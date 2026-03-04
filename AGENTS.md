@@ -5,9 +5,10 @@
 2. `CHARTER.md`
 3. `OPERATIONS.md`
 4. `TUX1000_PLAN.md`
-5. `docs/function-lane/README.md`
-6. `docs/FOUNDATION_SPEC_INDEX.md`
-7. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
+5. `docs/worksets/README.md`
+6. `docs/function-lane/README.md`
+7. `docs/FOUNDATION_SPEC_INDEX.md`
+8. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
 
 ## Source-of-Truth Rules
 - For OxFunc-local work, treat `CHARTER.md` in this directory as the working charter.

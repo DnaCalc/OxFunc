@@ -1,0 +1,62 @@
+use crate::function::{
+    Arity, DeterminismClass, FecDependencyProfile, FunctionMeta, HostInteractionClass,
+    VolatilityClass,
+};
+use crate::value::{EvalError, Value};
+
+pub const PI_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.PI",
+    arity: Arity::exact(0),
+    determinism: DeterminismClass::Deterministic,
+    volatility: VolatilityClass::NonVolatile,
+    host_interaction: HostInteractionClass::None,
+    fec_dependency_profile: FecDependencyProfile::None,
+};
+
+pub fn eval_pi(args: &[Value]) -> Result<Value, EvalError> {
+    if !PI_META.arity.accepts(args.len()) {
+        return Err(EvalError::ArityMismatch {
+            expected: PI_META.arity.min,
+            actual: args.len(),
+        });
+    }
+
+    Ok(Value::Number(std::f64::consts::PI))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_eval_pi_returns_pi_constant() {
+        match eval_pi(&[]) {
+            Ok(Value::Number(n)) => assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits()),
+            other => panic!("unexpected eval_pi outcome: {:?}", other),
+        }
+    }
+
+    #[test]
+    fn test_eval_pi_rejects_nonzero_args() {
+        let args = [Value::Number(1.0)];
+        let got = eval_pi(&args);
+        assert_eq!(
+            got,
+            Err(EvalError::ArityMismatch {
+                expected: 0,
+                actual: 1
+            })
+        );
+    }
+
+    #[test]
+    fn test_eval_pi_is_bitwise_stable() {
+        for _ in 0..32 {
+            match eval_pi(&[]) {
+                Ok(Value::Number(n)) => assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits()),
+                other => panic!("unexpected eval_pi outcome: {:?}", other),
+            }
+        }
+    }
+}
+

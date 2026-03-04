@@ -33,8 +33,11 @@ Out of slice:
 - `CHARTER.md` - OxFunc charter (canonical for OxFunc lane).
 - `OPERATIONS.md` - OxFunc execution doctrine (lane-level operations).
 - `TUX1000_PLAN.md` - aspirational execution adjunct to the charter.
+- `docs/worksets/` - sequence-based execution worksets for cross-cutting slices.
 - `docs/function-lane/` - mutable function/value working artifacts.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
+- `crates/` - Rust runtime/function scaffolding for executable slices.
+- `formal/lean/` - Lean formalization scaffolding for function/value proofs.
 
 ## Notes
 - Function behavior now has a dual version axis (Excel app version/channel plus workbook Compatibility Version), reflected in the OxFunc charter.

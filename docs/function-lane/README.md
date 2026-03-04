@@ -8,6 +8,8 @@ Primary files:
 3. `EXCEL_FUNCTION_DEFINITION_DISCUSSION.md`
 4. `INTERESTING_FUNCTIONS_INITIAL_CLASSIFICATION.csv`
 5. `INTERESTING_FUNCTIONS_INITIAL_CLASSIFICATION.md`
+6. `FUNCTION_SLICE_PI_CONTRACT_PRELIM.md`
+7. `FUNCTION_SLICE_CORRELATION_LEDGER.csv`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

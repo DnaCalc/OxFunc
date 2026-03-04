@@ -1,0 +1,3 @@
+function_id,contract_row_id,lean_module,lean_theorem_ids,rust_module,rust_test_ids,evidence_ids,excel_version_scope,compatibility_version_scope,status,notes
+FUNC.PI,FN-PI-001,OxFunc.Functions.Pi,evalPi_admitted_result;evalPi_rejects_cons;evalPi_deterministic,oxfunc_core::functions::pi,test_eval_pi_returns_pi_constant;test_eval_pi_rejects_nonzero_args;test_eval_pi_is_bitwise_stable,TBD-EMP-PI-001;TBD-SPEC-PI-001,unbounded_provisional,unbounded_provisional,provisional,Seed correlation row for first end-to-end function slice.
+
