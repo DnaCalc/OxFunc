@@ -210,3 +210,8 @@ This side-quest is done for a declared profile only when all are true:
 5. Foundation remains the owner of external Excel reference/spec corpus artifacts consumed by OxFunc.
 6. OxVBA remains a sibling program; this effort aligns with its clean-room and formal-assurance spirit, while focusing on worksheet function semantics rather than VBA language runtime.
 
+## 11. Execution Doctrine and Aspirational Plan
+1. `OPERATIONS.md` is the lane-level execution doctrine for OxFunc and is normative unless it conflicts with this charter or Foundation doctrine.
+2. `TUX1000_PLAN.md` is the aspirational execution adjunct for ambitious sequencing and method hardening.
+3. `TUX1000_PLAN.md` cannot override this charter; on conflict, this charter and Foundation doctrine win.
+

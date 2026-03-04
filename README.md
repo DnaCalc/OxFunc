@@ -31,6 +31,8 @@ Out of slice:
 
 ## Core Files Here
 - `CHARTER.md` - OxFunc charter (canonical for OxFunc lane).
+- `OPERATIONS.md` - OxFunc execution doctrine (lane-level operations).
+- `TUX1000_PLAN.md` - aspirational execution adjunct to the charter.
 - `docs/function-lane/` - mutable function/value working artifacts.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
 
