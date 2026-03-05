@@ -1,6 +1,6 @@
 # Floating-Point Behavior Research Notes (Excel)
 
-Status: `active-research`
+Status: `baseline-observed`
 
 ## 1. Purpose
 Capture online research findings and convert them into empirical TODOs for OxFunc characterization.
@@ -76,8 +76,8 @@ These are hypotheses until measured across explicit version axes.
 2. Execution tracker:
    - `FLOATING_POINT_EXECUTION_RECORD.md`.
 3. Current lane posture:
-   - `FP-A`, `FP-B`, and `FP-D` are ready for baseline execution capture.
-   - `FP-C` remains blocked until a minimal XLL/UDF harness is available for special-value injection.
+   - `FP-A`, `FP-B`, `FP-C`, and `FP-D` are executable with current tooling.
+   - `FP-C` requires XLL build/load path (`tools/fp-probe/xll/build-fp-edge-xll.ps1` + `-XllPath`).
 4. Comparative deviation ledger:
    - `FLOATING_POINT_LEAN_EXCEL_DEVIATION_LEDGER.csv`.
 
@@ -86,3 +86,51 @@ These are hypotheses until measured across explicit version axes.
 2. We do not currently claim Lean runtime FP behavior is fully Excel-equivalent.
 3. W2 will establish empirical equivalence classes and explicit divergence records before any stronger claims.
 4. If divergence is isolated and non-impacting for function contracts, we will document and bound it explicitly rather than introducing custom FP64 theory by default.
+
+## 9. Baseline Observations (2026-03-05)
+Observed scope:
+1. Excel lanes executed: `FP-A`, `FP-B`, `FP-C`, `FP-D`.
+2. Lean comparable scenarios executed: `FP2-001..FP2-010`.
+3. Baseline metadata:
+   - Excel `16.0 (build 19725)`,
+   - channel `http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60`,
+   - compatibility `default|CalculationVersion=191029|CheckCompatibility=False|FileFormat=51`,
+   - locale `en-US`.
+
+Key outcomes:
+1. Formula-surface signed-zero display normalizes to `0` in tested `FP-A/FP-B` paths.
+2. `FP-C` UDF ingress shows:
+   - `+/-inf`, `qNaN`, `sNaN` -> `#NUM!`,
+   - UDF `-0` -> observable `-0` display.
+3. Formula divide-by-zero/invalid (`0/0`, `1/0`, `-1/0`) -> `#DIV/0!`.
+4. Tiny/subnormal candidates in tested matrix show worksheet `0` and `Value2=0`.
+5. Lean runtime preserves nonzero subnormal payloads in comparable cases (`FP2-008..FP2-010`), yielding explicit divergence against Excel surface normalization.
+
+## 10. Baseline Policy Map (Provisional)
+1. Signed zero:
+   - Excel formula/reference surface often hides sign (`0`),
+   - interop return path can expose `-0`.
+2. Infinity/NaN:
+   - Excel worksheet surface normalizes to error values (`#NUM!` via UDF ingress; `#DIV/0!` for divide-by-zero formula lanes).
+3. Subnormals/tiny values:
+   - tested worksheet/value surface normalizes to zero.
+4. Lean runtime model:
+   - executable IEEE-like behavior retains infinities/NaN/subnormal values as floats, including payload-distinct NaN generation support in runtime pathways.
+5. Contract stance:
+   - OxFunc must model Excel worksheet-observable normalization as primary contract truth,
+   - Lean float behavior is comparative evidence, not default equivalence proof.
+
+## 11. Promotion Candidates (`EMP-*`) and Deferrals
+Candidates (for Foundation editorial promotion):
+1. `EMP-CAND-FP-001`:
+   - formula divide-by-zero/invalid operations normalize to worksheet errors rather than exposing IEEE infinities/NaNs.
+2. `EMP-CAND-FP-002`:
+   - formula/reference lanes normalize tested tiny/subnormal candidates to worksheet zero.
+3. `EMP-CAND-FP-003`:
+   - interop UDF ingress normalizes `+/-inf` and NaN variants to `#NUM!` at worksheet surface.
+4. `EMP-CAND-FP-004`:
+   - interop UDF ingress can surface `-0` as display `-0` even where formula lanes display `0`.
+
+Deferral rationale:
+1. Promotions are deferred pending cross-build/channel and non-default compatibility reruns.
+2. Promotions are deferred pending Foundation-side `EMP-*` ID assignment and acceptance review.

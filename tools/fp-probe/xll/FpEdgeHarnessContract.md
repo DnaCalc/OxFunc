@@ -6,12 +6,13 @@ Define the minimum XLL function contract required to inject IEEE edge values int
 This contract intentionally separates value injection from OxFunc semantics.
 
 ## 2. Required Worksheet Functions
-The harness should expose these worksheet-callable functions:
+The harness exposes these worksheet-callable functions:
 1. `OXFP_NEG_ZERO()`
 2. `OXFP_POS_INF()`
 3. `OXFP_NEG_INF()`
 4. `OXFP_QNAN(payload_id)`
-5. `OXFP_SNAN()`
+5. `OXFP_SNAN(payload_id)`
+6. `OXFP_BITS_ECHO(value)` (diagnostic passthrough helper)
 
 ## 3. Behavior Contract
 1. `OXFP_NEG_ZERO()`:
@@ -23,14 +24,19 @@ The harness should expose these worksheet-callable functions:
 4. `OXFP_QNAN(payload_id)`:
    - returns a quiet NaN.
    - `payload_id` selects among at least two distinct payload encodings.
-5. `OXFP_SNAN()`:
+5. `OXFP_SNAN(payload_id)`:
    - returns a signaling NaN if platform/runtime allows;
+   - `payload_id` selects payload variants;
    - otherwise return a documented fallback and emit diagnostic text in logs.
+6. `OXFP_BITS_ECHO(value)`:
+   - returns incoming value unchanged;
+   - supports worksheet probing of downstream normalization behavior.
 
 ## 4. Registration Contract
 1. Each function must be registered as non-volatile.
 2. Function names and argument arity must be stable.
 3. Registration metadata must include harness version.
+4. Registration is performed by the XLL itself in `xlAutoOpen` via `xlfRegister` using official SDK callback plumbing (`XLCALL.H`/`XLCALL.CPP`).
 
 ## 5. Logging and Provenance
 Each harness build/run must emit:

@@ -9,3 +9,5 @@ lean_lib OxFunc where
 lean_exe «oxfunc_formal_check» where
   root := `Main
 
+lean_exe «fp_scenario_eval» where
+  root := `FpScenarioEval

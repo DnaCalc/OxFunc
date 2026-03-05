@@ -4,7 +4,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-const RUNNER_VERSION: &str = "fp-probe-runner-rust/0.1.0";
+const RUNNER_VERSION: &str = "fp-probe-runner-rust/0.2.0";
 
 #[derive(Debug)]
 struct Options {
@@ -70,6 +70,12 @@ fn run() -> Result<(), (i32, String)> {
             String::new(),
             RUNNER_VERSION.to_string(),
             String::new(),
+            String::new(),
+            String::new(),
+            String::new(),
+            String::new(),
+            String::new(),
+            String::new(),
             notes,
         ]);
     }
@@ -92,6 +98,12 @@ fn run() -> Result<(), (i32, String)> {
         "locale_profile",
         "runner_version",
         "artifact_ref",
+        "primary_cell",
+        "primary_formula2",
+        "primary_value2",
+        "primary_text",
+        "observed_cells",
+        "comparison_bools",
         "notes",
     ];
     write_csv(&opts.out_path, &headers, &out_rows).map_err(|m| (7, m))?;

@@ -78,7 +78,7 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `in_progress`.
+1. `complete-provisional` (baseline closure achieved for declared initial scope).
 
 Claim confidence:
-1. `draft` (pending execution).
+1. `provisional` (single-build/single-locale baseline; expansion runs pending).

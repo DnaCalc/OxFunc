@@ -1,2 +1,2 @@
-scenario_id,lane,mode,execution_status,observed_class,excel_version,excel_channel,compat_version,locale_profile,runner_version,artifact_ref,notes
-FP2-001,FP-A,dry-run,queued,pending_observation,,,,,fp-probe-runner/0.1.0,,template row
+scenario_id,lane,mode,execution_status,observed_class,excel_version,excel_channel,compat_version,locale_profile,runner_version,artifact_ref,primary_cell,primary_formula2,primary_value2,primary_text,observed_cells,comparison_bools,notes
+FP2-001,FP-A,dry-run,queued,pending_observation,,,,,fp-probe-runner-rust/0.2.0,,,,,,,template row
