@@ -4,9 +4,9 @@ Worksets are sequence-based execution packets used to run cross-cutting slices e
 
 Active worksets:
 1. `WORKSET_TUX1000_PI_END_TO_END_SLICE.md`
+2. `WORKSET_TUX1000_FLOATING_POINT_CHARACTERIZATION.md`
 
 Guidelines:
 1. Worksets define ordered execution, gates, and artifact targets.
 2. Worksets do not use time commitments.
 3. Workset completion is recorded by artifact closure and gate status.
-
