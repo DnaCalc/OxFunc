@@ -64,7 +64,7 @@ Global required artifacts across kickoff:
 ## 6. Status Board (Current Intent)
 1. W1: `complete` (method seed complete; empirical depth expansion remains follow-on).
 2. W2: `complete-provisional` (baseline lanes executed, Lean comparison captured, divergence ledger populated).
-3. W3: `planned`.
+3. W3: `in_progress` (baseline taxonomy/spec and Rust/Lean tag scaffolds in place).
 4. W4: `planned`.
 5. W5: `planned`.
 6. W6: `planned`.

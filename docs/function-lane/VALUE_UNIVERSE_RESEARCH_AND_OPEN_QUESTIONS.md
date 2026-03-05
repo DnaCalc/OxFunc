@@ -1,6 +1,6 @@
 # Value Universe Research and Open Questions
 
-Status: `active-research`
+Status: `active`
 
 ## 1. Purpose
 Capture admissible evidence and unresolved design questions for Workset 3:
@@ -64,7 +64,27 @@ Capture admissible evidence and unresolved design questions for Workset 3:
    - transferability to XLL/UDF surfaces.
 4. Link resulting decisions into conformance rows and correlation ledger.
 
-## 6. Sources
+## 6. W3 Baseline Outputs (Current Run)
+Artifacts produced:
+1. `VALUE_UNIVERSE_PRELIM_SPEC.md`
+2. `VALUE_UNIVERSE_TAG_TABLE.csv`
+3. Rust value-tag scaffold in `crates/oxfunc_core/src/value.rs`
+4. Lean value-tag scaffold in `formal/lean/OxFunc/ValueUniverse.lean`
+5. local evidence ID registered: `W3-VU-BL-20260305`
+
+Baseline policy decisions (provisional):
+1. `EvalValue` excludes `missing_arg`, `empty_cell`, and `null_like`.
+2. `missing_arg` is call-boundary only.
+3. `empty_cell` is cell/call boundary and not a baseline eval-result tag.
+4. `null_like` remains reserved and unadmitted pending direct evidence.
+5. 3D references are modeled under `reference_like` with subtype metadata.
+
+## 7. Remaining W3 Closure Tasks
+1. Expand empirical anchors for disputed categories (`null_like`, modern error transferability).
+2. Absorb W7 string findings before W3 validation closure.
+3. Finalize downstream mapping for W4 coercion decision table consumption.
+
+## 8. Sources
 1. https://learn.microsoft.com/en-us/office/client-developer/excel/data-types-used-by-excel
 2. https://learn.microsoft.com/en-us/office/client-developer/excel/xlfregister-form-1
 3. https://learn.microsoft.com/en-us/office/client-developer/excel/xlcoerce

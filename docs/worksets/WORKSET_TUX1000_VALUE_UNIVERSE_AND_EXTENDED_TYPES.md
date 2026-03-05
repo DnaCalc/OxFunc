@@ -61,7 +61,14 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `planned`.
+1. `in_progress`.
 
 Claim confidence:
-1. `draft` (pre-closure).
+1. `provisional` for baseline taxonomy/spec + Rust/Lean scaffolds.
+2. `draft` for full validation pending expanded evidence and W7 integration.
+
+Gate snapshot:
+1. `G1` taxonomy closure: `closed-provisional`.
+2. `G2` evidence closure: `closed-provisional` (open points explicitly tracked).
+3. `G3` formal/runtime closure: `closed` (Rust + Lean compile passing).
+4. `G4` integration closure: `open` (W4/W5/W6 consumption not yet executed).

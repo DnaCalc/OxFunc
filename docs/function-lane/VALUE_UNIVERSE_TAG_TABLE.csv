@@ -1,0 +1,12 @@
+tag,cell_content_value,eval_value,call_arg_value,reference_like,extended_value,status,notes
+number,yes,yes,yes,no,yes,provisional,Scalar numeric value.
+text,yes,yes,yes,no,yes,provisional,Scalar text value.
+logical,yes,yes,yes,no,yes,provisional,Scalar boolean value.
+error,yes,yes,yes,no,yes,provisional,Scalar worksheet error value with code metadata.
+array,no,yes,yes,no,yes,provisional,Array value is eval/call/extended domain.
+reference_like,no,yes,yes,yes,yes,provisional,Reference-domain entity including 3D/structured/spill-anchor forms.
+missing_arg,no,no,yes,no,no,provisional,Omitted argument marker at call boundary.
+empty_cell,yes,no,yes,no,no,provisional,Empty cell state; distinct from missing arg and null-like.
+lambda_value,no,yes,yes,no,yes,provisional,Intermediate lambda/function value; not baseline cell content.
+extended_wrapper,no,no,no,no,yes,provisional,Wrapper for rich metadata surfaces (format hints, error enrichment).
+null_like,no,no,no,no,no,draft,Reserved disputed category with no baseline boundary admission.
