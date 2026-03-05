@@ -7,9 +7,11 @@ This folder contains the initial scaffolding for W2 floating-point empirical exe
    - Rust CLI that validates a scenario manifest and writes queued execution rows.
 2. `run-fp-probe.ps1`:
    - PowerShell wrapper around the runner.
-3. `xll/FpEdgeHarnessContract.md`:
+3. `run-fp-excel-baseline.ps1`:
+   - PowerShell COM runner for first local Excel baseline observations (`FP-A`, `FP-B` by default).
+4. `xll/FpEdgeHarnessContract.md`:
    - XLL function contract for special floating-point injection (`FP-C` lane).
-4. `results/FLOATING_POINT_RESULTS_TEMPLATE.csv`:
+5. `results/FLOATING_POINT_RESULTS_TEMPLATE.csv`:
    - output schema template for result capture.
 
 ## Runner CLI
@@ -32,4 +34,11 @@ powershell -File tools/fp-probe/run-fp-probe.ps1 -Manifest <csv> -Out <csv> [-Mo
 ```
 
 ## Current Scope
-This scaffold does not automate Excel yet. It prepares deterministic execution records and schema-compatible output files.
+1. Rust runner prepares deterministic schema-compatible output files from manifest rows.
+2. Excel baseline script executes first local observation pass for formula/reference lanes.
+3. XLL-driven special-value ingress (`FP-C`) remains pending harness implementation.
+
+First Excel baseline script:
+```powershell
+powershell -File tools/fp-probe/run-fp-excel-baseline.ps1 -Manifest docs/function-lane/FLOATING_POINT_SCENARIO_MANIFEST_SEED.csv -Out .tmp/fp-results-excel-baseline.csv
+```
