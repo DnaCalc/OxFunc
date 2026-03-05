@@ -17,6 +17,10 @@ Primary files:
 12. `FLOATING_POINT_PROBE_RUNTIME_REQUIREMENTS.md`
 13. `LEAN_FLOAT_MODEL_NOTES.md`
 14. `VALUE_UNIVERSE_RESEARCH_AND_OPEN_QUESTIONS.md`
+15. `STRING_BEHAVIOR_RESEARCH_NOTES.md`
+16. `STRING_SCENARIO_MANIFEST_SEED.csv`
+17. `STRING_EXECUTION_RECORD.md`
+18. `STRING_NORMALIZATION_AND_COMPARISON_POLICY_MAP.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

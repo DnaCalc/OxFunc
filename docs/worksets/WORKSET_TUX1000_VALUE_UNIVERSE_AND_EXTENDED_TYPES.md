@@ -12,6 +12,7 @@ Kickoff role:
 
 Dependencies:
 1. depends on W2 floating-point characterization baseline.
+2. consumes W7 string characterization feed where available (advisory during early W3 drafting; required before W3 validation closure).
 
 Downstream consumers:
 1. W4 coercion and resolver seam typing,

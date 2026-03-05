@@ -38,8 +38,8 @@ Assurance maturity intent:
 1. `exercised` for OxFunc-local closure.
 2. `green-validated` for Foundation-level pack closure.
 
-## 5. Kickoff Program (W1-W6)
-This is one combined kickoff program, not six unrelated documents.
+## 5. Kickoff Program (W1-W7)
+This is one combined kickoff program, not seven unrelated documents.
 
 ### 5.1 W1 - `PI()` End-to-End Method Seed
 Purpose:
@@ -83,6 +83,13 @@ Purpose:
 Primary outcome:
 1. evidence-backed decision: downgrade interest tier or retain high-interest with explicit rationale.
 
+### 5.7 W7 - String Characterization
+Purpose:
+1. characterize Excel string comparison/normalization/limit behavior via source extraction and empirical runs.
+
+Primary outcome:
+1. version-scoped string policy map for comparison semantics, control/unicode behavior, and boundary normalization.
+
 ## 6. Dependency Graph and Gate Discipline
 Dependencies:
 1. W1 has no upstream dependency.
@@ -90,7 +97,9 @@ Dependencies:
 3. W3 depends on W2 characterization baseline.
 4. W4 depends on W3 taxonomy closure.
 5. W5 depends on W2 + W3 + W4.
-6. W6 depends on W3 + W4 and consumes W2 numeric-edge findings.
+6. W6 depends on W3 + W4 + W7 and consumes W2 numeric-edge findings.
+7. W7 depends on W1 method template and feeds W3/W6.
+8. W3 may start before W7 closure but must absorb W7 outputs before W3 validation closure.
 
 Combined kickoff gates:
 1. KG1 Method gate: W1 closure is reusable without ad-hoc process edits.
@@ -99,9 +108,10 @@ Combined kickoff gates:
 4. KG4 Coercion-seam gate: W4 yields selected seam contract plus alternatives.
 5. KG5 Function-closure gate: W5 reaches at least `provisional` with complete artifact chain.
 6. KG6 Deterministic-quirks gate: W6 records classification decision with evidence.
+7. KG7 String semantics gate: W7 yields replayable string characterization and policy map.
 
 ## 7. Shared Artifact Contract for Kickoff
-Mandatory outputs across W1-W6:
+Mandatory outputs across W1-W7:
 1. workset spec with explicit state and gate status.
 2. conformance-row binding updates (`FDEF-*` lineage).
 3. function-lane narrative spec updates for each scope area.

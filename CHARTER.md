@@ -121,19 +121,21 @@ Rule:
 2. Program-level profile-green claims require `green-validated` Foundation pack closure.
 
 ## 8. Kickoff Program and Dependency Intent
-Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W6`):
+Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W7`):
 1. `PI()` method seed,
 2. floating-point behavior characterization,
 3. value-universe closure,
 4. coercion and reference-resolution seam closure,
 5. `ABS` full-formality slice,
-6. `XMATCH` deterministic-quirks closure.
+6. `XMATCH` deterministic-quirks closure,
+7. string normalization/comparison characterization.
 
 Dependency policy:
 1. W3 depends on W2 outputs.
 2. W4 depends on W3 closure.
 3. W5 depends on W2 + W3 + W4.
-4. W6 depends on W3 + W4 (and consumes W2 numeric-edge outcomes).
+4. W6 depends on W3 + W4 + W7 (and consumes W2 numeric-edge outcomes).
+5. W3 may begin before W7 closure but must absorb W7 outputs before W3 validation closure.
 
 ## 9. Definition of Done
 A function slice is done for declared scope only when all hold:
