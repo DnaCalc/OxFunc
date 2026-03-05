@@ -21,6 +21,7 @@ Primary files:
 16. `STRING_SCENARIO_MANIFEST_SEED.csv`
 17. `STRING_EXECUTION_RECORD.md`
 18. `STRING_NORMALIZATION_AND_COMPARISON_POLICY_MAP.md`
+19. `FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
