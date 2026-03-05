@@ -38,6 +38,7 @@ These are hypotheses until measured across explicit version axes.
 4. Does behavior differ between direct formula evaluation and referenced cell values?
 5. Do XLL/UDF boundaries allow injection of raw `-0`, infinities, and NaN variants, and if so how are they normalized?
 6. Are denormals/subnormals preserved, rounded to zero, or mapped to errors at any boundary?
+7. Is NaN payload information preserved at any worksheet-visible boundary in Excel?
 
 ## 5. Empirical TODO List
 1. Build `FP-A` single-cell formula matrix:
@@ -77,3 +78,11 @@ These are hypotheses until measured across explicit version axes.
 3. Current lane posture:
    - `FP-A`, `FP-B`, and `FP-D` are ready for baseline execution capture.
    - `FP-C` remains blocked until a minimal XLL/UDF harness is available for special-value injection.
+4. Comparative deviation ledger:
+   - `FLOATING_POINT_LEAN_EXCEL_DEVIATION_LEDGER.csv`.
+
+## 8. Lean-Comparison Working Position
+1. We do not currently claim that Excel preserves NaN payload identity at worksheet-visible boundaries.
+2. We do not currently claim Lean runtime FP behavior is fully Excel-equivalent.
+3. W2 will establish empirical equivalence classes and explicit divergence records before any stronger claims.
+4. If divergence is isolated and non-impacting for function contracts, we will document and bound it explicitly rather than introducing custom FP64 theory by default.

@@ -1,0 +1,11 @@
+deviation_id,scenario_id,excel_observation_ref,lean_observation_ref,relation_status,divergence_class,implication_level,contract_action,status,notes
+FPD-001,FP2-001,,,pending,unclassified,unknown,pending,draft,Seed row for signed-zero observability comparison.
+FPD-002,FP2-002,,,pending,unclassified,unknown,pending,draft,Seed row for signed-zero via arithmetic generation.
+FPD-003,FP2-003,,,pending,unclassified,unknown,pending,draft,Seed row for negative underflow handling.
+FPD-004,FP2-004,,,pending,unclassified,unknown,pending,draft,Seed row for overflow mapping.
+FPD-005,FP2-005,,,pending,unclassified,unknown,pending,draft,Seed row for invalid operation mapping.
+FPD-006,FP2-006,,,pending,unclassified,unknown,pending,draft,Seed row for positive divide-by-zero mapping.
+FPD-007,FP2-007,,,pending,unclassified,unknown,pending,draft,Seed row for negative divide-by-zero mapping.
+FPD-008,FP2-008,,,pending,unclassified,unknown,pending,draft,Seed row for subnormal literal ingestion.
+FPD-009,FP2-009,,,pending,unclassified,unknown,pending,draft,Seed row for negative subnormal literal ingestion.
+FPD-010,FP2-010,,,pending,unclassified,unknown,pending,draft,Seed row for text coercion near subnormal edge.

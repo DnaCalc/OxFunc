@@ -1,0 +1,2 @@
+scenario_id,lane,mode,execution_status,observed_class,excel_version,excel_channel,compat_version,locale_profile,runner_version,artifact_ref,notes
+FP2-001,FP-A,dry-run,queued,pending_observation,,,,,fp-probe-runner/0.1.0,,template row

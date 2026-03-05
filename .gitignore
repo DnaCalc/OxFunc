@@ -2,4 +2,7 @@
 target/
 **/.lake/
 **/.cache/
-
+tools/fp-probe/**/target/
+tools/fp-probe/**/bin/
+tools/fp-probe/**/obj/
+tools/fp-probe/FpProbeRunner/
