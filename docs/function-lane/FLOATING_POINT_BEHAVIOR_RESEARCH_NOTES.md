@@ -69,3 +69,11 @@ These are hypotheses until measured across explicit version axes.
 4. Conformance table:
    - add floating-point characterization references to relevant `FDEF-*` rows.
 
+## 7. Execution Artifacts (Current)
+1. Scenario seed manifest:
+   - `FLOATING_POINT_SCENARIO_MANIFEST_SEED.csv` (`FP2-001..FP2-026`).
+2. Execution tracker:
+   - `FLOATING_POINT_EXECUTION_RECORD.md`.
+3. Current lane posture:
+   - `FP-A`, `FP-B`, and `FP-D` are ready for baseline execution capture.
+   - `FP-C` remains blocked until a minimal XLL/UDF harness is available for special-value injection.

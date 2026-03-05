@@ -40,9 +40,10 @@ Out of scope:
 
 ## 5. Deliverables
 1. `docs/function-lane/FLOATING_POINT_BEHAVIOR_RESEARCH_NOTES.md` (updated)
-2. scenario manifest and execution matrix (location to be fixed in workset execution record)
-3. promoted findings candidates and notes for `EMP-*` promotion
-4. conformance-row linkage updates (`FDEF-027` and affected rows)
+2. `docs/function-lane/FLOATING_POINT_SCENARIO_MANIFEST_SEED.csv`
+3. `docs/function-lane/FLOATING_POINT_EXECUTION_RECORD.md`
+4. promoted findings candidates and notes for `EMP-*` promotion
+5. conformance-row linkage updates (`FDEF-027` and affected rows)
 
 ## 6. Gate Model
 ### G1 - Scenario Closure
@@ -64,7 +65,7 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `planned`.
+1. `in_progress`.
 
 Claim confidence:
 1. `draft` (pending execution).

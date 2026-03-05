@@ -58,7 +58,7 @@ Global required artifacts across kickoff:
 
 ## 6. Status Board (Current Intent)
 1. W1: `complete` (method seed complete; empirical depth expansion remains follow-on).
-2. W2: `planned`.
+2. W2: `in_progress` (scenario manifest and execution record seeded).
 3. W3: `planned`.
 4. W4: `planned`.
 5. W5: `planned`.
