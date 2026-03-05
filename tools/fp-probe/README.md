@@ -23,7 +23,12 @@ This folder contains runnable W2 probe tooling for Excel and Lean comparison lan
    - Builds the Rust XLL and emits `xll/bin/fp_edge_xll.xll`.
 10. `xll/fetch-excel-xll-sdk.ps1`
    - Downloads and extracts the official Microsoft Excel XLL SDK used by the harness build.
-11. `results/FLOATING_POINT_RESULTS_TEMPLATE.csv`
+11. `xll/EXCEL_XLL_SDK_LOCK.json`
+   - source/hash lock for SDK bootstrap reproducibility.
+   - lock can be rotated intentionally via `fetch-excel-xll-sdk.ps1 -UpdateLock`.
+12. `xll/README.md`
+   - FP-C operational runbook.
+13. `results/FLOATING_POINT_RESULTS_TEMPLATE.csv`
    - schema template for result capture.
 
 ## Core Commands

@@ -134,3 +134,4 @@ Candidates (for Foundation editorial promotion):
 Deferral rationale:
 1. Promotions are deferred pending cross-build/channel and non-default compatibility reruns.
 2. Promotions are deferred pending Foundation-side `EMP-*` ID assignment and acceptance review.
+3. Foundation editorial prompt packet is prepared in `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md`.

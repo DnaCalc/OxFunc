@@ -50,6 +50,8 @@ powershell -File tools/fp-probe/xll/build-fp-edge-xll.ps1 -Profile release
 ```powershell
 powershell -File tools/fp-probe/xll/fetch-excel-xll-sdk.ps1
 ```
+   - verifies MSI hash against `tools/fp-probe/xll/EXCEL_XLL_SDK_LOCK.json`.
+   - controlled lock rotation path: `-UpdateLock` (requires review + commit).
 6. Optional explicit SDK path:
 ```powershell
 powershell -File tools/fp-probe/xll/build-fp-edge-xll.ps1 -Profile release -ExcelXllSdkDir "<path-to-Excel2013XLLSDK>"

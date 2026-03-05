@@ -1,0 +1,10 @@
+{
+  "source_url": "https://download.microsoft.com/download/d/a/c/dac9c321-279c-4625-b381-bcb044eef7b2/excelxllsdk.msi",
+  "sha256": "1A59A4877F80881D0E8E931F39D5507B3A4EEA97FA18008554C425D7DF013930",
+  "sdk_subpath": "2013 Office System Developer Resources/Excel2013XLLSDK",
+  "required_files": [
+    "INCLUDE/XLCALL.H",
+    "SRC/XLCALL.CPP"
+  ],
+  "notes": "Lock file for operational reproducibility of W2 FP-C XLL SDK bootstrap."
+}

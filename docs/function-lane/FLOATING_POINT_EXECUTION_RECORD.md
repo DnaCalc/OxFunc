@@ -74,3 +74,15 @@ Output artifacts:
 2. Add non-default workbook compatibility template runs.
 3. Add multi-locale follow-up beyond `en-US`.
 4. Promote finalized candidates into Foundation `EMP-*` registry after editorial review.
+
+## 7. Follow-up Closure Notes
+1. Operational hardening for FP-C registration is complete:
+   - self-registration via `xlfRegister` in `xlAutoOpen`,
+   - official SDK callback bridge (`XLCALL.H` + `XLCALL.CPP`) in harness build path.
+2. SDK bootstrap is locked and scripted:
+   - `tools/fp-probe/xll/EXCEL_XLL_SDK_LOCK.json`
+   - `tools/fp-probe/xll/fetch-excel-xll-sdk.ps1`
+   - `tools/fp-probe/xll/README.md`
+   - includes controlled lock rotation path (`-UpdateLock`) for audited hash drift updates.
+3. Foundation editorial handoff prompts are prepared:
+   - `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md`.
