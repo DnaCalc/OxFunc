@@ -26,6 +26,7 @@ In scope:
 1. complete `PI()` contract-formal-runtime-verification-correlation chain.
 2. explicit function tags (`deterministic`, `nonvolatile`, `host_interaction=none`, `fec_dependency_profile=none`).
 3. linkage into function-lane conformance rows.
+4. admission-boundary empirical baseline for `PI()` arity behavior across entry/evaluate/file-ingress mechanisms.
 
 Out of scope:
 1. broad catalog rollout.
@@ -37,6 +38,8 @@ Out of scope:
 3. Rust `PI()` implementation + tests
 4. Lean `PI()` module + theorem inventory
 5. conformance row linkage (`FDEF-026`)
+6. `docs/function-lane/FORMULA_ADMISSION_BEHAVIOR_NOTES.md` (W1 admission-boundary supplement)
+7. `tools/formula-admission-probe/*` baseline runner + schema
 
 ## 5. Gate Model
 ### G1 - Contract Closure
@@ -56,6 +59,7 @@ Pass when:
 ### G4 - Correlation Closure
 Pass when:
 1. correlation record links contract/theorems/tests/evidence identifiers.
+2. admission-boundary baseline evidence is linked for `PI()` arity rejection behavior.
 
 ## 6. Status
 Execution state:
@@ -63,6 +67,7 @@ Execution state:
 
 Claim confidence:
 1. `provisional` for broader Excel-version closure until empirical replay depth is expanded.
+2. `provisional` for direct C API (`xlfEvaluate`/`xlCoerce`) admission-boundary equivalence until dedicated lane is executed.
 
 Assurance maturity:
 1. `exercised`.

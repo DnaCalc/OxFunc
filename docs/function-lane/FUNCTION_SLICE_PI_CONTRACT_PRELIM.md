@@ -61,5 +61,5 @@
 2. `empirical_anchor`: required for validated status.
 3. current status rationale:
    - scaffold-complete and locally verified,
-   - awaiting Excel observation capture for promotion.
-
+   - Excel admission-boundary baseline captured (`2026-03-05`, Excel `16.0 (build 19725)`) in `FORMULA_ADMISSION_BEHAVIOR_NOTES.md`,
+   - awaiting cross-build/channel, compatibility-variant, and direct C API equivalence replay for promotion.
