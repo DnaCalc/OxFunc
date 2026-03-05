@@ -1,217 +1,159 @@
 # OxFunc Charter
 
 ## 1. Mission
-OxFunc is the function-semantics and implementation program for DNA Calc worksheet compatibility.
+OxFunc is the function-semantics and implementation lane for DNA Calc worksheet compatibility.
 
-Its mission is to define, formalize, implement, and verify the Excel worksheet function universe so that compatibility is a mathematically grounded, auditable fact.
+Its mission is to define, formalize, implement, and verify worksheet value and function behavior so compatibility claims are explicit, auditable, and reproducible.
 
-This side-quest exists to convert function behavior from "folklore plus probes" into:
+OxFunc converts function behavior from folklore into:
 1. explicit formal semantics,
-2. executable conformance artifacts,
-3. mechanically checked proofs for selected high-value function families,
-4. production-grade Rust implementations with explicit correctness obligations.
+2. executable implementation contracts,
+3. machine-checkable proof obligations,
+4. reproducible conformance evidence.
 
-In the Fire Horse year and agentic coding era, the ambition is direct:
-1. move faster than ad-hoc reverse engineering,
-2. keep clean-room discipline intact,
-3. make correctness composable across models, engines, and evidence packs.
+## 2. Doctrine Alignment and Values
+When guidance conflicts, precedence is:
+1. `../Foundation/CHARTER.md` (program doctrine),
+2. `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md` (architecture constraints),
+3. `../Foundation/OPERATIONS.md` (program operations),
+4. `CHARTER.md` in this repository (OxFunc lane scope and execution constraints under Foundation doctrine),
+5. `OPERATIONS.md` in this repository,
+6. `TUX1000_PLAN.md` in this repository (aspirational, non-overriding).
 
-## 2. Values Ordering
-When values conflict, higher-ranked values win.
+Values ordering for OxFunc decisions:
+1. Correctness with explicit semantics.
+2. Compatibility with worksheet-observable behavior.
+3. Reproducibility and evidence provenance.
+4. Throughput and automation velocity.
+5. Presentation elegance.
 
-1. Correctness with explicit semantics
-2. Compatibility with worksheet-observable Excel behavior
-3. Reproducibility and evidence provenance
-4. Throughput/automation velocity
-5. Elegance of formal presentation
+Mandatory carry-over from Foundation doctrine:
+1. clean-room evidence discipline,
+2. coupled assurance stack (spec/model/proof/test/evidence),
+3. sequence-only planning (no date-commitment planning),
+4. profile-scoped claims with explicit version context,
+5. regressions as replayable permanent assets.
 
 ## 3. Clean-room Rule (Non-negotiable)
-This effort uses only:
+Allowed inputs:
 1. public specifications/documentation,
 2. published research,
 3. reproducible black-box observation of Excel behavior.
 
-Excluded:
-1. proprietary/restricted material,
-2. reverse engineering of Excel internals,
+Not allowed:
+1. proprietary or restricted materials,
+2. reverse engineering of internals,
 3. decompilation/disassembly of Office binaries.
 
 ## 4. Scope
 In scope:
 1. OxFunc as the F3E value/function slice:
-   - owns worksheet value type semantics,
-   - owns function/operator semantics and contracts,
-   - declares only the FEC capability dependencies required by those semantics.
-2. Built-in worksheet function universe (catalog + signatures + behavior classes).
-3. Operator-as-function universe (`OP_*`) where operators are evaluable semantics.
-4. UDF function-surface contracts:
-   - XLL/C API,
-   - VBA UDF,
-   - JavaScript custom functions,
-   - Automation add-in surface (lower depth allowed).
-5. Function-level semantics dimensions:
-   - argument admission vs runtime error boundary,
-   - coercion and domain/error behavior,
-   - array-lift/error propagation behavior,
-   - determinism/volatility/host-interaction classes,
-   - FEC dependency declarations.
-6. Worksheet value type system and function-call boundary semantics (value vs extended value, admission/coercion/return adaptation).
-7. Function behavior-class declarations used at the FEC boundary (`deterministic`, `volatile`, `host-interaction`, related tags), while FEC owns invalidation/scheduling policy execution.
-8. Lean-facing formal model slices and proof obligations for selected families.
-9. Rust implementations:
-   - value type system runtime,
-   - function implementations,
-   - verification utilities and differential harnesses.
-10. Proof-target mapping for concrete implementation sets (including external projects such as ExcelFinancialFunctions where relevant).
-11. Empirical edge-case scanning and replay infrastructure for Excel-validation-backed spec closure.
-12. Localization-aware behavior as an explicit axis (parse/format/coercion impacts), with staged depth.
-13. Dual-axis version behavior tracking:
-   - Excel application version/channel,
-   - workbook Compatibility Version setting,
-   for function availability and semantics.
-
-Out of scope:
-1. Full workbook scheduler semantics (belongs to core engine model).
-2. Power Query/M, DAX, and MDX language internals.
-3. Full VBA language runtime semantics (belongs to OxVBA).
-4. Full localization-completeness closure in the first formalization wave (tracked, not ignored).
-5. Formula language grammar/parse/bind ownership (belongs to OxFml lane).
-6. Full FEC/F3E protocol and host-state lifecycle design (consumed from model docs; not owned here).
-
-Boundary seam policy:
-1. Some semantics are intentionally cross-cutting (for example volatility and context dependence).
-2. OxFunc owns function-level declarations and contract meaning.
-3. FEC owns host execution policy (invalidation/scheduling/publication behavior) that consumes those declarations.
-4. Any ambiguous ownership discovered during implementation is logged and resolved explicitly, not silently absorbed.
-
-## 5. Deliverables
-1. Function universe registry:
-   - stable function ids,
-   - signature/arity contracts,
-   - classification axes,
-   - source/evidence bindings.
-2. Function classification completeness set:
-   - full built-in list,
-   - interesting/non-interesting tiering,
-   - dependency-profile tags (`FEC` capabilities).
-3. Formal function semantics schema:
-   - preconditions,
-   - postconditions,
-   - invariants,
-   - explicit error/algebraic result model.
-4. Formal worksheet value model:
-   - value-tag algebra,
-   - coercion/normalization contracts,
-   - error/detail and array-lift semantics.
-5. Function-adapter contract model:
-   - parse/admission policy,
-   - pre-call coercion,
-   - core typed kernel,
+   - worksheet value type semantics,
+   - function/operator semantics,
+   - function-level FEC capability declarations.
+2. Built-in function universe and operator-as-function (`OP_*`) semantics.
+3. Function call boundary semantics:
+   - admission,
+   - coercion,
+   - kernel behavior,
    - post-call adaptation.
-6. UDF surface conformance schema:
-   - registration/signature mapping,
-   - argument/return value class mapping,
-   - caller/context and capability boundaries.
-7. Lean proof lanes for selected profile slices.
-8. Rust implementation crates/modules for value/runtime/function kernels.
-9. Test scaffolding:
-   - contract tests,
-   - differential tests,
-   - metamorphic/property tests,
-   - regression corpus.
-10. Empirical scaffolding for Excel validation:
-   - scenario manifests,
-   - replayable probes,
-   - promoted finding records (`EMP-*` lineage).
-11. Conformance pack bindings (spec + empirical) for every formalized claim.
-12. Versioned behavior matrix for function semantics keyed by:
-   - Excel application version/channel,
+4. Value-universe formalization:
+   - scalar/error/array/reference-like/extended-value lanes,
+   - versioned edge behavior and ambiguity handling.
+5. UDF surface contract semantics (XLL/VBA/JS/Automation) at function boundary depth.
+6. Lean-facing formal model slices and proof obligations for selected families.
+7. Rust implementation of value/function kernels and adapters.
+8. Empirical edge characterization and replay artifacts for unresolved/spec-thin lanes.
+9. Dual-axis version behavior tracking:
+   - Excel app version/channel,
    - workbook Compatibility Version.
 
-## 6. Proof Ambition
-The goal is not "prove Excel." The goal is to prove that our implementations refine our formalized contracts for explicitly scoped behavior profiles.
+Out of scope:
+1. Formula grammar/parse/bind ownership (OxFml lane).
+2. Full FEC scheduler/protocol/lifecycle ownership (Foundation model lane).
+3. Workbook-level scheduling semantics and engine concurrency internals.
+4. Power Query/M, DAX, MDX internals.
+5. Full VBA runtime semantics.
 
-Proof posture:
-1. Kernel-first proofs:
-   - prove pure typed kernels (for example trig and financial core equations/properties).
-2. Adapter correctness proofs:
-   - show coercion/admission/error wrappers preserve declared contracts.
-3. Refinement proofs:
-   - implementation result equals formal model result under declared preconditions.
-4. Differential conformance evidence:
-   - where public specs are thin, empirical evidence provides bounded target behavior that is explicitly version-scoped.
-5. Rust-runtime consistency:
-   - Rust function/value implementations are required to satisfy declared contracts and proof-side assumptions.
+## 5. Boundary Contract (FEC/F3E)
+Normative OxFunc boundary commitments:
+1. F3E owns value semantics.
+2. FEC provides context capabilities and host lifecycle policy.
+3. OxFunc defines function-facing declarations (`deterministic`, `volatile`, `host-interaction`, `fec_dependency_profile`, capability tags).
+4. FEC consumes those declarations for invalidation/scheduling/publication policy.
+5. Any seam ambiguity is logged as an explicit boundary decision, never silently absorbed.
 
-Financial-functions lane:
-1. treat known external implementations (for example fsprojects/ExcelFinancialFunctions) as candidate comparative implementations,
-2. formalize target contracts first,
-3. prove equivalence/refinement for selected functions and tolerances where feasible.
+Implementation-seam rule:
+1. OxFunc contracts must remain compatible with the `CompileFormula -> DeclareDependencies -> Evaluate -> Publish/Render` interaction model documented in Foundation FEC/F3E specs.
 
-## 7. Phased Execution
-### Phase A: Universe Closure
-1. Complete built-in catalog and UDF-surface taxonomy.
-2. Freeze function ids and signature schema.
-3. Record known unknowns and unresolved ambiguity lanes explicitly.
-4. Establish Rust module scaffolding for values/functions and verification harness entry points.
+## 6. Required Artifact Stack
+Every promoted function slice must carry synchronized artifacts:
+1. Contract artifact (`docs/function-lane/*` rows/spec notes).
+2. Formal artifact (Lean module + theorem inventory).
+3. Runtime artifact (Rust kernel/adapter implementation).
+4. Verification artifact (contract/differential/property tests as required).
+5. Evidence artifact (spec and/or empirical source bindings with reproducible provenance).
+6. Correlation artifact (machine-readable linkage across the five artifacts).
 
-### Phase B: Semantic Contracts
-1. Write contract rows for non-interesting baseline families.
-2. Separate admission/coercion/domain/array-lift concerns in each row.
-3. Bind each row to source evidence and empirical probe obligations.
-4. Define localization influence points (argument separators, decimal behavior, parse/coercion sensitivity) and mark deferred-depth rows.
+## 7. Status and Gate Semantics
+OxFunc uses three orthogonal status planes.
 
-### Phase C: Formal Core and Proof Scaffolding
-1. Define Lean data model and contract encoding.
-2. Add proof obligations for selected canonical functions (`SIN`, `SUM`, `ROW`) and one financial profile slice.
-3. Connect contracts to executable reference implementations.
-4. Connect Lean-side contracts to Rust implementation obligations and test harness assertions.
+### 7.1 Execution State
+For worksets and slice execution flow:
+1. `planned`
+2. `in_progress`
+3. `blocked`
+4. `complete`
 
-### Phase D: Conformance Coupling
-1. Bind formal claims to conformance matrices and empirical finding ids.
-2. Enforce profile-scoped status (`draft`, `provisional`, `validated`) with explicit promotion rules.
-3. Require replayable evidence bundles for every claim that depends on empirical behavior.
-4. Run Excel differential/empirical lanes for unresolved edge cases and feed results back into contract rows.
+### 7.2 Contract Confidence State
+For function-definition rows/claims:
+1. `draft`
+2. `provisional`
+3. `validated`
 
-## 8. Definition of Done
-This side-quest is done for a declared profile only when all are true:
+### 7.3 Assurance Maturity State
+Mapped to Foundation pack language:
+1. `exercised`: OxFunc-local artifacts and checks pass.
+2. `green-validated`: required Foundation-level packs/evidence are complete.
 
-1. Coverage:
-   - every in-scope function and operator has a function id and contract row.
-   - every in-scope function is classified and mapped to implementation/proof/test lanes.
-2. Traceability:
-   - every contract row maps to evidence ids and requirement ids.
-   - every Rust implementation unit maps to its contract/proof/test obligations.
-3. Formalization:
-   - Lean formal model covers declared profile slice semantics for values/functions.
-4. Proofs:
-   - required proof obligations for declared profile slice pass.
-5. Conformance:
-   - required packs and empirical replay lanes pass for the same profile slice.
-6. Boundaries:
-   - unresolved behavior is explicit, version-scoped, and non-blocking by policy (not hidden).
-7. Validation:
-   - Excel differential evidence exists for all mandatory edge-case lanes in the declared slice.
-8. Localization posture:
-   - localization-sensitive lanes are either validated or explicitly deferred with bounded policy and follow-up hooks.
-9. Version context:
-   - each function claim states applicable Excel version/channel scope and Compatibility Version scope, or is explicitly marked unbounded/provisional.
+Rule:
+1. OxFunc may mark a slice `validated` only with explicit scope and evidence.
+2. Program-level profile-green claims require `green-validated` Foundation pack closure.
 
-## 9. Non-goal Guardrails
-1. Do not stall on global completeness before proving anything.
-2. Do not claim proof of behavior not captured in formal contracts.
-3. Do not hide ambiguity by overfitting to one Excel build.
+## 8. Kickoff Program and Dependency Intent
+Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W6`):
+1. `PI()` method seed,
+2. floating-point behavior characterization,
+3. value-universe closure,
+4. coercion and reference-resolution seam closure,
+5. `ABS` full-formality slice,
+6. `XMATCH` deterministic-quirks closure.
 
-## 10. Relationship to Existing Foundation Artifacts
-1. This charter governs the `OxFunc` lane.
-2. OxFunc-owned mutable artifacts live under `docs/function-lane/` and are the primary editable function-definition working set.
-3. `OxFml` is the sibling F3E formula-language lane (grammar/parse/bind and formula-level semantics outside function/value ownership).
-4. FEC/F3E boundaries are defined in model docs; OxFunc consumes those boundaries and contributes function/value capability declarations.
-5. Foundation remains the owner of external Excel reference/spec corpus artifacts consumed by OxFunc.
-6. OxVBA remains a sibling program; this effort aligns with its clean-room and formal-assurance spirit, while focusing on worksheet function semantics rather than VBA language runtime.
+Dependency policy:
+1. W3 depends on W2 outputs.
+2. W4 depends on W3 closure.
+3. W5 depends on W2 + W3 + W4.
+4. W6 depends on W3 + W4 (and consumes W2 numeric-edge outcomes).
 
-## 11. Execution Doctrine and Aspirational Plan
-1. `OPERATIONS.md` is the lane-level execution doctrine for OxFunc and is normative unless it conflicts with this charter or Foundation doctrine.
-2. `TUX1000_PLAN.md` is the aspirational execution adjunct for ambitious sequencing and method hardening.
-3. `TUX1000_PLAN.md` cannot override this charter; on conflict, this charter and Foundation doctrine win.
+## 9. Definition of Done
+A function slice is done for declared scope only when all hold:
+1. coverage: explicit id and complete contract fields.
+2. traceability: contract/formal/runtime/test/evidence linkage is machine-readable.
+3. formalization: required theorem obligations for its slice class pass.
+4. runtime: Rust implementation and required tests pass.
+5. evidence: source bindings and empirical findings (where needed) are replayable.
+6. version context: both required axes are explicit.
+7. boundaries: unresolved behavior is explicit and policy-bounded.
+8. maturity: status and assurance maturity are clearly stated (`draft/provisional/validated` and `exercised/green-validated`).
 
+## 10. Non-goal Guardrails
+1. Do not claim behavior proof beyond stated contract scope.
+2. Do not hide uncertainty behind broad compatibility language.
+3. Do not overfit to a single Excel build while presenting unbounded claims.
+4. Do not let large-catalog closure block small complete end-to-end slices.
+
+## 11. Relationship to Operating and Aspirational Docs
+1. `OPERATIONS.md` in this repository is the lane-level execution doctrine.
+2. `TUX1000_PLAN.md` is the aspirational execution adjunct.
+3. Workset files under `docs/worksets/` define sequence-level execution packets under this charter.
+4. Foundation conformance/model docs remain authoritative for cross-program protocol and evidence governance.

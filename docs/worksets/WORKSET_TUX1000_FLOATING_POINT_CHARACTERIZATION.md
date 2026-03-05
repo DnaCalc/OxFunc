@@ -1,85 +1,70 @@
-# WORKSET - TUX1000 Floating-Point Characterization
+# WORKSET - TUX1000 Floating-Point Characterization (W2)
 
-## 1. Why This Exists
-This is the second cross-cutting workset after `PI()`.
+## 1. Purpose
+Characterize Excel floating-point behavior at worksheet-observable boundaries, especially IEEE-edge cases relevant to OxFunc contracts.
 
-Goal:
-1. fully characterize Excel floating-point behavior for worksheet operations,
-2. explicitly test edge cases around IEEE-754 boundaries,
-3. separate behavior at expression-evaluation boundary versus stored-sheet-value boundary.
+Focus lanes:
+1. `-0` observability and propagation,
+2. infinity/NaN handling and normalization,
+3. subnormal behavior,
+4. formula-eval vs sheet-materialization vs reference-reuse differences.
 
-## 2. Research Snapshot (Primary-Source Baseline)
-Based on Microsoft documentation, Excel:
-1. uses IEEE-754 double precision as its numeric storage basis,
-2. does not fully implement optional IEEE-754 features in the same way as some scientific runtimes,
-3. historically normalizes/surfaces overflow and invalid operations as worksheet errors rather than exposing raw `+/-inf` or NaN values,
-4. limits precision to 15 significant digits for entered numbers.
+## 2. Kickoff Position and Dependencies
+Kickoff role:
+1. W2 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
 
-Primary sources:
-1. Microsoft Learn: Floating-point arithmetic behavior in Excel.
-2. Microsoft Support: Excel specifications and limits.
-3. Microsoft Learn: Data types used by Excel and XLL API references.
+Dependencies:
+1. depends on W1 method template.
+
+Downstream consumers:
+1. W3 value-universe decisions,
+2. W5 `ABS` edge policy,
+3. W6 numeric-comparison edge interpretation.
 
 ## 3. Scope
 In scope:
-1. `-0` observability and sign propagation.
-2. overflow/underflow behavior and error mapping.
-3. NaN and infinities (generation, import, propagation, display/storage mapping).
-4. denormal/subnormal handling.
-5. formula-only evaluation vs cross-cell reference behavior.
-6. worksheet display/serialization effects versus internal evaluation outcomes.
+1. boundary behavior mapping for formula-only, sheet, reference-chain, and interop lanes.
+2. version-scoped observation capture.
+3. empirical promotion candidates for stable `EMP-*` findings.
 
 Out of scope:
-1. full statistical analysis for every worksheet function in this pass.
-2. non-worksheet language domains (Power Query/DAX internals).
+1. full statistical closure for every function.
+2. non-worksheet language domains.
 
-## 4. Work Lanes
-1. Lane FP-A: pure formula expression tests (single-cell direct expressions).
-2. Lane FP-B: sheet boundary tests (value in one cell, consumed by references in others).
-3. Lane FP-C: import/interop boundary tests (XLL/UDF-provided doubles, including special values).
-4. Lane FP-D: persistence tests (save/load round-trip and text export/import effects).
-
-## 5. Required Matrix Axes
-Every empirical row must include:
+## 4. Required Axes per Observation Row
 1. Excel app version/channel.
-2. Workbook Compatibility Version.
-3. locale profile (decimal/thousands separators where relevant).
+2. workbook Compatibility Version.
+3. locale profile.
 4. boundary lane (`FP-A/B/C/D`).
+5. reproducibility metadata (runner/tool revision).
 
-## 6. Candidate Scenario Set
-1. Signed-zero candidates:
-   - underflow from negative-side operations,
-   - arithmetic identities that may preserve sign bit.
-2. Overflow candidates:
-   - large multiplication/exponentiation expected to exceed double finite range.
-3. Invalid-operation candidates:
-   - expressions that would be NaN in IEEE math runtimes.
-4. Denormal candidates:
-   - extremely small magnitudes near subnormal range.
-5. Boundary-comparison candidates:
-   - run same operation direct in formula and via reference chain.
-6. Interop candidates:
-   - inject `-0`, `+inf`, `-inf`, and quiet/signaling NaN from UDF/XLL boundary.
+## 5. Deliverables
+1. `docs/function-lane/FLOATING_POINT_BEHAVIOR_RESEARCH_NOTES.md` (updated)
+2. scenario manifest and execution matrix (location to be fixed in workset execution record)
+3. promoted findings candidates and notes for `EMP-*` promotion
+4. conformance-row linkage updates (`FDEF-027` and affected rows)
 
-## 7. Expected Outputs
-1. empirical scenario manifest with reproducible formulas/actions.
-2. result captures with raw observable outcomes.
-3. promotion candidates for `EMP-*` findings on stable behaviors.
-4. function/value-contract updates:
-   - value-type rules,
-   - coercion/error policy notes,
-   - conformance references.
+## 6. Gate Model
+### G1 - Scenario Closure
+Pass when:
+1. scenario matrix is explicit and reproducible.
 
-## 8. Gate Model
-1. G1 baseline:
-   - scenario matrix defined and runnable.
-2. G2 observation:
-   - baseline runs executed for at least one declared Excel version/channel and Compatibility Version.
-3. G3 characterization:
-   - normalized behavior map produced for `-0`, infinities, NaN, and denormals across lanes.
-4. G4 promotion:
-   - promoted `EMP-*` findings linked to conformance rows and value-model docs.
+### G2 - Observation Closure
+Pass when:
+1. at least one declared version/channel and Compatibility Version pass is executed for all required lanes.
 
-## 9. Status
-Current: `planned`.
+### G3 - Characterization Closure
+Pass when:
+1. normalized policy map exists for `-0`, infinities, NaN, and subnormals.
 
+### G4 - Promotion Closure
+Pass when:
+1. candidate findings are either promoted or explicitly deferred with rationale.
+2. downstream contract touchpoints are identified.
+
+## 7. Status
+Execution state:
+1. `planned`.
+
+Claim confidence:
+1. `draft` (pending execution).

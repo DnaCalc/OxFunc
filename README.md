@@ -33,9 +33,11 @@ Out of slice:
 - `CHARTER.md` - OxFunc charter (canonical for OxFunc lane).
 - `OPERATIONS.md` - OxFunc execution doctrine (lane-level operations).
 - `TUX1000_PLAN.md` - aspirational execution adjunct to the charter.
+- `docs/worksets/WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md` - combined kickoff orchestration for worksets 1..6.
 - `docs/worksets/` - sequence-based execution worksets for cross-cutting slices.
 - `docs/function-lane/` - mutable function/value working artifacts.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
+- `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md` - suggested Foundation repo updates from OxFunc execution.
 - `crates/` - Rust runtime/function scaffolding for executable slices.
 - `formal/lean/` - Lean formalization scaffolding for function/value proofs.
 

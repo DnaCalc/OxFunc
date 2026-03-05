@@ -7,10 +7,10 @@ It adapts Foundation doctrine and the practical execution posture proven in sibl
 
 ## 2. Precedence and Alignment
 When guidance conflicts, precedence is:
-1. `CHARTER.md` in this repository (OxFunc mission, scope, and done criteria).
-2. `../Foundation/CHARTER.md`
-3. `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`
-4. `../Foundation/OPERATIONS.md`
+1. `../Foundation/CHARTER.md`
+2. `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`
+3. `../Foundation/OPERATIONS.md`
+4. `CHARTER.md` in this repository
 5. This document (`OPERATIONS.md`)
 6. `TUX1000_PLAN.md` (aspirational execution plan; non-doctrinal where conflict exists).
 
@@ -144,4 +144,3 @@ A function slice is done for a declared profile only when:
 4. evidence links are complete and reproducible.
 5. version scope is explicit on both required axes.
 6. known unknowns are explicit and policy-bounded.
-

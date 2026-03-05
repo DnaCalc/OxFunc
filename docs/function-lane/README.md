@@ -11,6 +11,7 @@ Primary files:
 6. `FUNCTION_SLICE_PI_CONTRACT_PRELIM.md`
 7. `FUNCTION_SLICE_CORRELATION_LEDGER.csv`
 8. `FLOATING_POINT_BEHAVIOR_RESEARCH_NOTES.md`
+9. `VALUE_UNIVERSE_RESEARCH_AND_OPEN_QUESTIONS.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
