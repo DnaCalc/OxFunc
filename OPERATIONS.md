@@ -130,6 +130,10 @@ This template is the generalization seed for `SIN`, `SUM`, `ROW`, and later fami
 3. Behavior-critical tooling should follow Foundation language policy:
    - prefer stable .NET tooling for orchestration and empirical artifact emission.
 4. Keep machine-readable artifacts first-class; narrative summaries are secondary.
+5. Empirical scenario manifests must carry explicit expectation fields (`expected_status`, `expected_observable`) so intentional-failure cases are tracked as expected behavior, not ambiguous failures.
+6. Probe runs must emit run-metadata sidecars (manifest hash, runner version, git revision, environment/version metadata) for replay integrity.
+7. Probe suites should produce an analyzer report with mismatch and drift classification against prior baselines when available.
+8. Cross-cutting worksets must instantiate a cross-boundary invariant checklist (formula, interop ingress, reference reuse, persistence/interchange, and any additional active boundaries).
 
 ## 9. Doctrine and Plan Change Workflow
 1. Routine function-row and implementation updates do not require synthesis runs by default.

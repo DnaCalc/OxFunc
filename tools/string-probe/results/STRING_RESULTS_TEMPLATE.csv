@@ -1,0 +1,1 @@
+scenario_id,lane,scenario_kind,mode,execution_status,observed_class,expected_status,expected_observable,expectation_status,expectation_detail,excel_version,excel_channel,compat_version,locale_profile,runner_version,run_label,source_manifest,artifact_ref,primary_cell,primary_formula2,primary_value2,primary_text,primary_text_len,observed_cells,comparison_bools,objective,notes

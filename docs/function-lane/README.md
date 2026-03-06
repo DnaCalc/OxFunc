@@ -24,6 +24,8 @@ Primary files:
 19. `STRING_EXECUTION_RECORD.md`
 20. `STRING_NORMALIZATION_AND_COMPARISON_POLICY_MAP.md`
 21. `FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`
+22. `STRING_PROBE_RUNTIME_REQUIREMENTS.md`
+23. `CROSS_BOUNDARY_INVARIANT_CHECKLIST_TEMPLATE.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
