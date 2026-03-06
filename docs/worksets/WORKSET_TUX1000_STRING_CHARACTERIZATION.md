@@ -95,7 +95,22 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `planned`.
+1. `complete-provisional`.
 
 Claim confidence:
-1. `draft` (pre-execution).
+1. `provisional` (single-build/channel + compatibility/locale baseline executed).
+
+Gate snapshot:
+1. `G1` source map closure: `closed-provisional`.
+2. `G2` scenario closure: `closed`.
+3. `G3` observation closure: `closed`.
+4. `G4` characterization closure: `closed-provisional`.
+5. `G5` integration closure: `closed-provisional`.
+
+Primary evidence:
+1. `W7-STR-BL-20260305`
+2. `docs/function-lane/STRING_EXECUTION_RECORD.md`
+3. `.tmp/string-results-excel.csv`
+
+Follow-on execution packet:
+1. `WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md`

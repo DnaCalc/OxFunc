@@ -68,7 +68,7 @@ Global required artifacts across kickoff:
 4. W4: `planned`.
 5. W5: `planned`.
 6. W6: `planned`.
-7. W7: `planned`.
+7. W7: `complete-provisional` (baseline string characterization and policy map captured under `W7-STR-BL-20260305`).
 
 ## 7. Promotion and Maturity Notes
 1. Workset completion does not automatically imply `validated` status for all linked claims.

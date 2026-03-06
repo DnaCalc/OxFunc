@@ -14,7 +14,7 @@ Kickoff role:
 Dependencies:
 1. depends on W3 value-universe closure,
 2. depends on W4 coercion/resolver seam closure,
-3. depends on W7 string characterization closure for text comparison/matching behavior,
+3. depends on W7 string characterization closure for text comparison/matching behavior (baseline satisfied via `W7-STR-BL-20260305`; expansion replays may still refine),
 4. consumes W2 numeric-edge findings where comparison behavior is impacted.
 
 ## 3. Scope

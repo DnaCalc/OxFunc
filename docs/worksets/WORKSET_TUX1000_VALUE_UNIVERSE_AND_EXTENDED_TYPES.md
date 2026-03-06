@@ -65,10 +65,11 @@ Execution state:
 
 Claim confidence:
 1. `provisional` for baseline taxonomy/spec + Rust/Lean scaffolds.
-2. `draft` for full validation pending expanded evidence and W7 integration.
+2. `draft` for full validation pending expanded evidence beyond current W7 baseline scope.
 
 Gate snapshot:
 1. `G1` taxonomy closure: `closed-provisional`.
 2. `G2` evidence closure: `closed-provisional` (open points explicitly tracked).
+   - includes W7 baseline feed consumption (`W7-STR-BL-20260305`) for text-boundary constraints.
 3. `G3` formal/runtime closure: `closed` (Rust + Lean compile passing).
 4. `G4` integration closure: `open` (W4/W5/W6 consumption not yet executed).
