@@ -3,6 +3,8 @@ pub enum EvalError {
     ArityMismatch { expected: usize, actual: usize },
 }
 
+pub const EXCEL_TEXT_MAX_UTF16_CODE_UNITS: usize = 32_767;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Value {
     Number(f64),
@@ -62,10 +64,45 @@ pub struct ArrayShape {
     pub cols: usize,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExcelText {
+    utf16_code_units: Vec<u16>,
+}
+
+impl ExcelText {
+    pub fn from_utf16_code_units(utf16_code_units: Vec<u16>) -> Self {
+        Self { utf16_code_units }
+    }
+
+    pub fn from_interop_assignment(input: &str) -> Self {
+        let mut utf16_code_units: Vec<u16> = input.encode_utf16().collect();
+        utf16_code_units.truncate(EXCEL_TEXT_MAX_UTF16_CODE_UNITS);
+        Self { utf16_code_units }
+    }
+
+    pub fn len_utf16_code_units(&self) -> usize {
+        self.utf16_code_units.len()
+    }
+
+    pub fn utf16_code_units(&self) -> &[u16] {
+        &self.utf16_code_units
+    }
+
+    pub fn to_string_lossy(&self) -> String {
+        String::from_utf16_lossy(&self.utf16_code_units)
+    }
+
+    pub fn has_dangling_high_surrogate_tail(&self) -> bool {
+        self.utf16_code_units
+            .last()
+            .is_some_and(|u| (0xD800..=0xDBFF).contains(u))
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum EvalValue {
     Number(f64),
-    Text(String),
+    Text(ExcelText),
     Logical(bool),
     Error(WorksheetErrorCode),
     Array(ArrayShape),
@@ -76,7 +113,7 @@ pub enum EvalValue {
 #[derive(Debug, Clone, PartialEq)]
 pub enum CellContentValue {
     Number(f64),
-    Text(String),
+    Text(ExcelText),
     Logical(bool),
     Error(WorksheetErrorCode),
     EmptyCell,
@@ -181,7 +218,7 @@ impl ValueBoundary {
 
 #[cfg(test)]
 mod tests {
-    use super::{ValueBoundary, ValueTag};
+    use super::{ExcelText, ValueBoundary, ValueTag, EXCEL_TEXT_MAX_UTF16_CODE_UNITS};
 
     #[test]
     fn eval_boundary_excludes_missing_empty_and_null() {
@@ -209,5 +246,26 @@ mod tests {
         assert!(ValueBoundary::ReferenceDomain.allows(ValueTag::ReferenceLike));
         assert!(!ValueBoundary::ReferenceDomain.allows(ValueTag::Number));
         assert!(!ValueBoundary::ReferenceDomain.allows(ValueTag::Array));
+    }
+
+    #[test]
+    fn interop_assignment_truncates_ascii_to_32767_utf16_units() {
+        let text = ExcelText::from_interop_assignment(&"x".repeat(40_000));
+        assert_eq!(
+            text.len_utf16_code_units(),
+            EXCEL_TEXT_MAX_UTF16_CODE_UNITS
+        );
+        assert!(!text.has_dangling_high_surrogate_tail());
+    }
+
+    #[test]
+    fn interop_assignment_can_leave_dangling_surrogate_tail() {
+        let text = ExcelText::from_interop_assignment(&"😀".repeat(40_000));
+        assert_eq!(
+            text.len_utf16_code_units(),
+            EXCEL_TEXT_MAX_UTF16_CODE_UNITS
+        );
+        assert!(text.has_dangling_high_surrogate_tail());
+        assert!(text.to_string_lossy().ends_with('\u{FFFD}'));
     }
 }

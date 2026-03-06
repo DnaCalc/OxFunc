@@ -72,25 +72,38 @@ Code-level registry split (provisional):
 Versioning rule:
 1. code family membership is version-scoped by Excel build/channel and compatibility mode.
 
-## 7. Arrays, Lambda, and References
+## 7. Text Subtype Baseline (W7 Feed)
+For boundary-faithful modeling in this baseline scope:
+1. text is treated as UTF-16 code-unit sequence at worksheet/interop boundaries.
+2. observed cap for materialized text is `32767` UTF-16 code units.
+3. interop ingress (`Range.Value2`) truncates over-cap strings to cap without set-time exception in tested rows.
+4. truncation of surrogate-pair streams can yield dangling high-surrogate tail states (observed in emoji overflow scenario).
+5. formula-generated overflow behavior is distinct from interop ingress:
+   - formula path above cap produced `#VALUE!` in tested `REPT` rows.
+
+Evidence binding:
+1. `W7-STR-BL-20260305` (`STR8-019..STR8-046`).
+
+## 8. Arrays, Lambda, and References
 1. arrays are first-class `EvalValue` tags; materialization policy is downstream (W4/W5/W6).
 2. lambda values are intermediate-eval tags, not baseline cell content tags.
 3. 3D references are modeled as a `reference_like` subtype (`reference_kind=three_d`) and require resolver-policy handling in W4.
 
-## 8. Lean/Rust Mirror Rule
+## 9. Lean/Rust Mirror Rule
 W3 baseline requires shared tag vocabulary in:
 1. Rust: `crates/oxfunc_core/src/value.rs`
 2. Lean: `formal/lean/OxFunc/ValueUniverse.lean`
 
-Invariant objective for baseline:
+Invariant objectives for baseline:
 1. `EvalValue` excludes `missing_arg`, `empty_cell`, `null_like`.
+2. text-cap primitive encodes `<= 32767` UTF-16 code units.
 
-## 9. Integration Hooks
+## 10. Integration Hooks
 1. W4 consumes tag/boundary policy for coercion and `Ref -> EvalValue` seam typing.
 2. W5 consumes numeric/error/array policy for `ABS`.
 3. W6 consumes text/reference/error policy for `XMATCH`.
 
-## 10. Open Points
+## 11. Open Points
 1. explicit handling for modern dynamic-array error transfer across UDF/XLL boundaries,
 2. empirical evidence for any first-class `null_like` behavior,
-3. final W7-informed text/collation constraints before W3 validation closure.
+3. final decision on whether internal OxFunc runtime should store text as UTF-16 code-unit vectors end-to-end or only at boundary adapters.

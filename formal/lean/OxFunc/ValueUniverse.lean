@@ -38,6 +38,28 @@ inductive ValueBoundary where
   | extendedDomain
   deriving DecidableEq, Repr
 
+abbrev Utf16CodeUnit := UInt16
+
+def excelTextMaxUtf16CodeUnits : Nat := 32767
+
+structure ExcelText where
+  utf16CodeUnits : List Utf16CodeUnit
+  deriving DecidableEq, Repr
+
+def textWithinCellCap (text : ExcelText) : Prop :=
+  text.utf16CodeUnits.length <= excelTextMaxUtf16CodeUnits
+
+def truncateUtf16ToCellCap (units : List Utf16CodeUnit) : ExcelText :=
+  { utf16CodeUnits := units.take excelTextMaxUtf16CodeUnits }
+
+def isHighSurrogate (u : Utf16CodeUnit) : Bool :=
+  (0xD800 <= u.toNat) && (u.toNat <= 0xDBFF)
+
+def hasDanglingHighSurrogateTail (text : ExcelText) : Bool :=
+  match text.utf16CodeUnits.reverse with
+  | [] => false
+  | u :: _ => isHighSurrogate u
+
 def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .cellContent, .number => true
   | .cellContent, .text => true
@@ -76,6 +98,12 @@ theorem eval_disallows_missing_empty_null :
     boundaryAllows .evalResult .emptyCell = false ∧
     boundaryAllows .evalResult .nullLike = false := by
   simp [boundaryAllows]
+
+theorem truncateUtf16ToCellCap_within :
+    ∀ units : List Utf16CodeUnit, textWithinCellCap (truncateUtf16ToCellCap units) := by
+  intro units
+  unfold textWithinCellCap truncateUtf16ToCellCap excelTextMaxUtf16CodeUnits
+  simpa using List.length_take_le 32767 units
 
 theorem reference_domain_only_reference :
     boundaryAllows .referenceDomain .referenceLike = true ∧

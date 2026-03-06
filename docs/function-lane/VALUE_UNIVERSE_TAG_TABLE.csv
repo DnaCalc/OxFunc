@@ -1,6 +1,6 @@
 tag,cell_content_value,eval_value,call_arg_value,reference_like,extended_value,status,notes
 number,yes,yes,yes,no,yes,provisional,Scalar numeric value.
-text,yes,yes,yes,no,yes,provisional,Scalar text value.
+text,yes,yes,yes,no,yes,provisional,Boundary-faithful text modeled as UTF-16 code-unit sequence; observed materialized cap 32767 code units.
 logical,yes,yes,yes,no,yes,provisional,Scalar boolean value.
 error,yes,yes,yes,no,yes,provisional,Scalar worksheet error value with code metadata.
 array,no,yes,yes,no,yes,provisional,Array value is eval/call/extended domain.
