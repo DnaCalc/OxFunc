@@ -23,6 +23,12 @@ inductive HostInteractionClass where
   | externalProvider
   deriving DecidableEq, Repr
 
+inductive ThreadSafetyClass where
+  | safePure
+  | hostSerialized
+  | notThreadSafe
+  deriving DecidableEq, Repr
+
 inductive FecDependencyProfile where
   | none
   | refOnly
@@ -50,6 +56,7 @@ structure FunctionMeta where
   determinism : DeterminismClass
   volatility : VolatilityClass
   hostInteraction : HostInteractionClass
+  threadSafety : ThreadSafetyClass
   fecDependencyProfile : FecDependencyProfile
   deriving DecidableEq, Repr
 
@@ -64,4 +71,3 @@ theorem admitArity_exact_zero_ok :
   simp [admitArity, Arity.exact, Arity.accepts]
 
 end OxFunc
-

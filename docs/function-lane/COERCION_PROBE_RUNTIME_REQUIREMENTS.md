@@ -39,7 +39,14 @@ powershell -File tools/coercion-probe/run-coercion-suite.ps1 -Manifest docs/func
 powershell -File tools/coercion-probe/analyze-coercion-results.ps1 -Results .tmp/coercion-results-excel.csv -OutReport .tmp/coercion-analysis-report.csv
 ```
 
-## 5. Manifest Expectation Contract
+## 5. Supported Scenario Actions
+1. `calculate`
+2. `calculate_formula2`
+3. `save_reopen_recalc`
+4. `csv_roundtrip_values`
+5. `external_ref_open_state_compare`
+
+## 6. Manifest Expectation Contract
 Required process fields:
 1. `expected_status`
 2. `expected_observable`
@@ -51,7 +58,7 @@ Supported `expected_observable` clauses (joined by `&&`):
 4. `execution_status_eq:<value>`
 5. `notes_contains:<substring>`
 
-## 6. Output Contract
+## 7. Output Contract
 Output CSV columns:
 1. `scenario_id`
 2. `lane`
@@ -86,7 +93,7 @@ Output CSV columns:
 Template:
 1. `tools/coercion-probe/results/COERCION_RESULTS_TEMPLATE.csv`
 
-## 7. Current Limitations
+## 8. Current Limitations
 1. External/open-state row support is baseline-enabled (`external_ref_open_state_compare`) and currently validated with generated local workbook artifacts in the scenario directory.
 2. Baseline coverage remains single build/channel and locale unless explicitly rerun under additional profiles.
 3. Aggregate direct-vs-range precedence remains intentionally unresolved and must be reported as matrix outcomes, not collapsed into one global rule.

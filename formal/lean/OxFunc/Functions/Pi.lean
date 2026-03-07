@@ -10,6 +10,7 @@ def piMeta : FunctionMeta := {
   determinism := DeterminismClass.deterministic
   volatility := VolatilityClass.nonvolatile
   hostInteraction := HostInteractionClass.none
+  threadSafety := ThreadSafetyClass.safePure
   fecDependencyProfile := FecDependencyProfile.none
 }
 

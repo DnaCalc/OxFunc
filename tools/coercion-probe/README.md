@@ -20,13 +20,19 @@ Purpose:
 
 ## Supported action lanes
 1. `calculate`
-2. `save_reopen_recalc`
-3. `csv_roundtrip_values`
-4. `external_ref_open_state_compare` (generated workbook, closed-vs-open compare)
+2. `calculate_formula2`
+3. `save_reopen_recalc`
+4. `csv_roundtrip_values`
+5. `external_ref_open_state_compare` (generated workbook, closed-vs-open compare)
 
 ## Baseline run example
 ```powershell
 powershell -File tools/coercion-probe/run-coercion-excel-baseline.ps1 -Manifest docs/function-lane/COERCION_SCENARIO_MANIFEST_SEED.csv -Out .tmp/coercion-results-excel.csv
+```
+
+Baseline run with compatibility template:
+```powershell
+powershell -File tools/coercion-probe/run-coercion-excel-baseline.ps1 -Manifest docs/function-lane/COERCION_SCENARIO_MANIFEST_SEED.csv -Out .tmp/coercion-results-compat.csv -WorkbookTemplate .tmp/abs-compat-template.xls -RunLabel compat_template
 ```
 
 ## Suite run example

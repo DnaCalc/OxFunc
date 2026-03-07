@@ -1,6 +1,6 @@
 use crate::function::{
     Arity, DeterminismClass, FecDependencyProfile, FunctionMeta, HostInteractionClass,
-    VolatilityClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{EvalError, Value};
 
@@ -10,6 +10,7 @@ pub const PI_META: FunctionMeta = FunctionMeta {
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
+    thread_safety: ThreadSafetyClass::SafePure,
     fec_dependency_profile: FecDependencyProfile::None,
 };
 
@@ -27,6 +28,11 @@ pub fn eval_pi(args: &[Value]) -> Result<Value, EvalError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_pi_meta_thread_safety_class_is_safe_pure() {
+        assert_eq!(PI_META.thread_safety, ThreadSafetyClass::SafePure);
+    }
 
     #[test]
     fn test_eval_pi_returns_pi_constant() {
@@ -59,4 +65,3 @@ mod tests {
         }
     }
 }
-

@@ -18,12 +18,13 @@
 1. `determinism_class`: `deterministic`
 2. `volatility_class`: `nonvolatile`
 3. `host_interaction_class`: `none`
-4. `coercion_policy_class`: `strict`
-5. `error_policy_class`: `strict_propagate`
-6. `compat_version_policy`: `stable_across_versions` (provisional)
-7. `fec_dependency_profile`: `none`
-8. `fec_facility_tags`: none
-9. `compile_eval_class`: `const_foldable_when_closed`
+4. `thread_safety_class`: `safe_pure` (no host mutation/shared-state dependency in slice scope)
+5. `coercion_policy_class`: `strict`
+6. `error_policy_class`: `strict_propagate`
+7. `compat_version_policy`: `stable_across_versions` (provisional)
+8. `fec_dependency_profile`: `none`
+9. `fec_facility_tags`: none
+10. `compile_eval_class`: `const_foldable_when_closed`
 
 ## 4. Trigger Classes
 1. `T-DEP`: no direct dependency inputs.

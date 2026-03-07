@@ -31,11 +31,12 @@ Each function can carry multiple orthogonal tags:
 1. `determinism_class`: `deterministic | pseudo_random | time_dependent | external_event_dependent`.
 2. `volatility_class`: `nonvolatile | volatile_full | volatile_contextual | undecided`.
 3. `host_interaction_class`: `none | workbook_state | application_state | environment_state | external_provider`.
-4. `coercion_policy_class`: `strict | permissive_scalar | permissive_range_scan | mixed`.
-5. `error_policy_class`: `strict_propagate | conditional_mask | branch_selective | custom`.
-6. `compat_version_policy`: `stable_across_versions | version_scoped | unknown`.
-7. `fec_dependency_profile`: `none | ref_only | caller_context | time_provider | random_provider | external_provider | locale_profile | composite`.
-8. `compile_eval_class`: `const_foldable_when_closed | runtime_ref_dependent | runtime_context_dependent`.
+4. `thread_safety_class`: `safe_pure | host_serialized | not_thread_safe`.
+5. `coercion_policy_class`: `strict | permissive_scalar | permissive_range_scan | mixed`.
+6. `error_policy_class`: `strict_propagate | conditional_mask | branch_selective | custom`.
+7. `compat_version_policy`: `stable_across_versions | version_scoped | unknown`.
+8. `fec_dependency_profile`: `none | ref_only | caller_context | time_provider | random_provider | external_provider | locale_profile | composite`.
+9. `compile_eval_class`: `const_foldable_when_closed | runtime_ref_dependent | runtime_context_dependent`.
 
 ### 3.2 Working Definitions (Preliminary)
 1. Volatile:
@@ -50,14 +51,18 @@ Each function can carry multiple orthogonal tags:
 4. FEC dependency profile:
    - Declares which host-context facilities are required/allowed by function semantics.
    - See `../../../Foundation/reference/conformance/excel-worksheet-engine/model/EXCEL_FORMULA_EVALUATION_CONTEXT_FEC.md` for capability families and policy framing.
+5. Thread safety:
+   - `safe_pure`: function evaluation has no shared mutable host state dependence in declared scope.
+   - `host_serialized`: function is safe only under host-serialized invocation policy.
+   - `not_thread_safe`: function semantics rely on non-thread-safe state and cannot be safely concurrent.
 
-5. `volatile_full` vs `volatile_contextual`:
+6. `volatile_full` vs `volatile_contextual`:
    - retained as unresolved terminology pending interactive policy finalization.
    - current provisional intent:
      - `volatile_full`: always participates in volatile invalidation cycle.
      - `volatile_contextual`: participates only under function/context-specific conditions.
 
-6. Compile-time evaluability class:
+7. Compile-time evaluability class:
    - `const_foldable_when_closed`: expression can be reduced at compile/prepare time when all arguments are constant-closed.
    - `runtime_ref_dependent`: requires runtime value fetch/resolution from references.
    - `runtime_context_dependent`: requires runtime host context (for example caller/time/external context), so deterministic compile-time reduction is not valid.

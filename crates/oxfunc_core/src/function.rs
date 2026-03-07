@@ -23,6 +23,13 @@ pub enum HostInteractionClass {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ThreadSafetyClass {
+    SafePure,
+    HostSerialized,
+    NotThreadSafe,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FecDependencyProfile {
     None,
     RefOnly,
@@ -57,6 +64,6 @@ pub struct FunctionMeta {
     pub determinism: DeterminismClass,
     pub volatility: VolatilityClass,
     pub host_interaction: HostInteractionClass,
+    pub thread_safety: ThreadSafetyClass,
     pub fec_dependency_profile: FecDependencyProfile,
 }
-

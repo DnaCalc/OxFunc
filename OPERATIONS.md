@@ -65,11 +65,12 @@ Every function/operator row must explicitly carry:
 4. core semantic outcome model.
 5. post-call adaptation policy.
 6. determinism/volatility/host-interaction tags.
-7. `fec_dependency_profile` and facility tags.
-8. version scope:
+7. thread-safety classification (`safe_pure`, `host_serialized`, `not_thread_safe`).
+8. `fec_dependency_profile` and facility tags.
+9. version scope:
    - Excel application version/channel scope.
    - workbook Compatibility Version scope.
-9. evidence bindings (`spec`, `empirical`, policy decisions).
+10. evidence bindings (`spec`, `empirical`, policy decisions).
 
 ## 5. Promotion Gates
 Status transitions are mechanical, not narrative.

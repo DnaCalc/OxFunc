@@ -9,6 +9,8 @@ param(
 
     [string]$ArtifactRoot = ".tmp/coercion-artifacts",
 
+    [string]$WorkbookTemplate = "",
+
     [string]$RunLabel = "default",
 
     [switch]$IncludeSeed,
@@ -286,6 +288,37 @@ function New-ExternalWorkbookArtifact {
     return $path
 }
 
+function Open-ScenarioWorkbook {
+    param(
+        [object]$Excel,
+        [string]$ScenarioDir,
+        [string]$WorkbookTemplatePath
+    )
+
+    if ([string]::IsNullOrWhiteSpace($WorkbookTemplatePath)) {
+        return [PSCustomObject]@{
+            Workbook = $Excel.Workbooks.Add()
+            TemplateArtifact = ""
+        }
+    }
+
+    if (-not (Test-Path $WorkbookTemplatePath)) {
+        throw "WorkbookTemplate not found: $WorkbookTemplatePath"
+    }
+
+    $templateExt = [System.IO.Path]::GetExtension($WorkbookTemplatePath)
+    if ([string]::IsNullOrWhiteSpace($templateExt)) {
+        $templateExt = ".xlsx"
+    }
+    $templateCopyPath = Join-Path $ScenarioDir ("workbook_template_copy" + $templateExt)
+    Copy-Item -Path $WorkbookTemplatePath -Destination $templateCopyPath -Force
+
+    return [PSCustomObject]@{
+        Workbook = $Excel.Workbooks.Open($templateCopyPath)
+        TemplateArtifact = $templateCopyPath
+    }
+}
+
 function Serialize-Snapshots {
     param([object[]]$Snapshots)
     if ($null -eq $Snapshots -or $Snapshots.Count -eq 0) { return "" }
@@ -516,6 +549,14 @@ if (-not (Test-Path $artifactRootPath)) {
     New-Item -ItemType Directory -Path $artifactRootPath | Out-Null
 }
 
+$workbookTemplatePath = ""
+if (-not [string]::IsNullOrWhiteSpace($WorkbookTemplate)) {
+    $workbookTemplatePath = [System.IO.Path]::GetFullPath($WorkbookTemplate)
+    if (-not (Test-Path $workbookTemplatePath)) {
+        throw "WorkbookTemplate not found: $workbookTemplatePath"
+    }
+}
+
 $scenarios = Import-Csv -Path $manifestPath
 if (-not $scenarios -or $scenarios.Count -eq 0) {
     throw "Manifest has no scenario rows: $manifestPath"
@@ -549,6 +590,7 @@ try {
         $worksheet = $null
         $compatVersion = ""
         $artifactRef = ""
+        $templateArtifactRef = ""
         $primaryCell = [string]$scenario.op_primary_cell
         $primaryFormula2 = ""
         $primaryValue2 = ""
@@ -561,12 +603,16 @@ try {
                 New-Item -ItemType Directory -Path $scenarioDir | Out-Null
             }
 
-            $workbook = $excel.Workbooks.Add()
+            $scenarioWorkbook = Open-ScenarioWorkbook -Excel $excel -ScenarioDir $scenarioDir -WorkbookTemplatePath $workbookTemplatePath
+            $workbook = $scenarioWorkbook.Workbook
+            $templateArtifactRef = [string]$scenarioWorkbook.TemplateArtifact
             $worksheet = $workbook.Worksheets.Item(1)
             $compatVersion = Get-CompatibilityDescriptor -Workbook $workbook
 
             $formulaAssignments = Parse-FormulaAssignments -Raw ([string]$scenario.formula_setup)
             $valueAssignments = Parse-ValueAssignments -Raw ([string]$scenario.value_setup)
+            $action = [string]$scenario.op_action
+            if ([string]::IsNullOrWhiteSpace($action)) { $action = "calculate" }
 
             foreach ($valueSpec in $valueAssignments) {
                 $resolved = Resolve-ValueExpression -Expr $valueSpec.ValueExpr
@@ -584,7 +630,12 @@ try {
             }
 
             foreach ($formulaSpec in $formulaAssignments) {
-                $worksheet.Range($formulaSpec.Cell).Formula = $formulaSpec.Formula
+                if ($action -eq "calculate_formula2") {
+                    $worksheet.Range($formulaSpec.Cell).Formula2 = $formulaSpec.Formula
+                }
+                else {
+                    $worksheet.Range($formulaSpec.Cell).Formula = $formulaSpec.Formula
+                }
             }
 
             if ([string]::IsNullOrWhiteSpace($primaryCell)) {
@@ -600,14 +651,12 @@ try {
             }
 
             $observeCells = Parse-ObserveCells -Raw ([string]$scenario.op_observe_cells) -PrimaryCell $primaryCell -FormulaAssignments $formulaAssignments -ValueAssignments $valueAssignments
-            $action = [string]$scenario.op_action
-            if ([string]::IsNullOrWhiteSpace($action)) { $action = "calculate" }
 
             $preSnapshots = @()
             $postSnapshots = @()
             $notesExtra = ""
 
-            if ($action -eq "calculate") {
+            if ($action -eq "calculate" -or $action -eq "calculate_formula2") {
                 $excel.CalculateFull()
                 foreach ($cell in $observeCells) {
                     $postSnapshots += Get-CellSnapshot -Worksheet $worksheet -Cell $cell
@@ -734,6 +783,17 @@ try {
             }
 
             $combinedNotes = [string]$scenario.notes
+            if (-not [string]::IsNullOrWhiteSpace($templateArtifactRef)) {
+                if (-not [string]::IsNullOrWhiteSpace($combinedNotes)) {
+                    $combinedNotes = "$combinedNotes | workbook_template_copy=$templateArtifactRef"
+                }
+                else {
+                    $combinedNotes = "workbook_template_copy=$templateArtifactRef"
+                }
+                if ([string]::IsNullOrWhiteSpace($artifactRef)) {
+                    $artifactRef = $templateArtifactRef
+                }
+            }
             if (-not [string]::IsNullOrWhiteSpace($notesExtra)) {
                 if (-not [string]::IsNullOrWhiteSpace($combinedNotes)) {
                     $combinedNotes = "$combinedNotes | $notesExtra"
@@ -780,6 +840,7 @@ try {
         manifest_sha256 = Get-FileSha256 -Path $manifestPath
         output_path = $outPath
         artifact_root = $artifactRootPath
+        workbook_template = $workbookTemplatePath
         lanes = $Lanes
         include_seed = [bool]$IncludeSeed
         manifest_total_rows = $scenarios.Count

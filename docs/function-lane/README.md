@@ -32,6 +32,11 @@ Primary files:
 27. `REF_RESOLUTION_SEAM_OPTIONS.md`
 28. `COERCION_DECISION_TABLE.csv`
 29. `CROSS_BOUNDARY_INVARIANT_CHECKLIST_TEMPLATE.md`
+30. `FUNCTION_SLICE_ABS_CONTRACT_PRELIM.md`
+31. `ABS_SCENARIO_MANIFEST_SEED.csv`
+32. `ABS_PROBE_RUNTIME_REQUIREMENTS.md`
+33. `ABS_EXECUTION_RECORD.md`
+34. `ABS_ENTRYPOINT_SCENARIO_MANIFEST_SEED.csv`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
