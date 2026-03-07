@@ -30,7 +30,7 @@ Out of scope:
 
 ## 4. Required Behavior Lanes
 1. admission lane,
-2. coercion lane,
+2. coercion lane (consumes W4 `capability_record_model` seam baseline),
 3. numeric kernel lane,
 4. floating-point lane (`-0`, subnormal, NaN/infinity mapping where observable),
 5. array-lift lane,

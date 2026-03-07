@@ -31,7 +31,7 @@ Out of scope:
 1. admission/default lane,
 2. `match_mode` lane,
 3. `search_mode` and order lane,
-4. coercion/comparison lane,
+4. coercion/comparison lane (consumes W4 `capability_record_model` seam baseline),
 5. array-shape lane,
 6. error behavior lane,
 7. formula-vs-referenced-input boundary lane.

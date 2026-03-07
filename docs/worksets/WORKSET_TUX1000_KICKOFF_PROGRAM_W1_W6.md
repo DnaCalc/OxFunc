@@ -65,7 +65,7 @@ Global required artifacts across kickoff:
 1. W1: `complete` (method seed complete; empirical depth expansion remains follow-on).
 2. W2: `complete-provisional` (baseline lanes executed, Lean comparison captured, divergence ledger populated).
 3. W3: `in_progress` (baseline taxonomy/spec and Rust/Lean tag scaffolds in place).
-4. W4: `planned`.
+4. W4: `complete-provisional` (capability-record seam selected; primitive spec + decision table + Rust/Lean scaffolds + baseline empirical run captured under `W4-COERCE-BL-20260307`).
 5. W5: `planned`.
 6. W6: `planned`.
 7. W7: `complete-provisional` (baseline string characterization and policy map captured under `W7-STR-BL-20260305`).

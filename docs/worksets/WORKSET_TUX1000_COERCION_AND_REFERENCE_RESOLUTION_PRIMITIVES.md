@@ -40,9 +40,13 @@ Selection rule:
 1. `docs/function-lane/COERCION_AND_CONVERSION_PRELIM_SPEC.md`
 2. `docs/function-lane/REF_RESOLUTION_SEAM_OPTIONS.md`
 3. `docs/function-lane/COERCION_DECISION_TABLE.csv`
-4. Lean coercion primitives + seam abstraction
-5. Rust coercion primitives + resolver interface
-6. conformance-row linkage updates (`FDEF-029` and affected rows)
+4. `docs/function-lane/COERCION_SCENARIO_MANIFEST_SEED.csv`
+5. `docs/function-lane/COERCION_PROBE_RUNTIME_REQUIREMENTS.md`
+6. `docs/function-lane/COERCION_EXECUTION_RECORD.md`
+7. `tools/coercion-probe/results/COERCION_RESULTS_TEMPLATE.csv`
+8. Lean coercion primitives + seam abstraction
+9. Rust coercion primitives + resolver interface
+10. conformance-row linkage updates (`FDEF-029` and affected rows)
 
 ## 6. Gate Model
 ### G1 - Primitive Enumeration Closure
@@ -63,9 +67,22 @@ Pass when:
 Pass when:
 1. W5 and W6 reference the selected seam without policy ambiguity.
 
+### G5 - Empirical Closure
+Pass when:
+1. coercion scenario manifest and runtime requirements are published with explicit expected fields.
+2. baseline Excel run is recorded in `COERCION_EXECUTION_RECORD.md` with version/channel/compat descriptors.
+3. mismatch/drift reporting fields are present in emitted coercion results.
+
 ## 7. Status
 Execution state:
-1. `planned`.
+1. `complete`.
 
 Claim confidence:
-1. `draft` (pending baseline seam selection).
+1. `provisional` (global aggregate precedence and external-reference seed lane remain explicitly bounded).
+
+Gate snapshot:
+1. `G1` primitive enumeration closure: `closed-provisional`.
+2. `G2` seam contract closure: `closed` (selected baseline: `capability_record_model`).
+3. `G3` executable closure: `closed` (Rust + Lean builds/tests passing for W4 scaffolds).
+4. `G4` integration closure: `closed-provisional` (W5/W6 now reference selected seam baseline).
+5. `G5` empirical closure: `closed-provisional` (baseline run captured with explicit mismatch ledger).
