@@ -41,16 +41,22 @@ Out of scope:
 2. conformance row updates (`FDEF-031` and related rows)
 3. Lean module scaffold + theorem inventory for selected obligations
 4. Rust implementation/tests for selected core lanes
-5. empirical matrix and promoted findings where required
+5. empirical matrix scaffold and promoted findings where required:
+   - `docs/function-lane/XMATCH_SCENARIO_MANIFEST_SEED.csv`
+   - `docs/function-lane/XMATCH_PROBE_RUNTIME_REQUIREMENTS.md`
+   - `tools/xmatch-probe/*`
 6. correlation-ledger row for `FUNC.XMATCH`
 7. classification decision note updating interest-tier rationale
+8. `docs/function-lane/XMATCH_EXECUTION_RECORD.md`
 
 ## 6. Classification Objective
 Starting assumption:
 1. deterministic,
 2. nonvolatile,
 3. host interaction `none`,
-4. `fec_dependency_profile=ref_only` (provisional, to be validated).
+4. layered FEC dependency declaration:
+   - adapter `fec_dependency_profile=none`
+   - surface `surface_fec_dependency_profile=ref_only` (provisional, to be validated).
 
 Decision closure requirement:
 1. either downgrade tier with evidence,
@@ -76,7 +82,10 @@ Pass when:
 
 ## 8. Status
 Execution state:
-1. `planned`.
+1. `complete`.
 
 Claim confidence:
-1. `draft` (pre-execution).
+1. `provisional` (seed scaffold + empirical replay baseline + classification decision recorded).
+
+Assurance maturity:
+1. `exercised`.

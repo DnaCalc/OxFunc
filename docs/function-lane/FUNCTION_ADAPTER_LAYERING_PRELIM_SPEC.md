@@ -103,3 +103,12 @@ Required cross-level linkage:
 1. at least one theorem showing surface-prepared path corresponds to adapter path for prepared inputs.
 2. at least one runtime test showing surface execution equals adapter execution on prepared-value cases.
 3. correlation ledger row must include both modules and both theorem/test inventories.
+
+## 9. Deferred Considerations (Post-W6 XMATCH)
+1. Do not promote a new global evaluation-strategy axis yet (`eager_full_scan` vs `selective_probe` remains `to_consider`).
+2. Near-term selective behavior should be expressed per function via `refs_visible_in_adapter` and function-owned dereference policy, not as a mandatory cross-function abstraction.
+3. If introduced later, selective dereference capability must support reference-subset probing (sub-array/window dereference), not only whole-reference materialization.
+4. Non-standard error/coercion behavior should remain function-local until multiple independent functions demonstrate a stable reusable abstraction.
+5. Do not assume a generic "lookup function class" for semantic reuse; function-specific quirks remain first-class.
+6. Keep counterexample replay loop mandatory when Excel behavior diverges (contract + runtime + formal + evidence + correlation).
+7. Keep Q-vs-U side-by-side performance/semantic benching as planned follow-on, lower priority for current closure.

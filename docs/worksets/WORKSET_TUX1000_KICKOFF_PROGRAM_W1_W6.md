@@ -67,7 +67,7 @@ Global required artifacts across kickoff:
 3. W3: `in_progress` (baseline taxonomy/spec and Rust/Lean tag scaffolds in place).
 4. W4: `complete-provisional` (capability-record seam selected; primitive spec + decision table + Rust/Lean scaffolds + baseline empirical run captured under `W4-COERCE-BL-20260307`).
 5. W5: `complete-provisional` (contract/formal/runtime/evidence chain established for `ABS` under `W5-ABS-BL-20260308`, including dual-run evidence and entrypoint baseline `W5-ABS-ENTRY-20260308`).
-6. W6: `planned`.
+6. W6: `complete` (XMATCH seed scaffold + empirical dual-run replay baseline landed; classification decision retained tier-4 high-interest with provisional evidence closure).
 7. W7: `complete-provisional` (baseline string characterization and policy map captured under `W7-STR-BL-20260305`).
 
 ## 7. Promotion and Maturity Notes

@@ -6,3 +6,5 @@ import OxFunc.RefResolverSeam
 import OxFunc.Functions.Abs
 import OxFunc.Functions.AbsSurface
 import OxFunc.Functions.Pi
+import OxFunc.Functions.Xmatch
+import OxFunc.Functions.XmatchSurface

@@ -39,6 +39,10 @@ Primary files:
 34. `ABS_ENTRYPOINT_SCENARIO_MANIFEST_SEED.csv`
 35. `FUNCTION_ADAPTER_LAYERING_PRELIM_SPEC.md`
 36. `FEC_F3E_INTERFACE_REVIEW_PREP.md`
+37. `FUNCTION_SLICE_XMATCH_CONTRACT_PRELIM.md`
+38. `XMATCH_EXECUTION_RECORD.md`
+39. `XMATCH_SCENARIO_MANIFEST_SEED.csv`
+40. `XMATCH_PROBE_RUNTIME_REQUIREMENTS.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

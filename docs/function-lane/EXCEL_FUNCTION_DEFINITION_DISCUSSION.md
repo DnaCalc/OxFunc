@@ -217,6 +217,25 @@ Decision output needed:
 1. Canonical policy schema for admission/coercion/domain/array-lift outcomes per function family.
 2. Seed-backed decision table for `SIN()`, `SIN("asd")`, `SIN({1,"asd",3})`, `ASIN(2)` with explicit build/version scoping.
 
+### D-018: Selective Dereference Capability (To-Consider)
+Question:
+1. Should FEC/function interfaces support selective dereference over reference inputs (sub-array/window probing), rather than only full reference materialization?
+2. If supported, where should control live: function adapter (`refs_visible_in_adapter`) versus pre-adapter/global policy?
+
+Why this matters:
+1. Some functions (for example XMATCH-family exact/binary lanes) may not need full lookup-area materialization for correct outcomes.
+2. Full eager dereference can change observable error precedence and has performance implications.
+3. Premature abstraction risks overfitting before enough cross-function signal is available.
+
+Current position:
+1. Deferred (`to_consider`) for now.
+2. XMATCH keeps function-local behavior policy; no new global axis is promoted yet.
+3. Q-vs-U side-by-side benchmarking is follow-on work, not a current blocker.
+
+Decision output needed:
+1. Capability contract sketch for subset dereference requests (if adopted).
+2. Minimum evidence threshold (number/diversity of functions) before promoting a generalized abstraction.
+
 ## 3. Decision Log Template
 For each discussion item:
 1. `decision_id`

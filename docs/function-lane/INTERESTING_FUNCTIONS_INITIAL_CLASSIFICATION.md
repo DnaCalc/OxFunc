@@ -26,4 +26,5 @@ Provide a complete, first-pass class-axis mapping for all currently tagged inter
    - `INDIRECT`, `OFFSET` (context-dependence vs non-determinism),
    - `RTD` lifecycle and invalidation,
    - `XLOOKUP` reference-output behavior,
+   - `XMATCH` adapter parity completion (wildcard/binary/approximate implementation),
    - volatile family precision (`volatile_full` vs `volatile_contextual`).
