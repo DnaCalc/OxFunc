@@ -19,12 +19,16 @@
 2. `volatility_class`: `nonvolatile`
 3. `host_interaction_class`: `none`
 4. `thread_safety_class`: `safe_pure` (no host mutation/shared-state dependency in slice scope)
-5. `coercion_policy_class`: `strict`
-6. `error_policy_class`: `strict_propagate`
-7. `compat_version_policy`: `stable_across_versions` (provisional)
-8. `fec_dependency_profile`: `none`
-9. `fec_facility_tags`: none
-10. `compile_eval_class`: `const_foldable_when_closed`
+5. `arg_preparation_profile`: `values_only_pre_adapter`
+6. `coercion_lift_profile`: `none`
+7. `kernel_signature_class`: `nullary_const`
+8. `coercion_policy_class`: `strict`
+9. `error_policy_class`: `strict_propagate`
+10. `compat_version_policy`: `stable_across_versions` (provisional)
+11. `function_adapter_fec_dependency_profile`: `none`
+12. `surface_fec_dependency_profile`: `none`
+13. `fec_facility_tags`: none
+14. `compile_eval_class`: `const_foldable_when_closed`
 
 ## 4. Trigger Classes
 1. `T-DEP`: no direct dependency inputs.
@@ -52,6 +56,7 @@
    - admitted result theorem for zero-arg case.
    - nonzero-arity rejection theorem.
    - determinism theorem.
+   - layered profile declaration theorem (`piMeta_layered_profiles`).
 2. Rust obligations:
    - deterministic constant output.
    - explicit arity rejection behavior.

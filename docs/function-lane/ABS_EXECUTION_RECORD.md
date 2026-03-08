@@ -50,17 +50,22 @@ Template:
 1. Status: `closed`.
 2. Evidence:
    - `docs/function-lane/FUNCTION_SLICE_ABS_CONTRACT_PRELIM.md`
+   - `docs/function-lane/FUNCTION_ADAPTER_LAYERING_PRELIM_SPEC.md`
 
 ### G2 - Formal Closure
 1. Status: `closed`.
 2. Evidence:
-   - Lean module: `formal/lean/OxFunc/Functions/Abs.lean`
+   - Lean modules:
+     - `formal/lean/OxFunc/Functions/Abs.lean`
+     - `formal/lean/OxFunc/Functions/AbsSurface.lean`
    - Lean build: `lake build`
 
 ### G3 - Runtime and Verification Closure
 1. Status: `closed`.
 2. Evidence:
-   - Rust module: `crates/oxfunc_core/src/functions/abs.rs`
+   - Rust modules:
+     - `crates/oxfunc_core/src/functions/abs.rs`
+     - `crates/oxfunc_core/src/functions/abs_surface.rs`
    - Rust tests: `cargo test -p oxfunc_core`
 
 ### G4 - Evidence Closure
@@ -108,18 +113,30 @@ Template:
 2. Error propagation lanes are explicit and stable in baseline:
    - non-numeric text to `#VALUE!` (`ABS5-003`)
    - upstream `#DIV/0!` propagation (`ABS5-007`)
-3. Floating-point seed lanes observed:
+3. Layered adapter decomposition is now explicit:
+   - kernel: `num -> num` (`abs_kernel`)
+   - coercion/lift adapter: declarative unary numeric profile
+   - arg preparation: `values_only_pre_adapter` (reference seam consumed pre-adapter in surface module)
+   - strict runtime split: adapter/kernel in `functions::abs`, surface composition in `functions::abs_surface`
+4. Floating-point seed lanes observed:
    - `-0` normalized at worksheet surface (`ABS5-006`)
    - subnormal seed path observed as `0` at this baseline boundary (`ABS5-012`)
-4. Array-lift, spill obstruction, and reference lanes observed without mismatches (`ABS5-008..ABS5-011`, `ABS5-015`).
-5. Persistence lane (`save_reopen_recalc`) and external/open-state lane (`external_ref_open_state_compare`) retained expected outcomes (`ABS5-013`, `ABS5-014`).
-6. Locale-sensitive text coercion seed (`ABS5-016`) observed `#VALUE!` for `en-US` baseline.
-7. Entrypoint probe confirms mechanism-specific behavior:
+5. Array-lift, spill obstruction, and reference lanes observed without mismatches (`ABS5-008..ABS5-011`, `ABS5-015`).
+6. Persistence lane (`save_reopen_recalc`) and external/open-state lane (`external_ref_open_state_compare`) retained expected outcomes (`ABS5-013`, `ABS5-014`).
+7. Locale-sensitive text coercion seed (`ABS5-016`) observed `#VALUE!` for `en-US` baseline.
+8. Entrypoint probe confirms mechanism-specific behavior:
    - `Range.Formula` omission failure sentinel retained (`ABS-EP-002`).
    - `Evaluate` lanes observed expected value/error outcomes.
    - `WorksheetFunction.Abs` method is not exposed in this COM dispatch surface for this baseline (`ABS-EP-007`, `ABS-EP-008`).
 
-## 7. Recording Rules
+## 7. Runtime/Formal Alignment Map
+1. Rust surface path (`functions::abs_surface::eval_abs_scalar`) corresponds to Lean surface path (`Functions.AbsSurface.evalAbsSurfaceScalar`).
+2. Rust pre-adapter preparation (`functions::adapters::prepare_args_values_only`) corresponds to Lean preparation seam (`Functions.AbsSurface.prepareAbsSurfaceArgValuesOnly` + `RefResolverSeam.resolveRefToInput`).
+3. Rust adapter scalar path (`functions::abs::eval_abs_adapter_scalar_prepared`) corresponds to Lean adapter scalar path (`Functions.Abs.evalAbsAdapterScalar` / `evalAbsAdapterArg`).
+4. Rust kernel (`functions::abs::abs_kernel`) corresponds to Lean kernel (`Functions.Abs.absKernel`).
+5. Correlation obligations are maintained in `docs/function-lane/FUNCTION_SLICE_CORRELATION_LEDGER.csv` for both adapter/kernel and surface-path theorem/test IDs.
+
+## 8. Recording Rules
 1. Keep expected failures explicit through `expected_status` + `expected_observable`.
 2. Treat `execution_failed_unexpected` as gate-blocking; expected failures are not gate failures.
 3. Keep version/channel/compat metadata on every probe row for replay.

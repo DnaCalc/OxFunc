@@ -41,7 +41,7 @@ Out of scope:
 1. `docs/function-lane/FUNCTION_SLICE_ABS_CONTRACT_PRELIM.md`
 2. conformance row updates (`FDEF-030` and related rows)
 3. Lean module + theorem inventory for `ABS`
-4. Rust implementation/tests for `ABS`
+4. Rust implementation/tests for `ABS` with strict runtime split (`functions/abs.rs` adapter+kernel and `functions/abs_surface.rs` pre-adapter composition)
 5. empirical evidence bundle references and promoted findings where needed
 6. correlation-ledger row for `FUNC.ABS`
 7. `docs/function-lane/ABS_SCENARIO_MANIFEST_SEED.csv`
@@ -50,6 +50,7 @@ Out of scope:
 10. `tools/abs-probe/*`
 11. `docs/function-lane/ABS_ENTRYPOINT_SCENARIO_MANIFEST_SEED.csv`
 12. `tools/function-lane-check/run-correlation-integrity-check.ps1`
+13. `docs/function-lane/FUNCTION_ADAPTER_LAYERING_PRELIM_SPEC.md`
 
 ## 6. Gate Model
 ### G1 - Contract Closure

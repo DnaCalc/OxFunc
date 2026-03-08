@@ -11,7 +11,11 @@ def piMeta : FunctionMeta := {
   volatility := VolatilityClass.nonvolatile
   hostInteraction := HostInteractionClass.none
   threadSafety := ThreadSafetyClass.safePure
+  argPreparationProfile := ArgPreparationProfile.valuesOnlyPreAdapter
+  coercionLiftProfile := CoercionLiftProfile.none
+  kernelSignatureClass := KernelSignatureClass.nullaryConst
   fecDependencyProfile := FecDependencyProfile.none
+  surfaceFecDependencyProfile := FecDependencyProfile.none
 }
 
 def piConst : Rat := (884279719003555 : Rat) / (281474976710656 : Rat)
@@ -34,5 +38,13 @@ theorem evalPi_rejects_cons (x : Value) (xs : Args) :
 
 theorem evalPi_deterministic (args : Args) :
     evalPi args = evalPi args := rfl
+
+theorem piMeta_layered_profiles :
+    piMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter
+    ∧ piMeta.coercionLiftProfile = CoercionLiftProfile.none
+    ∧ piMeta.kernelSignatureClass = KernelSignatureClass.nullaryConst
+    ∧ piMeta.fecDependencyProfile = FecDependencyProfile.none
+    ∧ piMeta.surfaceFecDependencyProfile = FecDependencyProfile.none := by
+  simp [piMeta]
 
 end OxFunc.Functions

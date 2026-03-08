@@ -84,7 +84,11 @@ Normative OxFunc boundary commitments:
 5. Any seam ambiguity is logged as an explicit boundary decision, never silently absorbed.
 
 Implementation-seam rule:
-1. OxFunc contracts must remain compatible with the `CompileFormula -> DeclareDependencies -> Evaluate -> Publish/Render` interaction model documented in Foundation FEC/F3E specs.
+1. OxFunc contracts must remain compatible with the active Foundation FEC/F3E interaction model.
+2. Supported interaction shapes may include either:
+   - `CompileFormula -> DeclareDependencies -> Evaluate -> Publish/Render`, or
+   - `prepare -> open_session/capability_view -> execute -> commit`.
+3. In all supported shapes, function-library invocation occurs only after FEC admission and capability decision.
 
 ## 6. Required Artifact Stack
 Every promoted function slice must carry synchronized artifacts:

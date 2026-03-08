@@ -19,42 +19,50 @@
 2. `volatility_class`: `nonvolatile`
 3. `host_interaction_class`: `none`
 4. `thread_safety_class`: `safe_pure` (no host mutation/shared-state dependency in slice scope)
-5. `coercion_policy_class`: `permissive_scalar` with explicit error-bearing array lift
-6. `error_policy_class`: `strict_propagate`
-7. `compat_version_policy`: `version_scoped` (provisional)
-8. `fec_dependency_profile`: `ref_only`
-9. `fec_facility_tags`: `cap_reference_resolution`
-10. `compile_eval_class`: `const_foldable_when_closed`
+5. `arg_preparation_profile`: `values_only_pre_adapter`
+6. `coercion_lift_profile`: `unary_numeric_scalar_or_array_elementwise`
+7. `kernel_signature_class`: `num_to_num`
+8. `error_policy_class`: `strict_propagate`
+9. `compat_version_policy`: `version_scoped` (provisional)
+10. `function_adapter_fec_dependency_profile`: `none`
+11. `surface_fec_dependency_profile`: `ref_only` (through pre-adapter preparation seam)
+12. `fec_facility_tags`: `cap_reference_resolution` (surface preparation seam)
+13. `compile_eval_class`: `const_foldable_when_closed`
 
 ## 4. Required Behavior Lanes
 1. admission lane:
    - exact unary arity only.
 2. coercion lane:
-   - uses W4 selected seam (`capability_record_model`) and explicit `CallArgValue -> Number` coercion.
-   - text numeric and logical numeric coercion are admitted by coercion primitives.
-3. numeric kernel lane:
+   - function adapter consumes prepared values (no reference-bearing args).
+   - text numeric and logical numeric coercion are admitted by declarative unary numeric coercion/lift adapter.
+3. pre-adapter dereference lane:
+   - uses W4 selected seam (`capability_record_model`) before entering the ABS adapter.
+   - references are resolved into prepared value args by evaluator-side preparation.
+4. numeric kernel lane:
    - computes absolute value for admitted numeric payloads.
-4. floating-point lane:
+5. floating-point lane:
    - `-0` normalizes to `+0`.
    - `-inf` maps to `+inf`.
    - `NaN` remains `NaN` payload-class (no domain rejection in kernel).
-5. array-lift lane:
+6. array-lift lane:
    - elementwise lift for admitted array-like argument lanes.
    - per-element coercion errors are preserved in lifted outcomes.
-6. formula-vs-reference boundary lane:
-   - references are normalized/dereferenced before numeric coercion.
-   - resolver-capability denial remains an explicit error lane, not silent fallback.
-7. entrypoint-mechanism lane:
+7. formula-vs-reference boundary lane:
+   - function adapter is values-only and never requires direct dereference control.
+   - resolver-capability denial remains an explicit pre-adapter error lane, not silent fallback.
+8. entrypoint-mechanism lane:
    - admission/runtime surface tracked across `Range.Formula`, `Application.Evaluate`, `Worksheet.Evaluate`, and `WorksheetFunction.Abs`.
 
 ## 5. Core Outcome Model
 1. admitted unary call:
-   - returns `abs(coerce_to_number(arg))`.
+   - pipeline returns `abs_kernel(num)` after preparer + coercion/lift adapter.
 2. coercion failure:
-   - returns coercion error lane (`non_numeric_text`, worksheet error propagation, resolver error propagation).
-3. arity mismatch:
+   - returns coercion error lane (`non_numeric_text`, worksheet error propagation).
+3. preparation failure:
+   - returns pre-adapter seam error lane (resolver capability and resolution failures).
+4. arity mismatch:
    - returns admission error lane (`arityMismatch` in Lean/Rust scaffolds).
-4. lifted mixed inputs:
+5. lifted mixed inputs:
    - returns per-element number/error outcomes.
 
 ## 6. Version Scope (Required Axes)
@@ -65,8 +73,15 @@
 
 ## 7. Proof/Implementation Obligations
 1. Lean obligations:
+   - adapter/kernel module: `formal/lean/OxFunc/Functions/Abs.lean`
+   - surface execution module: `formal/lean/OxFunc/Functions/AbsSurface.lean`
    - `absKernel_of_neg`
    - `absKernel_of_nonneg`
+   - `absMeta_values_only_preparation`
+   - `absMeta_adapter_fec_none`
+   - `absMeta_surface_fec_ref_only`
+   - `absMeta_kernel_signature_num_to_num`
+   - `absMeta_coercion_profile_unary_numeric_scalar_or_array`
    - `evalAbsScalar_rejects_nil`
    - `evalAbsScalar_rejects_two`
    - `evalAbsScalar_admitted_number_neg`
@@ -74,10 +89,22 @@
    - `evalAbsScalar_text_bad`
    - `evalAbsLift_length`
    - `evalAbsScalar_deterministic`
-   - `evalAbsFromRef_deterministic`
+   - `prepareAbsSurfaceArgValuesOnly_prepared_passthrough`
+   - `evalAbsSurfaceScalar_rejects_nil`
+   - `evalAbsSurfaceScalar_prepared_number_neg`
+   - `evalAbsSurfaceScalar_prepared_logical_true`
+   - `evalAbsSurfaceScalar_prepared_text_bad`
+   - `evalAbsSurfaceLift_length`
+   - `evalAbsSurfacePrepared_matches_adapter_arg`
+   - `evalAbsSurfaceScalar_deterministic`
+   - `evalAbsSurfaceFromRef_deterministic`
 2. Rust obligations:
+   - strict runtime split:
+     - adapter/kernel module: `crates/oxfunc_core/src/functions/abs.rs`
+     - surface/pre-adapter composition module: `crates/oxfunc_core/src/functions/abs_surface.rs`
    - explicit unary-admission check.
-   - seam-based scalar coercion path (`coerce_arg_to_number` + resolver).
+   - declarative pre-adapter preparation profile (`values_only_pre_adapter`).
+   - declarative coercion/lift profile (`unary_numeric_scalar_or_array_elementwise`).
    - floating-point edge checks (`-0`, `±inf`, `NaN`).
    - array-lift mixed outcome checks.
 

@@ -32,11 +32,14 @@ Each function can carry multiple orthogonal tags:
 2. `volatility_class`: `nonvolatile | volatile_full | volatile_contextual | undecided`.
 3. `host_interaction_class`: `none | workbook_state | application_state | environment_state | external_provider`.
 4. `thread_safety_class`: `safe_pure | host_serialized | not_thread_safe`.
-5. `coercion_policy_class`: `strict | permissive_scalar | permissive_range_scan | mixed`.
-6. `error_policy_class`: `strict_propagate | conditional_mask | branch_selective | custom`.
-7. `compat_version_policy`: `stable_across_versions | version_scoped | unknown`.
-8. `fec_dependency_profile`: `none | ref_only | caller_context | time_provider | random_provider | external_provider | locale_profile | composite`.
-9. `compile_eval_class`: `const_foldable_when_closed | runtime_ref_dependent | runtime_context_dependent`.
+5. `arg_preparation_profile`: `values_only_pre_adapter | refs_visible_in_adapter`.
+6. `coercion_lift_profile`: declarative coercion+array-lift adapter profile id.
+7. `kernel_signature_class`: `nullary_const | num_to_num | nums_to_num | text_to_text | lookup_match | custom`.
+8. `error_policy_class`: `strict_propagate | conditional_mask | branch_selective | custom`.
+9. `compat_version_policy`: `stable_across_versions | version_scoped | unknown`.
+10. `fec_dependency_profile`: function-adapter-level FEC profile.
+11. `surface_fec_dependency_profile`: surface pipeline FEC profile (including pre-adapter preparation).
+12. `compile_eval_class`: `const_foldable_when_closed | runtime_ref_dependent | runtime_context_dependent`.
 
 ### 3.2 Working Definitions (Preliminary)
 1. Volatile:
@@ -55,14 +58,21 @@ Each function can carry multiple orthogonal tags:
    - `safe_pure`: function evaluation has no shared mutable host state dependence in declared scope.
    - `host_serialized`: function is safe only under host-serialized invocation policy.
    - `not_thread_safe`: function semantics rely on non-thread-safe state and cannot be safely concurrent.
+6. Argument preparation profile:
+   - `values_only_pre_adapter`: reference dereference/normalization occurs before function adapter.
+   - `refs_visible_in_adapter`: function adapter receives reference-bearing arguments and controls dereference behavior.
+7. Coercion/lift profile:
+   - declarative profile identifier for scalar coercion and array mapping behavior.
+8. Kernel signature class:
+   - pure function core shape independent from preparation/coercion seam.
 
-6. `volatile_full` vs `volatile_contextual`:
+9. `volatile_full` vs `volatile_contextual`:
    - retained as unresolved terminology pending interactive policy finalization.
    - current provisional intent:
      - `volatile_full`: always participates in volatile invalidation cycle.
      - `volatile_contextual`: participates only under function/context-specific conditions.
 
-7. Compile-time evaluability class:
+10. Compile-time evaluability class:
    - `const_foldable_when_closed`: expression can be reduced at compile/prepare time when all arguments are constant-closed.
    - `runtime_ref_dependent`: requires runtime value fetch/resolution from references.
    - `runtime_context_dependent`: requires runtime host context (for example caller/time/external context), so deterministic compile-time reduction is not valid.
@@ -83,7 +93,9 @@ Illustrative examples (planning):
 FEC is now a first-class contract axis for this lane.
 
 Normative planning rule:
-1. Every function/operator row shall declare `fec_dependency_profile`.
+1. Every function/operator row shall declare both:
+   - function-adapter `fec_dependency_profile`,
+   - surface pipeline `surface_fec_dependency_profile`.
 2. Where needed, row notes shall include explicit facility tags (for example `cap_reference_resolution`, `cap_time_provider`).
 3. A function must not observe undeclared FEC facilities in conformance-positive implementations.
 
@@ -99,6 +111,29 @@ Working profile vocabulary:
 
 Reference:
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/model/EXCEL_FORMULA_EVALUATION_CONTEXT_FEC.md`.
+
+### 3.4.1 FEC Admission and Failure Classification
+1. Function-library execution is permitted only after FEC/F3E admission for the invocation context succeeds.
+2. Seam-level admission outcomes (`Applied`/`Rejected*` or equivalent) are boundary-policy signals and must be tracked separately from function semantic result classification.
+3. Function semantic conformance claims are evaluated on admitted executions; rejected admissions are only function failures when the function contract explicitly requires admission for that scenario.
+4. Empirical manifests for adversarial seam tests must encode expected seam status so intentional rejections are treated as expected behavior.
+
+### 3.5 Layered Function Pipeline Contract
+Normative decomposition:
+1. Kernel:
+   - pure semantic core (`num_to_num`, etc.).
+2. Coercion/lift adapter:
+   - declarative conversion and array-map behavior.
+3. Argument preparation adapter:
+   - dereference/normalization policy according to `arg_preparation_profile`.
+
+Design rule:
+1. Non-interesting scalar families should default to:
+   - `arg_preparation_profile=values_only_pre_adapter`,
+   - kernel-focused proofs and tests.
+2. Reference-sensitive/aggregate families may require:
+   - `arg_preparation_profile=refs_visible_in_adapter`,
+   - provenance-aware semantics (for example direct-arg vs range-scan behavior in `SUM`-like families).
 
 ## 4. Invalidation and Recalc Trigger Model (Preliminary)
 Trigger classes:
@@ -129,7 +164,9 @@ Preliminary rule:
 ### 5.1 Pre-call argument coercion
 1. Arguments can be coerced before function invocation according to function signature and evaluator policy.
 2. Coercion source is host/evaluator policy, not function implementation internals.
-3. Reference-like arguments may be normalized/dereferenced according to function/operator contract before execution.
+3. Reference-like arguments may be normalized/dereferenced in either:
+   - pre-adapter preparation (`values_only_pre_adapter`), or
+   - function adapter (`refs_visible_in_adapter`).
 
 ### 5.2 Post-call return adaptation
 1. Function return values can be adapted by host after function execution.

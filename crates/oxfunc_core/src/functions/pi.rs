@@ -1,5 +1,6 @@
 use crate::function::{
-    Arity, DeterminismClass, FecDependencyProfile, FunctionMeta, HostInteractionClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass,
     ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{EvalError, Value};
@@ -11,7 +12,11 @@ pub const PI_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
+    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    coercion_lift_profile: CoercionLiftProfile::None,
+    kernel_signature_class: KernelSignatureClass::NullaryConst,
     fec_dependency_profile: FecDependencyProfile::None,
+    surface_fec_dependency_profile: FecDependencyProfile::None,
 };
 
 pub fn eval_pi(args: &[Value]) -> Result<Value, EvalError> {
@@ -32,6 +37,26 @@ mod tests {
     #[test]
     fn test_pi_meta_thread_safety_class_is_safe_pure() {
         assert_eq!(PI_META.thread_safety, ThreadSafetyClass::SafePure);
+    }
+
+    #[test]
+    fn test_pi_meta_arg_preparation_profile_values_only() {
+        assert_eq!(
+            PI_META.arg_preparation_profile,
+            ArgPreparationProfile::ValuesOnlyPreAdapter
+        );
+    }
+
+    #[test]
+    fn test_pi_meta_coercion_and_kernel_profiles() {
+        assert_eq!(PI_META.coercion_lift_profile, CoercionLiftProfile::None);
+        assert_eq!(PI_META.kernel_signature_class, KernelSignatureClass::NullaryConst);
+    }
+
+    #[test]
+    fn test_pi_meta_adapter_and_surface_fec_profiles_none() {
+        assert_eq!(PI_META.fec_dependency_profile, FecDependencyProfile::None);
+        assert_eq!(PI_META.surface_fec_dependency_profile, FecDependencyProfile::None);
     }
 
     #[test]

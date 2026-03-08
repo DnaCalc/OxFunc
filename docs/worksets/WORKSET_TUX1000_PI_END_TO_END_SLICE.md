@@ -24,7 +24,7 @@ Downstream consumers:
 ## 3. Scope
 In scope:
 1. complete `PI()` contract-formal-runtime-verification-correlation chain.
-2. explicit function tags (`deterministic`, `nonvolatile`, `host_interaction=none`, `fec_dependency_profile=none`).
+2. explicit function tags (`deterministic`, `nonvolatile`, `host_interaction=none`, `thread_safety=safe_pure`, `arg_preparation_profile=values_only_pre_adapter`, `coercion_lift_profile=none`, `kernel_signature_class=nullary_const`, adapter-level `fec_dependency_profile=none`, and `surface_fec_dependency_profile=none`).
 3. linkage into function-lane conformance rows.
 4. admission-boundary empirical baseline for `PI()` arity behavior across entry/evaluate/file-ingress mechanisms.
 

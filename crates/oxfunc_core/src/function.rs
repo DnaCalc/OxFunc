@@ -30,6 +30,32 @@ pub enum ThreadSafetyClass {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArgPreparationProfile {
+    ValuesOnlyPreAdapter,
+    RefsVisibleInAdapter,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CoercionLiftProfile {
+    None,
+    UnaryNumericScalarOnly,
+    UnaryNumericScalarOrArrayElementwise,
+    AggregateDirectAndRangeDualPolicy,
+    LookupMatchProfile,
+    Custom,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum KernelSignatureClass {
+    NullaryConst,
+    NumToNum,
+    NumsToNum,
+    TextToText,
+    LookupMatch,
+    Custom,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum FecDependencyProfile {
     None,
     RefOnly,
@@ -65,5 +91,11 @@ pub struct FunctionMeta {
     pub volatility: VolatilityClass,
     pub host_interaction: HostInteractionClass,
     pub thread_safety: ThreadSafetyClass,
+    pub arg_preparation_profile: ArgPreparationProfile,
+    pub coercion_lift_profile: CoercionLiftProfile,
+    pub kernel_signature_class: KernelSignatureClass,
+    // Adapter-level FEC profile.
     pub fec_dependency_profile: FecDependencyProfile,
+    // Surface pipeline FEC profile (includes pre-adapter preparation).
+    pub surface_fec_dependency_profile: FecDependencyProfile,
 }

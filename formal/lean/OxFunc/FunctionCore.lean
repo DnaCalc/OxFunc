@@ -29,6 +29,29 @@ inductive ThreadSafetyClass where
   | notThreadSafe
   deriving DecidableEq, Repr
 
+inductive ArgPreparationProfile where
+  | valuesOnlyPreAdapter
+  | refsVisibleInAdapter
+  deriving DecidableEq, Repr
+
+inductive CoercionLiftProfile where
+  | none
+  | unaryNumericScalarOnly
+  | unaryNumericScalarOrArrayElementwise
+  | aggregateDirectAndRangeDualPolicy
+  | lookupMatchProfile
+  | custom
+  deriving DecidableEq, Repr
+
+inductive KernelSignatureClass where
+  | nullaryConst
+  | numToNum
+  | numsToNum
+  | textToText
+  | lookupMatch
+  | custom
+  deriving DecidableEq, Repr
+
 inductive FecDependencyProfile where
   | none
   | refOnly
@@ -57,7 +80,11 @@ structure FunctionMeta where
   volatility : VolatilityClass
   hostInteraction : HostInteractionClass
   threadSafety : ThreadSafetyClass
+  argPreparationProfile : ArgPreparationProfile
+  coercionLiftProfile : CoercionLiftProfile
+  kernelSignatureClass : KernelSignatureClass
   fecDependencyProfile : FecDependencyProfile
+  surfaceFecDependencyProfile : FecDependencyProfile
   deriving DecidableEq, Repr
 
 def admitArity (arity : Arity) (args : Args) : Except EvalError Unit :=

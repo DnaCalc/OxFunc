@@ -66,11 +66,18 @@ Every function/operator row must explicitly carry:
 5. post-call adaptation policy.
 6. determinism/volatility/host-interaction tags.
 7. thread-safety classification (`safe_pure`, `host_serialized`, `not_thread_safe`).
-8. `fec_dependency_profile` and facility tags.
-9. version scope:
+8. `arg_preparation_profile` (`values_only_pre_adapter` or `refs_visible_in_adapter`).
+9. `coercion_lift_profile` and `kernel_signature_class`.
+10. adapter-level `fec_dependency_profile`, surface-level `surface_fec_dependency_profile`, and facility tags.
+11. version scope:
    - Excel application version/channel scope.
    - workbook Compatibility Version scope.
-10. evidence bindings (`spec`, `empirical`, policy decisions).
+12. evidence bindings (`spec`, `empirical`, policy decisions).
+
+### 4.4 FEC/F3E Invocation Invariant
+1. Function adapter/kernel execution must occur only after FEC-side admission has succeeded for the invocation context.
+2. Seam-level rejections (`token`, `snapshot`, `capability`, or equivalent host admission outcomes) are classified as boundary outcomes, not function semantic failures.
+3. Function semantic failures are only outcomes produced after successful admission and execution of the declared function pipeline.
 
 ## 5. Promotion Gates
 Status transitions are mechanical, not narrative.
@@ -135,6 +142,7 @@ This template is the generalization seed for `SIN`, `SUM`, `ROW`, and later fami
 6. Probe runs must emit run-metadata sidecars (manifest hash, runner version, git revision, environment/version metadata) for replay integrity.
 7. Probe suites should produce an analyzer report with mismatch and drift classification against prior baselines when available.
 8. Cross-cutting worksets must instantiate a cross-boundary invariant checklist (formula, interop ingress, reference reuse, persistence/interchange, and any additional active boundaries).
+9. Boundary evidence must report seam-level status and function semantic status separately so adversarial seam tests do not pollute function conformance failure counts.
 
 ## 9. Doctrine and Plan Change Workflow
 1. Routine function-row and implementation updates do not require synthesis runs by default.

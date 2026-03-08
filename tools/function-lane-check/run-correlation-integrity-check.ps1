@@ -61,39 +61,65 @@ $issues = New-Object System.Collections.Generic.List[object]
 
 foreach ($row in $rows) {
     $functionId = [string]$row.function_id
-    $leanModule = [string]$row.lean_module
-    $rustModule = [string]$row.rust_module
+    $leanModules = Split-Ids -Raw ([string]$row.lean_module)
+    $rustModules = Split-Ids -Raw ([string]$row.rust_module)
 
-    $leanPath = Resolve-LeanModulePath -LeanModule $leanModule
-    if (-not (Test-Path $leanPath)) {
-        Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "lean_module" -Message "Lean module path does not exist: $leanPath"
+    if ($leanModules.Count -eq 0) {
+        Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "lean_module" -Message "lean_module is empty."
     }
-    else {
-        $leanContent = Get-Content -Path $leanPath -Raw
-        foreach ($theoremId in (Split-Ids -Raw ([string]$row.lean_theorem_ids))) {
-            if ($theoremId.StartsWith("TBD-")) { continue }
-            $pattern = "(theorem|lemma|def)\s+$([regex]::Escape($theoremId))\b"
-            if (-not ([regex]::IsMatch($leanContent, $pattern))) {
-                Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "lean_theorem_ids" -Message "Theorem/lemma/def id not found in module '$leanModule': $theoremId"
+    if ($rustModules.Count -eq 0) {
+        Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_module" -Message "rust_module is empty."
+    }
+
+    $leanContents = @{}
+    foreach ($lm in $leanModules) {
+        $leanPath = Resolve-LeanModulePath -LeanModule $lm
+        if (-not (Test-Path $leanPath)) {
+            Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "lean_module" -Message "Lean module path does not exist: $leanPath"
+            continue
+        }
+        $leanContents[$lm] = Get-Content -Path $leanPath -Raw
+    }
+    foreach ($theoremId in (Split-Ids -Raw ([string]$row.lean_theorem_ids))) {
+        if ($theoremId.StartsWith("TBD-")) { continue }
+        $pattern = "(theorem|lemma|def)\s+$([regex]::Escape($theoremId))\b"
+        $found = $false
+        foreach ($kv in $leanContents.GetEnumerator()) {
+            if ([regex]::IsMatch([string]$kv.Value, $pattern)) {
+                $found = $true
+                break
             }
+        }
+        if (-not $found) {
+            Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "lean_theorem_ids" -Message "Theorem/lemma/def id not found in modules '$([string]::Join(';', $leanModules))': $theoremId"
         }
     }
 
-    $rustPath = Resolve-RustModulePath -RustModule $rustModule
-    if ([string]::IsNullOrWhiteSpace($rustPath)) {
-        Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_module" -Message "Unsupported rust_module prefix: $rustModule"
+    $rustContents = @{}
+    foreach ($rm in $rustModules) {
+        $rustPath = Resolve-RustModulePath -RustModule $rm
+        if ([string]::IsNullOrWhiteSpace($rustPath)) {
+            Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_module" -Message "Unsupported rust_module prefix: $rm"
+            continue
+        }
+        if (-not (Test-Path $rustPath)) {
+            Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_module" -Message "Rust module path does not exist: $rustPath"
+            continue
+        }
+        $rustContents[$rm] = Get-Content -Path $rustPath -Raw
     }
-    elseif (-not (Test-Path $rustPath)) {
-        Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_module" -Message "Rust module path does not exist: $rustPath"
-    }
-    else {
-        $rustContent = Get-Content -Path $rustPath -Raw
-        foreach ($testId in (Split-Ids -Raw ([string]$row.rust_test_ids))) {
-            if ($testId.StartsWith("TBD-")) { continue }
-            $pattern = "fn\s+$([regex]::Escape($testId))\s*\("
-            if (-not ([regex]::IsMatch($rustContent, $pattern))) {
-                Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_test_ids" -Message "Rust test function id not found in module '$rustModule': $testId"
+    foreach ($testId in (Split-Ids -Raw ([string]$row.rust_test_ids))) {
+        if ($testId.StartsWith("TBD-")) { continue }
+        $pattern = "fn\s+$([regex]::Escape($testId))\s*\("
+        $found = $false
+        foreach ($kv in $rustContents.GetEnumerator()) {
+            if ([regex]::IsMatch([string]$kv.Value, $pattern)) {
+                $found = $true
+                break
             }
+        }
+        if (-not $found) {
+            Add-Issue -Issues $issues -Severity "error" -FunctionId $functionId -Field "rust_test_ids" -Message "Rust test function id not found in modules '$([string]::Join(';', $rustModules))': $testId"
         }
     }
 
