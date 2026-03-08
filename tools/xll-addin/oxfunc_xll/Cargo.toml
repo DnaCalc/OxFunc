@@ -11,7 +11,7 @@ oxfunc_core = { path = "../../../crates/oxfunc_core" }
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_LibraryLoader"] }
 
 [build-dependencies]
-cc = "1.2"
+oxfunc_core = { path = "../../../crates/oxfunc_core" }
 
 [profile.release]
 panic = "abort"

@@ -37,7 +37,10 @@ Outputs:
 2. Evidence:
    - `tools/xll-addin/oxfunc_xll/Cargo.toml`
    - `tools/xll-addin/oxfunc_xll/build.rs`
+   - `crates/oxfunc_core/src/xll_export_specs.rs`
+   - `tools/xll-addin/oxfunc_xll/export_specs.csv`
    - `tools/xll-addin/build-oxfunc-xll.ps1`
+   - `tools/xll-addin/sync-export-specs.ps1`
    - built artifact `tools/xll-addin/bin/OxFunc64.xll`
 
 ### G2 - Shim Contract Closure
@@ -45,7 +48,9 @@ Outputs:
 2. Evidence:
    - `docs/function-lane/XLL_ADDIN_BRIDGE_SHIM_CONTRACT_PRELIM.md`
    - `tools/xll-addin/oxfunc_xll/src/lib.rs`
-   - `tools/xll-addin/oxfunc_xll/native/registration_bridge.cpp`
+   - `crates/oxfunc_core/src/xll_export_specs.rs`
+   - `tools/xll-addin/oxfunc_xll/export_specs.csv`
+   - `crates/oxfunc_core/src/functions/surface_dispatch.rs`
 
 ### G3 - Registration Closure
 1. Status: `closed`.
@@ -77,4 +82,5 @@ Outputs:
 1. Seed scalar parity is strong for ABS and PI paths (`W9-XLL-001..006`).
 2. U-style bridge surface can dereference simple references (`ox_ABS(A1)` parity observed).
 3. U-style bridge now supports shape-preserving `xltypeMulti` elementwise mapping for ABS (`W9-XLL-007` parity-closed).
-4. W9 is suitable as an exercised seed bridge and policy testbed for U-vs-Q registration decisions.
+4. Export wrappers and registration rows are generated from core `xll_export_specs` declarations, reducing hand-authored bridge code.
+5. W9 is suitable as an exercised seed bridge and policy testbed for U-vs-Q registration decisions.

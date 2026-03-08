@@ -4,7 +4,7 @@ param(
 
     [string]$OutDir = "",
 
-    [string]$ExcelXllSdkDir = ""
+    [switch]$SkipSpecSync
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,6 +15,14 @@ if (-not (Test-Path $manifestPath)) {
     throw "Missing Cargo manifest: $manifestPath"
 }
 
+if (-not $SkipSpecSync) {
+    $syncScript = Join-Path $PSScriptRoot "sync-export-specs.ps1"
+    if (-not (Test-Path $syncScript)) {
+        throw "Missing sync script: $syncScript"
+    }
+    & $syncScript | Out-Null
+}
+
 $profileArgs = @()
 $binSubdir = "debug"
 if ($Profile -eq "release") {
@@ -22,23 +30,8 @@ if ($Profile -eq "release") {
     $binSubdir = "release"
 }
 
-$originalSdkEnv = $env:EXCEL_XLL_SDK_DIR
-if (-not [string]::IsNullOrWhiteSpace($ExcelXllSdkDir)) {
-    $env:EXCEL_XLL_SDK_DIR = (Resolve-Path -Path $ExcelXllSdkDir -ErrorAction Stop).Path
-}
-
 cargo build --manifest-path $manifestPath @profileArgs
 $buildExit = $LASTEXITCODE
-
-if ([string]::IsNullOrWhiteSpace($ExcelXllSdkDir)) {
-    # keep environment untouched
-}
-elseif ($null -eq $originalSdkEnv) {
-    Remove-Item Env:EXCEL_XLL_SDK_DIR -ErrorAction SilentlyContinue
-}
-else {
-    $env:EXCEL_XLL_SDK_DIR = $originalSdkEnv
-}
 
 if ($buildExit -ne 0) {
     exit $buildExit

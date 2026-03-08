@@ -15,13 +15,17 @@ Record seed registration posture for U-style vs Q-style surfaces in the OxFunc X
 
 ## 3. Registration Call Path
 1. Self-registration in `xlAutoOpen`.
-2. `xlfRegister` invocation through official SDK callback path (`XLCALL.H` + `XLCALL.CPP`).
+2. `xlfRegister` invocation through direct Rust callback binding to Excel `MdCallBack12`.
 3. Category label: `OxFunc Bridge`.
+4. Source-of-truth export rows are declared in `crates/oxfunc_core/src/xll_export_specs.rs`.
+5. Export wrappers and registration rows are generated during build from that core source.
+6. CSV snapshot (`tools/xll-addin/oxfunc_xll/export_specs.csv`) is generated from core for audit/review.
 
 ## 4. Current Policy Decisions
 1. Keep both U-style and Q-style ABS exports to compare behavior and transport costs.
 2. Do not collapse to a single signature policy yet.
-3. Keep core function semantics in `oxfunc_core`; registration and ABI handling remain bridge-local.
+3. Keep core function semantics in `oxfunc_core`; XLL layer remains transport + registration + type conversion only.
+4. Keep export rows declarative in core; wrappers/rows and CSV snapshots are generated mechanically.
 
 ## 5. Follow-on Decisions
 1. Decide whether `ox_ABS_Q` remains public or becomes internal benchmark/control.
