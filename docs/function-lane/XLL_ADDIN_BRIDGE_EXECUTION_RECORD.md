@@ -1,0 +1,82 @@
+# XLL Add-in Bridge Execution Record
+
+Status: `complete-provisional`
+Workset: `W9`
+Evidence ID: `W9-XLL-BL-20260308`
+
+## 1. Purpose
+Track reproducible build/registration/baseline-validation evidence for the Rust-based `OxFunc64.xll` bridge.
+
+## 2. Executed Baseline Scope
+Execution date:
+1. `2026-03-08`
+
+Environment:
+1. Excel version/build: `16.0 (build 19725)`
+2. Excel channel: `http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60`
+3. Locale profile: `en-US`
+
+Inputs:
+1. Manifest:
+   - `docs/function-lane/XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`
+2. Bridge build:
+   - `tools/xll-addin/build-oxfunc-xll.ps1`
+   - `tools/xll-addin/oxfunc_xll/*`
+3. Baseline runner:
+   - `tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1`
+
+Outputs:
+1. XLL artifact:
+   - `tools/xll-addin/bin/OxFunc64.xll`
+2. Baseline result rows:
+   - `.tmp/oxfunc-xll-bridge-results.csv`
+
+## 3. Gate Tracking
+### G1 - Bridge Scaffold Closure
+1. Status: `closed`.
+2. Evidence:
+   - `tools/xll-addin/oxfunc_xll/Cargo.toml`
+   - `tools/xll-addin/oxfunc_xll/build.rs`
+   - `tools/xll-addin/build-oxfunc-xll.ps1`
+   - built artifact `tools/xll-addin/bin/OxFunc64.xll`
+
+### G2 - Shim Contract Closure
+1. Status: `closed`.
+2. Evidence:
+   - `docs/function-lane/XLL_ADDIN_BRIDGE_SHIM_CONTRACT_PRELIM.md`
+   - `tools/xll-addin/oxfunc_xll/src/lib.rs`
+   - `tools/xll-addin/oxfunc_xll/native/registration_bridge.cpp`
+
+### G3 - Registration Closure
+1. Status: `closed`.
+2. Evidence:
+   - `docs/function-lane/XLL_ADDIN_BRIDGE_REGISTRATION_NOTES.md`
+   - runtime `RegisterXLL` success in baseline runner.
+   - callable seed exports:
+     - `ox_ABS` (`U` posture)
+     - `ox_ABS_Q` (`Q` posture)
+     - `ox_PI` (`Q` posture)
+
+### G4 - Differential Workbook Closure
+1. Status: `closed-provisional`.
+2. Evidence:
+   - `docs/function-lane/XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`
+   - `.tmp/oxfunc-xll-bridge-results.csv`
+3. Outcomes:
+   - rows: `7`
+   - relation_status `matched`: `7`
+   - known divergence row captured:
+     - `W9-XLL-007` (`ABS({-1,2})` vs `ox_ABS({-1,2})`)
+     - native `#SPILL!` vs bridge `#VALUE!` (`u_multi_not_yet_closed`)
+
+### G5 - Separation Closure
+1. Status: `closed`.
+2. Evidence:
+   - bridge dependencies isolated under `tools/xll-addin/oxfunc_xll`.
+   - `crates/oxfunc_core` has no XLL SDK transport dependency.
+
+## 4. Key Findings
+1. Seed scalar parity is strong for ABS and PI paths (`W9-XLL-001..006`).
+2. U-style bridge surface can dereference simple references (`ox_ABS(A1)` parity observed).
+3. Dynamic-array/multi transport is intentionally not closed yet (`W9-XLL-007` known divergence).
+4. W9 is suitable as an exercised seed bridge and policy testbed for U-vs-Q registration decisions.

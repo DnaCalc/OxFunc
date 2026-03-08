@@ -6,3 +6,6 @@ tools/fp-probe/**/target/
 tools/fp-probe/**/bin/
 tools/fp-probe/**/obj/
 tools/fp-probe/FpProbeRunner/
+tools/xll-addin/**/target/
+tools/xll-addin/**/bin/
+tools/xll-addin/**/obj/

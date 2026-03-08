@@ -43,6 +43,10 @@ Primary files:
 38. `XMATCH_EXECUTION_RECORD.md`
 39. `XMATCH_SCENARIO_MANIFEST_SEED.csv`
 40. `XMATCH_PROBE_RUNTIME_REQUIREMENTS.md`
+41. `XLL_ADDIN_BRIDGE_SHIM_CONTRACT_PRELIM.md`
+42. `XLL_ADDIN_BRIDGE_REGISTRATION_NOTES.md`
+43. `XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`
+44. `XLL_ADDIN_BRIDGE_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

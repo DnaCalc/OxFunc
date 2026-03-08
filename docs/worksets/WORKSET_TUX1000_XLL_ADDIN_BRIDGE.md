@@ -80,10 +80,10 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `planned`.
+1. `complete`.
 
 Claim confidence:
-1. `draft` until initial seed export and workbook differential runs complete.
+1. `provisional` (seed export set built, registered, and replayed with side-by-side workbook baseline).
 
 Assurance maturity:
-1. `exercised` target for first closure.
+1. `exercised`.
