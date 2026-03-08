@@ -14,6 +14,7 @@ Kickoff worksets:
 6. `WORKSET_TUX1000_XMATCH_DETERMINISTIC_QUIRKS.md` (W6)
 7. `WORKSET_TUX1000_STRING_CHARACTERIZATION.md` (W7)
 8. `WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md` (W8.1)
+9. `WORKSET_TUX1000_XLL_ADDIN_BRIDGE.md` (W9)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.

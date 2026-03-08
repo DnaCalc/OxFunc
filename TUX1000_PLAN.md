@@ -147,3 +147,10 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 1. `CHARTER.md` is normative for mission/scope/done criteria.
 2. `OPERATIONS.md` is normative for execution doctrine.
 3. This plan is aspirational and directional, never overriding charter or Foundation doctrine.
+
+## 12. Post-kickoff Extension Packets
+1. `W8.1` String follow-up checklist:
+   - `docs/worksets/WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md`
+2. `W9` XLL add-in bridge packet:
+   - `docs/worksets/WORKSET_TUX1000_XLL_ADDIN_BRIDGE.md`
+   - goal: build `OxFunc64.xll` as an adapter around OxFunc core functions, with seed exports (for example `ox_ABS`) and side-by-side native-vs-OxFunc workbook validation packs.

@@ -81,3 +81,8 @@ When a kickoff gate closes and impacts cross-program policy, emit a concise hand
 2. changed assumptions or policy proposals,
 3. evidence and replay references,
 4. explicit open questions requiring Foundation decision.
+
+## 9. Post-kickoff Follow-ons
+This kickoff program remains scoped to W1..W7. Post-kickoff packets are tracked separately:
+1. `WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md` (W8.1)
+2. `WORKSET_TUX1000_XLL_ADDIN_BRIDGE.md` (W9)
