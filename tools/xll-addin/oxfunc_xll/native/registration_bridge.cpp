@@ -91,6 +91,20 @@ static LPXLOPER12 MakeResultNumber(double value) {
     return &result;
 }
 
+static LPXLOPER12 MakeResultMulti(unsigned int rows, unsigned int cols, const std::vector<XLOPER12>& items) {
+    const size_t count = static_cast<size_t>(rows) * static_cast<size_t>(cols);
+    auto* result = new XLOPER12{};
+    auto* storage = new XLOPER12[count]{};
+    for (size_t i = 0; i < count; ++i) {
+        storage[i] = items[i];
+    }
+    result->xltype = xltypeMulti | xlbitDLLFree;
+    result->val.array.rows = rows;
+    result->val.array.columns = cols;
+    result->val.array.lparray = storage;
+    return result;
+}
+
 static bool CoerceReferenceToValue(LPXLOPER12 arg, XLOPER12* coerced_out) {
     XLOPER12 coerced = {};
     LPXLOPER12 args[1] = {arg};
@@ -162,10 +176,6 @@ static bool ToShimArg(LPXLOPER12 arg, OxFuncShimArg* out, bool* used_temp, XLOPE
             out->text_len = len;
             return true;
         }
-        case xltypeMulti:
-            out->tag = kArgTagError;
-            out->error_code = xlerrValue;
-            return true;
         default:
             out->tag = kArgTagError;
             out->error_code = xlerrValue;
@@ -173,24 +183,78 @@ static bool ToShimArg(LPXLOPER12 arg, OxFuncShimArg* out, bool* used_temp, XLOPE
     }
 }
 
-extern "C" __declspec(dllexport) LPXLOPER12 __stdcall OX_ABS(LPXLOPER12 arg) {
+static bool EvalAbsScalarFromXloper(LPXLOPER12 arg, OxFuncShimResult* shim_result) {
     OxFuncShimArg shim_arg = {};
-    OxFuncShimResult shim_result = {};
     bool used_temp = false;
     XLOPER12 temp = {};
-
     if (!ToShimArg(arg, &shim_arg, &used_temp, &temp)) {
-        return MakeResultError(xlerrValue);
+        return false;
     }
-
-    int ok = oxfunc_abs_eval_shim(&shim_arg, &shim_result);
+    int ok = oxfunc_abs_eval_shim(&shim_arg, shim_result);
     if (used_temp) {
         Excel12(xlFree, nullptr, 1, &temp);
     }
-    if (ok != 1) {
-        return MakeResultError(xlerrValue);
+    return ok == 1;
+}
+
+extern "C" __declspec(dllexport) LPXLOPER12 __stdcall OX_ABS(LPXLOPER12 arg) {
+    LPXLOPER12 value = arg;
+    bool used_temp = false;
+    XLOPER12 temp = {};
+
+    if (value != nullptr) {
+        DWORD ty = value->xltype & kTypeMask;
+        if (ty == xltypeRef || ty == xltypeSRef) {
+            if (!CoerceReferenceToValue(value, &temp)) {
+                return MakeResultError(xlerrValue);
+            }
+            value = &temp;
+            used_temp = true;
+        }
     }
 
+    DWORD ty = (value == nullptr) ? xltypeMissing : (value->xltype & kTypeMask);
+    if (ty == xltypeMulti) {
+        const auto rows = value->val.array.rows;
+        const auto cols = value->val.array.columns;
+        const auto count = static_cast<size_t>(rows) * static_cast<size_t>(cols);
+        std::vector<XLOPER12> mapped(count);
+        LPXLOPER12 items = value->val.array.lparray;
+
+        for (size_t i = 0; i < count; ++i) {
+            OxFuncShimResult shim_result = {};
+            if (!EvalAbsScalarFromXloper(&items[i], &shim_result)) {
+                mapped[i] = {};
+                mapped[i].xltype = xltypeErr;
+                mapped[i].val.err = xlerrValue;
+                continue;
+            }
+            mapped[i] = {};
+            if (shim_result.tag == kResultTagNumber) {
+                mapped[i].xltype = xltypeNum;
+                mapped[i].val.num = shim_result.number;
+            } else {
+                mapped[i].xltype = xltypeErr;
+                mapped[i].val.err = shim_result.error_code;
+            }
+        }
+
+        if (used_temp) {
+            Excel12(xlFree, nullptr, 1, &temp);
+        }
+        return MakeResultMulti(rows, cols, mapped);
+    }
+
+    OxFuncShimResult shim_result = {};
+    if (!EvalAbsScalarFromXloper(value, &shim_result)) {
+        if (used_temp) {
+            Excel12(xlFree, nullptr, 1, &temp);
+        }
+        return MakeResultError(xlerrValue);
+    }
+    if (used_temp) {
+        Excel12(xlFree, nullptr, 1, &temp);
+    }
     if (shim_result.tag == kResultTagNumber) {
         return MakeResultNumber(shim_result.number);
     }
@@ -198,6 +262,16 @@ extern "C" __declspec(dllexport) LPXLOPER12 __stdcall OX_ABS(LPXLOPER12 arg) {
         return MakeResultError(shim_result.error_code);
     }
     return MakeResultError(xlerrValue);
+}
+
+extern "C" __declspec(dllexport) void __stdcall xlAutoFree12(LPXLOPER12 to_free) {
+    if (to_free == nullptr) {
+        return;
+    }
+    if ((to_free->xltype & kTypeMask) == xltypeMulti) {
+        delete[] to_free->val.array.lparray;
+    }
+    delete to_free;
 }
 
 static int RegisterOne(const wchar_t* module_path, const RegSpec& spec) {

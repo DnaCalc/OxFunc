@@ -65,9 +65,7 @@ Outputs:
 3. Outcomes:
    - rows: `7`
    - relation_status `matched`: `7`
-   - known divergence row captured:
-     - `W9-XLL-007` (`ABS({-1,2})` vs `ox_ABS({-1,2})`)
-     - native `#SPILL!` vs bridge `#VALUE!` (`u_multi_not_yet_closed`)
+   - spill-sensitive row `W9-XLL-007` now parity-closed when replayed without anchor collision.
 
 ### G5 - Separation Closure
 1. Status: `closed`.
@@ -78,5 +76,5 @@ Outputs:
 ## 4. Key Findings
 1. Seed scalar parity is strong for ABS and PI paths (`W9-XLL-001..006`).
 2. U-style bridge surface can dereference simple references (`ox_ABS(A1)` parity observed).
-3. Dynamic-array/multi transport is intentionally not closed yet (`W9-XLL-007` known divergence).
+3. U-style bridge now supports shape-preserving `xltypeMulti` elementwise mapping for ABS (`W9-XLL-007` parity-closed).
 4. W9 is suitable as an exercised seed bridge and policy testbed for U-vs-Q registration decisions.

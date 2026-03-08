@@ -5,4 +5,4 @@
 "W9-XLL-004","W9-A","ready","","PI()","ox_PI()","equal","none","Nullary constant parity."
 "W9-XLL-005","W9-A","ready","","ABS(-2)","ox_ABS_Q(-2)","equal","none","Q-style control lane parity for numeric scalar."
 "W9-XLL-006","W9-B","ready","A1:=-3","ABS(A1)","ox_ABS(A1)","equal","none","Reference dereference parity through U-style lane."
-"W9-XLL-007","W9-C","ready","","ABS({-1,2})","ox_ABS({-1,2})","known_divergence_not_equal","u_multi_not_yet_closed","Dynamic-array/multi transport divergence acknowledged in seed."
+"W9-XLL-007","W9-C","ready","","ABS({-1,2})","ox_ABS({-1,2})","equal","none","Dynamic-array scalar elementwise spill parity for simple numeric arrays."

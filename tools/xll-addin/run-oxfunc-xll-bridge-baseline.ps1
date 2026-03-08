@@ -162,7 +162,7 @@ try {
     $row = 1
     foreach ($scenario in $scenarios) {
         $nativeCell = "B$row"
-        $bridgeCell = "C$row"
+        $bridgeCell = "H$row"
         $executionStatus = "observed"
         $notes = [string]$scenario.notes
         $nativeText = ""

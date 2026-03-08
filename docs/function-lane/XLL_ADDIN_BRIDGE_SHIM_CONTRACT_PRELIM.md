@@ -39,8 +39,9 @@ For `ox_ABS` (`U` surface):
    - `xltypeNil` -> empty cell.
 2. Reference lanes:
    - `xltypeRef` / `xltypeSRef` are dereferenced through `xlCoerce` before shim translation.
-3. Unsupported lanes in seed:
-   - `xltypeMulti` currently mapped to `#VALUE!` in bridge wrapper.
+3. `xltypeMulti` array lanes:
+   - shape-preserving elementwise mapping through scalar shim (`eval_abs_scalar_value`) per element.
+   - result returned as `xltypeMulti` with Excel-owned lifetime (`xlbitDLLFree` + `xlAutoFree12`).
 4. Shim invokes OxFunc:
    - scalar path through `eval_abs_scalar_value` in `oxfunc_core`.
 
@@ -55,6 +56,6 @@ For `ox_PI`:
 2. Coercion/ref-resolution/unsupported shim cases default to `#VALUE!` unless a specific worksheet error is already declared.
 
 ## 6. Non-Goals in Seed
-1. Full `xltypeMulti`/dynamic-array transport closure.
+1. Full generalization of array-lift policy beyond current unary ABS shape-preserving mapping.
 2. Asynchronous/RTD callback model.
-3. Production-hardening of memory ownership/lifecycle beyond current static scalar/error return lane.
+3. Production-hardening beyond current scalar static-return + multi `xlAutoFree12` ownership split.
