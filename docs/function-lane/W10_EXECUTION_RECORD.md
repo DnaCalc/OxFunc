@@ -73,7 +73,7 @@ Function slices with landed scaffolding/runtime seeds:
    - `tools/w10-probe/new-w10-compat-template.ps1`
 
 ## 5. Verification Runs
-1. `cargo test -p oxfunc_core` -> pass (`183` tests).
+1. `cargo test -p oxfunc_core` -> pass (`186` tests).
 2. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml` -> pass.
 3. `./tools/xll-addin/sync-export-specs.ps1` -> pass.
 4. `lake build` (from `formal/lean`) -> pass.
