@@ -8,7 +8,7 @@ Primary question:
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W3 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W3 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W2 floating-point characterization baseline.
@@ -73,3 +73,4 @@ Gate snapshot:
    - includes W7 baseline feed consumption (`W7-STR-BL-20260305`) for text-boundary constraints.
 3. `G3` formal/runtime closure: `closed` (Rust + Lean compile passing).
 4. `G4` integration closure: `open` (W4/W5/W6 consumption not yet executed).
+

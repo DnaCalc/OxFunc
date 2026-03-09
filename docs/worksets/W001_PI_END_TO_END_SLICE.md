@@ -13,7 +13,7 @@ Establish the first complete OxFunc slice method on a minimal deterministic func
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W1 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W1 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. none.
@@ -71,3 +71,4 @@ Claim confidence:
 
 Assurance maturity:
 1. `exercised`.
+

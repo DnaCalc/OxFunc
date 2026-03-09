@@ -33,7 +33,7 @@ Out of slice:
 - `CHARTER.md` - OxFunc charter (canonical for OxFunc lane).
 - `OPERATIONS.md` - OxFunc execution doctrine (lane-level operations).
 - `TUX1000_PLAN.md` - aspirational execution adjunct to the charter.
-- `docs/worksets/WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md` - combined kickoff orchestration for worksets 1..7.
+- `docs/worksets/W000_KICKOFF_PROGRAM_W001_W006.md` - combined kickoff orchestration for worksets 1..7.
 - `docs/worksets/` - sequence-based execution worksets for cross-cutting slices.
 - `docs/function-lane/` - mutable function/value working artifacts.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
@@ -45,3 +45,4 @@ Out of slice:
 - Function behavior now has a dual version axis (Excel app version/channel plus workbook Compatibility Version), reflected in the OxFunc charter.
 - OxFunc assumes read access to Foundation artifacts but does not assume direct-write workflow to Foundation during routine iteration.
 - Completeness reporting is scope-qualified by doctrine; see `CHARTER.md` section `7.4` and `OPERATIONS.md` section `11`.
+

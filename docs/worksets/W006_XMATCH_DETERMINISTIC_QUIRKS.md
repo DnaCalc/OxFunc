@@ -9,7 +9,7 @@ This workset closes a cross-cutting decision:
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W6 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W6 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W3 value-universe closure,
@@ -89,3 +89,4 @@ Claim confidence:
 
 Assurance maturity:
 1. `exercised`.
+

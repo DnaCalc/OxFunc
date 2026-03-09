@@ -14,7 +14,7 @@ Method requirement:
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W7 extension workset in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W7 extension workset in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W1 method template and artifact doctrine.
@@ -68,7 +68,7 @@ Out of scope:
 3. `docs/function-lane/STRING_EXECUTION_RECORD.md`
 4. `docs/function-lane/STRING_NORMALIZATION_AND_COMPARISON_POLICY_MAP.md`
 5. updates to `docs/function-lane/VALUE_UNIVERSE_RESEARCH_AND_OPEN_QUESTIONS.md` (W3 feed)
-6. updates to `docs/worksets/WORKSET_TUX1000_XMATCH_DETERMINISTIC_QUIRKS.md` (W6 feed)
+6. updates to `docs/worksets/W006_XMATCH_DETERMINISTIC_QUIRKS.md` (W6 feed)
 7. conformance-row linkage updates (`FDEF-032` and affected rows)
 
 ## 6. Gate Model
@@ -113,4 +113,5 @@ Primary evidence:
 3. `.tmp/string-results-excel.csv`
 
 Follow-on execution packet:
-1. `WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md`
+1. `W008_STRING_W8_1_CHECKLIST.md`
+

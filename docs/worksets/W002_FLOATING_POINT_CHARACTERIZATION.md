@@ -16,7 +16,7 @@ Comparative policy:
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W2 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W2 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W1 method template.
@@ -82,3 +82,4 @@ Execution state:
 
 Claim confidence:
 1. `provisional` (single-build/single-locale baseline; expansion runs pending).
+

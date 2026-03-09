@@ -7,7 +7,7 @@ This workset hardens the most critical cross-boundary adapter contract in the ki
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W4 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W4 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W3 value-universe closure.
@@ -86,3 +86,4 @@ Gate snapshot:
 3. `G3` executable closure: `closed` (Rust + Lean builds/tests passing for W4 scaffolds).
 4. `G4` integration closure: `closed-provisional` (W5/W6 now reference selected seam baseline).
 5. `G5` empirical closure: `closed-provisional` (baseline run captured with explicit mismatch ledger).
+

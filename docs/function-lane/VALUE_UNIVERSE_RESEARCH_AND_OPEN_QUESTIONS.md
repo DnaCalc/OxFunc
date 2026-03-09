@@ -4,7 +4,7 @@ Status: `active`
 
 ## 1. Purpose
 Capture admissible evidence and unresolved design questions for Workset 3:
-`WORKSET_TUX1000_VALUE_UNIVERSE_AND_EXTENDED_TYPES.md`.
+`W003_VALUE_UNIVERSE_AND_EXTENDED_TYPES.md`.
 
 ## 2. Evidence Anchors (Public Sources)
 1. Excel C API data types:
@@ -107,3 +107,4 @@ Baseline policy decisions (provisional):
 18. https://support.microsoft.com/en-au/office/unicode-function-adb74aaa-a2a5-4dde-aff6-966e4e81f16f
 19. https://support.microsoft.com/en-au/office/unichar-function-ffeb64f5-f131-44c6-b332-5cd72f0659b8
 20. https://support.microsoft.com/en-gb/office/rept-function-04c4d778-e712-43b4-9c15-d656582bb061
+

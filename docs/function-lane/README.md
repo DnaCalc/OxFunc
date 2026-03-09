@@ -68,6 +68,8 @@ Primary files:
 63. `XLL_REGISTRATION_FLAG_SCENARIO_MANIFEST_SEED.csv`
 64. `XLL_REGISTRATION_FLAG_PROBE_RUNTIME_REQUIREMENTS.md`
 65. `XLL_REGISTRATION_FLAG_EXECUTION_RECORD.md`
+66. `W12_EXECUTION_RECORD.md`
+67. `W12_PROFILE_SYSTEM_SIDE_NOTES.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

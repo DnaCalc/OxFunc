@@ -81,7 +81,7 @@ Template:
    - W6 baseline now pins deterministic/nonvolatile/no-host-interaction assumptions under declared profile, while retaining explicit parity follow-ons for full adapter completion.
 4. Evidence:
    - `docs/function-lane/INTERESTING_FUNCTIONS_INITIAL_CLASSIFICATION.csv` (`XMATCH` row)
-   - `docs/worksets/WORKSET_TUX1000_XMATCH_DETERMINISTIC_QUIRKS.md`
+   - `docs/worksets/W006_XMATCH_DETERMINISTIC_QUIRKS.md`
    - `docs/function-lane/EXCEL_FUNCTION_DEFINITION_PRELIM_CONFORMANCE.csv` (`FDEF-031`)
 
 ## 5. Baseline Outcomes
@@ -125,3 +125,4 @@ Template:
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.
 2. Selective-probe/deref optimization is retained as a `to_consider` item and would require reference-subset dereference capability if pursued.
 3. Admission parsing behavior is handled in formula-language lanes; this execution record captures runtime-evaluable behavior only.
+

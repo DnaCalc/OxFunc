@@ -11,7 +11,7 @@ Deliver the first nontrivial scalar function closure (`ABS`) using the complete 
 
 ## 2. Kickoff Position and Dependencies
 Kickoff role:
-1. W5 in `WORKSET_TUX1000_KICKOFF_PROGRAM_W1_W6.md`.
+1. W5 in `W000_KICKOFF_PROGRAM_W001_W006.md`.
 
 Dependencies:
 1. depends on W2 floating-point characterization,
@@ -97,3 +97,4 @@ Primary evidence:
 3. `docs/function-lane/ABS_EXECUTION_RECORD.md`
 4. `.tmp/abs-analysis-summary.json`
 5. `.tmp/abs-entrypoint-analysis-summary.json`
+

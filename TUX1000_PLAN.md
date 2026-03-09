@@ -151,13 +151,17 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 
 ## 12. Post-kickoff Extension Packets
 1. `W8.1` String follow-up checklist:
-   - `docs/worksets/WORKSET_TUX1000_STRING_W8_1_CHECKLIST.md`
+   - `docs/worksets/W008_STRING_W8_1_CHECKLIST.md`
 2. `W9` XLL add-in bridge packet:
-   - `docs/worksets/WORKSET_TUX1000_XLL_ADDIN_BRIDGE.md`
+   - `docs/worksets/W009_XLL_ADDIN_BRIDGE.md`
    - goal: build `OxFunc64.xll` as an adapter around OxFunc core functions, with seed exports (for example `ox_ABS`) and side-by-side native-vs-OxFunc workbook validation packs.
 3. `W10` ten-function mixed-seam packet:
-   - `docs/worksets/WORKSET_TUX1000_TEN_FUNCTION_MIXED_SEAMS.md`
+   - `docs/worksets/W010_TEN_FUNCTION_MIXED_SEAMS.md`
    - goal: execute one breadth packet across `SUM`, `IF`, `INDEX`, `MATCH`, `ISNUMBER`, `NOW`, `XLOOKUP`, `INDIRECT`, `SEQUENCE`, and `OP_ADD` to pressure-test classification, layering, and U/Q export policy.
 4. `W11` XLL registration-flags evidence packet:
-   - `docs/worksets/WORKSET_TUX1000_XLL_REGISTRATION_FLAGS_EVIDENCE.md`
+   - `docs/worksets/W011_XLL_REGISTRATION_FLAGS_EVIDENCE.md`
    - goal: produce empirical closure for volatile/thread-safe/macro-type registration flags before enabling profile-derived mapping.
+5. `W12` moderate function expansion packet:
+   - `docs/worksets/W012_MODERATE_FUNCTION_EXPANSION.md`
+   - goal: implement a moderate fifteen-function batch (`AVERAGE`, `COUNT`, `COUNTA`, `IFERROR`, `ROUND`, `TEXTJOIN`, `TODAY`, `RAND`, `OFFSET`, `CELL`, `AND`, `CLEAN`, `DATE`, `EXACT`, `HSTACK`), with an explicit empirical-first probe on `CELL`, then feed stronger follow-back evidence into W11.
+

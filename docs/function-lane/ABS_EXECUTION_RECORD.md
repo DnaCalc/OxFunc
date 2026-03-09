@@ -87,7 +87,7 @@ Template:
 1. Status: `closed-provisional`.
 2. Evidence:
    - `docs/function-lane/EXCEL_FUNCTION_DEFINITION_PRELIM_CONFORMANCE.csv` (`FDEF-030`)
-   - `docs/worksets/WORKSET_TUX1000_ABS_FULL_FORMALITY.md`
+   - `docs/worksets/W005_ABS_FULL_FORMALITY.md`
    - `tools/function-lane-check/run-correlation-integrity-check.ps1`
    - `.tmp/function-slice-correlation-integrity-report.csv` (`PASS`)
 
@@ -141,3 +141,4 @@ Template:
 2. Treat `execution_failed_unexpected` as gate-blocking; expected failures are not gate failures.
 3. Keep version/channel/compat metadata on every probe row for replay.
 4. Keep unresolved lanes explicit and bounded in notes.
+
