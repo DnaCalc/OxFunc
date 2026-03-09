@@ -95,6 +95,8 @@ Primary files:
 90. `W12_PROBE_RUNTIME_REQUIREMENTS.md`
 91. `DOCTRINE_DECISION_FULL_EMPIRICAL_FUNCTION_IDENTITY_20260309.md`
 92. `XLL_VERIFICATION_SEAM_LIMITATIONS.md`
+93. `LOOKUP_FAMILY_EMPIRICAL_EXPANSION_NOTES.md`
+94. `TEXT_FUNCTION_EMPIRICAL_EXPANSION_NOTES.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
