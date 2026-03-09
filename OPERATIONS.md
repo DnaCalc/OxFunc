@@ -26,6 +26,7 @@ Non-negotiable carry-over:
 4. Regressions are permanent assets (minimized replayable cases).
 5. Prefer end-to-end vertical slices over broad speculative scaffolding.
 6. Keep process lightweight, but never skip required traceability fields.
+7. Report-back language must always qualify completeness by scope/target/integration axes.
 
 ## 4. Execution Model
 OxFunc executes as coupled lanes for each function/operator slice.
@@ -157,3 +158,16 @@ A function slice is done for a declared profile only when:
 4. evidence links are complete and reproducible.
 5. version scope is explicit on both required axes.
 6. known unknowns are explicit and policy-bounded.
+
+## 11. Report-Back Completeness Contract
+Every completion report (chat updates, execution records, workset closure notes, handoff summaries) must include:
+1. `execution_state` (`planned|in_progress|blocked|complete`).
+2. `scope_completeness` (`scope_complete|scope_partial`).
+3. `target_completeness` (`target_complete|target_partial`).
+4. `integration_completeness` (`integrated|partial`).
+5. explicit `open_lanes` list when any completeness axis is partial.
+
+Normative wording rules:
+1. Use `complete for declared scope` when `scope_completeness=scope_complete` and any other completeness axis is partial.
+2. Do not claim `fully complete` unless all three completeness axes are complete and evidence links are present.
+3. If runtime export/dispatch admission is generated automatically at compile-time, still report whether each function is included in the source-of-truth export table for the claim.

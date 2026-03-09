@@ -1,7 +1,17 @@
 pub mod abs;
 pub mod abs_surface;
 pub mod adapters;
+pub mod if_fn;
+pub mod index;
+pub mod indirect;
+pub mod isnumber;
+pub mod match_fn;
+pub mod now_fn;
+pub mod op_add;
 pub mod pi;
+pub mod sequence;
+pub mod sum;
 pub mod surface_dispatch;
+pub mod xlookup;
 pub mod xmatch;
 pub mod xmatch_surface;

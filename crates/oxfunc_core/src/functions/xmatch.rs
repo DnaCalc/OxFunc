@@ -38,7 +38,11 @@ pub enum XmatchSearchMode {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum XmatchEvalError {
-    ArityMismatch { expected_min: usize, expected_max: usize, actual: usize },
+    ArityMismatch {
+        expected_min: usize,
+        expected_max: usize,
+        actual: usize,
+    },
     EmptyLookupArray,
     MissingArg,
     EmptyCell,
@@ -90,15 +94,21 @@ fn parse_search_mode(n: f64) -> Result<XmatchSearchMode, XmatchEvalError> {
     Err(XmatchEvalError::InvalidSearchMode(n))
 }
 
-fn to_lookup_value_comparable(prepared: &PreparedArgValue) -> Result<XmatchComparable, XmatchEvalError> {
+fn to_lookup_value_comparable(
+    prepared: &PreparedArgValue,
+) -> Result<XmatchComparable, XmatchEvalError> {
     match prepared {
         PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(XmatchComparable::Number(*n)),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => Ok(XmatchComparable::Text(t.to_string_lossy())),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(XmatchComparable::Logical(*b)),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => {
-            Err(XmatchEvalError::Coercion(CoercionError::WorksheetError(*code)))
+        PreparedArgValue::Eval(EvalValue::Text(t)) => {
+            Ok(XmatchComparable::Text(t.to_string_lossy()))
         }
-        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(XmatchEvalError::UnsupportedValueKind("array")),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(XmatchComparable::Logical(*b)),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(XmatchEvalError::Coercion(
+            CoercionError::WorksheetError(*code),
+        )),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => {
+            Err(XmatchEvalError::UnsupportedValueKind("array"))
+        }
         PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
         }
@@ -122,7 +132,9 @@ fn to_lookup_candidate_comparable(
         PreparedArgValue::Eval(EvalValue::Error(_)) => Ok(None),
         PreparedArgValue::MissingArg => Ok(None),
         PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(XmatchEvalError::UnsupportedValueKind("array")),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => {
+            Err(XmatchEvalError::UnsupportedValueKind("array"))
+        }
         PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
         }
@@ -137,9 +149,9 @@ fn parse_optional_match_mode(
 ) -> Result<XmatchMatchMode, XmatchEvalError> {
     match mode {
         None => Ok(XmatchMatchMode::Exact),
-        Some(p) => parse_match_mode(
-            coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?,
-        ),
+        Some(p) => {
+            parse_match_mode(coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?)
+        }
     }
 }
 
@@ -148,9 +160,9 @@ fn parse_optional_search_mode(
 ) -> Result<XmatchSearchMode, XmatchEvalError> {
     match mode {
         None => Ok(XmatchSearchMode::FirstToLast),
-        Some(p) => parse_search_mode(
-            coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?,
-        ),
+        Some(p) => {
+            parse_search_mode(coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?)
+        }
     }
 }
 
@@ -205,7 +217,9 @@ pub fn eval_xmatch_adapter_prepared(
     let parsed_search_mode = parse_optional_search_mode(search_mode)?;
 
     if parsed_match_mode != XmatchMatchMode::Exact {
-        return Err(XmatchEvalError::UnsupportedMatchModeForSeed(parsed_match_mode));
+        return Err(XmatchEvalError::UnsupportedMatchModeForSeed(
+            parsed_match_mode,
+        ));
     }
 
     let lookup_value = to_lookup_value_comparable(lookup_value)?;
@@ -213,12 +227,12 @@ pub fn eval_xmatch_adapter_prepared(
     match parsed_search_mode {
         XmatchSearchMode::FirstToLast => xmatch_exact_first_to_last(&lookup_value, &lookup_array),
         XmatchSearchMode::LastToFirst => xmatch_exact_last_to_first(&lookup_value, &lookup_array),
-        XmatchSearchMode::BinaryAscending => Err(
-            XmatchEvalError::UnsupportedSearchModeForSeed(XmatchSearchMode::BinaryAscending),
-        ),
-        XmatchSearchMode::BinaryDescending => Err(
-            XmatchEvalError::UnsupportedSearchModeForSeed(XmatchSearchMode::BinaryDescending),
-        ),
+        XmatchSearchMode::BinaryAscending => Err(XmatchEvalError::UnsupportedSearchModeForSeed(
+            XmatchSearchMode::BinaryAscending,
+        )),
+        XmatchSearchMode::BinaryDescending => Err(XmatchEvalError::UnsupportedSearchModeForSeed(
+            XmatchSearchMode::BinaryDescending,
+        )),
     }
 }
 
@@ -279,7 +293,10 @@ mod tests {
             XMATCH_META.kernel_signature_class,
             KernelSignatureClass::LookupMatch
         );
-        assert_eq!(XMATCH_META.fec_dependency_profile, FecDependencyProfile::None);
+        assert_eq!(
+            XMATCH_META.fec_dependency_profile,
+            FecDependencyProfile::None
+        );
         assert_eq!(
             XMATCH_META.surface_fec_dependency_profile,
             FecDependencyProfile::RefOnly
@@ -310,12 +327,8 @@ mod tests {
 
     #[test]
     fn eval_xmatch_adapter_prepared_defaults_to_exact_forward() {
-        let got = eval_xmatch_adapter_prepared(
-            &num(2.0),
-            &[num(1.0), num(2.0), num(3.0)],
-            None,
-            None,
-        );
+        let got =
+            eval_xmatch_adapter_prepared(&num(2.0), &[num(1.0), num(2.0), num(3.0)], None, None);
         assert_eq!(got, Ok(2.0));
     }
 
@@ -338,12 +351,8 @@ mod tests {
 
     #[test]
     fn eval_xmatch_adapter_prepared_text_match_is_case_sensitive() {
-        let got = eval_xmatch_adapter_prepared(
-            &text("Abc"),
-            &[text("abc"), text("Abc")],
-            None,
-            None,
-        );
+        let got =
+            eval_xmatch_adapter_prepared(&text("Abc"), &[text("abc"), text("Abc")], None, None);
         assert_eq!(got, Ok(2.0));
     }
 
@@ -355,31 +364,17 @@ mod tests {
 
     #[test]
     fn eval_xmatch_adapter_prepared_rejects_invalid_modes() {
-        let bad_match = eval_xmatch_adapter_prepared(
-            &num(1.0),
-            &[num(1.0)],
-            Some(&num(9.0)),
-            None,
-        );
+        let bad_match = eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], Some(&num(9.0)), None);
         assert_eq!(bad_match, Err(XmatchEvalError::InvalidMatchMode(9.0)));
 
-        let bad_search = eval_xmatch_adapter_prepared(
-            &num(1.0),
-            &[num(1.0)],
-            None,
-            Some(&num(9.0)),
-        );
+        let bad_search =
+            eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], None, Some(&num(9.0)));
         assert_eq!(bad_search, Err(XmatchEvalError::InvalidSearchMode(9.0)));
     }
 
     #[test]
     fn eval_xmatch_adapter_prepared_reports_unsupported_seed_modes() {
-        let wildcard = eval_xmatch_adapter_prepared(
-            &num(1.0),
-            &[num(1.0)],
-            Some(&num(2.0)),
-            None,
-        );
+        let wildcard = eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], Some(&num(2.0)), None);
         assert_eq!(
             wildcard,
             Err(XmatchEvalError::UnsupportedMatchModeForSeed(
@@ -387,12 +382,7 @@ mod tests {
             ))
         );
 
-        let binary = eval_xmatch_adapter_prepared(
-            &num(1.0),
-            &[num(1.0)],
-            None,
-            Some(&num(2.0)),
-        );
+        let binary = eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], None, Some(&num(2.0)));
         assert_eq!(
             binary,
             Err(XmatchEvalError::UnsupportedSearchModeForSeed(
@@ -421,7 +411,9 @@ mod tests {
     fn eval_xmatch_adapter_prepared_skips_lookup_array_errors_when_match_exists() {
         let got = eval_xmatch_adapter_prepared(
             &num(2.0),
-            &[PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value))],
+            &[PreparedArgValue::Eval(EvalValue::Error(
+                WorksheetErrorCode::Value,
+            ))],
             None,
             None,
         );
@@ -451,20 +443,12 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(
-            got,
-            Err(XmatchEvalError::NotAvailable)
-        );
+        assert_eq!(got, Err(XmatchEvalError::NotAvailable));
     }
 
     #[test]
     fn eval_xmatch_adapter_prepared_value_wraps_index_as_eval_number() {
-        let got = eval_xmatch_adapter_prepared_value(
-            &num(3.0),
-            &[num(3.0), num(4.0)],
-            None,
-            None,
-        );
+        let got = eval_xmatch_adapter_prepared_value(&num(3.0), &[num(3.0), num(4.0)], None, None);
         assert_eq!(got, Ok(EvalValue::Number(1.0)));
     }
 }

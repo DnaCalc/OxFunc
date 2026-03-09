@@ -5,6 +5,16 @@ import OxFunc.CoercionPrimitives
 import OxFunc.RefResolverSeam
 import OxFunc.Functions.Abs
 import OxFunc.Functions.AbsSurface
+import OxFunc.Functions.IfFn
+import OxFunc.Functions.Index
+import OxFunc.Functions.Indirect
+import OxFunc.Functions.IsNumber
+import OxFunc.Functions.MatchFn
+import OxFunc.Functions.Now
+import OxFunc.Functions.OpAdd
 import OxFunc.Functions.Pi
+import OxFunc.Functions.Sequence
+import OxFunc.Functions.Sum
+import OxFunc.Functions.Xlookup
 import OxFunc.Functions.Xmatch
 import OxFunc.Functions.XmatchSurface

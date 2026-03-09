@@ -1,5 +1,7 @@
 use crate::coercion::{CoercionError, coerce_eval_to_number};
-use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value};
+use crate::resolver::{
+    RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
+};
 use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -33,7 +35,9 @@ pub fn prepare_arg_values_only(
     resolver: &impl ReferenceResolver,
 ) -> Result<PreparedArgValue, CoercionError> {
     match arg {
-        CallArgValue::Eval(v) => Ok(PreparedArgValue::Eval(resolve_eval_references(v, resolver)?)),
+        CallArgValue::Eval(v) => Ok(PreparedArgValue::Eval(resolve_eval_references(
+            v, resolver,
+        )?)),
         CallArgValue::MissingArg => Ok(PreparedArgValue::MissingArg),
         CallArgValue::EmptyCell => Ok(PreparedArgValue::EmptyCell),
         CallArgValue::Reference(r) => {
@@ -157,11 +161,17 @@ mod tests {
     #[test]
     fn prepare_values_only_preserves_missing_and_empty() {
         assert_eq!(
-            prepare_arg_values_only(&CallArgValue::MissingArg, &resolver_with(EvalValue::Number(1.0))),
+            prepare_arg_values_only(
+                &CallArgValue::MissingArg,
+                &resolver_with(EvalValue::Number(1.0))
+            ),
             Ok(PreparedArgValue::MissingArg)
         );
         assert_eq!(
-            prepare_arg_values_only(&CallArgValue::EmptyCell, &resolver_with(EvalValue::Number(1.0))),
+            prepare_arg_values_only(
+                &CallArgValue::EmptyCell,
+                &resolver_with(EvalValue::Number(1.0))
+            ),
             Ok(PreparedArgValue::EmptyCell)
         );
     }
@@ -208,6 +218,9 @@ mod tests {
         assert_eq!(got.len(), 3);
         assert_eq!(got[0], Ok(2.0));
         assert_eq!(got[2], Ok(1.0));
-        assert_eq!(got[1], Err(CoercionError::NonNumericText("asd".to_string())));
+        assert_eq!(
+            got[1],
+            Err(CoercionError::NonNumericText("asd".to_string()))
+        );
     }
 }

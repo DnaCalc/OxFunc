@@ -1,9 +1,19 @@
-use crate::functions::surface_dispatch::{FUNC_ID_ABS, FUNC_ID_PI};
+use crate::function::{
+    ArgPreparationProfile, CoercionLiftProfile, DeterminismClass, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, VolatilityClass,
+};
+use crate::functions::{
+    abs::ABS_META, if_fn::IF_META, index::INDEX_META, indirect::INDIRECT_META,
+    isnumber::ISNUMBER_META, match_fn::MATCH_META, now_fn::NOW_META, op_add::OP_ADD_META,
+    pi::PI_META, sequence::SEQUENCE_META, sum::SUM_META, xlookup::XLOOKUP_META,
+    xmatch::XMATCH_META,
+};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum XllEntryKind {
-    UUnary,
+    UArity(usize),
     QUnaryNumber,
+    QBinaryNumber,
     QNullaryNumber,
 }
 
@@ -13,56 +23,171 @@ pub enum XllULiftPolicy {
     UnaryScalarOrArrayElementwise,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct XllExportSpec {
-    pub export_name: &'static str,
-    pub worksheet_name: &'static str,
-    pub type_text: &'static str,
-    pub arg_names: &'static str,
+    pub export_name: String,
+    pub worksheet_name: String,
+    pub type_text: String,
+    pub arg_names: String,
     pub function_id: &'static str,
     pub entry_kind: XllEntryKind,
     pub u_lift_policy: Option<XllULiftPolicy>,
+    pub preserve_refs: bool,
 }
 
-pub const OXFUNC_XLL_EXPORT_SPECS: &[XllExportSpec] = &[
-    XllExportSpec {
-        export_name: "OX_ABS",
-        worksheet_name: "ox_ABS",
-        type_text: "QU",
-        arg_names: "value",
-        function_id: FUNC_ID_ABS,
-        entry_kind: XllEntryKind::UUnary,
-        u_lift_policy: Some(XllULiftPolicy::UnaryScalarOrArrayElementwise),
-    },
-    XllExportSpec {
-        export_name: "OX_ABS_Q",
-        worksheet_name: "ox_ABS_Q",
-        type_text: "BB",
-        arg_names: "value",
-        function_id: FUNC_ID_ABS,
-        entry_kind: XllEntryKind::QUnaryNumber,
-        u_lift_policy: None,
-    },
-    XllExportSpec {
-        export_name: "OX_PI",
-        worksheet_name: "ox_PI",
-        type_text: "B",
-        arg_names: "",
-        function_id: FUNC_ID_PI,
-        entry_kind: XllEntryKind::QNullaryNumber,
-        u_lift_policy: None,
-    },
+const FUNCTION_CATALOG: &[FunctionMeta] = &[
+    ABS_META,
+    IF_META,
+    INDEX_META,
+    INDIRECT_META,
+    ISNUMBER_META,
+    MATCH_META,
+    NOW_META,
+    OP_ADD_META,
+    PI_META,
+    SEQUENCE_META,
+    SUM_META,
+    XLOOKUP_META,
+    XMATCH_META,
 ];
+
+fn function_suffix(function_id: &str) -> String {
+    function_id
+        .strip_prefix("FUNC.")
+        .unwrap_or(function_id)
+        .replace('.', "_")
+}
+
+fn csv_escape(field: &str) -> String {
+    let needs_quotes = field.contains(',') || field.contains('"') || field.contains('\n');
+    if !needs_quotes {
+        return field.to_string();
+    }
+
+    let escaped = field.replace('"', "\"\"");
+    format!("\"{escaped}\"")
+}
+
+fn arg_names_for_count(count: usize) -> String {
+    if count == 0 {
+        return String::new();
+    }
+    (1..=count)
+        .map(|i| format!("arg{i}"))
+        .collect::<Vec<_>>()
+        .join(",")
+}
+
+fn type_text_for_u_arity(count: usize) -> String {
+    let mut out = String::from("Q");
+    out.push_str(&"U".repeat(count));
+    out
+}
+
+fn q_entry_kind_from_profile(meta: &FunctionMeta) -> Option<XllEntryKind> {
+    let exact_arity = meta.arity.min == meta.arity.max;
+    if !exact_arity {
+        return None;
+    }
+
+    let profile_allows_q = meta.determinism == DeterminismClass::Deterministic
+        && meta.volatility == VolatilityClass::NonVolatile
+        && meta.host_interaction == HostInteractionClass::None
+        && meta.arg_preparation_profile == ArgPreparationProfile::ValuesOnlyPreAdapter;
+
+    if !profile_allows_q {
+        return None;
+    }
+
+    match (meta.arity.min, meta.kernel_signature_class) {
+        (0, KernelSignatureClass::NullaryConst) => Some(XllEntryKind::QNullaryNumber),
+        (1, KernelSignatureClass::NumToNum) => Some(XllEntryKind::QUnaryNumber),
+        (2, KernelSignatureClass::NumsToNum) => Some(XllEntryKind::QBinaryNumber),
+        _ => None,
+    }
+}
+
+fn u_lift_policy_from_profile(meta: &FunctionMeta) -> XllULiftPolicy {
+    match meta.coercion_lift_profile {
+        CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise
+            if meta.arity.min == 1 && meta.arity.max == 1 =>
+        {
+            XllULiftPolicy::UnaryScalarOrArrayElementwise
+        }
+        _ => XllULiftPolicy::ScalarOnly,
+    }
+}
+
+pub fn xll_export_specs() -> Vec<XllExportSpec> {
+    let mut specs = Vec::new();
+
+    for meta in FUNCTION_CATALOG {
+        let suffix = function_suffix(meta.function_id);
+        let export_base = format!("OX_{suffix}");
+        let worksheet_base = format!("ox_{suffix}");
+        let q_kind = q_entry_kind_from_profile(meta);
+        let emit_u = meta.arity.max > 0 || q_kind.is_none();
+
+        if emit_u {
+            specs.push(XllExportSpec {
+                export_name: export_base.clone(),
+                worksheet_name: worksheet_base.clone(),
+                type_text: type_text_for_u_arity(meta.arity.max),
+                arg_names: arg_names_for_count(meta.arity.max),
+                function_id: meta.function_id,
+                entry_kind: XllEntryKind::UArity(meta.arity.max),
+                u_lift_policy: Some(u_lift_policy_from_profile(meta)),
+                preserve_refs: meta.arg_preparation_profile
+                    == ArgPreparationProfile::RefsVisibleInAdapter,
+            });
+        }
+
+        if let Some(kind) = q_kind {
+            let (type_text, arg_names) = match kind {
+                XllEntryKind::QNullaryNumber => ("B".to_string(), String::new()),
+                XllEntryKind::QUnaryNumber => ("BB".to_string(), "value".to_string()),
+                XllEntryKind::QBinaryNumber => ("BBB".to_string(), "lhs,rhs".to_string()),
+                XllEntryKind::UArity(_) => unreachable!(),
+            };
+
+            let export_name = if emit_u {
+                format!("{export_base}_Q")
+            } else {
+                export_base.clone()
+            };
+            let worksheet_name = if emit_u {
+                format!("{worksheet_base}_Q")
+            } else {
+                worksheet_base.clone()
+            };
+
+            specs.push(XllExportSpec {
+                export_name,
+                worksheet_name,
+                type_text,
+                arg_names,
+                function_id: meta.function_id,
+                entry_kind: kind,
+                u_lift_policy: None,
+                preserve_refs: false,
+            });
+        }
+    }
+
+    specs.sort_by(|a, b| a.export_name.cmp(&b.export_name));
+    specs
+}
 
 pub fn render_export_specs_csv() -> String {
     let mut out = String::from(
-        "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy\n",
+        "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy,preserve_refs\n",
     );
-    for spec in OXFUNC_XLL_EXPORT_SPECS {
+    for spec in xll_export_specs() {
         let entry_kind = match spec.entry_kind {
-            XllEntryKind::UUnary => "u_unary",
-            XllEntryKind::QUnaryNumber => "q_unary_number",
-            XllEntryKind::QNullaryNumber => "q_nullary_number",
+            XllEntryKind::UArity(n) => format!("u_arity_{n}"),
+            XllEntryKind::QUnaryNumber => "q_unary_number".to_string(),
+            XllEntryKind::QBinaryNumber => "q_binary_number".to_string(),
+            XllEntryKind::QNullaryNumber => "q_nullary_number".to_string(),
         };
         let u_lift = match spec.u_lift_policy {
             Some(XllULiftPolicy::ScalarOnly) => "scalar_only",
@@ -72,14 +197,15 @@ pub fn render_export_specs_csv() -> String {
             None => "",
         };
         out.push_str(&format!(
-            "{},{},{},{},{},{},{}\n",
-            spec.export_name,
-            spec.worksheet_name,
-            spec.type_text,
-            spec.arg_names,
-            spec.function_id,
-            entry_kind,
-            u_lift
+            "{},{},{},{},{},{},{},{}\n",
+            csv_escape(&spec.export_name),
+            csv_escape(&spec.worksheet_name),
+            csv_escape(&spec.type_text),
+            csv_escape(&spec.arg_names),
+            csv_escape(spec.function_id),
+            csv_escape(&entry_kind),
+            csv_escape(u_lift),
+            if spec.preserve_refs { "true" } else { "false" }
         ));
     }
     out
@@ -93,9 +219,21 @@ mod tests {
     fn export_specs_have_unique_export_and_worksheet_names() {
         let mut exports = std::collections::BTreeSet::new();
         let mut worksheets = std::collections::BTreeSet::new();
-        for spec in OXFUNC_XLL_EXPORT_SPECS {
+        for spec in xll_export_specs() {
             assert!(exports.insert(spec.export_name));
             assert!(worksheets.insert(spec.worksheet_name));
+        }
+    }
+
+    #[test]
+    fn all_catalog_functions_have_at_least_one_export() {
+        let specs = xll_export_specs();
+        let mut ids = std::collections::BTreeSet::new();
+        for spec in specs {
+            ids.insert(spec.function_id);
+        }
+        for meta in FUNCTION_CATALOG {
+            assert!(ids.contains(meta.function_id));
         }
     }
 
@@ -106,9 +244,9 @@ mod tests {
         assert_eq!(
             lines.first().copied(),
             Some(
-                "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy"
+                "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy,preserve_refs"
             )
         );
-        assert_eq!(lines.len(), OXFUNC_XLL_EXPORT_SPECS.len() + 1);
+        assert_eq!(lines.len(), xll_export_specs().len() + 1);
     }
 }

@@ -1,13 +1,17 @@
 #![allow(non_snake_case)]
 
+use std::env;
 use std::ffi::c_void;
 use std::sync::OnceLock;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use oxfunc_core::functions::surface_dispatch::{
-    eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_unary_scalar_value,
+    eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_value_call,
 };
 use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-use oxfunc_core::value::{CallArgValue, EvalValue, ExcelText, ReferenceLike, WorksheetErrorCode};
+use oxfunc_core::value::{
+    ArrayShape, CallArgValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
+};
 use windows_sys::Win32::Foundation::HMODULE;
 use windows_sys::Win32::System::LibraryLoader::{
     GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -158,6 +162,60 @@ struct RegistrationSpec {
     arg_names: &'static str,
 }
 
+#[derive(Clone, Copy)]
+struct ExperimentalRegistrationSpec {
+    export_name: &'static str,
+    type_text: &'static str,
+    function_name: &'static str,
+    arg_names: &'static str,
+    macro_type: i32,
+}
+
+const FLAG_EXPERIMENT_REGISTRATION_SPECS: &[ExperimentalRegistrationSpec] = &[
+    ExperimentalRegistrationSpec {
+        export_name: "OX_NOW",
+        type_text: "Q",
+        function_name: "ox_NOW_F_BASE",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ExperimentalRegistrationSpec {
+        export_name: "OX_NOW",
+        type_text: "Q!",
+        function_name: "ox_NOW_F_VOL",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ExperimentalRegistrationSpec {
+        export_name: "OX_ABS",
+        type_text: "QU",
+        function_name: "ox_ABS_F_BASE",
+        arg_names: "arg1",
+        macro_type: 1,
+    },
+    ExperimentalRegistrationSpec {
+        export_name: "OX_ABS",
+        type_text: "QU$",
+        function_name: "ox_ABS_F_TS",
+        arg_names: "arg1",
+        macro_type: 1,
+    },
+    ExperimentalRegistrationSpec {
+        export_name: "OX_INDIRECT",
+        type_text: "QUU",
+        function_name: "ox_INDIRECT_F_BASE",
+        arg_names: "arg1,arg2",
+        macro_type: 1,
+    },
+    ExperimentalRegistrationSpec {
+        export_name: "OX_INDIRECT",
+        type_text: "QUU#",
+        function_name: "ox_INDIRECT_F_MACRO",
+        arg_names: "arg1,arg2",
+        macro_type: 1,
+    },
+];
+
 #[allow(dead_code)]
 #[derive(Clone, Copy)]
 enum ULiftPolicy {
@@ -170,10 +228,18 @@ struct UExportSpec {
     function_id: &'static str,
     registration: RegistrationSpec,
     lift_policy: ULiftPolicy,
+    preserve_refs: bool,
+    arg_count: usize,
 }
 
 #[derive(Clone, Copy)]
 struct QUnaryNumberExportSpec {
+    function_id: &'static str,
+    registration: RegistrationSpec,
+}
+
+#[derive(Clone, Copy)]
+struct QBinaryNumberExportSpec {
     function_id: &'static str,
     registration: RegistrationSpec,
 }
@@ -210,6 +276,15 @@ fn make_xloper_num(value: f64) -> XLOPER12 {
     }
 }
 
+fn make_xloper_bool(value: bool) -> XLOPER12 {
+    XLOPER12 {
+        val: XLOPER12Value {
+            xbool: if value { 1 } else { 0 },
+        },
+        xltype: XLTYPE_BOOL,
+    }
+}
+
 fn make_xloper_err(error_code: i32) -> XLOPER12 {
     XLOPER12 {
         val: XLOPER12Value { err: error_code },
@@ -221,6 +296,18 @@ fn make_xloper_int(value: i32) -> XLOPER12 {
     XLOPER12 {
         val: XLOPER12Value { w: value },
         xltype: XLTYPE_INT,
+    }
+}
+
+fn make_xloper_str_from_utf16(units: &[u16]) -> XLOPER12 {
+    let mut data = Vec::with_capacity(units.len().saturating_add(1));
+    let text_len = units.len().min(32767);
+    data.push(u16::try_from(text_len).unwrap_or(32767));
+    data.extend_from_slice(&units[..text_len]);
+    let ptr = Box::into_raw(data.into_boxed_slice()) as *mut u16;
+    XLOPER12 {
+        val: XLOPER12Value { str: ptr },
+        xltype: XLTYPE_STR,
     }
 }
 
@@ -280,9 +367,19 @@ fn map_ws_err_to_excel(code: WorksheetErrorCode) -> i32 {
 fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
     match value {
         EvalValue::Number(n) => make_xloper_num(n),
+        EvalValue::Logical(b) => make_xloper_bool(b),
+        EvalValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
         EvalValue::Error(code) => make_xloper_err(map_ws_err_to_excel(code)),
         _ => make_xloper_err(XLERR_VALUE),
     }
+}
+
+fn current_excel_serial_utc() -> f64 {
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs_f64();
+    25569.0 + (now / 86400.0)
 }
 
 fn fetch_excel12_proc() -> Option<Excel12Proc> {
@@ -354,13 +451,31 @@ impl TempXlString {
 }
 
 fn register_one(module_path: &str, spec: RegistrationSpec) -> bool {
+    register_one_dynamic(
+        module_path,
+        spec.export_name,
+        spec.type_text,
+        spec.function_name,
+        spec.arg_names,
+        1,
+    )
+}
+
+fn register_one_dynamic(
+    module_path: &str,
+    export_name: &str,
+    type_text_text: &str,
+    function_name_text: &str,
+    arg_names_text: &str,
+    macro_type_value: i32,
+) -> bool {
     let mut dll = TempXlString::new(module_path);
-    let mut proc = TempXlString::new(spec.export_name);
-    let mut type_text = TempXlString::new(spec.type_text);
-    let mut fn_name = TempXlString::new(spec.function_name);
-    let mut arg_names = TempXlString::new(spec.arg_names);
+    let mut proc = TempXlString::new(export_name);
+    let mut type_text = TempXlString::new(type_text_text);
+    let mut fn_name = TempXlString::new(function_name_text);
+    let mut arg_names = TempXlString::new(arg_names_text);
     let mut category = TempXlString::new("OxFunc Bridge");
-    let mut macro_type = make_xloper_int(1);
+    let mut macro_type = make_xloper_int(macro_type_value);
     let mut reg_id = XLOPER12 {
         val: XLOPER12Value { w: 0 },
         xltype: 0,
@@ -377,6 +492,29 @@ fn register_one(module_path: &str, spec: RegistrationSpec) -> bool {
     ];
 
     excel12v(XLF_REGISTER, &mut reg_id, &mut args) == XLRET_SUCCESS
+}
+
+fn flag_experiments_enabled() -> bool {
+    let raw = env::var("OXFUNC_XLL_ENABLE_FLAG_EXPERIMENTS").unwrap_or_else(|_| "1".to_string());
+    !matches!(
+        raw.trim().to_ascii_lowercase().as_str(),
+        "0" | "false" | "no" | "off"
+    )
+}
+
+fn register_flag_experiment_aliases(module_path: &str) -> bool {
+    FLAG_EXPERIMENT_REGISTRATION_SPECS
+        .iter()
+        .all(|spec| {
+            register_one_dynamic(
+                module_path,
+                spec.export_name,
+                spec.type_text,
+                spec.function_name,
+                spec.arg_names,
+                spec.macro_type,
+            )
+        })
 }
 
 fn register_all(module_path: &str) -> bool {
@@ -417,7 +555,27 @@ fn coerce_reference_to_value(arg: *mut XLOPER12, out: &mut XLOPER12) -> bool {
     excel12v(XL_COERCE, out as *mut XLOPER12, &mut args) == XLRET_SUCCESS
 }
 
-fn call_arg_from_xloper(value: *const XLOPER12) -> CallArgValue {
+fn reference_like_from_bounds(rw_first: i32, rw_last: i32, col_first: i32, col_last: i32) -> ReferenceLike {
+    let r1 = rw_first.saturating_add(1);
+    let r2 = rw_last.saturating_add(1);
+    let c1 = col_first.saturating_add(1);
+    let c2 = col_last.saturating_add(1);
+    let target = if r1 == r2 && c1 == c2 {
+        format!("R{r1}C{c1}")
+    } else {
+        format!("R{r1}C{c1}:R{r2}C{c2}")
+    };
+    ReferenceLike {
+        kind: if r1 == r2 && c1 == c2 {
+            ReferenceKind::A1
+        } else {
+            ReferenceKind::Area
+        },
+        target,
+    }
+}
+
+fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgValue {
     if value.is_null() {
         return CallArgValue::MissingArg;
     }
@@ -429,6 +587,10 @@ fn call_arg_from_xloper(value: *const XLOPER12) -> CallArgValue {
         XLTYPE_NUM => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeNum`.
             CallArgValue::Eval(EvalValue::Number(unsafe { (*value).val.num }))
+        }
+        XLTYPE_INT => {
+            // SAFETY: Union arm is valid because `xltype` is `xltypeInt`.
+            CallArgValue::Eval(EvalValue::Number(unsafe { (*value).val.w as f64 }))
         }
         XLTYPE_BOOL => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeBool`.
@@ -454,81 +616,153 @@ fn call_arg_from_xloper(value: *const XLOPER12) -> CallArgValue {
             let chars = unsafe { std::slice::from_raw_parts(pstr.add(1), len) }.to_vec();
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(chars)))
         }
+        XLTYPE_MULTI => {
+            // SAFETY: Union arm is valid because `xltype` is `xltypeMulti`.
+            let array = unsafe { (*value).val.array };
+            let rows = usize::try_from(array.rows.max(0)).unwrap_or(0);
+            let cols = usize::try_from(array.columns.max(0)).unwrap_or(0);
+            CallArgValue::Eval(EvalValue::Array(ArrayShape { rows, cols }))
+        }
+        XLTYPE_SREF if preserve_refs => {
+            // SAFETY: Union arm is valid because `xltype` is `xltypeSRef`.
+            let sref = unsafe { (*value).val.sref };
+            CallArgValue::Reference(reference_like_from_bounds(
+                sref.r#ref.rw_first,
+                sref.r#ref.rw_last,
+                sref.r#ref.col_first,
+                sref.r#ref.col_last,
+            ))
+        }
+        XLTYPE_REF if preserve_refs => {
+            // SAFETY: Union arm is valid because `xltype` is `xltypeRef`.
+            let mref = unsafe { (*value).val.mref };
+            if mref.lpmref.is_null() {
+                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
+            }
+            // SAFETY: `lpmref` points to a valid XLMRef12 allocated by Excel.
+            let first = unsafe { (*mref.lpmref).reftbl[0] };
+            CallArgValue::Reference(reference_like_from_bounds(
+                first.rw_first,
+                first.rw_last,
+                first.col_first,
+                first.col_last,
+            ))
+        }
         _ => CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
     }
 }
 
-fn eval_scalar(function_id: &str, arg: &CallArgValue) -> EvalValue {
+fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
     let resolver = NoReferenceResolver;
-    match eval_surface_unary_scalar_value(function_id, arg, &resolver) {
+    match eval_surface_value_call(
+        function_id,
+        args,
+        &resolver,
+        Some(current_excel_serial_utc()),
+    ) {
         Ok(v) => v,
         Err(code) => EvalValue::Error(code),
     }
 }
 
-fn eval_u_export(spec: UExportSpec, arg: *mut XLOPER12) -> *mut XLOPER12 {
-    let mut temp = XLOPER12 {
-        val: XLOPER12Value { w: 0 },
-        xltype: 0,
-    };
-    let mut used_temp = false;
-    let mut value_ptr = arg;
-
-    if !value_ptr.is_null() {
-        // SAFETY: `value_ptr` originates from Excel and is valid for this call.
-        let ty = unsafe { (*value_ptr).xltype };
-        if is_ref_type(ty) {
-            if !coerce_reference_to_value(value_ptr, &mut temp) {
-                return alloc_result(make_xloper_err(XLERR_VALUE));
-            }
-            value_ptr = &mut temp;
-            used_temp = true;
-        }
+fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12 {
+    if raw_args.len() != spec.arg_count {
+        return alloc_result(make_xloper_err(XLERR_VALUE));
     }
 
-    // SAFETY: `value_ptr` either comes from Excel or from `temp` above.
-    let value_ty = if value_ptr.is_null() {
-        XLTYPE_MISSING
-    } else {
-        unsafe { (*value_ptr).xltype & XLTYPE_MASK }
-    };
-
-    let result = if value_ty == XLTYPE_MULTI {
-        match spec.lift_policy {
-            ULiftPolicy::ScalarOnly => alloc_result(make_xloper_err(XLERR_VALUE)),
-            ULiftPolicy::UnaryScalarOrArrayElementwise => {
-                // SAFETY: `value_ptr` points to xltypeMulti in this branch.
-                let array = unsafe { (*value_ptr).val.array };
-                let rows = array.rows;
-                let cols = array.columns;
-                let count = usize::try_from(rows.saturating_mul(cols)).unwrap_or(0);
-                let mut mapped = Vec::with_capacity(count);
-                for i in 0..count {
-                    // SAFETY: `lparray` points to `rows*cols` contiguous XLOPER12 entries.
-                    let item_ptr = unsafe { array.lparray.add(i) };
-                    // SAFETY: item pointer is inside the `lparray` allocation.
-                    let call_arg = call_arg_from_xloper(item_ptr);
-                    let eval_value = eval_scalar(spec.function_id, &call_arg);
-                    mapped.push(eval_value_to_xloper(eval_value));
+    if raw_args.len() == 1 && matches!(spec.lift_policy, ULiftPolicy::UnaryScalarOrArrayElementwise) {
+        let raw = raw_args[0];
+        let mut temp = XLOPER12 {
+            val: XLOPER12Value { w: 0 },
+            xltype: 0,
+        };
+        let mut value_ptr = raw;
+        let mut used_temp = false;
+        if !value_ptr.is_null() {
+            // SAFETY: `value_ptr` originates from Excel and is valid for this call.
+            let ty = unsafe { (*value_ptr).xltype };
+            if is_ref_type(ty) && !spec.preserve_refs {
+                if !coerce_reference_to_value(value_ptr, &mut temp) {
+                    return alloc_result(make_xloper_err(XLERR_VALUE));
                 }
-                alloc_result_multi(rows, cols, mapped)
+                value_ptr = &mut temp;
+                used_temp = true;
             }
         }
-    } else {
-        // SAFETY: `value_ptr` is nullable and handled in converter.
-        let call_arg = call_arg_from_xloper(value_ptr);
-        let eval_value = eval_scalar(spec.function_id, &call_arg);
-        alloc_result(eval_value_to_xloper(eval_value))
-    };
 
-    if used_temp {
-        call_excel_free(&mut temp);
+        let value_ty = if value_ptr.is_null() {
+            XLTYPE_MISSING
+        } else {
+            // SAFETY: `value_ptr` is valid for this scope.
+            unsafe { (*value_ptr).xltype & XLTYPE_MASK }
+        };
+
+        if value_ty == XLTYPE_MULTI {
+            // SAFETY: `value_ptr` points to xltypeMulti in this branch.
+            let array = unsafe { (*value_ptr).val.array };
+            let rows = array.rows;
+            let cols = array.columns;
+            let count = usize::try_from(rows.saturating_mul(cols)).unwrap_or(0);
+            let mut mapped = Vec::with_capacity(count);
+            for i in 0..count {
+                // SAFETY: `lparray` points to `rows*cols` contiguous XLOPER12 entries.
+                let item_ptr = unsafe { array.lparray.add(i) };
+                let call_arg = call_arg_from_xloper(item_ptr, false);
+                let eval_value = eval_surface_value(spec.function_id, &[call_arg]);
+                mapped.push(eval_value_to_xloper(eval_value));
+            }
+            if used_temp {
+                call_excel_free(&mut temp);
+            }
+            return alloc_result_multi(rows, cols, mapped);
+        }
+
+        let call_arg = call_arg_from_xloper(value_ptr, spec.preserve_refs);
+        let eval_value = eval_surface_value(spec.function_id, &[call_arg]);
+        if used_temp {
+            call_excel_free(&mut temp);
+        }
+        return alloc_result(eval_value_to_xloper(eval_value));
     }
-    result
+
+    let mut args = Vec::with_capacity(raw_args.len());
+    for raw in raw_args {
+        let mut temp = XLOPER12 {
+            val: XLOPER12Value { w: 0 },
+            xltype: 0,
+        };
+        let mut value_ptr = *raw;
+        let mut used_temp = false;
+
+        if !value_ptr.is_null() {
+            // SAFETY: `value_ptr` originates from Excel and is valid for this call.
+            let ty = unsafe { (*value_ptr).xltype };
+            if is_ref_type(ty) && !spec.preserve_refs {
+                if !coerce_reference_to_value(value_ptr, &mut temp) {
+                    return alloc_result(make_xloper_err(XLERR_VALUE));
+                }
+                value_ptr = &mut temp;
+                used_temp = true;
+            }
+        }
+
+        let call_arg = call_arg_from_xloper(value_ptr, spec.preserve_refs);
+        if used_temp {
+            call_excel_free(&mut temp);
+        }
+        args.push(call_arg);
+    }
+
+    let eval_value = eval_surface_value(spec.function_id, &args);
+    alloc_result(eval_value_to_xloper(eval_value))
 }
 
 fn eval_q_unary_number_export(spec: QUnaryNumberExportSpec, value: f64) -> f64 {
     eval_surface_q_unary_number(spec.function_id, value).unwrap_or(f64::NAN)
+}
+
+fn eval_q_binary_number_export(spec: QBinaryNumberExportSpec, lhs: f64, rhs: f64) -> f64 {
+    eval_surface_q_binary_number(spec.function_id, lhs, rhs).unwrap_or(f64::NAN)
 }
 
 fn eval_q_nullary_number_export(spec: QNullaryNumberExportSpec) -> f64 {
@@ -540,7 +774,13 @@ pub extern "system" fn xlAutoOpen() -> i32 {
     let Some(module_path) = current_module_path() else {
         return 0;
     };
-    if register_all(&module_path) { 1 } else { 0 }
+    if !register_all(&module_path) {
+        return 0;
+    }
+    if flag_experiments_enabled() && !register_flag_experiment_aliases(&module_path) {
+        return 0;
+    }
+    1
 }
 
 #[unsafe(no_mangle)]
@@ -569,6 +809,19 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
                 unsafe {
                     drop(Box::from_raw(raw_slice));
                 }
+            }
+        }
+    }
+    if base_type == XLTYPE_STR {
+        // SAFETY: Union access is valid for `xltypeStr`.
+        let pstr = unsafe { boxed.val.str };
+        if !pstr.is_null() {
+            // SAFETY: First code unit stores pascal-string length.
+            let len = usize::from(unsafe { *pstr });
+            // SAFETY: Allocation originates from `Box<[u16]>` in `make_xloper_str_from_utf16`.
+            let raw_slice = std::ptr::slice_from_raw_parts_mut(pstr, len.saturating_add(1));
+            unsafe {
+                drop(Box::from_raw(raw_slice));
             }
         }
     }

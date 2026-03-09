@@ -1,0 +1,52 @@
+# W10 Profile/System Side Notes
+
+Status: `active`
+Workset: `W10`
+
+Purpose:
+1. capture interesting or problematic situations discovered during W10 execution,
+2. isolate potential changes to profile/classification/coercion/deref systems,
+3. preserve concrete follow-up items without blocking W10 closure.
+
+## Notes Log
+
+1. `SUM` direct-vs-range coercion split:
+   - current `values_only_pre_adapter` preparation can erase provenance needed for true dual-policy aggregate coercion.
+   - profile-system implication:
+     - consider explicit argument provenance tags in prepared args (`direct_arg`, `range_scan`, `spill_scan`).
+2. `IF` lazy branch evaluation:
+   - eager pre-adapter preparation of all arguments conflicts with strict branch laziness guarantees.
+   - profile-system implication:
+     - add explicit `arg_evaluation_strategy` class (eager/lazy-branch/selective).
+3. Reference-returning functions (`INDEX`, `XLOOKUP`, `INDIRECT`):
+   - `values_only_pre_adapter` loses reference identity when return-by-reference semantics are required.
+   - profile-system implication:
+     - add return-shape classification axis (`value_only`, `reference_possible`, `array_shape_only`, `array_payload`).
+4. Volatile/time functions (`NOW`):
+   - current function core has no shared provider seam beyond ad hoc local traits.
+   - profile-system implication:
+     - standardize provider seams (`time_provider`, `random_provider`) in runtime and formal scaffolding.
+5. Dynamic array payload gap (`SEQUENCE`):
+   - current `EvalValue::Array(ArrayShape)` can represent shape but not element payload.
+   - profile-system implication:
+     - decide whether function lane needs array payload model now or explicit adapter-owned payload indirection.
+6. Seed-mode declaration needed for profile clarity:
+   - `MATCH`, `XLOOKUP`, `INDIRECT`, and `INDEX` currently expose explicit seed-only unsupported lanes.
+   - profile-system implication:
+     - add explicit `semantic_coverage_profile` field (`seed_exact_only`, `seed_partial`, `full_target`) so partial mode support is machine-visible.
+7. Reference-return policy needs first-class contract axis:
+   - `INDEX`/`XLOOKUP` can return references while `values_only_pre_adapter` functions cannot.
+   - profile-system implication:
+     - add `return_reference_policy` (`never`, `possible`, `required`) plus `return_provenance_policy` notes.
+8. Provider seams are now heterogeneous:
+   - `NOW` uses an explicit provider trait; other host-sensitive functions still rely on ad hoc context assumptions.
+   - profile-system implication:
+     - standardize provider seam contracts (`time_provider`, `caller_context_provider`, `external_provider`) with shared runtime and Lean signatures.
+9. XLL codegen is now profile-derived across the function catalog:
+   - U-vs-Q variant emission is generated from `FunctionMeta` profile rules (not hand-curated function lists).
+   - profile-system implication:
+     - keep function metadata sufficient for mechanical export policy derivation, with explicit handling for very-high-arity signatures and non-scalar payload lanes.
+10. XLOOKUP reference-return observability is now empirically pinned:
+   - `CELL("address", XLOOKUP(...))` and `SUM(XLOOKUP(...):XLOOKUP(...))` confirm reference identity and range composition lanes.
+   - profile-system implication:
+     - preserve `return_reference_policy` as first-class contract metadata and keep it distinct from deref policy.

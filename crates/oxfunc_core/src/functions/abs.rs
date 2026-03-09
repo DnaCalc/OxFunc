@@ -96,7 +96,10 @@ mod tests {
             ABS_META.coercion_lift_profile,
             CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise
         );
-        assert_eq!(ABS_META.kernel_signature_class, KernelSignatureClass::NumToNum);
+        assert_eq!(
+            ABS_META.kernel_signature_class,
+            KernelSignatureClass::NumToNum
+        );
         assert_eq!(ABS_META.fec_dependency_profile, FecDependencyProfile::None);
         assert_eq!(
             ABS_META.surface_fec_dependency_profile,
@@ -155,7 +158,9 @@ mod tests {
 
     #[test]
     fn eval_abs_adapter_scalar_prepared_propagates_worksheet_error_via_coercion() {
-        let args = [PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0))];
+        let args = [PreparedArgValue::Eval(EvalValue::Error(
+            WorksheetErrorCode::Div0,
+        ))];
         let got = eval_abs_adapter_scalar_prepared(&args);
         assert_eq!(
             got,

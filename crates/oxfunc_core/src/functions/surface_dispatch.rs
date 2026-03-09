@@ -1,13 +1,37 @@
 use crate::coercion::CoercionError;
+use crate::function::ArgPreparationProfile;
 use crate::functions::abs::{AbsEvalError, abs_kernel};
 use crate::functions::abs_surface::eval_abs_scalar_value;
+use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
+use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
+use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
+use crate::functions::isnumber::{eval_isnumber_surface, map_isnumber_error_to_ws};
+use crate::functions::match_fn::{eval_match_surface, map_match_error_to_ws};
+use crate::functions::now_fn::{NowProvider, eval_now_surface, map_now_error_to_ws};
+use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::pi::eval_pi;
+use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
+use crate::functions::sum::{eval_sum_surface, map_sum_error_to_ws};
+use crate::functions::xlookup::{eval_xlookup_surface, map_xlookup_error_to_ws};
+use crate::functions::xmatch::XmatchEvalError;
+use crate::functions::xmatch_surface::eval_xmatch_surface_value;
 use crate::resolver::RefResolutionError;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalError, EvalValue, Value, WorksheetErrorCode};
 
 pub const FUNC_ID_ABS: &str = "FUNC.ABS";
+pub const FUNC_ID_IF: &str = "FUNC.IF";
+pub const FUNC_ID_INDEX: &str = "FUNC.INDEX";
+pub const FUNC_ID_INDIRECT: &str = "FUNC.INDIRECT";
+pub const FUNC_ID_ISNUMBER: &str = "FUNC.ISNUMBER";
+pub const FUNC_ID_MATCH: &str = "FUNC.MATCH";
+pub const FUNC_ID_NOW: &str = "FUNC.NOW";
+pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
 pub const FUNC_ID_PI: &str = "FUNC.PI";
+pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
+pub const FUNC_ID_SUM: &str = "FUNC.SUM";
+pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
+pub const FUNC_ID_XMATCH: &str = "FUNC.XMATCH";
 
 fn map_ref_resolution_to_ws(e: &RefResolutionError) -> WorksheetErrorCode {
     match e {
@@ -42,15 +66,128 @@ fn map_eval_error_to_ws(e: &EvalError) -> WorksheetErrorCode {
     }
 }
 
-pub fn eval_surface_unary_scalar_value(
+fn map_xmatch_error_to_ws(e: &XmatchEvalError) -> WorksheetErrorCode {
+    match e {
+        XmatchEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyLookupArray => WorksheetErrorCode::NA,
+        XmatchEvalError::MissingArg => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyCell => WorksheetErrorCode::Value,
+        XmatchEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        XmatchEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::UnsupportedValueKind(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::InvalidMatchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::InvalidSearchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::UnsupportedMatchModeForSeed(_) => WorksheetErrorCode::NA,
+        XmatchEvalError::UnsupportedSearchModeForSeed(_) => WorksheetErrorCode::NA,
+        XmatchEvalError::NotAvailable => WorksheetErrorCode::NA,
+    }
+}
+
+struct FixedNowProvider {
+    serial: f64,
+}
+
+impl NowProvider for FixedNowProvider {
+    fn now_serial(&self) -> f64 {
+        self.serial
+    }
+}
+
+fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
+    // Core value model does not yet carry full array payloads in prepared call-args.
+    // Keep singleton passthrough until array payload/value expansion is implemented.
+    vec![arg.clone()]
+}
+
+pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfile> {
+    match function_id {
+        FUNC_ID_ABS => Some(crate::functions::abs::ABS_META.arg_preparation_profile),
+        FUNC_ID_IF => Some(crate::functions::if_fn::IF_META.arg_preparation_profile),
+        FUNC_ID_INDEX => Some(crate::functions::index::INDEX_META.arg_preparation_profile),
+        FUNC_ID_INDIRECT => Some(crate::functions::indirect::INDIRECT_META.arg_preparation_profile),
+        FUNC_ID_ISNUMBER => Some(crate::functions::isnumber::ISNUMBER_META.arg_preparation_profile),
+        FUNC_ID_MATCH => Some(crate::functions::match_fn::MATCH_META.arg_preparation_profile),
+        FUNC_ID_NOW => Some(crate::functions::now_fn::NOW_META.arg_preparation_profile),
+        FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
+        FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
+        FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
+        FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
+        FUNC_ID_XLOOKUP => Some(crate::functions::xlookup::XLOOKUP_META.arg_preparation_profile),
+        FUNC_ID_XMATCH => Some(crate::functions::xmatch::XMATCH_META.arg_preparation_profile),
+        _ => None,
+    }
+}
+
+pub fn eval_surface_value_call(
     function_id: &str,
-    arg: &CallArgValue,
+    args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    now_serial: Option<f64>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
     match function_id {
-        FUNC_ID_ABS => {
-            let args = [arg.clone()];
-            eval_abs_scalar_value(&args, resolver).map_err(|e| map_abs_error_to_ws(&e))
+        FUNC_ID_ABS => eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e)),
+        FUNC_ID_SUM => eval_sum_surface(args, resolver).map_err(|e| map_sum_error_to_ws(&e)),
+        FUNC_ID_IF => eval_if_surface(args, resolver).map_err(|e| map_if_error_to_ws(&e)),
+        FUNC_ID_INDEX => eval_index_surface(args, resolver).map_err(|e| map_index_error_to_ws(&e)),
+        FUNC_ID_MATCH => {
+            if args.len() < 2 {
+                return Err(WorksheetErrorCode::Value);
+            }
+            let lookup_array = singleton_arg_slice(&args[1]);
+            let match_type = args.get(2);
+            eval_match_surface(&args[0], &lookup_array, match_type, resolver)
+                .map_err(|e| map_match_error_to_ws(&e))
+        }
+        FUNC_ID_ISNUMBER => {
+            eval_isnumber_surface(args, resolver).map_err(|e| map_isnumber_error_to_ws(&e))
+        }
+        FUNC_ID_NOW => {
+            let serial = now_serial.ok_or(WorksheetErrorCode::Value)?;
+            let provider = FixedNowProvider { serial };
+            eval_now_surface(args, &provider).map_err(|e| map_now_error_to_ws(&e))
+        }
+        FUNC_ID_XLOOKUP => {
+            if args.len() < 3 {
+                return Err(WorksheetErrorCode::Value);
+            }
+            let lookup_array = singleton_arg_slice(&args[1]);
+            let return_array = singleton_arg_slice(&args[2]);
+            eval_xlookup_surface(
+                &args[0],
+                &lookup_array,
+                &return_array,
+                args.get(3),
+                args.get(4),
+                args.get(5),
+                resolver,
+            )
+            .map_err(|e| map_xlookup_error_to_ws(&e))
+        }
+        FUNC_ID_INDIRECT => {
+            eval_indirect_surface(args, resolver).map_err(|e| map_indirect_error_to_ws(&e))
+        }
+        FUNC_ID_SEQUENCE => {
+            eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
+        }
+        FUNC_ID_OP_ADD => eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e)),
+        FUNC_ID_XMATCH => {
+            if args.len() < 2 {
+                return Err(WorksheetErrorCode::Value);
+            }
+            let lookup_array = singleton_arg_slice(&args[1]);
+            eval_xmatch_surface_value(&args[0], &lookup_array, args.get(2), args.get(3), resolver)
+                .map_err(|e| map_xmatch_error_to_ws(&e))
+        }
+        FUNC_ID_PI => {
+            if !args.is_empty() {
+                return Err(WorksheetErrorCode::Value);
+            }
+            let pi_args: Vec<Value> = Vec::new();
+            match eval_pi(&pi_args) {
+                Ok(Value::Number(n)) => Ok(EvalValue::Number(n)),
+                Ok(Value::Error(_)) => Err(WorksheetErrorCode::Value),
+                Err(e) => Err(map_eval_error_to_ws(&e)),
+            }
         }
         _ => Err(WorksheetErrorCode::Value),
     }
@@ -62,6 +199,17 @@ pub fn eval_surface_q_unary_number(
 ) -> Result<f64, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_ABS => Ok(abs_kernel(value)),
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+pub fn eval_surface_q_binary_number(
+    function_id: &str,
+    lhs: f64,
+    rhs: f64,
+) -> Result<f64, WorksheetErrorCode> {
+    match function_id {
+        FUNC_ID_OP_ADD => Ok(op_add_kernel(lhs, rhs)),
         _ => Err(WorksheetErrorCode::Value),
     }
 }
@@ -101,18 +249,28 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_unary_scalar_value_abs_accepts_text_numeric() {
+    fn eval_surface_value_call_abs_accepts_text_numeric() {
         let arg = CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
             " -2 ".encode_utf16().collect(),
         )));
-        let got = eval_surface_unary_scalar_value(FUNC_ID_ABS, &arg, &NoReferenceResolver);
+        let got = eval_surface_value_call(
+            FUNC_ID_ABS,
+            &[arg],
+            &NoReferenceResolver,
+            Some(46000.0),
+        );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
 
     #[test]
-    fn eval_surface_unary_scalar_value_rejects_unknown_id() {
+    fn eval_surface_value_call_rejects_unknown_id() {
         let arg = CallArgValue::Eval(EvalValue::Number(1.0));
-        let got = eval_surface_unary_scalar_value("FUNC.UNKNOWN", &arg, &NoReferenceResolver);
+        let got = eval_surface_value_call(
+            "FUNC.UNKNOWN",
+            &[arg],
+            &NoReferenceResolver,
+            Some(46000.0),
+        );
         assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 
@@ -120,6 +278,12 @@ mod tests {
     fn eval_surface_q_unary_number_abs_calls_kernel() {
         let got = eval_surface_q_unary_number(FUNC_ID_ABS, -3.0);
         assert_eq!(got, Ok(3.0));
+    }
+
+    #[test]
+    fn eval_surface_q_binary_number_add_calls_kernel() {
+        let got = eval_surface_q_binary_number(FUNC_ID_OP_ADD, 1.5, 2.0);
+        assert_eq!(got, Ok(3.5));
     }
 
     #[test]

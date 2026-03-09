@@ -44,3 +44,4 @@ Out of slice:
 ## Notes
 - Function behavior now has a dual version axis (Excel app version/channel plus workbook Compatibility Version), reflected in the OxFunc charter.
 - OxFunc assumes read access to Foundation artifacts but does not assume direct-write workflow to Foundation during routine iteration.
+- Completeness reporting is scope-qualified by doctrine; see `CHARTER.md` section `7.4` and `OPERATIONS.md` section `11`.

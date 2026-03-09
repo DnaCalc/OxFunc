@@ -1,7 +1,6 @@
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass,
-    ThreadSafetyClass, VolatilityClass,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{EvalError, Value};
 
@@ -50,13 +49,19 @@ mod tests {
     #[test]
     fn test_pi_meta_coercion_and_kernel_profiles() {
         assert_eq!(PI_META.coercion_lift_profile, CoercionLiftProfile::None);
-        assert_eq!(PI_META.kernel_signature_class, KernelSignatureClass::NullaryConst);
+        assert_eq!(
+            PI_META.kernel_signature_class,
+            KernelSignatureClass::NullaryConst
+        );
     }
 
     #[test]
     fn test_pi_meta_adapter_and_surface_fec_profiles_none() {
         assert_eq!(PI_META.fec_dependency_profile, FecDependencyProfile::None);
-        assert_eq!(PI_META.surface_fec_dependency_profile, FecDependencyProfile::None);
+        assert_eq!(
+            PI_META.surface_fec_dependency_profile,
+            FecDependencyProfile::None
+        );
     }
 
     #[test]

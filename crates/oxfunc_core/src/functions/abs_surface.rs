@@ -143,7 +143,9 @@ mod tests {
 
     #[test]
     fn eval_abs_scalar_propagates_worksheet_error_via_coercion() {
-        let args = [CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0))];
+        let args = [CallArgValue::Eval(EvalValue::Error(
+            WorksheetErrorCode::Div0,
+        ))];
         let got = eval_abs_scalar(&args, &resolver());
         assert_eq!(
             got,
@@ -185,9 +187,9 @@ mod tests {
     fn eval_abs_surface_scalar_matches_adapter_for_prepared_numeric_input() {
         let args = [CallArgValue::Eval(EvalValue::Number(-5.0))];
         let surface = eval_abs_scalar(&args, &resolver());
-        let adapter = eval_abs_adapter_scalar_prepared(&[crate::functions::adapters::PreparedArgValue::Eval(
-            EvalValue::Number(-5.0),
-        )]);
+        let adapter = eval_abs_adapter_scalar_prepared(&[
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(-5.0)),
+        ]);
         assert_eq!(surface, adapter);
     }
 }

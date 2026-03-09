@@ -21,17 +21,15 @@ Dependencies:
 In scope:
 1. Rust `OxFunc64.xll` artifact scaffold and build lane.
 2. explicit XLL caller shim layer that maps XLL inputs to OxFunc call arguments.
-3. first exported seed functions for validation, including `ox_ABS`.
+3. profile-derived export generation across the function catalog from core `FunctionMeta` metadata.
 4. registration experiments for signature classes:
    - general/reference-admitting registration (U-style) for provenance/deref path testing,
-   - value-only registration (Q-style) for values-only function paths.
-5. optional dual export naming experiment (for example `ox_ABS` and `ox_ABS_Q`) while policy is unsettled.
-6. workbook-based differential validation packs comparing native formulas vs OxFunc add-in formulas.
+   - value-only registration (Q-style) where profile-admitted.
+5. workbook-based differential validation packs comparing native formulas vs OxFunc add-in formulas.
 
 Out of scope:
 1. changing core function kernels to fit XLL transport details.
-2. broad catalog export coverage beyond seed family.
-3. claiming production-ready add-in hardening/security lifecycle.
+2. claiming production-ready add-in hardening/security lifecycle.
 
 ## 4. Architectural Rule
 Separation is mandatory:
@@ -45,9 +43,7 @@ Separation is mandatory:
 3. caller shim contract doc:
    - XLL argument kind -> OxFunc argument mapping,
    - error/empty/missing/reference handling mapping.
-4. seed export set:
-   - `ox_ABS` (required),
-   - at least one additional constant/value-only function (for example `ox_PI`) for control comparison.
+4. generated export set from profile-derived rules (U/Q variants emitted mechanically).
 5. registration manifest notes for U-style vs Q-style export decisions.
 6. workbook validation pack:
    - paired native vs OxFunc formulas,
@@ -66,8 +62,8 @@ Pass when:
 
 ### G3 - Registration Closure
 Pass when:
-1. seed exports are registered in Excel and callable (`ox_ABS` required),
-2. U-style vs Q-style registration posture is explicitly recorded per seed export.
+1. generated exports are registered in Excel and callable,
+2. U-style vs Q-style registration posture is explicitly recorded by profile-derived export rows.
 
 ### G4 - Differential Workbook Closure
 Pass when:
@@ -83,7 +79,7 @@ Execution state:
 1. `complete`.
 
 Claim confidence:
-1. `provisional` (seed export set built, registered, and replayed with side-by-side workbook baseline).
+1. `provisional` (profile-derived export set built/registered; validation coverage remains seed-bounded).
 
 Assurance maturity:
 1. `exercised`.

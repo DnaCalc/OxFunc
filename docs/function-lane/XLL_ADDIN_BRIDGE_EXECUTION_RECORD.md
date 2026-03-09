@@ -57,10 +57,7 @@ Outputs:
 2. Evidence:
    - `docs/function-lane/XLL_ADDIN_BRIDGE_REGISTRATION_NOTES.md`
    - runtime `RegisterXLL` success in baseline runner.
-   - callable seed exports:
-     - `ox_ABS` (`U` posture)
-     - `ox_ABS_Q` (`Q` posture)
-     - `ox_PI` (`Q` posture)
+   - callable generated exports from profile-derived table (`tools/xll-addin/oxfunc_xll/export_specs.csv`).
 
 ### G4 - Differential Workbook Closure
 1. Status: `closed-provisional`.
@@ -82,5 +79,9 @@ Outputs:
 1. Seed scalar parity is strong for ABS and PI paths (`W9-XLL-001..006`).
 2. U-style bridge surface can dereference simple references (`ox_ABS(A1)` parity observed).
 3. U-style bridge now supports shape-preserving `xltypeMulti` elementwise mapping for ABS (`W9-XLL-007` parity-closed).
-4. Export wrappers and registration rows are generated from core `xll_export_specs` declarations, reducing hand-authored bridge code.
-5. W9 is suitable as an exercised seed bridge and policy testbed for U-vs-Q registration decisions.
+4. Export wrappers and registration rows are generated from core `FunctionMeta` profile rules through `xll_export_specs`, reducing hand-authored bridge code.
+5. W9 is suitable as an exercised bridge seam with profile-derived U-vs-Q policy generation.
+
+## 5. Follow-on Bounded Lanes
+1. registration-flag mapping (`!`, `$`, `#`) stays deferred from profile-derived generation until W11 evidence closure.
+2. W11 evidence lane uses runtime-only experimental aliases so profile-to-signature generation remains unchanged during probe collection.

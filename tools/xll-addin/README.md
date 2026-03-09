@@ -36,7 +36,19 @@ powershell -File tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1 -Manifest do
    - `tools/xll-addin/oxfunc_xll/build.rs`
 5. Generated CSV snapshot for review:
    - `tools/xll-addin/oxfunc_xll/export_specs.csv`
-6. Seed exports:
-   - `ox_ABS` (`U` argument surface through `OX_ABS` bridge wrapper),
-   - `ox_ABS_Q` (`B` numeric scalar surface through `OX_ABS_Q`),
-   - `ox_PI` (`B` nullary constant surface through `OX_PI`).
+6. Current generated exports are profile-derived across the function catalog (`export_specs.csv`).
+
+## 5. Registration Flag Evidence Replay (W11)
+1. Full dual-run suite:
+```powershell
+powershell -File tools/xll-addin/run-registration-flag-suite.ps1 -OutDir .tmp -BuildIfMissing
+```
+2. Single-run direct probe:
+```powershell
+powershell -File tools/xll-addin/run-registration-flag-evidence.ps1 -Manifest docs/function-lane/XLL_REGISTRATION_FLAG_SCENARIO_MANIFEST_SEED.csv -Out .tmp/xll-registration-flags-results-default.csv -BuildIfMissing
+```
+3. Analyzer only:
+```powershell
+powershell -File tools/xll-addin/analyze-registration-flag-results.ps1 -Results .tmp/xll-registration-flags-results-excel.csv -OutReport .tmp/xll-registration-flags-analysis-report.csv
+```
+4. Experimental alias mode is enabled by default for the bridge runtime and can be disabled with `OXFUNC_XLL_ENABLE_FLAG_EXPERIMENTS=0`; it does not change profile-derived export generation.

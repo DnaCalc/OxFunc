@@ -124,6 +124,25 @@ Rule:
 1. OxFunc may mark a slice `validated` only with explicit scope and evidence.
 2. Program-level profile-green claims require `green-validated` Foundation pack closure.
 
+### 7.4 Completeness Reporting Semantics (Mandatory)
+All report-back messages and execution records must separate completion claims across these axes:
+1. `execution_state`:
+   - planned/in_progress/blocked/complete.
+2. `scope_completeness`:
+   - `scope_complete`: all obligations for the declared slice/profile scope are done.
+   - `scope_partial`: some declared-scope obligations remain open.
+3. `target_completeness`:
+   - `target_complete`: no declared out-of-scope semantic lanes remain for the target behavior set.
+   - `target_partial`: one or more semantic lanes are explicitly bounded/deferred.
+4. `integration_completeness`:
+   - `integrated`: admitted in all declared runtime surfaces (for example core dispatch/export lanes) for the claim.
+   - `partial`: implemented but not admitted in all declared runtime surfaces.
+
+Language rule:
+1. Do not use unqualified "done/complete" claims.
+2. Use `complete for declared scope` when `scope_completeness = scope_complete` but `target_completeness = target_partial`.
+3. Always list explicit open lanes when `target_completeness = target_partial` or `integration_completeness = partial`.
+
 ## 8. Kickoff Program and Dependency Intent
 Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W7`):
 1. `PI()` method seed,
@@ -151,6 +170,9 @@ A function slice is done for declared scope only when all hold:
 6. version context: both required axes are explicit.
 7. boundaries: unresolved behavior is explicit and policy-bounded.
 8. maturity: status and assurance maturity are clearly stated (`draft/provisional/validated` and `exercised/green-validated`).
+
+Completeness claim rule:
+1. Any "done" claim must include completeness qualifiers from section 7.4.
 
 ## 10. Non-goal Guardrails
 1. Do not claim behavior proof beyond stated contract scope.

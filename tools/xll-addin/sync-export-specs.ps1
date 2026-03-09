@@ -14,7 +14,7 @@ if ($outDir -and -not (Test-Path $outDir)) {
     New-Item -ItemType Directory -Path $outDir | Out-Null
 }
 
-$csv = cargo run --manifest-path (Join-Path $repoRoot "crates\oxfunc_core\Cargo.toml") --bin emit_xll_export_specs --quiet
+$csv = cargo run --manifest-path (Join-Path $repoRoot "crates\oxfunc_core\Cargo.toml") --bin emit_xll_export_specs --quiet | Out-String
 if ($LASTEXITCODE -ne 0) {
     throw "Failed to generate export specs from oxfunc_core."
 }

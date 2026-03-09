@@ -20,50 +20,46 @@ Define the seed caller/shim contract for mapping XLL entrypoint arguments into O
 6. Function kernels/adapters owner:
    - `crates/oxfunc_core`
 
-## 3. Seed Export Set
-1. `ox_ABS`:
-   - registration export: `OX_ABS`
-   - registration type text: `QU`
-   - worksheet function name: `ox_ABS`
-2. `ox_ABS_Q`:
-   - registration export: `OX_ABS_Q`
-   - registration type text: `BB`
-   - worksheet function name: `ox_ABS_Q`
-3. `ox_PI`:
-   - registration export: `OX_PI`
-   - registration type text: `B`
-   - worksheet function name: `ox_PI`
+## 3. Export Set (Profile-Derived)
+1. Export rows are generated for every function in the OxFunc function catalog.
+2. U-vs-Q variants are derived by rule from `FunctionMeta` profile fields in `crates/oxfunc_core/src/xll_export_specs.rs`.
+3. Current generated snapshot is `tools/xll-addin/oxfunc_xll/export_specs.csv` (for example `OX_ABS`, `OX_IF`, `OX_SUM`, `OX_XLOOKUP`, `OX_XMATCH`, with profile-admitted Q variants such as `OX_ABS_Q`, `OX_OP_ADD_Q`, `OX_PI`).
 
-## 4. Shim Mapping (Seed Scope)
+## 4. Shim Mapping (Current Scope)
 Bridge policy is declarative per export row:
 1. registration row (`export_name`, `worksheet_name`, `type_text`, `arg_names`),
 2. bound `function_id` (for core dispatch),
-3. U-surface lift policy (`scalar_only` or `unary_scalar_or_array_elementwise`).
-4. export wrapper signature kind (`u_unary`, `q_unary_number`, `q_nullary_number`).
+3. U-surface lift policy (`scalar_only` or `unary_scalar_or_array_elementwise`),
+4. reference-preservation flag (`preserve_refs`) derived from `arg_preparation_profile`,
+5. export wrapper signature kind (`u_arity_N`, `q_unary_number`, `q_binary_number`, `q_nullary_number`).
 
 For `U` surface rows:
 1. Incoming `LPXLOPER12` categories handled by generic converter:
    - `xltypeNum` -> number,
+   - `xltypeInt` -> number,
    - `xltypeStr` -> UTF-16 text (pascal length-prefixed),
    - `xltypeBool` -> logical,
    - `xltypeErr` -> worksheet error code,
    - `xltypeMissing` -> missing arg,
-   - `xltypeNil` -> empty cell.
+   - `xltypeNil` -> empty cell,
+   - `xltypeMulti` -> shape-only array marker.
 2. Reference lanes (generic):
-   - `xltypeRef` / `xltypeSRef` are dereferenced through `xlCoerce` before shim translation.
+   - if `preserve_refs=false`, `xltypeRef` / `xltypeSRef` are dereferenced through `xlCoerce` before shim translation.
+   - if `preserve_refs=true`, reference-like tokens are passed through as `CallArgValue::Reference`.
 3. `xltypeMulti` array lanes (policy-driven):
    - for `unary_scalar_or_array_elementwise`, shape-preserving elementwise scalar dispatch by `function_id`.
    - result returned as `xltypeMulti` with Excel-owned lifetime (`xlbitDLLFree` + `xlAutoFree12`).
 4. Core invocation is by `function_id` through core dispatch entrypoints, not function-specific bridge logic.
 
 For `Q` surface rows:
-1. numeric unary and nullary calls are routed by `function_id` through core dispatch entrypoints.
+1. numeric unary, binary, and nullary calls are routed by `function_id` through core dispatch entrypoints.
 
 ## 5. Error Mapping (Seed)
 1. OxFunc worksheet errors map to XLL `xlerr*` codes (`#DIV/0!`, `#VALUE!`, `#N/A`, etc.).
 2. Coercion/ref-resolution/unsupported shim cases default to `#VALUE!` unless a specific worksheet error is already declared.
 
-## 6. Non-Goals in Seed
-1. Full multi-arity wrapper generation beyond current supported entry kinds (`u_unary`, `q_unary_number`, `q_nullary_number`).
+## 6. Bounded Lanes
+1. Array payload semantics remain shape-bounded in core for several functions; U bridge preserves this boundary.
 2. Asynchronous/RTD callback model.
 3. Production-hardening beyond current `xlbitDLLFree` + `xlAutoFree12` ownership discipline.
+4. Registration-flag mapping (`!`, `$`, `#`) is intentionally not profile-derived yet; W11 uses runtime-only experimental alias registrations for evidence collection.

@@ -1,4 +1,4 @@
-use crate::resolver::{resolve_eval_value, RefResolutionError, ReferenceResolver};
+use crate::resolver::{RefResolutionError, ReferenceResolver, resolve_eval_value};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -133,15 +133,18 @@ mod tests {
 
     #[test]
     fn coerce_text_numeric_to_number() {
-        let value = EvalValue::Text(ExcelText::from_utf16_code_units("1".encode_utf16().collect()));
+        let value = EvalValue::Text(ExcelText::from_utf16_code_units(
+            "1".encode_utf16().collect(),
+        ));
         let got = coerce_eval_to_number(&value, &resolver());
         assert_eq!(got, Ok(1.0));
     }
 
     #[test]
     fn coerce_text_non_numeric_fails() {
-        let value =
-            EvalValue::Text(ExcelText::from_utf16_code_units("asd".encode_utf16().collect()));
+        let value = EvalValue::Text(ExcelText::from_utf16_code_units(
+            "asd".encode_utf16().collect(),
+        ));
         let got = coerce_eval_to_number(&value, &resolver());
         assert_eq!(got, Err(CoercionError::NonNumericText("asd".to_string())));
     }

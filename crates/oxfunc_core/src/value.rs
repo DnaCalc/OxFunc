@@ -218,7 +218,7 @@ impl ValueBoundary {
 
 #[cfg(test)]
 mod tests {
-    use super::{ExcelText, ValueBoundary, ValueTag, EXCEL_TEXT_MAX_UTF16_CODE_UNITS};
+    use super::{EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, ValueBoundary, ValueTag};
 
     #[test]
     fn eval_boundary_excludes_missing_empty_and_null() {
@@ -251,20 +251,14 @@ mod tests {
     #[test]
     fn interop_assignment_truncates_ascii_to_32767_utf16_units() {
         let text = ExcelText::from_interop_assignment(&"x".repeat(40_000));
-        assert_eq!(
-            text.len_utf16_code_units(),
-            EXCEL_TEXT_MAX_UTF16_CODE_UNITS
-        );
+        assert_eq!(text.len_utf16_code_units(), EXCEL_TEXT_MAX_UTF16_CODE_UNITS);
         assert!(!text.has_dangling_high_surrogate_tail());
     }
 
     #[test]
     fn interop_assignment_can_leave_dangling_surrogate_tail() {
         let text = ExcelText::from_interop_assignment(&"😀".repeat(40_000));
-        assert_eq!(
-            text.len_utf16_code_units(),
-            EXCEL_TEXT_MAX_UTF16_CODE_UNITS
-        );
+        assert_eq!(text.len_utf16_code_units(), EXCEL_TEXT_MAX_UTF16_CODE_UNITS);
         assert!(text.has_dangling_high_surrogate_tail());
         assert!(text.to_string_lossy().ends_with('\u{FFFD}'));
     }

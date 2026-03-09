@@ -131,7 +131,10 @@ mod tests {
                 kind: ReferenceKind::A1,
                 target: "A1".to_string(),
             }),
-            &[CallArgValue::Eval(EvalValue::Number(1.0)), CallArgValue::Eval(EvalValue::Number(2.0))],
+            &[
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
             None,
             None,
             &r,
@@ -204,13 +207,7 @@ mod tests {
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
 
-        let surface = eval_xmatch_surface(
-            &lookup_value,
-            &lookup_array,
-            None,
-            None,
-            &resolver(),
-        );
+        let surface = eval_xmatch_surface(&lookup_value, &lookup_array, None, None, &resolver());
 
         let prepared_lookup_value = PreparedArgValue::Eval(EvalValue::Number(2.0));
         let prepared_lookup_array = vec![
@@ -262,7 +259,9 @@ mod tests {
     fn eval_xmatch_surface_lookup_array_error_is_skipped_via_adapter_lane() {
         let got = eval_xmatch_surface(
             &CallArgValue::Eval(EvalValue::Number(1.0)),
-            &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value))],
+            &[CallArgValue::Eval(EvalValue::Error(
+                WorksheetErrorCode::Value,
+            ))],
             None,
             None,
             &resolver(),

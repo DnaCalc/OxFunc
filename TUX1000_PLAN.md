@@ -19,6 +19,7 @@ Convert function compatibility from folklore into a repeatable assurance pipelin
 3. Clean-room evidence only.
 4. No promotion without replayable artifacts.
 5. No hidden ambiguity; unresolved lanes remain explicit and bounded.
+6. Completion reporting must be scope-qualified (scope/target/integration), never unqualified "done".
 
 ## 4. Slice Architecture (Coupled Lanes)
 Every function/operator slice must traverse six synchronized artifacts:
@@ -154,3 +155,9 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 2. `W9` XLL add-in bridge packet:
    - `docs/worksets/WORKSET_TUX1000_XLL_ADDIN_BRIDGE.md`
    - goal: build `OxFunc64.xll` as an adapter around OxFunc core functions, with seed exports (for example `ox_ABS`) and side-by-side native-vs-OxFunc workbook validation packs.
+3. `W10` ten-function mixed-seam packet:
+   - `docs/worksets/WORKSET_TUX1000_TEN_FUNCTION_MIXED_SEAMS.md`
+   - goal: execute one breadth packet across `SUM`, `IF`, `INDEX`, `MATCH`, `ISNUMBER`, `NOW`, `XLOOKUP`, `INDIRECT`, `SEQUENCE`, and `OP_ADD` to pressure-test classification, layering, and U/Q export policy.
+4. `W11` XLL registration-flags evidence packet:
+   - `docs/worksets/WORKSET_TUX1000_XLL_REGISTRATION_FLAGS_EVIDENCE.md`
+   - goal: produce empirical closure for volatile/thread-safe/macro-type registration flags before enabling profile-derived mapping.

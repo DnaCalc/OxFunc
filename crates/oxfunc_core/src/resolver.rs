@@ -38,7 +38,8 @@ pub enum RefResolutionError {
 
 pub trait ReferenceResolver {
     fn capabilities(&self) -> ResolverCapabilities;
-    fn resolve_reference(&self, reference: &ReferenceLike) -> Result<EvalValue, RefResolutionError>;
+    fn resolve_reference(&self, reference: &ReferenceLike)
+    -> Result<EvalValue, RefResolutionError>;
 }
 
 pub fn normalize_reference(reference: &ReferenceLike) -> ReferenceLike {
