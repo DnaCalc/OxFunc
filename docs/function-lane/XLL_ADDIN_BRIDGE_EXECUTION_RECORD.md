@@ -85,3 +85,11 @@ Outputs:
 ## 5. Follow-on Bounded Lanes
 1. registration-flag mapping (`!`, `$`, `#`) stays deferred from profile-derived generation until W11 evidence closure.
 2. W11 evidence lane uses runtime-only experimental aliases so profile-to-signature generation remains unchanged during probe collection.
+
+## 6. XLL Verification-Seam Limitations
+1. This record is a seam record, not a function-semantic closure record.
+2. Known seam limitations are tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+3. Relevant current limits for W9:
+   - registration-flag behavior is not yet part of normal profile-derived export generation,
+   - reference-return and non-scalar payload parity remain bounded,
+   - concurrency/thread-safety evidence is not demonstrated by this bridge baseline.

@@ -66,3 +66,11 @@ Primary outputs:
 ## 6. Decision Status
 1. Volatile/thread-safe/macro mapping remains **deferred** from profile-derived signature generation.
 2. W11 seed evidence is captured and reproducible, but not sufficient for mapping admission.
+
+## 7. XLL Verification-Seam Limitations
+1. This record documents XLL registration evidence only; it does not prove full function-semantic parity.
+2. Known seam limitations are tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+3. Relevant current limits for W11:
+   - volatile evidence is still confounded by the non-volatile control alias changing across recalc,
+   - thread-safe evidence does not yet include concurrency traces,
+   - macro-type evidence is admission/parity-only under current reference-return bridge bounds.

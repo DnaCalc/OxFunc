@@ -6,7 +6,7 @@ This document treats worksets W1-W7 as one coupled kickoff program.
 Goal:
 1. establish OxFunc execution method integrity,
 2. close core semantic substrate (floating-point + string + value universe + coercion seam),
-3. deliver first nontrivial function closures (`ABS`, `XMATCH`) under unified doctrine.
+3. deliver the first nontrivial fully-closed function (`ABS`) and the first behavior-rich incomplete-function scaffold (`XMATCH`) under unified doctrine.
 
 ## 2. Included Worksets
 1. `W001_PI_END_TO_END_SLICE.md` (W1)
@@ -67,7 +67,7 @@ Global required artifacts across kickoff:
 3. W3: `in_progress` (baseline taxonomy/spec and Rust/Lean tag scaffolds in place).
 4. W4: `complete-provisional` (capability-record seam selected; primitive spec + decision table + Rust/Lean scaffolds + baseline empirical run captured under `W4-COERCE-BL-20260307`).
 5. W5: `complete-provisional` (contract/formal/runtime/evidence chain established for `ABS` under `W5-ABS-BL-20260308`, including dual-run evidence and entrypoint baseline `W5-ABS-ENTRY-20260308`).
-6. W6: `complete` (XMATCH seed scaffold + empirical dual-run replay baseline landed; classification decision retained tier-4 high-interest with provisional evidence closure).
+6. W6: `in_progress` (XMATCH scaffold + empirical dual-run replay baseline landed, but wildcard/binary/approximate and fuller comparison semantics remain open).
 7. W7: `complete-provisional` (baseline string characterization and policy map captured under `W7-STR-BL-20260305`).
 
 ## 7. Promotion and Maturity Notes

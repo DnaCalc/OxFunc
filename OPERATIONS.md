@@ -22,11 +22,14 @@ Non-negotiable carry-over:
 ## 3. Operating Principles
 1. Correctness with explicit semantics before optimization.
 2. Compatibility claims require reproducible evidence.
-3. No function is "done" until contract, implementation, tests, and evidence align.
-4. Regressions are permanent assets (minimized replayable cases).
-5. Prefer end-to-end vertical slices over broad speculative scaffolding.
-6. Keep process lightweight, but never skip required traceability fields.
-7. Report-back language must always qualify completeness by scope/target/integration axes.
+3. No bounded-fit function implementations: partial semantic coverage is scaffolding/work-in-progress, not a completed function.
+4. Where public documentation and empirical Excel behavior differ, implementation follows empirical Excel behavior and the divergence is logged explicitly.
+5. No function is "done" until contract, implementation, tests, and evidence align on full known Excel semantics for the declared version axes.
+6. Regressions are permanent assets (minimized replayable cases).
+7. Prefer end-to-end vertical slices over broad speculative scaffolding, but do not misreport scaffolding as implementation closure.
+8. Keep process lightweight, but never skip required traceability fields.
+9. Report-back language must always qualify completeness by scope/target/integration axes.
+10. XLL verification-seam limits must be documented centrally in the seam project and repeated in function verification records when they materially qualify a function claim.
 
 ## 4. Execution Model
 OxFunc executes as coupled lanes for each function/operator slice.
@@ -57,6 +60,8 @@ For each function/operator `f`, use this lifecycle:
    - bind expected behavior to source/evidence and Excel differential observations.
 6. `promote`:
    - update status (`draft -> provisional -> validated`) only when gate criteria are met.
+7. `close`:
+   - claim implementation closure only after full known Excel semantics are represented for the tracked version axes; bounded seed coverage remains work-in-progress.
 
 ### 4.3 Mandatory Function Contract Fields
 Every function/operator row must explicitly carry:
@@ -157,7 +162,10 @@ A function slice is done for a declared profile only when:
 3. Rust implementation and required tests pass.
 4. evidence links are complete and reproducible.
 5. version scope is explicit on both required axes.
-6. known unknowns are explicit and policy-bounded.
+6. public-doc vs empirical discrepancies are recorded explicitly and resolved in favor of empirical Excel behavior.
+7. no known semantic gap remains between OxFunc and the empirically determined Excel function behavior for the declared version scope.
+8. any relevant XLL verification-seam limitation is explicitly documented in both seam-level and function-level verification records.
+9. known unknowns are explicit and policy-bounded, except that function-semantic omissions are not acceptable for closure; only external XLL verification-seam limits may remain.
 
 ## 11. Report-Back Completeness Contract
 Every completion report (chat updates, execution records, workset closure notes, handoff summaries) must include:
@@ -168,6 +176,7 @@ Every completion report (chat updates, execution records, workset closure notes,
 5. explicit `open_lanes` list when any completeness axis is partial.
 
 Normative wording rules:
-1. Use `complete for declared scope` when `scope_completeness=scope_complete` and any other completeness axis is partial.
-2. Do not claim `fully complete` unless all three completeness axes are complete and evidence links are present.
-3. If runtime export/dispatch admission is generated automatically at compile-time, still report whether each function is included in the source-of-truth export table for the claim.
+1. Use `complete for declared scope` only when the declared function scope already represents full known Excel semantics for the tracked version axes and only integration or external-host limits remain partial.
+2. Do not use `complete for declared scope` for semantically bounded function slices or function-batch worksets that still carry known Excel-semantic gaps; report those as `scope_partial`.
+3. Do not claim `fully complete` unless all three completeness axes are complete and evidence links are present.
+4. If runtime export/dispatch admission is generated automatically at compile-time, still report whether each function is included in the source-of-truth export table for the claim.

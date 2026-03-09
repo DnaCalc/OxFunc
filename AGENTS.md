@@ -18,6 +18,14 @@
 - For mutable function-definition work, use `docs/function-lane/*` in this repo.
 - For Excel reference/spec corpus and program-level conformance registry, use links listed in `docs/FOUNDATION_SPEC_INDEX.md`.
 
+## No-Compromise Function Doctrine
+- OxFunc targets full semantic identity with Excel for each implemented function over the declared version axes.
+- Partial or bounded semantic coverage is never an "implemented function" claim; it is work-in-progress scaffolding only.
+- If public documentation and empirical Excel behavior differ, record the discrepancy explicitly and implement the empirically observed behavior.
+- The only allowed compromise is in the XLL test/verification seam, where harness limits may prevent recreating all host behavior even though the core OxFunc semantics must still target full Excel parity.
+- When any known semantic lane remains open for a function, report that function and any packet containing it as `scope_partial`.
+- XLL test/verification seam limitations must be documented in the seam-project records and repeated in per-function or per-packet verification records when those limits materially qualify a function claim.
+
 ## Clean-room Rule
 Use only:
 - public specifications/documentation,

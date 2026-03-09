@@ -45,4 +45,6 @@ Out of slice:
 - Function behavior now has a dual version axis (Excel app version/channel plus workbook Compatibility Version), reflected in the OxFunc charter.
 - OxFunc assumes read access to Foundation artifacts but does not assume direct-write workflow to Foundation during routine iteration.
 - Completeness reporting is scope-qualified by doctrine; see `CHARTER.md` section `7.4` and `OPERATIONS.md` section `11`.
+- OxFunc does not accept bounded-fit function implementations. A function is only considered implemented when the runtime and formal model cover the full documented and empirically observed Excel semantics for the declared version scope; the only tolerated limitation is in the XLL verification seam.
+- XLL verification-seam limitations must be documented centrally in the seam records and repeated in function verification records wherever those limitations affect the meaning of a parity or closure claim.
 

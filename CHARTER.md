@@ -34,6 +34,13 @@ Mandatory carry-over from Foundation doctrine:
 4. profile-scoped claims with explicit version context,
 5. regressions as replayable permanent assets.
 
+Non-negotiable OxFunc-specific doctrine:
+1. function implementation targets full semantic identity with Excel for the declared version axes,
+2. bounded or seed-only semantic coverage is scaffolding, not implementation closure,
+3. when public documentation and empirical Excel behavior differ, OxFunc records the discrepancy and implements the empirically observed behavior,
+4. the only allowed limitation is in the XLL test/verification seam, where host-surface reproduction may be incomplete even though OxFunc runtime semantics must still target full Excel parity,
+5. XLL verification-seam limitations must be documented centrally in seam artifacts and repeated in function verification records wherever those limitations materially qualify a function claim.
+
 ## 3. Clean-room Rule (Non-negotiable)
 Allowed inputs:
 1. public specifications/documentation,
@@ -140,8 +147,9 @@ All report-back messages and execution records must separate completion claims a
 
 Language rule:
 1. Do not use unqualified "done/complete" claims.
-2. Use `complete for declared scope` when `scope_completeness = scope_complete` but `target_completeness = target_partial`.
-3. Always list explicit open lanes when `target_completeness = target_partial` or `integration_completeness = partial`.
+2. Use `complete for declared scope` only when the declared function scope already represents full known Excel semantics for the tracked version axes and only integration or external-host limits remain partial.
+3. Do not use `complete for declared scope` for semantically bounded function slices or packets; those remain `scope_partial`.
+4. Always list explicit open lanes when `target_completeness = target_partial` or `integration_completeness = partial`.
 
 ## 8. Kickoff Program and Dependency Intent
 Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W7`):
@@ -168,8 +176,11 @@ A function slice is done for declared scope only when all hold:
 4. runtime: Rust implementation and required tests pass.
 5. evidence: source bindings and empirical findings (where needed) are replayable.
 6. version context: both required axes are explicit.
-7. boundaries: unresolved behavior is explicit and policy-bounded.
-8. maturity: status and assurance maturity are clearly stated (`draft/provisional/validated` and `exercised/green-validated`).
+7. semantic identity: no known semantic gap remains between OxFunc and empirically determined Excel behavior for the function over the declared version axes.
+8. discrepancy handling: any public-doc vs empirical divergence is explicitly recorded and resolved in favor of empirical Excel behavior.
+9. XLL limitation disclosure: any XLL verification-seam limitation relevant to the function claim is explicitly documented in both seam-level and function-level verification records.
+10. boundaries: unresolved behavior is explicit and policy-bounded, except that function-semantic omissions are not treated as acceptable closure; only XLL verification-seam limits may remain external to the function implementation claim.
+11. maturity: status and assurance maturity are clearly stated (`draft/provisional/validated` and `exercised/green-validated`).
 
 Completeness claim rule:
 1. Any "done" claim must include completeness qualifiers from section 7.4.

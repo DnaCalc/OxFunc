@@ -63,3 +63,8 @@ For `Q` surface rows:
 2. Asynchronous/RTD callback model.
 3. Production-hardening beyond current `xlbitDLLFree` + `xlAutoFree12` ownership discipline.
 4. Registration-flag mapping (`!`, `$`, `#`) is intentionally not profile-derived yet; W11 uses runtime-only experimental alias registrations for evidence collection.
+
+## 7. Verification-Seam Limitation Disclosure
+1. This shim contract is part of the XLL verification seam, not the semantics-owning function layer.
+2. Known seam limitations are tracked centrally in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+3. Any function or packet using XLL evidence must repeat the relevant limitation notes in its own verification record when those limits qualify the claim.

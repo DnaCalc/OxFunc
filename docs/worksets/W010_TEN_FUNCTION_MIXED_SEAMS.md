@@ -116,20 +116,21 @@ Pass when:
 
 ### G5 - Promotion Readiness
 Pass when:
-1. all ten functions reach at least `provisional` function-slice status with `exercised` assurance maturity,
-2. outstanding policy questions are collected into a bounded carry-forward list.
+1. all ten functions reach full empirically aligned Excel semantics for the declared version axes,
+2. no known semantic gaps remain except external XLL verification-seam limits,
+3. outstanding policy questions are either closed or shown to be non-semantic integration issues.
 
 ## 8. Status
 Execution state:
-1. `complete`.
+1. `in_progress`.
 
 Claim confidence:
-1. `provisional` (seed-bounded for high-complexity lanes).
+1. `provisional` (useful scaffolding and empirical replay landed, but multiple functions remain semantically incomplete).
 
 Assurance maturity:
 1. `exercised`.
 
-## 9. Closure Notes
+## 9. Progress Notes
 1. Runtime slices implemented in `crates/oxfunc_core/src/functions/*` for all ten functions.
 2. Lean slices implemented in `formal/lean/OxFunc/Functions/*` for all ten functions.
 3. Function contracts published:
@@ -158,3 +159,4 @@ Assurance maturity:
    - `tools/w10-probe/run-w10-suite.ps1`
    - `tools/w10-probe/analyze-w10-results.ps1`
    - `tools/w10-probe/new-w10-compat-template.ps1`
+8. W10 remains open because `SUM`, `INDEX`, `MATCH`, `XLOOKUP`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.

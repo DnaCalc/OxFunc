@@ -1,9 +1,9 @@
-# WORKSET - TUX1000 XMATCH Deterministic Quirks Closure (W6)
+# WORKSET - TUX1000 XMATCH Deterministic Quirks Scaffolding (W6)
 
 ## 1. Purpose
 Formalize and characterize `XMATCH` as a behavior-rich deterministic candidate.
 
-This workset closes a cross-cutting decision:
+This workset advances a cross-cutting decision:
 1. downgrade to lower-interest deterministic class, or
 2. retain high-interest classification with explicit evidence-backed rationale.
 
@@ -82,10 +82,10 @@ Pass when:
 
 ## 8. Status
 Execution state:
-1. `complete`.
+1. `in_progress`.
 
 Claim confidence:
-1. `provisional` (seed scaffold + empirical replay baseline + classification decision recorded).
+1. `provisional` (scaffold + empirical replay baseline + classification decision recorded, but XMATCH remains semantically incomplete).
 
 Assurance maturity:
 1. `exercised`.

@@ -1,6 +1,6 @@
 # XMATCH Deterministic-Quirks Execution Record
 
-Status: `complete-provisional`
+Status: `in_progress-provisional`
 Workset: `W6`
 Conformance row: `FDEF-031`
 Evidence IDs:
@@ -8,9 +8,21 @@ Evidence IDs:
 2. `W6-XMATCH-BL-20260308`
 
 ## 1. Purpose
-Track execution status and reproducible evidence for W6 `XMATCH` exploration closure.
+Track execution status and reproducible evidence for W6 `XMATCH` exploration scaffolding.
 
-## 2. Executed Baseline Scope
+## 2. Completeness Axes
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
+4. integration_completeness: `partial`
+5. open_lanes:
+   - wildcard semantics (`match_mode = 2`) remain unimplemented.
+   - binary search semantics (`search_mode = 2|-2`) remain unimplemented.
+   - approximate-match semantics (`match_mode = 1|-1`) remain unimplemented.
+   - full Excel coercion parity for cross-type comparison remains open.
+   - full spill/range-shape semantics remain open.
+
+## 3. Executed Baseline Scope
 Execution date:
 1. `2026-03-08`
 
@@ -28,7 +40,7 @@ Environment:
 Manifest:
 1. `docs/function-lane/XMATCH_SCENARIO_MANIFEST_SEED.csv`
 
-## 3. Output Artifacts
+## 4. Output Artifacts
 1. `.tmp/xmatch-results-default.csv`
 2. `.tmp/xmatch-results-compat.csv`
 3. `.tmp/xmatch-results-excel.csv` (combined)
@@ -41,7 +53,7 @@ Manifest:
 Template:
 1. `tools/xmatch-probe/results/XMATCH_RESULTS_TEMPLATE.csv`
 
-## 4. Gate Tracking
+## 5. Gate Tracking
 ### G1 - Contract Closure
 1. Status: `closed`.
 2. Evidence:
@@ -78,13 +90,13 @@ Template:
 3. Rationale:
    - multi-mode behavior surface (`match_mode`/`search_mode`) has substantial parity risk.
    - coercion/comparison and shape lanes are deterministic but policy-rich.
-   - W6 baseline now pins deterministic/nonvolatile/no-host-interaction assumptions under declared profile, while retaining explicit parity follow-ons for full adapter completion.
+   - W6 baseline now pins deterministic/nonvolatile/no-host-interaction assumptions under declared profile, while retaining explicit parity follow-ons for full function completion.
 4. Evidence:
    - `docs/function-lane/INTERESTING_FUNCTIONS_INITIAL_CLASSIFICATION.csv` (`XMATCH` row)
    - `docs/worksets/W006_XMATCH_DETERMINISTIC_QUIRKS.md`
    - `docs/function-lane/EXCEL_FUNCTION_DEFINITION_PRELIM_CONFORMANCE.csv` (`FDEF-031`)
 
-## 5. Baseline Outcomes
+## 6. Baseline Outcomes
 1. Suite rows: `40` (`20` default + `20` compat_template)
 2. Observed rows: `38`
 3. Failed rows: `2`
@@ -96,7 +108,7 @@ Template:
 9. Gate status from analyzer: `green`
 10. Drift count: `0`
 
-## 6. Key Findings
+## 7. Key Findings
 1. Deterministic exact lanes are stable:
    - default exact forward (`XM6-001`, `XM6-002`),
    - reverse search (`XM6-003`),
@@ -115,13 +127,17 @@ Template:
    - no-match with embedded error returns `#N/A` (targeted replay `XMS2-004`, `XMS2-008`).
 7. Reference and dynamic-array source lanes are stable in both run labels (`XM6-015`, `XM6-016`, `XM6-020`).
 
-## 7. Recording Rules
+## 8. Recording Rules
 1. Keep expected failures explicit through `expected_status` + `expected_observable`.
 2. Treat `execution_failed_unexpected` as gate-blocking; expected failures are not gate failures.
 3. Keep version/channel/compat metadata on every probe row for replay.
 4. Keep unresolved parity lanes explicit and bounded in slice docs and runtime notes.
 
-## 8. Post-Closure Policy Notes
+## 9. Promotion Status
+1. W6 has useful scaffold and empirical replay closure for the declared exploration lanes.
+2. W6 does not satisfy XMATCH implementation closure because known Excel-semantic gaps remain in supported modes and comparison semantics.
+
+## 10. Post-Closure Policy Notes
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.
 2. Selective-probe/deref optimization is retained as a `to_consider` item and would require reference-subset dereference capability if pursued.
 3. Admission parsing behavior is handled in formula-language lanes; this execution record captures runtime-evaluable behavior only.
