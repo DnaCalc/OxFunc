@@ -65,7 +65,7 @@ Template:
 2. Evidence:
    - Rust modules:
      - `crates/oxfunc_core/src/functions/abs.rs`
-     - `crates/oxfunc_core/src/functions/abs_surface.rs`
+     - `crates/oxfunc_core/src/functions/adapters.rs` (shared declarative surface runner helpers)
    - Rust tests: `cargo test -p oxfunc_core`
 
 ### G4 - Evidence Closure
@@ -116,8 +116,8 @@ Template:
 3. Layered adapter decomposition is now explicit:
    - kernel: `num -> num` (`abs_kernel`)
    - coercion/lift adapter: declarative unary numeric profile
-   - arg preparation: `values_only_pre_adapter` (reference seam consumed pre-adapter in surface module)
-   - strict runtime split: adapter/kernel in `functions::abs`, surface composition in `functions::abs_surface`
+   - arg preparation: `values_only_pre_adapter` (reference seam consumed pre-adapter through shared surface runner helpers)
+   - runtime structure: adapter/kernel and ABS surface wrappers co-located in `functions::abs`, with shared preparation helpers in `functions::adapters`
 4. Floating-point seed lanes observed:
    - `-0` normalized at worksheet surface (`ABS5-006`)
    - subnormal seed path observed as `0` at this baseline boundary (`ABS5-012`)
@@ -130,7 +130,7 @@ Template:
    - `WorksheetFunction.Abs` method is not exposed in this COM dispatch surface for this baseline (`ABS-EP-007`, `ABS-EP-008`).
 
 ## 7. Runtime/Formal Alignment Map
-1. Rust surface path (`functions::abs_surface::eval_abs_scalar`) corresponds to Lean surface path (`Functions.AbsSurface.evalAbsSurfaceScalar`).
+1. Rust surface path (`functions::abs::eval_abs_scalar`) corresponds to Lean surface path (`Functions.AbsSurface.evalAbsSurfaceScalar`).
 2. Rust pre-adapter preparation (`functions::adapters::prepare_args_values_only`) corresponds to Lean preparation seam (`Functions.AbsSurface.prepareAbsSurfaceArgValuesOnly` + `RefResolverSeam.resolveRefToInput`).
 3. Rust adapter scalar path (`functions::abs::eval_abs_adapter_scalar_prepared`) corresponds to Lean adapter scalar path (`Functions.Abs.evalAbsAdapterScalar` / `evalAbsAdapterArg`).
 4. Rust kernel (`functions::abs::abs_kernel`) corresponds to Lean kernel (`Functions.Abs.absKernel`).

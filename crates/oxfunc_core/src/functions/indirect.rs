@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_args_values_only,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
@@ -73,9 +73,8 @@ fn parse_ref_text(arg: &PreparedArgValue) -> Result<String, IndirectEvalError> {
     }
 }
 
-pub fn eval_indirect_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+pub fn eval_indirect_adapter_prepared(
+    args: &[PreparedArgValue],
 ) -> Result<EvalValue, IndirectEvalError> {
     let argc = args.len();
     if !INDIRECT_META.arity.accepts(argc) {
@@ -86,9 +85,8 @@ pub fn eval_indirect_surface(
         });
     }
 
-    let prepared = prepare_args_values_only(args, resolver).map_err(IndirectEvalError::Coercion)?;
-    let text = parse_ref_text(&prepared[0])?;
-    let a1_style = parse_a1_flag(prepared.get(1))?;
+    let text = parse_ref_text(&args[0])?;
+    let a1_style = parse_a1_flag(args.get(1))?;
 
     if !a1_style {
         return Err(IndirectEvalError::UnsupportedR1C1Seed);
@@ -98,6 +96,18 @@ pub fn eval_indirect_surface(
         kind: ReferenceKind::A1,
         target: text,
     }))
+}
+
+pub fn eval_indirect_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, IndirectEvalError> {
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_indirect_adapter_prepared,
+        IndirectEvalError::Coercion,
+    )
 }
 
 pub fn map_indirect_error_to_ws(e: &IndirectEvalError) -> WorksheetErrorCode {

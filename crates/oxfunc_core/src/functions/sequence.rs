@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayShape, CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -45,9 +45,8 @@ fn parse_dimension(raw: f64, arg_index: usize) -> Result<usize, SequenceEvalErro
     Ok(raw as usize)
 }
 
-pub fn eval_sequence_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+pub fn eval_sequence_adapter_prepared(
+    args: &[PreparedArgValue],
 ) -> Result<EvalValue, SequenceEvalError> {
     let argc = args.len();
     if !SEQUENCE_META.arity.accepts(argc) {
@@ -58,16 +57,14 @@ pub fn eval_sequence_surface(
         });
     }
 
-    let prepared = prepare_args_values_only(args, resolver).map_err(SequenceEvalError::Coercion)?;
-
     let rows = parse_dimension(
-        coerce_prepared_to_number(&prepared[0]).map_err(SequenceEvalError::Coercion)?,
+        coerce_prepared_to_number(&args[0]).map_err(SequenceEvalError::Coercion)?,
         1,
     )?;
 
     let cols = if argc >= 2 {
         parse_dimension(
-            coerce_prepared_to_number(&prepared[1]).map_err(SequenceEvalError::Coercion)?,
+            coerce_prepared_to_number(&args[1]).map_err(SequenceEvalError::Coercion)?,
             2,
         )?
     } else {
@@ -77,13 +74,25 @@ pub fn eval_sequence_surface(
     // `start` and `step` are parsed to enforce seed coercion policy,
     // but array payload generation is intentionally out of this model scope.
     if argc >= 3 {
-        let _ = coerce_prepared_to_number(&prepared[2]).map_err(SequenceEvalError::Coercion)?;
+        let _ = coerce_prepared_to_number(&args[2]).map_err(SequenceEvalError::Coercion)?;
     }
     if argc >= 4 {
-        let _ = coerce_prepared_to_number(&prepared[3]).map_err(SequenceEvalError::Coercion)?;
+        let _ = coerce_prepared_to_number(&args[3]).map_err(SequenceEvalError::Coercion)?;
     }
 
     Ok(EvalValue::Array(ArrayShape { rows, cols }))
+}
+
+pub fn eval_sequence_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, SequenceEvalError> {
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_sequence_adapter_prepared,
+        SequenceEvalError::Coercion,
+    )
 }
 
 pub fn map_sequence_error_to_ws(e: &SequenceEvalError) -> WorksheetErrorCode {

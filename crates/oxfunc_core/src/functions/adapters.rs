@@ -58,6 +58,30 @@ pub fn prepare_args_values_only(
         .collect()
 }
 
+pub fn run_values_only_prepared<Out, E>(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    on_prepared: impl FnOnce(&[PreparedArgValue]) -> Result<Out, E>,
+    map_preparation_error: impl FnOnce(CoercionError) -> E,
+) -> Result<Out, E> {
+    let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
+    on_prepared(&prepared)
+}
+
+pub fn map_values_only_prepared<Out>(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    on_prepared_arg: impl Fn(&PreparedArgValue) -> Out,
+    on_preparation_error: impl Fn(CoercionError) -> Out,
+) -> Vec<Out> {
+    args.iter()
+        .map(|arg| match prepare_arg_values_only(arg, resolver) {
+            Ok(prepared) => on_prepared_arg(&prepared),
+            Err(e) => on_preparation_error(e),
+        })
+        .collect()
+}
+
 struct NoReferenceResolver;
 
 impl ReferenceResolver for NoReferenceResolver {
@@ -117,7 +141,7 @@ pub fn apply_unary_numeric_array_map_prepared(
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceKind, WorksheetErrorCode};
+    use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
     struct MockResolver {
         caps: ResolverCapabilities,
@@ -222,5 +246,48 @@ mod tests {
             got[1],
             Err(CoercionError::NonNumericText("asd".to_string()))
         );
+    }
+
+    #[test]
+    fn run_values_only_prepared_passes_prepared_args_to_adapter() {
+        let args = [CallArgValue::Eval(EvalValue::Number(2.0))];
+        let got = run_values_only_prepared(
+            &args,
+            &resolver_with(EvalValue::Number(0.0)),
+            |prepared| Ok::<f64, CoercionError>(coerce_prepared_to_number(&prepared[0])?),
+            |e| e,
+        );
+        assert_eq!(got, Ok(2.0));
+    }
+
+    #[test]
+    fn map_values_only_prepared_maps_preparation_errors_per_arg() {
+        let args = vec![
+            CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::A1,
+                target: "A1".to_string(),
+            }),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let resolver = MockResolver {
+            caps: ResolverCapabilities {
+                allow_eval_time_deref: false,
+                allow_three_d_refs: false,
+                allow_structured_refs: false,
+                allow_spill_anchor_refs: false,
+                allow_external_refs: false,
+            },
+            resolved_value: None,
+        };
+
+        let got = map_values_only_prepared(
+            &args,
+            &resolver,
+            |_| "ok".to_string(),
+            |e| format!("err:{e:?}"),
+        );
+        assert_eq!(got.len(), 2);
+        assert!(got[0].starts_with("err:"));
+        assert_eq!(got[1], "ok");
     }
 }

@@ -99,9 +99,9 @@
    - `evalAbsSurfaceScalar_deterministic`
    - `evalAbsSurfaceFromRef_deterministic`
 2. Rust obligations:
-   - strict runtime split:
+   - layered runtime split:
      - adapter/kernel module: `crates/oxfunc_core/src/functions/abs.rs`
-     - surface/pre-adapter composition module: `crates/oxfunc_core/src/functions/abs_surface.rs`
+     - surface/pre-adapter composition path: `crates/oxfunc_core/src/functions/abs.rs` (wrappers) + `crates/oxfunc_core/src/functions/adapters.rs` (shared runner)
    - explicit unary-admission check.
    - declarative pre-adapter preparation profile (`values_only_pre_adapter`).
    - declarative coercion/lift profile (`unary_numeric_scalar_or_array_elementwise`).
@@ -119,3 +119,4 @@
 3. current status rationale:
    - contract, Lean, Rust, and empirical baseline are wired for the declared W5 scope.
    - expansion for multi-build/channel/compat template remains required before `validated`.
+

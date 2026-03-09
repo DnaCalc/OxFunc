@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -26,9 +26,8 @@ pub enum IsnumberEvalError {
     Preparation(crate::coercion::CoercionError),
 }
 
-pub fn eval_isnumber_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+pub fn eval_isnumber_adapter_prepared(
+    args: &[PreparedArgValue],
 ) -> Result<EvalValue, IsnumberEvalError> {
     if !ISNUMBER_META.arity.accepts(args.len()) {
         return Err(IsnumberEvalError::ArityMismatch {
@@ -37,10 +36,20 @@ pub fn eval_isnumber_surface(
         });
     }
 
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(IsnumberEvalError::Preparation)?;
-    let is_number = matches!(prepared[0], PreparedArgValue::Eval(EvalValue::Number(_)));
+    let is_number = matches!(args[0], PreparedArgValue::Eval(EvalValue::Number(_)));
     Ok(EvalValue::Logical(is_number))
+}
+
+pub fn eval_isnumber_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, IsnumberEvalError> {
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_isnumber_adapter_prepared,
+        IsnumberEvalError::Preparation,
+    )
 }
 
 pub fn map_isnumber_error_to_ws(e: &IsnumberEvalError) -> WorksheetErrorCode {

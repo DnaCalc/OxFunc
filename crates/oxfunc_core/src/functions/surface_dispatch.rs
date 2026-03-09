@@ -1,7 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
-use crate::functions::abs::{AbsEvalError, abs_kernel};
-use crate::functions::abs_surface::eval_abs_scalar_value;
+use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};

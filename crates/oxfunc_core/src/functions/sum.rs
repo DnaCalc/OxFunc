@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -31,10 +31,7 @@ pub enum SumEvalError {
     Coercion(CoercionError),
 }
 
-pub fn eval_sum_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
-) -> Result<EvalValue, SumEvalError> {
+pub fn eval_sum_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SumEvalError> {
     let argc = args.len();
     if !SUM_META.arity.accepts(argc) {
         return Err(SumEvalError::ArityMismatch {
@@ -44,16 +41,22 @@ pub fn eval_sum_surface(
         });
     }
 
-    // W10 keeps SUM in a conservative values-only seed mode.
-    // Direct-vs-range dual coercion policy remains an explicit follow-up because
-    // provenance is erased under `values_only_pre_adapter`.
-    let prepared = prepare_args_values_only(args, resolver).map_err(SumEvalError::Coercion)?;
     let mut acc = 0.0;
-    for arg in &prepared {
+    for arg in args {
         let n = coerce_prepared_to_number(arg).map_err(SumEvalError::Coercion)?;
         acc += n;
     }
     Ok(EvalValue::Number(acc))
+}
+
+pub fn eval_sum_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, SumEvalError> {
+    // W10 keeps SUM in a conservative values-only seed mode.
+    // Direct-vs-range dual coercion policy remains an explicit follow-up because
+    // provenance is erased under `values_only_pre_adapter`.
+    run_values_only_prepared(args, resolver, eval_sum_adapter_prepared, SumEvalError::Coercion)
 }
 
 pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {

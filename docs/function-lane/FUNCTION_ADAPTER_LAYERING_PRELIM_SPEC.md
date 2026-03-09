@@ -96,13 +96,33 @@ For each promoted function slice, keep an explicit two-level model:
    - Rust: adapter/kernel module (`functions::<f>.rs`).
    - Lean: adapter/kernel module (`Functions.<F>.lean`).
 2. Surface execution level:
-   - Rust: pre-adapter composition module (`functions::<f>_surface.rs` or equivalent).
+   - Rust: pre-adapter composition path (either `functions::<f>_surface.rs` or a shared declarative runner path from `functions::adapters`).
    - Lean: surface composition module (`Functions.<F>Surface.lean` or equivalent).
 
 Required cross-level linkage:
 1. at least one theorem showing surface-prepared path corresponds to adapter path for prepared inputs.
 2. at least one runtime test showing surface execution equals adapter execution on prepared-value cases.
 3. correlation ledger row must include both modules and both theorem/test inventories.
+
+### 8.1 Declarative Surface Runner Policy
+For non-interesting functions with `values_only_pre_adapter` and no custom surface quirks:
+1. use shared surface helpers in `crates/oxfunc_core/src/functions/adapters.rs`:
+   - `run_values_only_prepared`
+   - `map_values_only_prepared`
+2. keep function-specific surface wrappers minimal (or inline in the function module) and avoid bespoke pre-adapter boilerplate.
+3. reserve dedicated `*_surface.rs` modules for functions that need custom surface behavior:
+   - lazy/selective argument evaluation,
+   - source-provenance-sensitive dereference timing,
+   - reference-return/caller-context custom paths,
+   - other non-standard boundary semantics.
+4. decision template:
+   - if function behavior fits shared values-only preparation, keep surface in the main function module.
+   - if function needs bespoke boundary logic, use a dedicated `*_surface.rs` companion module.
+
+Current adoption baseline (Rust):
+1. `ABS` surface wrappers now use shared declarative runner helpers.
+2. `ISNUMBER`, `OP_ADD`, `SUM`, `SEQUENCE`, and `INDIRECT` route values-only surface preparation through the shared runner.
+3. `XMATCH` remains split (`xmatch.rs` + `xmatch_surface.rs`) because it still needs custom surface behavior.
 
 ## 9. Deferred Considerations (Post-W6 XMATCH)
 1. Do not promote a new global evaluation-strategy axis yet (`eager_full_scan` vs `selective_probe` remains `to_consider`).

@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -31,9 +31,8 @@ pub fn op_add_kernel(lhs: f64, rhs: f64) -> f64 {
     lhs + rhs
 }
 
-pub fn eval_op_add_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+pub fn eval_op_add_adapter_prepared(
+    args: &[PreparedArgValue],
 ) -> Result<EvalValue, OpAddEvalError> {
     if !OP_ADD_META.arity.accepts(args.len()) {
         return Err(OpAddEvalError::ArityMismatch {
@@ -41,10 +40,21 @@ pub fn eval_op_add_surface(
             actual: args.len(),
         });
     }
-    let prepared = prepare_args_values_only(args, resolver).map_err(OpAddEvalError::Coercion)?;
-    let lhs = coerce_prepared_to_number(&prepared[0]).map_err(OpAddEvalError::Coercion)?;
-    let rhs = coerce_prepared_to_number(&prepared[1]).map_err(OpAddEvalError::Coercion)?;
+    let lhs = coerce_prepared_to_number(&args[0]).map_err(OpAddEvalError::Coercion)?;
+    let rhs = coerce_prepared_to_number(&args[1]).map_err(OpAddEvalError::Coercion)?;
     Ok(EvalValue::Number(op_add_kernel(lhs, rhs)))
+}
+
+pub fn eval_op_add_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, OpAddEvalError> {
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_op_add_adapter_prepared,
+        OpAddEvalError::Coercion,
+    )
 }
 
 pub fn map_op_add_error_to_ws(e: &OpAddEvalError) -> WorksheetErrorCode {

@@ -41,7 +41,7 @@ Out of scope:
 1. `docs/function-lane/FUNCTION_SLICE_ABS_CONTRACT_PRELIM.md`
 2. conformance row updates (`FDEF-030` and related rows)
 3. Lean module + theorem inventory for `ABS`
-4. Rust implementation/tests for `ABS` with strict runtime split (`functions/abs.rs` adapter+kernel and `functions/abs_surface.rs` pre-adapter composition)
+4. Rust implementation/tests for `ABS` with adapter/kernel and declarative surface-preparation path co-located in `functions/abs.rs` (via shared `functions::adapters` helpers)
 5. empirical evidence bundle references and promoted findings where needed
 6. correlation-ledger row for `FUNC.ABS`
 7. `docs/function-lane/ABS_SCENARIO_MANIFEST_SEED.csv`

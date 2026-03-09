@@ -13,6 +13,9 @@ pub fn eval_xmatch_surface(
     search_mode: Option<&CallArgValue>,
     resolver: &impl ReferenceResolver,
 ) -> Result<f64, XmatchEvalError> {
+    // XMATCH intentionally keeps a dedicated surface module because it needs
+    // custom boundary preparation/propagation behavior beyond the shared
+    // declarative values-only runner used by simpler functions.
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
 
