@@ -3,9 +3,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
-};
+use crate::functions::adapters::{expand_lookup_vector_arg, prepare_arg_values_only};
+use crate::functions::xmatch::{XmatchEvalError, XmatchMatchMode, eval_xmatch_adapter_prepared_value};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -16,10 +15,10 @@ pub const MATCH_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::LookupMatchProfile,
     kernel_signature_class: KernelSignatureClass::LookupMatch,
-    fec_dependency_profile: FecDependencyProfile::None,
+    fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
@@ -32,73 +31,83 @@ pub enum MatchEvalError {
     },
     EmptyLookupArray,
     Coercion(CoercionError),
-    UnsupportedValueKind(&'static str),
-    UnsupportedMatchTypeForSeed(f64),
+    InvalidMatchType(f64),
     NotAvailable,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-enum MatchComparable {
-    Number(f64),
-    Text(String),
-    Logical(bool),
-}
-
-fn to_lookup_value(prepared: &PreparedArgValue) -> Result<MatchComparable, MatchEvalError> {
-    match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(MatchComparable::Number(*n)),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => {
-            Ok(MatchComparable::Text(t.to_string_lossy()))
+fn map_xmatch_error(err: XmatchEvalError) -> MatchEvalError {
+    match err {
+        XmatchEvalError::ArityMismatch {
+            expected_min,
+            expected_max,
+            actual,
+        } => MatchEvalError::ArityMismatch {
+            expected_min,
+            expected_max,
+            actual,
+        },
+        XmatchEvalError::EmptyLookupArray => MatchEvalError::EmptyLookupArray,
+        XmatchEvalError::Coercion(err) => MatchEvalError::Coercion(err),
+        XmatchEvalError::InvalidMatchMode(n) => MatchEvalError::InvalidMatchType(n),
+        XmatchEvalError::InvalidSearchMode(_) => MatchEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("match_search_mode"),
+        ),
+        XmatchEvalError::NotAvailable => MatchEvalError::NotAvailable,
+        XmatchEvalError::MissingArg => MatchEvalError::Coercion(CoercionError::MissingArg),
+        XmatchEvalError::EmptyCell => MatchEvalError::Coercion(CoercionError::EmptyCell),
+        XmatchEvalError::UnsupportedValueKind(kind) => {
+            MatchEvalError::Coercion(CoercionError::UnsupportedValueKind(kind))
         }
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(MatchComparable::Logical(*b)),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(MatchEvalError::Coercion(
-            CoercionError::WorksheetError(*code),
-        )),
-        PreparedArgValue::MissingArg => Err(MatchEvalError::Coercion(CoercionError::MissingArg)),
-        PreparedArgValue::EmptyCell => Err(MatchEvalError::Coercion(CoercionError::EmptyCell)),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("lambda_value"))
-        }
+        XmatchEvalError::UnsupportedMatchModeForSeed(mode) => MatchEvalError::InvalidMatchType(
+            match mode {
+                XmatchMatchMode::Exact => 0.0,
+                XmatchMatchMode::ExactOrNextLarger => 1.0,
+                XmatchMatchMode::ExactOrNextSmaller => -1.0,
+                XmatchMatchMode::Wildcard => 2.0,
+            },
+        ),
+        XmatchEvalError::UnsupportedSearchModeForSeed(_) => MatchEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("match_search_mode"),
+        ),
     }
 }
 
-fn to_lookup_candidate(
-    prepared: &PreparedArgValue,
-) -> Result<Option<MatchComparable>, MatchEvalError> {
-    match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(Some(MatchComparable::Number(*n))),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => {
-            Ok(Some(MatchComparable::Text(t.to_string_lossy())))
+fn contains_unescaped_wildcard(text: &str) -> bool {
+    let mut escaped = false;
+    for ch in text.chars() {
+        if escaped {
+            escaped = false;
+            continue;
         }
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(Some(MatchComparable::Logical(*b))),
-        PreparedArgValue::Eval(EvalValue::Error(_)) => Ok(None),
-        PreparedArgValue::MissingArg => Ok(None),
-        PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("array"))
+        if ch == '~' {
+            escaped = true;
+            continue;
         }
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(MatchEvalError::UnsupportedValueKind("lambda_value"))
+        if ch == '*' || ch == '?' {
+            return true;
         }
     }
+    false
 }
 
-fn comparable_eq(lhs: &MatchComparable, rhs: &MatchComparable) -> bool {
-    match (lhs, rhs) {
-        (MatchComparable::Number(a), MatchComparable::Number(b)) => a == b,
-        (MatchComparable::Text(a), MatchComparable::Text(b)) => a == b,
-        (MatchComparable::Logical(a), MatchComparable::Logical(b)) => a == b,
-        _ => false,
+fn match_type_to_xmatch_mode(
+    lookup_value: &crate::functions::adapters::PreparedArgValue,
+    match_type: f64,
+) -> Result<f64, MatchEvalError> {
+    if match_type == 0.0 {
+        return Ok(match lookup_value {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Text(t))
+                if contains_unescaped_wildcard(&t.to_string_lossy()) => 2.0,
+            _ => 0.0,
+        });
     }
+    if match_type == 1.0 {
+        return Ok(-1.0);
+    }
+    if match_type == -1.0 {
+        return Ok(1.0);
+    }
+    Err(MatchEvalError::InvalidMatchType(match_type))
 }
 
 pub fn eval_match_surface(
@@ -116,36 +125,40 @@ pub fn eval_match_surface(
         });
     }
 
-    if lookup_array.is_empty() {
-        return Err(MatchEvalError::EmptyLookupArray);
+    let prepared_lookup_value =
+        prepare_arg_values_only(lookup_value, resolver).map_err(MatchEvalError::Coercion)?;
+    let mut prepared_lookup_array = Vec::new();
+    for arg in lookup_array {
+        prepared_lookup_array
+            .extend(expand_lookup_vector_arg(arg, resolver).map_err(MatchEvalError::Coercion)?);
     }
 
-    let match_type_num = match match_type {
-        None => 0.0,
+    let prepared_match_type = match match_type {
+        None => None,
+        Some(arg) => Some(prepare_arg_values_only(arg, resolver).map_err(MatchEvalError::Coercion)?),
+    };
+
+    let xmatch_match_mode = match prepared_match_type.as_ref() {
+        None => Some(crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(-1.0))),
         Some(arg) => {
-            let prepared =
-                prepare_arg_values_only(arg, resolver).map_err(MatchEvalError::Coercion)?;
-            coerce_prepared_to_number(&prepared).map_err(MatchEvalError::Coercion)?
+            let n = match arg {
+                crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(n)) => *n,
+                other => crate::functions::adapters::coerce_prepared_to_number(other)
+                    .map_err(MatchEvalError::Coercion)?,
+            };
+            Some(crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(
+                match_type_to_xmatch_mode(&prepared_lookup_value, n)?,
+            )))
         }
     };
-    if match_type_num != 0.0 {
-        return Err(MatchEvalError::UnsupportedMatchTypeForSeed(match_type_num));
-    }
 
-    let prepared_lookup =
-        prepare_arg_values_only(lookup_value, resolver).map_err(MatchEvalError::Coercion)?;
-    let lookup = to_lookup_value(&prepared_lookup)?;
-
-    for (idx, raw) in lookup_array.iter().enumerate() {
-        let prepared = prepare_arg_values_only(raw, resolver).map_err(MatchEvalError::Coercion)?;
-        if let Some(candidate) = to_lookup_candidate(&prepared)? {
-            if comparable_eq(&lookup, &candidate) {
-                return Ok(EvalValue::Number((idx + 1) as f64));
-            }
-        }
-    }
-
-    Err(MatchEvalError::NotAvailable)
+    eval_xmatch_adapter_prepared_value(
+        &prepared_lookup_value,
+        &prepared_lookup_array,
+        xmatch_match_mode.as_ref(),
+        None,
+    )
+    .map_err(map_xmatch_error)
 }
 
 pub fn map_match_error_to_ws(e: &MatchEvalError) -> WorksheetErrorCode {
@@ -153,8 +166,7 @@ pub fn map_match_error_to_ws(e: &MatchEvalError) -> WorksheetErrorCode {
         MatchEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         MatchEvalError::EmptyLookupArray => WorksheetErrorCode::NA,
         MatchEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
-        MatchEvalError::UnsupportedValueKind(_) => WorksheetErrorCode::Value,
-        MatchEvalError::UnsupportedMatchTypeForSeed(_) => WorksheetErrorCode::NA,
+        MatchEvalError::InvalidMatchType(_) => WorksheetErrorCode::NA,
         MatchEvalError::NotAvailable => WorksheetErrorCode::NA,
         MatchEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }
@@ -164,7 +176,7 @@ pub fn map_match_error_to_ws(e: &MatchEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceLike};
 
     struct NoResolver;
     impl ReferenceResolver for NoResolver {
@@ -196,18 +208,19 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
             ],
-            None,
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
 
     #[test]
-    fn eval_match_skips_candidate_errors_in_exact_seed() {
+    fn eval_match_default_match_type_uses_approximate_next_smaller() {
         let got = eval_match_surface(
-            &CallArgValue::Eval(EvalValue::Number(3.0)),
+            &CallArgValue::Eval(EvalValue::Number(2.5)),
             &[
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
             ],
             None,
@@ -217,24 +230,49 @@ mod tests {
     }
 
     #[test]
-    fn eval_match_non_exact_mode_is_explicitly_unsupported_for_seed() {
+    fn eval_match_case_insensitive_text_comparison() {
         let got = eval_match_surface(
-            &CallArgValue::Eval(EvalValue::Number(3.0)),
-            &[CallArgValue::Eval(EvalValue::Number(3.0))],
-            Some(&CallArgValue::Eval(EvalValue::Number(1.0))),
+            &text_arg("Abc"),
+            &[text_arg("abc"), text_arg("def")],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
             &NoResolver,
         );
-        assert_eq!(got, Err(MatchEvalError::UnsupportedMatchTypeForSeed(1.0)));
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
     }
 
     #[test]
-    fn eval_match_text_is_case_sensitive() {
-        let got = eval_match_surface(
-            &text_arg("Abc"),
-            &[text_arg("abc"), text_arg("Abc")],
-            None,
+    fn eval_match_flattens_lookup_vectors_and_rejects_two_dimensional_arrays() {
+        let flat = eval_match_surface(
+            &CallArgValue::Eval(EvalValue::Number(2.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(flat, Ok(EvalValue::Number(2.0)));
+
+        let two_d = eval_match_surface(
+            &CallArgValue::Eval(EvalValue::Number(2.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap(),
+            ))],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            &NoResolver,
+        );
+        assert_eq!(
+            two_d,
+            Err(MatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
+                "two_dimensional_array"
+            )))
+        );
     }
 }

@@ -1,0 +1,2 @@
+"scenario_id","lane","status","scenario_kind","function_or_operator","formula_setup","value_setup","op_action","op_primary_cell","op_observe_cells","objective","coercion_axis","ref_resolution_axis","expected_status","expected_observable","notes"
+"W12S6-001","W12-S6","ready","formula_case","HSTACK","A1:=HSTACK({1,2},3)","","calculate_formula2","A1","A1|B1|C1","HSTACK dynamic-array assembly baseline","dynamic_array_shape","none","observed","primary_value2_eq:1","Seed models shape-and-placement while payload generalization remains deferred."

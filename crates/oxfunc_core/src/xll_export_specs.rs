@@ -3,10 +3,13 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, VolatilityClass,
 };
 use crate::functions::{
-    abs::ABS_META, if_fn::IF_META, index::INDEX_META, indirect::INDIRECT_META,
-    isnumber::ISNUMBER_META, match_fn::MATCH_META, now_fn::NOW_META, op_add::OP_ADD_META,
-    pi::PI_META, sequence::SEQUENCE_META, sum::SUM_META, xlookup::XLOOKUP_META,
-    xmatch::XMATCH_META,
+    abs::ABS_META, and_fn::AND_META, average::AVERAGE_META, cell::CELL_META,
+    clean_fn::CLEAN_META, count::COUNT_META, counta::COUNTA_META, date_fn::DATE_META,
+    exact_fn::EXACT_META, hstack::HSTACK_META, if_fn::IF_META, iferror::IFERROR_META,
+    index::INDEX_META, indirect::INDIRECT_META, isnumber::ISNUMBER_META, match_fn::MATCH_META,
+    now_fn::NOW_META, offset::OFFSET_META, op_add::OP_ADD_META, pi::PI_META, rand_fn::RAND_META,
+    round_fn::ROUND_META, sequence::SEQUENCE_META, sum::SUM_META, textjoin::TEXTJOIN_META,
+    today_fn::TODAY_META, xlookup::XLOOKUP_META, xmatch::XMATCH_META,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -37,16 +40,31 @@ pub struct XllExportSpec {
 
 const FUNCTION_CATALOG: &[FunctionMeta] = &[
     ABS_META,
+    AND_META,
+    AVERAGE_META,
+    CELL_META,
+    CLEAN_META,
+    COUNT_META,
+    COUNTA_META,
+    DATE_META,
+    EXACT_META,
+    HSTACK_META,
     IF_META,
+    IFERROR_META,
     INDEX_META,
     INDIRECT_META,
     ISNUMBER_META,
     MATCH_META,
     NOW_META,
+    OFFSET_META,
     OP_ADD_META,
     PI_META,
+    RAND_META,
+    ROUND_META,
     SEQUENCE_META,
     SUM_META,
+    TEXTJOIN_META,
+    TODAY_META,
     XLOOKUP_META,
     XMATCH_META,
 ];

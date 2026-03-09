@@ -64,6 +64,12 @@ pub struct ArrayShape {
     pub cols: usize,
 }
 
+impl ArrayShape {
+    pub const fn cell_count(self) -> usize {
+        self.rows * self.cols
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExcelText {
     utf16_code_units: Vec<u16>,
@@ -100,12 +106,101 @@ impl ExcelText {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum ArrayCellValue {
+    Number(f64),
+    Text(ExcelText),
+    Logical(bool),
+    Error(WorksheetErrorCode),
+    EmptyCell,
+}
+
+impl ArrayCellValue {
+    pub fn to_eval_value(&self) -> Option<EvalValue> {
+        match self {
+            Self::Number(n) => Some(EvalValue::Number(*n)),
+            Self::Text(t) => Some(EvalValue::Text(t.clone())),
+            Self::Logical(b) => Some(EvalValue::Logical(*b)),
+            Self::Error(code) => Some(EvalValue::Error(*code)),
+            Self::EmptyCell => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct EvalArray {
+    shape: ArrayShape,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl EvalArray {
+    pub fn new(shape: ArrayShape, cells: Vec<ArrayCellValue>) -> Option<Self> {
+        if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
+            return None;
+        }
+        Some(Self { shape, cells })
+    }
+
+    pub fn from_scalar(value: ArrayCellValue) -> Self {
+        Self {
+            shape: ArrayShape { rows: 1, cols: 1 },
+            cells: vec![value],
+        }
+    }
+
+    pub fn from_rows(rows: Vec<Vec<ArrayCellValue>>) -> Option<Self> {
+        let row_count = rows.len();
+        let col_count = rows.first()?.len();
+        if row_count == 0 || col_count == 0 || rows.iter().any(|row| row.len() != col_count) {
+            return None;
+        }
+
+        let mut cells = Vec::with_capacity(row_count * col_count);
+        for row in rows {
+            cells.extend(row);
+        }
+
+        Self::new(
+            ArrayShape {
+                rows: row_count,
+                cols: col_count,
+            },
+            cells,
+        )
+    }
+
+    pub const fn shape(&self) -> ArrayShape {
+        self.shape
+    }
+
+    pub fn get(&self, row: usize, col: usize) -> Option<&ArrayCellValue> {
+        if row >= self.shape.rows || col >= self.shape.cols {
+            return None;
+        }
+        let index = row.checked_mul(self.shape.cols)?.checked_add(col)?;
+        self.cells.get(index)
+    }
+
+    pub fn iter_row_major(&self) -> impl Iterator<Item = &ArrayCellValue> {
+        self.cells.iter()
+    }
+
+    pub fn row_slice(&self, row: usize) -> Option<&[ArrayCellValue]> {
+        if row >= self.shape.rows {
+            return None;
+        }
+        let start = row.checked_mul(self.shape.cols)?;
+        let end = start.checked_add(self.shape.cols)?;
+        self.cells.get(start..end)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum EvalValue {
     Number(f64),
     Text(ExcelText),
     Logical(bool),
     Error(WorksheetErrorCode),
-    Array(ArrayShape),
+    Array(EvalArray),
     Reference(ReferenceLike),
     Lambda(String),
 }
@@ -218,7 +313,10 @@ impl ValueBoundary {
 
 #[cfg(test)]
 mod tests {
-    use super::{EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, ValueBoundary, ValueTag};
+    use super::{
+        ArrayCellValue, ArrayShape, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalArray, ExcelText,
+        ValueBoundary, ValueTag,
+    };
 
     #[test]
     fn eval_boundary_excludes_missing_empty_and_null() {
@@ -261,5 +359,24 @@ mod tests {
         assert_eq!(text.len_utf16_code_units(), EXCEL_TEXT_MAX_UTF16_CODE_UNITS);
         assert!(text.has_dangling_high_surrogate_tail());
         assert!(text.to_string_lossy().ends_with('\u{FFFD}'));
+    }
+
+    #[test]
+    fn eval_array_preserves_shape_and_row_major_access() {
+        let array = EvalArray::from_rows(vec![
+            vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                    "x".encode_utf16().collect(),
+                )),
+            ],
+            vec![ArrayCellValue::Logical(true), ArrayCellValue::EmptyCell],
+        ])
+        .unwrap();
+
+        assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 2 });
+        assert_eq!(array.get(0, 0), Some(&ArrayCellValue::Number(1.0)));
+        assert_eq!(array.get(1, 1), Some(&ArrayCellValue::EmptyCell));
+        assert_eq!(array.iter_row_major().count(), 4);
     }
 }

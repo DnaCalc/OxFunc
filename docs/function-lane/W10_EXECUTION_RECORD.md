@@ -13,12 +13,10 @@ Track W10 execution status across runtime/formal scaffolding, scenario manifests
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - `SUM` still lacks full direct-vs-range provenance semantics.
-   - `INDEX` still lacks full array-payload extraction and nontrivial `area_num` semantics.
-   - `MATCH` still rejects non-exact modes that Excel supports.
-   - `XLOOKUP` still omits broader match/search-mode parity beyond the current seed lanes.
-   - `INDIRECT` remains incomplete across R1C1 and broader ref-text semantics.
-   - `SEQUENCE` remains shape-only and does not materialize payload values.
+   - `INDEX` still lacks nontrivial `area_num` semantics and broader reference-form edge coverage.
+   - `MATCH` still needs broader collation, blank, and spill-shape parity beyond the current runtime lanes.
+   - `XLOOKUP` still needs broader collation/cross-type/reference edge coverage beyond the currently exercised runtime lanes.
+   - `INDIRECT` remains incomplete across broader ref-text semantics (for example structured, external, and richer workbook/sheet-address forms).
    - XLL verification-seam limits remain external and must not be mistaken for function-semantic closure.
 
 ## 3. Executed Scope
@@ -75,7 +73,7 @@ Function slices with landed scaffolding/runtime seeds:
    - `tools/w10-probe/new-w10-compat-template.ps1`
 
 ## 5. Verification Runs
-1. `cargo test -p oxfunc_core` -> pass (`120` tests).
+1. `cargo test -p oxfunc_core` -> pass (`183` tests).
 2. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml` -> pass.
 3. `./tools/xll-addin/sync-export-specs.ps1` -> pass.
 4. `lake build` (from `formal/lean`) -> pass.
@@ -90,7 +88,7 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `closed-provisional`.
 2. Notes:
    - each function now has a Rust module and Lean module.
-   - multiple functions remain semantically incomplete (`SUM`, `INDEX`, `MATCH`, `XLOOKUP`, `INDIRECT`, `SEQUENCE`) and are still scaffolding rather than closed implementations.
+   - multiple functions remain semantically incomplete (`INDEX`, `MATCH`, `XLOOKUP`, `INDIRECT`) and are still scaffolding rather than closed implementations.
 
 ### G3 - Empirical Closure
 1. Status: `closed-provisional`.
@@ -126,13 +124,14 @@ Function slices with landed scaffolding/runtime seeds:
 1. strict runtime split remains workable for most non-interesting function shapes.
 2. reference-return functions require explicit return policy axes and cannot be fully captured by values-only preparation.
 3. volatile/provider seams are now visible as a first-class profile pressure point (`NOW`).
-4. array payload modeling is the primary blocker for deeper `SEQUENCE`/`INDEX` closure.
+4. array payload modeling is now landed and removed the prior `SEQUENCE` shape-only blocker; `INDEX` still needs broader reference-form parity.
 5. XLL codegen is now profile-derived over the catalog, removing per-function export-row hand curation.
 6. empirical corrections from replay:
    - `MATCH(2,{1,2,3},1)` returns `2` (not `#N/A`).
-   - `SEQUENCE(0)` returns `#CALC!` (not `#VALUE!`).
+   - `SEQUENCE(0)` returns `#CALC!` (not `#VALUE!`), and the runtime mapper now follows that worksheet lane.
    - `INDIRECT` with `a1_style=FALSE` follows R1C1 addressing when expression is valid (for example `R1C2`).
    - `XLOOKUP` return-array orientation/alignment matters; mismatched orientation yields `#VALUE!`.
+   - `XLOOKUP(..., "nf")` returns the fallback before `#N/A` mapping on no-match.
 7. XLOOKUP reference-return behavior is empirically pinned in both run labels:
    - `CELL("address", XLOOKUP(...))` preserves address identity (`$C$1`, `$B$2`),
    - `SUM(XLOOKUP(...):XLOOKUP(...))` confirms returned references compose through `:` ranges.

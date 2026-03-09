@@ -24,10 +24,10 @@
 8. `function_adapter_fec_dependency_profile`: `ref_only`
 9. `surface_fec_dependency_profile`: `ref_only`
 
-## 4. W10 Seed Coverage
-1. reference source projection is implemented as reference-preserving shape projection.
-2. area number other than `1` is rejected in seed scope.
-3. array payload extraction is explicitly out of scope (`array_payload_unavailable`) until array payload modeling is available.
+## 4. Current Coverage
+1. reference source projection preserves actual A1 reference identity when the base reference is parseable as A1 text.
+2. array-form `INDEX` now extracts payload values and row/column slices from `EvalArray`.
+3. `area_num` other than `1` is still rejected in the current runtime.
 
 ## 5. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/index.rs`

@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
-use crate::value::{ArrayShape, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const SEQUENCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SEQUENCE",
@@ -29,6 +29,9 @@ pub enum SequenceEvalError {
         actual: usize,
     },
     Coercion(CoercionError),
+    ZeroDimension {
+        arg_index: usize,
+    },
     InvalidDimension {
         arg_index: usize,
         value: f64,
@@ -36,7 +39,10 @@ pub enum SequenceEvalError {
 }
 
 fn parse_dimension(raw: f64, arg_index: usize) -> Result<usize, SequenceEvalError> {
-    if !raw.is_finite() || raw <= 0.0 || raw.fract() != 0.0 {
+    if raw == 0.0 {
+        return Err(SequenceEvalError::ZeroDimension { arg_index });
+    }
+    if !raw.is_finite() || raw < 0.0 || raw.fract() != 0.0 {
         return Err(SequenceEvalError::InvalidDimension {
             arg_index,
             value: raw,
@@ -71,16 +77,26 @@ pub fn eval_sequence_adapter_prepared(
         1
     };
 
-    // `start` and `step` are parsed to enforce seed coercion policy,
-    // but array payload generation is intentionally out of this model scope.
-    if argc >= 3 {
-        let _ = coerce_prepared_to_number(&args[2]).map_err(SequenceEvalError::Coercion)?;
-    }
-    if argc >= 4 {
-        let _ = coerce_prepared_to_number(&args[3]).map_err(SequenceEvalError::Coercion)?;
+    let start = if argc >= 3 {
+        coerce_prepared_to_number(&args[2]).map_err(SequenceEvalError::Coercion)?
+    } else {
+        1.0
+    };
+    let step = if argc >= 4 {
+        coerce_prepared_to_number(&args[3]).map_err(SequenceEvalError::Coercion)?
+    } else {
+        1.0
+    };
+
+    let shape = ArrayShape { rows, cols };
+    let mut cells = Vec::with_capacity(shape.cell_count());
+    for idx in 0..shape.cell_count() {
+        cells.push(ArrayCellValue::Number(start + (idx as f64) * step));
     }
 
-    Ok(EvalValue::Array(ArrayShape { rows, cols }))
+    Ok(EvalValue::Array(
+        EvalArray::new(shape, cells).expect("sequence dimensions validated"),
+    ))
 }
 
 pub fn eval_sequence_surface(
@@ -99,6 +115,7 @@ pub fn map_sequence_error_to_ws(e: &SequenceEvalError) -> WorksheetErrorCode {
     match e {
         SequenceEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         SequenceEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        SequenceEvalError::ZeroDimension { .. } => WorksheetErrorCode::Calc,
         SequenceEvalError::InvalidDimension { .. } => WorksheetErrorCode::Value,
         SequenceEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }
@@ -130,7 +147,17 @@ mod tests {
     fn eval_sequence_rows_only_defaults_cols_to_one() {
         let args = [CallArgValue::Eval(EvalValue::Number(3.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(EvalValue::Array(ArrayShape { rows: 3, cols: 1 })));
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]
@@ -142,7 +169,24 @@ mod tests {
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(EvalValue::Array(ArrayShape { rows: 2, cols: 3 })));
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(10.0),
+                        ArrayCellValue::Number(12.0),
+                        ArrayCellValue::Number(14.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(16.0),
+                        ArrayCellValue::Number(18.0),
+                        ArrayCellValue::Number(20.0),
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]
@@ -151,7 +195,18 @@ mod tests {
             ExcelText::from_utf16_code_units("4".encode_utf16().collect()),
         ))];
         let got = eval_sequence_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(EvalValue::Array(ArrayShape { rows: 4, cols: 1 })));
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]
@@ -160,10 +215,15 @@ mod tests {
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Err(SequenceEvalError::InvalidDimension {
-                arg_index: 1,
-                value: 0.0,
-            })
+            Err(SequenceEvalError::ZeroDimension { arg_index: 1 })
+        );
+    }
+
+    #[test]
+    fn map_sequence_zero_dimension_to_calc() {
+        assert_eq!(
+            map_sequence_error_to_ws(&SequenceEvalError::ZeroDimension { arg_index: 1 }),
+            WorksheetErrorCode::Calc
         );
     }
 }

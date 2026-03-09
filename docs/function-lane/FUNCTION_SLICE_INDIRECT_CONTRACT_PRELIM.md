@@ -24,10 +24,10 @@
 8. `function_adapter_fec_dependency_profile`: `caller_context`
 9. `surface_fec_dependency_profile`: `caller_context`
 
-## 4. W10 Seed Coverage
+## 4. Current Coverage
 1. A1-style text to reference-like conversion is implemented.
-2. R1C1 (`a1_style = FALSE`) is explicit seed rejection.
-3. non-text ref expression input is explicit seed rejection.
+2. R1C1 (`a1_style = FALSE`) supports absolute and relative forms, with relative references requiring caller context.
+3. non-text ref expression input is rejected as invalid reference text.
 
 ## 5. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/indirect.rs`

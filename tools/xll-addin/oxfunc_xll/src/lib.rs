@@ -10,7 +10,8 @@ use oxfunc_core::functions::surface_dispatch::{
 };
 use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
 use oxfunc_core::value::{
-    ArrayShape, CallArgValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind,
+    ReferenceLike, WorksheetErrorCode,
 };
 use windows_sys::Win32::Foundation::HMODULE;
 use windows_sys::Win32::System::LibraryLoader::{
@@ -370,7 +371,49 @@ fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
         EvalValue::Logical(b) => make_xloper_bool(b),
         EvalValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
         EvalValue::Error(code) => make_xloper_err(map_ws_err_to_excel(code)),
+        EvalValue::Array(array) => {
+            let shape = array.shape();
+            let items: Vec<XLOPER12> = array
+                .iter_row_major()
+                .map(|cell| match cell {
+                    ArrayCellValue::Number(n) => make_xloper_num(*n),
+                    ArrayCellValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
+                    ArrayCellValue::Logical(b) => make_xloper_bool(*b),
+                    ArrayCellValue::Error(code) => make_xloper_err(map_ws_err_to_excel(*code)),
+                    ArrayCellValue::EmptyCell => XLOPER12 {
+                        val: XLOPER12Value { w: 0 },
+                        xltype: XLTYPE_NIL,
+                    },
+                })
+                .collect();
+            XLOPER12 {
+                val: XLOPER12Value {
+                    array: XlArray12 {
+                        lparray: Box::into_raw(items.into_boxed_slice()) as *mut XLOPER12,
+                        rows: i32::try_from(shape.rows).unwrap_or(i32::MAX),
+                        columns: i32::try_from(shape.cols).unwrap_or(i32::MAX),
+                    },
+                },
+                xltype: XLTYPE_MULTI,
+            }
+        }
         _ => make_xloper_err(XLERR_VALUE),
+    }
+}
+
+fn array_cell_from_call_arg(arg: CallArgValue) -> ArrayCellValue {
+    match arg {
+        CallArgValue::Eval(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        CallArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t),
+        CallArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(b),
+        CallArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        CallArgValue::EmptyCell | CallArgValue::MissingArg => ArrayCellValue::EmptyCell,
+        CallArgValue::Reference(_) | CallArgValue::Eval(EvalValue::Reference(_)) => {
+            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        }
+        CallArgValue::Eval(EvalValue::Array(_)) | CallArgValue::Eval(EvalValue::Lambda(_)) => {
+            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        }
     }
 }
 
@@ -380,6 +423,14 @@ fn current_excel_serial_utc() -> f64 {
         .unwrap_or_default()
         .as_secs_f64();
     25569.0 + (now / 86400.0)
+}
+
+fn current_random_unit() -> f64 {
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_nanos();
+    (nanos % 1_000_000_000) as f64 / 1_000_000_000.0
 }
 
 fn fetch_excel12_proc() -> Option<Excel12Proc> {
@@ -621,7 +672,20 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
             let array = unsafe { (*value).val.array };
             let rows = usize::try_from(array.rows.max(0)).unwrap_or(0);
             let cols = usize::try_from(array.columns.max(0)).unwrap_or(0);
-            CallArgValue::Eval(EvalValue::Array(ArrayShape { rows, cols }))
+            if rows == 0 || cols == 0 || array.lparray.is_null() {
+                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value));
+            }
+            let len = rows.saturating_mul(cols);
+            // SAFETY: Excel provides `rows * columns` contiguous XLOPER12 items.
+            let items = unsafe { std::slice::from_raw_parts(array.lparray, len) };
+            let cells = items
+                .iter()
+                .map(|item| array_cell_from_call_arg(call_arg_from_xloper(item, preserve_refs)))
+                .collect();
+            let shape = ArrayShape { rows, cols };
+            let eval_array = EvalArray::new(shape, cells)
+                .expect("excel multi arrays should match their declared dimensions");
+            CallArgValue::Eval(EvalValue::Array(eval_array))
         }
         XLTYPE_SREF if preserve_refs => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeSRef`.
@@ -659,6 +723,7 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
         args,
         &resolver,
         Some(current_excel_serial_utc()),
+        Some(current_random_unit()),
     ) {
         Ok(v) => v,
         Err(code) => EvalValue::Error(code),

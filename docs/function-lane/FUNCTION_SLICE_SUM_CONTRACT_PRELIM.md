@@ -18,16 +18,17 @@
 2. `volatility_class`: `nonvolatile`
 3. `host_interaction_class`: `none`
 4. `thread_safety_class`: `safe_pure`
-5. `arg_preparation_profile`: `values_only_pre_adapter`
-6. `coercion_lift_profile`: `aggregate_direct_and_range_dual_policy` (declared target profile)
+5. `arg_preparation_profile`: `refs_visible_in_adapter`
+6. `coercion_lift_profile`: `aggregate_direct_and_range_dual_policy`
 7. `kernel_signature_class`: `nums_to_num`
-8. `function_adapter_fec_dependency_profile`: `none`
+8. `function_adapter_fec_dependency_profile`: `ref_only`
 9. `surface_fec_dependency_profile`: `ref_only`
 
-## 4. W10 Seed Coverage
-1. strict numeric fold for prepared args is implemented.
-2. reference args are dereferenced pre-adapter.
-3. direct-vs-range provenance split is not yet implementable under current value-only preparation and is tracked as an explicit follow-up.
+## 4. Current Coverage
+1. direct scalar arguments coerce numeric text and logicals through the worksheet aggregate direct-argument policy.
+2. direct arrays and reference-derived values use range-like policy: numeric cells contribute, text/logical/blank cells are ignored, and worksheet errors propagate.
+3. missing arguments and empty cells in direct-scalar position contribute zero.
+4. the adapter preserves provenance explicitly enough to distinguish direct-scalar and range-like treatment.
 
 ## 5. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/sum.rs`

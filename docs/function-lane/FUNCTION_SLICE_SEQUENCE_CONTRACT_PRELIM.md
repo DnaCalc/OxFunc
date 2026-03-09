@@ -24,10 +24,11 @@
 8. `function_adapter_fec_dependency_profile`: `none`
 9. `surface_fec_dependency_profile`: `ref_only`
 
-## 4. W10 Seed Coverage
+## 4. Current Coverage
 1. row/column dimension coercion and positivity checks are implemented.
-2. `start` and `step` are coerced and admitted in seed scope.
-3. current runtime model returns shape only (`EvalValue::Array(ArrayShape)`), not payload values.
+2. `start` and `step` are coerced and admitted.
+3. current runtime materializes array payload values row-major into `EvalArray`.
+4. zero dimensions surface through the worksheet `#CALC!` lane.
 
 ## 5. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/sequence.rs`

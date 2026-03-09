@@ -1,10 +1,21 @@
-use crate::functions::adapters::prepare_arg_values_only;
+use crate::functions::adapters::{PreparedArgValue, expand_lookup_vector_arg, prepare_arg_values_only};
 use crate::functions::xmatch::{
     XmatchEvalError, eval_xmatch_adapter_prepared, eval_xmatch_adapter_prepared_value,
     validate_xmatch_surface_arity,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue};
+
+fn prepare_lookup_vector(
+    lookup_array: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<Vec<PreparedArgValue>, XmatchEvalError> {
+    let mut prepared = Vec::new();
+    for arg in lookup_array {
+        prepared.extend(expand_lookup_vector_arg(arg, resolver).map_err(XmatchEvalError::Coercion)?);
+    }
+    Ok(prepared)
+}
 
 pub fn eval_xmatch_surface(
     lookup_value: &CallArgValue,
@@ -13,19 +24,12 @@ pub fn eval_xmatch_surface(
     search_mode: Option<&CallArgValue>,
     resolver: &impl ReferenceResolver,
 ) -> Result<f64, XmatchEvalError> {
-    // XMATCH intentionally keeps a dedicated surface module because it needs
-    // custom boundary preparation/propagation behavior beyond the shared
-    // declarative values-only runner used by simpler functions.
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
 
     let prepared_lookup_value =
         prepare_arg_values_only(lookup_value, resolver).map_err(XmatchEvalError::Coercion)?;
-    let prepared_lookup_array = lookup_array
-        .iter()
-        .map(|arg| prepare_arg_values_only(arg, resolver))
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(XmatchEvalError::Coercion)?;
+    let prepared_lookup_array = prepare_lookup_vector(lookup_array, resolver)?;
     let prepared_match_mode = match_mode
         .map(|arg| prepare_arg_values_only(arg, resolver))
         .transpose()
@@ -55,11 +59,7 @@ pub fn eval_xmatch_surface_value(
 
     let prepared_lookup_value =
         prepare_arg_values_only(lookup_value, resolver).map_err(XmatchEvalError::Coercion)?;
-    let prepared_lookup_array = lookup_array
-        .iter()
-        .map(|arg| prepare_arg_values_only(arg, resolver))
-        .collect::<Result<Vec<_>, _>>()
-        .map_err(XmatchEvalError::Coercion)?;
+    let prepared_lookup_array = prepare_lookup_vector(lookup_array, resolver)?;
     let prepared_match_mode = match_mode
         .map(|arg| prepare_arg_values_only(arg, resolver))
         .transpose()
@@ -82,10 +82,8 @@ mod tests {
     use super::*;
     use crate::coercion::CoercionError;
     use crate::function::Arity;
-    use crate::functions::adapters::PreparedArgValue;
-    use crate::functions::xmatch::XMATCH_META;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
     struct MockResolver {
         caps: ResolverCapabilities,
@@ -134,10 +132,7 @@ mod tests {
                 kind: ReferenceKind::A1,
                 target: "A1".to_string(),
             }),
-            &[
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-            ],
+            &[CallArgValue::Eval(EvalValue::Number(1.0)), CallArgValue::Eval(EvalValue::Number(2.0))],
             None,
             None,
             &r,
@@ -146,46 +141,43 @@ mod tests {
     }
 
     #[test]
-    fn eval_xmatch_surface_uses_reference_preparation_for_lookup_array() {
-        let r = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
-            resolved_value: Some(EvalValue::Number(7.0)),
-        };
-
+    fn eval_xmatch_surface_flattens_lookup_array_argument() {
         let got = eval_xmatch_surface(
-            &CallArgValue::Eval(EvalValue::Number(7.0)),
-            &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }),
-                CallArgValue::Eval(EvalValue::Number(9.0)),
-            ],
+            &CallArgValue::Eval(EvalValue::Number(2.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            ))],
             None,
             None,
-            &r,
+            &resolver(),
         );
-        assert_eq!(got, Ok(1.0));
+        assert_eq!(got, Ok(2.0));
     }
 
     #[test]
-    fn eval_xmatch_surface_propagates_reference_resolution_error() {
+    fn eval_xmatch_surface_rejects_two_dimensional_lookup_array() {
         let got = eval_xmatch_surface(
-            &CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            }),
-            &[CallArgValue::Eval(EvalValue::Number(1.0))],
+            &CallArgValue::Eval(EvalValue::Number(3.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap(),
+            ))],
             None,
             None,
             &resolver(),
         );
         assert_eq!(
             got,
-            Err(XmatchEvalError::Coercion(CoercionError::RefResolution(
-                RefResolutionError::UnresolvedReference {
-                    target: "A1".to_string()
-                }
+            Err(XmatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
+                "two_dimensional_array"
             )))
         );
     }
@@ -200,30 +192,6 @@ mod tests {
             &resolver(),
         );
         assert_eq!(got, Ok(EvalValue::Number(1.0)));
-    }
-
-    #[test]
-    fn eval_xmatch_surface_scalar_matches_adapter_on_prepared_numeric_case() {
-        let lookup_value = CallArgValue::Eval(EvalValue::Number(2.0));
-        let lookup_array = [
-            CallArgValue::Eval(EvalValue::Number(1.0)),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-        ];
-
-        let surface = eval_xmatch_surface(&lookup_value, &lookup_array, None, None, &resolver());
-
-        let prepared_lookup_value = PreparedArgValue::Eval(EvalValue::Number(2.0));
-        let prepared_lookup_array = vec![
-            PreparedArgValue::Eval(EvalValue::Number(1.0)),
-            PreparedArgValue::Eval(EvalValue::Number(2.0)),
-        ];
-        let adapter = eval_xmatch_adapter_prepared(
-            &prepared_lookup_value,
-            &prepared_lookup_array,
-            None,
-            None,
-        );
-        assert_eq!(surface, adapter);
     }
 
     #[test]
@@ -242,6 +210,26 @@ mod tests {
     }
 
     #[test]
+    fn eval_xmatch_surface_lookup_array_error_is_skipped_as_non_match() {
+        let got = eval_xmatch_surface(
+            &CallArgValue::Eval(EvalValue::Number(9.0)),
+            &[
+                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            None,
+            None,
+            &resolver(),
+        );
+        assert_eq!(got, Err(XmatchEvalError::NotAvailable));
+    }
+
+    #[test]
+    fn xmatch_meta_arity_is_two_to_four_in_surface_context() {
+        assert_eq!(crate::functions::xmatch::XMATCH_META.arity, Arity { min: 2, max: 4 });
+    }
+
+    #[test]
     fn eval_xmatch_surface_coercion_error_from_mode_is_propagated() {
         let got = eval_xmatch_surface(
             &CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -256,41 +244,5 @@ mod tests {
                 "asd".to_string()
             )))
         );
-    }
-
-    #[test]
-    fn eval_xmatch_surface_lookup_array_error_is_skipped_via_adapter_lane() {
-        let got = eval_xmatch_surface(
-            &CallArgValue::Eval(EvalValue::Number(1.0)),
-            &[CallArgValue::Eval(EvalValue::Error(
-                WorksheetErrorCode::Value,
-            ))],
-            None,
-            None,
-            &resolver(),
-        );
-        assert_eq!(got, Err(XmatchEvalError::NotAvailable));
-    }
-
-    #[test]
-    fn eval_xmatch_surface_lookup_value_error_is_propagated() {
-        let got = eval_xmatch_surface(
-            &CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
-            &[CallArgValue::Eval(EvalValue::Number(1.0))],
-            None,
-            None,
-            &resolver(),
-        );
-        assert_eq!(
-            got,
-            Err(XmatchEvalError::Coercion(CoercionError::WorksheetError(
-                WorksheetErrorCode::Value
-            )))
-        );
-    }
-
-    #[test]
-    fn xmatch_meta_arity_is_two_to_four_in_surface_context() {
-        assert_eq!(XMATCH_META.arity, Arity { min: 2, max: 4 });
     }
 }

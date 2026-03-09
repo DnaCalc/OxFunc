@@ -5,6 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
 use crate::value::EvalValue;
+use std::cmp::Ordering;
 
 pub const XMATCH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.XMATCH",
@@ -169,38 +170,152 @@ fn parse_optional_search_mode(
 fn comparable_eq(lhs: &XmatchComparable, rhs: &XmatchComparable) -> bool {
     match (lhs, rhs) {
         (XmatchComparable::Number(a), XmatchComparable::Number(b)) => a == b,
-        (XmatchComparable::Text(a), XmatchComparable::Text(b)) => a == b,
+        (XmatchComparable::Text(a), XmatchComparable::Text(b)) => a.to_lowercase() == b.to_lowercase(),
         (XmatchComparable::Logical(a), XmatchComparable::Logical(b)) => a == b,
         _ => false,
     }
 }
 
-fn xmatch_exact_first_to_last(
-    lookup_value: &XmatchComparable,
-    lookup_array: &[PreparedArgValue],
-) -> Result<f64, XmatchEvalError> {
-    for (idx, candidate) in lookup_array.iter().enumerate() {
-        if let Some(candidate_comparable) = to_lookup_candidate_comparable(candidate)? {
-            if comparable_eq(lookup_value, &candidate_comparable) {
-                return Ok((idx + 1) as f64);
-            }
+fn comparable_order(lhs: &XmatchComparable, rhs: &XmatchComparable) -> Option<Ordering> {
+    match (lhs, rhs) {
+        (XmatchComparable::Number(a), XmatchComparable::Number(b)) => a.partial_cmp(b),
+        (XmatchComparable::Text(a), XmatchComparable::Text(b)) => {
+            Some(a.to_lowercase().cmp(&b.to_lowercase()))
         }
+        (XmatchComparable::Logical(a), XmatchComparable::Logical(b)) => Some(a.cmp(b)),
+        _ => None,
     }
-    Err(XmatchEvalError::NotAvailable)
 }
 
-fn xmatch_exact_last_to_first(
-    lookup_value: &XmatchComparable,
-    lookup_array: &[PreparedArgValue],
-) -> Result<f64, XmatchEvalError> {
-    for (idx, candidate) in lookup_array.iter().enumerate().rev() {
-        if let Some(candidate_comparable) = to_lookup_candidate_comparable(candidate)? {
-            if comparable_eq(lookup_value, &candidate_comparable) {
-                return Ok((idx + 1) as f64);
+fn wildcard_match(pattern: &str, text: &str) -> bool {
+    let pattern: Vec<char> = pattern.to_lowercase().chars().collect();
+    let text: Vec<char> = text.to_lowercase().chars().collect();
+    let mut pattern_index = 0usize;
+    let mut text_index = 0usize;
+    let mut star_index = None;
+    let mut resume_text_index = 0usize;
+
+    while text_index < text.len() {
+        if pattern_index < pattern.len() {
+            match pattern[pattern_index] {
+                '~'
+                    if pattern_index + 1 < pattern.len()
+                        && pattern[pattern_index + 1] == text[text_index] =>
+                {
+                    pattern_index += 2;
+                    text_index += 1;
+                    continue;
+                }
+                '?' => {
+                    pattern_index += 1;
+                    text_index += 1;
+                    continue;
+                }
+                '*' => {
+                    star_index = Some(pattern_index);
+                    pattern_index += 1;
+                    resume_text_index = text_index;
+                    continue;
+                }
+                ch if ch == text[text_index] => {
+                    pattern_index += 1;
+                    text_index += 1;
+                    continue;
+                }
+                _ => {}
             }
         }
+
+        if let Some(star) = star_index {
+            pattern_index = star + 1;
+            resume_text_index += 1;
+            text_index = resume_text_index;
+        } else {
+            return false;
+        }
     }
-    Err(XmatchEvalError::NotAvailable)
+
+    while pattern_index < pattern.len() && pattern[pattern_index] == '*' {
+        pattern_index += 1;
+    }
+
+    pattern_index == pattern.len()
+}
+
+fn scan_indices(search_mode: XmatchSearchMode, len: usize) -> Box<dyn Iterator<Item = usize>> {
+    match search_mode {
+        XmatchSearchMode::FirstToLast | XmatchSearchMode::BinaryAscending => Box::new(0..len),
+        XmatchSearchMode::LastToFirst | XmatchSearchMode::BinaryDescending => {
+            Box::new((0..len).rev())
+        }
+    }
+}
+
+fn candidate_matches(
+    lookup_value: &XmatchComparable,
+    candidate: &XmatchComparable,
+    match_mode: XmatchMatchMode,
+) -> bool {
+    match match_mode {
+        XmatchMatchMode::Wildcard => match (lookup_value, candidate) {
+            (XmatchComparable::Text(pattern), XmatchComparable::Text(text)) => {
+                wildcard_match(pattern, text)
+            }
+            _ => false,
+        },
+        _ => comparable_eq(lookup_value, candidate),
+    }
+}
+
+fn xmatch_scan(
+    lookup_value: &XmatchComparable,
+    lookup_array: &[PreparedArgValue],
+    match_mode: XmatchMatchMode,
+    search_mode: XmatchSearchMode,
+) -> Result<f64, XmatchEvalError> {
+    let mut best: Option<(usize, XmatchComparable)> = None;
+
+    for idx in scan_indices(search_mode, lookup_array.len()) {
+        let Some(candidate) = to_lookup_candidate_comparable(&lookup_array[idx])? else {
+            continue;
+        };
+
+        if candidate_matches(lookup_value, &candidate, match_mode) {
+            return Ok((idx + 1) as f64);
+        }
+
+        let Some(order) = comparable_order(&candidate, lookup_value) else {
+            continue;
+        };
+
+        match match_mode {
+            XmatchMatchMode::Exact | XmatchMatchMode::Wildcard => {}
+            XmatchMatchMode::ExactOrNextLarger if order == Ordering::Greater => {
+                let replace = match &best {
+                    None => true,
+                    Some((_, current)) => comparable_order(&candidate, current)
+                        .is_some_and(|candidate_vs_best| candidate_vs_best == Ordering::Less),
+                };
+                if replace {
+                    best = Some((idx, candidate));
+                }
+            }
+            XmatchMatchMode::ExactOrNextSmaller if order == Ordering::Less => {
+                let replace = match &best {
+                    None => true,
+                    Some((_, current)) => comparable_order(&candidate, current)
+                        .is_some_and(|candidate_vs_best| candidate_vs_best == Ordering::Greater),
+                };
+                if replace {
+                    best = Some((idx, candidate));
+                }
+            }
+            _ => {}
+        }
+    }
+
+    best.map(|(idx, _)| (idx + 1) as f64)
+        .ok_or(XmatchEvalError::NotAvailable)
 }
 
 pub fn eval_xmatch_adapter_prepared(
@@ -215,25 +330,14 @@ pub fn eval_xmatch_adapter_prepared(
 
     let parsed_match_mode = parse_optional_match_mode(match_mode)?;
     let parsed_search_mode = parse_optional_search_mode(search_mode)?;
-
-    if parsed_match_mode != XmatchMatchMode::Exact {
-        return Err(XmatchEvalError::UnsupportedMatchModeForSeed(
-            parsed_match_mode,
-        ));
-    }
-
     let lookup_value = to_lookup_value_comparable(lookup_value)?;
 
-    match parsed_search_mode {
-        XmatchSearchMode::FirstToLast => xmatch_exact_first_to_last(&lookup_value, &lookup_array),
-        XmatchSearchMode::LastToFirst => xmatch_exact_last_to_first(&lookup_value, &lookup_array),
-        XmatchSearchMode::BinaryAscending => Err(XmatchEvalError::UnsupportedSearchModeForSeed(
-            XmatchSearchMode::BinaryAscending,
-        )),
-        XmatchSearchMode::BinaryDescending => Err(XmatchEvalError::UnsupportedSearchModeForSeed(
-            XmatchSearchMode::BinaryDescending,
-        )),
-    }
+    xmatch_scan(
+        &lookup_value,
+        lookup_array,
+        parsed_match_mode,
+        parsed_search_mode,
+    )
 }
 
 pub fn eval_xmatch_adapter_prepared_value(
@@ -350,10 +454,17 @@ mod tests {
     }
 
     #[test]
-    fn eval_xmatch_adapter_prepared_text_match_is_case_sensitive() {
+    fn eval_xmatch_adapter_prepared_text_match_is_case_insensitive() {
         let got =
-            eval_xmatch_adapter_prepared(&text("Abc"), &[text("abc"), text("Abc")], None, None);
-        assert_eq!(got, Ok(2.0));
+            eval_xmatch_adapter_prepared(&text("Abc"), &[text("abc"), text("zzz")], None, None);
+        assert_eq!(got, Ok(1.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_handles_unicode_casefold_baseline() {
+        let got =
+            eval_xmatch_adapter_prepared(&text("Äbc"), &[text("äBC"), text("zzz")], None, None);
+        assert_eq!(got, Ok(1.0));
     }
 
     #[test]
@@ -373,22 +484,127 @@ mod tests {
     }
 
     #[test]
-    fn eval_xmatch_adapter_prepared_reports_unsupported_seed_modes() {
-        let wildcard = eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], Some(&num(2.0)), None);
-        assert_eq!(
-            wildcard,
-            Err(XmatchEvalError::UnsupportedMatchModeForSeed(
-                XmatchMatchMode::Wildcard
-            ))
-        );
+    fn eval_xmatch_adapter_prepared_supports_wildcard_mode() {
+        let wildcard =
+            eval_xmatch_adapter_prepared(&text("a*"), &[text("zzz"), text("abc")], Some(&num(2.0)), None);
+        assert_eq!(wildcard, Ok(2.0));
+    }
 
-        let binary = eval_xmatch_adapter_prepared(&num(1.0), &[num(1.0)], None, Some(&num(2.0)));
-        assert_eq!(
-            binary,
-            Err(XmatchEvalError::UnsupportedSearchModeForSeed(
-                XmatchSearchMode::BinaryAscending
-            ))
+    #[test]
+    fn eval_xmatch_adapter_prepared_honors_wildcard_escaping() {
+        let literal_star = eval_xmatch_adapter_prepared(
+            &text("a~*"),
+            &[text("abc"), text("a*")],
+            Some(&num(2.0)),
+            None,
         );
+        assert_eq!(literal_star, Ok(2.0));
+
+        let literal_question = eval_xmatch_adapter_prepared(
+            &text("a~?"),
+            &[text("a1"), text("a?")],
+            Some(&num(2.0)),
+            None,
+        );
+        assert_eq!(literal_question, Ok(2.0));
+
+        let literal_tilde = eval_xmatch_adapter_prepared(
+            &text("a~~b"),
+            &[text("a~b"), text("ab")],
+            Some(&num(2.0)),
+            None,
+        );
+        assert_eq!(literal_tilde, Ok(1.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_reverse_wildcard_returns_last_match() {
+        let got = eval_xmatch_adapter_prepared(
+            &text("a*"),
+            &[text("abc"), text("def"), text("ade")],
+            Some(&num(2.0)),
+            Some(&num(-1.0)),
+        );
+        assert_eq!(got, Ok(3.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_supports_binary_modes() {
+        let ascending = eval_xmatch_adapter_prepared(
+            &num(3.0),
+            &[num(1.0), num(2.0), num(3.0)],
+            None,
+            Some(&num(2.0)),
+        );
+        assert_eq!(ascending, Ok(3.0));
+
+        let descending = eval_xmatch_adapter_prepared(
+            &num(3.0),
+            &[num(4.0), num(3.0), num(2.0)],
+            None,
+            Some(&num(-2.0)),
+        );
+        assert_eq!(descending, Ok(2.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_supports_approximate_modes() {
+        let next_larger = eval_xmatch_adapter_prepared(
+            &num(2.5),
+            &[num(1.0), num(2.0), num(3.0)],
+            Some(&num(1.0)),
+            None,
+        );
+        assert_eq!(next_larger, Ok(3.0));
+
+        let next_smaller = eval_xmatch_adapter_prepared(
+            &num(2.5),
+            &[num(1.0), num(2.0), num(3.0)],
+            Some(&num(-1.0)),
+            None,
+        );
+        assert_eq!(next_smaller, Ok(2.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_approximate_modes_prefer_exact_match() {
+        let exact_larger = eval_xmatch_adapter_prepared(
+            &num(2.0),
+            &[num(1.0), num(2.0), num(3.0)],
+            Some(&num(1.0)),
+            None,
+        );
+        assert_eq!(exact_larger, Ok(2.0));
+
+        let exact_smaller = eval_xmatch_adapter_prepared(
+            &num(2.0),
+            &[num(1.0), num(2.0), num(3.0)],
+            Some(&num(-1.0)),
+            None,
+        );
+        assert_eq!(exact_smaller, Ok(2.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_binary_modes_accept_text_and_logical_ordering() {
+        let text_match = eval_xmatch_adapter_prepared(
+            &text("Beta"),
+            &[text("alpha"), text("beta"), text("gamma")],
+            None,
+            Some(&num(2.0)),
+        );
+        assert_eq!(text_match, Ok(2.0));
+
+        let logical_match = eval_xmatch_adapter_prepared(
+            &PreparedArgValue::Eval(EvalValue::Logical(true)),
+            &[
+                PreparedArgValue::Eval(EvalValue::Logical(false)),
+                PreparedArgValue::Eval(EvalValue::Logical(true)),
+            ],
+            None,
+            Some(&num(2.0)),
+        );
+        assert_eq!(logical_match, Ok(2.0));
     }
 
     #[test]

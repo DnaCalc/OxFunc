@@ -24,17 +24,17 @@
 8. `function_adapter_fec_dependency_profile`: `ref_only`
 9. `surface_fec_dependency_profile`: `ref_only`
 
-## 4. W10 Seed Coverage
-1. exact match mode only (`match_mode = 0` or omitted) is implemented.
-2. search modes supported in seed: forward (`1` default) and reverse (`-1`).
-3. lookup and return array length mismatch is explicit error.
-4. return lane preserves reference-form results when return element is reference-like.
-5. reference-return behavior is empirically exercised for:
+## 4. Current Coverage
+1. `match_mode` supports exact (`0` default), wildcard (`2`), exact-or-next-larger (`1`), and exact-or-next-smaller (`-1`) through the shared `XMATCH` substrate.
+2. `search_mode` supports forward (`1` default), reverse (`-1`), binary ascending (`2`), and binary descending (`-2`) ordering lanes.
+3. lookup and return array length mismatch is explicit error, and mismatched non-scalar orientations return `#VALUE!`.
+4. `if_not_found` fallback is returned on no-match before worksheet `#N/A` mapping.
+5. return lane preserves reference-form results when return element is reference-like.
+6. reference-return behavior is empirically exercised for:
    - `CELL("address", XLOOKUP(...))` address identity,
    - `SUM(XLOOKUP(...):XLOOKUP(...))` range composition.
-6. unsupported match/search lanes are explicit seed rejections.
 
 ## 5. Artifact Bindings
-1. Rust: `crates/oxfunc_core/src/functions/xlookup.rs`
+1. Rust: `crates/oxfunc_core/src/functions/xlookup_mod.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Xlookup.lean`
 3. side-note linkage: `docs/function-lane/W10_PROFILE_SYSTEM_SIDE_NOTES.md` (notes 3, 6, and 7)

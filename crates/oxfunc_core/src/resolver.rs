@@ -9,6 +9,13 @@ pub struct ResolverCapabilities {
     pub allow_external_refs: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CallerContext {
+    pub prefix: Option<String>,
+    pub row: usize,
+    pub col: usize,
+}
+
 impl ResolverCapabilities {
     pub const fn permissive_local() -> Self {
         Self {
@@ -40,6 +47,10 @@ pub trait ReferenceResolver {
     fn capabilities(&self) -> ResolverCapabilities;
     fn resolve_reference(&self, reference: &ReferenceLike)
     -> Result<EvalValue, RefResolutionError>;
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        None
+    }
 }
 
 pub fn normalize_reference(reference: &ReferenceLike) -> ReferenceLike {

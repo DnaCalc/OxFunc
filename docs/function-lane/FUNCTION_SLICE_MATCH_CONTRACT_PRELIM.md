@@ -18,16 +18,18 @@
 2. `volatility_class`: `nonvolatile`
 3. `host_interaction_class`: `none`
 4. `thread_safety_class`: `safe_pure`
-5. `arg_preparation_profile`: `values_only_pre_adapter`
+5. `arg_preparation_profile`: `refs_visible_in_adapter`
 6. `coercion_lift_profile`: `lookup_match_profile`
 7. `kernel_signature_class`: `lookup_match`
-8. `function_adapter_fec_dependency_profile`: `none`
+8. `function_adapter_fec_dependency_profile`: `ref_only`
 9. `surface_fec_dependency_profile`: `ref_only`
 
-## 4. W10 Seed Coverage
-1. exact match lane (`match_type = 0` or omitted in this seed) is implemented.
-2. lookup candidate errors are skipped as non-candidates in exact lane.
-3. non-exact match modes are explicit seed rejections (`unsupported_match_type_for_seed`).
+## 4. Current Coverage
+1. default `match_type` follows Excel’s approximate-next-smaller lane (`1` semantics).
+2. explicit `match_type = 0` supports exact matching and wildcard matching when the text lookup value contains unescaped wildcard characters.
+3. explicit `match_type = -1` maps to exact-or-next-larger over descending-ordered data.
+4. lookup vectors are flattened from one-dimensional arrays and references; two-dimensional lookup arrays are rejected with `#VALUE!`.
+5. text comparison is currently case-insensitive in the runtime.
 
 ## 5. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/match_fn.rs`

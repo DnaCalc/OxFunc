@@ -2,7 +2,7 @@ use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
     RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
 };
-use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike};
+use crate::value::{ArrayCellValue, CallArgValue, EvalValue, ReferenceKind, ReferenceLike};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UnaryNumericCoercionLiftProfile {
@@ -15,6 +15,49 @@ pub enum PreparedArgValue {
     Eval(EvalValue),
     MissingArg,
     EmptyCell,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AggregateArgOrigin {
+    DirectScalar,
+    DirectArray,
+    ReferenceDerived,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AggregatePreparedValue {
+    pub origin: AggregateArgOrigin,
+    pub value: PreparedArgValue,
+}
+
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn expand_resolved_eval_value(value: &EvalValue) -> Vec<PreparedArgValue> {
+    match value {
+        EvalValue::Array(array) => array.iter_row_major().map(prepared_from_array_cell).collect(),
+        _ => vec![PreparedArgValue::Eval(value.clone())],
+    }
+}
+
+fn expand_lookup_eval_value(value: &EvalValue) -> Result<Vec<PreparedArgValue>, CoercionError> {
+    match value {
+        EvalValue::Array(array) => {
+            let shape = array.shape();
+            if shape.rows > 1 && shape.cols > 1 {
+                return Err(CoercionError::UnsupportedValueKind("two_dimensional_array"));
+            }
+            Ok(array.iter_row_major().map(prepared_from_array_cell).collect())
+        }
+        _ => Ok(vec![PreparedArgValue::Eval(value.clone())]),
+    }
 }
 
 fn resolve_eval_references(
@@ -56,6 +99,84 @@ pub fn prepare_args_values_only(
     args.iter()
         .map(|arg| prepare_arg_values_only(arg, resolver))
         .collect()
+}
+
+pub fn expand_arg_values_only(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<Vec<PreparedArgValue>, CoercionError> {
+    match arg {
+        CallArgValue::Eval(v) => Ok(expand_resolved_eval_value(&resolve_eval_references(
+            v, resolver,
+        )?)),
+        CallArgValue::MissingArg => Ok(vec![PreparedArgValue::MissingArg]),
+        CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
+        CallArgValue::Reference(r) => {
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            Ok(expand_resolved_eval_value(&resolve_eval_references(
+                &resolved, resolver,
+            )?))
+        }
+    }
+}
+
+pub fn expand_lookup_vector_arg(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<Vec<PreparedArgValue>, CoercionError> {
+    match arg {
+        CallArgValue::Eval(v) => expand_lookup_eval_value(&resolve_eval_references(v, resolver)?),
+        CallArgValue::MissingArg => Ok(vec![PreparedArgValue::MissingArg]),
+        CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
+        CallArgValue::Reference(r) => {
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
+        }
+    }
+}
+
+pub fn expand_aggregate_arg(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
+    match arg {
+        CallArgValue::Reference(r) => {
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let prepared = expand_resolved_eval_value(&resolve_eval_references(&resolved, resolver)?);
+            Ok(prepared
+                .into_iter()
+                .map(|value| AggregatePreparedValue {
+                    origin: AggregateArgOrigin::ReferenceDerived,
+                    value,
+                })
+                .collect())
+        }
+        CallArgValue::Eval(EvalValue::Reference(r)) => {
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let prepared = expand_resolved_eval_value(&resolve_eval_references(&resolved, resolver)?);
+            Ok(prepared
+                .into_iter()
+                .map(|value| AggregatePreparedValue {
+                    origin: AggregateArgOrigin::ReferenceDerived,
+                    value,
+                })
+                .collect())
+        }
+        CallArgValue::Eval(EvalValue::Array(_)) => Ok(expand_arg_values_only(arg, resolver)?
+            .into_iter()
+            .map(|value| AggregatePreparedValue {
+                origin: AggregateArgOrigin::DirectArray,
+                value,
+            })
+            .collect()),
+        other => Ok(expand_arg_values_only(other, resolver)?
+            .into_iter()
+            .map(|value| AggregatePreparedValue {
+                origin: AggregateArgOrigin::DirectScalar,
+                value,
+            })
+            .collect()),
+    }
 }
 
 pub fn run_values_only_prepared<Out, E>(
@@ -120,6 +241,30 @@ pub fn coerce_prepared_to_number(arg: &PreparedArgValue) -> Result<f64, Coercion
     }
 }
 
+pub fn coerce_prepared_to_text(arg: &PreparedArgValue) -> Result<crate::value::ExcelText, CoercionError> {
+    use crate::value::ExcelText;
+
+    match arg {
+        PreparedArgValue::Eval(EvalValue::Text(t)) => Ok(t.clone()),
+        PreparedArgValue::Eval(EvalValue::Number(n)) => {
+            Ok(ExcelText::from_utf16_code_units(format!("{n}").encode_utf16().collect()))
+        }
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(ExcelText::from_utf16_code_units(
+            if *b { "TRUE" } else { "FALSE" }.encode_utf16().collect(),
+        )),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(CoercionError::UnsupportedValueKind("array")),
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            Err(CoercionError::RefResolution(RefResolutionError::EvalTimeDerefNotAllowed))
+        }
+        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+            Err(CoercionError::UnsupportedValueKind("lambda_value"))
+        }
+        PreparedArgValue::MissingArg => Ok(ExcelText::from_utf16_code_units(Vec::new())),
+        PreparedArgValue::EmptyCell => Ok(ExcelText::from_utf16_code_units(Vec::new())),
+    }
+}
+
 pub fn apply_unary_numeric_scalar_prepared(
     arg: &PreparedArgValue,
     kernel: fn(f64) -> f64,
@@ -141,7 +286,7 @@ pub fn apply_unary_numeric_array_map_prepared(
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+    use crate::value::{EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
     struct MockResolver {
         caps: ResolverCapabilities,
@@ -211,6 +356,21 @@ mod tests {
         assert_eq!(
             coerce_prepared_to_number(&err),
             Err(CoercionError::WorksheetError(WorksheetErrorCode::Value))
+        );
+    }
+
+    #[test]
+    fn prepared_text_coercion_formats_scalars_and_blanks() {
+        let number = PreparedArgValue::Eval(EvalValue::Number(2.5));
+        assert_eq!(
+            coerce_prepared_to_text(&number),
+            Ok(ExcelText::from_utf16_code_units("2.5".encode_utf16().collect()))
+        );
+
+        let blank = PreparedArgValue::EmptyCell;
+        assert_eq!(
+            coerce_prepared_to_text(&blank),
+            Ok(ExcelText::from_utf16_code_units(Vec::new()))
         );
     }
 
@@ -289,5 +449,71 @@ mod tests {
         assert_eq!(got.len(), 2);
         assert!(got[0].starts_with("err:"));
         assert_eq!(got[1], "ok");
+    }
+
+    #[test]
+    fn expand_arg_values_only_flattens_array_payloads() {
+        let arg = CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(1.0), ArrayCellValue::EmptyCell],
+                vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                    "x".encode_utf16().collect(),
+                )), ArrayCellValue::Logical(true)],
+            ])
+            .unwrap(),
+        ));
+        let got = expand_arg_values_only(&arg, &resolver_with(EvalValue::Number(0.0))).unwrap();
+        assert_eq!(
+            got,
+            vec![
+                PreparedArgValue::Eval(EvalValue::Number(1.0)),
+                PreparedArgValue::EmptyCell,
+                PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "x".encode_utf16().collect(),
+                ))),
+                PreparedArgValue::Eval(EvalValue::Logical(true)),
+            ]
+        );
+    }
+
+    #[test]
+    fn expand_aggregate_arg_marks_reference_derived_values() {
+        let arg = CallArgValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "A1:A2".to_string(),
+        });
+        let got = expand_aggregate_arg(
+            &arg,
+            &resolver_with(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "2".encode_utf16().collect(),
+                    ))],
+                ])
+                .unwrap(),
+            )),
+        )
+        .unwrap();
+        assert_eq!(got.len(), 2);
+        assert!(got
+            .iter()
+            .all(|item| item.origin == AggregateArgOrigin::ReferenceDerived));
+    }
+
+    #[test]
+    fn expand_lookup_vector_arg_rejects_two_dimensional_array() {
+        let arg = CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+            ])
+            .unwrap(),
+        ));
+        let got = expand_lookup_vector_arg(&arg, &resolver_with(EvalValue::Number(0.0)));
+        assert_eq!(
+            got,
+            Err(CoercionError::UnsupportedValueKind("two_dimensional_array"))
+        );
     }
 }

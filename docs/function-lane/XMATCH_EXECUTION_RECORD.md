@@ -16,10 +16,8 @@ Track execution status and reproducible evidence for W6 `XMATCH` exploration sca
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - wildcard semantics (`match_mode = 2`) remain unimplemented.
-   - binary search semantics (`search_mode = 2|-2`) remain unimplemented.
-   - approximate-match semantics (`match_mode = 1|-1`) remain unimplemented.
-   - full Excel coercion parity for cross-type comparison remains open.
+   - full Excel coercion parity for cross-type, blank, and richer collation comparison remains open.
+   - broader binary-mode edge-case coverage remains open.
    - full spill/range-shape semantics remain open.
 
 ## 3. Executed Baseline Scope
@@ -114,7 +112,7 @@ Template:
    - reverse search (`XM6-003`),
    - not-found `#N/A` (`XM6-004`).
 2. Invalid mode lanes produce `#VALUE!` (`XM6-006`, `XM6-007`).
-3. Wildcard/binary/approximate lanes are observed and now pinned in manifest expectations:
+3. Wildcard/binary/approximate lanes are observed, implemented in the runtime, and pinned in manifest expectations:
    - wildcard (`XM6-008`) -> `1`,
    - binary ascending (`XM6-009`) -> `3`,
    - binary descending (`XM6-010`) -> `2`,
@@ -135,7 +133,7 @@ Template:
 
 ## 9. Promotion Status
 1. W6 has useful scaffold and empirical replay closure for the declared exploration lanes.
-2. W6 does not satisfy XMATCH implementation closure because known Excel-semantic gaps remain in supported modes and comparison semantics.
+2. W6 does not satisfy XMATCH implementation closure because known Excel-semantic gaps remain in comparison, blank, and broader shape semantics despite the landed wildcard/binary/approximate runtime lanes.
 
 ## 10. Post-Closure Policy Notes
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.

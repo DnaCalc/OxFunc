@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::{
+    AggregateArgOrigin, PreparedArgValue, coerce_prepared_to_number, expand_aggregate_arg,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -14,10 +16,10 @@ pub const SUM_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
-    fec_dependency_profile: FecDependencyProfile::None,
+    fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
@@ -31,7 +33,35 @@ pub enum SumEvalError {
     Coercion(CoercionError),
 }
 
-pub fn eval_sum_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SumEvalError> {
+fn accumulate_direct_scalar(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
+    match arg {
+        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        other => coerce_prepared_to_number(other),
+    }
+}
+
+fn accumulate_range_like(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
+    match arg {
+        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            Err(CoercionError::UnsupportedValueKind("reference_like"))
+        }
+        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+            Err(CoercionError::UnsupportedValueKind("lambda_value"))
+        }
+        PreparedArgValue::Eval(EvalValue::Text(_))
+        | PreparedArgValue::Eval(EvalValue::Logical(_))
+        | PreparedArgValue::MissingArg
+        | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(CoercionError::UnsupportedValueKind("array")),
+    }
+}
+
+pub fn eval_sum_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, SumEvalError> {
     let argc = args.len();
     if !SUM_META.arity.accepts(argc) {
         return Err(SumEvalError::ArityMismatch {
@@ -43,20 +73,16 @@ pub fn eval_sum_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue,
 
     let mut acc = 0.0;
     for arg in args {
-        let n = coerce_prepared_to_number(arg).map_err(SumEvalError::Coercion)?;
-        acc += n;
+        for item in expand_aggregate_arg(arg, resolver).map_err(SumEvalError::Coercion)? {
+            acc += match item.origin {
+                AggregateArgOrigin::DirectScalar =>
+                    accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?,
+                AggregateArgOrigin::DirectArray | AggregateArgOrigin::ReferenceDerived =>
+                    accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?,
+            };
+        }
     }
     Ok(EvalValue::Number(acc))
-}
-
-pub fn eval_sum_surface(
-    args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
-) -> Result<EvalValue, SumEvalError> {
-    // W10 keeps SUM in a conservative values-only seed mode.
-    // Direct-vs-range dual coercion policy remains an explicit follow-up because
-    // provenance is erased under `values_only_pre_adapter`.
-    run_values_only_prepared(args, resolver, eval_sum_adapter_prepared, SumEvalError::Coercion)
 }
 
 pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
@@ -71,7 +97,7 @@ pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         resolved_value: Option<EvalValue>,
@@ -111,7 +137,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_sum_coerces_logical_and_numeric_text() {
+    fn eval_sum_coerces_direct_logical_and_numeric_text() {
         let args = vec![
             CallArgValue::Eval(EvalValue::Logical(true)),
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
@@ -128,7 +154,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_sum_rejects_non_numeric_text() {
+    fn eval_sum_rejects_direct_non_numeric_text() {
         let args = vec![
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
@@ -145,20 +171,159 @@ mod tests {
     }
 
     #[test]
-    fn eval_sum_dereferences_reference_arg() {
+    fn eval_sum_treats_missing_and_empty_direct_args_as_zero() {
         let args = vec![
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            }),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            CallArgValue::MissingArg,
+            CallArgValue::EmptyCell,
+            CallArgValue::Eval(EvalValue::Number(4.0)),
         ];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(EvalValue::Number(5.0)),
+                resolved_value: None,
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(4.0)));
+    }
+
+    #[test]
+    fn eval_sum_propagates_direct_scalar_error() {
+        let args = vec![
+            CallArgValue::Eval(EvalValue::Number(1.0)),
+            CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
+        ];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
+        assert_eq!(
+            got,
+            Err(SumEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_sum_ignores_reference_derived_text_and_logical() {
+        let args = vec![CallArgValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "A1:A3".to_string(),
+        })];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(5.0)],
+                        vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "2".encode_utf16().collect(),
+                        ))],
+                        vec![ArrayCellValue::Logical(true)],
+                    ])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+    }
+
+    #[test]
+    fn eval_sum_combines_direct_scalar_and_reference_derived_policies() {
+        let args = vec![
+            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "2".encode_utf16().collect(),
+            ))),
+            CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "A1:A3".to_string(),
+            }),
+        ];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(5.0)],
+                        vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "8".encode_utf16().collect(),
+                        ))],
+                        vec![ArrayCellValue::Logical(true)],
+                    ])
+                    .unwrap(),
+                )),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(7.0)));
+    }
+
+    #[test]
+    fn eval_sum_direct_arrays_use_range_like_policy() {
+        let args = vec![CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "2".encode_utf16().collect(),
+                    )),
+                ],
+                vec![ArrayCellValue::Logical(true), ArrayCellValue::Number(4.0)],
+            ])
+            .unwrap(),
+        ))];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+    }
+
+    #[test]
+    fn eval_sum_propagates_errors_from_range_like_inputs() {
+        let args = vec![CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Error(WorksheetErrorCode::Div0),
+            ]])
+            .unwrap(),
+        ))];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
+        assert_eq!(
+            got,
+            Err(SumEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_sum_reference_derived_empty_cells_are_ignored() {
+        let args = vec![CallArgValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "A1:A3".to_string(),
+        })];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::EmptyCell],
+                        vec![ArrayCellValue::Number(3.0)],
+                        vec![ArrayCellValue::EmptyCell],
+                    ])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(3.0)));
     }
 }
