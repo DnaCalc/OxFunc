@@ -25,10 +25,11 @@ Record seed registration posture for U-style vs Q-style surfaces in the OxFunc X
 2. Derive U-vs-Q variants from `FunctionMeta` profile fields, not per-function bridge edits.
 3. Keep core function semantics in `oxfunc_core`; XLL layer remains transport + registration + type conversion only.
 4. Keep export rows declarative in core; wrappers/rows and CSV snapshots are generated mechanically.
+5. Ordinary `volatile_full` U exports now receive `!` in generated registration text from core metadata (for example `ox_NOW`, `ox_TODAY`, `ox_RAND`).
 
 ## 5. Follow-on Decisions
 1. Confirm whether very-high-arity generated U signatures (for example `SUM` with `u_arity_255`) should remain as-is or be bounded by an explicit export-profile cap.
 2. Expand core array payload modeling to improve U-path behavior for lookup/array-return families.
 3. Add additional bridge conformance scenarios covering non-scalar return lanes under generated exports.
-4. Keep volatile/thread-safe/macro-type registration-flag mapping deferred from signature/export generation until W11 evidence closure (`docs/function-lane/XLL_REGISTRATION_FLAG_EVIDENCE_PLAN.md`).
+4. Keep broader volatile/thread-safe/macro-type registration-flag mapping beyond ordinary `volatile_full` exports deferred from signature/export generation until W11 evidence closure (`docs/function-lane/XLL_REGISTRATION_FLAG_EVIDENCE_PLAN.md`).
 5. Use runtime-only experimental aliases (for example `ox_NOW_F_BASE` vs `ox_NOW_F_VOL`) to gather evidence without altering profile-derived generation.

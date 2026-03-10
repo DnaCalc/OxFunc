@@ -2,6 +2,7 @@
 "W11-VOL-001","W11-VOL","ready","","ox_NOW_F_BASE()","1","calculate_twice_incremental","1200","observed","lhs_changed_eq:false","Volatile control: non-volatile alias should remain stable across incremental recalcs without dirty inputs."
 "W11-VOL-002","W11-VOL","ready","","ox_NOW_F_VOL()","1","calculate_twice_incremental","1200","observed","lhs_changed_eq:true","Volatile treatment check: volatile-flagged alias should tick across incremental recalcs."
 "W11-VOL-003","W11-VOL","ready","","NOW()","1","calculate_twice_incremental","1200","observed","lhs_changed_eq:true","Built-in volatile control reference."
+"W11-VOL-004","W11-VOL","ready","","NOW()","ox_NOW()","calculate_twice_incremental","1200","observed","lhs_changed_eq:true&&rhs_changed_eq:true","User-facing profile-derived export should tick alongside built-in NOW after volatile registration mapping."
 "W11-TS-001","W11-TS","ready","","ABS(-2)","ox_ABS_F_BASE(-2)","calculate_once","0","observed","lhs_value2_pass1_eq:2&&rhs_value2_pass1_eq:2","Thread-safe control registration parity (no $ suffix)."
 "W11-TS-002","W11-TS","ready","","ABS(-2)","ox_ABS_F_TS(-2)","calculate_once","0","observed","lhs_value2_pass1_eq:2&&rhs_value2_pass1_eq:2","Thread-safe candidate registration parity ($ suffix)."
 "W11-MAC-001","W11-MAC","ready","A1:=5","INDIRECT(""A1"")","ox_INDIRECT_F_BASE(""A1"")","calculate_once","0","observed","lhs_value2_pass1_eq:5","Macro-type control registration without #; bridge seed currently returns value-error due reference-return lane limits."

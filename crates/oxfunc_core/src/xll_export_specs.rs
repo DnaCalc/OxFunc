@@ -102,6 +102,14 @@ fn type_text_for_u_arity(count: usize) -> String {
     out
 }
 
+fn apply_registration_suffixes(meta: &FunctionMeta, base_type_text: String) -> String {
+    let mut out = base_type_text;
+    if meta.volatility == VolatilityClass::VolatileFull {
+        out.push('!');
+    }
+    out
+}
+
 fn q_entry_kind_from_profile(meta: &FunctionMeta) -> Option<XllEntryKind> {
     let exact_arity = meta.arity.min == meta.arity.max;
     if !exact_arity {
@@ -150,7 +158,7 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
             specs.push(XllExportSpec {
                 export_name: export_base.clone(),
                 worksheet_name: worksheet_base.clone(),
-                type_text: type_text_for_u_arity(meta.arity.max),
+                type_text: apply_registration_suffixes(meta, type_text_for_u_arity(meta.arity.max)),
                 arg_names: arg_names_for_count(meta.arity.max),
                 function_id: meta.function_id,
                 entry_kind: XllEntryKind::UArity(meta.arity.max),
@@ -266,5 +274,35 @@ mod tests {
             )
         );
         assert_eq!(lines.len(), xll_export_specs().len() + 1);
+    }
+
+    #[test]
+    fn volatile_full_u_exports_receive_bang_suffix() {
+        let specs = xll_export_specs();
+        for function_id in ["FUNC.NOW", "FUNC.TODAY", "FUNC.RAND"] {
+            let spec = specs
+                .iter()
+                .find(|s| s.function_id == function_id && matches!(s.entry_kind, XllEntryKind::UArity(_)))
+                .unwrap_or_else(|| panic!("missing U export for {function_id}"));
+            assert!(
+                spec.type_text.ends_with('!'),
+                "expected volatile U export for {function_id} to end with !, got {}",
+                spec.type_text
+            );
+        }
+    }
+
+    #[test]
+    fn nonvolatile_u_export_does_not_receive_bang_suffix() {
+        let specs = xll_export_specs();
+        let spec = specs
+            .iter()
+            .find(|s| s.function_id == "FUNC.ABS" && matches!(s.entry_kind, XllEntryKind::UArity(_)))
+            .expect("missing U export for FUNC.ABS");
+        assert!(
+            !spec.type_text.ends_with('!'),
+            "expected nonvolatile U export for FUNC.ABS to omit !, got {}",
+            spec.type_text
+        );
     }
 }

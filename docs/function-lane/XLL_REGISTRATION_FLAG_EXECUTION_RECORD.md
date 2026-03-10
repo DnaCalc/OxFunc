@@ -10,6 +10,7 @@ Track empirical evidence for XLL registration flags (`!`, `$`, `#`) before enabl
 ## 2. Executed Scope
 Execution date:
 1. `2026-03-09`
+2. `2026-03-10` (volatile-export follow-up rerun)
 
 Executed commands:
 1. `cargo test -p oxfunc_core`
@@ -37,15 +38,15 @@ Primary outputs:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - `W11-VOL`: non-volatile alias still changed across incremental recalc; volatile mapping behavior remains unresolved.
+   - `W11-VOL`: experimental non-volatile alias still changed across incremental recalc; broader volatility-control behavior remains unresolved even though ordinary `ox_NOW()` export alignment is now positive.
    - `W11-TS`: no multi-thread scheduling trace evidence yet (only scalar parity/registration acceptance).
    - `W11-MAC`: seed lane verifies registration acceptance only; macro-required behavior is not yet demonstrated.
-   - profile-derived mapping in `xll_export_specs` is intentionally deferred.
+   - broader profile-derived mapping beyond ordinary `volatile_full` exports is intentionally deferred.
 
 ## 4. Results Summary
-1. total rows: `14` (`7` scenarios x `2` run labels).
-2. execution observed: `14`; execution failed: `0`.
-3. expectation matched: `12`; expectation mismatched: `2`.
+1. total rows: `16` (`8` scenarios x `2` run labels).
+2. execution observed: `16`; execution failed: `0`.
+3. expectation matched: `14`; expectation mismatched: `2`.
 4. dual-run requirement: `satisfied` (`default` + `compat_template`).
 5. analyzer gate: `needs_attention`.
 
@@ -55,7 +56,8 @@ Primary outputs:
 2. Volatile lane:
    - `ox_NOW_F_VOL()` changed across incremental recalcs (`matched`).
    - `ox_NOW_F_BASE()` also changed across incremental recalcs (`mismatched` against expected non-change).
-   - implication: `!` handling for this seam is not yet conclusively modeled; additional volatility-control investigation is required before mapping.
+   - `NOW()` vs ordinary `ox_NOW()` now both changed across incremental recalcs in both run labels (`matched`).
+   - ordinary profile-derived exports for `volatile_full` functions now emit `!` from core metadata, which closes the user-facing `ox_NOW()` discrepancy while leaving the experimental control-alias question open.
 3. Thread-safe lane:
    - `$` and non-`$` ABS aliases both returned parity-correct scalar results.
    - this is registration/semantic parity only, not concurrency evidence.
@@ -64,8 +66,9 @@ Primary outputs:
    - this does not prove macro-required behavior; only admission parity is shown.
 
 ## 6. Decision Status
-1. Volatile/thread-safe/macro mapping remains **deferred** from profile-derived signature generation.
-2. W11 seed evidence is captured and reproducible, but not sufficient for mapping admission.
+1. Ordinary `volatile_full` export mapping is now enabled in profile-derived signature generation for user-facing exports (`ox_NOW`, `ox_TODAY`, `ox_RAND`).
+2. Experimental/control volatile mapping, thread-safe mapping, and macro mapping remain **deferred** from broader profile-derived signature generation.
+3. W11 evidence is captured and reproducible, but the experimental non-volatile volatile-control alias is still not isolated enough to close the full registration-flag lane.
 
 ## 7. XLL Verification-Seam Limitations
 1. This record documents XLL registration evidence only; it does not prove full function-semantic parity.

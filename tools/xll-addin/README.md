@@ -37,6 +37,7 @@ powershell -File tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1 -Manifest do
 5. Generated CSV snapshot for review:
    - `tools/xll-addin/oxfunc_xll/export_specs.csv`
 6. Current generated exports are profile-derived across the function catalog (`export_specs.csv`).
+7. Ordinary `volatile_full` U exports are emitted with `!` from core metadata (for example `ox_NOW`, `ox_TODAY`, `ox_RAND`).
 
 ## 5. Registration Flag Evidence Replay (W11)
 1. Full dual-run suite:
