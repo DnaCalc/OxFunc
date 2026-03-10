@@ -174,6 +174,7 @@ PreparedResult {
   result_class: ResultClass,
   provenance: ValueProvenance,
   reference_identity: Option<ReferenceIdentity>,
+  format_hint: Option<FormatHint>,
 }
 ```
 
@@ -183,6 +184,12 @@ Candidate `ResultClass` vocabulary:
 3. `ReferenceResult`
 4. `ErrorResult`
 5. `OmittedLike`
+
+Candidate `FormatHint` intent:
+1. carry post-evaluation worksheet-surface hints without pretending the pure function kernel mutates the grid directly
+2. canonical current examples are `NOW()` and `TODAY()` entered into a caller cell previously formatted as `General`
+3. FEC/F3E or the surrounding engine surface can decide whether and how to apply the hint
+4. XLL verification may legitimately omit this application step while still preserving the semantic characterization in OxFunc
 
 ### 5.6 Aggregate Design Test
 Aggregate families are the main current design test for this boundary.
@@ -216,6 +223,11 @@ OxFml should avoid baking in host-language stringification. Instead it should le
 2. distinct treatment of blank cell vs empty string
 3. array/range flattening policies that remain family-specific
 4. formatting-sensitive or locale/version-sensitive textification later
+5. post-evaluation format hints that are attached to function results rather than collapsed into plain scalar payloads too early
+
+Related pressure:
+1. `NOW` and `TODAY` are not just value producers; they can also emit caller-cell format hints in the observed Excel baseline
+2. that hint should survive the OxFml boundary as result metadata rather than as an ad hoc side effect
 
 ### 5.9 Minimum Invariants
 The following invariants should hold across the OxFml boundary:

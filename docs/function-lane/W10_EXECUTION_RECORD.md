@@ -13,15 +13,22 @@ Track W10 execution status across runtime/formal scaffolding, scenario manifests
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
+   - `SUM` still depends on richer provenance-aware aggregate input modeling before full Excel closure can be claimed across all lanes.
    - `INDEX` still lacks nontrivial `area_num` semantics and broader reference-form edge coverage.
    - `MATCH` still needs broader collation, blank, and spill-shape parity beyond the current runtime lanes.
    - `XLOOKUP` still needs broader collation/cross-type/reference edge coverage beyond the currently exercised runtime lanes.
    - `INDIRECT` remains incomplete across broader ref-text semantics (for example structured, external, and richer workbook/sheet-address forms).
+   - `SEQUENCE` still needs broader dynamic-array behavior closure beyond the current replayed shape/materialization lanes.
    - XLL verification-seam limits remain external and must not be mistaken for function-semantic closure.
+6. function-phase-complete slices within W10:
+   - `IF`
+   - `ISNUMBER`
+   - `NOW`
 
 ## 3. Executed Scope
 Execution date:
 1. `2026-03-09`
+2. `2026-03-10` (function-phase-complete promotion follow-up)
 
 Function slices with landed scaffolding/runtime seeds:
 1. `SUM`
@@ -93,9 +100,9 @@ Function slices with landed scaffolding/runtime seeds:
 ### G3 - Empirical Closure
 1. Status: `closed-provisional`.
 2. Notes:
-   - default + `compat_template` Excel replays executed on `2026-03-09`.
-   - rows: `48` (`24` default + `24` compat_template).
-   - expectation matched: `48`; mismatched: `0`.
+   - default + `compat_template` Excel replays rerun on `2026-03-10`.
+   - rows: `56` (`28` default + `28` compat_template).
+   - expectation matched: `56`; mismatched: `0`.
    - execution failed unexpected: `0`.
    - dual-run requirement satisfied: `true`.
    - analyzer gate status: `green`.
@@ -111,7 +118,8 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `in_progress`.
 2. Notes:
    - W10 has useful local scaffolding across contract, Rust, Lean, empirical replay, and export generation.
-   - W10 does not satisfy implementation closure because several functions still carry known Excel-semantic gaps.
+   - W10 does not satisfy packet-level implementation closure because several functions still carry known Excel-semantic gaps.
+   - `IF`, `ISNUMBER`, and `NOW` now satisfy current-phase function closure individually and may be reported as `function-phase-complete`.
 
 ## 6. XLL Verification-Seam Limitations
 1. Relevant seam limits for the W10 packet are tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
@@ -132,6 +140,12 @@ Function slices with landed scaffolding/runtime seeds:
    - `INDIRECT` with `a1_style=FALSE` follows R1C1 addressing when expression is valid (for example `R1C2`).
    - `XLOOKUP` return-array orientation/alignment matters; mismatched orientation yields `#VALUE!`.
    - `XLOOKUP(..., "nf")` returns the fallback before `#N/A` mapping on no-match.
+   - `IF(FALSE,1)` defaults the omitted false branch to logical `FALSE`.
+   - `ISNUMBER(1/0)` returns `FALSE`, and `ISNUMBER` classifies reference-fed numeric payloads as `TRUE`.
 7. XLOOKUP reference-return behavior is empirically pinned in both run labels:
    - `CELL("address", XLOOKUP(...))` preserves address identity (`$C$1`, `$B$2`),
    - `SUM(XLOOKUP(...):XLOOKUP(...))` confirms returned references compose through `:` ranges.
+8. `NOW` is now evidenced across three current-phase seams:
+   - provider/recalc baseline in W10,
+   - ordinary user-facing volatile XLL registration behavior in W11,
+   - caller-cell format-hinting in `TIME_FORMAT_HINT_EXECUTION_RECORD.md`.

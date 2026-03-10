@@ -98,6 +98,8 @@ Primary files:
 93. `LOOKUP_FAMILY_EMPIRICAL_EXPANSION_NOTES.md`
 94. `TEXT_FUNCTION_EMPIRICAL_EXPANSION_NOTES.md`
 95. `NOTES_FOR_OXFML.md`
+96. `TIME_FORMAT_HINT_SCENARIO_MANIFEST_SEED.csv`
+97. `TIME_FORMAT_HINT_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

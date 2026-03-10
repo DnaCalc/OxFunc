@@ -11,8 +11,8 @@ Record known limitations in the Rust XLL verification seam so they are not mista
 2. When any limitation below materially affects a function evidence claim, the affected function or packet verification record must cite it explicitly.
 
 ## 3. Current Limitation Set
-1. Registration-flag mapping is not yet profile-derived:
-   - `!`, `$`, and `#` remain under dedicated evidence work rather than normal export generation.
+1. Registration-flag mapping is only partially profile-derived:
+   - ordinary `volatile_full` user-facing exports now emit `!`, but broader `!`, `$`, and `#` mapping remains under dedicated evidence work rather than full normal export generation.
 2. Macro-type and caller-context behavior are only partially evidenced through the bridge:
    - admission and limited parity rows exist, but macro-required host behavior is not fully reproduced.
 3. Reference-return and non-scalar payload lanes are still bounded in the bridge:
@@ -21,6 +21,9 @@ Record known limitations in the Rust XLL verification seam so they are not mista
    - current probes show registration acceptance and scalar parity, not full scheduler or multithread execution behavior.
 5. Host-entrypoint parity is contextual:
    - worksheet formula behavior, COM evaluate paths, and XLL invocation are related but not interchangeable evidence surfaces.
+6. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
+   - caller-cell format mutation/application (for example `NOW` or `TODAY` entered into a `General` cell) is treated as an engine-surface responsibility above the core function result.
+   - XLL verification may check value and recalc semantics for such functions, but absence of caller-format application in the XLL seam is not a function-semantic failure by itself.
 
 ## 4. Primary Evidence Records
 1. `docs/function-lane/XLL_ADDIN_BRIDGE_EXECUTION_RECORD.md`

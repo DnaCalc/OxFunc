@@ -171,15 +171,21 @@ Preliminary rule:
 ### 5.2 Post-call return adaptation
 1. Function return values can be adapted by host after function execution.
 2. Array returns can be adapted into dynamic-array anchor representation at the calling cell.
-3. Spill-cell virtual value projection is tracked as related but primarily non-function-lane behavior.
+3. Post-evaluation format-hinting is part of this boundary:
+   - some functions return a normal semantic value plus a caller-cell formatting hint/action that the engine may apply after evaluation.
+   - canonical seed examples are `NOW` and `TODAY` when entered into a cell previously formatted as `General`.
+4. Spill-cell virtual value projection is tracked as related but primarily non-function-lane behavior.
 
 ### 5.3 Value vs extended value
 1. `value`: primary scalar/reference/array semantic payload.
 2. `extended_value`: value plus host metadata/structure used at worksheet boundary.
 3. Candidate extended-value families to refine:
-   - formatting-hint enriched value,
+   - format-hint enriched value,
    - error with detail payload (`source`, `description`, etc.),
    - virtual value relative to anchor.
+4. Working distinction:
+   - the function semantic result can include a format hint,
+   - application of that hint to the worksheet surface is an engine/FEC/F3E responsibility rather than a pure kernel obligation.
 
 ### 5.4 Formula admission vs runtime error boundary
 1. Function contracts need two separate outcome surfaces:
@@ -215,6 +221,7 @@ Preliminary rule:
 4. JavaScript custom functions:
    - async/external and custom data-type implications.
    - extended value returns and custom entity payloads in scope for compatibility classification.
+   - post-evaluation format-hint application is a separate surface concern and must not be assumed to be uniformly available across all add-in surfaces.
 
 ## 8. Compatibility-Version Semantics
 1. Function definitions may be workbook-compatibility-version scoped.

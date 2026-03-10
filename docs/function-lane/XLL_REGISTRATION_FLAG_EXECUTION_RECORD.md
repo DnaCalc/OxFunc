@@ -11,6 +11,7 @@ Track empirical evidence for XLL registration flags (`!`, `$`, `#`) before enabl
 Execution date:
 1. `2026-03-09`
 2. `2026-03-10` (volatile-export follow-up rerun)
+3. `2026-03-10` (RAND ordinary-export follow-up rerun)
 
 Executed commands:
 1. `cargo test -p oxfunc_core`
@@ -44,9 +45,9 @@ Primary outputs:
    - broader profile-derived mapping beyond ordinary `volatile_full` exports is intentionally deferred.
 
 ## 4. Results Summary
-1. total rows: `16` (`8` scenarios x `2` run labels).
-2. execution observed: `16`; execution failed: `0`.
-3. expectation matched: `14`; expectation mismatched: `2`.
+1. total rows: `18` (`9` scenarios x `2` run labels).
+2. execution observed: `18`; execution failed: `0`.
+3. expectation matched: `16`; expectation mismatched: `2`.
 4. dual-run requirement: `satisfied` (`default` + `compat_template`).
 5. analyzer gate: `needs_attention`.
 
@@ -57,7 +58,8 @@ Primary outputs:
    - `ox_NOW_F_VOL()` changed across incremental recalcs (`matched`).
    - `ox_NOW_F_BASE()` also changed across incremental recalcs (`mismatched` against expected non-change).
    - `NOW()` vs ordinary `ox_NOW()` now both changed across incremental recalcs in both run labels (`matched`).
-   - ordinary profile-derived exports for `volatile_full` functions now emit `!` from core metadata, which closes the user-facing `ox_NOW()` discrepancy while leaving the experimental control-alias question open.
+   - `RAND()` vs ordinary `ox_RAND()` now both changed across incremental recalcs in both run labels (`matched`).
+   - ordinary profile-derived exports for `volatile_full` functions now emit `!` from core metadata, which closes the user-facing `ox_NOW()` and `ox_RAND()` discrepancy while leaving the experimental control-alias question open.
 3. Thread-safe lane:
    - `$` and non-`$` ABS aliases both returned parity-correct scalar results.
    - this is registration/semantic parity only, not concurrency evidence.

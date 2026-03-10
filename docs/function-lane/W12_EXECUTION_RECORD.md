@@ -18,16 +18,20 @@ Track W12 execution status, artifacts, and gate closure for the moderate fifteen
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - all fifteen W12 function implementations remain work-in-progress until known Excel-semantic gaps are closed for the declared version axes.
+   - multiple W12 function implementations remain work-in-progress until known Excel-semantic gaps are closed for the declared version axes.
    - aggregate direct-vs-range provenance remains explicit target follow-up for `AVERAGE`/`COUNT`/`COUNTA`.
    - `TEXTJOIN` array flattening and richer formatting/text coercion lanes remain explicit target follow-up.
    - `OFFSET`/`CELL` retain bounded A1-only reference scope and are not yet full caller-context/macro closure.
    - `HSTACK` remains shape-only in OxFunc runtime; payload fill/padding is deferred.
    - W11 registration-flag mapping remains deferred; W12 only contributes stronger volatile and caller-context candidate scenarios.
+6. function-phase-complete slices within W12:
+   - `TODAY`
 
 ## 4. Executed Scope
 Execution date:
 1. `2026-03-09`
+2. `2026-03-10` (TODAY format-hint follow-up and function-phase-complete promotion)
+3. `2026-03-10` (W12 replay rerun after format-hint/range-observable expansion)
 
 Function slices with landed scaffolding/runtime seeds:
 1. `AVERAGE`
@@ -122,7 +126,7 @@ Function slices with landed scaffolding/runtime seeds:
      - rows: `10` (`5` default + `5` compat_template).
      - expectation matched: `10`; mismatched: `0`.
      - analyzer gate status: `green`.
-   - W12 suite dual-run executed on `2026-03-09`:
+   - W12 suite dual-run rerun on `2026-03-10`:
      - rows: `34` (`17` default + `17` compat_template).
      - expectation matched: `34`; mismatched: `0`.
      - execution failed unexpected: `0`.
@@ -143,7 +147,8 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `in_progress`.
 2. Notes:
    - W12 has local scaffolding closure across contract, Rust, Lean, and empirical seed lanes.
-   - W12 does not satisfy implementation closure because known Excel-semantic gaps remain across multiple functions.
+   - W12 does not satisfy packet-level implementation closure because known Excel-semantic gaps remain across multiple functions.
+   - `TODAY` now satisfies current-phase function closure individually and may be reported as `function-phase-complete`.
 
 ## 8. Key Findings
 1. W10’s declarative-runner/default-surface posture scaled to a moderate breadth packet without requiring broad special-case dispatcher growth.
@@ -151,3 +156,5 @@ Function slices with landed scaffolding/runtime seeds:
 3. provider seams are now standardized across `NOW`, `TODAY`, and `RAND`, which gives W11 a better volatile follow-back matrix.
 4. `OFFSET` and `CELL` justified a small shared A1 parse/format helper but also exposed the remaining caller-context/reference-shape work still needed for full parity.
 5. count-family and average-family aggregate semantics remain the clearest evidence that provenance-aware aggregate inputs will need first-class representation before these functions can be treated as implemented.
+6. `TODAY` now has current-phase closure evidence across provider floor semantics, volatile recalc behavior, and caller-cell format-hinting, while remaining XLL control-alias work stays external to function semantics.
+7. `RAND` replay now asserts the worksheet-visible numeric range contract (`0 <= RAND() < 1`) directly in the W12 suite, while W11 carries the separate ordinary volatile-registration follow-back lane.

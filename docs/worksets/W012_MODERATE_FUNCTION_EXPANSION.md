@@ -109,3 +109,4 @@ Assurance maturity:
 4. the `CELL` preprobe ran green across both required run labels and usefully narrowed the next semantic lanes.
 5. dual-run Excel replay for the current W12 suite ran green across `34` observed rows with `expectation_mismatched=0`.
 6. W11 follow-back readiness is improved by explicit `TODAY`/`RAND` volatile candidates and `CELL`/`OFFSET` caller-context candidates, but W12 remains open until the known semantic gaps are closed.
+7. `TODAY` is now `function-phase-complete` for the current implementation phase; the packet remains open because the other W12 functions still have known current-phase semantic gaps.

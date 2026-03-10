@@ -1,0 +1,5 @@
+"scenario_id","lane","status","function_name","formula","initial_number_format","expected_after_formula_number_format","expected_after_calc_number_format","notes"
+"TFMT-001","TFMT","ready","NOW","=NOW()","General","yyyy/mm/dd hh:mm","yyyy/mm/dd hh:mm","Built-in NOW applies a date-time number format when entered into a General cell in the current baseline."
+"TFMT-002","TFMT","ready","NOW","=NOW()","0.000","0.000","0.000","Preformatted cells retain their existing format for NOW in the current baseline."
+"TFMT-003","TFMT","ready","TODAY","=TODAY()","General","yyyy/mm/dd","yyyy/mm/dd","Built-in TODAY applies a date number format when entered into a General cell in the current baseline."
+"TFMT-004","TFMT","ready","TODAY","=TODAY()","0.000","0.000","0.000","Preformatted cells retain their existing format for TODAY in the current baseline."

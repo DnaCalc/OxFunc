@@ -144,11 +144,12 @@ Assurance maturity:
    - `docs/function-lane/FUNCTION_SLICE_INDIRECT_CONTRACT_PRELIM.md`
    - `docs/function-lane/FUNCTION_SLICE_SEQUENCE_CONTRACT_PRELIM.md`
    - `docs/function-lane/FUNCTION_SLICE_OP_ADD_CONTRACT_PRELIM.md`
-4. Scenario packs added:
+4. Scenario packs added and expanded:
    - `docs/function-lane/W10_S1_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W10_S2_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W10_S3_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W10_S4_SCENARIO_MANIFEST_SEED.csv` (includes `XLOOKUP` reference-return address and range-composition rows)
+   - current expansion adds `IF` omitted-false and `ISNUMBER` error/reference rows.
 5. Execution/evidence/correlation closure:
    - `docs/function-lane/W10_EXECUTION_RECORD.md`
    - `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md` (`W10-TENMIX-SEED-20260308`)
@@ -159,4 +160,9 @@ Assurance maturity:
    - `tools/w10-probe/run-w10-suite.ps1`
    - `tools/w10-probe/analyze-w10-results.ps1`
    - `tools/w10-probe/new-w10-compat-template.ps1`
-8. W10 remains open because `SUM`, `INDEX`, `MATCH`, `XLOOKUP`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.
+8. dual-run Excel replay reran green across `56` observed rows with `expectation_mismatched=0`.
+9. W10 remains open because `SUM`, `INDEX`, `MATCH`, `XLOOKUP`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.
+10. Individual W10 slices now considered `function-phase-complete` for the current implementation phase:
+   - `IF`
+   - `ISNUMBER`
+   - `NOW`

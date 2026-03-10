@@ -235,6 +235,10 @@ function Get-CellSnapshot {
     $value2Raw = $range.Value2
     $value2 = Convert-Value2ToString -Value $value2Raw
     $textLen = $text.Length
+    $numberFormat = ""
+    $numberFormatLocal = ""
+    try { $numberFormat = [string]$range.NumberFormat } catch { $numberFormat = "" }
+    try { $numberFormatLocal = [string]$range.NumberFormatLocal } catch { $numberFormatLocal = $numberFormat }
 
     return [PSCustomObject]@{
         cell = $Cell
@@ -242,6 +246,25 @@ function Get-CellSnapshot {
         text_len = $textLen
         formula2 = $formula2
         value2 = $value2
+        number_format = $numberFormat
+        number_format_local = $numberFormatLocal
+    }
+}
+
+function Try-ParseInvariantNumber {
+    param([string]$Raw)
+
+    $parsed = 0.0
+    $ok = [double]::TryParse(
+        $Raw,
+        [System.Globalization.NumberStyles]::Float,
+        [System.Globalization.CultureInfo]::InvariantCulture,
+        [ref]$parsed
+    )
+
+    return [PSCustomObject]@{
+        success = $ok
+        value = $parsed
     }
 }
 
@@ -343,6 +366,7 @@ function Evaluate-ExpectedObservable {
         [string]$PrimaryValue2,
         [string]$PrimaryText,
         [string]$PrimaryTextLen,
+        [string]$PrimaryNumberFormat,
         [string]$Notes
     )
 
@@ -381,6 +405,30 @@ function Evaluate-ExpectedObservable {
             $expected = $clause.Substring("primary_text_len_eq:".Length)
             $matched = ($PrimaryTextLen -ceq $expected)
         }
+        elseif ($clause.StartsWith("primary_value2_ge:")) {
+            $expected = Try-ParseInvariantNumber -Raw $clause.Substring("primary_value2_ge:".Length)
+            $actual = Try-ParseInvariantNumber -Raw $PrimaryValue2
+            $matched = $expected.success -and $actual.success -and ($actual.value -ge $expected.value)
+        }
+        elseif ($clause.StartsWith("primary_value2_gt:")) {
+            $expected = Try-ParseInvariantNumber -Raw $clause.Substring("primary_value2_gt:".Length)
+            $actual = Try-ParseInvariantNumber -Raw $PrimaryValue2
+            $matched = $expected.success -and $actual.success -and ($actual.value -gt $expected.value)
+        }
+        elseif ($clause.StartsWith("primary_value2_le:")) {
+            $expected = Try-ParseInvariantNumber -Raw $clause.Substring("primary_value2_le:".Length)
+            $actual = Try-ParseInvariantNumber -Raw $PrimaryValue2
+            $matched = $expected.success -and $actual.success -and ($actual.value -le $expected.value)
+        }
+        elseif ($clause.StartsWith("primary_value2_lt:")) {
+            $expected = Try-ParseInvariantNumber -Raw $clause.Substring("primary_value2_lt:".Length)
+            $actual = Try-ParseInvariantNumber -Raw $PrimaryValue2
+            $matched = $expected.success -and $actual.success -and ($actual.value -lt $expected.value)
+        }
+        elseif ($clause.StartsWith("primary_number_format_eq:")) {
+            $expected = $clause.Substring("primary_number_format_eq:".Length)
+            $matched = ($PrimaryNumberFormat -ceq $expected)
+        }
         elseif ($clause.StartsWith("execution_status_eq:")) {
             $expected = $clause.Substring("execution_status_eq:".Length)
             $matched = ($ExecutionStatus -ceq $expected)
@@ -415,6 +463,7 @@ function Resolve-Expectation {
         [string]$PrimaryValue2,
         [string]$PrimaryText,
         [string]$PrimaryTextLen,
+        [string]$PrimaryNumberFormat,
         [string]$Notes
     )
 
@@ -429,7 +478,7 @@ function Resolve-Expectation {
         $statusDetail = "expected_status=$expectedStatus actual=$ExecutionStatus match=$statusMatched"
     }
 
-    $observableEval = Evaluate-ExpectedObservable -ExpectedObservable $expectedObservable -ExecutionStatus $ExecutionStatus -PrimaryValue2 $PrimaryValue2 -PrimaryText $PrimaryText -PrimaryTextLen $PrimaryTextLen -Notes $Notes
+    $observableEval = Evaluate-ExpectedObservable -ExpectedObservable $expectedObservable -ExecutionStatus $ExecutionStatus -PrimaryValue2 $PrimaryValue2 -PrimaryText $PrimaryText -PrimaryTextLen $PrimaryTextLen -PrimaryNumberFormat $PrimaryNumberFormat -Notes $Notes
 
     $expectationStatus = "not_specified"
     if ($statusSpecified -or $observableEval.specified) {
@@ -464,6 +513,7 @@ function Add-ResultRow {
         [string]$PrimaryValue2,
         [string]$PrimaryText,
         [string]$PrimaryTextLen,
+        [string]$PrimaryNumberFormat,
         [string]$ObservedCells,
         [string]$ComparisonBools,
         [string]$Notes,
@@ -472,7 +522,7 @@ function Add-ResultRow {
         [string]$SourceManifest
     )
 
-    $expectation = Resolve-Expectation -Scenario $Scenario -ExecutionStatus $ExecutionStatus -PrimaryValue2 $PrimaryValue2 -PrimaryText $PrimaryText -PrimaryTextLen $PrimaryTextLen -Notes $Notes
+    $expectation = Resolve-Expectation -Scenario $Scenario -ExecutionStatus $ExecutionStatus -PrimaryValue2 $PrimaryValue2 -PrimaryText $PrimaryText -PrimaryTextLen $PrimaryTextLen -PrimaryNumberFormat $PrimaryNumberFormat -Notes $Notes
 
     $Rows.Add([PSCustomObject]@{
         scenario_id = [string]$Scenario.scenario_id
@@ -498,6 +548,7 @@ function Add-ResultRow {
         primary_value2 = $PrimaryValue2
         primary_text = $PrimaryText
         primary_text_len = $PrimaryTextLen
+        primary_number_format = $PrimaryNumberFormat
         observed_cells = $ObservedCells
         comparison_bools = $ComparisonBools
         objective = [string]$Scenario.objective
@@ -803,7 +854,12 @@ try {
                 }
             }
 
-            Add-ResultRow -Rows $results -Scenario $scenario -ExecutionStatus "observed" -ObservedClass "cell_snapshots" -ExcelVersion $excelVersionFull -ExcelChannel $excelChannel -CompatVersion $compatVersion -ArtifactRef $artifactRef -PrimaryCell $primaryCell -PrimaryFormula2 $primaryFormula2 -PrimaryValue2 $primaryValue2 -PrimaryText $primaryText -PrimaryTextLen $primaryTextLen -ObservedCells (Serialize-Snapshots -Snapshots $postSnapshots) -ComparisonBools $comparisonBools -Notes $combinedNotes -RunnerVersion $runnerVersion -RunLabel $RunLabel -SourceManifest $manifestPath
+            $primaryNumberFormat = ""
+            if ($null -ne $primarySnapshot) {
+                $primaryNumberFormat = [string]$primarySnapshot.number_format
+            }
+
+            Add-ResultRow -Rows $results -Scenario $scenario -ExecutionStatus "observed" -ObservedClass "cell_snapshots" -ExcelVersion $excelVersionFull -ExcelChannel $excelChannel -CompatVersion $compatVersion -ArtifactRef $artifactRef -PrimaryCell $primaryCell -PrimaryFormula2 $primaryFormula2 -PrimaryValue2 $primaryValue2 -PrimaryText $primaryText -PrimaryTextLen $primaryTextLen -PrimaryNumberFormat $primaryNumberFormat -ObservedCells (Serialize-Snapshots -Snapshots $postSnapshots) -ComparisonBools $comparisonBools -Notes $combinedNotes -RunnerVersion $runnerVersion -RunLabel $RunLabel -SourceManifest $manifestPath
         }
         catch {
             $errMsg = [string]$_.Exception.GetType().FullName + ": " + [string]$_.Exception.Message
@@ -811,7 +867,7 @@ try {
             if (-not [string]::IsNullOrWhiteSpace($stack)) {
                 $errMsg = $errMsg + " | stack: " + ($stack -replace "`r|`n", " :: ")
             }
-            Add-ResultRow -Rows $results -Scenario $scenario -ExecutionStatus "failed" -ObservedClass "com_exception" -ExcelVersion $excelVersionFull -ExcelChannel $excelChannel -CompatVersion $compatVersion -ArtifactRef $artifactRef -PrimaryCell $primaryCell -PrimaryFormula2 $primaryFormula2 -PrimaryValue2 $primaryValue2 -PrimaryText $primaryText -PrimaryTextLen $primaryTextLen -ObservedCells "" -ComparisonBools "" -Notes $errMsg -RunnerVersion $runnerVersion -RunLabel $RunLabel -SourceManifest $manifestPath
+            Add-ResultRow -Rows $results -Scenario $scenario -ExecutionStatus "failed" -ObservedClass "com_exception" -ExcelVersion $excelVersionFull -ExcelChannel $excelChannel -CompatVersion $compatVersion -ArtifactRef $artifactRef -PrimaryCell $primaryCell -PrimaryFormula2 $primaryFormula2 -PrimaryValue2 $primaryValue2 -PrimaryText $primaryText -PrimaryTextLen $primaryTextLen -PrimaryNumberFormat "" -ObservedCells "" -ComparisonBools "" -Notes $errMsg -RunnerVersion $runnerVersion -RunLabel $RunLabel -SourceManifest $manifestPath
         }
         finally {
             Close-WorkbookSafe -Workbook $workbook
