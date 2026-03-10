@@ -631,6 +631,159 @@ mod tests {
     }
 
     #[test]
+    fn eval_xlookup_treats_missing_optional_modes_as_omitted() {
+        let got = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Number(2.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&CallArgValue::MissingArg),
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            Some(&CallArgValue::MissingArg),
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(20.0)));
+    }
+
+    #[test]
+    fn eval_xlookup_omitted_or_blank_lookup_matches_true_blank_cells() {
+        let lookup_array = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::Number(1.0),
+            ]])
+            .unwrap(),
+        ))];
+        let return_array = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(10.0),
+                ArrayCellValue::Number(20.0),
+            ]])
+            .unwrap(),
+        ))];
+
+        let omitted = eval_xlookup_surface(
+            &CallArgValue::MissingArg,
+            &lookup_array,
+            &return_array,
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(omitted, Ok(EvalValue::Number(10.0)));
+
+        let blank = eval_xlookup_surface(
+            &CallArgValue::EmptyCell,
+            &lookup_array,
+            &return_array,
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(blank, Ok(EvalValue::Number(10.0)));
+    }
+
+    #[test]
+    fn eval_xlookup_empty_string_matches_formula_empty_not_true_blank() {
+        let lookup_array = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                ArrayCellValue::EmptyCell,
+            ]])
+            .unwrap(),
+        ))];
+        let return_array = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(10.0),
+                ArrayCellValue::Number(20.0),
+            ]])
+            .unwrap(),
+        ))];
+
+        let got = eval_xlookup_surface(
+            &text_arg(""),
+            &lookup_array,
+            &return_array,
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(10.0)));
+    }
+
+    #[test]
+    fn eval_xlookup_returns_zero_for_true_blank_return_cells() {
+        let got = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Number(1.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::EmptyCell,
+                    ArrayCellValue::Number(20.0),
+                ]])
+                .unwrap(),
+            ))],
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_xlookup_binary_unsorted_exact_matches_empirical_lane() {
+        let got = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Number(2.0)),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(20.0),
+                ]])
+                .unwrap(),
+            ))],
+            None,
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            Some(&CallArgValue::Eval(EvalValue::Number(2.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Err(XlookupEvalError::NotAvailable));
+    }
+
+    #[test]
     fn eval_xlookup_supports_reference_return_from_single_area_argument() {
         let got = eval_xlookup_surface(
             &CallArgValue::Eval(EvalValue::Number(2.0)),

@@ -70,7 +70,7 @@ When reviewing the new interface, answer explicitly:
 
 ## 6. Compact Context for Next Prompt
 1. ABS is currently used as the reference implementation for layered decomposition.
-2. W5 is `function-phase-complete`; W6 remains `planned`.
+2. W5 and W6 are `function-phase-complete` for the current implementation phase.
 3. New thread-safety and layered adapter fields are present in current local model/docs.
 4. Admission invariant is explicit: function-library execution runs only after seam admission success.
 5. Boundary failure accounting is explicit: seam rejections are tracked separately from function semantic failures.

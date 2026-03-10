@@ -82,11 +82,22 @@ Pass when:
 
 ## 8. Status
 Execution state:
-1. `in_progress`.
+1. `function-phase-complete`.
 
 Claim confidence:
-1. `provisional` (scaffold + empirical replay baseline + classification decision recorded, but XMATCH remains semantically incomplete).
+1. `provisional` (current reference-baseline semantics are closed for the implementation phase; broader locale/version replay remains orthogonal validation-phase work).
 
 Assurance maturity:
 1. `exercised`.
+
+## 9. Progress Notes
+1. `XMATCH` now has explicit current-phase contract closure in `docs/function-lane/FUNCTION_SLICE_XMATCH_CONTRACT_PRELIM.md`.
+2. Rust and Lean artifacts remain paired through:
+   - `crates/oxfunc_core/src/functions/xmatch.rs`
+   - `crates/oxfunc_core/src/functions/xmatch_surface.rs`
+   - `formal/lean/OxFunc/Functions/Xmatch.lean`
+   - `formal/lean/OxFunc/Functions/XmatchSurface.lean`
+3. Dual-run Excel replay now covers exact, wildcard, approximate, binary, blank-vs-empty, duplicate-selection, error-skipping, reference-fed, and spill-fed lanes in `docs/function-lane/XMATCH_SCENARIO_MANIFEST_SEED.csv`.
+4. Dedicated built-in vs `ox_XMATCH` bridge parity rows are tracked in `docs/function-lane/LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`.
+5. Remaining locale/version expansion is treated as orthogonal validation-phase hardening, not a current-phase semantic blocker for `XMATCH`.
 
