@@ -6,7 +6,7 @@ This document treats worksets W1-W7 as one coupled kickoff program.
 Goal:
 1. establish OxFunc execution method integrity,
 2. close core semantic substrate (floating-point + string + value universe + coercion seam),
-3. deliver the first nontrivial fully-closed function (`ABS`) and the first behavior-rich incomplete-function scaffold (`XMATCH`) under unified doctrine.
+3. deliver the first function-phase-complete slices (`PI()` and `ABS`) and the first behavior-rich incomplete-function scaffold (`XMATCH`) under unified doctrine.
 
 ## 2. Included Worksets
 1. `W001_PI_END_TO_END_SLICE.md` (W1)
@@ -62,11 +62,11 @@ Global required artifacts across kickoff:
    - W7 produces replayable, version-scoped string behavior characterization and policy map.
 
 ## 6. Status Board (Current Intent)
-1. W1: `complete` (method seed complete; empirical depth expansion remains follow-on).
+1. W1: `function-phase-complete` (method seed complete for the current implementation phase; empirical depth expansion remains orthogonal validation follow-on).
 2. W2: `complete-provisional` (baseline lanes executed, Lean comparison captured, divergence ledger populated).
 3. W3: `in_progress` (baseline taxonomy/spec and Rust/Lean tag scaffolds in place).
 4. W4: `complete-provisional` (capability-record seam selected; primitive spec + decision table + Rust/Lean scaffolds + baseline empirical run captured under `W4-COERCE-BL-20260307`).
-5. W5: `complete-provisional` (contract/formal/runtime/evidence chain established for `ABS` under `W5-ABS-BL-20260308`, including dual-run evidence and entrypoint baseline `W5-ABS-ENTRY-20260308`).
+5. W5: `function-phase-complete` (contract/formal/runtime/evidence chain established for `ABS` under `W5-ABS-BL-20260308`, including dual-run evidence and entrypoint baseline `W5-ABS-ENTRY-20260308`, with floating-point follow-back `W5-ABS-FP-20260310` closing the remaining current-phase ABS environment question).
 6. W6: `in_progress` (XMATCH scaffold + empirical dual-run replay baseline landed, but wildcard/binary/approximate and fuller comparison semantics remain open).
 7. W7: `complete-provisional` (baseline string characterization and policy map captured under `W7-STR-BL-20260305`).
 

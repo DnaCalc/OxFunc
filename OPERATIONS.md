@@ -24,7 +24,8 @@ Non-negotiable carry-over:
 2. Compatibility claims require reproducible evidence.
 3. No bounded-fit function implementations: partial semantic coverage is scaffolding/work-in-progress, not a completed function.
 4. Where public documentation and empirical Excel behavior differ, implementation follows empirical Excel behavior and the divergence is logged explicitly.
-5. No function is "done" until contract, implementation, tests, and evidence align on full known Excel semantics for the declared version axes.
+5. In the current implementation phase, a function is `function-phase-complete` when contract, implementation, tests, and evidence align on full known semantics for the current reference Excel baseline and no known function-semantic gap remains in current-phase scope.
+6. Locale and alternate Excel-version sweeps are separate orthogonal validation phases unless explicitly declared in scope for the current workset.
 6. Regressions are permanent assets (minimized replayable cases).
 7. Prefer end-to-end vertical slices over broad speculative scaffolding, but do not misreport scaffolding as implementation closure.
 8. Keep process lightweight, but never skip required traceability fields.
@@ -180,3 +181,4 @@ Normative wording rules:
 2. Do not use `complete for declared scope` for semantically bounded function slices or function-batch worksets that still carry known Excel-semantic gaps; report those as `scope_partial`.
 3. Do not claim `fully complete` unless all three completeness axes are complete and evidence links are present.
 4. If runtime export/dispatch admission is generated automatically at compile-time, still report whether each function is included in the source-of-truth export table for the claim.
+5. Use `function-phase-complete` for function slices that satisfy the current implementation-phase goal over the current reference Excel baseline, with no known function-semantic gap remaining, even if later locale/version sweeps are still pending as orthogonal validation phases.

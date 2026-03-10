@@ -40,6 +40,8 @@ Non-negotiable OxFunc-specific doctrine:
 3. when public documentation and empirical Excel behavior differ, OxFunc records the discrepancy and implements the empirically observed behavior,
 4. the only allowed limitation is in the XLL test/verification seam, where host-surface reproduction may be incomplete even though OxFunc runtime semantics must still target full Excel parity,
 5. XLL verification-seam limitations must be documented centrally in seam artifacts and repeated in function verification records wherever those limitations materially qualify a function claim.
+6. in the current implementation phase, a function may be reported as `function-phase-complete` when its reference-baseline semantics are characterized with high confidence, the function/evaluation seam is understood and documented, the Rust implementation is thorough and tested, the Lean description covers the intended slice, and no known function-semantic gap remains in current-phase scope.
+7. locale and alternate Excel-version sweeps are orthogonal validation phases unless a workset explicitly declares them in scope; they do not by themselves prevent `function-phase-complete` status.
 
 ## 3. Clean-room Rule (Non-negotiable)
 Allowed inputs:
@@ -145,11 +147,18 @@ All report-back messages and execution records must separate completion claims a
    - `integrated`: admitted in all declared runtime surfaces (for example core dispatch/export lanes) for the claim.
    - `partial`: implemented but not admitted in all declared runtime surfaces.
 
+Function-phase status term:
+1. `function-phase-complete`:
+   - allowed for function slices that satisfy the current implementation-phase goal over the current reference Excel baseline.
+   - requires no known function-semantic gap in current-phase scope.
+   - does not imply that later locale/version validation sweeps are finished.
+
 Language rule:
 1. Do not use unqualified "done/complete" claims.
 2. Use `complete for declared scope` only when the declared function scope already represents full known Excel semantics for the tracked version axes and only integration or external-host limits remain partial.
 3. Do not use `complete for declared scope` for semantically bounded function slices or packets; those remain `scope_partial`.
 4. Always list explicit open lanes when `target_completeness = target_partial` or `integration_completeness = partial`.
+5. Use `function-phase-complete` for a function only when the current implementation-phase goal is satisfied and the only remaining work is orthogonal validation-phase expansion (for example locale/version sweeps) or external XLL seam hardening.
 
 ## 8. Kickoff Program and Dependency Intent
 Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W7`):
@@ -184,6 +193,7 @@ A function slice is done for declared scope only when all hold:
 
 Completeness claim rule:
 1. Any "done" claim must include completeness qualifiers from section 7.4.
+2. For function slices, prefer `function-phase-complete` over bare "done" when the current implementation-phase goal is satisfied but later orthogonal validation sweeps remain.
 
 ## 10. Non-goal Guardrails
 1. Do not claim behavior proof beyond stated contract scope.

@@ -22,6 +22,8 @@
 - OxFunc targets full semantic identity with Excel for each implemented function over the declared version axes.
 - Partial or bounded semantic coverage is never an "implemented function" claim; it is work-in-progress scaffolding only.
 - If public documentation and empirical Excel behavior differ, record the discrepancy explicitly and implement the empirically observed behavior.
+- In the current implementation phase, a function may be reported as `function-phase-complete` when its semantics are characterized with high confidence for the current reference Excel baseline, the function/evaluation seam is understood and documented, the Rust implementation is thorough and tested, the Lean description covers the intended slice, and no known function-semantic gap remains in current-phase scope.
+- Locale and alternate Excel-version sweeps are separate orthogonal validation phases unless a workset explicitly declares them in scope; they do not by themselves prevent a function from being `function-phase-complete`.
 - The only allowed compromise is in the XLL test/verification seam, where harness limits may prevent recreating all host behavior even though the core OxFunc semantics must still target full Excel parity.
 - When any known semantic lane remains open for a function, report that function and any packet containing it as `scope_partial`.
 - XLL test/verification seam limitations must be documented in the seam-project records and repeated in per-function or per-packet verification records when those limits materially qualify a function claim.

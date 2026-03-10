@@ -34,7 +34,20 @@ Interpretation:
 3. Maintain explicit divergence records in `FLOATING_POINT_LEAN_EXCEL_DEVIATION_LEDGER.csv`.
 4. Introduce deeper custom FP theory only if required by unresolved high-impact divergences.
 
-## 5. Honesty Rule for Claims
+## 5. ABS Follow-Back Posture
+1. `ABS` formal kernel remains rational in `formal/lean/OxFunc/Functions/Abs.lean`; that kernel models the mathematical core, not worksheet-surface floating-point normalization.
+2. Worksheet-visible floating-point environment outcomes should be recorded separately in Lean when they materially qualify a function claim.
+3. Current ABS floating-point follow-back observations are recorded in:
+   - `formal/lean/OxFunc/FloatingPointEnv.lean`
+   - `formal/lean/OxFunc/Functions/Abs.lean`
+4. Current build-scoped observations for ABS:
+   - `ABS(-0)` is worksheet-visible as zero.
+   - direct tiny-negative and reference-fed tiny-negative ABS paths collapse to worksheet-visible zero strongly enough that reciprocal follow-back yields `#DIV/0!`.
+5. This separation is intentional:
+   - rational function kernel behavior stays simple and proof-friendly,
+   - worksheet float-surface normalization remains an empirical environment overlay with explicit evidence binding.
+
+## 6. Honesty Rule for Claims
 1. If Lean and Excel differ on observable behavior, document the divergence explicitly.
 2. Do not claim parity where only one side has been measured.
 3. Keep all claims version-scoped (Excel build/channel, Compatibility Version, Lean toolchain version).

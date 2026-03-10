@@ -56,6 +56,7 @@ Artifacts:
 
 ## 6. Open Items
 1. Add dedicated C API lane (`xlfEvaluate`/`xlCoerce`) through XLL probe exports and compare directly against COM evaluate lanes.
+   - status: orthogonal validation-phase follow-up, not a blocker for current-phase `PI()` closure.
 2. Extend sentinel mapping beyond legacy 7 worksheet errors to newer dynamic errors where applicable (`#SPILL!`, `#CALC!`, etc.).
 3. Expand matrix across additional builds/channels and non-default compatibility settings.
 4. Run explicit replay for non-`en-US` locales (deferred in this phase).

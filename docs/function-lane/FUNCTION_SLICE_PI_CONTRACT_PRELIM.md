@@ -66,6 +66,6 @@
 1. `spec_anchor`: to be attached from public references.
 2. `empirical_anchor`: required for validated status.
 3. current status rationale:
-   - scaffold-complete and locally verified,
+   - function-phase-complete and locally verified for the current reference Excel baseline,
    - Excel admission-boundary baseline captured (`2026-03-05`, Excel `16.0 (build 19725)`) in `FORMULA_ADMISSION_BEHAVIOR_NOTES.md`,
-   - awaiting cross-build/channel, compatibility-variant, and direct C API equivalence replay for promotion.
+   - cross-build/channel, compatibility-variant, locale, and direct C API equivalence replay remain orthogonal validation-phase follow-up rather than current-phase function-semantic gaps.

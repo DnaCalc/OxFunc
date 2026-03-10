@@ -1,10 +1,11 @@
 # ABS Full-Formality Execution Record
 
-Status: `complete-provisional`
+Status: `function-phase-complete`
 Workset: `W5`
 Conformance row: `FDEF-030`
 Evidence ID: `W5-ABS-BL-20260308`
 Entrypoint Evidence ID: `W5-ABS-ENTRY-20260308`
+Floating-Point Follow-Up Evidence ID: `W5-ABS-FP-20260310`
 
 ## 1. Purpose
 Track execution status and reproducible evidence for W5 `ABS` full-formality closure.
@@ -56,6 +57,7 @@ Template:
 1. Status: `closed`.
 2. Evidence:
    - Lean modules:
+     - `formal/lean/OxFunc/FloatingPointEnv.lean`
      - `formal/lean/OxFunc/Functions/Abs.lean`
      - `formal/lean/OxFunc/Functions/AbsSurface.lean`
    - Lean build: `lake build`
@@ -82,6 +84,13 @@ Template:
    - `.tmp/abs-results-compat.csv.run-metadata.json`
    - `.tmp/abs-entrypoint-results.csv`
    - `.tmp/abs-entrypoint-analysis-summary.json`
+   - `.tmp/abs-fp-followup/abs-results-default.csv`
+   - `.tmp/abs-fp-followup/abs-results-compat.csv`
+   - `.tmp/abs-fp-followup/abs-results-excel.csv`
+   - `.tmp/abs-fp-followup/abs-analysis-report.csv`
+   - `.tmp/abs-fp-followup/abs-analysis-summary.json`
+   - `.tmp/abs-fp-followup/abs-results-default.csv.run-metadata.json`
+   - `.tmp/abs-fp-followup/abs-results-compat.csv.run-metadata.json`
 
 ### G5 - Promotion Closure
 1. Status: `closed-provisional`.
@@ -108,6 +117,26 @@ Template:
 14. Entrypoint failed unexpected: `0`
 15. Entrypoint gate status: `green`
 
+## 5A. Floating-Point Follow-Up (2026-03-10)
+1. Evidence ID: `W5-ABS-FP-20260310`.
+2. Output artifacts:
+   - `.tmp/abs-fp-followup/abs-results-default.csv`
+   - `.tmp/abs-fp-followup/abs-results-compat.csv`
+   - `.tmp/abs-fp-followup/abs-results-excel.csv`
+   - `.tmp/abs-fp-followup/abs-analysis-report.csv`
+   - `.tmp/abs-fp-followup/abs-analysis-summary.json`
+3. Follow-up suite scenario rows: `36` (`18` default + `18` compat_template).
+4. Follow-up observed rows: `34`
+5. Follow-up failed expected: `2` (`ABS5-004` in both run labels)
+6. Follow-up failed unexpected: `0`
+7. Follow-up expectation matched: `36`
+8. Follow-up expectation mismatched: `0`
+9. Follow-up dual-run requirement satisfied: `true`
+10. Follow-up gate status from analyzer: `green`
+11. New floating-point observations:
+    - `ABS5-017`: direct tiny-negative `ABS` path produced worksheet-visible `0`, and reciprocal follow-back returned `#DIV/0!` in both run labels.
+    - `ABS5-018`: reference-fed tiny-negative `ABS` path also produced worksheet-visible `0`, and reciprocal follow-back returned `#DIV/0!` in both run labels.
+
 ## 6. Key Findings
 1. Scalar unary behavior aligns with contract (`ABS5-001`, `ABS5-002`, `ABS5-005`).
 2. Error propagation lanes are explicit and stable in baseline:
@@ -121,10 +150,13 @@ Template:
 4. Floating-point seed lanes observed:
    - `-0` normalized at worksheet surface (`ABS5-006`)
    - subnormal seed path observed as `0` at this baseline boundary (`ABS5-012`)
-5. Array-lift, spill obstruction, and reference lanes observed without mismatches (`ABS5-008..ABS5-011`, `ABS5-015`).
-6. Persistence lane (`save_reopen_recalc`) and external/open-state lane (`external_ref_open_state_compare`) retained expected outcomes (`ABS5-013`, `ABS5-014`).
-7. Locale-sensitive text coercion seed (`ABS5-016`) observed `#VALUE!` for `en-US` baseline.
-8. Entrypoint probe confirms mechanism-specific behavior:
+5. Floating-point follow-up closed the main remaining ABS environment question for tiny inputs:
+   - direct tiny-negative and reference-fed tiny-negative ABS paths both collapsed to worksheet-visible `0`,
+   - reciprocal follow-back returned `#DIV/0!` rather than exposing a retained nonzero tiny value (`ABS5-017`, `ABS5-018`).
+6. Array-lift, spill obstruction, and reference lanes observed without mismatches (`ABS5-008..ABS5-011`, `ABS5-015`).
+7. Persistence lane (`save_reopen_recalc`) and external/open-state lane (`external_ref_open_state_compare`) retained expected outcomes (`ABS5-013`, `ABS5-014`).
+8. Locale-sensitive text coercion seed (`ABS5-016`) observed `#VALUE!` for `en-US` baseline.
+9. Entrypoint probe confirms mechanism-specific behavior:
    - `Range.Formula` omission failure sentinel retained (`ABS-EP-002`).
    - `Evaluate` lanes observed expected value/error outcomes.
    - `WorksheetFunction.Abs` method is not exposed in this COM dispatch surface for this baseline (`ABS-EP-007`, `ABS-EP-008`).
@@ -134,7 +166,8 @@ Template:
 2. Rust pre-adapter preparation (`functions::adapters::prepare_args_values_only`) corresponds to Lean preparation seam (`Functions.AbsSurface.prepareAbsSurfaceArgValuesOnly` + `RefResolverSeam.resolveRefToInput`).
 3. Rust adapter scalar path (`functions::abs::eval_abs_adapter_scalar_prepared`) corresponds to Lean adapter scalar path (`Functions.Abs.evalAbsAdapterScalar` / `evalAbsAdapterArg`).
 4. Rust kernel (`functions::abs::abs_kernel`) corresponds to Lean kernel (`Functions.Abs.absKernel`).
-5. Correlation obligations are maintained in `docs/function-lane/FUNCTION_SLICE_CORRELATION_LEDGER.csv` for both adapter/kernel and surface-path theorem/test IDs.
+5. Floating-point environment overlay is recorded in Lean through `OxFunc.FloatingPointEnv` and ABS-specific observation bindings in `Functions.Abs`, rather than by overloading the rational ABS kernel with worksheet-surface normalization claims.
+6. Correlation obligations are maintained in `docs/function-lane/FUNCTION_SLICE_CORRELATION_LEDGER.csv` for both adapter/kernel and surface-path theorem/test IDs.
 
 ## 8. Recording Rules
 1. Keep expected failures explicit through `expected_status` + `expected_observable`.

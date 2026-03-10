@@ -79,7 +79,7 @@ Pass when:
 
 ## 7. Status
 Execution state:
-1. `complete-provisional`.
+1. `function-phase-complete`.
 
 Claim confidence:
 1. `provisional` (single-build/channel + default compatibility/locale baseline).
@@ -94,7 +94,9 @@ Gate snapshot:
 Primary evidence:
 1. `W5-ABS-BL-20260308`
 2. `W5-ABS-ENTRY-20260308`
-3. `docs/function-lane/ABS_EXECUTION_RECORD.md`
-4. `.tmp/abs-analysis-summary.json`
-5. `.tmp/abs-entrypoint-analysis-summary.json`
+3. `W5-ABS-FP-20260310`
+4. `docs/function-lane/ABS_EXECUTION_RECORD.md`
+5. `.tmp/abs-analysis-summary.json`
+6. `.tmp/abs-entrypoint-analysis-summary.json`
+7. `.tmp/abs-fp-followup/abs-analysis-summary.json`
 

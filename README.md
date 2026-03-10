@@ -46,5 +46,6 @@ Out of slice:
 - OxFunc assumes read access to Foundation artifacts but does not assume direct-write workflow to Foundation during routine iteration.
 - Completeness reporting is scope-qualified by doctrine; see `CHARTER.md` section `7.4` and `OPERATIONS.md` section `11`.
 - OxFunc does not accept bounded-fit function implementations. A function is only considered implemented when the runtime and formal model cover the full documented and empirically observed Excel semantics for the declared version scope; the only tolerated limitation is in the XLL verification seam.
+- For the current implementation phase, function closure is reported as `function-phase-complete` when the reference-baseline semantics and evaluation seam are understood with no known function-semantic gap remaining; locale/version sweeps are tracked as later orthogonal validation phases unless explicitly in scope.
 - XLL verification-seam limitations must be documented centrally in the seam records and repeated in function verification records wherever those limitations affect the meaning of a parity or closure claim.
 

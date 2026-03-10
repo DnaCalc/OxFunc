@@ -1,5 +1,6 @@
 import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.FloatingPointEnv
 
 namespace OxFunc.Functions
 
@@ -38,6 +39,35 @@ def evalAbsAdapterScalar (args : List CoercionInput) : Except (EvalError ⊕ Coe
 def evalAbsAdapterLift (args : List CoercionInput) : List (Except CoercionError Rat) :=
   args.map evalAbsAdapterArg
 
+inductive AbsFloatBoundaryCase where
+  | formulaNegZeroLiteral
+  | directTinyNegativeReciprocal
+  | referenceTinyNegativeReciprocal
+  deriving DecidableEq, Repr
+
+def absFloatObservationEvidenceId : String :=
+  "W5-ABS-FP-20260310"
+
+def absObservedFloatBinding : AbsFloatBoundaryCase → FloatObservationBinding
+  | .formulaNegZeroLiteral => {
+      layer := FloatEnvironmentLayer.worksheetFormulaSurface
+      outcome := WorksheetFloatOutcome.visibleZero
+      evidenceId := absFloatObservationEvidenceId
+      note := "ABS(-0) is worksheet-visible as zero in the build-scoped Excel baseline."
+    }
+  | .directTinyNegativeReciprocal => {
+      layer := FloatEnvironmentLayer.worksheetFormulaSurface
+      outcome := WorksheetFloatOutcome.div0Error
+      evidenceId := absFloatObservationEvidenceId
+      note := "ABS of a tiny negative candidate collapses to worksheet-visible zero strongly enough that a reciprocal yields #DIV/0!."
+    }
+  | .referenceTinyNegativeReciprocal => {
+      layer := FloatEnvironmentLayer.worksheetFormulaSurface
+      outcome := WorksheetFloatOutcome.div0Error
+      evidenceId := absFloatObservationEvidenceId
+      note := "Reference-fed ABS of a tiny negative candidate also collapses to worksheet-visible zero strongly enough that a reciprocal yields #DIV/0!."
+    }
+
 theorem absKernel_of_neg (n : Rat) (h : n < 0) :
     absKernel n = -n := by
   simp [absKernel, h]
@@ -45,6 +75,30 @@ theorem absKernel_of_neg (n : Rat) (h : n < 0) :
 theorem absKernel_of_nonneg (n : Rat) (h : ¬ n < 0) :
     absKernel n = n := by
   simp [absKernel, h]
+
+theorem absObservedFloat_formulaNegZeroLiteral :
+    absObservedFloatBinding .formulaNegZeroLiteral =
+      { layer := FloatEnvironmentLayer.worksheetFormulaSurface
+        outcome := WorksheetFloatOutcome.visibleZero
+        evidenceId := absFloatObservationEvidenceId
+        note := "ABS(-0) is worksheet-visible as zero in the build-scoped Excel baseline." } := by
+  rfl
+
+theorem absObservedFloat_directTinyNegativeReciprocal :
+    absObservedFloatBinding .directTinyNegativeReciprocal =
+      { layer := FloatEnvironmentLayer.worksheetFormulaSurface
+        outcome := WorksheetFloatOutcome.div0Error
+        evidenceId := absFloatObservationEvidenceId
+        note := "ABS of a tiny negative candidate collapses to worksheet-visible zero strongly enough that a reciprocal yields #DIV/0!." } := by
+  rfl
+
+theorem absObservedFloat_referenceTinyNegativeReciprocal :
+    absObservedFloatBinding .referenceTinyNegativeReciprocal =
+      { layer := FloatEnvironmentLayer.worksheetFormulaSurface
+        outcome := WorksheetFloatOutcome.div0Error
+        evidenceId := absFloatObservationEvidenceId
+        note := "Reference-fed ABS of a tiny negative candidate also collapses to worksheet-visible zero strongly enough that a reciprocal yields #DIV/0!." } := by
+  rfl
 
 theorem evalAbsScalar_rejects_nil :
     evalAbsAdapterScalar [] = Except.error (Sum.inl (EvalError.arityMismatch 1 0)) := by

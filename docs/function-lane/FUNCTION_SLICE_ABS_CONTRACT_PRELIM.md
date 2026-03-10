@@ -44,6 +44,7 @@
    - `-0` normalizes to `+0`.
    - `-inf` maps to `+inf`.
    - `NaN` remains `NaN` payload-class (no domain rejection in kernel).
+   - worksheet-formula paths observed so far do not preserve tiny negative inputs through `ABS` strongly enough to survive reciprocal follow-back; the tested tiny-value ABS lanes collapse to worksheet-visible zero and yield `#DIV/0!` on reciprocal reuse.
 6. array-lift lane:
    - elementwise lift for admitted array-like argument lanes.
    - per-element coercion errors are preserved in lifted outcomes.
@@ -116,6 +117,7 @@
    - `W4-COERCE-BL-20260307` (coercion + resolver seam baseline)
    - `W5-ABS-BL-20260308` (ABS slice baseline run)
    - `W5-ABS-ENTRY-20260308` (entrypoint mechanism baseline)
+   - `W5-ABS-FP-20260310` (ABS floating-point reciprocal follow-back)
 3. current status rationale:
    - contract, Lean, Rust, and empirical baseline are wired for the declared W5 scope.
    - expansion for multi-build/channel/compat template remains required before `validated`.

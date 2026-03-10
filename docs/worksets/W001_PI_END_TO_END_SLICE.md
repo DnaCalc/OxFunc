@@ -1,7 +1,7 @@
 # WORKSET - TUX1000 PI End-to-End Slice (W1)
 
 ## 1. Purpose
-Establish the first complete OxFunc slice method on a minimal deterministic function.
+Establish the first function-phase-complete OxFunc slice method on a minimal deterministic function.
 
 `PI()` is the method seed for the full artifact chain:
 1. contract,
@@ -23,7 +23,7 @@ Downstream consumers:
 
 ## 3. Scope
 In scope:
-1. complete `PI()` contract-formal-runtime-verification-correlation chain.
+1. function-phase-complete `PI()` contract-formal-runtime-verification-correlation chain.
 2. explicit function tags (`deterministic`, `nonvolatile`, `host_interaction=none`, `thread_safety=safe_pure`, `arg_preparation_profile=values_only_pre_adapter`, `coercion_lift_profile=none`, `kernel_signature_class=nullary_const`, adapter-level `fec_dependency_profile=none`, and `surface_fec_dependency_profile=none`).
 3. linkage into function-lane conformance rows.
 4. admission-boundary empirical baseline for `PI()` arity behavior across entry/evaluate/file-ingress mechanisms.
@@ -63,12 +63,17 @@ Pass when:
 
 ## 6. Status
 Execution state:
-1. `complete`.
+1. `function-phase-complete`.
 
 Claim confidence:
 1. `provisional` for broader Excel-version closure until empirical replay depth is expanded.
-2. `provisional` for direct C API (`xlfEvaluate`/`xlCoerce`) admission-boundary equivalence until dedicated lane is executed.
+2. `provisional` for locale and direct C API (`xlfEvaluate`/`xlCoerce`) admission-boundary validation until those orthogonal sweeps are executed.
 
 Assurance maturity:
 1. `exercised`.
+
+Current-phase closure statement:
+1. `PI()` is `function-phase-complete` for the current implementation phase.
+2. No known function-semantic gap remains in current-phase scope for the reference Excel baseline.
+3. Remaining locale/version/C API work is tracked as orthogonal validation-phase expansion, not as unfinished core `PI()` semantics.
 
