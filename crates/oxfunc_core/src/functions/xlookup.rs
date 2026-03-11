@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::a1_refs::{A1Reference, format_relative_target, parse_a1_reference};
+use crate::functions::a1_refs::{
+    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
+};
 use crate::functions::adapters::{
     PreparedArgValue, expand_lookup_vector_arg, prepare_arg_values_only,
 };
@@ -132,6 +134,7 @@ fn reference_from_cell(parsed: &A1Reference, row: usize, col: usize) -> Referenc
         end_row: parsed.start_row + row,
         start_col: parsed.start_col + col,
         end_col: parsed.start_col + col,
+        notation: A1ReferenceNotation::Rect,
     };
     let target = format_relative_target(&single).expect("single cell reference is formattable");
     ReferenceLike {
@@ -365,6 +368,7 @@ fn select_reference_slice(
             end_row: reference.start_row + index,
             start_col: reference.start_col,
             end_col: reference.end_col,
+            notation: A1ReferenceNotation::Rect,
         },
         VectorOrientation::Horizontal => A1Reference {
             prefix: reference.prefix.clone(),
@@ -372,6 +376,7 @@ fn select_reference_slice(
             end_row: reference.end_row,
             start_col: reference.start_col + index,
             end_col: reference.start_col + index,
+            notation: A1ReferenceNotation::Rect,
         },
         VectorOrientation::Scalar => reference.clone(),
     };

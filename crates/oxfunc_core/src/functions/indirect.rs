@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::a1_refs::{A1Reference, format_relative_target, parse_a1_reference};
+use crate::functions::a1_refs::{
+    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
+};
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
@@ -45,6 +47,7 @@ enum R1C1Component {
 fn parse_a1_flag(arg: Option<&PreparedArgValue>) -> Result<bool, IndirectEvalError> {
     match arg {
         None => Ok(true),
+        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(false),
         Some(p) => {
             let n = coerce_prepared_to_number(p).map_err(IndirectEvalError::Coercion)?;
             Ok(n != 0.0)
@@ -179,6 +182,7 @@ fn parse_r1c1_reference(target: &str, caller: Option<&CallerContext>) -> Option<
         start_col: start_col.min(end_col),
         end_row: start_row.max(end_row),
         end_col: start_col.max(end_col),
+        notation: A1ReferenceNotation::Rect,
     })
 }
 
@@ -368,6 +372,57 @@ mod tests {
             Err(IndirectEvalError::InvalidReferenceText(
                 "number".to_string()
             ))
+        );
+    }
+
+    #[test]
+    fn eval_indirect_missing_a1_flag_behaves_like_false() {
+        let got = eval_indirect_surface(
+            &[text_arg("R1C2"), CallArgValue::MissingArg],
+            &MockResolver {
+                caller: Some(CallerContext {
+                    prefix: Some("Sheet1".to_string()),
+                    row: 3,
+                    col: 3,
+                }),
+            },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::A1,
+                target: "Sheet1!B1".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn eval_indirect_whole_column_a1_text_returns_area_reference() {
+        let got = eval_indirect_surface(
+            &[text_arg("Sheet1!$K:$K")],
+            &MockResolver { caller: None },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "Sheet1!K:K".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn eval_indirect_whole_row_a1_text_returns_area_reference() {
+        let got = eval_indirect_surface(
+            &[text_arg("$1:$1")],
+            &MockResolver { caller: None },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "1:1".to_string(),
+            }))
         );
     }
 }

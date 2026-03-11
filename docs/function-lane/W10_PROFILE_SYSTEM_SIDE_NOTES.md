@@ -33,13 +33,13 @@ Purpose:
    - profile-system implication:
      - standardize provider seams (`time_provider`, `random_provider`) in runtime and formal scaffolding.
 5. Dynamic array payload gap (`SEQUENCE`):
-   - current `EvalValue::Array(ArrayShape)` can represent shape but not element payload.
+   - W10 originally exposed a shape-only gap for `SEQUENCE`; the current runtime now materializes full row-major payload arrays and the Lean model must stay aligned with payload, not just shape.
    - profile-system implication:
-     - decide whether function lane needs array payload model now or explicit adapter-owned payload indirection.
+     - keep array payload semantics first-class in function/runtime/formal layers and avoid regressing to shape-only placeholders.
 6. Seed-mode declaration needed for profile clarity:
-   - `MATCH`, `XLOOKUP`, `INDIRECT`, and `INDEX` currently expose explicit seed-only unsupported lanes.
+   - W10 originally used seed-mode language for `MATCH`, `XLOOKUP`, `INDIRECT`, and `INDEX`; after the current closure pass the remaining concern is not seed-mode coverage for those functions, but keeping reference-return, caller-context, and host-boundary semantics explicit in the contracts.
    - profile-system implication:
-     - add explicit `semantic_coverage_profile` field (`seed_exact_only`, `seed_partial`, `full_target`) so partial mode support is machine-visible.
+     - keep any future partial-mode declaration machine-visible, but do not use seed-language to mask already-closed function semantics.
 7. Reference-return policy needs first-class contract axis:
    - `INDEX`/`XLOOKUP` can return references while `values_only_pre_adapter` functions cannot.
    - profile-system implication:

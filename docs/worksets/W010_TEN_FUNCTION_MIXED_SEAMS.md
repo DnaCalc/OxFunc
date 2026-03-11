@@ -122,10 +122,10 @@ Pass when:
 
 ## 8. Status
 Execution state:
-1. `in_progress`.
+1. `complete`.
 
 Claim confidence:
-1. `provisional` (useful scaffolding and empirical replay landed, but multiple functions remain semantically incomplete).
+1. `provisional` (current-phase function closure is reached for all ten functions; broader locale/version validation remains orthogonal follow-up).
 
 Assurance maturity:
 1. `exercised`.
@@ -160,13 +160,20 @@ Assurance maturity:
    - `tools/w10-probe/run-w10-suite.ps1`
    - `tools/w10-probe/analyze-w10-results.ps1`
    - `tools/w10-probe/new-w10-compat-template.ps1`
-8. dual-run Excel replay reran green across `84` observed rows with `expectation_mismatched=0`.
+8. dual-run Excel replay reran green across `122` observed rows with `expectation_mismatched=0`.
 9. dedicated lookup-family XLL bridge replay now exists in `docs/function-lane/LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`, with array-constant parity rows matched and explicit reference-range seam divergences recorded.
-10. W10 remains open because `INDEX`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.
-11. Individual W10 slices now considered `function-phase-complete` for the current implementation phase:
+10. W10 closeout follow-up landed for `INDEX`, `INDIRECT`, and `SEQUENCE`:
+   - `INDEX` now covers explicit blank `row_num` / `col_num` defaults, same-sheet multi-area `area_num`, and mixed-sheet multi-area rejection.
+   - `INDIRECT` now covers explicit-blank `a1_style` as `FALSE`, plus whole-column and whole-row A1 text references.
+   - `SEQUENCE` now covers explicit blank defaults for `rows`, `columns`, `start`, and `step` with payload materialization.
+11. All W10 slices are now considered `function-phase-complete` for the current implementation phase:
    - `SUM`
    - `IF`
+   - `INDEX`
    - `ISNUMBER`
    - `MATCH`
    - `NOW`
+   - `OP_ADD`
+   - `INDIRECT`
+   - `SEQUENCE`
    - `XLOOKUP`

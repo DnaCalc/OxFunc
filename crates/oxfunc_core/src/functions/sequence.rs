@@ -51,6 +51,32 @@ fn parse_dimension(raw: f64, arg_index: usize) -> Result<usize, SequenceEvalErro
     Ok(raw as usize)
 }
 
+fn parse_optional_dimension(
+    arg: Option<&PreparedArgValue>,
+    arg_index: usize,
+    default: usize,
+) -> Result<usize, SequenceEvalError> {
+    match arg {
+        None => Ok(default),
+        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(default),
+        Some(other) => parse_dimension(
+            coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion)?,
+            arg_index,
+        ),
+    }
+}
+
+fn parse_optional_scalar(
+    arg: Option<&PreparedArgValue>,
+    default: f64,
+) -> Result<f64, SequenceEvalError> {
+    match arg {
+        None => Ok(default),
+        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(default),
+        Some(other) => coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion),
+    }
+}
+
 pub fn eval_sequence_adapter_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, SequenceEvalError> {
@@ -63,30 +89,10 @@ pub fn eval_sequence_adapter_prepared(
         });
     }
 
-    let rows = parse_dimension(
-        coerce_prepared_to_number(&args[0]).map_err(SequenceEvalError::Coercion)?,
-        1,
-    )?;
-
-    let cols = if argc >= 2 {
-        parse_dimension(
-            coerce_prepared_to_number(&args[1]).map_err(SequenceEvalError::Coercion)?,
-            2,
-        )?
-    } else {
-        1
-    };
-
-    let start = if argc >= 3 {
-        coerce_prepared_to_number(&args[2]).map_err(SequenceEvalError::Coercion)?
-    } else {
-        1.0
-    };
-    let step = if argc >= 4 {
-        coerce_prepared_to_number(&args[3]).map_err(SequenceEvalError::Coercion)?
-    } else {
-        1.0
-    };
+    let rows = parse_optional_dimension(args.first(), 1, 1)?;
+    let cols = parse_optional_dimension(args.get(1), 2, 1)?;
+    let start = parse_optional_scalar(args.get(2), 1.0)?;
+    let step = parse_optional_scalar(args.get(3), 1.0)?;
 
     let shape = ArrayShape { rows, cols };
     let mut cells = Vec::with_capacity(shape.cell_count());
@@ -224,6 +230,72 @@ mod tests {
         assert_eq!(
             map_sequence_error_to_ws(&SequenceEvalError::ZeroDimension { arg_index: 1 }),
             WorksheetErrorCode::Calc
+        );
+    }
+
+    #[test]
+    fn eval_sequence_missing_rows_defaults_to_one() {
+        let args = [
+            CallArgValue::MissingArg,
+            CallArgValue::Eval(EvalValue::Number(3.0)),
+        ];
+        let got = eval_sequence_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_sequence_missing_middle_args_follow_excel_defaults() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+            CallArgValue::MissingArg,
+            CallArgValue::Eval(EvalValue::Number(10.0)),
+        ];
+        let got = eval_sequence_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(10.0)],
+                    vec![ArrayCellValue::Number(11.0)],
+                ])
+                .unwrap()
+            ))
+        );
+
+        let args = [
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+            CallArgValue::Eval(EvalValue::Number(3.0)),
+            CallArgValue::MissingArg,
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let got = eval_sequence_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(5.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(7.0),
+                        ArrayCellValue::Number(9.0),
+                        ArrayCellValue::Number(11.0),
+                    ],
+                ])
+                .unwrap()
+            ))
         );
     }
 }
