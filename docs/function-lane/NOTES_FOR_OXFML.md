@@ -10,42 +10,39 @@ Capture concrete design constraints that OxFunc has discovered while trying to i
 This is not a speculative architecture note. It is a handoff ledger for cases where OxFunc needs OxFml to preserve distinctions that are currently at risk of being erased too early in parse/bind/evaluation.
 
 ## 2. Core Message
-OxFml should preserve provenance and expression-class information much longer than a plain “evaluated value” model.
+OxFml should preserve the distinctions that Excel semantics actually depend on for the current function set.
 
-For a number of Excel functions, especially aggregates and reference-returning functions, semantic correctness depends not only on the resulting value, but also on where that value came from.
+The most important current split is not “all provenance everywhere”, but:
+1. direct scalar argument versus array-like argument
+2. value-only function versus reference-observable function
+3. value-only result versus may-return-reference result
 
-## 3. Provenance Requirement for Aggregate Families
+## 3. Current Aggregate Requirement
 The immediate pressure point is aggregate semantics.
 
-At minimum, OxFml should preserve a distinction between:
-1. direct scalar argument from the formula AST
-2. direct array literal / array constant available at parse time
-3. reference-derived scalar
-4. reference-derived area/array
-5. eval-time reference-returning expression result:
-   - examples: `OFFSET(...)`, `INDEX(...)`, `XLOOKUP(...)`
-6. spilled / dynamic-array expression result that is not the same thing as an array literal
-7. omitted argument, blank cell, empty string, and error provenance without collapsing them into one generic scalar bucket
+For the currently closed `SUM` slice, OxFunc needs to preserve:
+1. direct scalar argument from the call structure
+2. array-like argument as a single argument
+3. omitted argument, blank cell, empty string, and error classes without collapsing them too early
 
 Why this matters:
-1. `SUM("2",TRUE)` is not the same source class as `SUM({"2",TRUE})`.
-2. `SUM(A1:A2)` is not the same source class as either of the above.
-3. `AVERAGE`, `COUNT`, `COUNTA`, and `AND` also depend on these distinctions.
-4. If OxFml erases provenance during parse, bind, normalization, or early evaluation, OxFunc cannot recover the correct Excel family policy later.
+1. `SUM("2",TRUE)` is not the same as `SUM({"2",TRUE})`.
+2. current evidence does not require `SUM` to distinguish reference-derived arrays from array literals once both have become array-like inputs.
+3. `AVERAGE`, `COUNT`, `COUNTA`, and `AND` may later require richer distinctions, but those should be demanded only when we have actual examples for them.
 
 Current OxFunc status:
-1. OxFunc now carries explicit aggregate provenance classes for `SUM` (`direct_scalar`, `direct_array_literal`, `reference_derived`, `opaque_array_value`).
-2. When upstream provenance is missing, OxFunc uses an explicit `opaque_array_value` fallback rather than silently pretending the source class is known.
-3. OxFml still needs to preserve the richer upstream distinctions so OxFunc does not depend on fallback classification for semantically exact calls.
+1. OxFunc now carries explicit aggregate input-structure classes for `SUM` (`direct_scalar`, `direct_array_literal`, `reference_derived`, `opaque_array_value`).
+2. The current `SUM` semantics use those classes to preserve direct-scalar versus array-like behavior; they do not currently require a worksheet-semantic distinction between array literal and reference-derived array.
+3. When upstream source structure is missing, OxFunc uses an explicit `opaque_array_value` fallback rather than silently pretending the source class is known.
 
 ## 4. Parse-Tree and Evaluation Implication
 OxFml should keep provenance attached all the way from parse tree through reference-tree build and evaluation results.
 
 Practical implication:
-1. do not normalize array literals and reference-derived arrays into the same opaque “array value” too early
+1. do not collapse direct scalar arguments and array-like arguments into the same generic prepared shape for aggregate-style functions
 2. do not normalize reference-returning expressions into plain values when reference identity is semantically relevant
 3. prepared-call surfaces should eventually consume something closer to:
-   - `value + provenance + reference_identity + production_mode`
+   - `value + structure_class + reference_identity + production_mode`
    rather than only:
    - `value`
 
@@ -57,27 +54,21 @@ The goal is not to freeze final Rust types here. The goal is to make sure the in
 ### 5.1 Candidate Expression-Source Vocabulary
 Suggested expression/argument source classification:
 1. `DirectScalar`
-   - scalar expression supplied directly in the AST
+   - scalar expression supplied directly in the call structure
    - examples: `1`, `"a"`, `TRUE`, `A1+1`
-2. `ArrayLiteral`
-   - array constant available from the formula AST
-   - examples: `{1,2}`, `{"2",TRUE}`
+2. `ArrayLikeValue`
+   - array-like input presented to the callee as one argument
+   - examples: `{1,2}`, a dereferenced range, a spill result
 3. `ReferenceNode`
    - syntactic reference expression before dereference
    - examples: `A1`, `A1:B2`, `Sheet2!C3`
-4. `ReferenceDerivedScalar`
-   - scalar obtained by resolving a reference or implicit intersection
-5. `ReferenceDerivedArray`
-   - area/array obtained by resolving a reference node
-6. `ReferenceReturningExpr`
+4. `ReferenceReturningExpr`
    - non-reference syntax that evaluates to a reference identity
    - examples: `OFFSET(...)`, `INDEX(...)`, `XLOOKUP(...)`, `INDIRECT(...)`
-7. `SpillExprResult`
-   - array result produced by expression evaluation rather than by array-literal syntax
-8. `Omitted`
+5. `Omitted`
    - omitted argument position
 
-These can be represented either as a single enum or as orthogonal fields. The important point is that OxFunc can still distinguish array literal from reference-derived array, and both from eval-time reference-returning results.
+These can be represented either as a single enum or as orthogonal fields. The important point is that OxFunc can still distinguish direct scalar input, array-like input, and reference-observable input/result cases.
 
 ### 5.2 Candidate Provenance Carrier
 Candidate boundary shape:
@@ -85,7 +76,7 @@ Candidate boundary shape:
 ```text
 PreparedArg {
   value_view: ValueView,
-  provenance: ValueProvenance,
+  structure_class: StructureClass,
   source_class: ExprSourceClass,
   reference_identity: Option<ReferenceIdentity>,
   evaluation_mode: EvaluationMode,
@@ -96,8 +87,8 @@ PreparedArg {
 Candidate field intent:
 1. `value_view`
    - the observed scalar/array/error payload currently visible to the callee
-2. `provenance`
-   - how the payload was produced
+2. `structure_class`
+   - whether the argument is a direct scalar, array-like input, omitted, or another semantically distinct prepared shape
 3. `source_class`
    - the originating syntactic/evaluative class
 4. `reference_identity`
@@ -107,14 +98,13 @@ Candidate field intent:
 6. `blankness_class`
    - omitted vs blank cell vs empty string without premature collapse
 
-Candidate provenance vocabulary:
-1. `AstScalar`
-2. `AstArrayLiteral`
-3. `ReferenceResolvedScalar`
-4. `ReferenceResolvedArea`
-5. `ReferenceReturnedAtEval`
-6. `SpillProduced`
-7. `AdapterSynthesized`
+Candidate minimal structure vocabulary:
+1. `DirectScalar`
+2. `ArrayLike`
+3. `Omitted`
+4. `AdapterSynthesized`
+
+Optional richer source vocabulary can sit beside this when later functions prove that it matters.
 
 ### 5.3 Candidate Reference Identity Carrier
 OxFunc likely needs more than a formatted address string.
@@ -177,7 +167,7 @@ Candidate result shape:
 PreparedResult {
   payload: ValueView,
   result_class: ResultClass,
-  provenance: ValueProvenance,
+  structure_class: StructureClass,
   reference_identity: Option<ReferenceIdentity>,
   format_hint: Option<FormatHint>,
 }
@@ -206,7 +196,10 @@ The boundary must allow OxFunc to distinguish at least:
 4. `SUM(OFFSET(A1,0,0,2,1))`
 5. `SUM(XLOOKUP(...))` when the lookup returns a reference-capable result
 
-If those arrive at OxFunc as the same generic array/scalar bucket, the boundary is already too lossy.
+Current lesson:
+1. `SUM("2",TRUE)` must stay distinct from the single-argument array-like cases.
+2. the current `SUM` evidence does not require array literal versus reference-derived array to stay distinct once both are array-like inputs.
+3. if later aggregate examples prove otherwise, the boundary should be able to grow richer source classes without breaking the simpler current model.
 
 ### 5.7 OFFSET Design Test
 `OFFSET` should be treated as a primary interface test, not just another function.
@@ -236,8 +229,8 @@ Related pressure:
 
 ### 5.9 Minimum Invariants
 The following invariants should hold across the OxFml boundary:
-1. array literal is not interchangeable with reference-derived area
-2. reference-returning expression is not interchangeable with an already-dereferenced payload
+1. direct scalar input is not interchangeable with array-like input
+2. reference-returning expression is not interchangeable with an already-dereferenced payload when reference identity matters
 3. omitted argument, blank cell, empty string, and error are not collapsed into one generic empty/scalar bucket
 4. reference identity survives until the consuming function family has explicitly decided to dereference or flatten it
 5. evaluation strategy is visible where Excel semantics depend on non-eager behavior

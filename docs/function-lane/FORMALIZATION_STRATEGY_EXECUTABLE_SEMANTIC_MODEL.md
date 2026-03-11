@@ -41,8 +41,8 @@ Function families should instead be used as a rough primary partition:
 
 Examples:
 1. `MATCH`, `XMATCH`, and `XLOOKUP` belong to a lookup-selection substrate family.
-2. `SUM`, `AVERAGE`, `COUNT`, and `COUNTA` belong to a provenance-sensitive aggregate policy family.
-3. `AND` belongs more naturally to a logical-fold substrate, even though some of its current Excel-observed lanes are provenance-sensitive.
+2. `SUM`, `AVERAGE`, `COUNT`, and `COUNTA` belong to an aggregate argument-structure policy family.
+3. `AND` belongs more naturally to a logical-fold substrate, even though some of its current Excel-observed lanes share aggregate-style direct-scalar versus array-like distinctions.
 4. `INDEX` belongs to a reference-selection family.
 5. `OFFSET` belongs to a reference-construction family.
 6. `INDIRECT` belongs to a reference-text-interpretation family.
@@ -86,7 +86,7 @@ Lean should primarily formalize layers `1` and `2`, describe layer `3`, and usua
 2. Declared adapter policy
    - defaulting
    - coercion class
-   - provenance-sensitive behavior
+   - direct-scalar versus array-like behavior and other declared preparation distinctions
    - admitted preparation assumptions
 3. FEC/F3E seam contract
    - what prepared arguments/results may contain
@@ -141,7 +141,7 @@ Recommended structure over time:
 
 1. substrate modules
    - reusable semantics shared across multiple functions
-   - examples: lookup selection, aggregate provenance policy, text coercion, date serial arithmetic, reference selection
+   - examples: lookup selection, aggregate argument-structure policy, text coercion, date serial arithmetic, reference selection
 2. function binding modules
    - function-specific admission/defaulting/result-adaptation binding into the substrate
 3. seam contract modules
@@ -217,7 +217,7 @@ Current lookup-family work is a good example:
 4. cross-cutting concerns like reference-return or text comparison remain notes on the family boundary, not separate equal-status homes for the same function
 
 The same pattern should apply later to:
-1. aggregate provenance
+1. aggregate argument structure
 2. reference-return selection
 3. text coercion and text comparison
 4. date/time serial handling

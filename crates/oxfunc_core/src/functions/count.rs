@@ -15,10 +15,10 @@ pub const COUNT_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
+    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
-    fec_dependency_profile: FecDependencyProfile::RefOnly,
+    fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 

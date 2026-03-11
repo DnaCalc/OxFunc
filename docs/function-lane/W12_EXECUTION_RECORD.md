@@ -19,7 +19,7 @@ Track W12 execution status, artifacts, and gate closure for the moderate fifteen
 4. integration_completeness: `partial`
 5. open_lanes:
    - multiple W12 function implementations remain work-in-progress until known Excel-semantic gaps are closed for the declared version axes.
-   - aggregate direct-vs-range provenance remains explicit target follow-up for `AVERAGE`/`COUNT`/`COUNTA`.
+   - aggregate direct-scalar versus array-like policy remains explicit target follow-up for `AVERAGE`/`COUNT`/`COUNTA`.
    - `TEXTJOIN` array flattening and richer formatting/text coercion lanes remain explicit target follow-up.
    - `OFFSET`/`CELL` retain bounded A1-only reference scope and are not yet full caller-context/macro closure.
    - `HSTACK` remains shape-only in OxFunc runtime; payload fill/padding is deferred.
@@ -117,7 +117,7 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `closed-provisional`.
 2. Notes:
    - each W12 function now has a Rust module and Lean module.
-   - bounded seed notes remain explicit for aggregate provenance, caller-context, and dynamic-array payload lanes.
+   - bounded seed notes remain explicit for aggregate argument-structure follow-up, caller-context, and dynamic-array payload lanes.
 
 ### G3 - Empirical Closure
 1. Status: `closed-provisional`.
@@ -155,6 +155,6 @@ Function slices with landed scaffolding/runtime seeds:
 2. `CELL` required an empirical-first narrowing pass before broader implementation work; the dual-run preprobe usefully selected the next semantic lanes without constituting closure.
 3. provider seams are now standardized across `NOW`, `TODAY`, and `RAND`, which gives W11 a better volatile follow-back matrix.
 4. `OFFSET` and `CELL` justified a small shared A1 parse/format helper but also exposed the remaining caller-context/reference-shape work still needed for full parity.
-5. count-family and average-family aggregate semantics remain the clearest evidence that provenance-aware aggregate inputs will need first-class representation before these functions can be treated as implemented.
+5. count-family and average-family aggregate semantics remain the clearest evidence that direct-scalar versus array-like aggregate inputs need first-class representation before these functions can be treated as implemented; any finer source-class distinction should be justified empirically rather than assumed.
 6. `TODAY` now has current-phase closure evidence across provider floor semantics, volatile recalc behavior, and caller-cell format-hinting, while remaining XLL control-alias work stays external to function semantics.
 7. `RAND` replay now asserts the worksheet-visible numeric range contract (`0 <= RAND() < 1`) directly in the W12 suite, while W11 carries the separate ordinary volatile-registration follow-back lane.

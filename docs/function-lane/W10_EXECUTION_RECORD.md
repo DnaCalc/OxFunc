@@ -44,7 +44,7 @@ Execution dates:
 1. `2026-03-09`
 2. `2026-03-10` (function-phase-complete promotion follow-up)
 3. `2026-03-10` (lookup-family closure follow-up)
-4. `2026-03-11` (SUM aggregate-provenance closure follow-up)
+4. `2026-03-11` (SUM aggregate argument-structure closure follow-up)
 5. `2026-03-11` (`INDEX` / `INDIRECT` / `SEQUENCE` closeout follow-up)
 
 Landed artifacts:
@@ -76,7 +76,10 @@ Landed artifacts:
    - mismatched: `0`
    - failed_unexpected: `0`
    - dual_run_satisfied: `true`
-5. `powershell -File tools/xll-addin/run-lookup-xll-bridge-suite.ps1 -OutDir .tmp/lookup-pass` -> pass (`15` relation rows matched, including `2` explicit seam-divergence rows).
+5. `powershell -File tools/xll-addin/run-lookup-xll-bridge-suite.ps1 -OutDir .tmp/xll-housekeeping` -> pass:
+   - rows: `17`
+   - matched: `17`
+   - mismatched: `0`
 6. `powershell -File tools/function-lane-check/run-correlation-integrity-check.ps1` -> pass.
 
 ## 5. Gate Tracking
@@ -113,12 +116,12 @@ Landed artifacts:
 ## 6. XLL Verification-Seam Limitations
 1. Relevant seam limits remain tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
 2. Material packet-level impacts:
-   - reference-return and reference-resolved lookup-array lanes are not fully demonstrated through the XLL bridge,
+   - lookup-family reference-return address and range-composition lanes are now demonstrated through the XLL bridge for the current manifest scope, but broader bridge coverage remains incomplete outside that scope,
    - registration-flag behavior remains a separate W11 evidence lane,
    - whole-row/whole-column worksheet-boundary effects for reference-returning functions remain host-surface observations rather than XLL parity requirements.
 
 ## 7. Key Findings
-1. `SUM` required explicit OxFunc-side provenance classes so direct-scalar versus array-scan semantics remain representable even before OxFml grows the fuller provenance substrate.
+1. `SUM` required explicit OxFunc-side direct-scalar versus array-like classification so aggregate semantics remain representable without passing raw references into the SUM kernel.
 2. `INDEX` required three concrete adjustments for closure:
    - explicit blank `row_num` / `col_num` positions behave as `0`,
    - same-sheet multi-area `area_num` selection happens before row/column slicing,
@@ -132,5 +135,5 @@ Landed artifacts:
    - explicit blank `rows`, `columns`, `start`, and `step` positions all use Excel defaults in the observed baseline.
 6. lookup-family closure remains intact after the W10 closeout:
    - `MATCH` and `XLOOKUP` stayed green under the widened packet replay,
-   - XLL reference-range divergence remains explicitly classified as a seam limit.
+   - the widened XLL bridge manifest is now green across scalar lookup, blank lookup, reference-return address, and reference-return range-composition lanes for the current scope.
 7. `NOW` remains evidenced across provider/recalc, registration, and format-hint lanes, with format-hint application assigned to the engine boundary rather than the pure kernel.

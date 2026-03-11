@@ -5,10 +5,16 @@ use std::ffi::c_void;
 use std::sync::OnceLock;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use oxfunc_core::functions::a1_refs::{
+    A1Reference, A1ReferenceNotation, EXCEL_MAX_COLS, EXCEL_MAX_ROWS, format_relative_target,
+    parse_a1_reference,
+};
 use oxfunc_core::functions::surface_dispatch::{
     eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_value_call,
 };
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+use oxfunc_core::resolver::{
+    CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
+};
 use oxfunc_core::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind,
     ReferenceLike, WorksheetErrorCode,
@@ -53,7 +59,10 @@ const XLRET_SUCCESS: i32 = 0;
 const XL_SPECIAL: i32 = 0x4000;
 const XL_FREE: i32 = XL_SPECIAL;
 const XL_COERCE: i32 = 2 | XL_SPECIAL;
+const XL_SHEET_ID: i32 = 4 | XL_SPECIAL;
+const XL_SHEET_NM: i32 = 5 | XL_SPECIAL;
 const XLF_REGISTER: i32 = 149;
+const XLF_CALLER: i32 = 89;
 
 type Excel12Proc = unsafe extern "system" fn(
     xlfn: i32,
@@ -251,9 +260,11 @@ struct QNullaryNumberExportSpec {
     registration: RegistrationSpec,
 }
 
-struct NoReferenceResolver;
+struct ExcelReferenceResolver {
+    caller: Option<CallerContext>,
+}
 
-impl ReferenceResolver for NoReferenceResolver {
+impl ReferenceResolver for ExcelReferenceResolver {
     fn capabilities(&self) -> ResolverCapabilities {
         ResolverCapabilities::permissive_local()
     }
@@ -262,9 +273,11 @@ impl ReferenceResolver for NoReferenceResolver {
         &self,
         reference: &ReferenceLike,
     ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
-        })
+        resolve_reference_via_excel(reference)
+    }
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        self.caller.clone()
     }
 }
 
@@ -333,6 +346,39 @@ fn alloc_result_multi(rows: i32, cols: i32, items: Vec<XLOPER12>) -> *mut XLOPER
     Box::into_raw(Box::new(oper))
 }
 
+fn make_xloper_nil() -> XLOPER12 {
+    XLOPER12 {
+        val: XLOPER12Value { w: 0 },
+        xltype: XLTYPE_NIL,
+    }
+}
+
+struct OwnedReferenceOper {
+    oper: XLOPER12,
+    owned_mref: Option<*mut XLMRef12>,
+}
+
+impl OwnedReferenceOper {
+    fn as_mut_ptr(&mut self) -> *mut XLOPER12 {
+        &mut self.oper
+    }
+
+    fn into_result_oper(mut self) -> XLOPER12 {
+        self.owned_mref = None;
+        self.oper
+    }
+}
+
+impl Drop for OwnedReferenceOper {
+    fn drop(&mut self) {
+        if let Some(ptr) = self.owned_mref.take() {
+            unsafe {
+                drop(Box::from_raw(ptr));
+            }
+        }
+    }
+}
+
 fn map_excel_err_to_ws(code: i32) -> WorksheetErrorCode {
     match code {
         XLERR_NULL => WorksheetErrorCode::Null,
@@ -365,12 +411,278 @@ fn map_ws_err_to_excel(code: WorksheetErrorCode) -> i32 {
     }
 }
 
+fn notation_from_bounds(
+    start_row: usize,
+    start_col: usize,
+    end_row: usize,
+    end_col: usize,
+) -> A1ReferenceNotation {
+    if start_row == 1 && end_row == EXCEL_MAX_ROWS {
+        A1ReferenceNotation::WholeColumn
+    } else if start_col == 1 && end_col == EXCEL_MAX_COLS {
+        A1ReferenceNotation::WholeRow
+    } else {
+        A1ReferenceNotation::Rect
+    }
+}
+
+fn reference_target_from_bounds(
+    rw_first: i32,
+    rw_last: i32,
+    col_first: i32,
+    col_last: i32,
+    prefix: Option<String>,
+) -> Option<String> {
+    let start_row = usize::try_from(rw_first.saturating_add(1)).ok()?;
+    let end_row = usize::try_from(rw_last.saturating_add(1)).ok()?;
+    let start_col = usize::try_from(col_first.saturating_add(1)).ok()?;
+    let end_col = usize::try_from(col_last.saturating_add(1)).ok()?;
+    let reference = A1Reference {
+        prefix,
+        start_row,
+        start_col,
+        end_row,
+        end_col,
+        notation: notation_from_bounds(start_row, start_col, end_row, end_col),
+    };
+    format_relative_target(&reference)
+}
+
+fn reference_like_from_bounds(
+    rw_first: i32,
+    rw_last: i32,
+    col_first: i32,
+    col_last: i32,
+    prefix: Option<String>,
+) -> ReferenceLike {
+    let target = reference_target_from_bounds(rw_first, rw_last, col_first, col_last, prefix)
+        .unwrap_or_else(|| {
+            let r1 = rw_first.saturating_add(1);
+            let r2 = rw_last.saturating_add(1);
+            let c1 = col_first.saturating_add(1);
+            let c2 = col_last.saturating_add(1);
+            if r1 == r2 && c1 == c2 {
+                format!("R{r1}C{c1}")
+            } else {
+                format!("R{r1}C{c1}:R{r2}C{c2}")
+            }
+        });
+    ReferenceLike {
+        kind: if rw_first == rw_last && col_first == col_last {
+            ReferenceKind::A1
+        } else {
+            ReferenceKind::Area
+        },
+        target,
+    }
+}
+
+fn parse_pascal_utf16_string(value: *const XLOPER12) -> Option<String> {
+    if value.is_null() {
+        return None;
+    }
+    let ty = unsafe { (*value).xltype & XLTYPE_MASK };
+    if ty != XLTYPE_STR {
+        return None;
+    }
+    let pstr = unsafe { (*value).val.str };
+    if pstr.is_null() {
+        return Some(String::new());
+    }
+    let len = usize::from(unsafe { *pstr });
+    let chars = unsafe { std::slice::from_raw_parts(pstr.add(1), len) };
+    Some(String::from_utf16_lossy(chars))
+}
+
+fn area_refs_from_mref(mref: XlMRef12) -> Option<Vec<XLRef12>> {
+    if mref.lpmref.is_null() {
+        return None;
+    }
+    let count = usize::from(unsafe { (*mref.lpmref).count });
+    if count == 0 {
+        return None;
+    }
+    let first = unsafe { (*mref.lpmref).reftbl.as_ptr() };
+    Some(unsafe { std::slice::from_raw_parts(first, count) }.to_vec())
+}
+
+fn call_excel_special(xlfn: i32, args: &mut [*mut XLOPER12]) -> Option<XLOPER12> {
+    let mut out = XLOPER12 {
+        val: XLOPER12Value { w: 0 },
+        xltype: 0,
+    };
+    if excel12v(xlfn, &mut out, args) != XLRET_SUCCESS {
+        return None;
+    }
+    Some(out)
+}
+
+fn sheet_name_from_reference_oper(reference: *mut XLOPER12) -> Option<String> {
+    let mut args = [reference];
+    let mut out = call_excel_special(XL_SHEET_NM, &mut args)?;
+    let name = parse_pascal_utf16_string(&out);
+    call_excel_free(&mut out);
+    name
+}
+
+fn sheet_id_from_prefix(prefix: &str) -> Option<IdSheet> {
+    let mut prefix_arg = TempXlString::new(prefix);
+    let mut args = [prefix_arg.oper_mut_ptr()];
+    let mut out = call_excel_special(XL_SHEET_ID, &mut args)?;
+    let ty = out.xltype & XLTYPE_MASK;
+    let id = match ty {
+        XLTYPE_REF => Some(unsafe { out.val.mref.id_sheet }),
+        _ => None,
+    };
+    call_excel_free(&mut out);
+    id
+}
+
+fn caller_context_from_reference(reference: &ReferenceLike) -> Option<CallerContext> {
+    let parsed = parse_a1_reference(&reference.target)?;
+    Some(CallerContext {
+        prefix: parsed.prefix,
+        row: parsed.start_row,
+        col: parsed.start_col,
+    })
+}
+
+fn current_caller_context() -> Option<CallerContext> {
+    let mut args = [];
+    let mut out = call_excel_special(XLF_CALLER, &mut args)?;
+    let caller = match out.xltype & XLTYPE_MASK {
+        XLTYPE_SREF => {
+            let sref = unsafe { out.val.sref };
+            let target = reference_target_from_bounds(
+                sref.r#ref.rw_first,
+                sref.r#ref.rw_last,
+                sref.r#ref.col_first,
+                sref.r#ref.col_last,
+                None,
+            )?;
+            caller_context_from_reference(&ReferenceLike {
+                kind: ReferenceKind::A1,
+                target,
+            })
+        }
+        XLTYPE_REF => {
+            let mref = unsafe { out.val.mref };
+            let refs = area_refs_from_mref(mref)?;
+            let first = refs.first()?;
+            let target = reference_target_from_bounds(
+                first.rw_first,
+                first.rw_last,
+                first.col_first,
+                first.col_last,
+                None,
+            )?;
+            caller_context_from_reference(&ReferenceLike {
+                kind: ReferenceKind::Area,
+                target,
+            })
+        }
+        _ => None,
+    };
+    if matches!(out.xltype & XLTYPE_MASK, XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI) {
+        call_excel_free(&mut out);
+    }
+    caller
+}
+
+fn owned_reference_oper_from_a1(reference: &A1Reference) -> Option<OwnedReferenceOper> {
+    let xl_ref = XLRef12 {
+        rw_first: i32::try_from(reference.start_row.checked_sub(1)?).ok()?,
+        rw_last: i32::try_from(reference.end_row.checked_sub(1)?).ok()?,
+        col_first: i32::try_from(reference.start_col.checked_sub(1)?).ok()?,
+        col_last: i32::try_from(reference.end_col.checked_sub(1)?).ok()?,
+    };
+
+    if let Some(prefix) = reference.prefix.as_deref() {
+        if let Some(id_sheet) = sheet_id_from_prefix(prefix) {
+            let mref = Box::new(XLMRef12 {
+                count: 1,
+                reftbl: [xl_ref],
+            });
+            let mref_ptr = Box::into_raw(mref);
+            return Some(OwnedReferenceOper {
+                oper: XLOPER12 {
+                    val: XLOPER12Value {
+                        mref: XlMRef12 {
+                            lpmref: mref_ptr,
+                            id_sheet,
+                        },
+                    },
+                    xltype: XLTYPE_REF,
+                },
+                owned_mref: Some(mref_ptr),
+            });
+        }
+    }
+
+    Some(OwnedReferenceOper {
+        oper: XLOPER12 {
+            val: XLOPER12Value {
+                sref: XlSRef12 {
+                    count: 1,
+                    r#ref: xl_ref,
+                },
+            },
+            xltype: XLTYPE_SREF,
+        },
+        owned_mref: None,
+    })
+}
+
+fn resolved_eval_from_call_arg(arg: CallArgValue) -> EvalValue {
+    match arg {
+        CallArgValue::Eval(value) => value,
+        CallArgValue::EmptyCell | CallArgValue::MissingArg => EvalValue::Array(EvalArray::from_scalar(
+            ArrayCellValue::EmptyCell,
+        )),
+        CallArgValue::Reference(reference) => EvalValue::Reference(reference),
+    }
+}
+
+fn resolve_reference_via_excel(reference: &ReferenceLike) -> Result<EvalValue, RefResolutionError> {
+    let parsed = parse_a1_reference(&reference.target).ok_or_else(|| {
+        RefResolutionError::UnresolvedReference {
+            target: reference.target.clone(),
+        }
+    })?;
+    let mut temp_ref = owned_reference_oper_from_a1(&parsed).ok_or_else(|| {
+        RefResolutionError::ProviderFailure {
+            detail: format!("unable to construct Excel reference for {}", reference.target),
+        }
+    })?;
+    let mut out = XLOPER12 {
+        val: XLOPER12Value { w: 0 },
+        xltype: 0,
+    };
+    if !coerce_reference_to_value(temp_ref.as_mut_ptr(), &mut out) {
+        return Err(RefResolutionError::UnresolvedReference {
+            target: reference.target.clone(),
+        });
+    }
+    let resolved = resolved_eval_from_call_arg(call_arg_from_xloper(&out, false));
+    call_excel_free(&mut out);
+    Ok(resolved)
+}
+
 fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
     match value {
         EvalValue::Number(n) => make_xloper_num(n),
         EvalValue::Logical(b) => make_xloper_bool(b),
         EvalValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
         EvalValue::Error(code) => make_xloper_err(map_ws_err_to_excel(code)),
+        EvalValue::Reference(reference) => {
+            let Some(parsed) = parse_a1_reference(&reference.target) else {
+                return make_xloper_err(XLERR_VALUE);
+            };
+            let Some(oper) = owned_reference_oper_from_a1(&parsed) else {
+                return make_xloper_err(XLERR_REF);
+            };
+            oper.into_result_oper()
+        }
         EvalValue::Array(array) => {
             let shape = array.shape();
             let items: Vec<XLOPER12> = array
@@ -380,10 +692,7 @@ fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
                     ArrayCellValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
                     ArrayCellValue::Logical(b) => make_xloper_bool(*b),
                     ArrayCellValue::Error(code) => make_xloper_err(map_ws_err_to_excel(*code)),
-                    ArrayCellValue::EmptyCell => XLOPER12 {
-                        val: XLOPER12Value { w: 0 },
-                        xltype: XLTYPE_NIL,
-                    },
+                    ArrayCellValue::EmptyCell => make_xloper_nil(),
                 })
                 .collect();
             XLOPER12 {
@@ -397,7 +706,7 @@ fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
                 xltype: XLTYPE_MULTI,
             }
         }
-        _ => make_xloper_err(XLERR_VALUE),
+        EvalValue::Lambda(_) => make_xloper_err(XLERR_VALUE),
     }
 }
 
@@ -606,26 +915,6 @@ fn coerce_reference_to_value(arg: *mut XLOPER12, out: &mut XLOPER12) -> bool {
     excel12v(XL_COERCE, out as *mut XLOPER12, &mut args) == XLRET_SUCCESS
 }
 
-fn reference_like_from_bounds(rw_first: i32, rw_last: i32, col_first: i32, col_last: i32) -> ReferenceLike {
-    let r1 = rw_first.saturating_add(1);
-    let r2 = rw_last.saturating_add(1);
-    let c1 = col_first.saturating_add(1);
-    let c2 = col_last.saturating_add(1);
-    let target = if r1 == r2 && c1 == c2 {
-        format!("R{r1}C{c1}")
-    } else {
-        format!("R{r1}C{c1}:R{r2}C{c2}")
-    };
-    ReferenceLike {
-        kind: if r1 == r2 && c1 == c2 {
-            ReferenceKind::A1
-        } else {
-            ReferenceKind::Area
-        },
-        target,
-    }
-}
-
 fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgValue {
     if value.is_null() {
         return CallArgValue::MissingArg;
@@ -695,29 +984,48 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
                 sref.r#ref.rw_last,
                 sref.r#ref.col_first,
                 sref.r#ref.col_last,
+                None,
             ))
         }
         XLTYPE_REF if preserve_refs => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeRef`.
             let mref = unsafe { (*value).val.mref };
-            if mref.lpmref.is_null() {
+            let Some(refs) = area_refs_from_mref(mref) else {
                 return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
-            }
-            // SAFETY: `lpmref` points to a valid XLMRef12 allocated by Excel.
-            let first = unsafe { (*mref.lpmref).reftbl[0] };
-            CallArgValue::Reference(reference_like_from_bounds(
-                first.rw_first,
-                first.rw_last,
-                first.col_first,
-                first.col_last,
-            ))
+            };
+            let targets: Option<Vec<String>> = refs
+                .iter()
+                .map(|entry| {
+                    reference_target_from_bounds(
+                        entry.rw_first,
+                        entry.rw_last,
+                        entry.col_first,
+                        entry.col_last,
+                        None,
+                    )
+                })
+                .collect();
+            let Some(targets) = targets else {
+                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
+            };
+            let target = if targets.len() == 1 {
+                targets[0].clone()
+            } else {
+                format!("({})", targets.join(","))
+            };
+            CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target,
+            })
         }
         _ => CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
     }
 }
 
 fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
-    let resolver = NoReferenceResolver;
+    let resolver = ExcelReferenceResolver {
+        caller: current_caller_context(),
+    };
     match eval_surface_value_call(
         function_id,
         args,
@@ -887,6 +1195,14 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
             let raw_slice = std::ptr::slice_from_raw_parts_mut(pstr, len.saturating_add(1));
             unsafe {
                 drop(Box::from_raw(raw_slice));
+            }
+        }
+    }
+    if base_type == XLTYPE_REF {
+        let mref = unsafe { boxed.val.mref };
+        if !mref.lpmref.is_null() {
+            unsafe {
+                drop(Box::from_raw(mref.lpmref));
             }
         }
     }

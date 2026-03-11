@@ -9,9 +9,9 @@ Purpose:
 
 ## Notes Log
 
-1. Aggregate provenance pressure remains open:
+1. Aggregate argument-structure pressure remains open:
    - `AVERAGE`, `COUNT`, and `COUNTA` can close direct-argument seed behavior under `values_only_pre_adapter`,
-   - but true direct-vs-range policy still needs provenance tags or richer array payloads.
+   - but full direct-scalar versus array-like policy still needs more empirical closure, and any finer source-class split should only be introduced if evidence proves it matters.
 2. Count-family split is now clearer:
    - `COUNT` and `COUNTA` can share a packet without sharing the same semantic kernel,
    - so aggregate families need explicit count-policy tags rather than being folded into one generic aggregate profile.

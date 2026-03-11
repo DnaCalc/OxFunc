@@ -59,7 +59,7 @@
 ## 9. W12 Seed Coverage
 1. logical fold over prepared scalar values is implemented.
 2. numeric-text coercion is exercised.
-3. richer Excel distinctions around aggregate provenance and non-scalar payloads remain outside the current seed.
+3. richer Excel distinctions around logical-fold array-like inputs and non-scalar payloads remain outside the current seed.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/and_fn.rs`

@@ -63,13 +63,13 @@ Pipeline shape:
    - adapter-level `fec_dependency_profile = none`.
    - surface-level `surface_fec_dependency_profile = ref_only`.
 
-## 5. SUM/Family Mapping (Reference-Sensitive Example)
+## 5. SUM/Family Mapping (Value-Only Aggregate Example)
 1. kernel:
    - numeric fold.
 2. coercion/lift adapter:
-   - aggregate dual policy (direct arg vs range-scan behavior).
+   - aggregate dual policy (direct-scalar vs array-like scan behavior).
 3. argument preparation:
-   - likely `refs_visible_in_adapter` for provenance-sensitive rules.
+   - `values_only_pre_adapter`, with dereference and array expansion happening before the numeric fold sees inputs.
 
 ## 6. Large-Sweep Guidance
 For broad non-interesting-function rollout:
@@ -79,8 +79,8 @@ For broad non-interesting-function rollout:
 
 For interesting/reference-sensitive families:
 1. use `refs_visible_in_adapter` only when required by observable behavior.
-2. require explicit provenance policy rows (direct arg, range-scan, spilled refs, structured refs).
-3. attach focused empirical lanes that distinguish provenance-sensitive outcomes.
+2. require explicit policy rows that say whether the function depends on direct-scalar versus array-like structure, on preserved reference identity, or on both.
+3. attach focused empirical lanes that distinguish those observable outcomes.
 
 ## 7. Required Tracking Fields
 Function contracts should explicitly state:
@@ -112,7 +112,7 @@ For non-interesting functions with `values_only_pre_adapter` and no custom surfa
 2. keep function-specific surface wrappers minimal (or inline in the function module) and avoid bespoke pre-adapter boilerplate.
 3. reserve dedicated `*_surface.rs` modules for functions that need custom surface behavior:
    - lazy/selective argument evaluation,
-   - source-provenance-sensitive dereference timing,
+   - source-structure-sensitive or reference-identity-sensitive dereference timing,
    - reference-return/caller-context custom paths,
    - other non-standard boundary semantics.
 4. decision template:

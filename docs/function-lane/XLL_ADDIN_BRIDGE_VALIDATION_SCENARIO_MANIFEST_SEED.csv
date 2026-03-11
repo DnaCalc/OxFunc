@@ -6,3 +6,7 @@
 "W9-XLL-005","W9-A","ready","","ABS(-2)","ox_ABS_Q(-2)","equal","none","Q-style control lane parity for numeric scalar."
 "W9-XLL-006","W9-B","ready","A1:=-3","ABS(A1)","ox_ABS(A1)","equal","none","Reference dereference parity through U-style lane."
 "W9-XLL-007","W9-C","ready","","ABS({-1,2})","ox_ABS({-1,2})","equal","none","Dynamic-array scalar elementwise spill parity for simple numeric arrays."
+"W9-XLL-008","W9-D","ready","","SUM(""2"",TRUE)","ox_SUM(""2"",TRUE)","equal","none","Aggregate direct-scalar provenance parity through XLL."
+"W9-XLL-009","W9-D","ready","","SUM({""2"",TRUE})","ox_SUM({""2"",TRUE})","equal","none","Aggregate array-literal scan-policy parity through XLL."
+"W9-XLL-010","W9-D","ready","A1:=""2""|A2:=TRUE","SUM(A1:A2)","ox_SUM(A1:A2)","equal","none","Aggregate reference-derived scan-policy parity through XLL."
+"W9-XLL-011","W9-E","ready","B1:=1|B2:=2|C1:=10|C2:=20","CELL(""address"",XLOOKUP(2,B1:B2,C1:C2))","CELL(""address"",ox_XLOOKUP(2,B1:B2,C1:C2))","equal","none","Reference-return address parity through the general XLL bridge baseline."

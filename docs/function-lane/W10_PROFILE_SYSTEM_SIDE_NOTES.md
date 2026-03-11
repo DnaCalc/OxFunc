@@ -10,22 +10,24 @@ Purpose:
 
 ## Notes Log
 
-1. `SUM` direct-vs-range coercion split:
-   - current OxFunc aggregate preparation now carries explicit provenance classes for:
+1. `SUM` direct-scalar-vs-array-like coercion split:
+   - current OxFunc aggregate preparation now carries explicit input-structure classes for:
      - `direct_scalar`
      - `direct_array_literal`
      - `reference_derived`
      - `opaque_array_value`
    - `SUM` uses direct-scalar policy only for `direct_scalar`; all array-like origins use scan policy.
-   - explicit fallback when upstream provenance is absent: treat raw evaluated arrays as `opaque_array_value` and apply scan policy.
+   - explicit fallback when upstream source structure is absent: treat raw evaluated arrays as `opaque_array_value` and apply scan policy.
    - profile-system implication:
-     - OxFml must preserve richer provenance upstream so OxFunc does not need to infer it after erasure.
+     - OxFunc should model the direct-scalar versus array-like distinction explicitly without pretending `SUM` needs raw reference identity.
+     - OxFml should preserve richer upstream structure only where later functions actually require it.
 2. `IF` lazy branch evaluation:
    - eager pre-adapter preparation of all arguments conflicts with strict branch laziness guarantees.
    - profile-system implication:
      - add explicit `arg_evaluation_strategy` class (eager/lazy-branch/selective).
-3. Reference-returning functions (`INDEX`, `XLOOKUP`, `INDIRECT`):
-   - `values_only_pre_adapter` loses reference identity when return-by-reference semantics are required.
+3. Reference-observable and reference-returning functions:
+   - `INDEX` and `XLOOKUP` need reference identity visible on input and on selected results.
+   - `INDIRECT` is different: it is values-only on input, but may return a reference result.
    - profile-system implication:
      - add return-shape classification axis (`value_only`, `reference_possible`, `array_shape_only`, `array_payload`).
 4. Volatile/time functions (`NOW`):
@@ -41,7 +43,7 @@ Purpose:
    - profile-system implication:
      - keep any future partial-mode declaration machine-visible, but do not use seed-language to mask already-closed function semantics.
 7. Reference-return policy needs first-class contract axis:
-   - `INDEX`/`XLOOKUP` can return references while `values_only_pre_adapter` functions cannot.
+   - `INDEX`/`XLOOKUP` can return references from reference-observable selection, while `INDIRECT` can return references from values-only text interpretation.
    - profile-system implication:
      - add `return_reference_policy` (`never`, `possible`, `required`) plus `return_provenance_policy` notes.
 8. Provider seams are now heterogeneous:

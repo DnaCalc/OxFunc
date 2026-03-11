@@ -17,14 +17,18 @@ Record known limitations in the Rust XLL verification seam so they are not mista
    - admission and limited parity rows exist, but macro-required host behavior is not fully reproduced.
 3. Reference-return and non-scalar payload lanes are still bounded in the bridge:
    - some functions can export or return shape/reference-like outcomes, but the bridge evidence does not yet demonstrate full Excel parity for all such lanes.
-   - current lookup-family bridge replay distinguishes array-constant parity from reference-range limits:
-     - `XMATCH` and `MATCH` array-constant parity is now replayed directly through `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`,
-     - `XLOOKUP` reference-resolved lookup arrays and blank-cell range lookup lanes are still tracked as explicit `known_divergence_not_equal` rows rather than parity claims.
-4. Concurrency/thread-safety evidence is incomplete:
+   - current lookup-family bridge replay is green for the admitted manifest scope:
+     - `XMATCH`, `MATCH`, and scalar `XLOOKUP` rows match directly through `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`,
+     - `XLOOKUP` reference-return address and range-composition rows also match in the current bridge scope.
+   - remaining bounded lanes now include broader reference construction/info functions and general non-scalar payload coverage outside that manifest scope.
+4. Some generated user-facing exports still need callable-surface hardening:
+   - current baseline replay shows `ox_SUM(...)` producing worksheet `#NAME?` even though the export is generated and registered.
+   - this is an XLL seam issue, not evidence against the core `SUM` semantics.
+5. Concurrency/thread-safety evidence is incomplete:
    - current probes show registration acceptance and scalar parity, not full scheduler or multithread execution behavior.
-5. Host-entrypoint parity is contextual:
+6. Host-entrypoint parity is contextual:
    - worksheet formula behavior, COM evaluate paths, and XLL invocation are related but not interchangeable evidence surfaces.
-6. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
+7. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
    - caller-cell format mutation/application (for example `NOW` or `TODAY` entered into a `General` cell) is treated as an engine-surface responsibility above the core function result.
    - XLL verification may check value and recalc semantics for such functions, but absence of caller-format application in the XLL seam is not a function-semantic failure by itself.
 

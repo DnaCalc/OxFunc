@@ -59,7 +59,7 @@
 ## 9. W12 Seed Coverage
 1. strict prepared-value numeric mean is implemented.
 2. logicals and numeric text participate through the shared numeric coercion path.
-3. direct-vs-range provenance split is still explicit follow-up work because current preparation erases aggregate provenance.
+3. direct-scalar versus array-like aggregate policy is still explicit follow-up work, and any finer source-class split should only be demanded if empirical evidence proves that it matters.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/average.rs`

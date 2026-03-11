@@ -59,7 +59,7 @@
 ## 9. W12 Seed Coverage
 1. counts prepared numeric, logical, and numeric-text direct arguments.
 2. ignores missing, empty, and non-numeric text in the current direct-argument seed.
-3. range-scan payload and provenance-sensitive Excel aggregate distinctions remain explicit target bounds.
+3. range-scan payload and any richer aggregate source-class distinctions remain explicit target bounds if empirical evidence proves they matter.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/count.rs`

@@ -133,7 +133,7 @@ Design rule:
    - kernel-focused proofs and tests.
 2. Reference-sensitive/aggregate families may require:
    - `arg_preparation_profile=refs_visible_in_adapter`,
-   - provenance-aware semantics (for example direct-arg vs range-scan behavior in `SUM`-like families).
+   - argument-structure-sensitive semantics (for example direct-scalar vs array-scan behavior in `SUM`-like families).
 
 ## 4. Invalidation and Recalc Trigger Model (Preliminary)
 Trigger classes:

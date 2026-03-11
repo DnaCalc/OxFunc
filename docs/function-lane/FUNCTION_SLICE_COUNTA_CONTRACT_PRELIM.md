@@ -59,7 +59,7 @@
 ## 9. W12 Seed Coverage
 1. counts prepared non-empty values.
 2. dereferenced reference payloads count when preparation yields a value.
-3. array payload semantics and richer provenance-sensitive aggregate behavior remain explicit target bounds.
+3. array payload semantics and any richer aggregate source-class behavior remain explicit target bounds if empirical evidence proves they matter.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/counta.rs`

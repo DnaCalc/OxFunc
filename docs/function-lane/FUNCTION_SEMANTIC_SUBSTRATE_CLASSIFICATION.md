@@ -34,8 +34,8 @@ Current working substrate classes for the covered function set:
    - unary numeric kernel with scalar/array coercion/lift behavior
 3. `NumericNary`
    - direct numeric arithmetic over one or more scalar inputs
-4. `AggregateProvenance`
-   - aggregate behavior sensitive to direct-vs-range/reference provenance
+4. `AggregateArgumentStructure`
+   - aggregate behavior sensitive to direct-scalar versus array-like argument structure
 5. `LogicalFold`
    - variadic logical reduction with Excel-specific ignore/error/direct-vs-reference policy
 6. `LogicalControlLazy`
@@ -76,7 +76,7 @@ Primary members:
 Primary members:
 1. `OP_ADD`
 
-### 4.4 `AggregateProvenance`
+### 4.4 `AggregateArgumentStructure`
 Primary members:
 1. `SUM`
 2. `AVERAGE`
@@ -150,7 +150,7 @@ Current primary substrate assignment for each covered function:
 1. `PI` -> `ConstScalar`
 2. `ABS` -> `NumericUnary`
 3. `XMATCH` -> `LookupSelection`
-4. `SUM` -> `AggregateProvenance`
+4. `SUM` -> `AggregateArgumentStructure`
 5. `IF` -> `LogicalControlLazy`
 6. `INDEX` -> `ReferenceSelectionReturn`
 7. `MATCH` -> `LookupSelection`
@@ -160,9 +160,9 @@ Current primary substrate assignment for each covered function:
 11. `INDIRECT` -> `ReferenceTextInterpretation`
 12. `SEQUENCE` -> `ArrayShapeConstruction`
 13. `OP_ADD` -> `NumericNary`
-14. `AVERAGE` -> `AggregateProvenance`
-15. `COUNT` -> `AggregateProvenance`
-16. `COUNTA` -> `AggregateProvenance`
+14. `AVERAGE` -> `AggregateArgumentStructure`
+15. `COUNT` -> `AggregateArgumentStructure`
+16. `COUNTA` -> `AggregateArgumentStructure`
 17. `IFERROR` -> `LogicalControlLazy`
 18. `ROUND` -> `NumericUnary`
 19. `TEXTJOIN` -> `TextCoercionNormalization`
@@ -181,7 +181,7 @@ If we want reusable Lean substrate modules rather than one-file-per-function gro
 
 1. `LookupSelection`
    - covers `XMATCH`, `MATCH`, `XLOOKUP`
-2. `AggregateProvenance`
+2. `AggregateArgumentStructure`
    - covers `SUM`, `AVERAGE`, `COUNT`, `COUNTA`
 3. `LogicalFold`
    - covers `AND`, and later likely `OR`
@@ -201,7 +201,7 @@ If we want reusable Lean substrate modules rather than one-file-per-function gro
 ## 7. Immediate Implications
 1. We should not assume one Lean file per Excel function is the long-run formal structure.
 2. The next useful refactor target is probably a reusable lookup substrate under `formal/lean/OxFunc/Semantics/*` or similar.
-3. Aggregate formalization should proceed on the OxFunc side when the semantic boundary can be stated cleanly, while recording any richer provenance vocabulary that OxFml must preserve upstream.
+3. Aggregate formalization should proceed on the OxFunc side when the semantic boundary can be stated cleanly, while only demanding richer upstream source tracking when a concrete function slice proves that it matters.
 4. `XLOOKUP` should live in one place only for primary classification: the lookup family. Its reference-return behavior remains a cross-cutting note, not a second home.
 5. `INDIRECT` should live in one place only for primary classification: reference-text interpretation. Its reference-return behavior remains a cross-cutting note, not a second home.
 6. `OFFSET` and `CELL` should not be forced into the same substrate even though both touch references; `OFFSET` is reference construction, while `CELL` is workbook/context information over references.
