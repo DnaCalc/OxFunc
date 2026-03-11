@@ -101,6 +101,8 @@ Primary files:
 96. `NOTES_FOR_OXFML.md`
 97. `TIME_FORMAT_HINT_SCENARIO_MANIFEST_SEED.csv`
 98. `TIME_FORMAT_HINT_EXECUTION_RECORD.md`
+99. `FORMALIZATION_STRATEGY_EXECUTABLE_SEMANTIC_MODEL.md`
+100. `FUNCTION_SEMANTIC_SUBSTRATE_CLASSIFICATION.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
