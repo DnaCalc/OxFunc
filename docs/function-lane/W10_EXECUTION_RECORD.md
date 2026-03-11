@@ -14,12 +14,12 @@ Track W10 execution status across runtime/formal scaffolding, scenario manifests
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - `SUM` still depends on richer provenance-aware aggregate input modeling before full Excel closure can be claimed across all lanes.
    - `INDEX` still lacks nontrivial `area_num` semantics and broader reference-form edge coverage.
    - `INDIRECT` remains incomplete across broader ref-text semantics (for example structured, external, and richer workbook/sheet-address forms).
    - `SEQUENCE` still needs broader dynamic-array behavior closure beyond the current replayed shape/materialization lanes.
    - XLL verification-seam limits remain external and must not be mistaken for function-semantic closure.
 6. function-phase-complete slices within W10:
+   - `SUM`
    - `IF`
    - `ISNUMBER`
    - `MATCH`
@@ -31,6 +31,7 @@ Execution date:
 1. `2026-03-09`
 2. `2026-03-10` (function-phase-complete promotion follow-up)
 3. `2026-03-10` (lookup-family closure follow-up)
+4. `2026-03-11` (SUM aggregate-provenance closure follow-up)
 
 Function slices with landed scaffolding/runtime seeds:
 1. `SUM`
@@ -84,11 +85,11 @@ Function slices with landed scaffolding/runtime seeds:
    - `tools/xll-addin/run-lookup-xll-bridge-suite.ps1`
 
 ## 5. Verification Runs
-1. `cargo test -p oxfunc_core` -> pass (`204` tests).
+1. `cargo test -p oxfunc_core` -> pass (`208` tests).
 2. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml` -> pass.
 3. `./tools/xll-addin/sync-export-specs.ps1` -> pass.
 4. `lake build` (from `formal/lean`) -> pass.
-5. `powershell -File tools/w10-probe/run-w10-suite.ps1 -OutDir .tmp/lookup-pass` -> pass (`84` matched, `0` mismatched).
+5. `powershell -File tools/w10-probe/run-w10-suite.ps1 -OutDir .tmp/sum-prov-pass` -> pass (`90` matched, `0` mismatched).
 6. `powershell -File tools/xll-addin/run-lookup-xll-bridge-suite.ps1 -OutDir .tmp/lookup-pass` -> pass (`15` matched relation rows, including `2` explicit seam-divergence rows).
 
 ## 5. Gate Tracking
@@ -101,14 +102,14 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `closed-provisional`.
 2. Notes:
    - each function now has a Rust module and Lean module.
-   - multiple functions remain semantically incomplete (`INDEX`, `INDIRECT`, `SEQUENCE`, `SUM`) and are still scaffolding rather than closed implementations.
+   - multiple functions remain semantically incomplete (`INDEX`, `INDIRECT`, `SEQUENCE`) and are still scaffolding rather than closed implementations.
 
 ### G3 - Empirical Closure
 1. Status: `closed-provisional`.
 2. Notes:
-   - default + `compat_template` Excel replays reran on `2026-03-10` after lookup-family expansion.
-   - rows: `84` (`42` default + `42` compat_template).
-   - expectation matched: `84`; mismatched: `0`.
+   - default + `compat_template` Excel replays reran on `2026-03-11` after SUM aggregate-provenance expansion.
+   - rows: `90` (`45` default + `45` compat_template).
+   - expectation matched: `90`; mismatched: `0`.
    - execution failed unexpected: `0`.
    - dual-run requirement satisfied: `true`.
    - analyzer gate status: `green`.
@@ -125,7 +126,7 @@ Function slices with landed scaffolding/runtime seeds:
 2. Notes:
    - W10 has useful local scaffolding across contract, Rust, Lean, empirical replay, and export generation.
    - W10 does not satisfy packet-level implementation closure because several functions still carry known Excel-semantic gaps.
-   - `IF`, `ISNUMBER`, `MATCH`, `NOW`, and `XLOOKUP` now satisfy current-phase function closure individually and may be reported as `function-phase-complete`.
+   - `SUM`, `IF`, `ISNUMBER`, `MATCH`, `NOW`, and `XLOOKUP` now satisfy current-phase function closure individually and may be reported as `function-phase-complete`.
 
 ## 6. XLL Verification-Seam Limitations
 1. Relevant seam limits for the W10 packet are tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
@@ -136,11 +137,15 @@ Function slices with landed scaffolding/runtime seeds:
 
 ## 7. Key Findings
 1. strict runtime split remains workable for most non-interesting function shapes.
-2. reference-return functions require explicit return policy axes and cannot be fully captured by values-only preparation.
-3. volatile/provider seams are now visible as a first-class profile pressure point (`NOW`).
-4. array payload modeling is now landed and removed the prior `SEQUENCE` shape-only blocker; `INDEX` still needs broader reference-form parity.
-5. XLL codegen is now profile-derived over the catalog, removing per-function export-row hand curation.
-6. empirical corrections from replay:
+2. `SUM` aggregate provenance is now explicit on the OxFunc side:
+   - `SUM("2",TRUE)` follows direct-scalar coercion and yields `3`,
+   - `SUM({"2",TRUE})` and `SUM(range-with-text-and-logical)` follow scan policy and yield `0`,
+   - provenance-erased arrays are now carried as an explicit `opaque_array_value` fallback rather than an implicit collapse.
+3. reference-return functions require explicit return policy axes and cannot be fully captured by values-only preparation.
+4. volatile/provider seams are now visible as a first-class profile pressure point (`NOW`).
+5. array payload modeling is now landed and removed the prior `SEQUENCE` shape-only blocker; `INDEX` still needs broader reference-form parity.
+6. XLL codegen is now profile-derived over the catalog, removing per-function export-row hand curation.
+7. empirical corrections from replay:
    - `MATCH(2,{1,2,3},1)` returns `2` (not `#N/A`).
    - `MATCH` approximate lanes on unsorted arrays follow Excel's older binary invalid-result behavior rather than the simpler bound logic first assumed.
    - `SEQUENCE(0)` returns `#CALC!` (not `#VALUE!`), and the runtime mapper now follows that worksheet lane.
@@ -150,13 +155,13 @@ Function slices with landed scaffolding/runtime seeds:
    - `XLOOKUP` distinguishes true blank lookup values from literal empty string lookup values, and true blank return cells materialize as numeric zero.
    - `IF(FALSE,1)` defaults the omitted false branch to logical `FALSE`.
    - `ISNUMBER(1/0)` returns `FALSE`, and `ISNUMBER` classifies reference-fed numeric payloads as `TRUE`.
-7. XLOOKUP reference-return behavior is empirically pinned in both run labels:
+8. XLOOKUP reference-return behavior is empirically pinned in both run labels:
    - `CELL("address", XLOOKUP(...))` preserves address identity (`$C$1`, `$B$2`),
    - `SUM(XLOOKUP(...):XLOOKUP(...))` confirms returned references compose through `:` ranges.
-8. lookup-family XLL bridge parity now has a dedicated manifest:
+9. lookup-family XLL bridge parity now has a dedicated manifest:
    - array-constant `MATCH`, `XMATCH`, and `XLOOKUP` rows matched built-in Excel in `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`,
    - reference-range `XLOOKUP` rows are carried as explicit `known_divergence_not_equal` seam-limit cases rather than semantic mismatches.
-9. `NOW` is now evidenced across three current-phase seams:
+10. `NOW` is now evidenced across three current-phase seams:
    - provider/recalc baseline in W10,
    - ordinary user-facing volatile XLL registration behavior in W11,
    - caller-cell format-hinting in `TIME_FORMAT_HINT_EXECUTION_RECORD.md`.

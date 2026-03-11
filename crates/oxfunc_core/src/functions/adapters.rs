@@ -2,7 +2,7 @@ use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
     RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
 };
-use crate::value::{ArrayCellValue, CallArgValue, EvalValue, ReferenceKind, ReferenceLike};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UnaryNumericCoercionLiftProfile {
@@ -18,10 +18,16 @@ pub enum PreparedArgValue {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AggregateArrayProvenance {
+    DirectArrayLiteral,
+    OpaqueArrayValue,
+    ReferenceDerived,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AggregateArgOrigin {
     DirectScalar,
-    DirectArray,
-    ReferenceDerived,
+    ArrayLike(AggregateArrayProvenance),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -38,6 +44,20 @@ fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
         ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
         ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
     }
+}
+
+pub fn expand_aggregate_array_with_provenance(
+    array: &EvalArray,
+    provenance: AggregateArrayProvenance,
+) -> Vec<AggregatePreparedValue> {
+    array
+        .iter_row_major()
+        .map(prepared_from_array_cell)
+        .map(|value| AggregatePreparedValue {
+            origin: AggregateArgOrigin::ArrayLike(provenance),
+            value,
+        })
+        .collect()
 }
 
 fn expand_resolved_eval_value(value: &EvalValue) -> Vec<PreparedArgValue> {
@@ -142,33 +162,34 @@ pub fn expand_aggregate_arg(
     match arg {
         CallArgValue::Reference(r) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            let prepared = expand_resolved_eval_value(&resolve_eval_references(&resolved, resolver)?);
-            Ok(prepared
-                .into_iter()
-                .map(|value| AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ReferenceDerived,
-                    value,
-                })
-                .collect())
+            match resolve_eval_references(&resolved, resolver)? {
+                EvalValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
+                    &array,
+                    AggregateArrayProvenance::ReferenceDerived,
+                )),
+                value => Ok(vec![AggregatePreparedValue {
+                    origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
+                    value: PreparedArgValue::Eval(value),
+                }]),
+            }
         }
         CallArgValue::Eval(EvalValue::Reference(r)) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            let prepared = expand_resolved_eval_value(&resolve_eval_references(&resolved, resolver)?);
-            Ok(prepared
-                .into_iter()
-                .map(|value| AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ReferenceDerived,
-                    value,
-                })
-                .collect())
+            match resolve_eval_references(&resolved, resolver)? {
+                EvalValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
+                    &array,
+                    AggregateArrayProvenance::ReferenceDerived,
+                )),
+                value => Ok(vec![AggregatePreparedValue {
+                    origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
+                    value: PreparedArgValue::Eval(value),
+                }]),
+            }
         }
-        CallArgValue::Eval(EvalValue::Array(_)) => Ok(expand_arg_values_only(arg, resolver)?
-            .into_iter()
-            .map(|value| AggregatePreparedValue {
-                origin: AggregateArgOrigin::DirectArray,
-                value,
-            })
-            .collect()),
+        CallArgValue::Eval(EvalValue::Array(array)) => Ok(expand_aggregate_array_with_provenance(
+            array,
+            AggregateArrayProvenance::OpaqueArrayValue,
+        )),
         other => Ok(expand_arg_values_only(other, resolver)?
             .into_iter()
             .map(|value| AggregatePreparedValue {
@@ -498,7 +519,49 @@ mod tests {
         assert_eq!(got.len(), 2);
         assert!(got
             .iter()
-            .all(|item| item.origin == AggregateArgOrigin::ReferenceDerived));
+            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
+    }
+
+    #[test]
+    fn expand_aggregate_arg_marks_eval_arrays_as_opaque_array_values() {
+        let got = expand_aggregate_arg(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "2".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Logical(true),
+                ]])
+                .unwrap(),
+            )),
+            &resolver_with(EvalValue::Number(0.0)),
+        )
+        .unwrap();
+        assert_eq!(got.len(), 2);
+        assert!(got
+            .iter()
+            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)));
+    }
+
+    #[test]
+    fn expand_aggregate_array_with_provenance_marks_direct_array_literal() {
+        let array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                "2".encode_utf16().collect(),
+            )),
+            ArrayCellValue::Logical(true),
+        ]])
+        .unwrap();
+
+        let got = expand_aggregate_array_with_provenance(
+            &array,
+            AggregateArrayProvenance::DirectArrayLiteral,
+        );
+
+        assert_eq!(got.len(), 2);
+        assert!(got
+            .iter()
+            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)));
     }
 
     #[test]

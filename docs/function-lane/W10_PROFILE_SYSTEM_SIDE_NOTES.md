@@ -11,9 +11,15 @@ Purpose:
 ## Notes Log
 
 1. `SUM` direct-vs-range coercion split:
-   - current `values_only_pre_adapter` preparation can erase provenance needed for true dual-policy aggregate coercion.
+   - current OxFunc aggregate preparation now carries explicit provenance classes for:
+     - `direct_scalar`
+     - `direct_array_literal`
+     - `reference_derived`
+     - `opaque_array_value`
+   - `SUM` uses direct-scalar policy only for `direct_scalar`; all array-like origins use scan policy.
+   - explicit fallback when upstream provenance is absent: treat raw evaluated arrays as `opaque_array_value` and apply scan policy.
    - profile-system implication:
-     - consider explicit argument provenance tags in prepared args (`direct_arg`, `range_scan`, `spill_scan`).
+     - OxFml must preserve richer provenance upstream so OxFunc does not need to infer it after erasure.
 2. `IF` lazy branch evaluation:
    - eager pre-adapter preparation of all arguments conflicts with strict branch laziness guarantees.
    - profile-system implication:

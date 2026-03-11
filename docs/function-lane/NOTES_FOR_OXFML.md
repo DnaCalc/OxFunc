@@ -33,6 +33,11 @@ Why this matters:
 3. `AVERAGE`, `COUNT`, `COUNTA`, and `AND` also depend on these distinctions.
 4. If OxFml erases provenance during parse, bind, normalization, or early evaluation, OxFunc cannot recover the correct Excel family policy later.
 
+Current OxFunc status:
+1. OxFunc now carries explicit aggregate provenance classes for `SUM` (`direct_scalar`, `direct_array_literal`, `reference_derived`, `opaque_array_value`).
+2. When upstream provenance is missing, OxFunc uses an explicit `opaque_array_value` fallback rather than silently pretending the source class is known.
+3. OxFml still needs to preserve the richer upstream distinctions so OxFunc does not depend on fallback classification for semantically exact calls.
+
 ## 4. Parse-Tree and Evaluation Implication
 OxFml should keep provenance attached all the way from parse tree through reference-tree build and evaluation results.
 

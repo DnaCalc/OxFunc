@@ -201,7 +201,7 @@ If we want reusable Lean substrate modules rather than one-file-per-function gro
 ## 7. Immediate Implications
 1. We should not assume one Lean file per Excel function is the long-run formal structure.
 2. The next useful refactor target is probably a reusable lookup substrate under `formal/lean/OxFunc/Semantics/*` or similar.
-3. Aggregate formalization should wait for the OxFml provenance boundary to settle enough to avoid rework.
+3. Aggregate formalization should proceed on the OxFunc side when the semantic boundary can be stated cleanly, while recording any richer provenance vocabulary that OxFml must preserve upstream.
 4. `XLOOKUP` should live in one place only for primary classification: the lookup family. Its reference-return behavior remains a cross-cutting note, not a second home.
 5. `INDIRECT` should live in one place only for primary classification: reference-text interpretation. Its reference-return behavior remains a cross-cutting note, not a second home.
 6. `OFFSET` and `CELL` should not be forced into the same substrate even though both touch references; `OFFSET` is reference construction, while `CELL` is workbook/context information over references.

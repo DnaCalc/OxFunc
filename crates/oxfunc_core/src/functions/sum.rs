@@ -4,7 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregateArgOrigin, PreparedArgValue, coerce_prepared_to_number, expand_aggregate_arg,
+    AggregateArgOrigin, AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number,
+    expand_aggregate_arg,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -58,6 +59,21 @@ fn accumulate_range_like(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
     }
 }
 
+pub fn eval_sum_prepared_aggregate(
+    args: &[AggregatePreparedValue],
+) -> Result<EvalValue, SumEvalError> {
+    let mut acc = 0.0;
+    for item in args {
+        acc += match item.origin {
+            AggregateArgOrigin::DirectScalar =>
+                accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?,
+            AggregateArgOrigin::ArrayLike(_) =>
+                accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?,
+        };
+    }
+    Ok(EvalValue::Number(acc))
+}
+
 pub fn eval_sum_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -71,18 +87,11 @@ pub fn eval_sum_surface(
         });
     }
 
-    let mut acc = 0.0;
+    let mut prepared = Vec::new();
     for arg in args {
-        for item in expand_aggregate_arg(arg, resolver).map_err(SumEvalError::Coercion)? {
-            acc += match item.origin {
-                AggregateArgOrigin::DirectScalar =>
-                    accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?,
-                AggregateArgOrigin::DirectArray | AggregateArgOrigin::ReferenceDerived =>
-                    accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?,
-            };
-        }
+        prepared.extend(expand_aggregate_arg(arg, resolver).map_err(SumEvalError::Coercion)?);
     }
-    Ok(EvalValue::Number(acc))
+    eval_sum_prepared_aggregate(&prepared)
 }
 
 pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
@@ -96,6 +105,9 @@ pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::functions::adapters::{
+        AggregateArrayProvenance, expand_aggregate_array_with_provenance,
+    };
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
 
@@ -257,6 +269,42 @@ mod tests {
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(7.0)));
+    }
+
+    #[test]
+    fn eval_sum_direct_array_literal_uses_array_scan_policy() {
+        let array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                "2".encode_utf16().collect(),
+            )),
+            ArrayCellValue::Logical(true),
+        ]])
+        .unwrap();
+        let prepared = expand_aggregate_array_with_provenance(
+            &array,
+            AggregateArrayProvenance::DirectArrayLiteral,
+        );
+
+        let got = eval_sum_prepared_aggregate(&prepared);
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_sum_opaque_array_fallback_uses_array_scan_policy() {
+        let array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                "2".encode_utf16().collect(),
+            )),
+            ArrayCellValue::Logical(true),
+        ]])
+        .unwrap();
+        let prepared = expand_aggregate_array_with_provenance(
+            &array,
+            AggregateArrayProvenance::OpaqueArrayValue,
+        );
+
+        let got = eval_sum_prepared_aggregate(&prepared);
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
     }
 
     #[test]

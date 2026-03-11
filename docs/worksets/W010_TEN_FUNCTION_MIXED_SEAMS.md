@@ -162,8 +162,9 @@ Assurance maturity:
    - `tools/w10-probe/new-w10-compat-template.ps1`
 8. dual-run Excel replay reran green across `84` observed rows with `expectation_mismatched=0`.
 9. dedicated lookup-family XLL bridge replay now exists in `docs/function-lane/LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`, with array-constant parity rows matched and explicit reference-range seam divergences recorded.
-10. W10 remains open because `SUM`, `INDEX`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.
+10. W10 remains open because `INDEX`, `INDIRECT`, and `SEQUENCE` still carry known Excel-semantic gaps.
 11. Individual W10 slices now considered `function-phase-complete` for the current implementation phase:
+   - `SUM`
    - `IF`
    - `ISNUMBER`
    - `MATCH`

@@ -22,6 +22,7 @@ inductive CoercionInput where
 def parseSimpleNumber : String → Option Rat
   | "0" => some 0
   | "1" => some 1
+  | "2" => some 2
   | "-1" => some (-1)
   | _ => none
 

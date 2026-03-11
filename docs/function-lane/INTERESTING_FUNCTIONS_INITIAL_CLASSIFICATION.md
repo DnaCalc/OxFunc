@@ -28,3 +28,5 @@ Provide a complete, first-pass class-axis mapping for all currently tagged inter
    - `XLOOKUP` reference-output behavior,
    - `XMATCH` adapter parity completion (wildcard/binary/approximate implementation),
    - volatile family precision (`volatile_full` vs `volatile_contextual`).
+4. Confirmed interesting seam behavior so far:
+   - `SUM` is provenance-sensitive at the function boundary: `SUM("2",TRUE)` follows direct-scalar coercion and yields `3`, while `SUM({"2",TRUE})` and `SUM(range-with-text-and-logical)` follow array-scan policy and yield `0`. OxFunc now models that distinction explicitly and treats provenance-erased arrays as an `opaque_array_value` fallback that still uses scan policy.
