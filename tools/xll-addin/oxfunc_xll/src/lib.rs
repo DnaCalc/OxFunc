@@ -239,6 +239,7 @@ struct UExportSpec {
     registration: RegistrationSpec,
     lift_policy: ULiftPolicy,
     preserve_refs: bool,
+    min_arity: usize,
     arg_count: usize,
 }
 
@@ -1038,6 +1039,23 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
     }
 }
 
+fn raw_arg_is_missing(raw: *mut XLOPER12) -> bool {
+    if raw.is_null() {
+        return true;
+    }
+    // SAFETY: `raw` originates from Excel and is valid for this call.
+    unsafe { ((*raw).xltype & XLTYPE_MASK) == XLTYPE_MISSING }
+}
+
+fn effective_u_arg_len(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> usize {
+    let trimmed = raw_args
+        .iter()
+        .rposition(|raw| !raw_arg_is_missing(*raw))
+        .map(|idx| idx + 1)
+        .unwrap_or(0);
+    trimmed.max(spec.min_arity)
+}
+
 fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12 {
     if raw_args.len() != spec.arg_count {
         return alloc_result(make_xloper_err(XLERR_VALUE));
@@ -1098,8 +1116,9 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
         return alloc_result(eval_value_to_xloper(eval_value));
     }
 
-    let mut args = Vec::with_capacity(raw_args.len());
-    for raw in raw_args {
+    let effective_len = effective_u_arg_len(spec, raw_args);
+    let mut args = Vec::with_capacity(effective_len);
+    for raw in raw_args.iter().take(effective_len) {
         let mut temp = XLOPER12 {
             val: XLOPER12Value { w: 0 },
             xltype: 0,
@@ -1128,6 +1147,77 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
 
     let eval_value = eval_surface_value(spec.function_id, &args);
     alloc_result(eval_value_to_xloper(eval_value))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn missing_xloper() -> XLOPER12 {
+        XLOPER12 {
+            val: XLOPER12Value { w: 0 },
+            xltype: XLTYPE_MISSING,
+        }
+    }
+
+    fn num_xloper(value: f64) -> XLOPER12 {
+        XLOPER12 {
+            val: XLOPER12Value { num: value },
+            xltype: XLTYPE_NUM,
+        }
+    }
+
+    #[test]
+    fn effective_u_arg_len_trims_trailing_missing_args() {
+        let present = num_xloper(1.0);
+        let missing1 = missing_xloper();
+        let missing2 = missing_xloper();
+        let raw_args = [
+            (&present as *const XLOPER12).cast_mut(),
+            (&missing1 as *const XLOPER12).cast_mut(),
+            (&missing2 as *const XLOPER12).cast_mut(),
+        ];
+        let spec = UExportSpec {
+            function_id: "FUNC.TEXTJOIN",
+            registration: RegistrationSpec {
+                export_name: "OX_TEXTJOIN",
+                type_text: "QUUU",
+                function_name: "ox_TEXTJOIN",
+                arg_names: "",
+            },
+            lift_policy: ULiftPolicy::ScalarOnly,
+            preserve_refs: false,
+            min_arity: 3,
+            arg_count: 3,
+        };
+        assert_eq!(effective_u_arg_len(spec, &raw_args), 1.max(spec.min_arity));
+    }
+
+    #[test]
+    fn effective_u_arg_len_keeps_internal_missing_args() {
+        let present1 = num_xloper(1.0);
+        let missing = missing_xloper();
+        let present2 = num_xloper(2.0);
+        let raw_args = [
+            (&present1 as *const XLOPER12).cast_mut(),
+            (&missing as *const XLOPER12).cast_mut(),
+            (&present2 as *const XLOPER12).cast_mut(),
+        ];
+        let spec = UExportSpec {
+            function_id: "FUNC.XLOOKUP",
+            registration: RegistrationSpec {
+                export_name: "OX_XLOOKUP",
+                type_text: "QUUU",
+                function_name: "ox_XLOOKUP",
+                arg_names: "",
+            },
+            lift_policy: ULiftPolicy::ScalarOnly,
+            preserve_refs: false,
+            min_arity: 3,
+            arg_count: 3,
+        };
+        assert_eq!(effective_u_arg_len(spec, &raw_args), 3);
+    }
 }
 
 fn eval_q_unary_number_export(spec: QUnaryNumberExportSpec, value: f64) -> f64 {

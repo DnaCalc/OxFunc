@@ -24,6 +24,7 @@ Purpose:
 5. Prepared-text helper reuse is now justified:
    - `TEXTJOIN`, `CLEAN`, and `EXACT` all consume the same bounded scalar-to-text path,
    - which is now centralized in `functions::adapters`.
+   - `TEXTJOIN` is now closed for the current phase once row-major flattening, delimiter textification, and the observed `32768 -> #CALC!` overflow lane were pinned empirically.
 6. Provider seam standardization is stronger after W12:
    - `TODAY` and `RAND` reuse the same provider-seam posture as `NOW`,
    - and they produce concrete follow-back candidates for W11 volatile mapping.

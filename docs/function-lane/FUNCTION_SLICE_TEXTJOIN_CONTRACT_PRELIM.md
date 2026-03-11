@@ -29,15 +29,20 @@
 1. surface preparation resolves references before adapter entry.
 2. delimiter and payload values use the shared prepared-text coercion path.
 3. `ignore_empty` is parsed numerically and treated as true when non-zero.
+4. array and range payload arguments are flattened row-major after values-only preparation.
 
 ## 5. Core Outcome Model
 1. admitted call concatenates payload arguments with the admitted delimiter.
 2. empty and missing payload lanes are skipped when `ignore_empty` is true.
-3. current seed is scalar/value-only; array flattening is not claimed.
+3. array constant and dereferenced range payloads are flattened row-major in the current slice.
+4. numeric and logical delimiters are textified through the shared prepared-text coercion path.
+5. if the joined UTF-16 result would exceed Excel's cell-text limit (`32767` code units), the current empirical baseline returns `#CALC!`.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation returns a scalar text `EvalValue`.
-2. adapter errors map to worksheet-visible `#VALUE!` unless a worksheet error code is already carried through coercion.
+2. adapter arity/coercion failures map to worksheet-visible `#VALUE!` unless a worksheet error code is already carried through coercion.
+3. result-overflow is mapped to worksheet-visible `#CALC!` in the current baseline slice.
+4. current XLL verification does not require reproducing this modern overflow error class exactly; that seam currently degrades `#CALC!` to legacy XLL error transport and the limitation is tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
 
 ## 7. Version Scope (Required Axes)
 1. Excel application version/channel scope:
@@ -54,12 +59,19 @@
    - `W12-MODERATE-BL-20260309`
 3. policy decision anchors:
    - `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (note 5)
+   - `docs/function-lane/TEXT_FUNCTION_EMPIRICAL_EXPANSION_NOTES.md`
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
+4. current status rationale:
+   - function-phase-complete for the current reference Excel baseline,
+   - row-major flattening, delimiter textification, ignore-empty behavior, and the 32767/32768 boundary are now explicitly evidenced,
+   - remaining locale/version expansion is orthogonal validation work rather than a known current-phase semantic gap.
 
 ## 9. W12 Seed Coverage
 1. scalar delimiter and payload joining is implemented.
 2. ignore-empty behavior is exercised for empty cells and empty strings.
-3. array flattening and richer formatting/text coercion remain explicit target follow-up.
+3. array constant and dereferenced range flattening are exercised directly in the W12 dual-run replay.
+4. exact-limit success and overflow-to-`#CALC!` are exercised directly in the W12 dual-run replay.
+5. richer locale/version textification expansion remains orthogonal follow-up rather than a current-phase semantic blocker.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/textjoin.rs`

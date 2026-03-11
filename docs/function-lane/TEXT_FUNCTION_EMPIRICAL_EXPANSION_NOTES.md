@@ -20,7 +20,7 @@ Bridge the W7 string baseline into a function-focused empirical matrix for the W
 
 ## 3. Official-Source Anchors
 1. `TEXTJOIN`:
-   - Microsoft Support says it accepts strings and ranges, converts numeric delimiters to text, and returns `#VALUE!` when the result exceeds `32767` characters.
+   - Microsoft Support says it accepts strings and ranges, converts numeric delimiters to text, and returns an error when the result exceeds `32767` characters.
    - Source: https://support.microsoft.com/en-gb/office/textjoin-function-357b449a-ec91-49d0-80c3-0e8fc845691c
 2. `EXACT`:
    - Microsoft Support says it is case-sensitive and ignores formatting differences.
@@ -81,5 +81,5 @@ Bridge the W7 string baseline into a function-focused empirical matrix for the W
 
 ## 7. Open Semantic Risks
 1. Current runtime textification is still not a proven Excel “General” formatting engine.
-2. Text limit behavior needs direct function-family proof, not just general W7 string proof.
+2. Current local Excel baseline for `TEXTJOIN` overflow returns `#CALC!` at `32768` characters, so public-doc wording must be treated as a loose error summary rather than exact error-code authority for this slice.
 3. Unicode normalization/collation questions remain open and must stay explicit in contracts until empirically pinned.

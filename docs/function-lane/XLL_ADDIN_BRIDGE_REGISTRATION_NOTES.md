@@ -32,7 +32,8 @@ Record seed registration posture for U-style vs Q-style surfaces in the OxFunc X
    - generated `type_text` must stay worksheet-callable in the current baseline (`len <= 255`),
    - this means `Q` + `U...` exports are capped at `254` U-arguments before registration suffixes,
    - when generated `arg_names` would exceed the Excel dialog/UI limit, they are omitted rather than emitted as oversized metadata.
-2. Expand core array payload modeling to improve U-path behavior for lookup/array-return families.
-3. Add additional bridge conformance scenarios covering non-scalar return lanes under generated exports.
+2. Fixed-width U wrappers now trim trailing omitted (`xltypeMissing`) arguments before core dispatch so variadic worksheet calls preserve effective call arity.
+3. Expand core array payload modeling to improve U-path behavior for lookup/array-return families.
+4. Add additional bridge conformance scenarios covering non-scalar return lanes under generated exports.
 4. Keep broader volatile/thread-safe/macro-type registration-flag mapping beyond ordinary `volatile_full` exports deferred from signature/export generation until W11 evidence closure (`docs/function-lane/XLL_REGISTRATION_FLAG_EVIDENCE_PLAN.md`).
 5. Use runtime-only experimental aliases (for example `ox_NOW_F_BASE` vs `ox_NOW_F_VOL`) to gather evidence without altering profile-derived generation.

@@ -20,18 +20,19 @@ Track W12 execution status, artifacts, and gate closure for the moderate fifteen
 5. open_lanes:
    - multiple W12 function implementations remain work-in-progress until known Excel-semantic gaps are closed for the declared version axes.
    - aggregate direct-scalar versus array-like policy remains explicit target follow-up for `AVERAGE`/`COUNT`/`COUNTA`.
-   - `TEXTJOIN` array flattening and richer formatting/text coercion lanes remain explicit target follow-up.
    - `OFFSET`/`CELL` retain bounded A1-only reference scope and are not yet full caller-context/macro closure.
    - `HSTACK` remains shape-only in OxFunc runtime; payload fill/padding is deferred.
    - W11 registration-flag mapping remains deferred; W12 only contributes stronger volatile and caller-context candidate scenarios.
 6. function-phase-complete slices within W12:
    - `TODAY`
+   - `TEXTJOIN`
 
 ## 4. Executed Scope
 Execution date:
 1. `2026-03-09`
 2. `2026-03-10` (TODAY format-hint follow-up and function-phase-complete promotion)
 3. `2026-03-10` (W12 replay rerun after format-hint/range-observable expansion)
+4. `2026-03-11` (`TEXTJOIN` closeout follow-up with flattening and length-boundary expansion)
 
 Function slices with landed scaffolding/runtime seeds:
 1. `AVERAGE`
@@ -106,6 +107,12 @@ Function slices with landed scaffolding/runtime seeds:
 5. `powershell -File tools/w12-probe/run-w12-cell-preprobe.ps1 -OutDir .tmp` -> pass.
 6. `powershell -File tools/w12-probe/run-w12-suite.ps1 -OutDir .tmp` -> pass.
 7. `powershell -File tools/function-lane-check/run-correlation-integrity-check.ps1` -> pass.
+8. `powershell -File tools/w12-probe/run-w12-suite.ps1 -OutDir .tmp/textjoin-closeout` -> pass:
+   - rows: `46`
+   - matched: `46`
+   - mismatched: `0`
+   - failed_unexpected: `0`
+   - dual_run_satisfied: `true`
 
 ## 7. Gate Tracking
 ### G1 - Classification Closure
@@ -126,9 +133,9 @@ Function slices with landed scaffolding/runtime seeds:
      - rows: `10` (`5` default + `5` compat_template).
      - expectation matched: `10`; mismatched: `0`.
      - analyzer gate status: `green`.
-   - W12 suite dual-run rerun on `2026-03-10`:
-     - rows: `34` (`17` default + `17` compat_template).
-     - expectation matched: `34`; mismatched: `0`.
+   - W12 suite dual-run rerun on `2026-03-11` after `TEXTJOIN` closeout expansion:
+     - rows: `46` (`23` default + `23` compat_template).
+     - expectation matched: `46`; mismatched: `0`.
      - execution failed unexpected: `0`.
      - dual-run requirement satisfied: `true`.
      - analyzer gate status: `green`.
@@ -148,7 +155,7 @@ Function slices with landed scaffolding/runtime seeds:
 2. Notes:
    - W12 has local scaffolding closure across contract, Rust, Lean, and empirical seed lanes.
    - W12 does not satisfy packet-level implementation closure because known Excel-semantic gaps remain across multiple functions.
-   - `TODAY` now satisfies current-phase function closure individually and may be reported as `function-phase-complete`.
+   - `TODAY` and `TEXTJOIN` now satisfy current-phase function closure individually and may be reported as `function-phase-complete`.
 
 ## 8. Key Findings
 1. W10’s declarative-runner/default-surface posture scaled to a moderate breadth packet without requiring broad special-case dispatcher growth.
@@ -158,3 +165,4 @@ Function slices with landed scaffolding/runtime seeds:
 5. count-family and average-family aggregate semantics remain the clearest evidence that direct-scalar versus array-like aggregate inputs need first-class representation before these functions can be treated as implemented; any finer source-class distinction should be justified empirically rather than assumed.
 6. `TODAY` now has current-phase closure evidence across provider floor semantics, volatile recalc behavior, and caller-cell format-hinting, while remaining XLL control-alias work stays external to function semantics.
 7. `RAND` replay now asserts the worksheet-visible numeric range contract (`0 <= RAND() < 1`) directly in the W12 suite, while W11 carries the separate ordinary volatile-registration follow-back lane.
+8. `TEXTJOIN` is now pinned for the current baseline across row-major flattening, numeric/logical delimiter textification, ignore-empty behavior, and the `32767`/`32768` length boundary, with the observed overflow lane returning `#CALC!`.

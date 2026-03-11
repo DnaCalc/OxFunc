@@ -41,12 +41,13 @@ fn emit_generated() -> String {
                     None => panic!("missing u_lift_policy for {}", row.export_name),
                 };
                 out.push_str(&format!(
-                    "const {const_name}: UExportSpec = UExportSpec {{ function_id: \"{function_id}\", {registration_block}, lift_policy: {lift}, preserve_refs: {preserve_refs}, arg_count: {arg_count} }};\n",
+                    "const {const_name}: UExportSpec = UExportSpec {{ function_id: \"{function_id}\", {registration_block}, lift_policy: {lift}, preserve_refs: {preserve_refs}, min_arity: {min_arity}, arg_count: {arg_count} }};\n",
                     const_name = const_name,
                     function_id = row.function_id,
                     registration_block = registration_block,
                     lift = lift,
                     preserve_refs = if row.preserve_refs { "true" } else { "false" },
+                    min_arity = row.min_arity,
                     arg_count = arity
                 ));
 

@@ -33,6 +33,7 @@ pub struct XllExportSpec {
     pub type_text: String,
     pub arg_names: String,
     pub function_id: &'static str,
+    pub min_arity: usize,
     pub entry_kind: XllEntryKind,
     pub u_lift_policy: Option<XllULiftPolicy>,
     pub preserve_refs: bool,
@@ -188,6 +189,7 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
                 type_text: apply_registration_suffixes(meta, type_text_for_u_arity(u_arity)),
                 arg_names: capped_arg_names_for_count(u_arity),
                 function_id: meta.function_id,
+                min_arity: meta.arity.min,
                 entry_kind: XllEntryKind::UArity(u_arity),
                 u_lift_policy: Some(u_lift_policy_from_profile(meta)),
                 preserve_refs: meta.arg_preparation_profile
@@ -220,6 +222,7 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
                 type_text,
                 arg_names,
                 function_id: meta.function_id,
+                min_arity: meta.arity.min,
                 entry_kind: kind,
                 u_lift_policy: None,
                 preserve_refs: false,
@@ -233,7 +236,7 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
 
 pub fn render_export_specs_csv() -> String {
     let mut out = String::from(
-        "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy,preserve_refs\n",
+        "export_name,worksheet_name,type_text,arg_names,function_id,min_arity,entry_kind,u_lift_policy,preserve_refs\n",
     );
     for spec in xll_export_specs() {
         let entry_kind = match spec.entry_kind {
@@ -250,12 +253,13 @@ pub fn render_export_specs_csv() -> String {
             None => "",
         };
         out.push_str(&format!(
-            "{},{},{},{},{},{},{},{}\n",
+            "{},{},{},{},{},{},{},{},{}\n",
             csv_escape(&spec.export_name),
             csv_escape(&spec.worksheet_name),
             csv_escape(&spec.type_text),
             csv_escape(&spec.arg_names),
             csv_escape(spec.function_id),
+            spec.min_arity,
             csv_escape(&entry_kind),
             csv_escape(u_lift),
             if spec.preserve_refs { "true" } else { "false" }
@@ -297,7 +301,7 @@ mod tests {
         assert_eq!(
             lines.first().copied(),
             Some(
-                "export_name,worksheet_name,type_text,arg_names,function_id,entry_kind,u_lift_policy,preserve_refs"
+                "export_name,worksheet_name,type_text,arg_names,function_id,min_arity,entry_kind,u_lift_policy,preserve_refs"
             )
         );
         assert_eq!(lines.len(), xll_export_specs().len() + 1);

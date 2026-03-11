@@ -34,6 +34,7 @@ Outputs:
    - `.tmp/oxfunc-xll-bridge-results.csv`
    - `.tmp/xll-housekeeping/oxfunc-xll-bridge-results.csv`
    - `.tmp/xll-arity-fix/oxfunc-xll-bridge-results.csv`
+   - `.tmp/textjoin-closeout/oxfunc-xll-bridge-results.csv`
 
 ## 3. Gate Tracking
 ### G1 - Bridge Scaffold Closure
@@ -70,10 +71,10 @@ Outputs:
    - `.tmp/oxfunc-xll-bridge-results.csv`
    - `.tmp/xll-housekeeping/oxfunc-xll-bridge-results.csv`
 3. Outcomes:
-   - rows: `11`
-   - relation_status `matched`: `11`
+   - rows: `13`
+   - relation_status `matched`: `13`
    - relation_status `mismatched`: `0`
-   - scalar ABS/PI rows remain green, spill-sensitive row `W9-XLL-007` remains parity-closed, aggregate provenance rows `W9-XLL-008..010` are now callable and parity-closed through the bridge, and reference-return address parity remains green in `W9-XLL-011`.
+   - scalar ABS/PI rows remain green, spill-sensitive row `W9-XLL-007` remains parity-closed, aggregate provenance rows `W9-XLL-008..010` are callable and parity-closed through the bridge, reference-return address parity remains green in `W9-XLL-011`, and `TEXTJOIN` non-error flattening parity is now green in `W9-XLL-012..013`.
 
 ### G5 - Separation Closure
 1. Status: `closed`.
@@ -91,6 +92,8 @@ Outputs:
    - keeping `type_text.len() <= 255` is necessary for worksheet callability in the current baseline,
    - omitting oversized `arg_names` strings is sufficient for the current bridge because they are UI-only metadata,
    - after applying that policy, `ox_SUM(...)` aggregate rows are callable and parity-closed.
+7. Fixed-width U exports also need trailing omitted-argument trimming before core dispatch:
+   - after trimming trailing `xltypeMissing` inputs down to the effective call arity, variadic XLL functions such as `ox_TEXTJOIN(...)` align with built-in non-error flattening semantics instead of materializing spurious trailing delimiters.
 
 ## 5. Follow-on Bounded Lanes
 1. registration-flag mapping (`!`, `$`, `#`) stays deferred from profile-derived generation until W11 evidence closure.

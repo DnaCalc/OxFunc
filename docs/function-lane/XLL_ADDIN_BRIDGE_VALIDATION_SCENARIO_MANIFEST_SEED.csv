@@ -10,3 +10,5 @@
 "W9-XLL-009","W9-D","ready","","SUM({""2"",TRUE})","ox_SUM({""2"",TRUE})","equal","none","Aggregate array-literal scan-policy parity through XLL."
 "W9-XLL-010","W9-D","ready","A1:=""2""|A2:=TRUE","SUM(A1:A2)","ox_SUM(A1:A2)","equal","none","Aggregate reference-derived scan-policy parity through XLL."
 "W9-XLL-011","W9-E","ready","B1:=1|B2:=2|C1:=10|C2:=20","CELL(""address"",XLOOKUP(2,B1:B2,C1:C2))","CELL(""address"",ox_XLOOKUP(2,B1:B2,C1:C2))","equal","none","Reference-return address parity through the general XLL bridge baseline."
+"W9-XLL-012","W9-F","ready","","TEXTJOIN("","",FALSE,{1,2;3,4})","ox_TEXTJOIN("","",FALSE,{1,2;3,4})","equal","none","TEXTJOIN array-constant row-major flatten parity through XLL."
+"W9-XLL-013","W9-F","ready","A1:=1|B1:=2|A2:=3|B2:=""""","TEXTJOIN("","",TRUE,A1:B2)","ox_TEXTJOIN("","",TRUE,A1:B2)","equal","none","TEXTJOIN range flattening and ignore-empty parity through XLL."

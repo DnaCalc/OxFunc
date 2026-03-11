@@ -57,6 +57,10 @@ For `U` surface rows:
 6. Registration shaping policy for generated U rows:
    - worksheet-callable `type_text` is capped to the current Excel baseline limit (`len <= 255`),
    - high-arity UI-only `arg_names` metadata is omitted when it would exceed Excel's practical dialog limit.
+7. Fixed-width U call normalization:
+   - trailing `xltypeMissing` arguments are trimmed back to the effective call arity before core dispatch,
+   - internal missing arguments are preserved,
+   - this keeps variadic worksheet calls such as `TEXTJOIN(...)` aligned with Excel's actual supplied-argument count.
 
 For `Q` surface rows:
 1. numeric unary, binary, and nullary calls are routed by `function_id` through core dispatch entrypoints.
