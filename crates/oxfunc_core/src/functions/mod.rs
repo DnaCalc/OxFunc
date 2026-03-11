@@ -26,10 +26,8 @@ pub mod round_fn;
 pub mod sequence;
 pub mod sum;
 pub mod surface_dispatch;
-#[path = "textjoin_mod.rs"]
 pub mod textjoin;
 pub mod today_fn;
-#[path = "xlookup_mod.rs"]
 pub mod xlookup;
 pub mod xmatch;
 pub mod xmatch_surface;

@@ -76,6 +76,6 @@
 2. array-constant built-in vs `ox_XLOOKUP` parity and known XLL reference-range seam divergences are replayed in `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`.
 
 ## 10. Artifact Bindings
-1. Rust: `crates/oxfunc_core/src/functions/xlookup_mod.rs`
+1. Rust: `crates/oxfunc_core/src/functions/xlookup.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Xlookup.lean`
 3. side-note linkage: `docs/function-lane/W10_PROFILE_SYSTEM_SIDE_NOTES.md` (notes 3, 6, and 7)
