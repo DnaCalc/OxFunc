@@ -28,7 +28,10 @@ Record seed registration posture for U-style vs Q-style surfaces in the OxFunc X
 5. Ordinary `volatile_full` U exports now receive `!` in generated registration text from core metadata (for example `ox_NOW`, `ox_TODAY`, `ox_RAND`).
 
 ## 5. Follow-on Decisions
-1. Confirm whether very-high-arity generated U signatures (for example `SUM` with `u_arity_255`) should remain as-is or be bounded by an explicit export-profile cap; current baseline replay shows `ox_SUM(...)` resolving to `#NAME?` despite generated export presence.
+1. Very-high-arity generated U signatures are now bounded by an explicit export-profile cap:
+   - generated `type_text` must stay worksheet-callable in the current baseline (`len <= 255`),
+   - this means `Q` + `U...` exports are capped at `254` U-arguments before registration suffixes,
+   - when generated `arg_names` would exceed the Excel dialog/UI limit, they are omitted rather than emitted as oversized metadata.
 2. Expand core array payload modeling to improve U-path behavior for lookup/array-return families.
 3. Add additional bridge conformance scenarios covering non-scalar return lanes under generated exports.
 4. Keep broader volatile/thread-safe/macro-type registration-flag mapping beyond ordinary `volatile_full` exports deferred from signature/export generation until W11 evidence closure (`docs/function-lane/XLL_REGISTRATION_FLAG_EVIDENCE_PLAN.md`).

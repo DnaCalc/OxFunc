@@ -54,6 +54,9 @@ For `U` surface rows:
    - scalar worksheet values,
    - `xltypeMulti` array payloads in admitted lanes,
    - admitted reference results returned as `xltypeSRef` or `xltypeRef` when the shim can preserve that identity.
+6. Registration shaping policy for generated U rows:
+   - worksheet-callable `type_text` is capped to the current Excel baseline limit (`len <= 255`),
+   - high-arity UI-only `arg_names` metadata is omitted when it would exceed Excel's practical dialog limit.
 
 For `Q` surface rows:
 1. numeric unary, binary, and nullary calls are routed by `function_id` through core dispatch entrypoints.
@@ -64,10 +67,9 @@ For `Q` surface rows:
 
 ## 6. Bounded Lanes
 1. Array payload semantics remain shape-bounded in core for several functions; U bridge preserves this boundary.
-2. Some very-high-arity user-facing exports still need callable-surface hardening (current baseline issue: `ox_SUM` resolves to `#NAME?` in the bridge workbook replay).
-3. Asynchronous/RTD callback model.
-4. Production-hardening beyond current `xlbitDLLFree` + `xlAutoFree12` ownership discipline.
-5. Registration-flag mapping (`!`, `$`, `#`) is intentionally not profile-derived yet; W11 uses runtime-only experimental alias registrations for evidence collection.
+2. Asynchronous/RTD callback model.
+3. Production-hardening beyond current `xlbitDLLFree` + `xlAutoFree12` ownership discipline.
+4. Registration-flag mapping (`!`, `$`, `#`) is intentionally not profile-derived yet; W11 uses runtime-only experimental alias registrations for evidence collection.
 
 ## 7. Verification-Seam Limitation Disclosure
 1. This shim contract is part of the XLL verification seam, not the semantics-owning function layer.

@@ -20,15 +20,13 @@ Record known limitations in the Rust XLL verification seam so they are not mista
    - current lookup-family bridge replay is green for the admitted manifest scope:
      - `XMATCH`, `MATCH`, and scalar `XLOOKUP` rows match directly through `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`,
      - `XLOOKUP` reference-return address and range-composition rows also match in the current bridge scope.
+   - current baseline replay is also green for the admitted `SUM` aggregate rows (`direct scalar`, `array literal`, `reference-derived`) through `XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`.
    - remaining bounded lanes now include broader reference construction/info functions and general non-scalar payload coverage outside that manifest scope.
-4. Some generated user-facing exports still need callable-surface hardening:
-   - current baseline replay shows `ox_SUM(...)` producing worksheet `#NAME?` even though the export is generated and registered.
-   - this is an XLL seam issue, not evidence against the core `SUM` semantics.
-5. Concurrency/thread-safety evidence is incomplete:
+4. Concurrency/thread-safety evidence is incomplete:
    - current probes show registration acceptance and scalar parity, not full scheduler or multithread execution behavior.
-6. Host-entrypoint parity is contextual:
+5. Host-entrypoint parity is contextual:
    - worksheet formula behavior, COM evaluate paths, and XLL invocation are related but not interchangeable evidence surfaces.
-7. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
+6. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
    - caller-cell format mutation/application (for example `NOW` or `TODAY` entered into a `General` cell) is treated as an engine-surface responsibility above the core function result.
    - XLL verification may check value and recalc semantics for such functions, but absence of caller-format application in the XLL seam is not a function-semantic failure by itself.
 

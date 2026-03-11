@@ -11,6 +11,7 @@ Track reproducible build/registration/baseline-validation evidence for the Rust-
 Execution date:
 1. `2026-03-08`
 2. `2026-03-11` (bridge follow-up rerun after reference-resolution and reference-return shim expansion)
+3. `2026-03-11` (registration callability follow-up after capped U-arity generation and high-arity `arg_names` omission)
 
 Environment:
 1. Excel version/build: `16.0 (build 19725)`
@@ -32,6 +33,7 @@ Outputs:
 2. Baseline result rows:
    - `.tmp/oxfunc-xll-bridge-results.csv`
    - `.tmp/xll-housekeeping/oxfunc-xll-bridge-results.csv`
+   - `.tmp/xll-arity-fix/oxfunc-xll-bridge-results.csv`
 
 ## 3. Gate Tracking
 ### G1 - Bridge Scaffold Closure
@@ -69,10 +71,9 @@ Outputs:
    - `.tmp/xll-housekeeping/oxfunc-xll-bridge-results.csv`
 3. Outcomes:
    - rows: `11`
-   - relation_status `matched`: `8`
-   - relation_status `mismatched`: `3`
-   - scalar ABS/PI rows remain green, spill-sensitive row `W9-XLL-007` remains parity-closed, and reference-return address parity is now green in `W9-XLL-011`.
-   - the three current mismatches are `W9-XLL-008..010`, where `ox_SUM(...)` produced worksheet `#NAME?` while the native formulas evaluated normally.
+   - relation_status `matched`: `11`
+   - relation_status `mismatched`: `0`
+   - scalar ABS/PI rows remain green, spill-sensitive row `W9-XLL-007` remains parity-closed, aggregate provenance rows `W9-XLL-008..010` are now callable and parity-closed through the bridge, and reference-return address parity remains green in `W9-XLL-011`.
 
 ### G5 - Separation Closure
 1. Status: `closed`.
@@ -86,7 +87,10 @@ Outputs:
 3. U-style bridge continues to support shape-preserving `xltypeMulti` elementwise mapping for ABS (`W9-XLL-007` parity-closed).
 4. The current shim can now carry admitted reference results back to Excel strongly enough for `CELL("address", ox_XLOOKUP(...))` parity in `W9-XLL-011`.
 5. Export wrappers and registration rows are generated from core `FunctionMeta` profile rules through `xll_export_specs`, reducing hand-authored bridge code.
-6. The remaining baseline bridge anomaly is a callable-surface problem for `ox_SUM(...)`, not a native SUM semantic mismatch.
+6. Very-high-arity worksheet exports need explicit registration shaping in the generated XLL surface:
+   - keeping `type_text.len() <= 255` is necessary for worksheet callability in the current baseline,
+   - omitting oversized `arg_names` strings is sufficient for the current bridge because they are UI-only metadata,
+   - after applying that policy, `ox_SUM(...)` aggregate rows are callable and parity-closed.
 
 ## 5. Follow-on Bounded Lanes
 1. registration-flag mapping (`!`, `$`, `#`) stays deferred from profile-derived generation until W11 evidence closure.
@@ -97,6 +101,5 @@ Outputs:
 2. Known seam limitations are tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
 3. Relevant current limits for W9:
    - registration-flag behavior is not yet part of normal profile-derived export generation,
-   - some very-high-arity generated exports still need callable-surface hardening (`ox_SUM` currently yields `#NAME?` in the baseline workbook replay),
    - reference-return and non-scalar payload parity remain bounded outside the currently green lookup-family scope,
    - concurrency/thread-safety evidence is not demonstrated by this bridge baseline.

@@ -96,10 +96,36 @@ fn arg_names_for_count(count: usize) -> String {
         .join(",")
 }
 
+const MAX_XLL_ARG_NAMES_LEN: usize = 255;
+
+fn capped_arg_names_for_count(count: usize) -> String {
+    let arg_names = arg_names_for_count(count);
+    if arg_names.len() > MAX_XLL_ARG_NAMES_LEN {
+        String::new()
+    } else {
+        arg_names
+    }
+}
+
 fn type_text_for_u_arity(count: usize) -> String {
     let mut out = String::from("Q");
     out.push_str(&"U".repeat(count));
     out
+}
+
+const MAX_XLL_TYPE_TEXT_LEN: usize = 255;
+
+fn registration_suffix_len(meta: &FunctionMeta) -> usize {
+    let mut len = 0;
+    if meta.volatility == VolatilityClass::VolatileFull {
+        len += 1;
+    }
+    len
+}
+
+fn capped_u_arity(meta: &FunctionMeta) -> usize {
+    let max_u_arity = MAX_XLL_TYPE_TEXT_LEN.saturating_sub(1 + registration_suffix_len(meta));
+    meta.arity.max.min(max_u_arity)
 }
 
 fn apply_registration_suffixes(meta: &FunctionMeta, base_type_text: String) -> String {
@@ -153,15 +179,16 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
         let worksheet_base = format!("ox_{suffix}");
         let q_kind = q_entry_kind_from_profile(meta);
         let emit_u = meta.arity.max > 0 || q_kind.is_none();
+        let u_arity = capped_u_arity(meta);
 
         if emit_u {
             specs.push(XllExportSpec {
                 export_name: export_base.clone(),
                 worksheet_name: worksheet_base.clone(),
-                type_text: apply_registration_suffixes(meta, type_text_for_u_arity(meta.arity.max)),
-                arg_names: arg_names_for_count(meta.arity.max),
+                type_text: apply_registration_suffixes(meta, type_text_for_u_arity(u_arity)),
+                arg_names: capped_arg_names_for_count(u_arity),
                 function_id: meta.function_id,
-                entry_kind: XllEntryKind::UArity(meta.arity.max),
+                entry_kind: XllEntryKind::UArity(u_arity),
                 u_lift_policy: Some(u_lift_policy_from_profile(meta)),
                 preserve_refs: meta.arg_preparation_profile
                     == ArgPreparationProfile::RefsVisibleInAdapter,
@@ -304,5 +331,32 @@ mod tests {
             "expected nonvolatile U export for FUNC.ABS to omit !, got {}",
             spec.type_text
         );
+    }
+
+    #[test]
+    fn u_exports_stay_within_type_text_limit() {
+        let specs = xll_export_specs();
+        for spec in specs {
+            if matches!(spec.entry_kind, XllEntryKind::UArity(_)) {
+                assert!(
+                    spec.type_text.len() <= MAX_XLL_TYPE_TEXT_LEN,
+                    "expected {} to stay within {MAX_XLL_TYPE_TEXT_LEN}, got {}",
+                    spec.export_name,
+                    spec.type_text.len()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn sum_u_export_is_capped_to_callable_arity_limit() {
+        let specs = xll_export_specs();
+        let spec = specs
+            .iter()
+            .find(|s| s.function_id == "FUNC.SUM" && matches!(s.entry_kind, XllEntryKind::UArity(_)))
+            .expect("missing U export for FUNC.SUM");
+        assert_eq!(spec.entry_kind, XllEntryKind::UArity(254));
+        assert_eq!(spec.type_text.len(), MAX_XLL_TYPE_TEXT_LEN);
+        assert!(spec.arg_names.is_empty());
     }
 }
