@@ -27,6 +27,10 @@ pub enum ExactEvalError {
     Coercion(CoercionError),
 }
 
+pub fn exact_kernel(lhs: &crate::value::ExcelText, rhs: &crate::value::ExcelText) -> bool {
+    lhs.utf16_code_units() == rhs.utf16_code_units()
+}
+
 pub fn eval_exact_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, ExactEvalError> {
     if !EXACT_META.arity.accepts(args.len()) {
         return Err(ExactEvalError::ArityMismatch {
@@ -37,7 +41,7 @@ pub fn eval_exact_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
     let lhs = coerce_prepared_to_text(&args[0]).map_err(ExactEvalError::Coercion)?;
     let rhs = coerce_prepared_to_text(&args[1]).map_err(ExactEvalError::Coercion)?;
-    Ok(EvalValue::Logical(lhs.utf16_code_units() == rhs.utf16_code_units()))
+    Ok(EvalValue::Logical(exact_kernel(&lhs, &rhs)))
 }
 
 pub fn eval_exact_surface(
@@ -102,6 +106,56 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
                     "1".encode_utf16().collect(),
                 ))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Logical(true)));
+    }
+
+    #[test]
+    fn eval_exact_coerces_logical_to_text() {
+        let got = eval_exact_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Logical(true)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "TRUE".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Logical(true)));
+    }
+
+    #[test]
+    fn eval_exact_treats_blank_as_empty_text() {
+        let got = eval_exact_adapter_prepared(&[
+            PreparedArgValue::EmptyCell,
+            PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))),
+        ]);
+        assert_eq!(got, Ok(EvalValue::Logical(true)));
+    }
+
+    #[test]
+    fn eval_exact_distinguishes_precomposed_and_combining_unicode() {
+        let got = eval_exact_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(vec![233]))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(vec![
+                    101, 769,
+                ]))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Logical(false)));
+    }
+
+    #[test]
+    fn eval_exact_matches_identical_surrogate_pair_text() {
+        let emoji = ExcelText::from_utf16_code_units(vec![0xD83D, 0xDE00]);
+        let got = eval_exact_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(emoji.clone())),
+                CallArgValue::Eval(EvalValue::Text(emoji)),
             ],
             &NoResolver,
         );

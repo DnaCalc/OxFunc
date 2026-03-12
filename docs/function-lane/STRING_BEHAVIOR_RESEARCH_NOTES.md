@@ -64,10 +64,12 @@ Key observed outcomes:
    - `="A"="a"` -> `TRUE` (`STR8-001`)
    - `EXACT("A","a")` -> `FALSE` (`STR8-002`)
    - accent-sensitive and punctuation-sensitive for tested pairs (`STR8-003..STR8-007`).
+   - W12 follow-up also pinned `EXACT(1,"1") -> TRUE`, `EXACT(TRUE,"TRUE") -> TRUE`, `EXACT("",blank_cell) -> TRUE`, `EXACT(UNICHAR(233),"e"&UNICHAR(769)) -> FALSE`, and `EXACT(UNICHAR(128512),UNICHAR(128512)) -> TRUE` under the same local Excel baseline.
 2. Whitespace/non-printable:
    - `TRIM(" A   B ")` -> `"A B"` (`STR8-008`).
    - `TRIM` did not remove NBSP or tab in tested rows (`STR8-034`, `STR8-035`).
    - `CLEAN(CHAR(1)&"A")` removed `CHAR(1)`; `CLEAN(CHAR(127)&"A")` did not remove `CHAR(127)` (`STR8-010`, `STR8-011`).
+   - W12 follow-up showed `CLEAN` also removes the extra C1 subset `CHAR(129)`, `141`, `143`, `144`, and `157`, while still preserving zero-width space and NBSP in the tested rows.
    - zero-width space survived `TRIM` and `CLEAN` in tested case (`STR8-036`).
 3. Unicode granularity:
    - `LEN(UNICHAR(128512))` -> `2` in this baseline (`STR8-012`).
@@ -98,6 +100,8 @@ Error sentinel mapping used:
    - interop ingress may yield dangling-surrogate tail states.
 3. W6 precondition update:
    - matching/collation work should assume `=`/`EXACT` split and non-trivial whitespace normalization behavior.
+4. W12 text-function update:
+   - `EXACT` and `CLEAN` now have function-level follow-up evidence beyond W7’s general string matrix, especially around blank/text coercion and the observed `CLEAN` C1-subset removal behavior.
 
 ## 6. Residual Risks and Deferred Expansion
 1. Multi-build/channel replay not yet done.

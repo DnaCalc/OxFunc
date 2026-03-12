@@ -44,6 +44,15 @@ $compatResultsPath = Join-Path $outDirPath "w12-results-compat.csv"
 $resultsPath = Join-Path $outDirPath "w12-results-excel.csv"
 $reportPath = Join-Path $outDirPath "w12-analysis-report.csv"
 $summaryPath = Join-Path $outDirPath "w12-analysis-summary.json"
+$isolatedScenarioIds = @(
+    "W12S3-005",
+    "W12S5-001",
+    "W12S5-002",
+    "W12S5-003",
+    "W12S5-004",
+    "W12S5-005",
+    "W12S6-004"
+)
 
 $mergedRows = New-Object System.Collections.Generic.List[object]
 
@@ -61,6 +70,103 @@ foreach ($manifest in $Manifests) {
 
 $mergedRows | Export-Csv -Path $mergedManifestPath -NoTypeInformation -Encoding UTF8
 
+function Invoke-CoercionRun {
+    param([hashtable]$RunParams)
+
+    function Quote-PwshString {
+        param([string]$Value)
+        return "'" + ($Value -replace "'", "''") + "'"
+    }
+
+    $commandParts = @(
+        "& " + (Quote-PwshString $runScript),
+        "-Manifest " + (Quote-PwshString ([string]$RunParams["Manifest"])),
+        "-Out " + (Quote-PwshString ([string]$RunParams["Out"])),
+        "-ArtifactRoot " + (Quote-PwshString ([string]$RunParams["ArtifactRoot"])),
+        "-RunLabel " + (Quote-PwshString ([string]$RunParams["RunLabel"]))
+    )
+
+    if ($RunParams.ContainsKey("WorkbookTemplate")) {
+        $commandParts += "-WorkbookTemplate " + (Quote-PwshString ([string]$RunParams["WorkbookTemplate"]))
+    }
+    if ($RunParams.ContainsKey("IncludeSeed") -and $RunParams["IncludeSeed"]) {
+        $commandParts += "-IncludeSeed"
+    }
+    if ($RunParams.ContainsKey("Lanes")) {
+        $laneTerms = @($RunParams["Lanes"] | ForEach-Object { Quote-PwshString ([string]$_) })
+        $commandParts += "-Lanes @(" + ($laneTerms -join ",") + ")"
+    }
+
+    $commandText = $commandParts -join " "
+    & powershell -Command $commandText
+    if ($LASTEXITCODE -ne 0) {
+        throw "Coercion runner failed with exit code $LASTEXITCODE."
+    }
+}
+
+function Invoke-IsolatedReruns {
+    param(
+        [object[]]$Rows,
+        [hashtable]$RunParams,
+        [string]$OutPath,
+        [string]$RunLabel
+    )
+
+    if ($Rows.Count -eq 0) {
+        return
+    }
+
+    $existing = @()
+    if (Test-Path $OutPath) {
+        $existing = @(Import-Csv -Path $OutPath)
+    }
+
+    $rerunResults = New-Object System.Collections.Generic.List[object]
+    foreach ($scenarioId in $isolatedScenarioIds) {
+        $row = $Rows | Where-Object { $_.scenario_id -eq $scenarioId } | Select-Object -First 1
+        if ($null -eq $row) {
+            continue
+        }
+
+        $singleManifestPath = Join-Path $outDirPath ("w12-isolated-" + $RunLabel + "-" + $scenarioId + ".csv")
+        @($row) | Export-Csv -Path $singleManifestPath -NoTypeInformation -Encoding UTF8
+
+        $singleResultPath = Join-Path $outDirPath ("w12-isolated-" + $RunLabel + "-" + $scenarioId + "-results.csv")
+        $singleArtifactRoot = Join-Path $artifactRootPath ("isolated-" + $RunLabel + "-" + $scenarioId)
+
+        $singleParams = @{
+            Manifest = $singleManifestPath
+            Out = $singleResultPath
+            Lanes = @([string]$row.lane)
+            ArtifactRoot = $singleArtifactRoot
+            RunLabel = $RunLabel
+        }
+        if ($RunParams.ContainsKey("WorkbookTemplate")) {
+            $singleParams["WorkbookTemplate"] = $RunParams["WorkbookTemplate"]
+        }
+        if ($IncludeSeed) {
+            $singleParams["IncludeSeed"] = $true
+        }
+
+        Invoke-CoercionRun -RunParams $singleParams
+        $singleRows = Import-Csv -Path $singleResultPath
+        foreach ($singleRow in $singleRows) {
+            $rerunResults.Add($singleRow)
+        }
+    }
+
+    $rerunArray = @($rerunResults.ToArray())
+    $rerunKeys = @($rerunArray | ForEach-Object { ([string]$_.scenario_id) + "|" + ([string]$_.run_label) })
+    $filtered = @(
+        $existing | Where-Object {
+            $key = ([string]$_.scenario_id) + "|" + ([string]$_.run_label)
+            $key -notin $rerunKeys
+        }
+    )
+    $merged = @($filtered) + $rerunArray
+    $merged | Export-Csv -Path $OutPath -NoTypeInformation -Encoding UTF8
+}
+
 $defaultRunParams = @{
     Manifest = $mergedManifestPath
     Out = $defaultResultsPath
@@ -72,7 +178,8 @@ if ($IncludeSeed) {
     $defaultRunParams["IncludeSeed"] = $true
 }
 
-& $runScript @defaultRunParams
+Invoke-CoercionRun -RunParams $defaultRunParams
+Invoke-IsolatedReruns -Rows $mergedRows.ToArray() -RunParams $defaultRunParams -OutPath $defaultResultsPath -RunLabel "default"
 
 $compatTemplatePath = ""
 if (-not [string]::IsNullOrWhiteSpace($WorkbookTemplate)) {
@@ -95,7 +202,8 @@ if ($IncludeSeed) {
     $compatRunParams["IncludeSeed"] = $true
 }
 
-& $runScript @compatRunParams
+Invoke-CoercionRun -RunParams $compatRunParams
+Invoke-IsolatedReruns -Rows $mergedRows.ToArray() -RunParams $compatRunParams -OutPath $compatResultsPath -RunLabel "compat_template"
 
 $all = @()
 if (Test-Path $defaultResultsPath) { $all += Import-Csv -Path $defaultResultsPath }

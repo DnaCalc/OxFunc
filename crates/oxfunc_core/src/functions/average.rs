@@ -173,4 +173,21 @@ mod tests {
         );
         assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Div0)));
     }
+
+    #[test]
+    fn eval_average_direct_array_uses_range_like_policy() {
+        let got = eval_average_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "2".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Logical(true),
+                ]])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved_value: None },
+        );
+        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Div0)));
+    }
 }

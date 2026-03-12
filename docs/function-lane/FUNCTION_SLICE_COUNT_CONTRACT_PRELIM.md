@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. counts prepared numeric, logical, and numeric-text direct arguments.
-2. ignores missing, empty, and non-numeric text in the current direct-argument seed.
-3. range-scan payload and any richer aggregate source-class distinctions remain explicit target bounds if empirical evidence proves they matter.
+1. counts direct numeric, logical, and numeric-text arguments.
+2. ignores array-like text/logical lanes and propagates worksheet errors from admitted inputs.
+3. current empirical baseline does not require any finer source-class split than direct-scalar versus array-like input, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/count.rs`

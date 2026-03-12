@@ -32,7 +32,9 @@
 
 ## 5. Core Outcome Model
 1. admitted call returns `TRUE` when both coerced text payloads match exactly.
-2. comparison is case-sensitive and code-unit-sensitive in the current seed.
+2. comparison is case-sensitive and code-unit-sensitive in the current slice.
+3. blank cells coerce to empty text before comparison in the current empirical baseline.
+4. the current empirical baseline distinguishes precomposed and combining Unicode forms rather than normalizing them.
 3. coercion failures terminate evaluation with error.
 
 ## 6. Post-call Adaptation Policy
@@ -54,12 +56,18 @@
    - `W12-MODERATE-BL-20260309`
 3. policy decision anchors:
    - `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (note 5)
+   - `docs/function-lane/TEXT_FUNCTION_EMPIRICAL_EXPANSION_NOTES.md`
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
+4. current status rationale:
+   - function-phase-complete for the current reference Excel baseline,
+   - case-sensitivity, numeric/logical textification, blank-as-empty, precomposed-versus-combining distinction, and identical surrogate-pair equality are now explicitly evidenced,
+   - remaining locale/version expansion is orthogonal validation work rather than a known current-phase semantic gap.
 
 ## 9. W12 Seed Coverage
 1. case-sensitive exact comparison is implemented.
-2. scalar-to-text coercion is exercised for numeric payloads.
-3. richer collation and normalization policy remain outside the current bounded seed.
+2. scalar-to-text coercion is exercised for numeric and logical payloads.
+3. blank-versus-empty behavior is exercised through dereferenced blank-cell replay.
+4. Unicode comparison is explicitly pinned as code-unit-sensitive rather than normalization-aware in the current baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/exact_fn.rs`

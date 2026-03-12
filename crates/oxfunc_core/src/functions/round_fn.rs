@@ -124,4 +124,16 @@ mod tests {
         );
         assert_eq!(got, Ok(EvalValue::Number(120.0)));
     }
+
+    #[test]
+    fn eval_round_truncates_digits_toward_zero() {
+        let got = eval_round_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1.5)),
+                CallArgValue::Eval(EvalValue::Number(0.9)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
 }

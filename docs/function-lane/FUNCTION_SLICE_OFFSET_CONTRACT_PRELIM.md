@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. preserved-reference argument handling is implemented for bounded A1 targets.
-2. reference shifting and explicit resize arguments are exercised.
-3. broader caller-context, non-A1, and full macro-sensitive reference-return lanes remain explicit target bounds.
+1. preserved-reference argument handling is implemented for bounded A1 and sheet-prefixed targets.
+2. reference shifting, default height/width inheritance, explicit resizing, reference identity through `CELL("address", ...)`, and aggregate composition through `SUM(OFFSET(...))` are pinned directly.
+3. the admitted OFFSET slice is `function-phase-complete` for the current reference baseline; deferred `CELL`/macro work remains a separate follow-on seam rather than an open OFFSET semantic gap.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/offset.rs`

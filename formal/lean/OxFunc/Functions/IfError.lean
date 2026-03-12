@@ -1,4 +1,6 @@
+import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
+import OxFunc.ValueUniverse
 
 namespace OxFunc.Functions
 
@@ -18,18 +20,54 @@ def ifErrorMeta : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
 }
 
-def evalIfErrorAdapter (primary fallback : Value) : Except EvalError Value :=
+inductive IfErrorValue where
+  | number (n : Rat)
+  | text (s : String)
+  | logical (b : Bool)
+  | error (code : WorksheetErrorCode)
+  deriving DecidableEq, Repr
+
+inductive DeferredFallback where
+  | ready (value : CoercionInput)
+  | poison
+  deriving DecidableEq, Repr
+
+def materializeIfErrorInput : CoercionInput → IfErrorValue
+  | .number n => .number n
+  | .text s => .text s
+  | .logical b => .logical b
+  | .error code => .error code
+  | .emptyCell => .number 0
+  | .missingArg => .error .value
+
+def forceDeferredFallback : DeferredFallback → Except String CoercionInput
+  | .ready value => .ok value
+  | .poison => .error "forced_fallback"
+
+def evalIfErrorPrepared
+    (primary : CoercionInput)
+    (fallback : DeferredFallback) : Except String IfErrorValue :=
   match primary with
-  | .err _ => Except.ok fallback
-  | _ => Except.ok primary
+  | .error _ => do
+      let forced ← forceDeferredFallback fallback
+      .ok (materializeIfErrorInput forced)
+  | other => .ok (materializeIfErrorInput other)
 
-theorem evalIfErrorAdapter_primary_ok :
-    evalIfErrorAdapter (.number 2) (.number 4) = Except.ok (.number 2) := by
-  simp [evalIfErrorAdapter]
+theorem evalIfErrorPrepared_passes_non_error_through_without_forcing_fallback :
+    evalIfErrorPrepared (.number 1) .poison = .ok (.number 1) := by
+  rfl
 
-theorem evalIfErrorAdapter_error_fallback :
-    evalIfErrorAdapter (.err (.arityMismatch 1 0)) (.number 4) = Except.ok (.number 4) := by
-  simp [evalIfErrorAdapter]
+theorem evalIfErrorPrepared_blank_primary_becomes_zero :
+    evalIfErrorPrepared .emptyCell .poison = .ok (.number 0) := by
+  rfl
+
+theorem evalIfErrorPrepared_blank_fallback_becomes_zero :
+    evalIfErrorPrepared (.error .na) (.ready .emptyCell) = .ok (.number 0) := by
+  rfl
+
+theorem evalIfErrorPrepared_missing_fallback_becomes_value_error :
+    evalIfErrorPrepared (.error .na) (.ready .missingArg) = .ok (.error .value) := by
+  rfl
 
 theorem ifErrorMeta_profiles :
     ifErrorMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter

@@ -49,7 +49,7 @@ fn excel_serial_from_ymd(year: i64, month: i64, day: i64) -> Result<i64, DateEva
 
     let base = days_from_civil(1899, 12, 31);
     let days = days_from_civil(year, month, 1) - base + (day - 1);
-    if days <= 0 {
+    if days < 0 {
         return Err(DateEvalError::NumericDomain);
     }
 
@@ -163,5 +163,54 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(45689.0)));
+    }
+
+    #[test]
+    fn eval_date_allows_serial_zero_boundary() {
+        let got = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1900.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_date_rejects_month_zero_boundary() {
+        let got = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1900.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Err(DateEvalError::NumericDomain));
+    }
+
+    #[test]
+    fn eval_date_normalizes_short_year_and_truncates_day() {
+        let got_short_year = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got_short_year, Ok(EvalValue::Number(1.0)));
+
+        let got_truncated_day = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(2008.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.9)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got_truncated_day, Ok(EvalValue::Number(39449.0)));
     }
 }

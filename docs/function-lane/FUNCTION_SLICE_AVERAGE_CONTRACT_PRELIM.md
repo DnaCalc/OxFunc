@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. strict prepared-value numeric mean is implemented.
-2. logicals and numeric text participate through the shared numeric coercion path.
-3. direct-scalar versus array-like aggregate policy is still explicit follow-up work, and any finer source-class split should only be demanded if empirical evidence proves that it matters.
+1. direct-scalar numeric, logical, and numeric-text contributors participate through the shared numeric coercion path.
+2. array-like text and logical contributors are ignored; if no numeric contributors survive, the result is `#DIV/0!`.
+3. current empirical baseline does not require any finer source-class split than direct-scalar versus array-like input, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/average.rs`

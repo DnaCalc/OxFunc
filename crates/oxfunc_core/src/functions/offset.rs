@@ -185,4 +185,48 @@ mod tests {
             }))
         );
     }
+
+    #[test]
+    fn eval_offset_defaults_height_and_width_to_base_shape() {
+        let got = eval_offset_surface(
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::Area,
+                    target: "B2:C3".to_string(),
+                }),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "C3:D4".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn eval_offset_preserves_sheet_prefix() {
+        let got = eval_offset_surface(
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::A1,
+                    target: "Sheet1!B2".to_string(),
+                }),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::A1,
+                target: "Sheet1!D3".to_string(),
+            }))
+        );
+    }
 }

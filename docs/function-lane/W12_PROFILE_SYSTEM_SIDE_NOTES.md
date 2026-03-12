@@ -10,8 +10,8 @@ Purpose:
 ## Notes Log
 
 1. Aggregate argument-structure pressure remains open:
-   - `AVERAGE`, `COUNT`, and `COUNTA` can close direct-argument seed behavior under `values_only_pre_adapter`,
-   - but full direct-scalar versus array-like policy still needs more empirical closure, and any finer source-class split should only be introduced if evidence proves it matters.
+   - `AVERAGE`, `COUNT`, and `COUNTA` are now pinned strongly enough to close on the simpler `direct_scalar` versus `array_like` distinction,
+   - and the current baseline does not justify any richer source-class split for these aggregate kernels.
 2. Count-family split is now clearer:
    - `COUNT` and `COUNTA` can share a packet without sharing the same semantic kernel,
    - so aggregate families need explicit count-policy tags rather than being folded into one generic aggregate profile.
@@ -20,17 +20,20 @@ Purpose:
    - `OFFSET` and `CELL` need preserved reference identity.
 4. Numeric helper candidates are becoming visible:
    - `ROUND`, `AND`, and `DATE` each expose small reusable coercion/kernel patterns,
-   - but they are still distinct enough to keep under `custom` in the current seed.
+   - and the current W12 pass was enough to close those slices without needing a broader shared numeric helper abstraction.
 5. Prepared-text helper reuse is now justified:
    - `TEXTJOIN`, `CLEAN`, and `EXACT` all consume the same bounded scalar-to-text path,
    - which is now centralized in `functions::adapters`.
    - `TEXTJOIN` is now closed for the current phase once row-major flattening, delimiter textification, and the observed `32768 -> #CALC!` overflow lane were pinned empirically.
+   - `EXACT` is also now closed for the current phase with blank-as-empty, scalar-to-text coercion, and code-unit-sensitive Unicode comparison pinned directly.
+   - `CLEAN` is now closed for the current phase with the observed extra C1 removal subset (`129`, `141`, `143`, `144`, `157`) recorded explicitly rather than assumed from public-doc summaries.
 6. Provider seam standardization is stronger after W12:
    - `TODAY` and `RAND` reuse the same provider-seam posture as `NOW`,
    - and they produce concrete follow-back candidates for W11 volatile mapping.
 7. Bounded A1 utility support is now shared infrastructure:
    - `OFFSET` and `CELL` both needed stable A1 parse/format helpers,
    - so a small function-local reference-text utility layer is now justified before broader resolver work.
-8. Dynamic-array shape-only modeling remains useful but bounded:
-   - `HSTACK` can close admission and shape classification under the current `ArrayShape` model,
-   - but payload fill/padding remains explicit target-partial follow-up.
+   - `OFFSET` is now closed for the admitted A1/sheet-prefixed slice, while `CELL` remains the deferred info/macro seam.
+8. Dynamic-array payload modeling turned out essential:
+   - `HSTACK` turned out not to be merely shape-sensitive in practice,
+   - and the current runtime/formal closure now treats it as a payload-materializing function with explicit `#N/A` padding.

@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. two-argument rounding is implemented.
-2. half-away-from-zero kernel behavior is exercised.
-3. richer floating-point edge correlation beyond the local seed remains open for later packetization.
+1. half-away-from-zero rounding is pinned for positive and negative midpoint cases.
+2. negative `num_digits` and truncation of non-integral `num_digits` toward zero are pinned directly.
+3. no known current-phase semantic gap remains in the admitted binary lane, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/round_fn.rs`

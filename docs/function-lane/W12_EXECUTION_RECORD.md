@@ -18,14 +18,24 @@ Track W12 execution status, artifacts, and gate closure for the moderate fifteen
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - multiple W12 function implementations remain work-in-progress until known Excel-semantic gaps are closed for the declared version axes.
-   - aggregate direct-scalar versus array-like policy remains explicit target follow-up for `AVERAGE`/`COUNT`/`COUNTA`.
-   - `OFFSET`/`CELL` retain bounded A1-only reference scope and are not yet full caller-context/macro closure.
-   - `HSTACK` remains shape-only in OxFunc runtime; payload fill/padding is deferred.
+   - the W12 packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam discussion.
    - W11 registration-flag mapping remains deferred; W12 only contributes stronger volatile and caller-context candidate scenarios.
+   - external XLL verification-seam limits remain tracked separately and do not reopen closed function semantics.
 6. function-phase-complete slices within W12:
+   - `AVERAGE`
+   - `COUNT`
+   - `COUNTA`
+   - `IFERROR`
+   - `ROUND`
    - `TODAY`
+   - `RAND`
+   - `OFFSET`
+   - `AND`
+   - `DATE`
+   - `HSTACK`
    - `TEXTJOIN`
+   - `CLEAN`
+   - `EXACT`
 
 ## 4. Executed Scope
 Execution date:
@@ -33,6 +43,8 @@ Execution date:
 2. `2026-03-10` (TODAY format-hint follow-up and function-phase-complete promotion)
 3. `2026-03-10` (W12 replay rerun after format-hint/range-observable expansion)
 4. `2026-03-11` (`TEXTJOIN` closeout follow-up with flattening and length-boundary expansion)
+5. `2026-03-12` (`EXACT`/`CLEAN` closeout follow-up with coercion, Unicode, and control-character expansion)
+6. `2026-03-12` (non-`CELL` W12 closeout with aggregate/date/reference/array follow-up and isolated mixed-case reruns in the W12 suite)
 
 Function slices with landed scaffolding/runtime seeds:
 1. `AVERAGE`
@@ -98,9 +110,15 @@ Function slices with landed scaffolding/runtime seeds:
    - `tools/w12-probe/run-w12-suite.ps1`
    - `tools/w12-probe/analyze-w12-results.ps1`
    - `tools/w12-probe/new-w12-compat-template.ps1`
+7. closeout rerun outputs:
+   - `.tmp/exact-clean-closeout/w12-results-default.csv`
+   - `.tmp/exact-clean-closeout/w12-results-compat.csv`
+   - `.tmp/exact-clean-closeout/w12-results-excel.csv`
+   - `.tmp/exact-clean-closeout/w12-analysis-report.csv`
+   - `.tmp/exact-clean-closeout/w12-analysis-summary.json`
 
 ## 6. Verification Runs
-1. `cargo test -p oxfunc_core` -> pass (`161` tests).
+1. `cargo test -p oxfunc_core` -> pass (`228` tests).
 2. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml` -> pass.
 3. `powershell -File tools/xll-addin/sync-export-specs.ps1` -> pass.
 4. `lake build` (from `formal/lean`) -> pass.
@@ -110,6 +128,18 @@ Function slices with landed scaffolding/runtime seeds:
 8. `powershell -File tools/w12-probe/run-w12-suite.ps1 -OutDir .tmp/textjoin-closeout` -> pass:
    - rows: `46`
    - matched: `46`
+   - mismatched: `0`
+   - failed_unexpected: `0`
+   - dual_run_satisfied: `true`
+9. `powershell -File tools/w12-probe/run-w12-suite.ps1 -OutDir .tmp/exact-clean-closeout` -> pass:
+   - rows: `62`
+   - matched: `62`
+   - mismatched: `0`
+   - failed_unexpected: `0`
+   - dual_run_satisfied: `true`
+10. `powershell -File tools/w12-probe/run-w12-suite.ps1 -OutDir .tmp/w12-final-closeout-7` -> pass:
+   - rows: `112`
+   - matched: `112`
    - mismatched: `0`
    - failed_unexpected: `0`
    - dual_run_satisfied: `true`
@@ -139,6 +169,19 @@ Function slices with landed scaffolding/runtime seeds:
      - execution failed unexpected: `0`.
      - dual-run requirement satisfied: `true`.
      - analyzer gate status: `green`.
+   - W12 suite dual-run rerun on `2026-03-12` after `EXACT`/`CLEAN` expansion:
+     - rows: `62` (`31` default + `31` compat_template).
+     - expectation matched: `62`; mismatched: `0`.
+     - execution failed unexpected: `0`.
+     - dual-run requirement satisfied: `true`.
+     - analyzer gate status: `green`.
+   - W12 suite dual-run rerun on `2026-03-12` after non-`CELL` closeout:
+     - rows: `112` (`56` default + `56` compat_template).
+     - expectation matched: `112`; mismatched: `0`.
+     - execution failed unexpected: `0`.
+     - dual-run requirement satisfied: `true`.
+     - analyzer gate status: `green`.
+     - seven mixed reference/dynamic rows (`W12S3-005`, `W12S5-001..005`, `W12S6-004`) are now rerun out-of-process in isolation before final analysis because the in-process combined runner showed Excel COM instability on those rows despite the isolated cases themselves matching cleanly.
 
 ### G4 - W11 Follow-back Readiness
 1. Status: `closed-provisional`.
@@ -153,16 +196,20 @@ Function slices with landed scaffolding/runtime seeds:
 ### G5 - Promotion Readiness
 1. Status: `in_progress`.
 2. Notes:
-   - W12 has local scaffolding closure across contract, Rust, Lean, and empirical seed lanes.
-   - W12 does not satisfy packet-level implementation closure because known Excel-semantic gaps remain across multiple functions.
-   - `TODAY` and `TEXTJOIN` now satisfy current-phase function closure individually and may be reported as `function-phase-complete`.
+   - all non-`CELL` W12 slices now satisfy current-phase closure individually and may be reported as `function-phase-complete`.
+   - the packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam design.
 
 ## 8. Key Findings
 1. W10’s declarative-runner/default-surface posture scaled to a moderate breadth packet without requiring broad special-case dispatcher growth.
 2. `CELL` required an empirical-first narrowing pass before broader implementation work; the dual-run preprobe usefully selected the next semantic lanes without constituting closure.
 3. provider seams are now standardized across `NOW`, `TODAY`, and `RAND`, which gives W11 a better volatile follow-back matrix.
-4. `OFFSET` and `CELL` justified a small shared A1 parse/format helper but also exposed the remaining caller-context/reference-shape work still needed for full parity.
-5. count-family and average-family aggregate semantics remain the clearest evidence that direct-scalar versus array-like aggregate inputs need first-class representation before these functions can be treated as implemented; any finer source-class distinction should be justified empirically rather than assumed.
+4. `OFFSET` and `CELL` justified a small shared A1 parse/format helper; `OFFSET` is now closed for the admitted slice, while `CELL` remains the deferred info/macro seam.
+5. count-family and average-family aggregate semantics are now closed on the simpler direct-scalar versus array-like distinction; the current baseline did not reveal any richer provenance split that the function kernels themselves need.
 6. `TODAY` now has current-phase closure evidence across provider floor semantics, volatile recalc behavior, and caller-cell format-hinting, while remaining XLL control-alias work stays external to function semantics.
 7. `RAND` replay now asserts the worksheet-visible numeric range contract (`0 <= RAND() < 1`) directly in the W12 suite, while W11 carries the separate ordinary volatile-registration follow-back lane.
-8. `TEXTJOIN` is now pinned for the current baseline across row-major flattening, numeric/logical delimiter textification, ignore-empty behavior, and the `32767`/`32768` length boundary, with the observed overflow lane returning `#CALC!`.
+8. `DATE` exposed a real serial-boundary issue: `DATE(1900,1,0)` must remain admitted as serial `0`, while `DATE(1900,0,1)` is still `#NUM!`.
+9. `OFFSET` is now pinned across bounded A1/sheet-prefixed reference return, default height/width inheritance, explicit resizing, reference identity via `CELL("address",...)`, and aggregate composition via `SUM(OFFSET(...))`.
+10. `HSTACK` turned out to be a payload function rather than a shape-only one; the current closure now pins row-major payload materialization and `#N/A` padding for shorter arguments.
+11. `TEXTJOIN` is now pinned for the current baseline across row-major flattening, numeric/logical delimiter textification, ignore-empty behavior, and the `32767`/`32768` length boundary, with the observed overflow lane returning `#CALC!`.
+12. `EXACT` is now pinned for the current baseline across numeric/logical textification, blank-as-empty comparison, precomposed-versus-combining distinction, and identical surrogate-pair equality.
+13. `CLEAN` is now pinned for the current baseline across low-ASCII control removal, preservation of `CHAR(127)`/NBSP/zero-width space, and the observed extra C1 removal subset `129`, `141`, `143`, `144`, `157`.

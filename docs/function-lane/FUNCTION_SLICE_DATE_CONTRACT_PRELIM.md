@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. Excel serial baseline behavior is implemented.
-2. the 1900 leap-bug seed and month normalization are exercised.
-3. wider calendar edge coverage remains open beyond the current seed.
+1. Excel serial conversion is implemented with year/month/day truncation and year-in-`[0,1899]` normalization.
+2. the serial-zero boundary (`DATE(1900,1,0)=0`), month-zero rejection, month overflow, short-year normalization, and the `1900-02-29 -> 60` leap-bug lane are pinned directly.
+3. no known current-phase semantic gap remains in the admitted ternary lane, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/date_fn.rs`

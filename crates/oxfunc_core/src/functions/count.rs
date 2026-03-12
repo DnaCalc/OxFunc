@@ -145,4 +145,21 @@ mod tests {
             )))
         );
     }
+
+    #[test]
+    fn eval_count_direct_array_uses_range_like_policy() {
+        let got = eval_count_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "2".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Logical(true),
+                ]])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
 }

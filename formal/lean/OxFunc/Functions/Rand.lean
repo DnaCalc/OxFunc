@@ -4,6 +4,15 @@ namespace OxFunc.Functions
 
 open OxFunc
 
+private instance instDecidableEqExceptRand [DecidableEq ε] [DecidableEq α] :
+    DecidableEq (Except ε α)
+  | .error a, .error b =>
+      if h : a = b then isTrue (by cases h; rfl) else isFalse (by intro h'; cases h'; exact h rfl)
+  | .ok a, .ok b =>
+      if h : a = b then isTrue (by cases h; rfl) else isFalse (by intro h'; cases h'; exact h rfl)
+  | .error _, .ok _ => isFalse (by intro h; cases h)
+  | .ok _, .error _ => isFalse (by intro h; cases h)
+
 def randMeta : FunctionMeta := {
   functionId := "FUNC.RAND"
   arity := Arity.exact 0
@@ -29,8 +38,16 @@ def evalRandAdapter (provider : RandomProvider) : Except String Value :=
     Except.error "out_of_range"
 
 theorem evalRandAdapter_in_range :
-    True := by
-  trivial
+    evalRandAdapter { unitValue := 0 } = .ok (.number 0) := by
+  native_decide
+
+theorem evalRandAdapter_upper_bound_exclusive :
+    evalRandAdapter { unitValue := 1 } = .error "out_of_range" := by
+  native_decide
+
+theorem evalRandAdapter_mid_range_value :
+    evalRandAdapter { unitValue := 3 / 4 } = .ok (.number (3 / 4 : Rat)) := by
+  native_decide
 
 theorem randMeta_profiles :
     randMeta.determinism = DeterminismClass.pseudoRandom

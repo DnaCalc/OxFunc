@@ -1,5 +1,5 @@
+import OxFunc.CoercionPrimitives
 import OxFunc.FunctionCore
-import OxFunc.ValueUniverse
 
 namespace OxFunc.Functions
 
@@ -19,18 +19,21 @@ def countAMeta : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
 }
 
-def countAContribution : Value → Nat
-  | .number _ => 1
-  | .err _ => 1
+def countAArgumentIncluded : CoercionInput → Bool
+  | .missingArg => false
+  | .emptyCell => false
+  | _ => true
 
-def evalCountAAdapter (args : Args) : Except EvalError Value :=
-  match admitArity countAMeta.arity args with
-  | Except.ok _ => Except.ok (.number (args.foldl (fun acc v => acc + countAContribution v) 0))
-  | Except.error e => Except.error e
+def evalCountAPrepared (args : List CoercionInput) : Nat :=
+  args.foldl (fun acc arg => if countAArgumentIncluded arg then acc + 1 else acc) 0
 
-theorem evalCountAAdapter_nonblank :
-    True := by
-  trivial
+theorem evalCountAPrepared_counts_empty_string_and_error :
+    evalCountAPrepared [.text "", .error .na, .emptyCell] = 2 := by
+  native_decide
+
+theorem evalCountAPrepared_ignores_missing_and_empty :
+    evalCountAPrepared [.missingArg, .emptyCell] = 0 := by
+  native_decide
 
 theorem countAMeta_profiles :
     countAMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter

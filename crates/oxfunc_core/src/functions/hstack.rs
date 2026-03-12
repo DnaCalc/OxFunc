@@ -194,4 +194,37 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn eval_hstack_pads_shorter_scalar_argument_with_na() {
+        let got = eval_hstack_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
+    }
 }

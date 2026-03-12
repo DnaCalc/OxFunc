@@ -32,8 +32,8 @@
 
 ## 5. Core Outcome Model
 1. admitted call returns an array-shape payload whose row count is the maximum of input row counts and whose column count is the sum of input column counts.
-2. current seed is shape-only and does not materialize payload cells.
-3. preparation failures terminate evaluation with error.
+2. payload cells are materialized row-major from each argument in left-to-right order.
+3. shorter arguments pad missing cells with `#N/A`; preparation failures terminate evaluation with error.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation returns an array-shape `EvalValue`.
@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. shape-only horizontal composition is implemented over scalar and array-shape inputs.
-2. scalar, blank, and missing arguments currently contribute `1x1` shape units.
-3. full payload fill, padding rules, and richer dynamic-array materialization remain explicit target bounds.
+1. full horizontal payload composition is implemented over scalar, array-constant, and dereferenced range inputs.
+2. scalar blank cells remain empty, and shorter arguments pad with `#N/A`.
+3. no known current-phase semantic gap remains in the admitted HSTACK slice, so this function is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/hstack.rs`

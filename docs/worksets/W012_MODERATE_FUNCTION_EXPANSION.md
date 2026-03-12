@@ -107,6 +107,7 @@ Assurance maturity:
 2. runtime slices are implemented in `crates/oxfunc_core/src/functions/*` and admitted through shared dispatch/export metadata.
 3. Lean slices are implemented in `formal/lean/OxFunc/Functions/*` and `lake build` passes.
 4. the `CELL` preprobe ran green across both required run labels and usefully narrowed the next semantic lanes.
-5. dual-run Excel replay for the current W12 suite now runs green across `46` observed rows with `expectation_mismatched=0`.
-6. W11 follow-back readiness is improved by explicit `TODAY`/`RAND` volatile candidates and `CELL`/`OFFSET` caller-context candidates, but W12 remains open until the known semantic gaps are closed.
-7. `TODAY` and `TEXTJOIN` are now `function-phase-complete` for the current implementation phase; the packet remains open because the other W12 functions still have known current-phase semantic gaps.
+5. dual-run Excel replay for the current W12 suite now runs green across `112` observed rows with `expectation_mismatched=0`.
+6. W11 follow-back readiness is improved by explicit `TODAY`/`RAND` volatile candidates and `CELL`/`OFFSET` caller-context candidates.
+7. the non-`CELL` W12 slices are now `function-phase-complete` for the current implementation phase: `AVERAGE`, `COUNT`, `COUNTA`, `IFERROR`, `ROUND`, `TEXTJOIN`, `TODAY`, `RAND`, `OFFSET`, `AND`, `CLEAN`, `DATE`, `EXACT`, and `HSTACK`.
+8. the packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam discussion.

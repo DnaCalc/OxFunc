@@ -127,4 +127,20 @@ mod tests {
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
+
+    #[test]
+    fn eval_counta_direct_array_counts_empty_string_and_error() {
+        let got = eval_counta_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::EmptyCell,
+                ]])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
 }

@@ -121,4 +121,31 @@ mod tests {
             )))
         );
     }
+
+    #[test]
+    fn eval_iferror_does_not_touch_fallback_when_primary_is_not_error() {
+        let got = eval_iferror_surface(
+            &[CallArgValue::EmptyCell, CallArgValue::Reference(ReferenceLike {
+                kind: crate::value::ReferenceKind::A1,
+                target: "Z99".to_string(),
+            })],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_iferror_blank_fallback_becomes_zero_and_missing_fallback_is_value_error() {
+        let blank_fallback = eval_iferror_surface(
+            &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)), CallArgValue::EmptyCell],
+            &NoResolver,
+        );
+        assert_eq!(blank_fallback, Ok(EvalValue::Number(0.0)));
+
+        let missing_fallback = eval_iferror_surface(
+            &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)), CallArgValue::MissingArg],
+            &NoResolver,
+        );
+        assert_eq!(missing_fallback, Ok(EvalValue::Error(WorksheetErrorCode::Value)));
+    }
 }

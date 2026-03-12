@@ -79,4 +79,13 @@ mod tests {
         let got = eval_rand_surface(&[], &FixedRandomProvider { value: 1.5 });
         assert_eq!(got, Err(RandEvalError::ProviderOutOfRange(1.5)));
     }
+
+    #[test]
+    fn eval_rand_rejects_non_finite_and_negative_values() {
+        let got_nan = eval_rand_surface(&[], &FixedRandomProvider { value: f64::NAN });
+        assert!(matches!(got_nan, Err(RandEvalError::ProviderOutOfRange(v)) if v.is_nan()));
+
+        let got_negative = eval_rand_surface(&[], &FixedRandomProvider { value: -0.1 });
+        assert_eq!(got_negative, Err(RandEvalError::ProviderOutOfRange(-0.1)));
+    }
 }

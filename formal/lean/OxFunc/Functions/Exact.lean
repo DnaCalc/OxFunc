@@ -18,11 +18,31 @@ def exactMeta : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
 }
 
-def evalExactSeed (lhs rhs : String) : Bool := lhs = rhs
+def evalExactCore (lhs rhs : String) : Bool := lhs = rhs
 
 theorem evalExactSeed_case_sensitive :
-    evalExactSeed "Abc" "abc" = false := by
-  simp [evalExactSeed]
+    evalExactCore "Abc" "abc" = false := by
+  simp [evalExactCore]
+
+theorem evalExactSeed_numeric_textification :
+    evalExactCore "1" "1" = true := by
+  simp [evalExactCore]
+
+theorem evalExactSeed_logical_textification :
+    evalExactCore "TRUE" "TRUE" = true := by
+  simp [evalExactCore]
+
+theorem evalExactSeed_blank_equals_empty_string :
+    evalExactCore "" "" = true := by
+  simp [evalExactCore]
+
+theorem evalExactSeed_precomposed_vs_combining_distinct :
+    evalExactCore "é" ("e" ++ "\u0301") = false := by
+  decide
+
+theorem evalExactSeed_identical_emoji_equal :
+    evalExactCore "😀" "😀" = true := by
+  decide
 
 theorem exactMeta_profiles :
     exactMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter

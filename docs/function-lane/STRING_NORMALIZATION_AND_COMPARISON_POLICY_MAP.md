@@ -10,7 +10,9 @@ Scope note:
 ## 1. Equality Semantics
 1. `=` is case-insensitive for tested ASCII pair (`"A"="a"` -> `TRUE`).
 2. `EXACT` is case-sensitive (`EXACT("A","a")` -> `FALSE`).
-3. Tested accent, punctuation, and edge-space differences remained unequal under `=`.
+3. `EXACT` textifies numeric/logical scalars and treats blank cells as empty text in the current function-level follow-up.
+4. `EXACT` remains code-unit-sensitive in tested Unicode lanes: precomposed and combining forms remained distinct, while identical emoji strings remained equal.
+5. Tested accent, punctuation, and edge-space differences remained unequal under `=`.
 4. `FIND` and `SEARCH` diverge as expected:
    - `FIND` case-sensitive (error on `"a"` in `"A"`),
    - `SEARCH` case-insensitive (`1` on same pair).
@@ -30,7 +32,8 @@ Evidence:
 1. `TRIM` normalized repeated ASCII spaces (`" A   B "` -> `"A B"`).
 2. `TRIM` did not remove NBSP (`U+00A0`) or tab (`U+0009`) in tested rows.
 3. `CLEAN` removed low control char (`CHAR(1)`), but did not remove `CHAR(127)` in tested row.
-4. Zero-width space (`U+200B`) survived tested `TRIM` and `CLEAN` paths.
+4. W12 follow-up showed `CLEAN` also removes `CHAR(129)`, `141`, `143`, `144`, and `157`.
+5. Zero-width space (`U+200B`) survived tested `TRIM` and `CLEAN` paths.
 
 Evidence:
 1. `STR8-008..STR8-011`

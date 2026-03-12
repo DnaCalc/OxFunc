@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. logical fold over prepared scalar values is implemented.
-2. numeric-text coercion is exercised.
-3. richer Excel distinctions around logical-fold array-like inputs and non-scalar payloads remain outside the current seed.
+1. direct numeric/logical truthiness is implemented over prepared values.
+2. direct text yields `#VALUE!`, array-like text and blank cells are ignored, and the all-ignored lane returns `#VALUE!`.
+3. no known current-phase semantic gap remains in the admitted logical-fold lane, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/and_fn.rs`

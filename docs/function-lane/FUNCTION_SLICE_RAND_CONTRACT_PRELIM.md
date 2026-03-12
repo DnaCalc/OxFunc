@@ -57,8 +57,8 @@
 
 ## 9. W12 Seed Coverage
 1. explicit provider seam is implemented and restricted to finite values in `[0,1)`.
-2. no argument-admission ambiguity remains in the current seed.
-3. volatility and control-scenario evidence remain follow-back work for W11 registration-flag mapping.
+2. nullary admission and the worksheet-visible range contract (`0 <= RAND() < 1`) are pinned directly.
+3. volatility-registration follow-back remains a W11 seam concern, not a core `RAND` semantic gap, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/rand_fn.rs`

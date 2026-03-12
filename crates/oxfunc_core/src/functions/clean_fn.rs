@@ -27,12 +27,16 @@ pub enum CleanEvalError {
     Coercion(CoercionError),
 }
 
+pub fn excel_clean_removes_utf16_unit(u: u16) -> bool {
+    u < 32 || matches!(u, 129 | 141 | 143 | 144 | 157)
+}
+
 pub fn clean_kernel(text: &ExcelText) -> ExcelText {
     let filtered: Vec<u16> = text
         .utf16_code_units()
         .iter()
         .copied()
-        .filter(|u| *u >= 32)
+        .filter(|u| !excel_clean_removes_utf16_unit(*u))
         .collect();
     ExcelText::from_utf16_code_units(filtered)
 }
@@ -94,6 +98,21 @@ mod tests {
             clean_kernel(&input),
             ExcelText::from_utf16_code_units("ABC".encode_utf16().collect())
         );
+    }
+
+    #[test]
+    fn clean_kernel_removes_excel_c1_subset() {
+        let input = ExcelText::from_utf16_code_units(vec![129, 65, 141, 66, 143, 144, 157, 67]);
+        assert_eq!(
+            clean_kernel(&input),
+            ExcelText::from_utf16_code_units("ABC".encode_utf16().collect())
+        );
+    }
+
+    #[test]
+    fn clean_kernel_preserves_char_127_and_zero_width_space() {
+        let input = ExcelText::from_utf16_code_units(vec![127, 8203, 65]);
+        assert_eq!(clean_kernel(&input), input);
     }
 
     #[test]

@@ -42,7 +42,7 @@ For `U` surface rows:
    - `xltypeErr` -> worksheet error code,
    - `xltypeMissing` -> missing arg,
    - `xltypeNil` -> empty cell,
-   - `xltypeMulti` -> shape-only array marker.
+   - `xltypeMulti` -> full array payload translation.
 2. Reference lanes (generic):
    - if `preserve_refs=false`, `xltypeRef` / `xltypeSRef` are dereferenced through `xlCoerce` before shim translation.
    - if `preserve_refs=true`, reference-like tokens are passed through as `CallArgValue::Reference`.

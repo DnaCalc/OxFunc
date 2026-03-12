@@ -21,7 +21,7 @@ Record known limitations in the Rust XLL verification seam so they are not mista
       - `XMATCH`, `MATCH`, and scalar `XLOOKUP` rows match directly through `LOOKUP_XLL_BRIDGE_SCENARIO_MANIFEST_SEED.csv`,
       - `XLOOKUP` reference-return address and range-composition rows also match in the current bridge scope.
    - current baseline replay is also green for the admitted `SUM` aggregate rows (`direct scalar`, `array literal`, `reference-derived`) through `XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`.
-   - current baseline replay is also green for the admitted `TEXTJOIN` non-error flattening rows (array constant and dereferenced range inputs) through `XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`.
+   - current baseline replay is also green for admitted `TEXTJOIN`, `DATE`, `OFFSET`, and `HSTACK` rows through `XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv`.
    - remaining bounded lanes now include broader reference construction/info functions and general non-scalar payload coverage outside that manifest scope.
 4. Concurrency/thread-safety evidence is incomplete:
    - current probes show registration acceptance and scalar parity, not full scheduler or multithread execution behavior.
@@ -33,6 +33,9 @@ Record known limitations in the Rust XLL verification seam so they are not mista
 7. Post-evaluation format-hinting is not currently exercised through the XLL test seam:
    - caller-cell format mutation/application (for example `NOW` or `TODAY` entered into a `General` cell) is treated as an engine-surface responsibility above the core function result.
    - XLL verification may check value and recalc semantics for such functions, but absence of caller-format application in the XLL seam is not a function-semantic failure by itself.
+8. The bridge baseline can improve independently of core function closure:
+   - `CLEAN` extra-C1 removal and `DATE(1900,1,0)` are now parity-closed through the rebuilt XLL baseline,
+   - but that kind of bridge improvement does not change the rule that XLL limitations must be documented whenever they materially affect evidence claims.
 
 ## 4. Primary Evidence Records
 1. `docs/function-lane/XLL_ADDIN_BRIDGE_EXECUTION_RECORD.md`

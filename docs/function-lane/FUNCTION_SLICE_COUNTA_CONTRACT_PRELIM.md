@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. counts prepared non-empty values.
-2. dereferenced reference payloads count when preparation yields a value.
-3. array payload semantics and any richer aggregate source-class behavior remain explicit target bounds if empirical evidence proves they matter.
+1. counts every admitted non-empty value, including empty-string text and worksheet errors.
+2. missing args and empty cells are ignored across both direct and array-like inputs.
+3. current empirical baseline does not require any finer source-class split than direct-scalar versus array-like input, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/counta.rs`

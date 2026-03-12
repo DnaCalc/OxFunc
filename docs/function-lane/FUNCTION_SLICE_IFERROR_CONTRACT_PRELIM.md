@@ -57,9 +57,9 @@
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
 
 ## 9. W12 Seed Coverage
-1. lazy fallback preparation is implemented.
-2. primary non-error values pass through unchanged.
-3. broader Excel error-class and array-shape distinctions remain outside the current seed.
+1. lazy fallback preparation is implemented and empirically pinned.
+2. non-error primaries pass through unchanged; blank primaries become `0`; blank fallbacks become empty string; missing fallbacks become `#VALUE!`.
+3. no known current-phase semantic gap remains in the admitted binary lane, so this slice is `function-phase-complete` for the current reference baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/iferror.rs`

@@ -51,7 +51,7 @@ function Get-CompatibilityDescriptor {
 function Release-ComObjectSafe {
     param([object]$Obj)
     if ($null -ne $Obj) {
-        try { [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($Obj) } catch {}
+        try { [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($Obj) } catch {}
     }
 }
 
@@ -172,6 +172,9 @@ function Resolve-ValueExpression {
     }
     if ($raw -eq "FALSE") {
         return [PSCustomObject]@{ Kind = "scalar"; Value = $false }
+    }
+    if ($raw -eq "#N/A") {
+        return [PSCustomObject]@{ Kind = "formula"; Value = "=NA()" }
     }
 
     $parsedNumber = 0.0
@@ -670,6 +673,9 @@ try {
                 if ($resolved.Kind -eq "empty") {
                     $worksheet.Range($valueSpec.Cell).ClearContents() | Out-Null
                 }
+                elseif ($resolved.Kind -eq "formula") {
+                    $worksheet.Range($valueSpec.Cell).Formula = [string]$resolved.Value
+                }
                 else {
                     if ($resolved.Value -is [string]) {
                         $worksheet.Range($valueSpec.Cell).Value = [string]$resolved.Value
@@ -873,6 +879,8 @@ try {
             Close-WorkbookSafe -Workbook $workbook
             Release-ComObjectSafe -Obj $worksheet
             Release-ComObjectSafe -Obj $workbook
+            [GC]::Collect()
+            [GC]::WaitForPendingFinalizers()
         }
     }
 

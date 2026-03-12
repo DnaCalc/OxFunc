@@ -32,7 +32,8 @@
 
 ## 5. Core Outcome Model
 1. admitted call removes UTF-16 code units below decimal `32`.
-2. printable characters and code units `>= 32` are preserved.
+2. in the current empirical baseline, it also removes the observed extra C1 subset `129`, `141`, `143`, `144`, and `157`.
+3. `CHAR(127)`, zero-width space (`U+200B`), and NBSP (`U+00A0`) are preserved in the current empirical baseline.
 3. coercion failures terminate evaluation with error.
 
 ## 6. Post-call Adaptation Policy
@@ -54,12 +55,19 @@
    - `W12-MODERATE-BL-20260309`
 3. policy decision anchors:
    - `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (note 5)
+   - `docs/function-lane/TEXT_FUNCTION_EMPIRICAL_EXPANSION_NOTES.md`
    - `docs/function-lane/W12_EXECUTION_RECORD.md`
+4. current status rationale:
+   - function-phase-complete for the current reference Excel baseline,
+   - ASCII control removal, the observed extra C1 removal subset, and the non-removal of `CHAR(127)` / `U+200B` / `U+00A0` are now explicitly evidenced,
+   - current XLL bridge replay is now parity-closed on the extra C1 subset after rebuilding the bridge against the closeout core semantics,
+   - remaining locale/version expansion is orthogonal validation work rather than a known current-phase semantic gap.
 
 ## 9. W12 Seed Coverage
-1. low ASCII control-strip behavior is implemented.
-2. prepared-text helper reuse is explicit in the seed.
-3. broader Unicode and control-character policy remains bounded to the current low-code-unit seed.
+1. low ASCII control-strip behavior is implemented and replayed directly.
+2. prepared-text helper reuse is explicit in the slice.
+3. the observed extra C1 removal subset (`129`, `141`, `143`, `144`, `157`) is now part of the admitted current-phase behavior claim.
+4. `CHAR(127)`, zero-width space, and NBSP preservation are explicitly evidenced in the current baseline.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/clean_fn.rs`
