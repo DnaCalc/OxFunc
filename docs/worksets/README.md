@@ -18,6 +18,7 @@ Kickoff worksets:
 10. `W010_TEN_FUNCTION_MIXED_SEAMS.md` (W10)
 11. `W011_XLL_REGISTRATION_FLAGS_EVIDENCE.md` (W11)
 12. `W012_MODERATE_FUNCTION_EXPANSION.md` (W12)
+13. `W013_DECEPTIVELY_SIMPLE_BOUNDARY_FUNCTIONS.md` (W13)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.

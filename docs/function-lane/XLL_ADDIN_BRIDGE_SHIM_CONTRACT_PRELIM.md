@@ -54,10 +54,14 @@ For `U` surface rows:
    - scalar worksheet values,
    - `xltypeMulti` array payloads in admitted lanes,
    - admitted reference results returned as `xltypeSRef` or `xltypeRef` when the shim can preserve that identity.
-6. Registration shaping policy for generated U rows:
+6. Manual probe lane for raw-return characterization:
+   - the shim can return raw `xltypeNil` scalars and `xltypeMulti` payloads containing `xltypeNil` elements for dedicated evidence functions.
+   - current baseline evidence shows scalar raw `xltypeNil` is normalized by Excel to numeric-zero semantics before outer argument binding and worksheet publication.
+   - raw `xltypeNil` elements inside arrays can remain visible to an outer XLL function as `empty_cell` element state until scalarization/publication.
+7. Registration shaping policy for generated U rows:
    - worksheet-callable `type_text` is capped to the current Excel baseline limit (`len <= 255`),
    - high-arity UI-only `arg_names` metadata is omitted when it would exceed Excel's practical dialog limit.
-7. Fixed-width U call normalization:
+8. Fixed-width U call normalization:
    - trailing `xltypeMissing` arguments are trimmed back to the effective call arity before core dispatch,
    - internal missing arguments are preserved,
    - this keeps variadic worksheet calls such as `TEXTJOIN(...)` aligned with Excel's actual supplied-argument count.

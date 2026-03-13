@@ -48,6 +48,10 @@ Capture admissible evidence and unresolved design questions for Workset 3:
    - cap at `32767` UTF-16 code units,
    - interop ingress truncation semantics differ from formula overflow semantics,
    - dangling-surrogate tail states can be observed at boundaries.
+8. W9 XLL nil-propagation probe indicates raw-return and published-result domains should be separated:
+   - raw scalar `xltypeNil` is admitted at XLL return boundary,
+   - but it normalizes to numeric-zero semantics before outer argument binding,
+   - raw `xltypeNil` array elements can persist as `empty_cell`-like element state inside returned arrays until scalarization/publication.
 
 ## 4. Open Questions (Need Empirical Resolution)
 1. Can formulas/materialization paths expose distinct behavior for "empty" vs "omitted" in all function families?
@@ -56,6 +60,7 @@ Capture admissible evidence and unresolved design questions for Workset 3:
 4. How should spilled-array error metadata be represented in `ExtendedValue` wrappers?
 5. What exact value shape does a function observe when passed a 3D reference in supported functions?
 6. Should OxFunc internal text representation be UTF-16 code units end-to-end, or adapter-bounded with canonical internal normalization?
+7. Should W3 split `EvalValue` into explicit `RawFunctionReturn` and `PublishedFormulaResult` layers after the `xltypeNil` probe evidence?
 
 ## 5. Immediate TODOs
 1. Keep value-tag algebra aligned with W7 text findings in Rust/Lean mirrors.
@@ -74,12 +79,14 @@ Artifacts produced:
    - `W7-STR-BL-20260305` (consumed feed)
 
 Baseline policy decisions (provisional):
-1. `EvalValue` excludes `missing_arg`, `empty_cell`, and `null_like`.
+1. `PublishedFormulaResult` excludes `missing_arg`, `empty_cell`, and `null_like`.
 2. `missing_arg` is call-boundary only.
-3. `empty_cell` is cell/call boundary and not a baseline eval-result tag.
+3. `empty_cell` is cell/call boundary and not a baseline published-result tag.
 4. `null_like` remains reserved and unadmitted pending direct evidence.
 5. 3D references are modeled under `reference_like` with subtype metadata.
 6. text boundary model tracks UTF-16 code units with `32767` cap and explicit dangling-surrogate possibility.
+7. raw scalar `xltypeNil` is now evidenced as an interop return token, but not as a stable outer-observable published scalar formula value.
+8. raw `xltypeNil` array elements are evidenced as surviving inside intermediate arrays even though spilled/scalarized publication collapses them to numeric-zero semantics.
 
 ## 7. Remaining W3 Closure Tasks
 1. Expand empirical anchors for disputed categories (`null_like`, modern error transferability).

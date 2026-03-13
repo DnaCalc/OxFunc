@@ -32,11 +32,18 @@ inductive ValueTag where
 
 inductive ValueBoundary where
   | cellContent
-  | evalResult
+  | rawFunctionReturn
+  | publishedFormulaResult
   | callArg
   | referenceDomain
   | extendedDomain
   deriving DecidableEq, Repr
+
+/- `publishedFormulaResult` models the current OxFunc result domain. It is intentionally
+   narrower than the broadest raw interop/UDF return domain. `W9-XLL-NIL-20260312` showed that
+   raw scalar `xltypeNil` can exist at the XLL return boundary even though it normalizes to
+   numeric-zero semantics before outer argument binding and worksheet publication. Raw array nil
+   elements can survive longer inside intermediate arrays. -/
 
 abbrev Utf16CodeUnit := UInt16
 
@@ -66,13 +73,21 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .cellContent, .logical => true
   | .cellContent, .error => true
   | .cellContent, .emptyCell => true
-  | .evalResult, .number => true
-  | .evalResult, .text => true
-  | .evalResult, .logical => true
-  | .evalResult, .error => true
-  | .evalResult, .array => true
-  | .evalResult, .referenceLike => true
-  | .evalResult, .lambdaValue => true
+  | .rawFunctionReturn, .number => true
+  | .rawFunctionReturn, .text => true
+  | .rawFunctionReturn, .logical => true
+  | .rawFunctionReturn, .error => true
+  | .rawFunctionReturn, .array => true
+  | .rawFunctionReturn, .referenceLike => true
+  | .rawFunctionReturn, .emptyCell => true
+  | .rawFunctionReturn, .lambdaValue => true
+  | .publishedFormulaResult, .number => true
+  | .publishedFormulaResult, .text => true
+  | .publishedFormulaResult, .logical => true
+  | .publishedFormulaResult, .error => true
+  | .publishedFormulaResult, .array => true
+  | .publishedFormulaResult, .referenceLike => true
+  | .publishedFormulaResult, .lambdaValue => true
   | .callArg, .number => true
   | .callArg, .text => true
   | .callArg, .logical => true
@@ -93,10 +108,16 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .extendedDomain, .extendedWrapper => true
   | _, _ => false
 
-theorem eval_disallows_missing_empty_null :
-    boundaryAllows .evalResult .missingArg = false ∧
-    boundaryAllows .evalResult .emptyCell = false ∧
-    boundaryAllows .evalResult .nullLike = false := by
+theorem published_formula_result_disallows_missing_empty_null :
+    boundaryAllows .publishedFormulaResult .missingArg = false ∧
+    boundaryAllows .publishedFormulaResult .emptyCell = false ∧
+    boundaryAllows .publishedFormulaResult .nullLike = false := by
+  simp [boundaryAllows]
+
+theorem raw_function_return_allows_empty_cell_but_not_missing_or_null :
+    boundaryAllows .rawFunctionReturn .emptyCell = true ∧
+    boundaryAllows .rawFunctionReturn .missingArg = false ∧
+    boundaryAllows .rawFunctionReturn .nullLike = false := by
   simp [boundaryAllows]
 
 theorem truncateUtf16ToCellCap_within :

@@ -181,6 +181,15 @@ struct ExperimentalRegistrationSpec {
     macro_type: i32,
 }
 
+#[derive(Clone, Copy)]
+struct ManualRegistrationSpec {
+    export_name: &'static str,
+    type_text: &'static str,
+    function_name: &'static str,
+    arg_names: &'static str,
+    macro_type: i32,
+}
+
 const FLAG_EXPERIMENT_REGISTRATION_SPECS: &[ExperimentalRegistrationSpec] = &[
     ExperimentalRegistrationSpec {
         export_name: "OX_NOW",
@@ -222,6 +231,44 @@ const FLAG_EXPERIMENT_REGISTRATION_SPECS: &[ExperimentalRegistrationSpec] = &[
         type_text: "QUU#",
         function_name: "ox_INDIRECT_F_MACRO",
         arg_names: "arg1,arg2",
+        macro_type: 1,
+    },
+];
+
+const MANUAL_PROBE_REGISTRATION_SPECS: &[ManualRegistrationSpec] = &[
+    ManualRegistrationSpec {
+        export_name: "OX_PROBE_RET_NIL",
+        type_text: "Q",
+        function_name: "ox_PROBE_RET_NIL",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_PROBE_ECHO",
+        type_text: "QU",
+        function_name: "ox_PROBE_ECHO",
+        arg_names: "arg1",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_PROBE_DESCRIBE",
+        type_text: "QU",
+        function_name: "ox_PROBE_DESCRIBE",
+        arg_names: "arg1",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_PROBE_RET_ARRAY_NIL",
+        type_text: "Q",
+        function_name: "ox_PROBE_RET_ARRAY_NIL",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_PROBE_ARRAY_DESC",
+        type_text: "QU",
+        function_name: "ox_PROBE_ARRAY_DESC",
+        arg_names: "arg1",
         macro_type: 1,
     },
 ];
@@ -352,6 +399,11 @@ fn make_xloper_nil() -> XLOPER12 {
         val: XLOPER12Value { w: 0 },
         xltype: XLTYPE_NIL,
     }
+}
+
+fn make_xloper_text(s: &str) -> XLOPER12 {
+    let units: Vec<u16> = s.encode_utf16().collect();
+    make_xloper_str_from_utf16(&units)
 }
 
 struct OwnedReferenceOper {
@@ -884,6 +936,19 @@ fn register_all(module_path: &str) -> bool {
         .all(|spec| register_one(module_path, *spec))
 }
 
+fn register_manual_probe_aliases(module_path: &str) -> bool {
+    MANUAL_PROBE_REGISTRATION_SPECS.iter().all(|spec| {
+        register_one_dynamic(
+            module_path,
+            spec.export_name,
+            spec.type_text,
+            spec.function_name,
+            spec.arg_names,
+            spec.macro_type,
+        )
+    })
+}
+
 fn current_module_path() -> Option<String> {
     let mut module: HMODULE = std::ptr::null_mut();
     let ok = unsafe {
@@ -1037,6 +1102,114 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
         Ok(v) => v,
         Err(code) => EvalValue::Error(code),
     }
+}
+
+fn describe_eval_value(value: &EvalValue) -> String {
+    match value {
+        EvalValue::Number(_) => "number".to_string(),
+        EvalValue::Text(text) => {
+            if text.utf16_code_units().is_empty() {
+                "text(\"\")".to_string()
+            } else {
+                "text".to_string()
+            }
+        }
+        EvalValue::Logical(_) => "logical".to_string(),
+        EvalValue::Error(code) => format!("error({code:?})"),
+        EvalValue::Reference(reference) => {
+            format!("reference({:?}:{})", reference.kind, reference.target)
+        }
+        EvalValue::Array(array) => {
+            let shape = array.shape();
+            let parts = array
+                .iter_row_major()
+                .map(|cell| match cell {
+                    ArrayCellValue::Number(_) => "number".to_string(),
+                    ArrayCellValue::Text(text) => {
+                        if text.utf16_code_units().is_empty() {
+                            "text(\"\")".to_string()
+                        } else {
+                            "text".to_string()
+                        }
+                    }
+                    ArrayCellValue::Logical(_) => "logical".to_string(),
+                    ArrayCellValue::Error(code) => format!("error({code:?})"),
+                    ArrayCellValue::EmptyCell => "empty_cell".to_string(),
+                })
+                .collect::<Vec<_>>()
+                .join(",");
+            format!("array({}x{})[{}]", shape.rows, shape.cols, parts)
+        }
+        EvalValue::Lambda(_) => "lambda".to_string(),
+    }
+}
+
+fn describe_call_arg(arg: &CallArgValue) -> String {
+    match arg {
+        CallArgValue::MissingArg => "missing_arg".to_string(),
+        CallArgValue::EmptyCell => "empty_cell".to_string(),
+        CallArgValue::Reference(reference) => {
+            format!("reference({:?}:{})", reference.kind, reference.target)
+        }
+        CallArgValue::Eval(value) => describe_eval_value(value),
+    }
+}
+
+fn probe_echo(raw: *mut XLOPER12) -> *mut XLOPER12 {
+    if raw.is_null() {
+        return alloc_result(make_xloper_err(XLERR_VALUE));
+    }
+
+    let ty = unsafe { (*raw).xltype & XLTYPE_MASK };
+    match ty {
+        XLTYPE_NIL => alloc_result(make_xloper_nil()),
+        XLTYPE_NUM => alloc_result(make_xloper_num(unsafe { (*raw).val.num })),
+        XLTYPE_INT => alloc_result(make_xloper_num(unsafe { (*raw).val.w as f64 })),
+        XLTYPE_BOOL => alloc_result(make_xloper_bool(unsafe { (*raw).val.xbool != 0 })),
+        XLTYPE_ERR => alloc_result(make_xloper_err(unsafe { (*raw).val.err })),
+        XLTYPE_STR => match call_arg_from_xloper(raw, false) {
+            CallArgValue::Eval(EvalValue::Text(text)) => {
+                alloc_result(make_xloper_str_from_utf16(text.utf16_code_units()))
+            }
+            _ => alloc_result(make_xloper_err(XLERR_VALUE)),
+        },
+        XLTYPE_MULTI => match call_arg_from_xloper(raw, false) {
+            CallArgValue::Eval(EvalValue::Array(array)) => {
+                alloc_result(eval_value_to_xloper(EvalValue::Array(array)))
+            }
+            _ => alloc_result(make_xloper_err(XLERR_VALUE)),
+        },
+        XLTYPE_SREF | XLTYPE_REF => match call_arg_from_xloper(raw, true) {
+            CallArgValue::Reference(reference) => {
+                alloc_result(eval_value_to_xloper(EvalValue::Reference(reference)))
+            }
+            _ => alloc_result(make_xloper_err(XLERR_VALUE)),
+        },
+        _ => alloc_result(make_xloper_err(XLERR_VALUE)),
+    }
+}
+
+fn probe_describe(raw: *mut XLOPER12) -> *mut XLOPER12 {
+    let description = describe_call_arg(&call_arg_from_xloper(raw, true));
+    alloc_result(make_xloper_text(&description))
+}
+
+fn probe_ret_array_nil() -> *mut XLOPER12 {
+    let items = vec![
+        make_xloper_nil(),
+        make_xloper_num(1.0),
+        make_xloper_text("x"),
+        make_xloper_nil(),
+    ];
+    alloc_result_multi(2, 2, items)
+}
+
+fn probe_array_desc(raw: *mut XLOPER12) -> *mut XLOPER12 {
+    let description = match call_arg_from_xloper(raw, false) {
+        CallArgValue::Eval(EvalValue::Array(array)) => describe_eval_value(&EvalValue::Array(array)),
+        other => describe_call_arg(&other),
+    };
+    alloc_result(make_xloper_text(&description))
 }
 
 fn raw_arg_is_missing(raw: *mut XLOPER12) -> bool {
@@ -1233,11 +1406,39 @@ fn eval_q_nullary_number_export(spec: QNullaryNumberExportSpec) -> f64 {
 }
 
 #[unsafe(no_mangle)]
+pub extern "system" fn OX_PROBE_RET_NIL() -> *mut XLOPER12 {
+    alloc_result(make_xloper_nil())
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_PROBE_ECHO(arg1: *mut XLOPER12) -> *mut XLOPER12 {
+    probe_echo(arg1)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_PROBE_DESCRIBE(arg1: *mut XLOPER12) -> *mut XLOPER12 {
+    probe_describe(arg1)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_PROBE_RET_ARRAY_NIL() -> *mut XLOPER12 {
+    probe_ret_array_nil()
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_PROBE_ARRAY_DESC(arg1: *mut XLOPER12) -> *mut XLOPER12 {
+    probe_array_desc(arg1)
+}
+
+#[unsafe(no_mangle)]
 pub extern "system" fn xlAutoOpen() -> i32 {
     let Some(module_path) = current_module_path() else {
         return 0;
     };
     if !register_all(&module_path) {
+        return 0;
+    }
+    if !register_manual_probe_aliases(&module_path) {
         return 0;
     }
     if flag_experiments_enabled() && !register_flag_experiment_aliases(&module_path) {

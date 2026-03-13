@@ -1,0 +1,16 @@
+scenario_id,status,lane,setup_values,formula,observe_range,notes
+XLL-NIL-S01,ready,scalar_direct,,=ox_PROBE_RET_NIL(),B2,Direct scalar nil return to worksheet cell.
+XLL-NIL-S02,ready,scalar_nested_custom,,=ox_PROBE_DESCRIBE(ox_PROBE_RET_NIL()),B2,Nested custom description of nil-returning inner function.
+XLL-NIL-S03,ready,scalar_nested_type,,=TYPE(ox_PROBE_RET_NIL()),B2,Built-in TYPE on nil-returning inner function.
+XLL-NIL-S04,ready,scalar_nested_n,,=N(ox_PROBE_RET_NIL()),B2,Built-in N on nil-returning inner function.
+XLL-NIL-S05,ready,scalar_nested_t,,=T(ox_PROBE_RET_NIL()),B2,Built-in T on nil-returning inner function.
+XLL-NIL-S06,ready,scalar_nested_echo,,=ox_PROBE_DESCRIBE(ox_PROBE_ECHO(ox_PROBE_RET_NIL())),B2,Echo nil through an outer custom function and describe the observed outer argument.
+XLL-NIL-S07,ready,scalar_operator_add,,=1+ox_PROBE_RET_NIL(),B2,Built-in operator on nil-returning inner function.
+XLL-NIL-A01,ready,array_direct,,=ox_PROBE_RET_ARRAY_NIL(),B2:C3,Direct array return containing nil elements.
+XLL-NIL-A02,ready,array_describe_outer,,=ox_PROBE_DESCRIBE(ox_PROBE_RET_ARRAY_NIL()),B2,Outer custom description of returned array argument.
+XLL-NIL-A03,ready,array_desc_custom,,=ox_PROBE_ARRAY_DESC(ox_PROBE_RET_ARRAY_NIL()),B2,Custom array-element descriptor on returned array.
+XLL-NIL-A04,ready,array_index_nil,,"=ox_PROBE_DESCRIBE(INDEX(ox_PROBE_RET_ARRAY_NIL(),1,1))",B2,Describe INDEX-selected nil element from returned array.
+XLL-NIL-A05,ready,array_index_number,,"=ox_PROBE_DESCRIBE(INDEX(ox_PROBE_RET_ARRAY_NIL(),1,2))",B2,Describe INDEX-selected number element from returned array.
+XLL-NIL-A06,ready,array_type_nil,,"=TYPE(INDEX(ox_PROBE_RET_ARRAY_NIL(),1,1))",B2,Built-in TYPE on INDEX-selected nil element.
+XLL-NIL-A07,ready,array_n_nil,,"=N(INDEX(ox_PROBE_RET_ARRAY_NIL(),1,1))",B2,Built-in N on INDEX-selected nil element.
+XLL-NIL-A08,ready,array_t_nil,,"=T(INDEX(ox_PROBE_RET_ARRAY_NIL(),1,1))",B2,Built-in T on INDEX-selected nil element.

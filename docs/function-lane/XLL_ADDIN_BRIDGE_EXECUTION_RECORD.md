@@ -36,6 +36,10 @@ Outputs:
    - `.tmp/xll-arity-fix/oxfunc-xll-bridge-results.csv`
    - `.tmp/textjoin-closeout/oxfunc-xll-bridge-results.csv`
    - `.tmp/exact-clean-closeout/oxfunc-xll-bridge-results.csv`
+3. Dedicated nil-propagation follow-up:
+   - `docs/function-lane/XLL_NIL_PROPAGATION_EXECUTION_RECORD.md`
+   - `docs/function-lane/XLL_NIL_PROPAGATION_SCENARIO_MANIFEST_SEED.csv`
+   - `.tmp/xll-nil-probe-results.csv`
 
 ## 3. Gate Tracking
 ### G1 - Bridge Scaffold Closure
@@ -99,6 +103,10 @@ Outputs:
 8. Rebuilding the XLL after the W12 closeout removed two bridge-only mismatches that had looked like semantic gaps from the outside:
    - `DATE(1900,1,0)` now matches built-in Excel through `ox_DATE(...)`,
    - and the extra-C1 `CLEAN` row now also matches built-in Excel through `ox_CLEAN(...)`.
+9. Raw `xltypeNil` behavior is now better characterized at the bridge boundary:
+   - direct scalar raw `xltypeNil` returns publish as numeric zero,
+   - outer functions/operators observe the scalarized result as number/zero rather than `empty_cell`,
+   - raw `xltypeNil` array elements can still survive inside returned arrays until scalarization/publication.
 
 ## 5. Follow-on Bounded Lanes
 1. registration-flag mapping (`!`, `$`, `#`) stays deferred from profile-derived generation until W11 evidence closure.

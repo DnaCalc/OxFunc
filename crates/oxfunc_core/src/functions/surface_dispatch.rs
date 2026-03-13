@@ -1,6 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
 use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
+use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
 use crate::functions::and_fn::{eval_and_surface, map_and_error_to_ws};
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
 use crate::functions::cell::{eval_cell_surface, map_cell_error_to_ws};
@@ -16,6 +17,7 @@ use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
 use crate::functions::isnumber::{eval_isnumber_surface, map_isnumber_error_to_ws};
 use crate::functions::match_fn::{eval_match_surface, map_match_error_to_ws};
+use crate::functions::n_fn::{eval_n_surface, map_n_error_to_ws};
 use crate::functions::now_fn::{NowProvider, eval_now_surface, map_now_error_to_ws};
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
@@ -23,9 +25,12 @@ use crate::functions::pi::eval_pi;
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
 use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, round_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
+use crate::functions::sin::{eval_sin_surface, map_sin_error_to_ws};
 use crate::functions::sum::{eval_sum_surface, map_sum_error_to_ws};
+use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{TodayProvider, eval_today_surface, map_today_error_to_ws};
+use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
 use crate::functions::xlookup::{eval_xlookup_surface, map_xlookup_error_to_ws};
 use crate::functions::xmatch::XmatchEvalError;
 use crate::functions::xmatch_surface::eval_xmatch_surface_value;
@@ -34,6 +39,7 @@ use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalError, EvalValue, Value, WorksheetErrorCode};
 
 pub const FUNC_ID_ABS: &str = "FUNC.ABS";
+pub const FUNC_ID_ASIN: &str = "FUNC.ASIN";
 pub const FUNC_ID_AND: &str = "FUNC.AND";
 pub const FUNC_ID_AVERAGE: &str = "FUNC.AVERAGE";
 pub const FUNC_ID_CELL: &str = "FUNC.CELL";
@@ -49,6 +55,7 @@ pub const FUNC_ID_INDEX: &str = "FUNC.INDEX";
 pub const FUNC_ID_INDIRECT: &str = "FUNC.INDIRECT";
 pub const FUNC_ID_ISNUMBER: &str = "FUNC.ISNUMBER";
 pub const FUNC_ID_MATCH: &str = "FUNC.MATCH";
+pub const FUNC_ID_N: &str = "FUNC.N";
 pub const FUNC_ID_NOW: &str = "FUNC.NOW";
 pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
 pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
@@ -56,9 +63,12 @@ pub const FUNC_ID_PI: &str = "FUNC.PI";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
 pub const FUNC_ID_ROUND: &str = "FUNC.ROUND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
+pub const FUNC_ID_SIN: &str = "FUNC.SIN";
 pub const FUNC_ID_SUM: &str = "FUNC.SUM";
+pub const FUNC_ID_T: &str = "FUNC.T";
 pub const FUNC_ID_TEXTJOIN: &str = "FUNC.TEXTJOIN";
 pub const FUNC_ID_TODAY: &str = "FUNC.TODAY";
+pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
 pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
 pub const FUNC_ID_XMATCH: &str = "FUNC.XMATCH";
 
@@ -147,6 +157,7 @@ fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
 pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfile> {
     match function_id {
         FUNC_ID_ABS => Some(crate::functions::abs::ABS_META.arg_preparation_profile),
+        FUNC_ID_ASIN => Some(crate::functions::asin::ASIN_META.arg_preparation_profile),
         FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
         FUNC_ID_AVERAGE => Some(crate::functions::average::AVERAGE_META.arg_preparation_profile),
         FUNC_ID_CELL => Some(crate::functions::cell::CELL_META.arg_preparation_profile),
@@ -162,6 +173,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_INDIRECT => Some(crate::functions::indirect::INDIRECT_META.arg_preparation_profile),
         FUNC_ID_ISNUMBER => Some(crate::functions::isnumber::ISNUMBER_META.arg_preparation_profile),
         FUNC_ID_MATCH => Some(crate::functions::match_fn::MATCH_META.arg_preparation_profile),
+        FUNC_ID_N => Some(crate::functions::n_fn::N_META.arg_preparation_profile),
         FUNC_ID_NOW => Some(crate::functions::now_fn::NOW_META.arg_preparation_profile),
         FUNC_ID_OFFSET => Some(crate::functions::offset::OFFSET_META.arg_preparation_profile),
         FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
@@ -169,9 +181,12 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_RAND => Some(crate::functions::rand_fn::RAND_META.arg_preparation_profile),
         FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
         FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
+        FUNC_ID_SIN => Some(crate::functions::sin::SIN_META.arg_preparation_profile),
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
+        FUNC_ID_T => Some(crate::functions::t_fn::T_META.arg_preparation_profile),
         FUNC_ID_TEXTJOIN => Some(crate::functions::textjoin::TEXTJOIN_META.arg_preparation_profile),
         FUNC_ID_TODAY => Some(crate::functions::today_fn::TODAY_META.arg_preparation_profile),
+        FUNC_ID_TYPE => Some(crate::functions::type_fn::TYPE_META.arg_preparation_profile),
         FUNC_ID_XLOOKUP => Some(crate::functions::xlookup::XLOOKUP_META.arg_preparation_profile),
         FUNC_ID_XMATCH => Some(crate::functions::xmatch::XMATCH_META.arg_preparation_profile),
         _ => None,
@@ -187,6 +202,7 @@ pub fn eval_surface_value_call(
 ) -> Result<EvalValue, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_ABS => eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e)),
+        FUNC_ID_ASIN => eval_asin_surface(args, resolver).map_err(|e| map_asin_error_to_ws(&e)),
         FUNC_ID_AND => eval_and_surface(args, resolver).map_err(|e| map_and_error_to_ws(&e)),
         FUNC_ID_AVERAGE => {
             eval_average_surface(args, resolver).map_err(|e| map_average_error_to_ws(&e))
@@ -220,6 +236,7 @@ pub fn eval_surface_value_call(
         FUNC_ID_ISNUMBER => {
             eval_isnumber_surface(args, resolver).map_err(|e| map_isnumber_error_to_ws(&e))
         }
+        FUNC_ID_N => eval_n_surface(args, resolver).map_err(|e| map_n_error_to_ws(&e)),
         FUNC_ID_NOW => {
             let serial = now_serial.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedNowProvider { serial };
@@ -259,7 +276,9 @@ pub fn eval_surface_value_call(
         FUNC_ID_SEQUENCE => {
             eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
         }
+        FUNC_ID_SIN => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
         FUNC_ID_OP_ADD => eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e)),
+        FUNC_ID_T => eval_t_surface(args, resolver).map_err(|e| map_t_error_to_ws(&e)),
         FUNC_ID_TEXTJOIN => {
             eval_textjoin_surface(args, resolver).map_err(|e| map_textjoin_error_to_ws(&e))
         }
@@ -268,6 +287,7 @@ pub fn eval_surface_value_call(
             let provider = FixedNowProvider { serial };
             eval_today_surface(args, &provider).map_err(|e| map_today_error_to_ws(&e))
         }
+        FUNC_ID_TYPE => eval_type_surface(args, resolver).map_err(|e| map_type_error_to_ws(&e)),
         FUNC_ID_XMATCH => {
             if args.len() < 2 {
                 return Err(WorksheetErrorCode::Value);
@@ -297,6 +317,7 @@ pub fn eval_surface_q_unary_number(
 ) -> Result<f64, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_ABS => Ok(abs_kernel(value)),
+        FUNC_ID_SIN => Ok(crate::functions::sin::sin_kernel(value)),
         _ => Err(WorksheetErrorCode::Value),
     }
 }

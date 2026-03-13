@@ -164,4 +164,7 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 5. `W12` moderate function expansion packet:
    - `docs/worksets/W012_MODERATE_FUNCTION_EXPANSION.md`
    - goal: implement a moderate fifteen-function batch (`AVERAGE`, `COUNT`, `COUNTA`, `IFERROR`, `ROUND`, `TEXTJOIN`, `TODAY`, `RAND`, `OFFSET`, `CELL`, `AND`, `CLEAN`, `DATE`, `EXACT`, `HSTACK`), with an explicit empirical-first probe on `CELL`, then feed stronger follow-back evidence into W11.
+6. `W13` deceptively simple boundary functions:
+   - `docs/worksets/W013_DECEPTIVELY_SIMPLE_BOUNDARY_FUNCTIONS.md`
+   - goal: run one packet over apparently simple functions (`SIN`, `ASIN`, `N`, `T`, `TYPE`, `VALUE`, `ROW`, `COLUMN`, `TEXT`, `DOLLAR`, `FIXED`) to settle coercion, caller-context, type-classification, and locale/format-parser seams.
 

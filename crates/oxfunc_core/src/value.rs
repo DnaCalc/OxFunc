@@ -256,7 +256,8 @@ pub enum ExtendedValue {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ValueBoundary {
     CellContent,
-    EvalResult,
+    RawFunctionReturn,
+    PublishedFormulaResult,
     CallArg,
     ReferenceDomain,
     ExtendedDomain,
@@ -273,7 +274,18 @@ impl ValueBoundary {
                     | ValueTag::Error
                     | ValueTag::EmptyCell
             ),
-            Self::EvalResult => matches!(
+            Self::RawFunctionReturn => matches!(
+                tag,
+                ValueTag::Number
+                    | ValueTag::Text
+                    | ValueTag::Logical
+                    | ValueTag::Error
+                    | ValueTag::Array
+                    | ValueTag::ReferenceLike
+                    | ValueTag::EmptyCell
+                    | ValueTag::LambdaValue
+            ),
+            Self::PublishedFormulaResult => matches!(
                 tag,
                 ValueTag::Number
                     | ValueTag::Text
@@ -319,10 +331,17 @@ mod tests {
     };
 
     #[test]
-    fn eval_boundary_excludes_missing_empty_and_null() {
-        assert!(!ValueBoundary::EvalResult.allows(ValueTag::MissingArg));
-        assert!(!ValueBoundary::EvalResult.allows(ValueTag::EmptyCell));
-        assert!(!ValueBoundary::EvalResult.allows(ValueTag::NullLike));
+    fn published_formula_result_excludes_missing_empty_and_null() {
+        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::MissingArg));
+        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::EmptyCell));
+        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::NullLike));
+    }
+
+    #[test]
+    fn raw_function_return_allows_empty_cell_but_not_missing_or_null() {
+        assert!(ValueBoundary::RawFunctionReturn.allows(ValueTag::EmptyCell));
+        assert!(!ValueBoundary::RawFunctionReturn.allows(ValueTag::MissingArg));
+        assert!(!ValueBoundary::RawFunctionReturn.allows(ValueTag::NullLike));
     }
 
     #[test]

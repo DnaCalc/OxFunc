@@ -185,6 +185,9 @@ Candidate `FormatHint` intent:
 2. canonical current examples are `NOW()` and `TODAY()` entered into a caller cell previously formatted as `General`
 3. FEC/F3E or the surrounding engine surface can decide whether and how to apply the hint
 4. XLL verification may legitimately omit this application step while still preserving the semantic characterization in OxFunc
+5. raw-return normalization should remain explicit:
+   - current XLL nil-propagation evidence shows scalar raw `xltypeNil` collapses to numeric-zero semantics before outer argument binding,
+   - but raw `xltypeNil` array elements can remain as `empty_cell`-like element state inside intermediate arrays until scalarization/publication
 
 ### 5.6 Aggregate Design Test
 Aggregate families are the main current design test for this boundary.
@@ -242,6 +245,7 @@ Questions OxFml should answer explicitly:
 3. how are spilled results represented distinctly from array literals
 4. what stable identity, if any, is guaranteed for reference-returning expressions
 5. which boundary owns scalar-to-text and scalar-to-number normalization decisions
+6. should OxFml expose both `RawFunctionReturn` and `PublishedFormulaResult` instead of forcing one result universe for all contexts
 
 ## 6. Reference-Semantics Pressure
 This is not only an aggregate issue.
@@ -278,6 +282,20 @@ This matters for at least:
 2. `EXACT`
 3. `CLEAN`
 4. later formatting-sensitive functions
+
+## 9. Locale And Format Pressure
+W13 makes the next substrate requirement explicit:
+1. `VALUE` needs locale/profile-sensitive text-to-value parsing
+2. `TEXT`, `DOLLAR`, and `FIXED` need Excel format-code rendering plus locale-profile symbols
+3. workbook date-system selection is adjacent and should travel through the same evaluation-context world
+
+So OxFml/FEC should own:
+1. locale/profile identity
+2. workbook date system
+3. format-code language definition and rendering
+4. locale-sensitive parse services
+
+OxFunc should consume those through explicit declared facilities, not by embedding ad hoc locale/format logic in function kernels.
 
 ## 9. Current OxFunc View
 Current OxFunc evidence suggests that the following distinctions should be first-class in OxFml interfaces:

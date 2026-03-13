@@ -26,6 +26,10 @@ powershell -File tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1 -Manifest do
 ```powershell
 powershell -File tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1 -Manifest docs/function-lane/XLL_ADDIN_BRIDGE_VALIDATION_SCENARIO_MANIFEST_SEED.csv -Out .tmp/oxfunc-xll-bridge-results.csv -XllPath tools/xll-addin/bin/OxFunc64.xll
 ```
+3. Raw `xltypeNil` propagation probe:
+```powershell
+powershell -File tools/xll-addin/run-xll-nil-probe.ps1 -Manifest docs/function-lane/XLL_NIL_PROPAGATION_SCENARIO_MANIFEST_SEED.csv -Out .tmp/xll-nil-probe-results.csv
+```
 
 ## 4. Registration Model
 1. The XLL self-registers in `xlAutoOpen`.
