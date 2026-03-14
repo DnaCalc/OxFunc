@@ -5,6 +5,7 @@ use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
 use crate::functions::and_fn::{eval_and_surface, map_and_error_to_ws};
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
 use crate::functions::cell::{eval_cell_surface, map_cell_error_to_ws};
+use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
 use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
 use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
@@ -25,6 +26,7 @@ use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::pi::eval_pi;
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
+use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
 use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, round_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
 use crate::functions::sin::{eval_sin_surface, map_sin_error_to_ws};
@@ -48,6 +50,7 @@ pub const FUNC_ID_ASIN: &str = "FUNC.ASIN";
 pub const FUNC_ID_AND: &str = "FUNC.AND";
 pub const FUNC_ID_AVERAGE: &str = "FUNC.AVERAGE";
 pub const FUNC_ID_CELL: &str = "FUNC.CELL";
+pub const FUNC_ID_COLUMN: &str = "FUNC.COLUMN";
 pub const FUNC_ID_CLEAN: &str = "FUNC.CLEAN";
 pub const FUNC_ID_COUNT: &str = "FUNC.COUNT";
 pub const FUNC_ID_COUNTA: &str = "FUNC.COUNTA";
@@ -68,6 +71,7 @@ pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
 pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
 pub const FUNC_ID_PI: &str = "FUNC.PI";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
+pub const FUNC_ID_ROW: &str = "FUNC.ROW";
 pub const FUNC_ID_ROUND: &str = "FUNC.ROUND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
 pub const FUNC_ID_SIN: &str = "FUNC.SIN";
@@ -170,6 +174,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
         FUNC_ID_AVERAGE => Some(crate::functions::average::AVERAGE_META.arg_preparation_profile),
         FUNC_ID_CELL => Some(crate::functions::cell::CELL_META.arg_preparation_profile),
+        FUNC_ID_COLUMN => Some(crate::functions::column_fn::COLUMN_META.arg_preparation_profile),
         FUNC_ID_CLEAN => Some(crate::functions::clean_fn::CLEAN_META.arg_preparation_profile),
         FUNC_ID_COUNT => Some(crate::functions::count::COUNT_META.arg_preparation_profile),
         FUNC_ID_COUNTA => Some(crate::functions::counta::COUNTA_META.arg_preparation_profile),
@@ -190,6 +195,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
         FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
         FUNC_ID_RAND => Some(crate::functions::rand_fn::RAND_META.arg_preparation_profile),
+        FUNC_ID_ROW => Some(crate::functions::row_fn::ROW_META.arg_preparation_profile),
         FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
         FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
         FUNC_ID_SIN => Some(crate::functions::sin::SIN_META.arg_preparation_profile),
@@ -224,6 +230,7 @@ pub fn eval_surface_value_call(
         FUNC_ID_CELL => eval_cell_surface(args, resolver).map_err(|e| map_cell_error_to_ws(&e)),
         FUNC_ID_CLEAN => eval_clean_surface(args, resolver).map_err(|e| map_clean_error_to_ws(&e)),
         FUNC_ID_COUNT => eval_count_surface(args, resolver).map_err(|e| map_count_error_to_ws(&e)),
+        FUNC_ID_COLUMN => eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e)),
         FUNC_ID_COUNTA => {
             eval_counta_surface(args, resolver).map_err(|e| map_counta_error_to_ws(&e))
         }
@@ -286,6 +293,7 @@ pub fn eval_surface_value_call(
             let provider = FixedRandomProvider { value };
             eval_rand_surface(args, &provider).map_err(|e| map_rand_error_to_ws(&e))
         }
+        FUNC_ID_ROW => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
         FUNC_ID_ROUND => {
             eval_round_surface(args, resolver).map_err(|e| map_round_error_to_ws(&e))
         }
@@ -440,6 +448,8 @@ mod tests {
         assert_eq!(got, Ok(std::f64::consts::PI));
     }
 }
+
+
 
 
 

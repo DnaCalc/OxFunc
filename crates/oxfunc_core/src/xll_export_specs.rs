@@ -3,13 +3,13 @@ use crate::function::{
     HostInteractionClass, KernelSignatureClass, VolatilityClass,
 };
 use crate::functions::{
-    abs::ABS_META, asin::ASIN_META, and_fn::AND_META, average::AVERAGE_META, cell::CELL_META,
+    abs::ABS_META, asin::ASIN_META, and_fn::AND_META, average::AVERAGE_META, cell::CELL_META, column_fn::COLUMN_META,
     clean_fn::CLEAN_META, count::COUNT_META, counta::COUNTA_META, date_fn::DATE_META,
     dollar_fn::DOLLAR_META,
     exact_fn::EXACT_META, fixed_fn::FIXED_META, hstack::HSTACK_META, if_fn::IF_META, iferror::IFERROR_META,
     index::INDEX_META, indirect::INDIRECT_META, isnumber::ISNUMBER_META, match_fn::MATCH_META,
     n_fn::N_META, now_fn::NOW_META, offset::OFFSET_META, op_add::OP_ADD_META, pi::PI_META,
-    rand_fn::RAND_META, round_fn::ROUND_META, sequence::SEQUENCE_META, sin::SIN_META,
+    rand_fn::RAND_META, round_fn::ROUND_META, row_fn::ROW_META, sequence::SEQUENCE_META, sin::SIN_META,
     sum::SUM_META, t_fn::T_META, text_fn::TEXT_META, textjoin::TEXTJOIN_META, today_fn::TODAY_META,
     type_fn::TYPE_META, value_fn::VALUE_META, xlookup::XLOOKUP_META, xmatch::XMATCH_META,
 };
@@ -47,6 +47,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     AND_META,
     AVERAGE_META,
     CELL_META,
+    COLUMN_META,
     CLEAN_META,
     COUNT_META,
     COUNTA_META,
@@ -67,6 +68,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     OP_ADD_META,
     PI_META,
     RAND_META,
+    ROW_META,
     ROUND_META,
     SEQUENCE_META,
     SIN_META,
@@ -375,6 +377,8 @@ mod tests {
         assert!(spec.arg_names.is_empty());
     }
 }
+
+
 
 
 

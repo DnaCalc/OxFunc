@@ -8,6 +8,8 @@ import OxFunc.LocaleFormat
 import OxFunc.Functions.Abs
 import OxFunc.Functions.AbsSurface
 import OxFunc.Functions.AndFn
+import OxFunc.Functions.Asin
+import OxFunc.Functions.Column
 import OxFunc.Functions.Average
 import OxFunc.Functions.Cell
 import OxFunc.Functions.Clean
@@ -24,18 +26,24 @@ import OxFunc.Functions.Index
 import OxFunc.Functions.Indirect
 import OxFunc.Functions.IsNumber
 import OxFunc.Functions.MatchFn
+import OxFunc.Functions.N
 import OxFunc.Functions.Now
 import OxFunc.Functions.OpAdd
 import OxFunc.Functions.Pi
 import OxFunc.Functions.Rand
 import OxFunc.Functions.Round
+import OxFunc.Functions.Row
 import OxFunc.Functions.Sequence
+import OxFunc.Functions.Sin
 import OxFunc.Functions.Sum
 import OxFunc.Functions.Text
 import OxFunc.Functions.TextJoin
+import OxFunc.Functions.T
 import OxFunc.Functions.Today
+import OxFunc.Functions.Type
 import OxFunc.Functions.Value
 import OxFunc.Functions.Offset
 import OxFunc.Functions.Xlookup
 import OxFunc.Functions.Xmatch
 import OxFunc.Functions.XmatchSurface
+

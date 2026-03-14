@@ -10,6 +10,19 @@ pub enum UnaryNumericCoercionLiftProfile {
     ScalarOrArrayElementwise,
 }
 
+fn normalize_prepared_eval(value: EvalValue) -> PreparedArgValue {
+    match value {
+        EvalValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
+            match array.get(0, 0) {
+                Some(ArrayCellValue::EmptyCell) => PreparedArgValue::EmptyCell,
+                Some(cell) => prepared_from_array_cell(cell),
+                None => PreparedArgValue::Eval(EvalValue::Array(array)),
+            }
+        }
+        other => PreparedArgValue::Eval(other),
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum PreparedArgValue {
     Eval(EvalValue),
@@ -98,14 +111,14 @@ pub fn prepare_arg_values_only(
     resolver: &impl ReferenceResolver,
 ) -> Result<PreparedArgValue, CoercionError> {
     match arg {
-        CallArgValue::Eval(v) => Ok(PreparedArgValue::Eval(resolve_eval_references(
+        CallArgValue::Eval(v) => Ok(normalize_prepared_eval(resolve_eval_references(
             v, resolver,
         )?)),
         CallArgValue::MissingArg => Ok(PreparedArgValue::MissingArg),
         CallArgValue::EmptyCell => Ok(PreparedArgValue::EmptyCell),
         CallArgValue::Reference(r) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            Ok(PreparedArgValue::Eval(resolve_eval_references(
+            Ok(normalize_prepared_eval(resolve_eval_references(
                 &resolved, resolver,
             )?))
         }
@@ -349,6 +362,21 @@ mod tests {
     }
 
     #[test]
+    fn prepare_values_only_normalizes_single_blank_area_to_empty_cell() {
+        let arg = CallArgValue::Reference(ReferenceLike {
+            kind: ReferenceKind::A1,
+            target: "A1".to_string(),
+        });
+        let prepared = prepare_arg_values_only(
+            &arg,
+            &resolver_with(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]]).unwrap(),
+            )),
+        );
+        assert_eq!(prepared, Ok(PreparedArgValue::EmptyCell));
+    }
+
+    #[test]
     fn prepare_values_only_preserves_missing_and_empty() {
         assert_eq!(
             prepare_arg_values_only(
@@ -580,3 +608,7 @@ mod tests {
         );
     }
 }
+
+
+
+
