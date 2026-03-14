@@ -74,7 +74,7 @@ Current signal:
    - `FIXED(1234.567,2)` returned locale-shaped grouping text (`1 234.57`)
    - `TEXT(0.5,"0%")` clearly depends on Excel's format-code engine
    - `VALUE` accepts some textual numeric forms (`"1E-3"`, `"12%"`) but rejected at least one date-like text lane (`"1/2/2024"`) in the current direct probe
-3. OxFunc now has a declared local shim substrate for admitted current-host and `en-US` rows, but not yet the full Excel locale/format language needed to close these functions honestly.
+3. OxFunc now has a declared local shim substrate for admitted current-host and `en-US` rows, and that admitted local slice is sufficient to close these functions honestly for the current reference baseline. Broader locale/format-language expansion remains an orthogonal validation phase.
 
 ## 5. Deliverables
 1. W13 workset spec and execution record.
@@ -82,7 +82,7 @@ Current signal:
 3. runtime implementations and dispatch integration for any functions closed in W13.
 4. Lean executable-semantic model coverage for any functions closed in W13.
 5. W13 empirical manifests and replay tooling.
-6. explicit blocked-lane note for locale/format-parser functions if closure is not yet defensible.
+6. explicit closure or blocked-lane note for the locale/format-parser functions, depending on whether the admitted baseline slice is fully characterized.
 
 ## 6. Gate Model
 ### G1 - Classification Closure
@@ -101,7 +101,7 @@ Pass when:
 ### G4 - Promotion Readiness
 Pass when:
 1. any closeable W13 functions reach `function-phase-complete`,
-2. any blocked W13 functions are explicitly left `scope_partial` with the locale/format substrate named as the blocker.
+2. any remaining blocked W13 functions are explicitly left `scope_partial` with their blocker named honestly.
 
 ## 7. Status
 Execution state:
@@ -119,4 +119,5 @@ Assurance maturity:
    - locale-sensitive text-to-number/date parsing,
    - Excel number-format-code rendering,
    - or both together?
+
 

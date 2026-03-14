@@ -4,7 +4,7 @@
 1. `function_id`: `FUNC.TEXT`
 2. `display_name`: `TEXT`
 3. `owner_lane`: `OxFunc`
-4. `status`: `provisional`
+4. `status`: `function-phase-complete`
 
 ## 2. Signature and Admission Contract
 1. arity:
@@ -68,9 +68,10 @@
    - `docs/function-lane/W13_EXECUTION_RECORD.md`
 4. current status rationale:
    - the local format-code render seam is now explicit in Rust and Lean and grounded in host-profile evidence,
-   - but `TEXT` is not yet `function-phase-complete` because the full Excel format-code language and broader locale textification surface remain larger than the currently admitted shim subset.
+   - and `TEXT()` is `function-phase-complete` for the current reference baseline because the admitted local render slice is now characterized, implemented, Lean-aligned, and empirically replayed; broader format-language and locale expansion remain orthogonal validation phases.
 
 ## 9. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/text_fn.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Text.lean`; `formal/lean/OxFunc/LocaleFormat.lean`
 3. empirical manifests: `docs/function-lane/FORMAT_RENDER_SCENARIO_MANIFEST_SEED.csv`; `docs/function-lane/FORMAT_PROFILE_SEED.csv`
+

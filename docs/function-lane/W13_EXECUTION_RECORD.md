@@ -58,6 +58,11 @@ Track W13 execution status, artifacts, and gate closure for the deceptively simp
    - `docs/function-lane/FUNCTION_SLICE_TEXT_CONTRACT_PRELIM.md`
    - `docs/function-lane/FUNCTION_SLICE_DOLLAR_CONTRACT_PRELIM.md`
    - `docs/function-lane/FUNCTION_SLICE_FIXED_CONTRACT_PRELIM.md`
+4. function-phase-complete slices within W13 so far:
+   - `VALUE`
+   - `TEXT`
+   - `DOLLAR`
+   - `FIXED`
 
 ## 6. Verification Runs
 1. direct Excel COM spot-checks run locally on `2026-03-12` and `2026-03-14` for:
@@ -74,7 +79,7 @@ Track W13 execution status, artifacts, and gate closure for the deceptively simp
 ### G2 - Runtime/Formal Pairing Closure
 1. Status: `in_progress`
 2. Notes:
-   - the locale/format seam now has explicit Rust and Lean artifacts (`LocaleFormat` plus four function bindings)
+   - the locale/format seam now has explicit Rust and Lean artifacts (`LocaleFormat` plus four function bindings), and the four locale-sensitive functions now satisfy current-phase Rust/Lean alignment for the admitted baseline slice
 
 ### G3 - Empirical Closure
 1. Status: `in_progress`
@@ -85,11 +90,13 @@ Track W13 execution status, artifacts, and gate closure for the deceptively simp
 ### G4 - Promotion Readiness
 1. Status: `in_progress`
 2. Notes:
-   - no W13 functions are yet promoted from this packet
+   - `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` are promoted to `function-phase-complete`
+   - the remaining W13 closure work is the non-locale subset, especially `SIN`, `ASIN`, `N`, `T`, `TYPE`, `ROW`, and `COLUMN`
 
 ## 8. Current Decision Pressure
 1. W13 no longer lacks a locale/format seam; it now has a concrete local substrate grounded in `en-US`, the current host profile, and `GET.WORKSPACE(37)` evidence.
 2. the remaining issue for `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` is breadth, not absence of a declared seam.
 3. the non-locale subset still needs a crisp boundary rule for blank scalar reference results and caller-context spill ownership.
+
 
 

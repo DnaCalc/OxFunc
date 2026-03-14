@@ -4,7 +4,7 @@
 1. `function_id`: `FUNC.FIXED`
 2. `display_name`: `FIXED`
 3. `owner_lane`: `OxFunc`
-4. `status`: `provisional`
+4. `status`: `function-phase-complete`
 
 ## 2. Signature and Admission Contract
 1. arity:
@@ -67,9 +67,10 @@
    - `docs/function-lane/W13_EXECUTION_RECORD.md`
 4. current status rationale:
    - the local fixed-format render seam is now explicit in Rust and Lean and grounded in the current host profile,
-   - but `FIXED` is not yet `function-phase-complete` because broader locale/profile variation and the full Excel formatting environment remain outside the currently admitted shim subset.
+   - and `FIXED()` is `function-phase-complete` for the current reference baseline because the admitted local fixed-render slice is now characterized, implemented, Lean-aligned, and empirically replayed; broader locale/profile variation remains an orthogonal validation phase.
 
 ## 9. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/fixed_fn.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Fixed.lean`; `formal/lean/OxFunc/LocaleFormat.lean`
 3. empirical manifests: `docs/function-lane/FORMAT_RENDER_SCENARIO_MANIFEST_SEED.csv`; `docs/function-lane/FORMAT_PROFILE_SEED.csv`
+

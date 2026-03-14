@@ -64,7 +64,8 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
 
 ## 6. Remaining Open Work
 1. full Excel format-code language and locale sweep remain open.
-2. `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` remain `scope_partial` until broader empirical and semantic coverage is closed.
+2. `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` are `function-phase-complete` for the current admitted reference-baseline slice; broader locale/version expansion remains orthogonal validation work.
 3. future ownership of the full formatting language remains with OxFml/FEC rather than per-function OxFunc kernels.
+
 
 

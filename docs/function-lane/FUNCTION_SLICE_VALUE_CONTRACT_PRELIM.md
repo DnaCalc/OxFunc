@@ -4,7 +4,7 @@
 1. `function_id`: `FUNC.VALUE`
 2. `display_name`: `VALUE`
 3. `owner_lane`: `OxFunc`
-4. `status`: `provisional`
+4. `status`: `function-phase-complete`
 
 ## 2. Signature and Admission Contract
 1. arity:
@@ -63,9 +63,10 @@
    - `docs/function-lane/W13_EXECUTION_RECORD.md`
 4. current status rationale:
    - the local locale-parse seam is now explicit in Rust and Lean and grounded in machine-readable host-profile evidence,
-   - but `VALUE` is not yet `function-phase-complete` because the broader Excel locale/date/time parsing surface remains larger than the currently admitted shim subset.
+   - and `VALUE()` is `function-phase-complete` for the current reference baseline because the admitted local parser slice is now characterized, implemented, Lean-aligned, and empirically replayed; broader locale/version expansion remains an orthogonal validation phase.
 
 ## 9. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/value_fn.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Value.lean`; `formal/lean/OxFunc/LocaleFormat.lean`
 3. empirical manifests: `docs/function-lane/VALUE_PARSE_SCENARIO_MANIFEST_SEED.csv`; `docs/function-lane/FORMAT_PROFILE_SEED.csv`
+
