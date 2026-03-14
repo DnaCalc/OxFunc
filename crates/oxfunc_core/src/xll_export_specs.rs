@@ -5,12 +5,13 @@ use crate::function::{
 use crate::functions::{
     abs::ABS_META, asin::ASIN_META, and_fn::AND_META, average::AVERAGE_META, cell::CELL_META,
     clean_fn::CLEAN_META, count::COUNT_META, counta::COUNTA_META, date_fn::DATE_META,
-    exact_fn::EXACT_META, hstack::HSTACK_META, if_fn::IF_META, iferror::IFERROR_META,
+    dollar_fn::DOLLAR_META,
+    exact_fn::EXACT_META, fixed_fn::FIXED_META, hstack::HSTACK_META, if_fn::IF_META, iferror::IFERROR_META,
     index::INDEX_META, indirect::INDIRECT_META, isnumber::ISNUMBER_META, match_fn::MATCH_META,
     n_fn::N_META, now_fn::NOW_META, offset::OFFSET_META, op_add::OP_ADD_META, pi::PI_META,
     rand_fn::RAND_META, round_fn::ROUND_META, sequence::SEQUENCE_META, sin::SIN_META,
-    sum::SUM_META, t_fn::T_META, textjoin::TEXTJOIN_META, today_fn::TODAY_META,
-    type_fn::TYPE_META, xlookup::XLOOKUP_META, xmatch::XMATCH_META,
+    sum::SUM_META, t_fn::T_META, text_fn::TEXT_META, textjoin::TEXTJOIN_META, today_fn::TODAY_META,
+    type_fn::TYPE_META, value_fn::VALUE_META, xlookup::XLOOKUP_META, xmatch::XMATCH_META,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -50,7 +51,9 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     COUNT_META,
     COUNTA_META,
     DATE_META,
+    DOLLAR_META,
     EXACT_META,
+    FIXED_META,
     HSTACK_META,
     IF_META,
     IFERROR_META,
@@ -69,9 +72,11 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     SIN_META,
     SUM_META,
     T_META,
+    TEXT_META,
     TEXTJOIN_META,
     TODAY_META,
     TYPE_META,
+    VALUE_META,
     XLOOKUP_META,
     XMATCH_META,
 ];
@@ -370,3 +375,6 @@ mod tests {
         assert!(spec.arg_names.is_empty());
     }
 }
+
+
+

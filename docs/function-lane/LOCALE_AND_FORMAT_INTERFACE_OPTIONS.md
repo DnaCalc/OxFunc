@@ -1,6 +1,6 @@
 # Locale And Format Interface Options
 
-Status: `active`
+Status: `selected-provisional`
 Owner lane: `OxFunc`
 Relationship: handoff/design note for OxFml and FEC/F3E
 
@@ -114,8 +114,8 @@ Cons:
 2. hard to align Lean with opaque callbacks
 3. easy to lose semantic clarity and artifact traceability
 
-## 7. Recommended Direction
-Option B is the best current fit.
+## 7. Selected Direction
+Option B is now the selected local seam direction, with the admitted Rust/Lean shim delivered in `LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md`.
 
 Reason:
 1. it keeps parsing and rendering separate
@@ -177,8 +177,9 @@ W13 also pressures where array-lift should live.
 
 Suggested rule:
 1. array-lift policy should remain declarative and visible in function metadata / substrate rules
-2. FEC/OxFml may execute the lift mechanically
+2. execution may still use generic shared helpers, but the lift policy and admissibility decision belong to OxFunc
 3. OxFunc should not duplicate array-lift orchestration ad hoc in every scalar function kernel
+4. OxFml/FEC should preserve enough structure for OxFunc to make the lift decision honestly
 
 This is especially relevant for:
 1. `SIN`
@@ -187,3 +188,5 @@ This is especially relevant for:
 4. `T`
 5. `ROW`
 6. `COLUMN`
+
+

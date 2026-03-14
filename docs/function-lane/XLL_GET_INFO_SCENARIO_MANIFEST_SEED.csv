@@ -1,0 +1,8 @@
+scenario_id,lane,status,setup_values,bridge_formula,native_macro,expected_relation,notes
+W9-GET-001,W9-GET,ready,,"INDEX(ox_GET_WORKSPACE(37),3)","INDEX(GET.WORKSPACE(37),3)",equal,GET.WORKSPACE decimal separator parity.
+W9-GET-002,W9-GET,ready,,"INDEX(ox_GET_WORKSPACE(37),4)","INDEX(GET.WORKSPACE(37),4)",equal,GET.WORKSPACE thousands separator parity.
+W9-GET-003,W9-GET,ready,,"INDEX(ox_GET_WORKSPACE(37),25)","INDEX(GET.WORKSPACE(37),25)",equal,GET.WORKSPACE currency symbol parity.
+W9-GET-004,W9-GET,ready,B2:=1,"ox_GET_CELL(1,B2)","GET.CELL(1,B2)",equal,GET.CELL absolute address parity for a scalar cell.
+W9-GET-005,W9-GET,ready,B2:=1,"ox_GET_CELL(5,B2)","GET.CELL(5,B2)",equal,GET.CELL contents parity for a scalar numeric cell.
+W9-GET-006,W9-GET,ready,,"ox_GET_WORKBOOK_ACTIVE(1)","GET.WORKBOOK(1)",equal,GET.WORKBOOK active-workbook name parity.
+

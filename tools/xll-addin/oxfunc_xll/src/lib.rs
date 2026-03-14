@@ -12,6 +12,7 @@ use oxfunc_core::functions::a1_refs::{
 use oxfunc_core::functions::surface_dispatch::{
     eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_value_call,
 };
+use oxfunc_core::locale_format::current_excel_host_context;
 use oxfunc_core::resolver::{
     CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
 };
@@ -63,6 +64,10 @@ const XL_SHEET_ID: i32 = 4 | XL_SPECIAL;
 const XL_SHEET_NM: i32 = 5 | XL_SPECIAL;
 const XLF_REGISTER: i32 = 149;
 const XLF_CALLER: i32 = 89;
+const XLF_GET_CELL: i32 = 185;
+const XLF_GET_WORKSPACE: i32 = 186;
+const XLF_GET_DOCUMENT: i32 = 188;
+const XLF_GET_WORKBOOK: i32 = 268;
 
 type Excel12Proc = unsafe extern "system" fn(
     xlfn: i32,
@@ -269,6 +274,41 @@ const MANUAL_PROBE_REGISTRATION_SPECS: &[ManualRegistrationSpec] = &[
         type_text: "QU",
         function_name: "ox_PROBE_ARRAY_DESC",
         arg_names: "arg1",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_GET_CELL",
+        type_text: "QUU",
+        function_name: "ox_GET_CELL",
+        arg_names: "type_num,reference",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_GET_DOCUMENT",
+        type_text: "QUU",
+        function_name: "ox_GET_DOCUMENT",
+        arg_names: "type_num,name_text",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_GET_WORKBOOK",
+        type_text: "QUU",
+        function_name: "ox_GET_WORKBOOK",
+        arg_names: "type_num,name_text",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_GET_WORKBOOK_ACTIVE",
+        type_text: "QU",
+        function_name: "ox_GET_WORKBOOK_ACTIVE",
+        arg_names: "type_num",
+        macro_type: 0,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_GET_WORKSPACE",
+        type_text: "QU",
+        function_name: "ox_GET_WORKSPACE",
+        arg_names: "type_num",
         macro_type: 1,
     },
 ];
@@ -696,6 +736,49 @@ fn resolved_eval_from_call_arg(arg: CallArgValue) -> EvalValue {
     }
 }
 
+fn call_arg_to_xloper(arg: CallArgValue) -> XLOPER12 {
+    match arg {
+        CallArgValue::Eval(value) => eval_value_to_xloper(value),
+        CallArgValue::MissingArg | CallArgValue::EmptyCell => make_xloper_nil(),
+        CallArgValue::Reference(reference) => eval_value_to_xloper(EvalValue::Reference(reference)),
+    }
+}
+
+fn clone_excel_return_to_owned(value: *const XLOPER12, preserve_refs: bool) -> XLOPER12 {
+    call_arg_to_xloper(call_arg_from_xloper(value, preserve_refs))
+}
+
+fn free_excel_result_if_needed(value: &mut XLOPER12) {
+    if matches!(value.xltype & XLTYPE_MASK, XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI) {
+        call_excel_free(value);
+    }
+}
+
+fn probe_info_unary(xlfn: i32, arg1: *mut XLOPER12, preserve_refs: bool) -> *mut XLOPER12 {
+    let mut args = [arg1];
+    let Some(mut out) = call_excel_special(xlfn, &mut args) else {
+        return alloc_result(make_xloper_err(XLERR_VALUE));
+    };
+    let cloned = clone_excel_return_to_owned(&out, preserve_refs);
+    free_excel_result_if_needed(&mut out);
+    alloc_result(cloned)
+}
+
+fn probe_info_binary(
+    xlfn: i32,
+    arg1: *mut XLOPER12,
+    arg2: *mut XLOPER12,
+    preserve_refs: bool,
+) -> *mut XLOPER12 {
+    let mut args = [arg1, arg2];
+    let Some(mut out) = call_excel_special(xlfn, &mut args) else {
+        return alloc_result(make_xloper_err(XLERR_VALUE));
+    };
+    let cloned = clone_excel_return_to_owned(&out, preserve_refs);
+    free_excel_result_if_needed(&mut out);
+    alloc_result(cloned)
+}
+
 fn resolve_reference_via_excel(reference: &ReferenceLike) -> Result<EvalValue, RefResolutionError> {
     let parsed = parse_a1_reference(&reference.target).ok_or_else(|| {
         RefResolutionError::UnresolvedReference {
@@ -1098,6 +1181,7 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
         &resolver,
         Some(current_excel_serial_utc()),
         Some(current_random_unit()),
+        Some(&current_excel_host_context()),
     ) {
         Ok(v) => v,
         Err(code) => EvalValue::Error(code),
@@ -1431,6 +1515,40 @@ pub extern "system" fn OX_PROBE_ARRAY_DESC(arg1: *mut XLOPER12) -> *mut XLOPER12
 }
 
 #[unsafe(no_mangle)]
+pub extern "system" fn OX_GET_CELL(
+    type_num: *mut XLOPER12,
+    reference: *mut XLOPER12,
+) -> *mut XLOPER12 {
+    probe_info_binary(XLF_GET_CELL, type_num, reference, true)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_GET_DOCUMENT(
+    type_num: *mut XLOPER12,
+    name_text: *mut XLOPER12,
+) -> *mut XLOPER12 {
+    probe_info_binary(XLF_GET_DOCUMENT, type_num, name_text, true)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_GET_WORKBOOK(
+    type_num: *mut XLOPER12,
+    name_text: *mut XLOPER12,
+) -> *mut XLOPER12 {
+    probe_info_binary(XLF_GET_WORKBOOK, type_num, name_text, true)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_GET_WORKBOOK_ACTIVE(type_num: *mut XLOPER12) -> *mut XLOPER12 {
+    probe_info_unary(XLF_GET_WORKBOOK, type_num, true)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_GET_WORKSPACE(type_num: *mut XLOPER12) -> *mut XLOPER12 {
+    probe_info_unary(XLF_GET_WORKSPACE, type_num, true)
+}
+
+#[unsafe(no_mangle)]
 pub extern "system" fn xlAutoOpen() -> i32 {
     let Some(module_path) = current_module_path() else {
         return 0;
@@ -1498,3 +1616,13 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+

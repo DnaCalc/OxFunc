@@ -1,0 +1,3 @@
+profile_id,scope,status,decimal_separator,thousands_separator,list_separator,currency_symbol,date_separator,time_separator,currency_decimals,negative_currency_format,negative_number_format,source,notes
+en-US,shim_seed,ready,".",",",",","$","/",":",2,standard_minus_prefix,standard_minus_prefix,declared_profile,Stable reference profile for local shim tests.
+current_excel_host,observed_seed,ready,"."," ",",","R","/",":",2,minus_prefix_currency,minus_prefix_number,GET.WORKSPACE(37) 2026-03-13,Observed from local Excel host profile.

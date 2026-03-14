@@ -61,20 +61,20 @@ Current signal:
    - `COLUMN()`, `COLUMN(A1:B2)`
 2. none of those probes currently require a general locale-sensitive number-format engine.
 
-### 4.2 Blocked On Locale / Format Substrate
+### 4.2 Locale / Format Pressure Packet
 1. `VALUE`
 2. `TEXT`
 3. `DOLLAR`
 4. `FIXED`
 
-Current blocker signal:
+Current signal:
 1. direct Excel spot-checks show that these functions depend materially on locale/profile-sensitive parsing or formatting.
 2. in the current environment:
    - `DOLLAR(1234.567,2)` returned locale-shaped text (`R1 234.57`)
    - `FIXED(1234.567,2)` returned locale-shaped grouping text (`1 234.57`)
    - `TEXT(0.5,"0%")` clearly depends on Excel's format-code engine
    - `VALUE` accepts some textual numeric forms (`"1E-3"`, `"12%"`) but rejected at least one date-like text lane (`"1/2/2024"`) in the current direct probe
-3. OxFunc does not currently have a declared locale/formatting engine substrate that is strong enough to claim full semantic identity for these functions.
+3. OxFunc now has a declared local shim substrate for admitted current-host and `en-US` rows, but not yet the full Excel locale/format language needed to close these functions honestly.
 
 ## 5. Deliverables
 1. W13 workset spec and execution record.
@@ -96,7 +96,7 @@ Pass when:
 ### G3 - Empirical Closure
 Pass when:
 1. the W13 suite replays against the current reference baseline and compatibility lane,
-2. the blocked locale/format functions have explicit blocker evidence rather than vague postponement.
+2. the locale/format subset has explicit seam artifacts, manifests, and blocker evidence rather than vague postponement.
 
 ### G4 - Promotion Readiness
 Pass when:
@@ -119,3 +119,4 @@ Assurance maturity:
    - locale-sensitive text-to-number/date parsing,
    - Excel number-format-code rendering,
    - or both together?
+

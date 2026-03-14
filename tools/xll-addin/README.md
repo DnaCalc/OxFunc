@@ -30,6 +30,10 @@ powershell -File tools/xll-addin/run-oxfunc-xll-bridge-baseline.ps1 -Manifest do
 ```powershell
 powershell -File tools/xll-addin/run-xll-nil-probe.ps1 -Manifest docs/function-lane/XLL_NIL_PROPAGATION_SCENARIO_MANIFEST_SEED.csv -Out .tmp/xll-nil-probe-results.csv
 ```
+4. GET.INFO wrapper probe:
+```powershell
+powershell -File tools/xll-addin/run-get-info-probe.ps1 -Manifest docs/function-lane/XLL_GET_INFO_SCENARIO_MANIFEST_SEED.csv -Out .tmp/xll-get-info-results.csv -BuildIfMissing
+```
 
 ## 4. Registration Model
 1. The XLL self-registers in `xlAutoOpen`.
@@ -42,6 +46,7 @@ powershell -File tools/xll-addin/run-xll-nil-probe.ps1 -Manifest docs/function-l
    - `tools/xll-addin/oxfunc_xll/export_specs.csv`
 6. Current generated exports are profile-derived across the function catalog (`export_specs.csv`).
 7. Ordinary `volatile_full` U exports are emitted with `!` from core metadata (for example `ox_NOW`, `ox_TODAY`, `ox_RAND`).
+8. Manual tester-XLL helper exports for `GET.*` live directly in `tools/xll-addin/oxfunc_xll/src/lib.rs` and are documented in `docs/function-lane/XLL_GET_INFO_EXECUTION_RECORD.md`.
 
 ## 5. Registration Flag Evidence Replay (W11)
 1. Full dual-run suite:

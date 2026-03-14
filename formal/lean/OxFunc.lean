@@ -4,6 +4,7 @@ import OxFunc.ValueUniverse
 import OxFunc.CoercionPrimitives
 import OxFunc.FloatingPointEnv
 import OxFunc.RefResolverSeam
+import OxFunc.LocaleFormat
 import OxFunc.Functions.Abs
 import OxFunc.Functions.AbsSurface
 import OxFunc.Functions.AndFn
@@ -13,7 +14,9 @@ import OxFunc.Functions.Clean
 import OxFunc.Functions.Count
 import OxFunc.Functions.CountA
 import OxFunc.Functions.Date
+import OxFunc.Functions.Dollar
 import OxFunc.Functions.Exact
+import OxFunc.Functions.Fixed
 import OxFunc.Functions.Hstack
 import OxFunc.Functions.IfFn
 import OxFunc.Functions.IfError
@@ -28,8 +31,10 @@ import OxFunc.Functions.Rand
 import OxFunc.Functions.Round
 import OxFunc.Functions.Sequence
 import OxFunc.Functions.Sum
+import OxFunc.Functions.Text
 import OxFunc.Functions.TextJoin
 import OxFunc.Functions.Today
+import OxFunc.Functions.Value
 import OxFunc.Functions.Offset
 import OxFunc.Functions.Xlookup
 import OxFunc.Functions.Xmatch

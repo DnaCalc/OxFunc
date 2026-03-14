@@ -9,7 +9,9 @@ use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
 use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
 use crate::functions::date_fn::{eval_date_surface, map_date_error_to_ws};
+use crate::functions::dollar_fn::{eval_dollar_surface, map_dollar_error_to_ws};
 use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
+use crate::functions::fixed_fn::{eval_fixed_surface, map_fixed_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
@@ -30,11 +32,14 @@ use crate::functions::sum::{eval_sum_surface, map_sum_error_to_ws};
 use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{TodayProvider, eval_today_surface, map_today_error_to_ws};
+use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
+use crate::functions::text_fn::{eval_text_surface, map_text_error_to_ws};
 use crate::functions::xlookup::{eval_xlookup_surface, map_xlookup_error_to_ws};
 use crate::functions::xmatch::XmatchEvalError;
 use crate::functions::xmatch_surface::eval_xmatch_surface_value;
 use crate::resolver::RefResolutionError;
+use crate::locale_format::LocaleFormatContext;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalError, EvalValue, Value, WorksheetErrorCode};
 
@@ -47,7 +52,9 @@ pub const FUNC_ID_CLEAN: &str = "FUNC.CLEAN";
 pub const FUNC_ID_COUNT: &str = "FUNC.COUNT";
 pub const FUNC_ID_COUNTA: &str = "FUNC.COUNTA";
 pub const FUNC_ID_DATE: &str = "FUNC.DATE";
+pub const FUNC_ID_DOLLAR: &str = "FUNC.DOLLAR";
 pub const FUNC_ID_EXACT: &str = "FUNC.EXACT";
+pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
 pub const FUNC_ID_HSTACK: &str = "FUNC.HSTACK";
 pub const FUNC_ID_IF: &str = "FUNC.IF";
 pub const FUNC_ID_IFERROR: &str = "FUNC.IFERROR";
@@ -66,9 +73,11 @@ pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
 pub const FUNC_ID_SIN: &str = "FUNC.SIN";
 pub const FUNC_ID_SUM: &str = "FUNC.SUM";
 pub const FUNC_ID_T: &str = "FUNC.T";
+pub const FUNC_ID_TEXT: &str = "FUNC.TEXT";
 pub const FUNC_ID_TEXTJOIN: &str = "FUNC.TEXTJOIN";
 pub const FUNC_ID_TODAY: &str = "FUNC.TODAY";
 pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
+pub const FUNC_ID_VALUE: &str = "FUNC.VALUE";
 pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
 pub const FUNC_ID_XMATCH: &str = "FUNC.XMATCH";
 
@@ -165,7 +174,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_COUNT => Some(crate::functions::count::COUNT_META.arg_preparation_profile),
         FUNC_ID_COUNTA => Some(crate::functions::counta::COUNTA_META.arg_preparation_profile),
         FUNC_ID_DATE => Some(crate::functions::date_fn::DATE_META.arg_preparation_profile),
+        FUNC_ID_DOLLAR => Some(crate::functions::dollar_fn::DOLLAR_META.arg_preparation_profile),
         FUNC_ID_EXACT => Some(crate::functions::exact_fn::EXACT_META.arg_preparation_profile),
+        FUNC_ID_FIXED => Some(crate::functions::fixed_fn::FIXED_META.arg_preparation_profile),
         FUNC_ID_HSTACK => Some(crate::functions::hstack::HSTACK_META.arg_preparation_profile),
         FUNC_ID_IF => Some(crate::functions::if_fn::IF_META.arg_preparation_profile),
         FUNC_ID_IFERROR => Some(crate::functions::iferror::IFERROR_META.arg_preparation_profile),
@@ -184,9 +195,11 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_SIN => Some(crate::functions::sin::SIN_META.arg_preparation_profile),
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
         FUNC_ID_T => Some(crate::functions::t_fn::T_META.arg_preparation_profile),
+        FUNC_ID_TEXT => Some(crate::functions::text_fn::TEXT_META.arg_preparation_profile),
         FUNC_ID_TEXTJOIN => Some(crate::functions::textjoin::TEXTJOIN_META.arg_preparation_profile),
         FUNC_ID_TODAY => Some(crate::functions::today_fn::TODAY_META.arg_preparation_profile),
         FUNC_ID_TYPE => Some(crate::functions::type_fn::TYPE_META.arg_preparation_profile),
+        FUNC_ID_VALUE => Some(crate::functions::value_fn::VALUE_META.arg_preparation_profile),
         FUNC_ID_XLOOKUP => Some(crate::functions::xlookup::XLOOKUP_META.arg_preparation_profile),
         FUNC_ID_XMATCH => Some(crate::functions::xmatch::XMATCH_META.arg_preparation_profile),
         _ => None,
@@ -199,6 +212,7 @@ pub fn eval_surface_value_call(
     resolver: &impl ReferenceResolver,
     now_serial: Option<f64>,
     random_value: Option<f64>,
+    locale_ctx: Option<&LocaleFormatContext>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_ABS => eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e)),
@@ -214,7 +228,9 @@ pub fn eval_surface_value_call(
             eval_counta_surface(args, resolver).map_err(|e| map_counta_error_to_ws(&e))
         }
         FUNC_ID_DATE => eval_date_surface(args, resolver).map_err(|e| map_date_error_to_ws(&e)),
+        FUNC_ID_DOLLAR => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_dollar_surface(args, resolver, ctx).map_err(|e| map_dollar_error_to_ws(&e)) },
         FUNC_ID_EXACT => eval_exact_surface(args, resolver).map_err(|e| map_exact_error_to_ws(&e)),
+        FUNC_ID_FIXED => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e)) },
         FUNC_ID_HSTACK => {
             eval_hstack_surface(args, resolver).map_err(|e| map_hstack_error_to_ws(&e))
         }
@@ -279,6 +295,7 @@ pub fn eval_surface_value_call(
         FUNC_ID_SIN => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
         FUNC_ID_OP_ADD => eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e)),
         FUNC_ID_T => eval_t_surface(args, resolver).map_err(|e| map_t_error_to_ws(&e)),
+        FUNC_ID_TEXT => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_text_surface(args, resolver, ctx).map_err(|e| map_text_error_to_ws(&e)) },
         FUNC_ID_TEXTJOIN => {
             eval_textjoin_surface(args, resolver).map_err(|e| map_textjoin_error_to_ws(&e))
         }
@@ -288,6 +305,7 @@ pub fn eval_surface_value_call(
             eval_today_surface(args, &provider).map_err(|e| map_today_error_to_ws(&e))
         }
         FUNC_ID_TYPE => eval_type_surface(args, resolver).map_err(|e| map_type_error_to_ws(&e)),
+        FUNC_ID_VALUE => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_value_surface(args, resolver, ctx).map_err(|e| map_value_error_to_ws(&e)) },
         FUNC_ID_XMATCH => {
             if args.len() < 2 {
                 return Err(WorksheetErrorCode::Value);
@@ -379,6 +397,7 @@ mod tests {
             &NoReferenceResolver,
             Some(46000.0),
             Some(0.5),
+            None,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
@@ -392,6 +411,7 @@ mod tests {
             &NoReferenceResolver,
             Some(46000.0),
             Some(0.5),
+            None,
         );
         assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
@@ -420,3 +440,7 @@ mod tests {
         assert_eq!(got, Ok(std::f64::consts::PI));
     }
 }
+
+
+
+

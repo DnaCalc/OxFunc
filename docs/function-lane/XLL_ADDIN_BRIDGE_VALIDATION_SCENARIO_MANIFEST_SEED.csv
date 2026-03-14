@@ -27,3 +27,8 @@
 "W9-XLL-026","W9-G","ready","B1:=1|B2:=2|B3:=3","SUM(OFFSET(B1,1,0,2,1))","SUM(ox_OFFSET(B1,1,0,2,1))","equal","none","OFFSET resized-range composition parity through XLL."
 "W9-XLL-027","W9-G","ready","","SUM(HSTACK({1,2},3))","SUM(ox_HSTACK({1,2},3))","equal","none","HSTACK payload assembly parity through XLL."
 "W9-XLL-028","W9-G","ready","","ISNA(INDEX(HSTACK({1;2},{3}),2,2))","ISNA(INDEX(ox_HSTACK({1;2},{3}),2,2))","equal","none","HSTACK #N/A padding parity through XLL."
+"W9-XLL-029","W9-H","ready","","VALUE(""1 234.5"")","ox_VALUE(""1 234.5"")","equal","none","VALUE grouped numeric parse parity through XLL on the current host profile."
+"W9-XLL-030","W9-H","ready","","TEXT(0.125,""0%"")","ox_TEXT(0.125,""0%"")","equal","none","TEXT admitted percent-code render parity through XLL on the current host profile."
+"W9-XLL-031","W9-H","ready","","TEXT(""x"",""0"")","ox_TEXT(""x"",""0"")","equal","none","TEXT nonnumeric-text preservation parity through XLL."
+"W9-XLL-032","W9-H","ready","","DOLLAR(1234.567,2)","ox_DOLLAR(1234.567,2)","equal","none","DOLLAR current-host currency render parity through XLL."
+"W9-XLL-033","W9-H","ready","","FIXED(1234.567,2,TRUE)","ox_FIXED(1234.567,2,TRUE)","equal","none","FIXED no-commas render parity through XLL."
