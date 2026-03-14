@@ -34,7 +34,7 @@ Track W13 execution status, artifacts, and gate closure for the deceptively simp
    - current-host `VALUE` rows include grouped numeric, currency, percent, ISO date, and slash-date rejection lanes
    - current-host `TEXT` rows include `0`, `0.00`, `0%`, and `yyyy-mm-dd`
    - current-host `DOLLAR` and `FIXED` rows pin the local `R` currency symbol and space grouping rules
-3. the tester XLL now exposes Rust-based wrappers for selected legacy `GET.*` info surfaces, but that wrapper lane is still partial rather than parity-closed:
+3. the tester XLL now exposes Rust-based wrappers for selected legacy `GET.*` info surfaces, and the seeded wrapper lane is now parity-closed:
    - `ox_GET_CELL`
    - `ox_GET_DOCUMENT`
    - `ox_GET_WORKBOOK`
@@ -91,4 +91,5 @@ Track W13 execution status, artifacts, and gate closure for the deceptively simp
 1. W13 no longer lacks a locale/format seam; it now has a concrete local substrate grounded in `en-US`, the current host profile, and `GET.WORKSPACE(37)` evidence.
 2. the remaining issue for `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` is breadth, not absence of a declared seam.
 3. the non-locale subset still needs a crisp boundary rule for blank scalar reference results and caller-context spill ownership.
+
 

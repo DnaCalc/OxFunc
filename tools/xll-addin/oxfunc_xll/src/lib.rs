@@ -278,39 +278,40 @@ const MANUAL_PROBE_REGISTRATION_SPECS: &[ManualRegistrationSpec] = &[
     },
     ManualRegistrationSpec {
         export_name: "OX_GET_CELL",
-        type_text: "QUU",
+        type_text: "QUU#",
         function_name: "ox_GET_CELL",
         arg_names: "type_num,reference",
         macro_type: 1,
     },
     ManualRegistrationSpec {
         export_name: "OX_GET_DOCUMENT",
-        type_text: "QUU",
+        type_text: "QUU#",
         function_name: "ox_GET_DOCUMENT",
         arg_names: "type_num,name_text",
         macro_type: 1,
     },
     ManualRegistrationSpec {
         export_name: "OX_GET_WORKBOOK",
-        type_text: "QUU",
+        type_text: "QUU#",
         function_name: "ox_GET_WORKBOOK",
         arg_names: "type_num,name_text",
         macro_type: 1,
     },
     ManualRegistrationSpec {
         export_name: "OX_GET_WORKBOOK_ACTIVE",
-        type_text: "QU",
+        type_text: "QU#",
         function_name: "ox_GET_WORKBOOK_ACTIVE",
         arg_names: "type_num",
-        macro_type: 0,
+        macro_type: 1,
     },
     ManualRegistrationSpec {
         export_name: "OX_GET_WORKSPACE",
-        type_text: "QU",
+        type_text: "QU#",
         function_name: "ox_GET_WORKSPACE",
         arg_names: "type_num",
         macro_type: 1,
     },
+
 ];
 
 #[allow(dead_code)]
@@ -599,12 +600,18 @@ fn area_refs_from_mref(mref: XlMRef12) -> Option<Vec<XLRef12>> {
     Some(unsafe { std::slice::from_raw_parts(first, count) }.to_vec())
 }
 
-fn call_excel_special(xlfn: i32, args: &mut [*mut XLOPER12]) -> Option<XLOPER12> {
+fn call_excel_special_with_status(xlfn: i32, args: &mut [*mut XLOPER12]) -> (i32, XLOPER12) {
     let mut out = XLOPER12 {
         val: XLOPER12Value { w: 0 },
         xltype: 0,
     };
-    if excel12v(xlfn, &mut out, args) != XLRET_SUCCESS {
+    let ret = excel12v(xlfn, &mut out, args);
+    (ret, out)
+}
+
+fn call_excel_special(xlfn: i32, args: &mut [*mut XLOPER12]) -> Option<XLOPER12> {
+    let (ret, out) = call_excel_special_with_status(xlfn, args);
+    if ret != XLRET_SUCCESS {
         return None;
     }
     Some(out)
@@ -1548,6 +1555,8 @@ pub extern "system" fn OX_GET_WORKSPACE(type_num: *mut XLOPER12) -> *mut XLOPER1
     probe_info_unary(XLF_GET_WORKSPACE, type_num, true)
 }
 
+
+
 #[unsafe(no_mangle)]
 pub extern "system" fn xlAutoOpen() -> i32 {
     let Some(module_path) = current_module_path() else {
@@ -1616,6 +1625,17 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

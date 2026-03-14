@@ -216,3 +216,9 @@ The Rust tester XLL now exposes worksheet-callable wrappers for selected legacy 
 5. `ox_GET_WORKSPACE`
 
 These wrappers are implemented in `tools/xll-addin/oxfunc_xll/src/lib.rs` and exercised through `docs/function-lane/XLL_GET_INFO_SCENARIO_MANIFEST_SEED.csv` plus `tools/xll-addin/run-get-info-probe.ps1`.
+
+
+Update 2026-03-14:
+1. The tester-XLL GET.* wrappers required true macro-type registration via the # suffix in 	ype_text; macro_type = 1 on its own was not sufficient for parity.
+2. The GET.CELL probe runner also had to translate manifest A1 references into Excel4 Sheet!R1C1 references before ExecuteExcel4Macro(...) would accept them.
+

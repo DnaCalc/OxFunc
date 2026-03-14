@@ -26,7 +26,7 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
    - `TEXT(...,"yyyy-mm-dd")`
    - `DOLLAR`
    - `FIXED`
-5. tester-XLL support wrappers for `GET.CELL`, `GET.DOCUMENT`, `GET.WORKBOOK`, `GET.WORKBOOK(1)`, and `GET.WORKSPACE` are implemented, but their own parity closure remains open in `XLL_GET_INFO_EXECUTION_RECORD.md`.
+5. tester-XLL support wrappers for `GET.CELL`, `GET.DOCUMENT`, `GET.WORKBOOK`, `GET.WORKBOOK(1)`, and `GET.WORKSPACE` are implemented and parity-closed for the seeded lanes in `XLL_GET_INFO_EXECUTION_RECORD.md`.
 
 ## 3. Key Artifacts
 1. Rust seam and function modules:
@@ -60,10 +60,11 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
 1. `cargo test -p oxfunc_core`
 2. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml`
 3. `lake build`
-4. XLL GET-info probe recorded separately under `W9-XLL-GETINFO-20260314`; that wrapper lane remains `scope_partial` and does not block closure of the local parser/renderer seam itself
+4. XLL GET-info probe recorded separately under `W9-XLL-GETINFO-20260314`; that wrapper lane is now seeded and closed and continues to support the local parser/renderer seam
 
 ## 6. Remaining Open Work
 1. full Excel format-code language and locale sweep remain open.
 2. `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` remain `scope_partial` until broader empirical and semantic coverage is closed.
 3. future ownership of the full formatting language remains with OxFml/FEC rather than per-function OxFunc kernels.
+
 

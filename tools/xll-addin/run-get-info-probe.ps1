@@ -90,6 +90,36 @@ function Apply-Assignment {
     $Worksheet.Range($Assignment.Cell).Value = $expr
 }
 
+function Get-SheetMacroPrefix {
+    param([object]$Worksheet)
+    $name = [string]$Worksheet.Name
+    if ($name -match "[\s']") {
+        return "'" + $name.Replace("'", "''") + "'"
+    }
+    return $name
+}
+
+function Invoke-NativeMacro {
+    param(
+        [object]$Excel,
+        [object]$Worksheet,
+        [string]$MacroText
+    )
+
+    $macro = $MacroText.Trim()
+    $getCellMatch = [regex]::Match($macro, '^GET\.CELL\((\d+)\s*,\s*([A-Z]{1,3}[0-9]+)\)$')
+    if ($getCellMatch.Success) {
+        $typeNum = $getCellMatch.Groups[1].Value
+        $cellRef = $getCellMatch.Groups[2].Value
+        $target = $Worksheet.Range($cellRef)
+        $sheetPrefix = Get-SheetMacroPrefix -Worksheet $Worksheet
+        $r1c1Ref = "$sheetPrefix!R$($target.Row)C$($target.Column)"
+        return $Excel.ExecuteExcel4Macro("GET.CELL($typeNum,$r1c1Ref)")
+    }
+
+    return $Excel.ExecuteExcel4Macro($macro)
+}
+
 $manifestPath = (Resolve-Path -Path $Manifest -ErrorAction Stop).Path
 $outPath = [System.IO.Path]::GetFullPath($Out)
 $outDir = Split-Path -Path $outPath -Parent
@@ -156,7 +186,7 @@ try {
             $bridgeText = [string]$bridgeRange.Text
             $bridgeValue = Convert-ScalarToString -Value $bridgeRange.Value2
 
-            $nativeRaw = $excel.ExecuteExcel4Macro([string]$scenario.native_macro)
+            $nativeRaw = Invoke-NativeMacro -Excel $excel -Worksheet $worksheet -MacroText ([string]$scenario.native_macro)
             $nativeText = Convert-ScalarToString -Value $nativeRaw
         }
         catch {
