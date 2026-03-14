@@ -40,6 +40,11 @@ Out of slice:
 - `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md` - suggested Foundation repo updates from OxFunc execution.
 - `crates/` - Rust runtime/function scaffolding for executable slices.
 - `formal/lean/` - Lean formalization scaffolding for function/value proofs.
+- `CURRENT_BLOCKERS.md` - active blocker register (`BLK-FN-NNN` entries).
+- `docs/IN_PROGRESS_FEATURE_WORKLIST.md` - in-progress feature register.
+- `docs/decisions/README.md` - decision register (`ODR-FN-NNN` entries).
+- `docs/handoffs/HANDOFF_REGISTER.csv` - cross-repo handoff register.
+- `docs/upstream/NOTES_FOR_OXFML.md` - outbound observation ledger for OxFml.
 
 ## Notes
 - Function behavior now has a dual version axis (Excel app version/channel plus workbook Compatibility Version), reflected in the OxFunc charter.

@@ -182,3 +182,121 @@ Normative wording rules:
 3. Do not claim `fully complete` unless all three completeness axes are complete and evidence links are present.
 4. If runtime export/dispatch admission is generated automatically at compile-time, still report whether each function is included in the source-of-truth export table for the claim.
 5. Use `function-phase-complete` for function slices that satisfy the current implementation-phase goal over the current reference Excel baseline, with no known function-semantic gap remaining, and with the Lean/formal work required by the formalization strategy for the function's primary semantic substrate attended to and aligned, even if later locale/version sweeps are still pending as orthogonal validation phases.
+
+## 12. Pre-Closure Verification Checklist
+
+Before claiming any workset or feature item as complete, answer each item yes or no.
+All items must be "yes" for a completion claim. Any "no" means the item is `in_progress`.
+
+| # | Check | Yes/No |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | |
+| 5 | Evidence links complete and reproducible? | |
+| 6 | Version scope explicit on both axes (Excel app version/channel + workbook Compatibility Version)? | |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | |
+| 8 | XLL verification-seam limitations documented in seam-level and function-level records where material? | |
+| 9 | Cross-repo impact assessed and handoff filed if FEC/F3E boundary or evaluator-facing clauses affected? | |
+| 10 | No known semantic gap remains in declared scope? | |
+| 11 | Completion language audit passed (no premature "done"/"complete" per AGENTS.md anti-premature-completion rules)? | |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | |
+| 13 | `CURRENT_BLOCKERS.md` updated (new/resolved)? | |
+
+## 13. Expanded Definition of Done
+
+A workset or feature item is done for its declared scope only when all of the following hold:
+
+1. **Existing Section 10 criteria**: all nine items in Section 10 are satisfied.
+2. **Three-axis report**: completion report includes `scope_completeness`, `target_completeness`, `integration_completeness`, and `open_lanes` per AGENTS.md anti-premature-completion rules.
+3. **Cross-repo impact**: impact on OxFml evaluator-facing clauses and FEC/F3E boundary is assessed; handoff packet filed if affected.
+4. **Checklist attached**: Pre-Closure Verification Checklist (Section 12) is filled in and all items are "yes".
+
+## 14. Completion Claim Self-Audit
+
+Before submitting a completion claim, the agent must perform this self-audit and include the results.
+
+### Step 1: Scope Re-Read
+Re-read the workset scope declaration. For each in-scope item, verify that exercised implementation (not scaffolding) matches. Any missing item = `in_progress`.
+
+### Step 2: Gate Criteria Re-Read
+Re-read the workset gate criteria. All pass criteria must be met. Any unmet criterion = gate open.
+
+### Step 3: Silent Scope Reduction Check
+Compare the original scope declaration with what was actually delivered. Any unreported narrowing of scope is a doctrine violation. If scope was intentionally narrowed, it must be explicitly documented with rationale.
+
+### Step 4: "Looks Done But Is Not" Pattern Check
+Check for these patterns:
+- Stubs or placeholder implementations reported as real.
+- Insufficient test coverage masking untested paths.
+- Contract text that does not match exercised implementation.
+- Lean obligations claimed as satisfied without exercised evidence.
+- Handoffs filed but not acknowledged by receiving repo.
+
+### Step 5: Include Result
+Include the self-audit result in the completion report with explicit pass/fail for each step.
+
+## 15. Carried-Forward Operating Lessons
+
+These five lessons are derived from observed execution failures in OxVba (86+ worksets) and OxFunc's own execution history (13 worksets, 38 function-phase-complete functions). They are not speculative — each addresses a real failure mode.
+
+### Lesson 1: Scaffold Determinism Is a Gate
+Scaffolding (stubs, empty traits, compile-only code) must produce deterministic outputs or be explicitly marked non-functional. Non-deterministic scaffolding that silently passes tests is a gate failure.
+*Source: OxVba Lesson 1.*
+
+### Lesson 2: Spec Drift Checks Run Alongside Implementation
+Do not defer spec-vs-implementation consistency checks to a separate phase. Run them as part of each workset execution. Spec drift discovered late is expensive to reconcile.
+*Source: OxVba Lesson 3.*
+
+### Lesson 3: Final Validation Must Not Mutate Tracked Evidence
+Validation runs must not modify the artifacts they are validating. Evidence mutation during validation invalidates the evidence chain.
+*Source: OxVba Lesson 9.*
+
+### Lesson 4: Guard Artifact Scope Before Commit
+Before committing, verify that only intended artifacts are staged. Accidental inclusion of generated files, temporary outputs, or out-of-scope changes pollutes the evidence record.
+*Source: OxVba Lesson 12.*
+
+### Lesson 5: Partial Semantics Are Not Implementation
+A function, protocol, or contract that covers a subset of its declared semantic space is work-in-progress, not an implementation. This applies even if the subset compiles, passes tests, and looks correct for the covered cases.
+*Source: OxFunc doctrine decision (`docs/function-lane/DOCTRINE_DECISION_FULL_EMPIRICAL_FUNCTION_IDENTITY_20260309.md`).*
+
+## 16. Upstream Observation Ledger Protocol
+
+### 16.1 Purpose
+Repos that interact with OxFunc discover interface and design constraints through their own implementation work. Those observations must flow through a structured channel so they inform design before contracts solidify.
+
+This is distinct from handoff packets (registered in `docs/handoffs/HANDOFF_REGISTER.csv`), which propose specific normative text changes. Observation ledgers are standing documents that accumulate design feedback over time.
+
+### 16.2 Outbound Observations (OxFunc -> OxFml)
+When OxFunc implementation work reveals design constraints that affect OxFml, write them to `docs/upstream/NOTES_FOR_OXFML.md` following this structure:
+
+1. **Purpose**: what the consuming repo needs to know and why.
+2. **Core message**: the essential design constraint in 2-3 sentences.
+3. **Current evidence**: specific examples with concrete scenarios.
+4. **Interface implications**: what the receiving repo must preserve, avoid, or expose.
+5. **Minimum invariants**: binary testable statements.
+6. **Open questions**: explicit questions the receiving repo should answer.
+
+### 16.3 Inbound Observations (OxFml -> OxFunc)
+OxFunc must check for inbound observation ledgers from OxFml at the start of any interface or design workset. Known source location:
+
+| Source repo | Ledger location | Relationship |
+|-------------|----------------|--------------|
+| OxFml | `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` | Evaluator-facing interface constraints |
+
+### 16.4 Format
+Observation ledger entries follow the structure in Section 16.2. Each entry should be self-contained, version-scoped, and traceable to specific implementation evidence.
+
+### 16.5 Lifecycle
+1. Observation ledgers are living documents — updated as new evidence accumulates.
+2. Entries are never silently removed; outdated observations are marked superseded with rationale.
+3. When an observation is addressed by the receiving repo (through spec changes, interface decisions, or handoff packets), the originating entry is updated with a resolution reference.
+4. Observation ledgers are not completion artifacts — they do not close worksets or satisfy gate criteria. They are design inputs.
+
+### 16.6 Agent Obligation
+Agents starting work on OxFunc interface or contract design must:
+1. Check all listed inbound observation sources (Section 16.3).
+2. Note any unresolved observations that are relevant to current scope.
+3. Include a "reviewed inbound observations" line in the workset status report.
+4. When a design decision addresses an inbound observation, reference the observation entry explicitly.

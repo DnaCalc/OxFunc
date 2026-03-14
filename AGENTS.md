@@ -9,6 +9,10 @@
 6. `docs/function-lane/README.md`
 7. `docs/FOUNDATION_SPEC_INDEX.md`
 8. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
+9. `CURRENT_BLOCKERS.md`
+10. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
+11. Inbound observation ledgers from upstream repos (see OPERATIONS.md Section 16.3):
+   - `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 
 ## Source-of-Truth Rules
 - For OxFunc-local work, treat `CHARTER.md` in this directory as the working charter.
@@ -40,3 +44,73 @@ Do not use proprietary or restricted sources.
 Function behavior must be tracked across two axes:
 1. Excel application version/channel.
 2. Workbook Compatibility Version.
+
+## Anti-Premature-Completion Doctrine
+
+Extends the No-Compromise Function Doctrine above with mechanical rules. This section is binding. Violations are doctrine failures, not style preferences.
+
+### Rule 1: Restricted Completion Language
+The words "implemented", "closed", "done", and "complete" are forbidden when describing:
+- partial subsets of declared scope,
+- scaffolding, stubs, or compile-only code,
+- merely enabled paths without exercised evidence,
+- contract text without replay/test evidence.
+
+Use "in-progress", "partial", or "scaffolded" instead.
+
+### Rule 2: Self-Audit Required Before Completion Claims
+Before ANY completion claim, the agent must:
+1. Run the Pre-Closure Verification Checklist from OPERATIONS.md Section 12.
+2. Run the Completion Claim Self-Audit from OPERATIONS.md Section 14.
+3. Include the checklist and self-audit results in the completion report.
+
+### Rule 3: Three-Axis Reporting Mandatory
+Every status report must include:
+- `scope_completeness` (`scope_complete` | `scope_partial`)
+- `target_completeness` (`target_complete` | `target_partial`)
+- `integration_completeness` (`integrated` | `partial`)
+- explicit `open_lanes` list when any axis is partial
+
+### Rule 4: Scaffolding Is Not Implementation
+Stubs, empty traits, compile-only code, and placeholder implementations are scaffolding.
+Scaffolding is never reported as implementation. Report it as `scaffolded`.
+
+### Rule 5: Spec Text Without Evidence Is Not Done
+Contract or spec text without at least one deterministic replay artifact or exercised test proving intended behavior is not done. Report it as `spec_drafted`.
+
+### Rule 6: Cross-Repo Handoff Is Not Completion
+Filing a handoff packet to OxFml opens a dependency — it does not close work.
+The originating item remains `in_progress` until the receiving repo acknowledges and integrates.
+
+### Rule 7: Default to In-Progress
+When uncertain whether work meets completion criteria, report `in_progress`.
+
+## Continuation Behavior
+
+Mode: **checkpoint-at-gates** with mature-repo calibration.
+
+1. Agent must pause and report status at each workset gate boundary.
+2. AutoRun is disabled by default.
+3. AutoRun may only be enabled when explicitly requested by the user for a specific scope.
+4. Between gates, the agent may proceed autonomously within the declared workset scope (scope-bounded autonomous execution).
+
+Mature-repo note: OxFunc has 13+ worksets and 38 function-phase-complete functions, exceeding the 5-workset threshold for conservative gate-pausing. Gate discipline remains mandatory but the agent has demonstrated execution history to support scope-bounded autonomy between gates.
+
+## Blocker Handling
+
+When a blocker is encountered:
+
+1. Create or update `CURRENT_BLOCKERS.md` with a structured `BLK-FN-NNN` entry.
+2. Continue with other non-blocked work within scope.
+3. If all paths are blocked, emit a structured summary:
+   - blocked items with `BLK-*` identifiers,
+   - current state of each,
+   - exact unblock steps required,
+   - recommendation (wait / escalate / workaround).
+
+## Change Discipline
+
+1. Keep changes minimal, explicit, and testable.
+2. Changes to FEC/F3E boundary semantics (function-facing declarations, coercion policies, admission contracts) require cross-repo impact assessment before promotion.
+3. When proposing changes that affect OxFml evaluator-facing clauses, file a handoff packet and register it in `docs/handoffs/HANDOFF_REGISTER.csv`.
+4. Neither repo marks a seam change as "complete" until both sides acknowledge.

@@ -116,9 +116,11 @@ Primary files:
 111. `FUNCTION_SLICE_FIXED_CONTRACT_PRELIM.md`
 112. `XLL_GET_INFO_SCENARIO_MANIFEST_SEED.csv`
 113. `XLL_GET_INFO_EXECUTION_RECORD.md`
+114. `PHASE_SUMMARY_FUNCTION_CLOSURE_THROUGH_W13.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
 2. `../../../Foundation/reference/conformance/excel-worksheet-engine/model/EXCEL_FORMULA_EVALUATION_CONTEXT_FEC.md`
 3. `../../../Foundation/reference/conformance/excel-worksheet-engine/model/FEC_F3E_INTERFACE_DRAFT_SPEC.md`
 4. `../../../Foundation/reference/conformance/excel-worksheet-engine/EXCEL_CONFORMANCE_SPEC.md`
+

@@ -26,3 +26,9 @@ Common rules:
 3. Completion is recorded by gate closure and explicit status updates.
 4. Claim confidence (`draft/provisional/validated`) and assurance maturity (`exercised/green-validated`) must be stated separately.
 
+Process references:
+- Pre-closure checklist: `OPERATIONS.md` Section 12.
+- Completion claim self-audit: `OPERATIONS.md` Section 14.
+- Active blockers: `CURRENT_BLOCKERS.md`.
+- In-progress feature register: `docs/IN_PROGRESS_FEATURE_WORKLIST.md`.
+
