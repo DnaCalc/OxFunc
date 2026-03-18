@@ -1,0 +1,129 @@
+{
+  "adapter_id": "oxfunc.replay.packet_adapter",
+  "adapter_version": "1.0.0-draft",
+  "lane_id": "oxfunc",
+  "supported_source_schema_ids": [
+    {
+      "source_schema_id": "oxfunc.local.packet_manifest.csv.v1",
+      "status": "local_only",
+      "summary": "Manifest-driven packet definition CSV used by OxFunc workset probes."
+    },
+    {
+      "source_schema_id": "oxfunc.local.packet_results.csv.v1",
+      "status": "local_only",
+      "summary": "Observed packet row results CSV emitted by local OxFunc probe runs."
+    },
+    {
+      "source_schema_id": "oxfunc.local.execution_record.md.v1",
+      "status": "local_only",
+      "summary": "Execution-record markdown summary with packet outcome and limitation narrative."
+    },
+    {
+      "source_schema_id": "oxfunc.local.evidence_registry.table.v1",
+      "status": "local_only",
+      "summary": "Evidence-id registry rows binding packet artifacts to stable local evidence ids."
+    },
+    {
+      "source_schema_id": "oxfunc.local.correlation_ledger.csv.v1",
+      "status": "local_only",
+      "summary": "Correlation-ledger rows binding Excel, contract, Rust, and Lean artifacts."
+    },
+    {
+      "source_schema_id": "oxfunc.local.limitation_note.md.v1",
+      "status": "local_only",
+      "summary": "Limitation note describing XLL or host-surface qualification without reclassifying semantics."
+    }
+  ],
+  "supported_bundle_schema_versions": [
+    {
+      "bundle_schema_id": "dna-replay-bundle/v1",
+      "bundle_schema_version": "1",
+      "status": "targeted"
+    }
+  ],
+  "claimed_capability_levels": [
+    "cap.C0.ingest_valid",
+    "cap.C1.replay_valid",
+    "cap.C2.diff_valid",
+    "cap.C3.explain_valid"
+  ],
+  "known_limits": [
+    {
+      "limit_id": "oxfunc.local.limit.packet_first_only",
+      "summary": "The adapter is packet-first and row-first; it does not claim a fine-grained source-semantic event stream."
+    },
+    {
+      "limit_id": "oxfunc.local.limit.no_fake_event_stream",
+      "summary": "Normalized event families are projection views only and may not invent internal evaluator steps."
+    },
+    {
+      "limit_id": "oxfunc.local.limit.c4_scaffold_only",
+      "summary": "Packet-first witness distillation is scaffolded but not proven replay-valid in this pass."
+    },
+    {
+      "limit_id": "oxfunc.local.limit.no_pack_claim",
+      "summary": "No cap.C5.pack_valid claim is made in this pass."
+    },
+    {
+      "limit_id": "oxfunc.local.limit.xll_seam_preserved",
+      "summary": "XLL and host-bridge limitations remain classified separately from core semantic failures."
+    }
+  ],
+  "conformance_artifact_refs": [
+    "docs/function-lane/OXFUNC_REPLAY_APPLIANCE_PACKET_ADAPTER_V1.md",
+    "docs/worksets/W018_REPLAY_APPLIANCE_PACKET_ADAPTER_BASELINE.md",
+    "docs/worksets/W019_PACKET_WITNESS_DISTILLATION_AND_RETENTION_BASELINE.md",
+    "docs/worksets/W020_OXFUNC_REPLAY_BUNDLE_LAYOUT_AND_INDEX_BASELINE.md",
+    "docs/worksets/W021_W15_FIRST_LIVE_REPLAY_ADAPTER_RUN_BASELINE.md",
+    "docs/function-lane/W21_EXECUTION_RECORD.md",
+    "docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md",
+    "docs/function-lane/FUNCTION_ADAPTER_LAYERING_PRELIM_SPEC.md",
+    "docs/function-lane/FORMALIZATION_STRATEGY_EXECUTABLE_SEMANTIC_MODEL.md",
+    "docs/function-lane/CROSS_BOUNDARY_INVARIANT_CHECKLIST_TEMPLATE.md",
+    "docs/function-lane/W15_PROBE_RUNTIME_REQUIREMENTS.md",
+    ".tmp/replay-bundles/oxfunc-w15-v1/bundle_manifest.json",
+    ".tmp/replay-bundles/oxfunc-w15-v1/sidecars/normalized/w15.validation.json",
+    ".tmp/replay-bundles/oxfunc-w15-v1/sidecars/normalized/w15.replay_result.json",
+    ".tmp/replay-bundles/oxfunc-w15-v1/diff/emitted/w15.default_vs_compat.json",
+    ".tmp/replay-bundles/oxfunc-w15-v1/explain/emitted/w15.explain.json"
+  ],
+  "registry_version_refs": [
+    {
+      "registry_family": "capability_level",
+      "registry_version": "foundation-handoff-20260315-pass-01",
+      "status": "foundation_snapshot"
+    },
+    {
+      "registry_family": "predicate_kind",
+      "registry_version": "foundation-handoff-20260315-pass-01",
+      "status": "foundation_snapshot"
+    },
+    {
+      "registry_family": "mismatch_kind",
+      "registry_version": "foundation-handoff-20260315-pass-01",
+      "status": "foundation_snapshot"
+    },
+    {
+      "registry_family": "witness_lifecycle_state",
+      "registry_version": "foundation-handoff-20260315-pass-01",
+      "status": "foundation_snapshot"
+    },
+    {
+      "registry_family": "reduction_status",
+      "registry_version": "foundation-handoff-20260315-pass-01",
+      "status": "foundation_snapshot"
+    },
+    {
+      "registry_family": "oxfunc.local.source_schema_id",
+      "registry_version": "oxfunc-local-v1",
+      "status": "local_only"
+    }
+  ],
+  "rollout_notes": [
+    "This manifest preserves OxFunc authority over semantic claims, evidence ids, and boundary invariants.",
+    "The adapter maps packet and row artifacts into Replay bundle form without fabricating a fake event stream.",
+    "The first live local W15 bundle now exists under .tmp/replay-bundles/oxfunc-w15-v1 and evidences cap.C0 through cap.C3 for the local adapter surface.",
+    "cap.C4.distill_valid is not claimed; W019 only establishes packet-first reduction and lifecycle policy baseline.",
+    "cap.C5.pack_valid is not claimed in this pass."
+  ]
+}

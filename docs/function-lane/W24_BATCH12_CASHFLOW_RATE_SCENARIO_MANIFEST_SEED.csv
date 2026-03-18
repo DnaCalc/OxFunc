@@ -1,0 +1,12 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+irr_simple,IRR,"IRR({-100,121})",,0.21,1E-9,Two-cashflow identity
+irr_guess,IRR,"IRR({-100,121},0.5)",,0.21,1E-9,Optional guess still converges to same root
+irr_no_sign_change,IRR,"IRR({100,121})",#NUM!,,,Missing sign change returns numeric error
+xnpv_simple,XNPV,"XNPV(0.1,{-100,121},{45000,45365})",,10,1E-9,One-year discounted irregular NPV identity
+xnpv_length_mismatch,XNPV,"XNPV(0.1,{-100,121},{45000})",#NUM!,,,Length mismatch returns numeric error
+xnpv_pre_anchor_date,XNPV,"XNPV(0.1,{-100,121},{45000,44999})",#NUM!,,,Date before anchor returns numeric error
+xirr_simple,XIRR,"XIRR({-100,121},{45000,45365})",,0.21,1E-9,One-year irregular-rate identity
+xirr_guess,XIRR,"XIRR({-100,121},{45000,45365},0.5)",,0.21,1E-9,Optional guess still converges to same root
+xirr_no_sign_change,XIRR,"XIRR({100,121},{45000,45365})",#NUM!,,,Missing sign change returns numeric error
+xirr_length_mismatch,XIRR,"XIRR({-100,121},{45000})",#NUM!,,,Length mismatch returns numeric error
+xirr_pre_anchor_date,XIRR,"XIRR({-100,121},{45000,44999})",#NUM!,,,Date before anchor returns numeric error

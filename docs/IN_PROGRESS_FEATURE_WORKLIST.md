@@ -3,7 +3,7 @@
 Canonical repo-level register of feature areas that are in-progress under workset completion doctrine.
 
 Status: active.
-Last updated: 2026-03-14.
+Last updated: 2026-03-18.
 
 ## Status Vocabulary
 
@@ -16,10 +16,10 @@ Last updated: 2026-03-14.
 ### IP-01: Function Catalog Expansion
 
 - **Status**: in-progress
-- **Current floor**: 38 functions at `function-phase-complete` across W001-W013.
-- **Remaining gaps**: remaining built-in function universe beyond the current 38; operator-as-function (`OP_*`) semantics for undeclared operators.
-- **Why still open**: function catalog is incrementally expanded through worksets; large function families remain.
-- **Canonical owner**: ongoing across worksets.
+- **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
+- **Remaining gaps**: the host/metadata/database successor packet `W023`, extracted successor packets `W025` / `W026` / `W027`, the remaining interesting-function universe, and operator-as-function (`OP_*`) semantics for undeclared operators.
+- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, and `W024` is now reconciled; the remaining low-interest work now sits in the successor extraction packets rather than the ordinary mega-batch itself.
+- **Canonical owner**: ongoing across worksets, currently `W023` / `W025` / `W026` / `W027` for the residual low-interest universe and `W014` for deferred `@`.
 
 ### IP-02: Locale and Version Sweeps
 
@@ -60,3 +60,19 @@ Last updated: 2026-03-14.
 - **Remaining gaps**: finalized upstream provenance vocabulary; reference-identity carrier; prepared-call contract; evaluation-mode contract.
 - **Why still open**: upstream interface is actively evolving; OxFunc observations inform but do not control OxFml design.
 - **Canonical owner**: cross-repo; tracked via upstream observation ledger.
+
+### IP-07: Implicit Intersection and Scalarization Semantics
+
+- **Status**: in-progress
+- **Current floor**: provisional canonicalization row `FDEF-018`; OxFml formula-language rules preserve `@` parse acceptance; W14 now records a dedicated OxFunc investigation slice and upstream handoff packet.
+- **Remaining gaps**: precise caller-context scalarization semantics, spill-anchor/reference-result provenance, compatibility-version mapping for `@` vs `SINGLE`/`_xlfn.SINGLE`, runtime implementation, Lean executable model, and deterministic replay artifacts.
+- **Why still open**: current evidence proves syntax and migration pressure, but not a fully implemented scalarization seam across OxFunc, OxFml, and FEC/F3E.
+- **Canonical owner**: `W014`.
+
+### IP-08: Replay Appliance Packet Adapter Rollout
+
+- **Status**: in-progress
+- **Current floor**: `W020` and `W021` now have a first live local proving artifact under `.tmp/replay-bundles/oxfunc-w15-v1/`, with `W21_EXECUTION_RECORD.md` and the emitted bundle validation/replay/diff/explain sidecars evidencing local `cap.C0` through `cap.C3` for the `W15` worked packet.
+- **Remaining gaps**: live `DNA ReCalc` import against an OxFunc packet bundle, replay-valid reduced packet or row witnesses, a second packet proving the adapter is not `W15`-specific, and any future pack-grade promotion evidence.
+- **Why still open**: the local adapter surface is now real and exercised, but `cap.C4` / `cap.C5` remain explicitly non-claimed and the cross-lane replay-host path is still unproven.
+- **Canonical owner**: `W018` through `W021`.

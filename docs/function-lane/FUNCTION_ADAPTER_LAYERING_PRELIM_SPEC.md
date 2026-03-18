@@ -124,7 +124,32 @@ Current adoption baseline (Rust):
 2. `ISNUMBER`, `OP_ADD`, `SUM`, `SEQUENCE`, and `INDIRECT` route values-only surface preparation through the shared runner.
 3. `XMATCH` remains split (`xmatch.rs` + `xmatch_surface.rs`) because it still needs custom surface behavior.
 
-## 9. Deferred Considerations (Post-W6 XMATCH)
+## 9. Replay Appliance Packet Adapter Role
+The Replay appliance packet adapter sits above the `P/C/K` function pipeline.
+
+It does not replace or reinterpret function semantics.
+It projects packet-native evidence into Replay bundle form.
+
+Adapter role:
+1. preserve source schema ids and source artifact refs for manifests, execution records, evidence rows, correlation rows, invariant notes, and limitation notes,
+2. expose packet and row results as normalized replay views,
+3. preserve run labels, compatibility descriptors, locale/environment metadata, and verification-surface distinctions,
+4. support replay, diff, and explain over those packet witnesses without changing how the underlying function pipeline is defined.
+
+Allowed reduction-unit hierarchy for OxFunc replay rollout:
+1. packet,
+2. row cluster,
+3. row,
+4. analysis summary,
+5. invariant declaration,
+6. limitation marker,
+7. sidecar partition.
+
+Replay rule:
+1. packet-adapter normalization may emit derived event families for indexing or explanation,
+2. but it must never invent a fake internal evaluator event stream merely for cross-lane symmetry.
+
+## 10. Deferred Considerations (Post-W6 XMATCH)
 1. Do not promote a new global evaluation-strategy axis yet (`eager_full_scan` vs `selective_probe` remains `to_consider`).
 2. Near-term selective behavior should be expressed per function via `refs_visible_in_adapter` and function-owned dereference policy, not as a mandatory cross-function abstraction.
 3. If introduced later, selective dereference capability must support reference-subset probing (sub-array/window dereference), not only whole-reference materialization.

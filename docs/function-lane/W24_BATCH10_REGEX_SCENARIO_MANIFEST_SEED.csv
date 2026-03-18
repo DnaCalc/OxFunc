@@ -1,0 +1,8 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+regexextract_digits,REGEXEXTRACT,"REGEXEXTRACT(""abc123def"",""\d+"")",123,,,Shorthand digit class extracts first digit run
+regexextract_class,REGEXEXTRACT,"REGEXEXTRACT(""abc123def"",""[a-z]+"")",abc,,,Character class extracts first lowercase run
+regexextract_nomatch,REGEXEXTRACT,"REGEXEXTRACT(""abc123def"",""XYZ"")",#N/A,,,No match returns #N/A
+regexreplace_all,REGEXREPLACE,"REGEXREPLACE(""abc123def"",""\d+"",""X"")",abcXdef,,,Occurrence omitted replaces first or only matching run here
+regexreplace_nth,REGEXREPLACE,"REGEXREPLACE(""abc123def"",""[a-z]+"",""X"",2)",abc123X,,,Positive occurrence selects the nth match
+regextest_case_insensitive,REGEXTEST,"REGEXTEST(""abc123def"",""[A-Z]+"",1)",TRUE,,,Mode 1 is case-insensitive on the current ASCII baseline
+regextest_case_sensitive,REGEXTEST,"REGEXTEST(""abc123def"",""[A-Z]+"",0)",FALSE,,,Mode 0 is case-sensitive on the current ASCII baseline

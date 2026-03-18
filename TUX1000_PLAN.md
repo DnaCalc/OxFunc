@@ -167,4 +167,46 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 6. `W13` deceptively simple boundary functions:
    - `docs/worksets/W013_DECEPTIVELY_SIMPLE_BOUNDARY_FUNCTIONS.md`
    - goal: run one packet over apparently simple functions (`SIN`, `ASIN`, `N`, `T`, `TYPE`, `VALUE`, `ROW`, `COLUMN`, `TEXT`, `DOLLAR`, `FIXED`) to settle coercion, caller-context, type-classification, and locale/format-parser seams.
+7. `W14` implicit intersection operator and scalarization seam:
+   - `docs/worksets/W014_IMPLICIT_INTERSECTION_OPERATOR.md`
+   - goal: characterize the `@` operator as an explicit semantic seam across OxFunc, OxFml, and FEC/F3E, including compatibility aliasing (`SINGLE`, `_xlfn.SINGLE`), caller-context scalarization, spill/provenance requirements, and executable/formal test planning.
+8. `W15` `CELL` and `INFO` host-query functions:
+   - `docs/worksets/W015_CELL_AND_INFO_HOST_QUERY_FUNCTIONS.md`
+   - goal: close the deferred `CELL` and `INFO` information-function seam through an explicit typed host-query contract, reproducible empirical baselines, and aligned runtime/formal artifacts without pretending these functions are pure local kernels.
+9. `W16` bulk non-interesting functions and operators:
+   - `docs/worksets/W016_BULK_NON_INTERESTING_FUNCTIONS_AND_OPERATORS.md`
+   - goal: freeze the remaining non-interesting inventory and execute family-by-family breadth implementation on top of the existing OxFunc method stack, starting with reusable pure unary numeric values-only families.
+10. `W17` deferred low-interest hardening and host-seam packet:
+   - `docs/worksets/W017_DEFERRED_LOW_INTEREST_FUNCTIONS_REQUIRING_HARDENING_AND_HOST_SEAMS.md`
+   - goal: absorb the low-interest residuals extracted at `W16` closure, separating host/query seam work from bounded semantic hardening families that still need deeper replay before honest closure.
+11. `W18` Replay appliance packet-adapter baseline:
+   - `docs/worksets/W018_REPLAY_APPLIANCE_PACKET_ADAPTER_BASELINE.md`
+   - goal: incorporate the Foundation replay handoff into OxFunc without weakening local semantic or evidence authority, publish the packet-first adapter contract and conservative capability manifest, and bind packet/evidence/invariant concepts into the local doctrine stack.
+12. `W19` packet witness-distillation and retention baseline:
+   - `docs/worksets/W019_PACKET_WITNESS_DISTILLATION_AND_RETENTION_BASELINE.md`
+   - goal: define packet-first reduction units, lifecycle, supersession, quarantine, and retention expectations for future OxFunc reduced witnesses without overclaiming `cap.C4` or `cap.C5`.
+13. `W20` emitted replay bundle layout and index baseline:
+   - `docs/worksets/W020_OXFUNC_REPLAY_BUNDLE_LAYOUT_AND_INDEX_BASELINE.md`
+   - goal: define the first explicit on-disk OxFunc replay bundle layout and index contract for packet-first bundles, including the W15 worked example.
+14. `W21` first live W15 replay-adapter run baseline:
+   - `docs/worksets/W021_W15_FIRST_LIVE_REPLAY_ADAPTER_RUN_BASELINE.md`
+   - goal: emit the first real OxFunc replay bundle for W15 and judge it against the declared skeleton, conformance checklist, and diff/explain shape targets.
+15. `W22` criteria-family shape hardening:
+   - `docs/worksets/W022_CRITERIA_FAMILY_SHAPE_HARDENING.md`
+   - goal: close the old generic criteria-family shape gap by pinning the current-baseline split between `AVERAGEIF` anchoring and exact-shape `*IFS` behavior.
+16. `W23` deferred host, metadata, and database functions:
+   - `docs/worksets/W023_DEFERRED_HOST_METADATA_AND_DATABASE_FUNCTIONS.md`
+   - goal: isolate the low-interest residuals that are not honestly pure value functions on the current boundary, namely the host-sensitive cluster, the database family, and `ISFORMULA`.
+17. `W24` ordinary functions mega-batch execution plan:
+   - `docs/worksets/W024_ORDINARY_FUNCTIONS_MEGA_BATCH_EXECUTION_PLAN.md`
+   - goal: freeze the remaining ordinary `W17` residuals into one uninterrupted execution checklist that still preserves family-level outputs, replay artifacts, tests, Lean alignment, and closure discipline.
+18. `W25` deferred misc add-in and dynamic-array outliers:
+   - `docs/worksets/W025_DEFERRED_MISC_ADDIN_AND_DYNAMIC_ARRAY_OUTLIERS.md`
+   - goal: characterize the native `#NAME?` outliers (`EUROCONVERT`, `RANDARRA`) that proved not to be ordinary current-host worksheet functions in `W24`.
+19. `W26` deferred locale/profile and provider-sensitive ordinary outliers:
+   - `docs/worksets/W026_DEFERRED_LOCALE_PROFILE_AND_PROVIDER_SENSITIVE_ORDINARY_OUTLIERS.md`
+   - goal: characterize locale/profile-sensitive width-conversion and separator-default behavior plus provider-bound `TRANSLATE` behavior outside the ordinary mega-batch assumptions.
+20. `W27` deferred advanced bond and odd-bond hardening:
+   - `docs/worksets/W027_DEFERRED_ADVANCED_BOND_AND_ODD_BOND_HARDENING.md`
+   - goal: reopen the extracted advanced bond and odd-bond families only after direct native parity packets and substrate corrections exist.
 

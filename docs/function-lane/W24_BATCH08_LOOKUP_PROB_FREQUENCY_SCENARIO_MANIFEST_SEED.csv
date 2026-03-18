@@ -1,0 +1,10 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+W24LP-001,W24-BATCH08-LOOKUP-PROB-FREQ,"LOOKUP(2.9,{1,2,3},{10,20,30})",,20,0,"Vector-form approximate lookup."
+W24LP-002,W24-BATCH08-LOOKUP-PROB-FREQ,"LOOKUP(2.9,{1,10;2,20;3,30})",,20,0,"Tall array-form heuristic uses first column and last column."
+W24LP-003,W24-BATCH08-LOOKUP-PROB-FREQ,"LOOKUP(4,{1,2,3},{10,20,30})",,30,0,"Approximate lookup returns the last <= match."
+W24LP-004,W24-BATCH08-LOOKUP-PROB-FREQ,"ARRAYTOTEXT(FREQUENCY({1;2;2;3;4},{2;3}),1)","{3;1;1}",,,"FREQUENCY vertical count witness."
+W24LP-005,W24-BATCH08-LOOKUP-PROB-FREQ,"PROB({0;1;2},{0.2;0.3;0.5},1)",,0.3,0.000000000001,"Point probability lane."
+W24LP-006,W24-BATCH08-LOOKUP-PROB-FREQ,"PROB({0;1;2},{0.2;0.3;0.5},1,2)",,0.8,0.000000000001,"Interval probability lane."
+W24LP-007,W24-BATCH08-LOOKUP-PROB-FREQ,"PROB({0;1;2},{0.2;0.3;0.4},1)",#NUM!,,,"Probability vector that does not sum to one yields #NUM!."
+W24LP-008,W24-BATCH08-LOOKUP-PROB-FREQ,"ARRAYTOTEXT(MODE.MULT({1;2;2;3;3}),1)","{2;3}",,,"MODE.MULT vertical sorted modes witness."
+W24LP-009,W24-BATCH08-LOOKUP-PROB-FREQ,"MODE.MULT({1;2;3})",#N/A,,,"No surviving mode yields #N/A."

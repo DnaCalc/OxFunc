@@ -1,0 +1,11 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+amorlinc_basis1_period0,AMORLINC,"AMORLINC(2400,39679,39813,300,0,0.15,1)",,131.8032786885246,1E-9,Support-example first prorated depreciation
+amorlinc_basis1_period1,AMORLINC,"AMORLINC(2400,39679,39813,300,1,0.15,1)",,360,1E-9,Support-example first full annual period
+amorlinc_basis1_period6,AMORLINC,"AMORLINC(2400,39679,39813,300,6,0.15,1)",,168.19672131147536,1E-9,Support-example final partial depreciation
+amordegrc_basis1_period0,AMORDEGRC,"AMORDEGRC(2400,39679,39813,300,0,0.15,1)",,330,1E-9,Support-example first period accelerated depreciation
+amordegrc_basis1_period1,AMORDEGRC,"AMORDEGRC(2400,39679,39813,300,1,0.15,1)",,776,1E-9,Support-example second period accelerated depreciation
+amordegrc_basis1_period6,AMORDEGRC,"AMORDEGRC(2400,39679,39813,300,6,0.15,1)",,0,1E-9,Support-example terminal depreciation with salvage
+amorlinc_basis0_period0,AMORLINC,"AMORLINC(2400,39679,39813,300,0,0.15,0)",,132,1E-9,Basis 0 first-period lane
+amorlinc_basis3_period0,AMORLINC,"AMORLINC(2400,39679,39813,300,0,0.15,3)",,132.16438356164383,1E-9,Basis 3 first-period lane
+amorlinc_basis4_period0,AMORLINC,"AMORLINC(2400,39679,39813,300,0,0.15,4)",,131,1E-9,Basis 4 first-period lane
+amordegrc_basis4_period0,AMORDEGRC,"AMORDEGRC(2400,39679,39813,300,0,0.15,4)",,328,1E-9,Basis 4 first-period accelerated lane

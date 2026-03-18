@@ -1,1 +1,3 @@
 handoff_id,direction,title,status,source_workset,target_workset,filed_date,acknowledged_date
+"HO-FN-001","OxFunc->OxFml","W14 implicit intersection and scalarization seam requirements","filed","W014","OxFml formula-language + fec-f3e","2026-03-14",""
+"HO-FN-002","OxFunc->OxFml","W15 CELL and INFO typed host-query seam","acknowledged","W015","OxFml formula-language + fec-f3e","2026-03-15","2026-03-15"

@@ -14,6 +14,11 @@ Usage:
 2. Version scope (Excel build/channel + compatibility):
 3. Locale scope:
 4. Evidence IDs:
+5. Replay bundle ref(s):
+6. Source schema id(s):
+7. Predicate ref(s):
+8. Witness / reduction ref(s):
+9. Retention or quarantine state:
 
 ## Boundary Lanes
 1. Formula evaluation lane (`formula -> value`)
@@ -29,6 +34,9 @@ Usage:
    - Boundaries covered:
    - Scenario IDs:
    - Expected observation:
+   - Replay binding refs:
+   - Predicate / mismatch refs:
+   - Witness retention expectation:
    - Status (`open`|`provisional`|`validated`):
    - Notes:
 2. Invariant ID:
@@ -36,6 +44,9 @@ Usage:
    - Boundaries covered:
    - Scenario IDs:
    - Expected observation:
+   - Replay binding refs:
+   - Predicate / mismatch refs:
+   - Witness retention expectation:
    - Status (`open`|`provisional`|`validated`):
    - Notes:
 3. Invariant ID:
@@ -43,6 +54,9 @@ Usage:
    - Boundaries covered:
    - Scenario IDs:
    - Expected observation:
+   - Replay binding refs:
+   - Predicate / mismatch refs:
+   - Witness retention expectation:
    - Status (`open`|`provisional`|`validated`):
    - Notes:
 
@@ -55,6 +69,9 @@ Usage:
    - confirm whether value survives reference reuse and persistence unchanged.
 4. Admission invariant:
    - define parse/set admission boundaries versus runtime evaluation boundaries.
+5. Replay-binding invariant:
+   - state which packet rows, evidence ids, limitation refs, and predicate refs must remain attached if the invariant is used for explain or witness distillation.
 
 ## Closure Rule
 1. A workset cannot claim characterization closure without at least one validated invariant per active boundary lane.
+2. If an invariant is used to justify replay explainability or reduced-witness retention, the retained witness must preserve its scenario ids, evidence ids, and predicate ref, or else be quarantined explicitly.

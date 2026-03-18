@@ -1,0 +1,4 @@
+residual_class,source,target_count,functions,reason
+host_sensitive,W17_host_sensitive,10,"AGGREGATE; CALL; COPILOT; DETECTLANGUAGE; GETPIVOTDATA; HYPERLINK; IMAGE; PHONETIC; REGISTER.ID; SUBTOTAL","Need new host/query or visibility seams"
+database_family,W17_database_family,12,"DAVERAGE; DCOUNT; DCOUNTA; DGET; DMAX; DMIN; DPRODUCT; DSTDEV; DSTDEVP; DSUM; DVAR; DVARP","Need separate record/criteria-grid replay and field/header semantics hardening"
+metadata_query,W17_isformula,1,"ISFORMULA","Needs cell-formula metadata seam rather than value-only evaluation"

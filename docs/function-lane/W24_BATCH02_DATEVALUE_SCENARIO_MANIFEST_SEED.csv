@@ -1,0 +1,17 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+W24DV-001,W24-BATCH02-DATEVALUE,"DATEVALUE(""2024-02-03"")",,45325,0,ISO date text admitted.
+W24DV-002,W24-BATCH02-DATEVALUE,"DATEVALUE(""2024-02-03 6:35 AM"")",,45325,0,DATEVALUE ignores admitted time suffix.
+W24DV-003,W24-BATCH02-DATEVALUE,"DATEVALUE(""6:35 AM"")",,0,0,Pure time text yields zero date serial in current baseline.
+W24DV-004,W24-BATCH02-DATEVALUE,"DATEVALUE(""22-Aug-2008"")",,39682,0,d-MMM-yyyy text admitted.
+W24DV-005,W24-BATCH02-DATEVALUE,"DATEVALUE(""1/2/2024"")",#VALUE!,,,"Slash-date text remains rejected in current admitted slice."
+W24DV-006,W24-BATCH02-DATEVALUE,"TIMEVALUE(""2:24 AM"")",,0.1,0.000000000001,Pure time text admitted.
+W24DV-007,W24-BATCH02-DATEVALUE,"TIMEVALUE(""22-Aug-2008 6:35 AM"")",,0.2743055555555556,0.000000001,Time fraction preserved from admitted date-time text.
+W24DV-008,W24-BATCH02-DATEVALUE,"TIMEVALUE(""2024-02-03"")",,0,0,Date-only text yields zero time fraction.
+W24DV-009,W24-BATCH02-DATEVALUE,"TIMEVALUE(""1/2/2024 6:35 AM"")",#VALUE!,,,"Slash-date plus time remains rejected in current admitted slice."
+W24DV-010,W24-BATCH02-DATEVALUE,"DAYS360(DATE(2024,2,29),DATE(2024,3,31),FALSE)",,30,0,NASD/US February-end divergence.
+W24DV-011,W24-BATCH02-DATEVALUE,"DAYS360(DATE(2024,2,29),DATE(2024,3,31),TRUE)",,31,0,European method February-end divergence.
+W24DV-012,W24-BATCH02-DATEVALUE,"DAYS360(DATE(2011,2,28),DATE(2011,3,31),TRUE)",,32,0,European method on non-leap February end.
+W24DV-013,W24-BATCH02-DATEVALUE,"DATEDIF(DATE(2001,6,1),DATE(2002,8,15),""YD"")",,75,0,YD lane pinned.
+W24DV-014,W24-BATCH02-DATEVALUE,"DATEDIF(DATE(2001,1,31),DATE(2001,2,28),""MD"")",,28,0,Empirically pinned quirky MD lane.
+W24DV-015,W24-BATCH02-DATEVALUE,"DATEDIF(DATE(2001,1,31),DATE(2001,3,1),""MD"")",,-2,0,Empirically pinned negative MD lane.
+W24DV-016,W24-BATCH02-DATEVALUE,"DATEDIF(DATE(2001,6,1),DATE(2002,8,15),""Q"")",#NUM!,,,"Invalid unit yields #NUM!."

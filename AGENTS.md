@@ -93,6 +93,12 @@ Mode: **checkpoint-at-gates** with mature-repo calibration.
 2. AutoRun is disabled by default.
 3. AutoRun may only be enabled when explicitly requested by the user for a specific scope.
 4. Between gates, the agent may proceed autonomously within the declared workset scope (scope-bounded autonomous execution).
+5. When AutoRun is explicitly enabled and the user sets a named exit gate, the agent must remain silent until one of only two conditions holds:
+   - the declared AutoRun exit gate has been reached, or
+   - all remaining in-scope paths are blocked and `CURRENT_BLOCKERS.md` has been updated.
+6. User messages such as `continue`, `go on`, or equivalent resume nudges do not create a checkpoint and do not justify an interim status reply while an AutoRun gate remains open.
+7. During AutoRun, partial progress must be recorded in repository artifacts, checklist rows, and blocker entries rather than emitted as chat status.
+8. If a response is required because all remaining paths are blocked, the response must be a blocker summary only; it must not be framed as a checkpoint or partial completion report.
 
 Mature-repo note: OxFunc has 13+ worksets and 38 function-phase-complete functions, exceeding the 5-workset threshold for conservative gate-pausing. Gate discipline remains mandatory but the agent has demonstrated execution history to support scope-bounded autonomy between gates.
 

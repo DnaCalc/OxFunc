@@ -1,0 +1,8 @@
+scenario_id,lane,formula,expected_text,notes
+W24AS-001,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT({TRUE,#VALUE!;""Hello"",2},0)","TRUE, #VALUE!, Hello, 2","Concise mode renders row-major text without braces."
+W24AS-002,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT({TRUE,#VALUE!;""Hello"",2},1)","{TRUE,#VALUE!;""Hello"",2}","Strict mode renders braces, row separators, and quoted text cells."
+W24AS-003,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT(TEXTSPLIT(""Dakota Lennon Sanchez"","" ""),1)","{""Dakota"",""Lennon"",""Sanchez""}","TEXTSPLIT column delimiter witness."
+W24AS-004,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT(TEXTSPLIT(""1,2,3;4,5"","","","";""),1)","{""1"",""2"",""3"";""4"",""5"",#N/A}","TEXTSPLIT row+column split with default padding."
+W24AS-005,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT(TEXTSPLIT(""Do. Or do not. There is no try. -Anonymous"",{""."",""-""},,TRUE),1)","{""Do"","" Or do not"","" There is no try"","" "",""Anonymous""}","TEXTSPLIT multi-delimiter array with ignore_empty."
+W24AS-006,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT(TEXTSPLIT(""aXbxc"",""x"",,FALSE,1,""pad""),1)","{""a"",""b"",""c""}","ASCII-only case-insensitive match_mode."
+W24AS-007,W24-BATCH04-ARRAY-TEXT-SPLIT,"ARRAYTOTEXT(TEXTSPLIT(""1,2,3;4,5"","","","";"",FALSE,0,""pad""),1)","{""1"",""2"",""3"";""4"",""5"",""pad""}","Explicit pad_with replaces default #N/A."

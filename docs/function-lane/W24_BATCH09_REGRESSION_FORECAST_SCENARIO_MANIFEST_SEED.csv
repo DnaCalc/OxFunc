@@ -1,0 +1,20 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+trend_default,TREND,"ARRAYTOTEXT(TREND({2;4;6}),1)","{2;4;6}",,,Default known_x sequence preserves known_y shape
+trend_vector,TREND,"ARRAYTOTEXT(TREND({2;4;6},{1;2;3},{4;5}),1)","{8;10}",,,Single-predictor vector new_x returns matching column vector
+trend_matrix,TREND,"ARRAYTOTEXT(TREND({2;4;6},{1;2;3},{1,2;3,4}),1)","{2,4;6,8}",,,Single-predictor matrix new_x preserves matrix shape
+trend_scalar,TREND,"TREND({2;4;6},{1;2;3},4)",,8,1E-12,Scalar new_x returns scalar
+trend_multivariate,TREND,"ARRAYTOTEXT(TREND({6;8;9;11;10},{1,1;2,1;1,2;2,2;3,1},{4,1;4,2}),1)","{12;15}",,,Multivariate new_x rows return vertical projection vector
+trend_multivariate_bad_newx,TREND,"ARRAYTOTEXT(TREND({3;5;7},{1,2;2,4;3,6},{4;5}),1)",#REF!,,,Multivariate new_x requires matching predictor column count
+growth_vector,GROWTH,"ARRAYTOTEXT(GROWTH({2;4;8},,{4;5}),1)","{16;32}",,,Default known_x sequence drives exponential projection
+growth_multivariate_1,GROWTH,"INDEX(GROWTH({9;18;27;54;72},{1,1;2,1;1,2;2,2;3,2},{4,1;4,2}),1)",,47.9999999999999,1E-9,First multivariate growth projection
+growth_multivariate_2,GROWTH,"INDEX(GROWTH({9;18;27;54;72},{1,1;2,1;1,2;2,2;3,2},{4,1;4,2}),2)",,136.421762958185,1E-9,Second multivariate growth projection
+growth_nonpositive,GROWTH,"GROWTH({3;0;12},{1;2;3})",#NUM!,,,Nonpositive known_y is rejected
+linest_single,LINEST,"ARRAYTOTEXT(LINEST({3;5;7},{1;2;3}),1)","{2,1}",,,Raw coefficient row for single predictor
+linest_no_const,LINEST,"ARRAYTOTEXT(LINEST({2;4;6},{1;2;3},FALSE),1)","{2,0}",,,Const FALSE retains trailing zero intercept cell
+linest_multi,LINEST,"ARRAYTOTEXT(LINEST({6;8;9;11;10},{1,1;2,1;1,2;2,2;3,1}),1)","{3,2,1}",,,Multivariate coefficients are returned in reverse predictor order then intercept
+logest_single,LOGEST,"ARRAYTOTEXT(LOGEST({3;6;12},{1;2;3}),1)","{2,1.5}",,,Raw factor/base row for single predictor
+logest_no_const_1,LOGEST,"INDEX(LOGEST({3;6;12},{1;2;3},FALSE),1)",,2.37956557896877,1E-12,Const FALSE still publishes trailing base cell
+logest_no_const_2,LOGEST,"INDEX(LOGEST({3;6;12},{1;2;3},FALSE),2)",,1,1E-12,Const FALSE base cell is exactly one
+logest_multi_1,LOGEST,"INDEX(LOGEST({9;18;27;54;72},{1,1;2,1;1,2;2,2;3,2}),1)",,2.84212006162885,1E-9,First multivariate growth factor in reverse predictor order
+logest_multi_2,LOGEST,"INDEX(LOGEST({9;18;27;54;72},{1,1;2,1;1,2;2,2;3,2}),2)",,1.70056600083439,1E-9,Second multivariate growth factor in reverse predictor order
+logest_multi_3,LOGEST,"INDEX(LOGEST({9;18;27;54;72},{1,1;2,1;1,2;2,2;3,2}),3)",,2.01941161117829,1E-9,Intercept base is last

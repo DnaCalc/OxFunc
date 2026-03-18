@@ -111,3 +111,4 @@ Assurance maturity:
 6. W11 follow-back readiness is improved by explicit `TODAY`/`RAND` volatile candidates and `CELL`/`OFFSET` caller-context candidates.
 7. the non-`CELL` W12 slices are now `function-phase-complete` for the current implementation phase: `AVERAGE`, `COUNT`, `COUNTA`, `IFERROR`, `ROUND`, `TEXTJOIN`, `TODAY`, `RAND`, `OFFSET`, `AND`, `CLEAN`, `DATE`, `EXACT`, and `HSTACK`.
 8. the packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam discussion.
+9. deferred `CELL` completion now continues in `docs/worksets/W015_CELL_AND_INFO_HOST_QUERY_FUNCTIONS.md`.

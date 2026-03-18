@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+extracted_outlier,W24_batch15,2,"EUROCONVERT; RANDARRA","Native replay on 2026-03-18 returned #NAME! on the current host baseline, so these do not honestly belong to the ordinary W24 closure slice"

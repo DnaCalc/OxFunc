@@ -1,0 +1,24 @@
+reconciliation_class,row_count,owner,raw_rows,disposition,notes
+closed_in_w16,288,W16,ALL_REMAINING_RAW_ROWS_NOT_LISTED_BELOW,closed_in_w16,Raw inventory rows that reached honest current-baseline closure inside W16
+grouped_alias_rows,7,W16,"FIND, FINDB; LEFT, LEFTB; LEN, LENB; MID, MIDB; REPLACE, REPLACEB; RIGHT, RIGHTB; SEARCH, SEARCHB",covered_by_member_functions,Grouped inventory rows reconciled to implemented member functions rather than left open
+deferred_to_w17_host,10,W17,"AGGREGATE; CALL; COPILOT; DETECTLANGUAGE; GETPIVOTDATA; HYPERLINK; IMAGE; PHONETIC; REGISTER.ID; SUBTOTAL",deferred_to_w17,Need new host/query or visibility seams
+deferred_to_w17_batch48,4,W17,"DATEVALUE; TIMEVALUE; DAYS360; DATEDIF",deferred_to_w17,Batch 48 remained bounded/self-contained
+deferred_to_w17_batch49,2,W17,"SWITCH; ISFORMULA",deferred_to_w17,Batch 49 still carried branch/query seam limits
+deferred_to_w17_batch51,7,W17,"COUNTIF; COUNTIFS; SUMIFS; AVERAGEIF; AVERAGEIFS; MAXIFS; MINIFS",deferred_to_w17,Offset-size top-left anchoring still open
+deferred_to_w17_batch54,9,W17,"ERF; ERF.PRECISE; ERFC; ERFC.PRECISE; GAMMA; GAMMALN; GAMMALN.PRECISE; WEIBULL; WEIBULL.DIST",deferred_to_w17,Special-distribution family still carried explicit open semantic lanes
+deferred_to_w17_batch55,15,W17,"PV; FV; PMT; NPER; NPV; RATE; IPMT; PPMT; ISPMT; MIRR; FVSCHEDULE; PDURATION; RRI; NOMINAL; EFFECT",deferred_to_w17,Financial time-value family still carried explicit open semantic lanes
+deferred_to_w17_batch61,2,W17,"TEXTAFTER; TEXTBEFORE",deferred_to_w17,Text delimiter family remained scaffolded/self-contained
+deferred_to_w17_batch62,2,W17,"CONFIDENCE.T; Z.TEST",deferred_to_w17,Confidence/test helper family remained partial
+deferred_to_w17_batch66,4,W17,"GROWTH; TREND; LINEST; LOGEST",deferred_to_w17,Regression/forecast family remained bounded
+deferred_to_w17_batch67,2,W17,"ARRAYTOTEXT; TEXTSPLIT",deferred_to_w17,Array/text split family remained narrower than full Excel parity
+deferred_to_w17_batch68,12,W17,"DAVERAGE; DCOUNT; DCOUNTA; DGET; DMAX; DMIN; DPRODUCT; DSTDEV; DSTDEVP; DSUM; DVAR; DVARP",deferred_to_w17,Database family remained bounded
+deferred_to_w17_batch69,6,W17,"COUPDAYBS; COUPDAYS; COUPDAYSNC; COUPNCD; COUPNUM; COUPPCD",deferred_to_w17,Coupon family remained bounded
+deferred_to_w17_batch71,3,W17,"IRR; XNPV; XIRR",deferred_to_w17,Cashflow/rate family remained bounded
+deferred_to_w17_stat_tests,7,W17,"CHISQ.TEST; CHITEST; F.TEST; FTEST; T.TEST; TTEST; ZTEST",deferred_to_w17,Modern test family and aliases remained partial
+deferred_to_w17_batch74,3,W17,"ASC; DBCS; JIS",deferred_to_w17,Locale/width-conversion family remained bounded
+deferred_to_w17_batch75,5,W17,"NUMBERVALUE; REGEXEXTRACT; REGEXREPLACE; REGEXTEST; TRANSLATE",deferred_to_w17,Regex/translate family remained bounded and provider-sensitive
+deferred_to_w17_batch77,4,W17,"LOOKUP; FREQUENCY; PROB; MODE.MULT",deferred_to_w17,Lookup/prob/frequency family remained bounded
+deferred_to_w17_batch79,9,W17,"ACCRINT; ACCRINTM; DURATION; MDURATION; PRICE; PRICEMAT; YIELD; YIELDDISC; YIELDMAT",deferred_to_w17,Bond core family remained bounded
+deferred_to_w17_batch80,4,W17,"ODDFPRICE; ODDFYIELD; ODDLPRICE; ODDLYIELD",deferred_to_w17,Odd-bond family remained bounded
+deferred_to_w17_batch81,2,W17,"AMORDEGRC; AMORLINC",deferred_to_w17,AMOR depreciation family remained bounded
+deferred_to_w17_batch82,5,W17,"BAHTTEXT; CONVERT; EUROCONVERT; PERCENTOF; RANDARRA",deferred_to_w17,Misc conversion/provider family remained bounded

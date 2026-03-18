@@ -151,6 +151,24 @@ This template is the generalization seed for `SIN`, `SUM`, `ROW`, and later fami
 8. Cross-cutting worksets must instantiate a cross-boundary invariant checklist (formula, interop ingress, reference reuse, persistence/interchange, and any additional active boundaries).
 9. Boundary evidence must report seam-level status and function semantic status separately so adversarial seam tests do not pollute function conformance failure counts.
 
+### 8.1 Replay Appliance Rule
+Replay bundles, adapter manifests, explain records, and witness lifecycle records are Logistics-layer artifacts.
+
+Rules:
+1. they are secondary evidence carriers and must not become a new OxFunc semantic authority,
+2. packet-first and row-first artifacts are the honest default replay surface for OxFunc,
+3. normalized event families may be projected for tooling convenience but must never fabricate a fake internal evaluator event stream,
+4. XLL or host-bridge limitations must remain classified separately from core semantic failures inside replay diff/explain surfaces,
+5. Replay adapter capability levels (`cap.C0` through `cap.C5`) are rollout claims about replay tooling support, not substitutes for function-semantic closure.
+
+### 8.2 Silent AutoRun Protocol
+When the user explicitly enables AutoRun for a named scope and sets an exit gate:
+1. the agent must treat repository artifacts as the progress surface and chat output as suppressed,
+2. no interim status, checkpoint, or partial-progress reply may be emitted before the exit gate is reached,
+3. repeated user prompts such as `continue` are resume confirmations, not new report requests,
+4. the only allowed pre-gate chat output is a blocker-only summary when every remaining in-scope path is blocked and the blocker ledger has been updated,
+5. the first ordinary report after a silent AutoRun run must occur at the declared exit gate and must still satisfy the normal completeness-reporting rules.
+
 ## 9. Doctrine and Plan Change Workflow
 1. Routine function-row and implementation updates do not require synthesis runs by default.
 2. Doctrine-shifting changes (gate model, evidence policy, status semantics, profile rules) must include a logged synthesis/decision record.

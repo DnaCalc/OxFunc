@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+finance_hardening,W24_extracted_bond_odd_bond,13,"ACCRINT; ACCRINTM; DURATION; MDURATION; PRICE; PRICEMAT; YIELD; YIELDDISC; YIELDMAT; ODDFPRICE; ODDFYIELD; ODDLPRICE; ODDLYIELD","Native replay on 2026-03-18 exposed direct Excel parity gaps or unclosed substrate questions, so these functions were extracted out of the ordinary W24 mega-batch"

@@ -1,0 +1,9 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+W24CT-001,W24-BATCH05-CONFIDENCE-TEST,"CONFIDENCE.T(0.05,2.5,50)",,0.710492138739324,0.000000001,"Primary scalar confidence lane."
+W24CT-002,W24-BATCH05-CONFIDENCE-TEST,"CONFIDENCE.T(1,2.5,50)",#NUM!,,,"Invalid alpha yields #NUM!."
+W24CT-003,W24-BATCH05-CONFIDENCE-TEST,"CONFIDENCE.T(0.05,0,50)",#NUM!,,,"Invalid sigma yields #NUM!."
+W24CT-004,W24-BATCH05-CONFIDENCE-TEST,"Z.TEST({3;6;7;8;6},4,1.5)",,0.00143455639603831,0.000000000001,"Supplied sigma lane."
+W24CT-005,W24-BATCH05-CONFIDENCE-TEST,"Z.TEST({3;6;7;8;6},4)",,0.00841370474137842,0.000000000001,"Default sample-standard-deviation lane."
+W24CT-006,W24-BATCH05-CONFIDENCE-TEST,"Z.TEST({3,""x"";6,TRUE;8,""""},
+4,1.5)",,0.0271459141834273,0.000000000001,"Text, logical, and blank survivors are ignored."
+W24CT-007,W24-BATCH05-CONFIDENCE-TEST,"Z.TEST({3,""x"";6,TRUE;#N/A,8},4,1.5)",#N/A,,,"Error survivor propagates."

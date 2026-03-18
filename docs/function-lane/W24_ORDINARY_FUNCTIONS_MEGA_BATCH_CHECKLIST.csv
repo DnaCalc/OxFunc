@@ -1,0 +1,88 @@
+execution_order,wave,source_family,function,status,notes
+1,1,W16_batch48,DATEVALUE,done,Closed by W24 Batch 02 date-value packet
+2,1,W16_batch48,TIMEVALUE,done,Closed by W24 Batch 02 date-value packet
+3,1,W16_batch48,DAYS360,done,Closed by W24 Batch 02 date-value packet
+4,1,W16_batch48,DATEDIF,done,Closed by W24 Batch 02 date-value packet
+5,1,W16_batch49,SWITCH,done,Closed by W24 Batch 01 SWITCH packet
+6,1,W16_batch61,TEXTAFTER,done,Closed by W24 Batch 03 text delimiter packet
+7,1,W16_batch61,TEXTBEFORE,done,Closed by W24 Batch 03 text delimiter packet
+8,1,W16_batch67,ARRAYTOTEXT,done,Closed by W24 Batch 04 array/text split packet
+9,1,W16_batch67,TEXTSPLIT,done,Closed by W24 Batch 04 array/text split packet
+10,2,W16_batch62,CONFIDENCE.T,done,Closed by W24 Batch 05 confidence/test packet
+11,2,W16_batch62,Z.TEST,done,Closed by W24 Batch 05 confidence/test packet
+12,2,W16_batch54,ERF,done,Closed by W24 Batch 06 special-distribution packet
+13,2,W16_batch54,ERF.PRECISE,done,Closed by W24 Batch 06 special-distribution packet
+14,2,W16_batch54,ERFC,done,Closed by W24 Batch 06 special-distribution packet
+15,2,W16_batch54,ERFC.PRECISE,done,Closed by W24 Batch 06 special-distribution packet
+16,2,W16_batch54,GAMMA,done,Closed by W24 Batch 06 special-distribution packet
+17,2,W16_batch54,GAMMALN,done,Closed by W24 Batch 06 special-distribution packet
+18,2,W16_batch54,GAMMALN.PRECISE,done,Closed by W24 Batch 06 special-distribution packet
+19,2,W16_batch54,WEIBULL,done,Closed by W24 Batch 06 special-distribution packet
+20,2,W16_batch54,WEIBULL.DIST,done,Closed by W24 Batch 06 special-distribution packet
+21,2,W16_stat_tests,CHISQ.TEST,done,Closed by W24 Batch 07 statistical-test packet
+22,2,W16_stat_tests,CHITEST,done,Closed by W24 Batch 07 statistical-test packet
+23,2,W16_stat_tests,F.TEST,done,Closed by W24 Batch 07 statistical-test packet
+24,2,W16_stat_tests,FTEST,done,Closed by W24 Batch 07 statistical-test packet
+25,2,W16_stat_tests,T.TEST,done,Closed by W24 Batch 07 statistical-test packet
+26,2,W16_stat_tests,TTEST,done,Closed by W24 Batch 07 statistical-test packet
+27,2,W16_stat_tests,ZTEST,done,Closed by W24 Batch 07 statistical-test packet
+28,3,W16_batch77,LOOKUP,done,Closed by W24 Batch 08 lookup/prob/frequency packet
+29,3,W16_batch77,FREQUENCY,done,Closed by W24 Batch 08 lookup/prob/frequency packet
+30,3,W16_batch77,PROB,done,Closed by W24 Batch 08 lookup/prob/frequency packet
+31,3,W16_batch77,MODE.MULT,done,Closed by W24 Batch 08 lookup/prob/frequency packet
+32,3,W16_batch66,GROWTH,done,Closed by W24 Batch 09 regression/forecast packet
+33,3,W16_batch66,TREND,done,Closed by W24 Batch 09 regression/forecast packet
+34,3,W16_batch66,LINEST,done,Closed by W24 Batch 09 regression/forecast packet
+35,3,W16_batch66,LOGEST,done,Closed by W24 Batch 09 regression/forecast packet
+36,4,W16_batch74,ASC,extracted,Extracted to W26 locale/profile-sensitive successor packet
+37,4,W16_batch74,DBCS,extracted,Extracted to W26 locale/profile-sensitive successor packet
+38,4,W16_batch74,JIS,extracted,Extracted to W26 locale/profile-sensitive successor packet
+39,4,W16_batch75,NUMBERVALUE,extracted,Extracted to W26 locale/profile-sensitive successor packet
+40,4,W16_batch75,REGEXEXTRACT,done,Closed by W24 Batch 10 regex-triad packet
+41,4,W16_batch75,REGEXREPLACE,done,Closed by W24 Batch 10 regex-triad packet
+42,4,W16_batch75,REGEXTEST,done,Closed by W24 Batch 10 regex-triad packet
+43,4,W16_batch75,TRANSLATE,extracted,Extracted to W26 locale/profile/provider-sensitive successor packet
+44,5,W16_batch55,PV,done,Closed by W24 Batch 11 financial time-value packet
+45,5,W16_batch55,FV,done,Closed by W24 Batch 11 financial time-value packet
+46,5,W16_batch55,PMT,done,Closed by W24 Batch 11 financial time-value packet
+47,5,W16_batch55,NPER,done,Closed by W24 Batch 11 financial time-value packet
+48,5,W16_batch55,NPV,done,Closed by W24 Batch 11 financial time-value packet
+49,5,W16_batch55,RATE,done,Closed by W24 Batch 11 financial time-value packet
+50,5,W16_batch55,IPMT,done,Closed by W24 Batch 11 financial time-value packet
+51,5,W16_batch55,PPMT,done,Closed by W24 Batch 11 financial time-value packet
+52,5,W16_batch55,ISPMT,done,Closed by W24 Batch 11 financial time-value packet
+53,5,W16_batch55,MIRR,done,Closed by W24 Batch 11 financial time-value packet
+54,5,W16_batch55,FVSCHEDULE,done,Closed by W24 Batch 11 financial time-value packet
+55,5,W16_batch55,PDURATION,done,Closed by W24 Batch 11 financial time-value packet
+56,5,W16_batch55,RRI,done,Closed by W24 Batch 11 financial time-value packet
+57,5,W16_batch55,NOMINAL,done,Closed by W24 Batch 11 financial time-value packet
+58,5,W16_batch55,EFFECT,done,Closed by W24 Batch 11 financial time-value packet
+59,5,W16_batch71,IRR,done,Closed by W24 Batch 12 cashflow/rate packet
+60,5,W16_batch71,XNPV,done,Closed by W24 Batch 12 cashflow/rate packet
+61,5,W16_batch71,XIRR,done,Closed by W24 Batch 12 cashflow/rate packet
+62,6,W16_batch69,COUPDAYBS,done,Closed by W24 Batch 13 coupon packet
+63,6,W16_batch69,COUPDAYS,done,Closed by W24 Batch 13 coupon packet
+64,6,W16_batch69,COUPDAYSNC,done,Closed by W24 Batch 13 coupon packet
+65,6,W16_batch69,COUPNCD,done,Closed by W24 Batch 13 coupon packet
+66,6,W16_batch69,COUPNUM,done,Closed by W24 Batch 13 coupon packet
+67,6,W16_batch69,COUPPCD,done,Closed by W24 Batch 13 coupon packet
+68,6,W16_batch79,ACCRINT,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+69,6,W16_batch79,ACCRINTM,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+70,6,W16_batch79,DURATION,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+71,6,W16_batch79,MDURATION,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+72,6,W16_batch79,PRICE,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+73,6,W16_batch79,PRICEMAT,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+74,6,W16_batch79,YIELD,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+75,6,W16_batch79,YIELDDISC,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+76,6,W16_batch79,YIELDMAT,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+77,6,W16_batch80,ODDFPRICE,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+78,6,W16_batch80,ODDFYIELD,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+79,6,W16_batch80,ODDLPRICE,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+80,6,W16_batch80,ODDLYIELD,extracted,Extracted to W27 advanced bond and odd-bond hardening packet
+81,6,W16_batch81,AMORDEGRC,done,Closed by W24 Batch 14 AMOR depreciation packet
+82,6,W16_batch81,AMORLINC,done,Closed by W24 Batch 14 AMOR depreciation packet
+83,7,W16_batch82,BAHTTEXT,done,Closed by W24 Batch 15 misc ordinary conversion packet
+84,7,W16_batch82,CONVERT,done,Closed by W24 Batch 15 misc ordinary conversion packet
+85,7,W16_batch82,EUROCONVERT,extracted,Extracted to W25 add-in and dynamic-array outlier packet
+86,7,W16_batch82,PERCENTOF,done,Closed by W24 Batch 15 misc ordinary conversion packet
+87,7,W16_batch82,RANDARRA,extracted,Extracted to W25 add-in and dynamic-array outlier packet

@@ -136,6 +136,44 @@ Expected alignment chain:
 
 If any one of those moves, the correlation row and/or shared manifest should expose the drift.
 
+### 9A. Replay-Bundle and Evidence-Correlation Binding
+Replay appliance bundle projections are an additional alignment carrier, not a replacement semantic authority.
+
+For OxFunc they should bind:
+1. source manifest rows,
+2. execution-record summaries,
+3. evidence ids,
+4. correlation-ledger refs,
+5. function-contract refs,
+6. formal artifact refs,
+7. limitation refs,
+8. invariant refs.
+
+Replay rule:
+1. normalized replay views may summarize or index these bindings,
+2. but they must not sever the direct path back to the local contract/evidence/correlation artifacts that define OxFunc meaning.
+
+### 9B. Capability-Level Evidence Path
+Replay adapter capability claims and formal maturity claims are related but not identical.
+
+Current OxFunc rollout rule:
+1. `cap.C0.ingest_valid` through `cap.C3.explain_valid` may be claimed through bundle-valid packet import, replay, diff, and explain surfaces over manifest-driven empirical packets.
+2. `cap.C4.distill_valid` requires a locally proven reduced witness that remains replay-valid under an explicit preservation predicate.
+3. `cap.C5.pack_valid` requires pack-policy evidence and witness-lifecycle promotion evidence.
+
+Formal consequence:
+1. a replay capability claim does not by itself strengthen a semantic claim,
+2. and a reduced witness cannot strengthen a formal or empirical claim unless its lifecycle state and replay-valid status are explicit.
+
+### 9C. Witness Lifecycle Effect On Claims
+Witness lifecycle state affects how replay artifacts may be used in OxFunc reasoning.
+
+Rules:
+1. `wit.explanatory_only` witnesses may support explanation but do not upgrade semantic closure claims.
+2. `wit.quarantined` witnesses may remain indexable and analyzable but are not promotion-grade evidence.
+3. `wit.superseded` witnesses remain traceable but should not silently replace the primary source evidence path.
+4. only replay-valid retained witnesses may support a future `cap.C4.distill_valid` claim.
+
 ## 10. Recommended Formalization Shape
 Recommended structure over time:
 

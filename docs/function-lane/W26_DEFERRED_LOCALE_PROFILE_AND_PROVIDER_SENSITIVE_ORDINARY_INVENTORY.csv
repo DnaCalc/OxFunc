@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+profile_sensitive,W24_extracted_locale_provider,5,"ASC; DBCS; JIS; NUMBERVALUE; TRANSLATE","Native replay on 2026-03-18 showed host-profile-sensitive width conversion, locale-dependent omitted separators, or external-provider behavior inconsistent with ordinary pure-function closure"

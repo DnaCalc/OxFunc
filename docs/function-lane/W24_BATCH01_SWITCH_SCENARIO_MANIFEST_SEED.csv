@@ -1,0 +1,9 @@
+scenario_id,lane,formula,expected_text,notes
+W24SW-001,W24-BATCH01-SWITCH,"SWITCH(2,1,""a"",2,""b"",""other"")",b,First exact numeric match returns selected text result.
+W24SW-002,W24-BATCH01-SWITCH,"SWITCH(3,1,""a"",2,""b"",""other"")",other,Optional default is returned when no candidate matches.
+W24SW-003,W24-BATCH01-SWITCH,"SWITCH(3,1,""a"",2,""b"")",#N/A,No default yields worksheet #N/A.
+W24SW-004,W24-BATCH01-SWITCH,"SWITCH(""1"",1,""a"",""1"",""b"")",b,Typed comparison does not match numeric 1 against text 1 but later text candidate matches.
+W24SW-005,W24-BATCH01-SWITCH,"SWITCH(TRUE,1,""a"",TRUE,""b"")",b,Logical TRUE candidate matches.
+W24SW-006,W24-BATCH01-SWITCH,"SWITCH(""A"",""a"",1,""A"",2)",1,Text comparison is case-insensitive in the current baseline and first text candidate wins.
+W24SW-007,W24-BATCH01-SWITCH,"SWITCH(1,1,1/0,2,3,4)",#DIV/0!,Selected result error propagates.
+W24SW-008,W24-BATCH01-SWITCH,"SWITCH(2,1,1/0,2,3,4)",3,Later successful match is not poisoned by an earlier unselected result error.

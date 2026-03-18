@@ -22,6 +22,18 @@ Working rule:
 1. preserve the semantic requirement
 2. allow the upstream transport/mechanism to change
 3. keep the mapping from upstream mechanism to OxFunc semantic dependency explicit
+
+Central seam-model note:
+1. `docs/function-lane/OXFML_OXFUNC_HIDDEN_MACHINERY_SEAM_EXPLICIT_MODEL.md`
+2. `docs/function-lane/OXFML_OXFUNC_NEXT_ROUND_STABILIZATION_TOPICS.md`
+3. `docs/function-lane/OXFML_OXFUNC_MINIMUM_STABILIZATION_RESPONSE_V1.md`
+4. `docs/function-lane/OXFML_OXFUNC_MINIMUM_STABILIZATION_RESPONSE_V2.md`
+
+Relationship to OxFml's current upstream position:
+1. this central note is intended to align with OxFml's current "semantic requirements first, transport later" posture recorded in `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`,
+2. it should not be read as a demand for any one final carrier/type shape,
+3. it is the OxFunc-side attempt to make the hidden Excel machinery themes explicit and iteratively negotiable,
+4. the new stabilization-topics note narrows that broader model to the few seam topics that appear most ready for concrete next-round progress.
 ## 2. Core Message
 OxFml should preserve the distinctions that Excel semantics actually depend on for the current function set.
 
@@ -258,6 +270,34 @@ Questions OxFml should answer explicitly:
 1. what is the smallest provenance vocabulary that still keeps aggregate and reference semantics correct
 2. where does implicit intersection live in the pipeline, and how is its provenance recorded
 3. how are spilled results represented distinctly from array literals
+
+## 6. Updated W14 Position on `@` and `#`
+Current W14 narrowing from OxFunc:
+1. OxFunc does not currently require arbitrary parse-tree access for `@`.
+2. A plausible OxFml -> OxFunc seam is a uniform evaluation request carrying:
+   - optional bound callee,
+   - ordinary args/results,
+   - caller context,
+   - explicit-`@` / implicit-intersection mode metadata.
+3. For OxFunc-owned `@` semantics, the currently required operand/result classes are:
+   - scalar,
+   - reference,
+   - array,
+   - error.
+4. OxFunc does not currently require spill-link provenance as a separate semantic class.
+
+Working split for `#`:
+1. OxFml should normally discharge spill-anchor syntax (`A1#`) into the current resolved spill region or error before OxFunc evaluation.
+2. OxFunc should not receive a spill-provenance flag by default.
+3. This remains revisable if later evidence proves a true OxFunc-owned semantic lane that depends on “came from `#`” rather than on the resolved operand class.
+
+Immediate implication for upstream design:
+1. preserve enough structure for `@` to be explicit and caller-context-aware,
+2. but do not assume OxFunc needs spill-anchor identity once `#` has already been resolved to its current reference/array/error outcome.
+3. local `2026-03-14` probe evidence for `B1:=SEQUENCE(3)` found no semantic difference in the current baseline between:
+   - `@B1#` and `@B1:B3`,
+   - `SINGLE(OX_TRACE_Q1(B1#))` and `SINGLE(OX_TRACE_Q1(B1:B3))`,
+   - `SINGLE(OX_PROBE_ECHO(B1#))` and `SINGLE(OX_PROBE_ECHO(B1:B3))`.
 4. what stable identity, if any, is guaranteed for reference-returning expressions
 5. which boundary owns scalar-to-text and scalar-to-number normalization decisions
 6. should OxFml expose both `RawFunctionReturn` and `PublishedFormulaResult` instead of forcing one result universe for all contexts
@@ -365,4 +405,387 @@ W13 sharpened the OxFml-facing message in three ways:
 2. `ROW` and `COLUMN` show that caller-context and reference-shape semantics belong in the upstream semantic world even when the kernel itself is simple
 3. whole-axis cardinality is workbook-compatibility-sensitive, so upstream context must be able to carry compatibility-sensitive sheet geometry assumptions when functions depend on them
 
+## 14. W14 Implicit-Intersection Pressure
+### 14.1 Purpose
+Capture the specific upstream distinctions OxFunc now needs in order to implement the explicit implicit-intersection operator `@` without guessing from already-collapsed values.
+
+### 14.2 Core Message
+`@` is not only parser syntax. OxFunc needs OxFml to preserve whether the operand was scalar already, a reference/range result, an array payload, or a spill-linked result, and it needs caller-context visibility when scalarization depends on row/column alignment.
+
+### 14.3 Current Evidence
+1. OxFml already carries `FML-R-003` requiring `@` to survive parse normalization as explicit syntax.
+2. OxFml pass-2 notes also show stored-form normalization can remove visible `@` in tested shapes (`=@A1# -> =A1#`, `=@SEQUENCE(3) -> =SEQUENCE(3)`), proving that stored text and semantic provenance are not interchangeable.
+3. OxFunc already carries `FDEF-018` for canonical `OP_IMPLICIT_INTERSECTION` with legacy alias metadata and `caller_context` FEC dependency.
+4. W10/W12/W13 proved that reference identity, caller context, and spill-aware result classes already matter for adjacent functions (`INDEX`, `OFFSET`, `INDIRECT`, `ROW`, `COLUMN`).
+
+### 14.4 Interface Implications
+OxFml should preserve:
+1. explicit `@` provenance through parse/bind/eval even when visible stored-form text later omits the token
+2. caller row/column context
+3. distinction between scalar result, reference result, array payload, and spill-anchor-linked result
+4. scalarization route metadata in traces so implicit-intersection outcomes are replayable
+
+### 14.5 Minimum Invariants
+1. stored-form normalization removing visible `@` must not erase the fact that implicit-intersection semantics were in force
+2. explicit `@` applied to a reference result must remain distinguishable from explicit `@` applied to an already-materialized array payload
+3. caller-context-dependent scalarization must not be approximated by unconditional top-left selection
+4. capability-denied caller-context/spill-reference paths must remain typed seam failures, not silent semantic collapse
+
+### 14.6 Open Questions
+1. where should implicit intersection live in the execution pipeline: upstream evaluator, downstream OxFunc operator dispatch, or a split-provenance model
+2. what is the smallest provenance vocabulary that preserves `@` semantics without overcommitting the general boundary
+3. which compatibility/version fields are required to represent `_xlfn.SINGLE(...)` roundtrip behavior honestly
+
+## 15. W15 Host-Query Pressure (`CELL` / `INFO`)
+### 15.1 Purpose
+Record the current OxFunc view of the execution-context seam needed by `CELL` and `INFO`.
+
+### 15.2 Core Message
+`CELL` and `INFO` are not pure local kernels, but they should also not be modeled as arbitrary evaluator callbacks.
+
+The cleaner split is:
+1. OxFunc owns:
+   - `info_type` / `type_text` normalization,
+   - Excel-specific query classification,
+   - result-shaping and worksheet error policy.
+2. OxFml/FEC/F3E owns:
+   - actual cell metadata,
+   - workbook facts,
+   - application/environment facts.
+
+### 15.3 Current OxFunc Implementation Position
+OxFunc now carries a typed local interface in `crates/oxfunc_core/src/host_info.rs`:
+1. `CellInfoQuery`
+2. `InfoQuery`
+3. `HostInfoProvider`
+
+Current intended seam rule:
+1. OxFunc should ask for enum-based host facts.
+2. Upstream should not pass raw workbook objects or parse-tree internals into OxFunc for these functions.
+3. String parsing for `CELL` / `INFO` remains OxFunc responsibility.
+
+### 15.4 Function Split
+`CELL` is mixed:
+1. local/reference-based lanes:
+   - `address`
+   - `row`
+   - `col`
+   - `contents`
+   - `type`
+2. host-query lanes:
+   - `filename`
+   - `format`
+   - `color`
+   - `prefix`
+   - `protect`
+   - `width`
+
+`INFO` is mostly host-query driven:
+1. `directory`
+2. `numfile`
+3. `origin`
+4. `osversion`
+5. `recalc`
+6. `release`
+7. `system`
+8. `memavail`
+9. `memused`
+10. `totmem`
+
+### 15.5 Empirical Pressure
+W15 replay on `2026-03-15` showed:
+1. `INFO("directory")`, `numfile`, `origin`, `osversion`, `recalc`, `release`, and `system` all return concrete host/workbook facts
+2. `memavail`, `memused`, and `totmem` currently return `#N/A` on this host baseline
+
+So OxFunc should not try to synthesize these answers from local value state.
+
+### 15.6 Upstream Request
+Leave room for a typed host-query capability view that can answer:
+1. selected cell metadata by preserved reference identity
+2. selected workbook facts
+3. selected application/environment facts
+
+without requiring OxFunc to depend on:
+1. arbitrary parse-tree access
+2. workbook object model handles
+3. host-specific callback names encoded inside function kernels
+
+Update 2026-03-15:
+1. OxFunc now has a working typed host-query seam for generated `CELL` / `INFO` XLL exports, backed locally by an XLL-side provider.
+2. `CELL(info_type)` omitted-reference forms are now confirmed to depend on the active selected cell, not merely the caller cell. Upstream therefore needs a way to surface active-selection context to the host-query facility even when no explicit reference argument is present.
+3. The current provider seam should allow optional preserved reference identity for `CELL` queries.
+4. Provider-backed generated `ox_CELL` / `ox_INFO` exports matched native `CELL` / `INFO` on the current baseline without needing the `#` macro-type suffix, even though the manual legacy `GET.*` probe wrappers still require `#`.
+5. `CELL("width", ref)` is now locally closed in the generated XLL bridge as a real two-item artifact:
+   - ordinary single-cell entry shows the first numeric item,
+   - `INDEX(...,2)` exposes the second boolean item,
+   - `COLUMNS(...)` reports the two-column width shape.
+6. Dual-run (`default` + `compat_template`) replay is now green for the admitted current-baseline `CELL` / `INFO` slice, and OxFml has now acknowledged/integrated `HO-FN-002` on its side.
+7. The filed handoff packet for this seam is `docs/handoffs/HANDOFF_W015_CELL_INFO_HOST_QUERY_TO_OXFML.md`.
+
+## 16. Replay Appliance Packet-Adapter Position
+### 16.1 Purpose
+Record the local OxFunc replay rollout position now that `W018` and `W019` have been opened.
+
+### 16.2 Core Message
+The Foundation replay handoff does not reduce the OxFml/OxFunc semantic seam.
+
+For OxFunc:
+1. replay is packet-first and row-first,
+2. evidence ids, correlation rows, invariant bindings, compatibility descriptors, locale/environment metadata, and XLL limitation classifications remain first-class,
+3. normalized replay event families are allowed only as derived projection views over packet witnesses, not as invented semantic traces.
+
+### 16.3 Interface Implications
+Current downstream replay rollout does not ask OxFml for arbitrary replay-event emission.
+
+It does ask that upstream-preserved distinctions remain recoverable in packet evidence when they are semantically relevant:
+1. source manifest identity,
+2. packet/row identity,
+3. compatibility/version descriptors,
+4. invariant and limitation bindings,
+5. semantic-vs-seam-failure classification.
+
+### 16.4 Current Local Position
+OxFunc now treats the Replay appliance as a Logistics-layer host over local semantic artifacts:
+1. `DNA ReCalc` is not a new semantic authority,
+2. OxFunc retains authority over function semantics and evidence meaning,
+3. local-only replay source-schema ids are currently prefixed `oxfunc.local.*`,
+4. no fake internal evaluator event stream will be emitted for cross-lane symmetry,
+5. `cap.C3.explain_valid` is the current honest ceiling,
+6. `cap.C4` and `cap.C5` remain explicitly non-claimed.
+
+### 16.5 Open Upstream Question
+If OxFml later emits replay-oriented artifacts for evaluator or seam work, they should preserve semantic boundary meaning without assuming that OxFunc packets can or should be decomposed into the same native event granularity.
+
+## 17. Next OxFml Integration Run Agenda
+### 17.1 Purpose
+Prepare the next OxFml integration round around the central seam-model note:
+1. `docs/function-lane/OXFML_OXFUNC_HIDDEN_MACHINERY_SEAM_EXPLICIT_MODEL.md`
+
+This section is not a final design lock.
+It is a concrete agenda for iterative stabilization with OxFml's current "semantic requirements first, transport later" posture.
+
+### 17.2 Primary Questions For The Next Round
+The highest-value topics now appear to be:
+1. function catalog and library-context ownership,
+2. callable/helper semantics (`LET`, `LAMBDA`, callable values),
+3. explicit scalarization (`@`, `SINGLE`, `_xlfn.SINGLE`),
+4. minimum prepared-argument/result provenance vocabulary,
+5. operator/literal/value-universe ownership tension,
+6. typed host-capability families,
+7. availability/feature/profile/provider gating,
+8. publication and proving-host/replay surfaces.
+
+### 17.3 Function Catalog And Library Context
+Current OxFunc direction:
+1. OxFunc should own the canonical function/operator catalog, including canonical ids, aliases, localized names, function profiles, capability declarations, and feature/version/profile gates.
+2. OxFml should bind against an externally supplied library-context snapshot rather than hardcoding a closed world of function names.
+3. The same library-context snapshot should be consumable by both OxFml (for parse/bind and early rejection) and OxFunc (for evaluation).
+
+Integration-run questions:
+1. what is the smallest honest shared library-context snapshot shape,
+2. how should OxFml consume catalog/profile facts during parse and early formula rejection,
+3. which catalog facts must be visible before binding versus only at evaluation time,
+4. how should localized function-name tables participate in that snapshot.
+
+### 17.4 Dynamic Function Registration And State-Free OxFunc
+Current OxFunc direction:
+1. function registrations are expected to be dynamic rather than permanently static,
+2. this includes add-in, VBA, and later user-defined function sources,
+3. OxFunc should still remain runtime-state-free,
+4. therefore the mutable library context should be externally allocated and versioned, not globally owned by OxFunc.
+
+Working implication:
+1. the seam should permit OxFml to pass a library/context handle or snapshot into OxFunc,
+2. OxFunc may consume and possibly help refine/normalize that context,
+3. but OxFunc should not become the owner of hidden global runtime registry state.
+
+Integration-run questions:
+1. what should the lifecycle of the external library context be,
+2. how should updates/additions/removals be represented,
+3. what stable identity/versioning should a context snapshot carry,
+4. where should localized aliases and registration metadata live.
+
+### 17.5 Value Universe, Operators, Literals, And Grammar Tension
+Current OxFunc direction:
+1. OxFunc owns the semantic value universe and canonical operator set,
+2. OxFml owns lexical grammar, parse structure, localized separators, and literal tokenization,
+3. precedence/associativity likely remain grammar-owned while operator ids and semantics remain catalog-owned.
+
+This is intentionally not perfectly clean.
+The tension should be documented explicitly rather than over-smoothed.
+
+Examples:
+1. decimal/group/currency literal spelling is lexical and locale-sensitive,
+2. operator meaning and result class are semantic,
+3. some operator availability may still depend on catalog/profile decisions.
+
+Integration-run questions:
+1. which operator facts should be catalog-visible to OxFml,
+2. how should literal-surface localization and semantic value typing stay aligned,
+3. should operator syntactic definitions themselves be catalog-backed or remain purely grammar-level.
+
+### 17.6 Callable Helper Values: `LET` And `LAMBDA`
+These should now be near the top of the seam agenda.
+
+Current OxFunc direction:
+1. OxFml should own helper syntax, sequential binding, shadowing, lambda formation, lexical capture, and invocation planning.
+2. OxFunc should not need raw helper AST ownership.
+3. OxFunc should be able to consume callable values through a typed carrier or typed invocation facility without losing lexical meaning.
+
+Important semantic position:
+1. callable/lambda values should be treated as first-class semantic values in the value universe,
+2. they are still not ordinary worksheet cell-display values on the current Excel baseline,
+3. but they should be admissible as:
+   - helper-produced values,
+   - function arguments,
+   - function return values,
+   - defined-name values,
+   - UDF interop payloads.
+
+Working extension for the seam:
+1. the seam should leave room for native and user-defined lambda values crossing through an interop carrier such as `IExcelLambda` or equivalent,
+2. this should support argument passing, return values, and higher-order/currying patterns,
+3. publication restrictions should remain separate from the question of whether the lambda is a first-class semantic value.
+
+Integration-run questions:
+1. what is the smallest callable-value carrier OxFml can expose without erasing lexical capture,
+2. which callable facts OxFunc truly needs beyond opaque identity plus typed invocation,
+3. how callable values should appear in defined names and UDF interop,
+4. which callable restrictions are publication-only versus true semantic restrictions.
+
+### 17.7 Explicit Scalarization: `@` / `SINGLE`
+Current OxFunc direction:
+1. OxFml owns syntax, attachment point, compatibility alias recognition, and caller-cell association.
+2. OxFunc should own the scalarization semantics and function-profile-aware admission/result behavior.
+3. The seam should preserve at least `scalar` / `reference` / `array` / `error` result-class distinctions plus caller context.
+
+Integration-run questions:
+1. where should explicit `@` live in the execution pipeline,
+2. what is the minimum provenance vocabulary needed for `@`,
+3. how should `_xlfn.SINGLE(...)` compatibility and round-trip treatment be represented,
+4. how should OxFml and OxFunc divide work for non-call operands versus function-call operands.
+
+### 17.8 Typed Host Capability Families
+Current OxFunc direction:
+1. host-sensitive functions should consume typed capability views rather than raw workbook objects or arbitrary callbacks,
+2. caller cell, active selection, referenced cell metadata, workbook facts, application facts, environment facts, and later row-visibility/provider families should all be representable this way.
+
+Integration-run questions:
+1. which host-capability families should be locked first after `CELL` / `INFO`,
+2. how active selection should be represented when no explicit reference argument is present,
+3. where provider-bound services such as translation should sit relative to generic host-query capabilities.
+
+### 17.9 Availability, Feature Gates, And Provider Presence
+Processed functions now show that OxFml and OxFunc need a shared way to distinguish:
+1. known in catalog,
+2. feature-gated,
+3. compatibility-gated,
+4. host-profile unavailable,
+5. add-in absent,
+6. provider unavailable.
+
+Integration-run questions:
+1. which of these states belong in the library context,
+2. which belong in runtime capability views,
+3. how early formula rejection should differ from runtime `#NAME?`, capability denial, or provider-failure outcomes.
+
+### 17.10 Seam Themes Revealed By Processed Functions
+The functions processed so far strongly suggest that the following seam themes are real and worth naming explicitly in OxFml:
+1. reference identity vs eager dereference,
+2. direct-cell-binding proving-host truth,
+3. whole-axis geometry and compatibility-sensitive sheet assumptions,
+4. locale/profile-sensitive semantics, not only formatting,
+5. typed host-query capability families,
+6. provider-bound functions,
+7. feature availability and `#NAME?` classification,
+8. volatility, random/time providers, and recalculation profile,
+9. semantic failure vs capability denial vs seam limitation,
+10. format hints and publication behavior above the pure kernel,
+11. family-specific admission/coercion policy as catalog metadata.
+
+### 17.11 Requested OxFml Response Shape
+The next useful OxFml-side response would ideally say, topic by topic:
+1. which semantic distinctions OxFml agrees must survive,
+2. which distinctions OxFml believes belong in library context versus prepared arguments/results versus host capability views,
+3. where OxFml currently wants to keep transport deliberately open,
+4. which of the above topics should be stabilized first.
+
+### 17.12 Narrowed Recommendation For This Stage
+If the next integration round needs a smaller working set, the current best narrowed focus is:
+1. external library-context snapshot,
+2. callable-value minimum carrier,
+3. availability / feature-gate / provider-failure taxonomy.
+
+Reference:
+1. `docs/function-lane/OXFML_OXFUNC_NEXT_ROUND_STABILIZATION_TOPICS.md`
+
+### 17.13 OxFunc Narrowed Response After OxFml Processing
+After reading the latest OxFml note, OxFunc's best next-step response is now captured in:
+1. `docs/function-lane/OXFML_OXFUNC_MINIMUM_STABILIZATION_RESPONSE_V1.md`
+
+Current intent:
+1. make Topic A concrete enough to support parse/bind/evaluation identity,
+2. make Topic B concrete enough to keep availability truth distinct from runtime/provider truth,
+3. state only the minimum callable facts OxFunc currently needs for Topic C,
+4. avoid pretending that provenance, `@`, or full callable transport are already ready for final lock.
+
+### 17.14 OxFunc Further Narrowing After The Latest OxFml Round
+After the most recent OxFml processing pass, OxFunc now narrows one step further in:
+1. `docs/function-lane/OXFML_OXFUNC_MINIMUM_STABILIZATION_RESPONSE_V2.md`
+
+Current focus:
+1. make the operator-admission vs grammar boundary more explicit,
+2. make the minimum library-context field set more concrete,
+3. map availability states to parse/bind, runtime-capability, and post-dispatch stages,
+4. keep the callable-value carrier intentionally looser for one more round while the surrounding catalog/admission surfaces settle.
+
+## 18. Round Closure Position
+### 18.1 Purpose
+Capture what OxFunc now thinks is the right closing position for this seam round.
+
+This is not a claim that the seam is finalized.
+It is a claim that the current round has probably reached the point of diminishing returns for further note-only narrowing.
+
+### 18.2 What Now Looks Aligned
+OxFunc currently reads the following as substantially aligned with OxFml:
+1. semantic requirements should be preserved first, while transport remains provisional,
+2. the next stabilization topics are:
+   - external library-context snapshot,
+   - availability / feature-gate / provider-failure taxonomy,
+   - callable-value minimum carrier,
+3. OxFml and OxFunc both now place library-context truth above runtime capability/provider truth,
+4. callable values should be treated as first-class semantic values even if publication restrictions remain separate,
+5. the operator/literal/value-universe ownership tension should remain explicit rather than hidden,
+6. callable transport should remain intentionally looser until catalog/admission surfaces are more stable,
+7. `#` normally resolves upstream and does not require a default spill-provenance flag once fully resolved.
+
+### 18.3 What Remains Intentionally Open
+OxFunc expects the following to remain open after this round:
+1. the smallest honest shared library-context snapshot shape,
+2. the exact catalog-backed boundary for operator admission versus pure grammar ownership,
+3. the final split between early formula rejection, runtime `#NAME?`, typed capability denial, and provider-failure outcomes,
+4. the final shared callable-value carrier,
+5. the full provenance vocabulary for prepared arguments/results,
+6. the final placement of explicit `@` semantics in the execution pipeline,
+7. the final compatibility and round-trip treatment of `_xlfn.SINGLE(...)`,
+8. broader host-query return-family carriers.
+
+These are now expected unresolved items, not signs that the round failed.
+
+### 18.4 Best Next Move After This Round
+OxFunc's current recommendation is:
+1. do not keep narrowing the notes indefinitely,
+2. let OxFml canonical docs absorb the current aligned direction,
+3. revisit the seam next when one of the still-open topics needs:
+   - a more concrete canonical field set,
+   - a proving-host artifact,
+   - an implementation-facing handoff,
+   - or a coordinator-visible consequence.
+
+### 18.5 Working Rule
+Until that next trigger point:
+1. treat the current OxFml canonical seam docs as the active upstream baseline,
+2. treat the OxFunc seam-model and stabilization notes as the downstream semantic rationale,
+3. do not over-read the current alignment as final interface lock,
+4. do treat it as enough alignment to proceed with function work and future seam-triggered refinements.
 

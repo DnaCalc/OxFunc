@@ -18,7 +18,7 @@ Track W12 execution status, artifacts, and gate closure for the moderate fifteen
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - the W12 packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam discussion.
+   - the W12 packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam discussion, now carried forward explicitly by `W015`.
    - W11 registration-flag mapping remains deferred; W12 only contributes stronger volatile and caller-context candidate scenarios.
    - external XLL verification-seam limits remain tracked separately and do not reopen closed function semantics.
 6. function-phase-complete slices within W12:
@@ -197,7 +197,7 @@ Function slices with landed scaffolding/runtime seeds:
 1. Status: `in_progress`.
 2. Notes:
    - all non-`CELL` W12 slices now satisfy current-phase closure individually and may be reported as `function-phase-complete`.
-   - the packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam design.
+   - the packet remains open only because `CELL` is intentionally deferred pending the broader info/macro seam design, now tracked in `docs/worksets/W015_CELL_AND_INFO_HOST_QUERY_FUNCTIONS.md`.
 
 ## 8. Key Findings
 1. W10’s declarative-runner/default-surface posture scaled to a moderate breadth packet without requiring broad special-case dispatcher growth.

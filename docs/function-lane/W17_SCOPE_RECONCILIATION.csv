@@ -1,0 +1,5 @@
+reconciliation_class,source,target_count,functions,reason
+ordinary_done_in_w24,W24_scope_reconciliation,67,"See W24_SCOPE_RECONCILIATION.csv row ordinary_done_in_w24","The ordinary residual universe was worked through inside W24"
+successor_w25,W24_scope_reconciliation,2,"EUROCONVERT; RANDARRA","Outliers extracted from the ordinary mega-batch to W25"
+successor_w26,W24_scope_reconciliation,5,"ASC; DBCS; JIS; NUMBERVALUE; TRANSLATE","Locale/profile/provider-sensitive rows extracted from the ordinary mega-batch to W26"
+successor_w27,W24_scope_reconciliation,13,"ACCRINT; ACCRINTM; DURATION; MDURATION; PRICE; PRICEMAT; YIELD; YIELDDISC; YIELDMAT; ODDFPRICE; ODDFYIELD; ODDLPRICE; ODDLYIELD","Finance-hardening rows extracted from the ordinary mega-batch to W27"

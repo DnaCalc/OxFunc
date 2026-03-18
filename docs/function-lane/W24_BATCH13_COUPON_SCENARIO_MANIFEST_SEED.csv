@@ -1,0 +1,21 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+regular_pcd_actual_actual,COUPPCD,"COUPPCD(DATE(2011,1,25),DATE(2011,11,15),2,1)",,40497,1E-9,Regular semiannual previous coupon date
+regular_ncd_actual_actual,COUPNCD,"COUPNCD(DATE(2011,1,25),DATE(2011,11,15),2,1)",,40678,1E-9,Regular semiannual next coupon date
+regular_daybs_actual_actual,COUPDAYBS,"COUPDAYBS(DATE(2011,1,25),DATE(2011,11,15),2,1)",,71,1E-9,Actual/actual accrued days
+regular_daysnc_actual_actual,COUPDAYSNC,"COUPDAYSNC(DATE(2011,1,25),DATE(2011,11,15),2,1)",,110,1E-9,Actual/actual remaining days
+regular_days_actual_actual,COUPDAYS,"COUPDAYS(DATE(2011,1,25),DATE(2011,11,15),2,1)",,181,1E-9,Actual/actual coupon period size
+regular_num_actual_actual,COUPNUM,"COUPNUM(DATE(2011,1,25),DATE(2011,11,15),2,1)",,2,1E-9,Remaining regular coupon count
+basis_zero_daybs,COUPDAYBS,"COUPDAYBS(DATE(2011,1,25),DATE(2011,11,15),2,0)",,70,1E-9,US 30/360 accrued days
+basis_three_days,COUPDAYS,"COUPDAYS(DATE(2011,1,25),DATE(2011,11,15),2,3)",,182.5,1E-9,Actual/365 fixed coupon period size
+eom_quarterly_pcd,COUPPCD,"COUPPCD(DATE(2024,2,15),DATE(2024,11,30),4,1)",,45260,1E-9,Quarterly end-of-month previous coupon date
+eom_quarterly_ncd,COUPNCD,"COUPNCD(DATE(2024,2,15),DATE(2024,11,30),4,1)",,45351,1E-9,Quarterly end-of-month next coupon date
+eom_quarterly_num,COUPNUM,"COUPNUM(DATE(2024,2,15),DATE(2024,11,30),4,1)",,4,1E-9,Quarterly end-of-month coupon count
+eom_quarterly_days,COUPDAYS,"COUPDAYS(DATE(2024,2,15),DATE(2024,11,30),4,1)",,91,1E-9,Quarterly end-of-month period size
+serial_zero_daybs,COUPDAYBS,"COUPDAYBS(0,DATE(2011,11,15),2,1)",,0,1E-9,Serial zero is admitted and clips accrued days to zero
+serial_zero_pcd,COUPPCD,"COUPPCD(0,DATE(2011,11,15),2,1)",,0,1E-9,Serial zero previous coupon date clips to zero
+serial_zero_num_error,COUPNUM,"COUPNUM(0,DATE(2011,11,15),2,1)",#NUM!,,,Serial zero remains pre-first-coupon for COUPNUM
+on_coupon_pcd,COUPPCD,"COUPPCD(136,DATE(2011,11,15),2,1)",,136,1E-9,Settlement on coupon date advances previous coupon to settlement
+on_coupon_ncd,COUPNCD,"COUPNCD(136,DATE(2011,11,15),2,1)",,320,1E-9,Settlement on coupon date advances next coupon date
+on_coupon_num,COUPNUM,"COUPNUM(136,DATE(2011,11,15),2,1)",,223,1E-9,Settlement on coupon date advances coupon count
+negative_date_num_error,COUPDAYBS,"COUPDAYBS(-1,DATE(2011,11,15),2,1)",#NUM!,,,Negative date serial returns numeric error
+invalid_frequency_num_error,COUPNUM,"COUPNUM(DATE(2011,1,25),DATE(2011,11,15),3,1)",#NUM!,,,Invalid frequency returns numeric error
