@@ -93,9 +93,9 @@ mod tests {
         );
         assert_eq!(
             eval_type_surface(
-                &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                    "x".encode_utf16().collect(),
-                )))],
+                &[CallArgValue::Eval(EvalValue::Text(
+                    ExcelText::from_utf16_code_units("x".encode_utf16().collect(),)
+                ))],
                 &NoResolver,
             ),
             Ok(EvalValue::Number(2.0))

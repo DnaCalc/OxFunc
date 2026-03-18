@@ -3,9 +3,13 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::{
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+};
 use crate::resolver::ReferenceResolver;
-use crate::value::{ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const SEQUENCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SEQUENCE",
@@ -219,10 +223,7 @@ mod tests {
     fn eval_sequence_rejects_zero_dimension() {
         let args = [CallArgValue::Eval(EvalValue::Number(0.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
-        assert_eq!(
-            got,
-            Err(SequenceEvalError::ZeroDimension { arg_index: 1 })
-        );
+        assert_eq!(got, Err(SequenceEvalError::ZeroDimension { arg_index: 1 }));
     }
 
     #[test]

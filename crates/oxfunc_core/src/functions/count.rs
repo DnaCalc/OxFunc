@@ -135,7 +135,9 @@ mod tests {
     #[test]
     fn eval_count_propagates_worksheet_errors() {
         let got = eval_count_surface(
-            &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0))],
+            &[CallArgValue::Eval(EvalValue::Error(
+                WorksheetErrorCode::Div0,
+            ))],
             &MockResolver { resolved: None },
         );
         assert_eq!(

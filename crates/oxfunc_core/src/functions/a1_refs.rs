@@ -301,8 +301,12 @@ pub fn offset_reference(
     height: Option<usize>,
     width: Option<usize>,
 ) -> Option<A1Reference> {
-    let top = i64::try_from(base.start_row).ok()?.checked_add(row_offset)?;
-    let left = i64::try_from(base.start_col).ok()?.checked_add(col_offset)?;
+    let top = i64::try_from(base.start_row)
+        .ok()?
+        .checked_add(row_offset)?;
+    let left = i64::try_from(base.start_col)
+        .ok()?
+        .checked_add(col_offset)?;
     if top <= 0 || left <= 0 {
         return None;
     }
@@ -399,10 +403,7 @@ mod tests {
         assert_eq!(got.start_col, 2);
         assert_eq!(got.end_col, 3);
         assert_eq!(got.notation, A1ReferenceNotation::WholeColumn);
-        assert_eq!(
-            format_relative_target(&got),
-            Some("Sheet1!B:C".to_string())
-        );
+        assert_eq!(format_relative_target(&got), Some("Sheet1!B:C".to_string()));
         assert_eq!(
             format_absolute_address(&got),
             Some("Sheet1!$B:$C".to_string())

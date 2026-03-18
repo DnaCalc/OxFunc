@@ -51,11 +51,13 @@ pub fn eval_sin_surface(
             let mapped = expand_arg_values_only(&args[0], resolver)
                 .map_err(SinEvalError::Coercion)?
                 .into_iter()
-                .map(|item| match apply_unary_numeric_scalar_prepared(&item, sin_kernel) {
-                    Ok(n) => ArrayCellValue::Number(n),
-                    Err(CoercionError::WorksheetError(code)) => ArrayCellValue::Error(code),
-                    Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
-                })
+                .map(
+                    |item| match apply_unary_numeric_scalar_prepared(&item, sin_kernel) {
+                        Ok(n) => ArrayCellValue::Number(n),
+                        Err(CoercionError::WorksheetError(code)) => ArrayCellValue::Error(code),
+                        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    },
+                )
                 .collect::<Vec<_>>();
             Ok(EvalValue::Array(
                 EvalArray::new(array.shape(), mapped).expect("shape preserved"),
@@ -102,9 +104,9 @@ mod tests {
     #[test]
     fn eval_sin_accepts_numeric_text() {
         let got = eval_sin_surface(
-            &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                "1".encode_utf16().collect(),
-            )))],
+            &[CallArgValue::Eval(EvalValue::Text(
+                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
+            ))],
             &NoResolver,
         )
         .unwrap();

@@ -163,7 +163,11 @@ fn normalize_numeric_text(profile: &FormatProfile, raw: &str) -> Option<String> 
 fn parse_number_with_profile(profile: &FormatProfile, raw: &str) -> Option<f64> {
     let normalized = normalize_numeric_text(profile, raw)?;
     let parsed = normalized.parse::<f64>().ok()?;
-    if parsed.is_finite() { Some(parsed) } else { None }
+    if parsed.is_finite() {
+        Some(parsed)
+    } else {
+        None
+    }
 }
 
 fn parse_iso_ymd(text: &str) -> Option<(i64, i64, i64)> {
@@ -230,7 +234,11 @@ pub fn excel_serial_from_ymd(
             if days < 0 {
                 return None;
             }
-            Some(if days >= 60 { (days + 1) as f64 } else { days as f64 })
+            Some(if days >= 60 {
+                (days + 1) as f64
+            } else {
+                days as f64
+            })
         }
         WorkbookDateSystem::System1904 => {
             let base = days_from_civil(1904, 1, 1);
@@ -415,11 +423,7 @@ impl FormatCodeEngine for TestFormatCodeEngine {
         no_commas: bool,
     ) -> Result<ExcelText, FormatFailure> {
         Ok(text_from_string(render_fixed_common(
-            profile,
-            value,
-            decimals,
-            !no_commas,
-            "",
+            profile, value, decimals, !no_commas, "",
         )))
     }
 }
@@ -431,25 +435,73 @@ mod tests {
     #[test]
     fn parser_handles_current_host_seed_rows() {
         let ctx = current_excel_host_context();
-        assert_eq!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "1 234.5"), Ok(1234.5));
-        assert_eq!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "R1 234.57"), Ok(1234.57));
-        assert_eq!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "12%"), Ok(0.12));
-        assert!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "1/2/2024").is_err());
-        assert_eq!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "2024-02-03"), Ok(45325.0));
+        assert_eq!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "1 234.5"),
+            Ok(1234.5)
+        );
+        assert_eq!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "R1 234.57"),
+            Ok(1234.57)
+        );
+        assert_eq!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "12%"),
+            Ok(0.12)
+        );
+        assert!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "1/2/2024")
+                .is_err()
+        );
+        assert_eq!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "2024-02-03"),
+            Ok(45325.0)
+        );
     }
 
     #[test]
     fn parser_handles_en_us_slash_date() {
         let ctx = en_us_context();
-        assert_eq!(ctx.parser.parse_value_text(&ctx.profile, ctx.date_system, "1/2/2024"), Ok(45293.0));
+        assert_eq!(
+            ctx.parser
+                .parse_value_text(&ctx.profile, ctx.date_system, "1/2/2024"),
+            Ok(45293.0)
+        );
     }
 
     #[test]
     fn formatter_handles_current_host_seed_rows() {
         let ctx = current_excel_host_context();
-        assert_eq!(ctx.formatter.render_with_code(&ctx.profile, ctx.date_system, 0.125, "0%").unwrap().to_string_lossy(), "13%");
-        assert_eq!(ctx.formatter.render_currency(&ctx.profile, -1234.567, 2).unwrap().to_string_lossy(), "-R1 234.57");
-        assert_eq!(ctx.formatter.render_fixed(&ctx.profile, 1234.567, 2, false).unwrap().to_string_lossy(), "1 234.57");
-        assert_eq!(ctx.formatter.render_with_code(&ctx.profile, ctx.date_system, 45325.0, "yyyy-mm-dd").unwrap().to_string_lossy(), "2024-02-03");
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 0.125, "0%")
+                .unwrap()
+                .to_string_lossy(),
+            "13%"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_currency(&ctx.profile, -1234.567, 2)
+                .unwrap()
+                .to_string_lossy(),
+            "-R1 234.57"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_fixed(&ctx.profile, 1234.567, 2, false)
+                .unwrap()
+                .to_string_lossy(),
+            "1 234.57"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 45325.0, "yyyy-mm-dd")
+                .unwrap()
+                .to_string_lossy(),
+            "2024-02-03"
+        );
     }
 }

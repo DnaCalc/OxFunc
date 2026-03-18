@@ -54,26 +54,26 @@ fn map_xmatch_error(err: XmatchEvalError) -> MatchEvalError {
         XmatchEvalError::EmptyLookupArray => MatchEvalError::EmptyLookupArray,
         XmatchEvalError::Coercion(err) => MatchEvalError::Coercion(err),
         XmatchEvalError::InvalidMatchMode(n) => MatchEvalError::InvalidMatchType(n),
-        XmatchEvalError::InvalidSearchMode(_) => MatchEvalError::Coercion(
-            CoercionError::UnsupportedValueKind("match_search_mode"),
-        ),
+        XmatchEvalError::InvalidSearchMode(_) => {
+            MatchEvalError::Coercion(CoercionError::UnsupportedValueKind("match_search_mode"))
+        }
         XmatchEvalError::NotAvailable => MatchEvalError::NotAvailable,
         XmatchEvalError::MissingArg => MatchEvalError::Coercion(CoercionError::MissingArg),
         XmatchEvalError::EmptyCell => MatchEvalError::Coercion(CoercionError::EmptyCell),
         XmatchEvalError::UnsupportedValueKind(kind) => {
             MatchEvalError::Coercion(CoercionError::UnsupportedValueKind(kind))
         }
-        XmatchEvalError::UnsupportedMatchModeForSeed(mode) => MatchEvalError::InvalidMatchType(
-            match mode {
+        XmatchEvalError::UnsupportedMatchModeForSeed(mode) => {
+            MatchEvalError::InvalidMatchType(match mode {
                 XmatchMatchMode::Exact => 0.0,
                 XmatchMatchMode::ExactOrNextLarger => 1.0,
                 XmatchMatchMode::ExactOrNextSmaller => -1.0,
                 XmatchMatchMode::Wildcard => 2.0,
-            },
-        ),
-        XmatchEvalError::UnsupportedSearchModeForSeed(_) => MatchEvalError::Coercion(
-            CoercionError::UnsupportedValueKind("match_search_mode"),
-        ),
+            })
+        }
+        XmatchEvalError::UnsupportedSearchModeForSeed(_) => {
+            MatchEvalError::Coercion(CoercionError::UnsupportedValueKind("match_search_mode"))
+        }
     }
 }
 
@@ -110,7 +110,10 @@ fn match_type_to_xmatch_mode(
     if match_type == 0.0 {
         return Ok(match lookup_value {
             crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Text(t))
-                if contains_unescaped_wildcard(&t.to_string_lossy()) => 2.0,
+                if contains_unescaped_wildcard(&t.to_string_lossy()) =>
+            {
+                2.0
+            }
             _ => 0.0,
         });
     }
@@ -123,7 +126,10 @@ fn match_type_to_xmatch_mode(
     Err(MatchEvalError::InvalidMatchType(match_type))
 }
 
-fn first_greater_ascending(candidates: &[XmatchComparable], lookup_value: &XmatchComparable) -> usize {
+fn first_greater_ascending(
+    candidates: &[XmatchComparable],
+    lookup_value: &XmatchComparable,
+) -> usize {
     let mut low = 1usize;
     let mut high = candidates.len();
     let mut best = 0usize;
@@ -173,7 +179,9 @@ fn collect_match_candidates(
 ) -> Result<Vec<XmatchComparable>, MatchEvalError> {
     let mut candidates = Vec::with_capacity(lookup_array.len());
     for value in lookup_array {
-        let Some(candidate) = prepared_lookup_candidate_comparable(value).map_err(map_xmatch_error)? else {
+        let Some(candidate) =
+            prepared_lookup_candidate_comparable(value).map_err(map_xmatch_error)?
+        else {
             return Err(MatchEvalError::NotAvailable);
         };
         candidates.push(candidate);
@@ -189,7 +197,7 @@ fn eval_match_approximate_prepared(
     let lookup_value = match prepared_lookup_comparable(lookup_value) {
         Ok(value) => value,
         Err(XmatchEvalError::MissingArg | XmatchEvalError::EmptyCell) => {
-            return Err(MatchEvalError::NotAvailable)
+            return Err(MatchEvalError::NotAvailable);
         }
         Err(err) => return Err(map_xmatch_error(err)),
     };
@@ -252,7 +260,9 @@ pub fn eval_match_surface(
 
     let prepared_match_type = match match_type {
         None => None,
-        Some(arg) => Some(prepare_arg_values_only(arg, resolver).map_err(MatchEvalError::Coercion)?),
+        Some(arg) => {
+            Some(prepare_arg_values_only(arg, resolver).map_err(MatchEvalError::Coercion)?)
+        }
     };
 
     let match_type_value = match prepared_match_type.as_ref() {
@@ -532,9 +542,9 @@ mod tests {
         );
         assert_eq!(
             two_d,
-            Err(MatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
-                "two_dimensional_array"
-            )))
+            Err(MatchEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("two_dimensional_array")
+            ))
         );
     }
 }

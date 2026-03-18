@@ -5,12 +5,13 @@ use crate::function::{
 };
 use crate::functions::a1_refs::{format_absolute_address, parse_a1_reference};
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
+use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
 pub const CELL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CELL",
-    arity: Arity { min: 2, max: 2 },
+    arity: Arity { min: 1, max: 2 },
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::VolatileContextual,
     host_interaction: HostInteractionClass::WorkbookState,
@@ -29,6 +30,13 @@ enum CellInfoType {
     Col,
     Contents,
     Type,
+    Filename,
+    Format,
+    Color,
+    Parentheses,
+    Prefix,
+    Protect,
+    Width,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -39,10 +47,16 @@ pub enum CellEvalError {
     InvalidReferenceText(String),
     UnsupportedInfoType(String),
     RefResolution(CoercionError),
+    HostInfoProviderMissing(CellInfoQuery),
+    HostInfo(HostInfoError),
 }
 
-fn parse_info_type(arg: &CallArgValue, resolver: &impl ReferenceResolver) -> Result<CellInfoType, CellEvalError> {
-    let prepared = prepare_arg_values_only(arg, resolver).map_err(CellEvalError::InfoTypeCoercion)?;
+fn parse_info_type(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<CellInfoType, CellEvalError> {
+    let prepared =
+        prepare_arg_values_only(arg, resolver).map_err(CellEvalError::InfoTypeCoercion)?;
     let info = coerce_prepared_to_text(&prepared)
         .map_err(CellEvalError::InfoTypeCoercion)?
         .to_string_lossy()
@@ -55,6 +69,13 @@ fn parse_info_type(arg: &CallArgValue, resolver: &impl ReferenceResolver) -> Res
         "col" => Ok(CellInfoType::Col),
         "contents" => Ok(CellInfoType::Contents),
         "type" => Ok(CellInfoType::Type),
+        "filename" => Ok(CellInfoType::Filename),
+        "format" => Ok(CellInfoType::Format),
+        "color" => Ok(CellInfoType::Color),
+        "parentheses" => Ok(CellInfoType::Parentheses),
+        "prefix" => Ok(CellInfoType::Prefix),
+        "protect" => Ok(CellInfoType::Protect),
+        "width" => Ok(CellInfoType::Width),
         _ => Err(CellEvalError::UnsupportedInfoType(info)),
     }
 }
@@ -75,9 +96,27 @@ fn classify_type(value: &EvalValue) -> &'static str {
     }
 }
 
+fn host_query_for_info_type(info_type: CellInfoType) -> Option<CellInfoQuery> {
+    match info_type {
+        CellInfoType::Address => Some(CellInfoQuery::Address),
+        CellInfoType::Row => Some(CellInfoQuery::Row),
+        CellInfoType::Col => Some(CellInfoQuery::Col),
+        CellInfoType::Contents => Some(CellInfoQuery::Contents),
+        CellInfoType::Type => Some(CellInfoQuery::Type),
+        CellInfoType::Filename => Some(CellInfoQuery::Filename),
+        CellInfoType::Format => Some(CellInfoQuery::Format),
+        CellInfoType::Color => Some(CellInfoQuery::Color),
+        CellInfoType::Parentheses => Some(CellInfoQuery::Parentheses),
+        CellInfoType::Prefix => Some(CellInfoQuery::Prefix),
+        CellInfoType::Protect => Some(CellInfoQuery::Protect),
+        CellInfoType::Width => Some(CellInfoQuery::Width),
+    }
+}
+
 pub fn eval_cell_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, CellEvalError> {
     if !CELL_META.arity.accepts(args.len()) {
         return Err(CellEvalError::ArityMismatch {
@@ -87,19 +126,43 @@ pub fn eval_cell_surface(
     }
 
     let info_type = parse_info_type(&args[0], resolver)?;
-    let reference = parse_reference_arg(&args[1])?;
-    let parsed = parse_a1_reference(&reference.target)
-        .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
+    let reference = if args.len() >= 2 {
+        Some(parse_reference_arg(&args[1])?)
+    } else {
+        None
+    };
+
+    if reference.is_none() {
+        let query = host_query_for_info_type(info_type).expect("cell info query mapping");
+        let provider = host_info.ok_or(CellEvalError::HostInfoProviderMissing(query))?;
+        return provider
+            .query_cell_info(query, None)
+            .map_err(CellEvalError::HostInfo);
+    }
+
+    let reference = reference.expect("reference present");
 
     match info_type {
-        CellInfoType::Address => Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
-            format_absolute_address(&parsed)
-                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?
-                .encode_utf16()
-                .collect(),
-        ))),
-        CellInfoType::Row => Ok(EvalValue::Number(parsed.start_row as f64)),
-        CellInfoType::Col => Ok(EvalValue::Number(parsed.start_col as f64)),
+        CellInfoType::Address => {
+            let parsed = parse_a1_reference(&reference.target)
+                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                format_absolute_address(&parsed)
+                    .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?
+                    .encode_utf16()
+                    .collect(),
+            )))
+        }
+        CellInfoType::Row => {
+            let parsed = parse_a1_reference(&reference.target)
+                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
+            Ok(EvalValue::Number(parsed.start_row as f64))
+        }
+        CellInfoType::Col => {
+            let parsed = parse_a1_reference(&reference.target)
+                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
+            Ok(EvalValue::Number(parsed.start_col as f64))
+        }
         CellInfoType::Contents => resolver
             .resolve_reference(&reference)
             .map_err(CoercionError::RefResolution)
@@ -113,6 +176,13 @@ pub fn eval_cell_surface(
                 classify_type(&value).encode_utf16().collect(),
             )))
         }
+        _ => {
+            let query = host_query_for_info_type(info_type).expect("host query mapping");
+            let provider = host_info.ok_or(CellEvalError::HostInfoProviderMissing(query))?;
+            provider
+                .query_cell_info(query, Some(&reference))
+                .map_err(CellEvalError::HostInfo)
+        }
     }
 }
 
@@ -125,7 +195,11 @@ pub fn map_cell_error_to_ws(e: &CellEvalError) -> WorksheetErrorCode {
         CellEvalError::UnsupportedInfoType(_) => WorksheetErrorCode::Value,
         CellEvalError::RefResolution(CoercionError::WorksheetError(code)) => *code,
         CellEvalError::RefResolution(CoercionError::RefResolution(_)) => WorksheetErrorCode::Ref,
-        CellEvalError::InfoTypeCoercion(_) | CellEvalError::RefResolution(_) => WorksheetErrorCode::Value,
+        CellEvalError::HostInfoProviderMissing(_) => WorksheetErrorCode::Value,
+        CellEvalError::HostInfo(_) => WorksheetErrorCode::Value,
+        CellEvalError::InfoTypeCoercion(_) | CellEvalError::RefResolution(_) => {
+            WorksheetErrorCode::Value
+        }
     }
 }
 
@@ -136,6 +210,25 @@ mod tests {
 
     struct MockResolver {
         resolved: Option<EvalValue>,
+    }
+
+    struct MockHostInfoProvider {
+        result: EvalValue,
+    }
+
+    impl HostInfoProvider for MockHostInfoProvider {
+        fn query_cell_info(
+            &self,
+            query: CellInfoQuery,
+            _reference: Option<&ReferenceLike>,
+        ) -> Result<EvalValue, HostInfoError> {
+            match query {
+                CellInfoQuery::Filename => Ok(self.result.clone()),
+                CellInfoQuery::Parentheses => Ok(self.result.clone()),
+                CellInfoQuery::Row => Ok(self.result.clone()),
+                other => Err(HostInfoError::UnsupportedCellInfoQuery(other)),
+            }
+        }
     }
 
     impl ReferenceResolver for MockResolver {
@@ -173,6 +266,7 @@ mod tests {
         let got = eval_cell_surface(
             &[text_arg("address"), ref_arg("B3")],
             &MockResolver { resolved: None },
+            None,
         );
         assert_eq!(
             got,
@@ -189,6 +283,7 @@ mod tests {
             &MockResolver {
                 resolved: Some(EvalValue::Number(7.0)),
             },
+            None,
         );
         assert_eq!(got, Ok(EvalValue::Number(7.0)));
     }
@@ -202,6 +297,7 @@ mod tests {
                     "x".encode_utf16().collect(),
                 ))),
             },
+            None,
         );
         assert_eq!(
             got,
@@ -209,5 +305,48 @@ mod tests {
                 "l".encode_utf16().collect(),
             )))
         );
+    }
+
+    #[test]
+    fn eval_cell_filename_uses_host_provider() {
+        let got = eval_cell_surface(
+            &[text_arg("filename"), ref_arg("A1")],
+            &MockResolver { resolved: None },
+            Some(&MockHostInfoProvider {
+                result: EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "[Book1]Sheet1".encode_utf16().collect(),
+                )),
+            }),
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "[Book1]Sheet1".encode_utf16().collect(),
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_cell_parentheses_uses_host_provider() {
+        let got = eval_cell_surface(
+            &[text_arg("parentheses"), ref_arg("A1")],
+            &MockResolver { resolved: None },
+            Some(&MockHostInfoProvider {
+                result: EvalValue::Number(1.0),
+            }),
+        );
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
+    fn eval_cell_omitted_reference_uses_host_provider() {
+        let got = eval_cell_surface(
+            &[text_arg("row")],
+            &MockResolver { resolved: None },
+            Some(&MockHostInfoProvider {
+                result: EvalValue::Number(7.0),
+            }),
+        );
+        assert_eq!(got, Ok(EvalValue::Number(7.0)));
     }
 }

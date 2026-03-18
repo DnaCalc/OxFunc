@@ -118,10 +118,7 @@ fn parse_r1c1_component(token: &str, marker: char) -> Option<(R1C1Component, &st
     Some((R1C1Component::Absolute(value), &rest[digits_len..]))
 }
 
-fn resolve_r1c1_component(
-    component: R1C1Component,
-    current: usize,
-) -> Option<usize> {
+fn resolve_r1c1_component(component: R1C1Component, current: usize) -> Option<usize> {
     match component {
         R1C1Component::Same => Some(current),
         R1C1Component::Absolute(value) => Some(value),
@@ -285,10 +282,7 @@ mod tests {
 
     #[test]
     fn eval_indirect_a1_text_returns_reference_like() {
-        let got = eval_indirect_surface(
-            &[text_arg("Sheet1!A1")],
-            &MockResolver { caller: None },
-        );
+        let got = eval_indirect_surface(&[text_arg("Sheet1!A1")], &MockResolver { caller: None });
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
@@ -301,10 +295,7 @@ mod tests {
     #[test]
     fn eval_indirect_absolute_r1c1_is_supported() {
         let got = eval_indirect_surface(
-            &[
-                text_arg("R1C2"),
-                CallArgValue::Eval(EvalValue::Number(0.0)),
-            ],
+            &[text_arg("R1C2"), CallArgValue::Eval(EvalValue::Number(0.0))],
             &MockResolver {
                 caller: Some(CallerContext {
                     prefix: Some("Sheet1".to_string()),
@@ -357,7 +348,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Err(IndirectEvalError::InvalidReferenceText("R[1]C[1]".to_string()))
+            Err(IndirectEvalError::InvalidReferenceText(
+                "R[1]C[1]".to_string()
+            ))
         );
     }
 
@@ -398,10 +391,8 @@ mod tests {
 
     #[test]
     fn eval_indirect_whole_column_a1_text_returns_area_reference() {
-        let got = eval_indirect_surface(
-            &[text_arg("Sheet1!$K:$K")],
-            &MockResolver { caller: None },
-        );
+        let got =
+            eval_indirect_surface(&[text_arg("Sheet1!$K:$K")], &MockResolver { caller: None });
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
@@ -413,10 +404,7 @@ mod tests {
 
     #[test]
     fn eval_indirect_whole_row_a1_text_returns_area_reference() {
-        let got = eval_indirect_surface(
-            &[text_arg("$1:$1")],
-            &MockResolver { caller: None },
-        );
+        let got = eval_indirect_surface(&[text_arg("$1:$1")], &MockResolver { caller: None });
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {

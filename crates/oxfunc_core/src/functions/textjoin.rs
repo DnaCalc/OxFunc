@@ -57,7 +57,8 @@ pub fn eval_textjoin_surface(
         });
     }
 
-    let delimiter = prepare_arg_values_only(&args[0], resolver).map_err(TextJoinEvalError::Coercion)?;
+    let delimiter =
+        prepare_arg_values_only(&args[0], resolver).map_err(TextJoinEvalError::Coercion)?;
     let ignore_empty_arg =
         prepare_arg_values_only(&args[1], resolver).map_err(TextJoinEvalError::Coercion)?;
     let delimiter = coerce_prepared_to_text(&delimiter).map_err(TextJoinEvalError::Coercion)?;
@@ -67,17 +68,24 @@ pub fn eval_textjoin_surface(
     let mut parts: Vec<ExcelText> = Vec::new();
     let mut total_utf16_len = 0usize;
     for arg in &args[2..] {
-        for prepared in expand_arg_values_only(arg, resolver).map_err(TextJoinEvalError::Coercion)? {
+        for prepared in
+            expand_arg_values_only(arg, resolver).map_err(TextJoinEvalError::Coercion)?
+        {
             match prepared {
                 PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell if ignore_empty => {}
                 ref other => {
-                    let text = coerce_prepared_to_text(other).map_err(TextJoinEvalError::Coercion)?;
+                    let text =
+                        coerce_prepared_to_text(other).map_err(TextJoinEvalError::Coercion)?;
                     if ignore_empty && text.utf16_code_units().is_empty() {
                         continue;
                     }
                     let next_total = total_utf16_len
                         .saturating_add(text.utf16_code_units().len())
-                        .saturating_add(if parts.is_empty() { 0 } else { delimiter_utf16_len });
+                        .saturating_add(if parts.is_empty() {
+                            0
+                        } else {
+                            delimiter_utf16_len
+                        });
                     if next_total > EXCEL_TEXT_MAX_UTF16_CODE_UNITS {
                         return Err(TextJoinEvalError::ResultTooLong {
                             actual_utf16_len: next_total,
@@ -165,9 +173,12 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(
                     EvalArray::from_rows(vec![
                         vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
-                        vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
-                            "x".encode_utf16().collect(),
-                        )), ArrayCellValue::EmptyCell],
+                        vec![
+                            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                                "x".encode_utf16().collect(),
+                            )),
+                            ArrayCellValue::EmptyCell,
+                        ],
                     ])
                     .unwrap(),
                 )),
@@ -248,7 +259,9 @@ mod tests {
 
         let exact_limit = eval_textjoin_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))),
+                CallArgValue::Eval(EvalValue::Text(
+                    ExcelText::from_utf16_code_units(Vec::new()),
+                )),
                 CallArgValue::Eval(EvalValue::Logical(false)),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
                     base.encode_utf16().collect(),
@@ -270,7 +283,9 @@ mod tests {
 
         let too_long = eval_textjoin_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))),
+                CallArgValue::Eval(EvalValue::Text(
+                    ExcelText::from_utf16_code_units(Vec::new()),
+                )),
                 CallArgValue::Eval(EvalValue::Logical(false)),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
                     base.encode_utf16().collect(),

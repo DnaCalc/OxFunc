@@ -43,11 +43,15 @@ fn map_array(array: &EvalArray) -> EvalArray {
 fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
     match prepared {
         PreparedArgValue::Eval(EvalValue::Number(n)) => EvalValue::Number(n),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => EvalValue::Number(if b { 1.0 } else { 0.0 }),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => {
+            EvalValue::Number(if b { 1.0 } else { 0.0 })
+        }
         PreparedArgValue::Eval(EvalValue::Text(_)) => EvalValue::Number(0.0),
         PreparedArgValue::Eval(EvalValue::Error(code)) => EvalValue::Error(code),
         PreparedArgValue::Eval(EvalValue::Array(array)) => EvalValue::Array(map_array(&array)),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => EvalValue::Error(WorksheetErrorCode::Value),
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            EvalValue::Error(WorksheetErrorCode::Value)
+        }
         PreparedArgValue::Eval(EvalValue::Lambda(_)) => EvalValue::Error(WorksheetErrorCode::Value),
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
     }
@@ -102,9 +106,9 @@ mod tests {
     fn eval_n_maps_text_to_zero_and_logical_to_number() {
         assert_eq!(
             eval_n_surface(
-                &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                    "x".encode_utf16().collect(),
-                )))],
+                &[CallArgValue::Eval(EvalValue::Text(
+                    ExcelText::from_utf16_code_units("x".encode_utf16().collect(),)
+                ))],
                 &NoResolver,
             ),
             Ok(EvalValue::Number(0.0))

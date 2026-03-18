@@ -5,45 +5,240 @@ import OxFunc.CoercionPrimitives
 import OxFunc.FloatingPointEnv
 import OxFunc.RefResolverSeam
 import OxFunc.LocaleFormat
+import OxFunc.HostInfoSeam
 import OxFunc.Functions.Abs
+import OxFunc.Functions.Acos
+import OxFunc.Functions.Acot
+import OxFunc.Functions.Acosh
+import OxFunc.Functions.Acoth
 import OxFunc.Functions.AbsSurface
+import OxFunc.Functions.AmorDepreciationFamily
 import OxFunc.Functions.AndFn
+import OxFunc.Functions.ArabicFn
+import OxFunc.Functions.ArrayTextSplitFamily
 import OxFunc.Functions.Asin
+import OxFunc.Functions.Asinh
+import OxFunc.Functions.Atan
+import OxFunc.Functions.Atan2
+import OxFunc.Functions.Atanh
+import OxFunc.Functions.BaseFn
+import OxFunc.Functions.BesselConvertFamily
 import OxFunc.Functions.Column
 import OxFunc.Functions.Average
+import OxFunc.Functions.BondCoreFamily
+import OxFunc.Functions.BitAndFn
+import OxFunc.Functions.BitLshiftFn
+import OxFunc.Functions.BitOrFn
+import OxFunc.Functions.BitRshiftFn
+import OxFunc.Functions.BitXorFn
+import OxFunc.Functions.CashflowRateFamily
 import OxFunc.Functions.Cell
+import OxFunc.Functions.CharFn
+import OxFunc.Functions.CeilingFloorFamily
+import OxFunc.Functions.ChiFTFamily
+import OxFunc.Functions.ChooseIfsFamily
 import OxFunc.Functions.Clean
+import OxFunc.Functions.Combin
+import OxFunc.Functions.Combina
+import OxFunc.Functions.ComplexFamily
+import OxFunc.Functions.ConfidenceTestFamily
+import OxFunc.Functions.ConcatFamily
+import OxFunc.Functions.CodeFn
+import OxFunc.Functions.Cos
+import OxFunc.Functions.Cosh
+import OxFunc.Functions.Cot
+import OxFunc.Functions.Coth
 import OxFunc.Functions.Count
+import OxFunc.Functions.CountBlankFn
 import OxFunc.Functions.CountA
+import OxFunc.Functions.CouponFamily
+import OxFunc.Functions.CriteriaFamily
+import OxFunc.Functions.CorrelFn
+import OxFunc.Functions.CovariancePFn
+import OxFunc.Functions.CovarianceSFn
+import OxFunc.Functions.Csc
+import OxFunc.Functions.Csch
+import OxFunc.Functions.CumulativeFinanceFamily
+import OxFunc.Functions.DatabaseFamily
 import OxFunc.Functions.Date
+import OxFunc.Functions.DatePartsFamily
+import OxFunc.Functions.DateValueFamily
+import OxFunc.Functions.DateWeekFamily
+import OxFunc.Functions.DecimalFn
+import OxFunc.Functions.Degrees
+import OxFunc.Functions.DeltaFn
+import OxFunc.Functions.DepreciationFamily
+import OxFunc.Functions.DiscreteDistFamily
+import OxFunc.Functions.ErrorTypeFn
+import OxFunc.Functions.EngineeringRadixFamily
 import OxFunc.Functions.Dollar
+import OxFunc.Functions.DollarFractionFamily
+import OxFunc.Functions.Even
 import OxFunc.Functions.Exact
+import OxFunc.Functions.Exp
+import OxFunc.Functions.Fact
+import OxFunc.Functions.FactDouble
+import OxFunc.Functions.FisherFn
+import OxFunc.Functions.FisherInvFn
+import OxFunc.Functions.FalseFn
+import OxFunc.Functions.FinancialTimeValueFamily
 import OxFunc.Functions.Fixed
+import OxFunc.Functions.GaussFn
+import OxFunc.Functions.GcdFn
+import OxFunc.Functions.GeoMeanFn
+import OxFunc.Functions.GestepFn
+import OxFunc.Functions.HarMeanFn
 import OxFunc.Functions.Hstack
+import OxFunc.Functions.Info
 import OxFunc.Functions.IfFn
 import OxFunc.Functions.IfError
+import OxFunc.Functions.IfNaFn
 import OxFunc.Functions.Index
 import OxFunc.Functions.Indirect
 import OxFunc.Functions.IsNumber
+import OxFunc.Functions.InterceptFn
+import OxFunc.Functions.LargeFn
+import OxFunc.Functions.IntFn
+import OxFunc.Functions.IsEvenFn
+import OxFunc.Functions.LcmFn
+import OxFunc.Functions.LegacyStatsAliasFamily
+import OxFunc.Functions.Ln
+import OxFunc.Functions.LogFn
+import OxFunc.Functions.Log10
+import OxFunc.Functions.LookupProbFrequencyFamily
+import OxFunc.Functions.LowerFn
+import OxFunc.Functions.MaxFn
+import OxFunc.Functions.MaxAFn
 import OxFunc.Functions.MatchFn
+import OxFunc.Functions.MatrixFamily
+import OxFunc.Functions.MinFn
+import OxFunc.Functions.MinAFn
+import OxFunc.Functions.ModeSnglFn
+import OxFunc.Functions.MedianFn
+import OxFunc.Functions.MiscSwitchInfoFamily
+import OxFunc.Functions.ModFn
+import OxFunc.Functions.MomentStatsFamily
+import OxFunc.Functions.Mround
+import OxFunc.Functions.Multinomial
+import OxFunc.Functions.MiscConversionFamily
 import OxFunc.Functions.N
+import OxFunc.Functions.NaFn
+import OxFunc.Functions.NormalLogFamily
+import OxFunc.Functions.NotFn
 import OxFunc.Functions.Now
+import OxFunc.Functions.Odd
+import OxFunc.Functions.OrFn
 import OxFunc.Functions.OpAdd
+import OxFunc.Functions.PearsonFn
+import OxFunc.Functions.PhiFn
+import OxFunc.Functions.SpillRef
+import OxFunc.Functions.PermutationAFn
+import OxFunc.Functions.PermutFn
+import OxFunc.Functions.PercentileExcFn
+import OxFunc.Functions.PercentileIncFn
+import OxFunc.Functions.PercentRankExcFn
+import OxFunc.Functions.PercentRankIncFn
 import OxFunc.Functions.Pi
+import OxFunc.Functions.Product
+import OxFunc.Functions.PowerFn
+import OxFunc.Functions.QuotientFn
+import OxFunc.Functions.QuartileExcFn
+import OxFunc.Functions.QuartileIncFn
 import OxFunc.Functions.Rand
+import OxFunc.Functions.Radians
+import OxFunc.Functions.RankAvgFn
+import OxFunc.Functions.RankCompatFn
+import OxFunc.Functions.RankEqFn
+import OxFunc.Functions.RegressionForecastFamily
+import OxFunc.Functions.RsqFn
 import OxFunc.Functions.Round
+import OxFunc.Functions.RoundDownFn
+import OxFunc.Functions.RoundUpFn
+import OxFunc.Functions.RomanFn
 import OxFunc.Functions.Row
+import OxFunc.Functions.Sec
 import OxFunc.Functions.Sequence
+import OxFunc.Functions.Sech
+import OxFunc.Functions.Sign
 import OxFunc.Functions.Sin
+import OxFunc.Functions.Sinh
+import OxFunc.Functions.Sqrt
+import OxFunc.Functions.SqrtPi
+import OxFunc.Functions.SlopeFn
+import OxFunc.Functions.SmallFn
+import OxFunc.Functions.SpecialDistFamily
 import OxFunc.Functions.Sum
+import OxFunc.Functions.SumSq
+import OxFunc.Functions.SumproductFamily
+import OxFunc.Functions.StdevFn
+import OxFunc.Functions.StandardizeFn
+import OxFunc.Functions.VarFn
 import OxFunc.Functions.Text
+import OxFunc.Functions.TextSearchReplaceFamily
+import OxFunc.Functions.TextBCompatFamily
+import OxFunc.Functions.TextUnicodeFn
+import OxFunc.Functions.TextSliceFamily
+import OxFunc.Functions.ReptFn
 import OxFunc.Functions.TextJoin
 import OxFunc.Functions.T
+import OxFunc.Functions.Tan
+import OxFunc.Functions.Tanh
+import OxFunc.Functions.TestAliasFamily
+import OxFunc.Functions.TextDelimFamily
+import OxFunc.Functions.TextCompatLocaleFamily
+import OxFunc.Functions.NumberRegexTranslateFamily
+import OxFunc.Functions.OddBondFamily
+import OxFunc.Functions.DiscountBillYearfracFamily
+import OxFunc.Functions.StatisticalTestsFamily
 import OxFunc.Functions.Today
+import OxFunc.Functions.TrueFn
+import OxFunc.Functions.TruncFn
+import OxFunc.Functions.TrimFn
 import OxFunc.Functions.Type
+import OxFunc.Functions.UpperFn
 import OxFunc.Functions.Value
 import OxFunc.Functions.Offset
 import OxFunc.Functions.Xlookup
 import OxFunc.Functions.Xmatch
 import OxFunc.Functions.XmatchSurface
+import OxFunc.Functions.XorFn
+
+import OxFunc.Functions.AverageAFn
+import OxFunc.Functions.AveDevFn
+import OxFunc.Functions.DevSqFn
+import OxFunc.Functions.StdevAFn
+import OxFunc.Functions.StdevPAFn
+import OxFunc.Functions.StdevPFn
+import OxFunc.Functions.StdevSFn
+import OxFunc.Functions.VarAFn
+import OxFunc.Functions.VarPAFn
+import OxFunc.Functions.VarPFn
+import OxFunc.Functions.VarSFn
+import OxFunc.Functions.StdevCompatFn
+import OxFunc.Functions.StdevPCompatFn
+import OxFunc.Functions.VarCompatFn
+import OxFunc.Functions.VarPCompatFn
+import OxFunc.Functions.VhlookupFamily
+import OxFunc.Functions.WorkdayNetworkdaysFamily
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

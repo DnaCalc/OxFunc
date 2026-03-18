@@ -1,4 +1,6 @@
-use crate::functions::adapters::{PreparedArgValue, expand_lookup_vector_arg, prepare_arg_values_only};
+use crate::functions::adapters::{
+    PreparedArgValue, expand_lookup_vector_arg, prepare_arg_values_only,
+};
 use crate::functions::xmatch::{
     XmatchEvalError, eval_xmatch_adapter_prepared, eval_xmatch_adapter_prepared_value,
     validate_xmatch_surface_arity,
@@ -12,7 +14,8 @@ fn prepare_lookup_vector(
 ) -> Result<Vec<PreparedArgValue>, XmatchEvalError> {
     let mut prepared = Vec::new();
     for arg in lookup_array {
-        prepared.extend(expand_lookup_vector_arg(arg, resolver).map_err(XmatchEvalError::Coercion)?);
+        prepared
+            .extend(expand_lookup_vector_arg(arg, resolver).map_err(XmatchEvalError::Coercion)?);
     }
     Ok(prepared)
 }
@@ -83,7 +86,9 @@ mod tests {
     use crate::coercion::CoercionError;
     use crate::function::Arity;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+    use crate::value::{
+        ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
+    };
 
     struct MockResolver {
         caps: ResolverCapabilities,
@@ -132,7 +137,10 @@ mod tests {
                 kind: ReferenceKind::A1,
                 target: "A1".to_string(),
             }),
-            &[CallArgValue::Eval(EvalValue::Number(1.0)), CallArgValue::Eval(EvalValue::Number(2.0))],
+            &[
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
             None,
             None,
             &r,
@@ -176,9 +184,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Err(XmatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
-                "two_dimensional_array"
-            )))
+            Err(XmatchEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("two_dimensional_array")
+            ))
         );
     }
 
@@ -226,7 +234,10 @@ mod tests {
 
     #[test]
     fn xmatch_meta_arity_is_two_to_four_in_surface_context() {
-        assert_eq!(crate::functions::xmatch::XMATCH_META.arity, Arity { min: 2, max: 4 });
+        assert_eq!(
+            crate::functions::xmatch::XMATCH_META.arity,
+            Arity { min: 2, max: 4 }
+        );
     }
 
     #[test]

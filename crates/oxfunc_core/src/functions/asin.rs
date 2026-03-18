@@ -61,13 +61,17 @@ pub fn eval_asin_surface(
                     match n {
                         Ok(n) => match asin_kernel(n) {
                             Ok(v) => Ok(ArrayCellValue::Number(v)),
-                            Err(AsinEvalError::Domain) => Ok(ArrayCellValue::Error(WorksheetErrorCode::Num)),
+                            Err(AsinEvalError::Domain) => {
+                                Ok(ArrayCellValue::Error(WorksheetErrorCode::Num))
+                            }
                             Err(other) => Err(other),
                         },
                         Err(AsinEvalError::Coercion(CoercionError::WorksheetError(code))) => {
                             Ok(ArrayCellValue::Error(code))
                         }
-                        Err(AsinEvalError::Coercion(_)) => Ok(ArrayCellValue::Error(WorksheetErrorCode::Value)),
+                        Err(AsinEvalError::Coercion(_)) => {
+                            Ok(ArrayCellValue::Error(WorksheetErrorCode::Value))
+                        }
                         Err(other) => Err(other),
                     }
                 })
@@ -128,9 +132,9 @@ mod tests {
     #[test]
     fn eval_asin_accepts_numeric_text() {
         let got = eval_asin_surface(
-            &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                "1".encode_utf16().collect(),
-            )))],
+            &[CallArgValue::Eval(EvalValue::Text(
+                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
+            ))],
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(std::f64::consts::FRAC_PI_2)));
@@ -140,8 +144,11 @@ mod tests {
     fn eval_asin_array_lifts_with_element_errors() {
         let got = eval_asin_surface(
             &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(0.0), ArrayCellValue::Number(2.0)]])
-                    .unwrap(),
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(0.0),
+                    ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap(),
             ))],
             &NoResolver,
         )

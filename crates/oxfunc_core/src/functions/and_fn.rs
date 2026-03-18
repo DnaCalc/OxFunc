@@ -136,12 +136,15 @@ mod tests {
     #[test]
     fn eval_and_direct_text_is_value_error() {
         let got = eval_and_surface(
-            &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                "1".encode_utf16().collect(),
-            )))],
+            &[CallArgValue::Eval(EvalValue::Text(
+                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
+            ))],
             &MockResolver { resolved: None },
         );
-        assert!(matches!(got, Err(AndEvalError::Coercion(CoercionError::NonNumericText(_)))));
+        assert!(matches!(
+            got,
+            Err(AndEvalError::Coercion(CoercionError::NonNumericText(_)))
+        ));
     }
 
     #[test]

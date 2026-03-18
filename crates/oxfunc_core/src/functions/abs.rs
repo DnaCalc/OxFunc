@@ -434,9 +434,8 @@ mod tests {
     fn eval_abs_surface_scalar_matches_adapter_for_prepared_numeric_input() {
         let args = [CallArgValue::Eval(EvalValue::Number(-5.0))];
         let surface = eval_abs_scalar(&args, &resolver());
-        let adapter = eval_abs_adapter_scalar_prepared(&[PreparedArgValue::Eval(
-            EvalValue::Number(-5.0),
-        )]);
+        let adapter =
+            eval_abs_adapter_scalar_prepared(&[PreparedArgValue::Eval(EvalValue::Number(-5.0))]);
         assert_eq!(surface, adapter);
     }
 }

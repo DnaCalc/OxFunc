@@ -2,7 +2,9 @@ use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
     RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
 };
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UnaryNumericCoercionLiftProfile {
@@ -75,7 +77,10 @@ pub fn expand_aggregate_array_with_provenance(
 
 fn expand_resolved_eval_value(value: &EvalValue) -> Vec<PreparedArgValue> {
     match value {
-        EvalValue::Array(array) => array.iter_row_major().map(prepared_from_array_cell).collect(),
+        EvalValue::Array(array) => array
+            .iter_row_major()
+            .map(prepared_from_array_cell)
+            .collect(),
         _ => vec![PreparedArgValue::Eval(value.clone())],
     }
 }
@@ -87,7 +92,10 @@ fn expand_lookup_eval_value(value: &EvalValue) -> Result<Vec<PreparedArgValue>, 
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(CoercionError::UnsupportedValueKind("two_dimensional_array"));
             }
-            Ok(array.iter_row_major().map(prepared_from_array_cell).collect())
+            Ok(array
+                .iter_row_major()
+                .map(prepared_from_array_cell)
+                .collect())
         }
         _ => Ok(vec![PreparedArgValue::Eval(value.clone())]),
     }
@@ -181,7 +189,9 @@ pub fn expand_aggregate_arg(
                     AggregateArrayProvenance::ReferenceDerived,
                 )),
                 value => Ok(vec![AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
+                    origin: AggregateArgOrigin::ArrayLike(
+                        AggregateArrayProvenance::ReferenceDerived,
+                    ),
                     value: PreparedArgValue::Eval(value),
                 }]),
             }
@@ -194,7 +204,9 @@ pub fn expand_aggregate_arg(
                     AggregateArrayProvenance::ReferenceDerived,
                 )),
                 value => Ok(vec![AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
+                    origin: AggregateArgOrigin::ArrayLike(
+                        AggregateArrayProvenance::ReferenceDerived,
+                    ),
                     value: PreparedArgValue::Eval(value),
                 }]),
             }
@@ -275,22 +287,26 @@ pub fn coerce_prepared_to_number(arg: &PreparedArgValue) -> Result<f64, Coercion
     }
 }
 
-pub fn coerce_prepared_to_text(arg: &PreparedArgValue) -> Result<crate::value::ExcelText, CoercionError> {
+pub fn coerce_prepared_to_text(
+    arg: &PreparedArgValue,
+) -> Result<crate::value::ExcelText, CoercionError> {
     use crate::value::ExcelText;
 
     match arg {
         PreparedArgValue::Eval(EvalValue::Text(t)) => Ok(t.clone()),
-        PreparedArgValue::Eval(EvalValue::Number(n)) => {
-            Ok(ExcelText::from_utf16_code_units(format!("{n}").encode_utf16().collect()))
-        }
+        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(ExcelText::from_utf16_code_units(
+            format!("{n}").encode_utf16().collect(),
+        )),
         PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(ExcelText::from_utf16_code_units(
             if *b { "TRUE" } else { "FALSE" }.encode_utf16().collect(),
         )),
         PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(CoercionError::UnsupportedValueKind("array")),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(CoercionError::RefResolution(RefResolutionError::EvalTimeDerefNotAllowed))
+        PreparedArgValue::Eval(EvalValue::Array(_)) => {
+            Err(CoercionError::UnsupportedValueKind("array"))
         }
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(CoercionError::RefResolution(
+            RefResolutionError::EvalTimeDerefNotAllowed,
+        )),
         PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
             Err(CoercionError::UnsupportedValueKind("lambda_value"))
         }
@@ -413,7 +429,9 @@ mod tests {
         let number = PreparedArgValue::Eval(EvalValue::Number(2.5));
         assert_eq!(
             coerce_prepared_to_text(&number),
-            Ok(ExcelText::from_utf16_code_units("2.5".encode_utf16().collect()))
+            Ok(ExcelText::from_utf16_code_units(
+                "2.5".encode_utf16().collect()
+            ))
         );
 
         let blank = PreparedArgValue::EmptyCell;
@@ -505,9 +523,12 @@ mod tests {
         let arg = CallArgValue::Eval(EvalValue::Array(
             EvalArray::from_rows(vec![
                 vec![ArrayCellValue::Number(1.0), ArrayCellValue::EmptyCell],
-                vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
-                    "x".encode_utf16().collect(),
-                )), ArrayCellValue::Logical(true)],
+                vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "x".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Logical(true),
+                ],
             ])
             .unwrap(),
         ));
@@ -545,9 +566,8 @@ mod tests {
         )
         .unwrap();
         assert_eq!(got.len(), 2);
-        assert!(got
-            .iter()
-            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
+        assert!(got.iter().all(|item| item.origin
+            == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
     }
 
     #[test]
@@ -566,9 +586,8 @@ mod tests {
         )
         .unwrap();
         assert_eq!(got.len(), 2);
-        assert!(got
-            .iter()
-            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)));
+        assert!(got.iter().all(|item| item.origin
+            == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)));
     }
 
     #[test]
@@ -587,9 +606,8 @@ mod tests {
         );
 
         assert_eq!(got.len(), 2);
-        assert!(got
-            .iter()
-            .all(|item| item.origin == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)));
+        assert!(got.iter().all(|item| item.origin
+            == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)));
     }
 
     #[test]
@@ -608,7 +626,3 @@ mod tests {
         );
     }
 }
-
-
-
-

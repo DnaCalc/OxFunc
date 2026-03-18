@@ -1,0 +1,91 @@
+use crate::coercion::CoercionError;
+use crate::function::{
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+};
+use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::factorial_common::trunc_nonnegative;
+use crate::functions::gcd_lcm_common::gcd_int;
+use crate::resolver::ReferenceResolver;
+use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+
+pub const GCD_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.GCD",
+    arity: Arity { min: 1, max: 255 },
+    determinism: DeterminismClass::Deterministic,
+    volatility: VolatilityClass::NonVolatile,
+    host_interaction: HostInteractionClass::None,
+    thread_safety: ThreadSafetyClass::SafePure,
+    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    coercion_lift_profile: CoercionLiftProfile::Custom,
+    kernel_signature_class: KernelSignatureClass::Custom,
+    fec_dependency_profile: FecDependencyProfile::None,
+    surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+};
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum GcdEvalError {
+    ArityMismatch {
+        expected_min: usize,
+        expected_max: usize,
+        actual: usize,
+    },
+    Coercion(CoercionError),
+    Domain(WorksheetErrorCode),
+}
+
+fn coerce_prepared_to_nonnegative_int(arg: &PreparedArgValue) -> Result<i64, GcdEvalError> {
+    let n = crate::functions::adapters::coerce_prepared_to_number(arg)
+        .map_err(GcdEvalError::Coercion)?;
+    trunc_nonnegative(n).map_err(GcdEvalError::Domain)
+}
+
+pub fn gcd_kernel(items: &[i64]) -> f64 {
+    items.iter().copied().fold(0, gcd_int) as f64
+}
+
+pub fn eval_gcd_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, GcdEvalError> {
+    let argc = args.len();
+    if !GCD_META.arity.accepts(argc) {
+        return Err(GcdEvalError::ArityMismatch {
+            expected_min: GCD_META.arity.min,
+            expected_max: GCD_META.arity.max,
+            actual: argc,
+        });
+    }
+    let prepared = prepare_args_values_only(args, resolver).map_err(GcdEvalError::Coercion)?;
+    let items = prepared
+        .iter()
+        .map(coerce_prepared_to_nonnegative_int)
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(EvalValue::Number(gcd_kernel(&items)))
+}
+
+pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
+    match e {
+        GcdEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        GcdEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        GcdEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        GcdEvalError::Domain(code) => *code,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn gcd_meta_function_id_is_stable() {
+        assert_eq!(GCD_META.function_id, "FUNC.GCD");
+    }
+
+    #[test]
+    fn gcd_kernel_matches_excel_seed_rows() {
+        assert_eq!(gcd_kernel(&[24, 36]), 12.0);
+        assert_eq!(gcd_kernel(&[0, 5]), 5.0);
+        assert_eq!(gcd_kernel(&[0, 0]), 0.0);
+    }
+}

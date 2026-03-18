@@ -50,7 +50,9 @@ fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
         PreparedArgValue::Eval(EvalValue::Text(t)) => EvalValue::Text(t),
         PreparedArgValue::Eval(EvalValue::Error(code)) => EvalValue::Error(code),
         PreparedArgValue::Eval(EvalValue::Array(array)) => EvalValue::Array(map_array(&array)),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => EvalValue::Error(WorksheetErrorCode::Value),
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            EvalValue::Error(WorksheetErrorCode::Value)
+        }
         PreparedArgValue::Eval(EvalValue::Number(_))
         | PreparedArgValue::Eval(EvalValue::Logical(_))
         | PreparedArgValue::Eval(EvalValue::Lambda(_))

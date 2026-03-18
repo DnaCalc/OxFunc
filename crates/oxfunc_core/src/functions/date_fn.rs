@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::{
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -29,7 +31,9 @@ pub enum DateEvalError {
 }
 
 fn truncate_to_i64(arg: &PreparedArgValue) -> Result<i64, DateEvalError> {
-    Ok(coerce_prepared_to_number(arg).map_err(DateEvalError::Coercion)?.trunc() as i64)
+    Ok(coerce_prepared_to_number(arg)
+        .map_err(DateEvalError::Coercion)?
+        .trunc() as i64)
 }
 
 fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
@@ -91,7 +95,12 @@ pub fn eval_date_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, DateEvalError> {
-    run_values_only_prepared(args, resolver, eval_date_adapter_prepared, DateEvalError::Coercion)
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_date_adapter_prepared,
+        DateEvalError::Coercion,
+    )
 }
 
 pub fn map_date_error_to_ws(e: &DateEvalError) -> WorksheetErrorCode {

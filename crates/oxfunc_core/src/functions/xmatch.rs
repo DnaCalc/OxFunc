@@ -177,9 +177,7 @@ pub(crate) fn prepared_lookup_candidate_comparable(
     }
 }
 
-fn to_lookup_candidate(
-    prepared: &PreparedArgValue,
-) -> Result<LookupCandidate, XmatchEvalError> {
+fn to_lookup_candidate(prepared: &PreparedArgValue) -> Result<LookupCandidate, XmatchEvalError> {
     match prepared {
         PreparedArgValue::EmptyCell => Ok(LookupCandidate::BlankCell),
         PreparedArgValue::MissingArg => Ok(LookupCandidate::Skip),
@@ -217,7 +215,9 @@ fn parse_optional_search_mode(
 pub(crate) fn comparable_eq(lhs: &XmatchComparable, rhs: &XmatchComparable) -> bool {
     match (lhs, rhs) {
         (XmatchComparable::Number(a), XmatchComparable::Number(b)) => a == b,
-        (XmatchComparable::Text(a), XmatchComparable::Text(b)) => a.to_lowercase() == b.to_lowercase(),
+        (XmatchComparable::Text(a), XmatchComparable::Text(b)) => {
+            a.to_lowercase() == b.to_lowercase()
+        }
         (XmatchComparable::Logical(a), XmatchComparable::Logical(b)) => a == b,
         _ => false,
     }
@@ -245,9 +245,8 @@ pub(crate) fn wildcard_match(pattern: &str, text: &str) -> bool {
     while text_index < text.len() {
         if pattern_index < pattern.len() {
             match pattern[pattern_index] {
-                '~'
-                    if pattern_index + 1 < pattern.len()
-                        && pattern[pattern_index + 1] == text[text_index] =>
+                '~' if pattern_index + 1 < pattern.len()
+                    && pattern[pattern_index + 1] == text[text_index] =>
                 {
                     pattern_index += 2;
                     text_index += 1;
@@ -319,7 +318,10 @@ fn find_blank_cell_scan(
     search_mode: XmatchSearchMode,
 ) -> Result<f64, XmatchEvalError> {
     for idx in scan_indices(search_mode, lookup_array.len()) {
-        if matches!(to_lookup_candidate(&lookup_array[idx])?, LookupCandidate::BlankCell) {
+        if matches!(
+            to_lookup_candidate(&lookup_array[idx])?,
+            LookupCandidate::BlankCell
+        ) {
             return Ok((idx + 1) as f64);
         }
     }
@@ -336,7 +338,8 @@ fn xmatch_scan_exact_or_approximate(
     let mut best: Option<(usize, XmatchComparable)> = None;
 
     for idx in scan_indices(search_mode, lookup_array.len()) {
-        let LookupCandidate::Comparable(candidate) = to_lookup_candidate(&lookup_array[idx])? else {
+        let LookupCandidate::Comparable(candidate) = to_lookup_candidate(&lookup_array[idx])?
+        else {
             continue;
         };
 
@@ -391,7 +394,10 @@ fn collect_binary_candidates(
     Ok(Some(out))
 }
 
-fn lower_bound_ascending(candidates: &[XmatchComparable], lookup_value: &XmatchComparable) -> usize {
+fn lower_bound_ascending(
+    candidates: &[XmatchComparable],
+    lookup_value: &XmatchComparable,
+) -> usize {
     let mut low = 0usize;
     let mut high = candidates.len();
     while low < high {
@@ -405,7 +411,10 @@ fn lower_bound_ascending(candidates: &[XmatchComparable], lookup_value: &XmatchC
     low
 }
 
-fn first_less_descending(candidates: &[XmatchComparable], lookup_value: &XmatchComparable) -> usize {
+fn first_less_descending(
+    candidates: &[XmatchComparable],
+    lookup_value: &XmatchComparable,
+) -> usize {
     let mut low = 0usize;
     let mut high = candidates.len();
     while low < high {
@@ -533,9 +542,9 @@ pub(crate) fn eval_xmatch_adapter_prepared_with_blank_behavior(
             XmatchSearchMode::BinaryAscending | XmatchSearchMode::BinaryDescending
         )
     {
-        return Err(XmatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
-            "wildcard_binary_search",
-        )));
+        return Err(XmatchEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("wildcard_binary_search"),
+        ));
     }
 
     match lookup_value {
@@ -726,8 +735,12 @@ mod tests {
 
     #[test]
     fn eval_xmatch_adapter_prepared_supports_wildcard_mode() {
-        let wildcard =
-            eval_xmatch_adapter_prepared(&text("a*"), &[text("zzz"), text("abc")], Some(&num(2.0)), None);
+        let wildcard = eval_xmatch_adapter_prepared(
+            &text("a*"),
+            &[text("zzz"), text("abc")],
+            Some(&num(2.0)),
+            None,
+        );
         assert_eq!(wildcard, Ok(2.0));
     }
 
@@ -961,9 +974,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Err(XmatchEvalError::Coercion(CoercionError::UnsupportedValueKind(
-                "wildcard_binary_search"
-            )))
+            Err(XmatchEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("wildcard_binary_search")
+            ))
         );
     }
 

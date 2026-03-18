@@ -7,7 +7,7 @@ open OxFunc
 
 def cellMeta : FunctionMeta := {
   functionId := "FUNC.CELL"
-  arity := Arity.exact 2
+  arity := { min := 1, max := 2 }
   determinism := DeterminismClass.deterministic
   volatility := VolatilityClass.volatileContextual
   hostInteraction := HostInteractionClass.workbookState
@@ -29,7 +29,9 @@ theorem evalCellSeedAddress_b3 :
   simp [evalCellSeedAddress]
 
 theorem cellMeta_profiles :
-    cellMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
+    cellMeta.arity.min = 1
+    ∧ cellMeta.arity.max = 2
+    ∧ cellMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
     ∧ cellMeta.fecDependencyProfile = FecDependencyProfile.callerContext
     ∧ cellMeta.surfaceFecDependencyProfile = FecDependencyProfile.callerContext := by
   simp [cellMeta]

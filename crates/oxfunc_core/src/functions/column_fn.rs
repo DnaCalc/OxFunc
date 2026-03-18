@@ -4,7 +4,9 @@ use crate::function::{
 };
 use crate::functions::a1_refs::parse_a1_reference;
 use crate::resolver::ReferenceResolver;
-use crate::value::{ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const COLUMN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COLUMN",
@@ -22,12 +24,18 @@ pub const COLUMN_META: FunctionMeta = FunctionMeta {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ColumnEvalError {
-    ArityMismatch { expected_min: usize, expected_max: usize, actual: usize },
+    ArityMismatch {
+        expected_min: usize,
+        expected_max: usize,
+        actual: usize,
+    },
     MissingCallerContext,
     InvalidReferenceArg,
 }
 
-fn column_reference_from_arg(arg: &CallArgValue) -> Result<crate::functions::a1_refs::A1Reference, ColumnEvalError> {
+fn column_reference_from_arg(
+    arg: &CallArgValue,
+) -> Result<crate::functions::a1_refs::A1Reference, ColumnEvalError> {
     let reference = match arg {
         CallArgValue::Reference(r) => r,
         CallArgValue::Eval(EvalValue::Reference(r)) => r,
@@ -69,7 +77,9 @@ pub fn eval_column_surface(
     }
 
     if args.is_empty() || matches!(args[0], CallArgValue::MissingArg) {
-        let caller = resolver.caller_context().ok_or(ColumnEvalError::MissingCallerContext)?;
+        let caller = resolver
+            .caller_context()
+            .ok_or(ColumnEvalError::MissingCallerContext)?;
         return Ok(EvalValue::Number(caller.col as f64));
     }
 
@@ -116,14 +126,26 @@ mod tests {
 
     #[test]
     fn eval_column_omitted_uses_caller_column() {
-        let got = eval_column_surface(&[], &MockResolver { caller: Some(CallerContext { prefix: Some("Sheet1".to_string()), row: 7, col: 3 }) });
+        let got = eval_column_surface(
+            &[],
+            &MockResolver {
+                caller: Some(CallerContext {
+                    prefix: Some("Sheet1".to_string()),
+                    row: 7,
+                    col: 3,
+                }),
+            },
+        );
         assert_eq!(got, Ok(EvalValue::Number(3.0)));
     }
 
     #[test]
     fn eval_column_single_cell_reference_returns_scalar() {
         let got = eval_column_surface(
-            &[CallArgValue::Reference(ReferenceLike { kind: ReferenceKind::A1, target: "B2".to_string() })],
+            &[CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::A1,
+                target: "B2".to_string(),
+            })],
             &MockResolver { caller: None },
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
@@ -132,16 +154,21 @@ mod tests {
     #[test]
     fn eval_column_area_reference_spills_horizontally() {
         let got = eval_column_surface(
-            &[CallArgValue::Reference(ReferenceLike { kind: ReferenceKind::Area, target: "B2:C3".to_string() })],
+            &[CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "B2:C3".to_string(),
+            })],
             &MockResolver { caller: None },
-        ).unwrap();
+        )
+        .unwrap();
         assert_eq!(
             got,
             EvalValue::Array(
                 EvalArray::from_rows(vec![vec![
                     ArrayCellValue::Number(2.0),
                     ArrayCellValue::Number(3.0),
-                ]]).unwrap()
+                ]])
+                .unwrap()
             )
         );
     }
@@ -149,13 +176,27 @@ mod tests {
     #[test]
     fn eval_column_whole_row_reference_builds_full_width_vector() {
         let got = eval_column_surface(
-            &[CallArgValue::Reference(ReferenceLike { kind: ReferenceKind::Area, target: "1:1".to_string() })],
+            &[CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "1:1".to_string(),
+            })],
             &MockResolver { caller: None },
-        ).unwrap();
-        let EvalValue::Array(array) = got else { panic!("expected array"); };
-        assert_eq!(array.shape(), ArrayShape { rows: 1, cols: 16_384 });
+        )
+        .unwrap();
+        let EvalValue::Array(array) = got else {
+            panic!("expected array");
+        };
+        assert_eq!(
+            array.shape(),
+            ArrayShape {
+                rows: 1,
+                cols: 16_384
+            }
+        );
         assert_eq!(array.get(0, 0), Some(&ArrayCellValue::Number(1.0)));
-        assert_eq!(array.get(0, 16_383), Some(&ArrayCellValue::Number(16_384.0)));
+        assert_eq!(
+            array.get(0, 16_383),
+            Some(&ArrayCellValue::Number(16_384.0))
+        );
     }
 }
-

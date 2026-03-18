@@ -34,7 +34,10 @@ pub enum OffsetEvalError {
     InvalidDimension,
 }
 
-fn parse_offset_number(arg: &CallArgValue, resolver: &impl ReferenceResolver) -> Result<i64, OffsetEvalError> {
+fn parse_offset_number(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<i64, OffsetEvalError> {
     let number = match arg {
         CallArgValue::Eval(v) => coerce_eval_to_number(v, resolver),
         CallArgValue::Reference(r) => resolver

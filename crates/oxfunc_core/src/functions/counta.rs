@@ -96,9 +96,9 @@ mod tests {
     fn eval_counta_counts_non_empty_values() {
         let args = vec![
             CallArgValue::Eval(EvalValue::Number(1.0)),
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                Vec::new(),
-            ))),
+            CallArgValue::Eval(EvalValue::Text(
+                ExcelText::from_utf16_code_units(Vec::new()),
+            )),
             CallArgValue::MissingArg,
             CallArgValue::EmptyCell,
         ];

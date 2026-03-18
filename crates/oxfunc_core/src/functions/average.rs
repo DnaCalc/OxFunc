@@ -111,7 +111,12 @@ mod tests {
             CallArgValue::Eval(EvalValue::Number(2.0)),
             CallArgValue::Eval(EvalValue::Number(5.0)),
         ];
-        let got = eval_average_surface(&args, &MockResolver { resolved_value: None });
+        let got = eval_average_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
         assert_eq!(got, Ok(EvalValue::Number(8.0 / 3.0)));
     }
 
@@ -123,7 +128,12 @@ mod tests {
             ))),
             CallArgValue::Eval(EvalValue::Logical(true)),
         ];
-        let got = eval_average_surface(&args, &MockResolver { resolved_value: None });
+        let got = eval_average_surface(
+            &args,
+            &MockResolver {
+                resolved_value: None,
+            },
+        );
         assert_eq!(got, Ok(EvalValue::Number(1.5)));
     }
 
@@ -186,7 +196,9 @@ mod tests {
                 ]])
                 .unwrap(),
             ))],
-            &MockResolver { resolved_value: None },
+            &MockResolver {
+                resolved_value: None,
+            },
         );
         assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Div0)));
     }

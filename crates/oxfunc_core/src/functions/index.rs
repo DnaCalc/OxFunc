@@ -46,7 +46,10 @@ pub enum IndexEvalError {
     ArrayPayloadUnavailable,
 }
 
-fn coerce_index_number(arg: &CallArgValue, resolver: &impl ReferenceResolver) -> Result<usize, IndexEvalError> {
+fn coerce_index_number(
+    arg: &CallArgValue,
+    resolver: &impl ReferenceResolver,
+) -> Result<usize, IndexEvalError> {
     let n = coerce_arg_to_number(arg, resolver).map_err(IndexEvalError::Coercion)?;
     if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
         return Err(IndexEvalError::InvalidIndexNumber(n));
@@ -222,17 +225,11 @@ fn cell_to_eval_value(cell: &ArrayCellValue) -> EvalValue {
         ArrayCellValue::Text(t) => EvalValue::Text(t.clone()),
         ArrayCellValue::Logical(b) => EvalValue::Logical(*b),
         ArrayCellValue::Error(code) => EvalValue::Error(*code),
-        ArrayCellValue::EmptyCell => {
-            EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
-        }
+        ArrayCellValue::EmptyCell => EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
     }
 }
 
-fn slice_array(
-    array: &EvalArray,
-    row: usize,
-    col: usize,
-) -> Result<EvalValue, IndexEvalError> {
+fn slice_array(array: &EvalArray, row: usize, col: usize) -> Result<EvalValue, IndexEvalError> {
     let shape = array.shape();
     if row > shape.rows || col > shape.cols {
         return Err(IndexEvalError::OutOfBounds {
@@ -280,9 +277,7 @@ fn slice_array(
             .expect("slice dimensions validated"),
         )),
         (r, c) => Ok(cell_to_eval_value(
-            array
-                .get(r - 1, c - 1)
-                .expect("cell bounds validated"),
+            array.get(r - 1, c - 1).expect("cell bounds validated"),
         )),
     }
 }

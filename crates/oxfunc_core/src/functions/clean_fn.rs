@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared};
+use crate::functions::adapters::{
+    PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
@@ -57,7 +59,12 @@ pub fn eval_clean_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, CleanEvalError> {
-    run_values_only_prepared(args, resolver, eval_clean_adapter_prepared, CleanEvalError::Coercion)
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_clean_adapter_prepared,
+        CleanEvalError::Coercion,
+    )
 }
 
 pub fn map_clean_error_to_ws(e: &CleanEvalError) -> WorksheetErrorCode {

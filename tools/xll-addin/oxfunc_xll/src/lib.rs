@@ -2,7 +2,7 @@
 
 use std::env;
 use std::ffi::c_void;
-use std::sync::OnceLock;
+use std::sync::{Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use oxfunc_core::functions::a1_refs::{
@@ -12,6 +12,7 @@ use oxfunc_core::functions::a1_refs::{
 use oxfunc_core::functions::surface_dispatch::{
     eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_value_call,
 };
+use oxfunc_core::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider, InfoQuery};
 use oxfunc_core::locale_format::current_excel_host_context;
 use oxfunc_core::resolver::{
     CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
@@ -64,6 +65,7 @@ const XL_SHEET_ID: i32 = 4 | XL_SPECIAL;
 const XL_SHEET_NM: i32 = 5 | XL_SPECIAL;
 const XLF_REGISTER: i32 = 149;
 const XLF_CALLER: i32 = 89;
+const XLF_EVALUATE: i32 = 257;
 const XLF_GET_CELL: i32 = 185;
 const XLF_GET_WORKSPACE: i32 = 186;
 const XLF_GET_DOCUMENT: i32 = 188;
@@ -77,6 +79,7 @@ type Excel12Proc = unsafe extern "system" fn(
 ) -> i32;
 
 static EXCEL12_PROC: OnceLock<Option<Excel12Proc>> = OnceLock::new();
+static TRACE_LOG: OnceLock<Mutex<Vec<String>>> = OnceLock::new();
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -277,6 +280,55 @@ const MANUAL_PROBE_REGISTRATION_SPECS: &[ManualRegistrationSpec] = &[
         macro_type: 1,
     },
     ManualRegistrationSpec {
+        export_name: "OX_TRACE_RESET",
+        type_text: "Q",
+        function_name: "ox_TRACE_RESET",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_DUMP",
+        type_text: "Q",
+        function_name: "ox_TRACE_DUMP",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_COUNT",
+        type_text: "B",
+        function_name: "ox_TRACE_COUNT",
+        arg_names: "",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_U1",
+        type_text: "QU",
+        function_name: "ox_TRACE_U1",
+        arg_names: "arg1",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_U2",
+        type_text: "QUU",
+        function_name: "ox_TRACE_U2",
+        arg_names: "arg1,arg2",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_Q1",
+        type_text: "BB",
+        function_name: "ox_TRACE_Q1",
+        arg_names: "value",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
+        export_name: "OX_TRACE_Q2",
+        type_text: "BBB",
+        function_name: "ox_TRACE_Q2",
+        arg_names: "lhs,rhs",
+        macro_type: 1,
+    },
+    ManualRegistrationSpec {
         export_name: "OX_GET_CELL",
         type_text: "QUU#",
         function_name: "ox_GET_CELL",
@@ -367,6 +419,102 @@ impl ReferenceResolver for ExcelReferenceResolver {
 
     fn caller_context(&self) -> Option<CallerContext> {
         self.caller.clone()
+    }
+}
+
+struct ExcelHostInfoProvider;
+
+fn info_query_text(query: InfoQuery) -> &'static str {
+    match query {
+        InfoQuery::Directory => "directory",
+        InfoQuery::NumFile => "numfile",
+        InfoQuery::Origin => "origin",
+        InfoQuery::OsVersion => "osversion",
+        InfoQuery::Recalc => "recalc",
+        InfoQuery::Release => "release",
+        InfoQuery::System => "system",
+        InfoQuery::MemAvail => "memavail",
+        InfoQuery::MemUsed => "memused",
+        InfoQuery::TotMem => "totmem",
+    }
+}
+
+fn cell_query_text(query: CellInfoQuery) -> &'static str {
+    match query {
+        CellInfoQuery::Address => "address",
+        CellInfoQuery::Row => "row",
+        CellInfoQuery::Col => "col",
+        CellInfoQuery::Contents => "contents",
+        CellInfoQuery::Type => "type",
+        CellInfoQuery::Filename => "filename",
+        CellInfoQuery::Format => "format",
+        CellInfoQuery::Color => "color",
+        CellInfoQuery::Parentheses => "parentheses",
+        CellInfoQuery::Prefix => "prefix",
+        CellInfoQuery::Protect => "protect",
+        CellInfoQuery::Width => "width",
+        CellInfoQuery::IsFormula => "isformula",
+    }
+}
+
+fn normalize_sheet_prefix(prefix: &str) -> String {
+    let trimmed = prefix.trim();
+    if let Some(rest) = trimmed.strip_prefix("'[") {
+        if let Some(close_idx) = rest.find(']') {
+            let sheet_name = &rest[close_idx + 1..];
+            return format!("'{}", sheet_name);
+        }
+    }
+    if let Some(rest) = trimmed.strip_prefix('[') {
+        if let Some(close_idx) = rest.find(']') {
+            return rest[close_idx + 1..].to_string();
+        }
+    }
+    trimmed.to_string()
+}
+
+fn eval_formula_via_excel(formula_text: &str) -> Result<EvalValue, HostInfoError> {
+    let mut formula = TempXlString::new(formula_text);
+    let mut args = [formula.oper_mut_ptr()];
+    let (status, mut out) = call_excel_special_with_status(XLF_EVALUATE, &mut args);
+    if status != XLRET_SUCCESS {
+        return Err(HostInfoError::ProviderFailure {
+            detail: format!("xlfEvaluate failed ({status}) for {formula_text}"),
+        });
+    }
+
+    let value = resolved_eval_from_call_arg(call_arg_from_xloper(&out, false));
+    free_excel_result_if_needed(&mut out);
+    Ok(value)
+}
+
+impl HostInfoProvider for ExcelHostInfoProvider {
+    fn query_cell_info(
+        &self,
+        query: CellInfoQuery,
+        reference: Option<&ReferenceLike>,
+    ) -> Result<EvalValue, HostInfoError> {
+        if matches!(query, CellInfoQuery::Width) {
+            if let Some(reference) = reference {
+                return eval_formula_via_excel(&format!("CELL(\"width\",{})", reference.target));
+            }
+        }
+        if matches!(query, CellInfoQuery::IsFormula) {
+            let reference = reference.ok_or_else(|| HostInfoError::ProviderFailure {
+                detail: "ISFORMULA requires a reference".to_string(),
+            })?;
+            return eval_formula_via_excel(&format!("ISFORMULA({})", reference.target));
+        }
+        let formula = match reference {
+            Some(reference) => format!("CELL(\"{}\",{})", cell_query_text(query), reference.target),
+            None => format!("CELL(\"{}\")", cell_query_text(query)),
+        };
+        eval_formula_via_excel(&formula)
+    }
+
+    fn query_info(&self, query: InfoQuery) -> Result<EvalValue, HostInfoError> {
+        let formula = format!("INFO(\"{}\")", info_query_text(query));
+        eval_formula_via_excel(&formula)
     }
 }
 
@@ -687,6 +835,39 @@ fn current_caller_context() -> Option<CallerContext> {
         call_excel_free(&mut out);
     }
     caller
+}
+
+fn trace_log() -> &'static Mutex<Vec<String>> {
+    TRACE_LOG.get_or_init(|| Mutex::new(Vec::new()))
+}
+
+fn reset_trace_log() {
+    trace_log().lock().expect("trace log poisoned").clear();
+}
+
+fn trace_count() -> usize {
+    trace_log().lock().expect("trace log poisoned").len()
+}
+
+fn push_trace_entry(entry: String) {
+    trace_log().lock().expect("trace log poisoned").push(entry);
+}
+
+fn dump_trace_log() -> String {
+    trace_log()
+        .lock()
+        .expect("trace log poisoned")
+        .join(" || ")
+}
+
+fn format_caller_context(caller: Option<CallerContext>) -> String {
+    match caller {
+        Some(caller) => match caller.prefix {
+            Some(prefix) => format!("{prefix}!R{}C{}", caller.row, caller.col),
+            None => format!("R{}C{}", caller.row, caller.col),
+        },
+        None => "none".to_string(),
+    }
 }
 
 fn owned_reference_oper_from_a1(reference: &A1Reference) -> Option<OwnedReferenceOper> {
@@ -1149,6 +1330,8 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
             let Some(refs) = area_refs_from_mref(mref) else {
                 return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
             };
+            let prefix = sheet_name_from_reference_oper(value.cast_mut())
+                .map(|sheet| normalize_sheet_prefix(&sheet));
             let targets: Option<Vec<String>> = refs
                 .iter()
                 .map(|entry| {
@@ -1157,7 +1340,7 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
                         entry.rw_last,
                         entry.col_first,
                         entry.col_last,
-                        None,
+                        prefix.clone(),
                     )
                 })
                 .collect();
@@ -1178,10 +1361,34 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
     }
 }
 
+#[cfg(test)]
+mod xll_bridge_tests {
+    use super::normalize_sheet_prefix;
+
+    #[test]
+    fn normalize_sheet_prefix_strips_workbook_from_unquoted_sheet_name() {
+        assert_eq!(normalize_sheet_prefix("[Book1]Sheet2"), "Sheet2");
+    }
+
+    #[test]
+    fn normalize_sheet_prefix_strips_workbook_from_quoted_sheet_name() {
+        assert_eq!(
+            normalize_sheet_prefix("'[Book1]Annual Report'"),
+            "'Annual Report'"
+        );
+    }
+
+    #[test]
+    fn normalize_sheet_prefix_leaves_plain_sheet_name_unchanged() {
+        assert_eq!(normalize_sheet_prefix("Sheet1"), "Sheet1");
+    }
+}
+
 fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
     let resolver = ExcelReferenceResolver {
         caller: current_caller_context(),
     };
+    let host_info = ExcelHostInfoProvider;
     match eval_surface_value_call(
         function_id,
         args,
@@ -1189,6 +1396,7 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
         Some(current_excel_serial_utc()),
         Some(current_random_unit()),
         Some(&current_excel_host_context()),
+        Some(&host_info),
     ) {
         Ok(v) => v,
         Err(code) => EvalValue::Error(code),
@@ -1301,6 +1509,44 @@ fn probe_array_desc(raw: *mut XLOPER12) -> *mut XLOPER12 {
         other => describe_call_arg(&other),
     };
     alloc_result(make_xloper_text(&description))
+}
+
+fn trace_u1(arg1: *mut XLOPER12) -> *mut XLOPER12 {
+    let caller = format_caller_context(current_caller_context());
+    let arg1_desc = describe_call_arg(&call_arg_from_xloper(arg1, true));
+    let entry = format!("U1 caller={caller} arg1={arg1_desc}");
+    push_trace_entry(entry.clone());
+    alloc_result(make_xloper_text(&entry))
+}
+
+fn trace_u2(arg1: *mut XLOPER12, arg2: *mut XLOPER12) -> *mut XLOPER12 {
+    let caller = format_caller_context(current_caller_context());
+    let arg1_desc = describe_call_arg(&call_arg_from_xloper(arg1, true));
+    let arg2_desc = describe_call_arg(&call_arg_from_xloper(arg2, true));
+    let entry = format!("U2 caller={caller} arg1={arg1_desc} arg2={arg2_desc}");
+    push_trace_entry(entry.clone());
+    alloc_result(make_xloper_text(&entry))
+}
+
+fn trace_q1(value: f64) -> f64 {
+    let caller = format_caller_context(current_caller_context());
+    push_trace_entry(format!("Q1 caller={caller} value={value}"));
+    value
+}
+
+fn trace_q2(lhs: f64, rhs: f64) -> f64 {
+    let caller = format_caller_context(current_caller_context());
+    push_trace_entry(format!("Q2 caller={caller} lhs={lhs} rhs={rhs}"));
+    lhs + rhs
+}
+
+fn trace_reset() -> *mut XLOPER12 {
+    reset_trace_log();
+    alloc_result(make_xloper_nil())
+}
+
+fn trace_dump() -> *mut XLOPER12 {
+    alloc_result(make_xloper_text(&dump_trace_log()))
 }
 
 fn raw_arg_is_missing(raw: *mut XLOPER12) -> bool {
@@ -1522,6 +1768,41 @@ pub extern "system" fn OX_PROBE_ARRAY_DESC(arg1: *mut XLOPER12) -> *mut XLOPER12
 }
 
 #[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_RESET() -> *mut XLOPER12 {
+    trace_reset()
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_DUMP() -> *mut XLOPER12 {
+    trace_dump()
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_COUNT() -> f64 {
+    trace_count() as f64
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_U1(arg1: *mut XLOPER12) -> *mut XLOPER12 {
+    trace_u1(arg1)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_U2(arg1: *mut XLOPER12, arg2: *mut XLOPER12) -> *mut XLOPER12 {
+    trace_u2(arg1, arg2)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_Q1(value: f64) -> f64 {
+    trace_q1(value)
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn OX_TRACE_Q2(lhs: f64, rhs: f64) -> f64 {
+    trace_q2(lhs, rhs)
+}
+
+#[unsafe(no_mangle)]
 pub extern "system" fn OX_GET_CELL(
     type_num: *mut XLOPER12,
     reference: *mut XLOPER12,
@@ -1625,6 +1906,9 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
         }
     }
 }
+
+
+
 
 
 

@@ -3,7 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared};
+use crate::functions::adapters::{
+    PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -48,7 +50,12 @@ pub fn eval_exact_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, ExactEvalError> {
-    run_values_only_prepared(args, resolver, eval_exact_adapter_prepared, ExactEvalError::Coercion)
+    run_values_only_prepared(
+        args,
+        resolver,
+        eval_exact_adapter_prepared,
+        ExactEvalError::Coercion,
+    )
 }
 
 pub fn map_exact_error_to_ws(e: &ExactEvalError) -> WorksheetErrorCode {
@@ -130,7 +137,9 @@ mod tests {
     fn eval_exact_treats_blank_as_empty_text() {
         let got = eval_exact_adapter_prepared(&[
             PreparedArgValue::EmptyCell,
-            PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))),
+            PreparedArgValue::Eval(EvalValue::Text(
+                ExcelText::from_utf16_code_units(Vec::new()),
+            )),
         ]);
         assert_eq!(got, Ok(EvalValue::Logical(true)));
     }

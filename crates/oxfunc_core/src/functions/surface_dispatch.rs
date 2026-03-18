@@ -1,89 +1,838 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
 use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
-use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
+use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
+use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
+use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
+use crate::functions::acoth::{eval_acoth_surface, map_acoth_error_to_ws};
+use crate::functions::amor_depreciation_family::{
+    eval_amordegrc_surface, eval_amorlinc_surface, map_amor_depreciation_error_to_ws,
+};
 use crate::functions::and_fn::{eval_and_surface, map_and_error_to_ws};
+use crate::functions::arabic_fn::{eval_arabic_surface, map_arabic_error_to_ws};
+use crate::functions::array_text_split_family::{
+    eval_arraytotext_surface, eval_textsplit_surface, map_array_text_split_error_to_ws,
+};
+use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
+use crate::functions::asinh::{asinh_kernel, eval_asinh_surface, map_asinh_error_to_ws};
+use crate::functions::atan::{atan_kernel, eval_atan_surface, map_atan_error_to_ws};
+use crate::functions::atan2::{atan2_kernel, eval_atan2_surface, map_atan2_error_to_ws};
+use crate::functions::atanh::{atanh_kernel, eval_atanh_surface, map_atanh_error_to_ws};
+use crate::functions::avedev_fn::{eval_avedev_surface, map_avedev_error_to_ws};
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
+use crate::functions::averagea_fn::{eval_averagea_surface, map_averagea_error_to_ws};
+use crate::functions::base_fn::{eval_base_surface, map_base_error_to_ws};
+use crate::functions::bessel_convert_family::{
+    eval_besseli_surface, eval_besselj_surface, eval_besselk_surface, eval_bessely_surface,
+    map_bessel_convert_error_to_ws,
+};
+use crate::functions::beta_gamma_stats_family::{
+    eval_beta_dist_surface, eval_beta_inv_surface, eval_betadist_surface, eval_betainv_surface,
+    eval_gamma_dist_surface, eval_gamma_inv_surface, eval_gammadist_surface, eval_gammainv_surface,
+    map_beta_gamma_stats_error_to_ws,
+};
+use crate::functions::bitand_fn::{bitand_kernel, eval_bitand_surface, map_bitand_error_to_ws};
+use crate::functions::bitlshift_fn::{
+    bitlshift_kernel, eval_bitlshift_surface, map_bitlshift_error_to_ws,
+};
+use crate::functions::bitor_fn::{bitor_kernel, eval_bitor_surface, map_bitor_error_to_ws};
+use crate::functions::bitrshift_fn::{
+    bitrshift_kernel, eval_bitrshift_surface, map_bitrshift_error_to_ws,
+};
+use crate::functions::bitxor_fn::{bitxor_kernel, eval_bitxor_surface, map_bitxor_error_to_ws};
+use crate::functions::bond_core_family::{
+    eval_accrint_surface, eval_accrintm_surface, eval_duration_surface, eval_mduration_surface,
+    eval_price_surface, eval_pricemat_surface, eval_yield_surface, eval_yielddisc_surface,
+    eval_yieldmat_surface, map_bond_core_error_to_ws,
+};
+use crate::functions::cashflow_rate_family::{
+    eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
+};
+use crate::functions::ceiling_floor_family::{
+    eval_ceiling_math_surface, eval_ceiling_precise_surface, eval_ceiling_surface,
+    eval_floor_math_surface, eval_floor_precise_surface, eval_floor_surface,
+    eval_iso_ceiling_surface, map_ceiling_floor_error_to_ws,
+};
 use crate::functions::cell::{eval_cell_surface, map_cell_error_to_ws};
-use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
+use crate::functions::chi_f_t_family::{
+    eval_chidist_surface, eval_chiinv_surface, eval_chisq_dist_rt_surface, eval_chisq_dist_surface,
+    eval_chisq_inv_rt_surface, eval_chisq_inv_surface, eval_f_dist_rt_surface, eval_f_dist_surface,
+    eval_f_inv_rt_surface, eval_f_inv_surface, eval_fdist_surface, eval_finv_surface,
+    eval_t_dist_2t_surface, eval_t_dist_rt_surface, eval_t_dist_surface, eval_t_inv_2t_surface,
+    eval_t_inv_surface, eval_tdist_surface, eval_tinv_surface, map_chi_f_t_error_to_ws,
+};
+use crate::functions::choose_ifs_family::{
+    eval_choose_surface, eval_ifs_surface, map_choose_ifs_error_to_ws,
+};
 use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
+use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
+use crate::functions::combin::{combin_kernel, eval_combin_surface, map_combin_error_to_ws};
+use crate::functions::combina::{combina_kernel, eval_combina_surface, map_combina_error_to_ws};
+use crate::functions::complex_family::{
+    eval_complex_surface, eval_imabs_surface, eval_imaginary_surface, eval_imargument_surface,
+    eval_imconjugate_surface, eval_imcos_surface, eval_imcosh_surface, eval_imcot_surface,
+    eval_imcsc_surface, eval_imcsch_surface, eval_imdiv_surface, eval_imexp_surface,
+    eval_imln_surface, eval_imlog2_surface, eval_imlog10_surface, eval_impower_surface,
+    eval_improduct_surface, eval_imreal_surface, eval_imsec_surface, eval_imsech_surface,
+    eval_imsin_surface, eval_imsinh_surface, eval_imsqrt_surface, eval_imsub_surface,
+    eval_imsum_surface, eval_imtan_surface, map_complex_family_error_to_ws,
+};
+use crate::functions::concat_family::{
+    eval_concat_surface, eval_concatenate_surface, map_concat_error_to_ws,
+};
+use crate::functions::confidence_test_family::{
+    eval_confidence_t_surface, eval_z_test_surface, map_confidence_test_error_to_ws,
+};
+use crate::functions::correl_fn::{eval_correl_surface, map_correl_error_to_ws};
+use crate::functions::cos::{cos_kernel, eval_cos_surface, map_cos_error_to_ws};
+use crate::functions::cosh::{cosh_kernel, eval_cosh_surface, map_cosh_error_to_ws};
+use crate::functions::cot::{cot_kernel, eval_cot_surface, map_cot_error_to_ws};
+use crate::functions::coth::{coth_kernel, eval_coth_surface, map_coth_error_to_ws};
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
 use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
+use crate::functions::countblank_fn::{eval_countblank_surface, map_countblank_error_to_ws};
+use crate::functions::coupon_family::{
+    eval_coupdaybs_surface, eval_coupdays_surface, eval_coupdaysnc_surface, eval_coupncd_surface,
+    eval_coupnum_surface, eval_couppcd_surface, map_coupon_error_to_ws,
+};
+use crate::functions::covariance_p_fn::{eval_covariance_p_surface, map_covariance_p_error_to_ws};
+use crate::functions::covariance_s_fn::{eval_covariance_s_surface, map_covariance_s_error_to_ws};
+use crate::functions::criteria_family::{
+    eval_averageif_surface, eval_averageifs_surface, eval_countif_surface, eval_countifs_surface,
+    eval_maxifs_surface, eval_minifs_surface, eval_sumifs_surface, map_criteria_error_to_ws,
+};
+use crate::functions::csc::{csc_kernel, eval_csc_surface, map_csc_error_to_ws};
+use crate::functions::csch::{csch_kernel, eval_csch_surface, map_csch_error_to_ws};
+use crate::functions::cumulative_finance_family::{
+    eval_cumipmt_surface, eval_cumprinc_surface, map_cumulative_finance_error_to_ws,
+};
+use crate::functions::database_family::{
+    eval_daverage_surface, eval_dcount_surface, eval_dcounta_surface, eval_dget_surface,
+    eval_dmax_surface, eval_dmin_surface, eval_dproduct_surface, eval_dstdev_surface,
+    eval_dstdevp_surface, eval_dsum_surface, eval_dvar_surface, eval_dvarp_surface,
+    map_database_error_to_ws,
+};
 use crate::functions::date_fn::{eval_date_surface, map_date_error_to_ws};
+use crate::functions::date_parts_family::{
+    eval_day_surface, eval_days_surface, eval_hour_surface, eval_minute_surface,
+    eval_month_surface, eval_second_surface, eval_time_surface, eval_year_surface,
+    map_date_parts_error_to_ws,
+};
+use crate::functions::date_value_family::{
+    eval_datedif_surface, eval_datevalue_surface, eval_days360_surface, eval_timevalue_surface,
+    map_date_value_family_error_to_ws,
+};
+use crate::functions::date_week_family::{
+    eval_edate_surface, eval_eomonth_surface, eval_isoweeknum_surface, eval_weekday_surface,
+    eval_weeknum_surface, map_date_week_error_to_ws,
+};
+use crate::functions::decimal_fn::{eval_decimal_surface, map_decimal_error_to_ws};
+use crate::functions::degrees::{degrees_kernel, eval_degrees_surface, map_degrees_error_to_ws};
+use crate::functions::delta_fn::{delta_kernel, eval_delta_surface, map_delta_error_to_ws};
+use crate::functions::depreciation_family::{
+    eval_db_surface, eval_ddb_surface, eval_sln_surface, eval_syd_surface, eval_vdb_surface,
+    map_depreciation_error_to_ws,
+};
+use crate::functions::devsq_fn::{eval_devsq_surface, map_devsq_error_to_ws};
+use crate::functions::discount_bill_yearfrac_family::{
+    eval_disc_surface, eval_intrate_surface, eval_pricedisc_surface, eval_received_surface,
+    eval_tbilleq_surface, eval_tbillprice_surface, eval_tbillyield_surface, eval_yearfrac_surface,
+    map_discount_bill_yearfrac_error_to_ws,
+};
+use crate::functions::discrete_dist_family::{
+    eval_binom_dist_range_surface, eval_binom_dist_surface, eval_binom_inv_surface,
+    eval_binomdist_surface, eval_critbinom_surface, eval_expon_dist_surface,
+    eval_expondist_surface, eval_hypgeom_dist_surface, eval_hypgeomdist_surface,
+    eval_negbinom_dist_surface, eval_negbinomdist_surface, eval_poisson_dist_surface,
+    eval_poisson_surface, map_discrete_dist_error_to_ws,
+};
 use crate::functions::dollar_fn::{eval_dollar_surface, map_dollar_error_to_ws};
+use crate::functions::dollar_fraction_family::{
+    eval_dollarde_surface, eval_dollarfr_surface, map_dollar_fraction_error_to_ws,
+};
+use crate::functions::engineering_radix_family::{
+    eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
+    eval_dec2hex_surface, eval_dec2oct_surface, eval_hex2bin_surface, eval_hex2dec_surface,
+    eval_hex2oct_surface, eval_oct2bin_surface, eval_oct2dec_surface, eval_oct2hex_surface,
+    map_engineering_radix_error_to_ws,
+};
+use crate::functions::error_type_fn::{eval_error_type_surface, map_error_type_error_to_ws};
+use crate::functions::even_fn::{eval_even_surface, even_kernel, map_even_error_to_ws};
 use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
+use crate::functions::exp_fn::{eval_exp_surface, exp_kernel, map_exp_error_to_ws};
+use crate::functions::fact::{eval_fact_surface, fact_kernel, map_fact_error_to_ws};
+use crate::functions::factdouble::{
+    eval_factdouble_surface, factdouble_kernel, map_factdouble_error_to_ws,
+};
+use crate::functions::false_fn::eval_false_surface;
+use crate::functions::financial_time_value_family::{
+    eval_effect_surface, eval_fv_surface, eval_fvschedule_surface, eval_ipmt_surface,
+    eval_ispmt_surface, eval_mirr_surface, eval_nominal_surface, eval_nper_surface,
+    eval_npv_surface, eval_pduration_surface, eval_pmt_surface, eval_ppmt_surface, eval_pv_surface,
+    eval_rate_surface, eval_rri_surface, map_financial_time_value_error_to_ws,
+};
+use crate::functions::fisher_fn::{eval_fisher_surface, map_fisher_error_to_ws};
+use crate::functions::fisherinv_fn::{eval_fisherinv_surface, map_fisherinv_error_to_ws};
 use crate::functions::fixed_fn::{eval_fixed_surface, map_fixed_error_to_ws};
+use crate::functions::gauss_fn::{eval_gauss_surface, map_gauss_error_to_ws};
+use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
+use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
+use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
+use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
+use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
 use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
+use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
+use crate::functions::int_fn::{eval_int_surface, int_kernel, map_int_error_to_ws};
+use crate::functions::intercept_fn::{eval_intercept_surface, map_intercept_error_to_ws};
+use crate::functions::iseven_fn::{eval_iseven_surface, map_iseven_error_to_ws};
 use crate::functions::isnumber::{eval_isnumber_surface, map_isnumber_error_to_ws};
+use crate::functions::large_fn::{eval_large_surface, map_large_error_to_ws};
+use crate::functions::lcm_fn::{eval_lcm_surface, map_lcm_error_to_ws};
+use crate::functions::legacy_stats_alias_family::{
+    eval_covar_surface, eval_loginv_surface, eval_mode_surface, eval_percentile_surface,
+    eval_percentrank_surface, eval_quartile_surface, map_legacy_stats_alias_error_to_ws,
+};
+use crate::functions::ln_fn::{eval_ln_surface, ln_kernel, map_ln_error_to_ws};
+use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
+use crate::functions::log10_fn::{eval_log10_surface, log10_kernel, map_log10_error_to_ws};
+use crate::functions::lookup_prob_frequency_family::{
+    eval_frequency_surface, eval_lookup_surface, eval_mode_mult_surface, eval_prob_surface,
+    map_lookup_prob_frequency_error_to_ws,
+};
 use crate::functions::match_fn::{eval_match_surface, map_match_error_to_ws};
+use crate::functions::matrix_family::{
+    eval_mdeterm_surface, eval_minverse_surface, eval_mmult_surface, eval_munit_surface,
+    map_matrix_error_to_ws,
+};
+use crate::functions::max_fn::{eval_max_surface, map_max_error_to_ws};
+use crate::functions::maxa_fn::{eval_maxa_surface, map_maxa_error_to_ws};
+use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
+use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
+use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
+use crate::functions::misc_conversion_family::{
+    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface,
+    eval_percentof_surface, eval_randarra_surface, map_misc_conversion_error_to_ws,
+};
+use crate::functions::misc_switch_info_family::{
+    eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
+};
+use crate::functions::mod_fn::{eval_mod_surface, map_mod_error_to_ws, mod_kernel};
+use crate::functions::mode_sngl_fn::{eval_mode_sngl_surface, map_mode_sngl_error_to_ws};
+use crate::functions::moment_stats_family::{
+    eval_kurt_surface, eval_skew_p_surface, eval_skew_surface, eval_steyx_surface,
+    eval_trimmean_surface, map_moment_stats_error_to_ws,
+};
+use crate::functions::mround::{eval_mround_surface, map_mround_error_to_ws, mround_kernel};
+use crate::functions::multinomial::{eval_multinomial_surface, map_multinomial_error_to_ws};
 use crate::functions::n_fn::{eval_n_surface, map_n_error_to_ws};
+use crate::functions::na_fn::eval_na_surface;
+use crate::functions::normal_log_family::{
+    eval_confidence_norm_surface, eval_confidence_surface, eval_lognorm_dist_surface,
+    eval_lognorm_inv_surface, eval_lognormdist_surface, eval_norm_dist_surface,
+    eval_norm_inv_surface, eval_norm_s_dist_surface, eval_norm_s_inv_surface,
+    eval_normdist_surface, eval_norminv_surface, eval_normsdist_surface, eval_normsinv_surface,
+    map_normal_log_error_to_ws,
+};
+use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
 use crate::functions::now_fn::{NowProvider, eval_now_surface, map_now_error_to_ws};
+use crate::functions::number_regex_translate_family::{
+    eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
+    eval_regextest_surface, eval_translate_surface, map_number_regex_translate_error_to_ws,
+};
+use crate::functions::odd_bond_family::{
+    eval_oddfprice_surface, eval_oddfyield_surface, eval_oddlprice_surface, eval_oddlyield_surface,
+    map_odd_bond_error_to_ws,
+};
+use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel};
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
+use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
+use crate::functions::or_fn::{eval_or_surface, map_or_error_to_ws};
+use crate::functions::pearson_fn::{eval_pearson_surface, map_pearson_error_to_ws};
+use crate::functions::percentile_exc_fn::{
+    eval_percentile_exc_surface, map_percentile_exc_error_to_ws,
+};
+use crate::functions::percentile_inc_fn::{
+    eval_percentile_inc_surface, map_percentile_inc_error_to_ws,
+};
+use crate::functions::percentrank_exc_fn::{
+    eval_percentrank_exc_surface, map_percentrank_exc_error_to_ws,
+};
+use crate::functions::percentrank_inc_fn::{
+    eval_percentrank_inc_surface, map_percentrank_inc_error_to_ws,
+};
+use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
+use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
+use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws};
 use crate::functions::pi::eval_pi;
+use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
+use crate::functions::product::{eval_product_surface, map_product_error_to_ws};
+use crate::functions::quartile_exc_fn::{eval_quartile_exc_surface, map_quartile_exc_error_to_ws};
+use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_inc_error_to_ws};
+use crate::functions::quotient_fn::{
+    eval_quotient_surface, map_quotient_error_to_ws, quotient_kernel,
+};
+use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
-use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
+use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
+use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
+use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
+use crate::functions::regression_forecast_family::{
+    eval_growth_surface, eval_linest_surface, eval_logest_surface, eval_trend_surface,
+    map_regression_forecast_error_to_ws,
+};
+use crate::functions::roman_fn::{eval_roman_surface, map_roman_error_to_ws};
 use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, round_kernel};
+use crate::functions::rounddown_fn::{eval_rounddown_surface, map_rounddown_error_to_ws};
+use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws};
+use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
+use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
+use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
+use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
+use crate::functions::sign_fn::{eval_sign_surface, map_sign_error_to_ws, sign_kernel};
 use crate::functions::sin::{eval_sin_surface, map_sin_error_to_ws};
+use crate::functions::sinh::{eval_sinh_surface, map_sinh_error_to_ws, sinh_kernel};
+use crate::functions::slope_fn::{eval_slope_surface, map_slope_error_to_ws};
+use crate::functions::small_fn::{eval_small_surface, map_small_error_to_ws};
+use crate::functions::special_dist_family::{
+    eval_erf_precise_surface, eval_erf_surface, eval_erfc_precise_surface, eval_erfc_surface,
+    eval_gamma_surface, eval_gammaln_precise_surface, eval_gammaln_surface,
+    eval_weibull_dist_surface, eval_weibull_surface, map_special_dist_error_to_ws,
+};
+use crate::functions::sqrt_fn::{eval_sqrt_surface, map_sqrt_error_to_ws, sqrt_kernel};
+use crate::functions::sqrtpi::{eval_sqrtpi_surface, map_sqrtpi_error_to_ws, sqrtpi_kernel};
+use crate::functions::standardize_fn::{eval_standardize_surface, map_standardize_error_to_ws};
+use crate::functions::statistical_tests_family::{
+    eval_chisq_test_surface, eval_chitest_surface, eval_f_test_surface, eval_ftest_surface,
+    eval_t_test_surface, eval_ttest_surface, map_statistical_tests_error_to_ws,
+};
+use crate::functions::stdev_fn::{eval_stdev_surface, map_stdev_error_to_ws};
+use crate::functions::stdev_p_fn::{eval_stdev_p_surface, map_stdev_p_error_to_ws};
+use crate::functions::stdev_s_fn::{eval_stdev_s_surface, map_stdev_s_error_to_ws};
+use crate::functions::stdeva_fn::{eval_stdeva_surface, map_stdeva_error_to_ws};
+use crate::functions::stdevp_fn::{eval_stdevp_surface, map_stdevp_error_to_ws};
+use crate::functions::stdevpa_fn::{eval_stdevpa_surface, map_stdevpa_error_to_ws};
 use crate::functions::sum::{eval_sum_surface, map_sum_error_to_ws};
+use crate::functions::sumproduct_family::{
+    eval_seriessum_surface, eval_sumproduct_surface, eval_sumx2my2_surface, eval_sumx2py2_surface,
+    eval_sumxmy2_surface, map_sumproduct_error_to_ws,
+};
+use crate::functions::sumsq::{eval_sumsq_surface, map_sumsq_error_to_ws};
 use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
+use crate::functions::tan::{eval_tan_surface, map_tan_error_to_ws, tan_kernel};
+use crate::functions::tanh::{eval_tanh_surface, map_tanh_error_to_ws, tanh_kernel};
+use crate::functions::test_alias_family::{eval_ztest_surface, map_test_alias_error_to_ws};
+use crate::functions::text_b_compat_family::{
+    eval_findb_surface, eval_leftb_surface, eval_lenb_surface, eval_midb_surface,
+    eval_replaceb_surface, eval_rightb_surface, eval_searchb_surface,
+    map_text_b_compat_error_to_ws,
+};
+use crate::functions::text_compat_locale_family::{
+    eval_asc_surface, eval_dbcs_surface, eval_jis_surface, map_text_compat_locale_error_to_ws,
+};
+use crate::functions::text_delim_family::{
+    eval_textafter_surface, eval_textbefore_surface, map_text_delim_error_to_ws,
+};
+use crate::functions::text_fn::{eval_text_surface, map_text_error_to_ws};
+use crate::functions::text_scalar_misc::{
+    eval_char_surface, eval_code_surface, eval_lower_surface, eval_rept_surface, eval_trim_surface,
+    eval_upper_surface, map_text_scalar_error_to_ws,
+};
+use crate::functions::text_search_replace_family::{
+    eval_find_surface, eval_proper_surface, eval_replace_surface, eval_search_surface,
+    eval_substitute_surface, map_text_search_replace_error_to_ws,
+};
+use crate::functions::text_slice_family::{
+    eval_left_surface, eval_len_surface, eval_mid_surface, eval_right_surface,
+    map_text_slice_error_to_ws,
+};
+use crate::functions::text_unicode_fn::{
+    eval_unichar_surface, eval_unicode_surface, map_text_unicode_error_to_ws,
+};
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{TodayProvider, eval_today_surface, map_today_error_to_ws};
-use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
+use crate::functions::true_fn::eval_true_surface;
+use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
-use crate::functions::text_fn::{eval_text_surface, map_text_error_to_ws};
+use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
+use crate::functions::var_fn::{eval_var_surface, map_var_error_to_ws};
+use crate::functions::var_p_fn::{eval_var_p_surface, map_var_p_error_to_ws};
+use crate::functions::var_s_fn::{eval_var_s_surface, map_var_s_error_to_ws};
+use crate::functions::vara_fn::{eval_vara_surface, map_vara_error_to_ws};
+use crate::functions::varp_fn::{eval_varp_surface, map_varp_error_to_ws};
+use crate::functions::varpa_fn::{eval_varpa_surface, map_varpa_error_to_ws};
+use crate::functions::vhlookup_family::{
+    eval_hlookup_surface, eval_vlookup_surface, map_vhlookup_error_to_ws,
+};
+use crate::functions::workday_networkdays_family::{
+    eval_networkdays_intl_surface, eval_networkdays_surface, eval_workday_intl_surface,
+    eval_workday_surface, map_workday_networkdays_error_to_ws,
+};
 use crate::functions::xlookup::{eval_xlookup_surface, map_xlookup_error_to_ws};
 use crate::functions::xmatch::XmatchEvalError;
 use crate::functions::xmatch_surface::eval_xmatch_surface_value;
-use crate::resolver::RefResolutionError;
+use crate::functions::xor_fn::{eval_xor_surface, map_xor_error_to_ws};
+use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
+use crate::resolver::RefResolutionError;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalError, EvalValue, Value, WorksheetErrorCode};
 
+pub const FUNC_ID_ACOS: &str = "FUNC.ACOS";
+pub const FUNC_ID_ACOT: &str = "FUNC.ACOT";
+pub const FUNC_ID_ACOSH: &str = "FUNC.ACOSH";
+pub const FUNC_ID_ACOTH: &str = "FUNC.ACOTH";
 pub const FUNC_ID_ABS: &str = "FUNC.ABS";
+pub const FUNC_ID_ACCRINT: &str = "FUNC.ACCRINT";
+pub const FUNC_ID_ACCRINTM: &str = "FUNC.ACCRINTM";
+pub const FUNC_ID_AMORDEGRC: &str = "FUNC.AMORDEGRC";
+pub const FUNC_ID_AMORLINC: &str = "FUNC.AMORLINC";
+pub const FUNC_ID_ATAN: &str = "FUNC.ATAN";
 pub const FUNC_ID_ASIN: &str = "FUNC.ASIN";
+pub const FUNC_ID_ASINH: &str = "FUNC.ASINH";
+pub const FUNC_ID_ATAN2: &str = "FUNC.ATAN2";
+pub const FUNC_ID_ATANH: &str = "FUNC.ATANH";
 pub const FUNC_ID_AND: &str = "FUNC.AND";
+pub const FUNC_ID_ARABIC: &str = "FUNC.ARABIC";
+pub const FUNC_ID_ARRAYTOTEXT: &str = "FUNC.ARRAYTOTEXT";
+pub const FUNC_ID_ASC: &str = "FUNC.ASC";
+pub const FUNC_ID_AVEDEV: &str = "FUNC.AVEDEV";
 pub const FUNC_ID_AVERAGE: &str = "FUNC.AVERAGE";
+pub const FUNC_ID_AVERAGEIF: &str = "FUNC.AVERAGEIF";
+pub const FUNC_ID_AVERAGEIFS: &str = "FUNC.AVERAGEIFS";
+pub const FUNC_ID_AVERAGEA: &str = "FUNC.AVERAGEA";
+pub const FUNC_ID_BAHTTEXT: &str = "FUNC.BAHTTEXT";
+pub const FUNC_ID_BASE: &str = "FUNC.BASE";
+pub const FUNC_ID_BETA_DIST: &str = "FUNC.BETA.DIST";
+pub const FUNC_ID_BETA_INV: &str = "FUNC.BETA.INV";
+pub const FUNC_ID_BETADIST: &str = "FUNC.BETADIST";
+pub const FUNC_ID_BETAINV: &str = "FUNC.BETAINV";
+pub const FUNC_ID_BESSELI: &str = "FUNC.BESSELI";
+pub const FUNC_ID_BESSELJ: &str = "FUNC.BESSELJ";
+pub const FUNC_ID_BESSELK: &str = "FUNC.BESSELK";
+pub const FUNC_ID_BESSELY: &str = "FUNC.BESSELY";
+pub const FUNC_ID_BINOM_DIST: &str = "FUNC.BINOM.DIST";
+pub const FUNC_ID_BINOM_DIST_RANGE: &str = "FUNC.BINOM.DIST.RANGE";
+pub const FUNC_ID_BINOM_INV: &str = "FUNC.BINOM.INV";
+pub const FUNC_ID_BINOMDIST: &str = "FUNC.BINOMDIST";
+pub const FUNC_ID_BIN2DEC: &str = "FUNC.BIN2DEC";
+pub const FUNC_ID_BIN2HEX: &str = "FUNC.BIN2HEX";
+pub const FUNC_ID_BIN2OCT: &str = "FUNC.BIN2OCT";
+pub const FUNC_ID_BITAND: &str = "FUNC.BITAND";
+pub const FUNC_ID_BITLSHIFT: &str = "FUNC.BITLSHIFT";
+pub const FUNC_ID_BITOR: &str = "FUNC.BITOR";
+pub const FUNC_ID_BITRSHIFT: &str = "FUNC.BITRSHIFT";
+pub const FUNC_ID_BITXOR: &str = "FUNC.BITXOR";
 pub const FUNC_ID_CELL: &str = "FUNC.CELL";
+pub const FUNC_ID_CEILING: &str = "FUNC.CEILING";
+pub const FUNC_ID_CEILING_MATH: &str = "FUNC.CEILING.MATH";
+pub const FUNC_ID_CEILING_PRECISE: &str = "FUNC.CEILING.PRECISE";
+pub const FUNC_ID_CHIDIST: &str = "FUNC.CHIDIST";
+pub const FUNC_ID_CHIINV: &str = "FUNC.CHIINV";
+pub const FUNC_ID_CHOOSE: &str = "FUNC.CHOOSE";
+pub const FUNC_ID_CHISQ_DIST: &str = "FUNC.CHISQ.DIST";
+pub const FUNC_ID_CHISQ_DIST_RT: &str = "FUNC.CHISQ.DIST.RT";
+pub const FUNC_ID_CHISQ_INV: &str = "FUNC.CHISQ.INV";
+pub const FUNC_ID_CHISQ_INV_RT: &str = "FUNC.CHISQ.INV.RT";
+pub const FUNC_ID_CHISQ_TEST: &str = "FUNC.CHISQ.TEST";
+pub const FUNC_ID_CHITEST: &str = "FUNC.CHITEST";
+pub const FUNC_ID_CHAR: &str = "FUNC.CHAR";
 pub const FUNC_ID_COLUMN: &str = "FUNC.COLUMN";
+pub const FUNC_ID_CODE: &str = "FUNC.CODE";
+pub const FUNC_ID_COMBIN: &str = "FUNC.COMBIN";
+pub const FUNC_ID_COMBINA: &str = "FUNC.COMBINA";
+pub const FUNC_ID_COMPLEX: &str = "FUNC.COMPLEX";
 pub const FUNC_ID_CLEAN: &str = "FUNC.CLEAN";
+pub const FUNC_ID_CONCAT: &str = "FUNC.CONCAT";
+pub const FUNC_ID_CONCATENATE: &str = "FUNC.CONCATENATE";
+pub const FUNC_ID_COS: &str = "FUNC.COS";
+pub const FUNC_ID_COSH: &str = "FUNC.COSH";
+pub const FUNC_ID_CORREL: &str = "FUNC.CORREL";
+pub const FUNC_ID_COVARIANCE_P: &str = "FUNC.COVARIANCE.P";
+pub const FUNC_ID_COVARIANCE_S: &str = "FUNC.COVARIANCE.S";
+pub const FUNC_ID_COT: &str = "FUNC.COT";
+pub const FUNC_ID_COTH: &str = "FUNC.COTH";
 pub const FUNC_ID_COUNT: &str = "FUNC.COUNT";
+pub const FUNC_ID_COUNTBLANK: &str = "FUNC.COUNTBLANK";
+pub const FUNC_ID_COUNTIF: &str = "FUNC.COUNTIF";
+pub const FUNC_ID_COUNTIFS: &str = "FUNC.COUNTIFS";
 pub const FUNC_ID_COUNTA: &str = "FUNC.COUNTA";
+pub const FUNC_ID_COUPDAYBS: &str = "FUNC.COUPDAYBS";
+pub const FUNC_ID_COUPDAYS: &str = "FUNC.COUPDAYS";
+pub const FUNC_ID_COUPDAYSNC: &str = "FUNC.COUPDAYSNC";
+pub const FUNC_ID_COUPNCD: &str = "FUNC.COUPNCD";
+pub const FUNC_ID_COUPNUM: &str = "FUNC.COUPNUM";
+pub const FUNC_ID_COUPPCD: &str = "FUNC.COUPPCD";
+pub const FUNC_ID_COVAR: &str = "FUNC.COVAR";
+pub const FUNC_ID_CRITBINOM: &str = "FUNC.CRITBINOM";
+pub const FUNC_ID_CSC: &str = "FUNC.CSC";
+pub const FUNC_ID_CSCH: &str = "FUNC.CSCH";
+pub const FUNC_ID_CUMIPMT: &str = "FUNC.CUMIPMT";
+pub const FUNC_ID_CUMPRINC: &str = "FUNC.CUMPRINC";
+pub const FUNC_ID_CONVERT: &str = "FUNC.CONVERT";
+pub const FUNC_ID_DAVERAGE: &str = "FUNC.DAVERAGE";
 pub const FUNC_ID_DATE: &str = "FUNC.DATE";
+pub const FUNC_ID_DAY: &str = "FUNC.DAY";
+pub const FUNC_ID_DAYS: &str = "FUNC.DAYS";
+pub const FUNC_ID_DAYS360: &str = "FUNC.DAYS360";
+pub const FUNC_ID_DATEDIF: &str = "FUNC.DATEDIF";
+pub const FUNC_ID_DATEVALUE: &str = "FUNC.DATEVALUE";
+pub const FUNC_ID_DBCS: &str = "FUNC.DBCS";
+pub const FUNC_ID_DB: &str = "FUNC.DB";
+pub const FUNC_ID_DEC2BIN: &str = "FUNC.DEC2BIN";
+pub const FUNC_ID_DEC2HEX: &str = "FUNC.DEC2HEX";
+pub const FUNC_ID_DEC2OCT: &str = "FUNC.DEC2OCT";
+pub const FUNC_ID_EDATE: &str = "FUNC.EDATE";
+pub const FUNC_ID_EOMONTH: &str = "FUNC.EOMONTH";
+pub const FUNC_ID_EFFECT: &str = "FUNC.EFFECT";
+pub const FUNC_ID_EUROCONVERT: &str = "FUNC.EUROCONVERT";
+pub const FUNC_ID_DECIMAL: &str = "FUNC.DECIMAL";
+pub const FUNC_ID_DDB: &str = "FUNC.DDB";
+pub const FUNC_ID_DCOUNT: &str = "FUNC.DCOUNT";
+pub const FUNC_ID_DCOUNTA: &str = "FUNC.DCOUNTA";
+pub const FUNC_ID_DISC: &str = "FUNC.DISC";
+pub const FUNC_ID_DGET: &str = "FUNC.DGET";
+pub const FUNC_ID_DMAX: &str = "FUNC.DMAX";
+pub const FUNC_ID_DMIN: &str = "FUNC.DMIN";
+pub const FUNC_ID_DPRODUCT: &str = "FUNC.DPRODUCT";
+pub const FUNC_ID_DSTDEV: &str = "FUNC.DSTDEV";
+pub const FUNC_ID_DSTDEVP: &str = "FUNC.DSTDEVP";
+pub const FUNC_ID_DSUM: &str = "FUNC.DSUM";
+pub const FUNC_ID_DVAR: &str = "FUNC.DVAR";
+pub const FUNC_ID_DVARP: &str = "FUNC.DVARP";
+pub const FUNC_ID_DEVSQ: &str = "FUNC.DEVSQ";
+pub const FUNC_ID_DEGREES: &str = "FUNC.DEGREES";
+pub const FUNC_ID_DELTA: &str = "FUNC.DELTA";
+pub const FUNC_ID_DURATION: &str = "FUNC.DURATION";
 pub const FUNC_ID_DOLLAR: &str = "FUNC.DOLLAR";
+pub const FUNC_ID_DOLLARDE: &str = "FUNC.DOLLARDE";
+pub const FUNC_ID_DOLLARFR: &str = "FUNC.DOLLARFR";
+pub const FUNC_ID_EVEN: &str = "FUNC.EVEN";
+pub const FUNC_ID_ERROR_TYPE: &str = "FUNC.ERROR.TYPE";
+pub const FUNC_ID_ERF: &str = "FUNC.ERF";
+pub const FUNC_ID_ERF_PRECISE: &str = "FUNC.ERF.PRECISE";
+pub const FUNC_ID_ERFC: &str = "FUNC.ERFC";
+pub const FUNC_ID_ERFC_PRECISE: &str = "FUNC.ERFC.PRECISE";
 pub const FUNC_ID_EXACT: &str = "FUNC.EXACT";
+pub const FUNC_ID_EXPON_DIST: &str = "FUNC.EXPON.DIST";
+pub const FUNC_ID_EXPONDIST: &str = "FUNC.EXPONDIST";
+pub const FUNC_ID_EXP: &str = "FUNC.EXP";
+pub const FUNC_ID_FACT: &str = "FUNC.FACT";
+pub const FUNC_ID_FACTDOUBLE: &str = "FUNC.FACTDOUBLE";
+pub const FUNC_ID_FALSE: &str = "FUNC.FALSE";
+pub const FUNC_ID_FTEST: &str = "FUNC.FTEST";
+pub const FUNC_ID_FREQUENCY: &str = "FUNC.FREQUENCY";
+pub const FUNC_ID_FV: &str = "FUNC.FV";
+pub const FUNC_ID_FVSCHEDULE: &str = "FUNC.FVSCHEDULE";
+pub const FUNC_ID_F_DIST: &str = "FUNC.F.DIST";
+pub const FUNC_ID_F_DIST_RT: &str = "FUNC.F.DIST.RT";
+pub const FUNC_ID_F_INV: &str = "FUNC.F.INV";
+pub const FUNC_ID_F_INV_RT: &str = "FUNC.F.INV.RT";
+pub const FUNC_ID_F_TEST: &str = "FUNC.F.TEST";
+pub const FUNC_ID_FDIST: &str = "FUNC.FDIST";
+pub const FUNC_ID_FINV: &str = "FUNC.FINV";
+pub const FUNC_ID_FISHER: &str = "FUNC.FISHER";
+pub const FUNC_ID_FISHERINV: &str = "FUNC.FISHERINV";
+pub const FUNC_ID_FIND: &str = "FUNC.FIND";
+pub const FUNC_ID_FINDB: &str = "FUNC.FINDB";
 pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
+pub const FUNC_ID_FLOOR: &str = "FUNC.FLOOR";
+pub const FUNC_ID_FLOOR_MATH: &str = "FUNC.FLOOR.MATH";
+pub const FUNC_ID_FLOOR_PRECISE: &str = "FUNC.FLOOR.PRECISE";
+pub const FUNC_ID_IRR: &str = "FUNC.IRR";
+pub const FUNC_ID_GAUSS: &str = "FUNC.GAUSS";
+pub const FUNC_ID_GAMMA: &str = "FUNC.GAMMA";
+pub const FUNC_ID_GAMMA_DIST: &str = "FUNC.GAMMA.DIST";
+pub const FUNC_ID_GAMMA_INV: &str = "FUNC.GAMMA.INV";
+pub const FUNC_ID_GAMMADIST: &str = "FUNC.GAMMADIST";
+pub const FUNC_ID_GAMMAINV: &str = "FUNC.GAMMAINV";
+pub const FUNC_ID_GAMMALN: &str = "FUNC.GAMMALN";
+pub const FUNC_ID_GAMMALN_PRECISE: &str = "FUNC.GAMMALN.PRECISE";
+pub const FUNC_ID_GCD: &str = "FUNC.GCD";
+pub const FUNC_ID_GEOMEAN: &str = "FUNC.GEOMEAN";
+pub const FUNC_ID_GESTEP: &str = "FUNC.GESTEP";
+pub const FUNC_ID_GROWTH: &str = "FUNC.GROWTH";
+pub const FUNC_ID_HARMEAN: &str = "FUNC.HARMEAN";
+pub const FUNC_ID_HYPGEOM_DIST: &str = "FUNC.HYPGEOM.DIST";
+pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
+pub const FUNC_ID_HOUR: &str = "FUNC.HOUR";
 pub const FUNC_ID_HSTACK: &str = "FUNC.HSTACK";
+pub const FUNC_ID_INFO: &str = "FUNC.INFO";
+pub const FUNC_ID_IMABS: &str = "FUNC.IMABS";
+pub const FUNC_ID_IMAGINARY: &str = "FUNC.IMAGINARY";
+pub const FUNC_ID_IMARGUMENT: &str = "FUNC.IMARGUMENT";
+pub const FUNC_ID_IMCONJUGATE: &str = "FUNC.IMCONJUGATE";
+pub const FUNC_ID_IMCOS: &str = "FUNC.IMCOS";
+pub const FUNC_ID_IMCOSH: &str = "FUNC.IMCOSH";
+pub const FUNC_ID_IMCOT: &str = "FUNC.IMCOT";
+pub const FUNC_ID_IMCSC: &str = "FUNC.IMCSC";
+pub const FUNC_ID_IMCSCH: &str = "FUNC.IMCSCH";
+pub const FUNC_ID_IMDIV: &str = "FUNC.IMDIV";
+pub const FUNC_ID_IMEXP: &str = "FUNC.IMEXP";
+pub const FUNC_ID_IMLN: &str = "FUNC.IMLN";
+pub const FUNC_ID_IMLOG10: &str = "FUNC.IMLOG10";
+pub const FUNC_ID_IMLOG2: &str = "FUNC.IMLOG2";
+pub const FUNC_ID_IMPOWER: &str = "FUNC.IMPOWER";
+pub const FUNC_ID_IMPRODUCT: &str = "FUNC.IMPRODUCT";
+pub const FUNC_ID_IMREAL: &str = "FUNC.IMREAL";
+pub const FUNC_ID_IMSEC: &str = "FUNC.IMSEC";
+pub const FUNC_ID_IMSECH: &str = "FUNC.IMSECH";
+pub const FUNC_ID_IMSIN: &str = "FUNC.IMSIN";
+pub const FUNC_ID_IMSINH: &str = "FUNC.IMSINH";
+pub const FUNC_ID_IMSQRT: &str = "FUNC.IMSQRT";
+pub const FUNC_ID_IMSUB: &str = "FUNC.IMSUB";
+pub const FUNC_ID_IMSUM: &str = "FUNC.IMSUM";
+pub const FUNC_ID_IMTAN: &str = "FUNC.IMTAN";
+pub const FUNC_ID_ISFORMULA: &str = "FUNC.ISFORMULA";
 pub const FUNC_ID_IF: &str = "FUNC.IF";
 pub const FUNC_ID_IFERROR: &str = "FUNC.IFERROR";
+pub const FUNC_ID_IFNA: &str = "FUNC.IFNA";
+pub const FUNC_ID_IFS: &str = "FUNC.IFS";
 pub const FUNC_ID_INDEX: &str = "FUNC.INDEX";
 pub const FUNC_ID_INDIRECT: &str = "FUNC.INDIRECT";
+pub const FUNC_ID_IPMT: &str = "FUNC.IPMT";
+pub const FUNC_ID_ISPMT: &str = "FUNC.ISPMT";
+pub const FUNC_ID_HEX2BIN: &str = "FUNC.HEX2BIN";
+pub const FUNC_ID_HEX2DEC: &str = "FUNC.HEX2DEC";
+pub const FUNC_ID_HEX2OCT: &str = "FUNC.HEX2OCT";
 pub const FUNC_ID_ISNUMBER: &str = "FUNC.ISNUMBER";
+pub const FUNC_ID_ISOWEEKNUM: &str = "FUNC.ISOWEEKNUM";
+pub const FUNC_ID_ISO_CEILING: &str = "FUNC.ISO.CEILING";
+pub const FUNC_ID_INTERCEPT: &str = "FUNC.INTERCEPT";
+pub const FUNC_ID_INT: &str = "FUNC.INT";
+pub const FUNC_ID_INTRATE: &str = "FUNC.INTRATE";
+pub const FUNC_ID_ISEVEN: &str = "FUNC.ISEVEN";
+pub const FUNC_ID_JIS: &str = "FUNC.JIS";
+pub const FUNC_ID_KURT: &str = "FUNC.KURT";
+pub const FUNC_ID_LARGE: &str = "FUNC.LARGE";
+pub const FUNC_ID_LCM: &str = "FUNC.LCM";
+pub const FUNC_ID_LINEST: &str = "FUNC.LINEST";
+pub const FUNC_ID_LOGINV: &str = "FUNC.LOGINV";
+pub const FUNC_ID_LN: &str = "FUNC.LN";
+pub const FUNC_ID_LOG: &str = "FUNC.LOG";
+pub const FUNC_ID_LOG10: &str = "FUNC.LOG10";
+pub const FUNC_ID_LOOKUP: &str = "FUNC.LOOKUP";
+pub const FUNC_ID_LOWER: &str = "FUNC.LOWER";
+pub const FUNC_ID_MAX: &str = "FUNC.MAX";
+pub const FUNC_ID_MAXA: &str = "FUNC.MAXA";
+pub const FUNC_ID_MAXIFS: &str = "FUNC.MAXIFS";
+pub const FUNC_ID_MEDIAN: &str = "FUNC.MEDIAN";
 pub const FUNC_ID_MATCH: &str = "FUNC.MATCH";
+pub const FUNC_ID_MDETERM: &str = "FUNC.MDETERM";
+pub const FUNC_ID_MDURATION: &str = "FUNC.MDURATION";
+pub const FUNC_ID_MINVERSE: &str = "FUNC.MINVERSE";
+pub const FUNC_ID_MMULT: &str = "FUNC.MMULT";
+pub const FUNC_ID_MUNIT: &str = "FUNC.MUNIT";
+pub const FUNC_ID_MIN: &str = "FUNC.MIN";
+pub const FUNC_ID_MINA: &str = "FUNC.MINA";
+pub const FUNC_ID_MINIFS: &str = "FUNC.MINIFS";
+pub const FUNC_ID_MIRR: &str = "FUNC.MIRR";
+pub const FUNC_ID_MINUTE: &str = "FUNC.MINUTE";
+pub const FUNC_ID_MOD: &str = "FUNC.MOD";
+pub const FUNC_ID_MODE: &str = "FUNC.MODE";
+pub const FUNC_ID_MODE_MULT: &str = "FUNC.MODE.MULT";
+pub const FUNC_ID_MODE_SNGL: &str = "FUNC.MODE.SNGL";
+pub const FUNC_ID_MONTH: &str = "FUNC.MONTH";
+pub const FUNC_ID_MROUND: &str = "FUNC.MROUND";
+pub const FUNC_ID_MULTINOMIAL: &str = "FUNC.MULTINOMIAL";
 pub const FUNC_ID_N: &str = "FUNC.N";
+pub const FUNC_ID_NA: &str = "FUNC.NA";
+pub const FUNC_ID_NOMINAL: &str = "FUNC.NOMINAL";
+pub const FUNC_ID_NPER: &str = "FUNC.NPER";
+pub const FUNC_ID_NPV: &str = "FUNC.NPV";
+pub const FUNC_ID_NUMBERVALUE: &str = "FUNC.NUMBERVALUE";
+pub const FUNC_ID_NEGBINOM_DIST: &str = "FUNC.NEGBINOM.DIST";
+pub const FUNC_ID_NEGBINOMDIST: &str = "FUNC.NEGBINOMDIST";
+pub const FUNC_ID_CONFIDENCE: &str = "FUNC.CONFIDENCE";
+pub const FUNC_ID_CONFIDENCE_T: &str = "FUNC.CONFIDENCE.T";
+pub const FUNC_ID_CONFIDENCE_NORM: &str = "FUNC.CONFIDENCE.NORM";
+pub const FUNC_ID_LOGNORM_DIST: &str = "FUNC.LOGNORM.DIST";
+pub const FUNC_ID_LOGNORM_INV: &str = "FUNC.LOGNORM.INV";
+pub const FUNC_ID_LOGNORMDIST: &str = "FUNC.LOGNORMDIST";
+pub const FUNC_ID_LOGEST: &str = "FUNC.LOGEST";
+pub const FUNC_ID_NORM_DIST: &str = "FUNC.NORM.DIST";
+pub const FUNC_ID_NORM_INV: &str = "FUNC.NORM.INV";
+pub const FUNC_ID_NORM_S_DIST: &str = "FUNC.NORM.S.DIST";
+pub const FUNC_ID_NORM_S_INV: &str = "FUNC.NORM.S.INV";
+pub const FUNC_ID_NORMDIST: &str = "FUNC.NORMDIST";
+pub const FUNC_ID_NORMINV: &str = "FUNC.NORMINV";
+pub const FUNC_ID_NORMSDIST: &str = "FUNC.NORMSDIST";
+pub const FUNC_ID_NORMSINV: &str = "FUNC.NORMSINV";
+pub const FUNC_ID_NETWORKDAYS: &str = "FUNC.NETWORKDAYS";
+pub const FUNC_ID_NETWORKDAYS_INTL: &str = "FUNC.NETWORKDAYS.INTL";
+pub const FUNC_ID_NOT: &str = "FUNC.NOT";
 pub const FUNC_ID_NOW: &str = "FUNC.NOW";
+pub const FUNC_ID_OCT2BIN: &str = "FUNC.OCT2BIN";
+pub const FUNC_ID_OCT2DEC: &str = "FUNC.OCT2DEC";
+pub const FUNC_ID_OCT2HEX: &str = "FUNC.OCT2HEX";
+pub const FUNC_ID_POISSON: &str = "FUNC.POISSON";
+pub const FUNC_ID_POISSON_DIST: &str = "FUNC.POISSON.DIST";
+pub const FUNC_ID_ODD: &str = "FUNC.ODD";
+pub const FUNC_ID_ODDFPRICE: &str = "FUNC.ODDFPRICE";
+pub const FUNC_ID_ODDFYIELD: &str = "FUNC.ODDFYIELD";
+pub const FUNC_ID_ODDLPRICE: &str = "FUNC.ODDLPRICE";
+pub const FUNC_ID_ODDLYIELD: &str = "FUNC.ODDLYIELD";
+pub const FUNC_ID_OR: &str = "FUNC.OR";
 pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
 pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
+pub const FUNC_ID_OP_SPILL_REF: &str = "FUNC.OP_SPILL_REF";
+pub const FUNC_ID_PEARSON: &str = "FUNC.PEARSON";
+pub const FUNC_ID_PDURATION: &str = "FUNC.PDURATION";
+pub const FUNC_ID_PERMUT: &str = "FUNC.PERMUT";
+pub const FUNC_ID_PERMUTATIONA: &str = "FUNC.PERMUTATIONA";
+pub const FUNC_ID_PERCENTILE_EXC: &str = "FUNC.PERCENTILE.EXC";
+pub const FUNC_ID_PERCENTILE_INC: &str = "FUNC.PERCENTILE.INC";
+pub const FUNC_ID_PERCENTILE: &str = "FUNC.PERCENTILE";
+pub const FUNC_ID_PERCENTRANK_EXC: &str = "FUNC.PERCENTRANK.EXC";
+pub const FUNC_ID_PERCENTRANK_INC: &str = "FUNC.PERCENTRANK.INC";
+pub const FUNC_ID_PERCENTRANK: &str = "FUNC.PERCENTRANK";
+pub const FUNC_ID_PHI: &str = "FUNC.PHI";
 pub const FUNC_ID_PI: &str = "FUNC.PI";
+pub const FUNC_ID_PMT: &str = "FUNC.PMT";
+pub const FUNC_ID_PPMT: &str = "FUNC.PPMT";
+pub const FUNC_ID_PERCENTOF: &str = "FUNC.PERCENTOF";
+pub const FUNC_ID_PRICE: &str = "FUNC.PRICE";
+pub const FUNC_ID_PRICEDISC: &str = "FUNC.PRICEDISC";
+pub const FUNC_ID_PRICEMAT: &str = "FUNC.PRICEMAT";
+pub const FUNC_ID_PROB: &str = "FUNC.PROB";
+pub const FUNC_ID_PRODUCT: &str = "FUNC.PRODUCT";
+pub const FUNC_ID_POWER: &str = "FUNC.POWER";
+pub const FUNC_ID_PV: &str = "FUNC.PV";
+pub const FUNC_ID_PROPER: &str = "FUNC.PROPER";
+pub const FUNC_ID_QUOTIENT: &str = "FUNC.QUOTIENT";
+pub const FUNC_ID_QUARTILE_EXC: &str = "FUNC.QUARTILE.EXC";
+pub const FUNC_ID_QUARTILE_INC: &str = "FUNC.QUARTILE.INC";
+pub const FUNC_ID_QUARTILE: &str = "FUNC.QUARTILE";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
+pub const FUNC_ID_RANDARRA: &str = "FUNC.RANDARRA";
+pub const FUNC_ID_RATE: &str = "FUNC.RATE";
+pub const FUNC_ID_RADIANS: &str = "FUNC.RADIANS";
+pub const FUNC_ID_RANK: &str = "FUNC.RANK";
+pub const FUNC_ID_RANK_AVG: &str = "FUNC.RANK.AVG";
+pub const FUNC_ID_RANK_EQ: &str = "FUNC.RANK.EQ";
 pub const FUNC_ID_ROW: &str = "FUNC.ROW";
+pub const FUNC_ID_RRI: &str = "FUNC.RRI";
+pub const FUNC_ID_ROMAN: &str = "FUNC.ROMAN";
 pub const FUNC_ID_ROUND: &str = "FUNC.ROUND";
+pub const FUNC_ID_ROUNDDOWN: &str = "FUNC.ROUNDDOWN";
+pub const FUNC_ID_REPLACE: &str = "FUNC.REPLACE";
+pub const FUNC_ID_REPLACEB: &str = "FUNC.REPLACEB";
+pub const FUNC_ID_RECEIVED: &str = "FUNC.RECEIVED";
+pub const FUNC_ID_REGEXEXTRACT: &str = "FUNC.REGEXEXTRACT";
+pub const FUNC_ID_REGEXREPLACE: &str = "FUNC.REGEXREPLACE";
+pub const FUNC_ID_REGEXTEST: &str = "FUNC.REGEXTEST";
+pub const FUNC_ID_ROUNDUP: &str = "FUNC.ROUNDUP";
+pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
+pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
+pub const FUNC_ID_SEC: &str = "FUNC.SEC";
+pub const FUNC_ID_SERIESSUM: &str = "FUNC.SERIESSUM";
+pub const FUNC_ID_SECH: &str = "FUNC.SECH";
+pub const FUNC_ID_SIGN: &str = "FUNC.SIGN";
 pub const FUNC_ID_SIN: &str = "FUNC.SIN";
+pub const FUNC_ID_SINH: &str = "FUNC.SINH";
+pub const FUNC_ID_SKEW: &str = "FUNC.SKEW";
+pub const FUNC_ID_SKEW_P: &str = "FUNC.SKEW.P";
+pub const FUNC_ID_STEYX: &str = "FUNC.STEYX";
+pub const FUNC_ID_SLN: &str = "FUNC.SLN";
+pub const FUNC_ID_SMALL: &str = "FUNC.SMALL";
+pub const FUNC_ID_SQRT: &str = "FUNC.SQRT";
+pub const FUNC_ID_SQRTPI: &str = "FUNC.SQRTPI";
+pub const FUNC_ID_SLOPE: &str = "FUNC.SLOPE";
+pub const FUNC_ID_STDEV: &str = "FUNC.STDEV";
+pub const FUNC_ID_STDEV_P: &str = "FUNC.STDEV.P";
+pub const FUNC_ID_STDEV_S: &str = "FUNC.STDEV.S";
+pub const FUNC_ID_STDEVP: &str = "FUNC.STDEVP";
+pub const FUNC_ID_STDEVA: &str = "FUNC.STDEVA";
+pub const FUNC_ID_STDEVPA: &str = "FUNC.STDEVPA";
+pub const FUNC_ID_STANDARDIZE: &str = "FUNC.STANDARDIZE";
 pub const FUNC_ID_SUM: &str = "FUNC.SUM";
+pub const FUNC_ID_SUMIFS: &str = "FUNC.SUMIFS";
+pub const FUNC_ID_SUMPRODUCT: &str = "FUNC.SUMPRODUCT";
+pub const FUNC_ID_SUMX2MY2: &str = "FUNC.SUMX2MY2";
+pub const FUNC_ID_SUMX2PY2: &str = "FUNC.SUMX2PY2";
+pub const FUNC_ID_SUMXMY2: &str = "FUNC.SUMXMY2";
+pub const FUNC_ID_SUMSQ: &str = "FUNC.SUMSQ";
+pub const FUNC_ID_SWITCH: &str = "FUNC.SWITCH";
 pub const FUNC_ID_T: &str = "FUNC.T";
+pub const FUNC_ID_T_DIST: &str = "FUNC.T.DIST";
+pub const FUNC_ID_T_DIST_2T: &str = "FUNC.T.DIST.2T";
+pub const FUNC_ID_T_DIST_RT: &str = "FUNC.T.DIST.RT";
+pub const FUNC_ID_T_INV: &str = "FUNC.T.INV";
+pub const FUNC_ID_T_INV_2T: &str = "FUNC.T.INV.2T";
+pub const FUNC_ID_T_TEST: &str = "FUNC.T.TEST";
+pub const FUNC_ID_TDIST: &str = "FUNC.TDIST";
+pub const FUNC_ID_TINV: &str = "FUNC.TINV";
+pub const FUNC_ID_SYD: &str = "FUNC.SYD";
+pub const FUNC_ID_TAN: &str = "FUNC.TAN";
+pub const FUNC_ID_TANH: &str = "FUNC.TANH";
+pub const FUNC_ID_TBILLEQ: &str = "FUNC.TBILLEQ";
+pub const FUNC_ID_TBILLPRICE: &str = "FUNC.TBILLPRICE";
+pub const FUNC_ID_TBILLYIELD: &str = "FUNC.TBILLYIELD";
+pub const FUNC_ID_LEFT: &str = "FUNC.LEFT";
+pub const FUNC_ID_LEFTB: &str = "FUNC.LEFTB";
+pub const FUNC_ID_LEN: &str = "FUNC.LEN";
+pub const FUNC_ID_LENB: &str = "FUNC.LENB";
+pub const FUNC_ID_MID: &str = "FUNC.MID";
+pub const FUNC_ID_MIDB: &str = "FUNC.MIDB";
+pub const FUNC_ID_RIGHT: &str = "FUNC.RIGHT";
+pub const FUNC_ID_RIGHTB: &str = "FUNC.RIGHTB";
 pub const FUNC_ID_TEXT: &str = "FUNC.TEXT";
+pub const FUNC_ID_TEXTAFTER: &str = "FUNC.TEXTAFTER";
+pub const FUNC_ID_TEXTBEFORE: &str = "FUNC.TEXTBEFORE";
+pub const FUNC_ID_TEXTSPLIT: &str = "FUNC.TEXTSPLIT";
+pub const FUNC_ID_SEARCH: &str = "FUNC.SEARCH";
+pub const FUNC_ID_SEARCHB: &str = "FUNC.SEARCHB";
+pub const FUNC_ID_REPT: &str = "FUNC.REPT";
+pub const FUNC_ID_SUBSTITUTE: &str = "FUNC.SUBSTITUTE";
 pub const FUNC_ID_TEXTJOIN: &str = "FUNC.TEXTJOIN";
 pub const FUNC_ID_TODAY: &str = "FUNC.TODAY";
+pub const FUNC_ID_TIME: &str = "FUNC.TIME";
+pub const FUNC_ID_TIMEVALUE: &str = "FUNC.TIMEVALUE";
+pub const FUNC_ID_TRANSLATE: &str = "FUNC.TRANSLATE";
+pub const FUNC_ID_TRIMMEAN: &str = "FUNC.TRIMMEAN";
+pub const FUNC_ID_TRUE: &str = "FUNC.TRUE";
+pub const FUNC_ID_TREND: &str = "FUNC.TREND";
+pub const FUNC_ID_TRUNC: &str = "FUNC.TRUNC";
+pub const FUNC_ID_TRIM: &str = "FUNC.TRIM";
+pub const FUNC_ID_TTEST: &str = "FUNC.TTEST";
 pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
+pub const FUNC_ID_UNICHAR: &str = "FUNC.UNICHAR";
+pub const FUNC_ID_UNICODE: &str = "FUNC.UNICODE";
+pub const FUNC_ID_UPPER: &str = "FUNC.UPPER";
 pub const FUNC_ID_VALUE: &str = "FUNC.VALUE";
+pub const FUNC_ID_VAR: &str = "FUNC.VAR";
+pub const FUNC_ID_VAR_P: &str = "FUNC.VAR.P";
+pub const FUNC_ID_VAR_S: &str = "FUNC.VAR.S";
+pub const FUNC_ID_VARA: &str = "FUNC.VARA";
+pub const FUNC_ID_VARP: &str = "FUNC.VARP";
+pub const FUNC_ID_VARPA: &str = "FUNC.VARPA";
+pub const FUNC_ID_VDB: &str = "FUNC.VDB";
+pub const FUNC_ID_HLOOKUP: &str = "FUNC.HLOOKUP";
+pub const FUNC_ID_VLOOKUP: &str = "FUNC.VLOOKUP";
+pub const FUNC_ID_WEIBULL: &str = "FUNC.WEIBULL";
+pub const FUNC_ID_WEIBULL_DIST: &str = "FUNC.WEIBULL.DIST";
 pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
+pub const FUNC_ID_XIRR: &str = "FUNC.XIRR";
+pub const FUNC_ID_XNPV: &str = "FUNC.XNPV";
 pub const FUNC_ID_XMATCH: &str = "FUNC.XMATCH";
+pub const FUNC_ID_XOR: &str = "FUNC.XOR";
+pub const FUNC_ID_WEEKDAY: &str = "FUNC.WEEKDAY";
+pub const FUNC_ID_WEEKNUM: &str = "FUNC.WEEKNUM";
+pub const FUNC_ID_WORKDAY: &str = "FUNC.WORKDAY";
+pub const FUNC_ID_WORKDAY_INTL: &str = "FUNC.WORKDAY.INTL";
+pub const FUNC_ID_YIELD: &str = "FUNC.YIELD";
+pub const FUNC_ID_YIELDDISC: &str = "FUNC.YIELDDISC";
+pub const FUNC_ID_YIELDMAT: &str = "FUNC.YIELDMAT";
+pub const FUNC_ID_YEAR: &str = "FUNC.YEAR";
+pub const FUNC_ID_YEARFRAC: &str = "FUNC.YEARFRAC";
+pub const FUNC_ID_Z_TEST: &str = "FUNC.Z.TEST";
+pub const FUNC_ID_ZTEST: &str = "FUNC.ZTEST";
 
 fn map_ref_resolution_to_ws(e: &RefResolutionError) -> WorksheetErrorCode {
     match e {
@@ -161,6 +910,12 @@ impl RandomProvider for FixedRandomProvider {
     }
 }
 
+impl RandomArrayProvider for FixedRandomProvider {
+    fn random_unit(&self) -> f64 {
+        self.value
+    }
+}
+
 fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
     // Core value model does not yet carry full array payloads in prepared call-args.
     // Keep singleton passthrough until array payload/value expansion is implemented.
@@ -169,45 +924,1022 @@ fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
 
 pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfile> {
     match function_id {
+        FUNC_ID_ACOS => Some(crate::functions::acos::ACOS_META.arg_preparation_profile),
+        FUNC_ID_ACOT => Some(crate::functions::acot::ACOT_META.arg_preparation_profile),
+        FUNC_ID_ACOSH => Some(crate::functions::acosh::ACOSH_META.arg_preparation_profile),
+        FUNC_ID_ACOTH => Some(crate::functions::acoth::ACOTH_META.arg_preparation_profile),
         FUNC_ID_ABS => Some(crate::functions::abs::ABS_META.arg_preparation_profile),
+        FUNC_ID_ACCRINT => {
+            Some(crate::functions::bond_core_family::ACCRINT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ACCRINTM => {
+            Some(crate::functions::bond_core_family::ACCRINTM_META.arg_preparation_profile)
+        }
+        FUNC_ID_AMORDEGRC => {
+            Some(crate::functions::amor_depreciation_family::AMORDEGRC_META.arg_preparation_profile)
+        }
+        FUNC_ID_AMORLINC => {
+            Some(crate::functions::amor_depreciation_family::AMORLINC_META.arg_preparation_profile)
+        }
+        FUNC_ID_ATAN => Some(crate::functions::atan::ATAN_META.arg_preparation_profile),
         FUNC_ID_ASIN => Some(crate::functions::asin::ASIN_META.arg_preparation_profile),
+        FUNC_ID_ASINH => Some(crate::functions::asinh::ASINH_META.arg_preparation_profile),
+        FUNC_ID_ATAN2 => Some(crate::functions::atan2::ATAN2_META.arg_preparation_profile),
+        FUNC_ID_ATANH => Some(crate::functions::atanh::ATANH_META.arg_preparation_profile),
         FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
+        FUNC_ID_ARABIC => Some(crate::functions::arabic_fn::ARABIC_META.arg_preparation_profile),
+        FUNC_ID_ARRAYTOTEXT => Some(
+            crate::functions::array_text_split_family::ARRAYTOTEXT_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ASC => {
+            Some(crate::functions::text_compat_locale_family::ASC_META.arg_preparation_profile)
+        }
+        FUNC_ID_AVEDEV => Some(crate::functions::avedev_fn::AVEDEV_META.arg_preparation_profile),
         FUNC_ID_AVERAGE => Some(crate::functions::average::AVERAGE_META.arg_preparation_profile),
+        FUNC_ID_AVERAGEIF => {
+            Some(crate::functions::criteria_family::AVERAGEIF_META.arg_preparation_profile)
+        }
+        FUNC_ID_AVERAGEIFS => {
+            Some(crate::functions::criteria_family::AVERAGEIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_AVERAGEA => {
+            Some(crate::functions::averagea_fn::AVERAGEA_META.arg_preparation_profile)
+        }
+        FUNC_ID_BAHTTEXT => {
+            Some(crate::functions::misc_conversion_family::BAHTTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BASE => Some(crate::functions::base_fn::BASE_META.arg_preparation_profile),
+        FUNC_ID_BETA_DIST => {
+            Some(crate::functions::beta_gamma_stats_family::BETA_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETA_INV => {
+            Some(crate::functions::beta_gamma_stats_family::BETA_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETADIST => {
+            Some(crate::functions::beta_gamma_stats_family::BETADIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BETAINV => {
+            Some(crate::functions::beta_gamma_stats_family::BETAINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELI => {
+            Some(crate::functions::bessel_convert_family::BESSELI_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELJ => {
+            Some(crate::functions::bessel_convert_family::BESSELJ_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELK => {
+            Some(crate::functions::bessel_convert_family::BESSELK_META.arg_preparation_profile)
+        }
+        FUNC_ID_BESSELY => {
+            Some(crate::functions::bessel_convert_family::BESSELY_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOM_DIST => {
+            Some(crate::functions::discrete_dist_family::BINOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOM_DIST_RANGE => Some(
+            crate::functions::discrete_dist_family::BINOM_DIST_RANGE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_BINOM_INV => {
+            Some(crate::functions::discrete_dist_family::BINOM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_BINOMDIST => {
+            Some(crate::functions::discrete_dist_family::BINOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2DEC => {
+            Some(crate::functions::engineering_radix_family::BIN2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2HEX => {
+            Some(crate::functions::engineering_radix_family::BIN2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_BIN2OCT => {
+            Some(crate::functions::engineering_radix_family::BIN2OCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITAND => Some(crate::functions::bitand_fn::BITAND_META.arg_preparation_profile),
+        FUNC_ID_BITLSHIFT => {
+            Some(crate::functions::bitlshift_fn::BITLSHIFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITOR => Some(crate::functions::bitor_fn::BITOR_META.arg_preparation_profile),
+        FUNC_ID_BITRSHIFT => {
+            Some(crate::functions::bitrshift_fn::BITRSHIFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_BITXOR => Some(crate::functions::bitxor_fn::BITXOR_META.arg_preparation_profile),
         FUNC_ID_CELL => Some(crate::functions::cell::CELL_META.arg_preparation_profile),
+        FUNC_ID_CEILING => {
+            Some(crate::functions::ceiling_floor_family::CEILING_META.arg_preparation_profile)
+        }
+        FUNC_ID_CEILING_MATH => {
+            Some(crate::functions::ceiling_floor_family::CEILING_MATH_META.arg_preparation_profile)
+        }
+        FUNC_ID_CEILING_PRECISE => Some(
+            crate::functions::ceiling_floor_family::CEILING_PRECISE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CHIDIST => {
+            Some(crate::functions::chi_f_t_family::CHIDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHIINV => {
+            Some(crate::functions::chi_f_t_family::CHIINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHOOSE => {
+            Some(crate::functions::choose_ifs_family::CHOOSE_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_DIST => {
+            Some(crate::functions::chi_f_t_family::CHISQ_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::CHISQ_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_INV => {
+            Some(crate::functions::chi_f_t_family::CHISQ_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_INV_RT => {
+            Some(crate::functions::chi_f_t_family::CHISQ_INV_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHISQ_TEST => Some(
+            crate::functions::statistical_tests_family::CHISQ_TEST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CHITEST => {
+            Some(crate::functions::statistical_tests_family::CHITEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CHAR => Some(crate::functions::text_scalar_misc::CHAR_META.arg_preparation_profile),
         FUNC_ID_COLUMN => Some(crate::functions::column_fn::COLUMN_META.arg_preparation_profile),
+        FUNC_ID_CODE => Some(crate::functions::text_scalar_misc::CODE_META.arg_preparation_profile),
+        FUNC_ID_COMBIN => Some(crate::functions::combin::COMBIN_META.arg_preparation_profile),
+        FUNC_ID_COMBINA => Some(crate::functions::combina::COMBINA_META.arg_preparation_profile),
+        FUNC_ID_COMPLEX => {
+            Some(crate::functions::complex_family::COMPLEX_META.arg_preparation_profile)
+        }
         FUNC_ID_CLEAN => Some(crate::functions::clean_fn::CLEAN_META.arg_preparation_profile),
+        FUNC_ID_CONCAT => {
+            Some(crate::functions::concat_family::CONCAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONCATENATE => {
+            Some(crate::functions::concat_family::CONCATENATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_COS => Some(crate::functions::cos::COS_META.arg_preparation_profile),
+        FUNC_ID_COSH => Some(crate::functions::cosh::COSH_META.arg_preparation_profile),
+        FUNC_ID_CORREL => Some(crate::functions::correl_fn::CORREL_META.arg_preparation_profile),
+        FUNC_ID_COVARIANCE_P => {
+            Some(crate::functions::covariance_p_fn::COVARIANCE_P_META.arg_preparation_profile)
+        }
+        FUNC_ID_COVARIANCE_S => {
+            Some(crate::functions::covariance_s_fn::COVARIANCE_S_META.arg_preparation_profile)
+        }
+        FUNC_ID_COT => Some(crate::functions::cot::COT_META.arg_preparation_profile),
+        FUNC_ID_COTH => Some(crate::functions::coth::COTH_META.arg_preparation_profile),
         FUNC_ID_COUNT => Some(crate::functions::count::COUNT_META.arg_preparation_profile),
+        FUNC_ID_COUNTBLANK => {
+            Some(crate::functions::countblank_fn::COUNTBLANK_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYBS => {
+            Some(crate::functions::coupon_family::COUPDAYBS_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYS => {
+            Some(crate::functions::coupon_family::COUPDAYS_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPDAYSNC => {
+            Some(crate::functions::coupon_family::COUPDAYSNC_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPNCD => {
+            Some(crate::functions::coupon_family::COUPNCD_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPNUM => {
+            Some(crate::functions::coupon_family::COUPNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_COUPPCD => {
+            Some(crate::functions::coupon_family::COUPPCD_META.arg_preparation_profile)
+        }
+        FUNC_ID_CRITBINOM => {
+            Some(crate::functions::discrete_dist_family::CRITBINOM_META.arg_preparation_profile)
+        }
         FUNC_ID_COUNTA => Some(crate::functions::counta::COUNTA_META.arg_preparation_profile),
+        FUNC_ID_COVAR => {
+            Some(crate::functions::legacy_stats_alias_family::COVAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_CSC => Some(crate::functions::csc::CSC_META.arg_preparation_profile),
+        FUNC_ID_CSCH => Some(crate::functions::csch::CSCH_META.arg_preparation_profile),
+        FUNC_ID_CUMIPMT => {
+            Some(crate::functions::cumulative_finance_family::CUMIPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_CUMPRINC => {
+            Some(crate::functions::cumulative_finance_family::CUMPRINC_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONVERT => {
+            Some(crate::functions::misc_conversion_family::CONVERT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAVERAGE => {
+            Some(crate::functions::database_family::DAVERAGE_META.arg_preparation_profile)
+        }
         FUNC_ID_DATE => Some(crate::functions::date_fn::DATE_META.arg_preparation_profile),
+        FUNC_ID_DATEDIF => {
+            Some(crate::functions::date_value_family::DATEDIF_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAY => Some(crate::functions::date_parts_family::DAY_META.arg_preparation_profile),
+        FUNC_ID_DAYS => {
+            Some(crate::functions::date_parts_family::DAYS_META.arg_preparation_profile)
+        }
+        FUNC_ID_DAYS360 => {
+            Some(crate::functions::date_value_family::DAYS360_META.arg_preparation_profile)
+        }
+        FUNC_ID_DATEVALUE => {
+            Some(crate::functions::date_value_family::DATEVALUE_META.arg_preparation_profile)
+        }
+        FUNC_ID_DBCS => {
+            Some(crate::functions::text_compat_locale_family::DBCS_META.arg_preparation_profile)
+        }
+        FUNC_ID_DB => Some(crate::functions::depreciation_family::DB_META.arg_preparation_profile),
+        FUNC_ID_DEC2BIN => {
+            Some(crate::functions::engineering_radix_family::DEC2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_DEC2HEX => {
+            Some(crate::functions::engineering_radix_family::DEC2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_DEC2OCT => {
+            Some(crate::functions::engineering_radix_family::DEC2OCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_EDATE => {
+            Some(crate::functions::date_week_family::EDATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_EOMONTH => {
+            Some(crate::functions::date_week_family::EOMONTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_EFFECT => {
+            Some(crate::functions::financial_time_value_family::EFFECT_META.arg_preparation_profile)
+        }
+        FUNC_ID_EUROCONVERT => {
+            Some(crate::functions::misc_conversion_family::EUROCONVERT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DECIMAL => Some(crate::functions::decimal_fn::DECIMAL_META.arg_preparation_profile),
+        FUNC_ID_DDB => {
+            Some(crate::functions::depreciation_family::DDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_DCOUNT => {
+            Some(crate::functions::database_family::DCOUNT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DCOUNTA => {
+            Some(crate::functions::database_family::DCOUNTA_META.arg_preparation_profile)
+        }
+        FUNC_ID_DISC => {
+            Some(crate::functions::discount_bill_yearfrac_family::DISC_META.arg_preparation_profile)
+        }
+        FUNC_ID_DGET => Some(crate::functions::database_family::DGET_META.arg_preparation_profile),
+        FUNC_ID_DMAX => Some(crate::functions::database_family::DMAX_META.arg_preparation_profile),
+        FUNC_ID_DMIN => Some(crate::functions::database_family::DMIN_META.arg_preparation_profile),
+        FUNC_ID_DPRODUCT => {
+            Some(crate::functions::database_family::DPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSTDEV => {
+            Some(crate::functions::database_family::DSTDEV_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSTDEVP => {
+            Some(crate::functions::database_family::DSTDEVP_META.arg_preparation_profile)
+        }
+        FUNC_ID_DSUM => Some(crate::functions::database_family::DSUM_META.arg_preparation_profile),
+        FUNC_ID_DVAR => Some(crate::functions::database_family::DVAR_META.arg_preparation_profile),
+        FUNC_ID_DVARP => {
+            Some(crate::functions::database_family::DVARP_META.arg_preparation_profile)
+        }
+        FUNC_ID_DEVSQ => Some(crate::functions::devsq_fn::DEVSQ_META.arg_preparation_profile),
+        FUNC_ID_DEGREES => Some(crate::functions::degrees::DEGREES_META.arg_preparation_profile),
+        FUNC_ID_DELTA => Some(crate::functions::delta_fn::DELTA_META.arg_preparation_profile),
+        FUNC_ID_DURATION => {
+            Some(crate::functions::bond_core_family::DURATION_META.arg_preparation_profile)
+        }
         FUNC_ID_DOLLAR => Some(crate::functions::dollar_fn::DOLLAR_META.arg_preparation_profile),
+        FUNC_ID_DOLLARDE => {
+            Some(crate::functions::dollar_fraction_family::DOLLARDE_META.arg_preparation_profile)
+        }
+        FUNC_ID_DOLLARFR => {
+            Some(crate::functions::dollar_fraction_family::DOLLARFR_META.arg_preparation_profile)
+        }
+        FUNC_ID_EVEN => Some(crate::functions::even_fn::EVEN_META.arg_preparation_profile),
+        FUNC_ID_ERROR_TYPE => {
+            Some(crate::functions::error_type_fn::ERROR_TYPE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERF => {
+            Some(crate::functions::special_dist_family::ERF_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERF_PRECISE => {
+            Some(crate::functions::special_dist_family::ERF_PRECISE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERFC => {
+            Some(crate::functions::special_dist_family::ERFC_META.arg_preparation_profile)
+        }
+        FUNC_ID_ERFC_PRECISE => {
+            Some(crate::functions::special_dist_family::ERFC_PRECISE_META.arg_preparation_profile)
+        }
         FUNC_ID_EXACT => Some(crate::functions::exact_fn::EXACT_META.arg_preparation_profile),
+        FUNC_ID_EXPON_DIST => {
+            Some(crate::functions::discrete_dist_family::EXPON_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXPONDIST => {
+            Some(crate::functions::discrete_dist_family::EXPONDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_EXP => Some(crate::functions::exp_fn::EXP_META.arg_preparation_profile),
+        FUNC_ID_FACT => Some(crate::functions::fact::FACT_META.arg_preparation_profile),
+        FUNC_ID_FACTDOUBLE => {
+            Some(crate::functions::factdouble::FACTDOUBLE_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_DIST => {
+            Some(crate::functions::chi_f_t_family::F_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::F_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_INV => Some(crate::functions::chi_f_t_family::F_INV_META.arg_preparation_profile),
+        FUNC_ID_F_INV_RT => {
+            Some(crate::functions::chi_f_t_family::F_INV_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_F_TEST => {
+            Some(crate::functions::statistical_tests_family::F_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_FDIST => Some(crate::functions::chi_f_t_family::FDIST_META.arg_preparation_profile),
+        FUNC_ID_FINV => Some(crate::functions::chi_f_t_family::FINV_META.arg_preparation_profile),
+        FUNC_ID_FALSE => Some(crate::functions::false_fn::FALSE_META.arg_preparation_profile),
+        FUNC_ID_FTEST => {
+            Some(crate::functions::statistical_tests_family::FTEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_FREQUENCY => Some(
+            crate::functions::lookup_prob_frequency_family::FREQUENCY_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FV => {
+            Some(crate::functions::financial_time_value_family::FV_META.arg_preparation_profile)
+        }
+        FUNC_ID_FVSCHEDULE => Some(
+            crate::functions::financial_time_value_family::FVSCHEDULE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FISHER => Some(crate::functions::fisher_fn::FISHER_META.arg_preparation_profile),
+        FUNC_ID_FISHERINV => {
+            Some(crate::functions::fisherinv_fn::FISHERINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_FIND => {
+            Some(crate::functions::text_search_replace_family::FIND_META.arg_preparation_profile)
+        }
+        FUNC_ID_FINDB => {
+            Some(crate::functions::text_b_compat_family::FINDB_META.arg_preparation_profile)
+        }
         FUNC_ID_FIXED => Some(crate::functions::fixed_fn::FIXED_META.arg_preparation_profile),
+        FUNC_ID_FLOOR => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_META.arg_preparation_profile)
+        }
+        FUNC_ID_FLOOR_MATH => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_MATH_META.arg_preparation_profile)
+        }
+        FUNC_ID_FLOOR_PRECISE => {
+            Some(crate::functions::ceiling_floor_family::FLOOR_PRECISE_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAUSS => Some(crate::functions::gauss_fn::GAUSS_META.arg_preparation_profile),
+        FUNC_ID_GAMMA => {
+            Some(crate::functions::special_dist_family::GAMMA_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMA_DIST => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMA_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMA_INV => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMA_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMADIST => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMADIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMAINV => {
+            Some(crate::functions::beta_gamma_stats_family::GAMMAINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMALN => {
+            Some(crate::functions::special_dist_family::GAMMALN_META.arg_preparation_profile)
+        }
+        FUNC_ID_GAMMALN_PRECISE => Some(
+            crate::functions::special_dist_family::GAMMALN_PRECISE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_GCD => Some(crate::functions::gcd_fn::GCD_META.arg_preparation_profile),
+        FUNC_ID_GEOMEAN => Some(crate::functions::geomean_fn::GEOMEAN_META.arg_preparation_profile),
+        FUNC_ID_GESTEP => Some(crate::functions::gestep_fn::GESTEP_META.arg_preparation_profile),
+        FUNC_ID_GROWTH => {
+            Some(crate::functions::regression_forecast_family::GROWTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_HARMEAN => Some(crate::functions::harmean_fn::HARMEAN_META.arg_preparation_profile),
+        FUNC_ID_HYPGEOM_DIST => {
+            Some(crate::functions::discrete_dist_family::HYPGEOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_HYPGEOMDIST => {
+            Some(crate::functions::discrete_dist_family::HYPGEOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_HOUR => {
+            Some(crate::functions::date_parts_family::HOUR_META.arg_preparation_profile)
+        }
         FUNC_ID_HSTACK => Some(crate::functions::hstack::HSTACK_META.arg_preparation_profile),
+        FUNC_ID_INFO => Some(crate::functions::info_fn::INFO_META.arg_preparation_profile),
+        FUNC_ID_IRR => {
+            Some(crate::functions::cashflow_rate_family::IRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMABS => Some(crate::functions::complex_family::IMABS_META.arg_preparation_profile),
+        FUNC_ID_IMAGINARY => {
+            Some(crate::functions::complex_family::IMAGINARY_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMARGUMENT => {
+            Some(crate::functions::complex_family::IMARGUMENT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCONJUGATE => {
+            Some(crate::functions::complex_family::IMCONJUGATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCOS => Some(crate::functions::complex_family::IMCOS_META.arg_preparation_profile),
+        FUNC_ID_IMCOSH => {
+            Some(crate::functions::complex_family::IMCOSH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMCOT => Some(crate::functions::complex_family::IMCOT_META.arg_preparation_profile),
+        FUNC_ID_IMCSC => Some(crate::functions::complex_family::IMCSC_META.arg_preparation_profile),
+        FUNC_ID_IMCSCH => {
+            Some(crate::functions::complex_family::IMCSCH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMDIV => Some(crate::functions::complex_family::IMDIV_META.arg_preparation_profile),
+        FUNC_ID_IMEXP => Some(crate::functions::complex_family::IMEXP_META.arg_preparation_profile),
+        FUNC_ID_IMLN => Some(crate::functions::complex_family::IMLN_META.arg_preparation_profile),
+        FUNC_ID_IMLOG10 => {
+            Some(crate::functions::complex_family::IMLOG10_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMLOG2 => {
+            Some(crate::functions::complex_family::IMLOG2_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMPOWER => {
+            Some(crate::functions::complex_family::IMPOWER_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMPRODUCT => {
+            Some(crate::functions::complex_family::IMPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMREAL => {
+            Some(crate::functions::complex_family::IMREAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSEC => Some(crate::functions::complex_family::IMSEC_META.arg_preparation_profile),
+        FUNC_ID_IMSECH => {
+            Some(crate::functions::complex_family::IMSECH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSIN => Some(crate::functions::complex_family::IMSIN_META.arg_preparation_profile),
+        FUNC_ID_IMSINH => {
+            Some(crate::functions::complex_family::IMSINH_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSQRT => {
+            Some(crate::functions::complex_family::IMSQRT_META.arg_preparation_profile)
+        }
+        FUNC_ID_IMSUB => Some(crate::functions::complex_family::IMSUB_META.arg_preparation_profile),
+        FUNC_ID_IMSUM => Some(crate::functions::complex_family::IMSUM_META.arg_preparation_profile),
+        FUNC_ID_IMTAN => Some(crate::functions::complex_family::IMTAN_META.arg_preparation_profile),
+        FUNC_ID_ISFORMULA => {
+            Some(crate::functions::misc_switch_info_family::ISFORMULA_META.arg_preparation_profile)
+        }
         FUNC_ID_IF => Some(crate::functions::if_fn::IF_META.arg_preparation_profile),
         FUNC_ID_IFERROR => Some(crate::functions::iferror::IFERROR_META.arg_preparation_profile),
+        FUNC_ID_IFNA => Some(crate::functions::ifna_fn::IFNA_META.arg_preparation_profile),
+        FUNC_ID_IFS => Some(crate::functions::choose_ifs_family::IFS_META.arg_preparation_profile),
         FUNC_ID_INDEX => Some(crate::functions::index::INDEX_META.arg_preparation_profile),
         FUNC_ID_INDIRECT => Some(crate::functions::indirect::INDIRECT_META.arg_preparation_profile),
+        FUNC_ID_IPMT => {
+            Some(crate::functions::financial_time_value_family::IPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISPMT => {
+            Some(crate::functions::financial_time_value_family::ISPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2BIN => {
+            Some(crate::functions::engineering_radix_family::HEX2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2DEC => {
+            Some(crate::functions::engineering_radix_family::HEX2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_HEX2OCT => {
+            Some(crate::functions::engineering_radix_family::HEX2OCT_META.arg_preparation_profile)
+        }
         FUNC_ID_ISNUMBER => Some(crate::functions::isnumber::ISNUMBER_META.arg_preparation_profile),
+        FUNC_ID_ISOWEEKNUM => {
+            Some(crate::functions::date_week_family::ISOWEEKNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISO_CEILING => {
+            Some(crate::functions::ceiling_floor_family::ISO_CEILING_META.arg_preparation_profile)
+        }
+        FUNC_ID_INTERCEPT => {
+            Some(crate::functions::intercept_fn::INTERCEPT_META.arg_preparation_profile)
+        }
+        FUNC_ID_INT => Some(crate::functions::int_fn::INT_META.arg_preparation_profile),
+        FUNC_ID_INTRATE => Some(
+            crate::functions::discount_bill_yearfrac_family::INTRATE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ISEVEN => Some(crate::functions::iseven_fn::ISEVEN_META.arg_preparation_profile),
+        FUNC_ID_JIS => {
+            Some(crate::functions::text_compat_locale_family::JIS_META.arg_preparation_profile)
+        }
+        FUNC_ID_KURT => {
+            Some(crate::functions::moment_stats_family::KURT_META.arg_preparation_profile)
+        }
+        FUNC_ID_LARGE => Some(crate::functions::large_fn::LARGE_META.arg_preparation_profile),
+        FUNC_ID_LCM => Some(crate::functions::lcm_fn::LCM_META.arg_preparation_profile),
+        FUNC_ID_LINEST => {
+            Some(crate::functions::regression_forecast_family::LINEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGINV => {
+            Some(crate::functions::legacy_stats_alias_family::LOGINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_LN => Some(crate::functions::ln_fn::LN_META.arg_preparation_profile),
+        FUNC_ID_LOG => Some(crate::functions::log_fn::LOG_META.arg_preparation_profile),
+        FUNC_ID_LOG10 => Some(crate::functions::log10_fn::LOG10_META.arg_preparation_profile),
+        FUNC_ID_LOOKUP => Some(
+            crate::functions::lookup_prob_frequency_family::LOOKUP_META.arg_preparation_profile,
+        ),
+        FUNC_ID_LOGEST => {
+            Some(crate::functions::regression_forecast_family::LOGEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOWER => {
+            Some(crate::functions::text_scalar_misc::LOWER_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEFT => {
+            Some(crate::functions::text_slice_family::LEFT_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEFTB => {
+            Some(crate::functions::text_b_compat_family::LEFTB_META.arg_preparation_profile)
+        }
+        FUNC_ID_LEN => Some(crate::functions::text_slice_family::LEN_META.arg_preparation_profile),
+        FUNC_ID_LENB => {
+            Some(crate::functions::text_b_compat_family::LENB_META.arg_preparation_profile)
+        }
+        FUNC_ID_MID => Some(crate::functions::text_slice_family::MID_META.arg_preparation_profile),
+        FUNC_ID_MIDB => {
+            Some(crate::functions::text_b_compat_family::MIDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_RIGHT => {
+            Some(crate::functions::text_slice_family::RIGHT_META.arg_preparation_profile)
+        }
+        FUNC_ID_RIGHTB => {
+            Some(crate::functions::text_b_compat_family::RIGHTB_META.arg_preparation_profile)
+        }
+        FUNC_ID_MAX => Some(crate::functions::max_fn::MAX_META.arg_preparation_profile),
+        FUNC_ID_MAXA => Some(crate::functions::maxa_fn::MAXA_META.arg_preparation_profile),
+        FUNC_ID_MAXIFS => {
+            Some(crate::functions::criteria_family::MAXIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_MEDIAN => Some(crate::functions::median_fn::MEDIAN_META.arg_preparation_profile),
         FUNC_ID_MATCH => Some(crate::functions::match_fn::MATCH_META.arg_preparation_profile),
+        FUNC_ID_MDETERM => {
+            Some(crate::functions::matrix_family::MDETERM_META.arg_preparation_profile)
+        }
+        FUNC_ID_MDURATION => {
+            Some(crate::functions::bond_core_family::MDURATION_META.arg_preparation_profile)
+        }
+        FUNC_ID_MINVERSE => {
+            Some(crate::functions::matrix_family::MINVERSE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MMULT => Some(crate::functions::matrix_family::MMULT_META.arg_preparation_profile),
+        FUNC_ID_MUNIT => Some(crate::functions::matrix_family::MUNIT_META.arg_preparation_profile),
+        FUNC_ID_MIN => Some(crate::functions::min_fn::MIN_META.arg_preparation_profile),
+        FUNC_ID_MINA => Some(crate::functions::mina_fn::MINA_META.arg_preparation_profile),
+        FUNC_ID_MINIFS => {
+            Some(crate::functions::criteria_family::MINIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_MIRR => {
+            Some(crate::functions::financial_time_value_family::MIRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_MINUTE => {
+            Some(crate::functions::date_parts_family::MINUTE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MOD => Some(crate::functions::mod_fn::MOD_META.arg_preparation_profile),
+        FUNC_ID_MODE => {
+            Some(crate::functions::legacy_stats_alias_family::MODE_META.arg_preparation_profile)
+        }
+        FUNC_ID_MODE_MULT => Some(
+            crate::functions::lookup_prob_frequency_family::MODE_MULT_META.arg_preparation_profile,
+        ),
+        FUNC_ID_MODE_SNGL => {
+            Some(crate::functions::mode_sngl_fn::MODE_SNGL_META.arg_preparation_profile)
+        }
+        FUNC_ID_MONTH => {
+            Some(crate::functions::date_parts_family::MONTH_META.arg_preparation_profile)
+        }
+        FUNC_ID_MROUND => Some(crate::functions::mround::MROUND_META.arg_preparation_profile),
+        FUNC_ID_MULTINOMIAL => {
+            Some(crate::functions::multinomial::MULTINOMIAL_META.arg_preparation_profile)
+        }
         FUNC_ID_N => Some(crate::functions::n_fn::N_META.arg_preparation_profile),
+        FUNC_ID_NA => Some(crate::functions::na_fn::NA_META.arg_preparation_profile),
+        FUNC_ID_NOMINAL => Some(
+            crate::functions::financial_time_value_family::NOMINAL_META.arg_preparation_profile,
+        ),
+        FUNC_ID_NPER => {
+            Some(crate::functions::financial_time_value_family::NPER_META.arg_preparation_profile)
+        }
+        FUNC_ID_NPV => {
+            Some(crate::functions::financial_time_value_family::NPV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NUMBERVALUE => Some(
+            crate::functions::number_regex_translate_family::NUMBERVALUE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_NEGBINOM_DIST => {
+            Some(crate::functions::discrete_dist_family::NEGBINOM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NEGBINOMDIST => {
+            Some(crate::functions::discrete_dist_family::NEGBINOMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONFIDENCE => {
+            Some(crate::functions::normal_log_family::CONFIDENCE_META.arg_preparation_profile)
+        }
+        FUNC_ID_CONFIDENCE_T => Some(
+            crate::functions::confidence_test_family::CONFIDENCE_T_META.arg_preparation_profile,
+        ),
+        FUNC_ID_CONFIDENCE_NORM => {
+            Some(crate::functions::normal_log_family::CONFIDENCE_NORM_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORM_DIST => {
+            Some(crate::functions::normal_log_family::LOGNORM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORM_INV => {
+            Some(crate::functions::normal_log_family::LOGNORM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_LOGNORMDIST => {
+            Some(crate::functions::normal_log_family::LOGNORMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_DIST => {
+            Some(crate::functions::normal_log_family::NORM_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_INV => {
+            Some(crate::functions::normal_log_family::NORM_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_S_DIST => {
+            Some(crate::functions::normal_log_family::NORM_S_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORM_S_INV => {
+            Some(crate::functions::normal_log_family::NORM_S_INV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMDIST => {
+            Some(crate::functions::normal_log_family::NORMDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMINV => {
+            Some(crate::functions::normal_log_family::NORMINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMSDIST => {
+            Some(crate::functions::normal_log_family::NORMSDIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_NORMSINV => {
+            Some(crate::functions::normal_log_family::NORMSINV_META.arg_preparation_profile)
+        }
+        FUNC_ID_NETWORKDAYS => Some(
+            crate::functions::workday_networkdays_family::NETWORKDAYS_META.arg_preparation_profile,
+        ),
+        FUNC_ID_NETWORKDAYS_INTL => Some(
+            crate::functions::workday_networkdays_family::NETWORKDAYS_INTL_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_NOT => Some(crate::functions::not_fn::NOT_META.arg_preparation_profile),
         FUNC_ID_NOW => Some(crate::functions::now_fn::NOW_META.arg_preparation_profile),
+        FUNC_ID_OCT2BIN => {
+            Some(crate::functions::engineering_radix_family::OCT2BIN_META.arg_preparation_profile)
+        }
+        FUNC_ID_OCT2DEC => {
+            Some(crate::functions::engineering_radix_family::OCT2DEC_META.arg_preparation_profile)
+        }
+        FUNC_ID_OCT2HEX => {
+            Some(crate::functions::engineering_radix_family::OCT2HEX_META.arg_preparation_profile)
+        }
+        FUNC_ID_POISSON => {
+            Some(crate::functions::discrete_dist_family::POISSON_META.arg_preparation_profile)
+        }
+        FUNC_ID_POISSON_DIST => {
+            Some(crate::functions::discrete_dist_family::POISSON_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODD => Some(crate::functions::odd_fn::ODD_META.arg_preparation_profile),
+        FUNC_ID_ODDFPRICE => {
+            Some(crate::functions::odd_bond_family::ODDFPRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDFYIELD => {
+            Some(crate::functions::odd_bond_family::ODDFYIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDLPRICE => {
+            Some(crate::functions::odd_bond_family::ODDLPRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_ODDLYIELD => {
+            Some(crate::functions::odd_bond_family::ODDLYIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_OR => Some(crate::functions::or_fn::OR_META.arg_preparation_profile),
         FUNC_ID_OFFSET => Some(crate::functions::offset::OFFSET_META.arg_preparation_profile),
         FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
+        FUNC_ID_OP_SPILL_REF => {
+            Some(crate::functions::op_spill_ref::OP_SPILL_REF_META.arg_preparation_profile)
+        }
+        FUNC_ID_PEARSON => Some(crate::functions::pearson_fn::PEARSON_META.arg_preparation_profile),
+        FUNC_ID_PDURATION => Some(
+            crate::functions::financial_time_value_family::PDURATION_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PERMUT => Some(crate::functions::permut_fn::PERMUT_META.arg_preparation_profile),
+        FUNC_ID_PERMUTATIONA => {
+            Some(crate::functions::permutationa_fn::PERMUTATIONA_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE_EXC => {
+            Some(crate::functions::percentile_exc_fn::PERCENTILE_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE_INC => {
+            Some(crate::functions::percentile_inc_fn::PERCENTILE_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTILE => Some(
+            crate::functions::legacy_stats_alias_family::PERCENTILE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PERCENTRANK_EXC => {
+            Some(crate::functions::percentrank_exc_fn::PERCENTRANK_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTRANK_INC => {
+            Some(crate::functions::percentrank_inc_fn::PERCENTRANK_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTRANK => Some(
+            crate::functions::legacy_stats_alias_family::PERCENTRANK_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PHI => Some(crate::functions::phi_fn::PHI_META.arg_preparation_profile),
         FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
+        FUNC_ID_PMT => {
+            Some(crate::functions::financial_time_value_family::PMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PPMT => {
+            Some(crate::functions::financial_time_value_family::PPMT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PERCENTOF => {
+            Some(crate::functions::misc_conversion_family::PERCENTOF_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRICE => {
+            Some(crate::functions::bond_core_family::PRICE_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRICEDISC => Some(
+            crate::functions::discount_bill_yearfrac_family::PRICEDISC_META.arg_preparation_profile,
+        ),
+        FUNC_ID_PRICEMAT => {
+            Some(crate::functions::bond_core_family::PRICEMAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_PROB => {
+            Some(crate::functions::lookup_prob_frequency_family::PROB_META.arg_preparation_profile)
+        }
+        FUNC_ID_PRODUCT => Some(crate::functions::product::PRODUCT_META.arg_preparation_profile),
+        FUNC_ID_POWER => Some(crate::functions::power_fn::POWER_META.arg_preparation_profile),
+        FUNC_ID_PV => {
+            Some(crate::functions::financial_time_value_family::PV_META.arg_preparation_profile)
+        }
+        FUNC_ID_PROPER => {
+            Some(crate::functions::text_search_replace_family::PROPER_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUOTIENT => {
+            Some(crate::functions::quotient_fn::QUOTIENT_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE_EXC => {
+            Some(crate::functions::quartile_exc_fn::QUARTILE_EXC_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE_INC => {
+            Some(crate::functions::quartile_inc_fn::QUARTILE_INC_META.arg_preparation_profile)
+        }
+        FUNC_ID_QUARTILE => {
+            Some(crate::functions::legacy_stats_alias_family::QUARTILE_META.arg_preparation_profile)
+        }
         FUNC_ID_RAND => Some(crate::functions::rand_fn::RAND_META.arg_preparation_profile),
+        FUNC_ID_RANDARRA => {
+            Some(crate::functions::misc_conversion_family::RANDARRA_META.arg_preparation_profile)
+        }
+        FUNC_ID_RATE => {
+            Some(crate::functions::financial_time_value_family::RATE_META.arg_preparation_profile)
+        }
+        FUNC_ID_RADIANS => Some(crate::functions::radians::RADIANS_META.arg_preparation_profile),
+        FUNC_ID_RANK => Some(crate::functions::rank_fn::RANK_META.arg_preparation_profile),
+        FUNC_ID_RANK_AVG => {
+            Some(crate::functions::rank_avg_fn::RANK_AVG_META.arg_preparation_profile)
+        }
+        FUNC_ID_RANK_EQ => Some(crate::functions::rank_eq_fn::RANK_EQ_META.arg_preparation_profile),
         FUNC_ID_ROW => Some(crate::functions::row_fn::ROW_META.arg_preparation_profile),
+        FUNC_ID_RRI => {
+            Some(crate::functions::financial_time_value_family::RRI_META.arg_preparation_profile)
+        }
+        FUNC_ID_ROMAN => Some(crate::functions::roman_fn::ROMAN_META.arg_preparation_profile),
         FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
+        FUNC_ID_ROUNDDOWN => {
+            Some(crate::functions::rounddown_fn::ROUNDDOWN_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPLACE => {
+            Some(crate::functions::text_search_replace_family::REPLACE_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPLACEB => {
+            Some(crate::functions::text_b_compat_family::REPLACEB_META.arg_preparation_profile)
+        }
+        FUNC_ID_RECEIVED => Some(
+            crate::functions::discount_bill_yearfrac_family::RECEIVED_META.arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXEXTRACT => Some(
+            crate::functions::number_regex_translate_family::REGEXEXTRACT_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXREPLACE => Some(
+            crate::functions::number_regex_translate_family::REGEXREPLACE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_REGEXTEST => Some(
+            crate::functions::number_regex_translate_family::REGEXTEST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_ROUNDUP => Some(crate::functions::roundup_fn::ROUNDUP_META.arg_preparation_profile),
+        FUNC_ID_RSQ => Some(crate::functions::rsq_fn::RSQ_META.arg_preparation_profile),
+        FUNC_ID_SECOND => {
+            Some(crate::functions::date_parts_family::SECOND_META.arg_preparation_profile)
+        }
         FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
+        FUNC_ID_SEC => Some(crate::functions::sec::SEC_META.arg_preparation_profile),
+        FUNC_ID_SECH => Some(crate::functions::sech::SECH_META.arg_preparation_profile),
+        FUNC_ID_SERIESSUM => {
+            Some(crate::functions::sumproduct_family::SERIESSUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_SIGN => Some(crate::functions::sign_fn::SIGN_META.arg_preparation_profile),
         FUNC_ID_SIN => Some(crate::functions::sin::SIN_META.arg_preparation_profile),
+        FUNC_ID_SINH => Some(crate::functions::sinh::SINH_META.arg_preparation_profile),
+        FUNC_ID_SKEW => {
+            Some(crate::functions::moment_stats_family::SKEW_META.arg_preparation_profile)
+        }
+        FUNC_ID_SKEW_P => {
+            Some(crate::functions::moment_stats_family::SKEW_P_META.arg_preparation_profile)
+        }
+        FUNC_ID_SLN => {
+            Some(crate::functions::depreciation_family::SLN_META.arg_preparation_profile)
+        }
+        FUNC_ID_SMALL => Some(crate::functions::small_fn::SMALL_META.arg_preparation_profile),
+        FUNC_ID_STEYX => {
+            Some(crate::functions::moment_stats_family::STEYX_META.arg_preparation_profile)
+        }
+        FUNC_ID_SQRT => Some(crate::functions::sqrt_fn::SQRT_META.arg_preparation_profile),
+        FUNC_ID_SQRTPI => Some(crate::functions::sqrtpi::SQRTPI_META.arg_preparation_profile),
+        FUNC_ID_SLOPE => Some(crate::functions::slope_fn::SLOPE_META.arg_preparation_profile),
+        FUNC_ID_STDEV => Some(crate::functions::stdev_fn::STDEV_META.arg_preparation_profile),
+        FUNC_ID_STDEV_P => Some(crate::functions::stdev_p_fn::STDEV_P_META.arg_preparation_profile),
+        FUNC_ID_STDEV_S => Some(crate::functions::stdev_s_fn::STDEV_S_META.arg_preparation_profile),
+        FUNC_ID_STDEVP => Some(crate::functions::stdevp_fn::STDEVP_META.arg_preparation_profile),
+        FUNC_ID_STDEVA => Some(crate::functions::stdeva_fn::STDEVA_META.arg_preparation_profile),
+        FUNC_ID_STDEVPA => Some(crate::functions::stdevpa_fn::STDEVPA_META.arg_preparation_profile),
+        FUNC_ID_STANDARDIZE => {
+            Some(crate::functions::standardize_fn::STANDARDIZE_META.arg_preparation_profile)
+        }
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
+        FUNC_ID_SUMIFS => {
+            Some(crate::functions::criteria_family::SUMIFS_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMPRODUCT => {
+            Some(crate::functions::sumproduct_family::SUMPRODUCT_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMX2MY2 => {
+            Some(crate::functions::sumproduct_family::SUMX2MY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMX2PY2 => {
+            Some(crate::functions::sumproduct_family::SUMX2PY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMXMY2 => {
+            Some(crate::functions::sumproduct_family::SUMXMY2_META.arg_preparation_profile)
+        }
+        FUNC_ID_SUMSQ => Some(crate::functions::sumsq::SUMSQ_META.arg_preparation_profile),
+        FUNC_ID_SWITCH => {
+            Some(crate::functions::misc_switch_info_family::SWITCH_META.arg_preparation_profile)
+        }
         FUNC_ID_T => Some(crate::functions::t_fn::T_META.arg_preparation_profile),
+        FUNC_ID_T_DIST => {
+            Some(crate::functions::chi_f_t_family::T_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_DIST_2T => {
+            Some(crate::functions::chi_f_t_family::T_DIST_2T_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_DIST_RT => {
+            Some(crate::functions::chi_f_t_family::T_DIST_RT_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_INV => Some(crate::functions::chi_f_t_family::T_INV_META.arg_preparation_profile),
+        FUNC_ID_T_INV_2T => {
+            Some(crate::functions::chi_f_t_family::T_INV_2T_META.arg_preparation_profile)
+        }
+        FUNC_ID_T_TEST => {
+            Some(crate::functions::statistical_tests_family::T_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_TAN => Some(crate::functions::tan::TAN_META.arg_preparation_profile),
+        FUNC_ID_TANH => Some(crate::functions::tanh::TANH_META.arg_preparation_profile),
+        FUNC_ID_TBILLEQ => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLEQ_META.arg_preparation_profile,
+        ),
+        FUNC_ID_TBILLPRICE => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLPRICE_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_TBILLYIELD => Some(
+            crate::functions::discount_bill_yearfrac_family::TBILLYIELD_META
+                .arg_preparation_profile,
+        ),
+        FUNC_ID_TDIST => Some(crate::functions::chi_f_t_family::TDIST_META.arg_preparation_profile),
+        FUNC_ID_TINV => Some(crate::functions::chi_f_t_family::TINV_META.arg_preparation_profile),
+        FUNC_ID_SYD => {
+            Some(crate::functions::depreciation_family::SYD_META.arg_preparation_profile)
+        }
+        FUNC_ID_SEARCH => {
+            Some(crate::functions::text_search_replace_family::SEARCH_META.arg_preparation_profile)
+        }
+        FUNC_ID_SEARCHB => {
+            Some(crate::functions::text_b_compat_family::SEARCHB_META.arg_preparation_profile)
+        }
         FUNC_ID_TEXT => Some(crate::functions::text_fn::TEXT_META.arg_preparation_profile),
+        FUNC_ID_TEXTAFTER => {
+            Some(crate::functions::text_delim_family::TEXTAFTER_META.arg_preparation_profile)
+        }
+        FUNC_ID_TEXTBEFORE => {
+            Some(crate::functions::text_delim_family::TEXTBEFORE_META.arg_preparation_profile)
+        }
+        FUNC_ID_TEXTSPLIT => {
+            Some(crate::functions::array_text_split_family::TEXTSPLIT_META.arg_preparation_profile)
+        }
+        FUNC_ID_REPT => Some(crate::functions::text_scalar_misc::REPT_META.arg_preparation_profile),
+        FUNC_ID_SUBSTITUTE => Some(
+            crate::functions::text_search_replace_family::SUBSTITUTE_META.arg_preparation_profile,
+        ),
         FUNC_ID_TEXTJOIN => Some(crate::functions::textjoin::TEXTJOIN_META.arg_preparation_profile),
         FUNC_ID_TODAY => Some(crate::functions::today_fn::TODAY_META.arg_preparation_profile),
+        FUNC_ID_TIME => {
+            Some(crate::functions::date_parts_family::TIME_META.arg_preparation_profile)
+        }
+        FUNC_ID_TIMEVALUE => {
+            Some(crate::functions::date_value_family::TIMEVALUE_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRANSLATE => Some(
+            crate::functions::number_regex_translate_family::TRANSLATE_META.arg_preparation_profile,
+        ),
+        FUNC_ID_TRIMMEAN => {
+            Some(crate::functions::moment_stats_family::TRIMMEAN_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRUE => Some(crate::functions::true_fn::TRUE_META.arg_preparation_profile),
+        FUNC_ID_TREND => {
+            Some(crate::functions::regression_forecast_family::TREND_META.arg_preparation_profile)
+        }
+        FUNC_ID_TRUNC => Some(crate::functions::trunc_fn::TRUNC_META.arg_preparation_profile),
+        FUNC_ID_TRIM => Some(crate::functions::text_scalar_misc::TRIM_META.arg_preparation_profile),
+        FUNC_ID_TTEST => {
+            Some(crate::functions::statistical_tests_family::TTEST_META.arg_preparation_profile)
+        }
         FUNC_ID_TYPE => Some(crate::functions::type_fn::TYPE_META.arg_preparation_profile),
+        FUNC_ID_UNICHAR => {
+            Some(crate::functions::text_unicode_fn::UNICHAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_UNICODE => {
+            Some(crate::functions::text_unicode_fn::UNICODE_META.arg_preparation_profile)
+        }
+        FUNC_ID_UPPER => {
+            Some(crate::functions::text_scalar_misc::UPPER_META.arg_preparation_profile)
+        }
         FUNC_ID_VALUE => Some(crate::functions::value_fn::VALUE_META.arg_preparation_profile),
+        FUNC_ID_VAR => Some(crate::functions::var_fn::VAR_META.arg_preparation_profile),
+        FUNC_ID_VAR_P => Some(crate::functions::var_p_fn::VAR_P_META.arg_preparation_profile),
+        FUNC_ID_VAR_S => Some(crate::functions::var_s_fn::VAR_S_META.arg_preparation_profile),
+        FUNC_ID_VARA => Some(crate::functions::vara_fn::VARA_META.arg_preparation_profile),
+        FUNC_ID_VARP => Some(crate::functions::varp_fn::VARP_META.arg_preparation_profile),
+        FUNC_ID_VARPA => Some(crate::functions::varpa_fn::VARPA_META.arg_preparation_profile),
+        FUNC_ID_VDB => {
+            Some(crate::functions::depreciation_family::VDB_META.arg_preparation_profile)
+        }
+        FUNC_ID_HLOOKUP => {
+            Some(crate::functions::vhlookup_family::HLOOKUP_META.arg_preparation_profile)
+        }
+        FUNC_ID_VLOOKUP => {
+            Some(crate::functions::vhlookup_family::VLOOKUP_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEIBULL => {
+            Some(crate::functions::special_dist_family::WEIBULL_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEIBULL_DIST => {
+            Some(crate::functions::special_dist_family::WEIBULL_DIST_META.arg_preparation_profile)
+        }
+        FUNC_ID_XIRR => {
+            Some(crate::functions::cashflow_rate_family::XIRR_META.arg_preparation_profile)
+        }
+        FUNC_ID_XNPV => {
+            Some(crate::functions::cashflow_rate_family::XNPV_META.arg_preparation_profile)
+        }
         FUNC_ID_XLOOKUP => Some(crate::functions::xlookup::XLOOKUP_META.arg_preparation_profile),
         FUNC_ID_XMATCH => Some(crate::functions::xmatch::XMATCH_META.arg_preparation_profile),
+        FUNC_ID_XOR => Some(crate::functions::xor_fn::XOR_META.arg_preparation_profile),
+        FUNC_ID_WEEKDAY => {
+            Some(crate::functions::date_week_family::WEEKDAY_META.arg_preparation_profile)
+        }
+        FUNC_ID_WEEKNUM => {
+            Some(crate::functions::date_week_family::WEEKNUM_META.arg_preparation_profile)
+        }
+        FUNC_ID_WORKDAY => {
+            Some(crate::functions::workday_networkdays_family::WORKDAY_META.arg_preparation_profile)
+        }
+        FUNC_ID_WORKDAY_INTL => Some(
+            crate::functions::workday_networkdays_family::WORKDAY_INTL_META.arg_preparation_profile,
+        ),
+        FUNC_ID_YIELD => {
+            Some(crate::functions::bond_core_family::YIELD_META.arg_preparation_profile)
+        }
+        FUNC_ID_YIELDDISC => {
+            Some(crate::functions::bond_core_family::YIELDDISC_META.arg_preparation_profile)
+        }
+        FUNC_ID_YIELDMAT => {
+            Some(crate::functions::bond_core_family::YIELDMAT_META.arg_preparation_profile)
+        }
+        FUNC_ID_YEAR => {
+            Some(crate::functions::date_parts_family::YEAR_META.arg_preparation_profile)
+        }
+        FUNC_ID_YEARFRAC => Some(
+            crate::functions::discount_bill_yearfrac_family::YEARFRAC_META.arg_preparation_profile,
+        ),
+        FUNC_ID_Z_TEST => {
+            Some(crate::functions::confidence_test_family::Z_TEST_META.arg_preparation_profile)
+        }
+        FUNC_ID_ZTEST => {
+            Some(crate::functions::test_alias_family::ZTEST_META.arg_preparation_profile)
+        }
         _ => None,
     }
 }
@@ -219,34 +1951,646 @@ pub fn eval_surface_value_call(
     now_serial: Option<f64>,
     random_value: Option<f64>,
     locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
     match function_id {
+        FUNC_ID_ACOS => eval_acos_surface(args, resolver).map_err(|e| map_acos_error_to_ws(&e)),
+        FUNC_ID_ACOT => eval_acot_surface(args, resolver).map_err(|e| map_acot_error_to_ws(&e)),
+        FUNC_ID_ACOSH => eval_acosh_surface(args, resolver).map_err(|e| map_acosh_error_to_ws(&e)),
+        FUNC_ID_ACOTH => eval_acoth_surface(args, resolver).map_err(|e| map_acoth_error_to_ws(&e)),
         FUNC_ID_ABS => eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e)),
+        FUNC_ID_ACCRINT => {
+            eval_accrint_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_ACCRINTM => {
+            eval_accrintm_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_ATAN => eval_atan_surface(args, resolver).map_err(|e| map_atan_error_to_ws(&e)),
         FUNC_ID_ASIN => eval_asin_surface(args, resolver).map_err(|e| map_asin_error_to_ws(&e)),
+        FUNC_ID_ASINH => eval_asinh_surface(args, resolver).map_err(|e| map_asinh_error_to_ws(&e)),
+        FUNC_ID_ATAN2 => eval_atan2_surface(args, resolver).map_err(|e| map_atan2_error_to_ws(&e)),
+        FUNC_ID_ATANH => eval_atanh_surface(args, resolver).map_err(|e| map_atanh_error_to_ws(&e)),
         FUNC_ID_AND => eval_and_surface(args, resolver).map_err(|e| map_and_error_to_ws(&e)),
+        FUNC_ID_AMORDEGRC => eval_amordegrc_surface(args, resolver)
+            .map_err(|e| map_amor_depreciation_error_to_ws(&e)),
+        FUNC_ID_AMORLINC => {
+            eval_amorlinc_surface(args, resolver).map_err(|e| map_amor_depreciation_error_to_ws(&e))
+        }
+        FUNC_ID_ARABIC => {
+            eval_arabic_surface(args, resolver).map_err(|e| map_arabic_error_to_ws(&e))
+        }
+        FUNC_ID_ARRAYTOTEXT => eval_arraytotext_surface(args, resolver)
+            .map_err(|e| map_array_text_split_error_to_ws(&e)),
+        FUNC_ID_ASC => {
+            eval_asc_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
+        }
+        FUNC_ID_AVEDEV => {
+            eval_avedev_surface(args, resolver).map_err(|e| map_avedev_error_to_ws(&e))
+        }
         FUNC_ID_AVERAGE => {
             eval_average_surface(args, resolver).map_err(|e| map_average_error_to_ws(&e))
         }
-        FUNC_ID_CELL => eval_cell_surface(args, resolver).map_err(|e| map_cell_error_to_ws(&e)),
+        FUNC_ID_AVERAGEIF => {
+            eval_averageif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_AVERAGEIFS => {
+            eval_averageifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_AVERAGEA => {
+            eval_averagea_surface(args, resolver).map_err(|e| map_averagea_error_to_ws(&e))
+        }
+        FUNC_ID_BAHTTEXT => {
+            eval_bahttext_surface(args, resolver).map_err(|e| map_misc_conversion_error_to_ws(&e))
+        }
+        FUNC_ID_BASE => eval_base_surface(args, resolver).map_err(|e| map_base_error_to_ws(&e)),
+        FUNC_ID_BETA_DIST => {
+            eval_beta_dist_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_BETA_INV => {
+            eval_beta_inv_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_BETADIST => {
+            eval_betadist_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_BETAINV => {
+            eval_betainv_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_BESSELI => {
+            eval_besseli_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
+        }
+        FUNC_ID_BESSELJ => {
+            eval_besselj_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
+        }
+        FUNC_ID_BESSELK => {
+            eval_besselk_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
+        }
+        FUNC_ID_BESSELY => {
+            eval_bessely_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
+        }
+        FUNC_ID_BINOM_DIST => {
+            eval_binom_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_BINOM_DIST_RANGE => eval_binom_dist_range_surface(args, resolver)
+            .map_err(|e| map_discrete_dist_error_to_ws(&e)),
+        FUNC_ID_BINOM_INV => {
+            eval_binom_inv_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_BINOMDIST => {
+            eval_binomdist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_BIN2DEC => {
+            eval_bin2dec_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_BIN2HEX => {
+            eval_bin2hex_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_BIN2OCT => {
+            eval_bin2oct_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_BITAND => {
+            eval_bitand_surface(args, resolver).map_err(|e| map_bitand_error_to_ws(&e))
+        }
+        FUNC_ID_BITLSHIFT => {
+            eval_bitlshift_surface(args, resolver).map_err(|e| map_bitlshift_error_to_ws(&e))
+        }
+        FUNC_ID_BITOR => eval_bitor_surface(args, resolver).map_err(|e| map_bitor_error_to_ws(&e)),
+        FUNC_ID_BITRSHIFT => {
+            eval_bitrshift_surface(args, resolver).map_err(|e| map_bitrshift_error_to_ws(&e))
+        }
+        FUNC_ID_BITXOR => {
+            eval_bitxor_surface(args, resolver).map_err(|e| map_bitxor_error_to_ws(&e))
+        }
+        FUNC_ID_CELL => {
+            eval_cell_surface(args, resolver, host_info).map_err(|e| map_cell_error_to_ws(&e))
+        }
+        FUNC_ID_CEILING => {
+            eval_ceiling_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
+        }
+        FUNC_ID_CEILING_MATH => {
+            eval_ceiling_math_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
+        }
+        FUNC_ID_CEILING_PRECISE => eval_ceiling_precise_surface(args, resolver)
+            .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
+        FUNC_ID_CHIDIST => {
+            eval_chidist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHIINV => {
+            eval_chiinv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHOOSE => {
+            eval_choose_surface(args, resolver).map_err(|e| map_choose_ifs_error_to_ws(&e))
+        }
+        FUNC_ID_CHISQ_DIST => {
+            eval_chisq_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHISQ_DIST_RT => {
+            eval_chisq_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHISQ_INV => {
+            eval_chisq_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHISQ_INV_RT => {
+            eval_chisq_inv_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_CHISQ_TEST => eval_chisq_test_surface(args, resolver)
+            .map_err(|e| map_statistical_tests_error_to_ws(&e)),
+        FUNC_ID_CHITEST => {
+            eval_chitest_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
+        }
+        FUNC_ID_CHAR => {
+            eval_char_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_CODE => {
+            eval_code_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_COMBIN => {
+            eval_combin_surface(args, resolver).map_err(|e| map_combin_error_to_ws(&e))
+        }
+        FUNC_ID_COMBINA => {
+            eval_combina_surface(args, resolver).map_err(|e| map_combina_error_to_ws(&e))
+        }
+        FUNC_ID_COMPLEX => {
+            eval_complex_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
         FUNC_ID_CLEAN => eval_clean_surface(args, resolver).map_err(|e| map_clean_error_to_ws(&e)),
+        FUNC_ID_CONCAT => {
+            eval_concat_surface(args, resolver).map_err(|e| map_concat_error_to_ws(&e))
+        }
+        FUNC_ID_CONCATENATE => {
+            eval_concatenate_surface(args, resolver).map_err(|e| map_concat_error_to_ws(&e))
+        }
+        FUNC_ID_COLUMN => {
+            eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e))
+        }
+        FUNC_ID_COS => eval_cos_surface(args, resolver).map_err(|e| map_cos_error_to_ws(&e)),
+        FUNC_ID_COSH => eval_cosh_surface(args, resolver).map_err(|e| map_cosh_error_to_ws(&e)),
+        FUNC_ID_CORREL => {
+            eval_correl_surface(args, resolver).map_err(|e| map_correl_error_to_ws(&e))
+        }
+        FUNC_ID_COVARIANCE_P => {
+            eval_covariance_p_surface(args, resolver).map_err(|e| map_covariance_p_error_to_ws(&e))
+        }
+        FUNC_ID_COVARIANCE_S => {
+            eval_covariance_s_surface(args, resolver).map_err(|e| map_covariance_s_error_to_ws(&e))
+        }
+        FUNC_ID_COT => eval_cot_surface(args, resolver).map_err(|e| map_cot_error_to_ws(&e)),
+        FUNC_ID_COTH => eval_coth_surface(args, resolver).map_err(|e| map_coth_error_to_ws(&e)),
         FUNC_ID_COUNT => eval_count_surface(args, resolver).map_err(|e| map_count_error_to_ws(&e)),
-        FUNC_ID_COLUMN => eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e)),
+        FUNC_ID_COUNTBLANK => {
+            eval_countblank_surface(args, resolver).map_err(|e| map_countblank_error_to_ws(&e))
+        }
+        FUNC_ID_COUPDAYBS => {
+            eval_coupdaybs_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUPDAYS => {
+            eval_coupdays_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUPDAYSNC => {
+            eval_coupdaysnc_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUPNCD => {
+            eval_coupncd_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUPNUM => {
+            eval_coupnum_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUPPCD => {
+            eval_couppcd_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
+        }
+        FUNC_ID_COUNTIF => {
+            eval_countif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_COUNTIFS => {
+            eval_countifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
         FUNC_ID_COUNTA => {
             eval_counta_surface(args, resolver).map_err(|e| map_counta_error_to_ws(&e))
         }
+        FUNC_ID_COVAR => {
+            eval_covar_surface(args, resolver).map_err(|e| map_legacy_stats_alias_error_to_ws(&e))
+        }
+        FUNC_ID_CRITBINOM => {
+            eval_critbinom_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_CSC => eval_csc_surface(args, resolver).map_err(|e| map_csc_error_to_ws(&e)),
+        FUNC_ID_CSCH => eval_csch_surface(args, resolver).map_err(|e| map_csch_error_to_ws(&e)),
+        FUNC_ID_CUMIPMT => {
+            eval_cumipmt_surface(args, resolver).map_err(|e| map_cumulative_finance_error_to_ws(&e))
+        }
+        FUNC_ID_CUMPRINC => eval_cumprinc_surface(args, resolver)
+            .map_err(|e| map_cumulative_finance_error_to_ws(&e)),
+        FUNC_ID_CONVERT => {
+            eval_convert_surface(args, resolver).map_err(|e| map_misc_conversion_error_to_ws(&e))
+        }
+        FUNC_ID_DAVERAGE => {
+            eval_daverage_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
         FUNC_ID_DATE => eval_date_surface(args, resolver).map_err(|e| map_date_error_to_ws(&e)),
-        FUNC_ID_DOLLAR => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_dollar_surface(args, resolver, ctx).map_err(|e| map_dollar_error_to_ws(&e)) },
+        FUNC_ID_DATEDIF => {
+            eval_datedif_surface(args, resolver).map_err(|e| map_date_value_family_error_to_ws(&e))
+        }
+        FUNC_ID_DAY => eval_day_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e)),
+        FUNC_ID_DAYS => {
+            eval_days_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_DAYS360 => {
+            eval_days360_surface(args, resolver).map_err(|e| map_date_value_family_error_to_ws(&e))
+        }
+        FUNC_ID_DATEVALUE => eval_datevalue_surface(args, resolver)
+            .map_err(|e| map_date_value_family_error_to_ws(&e)),
+        FUNC_ID_DBCS => {
+            eval_dbcs_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
+        }
+        FUNC_ID_DB => eval_db_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e)),
+        FUNC_ID_DEC2BIN => {
+            eval_dec2bin_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_DEC2HEX => {
+            eval_dec2hex_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_DEC2OCT => {
+            eval_dec2oct_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_EDATE => {
+            eval_edate_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
+        }
+        FUNC_ID_EOMONTH => {
+            eval_eomonth_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
+        }
+        FUNC_ID_EFFECT => eval_effect_surface(args, resolver)
+            .map_err(|e| map_financial_time_value_error_to_ws(&e)),
+        FUNC_ID_EUROCONVERT => eval_euroconvert_surface(args, resolver)
+            .map_err(|e| map_misc_conversion_error_to_ws(&e)),
+        FUNC_ID_DECIMAL => {
+            eval_decimal_surface(args, resolver).map_err(|e| map_decimal_error_to_ws(&e))
+        }
+        FUNC_ID_DDB => {
+            eval_ddb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
+        }
+        FUNC_ID_DCOUNT => {
+            eval_dcount_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DCOUNTA => {
+            eval_dcounta_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DISC => eval_disc_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_DGET => eval_dget_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
+        FUNC_ID_DMAX => eval_dmax_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
+        FUNC_ID_DMIN => eval_dmin_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
+        FUNC_ID_DPRODUCT => {
+            eval_dproduct_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DSTDEV => {
+            eval_dstdev_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DSTDEVP => {
+            eval_dstdevp_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DSUM => eval_dsum_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
+        FUNC_ID_DVAR => eval_dvar_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
+        FUNC_ID_DVARP => {
+            eval_dvarp_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DEVSQ => eval_devsq_surface(args, resolver).map_err(|e| map_devsq_error_to_ws(&e)),
+        FUNC_ID_DEGREES => {
+            eval_degrees_surface(args, resolver).map_err(|e| map_degrees_error_to_ws(&e))
+        }
+        FUNC_ID_DELTA => eval_delta_surface(args, resolver).map_err(|e| map_delta_error_to_ws(&e)),
+        FUNC_ID_DURATION => {
+            eval_duration_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_DOLLAR => {
+            let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
+            eval_dollar_surface(args, resolver, ctx).map_err(|e| map_dollar_error_to_ws(&e))
+        }
+        FUNC_ID_DOLLARDE => {
+            eval_dollarde_surface(args, resolver).map_err(|e| map_dollar_fraction_error_to_ws(&e))
+        }
+        FUNC_ID_DOLLARFR => {
+            eval_dollarfr_surface(args, resolver).map_err(|e| map_dollar_fraction_error_to_ws(&e))
+        }
+        FUNC_ID_EVEN => eval_even_surface(args, resolver).map_err(|e| map_even_error_to_ws(&e)),
+        FUNC_ID_ERROR_TYPE => {
+            eval_error_type_surface(args, resolver).map_err(|e| map_error_type_error_to_ws(&e))
+        }
+        FUNC_ID_ERF => {
+            eval_erf_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_ERF_PRECISE => {
+            eval_erf_precise_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_ERFC => {
+            eval_erfc_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_ERFC_PRECISE => {
+            eval_erfc_precise_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
         FUNC_ID_EXACT => eval_exact_surface(args, resolver).map_err(|e| map_exact_error_to_ws(&e)),
-        FUNC_ID_FIXED => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e)) },
+        FUNC_ID_EXPON_DIST => {
+            eval_expon_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_EXPONDIST => {
+            eval_expondist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_EXP => eval_exp_surface(args, resolver).map_err(|e| map_exp_error_to_ws(&e)),
+        FUNC_ID_FACT => eval_fact_surface(args, resolver).map_err(|e| map_fact_error_to_ws(&e)),
+        FUNC_ID_FACTDOUBLE => {
+            eval_factdouble_surface(args, resolver).map_err(|e| map_factdouble_error_to_ws(&e))
+        }
+        FUNC_ID_F_DIST => {
+            eval_f_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_F_DIST_RT => {
+            eval_f_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_F_INV => {
+            eval_f_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_F_INV_RT => {
+            eval_f_inv_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_F_TEST => {
+            eval_f_test_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
+        }
+        FUNC_ID_FDIST => {
+            eval_fdist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_FINV => eval_finv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e)),
+        FUNC_ID_FALSE => eval_false_surface(args),
+        FUNC_ID_FTEST => {
+            eval_ftest_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
+        }
+        FUNC_ID_FREQUENCY => eval_frequency_surface(args, resolver)
+            .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
+        FUNC_ID_FV => {
+            eval_fv_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_FVSCHEDULE => eval_fvschedule_surface(args, resolver)
+            .map_err(|e| map_financial_time_value_error_to_ws(&e)),
+        FUNC_ID_FISHER => {
+            eval_fisher_surface(args, resolver).map_err(|e| map_fisher_error_to_ws(&e))
+        }
+        FUNC_ID_FISHERINV => {
+            eval_fisherinv_surface(args, resolver).map_err(|e| map_fisherinv_error_to_ws(&e))
+        }
+        FUNC_ID_FIND => {
+            eval_find_surface(args, resolver).map_err(|e| map_text_search_replace_error_to_ws(&e))
+        }
+        FUNC_ID_FINDB => {
+            eval_findb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_FIXED => {
+            let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
+            eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e))
+        }
+        FUNC_ID_FLOOR => {
+            eval_floor_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
+        }
+        FUNC_ID_FLOOR_MATH => {
+            eval_floor_math_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
+        }
+        FUNC_ID_FLOOR_PRECISE => eval_floor_precise_surface(args, resolver)
+            .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
+        FUNC_ID_GAUSS => eval_gauss_surface(args, resolver).map_err(|e| map_gauss_error_to_ws(&e)),
+        FUNC_ID_GAMMA => {
+            eval_gamma_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_GAMMA_DIST => eval_gamma_dist_surface(args, resolver)
+            .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
+        FUNC_ID_GAMMA_INV => {
+            eval_gamma_inv_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_GAMMADIST => {
+            eval_gammadist_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_GAMMAINV => {
+            eval_gammainv_surface(args, resolver).map_err(|e| map_beta_gamma_stats_error_to_ws(&e))
+        }
+        FUNC_ID_GAMMALN => {
+            eval_gammaln_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_GAMMALN_PRECISE => eval_gammaln_precise_surface(args, resolver)
+            .map_err(|e| map_special_dist_error_to_ws(&e)),
+        FUNC_ID_GCD => eval_gcd_surface(args, resolver).map_err(|e| map_gcd_error_to_ws(&e)),
+        FUNC_ID_GEOMEAN => {
+            eval_geomean_surface(args, resolver).map_err(|e| map_geomean_error_to_ws(&e))
+        }
+        FUNC_ID_GESTEP => {
+            eval_gestep_surface(args, resolver).map_err(|e| map_gestep_error_to_ws(&e))
+        }
+        FUNC_ID_GROWTH => {
+            eval_growth_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
+        }
+        FUNC_ID_HARMEAN => {
+            eval_harmean_surface(args, resolver).map_err(|e| map_harmean_error_to_ws(&e))
+        }
+        FUNC_ID_HYPGEOM_DIST => {
+            eval_hypgeom_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_HYPGEOMDIST => {
+            eval_hypgeomdist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_HOUR => {
+            eval_hour_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
         FUNC_ID_HSTACK => {
             eval_hstack_surface(args, resolver).map_err(|e| map_hstack_error_to_ws(&e))
         }
+        FUNC_ID_INFO => {
+            eval_info_surface(args, resolver, host_info).map_err(|e| map_info_error_to_ws(&e))
+        }
+        FUNC_ID_IRR => {
+            eval_irr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
+        }
+        FUNC_ID_IMABS => {
+            eval_imabs_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMAGINARY => {
+            eval_imaginary_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMARGUMENT => {
+            eval_imargument_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCONJUGATE => {
+            eval_imconjugate_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCOS => {
+            eval_imcos_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCOSH => {
+            eval_imcosh_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCOT => {
+            eval_imcot_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCSC => {
+            eval_imcsc_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMCSCH => {
+            eval_imcsch_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMDIV => {
+            eval_imdiv_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMEXP => {
+            eval_imexp_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMLN => {
+            eval_imln_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMLOG10 => {
+            eval_imlog10_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMLOG2 => {
+            eval_imlog2_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMPOWER => {
+            eval_impower_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMPRODUCT => {
+            eval_improduct_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMREAL => {
+            eval_imreal_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSEC => {
+            eval_imsec_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSECH => {
+            eval_imsech_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSIN => {
+            eval_imsin_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSINH => {
+            eval_imsinh_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSQRT => {
+            eval_imsqrt_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSUB => {
+            eval_imsub_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMSUM => {
+            eval_imsum_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_IMTAN => {
+            eval_imtan_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
+        }
+        FUNC_ID_ISFORMULA => eval_isformula_surface(args, host_info)
+            .map_err(|e| map_misc_switch_info_error_to_ws(&e)),
+        FUNC_ID_PRODUCT => {
+            eval_product_surface(args, resolver).map_err(|e| map_product_error_to_ws(&e))
+        }
         FUNC_ID_SUM => eval_sum_surface(args, resolver).map_err(|e| map_sum_error_to_ws(&e)),
+        FUNC_ID_SUMIFS => {
+            eval_sumifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_SUMPRODUCT => {
+            eval_sumproduct_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
+        }
+        FUNC_ID_SUMX2MY2 => {
+            eval_sumx2my2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
+        }
+        FUNC_ID_SUMX2PY2 => {
+            eval_sumx2py2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
+        }
+        FUNC_ID_SUMXMY2 => {
+            eval_sumxmy2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
+        }
+        FUNC_ID_SUMSQ => eval_sumsq_surface(args, resolver).map_err(|e| map_sumsq_error_to_ws(&e)),
+        FUNC_ID_SWITCH => {
+            eval_switch_surface(args, resolver).map_err(|e| map_misc_switch_info_error_to_ws(&e))
+        }
+        FUNC_ID_T_DIST => {
+            eval_t_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_T_DIST_2T => {
+            eval_t_dist_2t_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_T_DIST_RT => {
+            eval_t_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_T_INV => {
+            eval_t_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_T_INV_2T => {
+            eval_t_inv_2t_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_T_TEST => {
+            eval_t_test_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
+        }
+        FUNC_ID_TDIST => {
+            eval_tdist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
+        }
+        FUNC_ID_TINV => eval_tinv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e)),
+        FUNC_ID_SYD => {
+            eval_syd_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
+        }
         FUNC_ID_IF => eval_if_surface(args, resolver).map_err(|e| map_if_error_to_ws(&e)),
         FUNC_ID_IFERROR => {
             eval_iferror_surface(args, resolver).map_err(|e| map_iferror_error_to_ws(&e))
         }
+        FUNC_ID_IFNA => eval_ifna_surface(args, resolver).map_err(|e| map_ifna_error_to_ws(&e)),
+        FUNC_ID_IFS => eval_ifs_surface(args, resolver).map_err(|e| map_choose_ifs_error_to_ws(&e)),
         FUNC_ID_INDEX => eval_index_surface(args, resolver).map_err(|e| map_index_error_to_ws(&e)),
+        FUNC_ID_IPMT => {
+            eval_ipmt_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_ISPMT => {
+            eval_ispmt_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_HEX2BIN => {
+            eval_hex2bin_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_HEX2DEC => {
+            eval_hex2dec_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_HEX2OCT => {
+            eval_hex2oct_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_ISO_CEILING => {
+            eval_iso_ceiling_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
+        }
+        FUNC_ID_JIS => {
+            eval_jis_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
+        }
+        FUNC_ID_LN => eval_ln_surface(args, resolver).map_err(|e| map_ln_error_to_ws(&e)),
+        FUNC_ID_LOOKUP => eval_lookup_surface(args, resolver)
+            .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
+        FUNC_ID_LOG10 => eval_log10_surface(args, resolver).map_err(|e| map_log10_error_to_ws(&e)),
+        FUNC_ID_LOWER => {
+            eval_lower_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_LEFT => {
+            eval_left_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
+        }
+        FUNC_ID_LEFTB => {
+            eval_leftb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_LEN => eval_len_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e)),
+        FUNC_ID_LENB => {
+            eval_lenb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_MID => eval_mid_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e)),
+        FUNC_ID_MIDB => {
+            eval_midb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_RIGHT => {
+            eval_right_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
+        }
+        FUNC_ID_RIGHTB => {
+            eval_rightb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_MAX => eval_max_surface(args, resolver).map_err(|e| map_max_error_to_ws(&e)),
+        FUNC_ID_MAXA => eval_maxa_surface(args, resolver).map_err(|e| map_maxa_error_to_ws(&e)),
+        FUNC_ID_MAXIFS => {
+            eval_maxifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_MEDIAN => {
+            eval_median_surface(args, resolver).map_err(|e| map_median_error_to_ws(&e))
+        }
         FUNC_ID_MATCH => {
             if args.len() < 2 {
                 return Err(WorksheetErrorCode::Value);
@@ -256,17 +2600,200 @@ pub fn eval_surface_value_call(
             eval_match_surface(&args[0], &lookup_array, match_type, resolver)
                 .map_err(|e| map_match_error_to_ws(&e))
         }
+        FUNC_ID_MDETERM => {
+            eval_mdeterm_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
+        }
+        FUNC_ID_MDURATION => {
+            eval_mduration_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_MINVERSE => {
+            eval_minverse_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
+        }
+        FUNC_ID_MMULT => eval_mmult_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e)),
+        FUNC_ID_MUNIT => eval_munit_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e)),
+        FUNC_ID_MOD => eval_mod_surface(args, resolver).map_err(|e| map_mod_error_to_ws(&e)),
+        FUNC_ID_MIN => eval_min_surface(args, resolver).map_err(|e| map_min_error_to_ws(&e)),
+        FUNC_ID_MINA => eval_mina_surface(args, resolver).map_err(|e| map_mina_error_to_ws(&e)),
+        FUNC_ID_MINIFS => {
+            eval_minifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
+        FUNC_ID_MIRR => {
+            eval_mirr_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_MINUTE => {
+            eval_minute_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_MODE => {
+            eval_mode_surface(args, resolver).map_err(|e| map_legacy_stats_alias_error_to_ws(&e))
+        }
+        FUNC_ID_MODE_MULT => eval_mode_mult_surface(args, resolver)
+            .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
+        FUNC_ID_MODE_SNGL => {
+            eval_mode_sngl_surface(args, resolver).map_err(|e| map_mode_sngl_error_to_ws(&e))
+        }
+        FUNC_ID_MONTH => {
+            eval_month_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_MROUND => {
+            eval_mround_surface(args, resolver).map_err(|e| map_mround_error_to_ws(&e))
+        }
+        FUNC_ID_MULTINOMIAL => {
+            eval_multinomial_surface(args, resolver).map_err(|e| map_multinomial_error_to_ws(&e))
+        }
         FUNC_ID_ISNUMBER => {
             eval_isnumber_surface(args, resolver).map_err(|e| map_isnumber_error_to_ws(&e))
         }
+        FUNC_ID_ISOWEEKNUM => {
+            eval_isoweeknum_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
+        }
         FUNC_ID_N => eval_n_surface(args, resolver).map_err(|e| map_n_error_to_ws(&e)),
+        FUNC_ID_NA => eval_na_surface(args),
+        FUNC_ID_NOMINAL => eval_nominal_surface(args, resolver)
+            .map_err(|e| map_financial_time_value_error_to_ws(&e)),
+        FUNC_ID_NPER => {
+            eval_nper_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_NPV => {
+            eval_npv_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_NUMBERVALUE => eval_numbervalue_surface(args, resolver)
+            .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_NEGBINOM_DIST => eval_negbinom_dist_surface(args, resolver)
+            .map_err(|e| map_discrete_dist_error_to_ws(&e)),
+        FUNC_ID_NEGBINOMDIST => {
+            eval_negbinomdist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_CONFIDENCE => {
+            eval_confidence_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_CONFIDENCE_T => eval_confidence_t_surface(args, resolver)
+            .map_err(|e| map_confidence_test_error_to_ws(&e)),
+        FUNC_ID_CONFIDENCE_NORM => {
+            eval_confidence_norm_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_LOGNORM_DIST => {
+            eval_lognorm_dist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_LOGNORM_INV => {
+            eval_lognorm_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_LOGNORMDIST => {
+            eval_lognormdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORM_DIST => {
+            eval_norm_dist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORM_INV => {
+            eval_norm_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORM_S_DIST => {
+            eval_norm_s_dist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORM_S_INV => {
+            eval_norm_s_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORMDIST => {
+            eval_normdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORMINV => {
+            eval_norminv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORMSDIST => {
+            eval_normsdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NORMSINV => {
+            eval_normsinv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
+        }
+        FUNC_ID_NETWORKDAYS => eval_networkdays_surface(args, resolver)
+            .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
+        FUNC_ID_NETWORKDAYS_INTL => eval_networkdays_intl_surface(args, resolver)
+            .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
+        FUNC_ID_NOT => eval_not_surface(args, resolver).map_err(|e| map_not_error_to_ws(&e)),
         FUNC_ID_NOW => {
             let serial = now_serial.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedNowProvider { serial };
             eval_now_surface(args, &provider).map_err(|e| map_now_error_to_ws(&e))
         }
+        FUNC_ID_OCT2BIN => {
+            eval_oct2bin_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_OCT2DEC => {
+            eval_oct2dec_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_OCT2HEX => {
+            eval_oct2hex_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
+        }
+        FUNC_ID_POISSON => {
+            eval_poisson_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_POISSON_DIST => {
+            eval_poisson_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
+        }
+        FUNC_ID_ODDFPRICE => {
+            eval_oddfprice_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
+        }
+        FUNC_ID_ODDFYIELD => {
+            eval_oddfyield_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
+        }
+        FUNC_ID_ODDLPRICE => {
+            eval_oddlprice_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
+        }
+        FUNC_ID_ODDLYIELD => {
+            eval_oddlyield_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
+        }
+        FUNC_ID_OR => eval_or_surface(args, resolver).map_err(|e| map_or_error_to_ws(&e)),
         FUNC_ID_OFFSET => {
             eval_offset_surface(args, resolver).map_err(|e| map_offset_error_to_ws(&e))
+        }
+        FUNC_ID_PEARSON => {
+            eval_pearson_surface(args, resolver).map_err(|e| map_pearson_error_to_ws(&e))
+        }
+        FUNC_ID_PDURATION => eval_pduration_surface(args, resolver)
+            .map_err(|e| map_financial_time_value_error_to_ws(&e)),
+        FUNC_ID_PERMUT => {
+            eval_permut_surface(args, resolver).map_err(|e| map_permut_error_to_ws(&e))
+        }
+        FUNC_ID_PERMUTATIONA => {
+            eval_permutationa_surface(args, resolver).map_err(|e| map_permutationa_error_to_ws(&e))
+        }
+        FUNC_ID_PERCENTILE_EXC => eval_percentile_exc_surface(args, resolver)
+            .map_err(|e| map_percentile_exc_error_to_ws(&e)),
+        FUNC_ID_PERCENTILE_INC => eval_percentile_inc_surface(args, resolver)
+            .map_err(|e| map_percentile_inc_error_to_ws(&e)),
+        FUNC_ID_PERCENTILE => eval_percentile_surface(args, resolver)
+            .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
+        FUNC_ID_PERCENTRANK_EXC => eval_percentrank_exc_surface(args, resolver)
+            .map_err(|e| map_percentrank_exc_error_to_ws(&e)),
+        FUNC_ID_PERCENTRANK_INC => eval_percentrank_inc_surface(args, resolver)
+            .map_err(|e| map_percentrank_inc_error_to_ws(&e)),
+        FUNC_ID_PERCENTRANK => eval_percentrank_surface(args, resolver)
+            .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
+        FUNC_ID_PERCENTOF => {
+            eval_percentof_surface(args, resolver).map_err(|e| map_misc_conversion_error_to_ws(&e))
+        }
+        FUNC_ID_PHI => eval_phi_surface(args, resolver).map_err(|e| map_phi_error_to_ws(&e)),
+        FUNC_ID_PMT => {
+            eval_pmt_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_PPMT => {
+            eval_ppmt_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_PRICE => {
+            eval_price_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_PRICEDISC => eval_pricedisc_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_PRICEMAT => {
+            eval_pricemat_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_PROB => {
+            eval_prob_surface(args, resolver).map_err(|e| map_lookup_prob_frequency_error_to_ws(&e))
+        }
+        FUNC_ID_PV => {
+            eval_pv_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_PROPER => {
+            eval_proper_surface(args, resolver).map_err(|e| map_text_search_replace_error_to_ws(&e))
         }
         FUNC_ID_XLOOKUP => {
             if args.len() < 3 {
@@ -288,22 +2815,179 @@ pub fn eval_surface_value_call(
         FUNC_ID_INDIRECT => {
             eval_indirect_surface(args, resolver).map_err(|e| map_indirect_error_to_ws(&e))
         }
+        FUNC_ID_INTERCEPT => {
+            eval_intercept_surface(args, resolver).map_err(|e| map_intercept_error_to_ws(&e))
+        }
+        FUNC_ID_INT => eval_int_surface(args, resolver).map_err(|e| map_int_error_to_ws(&e)),
+        FUNC_ID_INTRATE => eval_intrate_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_ISEVEN => {
+            eval_iseven_surface(args, resolver).map_err(|e| map_iseven_error_to_ws(&e))
+        }
+        FUNC_ID_KURT => {
+            eval_kurt_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
+        }
+        FUNC_ID_LARGE => eval_large_surface(args, resolver).map_err(|e| map_large_error_to_ws(&e)),
+        FUNC_ID_LCM => eval_lcm_surface(args, resolver).map_err(|e| map_lcm_error_to_ws(&e)),
+        FUNC_ID_LINEST => {
+            eval_linest_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
+        }
+        FUNC_ID_LOGINV => {
+            eval_loginv_surface(args, resolver).map_err(|e| map_legacy_stats_alias_error_to_ws(&e))
+        }
+        FUNC_ID_LOGEST => {
+            eval_logest_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
+        }
+        FUNC_ID_RANDARRA => {
+            let value = random_value.ok_or(WorksheetErrorCode::Value)?;
+            let provider = FixedRandomProvider { value };
+            eval_randarra_surface(args, resolver, &provider)
+                .map_err(|e| map_misc_conversion_error_to_ws(&e))
+        }
         FUNC_ID_RAND => {
             let value = random_value.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedRandomProvider { value };
             eval_rand_surface(args, &provider).map_err(|e| map_rand_error_to_ws(&e))
         }
-        FUNC_ID_ROW => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
-        FUNC_ID_ROUND => {
-            eval_round_surface(args, resolver).map_err(|e| map_round_error_to_ws(&e))
+        FUNC_ID_RATE => {
+            eval_rate_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
         }
+        FUNC_ID_RADIANS => {
+            eval_radians_surface(args, resolver).map_err(|e| map_radians_error_to_ws(&e))
+        }
+        FUNC_ID_LOG => eval_log_surface(args, resolver).map_err(|e| map_log_error_to_ws(&e)),
+        FUNC_ID_RANK => eval_rank_surface(args, resolver).map_err(|e| map_rank_error_to_ws(&e)),
+        FUNC_ID_RANK_AVG => {
+            eval_rank_avg_surface(args, resolver).map_err(|e| map_rank_avg_error_to_ws(&e))
+        }
+        FUNC_ID_RANK_EQ => {
+            eval_rank_eq_surface(args, resolver).map_err(|e| map_rank_eq_error_to_ws(&e))
+        }
+        FUNC_ID_QUARTILE_EXC => {
+            eval_quartile_exc_surface(args, resolver).map_err(|e| map_quartile_exc_error_to_ws(&e))
+        }
+        FUNC_ID_QUARTILE_INC => {
+            eval_quartile_inc_surface(args, resolver).map_err(|e| map_quartile_inc_error_to_ws(&e))
+        }
+        FUNC_ID_QUARTILE => eval_quartile_surface(args, resolver)
+            .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
+        FUNC_ID_ROW => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
+        FUNC_ID_RRI => {
+            eval_rri_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
+        }
+        FUNC_ID_ROUND => eval_round_surface(args, resolver).map_err(|e| map_round_error_to_ws(&e)),
+        FUNC_ID_ROUNDDOWN => {
+            eval_rounddown_surface(args, resolver).map_err(|e| map_rounddown_error_to_ws(&e))
+        }
+        FUNC_ID_REPLACE => eval_replace_surface(args, resolver)
+            .map_err(|e| map_text_search_replace_error_to_ws(&e)),
+        FUNC_ID_REPLACEB => {
+            eval_replaceb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_RECEIVED => eval_received_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_REGEXEXTRACT => eval_regexextract_surface(args, resolver)
+            .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_REGEXREPLACE => eval_regexreplace_surface(args, resolver)
+            .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_REGEXTEST => eval_regextest_surface(args, resolver)
+            .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_ROUNDUP => {
+            eval_roundup_surface(args, resolver).map_err(|e| map_roundup_error_to_ws(&e))
+        }
+        FUNC_ID_ROMAN => eval_roman_surface(args, resolver).map_err(|e| map_roman_error_to_ws(&e)),
+        FUNC_ID_RSQ => eval_rsq_surface(args, resolver).map_err(|e| map_rsq_error_to_ws(&e)),
+        FUNC_ID_SECOND => {
+            eval_second_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_SEC => eval_sec_surface(args, resolver).map_err(|e| map_sec_error_to_ws(&e)),
+        FUNC_ID_SECH => eval_sech_surface(args, resolver).map_err(|e| map_sech_error_to_ws(&e)),
+        FUNC_ID_SERIESSUM => {
+            eval_seriessum_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
+        }
+        FUNC_ID_ODD => eval_odd_surface(args, resolver).map_err(|e| map_odd_error_to_ws(&e)),
         FUNC_ID_SEQUENCE => {
             eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
         }
+        FUNC_ID_SIGN => eval_sign_surface(args, resolver).map_err(|e| map_sign_error_to_ws(&e)),
         FUNC_ID_SIN => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
-        FUNC_ID_OP_ADD => eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e)),
+        FUNC_ID_SINH => eval_sinh_surface(args, resolver).map_err(|e| map_sinh_error_to_ws(&e)),
+        FUNC_ID_SKEW => {
+            eval_skew_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
+        }
+        FUNC_ID_SKEW_P => {
+            eval_skew_p_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
+        }
+        FUNC_ID_SLN => {
+            eval_sln_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
+        }
+        FUNC_ID_SMALL => eval_small_surface(args, resolver).map_err(|e| map_small_error_to_ws(&e)),
+        FUNC_ID_SQRT => eval_sqrt_surface(args, resolver).map_err(|e| map_sqrt_error_to_ws(&e)),
+        FUNC_ID_SQRTPI => {
+            eval_sqrtpi_surface(args, resolver).map_err(|e| map_sqrtpi_error_to_ws(&e))
+        }
+        FUNC_ID_SLOPE => eval_slope_surface(args, resolver).map_err(|e| map_slope_error_to_ws(&e)),
+        FUNC_ID_STDEV => eval_stdev_surface(args, resolver).map_err(|e| map_stdev_error_to_ws(&e)),
+        FUNC_ID_STDEV_P => {
+            eval_stdev_p_surface(args, resolver).map_err(|e| map_stdev_p_error_to_ws(&e))
+        }
+        FUNC_ID_STDEV_S => {
+            eval_stdev_s_surface(args, resolver).map_err(|e| map_stdev_s_error_to_ws(&e))
+        }
+        FUNC_ID_STDEVP => {
+            eval_stdevp_surface(args, resolver).map_err(|e| map_stdevp_error_to_ws(&e))
+        }
+        FUNC_ID_STDEVA => {
+            eval_stdeva_surface(args, resolver).map_err(|e| map_stdeva_error_to_ws(&e))
+        }
+        FUNC_ID_STDEVPA => {
+            eval_stdevpa_surface(args, resolver).map_err(|e| map_stdevpa_error_to_ws(&e))
+        }
+        FUNC_ID_STEYX => {
+            eval_steyx_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
+        }
+        FUNC_ID_STANDARDIZE => {
+            eval_standardize_surface(args, resolver).map_err(|e| map_standardize_error_to_ws(&e))
+        }
+        FUNC_ID_OP_ADD => {
+            eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e))
+        }
+        FUNC_ID_OP_SPILL_REF => {
+            eval_op_spill_ref_surface(args, resolver).map_err(|e| map_op_spill_ref_error_to_ws(&e))
+        }
         FUNC_ID_T => eval_t_surface(args, resolver).map_err(|e| map_t_error_to_ws(&e)),
-        FUNC_ID_TEXT => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_text_surface(args, resolver, ctx).map_err(|e| map_text_error_to_ws(&e)) },
+        FUNC_ID_TAN => eval_tan_surface(args, resolver).map_err(|e| map_tan_error_to_ws(&e)),
+        FUNC_ID_TANH => eval_tanh_surface(args, resolver).map_err(|e| map_tanh_error_to_ws(&e)),
+        FUNC_ID_TBILLEQ => eval_tbilleq_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_TBILLPRICE => eval_tbillprice_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_TBILLYIELD => eval_tbillyield_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_SEARCH => {
+            eval_search_surface(args, resolver).map_err(|e| map_text_search_replace_error_to_ws(&e))
+        }
+        FUNC_ID_SEARCHB => {
+            eval_searchb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
+        }
+        FUNC_ID_TEXT => {
+            let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
+            eval_text_surface(args, resolver, ctx).map_err(|e| map_text_error_to_ws(&e))
+        }
+        FUNC_ID_TEXTAFTER => {
+            eval_textafter_surface(args, resolver).map_err(|e| map_text_delim_error_to_ws(&e))
+        }
+        FUNC_ID_TEXTBEFORE => {
+            eval_textbefore_surface(args, resolver).map_err(|e| map_text_delim_error_to_ws(&e))
+        }
+        FUNC_ID_TEXTSPLIT => {
+            eval_textsplit_surface(args, resolver).map_err(|e| map_array_text_split_error_to_ws(&e))
+        }
+        FUNC_ID_REPT => {
+            eval_rept_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_SUBSTITUTE => eval_substitute_surface(args, resolver)
+            .map_err(|e| map_text_search_replace_error_to_ws(&e)),
         FUNC_ID_TEXTJOIN => {
             eval_textjoin_surface(args, resolver).map_err(|e| map_textjoin_error_to_ws(&e))
         }
@@ -312,8 +2996,88 @@ pub fn eval_surface_value_call(
             let provider = FixedNowProvider { serial };
             eval_today_surface(args, &provider).map_err(|e| map_today_error_to_ws(&e))
         }
+        FUNC_ID_TIME => {
+            eval_time_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_TIMEVALUE => eval_timevalue_surface(args, resolver)
+            .map_err(|e| map_date_value_family_error_to_ws(&e)),
+        FUNC_ID_TRANSLATE => eval_translate_surface(args, resolver)
+            .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_TRIMMEAN => {
+            eval_trimmean_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
+        }
+        FUNC_ID_TRUE => eval_true_surface(args),
+        FUNC_ID_TREND => {
+            eval_trend_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
+        }
+        FUNC_ID_TRUNC => eval_trunc_surface(args, resolver).map_err(|e| map_trunc_error_to_ws(&e)),
+        FUNC_ID_TRIM => {
+            eval_trim_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_TTEST => {
+            eval_ttest_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
+        }
         FUNC_ID_TYPE => eval_type_surface(args, resolver).map_err(|e| map_type_error_to_ws(&e)),
-        FUNC_ID_VALUE => { let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?; eval_value_surface(args, resolver, ctx).map_err(|e| map_value_error_to_ws(&e)) },
+        FUNC_ID_UNICHAR => {
+            eval_unichar_surface(args, resolver).map_err(|e| map_text_unicode_error_to_ws(&e))
+        }
+        FUNC_ID_UNICODE => {
+            eval_unicode_surface(args, resolver).map_err(|e| map_text_unicode_error_to_ws(&e))
+        }
+        FUNC_ID_UPPER => {
+            eval_upper_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
+        }
+        FUNC_ID_VALUE => {
+            let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
+            eval_value_surface(args, resolver, ctx).map_err(|e| map_value_error_to_ws(&e))
+        }
+        FUNC_ID_VAR => eval_var_surface(args, resolver).map_err(|e| map_var_error_to_ws(&e)),
+        FUNC_ID_VAR_P => eval_var_p_surface(args, resolver).map_err(|e| map_var_p_error_to_ws(&e)),
+        FUNC_ID_VAR_S => eval_var_s_surface(args, resolver).map_err(|e| map_var_s_error_to_ws(&e)),
+        FUNC_ID_VARA => eval_vara_surface(args, resolver).map_err(|e| map_vara_error_to_ws(&e)),
+        FUNC_ID_VARP => eval_varp_surface(args, resolver).map_err(|e| map_varp_error_to_ws(&e)),
+        FUNC_ID_VARPA => eval_varpa_surface(args, resolver).map_err(|e| map_varpa_error_to_ws(&e)),
+        FUNC_ID_VDB => {
+            eval_vdb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
+        }
+        FUNC_ID_HLOOKUP => {
+            eval_hlookup_surface(args, resolver).map_err(|e| map_vhlookup_error_to_ws(&e))
+        }
+        FUNC_ID_VLOOKUP => {
+            eval_vlookup_surface(args, resolver).map_err(|e| map_vhlookup_error_to_ws(&e))
+        }
+        FUNC_ID_WEIBULL => {
+            eval_weibull_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_WEIBULL_DIST => {
+            eval_weibull_dist_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
+        }
+        FUNC_ID_XIRR => {
+            eval_xirr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
+        }
+        FUNC_ID_XNPV => {
+            eval_xnpv_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
+        }
+        FUNC_ID_XOR => eval_xor_surface(args, resolver).map_err(|e| map_xor_error_to_ws(&e)),
+        FUNC_ID_WEEKDAY => {
+            eval_weekday_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
+        }
+        FUNC_ID_WEEKNUM => {
+            eval_weeknum_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
+        }
+        FUNC_ID_WORKDAY => eval_workday_surface(args, resolver)
+            .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
+        FUNC_ID_WORKDAY_INTL => eval_workday_intl_surface(args, resolver)
+            .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
+        FUNC_ID_YIELD => {
+            eval_yield_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_YIELDDISC => {
+            eval_yielddisc_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
+        FUNC_ID_YIELDMAT => {
+            eval_yieldmat_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
+        }
         FUNC_ID_XMATCH => {
             if args.len() < 2 {
                 return Err(WorksheetErrorCode::Value);
@@ -322,6 +3086,17 @@ pub fn eval_surface_value_call(
             eval_xmatch_surface_value(&args[0], &lookup_array, args.get(2), args.get(3), resolver)
                 .map_err(|e| map_xmatch_error_to_ws(&e))
         }
+        FUNC_ID_Z_TEST => {
+            eval_z_test_surface(args, resolver).map_err(|e| map_confidence_test_error_to_ws(&e))
+        }
+        FUNC_ID_ZTEST => {
+            eval_ztest_surface(args, resolver).map_err(|e| map_test_alias_error_to_ws(&e))
+        }
+        FUNC_ID_YEAR => {
+            eval_year_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
+        }
+        FUNC_ID_YEARFRAC => eval_yearfrac_surface(args, resolver)
+            .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
         FUNC_ID_PI => {
             if !args.is_empty() {
                 return Err(WorksheetErrorCode::Value);
@@ -333,6 +3108,10 @@ pub fn eval_surface_value_call(
                 Err(e) => Err(map_eval_error_to_ws(&e)),
             }
         }
+        FUNC_ID_POWER => eval_power_surface(args, resolver).map_err(|e| map_power_error_to_ws(&e)),
+        FUNC_ID_QUOTIENT => {
+            eval_quotient_surface(args, resolver).map_err(|e| map_quotient_error_to_ws(&e))
+        }
         _ => Err(WorksheetErrorCode::Value),
     }
 }
@@ -343,7 +3122,35 @@ pub fn eval_surface_q_unary_number(
 ) -> Result<f64, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_ABS => Ok(abs_kernel(value)),
+        FUNC_ID_ACOT => acot_kernel(value),
+        FUNC_ID_ATAN => Ok(atan_kernel(value)),
+        FUNC_ID_ASINH => asinh_kernel(value),
+        FUNC_ID_ATANH => atanh_kernel(value),
+        FUNC_ID_COS => Ok(cos_kernel(value)),
+        FUNC_ID_COSH => Ok(cosh_kernel(value)),
+        FUNC_ID_COT => cot_kernel(value),
+        FUNC_ID_COTH => coth_kernel(value),
+        FUNC_ID_CSC => csc_kernel(value),
+        FUNC_ID_CSCH => csch_kernel(value),
+        FUNC_ID_DEGREES => Ok(degrees_kernel(value)),
+        FUNC_ID_EVEN => even_kernel(value),
+        FUNC_ID_EXP => Ok(exp_kernel(value)),
+        FUNC_ID_FACT => fact_kernel(value),
+        FUNC_ID_FACTDOUBLE => factdouble_kernel(value),
+        FUNC_ID_INT => int_kernel(value),
+        FUNC_ID_LN => ln_kernel(value),
+        FUNC_ID_LOG10 => log10_kernel(value),
+        FUNC_ID_ODD => odd_kernel(value),
+        FUNC_ID_RADIANS => Ok(radians_kernel(value)),
+        FUNC_ID_SEC => sec_kernel(value),
+        FUNC_ID_SECH => sech_kernel(value),
+        FUNC_ID_SIGN => sign_kernel(value),
         FUNC_ID_SIN => Ok(crate::functions::sin::sin_kernel(value)),
+        FUNC_ID_SINH => Ok(sinh_kernel(value)),
+        FUNC_ID_SQRT => sqrt_kernel(value),
+        FUNC_ID_SQRTPI => sqrtpi_kernel(value),
+        FUNC_ID_TAN => Ok(tan_kernel(value)),
+        FUNC_ID_TANH => Ok(tanh_kernel(value)),
         _ => Err(WorksheetErrorCode::Value),
     }
 }
@@ -354,8 +3161,23 @@ pub fn eval_surface_q_binary_number(
     rhs: f64,
 ) -> Result<f64, WorksheetErrorCode> {
     match function_id {
+        FUNC_ID_ATAN2 => atan2_kernel(lhs, rhs),
+        FUNC_ID_BITAND => bitand_kernel(lhs, rhs),
+        FUNC_ID_BITLSHIFT => bitlshift_kernel(lhs, rhs),
+        FUNC_ID_BITOR => bitor_kernel(lhs, rhs),
+        FUNC_ID_BITRSHIFT => bitrshift_kernel(lhs, rhs),
+        FUNC_ID_BITXOR => bitxor_kernel(lhs, rhs),
+        FUNC_ID_COMBIN => combin_kernel(lhs, rhs),
+        FUNC_ID_COMBINA => combina_kernel(lhs, rhs),
+        FUNC_ID_DELTA => delta_kernel(lhs, rhs),
+        FUNC_ID_GESTEP => gestep_kernel(lhs, rhs),
+        FUNC_ID_MOD => mod_kernel(lhs, rhs),
+        FUNC_ID_MROUND => mround_kernel(lhs, rhs),
         FUNC_ID_OP_ADD => Ok(op_add_kernel(lhs, rhs)),
+        FUNC_ID_POWER => power_kernel(lhs, rhs),
+        FUNC_ID_QUOTIENT => quotient_kernel(lhs, rhs),
         FUNC_ID_ROUND => Ok(round_kernel(lhs, rhs.trunc() as i32)),
+        FUNC_ID_TRUNC => Ok(trunc_kernel(lhs, rhs.trunc() as i32)),
         _ => Err(WorksheetErrorCode::Value),
     }
 }
@@ -406,6 +3228,7 @@ mod tests {
             Some(46000.0),
             Some(0.5),
             None,
+            None,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
@@ -420,8 +3243,37 @@ mod tests {
             Some(46000.0),
             Some(0.5),
             None,
+            None,
         );
         assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_roman_returns_text_result() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ROMAN,
+            &[
+                CallArgValue::Eval(EvalValue::Number(499.0)),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "ID".encode_utf16().collect(),
+            )))
+        );
+    }
+
+    #[test]
+    fn arg_preparation_profile_reports_roman_as_values_only() {
+        let got = arg_preparation_profile(FUNC_ID_ROMAN);
+        assert_eq!(got, Some(ArgPreparationProfile::ValuesOnlyPreAdapter));
     }
 
     #[test]
@@ -443,14 +3295,14 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_q_binary_number_power_calls_kernel() {
+        let got = eval_surface_q_binary_number(FUNC_ID_POWER, 2.0, 3.0);
+        assert_eq!(got, Ok(8.0));
+    }
+
+    #[test]
     fn eval_surface_q_nullary_number_pi_returns_constant() {
         let got = eval_surface_q_nullary_number(FUNC_ID_PI);
         assert_eq!(got, Ok(std::f64::consts::PI));
     }
 }
-
-
-
-
-
-

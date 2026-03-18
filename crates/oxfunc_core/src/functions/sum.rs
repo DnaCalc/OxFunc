@@ -55,7 +55,9 @@ fn accumulate_range_like(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
         | PreparedArgValue::Eval(EvalValue::Logical(_))
         | PreparedArgValue::MissingArg
         | PreparedArgValue::EmptyCell => Ok(0.0),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(CoercionError::UnsupportedValueKind("array")),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => {
+            Err(CoercionError::UnsupportedValueKind("array"))
+        }
     }
 }
 
@@ -65,10 +67,12 @@ pub fn eval_sum_prepared_aggregate(
     let mut acc = 0.0;
     for item in args {
         acc += match item.origin {
-            AggregateArgOrigin::DirectScalar =>
-                accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?,
-            AggregateArgOrigin::ArrayLike(_) =>
-                accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?,
+            AggregateArgOrigin::DirectScalar => {
+                accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?
+            }
+            AggregateArgOrigin::ArrayLike(_) => {
+                accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?
+            }
         };
     }
     Ok(EvalValue::Number(acc))

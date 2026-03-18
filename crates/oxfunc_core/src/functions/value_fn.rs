@@ -66,7 +66,12 @@ pub fn eval_value_surface(
     resolver: &impl ReferenceResolver,
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, ValueEvalError> {
-    run_values_only_prepared(args, resolver, |prepared| eval_value_adapter_prepared(prepared, ctx), ValueEvalError::Coercion)
+    run_values_only_prepared(
+        args,
+        resolver,
+        |prepared| eval_value_adapter_prepared(prepared, ctx),
+        ValueEvalError::Coercion,
+    )
 }
 
 pub fn map_value_error_to_ws(e: &ValueEvalError) -> WorksheetErrorCode {
@@ -87,20 +92,46 @@ mod tests {
     struct NoResolver;
 
     impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities { ResolverCapabilities::permissive_local() }
-        fn resolve_reference(&self, reference: &ReferenceLike) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference { target: reference.target.clone() })
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
         }
     }
 
     #[test]
     fn value_current_host_seed_rows() {
         let ctx = current_excel_host_context();
-        let mk = |s: &str| CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())));
-        assert_eq!(eval_value_surface(&[mk("1 234.5")], &NoResolver, &ctx), Ok(EvalValue::Number(1234.5)));
-        assert_eq!(eval_value_surface(&[mk("R1 234.57")], &NoResolver, &ctx), Ok(EvalValue::Number(1234.57)));
-        assert_eq!(eval_value_surface(&[mk("12%")], &NoResolver, &ctx), Ok(EvalValue::Number(0.12)));
-        assert_eq!(eval_value_surface(&[mk("2024-02-03")], &NoResolver, &ctx), Ok(EvalValue::Number(45325.0)));
-        assert!(matches!(eval_value_surface(&[mk("1/2/2024")], &NoResolver, &ctx), Err(ValueEvalError::Parse(_))));
+        let mk = |s: &str| {
+            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                s.encode_utf16().collect(),
+            )))
+        };
+        assert_eq!(
+            eval_value_surface(&[mk("1 234.5")], &NoResolver, &ctx),
+            Ok(EvalValue::Number(1234.5))
+        );
+        assert_eq!(
+            eval_value_surface(&[mk("R1 234.57")], &NoResolver, &ctx),
+            Ok(EvalValue::Number(1234.57))
+        );
+        assert_eq!(
+            eval_value_surface(&[mk("12%")], &NoResolver, &ctx),
+            Ok(EvalValue::Number(0.12))
+        );
+        assert_eq!(
+            eval_value_surface(&[mk("2024-02-03")], &NoResolver, &ctx),
+            Ok(EvalValue::Number(45325.0))
+        );
+        assert!(matches!(
+            eval_value_surface(&[mk("1/2/2024")], &NoResolver, &ctx),
+            Err(ValueEvalError::Parse(_))
+        ));
     }
 }
