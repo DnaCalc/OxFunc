@@ -653,6 +653,9 @@ Integration-run questions:
 3. how callable values should appear in defined names and UDF interop,
 4. which callable restrictions are publication-only versus true semantic restrictions.
 
+Focused follow-up after the first `W38` helper/lambda packet:
+1. `docs/function-lane/OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md`
+
 ### 17.7 Explicit Scalarization: `@` / `SINGLE`
 Current OxFunc direction:
 1. OxFml owns syntax, attachment point, compatibility alias recognition, and caller-cell association.
@@ -788,4 +791,124 @@ Until that next trigger point:
 2. treat the OxFunc seam-model and stabilization notes as the downstream semantic rationale,
 3. do not over-read the current alignment as final interface lock,
 4. do treat it as enough alignment to proceed with function work and future seam-triggered refinements.
+
+## 19. `LET` / `LAMBDA` Pin-Down Follow-Up
+### 19.1 Why This Follow-Up Exists
+`W38` now gives OxFunc a real empirical helper/lambda baseline instead of only seam theory:
+1. direct `LET`,
+2. immediate `LAMBDA`,
+3. current `ISOMITTED` lanes,
+4. first higher-order helper lanes through `MAP`, `REDUCE`, and `SCAN`.
+
+That makes it possible to answer OxFml's focused prep note more concretely.
+
+### 19.2 Current OxFunc Reply
+The focused reply is now:
+1. `docs/function-lane/OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md`
+
+Current OxFunc position:
+1. lexical meaning, exact capture truth, and callable-first-class status are now accepted as fixed enough for the next narrowing round,
+2. the smallest honest callable carrier currently looks like:
+   - opaque `callable_token`,
+   - `origin_kind`,
+   - `arity_shape`,
+   - `capture_mode`,
+   - `invocation_contract_ref`,
+3. exact parameter-name and capture-name surfaces should remain provenance/replay detail for now rather than minimum carrier fields,
+4. typed invocation over an opaque callable token is the preferred invocation boundary.
+
+### 19.3 Why This Is The Current Boundary
+This is the smallest boundary that still fits the local evidence:
+1. immediate `LAMBDA` invocation,
+2. lexical capture from `LET`,
+3. admission-time helper validation failures,
+4. higher-order helper invocation inside `MAP`, `REDUCE`, and `SCAN`.
+
+### 19.4 What Remains Open
+This still intentionally leaves open:
+1. final callable ABI/transport,
+2. full defined-name and UDF/interoperable callable transport,
+3. `BYROW`, `BYCOL`, and `MAKEARRAY`,
+4. broader callable/provider interaction beyond the generic staged availability model.
+
+### 19.5 Processed Latest OxFml Response
+OxFunc has now processed the latest OxFml note and reads it as substantially convergent on the narrowed `LET` / `LAMBDA` round.
+
+Items OxFunc now incorporates from OxFml's response:
+1. opaque callable identity is only acceptable if the minimum typed semantic fields remain recoverable:
+   - `origin_kind`
+   - `capture_mode`
+   - `arity_shape`
+   - stable invocation-contract meaning
+2. richer callable detail may remain outside the minimum carrier, but it must survive as structured provenance/replay detail rather than collapsing to free-form summary text,
+3. `invocation_contract_ref` should be understood as a stable semantic invocation reference, not as an implementation-specific callback or ABI handle,
+4. the generic staged availability model should remain the default for callable lanes unless later callable-specific evidence proves it insufficient,
+5. OxFunc-local candidate field names such as `callable_token`, `arity_shape`, and `invocation_contract_ref` should be read as candidate labels, not as demanded canonical OxFml vocabulary.
+
+Those points are consistent enough with the current OxFunc direction that they should now be treated as aligned for this round.
+
+### 19.6 Narrow OxFunc Alternatives Still Preferred
+OxFunc still prefers the following narrower boundary choices unless later evidence forces otherwise:
+1. parameter-name, capture-name, and body-kind detail should stay out of the minimum shared callable carrier by default,
+2. typed invocation over an opaque callable token should remain the preferred invocation boundary,
+3. callable-specific availability/provider typing should not be expanded beyond the generic staged availability model until a concrete callable case proves that the generic taxonomy is insufficient,
+4. higher-order helper evidence from `W38` should continue to inform OxFunc's local seam pressure, but should not by itself be treated as upstream seam-lock evidence until OxFml has comparable exercised local coverage.
+
+In other words:
+1. yes to a typed minimum carrier,
+2. yes to structured provenance,
+3. no to prematurely promoting rich callable inspection detail into the shared hot-path carrier,
+4. no to inventing a special callable-only availability taxonomy before evidence requires it,
+5. no to forcing canonical shared field names before the semantic field set itself is stable enough.
+
+### 19.7 Best Next OxFml/OxFunc Narrowing Step
+The best next narrowing step had looked like:
+1. lock the minimum callable carrier field set,
+2. lock the meaning of `invocation_contract_ref` as semantic rather than implementation-facing,
+3. lock the carrier-versus-provenance split for parameter/capture/body detail,
+4. leave broader callable/provider interaction and full publication policy open,
+5. explicitly keep open whether an additional invocation-model field is needed beyond the current `invocation_contract_ref` idea until stronger evidence appears.
+
+After processing the latest OxFml note, OxFunc no longer recommends continuing that narrowing in this exchange.
+
+### 19.8 Final Processed OxFml Closure
+OxFunc reads OxFml's latest note as a real round-closure message and incorporates the following as aligned for this exchange:
+1. semantic requirements remain primary and transport remains provisional,
+2. library-context truth remains above runtime capability/provider truth,
+3. callable values remain first-class semantic values,
+4. the generic staged availability model remains the default for callable lanes,
+5. richer callable detail remains out of the minimum hot-path carrier by default if structured provenance/replay detail preserves it,
+6. typed invocation over a narrower callable carrier remains the preferred direction,
+7. canonical field names such as `callable_token`, `arity_shape`, and `invocation_contract_ref` are still candidate labels rather than locked shared vocabulary,
+8. OxFunc-local higher-order helper evidence from `W38` is useful local seam pressure but not by itself enough to lock the upstream shared seam.
+
+OxFunc also accepts OxFml's explicit non-locks for this round:
+1. final minimum callable carrier field set,
+2. final carrier-versus-provenance split,
+3. final canonical shared field names,
+4. final callable/provider interaction beyond the generic staged availability model,
+5. higher-order callable seam pressure inferred only from OxFunc-local evidence.
+
+### 19.9 Deferred Until Further Evidence
+The remaining callable-seam questions should now be treated as explicitly deferred future work, not as unresolved note-exchange debt.
+
+Deferred OxFunc owner:
+1. `docs/worksets/W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md`
+
+Deferred topics:
+1. minimum callable carrier field lock beyond the current narrowed candidate set,
+2. final carrier-versus-provenance split for parameter, capture, and body detail,
+3. whether an additional invocation-model field is needed beyond the current `invocation_contract_ref` idea,
+4. higher-order helper seam pressure from `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, and `ISOMITTED`,
+5. fuller defined-name, UDF, and interoperable callable transport,
+6. any callable/provider-stage refinement beyond the generic staged availability model.
+
+Working closure reading:
+1. there is enough convergence to proceed with function work and later seam-triggered refinement,
+2. the unresolved callable details are now narrow and mostly about field-set shape and evidence maturity rather than semantic disagreement,
+3. the remaining weakly evidenced aspects should stay open and owned by `W042` rather than being forced to closure prematurely,
+4. OxFunc should treat this as its final note in this callable/library-context exchange unless a stronger trigger appears:
+   - a concrete field-set lock need,
+   - a proving-host/runtime artifact forcing a narrower choice,
+   - or new higher-order helper evidence that materially changes the seam.
 

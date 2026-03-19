@@ -17,9 +17,9 @@ Last updated: 2026-03-18.
 
 - **Status**: in-progress
 - **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
-- **Remaining gaps**: the host/metadata/database successor packet `W023`, locale/profile/provider successor packets `W030` / `W031`, reopened finance parity repair in `W032`, the remaining interesting-function universe, and operator-as-function (`OP_*`) semantics for undeclared operators.
-- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, and `W033` closes the newly promoted information-predicate and forecast-compatibility packet; the remaining low-interest work now sits in `W023` / `W030` / `W031` / `W032`.
-- **Canonical owner**: ongoing across worksets, currently `W023` / `W030` / `W031` / `W032` for the residual low-interest universe and `W014` for deferred `@`.
+- **Remaining gaps**: the host/metadata/database successor packet `W023`, successor seam packets `W034` / `W035` / `W036`, reopened `XIRR` precision repair in `W037`, the newly opened interesting-function packets `W038` / `W039` / `W040` / `W041`, and operator-as-function (`OP_*`) semantics for undeclared operators.
+- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet and extracted the remaining `XIRR` precision lane to `W037`, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, and the next interesting families are now packeted explicitly instead of remaining as an undifferentiated backlog.
+- **Canonical owner**: ongoing across worksets, currently `W023` / `W034` / `W035` / `W036` / `W037` for the residual low-interest universe, `W038` / `W039` / `W040` / `W041` for the remaining interesting-function universe, and `W014` for deferred `@`.
 
 ### IP-02: Locale and Version Sweeps
 
@@ -58,8 +58,8 @@ Last updated: 2026-03-18.
 - **Status**: in-progress
 - **Current floor**: interface constraints documented in `docs/upstream/NOTES_FOR_OXFML.md`; provisional sketches for provenance carriers and boundary contracts.
 - **Remaining gaps**: finalized upstream provenance vocabulary; reference-identity carrier; prepared-call contract; evaluation-mode contract.
-- **Why still open**: upstream interface is actively evolving; OxFunc observations inform but do not control OxFml design.
-- **Canonical owner**: cross-repo; tracked via upstream observation ledger.
+- **Why still open**: upstream interface is actively evolving; OxFunc observations inform but do not control OxFml design. The latest callable/library-context note round is now intentionally closed with the remaining callable field-lock questions deferred to `W042` until stronger evidence appears.
+- **Canonical owner**: cross-repo; tracked via upstream observation ledger, with deferred OxFunc callable follow-up in `W042`.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 

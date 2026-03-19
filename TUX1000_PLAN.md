@@ -227,4 +227,31 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 26. `W33` information predicates and forecast compatibility closure:
    - `docs/worksets/W033_INFORMATION_PREDICATES_AND_FORECAST_COMPATIBILITY_CLOSURE.md`
    - goal: close the newly exposed ordinary-function catalog gaps from the corrected `W28` local canonical list, namely the missing `IS*` predicate family members and the `FORECAST` / `FORECAST.LINEAR` pair.
+27. `W34` deferred width-conversion host/profile capability baseline:
+   - `docs/worksets/W034_DEFERRED_WIDTH_CONVERSION_HOST_PROFILE_CAPABILITY_BASELINE.md`
+   - goal: take over `ASC`, `DBCS`, and `JIS` after `W030` proved they are host/profile-sensitive rather than ordinary pure text functions on the current boundary.
+28. `W35` deferred `NUMBERVALUE` locale-default profile baseline:
+   - `docs/worksets/W035_DEFERRED_NUMBERVALUE_LOCALE_DEFAULT_PROFILE_BASELINE.md`
+   - goal: isolate the omitted-default locale/profile behavior of `NUMBERVALUE` from the already-admitted explicit-separator lanes.
+29. `W36` deferred provider-language capability baseline:
+   - `docs/worksets/W036_DEFERRED_PROVIDER_LANGUAGE_CAPABILITY_BASELINE.md`
+   - goal: carry `TRANSLATE` into a provider-language capability packet and decide how it aligns with `DETECTLANGUAGE`.
+30. `W37` reopened `XIRR` large-root solver precision:
+   - `docs/worksets/W037_REOPENED_XIRR_LARGE_ROOT_SOLVER_PRECISION.md`
+   - goal: resolve the remaining direct-Excel precision drift on the large positive-root `XIRR` lane after the broader `W032` repair packet.
+31. `W38` functional lambda and helper family:
+   - `docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md`
+   - goal: execute the highest-value remaining in-core interesting seam packet for `LET`, `LAMBDA`, omission, and the lambda-helper family.
+32. `W39` dynamic-array shaping and reshaping family:
+   - `docs/worksets/W039_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY.md`
+   - goal: close the remaining high-interest spill-shape and array-reshaping family on top of the existing array/publication substrate.
+33. `W40` reference metadata and formula visibility functions:
+   - `docs/worksets/W040_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_FUNCTIONS.md`
+   - goal: characterize the reference-identity, formula-visibility, and sheet-metadata functions that sit between pure semantics and host/grid truth.
+34. `W41` external data provider and cube functions:
+   - `docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md`
+   - goal: characterize the high-interest provider-bound and cube-context family, with explicit capability and external-failure taxonomy rather than fake pure-kernel claims.
+35. `W42` deferred callable seam field lock and higher-order evidence:
+   - `docs/worksets/W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md`
+   - goal: hold the remaining callable/library-context seam locks until stronger empirical or implementation-facing evidence exists, instead of forcing premature closure from note-only reasoning.
 

@@ -39,6 +39,15 @@ Kickoff worksets:
 31. `W031_DEFERRED_PROVIDER_LANGUAGE_FUNCTIONS.md` (W31)
 32. `W032_REOPENED_FINANCE_PARITY_GAPS_FROM_BENCHMARK.md` (W32)
 33. `W033_INFORMATION_PREDICATES_AND_FORECAST_COMPATIBILITY_CLOSURE.md` (W33)
+34. `W034_DEFERRED_WIDTH_CONVERSION_HOST_PROFILE_CAPABILITY_BASELINE.md` (W34)
+35. `W035_DEFERRED_NUMBERVALUE_LOCALE_DEFAULT_PROFILE_BASELINE.md` (W35)
+36. `W036_DEFERRED_PROVIDER_LANGUAGE_CAPABILITY_BASELINE.md` (W36)
+37. `W037_REOPENED_XIRR_LARGE_ROOT_SOLVER_PRECISION.md` (W37)
+38. `W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md` (W38)
+39. `W039_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY.md` (W39)
+40. `W040_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_FUNCTIONS.md` (W40)
+41. `W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md` (W41)
+42. `W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md` (W42)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -65,6 +74,7 @@ Replay rollout sequence after `W016`:
 5. `W021` emits the first live `W15` replay-adapter bundle against that declared target and records the result in `W21_EXECUTION_RECORD.md`.
 6. `W024` is now reconciled: ordinary rows are either closed in `W24` or extracted to successor handling; `W025`, `W026`, and `W027` are now closed for their declared scopes.
 7. `W028` is complete for its declared discovery-and-library-seed scope.
-8. `W029` is complete as a benchmark-and-classification packet; concrete reopened finance parity repair now moves to `W032`.
+8. `W029` is complete as a benchmark-and-classification packet; `W032` repaired the reopened finance packet and extracted the remaining large-root `XIRR` precision lane to `W037`.
+9. `W030` and `W031` are now complete as seam-definition/reconciliation packets; successor ownership moved to `W034`, `W035`, and `W036`.
 
 
