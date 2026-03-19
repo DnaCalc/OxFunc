@@ -12,7 +12,7 @@ This slice closes the ordinary current-baseline semantics for:
 
 This slice does not own:
 1. `EUROCONVERT`
-2. `RANDARRA`
+2. `RANDARRAY`
 
 Those two functions are evidenced in the same native packet only to justify extraction to `W025`.
 
@@ -34,7 +34,7 @@ Those two functions are evidenced in the same native packet only to justify extr
 
 ## 3. Packet Findings
 1. Native Excel replay on `2026-03-18` matched the seeded `BAHTTEXT`, `CONVERT`, and `PERCENTOF` rows on the current host baseline.
-2. The same replay showed `EUROCONVERT(...) -> #NAME?` and `RANDARRA() -> #NAME?` on this host baseline.
+2. The same replay showed `EUROCONVERT(...) -> #NAME?` and `RANDARRAY() -> #NAME?` on this host baseline.
 3. Those two outliers therefore do not belong in the ordinary `W24` closure slice and move to `W025`.
 
 ## 4. Completeness Axes
@@ -43,4 +43,4 @@ Those two functions are evidenced in the same native packet only to justify extr
 3. `integration_completeness`: `integrated`
 4. `open_lanes`:
    - broader locale/version sweeps remain outside this packet,
-   - the extracted `EUROCONVERT` / `RANDARRA` work now belongs to `W025`, not to this slice.
+   - the extracted `EUROCONVERT` / `RANDARRAY` work now belongs to `W025`, not to this slice.

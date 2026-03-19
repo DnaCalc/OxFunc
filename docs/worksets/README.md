@@ -33,6 +33,12 @@ Kickoff worksets:
 25. `W025_DEFERRED_MISC_ADDIN_AND_DYNAMIC_ARRAY_OUTLIERS.md` (W25)
 26. `W026_DEFERRED_LOCALE_PROFILE_AND_PROVIDER_SENSITIVE_ORDINARY_OUTLIERS.md` (W26)
 27. `W027_DEFERRED_ADVANCED_BOND_AND_ODD_BOND_HARDENING.md` (W27)
+28. `W028_FUNCTION_NAME_LOCALIZATION_LIBRARY_DISCOVERY.md` (W28)
+29. `W029_FINANCE_FUNCTIONS_FSHARP_BENCHMARK_CROSSCHECK.md` (W29)
+30. `W030_DEFERRED_LOCALE_PROFILE_SENSITIVE_TEXT_AND_NUMBER_FUNCTIONS.md` (W30)
+31. `W031_DEFERRED_PROVIDER_LANGUAGE_FUNCTIONS.md` (W31)
+32. `W032_REOPENED_FINANCE_PARITY_GAPS_FROM_BENCHMARK.md` (W32)
+33. `W033_INFORMATION_PREDICATES_AND_FORECAST_COMPATIBILITY_CLOSURE.md` (W33)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -52,11 +58,13 @@ Process references:
 - In-progress feature register: `docs/IN_PROGRESS_FEATURE_WORKLIST.md`.
 
 Replay rollout sequence after `W016`:
-1. `W017` is now reconciled and remains as provenance only; active successor ownership moved to `W023`, `W025`, `W026`, and `W027`.
+1. `W017` is now reconciled and remains as provenance only; active successor ownership moved to `W023`, `W026`, and `W027`, while `W025` has since closed as a classification packet.
 2. `W018` establishes the OxFunc Replay appliance packet adapter baseline on top of the current packet/evidence discipline.
 3. `W019` then defines packet-first witness distillation, lifecycle, retention, and quarantine policy without overclaiming pack-grade support.
 4. `W020` defines and now has locally exercised the first emitted OxFunc replay bundle layout and index target on disk.
 5. `W021` emits the first live `W15` replay-adapter bundle against that declared target and records the result in `W21_EXECUTION_RECORD.md`.
-6. `W024` is now reconciled: ordinary rows are either closed in `W24` or extracted to `W025` / `W026` / `W027`.
+6. `W024` is now reconciled: ordinary rows are either closed in `W24` or extracted to successor handling; `W025`, `W026`, and `W027` are now closed for their declared scopes.
+7. `W028` is complete for its declared discovery-and-library-seed scope.
+8. `W029` is complete as a benchmark-and-classification packet; concrete reopened finance parity repair now moves to `W032`.
 
 

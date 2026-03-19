@@ -191,6 +191,29 @@ fn days360_us(start: i64, end: i64) -> Result<f64, OddBondEvalError> {
 
     Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
 }
+fn days360_us_both(start: i64, end: i64) -> Result<f64, OddBondEvalError> {
+    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
+        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Value))?;
+    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, end as f64)
+        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Value))?;
+
+    let start_last_feb = sm == 2 && sd == days_in_month(sy, sm);
+    let end_last_feb = em == 2 && ed == days_in_month(ey, em);
+    if end_last_feb {
+        ed = 30;
+    }
+    if ed == 31 {
+        ed = 30;
+    }
+    if sd == 31 {
+        sd = 30;
+    }
+    if start_last_feb {
+        sd = 30;
+    }
+
+    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+}
 
 fn days360_eu(start: i64, end: i64) -> Result<f64, OddBondEvalError> {
     let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
@@ -214,6 +237,24 @@ fn day_count(start: i64, end: i64, basis: DayCountBasis) -> Result<f64, OddBondE
         }
         DayCountBasis::European30_360 => days360_eu(start, end),
     }
+}
+fn day_count_non_negative(
+    start: i64,
+    end: i64,
+    basis: DayCountBasis,
+) -> Result<f64, OddBondEvalError> {
+    Ok(day_count(start, end, basis)?.max(0.0))
+}
+fn day_count_non_negative_with_us_hack(
+    start: i64,
+    end: i64,
+    basis: DayCountBasis,
+) -> Result<f64, OddBondEvalError> {
+    let result = match basis {
+        DayCountBasis::Us30_360 => days360_us_both(start, end)?,
+        _ => day_count(start, end, basis)?,
+    };
+    Ok(result.max(0.0))
 }
 
 fn count_regular_periods(
@@ -317,55 +358,6 @@ pub fn oddfprice_kernel(
     }
 }
 
-fn odd_last_boundaries(
-    last_interest: i64,
-    maturity: i64,
-    months_per_coupon: i64,
-) -> Result<Vec<i64>, OddBondEvalError> {
-    let mut boundaries = vec![last_interest];
-    let mut cursor = last_interest;
-    loop {
-        let next = add_months_clamped(cursor, months_per_coupon)
-            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
-        boundaries.push(next);
-        if next >= maturity {
-            break;
-        }
-        cursor = next;
-        if boundaries.len() > 64 {
-            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
-        }
-    }
-    Ok(boundaries)
-}
-
-fn fractional_periods_between(
-    start: i64,
-    end: i64,
-    boundaries: &[i64],
-    basis: DayCountBasis,
-) -> Result<f64, OddBondEvalError> {
-    if end <= start {
-        return Ok(0.0);
-    }
-    let mut total = 0.0;
-    for window in boundaries.windows(2) {
-        let left = window[0];
-        let right = window[1];
-        if end <= left || start >= right {
-            continue;
-        }
-        let seg_start = start.max(left);
-        let seg_end = end.min(right);
-        let normal_len = day_count(left, right, basis)?;
-        if normal_len <= 0.0 {
-            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
-        }
-        total += day_count(seg_start, seg_end, basis)? / normal_len;
-    }
-    Ok(total)
-}
-
 pub fn oddlprice_kernel(
     settlement: f64,
     maturity: f64,
@@ -398,35 +390,55 @@ pub fn oddlprice_kernel(
     }
 
     let months_per_coupon = 12 / frequency;
-    let boundaries = odd_last_boundaries(last_interest, maturity, months_per_coupon)?;
-    let coupon = coupon_amount(rate, frequency, redemption);
-    let ypf = yld / frequency as f64;
-    let base = 1.0 + ypf;
-    if base <= 0.0 {
+    let mut nc = 0i64;
+    let mut cursor = last_interest;
+    while cursor < maturity {
+        cursor = add_months_clamped(cursor, months_per_coupon)
+            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
+        nc += 1;
+        if nc > 64 {
+            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+        }
+    }
+    let mut early_coupon = last_interest;
+    let mut dcnl = 0.0;
+    let mut anl = 0.0;
+    let mut dscnl = 0.0;
+    for index in 1..=nc {
+        let late_coupon = add_months_clamped(early_coupon, months_per_coupon)
+            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
+        let nl = day_count_non_negative_with_us_hack(early_coupon, late_coupon, basis)?;
+        if nl <= 0.0 {
+            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+        }
+        let dci = if index < nc {
+            nl
+        } else {
+            day_count_non_negative_with_us_hack(early_coupon, maturity, basis)?
+        };
+        let a = if late_coupon < settlement {
+            dci
+        } else if early_coupon < settlement {
+            day_count_non_negative(early_coupon, settlement, basis)?
+        } else {
+            0.0
+        };
+        let start_date = settlement.max(early_coupon);
+        let end_date = maturity.min(late_coupon);
+        let dsc = day_count_non_negative(start_date, end_date, basis)?;
+        early_coupon = late_coupon;
+        dcnl += dci / nl;
+        anl += a / nl;
+        dscnl += dsc / nl;
+    }
+    if dscnl <= 0.0 {
         return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
     }
-
-    let accrued =
-        coupon * fractional_periods_between(last_interest, settlement, &boundaries, basis)?;
-    let mut pv = 0.0;
-    for window in boundaries.windows(2) {
-        let left = window[0];
-        let right = window[1];
-        if right <= settlement {
-            continue;
-        }
-        if right < maturity {
-            let exponent = fractional_periods_between(settlement, right, &boundaries, basis)?;
-            pv += coupon / base.powf(exponent);
-        } else {
-            let final_coupon_fraction =
-                fractional_periods_between(left, maturity, &boundaries, basis)?;
-            let exponent = fractional_periods_between(settlement, maturity, &boundaries, basis)?;
-            pv += (coupon * final_coupon_fraction + redemption) / base.powf(exponent);
-            break;
-        }
-    }
-    let price = pv - accrued;
+    let x = 100.0 * rate / frequency as f64;
+    let term1 = dcnl * x + redemption;
+    let term2 = dscnl * yld / frequency as f64 + 1.0;
+    let term3 = anl * x;
+    let price = term1 / term2 - term3;
     if price.is_finite() {
         Ok(price)
     } else {
@@ -512,18 +524,76 @@ pub fn oddlyield_kernel(
     frequency: f64,
     basis: Option<f64>,
 ) -> Result<f64, OddBondEvalError> {
-    solve_yield_bisection(pr, |y| {
-        oddlprice_kernel(
-            settlement,
-            maturity,
-            last_interest,
-            rate,
-            y,
-            redemption,
-            frequency,
-            basis,
-        )
-    })
+    validate_positive_inputs(&[
+        settlement,
+        maturity,
+        last_interest,
+        rate,
+        pr,
+        redemption,
+        frequency,
+    ])?;
+    if rate < 0.0 || pr < 0.0 || redemption <= 0.0 {
+        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+    }
+    let settlement = parse_date_serial(settlement)?;
+    let maturity = parse_date_serial(maturity)?;
+    let last_interest = parse_date_serial(last_interest)?;
+    let frequency = parse_frequency(frequency)?;
+    let basis = parse_basis(basis.unwrap_or(0.0))?;
+    if !(last_interest < settlement && settlement < maturity) {
+        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+    }
+    let months_per_coupon = 12 / frequency;
+    let mut nc = 0i64;
+    let mut cursor = last_interest;
+    while cursor < maturity {
+        cursor = add_months_clamped(cursor, months_per_coupon)
+            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
+        nc += 1;
+        if nc > 64 {
+            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+        }
+    }
+    let mut early_coupon = last_interest;
+    let mut dcnl = 0.0;
+    let mut anl = 0.0;
+    let mut dscnl = 0.0;
+    for index in 1..=nc {
+        let late_coupon = add_months_clamped(early_coupon, months_per_coupon)
+            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
+        let nl = day_count_non_negative_with_us_hack(early_coupon, late_coupon, basis)?;
+        if nl <= 0.0 {
+            return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+        }
+        let dci = if index < nc {
+            nl
+        } else {
+            day_count_non_negative_with_us_hack(early_coupon, maturity, basis)?
+        };
+        let a = if late_coupon < settlement {
+            dci
+        } else if early_coupon < settlement {
+            day_count_non_negative(early_coupon, settlement, basis)?
+        } else {
+            0.0
+        };
+        let start_date = settlement.max(early_coupon);
+        let end_date = maturity.min(late_coupon);
+        let dsc = day_count_non_negative(start_date, end_date, basis)?;
+        early_coupon = late_coupon;
+        dcnl += dci / nl;
+        anl += a / nl;
+        dscnl += dsc / nl;
+    }
+    if dscnl <= 0.0 {
+        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+    }
+    let x = 100.0 * rate / frequency as f64;
+    let term1 = dcnl * x + redemption;
+    let term2 = anl * x + pr;
+    let term3 = frequency as f64 / dscnl;
+    Ok((term1 - term2) / term2 * term3)
 }
 
 fn eval_numeric(
@@ -708,7 +778,7 @@ mod tests {
             Some(0.0),
         )
         .expect("oddlprice should succeed");
-        assert_close(got, 99.894_839_513_695_3, 1.0e-10);
+        assert_close(got, 99.878_286_014_721_34, 1.0e-10);
     }
 
     #[test]
@@ -718,7 +788,7 @@ mod tests {
             serial(2008, 6, 15),
             serial(2007, 10, 15),
             0.0375,
-            99.894_839_513_695_3,
+            99.878_286_014_721_34,
             100.0,
             2.0,
             Some(0.0),

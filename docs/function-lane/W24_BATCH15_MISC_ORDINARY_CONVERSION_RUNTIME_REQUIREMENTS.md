@@ -6,7 +6,7 @@ Evidence ID: `W24-B15-MISC-ORDINARY-CONVERSION-20260318`
 
 ## 1. Packet Purpose
 1. replay the ordinary `BAHTTEXT` / `CONVERT` / `PERCENTOF` closure packet,
-2. pin the current host-baseline absence of `EUROCONVERT` and `RANDARRA`,
+2. pin the current host-baseline absence of `EUROCONVERT` and `RANDARRAY`,
 3. justify extraction of the outliers to `W025`.
 
 ## 2. Inputs
@@ -29,5 +29,5 @@ Evidence ID: `W24-B15-MISC-ORDINARY-CONVERSION-20260318`
 ## 4. Acceptance Rule
 1. every seeded row must emit `matches_expected = True`,
 2. the `BAHTTEXT` / `CONVERT` / `PERCENTOF` rows prove the ordinary triad closure slice,
-3. the `EUROCONVERT` / `RANDARRA` `#NAME!` rows are extraction evidence, not ordinary closure claims,
+3. the `EUROCONVERT` / `RANDARRAY` `#NAME!` rows are extraction evidence, not ordinary closure claims,
 4. no XLL seam limitation is expected for this native worksheet packet.

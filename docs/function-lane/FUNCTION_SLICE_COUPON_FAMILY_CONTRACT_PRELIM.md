@@ -1,5 +1,10 @@
 # Function Slice Contract (Preliminary) - Coupon Family
 
+Supersession note:
+1. `W29` reopened direct Excel parity for a leap-year actual/actual `COUPDAYS` lane.
+2. This contract remains the admitted-slice baseline for the original `W24` packet, but it is now qualified by the benchmark findings recorded in `W29_EXECUTION_RECORD.md` and `W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`.
+3. `W032` owns the reopened repair work.
+
 Status: `provisional`
 Workset: `W24`
 Primary Functions: `COUPDAYBS`, `COUPDAYS`, `COUPDAYSNC`, `COUPNCD`, `COUPNUM`, `COUPPCD`
@@ -51,4 +56,5 @@ Primary Functions: `COUPDAYBS`, `COUPDAYS`, `COUPDAYSNC`, `COUPNCD`, `COUPNUM`, 
 ## 6. Scope Boundary
 1. The closure is bounded to the admitted regular-schedule current-baseline slice above.
 2. The packet now evidences the seeded basis split, end-of-month stepping, early-date boundary, and on-coupon-date advance rules directly.
-3. Irregular schedule and broader version-system parity remain separate follow-on validation concerns rather than unacknowledged gaps in this packet.
+3. `W29` showed a leap-year actual/actual `COUPDAYS` lane that still diverges from direct Excel, so the family is now reopened for that lane under `W032`.
+4. Irregular schedule and broader version-system parity remain separate follow-on validation concerns rather than unacknowledged gaps in this packet.

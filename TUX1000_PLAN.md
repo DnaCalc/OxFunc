@@ -202,11 +202,29 @@ Each divergence becomes a replayable case and a tracked closure obligation.
    - goal: freeze the remaining ordinary `W17` residuals into one uninterrupted execution checklist that still preserves family-level outputs, replay artifacts, tests, Lean alignment, and closure discipline.
 18. `W25` deferred misc add-in and dynamic-array outliers:
    - `docs/worksets/W025_DEFERRED_MISC_ADDIN_AND_DYNAMIC_ARRAY_OUTLIERS.md`
-   - goal: characterize the native `#NAME?` outliers (`EUROCONVERT`, `RANDARRA`) that proved not to be ordinary current-host worksheet functions in `W24`.
+   - goal: characterize the native `#NAME?` outliers (`EUROCONVERT`, `RANDARRAY`) that proved not to be ordinary current-host worksheet functions in `W24`.
 19. `W26` deferred locale/profile and provider-sensitive ordinary outliers:
    - `docs/worksets/W026_DEFERRED_LOCALE_PROFILE_AND_PROVIDER_SENSITIVE_ORDINARY_OUTLIERS.md`
    - goal: characterize locale/profile-sensitive width-conversion and separator-default behavior plus provider-bound `TRANSLATE` behavior outside the ordinary mega-batch assumptions.
 20. `W27` deferred advanced bond and odd-bond hardening:
    - `docs/worksets/W027_DEFERRED_ADVANCED_BOND_AND_ODD_BOND_HARDENING.md`
    - goal: reopen the extracted advanced bond and odd-bond families only after direct native parity packets and substrate corrections exist.
+21. `W28` function name localization library discovery:
+   - `docs/worksets/W028_FUNCTION_NAME_LOCALIZATION_LIBRARY_DISCOVERY.md`
+   - goal: discover the official multilingual support surfaces for Excel function names, capture locale/article seeds and current-list extraction routes, and plan the future localization library that will feed catalog and library-context work.
+22. `W29` finance functions F# benchmark cross-check:
+   - `docs/worksets/W029_FINANCE_FUNCTIONS_FSHARP_BENCHMARK_CROSSCHECK.md`
+   - goal: compare OxFunc finance families against the public ExcelFinancialFunctions F# implementation and compatibility/test surface, then classify any discrepancy against direct Excel evidence.
+23. `W30` deferred locale/profile-sensitive text and number functions:
+   - `docs/worksets/W030_DEFERRED_LOCALE_PROFILE_SENSITIVE_TEXT_AND_NUMBER_FUNCTIONS.md`
+   - goal: take over the `W26` locale/profile-sensitive subset (`ASC`, `DBCS`, `JIS`, `NUMBERVALUE`) with an explicit host/profile matrix and honest boundary semantics.
+24. `W31` deferred provider language functions:
+   - `docs/worksets/W031_DEFERRED_PROVIDER_LANGUAGE_FUNCTIONS.md`
+   - goal: take over provider-bound language functions such as `TRANSLATE` after `W26` proved they are not ordinary pure local kernels on the current host boundary.
+25. `W32` reopened finance parity gaps from benchmark:
+   - `docs/worksets/W032_REOPENED_FINANCE_PARITY_GAPS_FROM_BENCHMARK.md`
+   - goal: repair the concrete OxFunc-vs-Excel finance discrepancies reopened by `W29`, currently `COUPDAYS`, `XNPV`, and `XIRR`.
+26. `W33` information predicates and forecast compatibility closure:
+   - `docs/worksets/W033_INFORMATION_PREDICATES_AND_FORECAST_COMPATIBILITY_CLOSURE.md`
+   - goal: close the newly exposed ordinary-function catalog gaps from the corrected `W28` local canonical list, namely the missing `IS*` predicate family members and the `FORECAST` / `FORECAST.LINEAR` pair.
 

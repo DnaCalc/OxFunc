@@ -21,4 +21,4 @@ deferred_to_w17_batch77,4,W17,"LOOKUP; FREQUENCY; PROB; MODE.MULT",deferred_to_w
 deferred_to_w17_batch79,9,W17,"ACCRINT; ACCRINTM; DURATION; MDURATION; PRICE; PRICEMAT; YIELD; YIELDDISC; YIELDMAT",deferred_to_w17,Bond core family remained bounded
 deferred_to_w17_batch80,4,W17,"ODDFPRICE; ODDFYIELD; ODDLPRICE; ODDLYIELD",deferred_to_w17,Odd-bond family remained bounded
 deferred_to_w17_batch81,2,W17,"AMORDEGRC; AMORLINC",deferred_to_w17,AMOR depreciation family remained bounded
-deferred_to_w17_batch82,5,W17,"BAHTTEXT; CONVERT; EUROCONVERT; PERCENTOF; RANDARRA",deferred_to_w17,Misc conversion/provider family remained bounded
+deferred_to_w17_batch82,5,W17,"BAHTTEXT; CONVERT; EUROCONVERT; PERCENTOF; RANDARRAY",deferred_to_w17,Misc conversion/provider family remained bounded

@@ -41,14 +41,14 @@ def oddlyieldMeta : FunctionMeta := {
 def oddBondSeed (fnName : String) : Option Rat :=
   if fnName = "ODDFPRICE" then some ((113597717474079 : Rat) / 1000000000000)
   else if fnName = "ODDFYIELD" then some ((1 : Rat) / 16)
-  else if fnName = "ODDLPRICE" then some ((998948395136953 : Rat) / 10000000000000)
+  else if fnName = "ODDLPRICE" then some ((4993914300736067 : Rat) / 50000000000000)
   else if fnName = "ODDLYIELD" then some ((81 : Rat) / 2000)
   else none
 
 theorem oddBond_seed_rows :
     oddBondSeed "ODDFPRICE" = some ((113597717474079 : Rat) / 1000000000000)
     ∧ oddBondSeed "ODDFYIELD" = some ((1 : Rat) / 16)
-    ∧ oddBondSeed "ODDLPRICE" = some ((998948395136953 : Rat) / 10000000000000)
+    ∧ oddBondSeed "ODDLPRICE" = some ((4993914300736067 : Rat) / 50000000000000)
     ∧ oddBondSeed "ODDLYIELD" = some ((81 : Rat) / 2000) := by
   native_decide
 

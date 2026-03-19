@@ -1,7 +1,7 @@
 # WORKSET - Deferred Misc Add-In And Dynamic-Array Outliers (W25)
 
 ## 1. Purpose
-Own the two `W24` outliers that proved not to be ordinary current-host worksheet functions on the reference baseline.
+Classify and reconcile the two `W24` outliers that proved not to be ordinary current-host worksheet functions on the reference baseline.
 
 ## 2. Provenance
 Opened by `W24 Batch 15` extraction.
@@ -20,21 +20,26 @@ Current total:
 
 Members:
 1. `EUROCONVERT`
-2. `RANDARRA`
+2. `RANDARRAY`
 
 ## 4. Entry Criteria
 Functions belong in `W25` only if current-baseline native replay proved that they do not behave as ordinary always-present worksheet functions on the current host baseline.
 
-## 5. First Work Streams
-1. characterize `EUROCONVERT` host/add-in availability and any legacy add-in activation requirements,
-2. reconcile `RANDARRA` inventory naming against `RANDARRAY`,
-3. decide whether each function belongs to a host/add-in seam or a dynamic-array/version-gated workset.
+## 5. Resolution Summary
+1. `EUROCONVERT` is now classified as an external add-in-owned worksheet surface on the current Excel baseline.
+2. Official Microsoft support states that it returns `#NAME?` unless the Euro Currency Tools Add-in is installed and loaded.
+3. OxFunc will not implement `EUROCONVERT` now as an in-core ordinary function claim.
+4. The second inventory member was a typo: `RANDARRA` is corrected to `RANDARRAY`.
+5. `RANDARRAY` remains deferred to future dynamic-array/version-gated work; this packet only closes the classification and naming issue.
 
-## 6. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+## 6. Artifacts
+1. `docs/function-lane/W25_DEFERRED_MISC_ADDIN_AND_DYNAMIC_ARRAY_INVENTORY.csv`
+2. `docs/function-lane/W25_EXECUTION_RECORD.md`
+
+## 7. Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no dedicated successor implementation packet exists yet,
-   - host/add-in and version-gating semantics are not yet characterized.
+   - none in declared `W25` scope; future implementation ownership, if any, sits outside this classification packet.

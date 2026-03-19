@@ -30,7 +30,7 @@ Result:
 4. `13` functions extracted to `W027`.
 
 ## 5. Successor Ownership
-1. `W025` owns `EUROCONVERT` and `RANDARRA`.
+1. `W025` owns `EUROCONVERT` and `RANDARRAY`.
 2. `W026` owns `ASC`, `DBCS`, `JIS`, `NUMBERVALUE`, and `TRANSLATE`.
 3. `W027` owns the advanced bond and odd-bond family rows.
 

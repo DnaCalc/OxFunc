@@ -17,9 +17,9 @@ Last updated: 2026-03-18.
 
 - **Status**: in-progress
 - **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
-- **Remaining gaps**: the host/metadata/database successor packet `W023`, extracted successor packets `W025` / `W026` / `W027`, the remaining interesting-function universe, and operator-as-function (`OP_*`) semantics for undeclared operators.
-- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, and `W024` is now reconciled; the remaining low-interest work now sits in the successor extraction packets rather than the ordinary mega-batch itself.
-- **Canonical owner**: ongoing across worksets, currently `W023` / `W025` / `W026` / `W027` for the residual low-interest universe and `W014` for deferred `@`.
+- **Remaining gaps**: the host/metadata/database successor packet `W023`, locale/profile/provider successor packets `W030` / `W031`, reopened finance parity repair in `W032`, the remaining interesting-function universe, and operator-as-function (`OP_*`) semantics for undeclared operators.
+- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, and `W033` closes the newly promoted information-predicate and forecast-compatibility packet; the remaining low-interest work now sits in `W023` / `W030` / `W031` / `W032`.
+- **Canonical owner**: ongoing across worksets, currently `W023` / `W030` / `W031` / `W032` for the residual low-interest universe and `W014` for deferred `@`.
 
 ### IP-02: Locale and Version Sweeps
 
@@ -76,3 +76,11 @@ Last updated: 2026-03-18.
 - **Remaining gaps**: live `DNA ReCalc` import against an OxFunc packet bundle, replay-valid reduced packet or row witnesses, a second packet proving the adapter is not `W15`-specific, and any future pack-grade promotion evidence.
 - **Why still open**: the local adapter surface is now real and exercised, but `cap.C4` / `cap.C5` remain explicitly non-claimed and the cross-lane replay-host path is still unproven.
 - **Canonical owner**: `W018` through `W021`.
+
+### IP-09: Function Name Localization Library
+
+- **Status**: in-progress
+- **Current floor**: `W28` now has a reproducible official-support harvest, `40` published `hreflang` alternates, a `20,360`-row localized-name seed, a `509`-name current English harvest, and a reconciliation artifact against the older `500`-row catalog freeze.
+- **Remaining gaps**: version-marker extraction, normative variation matching against `MS-OE376`, normalization of localized function names against canonical OxFunc ids, and eventual library-context export for OxFml parse/bind use.
+- **Why still open**: `W28` completed its declared discovery-and-seed scope, but the actual localization library and normative reconciliation work remain follow-on packets.
+- **Canonical owner**: `W028`.

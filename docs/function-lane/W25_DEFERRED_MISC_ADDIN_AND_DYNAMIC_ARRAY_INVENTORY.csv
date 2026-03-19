@@ -1,2 +1,3 @@
-residual_class,source,target_count,functions,reason
-extracted_outlier,W24_batch15,2,"EUROCONVERT; RANDARRA","Native replay on 2026-03-18 returned #NAME! on the current host baseline, so these do not honestly belong to the ordinary W24 closure slice"
+residual_class,source,function_name,current_position,reason
+external_addin,W24_batch15,EUROCONVERT,declared_external,"Official Microsoft support states that EUROCONVERT returns #NAME? unless the Euro Currency Tools Add-in is installed and loaded; OxFunc will not implement this add-in-owned surface now."
+dynamic_array_version_gated,W24_batch15,RANDARRAY,deferred_to_future_dynamic_array_work,"The original W25 inventory used the typo RANDARRA. This is corrected to RANDARRAY. Native replay on the current host baseline returned #NAME?, so the function does not currently belong to the ordinary W24 closure slice."

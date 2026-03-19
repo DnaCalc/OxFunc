@@ -103,7 +103,7 @@ We should not yet try to freeze:
 ### 5.1 Why First
 This topic is now pressure-tested by processed functions including:
 1. `EUROCONVERT`,
-2. `RANDARRA`,
+2. `RANDARRAY`,
 3. `TRANSLATE`,
 4. locale/profile-sensitive width-conversion functions,
 5. other feature- and provider-sensitive surfaces.

@@ -25,6 +25,18 @@ pub const GROWTH_META: FunctionMeta = FunctionMeta {
     ..REGRESSION_FORECAST_BASE_META
 };
 
+pub const FORECAST_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.FORECAST",
+    arity: Arity::exact(3),
+    ..REGRESSION_FORECAST_BASE_META
+};
+
+pub const FORECAST_LINEAR_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.FORECAST.LINEAR",
+    arity: Arity::exact(3),
+    ..REGRESSION_FORECAST_BASE_META
+};
+
 pub const TREND_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TREND",
     ..REGRESSION_FORECAST_BASE_META
@@ -735,6 +747,34 @@ fn logest_kernel(
     Ok(row_array(&row))
 }
 
+fn forecast_pair_kernel(
+    x: f64,
+    known_y: &NumericVector,
+    known_x: &NumericVector,
+) -> Result<EvalValue, WorksheetErrorCode> {
+    if known_x.values.len() != known_y.values.len() {
+        return Err(WorksheetErrorCode::NA);
+    }
+    let known_x_prepared = predictor_input_from_optional(
+        Some(NumericMatrix {
+            rows: known_x.values.len(),
+            cols: 1,
+            values: known_x.values.clone(),
+        }),
+        known_y,
+    )
+    .map_err(|error| map_regression_forecast_error_to_ws(&error))?;
+    let new_x = PreparedPredictorInput {
+        predictors: NumericMatrix {
+            rows: 1,
+            cols: 1,
+            values: vec![x],
+        },
+        output_shape: OutputShape::Scalar,
+    };
+    trend_kernel(known_y, &known_x_prepared, &new_x, true)
+}
+
 pub fn eval_trend_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -784,6 +824,32 @@ pub fn eval_growth_surface(
         bool_flag_from_eval_or_default(optional_arg_value(args.get(3), resolver)?, true)?;
     growth_kernel(&known_y, &known_x, &new_x, use_const)
         .map_err(RegressionForecastEvalError::Domain)
+}
+
+pub fn eval_forecast_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, RegressionForecastEvalError> {
+    if !FORECAST_META.arity.accepts(args.len()) {
+        return Err(arity_error(&FORECAST_META, args.len()));
+    }
+    let x = numeric_scalar_from_eval(&resolve_arg_eval(&args[0], resolver)?)?;
+    let known_y = collect_numeric_vector_arg(&args[1], resolver)?;
+    let known_x = collect_numeric_vector_arg(&args[2], resolver)?;
+    forecast_pair_kernel(x, &known_y, &known_x).map_err(RegressionForecastEvalError::Domain)
+}
+
+pub fn eval_forecast_linear_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, RegressionForecastEvalError> {
+    if !FORECAST_LINEAR_META.arity.accepts(args.len()) {
+        return Err(arity_error(&FORECAST_LINEAR_META, args.len()));
+    }
+    let x = numeric_scalar_from_eval(&resolve_arg_eval(&args[0], resolver)?)?;
+    let known_y = collect_numeric_vector_arg(&args[1], resolver)?;
+    let known_x = collect_numeric_vector_arg(&args[2], resolver)?;
+    forecast_pair_kernel(x, &known_y, &known_x).map_err(RegressionForecastEvalError::Domain)
 }
 
 pub fn eval_linest_surface(
@@ -1070,6 +1136,41 @@ mod tests {
             }
             other => panic!("expected array, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn forecast_and_forecast_linear_match_seed_lanes() {
+        let forecast = eval_forecast_surface(
+            &[num(3.0), row(&[1.0, 2.0]), row(&[2.0, 4.0])],
+            &MockResolver {
+                map: BTreeMap::new(),
+            },
+        )
+        .unwrap();
+        let forecast_linear = eval_forecast_linear_surface(
+            &[num(3.0), row(&[1.0, 2.0]), row(&[2.0, 4.0])],
+            &MockResolver {
+                map: BTreeMap::new(),
+            },
+        )
+        .unwrap();
+        assert_close(expect_number(forecast), 1.5);
+        assert_close(expect_number(forecast_linear), 1.5);
+    }
+
+    #[test]
+    fn forecast_length_mismatch_returns_na() {
+        let error = eval_forecast_surface(
+            &[num(3.0), row(&[1.0, 2.0, 3.0]), row(&[2.0, 4.0])],
+            &MockResolver {
+                map: BTreeMap::new(),
+            },
+        )
+        .unwrap_err();
+        assert_eq!(
+            map_regression_forecast_error_to_ws(&error),
+            WorksheetErrorCode::NA
+        );
     }
 
     #[test]

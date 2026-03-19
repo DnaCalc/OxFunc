@@ -188,6 +188,11 @@ use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws
 use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
 use crate::functions::int_fn::{eval_int_surface, int_kernel, map_int_error_to_ws};
 use crate::functions::intercept_fn::{eval_intercept_surface, map_intercept_error_to_ws};
+use crate::functions::is_predicates_family::{
+    eval_isblank_surface, eval_iserr_surface, eval_iserror_surface, eval_islogical_surface,
+    eval_isna_surface, eval_isnontext_surface, eval_isodd_surface, eval_isref_surface,
+    eval_istext_surface, map_information_predicate_error_to_ws,
+};
 use crate::functions::iseven_fn::{eval_iseven_surface, map_iseven_error_to_ws};
 use crate::functions::isnumber::{eval_isnumber_surface, map_isnumber_error_to_ws};
 use crate::functions::large_fn::{eval_large_surface, map_large_error_to_ws};
@@ -214,8 +219,8 @@ use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
 use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
 use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
 use crate::functions::misc_conversion_family::{
-    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface,
-    eval_percentof_surface, eval_randarra_surface, map_misc_conversion_error_to_ws,
+    RandomArrayProvider, eval_RANDARRAY_surface, eval_bahttext_surface, eval_convert_surface,
+    eval_euroconvert_surface, eval_percentof_surface, map_misc_conversion_error_to_ws,
 };
 use crate::functions::misc_switch_info_family::{
     eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
@@ -282,8 +287,8 @@ use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
 use crate::functions::regression_forecast_family::{
-    eval_growth_surface, eval_linest_surface, eval_logest_surface, eval_trend_surface,
-    map_regression_forecast_error_to_ws,
+    eval_forecast_linear_surface, eval_forecast_surface, eval_growth_surface, eval_linest_surface,
+    eval_logest_surface, eval_trend_surface, map_regression_forecast_error_to_ws,
 };
 use crate::functions::roman_fn::{eval_roman_surface, map_roman_error_to_ws};
 use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, round_kernel};
@@ -557,6 +562,8 @@ pub const FUNC_ID_GCD: &str = "FUNC.GCD";
 pub const FUNC_ID_GEOMEAN: &str = "FUNC.GEOMEAN";
 pub const FUNC_ID_GESTEP: &str = "FUNC.GESTEP";
 pub const FUNC_ID_GROWTH: &str = "FUNC.GROWTH";
+pub const FUNC_ID_FORECAST: &str = "FUNC.FORECAST";
+pub const FUNC_ID_FORECAST_LINEAR: &str = "FUNC.FORECAST.LINEAR";
 pub const FUNC_ID_HARMEAN: &str = "FUNC.HARMEAN";
 pub const FUNC_ID_HYPGEOM_DIST: &str = "FUNC.HYPGEOM.DIST";
 pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
@@ -601,6 +608,15 @@ pub const FUNC_ID_HEX2BIN: &str = "FUNC.HEX2BIN";
 pub const FUNC_ID_HEX2DEC: &str = "FUNC.HEX2DEC";
 pub const FUNC_ID_HEX2OCT: &str = "FUNC.HEX2OCT";
 pub const FUNC_ID_ISNUMBER: &str = "FUNC.ISNUMBER";
+pub const FUNC_ID_ISBLANK: &str = "FUNC.ISBLANK";
+pub const FUNC_ID_ISERR: &str = "FUNC.ISERR";
+pub const FUNC_ID_ISERROR: &str = "FUNC.ISERROR";
+pub const FUNC_ID_ISLOGICAL: &str = "FUNC.ISLOGICAL";
+pub const FUNC_ID_ISNA: &str = "FUNC.ISNA";
+pub const FUNC_ID_ISNONTEXT: &str = "FUNC.ISNONTEXT";
+pub const FUNC_ID_ISODD: &str = "FUNC.ISODD";
+pub const FUNC_ID_ISREF: &str = "FUNC.ISREF";
+pub const FUNC_ID_ISTEXT: &str = "FUNC.ISTEXT";
 pub const FUNC_ID_ISOWEEKNUM: &str = "FUNC.ISOWEEKNUM";
 pub const FUNC_ID_ISO_CEILING: &str = "FUNC.ISO.CEILING";
 pub const FUNC_ID_INTERCEPT: &str = "FUNC.INTERCEPT";
@@ -709,7 +725,7 @@ pub const FUNC_ID_QUARTILE_EXC: &str = "FUNC.QUARTILE.EXC";
 pub const FUNC_ID_QUARTILE_INC: &str = "FUNC.QUARTILE.INC";
 pub const FUNC_ID_QUARTILE: &str = "FUNC.QUARTILE";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
-pub const FUNC_ID_RANDARRA: &str = "FUNC.RANDARRA";
+pub const FUNC_ID_RANDARRAY: &str = "FUNC.RANDARRAY";
 pub const FUNC_ID_RATE: &str = "FUNC.RATE";
 pub const FUNC_ID_RADIANS: &str = "FUNC.RADIANS";
 pub const FUNC_ID_RANK: &str = "FUNC.RANK";
@@ -1406,6 +1422,33 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::engineering_radix_family::HEX2OCT_META.arg_preparation_profile)
         }
         FUNC_ID_ISNUMBER => Some(crate::functions::isnumber::ISNUMBER_META.arg_preparation_profile),
+        FUNC_ID_ISBLANK => {
+            Some(crate::functions::is_predicates_family::ISBLANK_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISERR => {
+            Some(crate::functions::is_predicates_family::ISERR_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISERROR => {
+            Some(crate::functions::is_predicates_family::ISERROR_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISLOGICAL => {
+            Some(crate::functions::is_predicates_family::ISLOGICAL_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISNA => {
+            Some(crate::functions::is_predicates_family::ISNA_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISNONTEXT => {
+            Some(crate::functions::is_predicates_family::ISNONTEXT_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISODD => {
+            Some(crate::functions::is_predicates_family::ISODD_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISREF => {
+            Some(crate::functions::is_predicates_family::ISREF_META.arg_preparation_profile)
+        }
+        FUNC_ID_ISTEXT => {
+            Some(crate::functions::is_predicates_family::ISTEXT_META.arg_preparation_profile)
+        }
         FUNC_ID_ISOWEEKNUM => {
             Some(crate::functions::date_week_family::ISOWEEKNUM_META.arg_preparation_profile)
         }
@@ -1428,6 +1471,13 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_LARGE => Some(crate::functions::large_fn::LARGE_META.arg_preparation_profile),
         FUNC_ID_LCM => Some(crate::functions::lcm_fn::LCM_META.arg_preparation_profile),
+        FUNC_ID_FORECAST => Some(
+            crate::functions::regression_forecast_family::FORECAST_META.arg_preparation_profile,
+        ),
+        FUNC_ID_FORECAST_LINEAR => Some(
+            crate::functions::regression_forecast_family::FORECAST_LINEAR_META
+                .arg_preparation_profile,
+        ),
         FUNC_ID_LINEST => {
             Some(crate::functions::regression_forecast_family::LINEST_META.arg_preparation_profile)
         }
@@ -1688,8 +1738,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::legacy_stats_alias_family::QUARTILE_META.arg_preparation_profile)
         }
         FUNC_ID_RAND => Some(crate::functions::rand_fn::RAND_META.arg_preparation_profile),
-        FUNC_ID_RANDARRA => {
-            Some(crate::functions::misc_conversion_family::RANDARRA_META.arg_preparation_profile)
+        FUNC_ID_RANDARRAY => {
+            Some(crate::functions::misc_conversion_family::RANDARRAY_META.arg_preparation_profile)
         }
         FUNC_ID_RATE => {
             Some(crate::functions::financial_time_value_family::RATE_META.arg_preparation_profile)
@@ -2382,6 +2432,10 @@ pub fn eval_surface_value_call(
         FUNC_ID_GROWTH => {
             eval_growth_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
         }
+        FUNC_ID_FORECAST => eval_forecast_surface(args, resolver)
+            .map_err(|e| map_regression_forecast_error_to_ws(&e)),
+        FUNC_ID_FORECAST_LINEAR => eval_forecast_linear_surface(args, resolver)
+            .map_err(|e| map_regression_forecast_error_to_ws(&e)),
         FUNC_ID_HARMEAN => {
             eval_harmean_surface(args, resolver).map_err(|e| map_harmean_error_to_ws(&e))
         }
@@ -2643,6 +2697,25 @@ pub fn eval_surface_value_call(
         FUNC_ID_ISNUMBER => {
             eval_isnumber_surface(args, resolver).map_err(|e| map_isnumber_error_to_ws(&e))
         }
+        FUNC_ID_ISBLANK => eval_isblank_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISERR => eval_iserr_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISERROR => eval_iserror_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISLOGICAL => eval_islogical_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISNA => {
+            eval_isna_surface(args, resolver).map_err(|e| map_information_predicate_error_to_ws(&e))
+        }
+        FUNC_ID_ISNONTEXT => eval_isnontext_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISODD => eval_isodd_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISREF => eval_isref_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
+        FUNC_ID_ISTEXT => eval_istext_surface(args, resolver)
+            .map_err(|e| map_information_predicate_error_to_ws(&e)),
         FUNC_ID_ISOWEEKNUM => {
             eval_isoweeknum_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
         }
@@ -2838,10 +2911,10 @@ pub fn eval_surface_value_call(
         FUNC_ID_LOGEST => {
             eval_logest_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
         }
-        FUNC_ID_RANDARRA => {
+        FUNC_ID_RANDARRAY => {
             let value = random_value.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedRandomProvider { value };
-            eval_randarra_surface(args, resolver, &provider)
+            eval_RANDARRAY_surface(args, resolver, &provider)
                 .map_err(|e| map_misc_conversion_error_to_ws(&e))
         }
         FUNC_ID_RAND => {

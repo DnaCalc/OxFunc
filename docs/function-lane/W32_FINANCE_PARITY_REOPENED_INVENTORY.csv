@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+reopened_from_w29_benchmark,W29_finance_benchmark,3,"COUPDAYS; XNPV; XIRR","W29 benchmark evidence proved direct Excel parity gaps relative to both the public F# benchmark and native Excel on specific targeted lanes"

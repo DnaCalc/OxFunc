@@ -1,5 +1,10 @@
 # W24 Batch 12 Execution Record - Cashflow Rate Family
 
+Supersession note:
+1. `W29` reopened direct Excel parity concerns for negative-rate/root-finding `XNPV` and `XIRR` lanes.
+2. This record remains valid as the original admitted-slice packet evidence, but it is no longer sufficient by itself to claim closure for the full admitted current reference baseline of `XNPV` / `XIRR`.
+3. Successor repair ownership now sits in `W032`.
+
 Status: `complete-provisional`
 Workset: `W24`
 Evidence ID: `W24-B12-CASHFLOW-RATE-20260318`
@@ -57,6 +62,6 @@ From `.tmp/w24-batch12-cashflow-rate-results.csv`:
 4. `lake build`
 
 ## 8. Standing
-1. `IRR`, `XNPV`, and `XIRR` are now function-phase-complete for the admitted current reference baseline.
-2. The closure is bounded to the admitted numeric vector/date-vector slice above.
-3. `W024` continues with the remaining unblocked families after this packet.
+1. `IRR` remains unreopened on the benchmarked `W29` lanes, but `XNPV` and `XIRR` are no longer treated as fully closed for the admitted current reference baseline.
+2. The packet still evidences the seeded numeric vector/date-vector slice above, but `W29` showed additional negative-rate/root-finding lanes where `XNPV` and `XIRR` diverge from direct Excel.
+3. `W032` now owns the reopened parity repair work for `XNPV` and `XIRR`.

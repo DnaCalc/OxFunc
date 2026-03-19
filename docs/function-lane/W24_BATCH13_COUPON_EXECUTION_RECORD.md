@@ -1,5 +1,10 @@
 # W24 Batch 13 Execution Record - Coupon Family
 
+Supersession note:
+1. `W29` reopened direct Excel parity for a leap-year actual/actual `COUPDAYS` lane.
+2. This record remains valid as the original admitted-slice packet evidence, but it is no longer sufficient by itself to claim closure for the full admitted current reference baseline of `COUPDAYS`.
+3. Successor repair ownership now sits in `W032`.
+
 Status: `complete-provisional`
 Workset: `W24`
 Evidence ID: `W24-B13-COUPON-20260318`
@@ -60,6 +65,6 @@ From `.tmp/w24-batch13-coupon-results.csv`:
 4. `lake build`
 
 ## 8. Standing
-1. The six coupon family members above are now function-phase-complete for the admitted current reference baseline.
-2. The closure is bounded to the admitted regular coupon-schedule slice above.
-3. `W024` continues with the remaining unblocked families after this packet.
+1. `COUPDAYBS`, `COUPDAYSNC`, `COUPNCD`, `COUPNUM`, and `COUPPCD` were not shown divergent on the benchmarked `W29` lanes, but `COUPDAYS` is no longer treated as fully closed for the admitted current reference baseline.
+2. The packet still evidences the admitted regular coupon-schedule slice above, but `W29` showed a leap-year actual/actual lane where `COUPDAYS` diverges from direct Excel.
+3. `W032` now owns the reopened parity repair work for `COUPDAYS`.

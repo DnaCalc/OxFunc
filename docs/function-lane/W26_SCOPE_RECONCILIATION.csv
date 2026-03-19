@@ -1,0 +1,3 @@
+reconciliation_class,source,target_count,functions,reason
+successor_w30,W26_current_packet,4,"ASC; DBCS; JIS; NUMBERVALUE","Native replay shows locale/profile-sensitive availability or omitted-default semantics that need a dedicated locale-profile seam workset"
+successor_w31,W26_current_packet,1,"TRANSLATE","Native replay shows an external-provider behavior (`#BUSY!`) that belongs in a provider-language seam packet rather than an ordinary function packet"

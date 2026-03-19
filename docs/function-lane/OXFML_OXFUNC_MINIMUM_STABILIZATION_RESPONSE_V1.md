@@ -115,7 +115,7 @@ Current proposed minimum vocabulary:
 ### 2.3 Why This Matters
 Processed functions already pressure this split:
 1. `EUROCONVERT`
-2. `RANDARRA`
+2. `RANDARRAY`
 3. `TRANSLATE`
 4. locale/profile-sensitive width-conversion functions
 5. later host/add-in/provider-sensitive functions

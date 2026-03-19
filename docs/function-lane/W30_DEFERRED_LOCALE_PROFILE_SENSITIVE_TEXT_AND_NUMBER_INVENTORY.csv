@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+locale_profile_sensitive,W26_scope_reconciliation,4,"ASC; DBCS; JIS; NUMBERVALUE","Current host replay shows locale/profile-sensitive availability or omitted-default parsing behavior that cannot be treated as ordinary pure in-core semantics on the current boundary"

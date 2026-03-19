@@ -99,6 +99,7 @@ pub mod indirect;
 pub mod info_fn;
 pub mod int_fn;
 pub mod intercept_fn;
+pub mod is_predicates_family;
 pub mod iseven_fn;
 pub mod isnumber;
 pub mod large_fn;

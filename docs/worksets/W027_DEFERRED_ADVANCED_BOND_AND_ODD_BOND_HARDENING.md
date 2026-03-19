@@ -36,16 +36,24 @@ Members:
 ## 4. Entry Criteria
 Functions belong in `W27` only if direct native replay proved that the current local finance kernel is not yet parity-clean on the current reference baseline.
 
-## 5. First Work Streams
-1. characterize the precise basis-`1` maturity-security convention gap on `PRICEMAT` / `YIELDMAT`,
-2. pin direct native parity packets for the odd-bond `ODDL*` lanes,
-3. reopen the shared bond substrate only after explicit native-valued parity rows exist.
+## 5. Execution Outcome
+1. `W27` now owns a dedicated direct Excel parity packet:
+   - `docs/function-lane/W27_BOND_ODD_BOND_SCENARIO_MANIFEST_SEED.csv`
+   - `docs/function-lane/W27_RUNTIME_REQUIREMENTS.md`
+   - `tools/w27-probe/run-w27-bond-odd-bond-baseline.ps1`
+   - `.tmp/w27-bond-odd-bond-results.csv`
+2. `PRICEMAT` / `YIELDMAT` were corrected to use the Excel-style `DaysInYear(issue,settlement)` denominator on the admitted maturity-security slice.
+3. `ODDLPRICE` / `ODDLYIELD` were corrected to use the normalized odd-last quasi-coupon accumulation that matches the direct Excel blocker lane.
+4. The public ExcelFinancialFunctions F# project was used as a benchmark and structural cross-check, while direct Excel remained authoritative.
 
 ## 6. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - the shared bond/odd-bond substrate is not yet closure-grade,
-   - direct parity packets still need to be widened beyond the seeded blocker rows.
+   - none in declared `W27` scope
+
+## 7. Additional Note
+1. The public ExcelFinancialFunctions F# project is a useful external benchmark for finance-function semantics and test methodology.
+2. It is not authoritative over Excel, but `W27` should eventually compare OxFunc, the F# implementation, and direct Excel evidence explicitly.

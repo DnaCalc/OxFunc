@@ -6,4 +6,4 @@ convert_f_c,CONVERT,"CONVERT(68,""F"",""C"")",,20,1E-12,Temperature conversion b
 convert_km_m,CONVERT,"CONVERT(3.5,""km"",""m"")",,3500,1E-9,Metric-prefix conversion baseline
 percentof_scalar,PERCENTOF,"PERCENTOF(15,60)",,0.25,1E-12,Scalar ratio baseline
 euroconvert_name,EUROCONVERT,"EUROCONVERT(10,""DEM"",""EUR"")",#NAME?,,,Current host baseline has no EUROCONVERT surface
-randarra_name,RANDARRA,"RANDARRA()",#NAME?,,,Current host baseline has no RANDARRA surface
+RANDARRAY_name,RANDARRAY,"RANDARRAY()",#NAME?,,,Current host baseline has no RANDARRAY surface

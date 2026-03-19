@@ -1,0 +1,31 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+isblank_empty_ref,ISBLANK,"ISBLANK(B1)",TRUE,,,Blank referenced cell returns TRUE
+isblank_empty_string,ISBLANK,"ISBLANK("""")",FALSE,,,Empty string literal is not blank
+isblank_formula_empty,ISBLANK,"ISBLANK(A3)",FALSE,,,Formula returning empty string is not blank
+iserr_div0,ISERR,"ISERR(1/0)",TRUE,,,Non-NA error returns TRUE
+iserr_na,ISERR,"ISERR(NA())",FALSE,,,NA is excluded from ISERR
+iserror_div0,ISERROR,"ISERROR(1/0)",TRUE,,,Any worksheet error returns TRUE
+iserror_text,ISERROR,"ISERROR(""x"")",FALSE,,,Non-error scalar returns FALSE
+islogical_true,ISLOGICAL,"ISLOGICAL(TRUE)",TRUE,,,Logical TRUE returns TRUE
+islogical_one,ISLOGICAL,"ISLOGICAL(1)",FALSE,,,Number is not logical
+isna_na,ISNA,"ISNA(NA())",TRUE,,,NA is detected
+isna_div0,ISNA,"ISNA(1/0)",FALSE,,,Non-NA error returns FALSE
+isnontext_blank_ref,ISNONTEXT,"ISNONTEXT(B1)",TRUE,,,Blank reference is non-text
+istext_text_ref,ISTEXT,"ISTEXT(A1)",TRUE,,,Text reference returns TRUE
+istext_num_ref,ISTEXT,"ISTEXT(A2)",FALSE,,,Numeric reference returns FALSE
+isodd_num,ISODD,"ISODD(3)",TRUE,,,Odd number returns TRUE
+isodd_textnum,ISODD,"ISODD(""3"")",TRUE,,,Numeric text is coerced
+isodd_true,ISODD,"ISODD(TRUE)",#VALUE!,,,Logical direct arg is rejected
+isref_direct_ref,ISREF,"ISREF(A1)",TRUE,,,Direct cell reference is reference-like
+isref_range_ref,ISREF,"ISREF(A1:A2)",TRUE,,,Area reference is reference-like
+isref_scalar,ISREF,"ISREF(1)",FALSE,,,Scalar literal is not a reference
+isref_indirect,ISREF,"ISREF(INDIRECT(""A1""))",TRUE,,,INDIRECT result stays reference-like
+isref_offset,ISREF,"ISREF(OFFSET(A1,1,0))",TRUE,,,OFFSET result stays reference-like
+isref_index_area,ISREF,"ISREF(INDEX(A1:B2,0,0))",TRUE,,,INDEX area result stays reference-like
+isref_hstack,ISREF,"ISREF(HSTACK({1;2},{3;4}))",FALSE,,,Array value is not a reference
+forecast_simple,FORECAST,"FORECAST(3,{1,2},{2,4})",,1.5,1E-12,Simple scalar forecast
+forecast_linear_simple,FORECAST.LINEAR,"FORECAST.LINEAR(3,{1,2},{2,4})",,1.5,1E-12,Compatibility pair matches simple scalar forecast
+forecast_mismatch,FORECAST,"FORECAST(3,{1,2,3},{2,4})",#N/A,,,Known vectors with different lengths return #N/A
+forecast_linear_mismatch,FORECAST.LINEAR,"FORECAST.LINEAR(3,{1,2,3},{2,4})",#N/A,,,Compatibility pair preserves mismatch behavior
+forecast_vertical_refs,FORECAST,"FORECAST(3,B10:B11,A10:A11)",,1.5,1E-12,Reference-fed scalar forecast
+forecast_linear_vertical_refs,FORECAST.LINEAR,"FORECAST.LINEAR(3,B10:B11,A10:A11)",,1.5,1E-12,Compatibility pair preserves reference-fed lane

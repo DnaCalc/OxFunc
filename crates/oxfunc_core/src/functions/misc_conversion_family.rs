@@ -46,8 +46,8 @@ pub const PERCENTOF_META: FunctionMeta = FunctionMeta {
     arity: Arity::exact(2),
     ..MISC_CONVERSION_META_BASE
 };
-pub const RANDARRA_META: FunctionMeta = FunctionMeta {
-    function_id: "FUNC.RANDARRA",
+pub const RANDARRAY_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.RANDARRAY",
     arity: Arity { min: 0, max: 5 },
     determinism: DeterminismClass::PseudoRandom,
     volatility: VolatilityClass::VolatileFull,
@@ -539,7 +539,7 @@ fn validate_random_unit(value: f64) -> Result<f64, MiscConversionError> {
     }
 }
 
-pub fn randarra_kernel(
+pub fn RANDARRAY_kernel(
     provider: &impl RandomArrayProvider,
     rows: usize,
     cols: usize,
@@ -578,7 +578,7 @@ pub fn randarra_kernel(
     }
     Ok(EvalValue::Array(
         EvalArray::new(ArrayShape { rows, cols }, cells)
-            .expect("randarra dimensions were validated"),
+            .expect("RANDARRAY dimensions were validated"),
     ))
 }
 
@@ -710,7 +710,7 @@ pub fn eval_percentof_surface(
     ))
 }
 
-pub fn eval_randarra_surface(
+pub fn eval_RANDARRAY_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
     provider: &impl RandomArrayProvider,
@@ -719,8 +719,8 @@ pub fn eval_randarra_surface(
         args,
         resolver,
         |prepared| {
-            if !RANDARRA_META.arity.accepts(prepared.len()) {
-                return Err(arity_error(&RANDARRA_META, prepared.len()));
+            if !RANDARRAY_META.arity.accepts(prepared.len()) {
+                return Err(arity_error(&RANDARRAY_META, prepared.len()));
             }
             let rows = prepared
                 .first()
@@ -752,7 +752,7 @@ pub fn eval_randarra_surface(
             if rows < 1.0 || cols < 1.0 {
                 return Err(MiscConversionError::Domain(WorksheetErrorCode::Value));
             }
-            randarra_kernel(
+            RANDARRAY_kernel(
                 provider,
                 rows as usize,
                 cols as usize,
@@ -811,7 +811,7 @@ mod tests {
             PERCENTOF_META.surface_fec_dependency_profile,
             FecDependencyProfile::RefOnly
         );
-        assert_eq!(RANDARRA_META.volatility, VolatilityClass::VolatileFull);
+        assert_eq!(RANDARRAY_META.volatility, VolatilityClass::VolatileFull);
     }
 
     #[test]
@@ -885,12 +885,12 @@ mod tests {
     }
 
     #[test]
-    fn randarra_builds_scalar_and_rectangular_outputs() {
+    fn RANDARRAY_builds_scalar_and_rectangular_outputs() {
         let scalar_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([0.25])),
         };
         assert_eq!(
-            randarra_kernel(&scalar_provider, 1, 1, 0.0, 1.0, false).unwrap(),
+            RANDARRAY_kernel(&scalar_provider, 1, 1, 0.0, 1.0, false).unwrap(),
             EvalValue::Array(
                 EvalArray::from_rows(vec![vec![ArrayCellValue::Number(0.25)]]).unwrap()
             )
@@ -900,7 +900,7 @@ mod tests {
             values: RefCell::new(VecDeque::from([0.0, 0.49, 0.50, 0.99])),
         };
         assert_eq!(
-            randarra_kernel(&grid_provider, 2, 2, 10.0, 12.0, true).unwrap(),
+            RANDARRAY_kernel(&grid_provider, 2, 2, 10.0, 12.0, true).unwrap(),
             EvalValue::Array(
                 EvalArray::from_rows(vec![
                     vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(11.0)],
@@ -912,19 +912,19 @@ mod tests {
     }
 
     #[test]
-    fn randarra_rejects_bad_provider_values_and_invalid_ranges() {
+    fn RANDARRAY_rejects_bad_provider_values_and_invalid_ranges() {
         let bad_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([1.5])),
         };
         assert_eq!(
-            randarra_kernel(&bad_provider, 1, 1, 0.0, 1.0, false),
+            RANDARRAY_kernel(&bad_provider, 1, 1, 0.0, 1.0, false),
             Err(MiscConversionError::RandomProviderOutOfRange(1.5))
         );
         let range_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([0.0])),
         };
         assert_eq!(
-            randarra_kernel(&range_provider, 1, 1, 5.0, 4.0, false),
+            RANDARRAY_kernel(&range_provider, 1, 1, 5.0, 4.0, false),
             Err(MiscConversionError::Domain(WorksheetErrorCode::Num))
         );
     }

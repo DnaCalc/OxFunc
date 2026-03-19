@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+provider_language_sensitive,W26_scope_reconciliation,1,"TRANSLATE","Current host replay shows provider-bound translation behavior with `#BUSY!` and same-language pass-through semantics that belong in a provider-facing seam packet"

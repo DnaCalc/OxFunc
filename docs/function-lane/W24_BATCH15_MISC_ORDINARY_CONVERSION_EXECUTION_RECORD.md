@@ -9,7 +9,7 @@ Record the final ordinary packet in `W24`, closing the ordinary misc conversion 
 
 ## 2. Scope
 1. close `BAHTTEXT`, `CONVERT`, and `PERCENTOF` for the admitted current reference baseline,
-2. capture native host evidence that `EUROCONVERT` and `RANDARRA` are not ordinary current-host worksheet surfaces,
+2. capture native host evidence that `EUROCONVERT` and `RANDARRAY` are not ordinary current-host worksheet surfaces,
 3. hand explicit successor ownership of those outliers to `W025`.
 
 ## 3. Completeness Axes
@@ -19,7 +19,7 @@ Record the final ordinary packet in `W24`, closing the ordinary misc conversion 
 4. integration_completeness: `integrated`
 5. open_lanes:
    - broader locale/version sweeps remain outside this packet,
-   - `EUROCONVERT` and `RANDARRA` now belong to `W025`.
+   - `EUROCONVERT` and `RANDARRAY` now belong to `W025`.
 
 ## 4. Executed Scope
 Artifacts created or updated:
@@ -41,11 +41,11 @@ From `.tmp/w24-batch15-misc-ordinary-conversion-results.csv`:
 2. `CONVERT(1,"lbm","kg")`, `CONVERT(68,"F","C")`, and `CONVERT(3.5,"km","m")` matched the seeded numeric outputs.
 3. `PERCENTOF(15,60)` matched `0.25`.
 4. `EUROCONVERT(10,"DEM","EUR")` returned `#NAME!` on the current host baseline.
-5. `RANDARRA()` returned `#NAME!` on the current host baseline.
+5. `RANDARRAY()` returned `#NAME!` on the current host baseline.
 
 ## 6. Implementation Result
 1. `BAHTTEXT`, `CONVERT`, and `PERCENTOF` are now packet-evidenced for the admitted ordinary current-baseline slice.
-2. `EUROCONVERT` and `RANDARRA` are not honestly ordinary-closure members of `W24`.
+2. `EUROCONVERT` and `RANDARRAY` are not honestly ordinary-closure members of `W24`.
 3. Those outliers are extracted to `W025`.
 
 ## 7. Verification Runs
@@ -56,5 +56,5 @@ From `.tmp/w24-batch15-misc-ordinary-conversion-results.csv`:
 
 ## 8. Standing
 1. `BAHTTEXT`, `CONVERT`, and `PERCENTOF` are now function-phase-complete for the admitted current reference baseline.
-2. `EUROCONVERT` and `RANDARRA` no longer belong to `W24`.
+2. `EUROCONVERT` and `RANDARRAY` no longer belong to `W24`.
 3. `W24` must reconcile the extracted successors before the mega-batch can close.

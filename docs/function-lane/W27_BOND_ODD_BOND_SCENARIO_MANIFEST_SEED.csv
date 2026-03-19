@@ -1,0 +1,14 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+accrint_regular,ACCRINT,"ACCRINT(DATE(2024,1,1),DATE(2024,7,1),DATE(2024,10,1),0.12,1000,2,0,TRUE)",,90,1E-12,Current admitted regular first-interest anchor sample
+accrintm_actual365,ACCRINTM,"ACCRINTM(DATE(2024,1,1),DATE(2024,10,1),0.08,1000,3)",,60.054794520547944,1E-12,Current admitted maturity-interest sample
+duration_regular,DURATION,"DURATION(DATE(2024,3,15),DATE(2031,11,15),0.06,0.0675,2,0)",,6.092590716034263,1E-12,Regular coupon duration sample
+mduration_regular,MDURATION,"MDURATION(DATE(2024,3,15),DATE(2031,11,15),0.06,0.0675,2,0)",,5.8936790481589005,1E-12,Modified duration companion sample
+price_regular,PRICE,"PRICE(DATE(2029,6,15),DATE(2029,11,15),0.0575,0.065,100,2,0)",,99.68310513860716,1E-12,Regular coupon price sample
+pricemat_basis1,PRICEMAT,"PRICEMAT(DATE(2024,6,15),DATE(2025,12,31),DATE(2024,1,1),0.0525,0.061,1)",,98.59811340546048,1E-12,Direct Excel blocker lane for basis-1 maturity security
+yield_regular,YIELD,"YIELD(DATE(2029,6,15),DATE(2029,11,15),0.0575,96.7752371608925,100,2,0)",,0.1387025191967244,1E-12,Regular coupon yield sample
+yielddisc_basic,YIELDDISC,"YIELDDISC(DATE(2024,6,15),DATE(2024,12,31),97.25,100,0)",,0.051938513194480875,1E-12,Discount security yield sample
+yieldmat_basis1,YIELDMAT,"YIELDMAT(DATE(2024,6,15),DATE(2025,12,31),DATE(2024,1,1),0.0525,98.59811340546048,1)",,0.06100000000000056,1E-12,Basis-1 maturity-security inversion lane
+oddfprice_short_first,ODDFPRICE,"ODDFPRICE(DATE(2008,11,11),DATE(2021,3,1),DATE(2008,10,15),DATE(2009,3,1),0.0785,0.0625,100,2,1)",,113.59771747407883,1E-12,Current admitted short odd-first price lane
+oddfyield_short_first,ODDFYIELD,"ODDFYIELD(DATE(2008,11,11),DATE(2021,3,1),DATE(2008,10,15),DATE(2009,3,1),0.0785,113.597717474079,100,2,1)",,0.06249999999989627,1E-10,Current admitted short odd-first inversion lane
+oddlprice_odd_last,ODDLPRICE,"ODDLPRICE(DATE(2008,2,7),DATE(2008,6,15),DATE(2007,10,15),0.0375,0.0405,100,2,0)",,99.87828601472134,1E-12,Direct Excel blocker lane for odd-last clean price
+oddlyield_odd_last,ODDLYIELD,"ODDLYIELD(DATE(2008,2,7),DATE(2008,6,15),DATE(2007,10,15),0.0375,99.87828601472134,100,2,0)",,0.04050000000000125,1E-12,Odd-last inversion lane using the corrected Excel price

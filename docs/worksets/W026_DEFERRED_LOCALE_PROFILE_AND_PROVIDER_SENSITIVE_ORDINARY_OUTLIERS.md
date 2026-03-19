@@ -31,16 +31,21 @@ Functions belong in `W26` only if native replay showed they depend materially on
 2. omitted-separator locale defaults,
 3. external translation/provider behavior.
 
-## 5. First Work Streams
-1. characterize `ASC` / `DBCS` / `JIS` availability and width-conversion behavior by host/profile,
-2. characterize `NUMBERVALUE` omitted-separator defaults by host locale/profile,
-3. characterize `TRANSLATE` provider-bound behavior and whether it belongs with a broader host/provider seam.
+## 5. Execution Outcome
+1. `W26` now owns a dedicated current-host characterization packet:
+   - `docs/function-lane/W26_HOST_PROFILE_PROVIDER_SCENARIO_MANIFEST_SEED.csv`
+   - `docs/function-lane/W26_RUNTIME_REQUIREMENTS.md`
+   - `tools/w26-probe/run-w26-host-profile-provider-baseline.ps1`
+   - `.tmp/w26-host-profile-provider-results.csv`
+2. The packet shows two distinct successor seam classes:
+   - locale/profile-sensitive text/number functions -> `W30`
+   - provider-language functions -> `W31`
+3. `W26` therefore closes by reconciliation rather than by pretending these functions are solved on the current boundary.
 
 ## 6. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no dedicated replay packet exists yet,
-   - locale/profile matrix and provider behavior are not yet closure-grade.
+   - none in declared `W26` scope after reconciliation

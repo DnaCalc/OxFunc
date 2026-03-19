@@ -126,7 +126,7 @@ The checklist order is grouped into waves that maximize throughput while reducin
 4. `AMORDEGRC`, `AMORLINC`
 
 ### Wave 7 - Misc Ordinary Residuals
-1. `BAHTTEXT`, `CONVERT`, `EUROCONVERT`, `PERCENTOF`, `RANDARRA`
+1. `BAHTTEXT`, `CONVERT`, `EUROCONVERT`, `PERCENTOF`, `RANDARRAY`
 
 ## 9. Blocker Policy
 When a family is blocked:

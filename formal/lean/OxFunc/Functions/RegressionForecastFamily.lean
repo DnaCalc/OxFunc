@@ -19,6 +19,16 @@ def regressionForecastBaseMeta : FunctionMeta := {
 }
 
 def growthMeta : FunctionMeta := { regressionForecastBaseMeta with functionId := "FUNC.GROWTH" }
+def forecastMeta : FunctionMeta := {
+  regressionForecastBaseMeta with
+    functionId := "FUNC.FORECAST"
+    arity := Arity.exact 3
+}
+def forecastLinearMeta : FunctionMeta := {
+  regressionForecastBaseMeta with
+    functionId := "FUNC.FORECAST.LINEAR"
+    arity := Arity.exact 3
+}
 def trendMeta : FunctionMeta := { regressionForecastBaseMeta with functionId := "FUNC.TREND" }
 def linestMeta : FunctionMeta := { regressionForecastBaseMeta with functionId := "FUNC.LINEST" }
 def logestMeta : FunctionMeta := { regressionForecastBaseMeta with functionId := "FUNC.LOGEST" }
@@ -30,17 +40,21 @@ metadata/binding alignment layer rather than duplicating the numeric kernel.
 -/
 theorem regressionForecastFamily_meta_profiles :
     growthMeta.arity = { min := 1, max := 4 }
+    ∧ forecastMeta.arity = Arity.exact 3
+    ∧ forecastLinearMeta.arity = Arity.exact 3
     ∧ trendMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
     ∧ linestMeta.kernelSignatureClass = KernelSignatureClass.custom
     ∧ logestMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly
     ∧ trendMeta.threadSafety = ThreadSafetyClass.safePure := by
-  simp [regressionForecastBaseMeta, growthMeta, trendMeta, linestMeta, logestMeta]
+  simp [regressionForecastBaseMeta, growthMeta, forecastMeta, forecastLinearMeta, trendMeta, linestMeta, logestMeta]
 
 theorem regressionForecastFamily_ids :
     growthMeta.functionId = "FUNC.GROWTH"
+    ∧ forecastMeta.functionId = "FUNC.FORECAST"
+    ∧ forecastLinearMeta.functionId = "FUNC.FORECAST.LINEAR"
     ∧ trendMeta.functionId = "FUNC.TREND"
     ∧ linestMeta.functionId = "FUNC.LINEST"
     ∧ logestMeta.functionId = "FUNC.LOGEST" := by
-  simp [growthMeta, trendMeta, linestMeta, logestMeta]
+  simp [growthMeta, forecastMeta, forecastLinearMeta, trendMeta, linestMeta, logestMeta]
 
 end OxFunc.Functions

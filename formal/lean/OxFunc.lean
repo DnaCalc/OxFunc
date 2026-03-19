@@ -95,6 +95,7 @@ import OxFunc.Functions.IfError
 import OxFunc.Functions.IfNaFn
 import OxFunc.Functions.Index
 import OxFunc.Functions.Indirect
+import OxFunc.Functions.IsPredicatesFamily
 import OxFunc.Functions.IsNumber
 import OxFunc.Functions.InterceptFn
 import OxFunc.Functions.LargeFn

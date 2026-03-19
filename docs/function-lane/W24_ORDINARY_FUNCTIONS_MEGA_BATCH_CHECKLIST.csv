@@ -85,4 +85,4 @@ execution_order,wave,source_family,function,status,notes
 84,7,W16_batch82,CONVERT,done,Closed by W24 Batch 15 misc ordinary conversion packet
 85,7,W16_batch82,EUROCONVERT,extracted,Extracted to W25 add-in and dynamic-array outlier packet
 86,7,W16_batch82,PERCENTOF,done,Closed by W24 Batch 15 misc ordinary conversion packet
-87,7,W16_batch82,RANDARRA,extracted,Extracted to W25 add-in and dynamic-array outlier packet
+87,7,W16_batch82,RANDARRAY,extracted,Extracted to W25 add-in and dynamic-array outlier packet

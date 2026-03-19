@@ -309,7 +309,7 @@
 "QUARTILE.INC","Statistical functions","","1","regular_pure_or_low_risk","Returns the quartile of a data set"
 "QUOTIENT","Math and trigonometry functions","","1","regular_pure_or_low_risk","Returns the integer portion of a division"
 "RADIANS","Math and trigonometry functions","","1","regular_pure_or_low_risk","Converts degrees to radians"
-"RANDARRA","Math and trigonometry functions","","1","regular_pure_or_low_risk","Returns an array of random numbers between 0 and 1. However, you can specify the number of rows and columns to fill, minimum and maximum values, and whether to return whole numbers or decimal values."
+"RANDARRAY","Math and trigonometry functions","","1","regular_pure_or_low_risk","Returns an array of random numbers between 0 and 1. However, you can specify the number of rows and columns to fill, minimum and maximum values, and whether to return whole numbers or decimal values."
 "RANK","Compatibility","","2","baseline_context","Returns the rank of a number in a list of numbers"
 "RANK.AVG","Statistical functions","","1","regular_pure_or_low_risk","Returns the rank of a number in a list of numbers"
 "RANK.EQ","Statistical functions","","1","regular_pure_or_low_risk","Returns the rank of a number in a list of numbers"

@@ -272,6 +272,63 @@ fn actact(s: i64, e: i64) -> Result<f64, BondCoreEvalError> {
     t += act(eys, e) / dyear(ey);
     Ok(t)
 }
+fn less_or_equal_to_a_year_apart(s: i64, e: i64) -> Result<bool, BondCoreEvalError> {
+    let (sy, sm, sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    let (ey, em, ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    Ok((ey - sy) < 1 || ((ey - sy) == 1 && (em < sm || (em == sm && ed <= sd))))
+}
+fn consider_as_bisestile(s: i64, e: i64) -> Result<bool, BondCoreEvalError> {
+    let (sy, _sm, _sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    let (ey, em, ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    if sy == ey {
+        return Ok(dyear(sy) == 366.0);
+    }
+    if em == 2 && ed == 29 {
+        return Ok(true);
+    }
+    for year in sy..=ey {
+        if dyear(year) == 366.0 {
+            let feb29 = excel_serial_from_ymd(WorkbookDateSystem::System1900, year, 2, 29)
+                .ok_or(derr(WorksheetErrorCode::Value))? as i64;
+            if s <= feb29 && feb29 <= e {
+                return Ok(true);
+            }
+        }
+    }
+    Ok(false)
+}
+fn days_in_year_for_mat(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCoreEvalError> {
+    match b {
+        DayCountBasis::Us30_360 | DayCountBasis::Actual360 | DayCountBasis::European30_360 => {
+            Ok(360.0)
+        }
+        DayCountBasis::Actual365 => Ok(365.0),
+        DayCountBasis::ActualActual => {
+            if !less_or_equal_to_a_year_apart(s, e)? {
+                let (sy, _, _) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+                    .ok_or(derr(WorksheetErrorCode::Value))?;
+                let (ey, _, _) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
+                    .ok_or(derr(WorksheetErrorCode::Value))?;
+                let tot_years = (ey - sy) + 1;
+                let start_of_issue_year =
+                    excel_serial_from_ymd(WorkbookDateSystem::System1900, sy, 1, 1)
+                        .ok_or(derr(WorksheetErrorCode::Value))? as i64;
+                let start_after_end_year =
+                    excel_serial_from_ymd(WorkbookDateSystem::System1900, ey + 1, 1, 1)
+                        .ok_or(derr(WorksheetErrorCode::Value))? as i64;
+                Ok(act(start_of_issue_year, start_after_end_year) / tot_years as f64)
+            } else if consider_as_bisestile(s, e)? {
+                Ok(366.0)
+            } else {
+                Ok(365.0)
+            }
+        }
+    }
+}
 fn yf(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCoreEvalError> {
     match b {
         DayCountBasis::Us30_360 => Ok(d360us(s, e)? / 360.0),
@@ -435,9 +492,13 @@ pub fn pricemat_kernel(
     if !(issue < settlement && settlement < maturity) {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    let future = 100.0 + 100.0 * rate_ * yf(issue, maturity, basis_)?;
-    let accrued = 100.0 * rate_ * yf(issue, settlement, basis_)?;
-    let den = 1.0 + yld * yf(settlement, maturity, basis_)?;
+    let b = days_in_year_for_mat(issue, settlement, basis_)?;
+    let dim = dd(issue, maturity, basis_)?;
+    let a = dd(issue, settlement, basis_)?;
+    let dsm = dim - a;
+    let future = 100.0 + (dim / b * rate_ * 100.0);
+    let accrued = a / b * rate_ * 100.0;
+    let den = 1.0 + (dsm / b * yld);
     if den <= 0.0 {
         return Err(derr(WorksheetErrorCode::Num));
     }
@@ -460,10 +521,14 @@ pub fn yieldmat_kernel(
     if !(issue < settlement && settlement < maturity) {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    let future = 100.0 + 100.0 * rate_ * yf(issue, maturity, basis_)?;
-    let accrued = 100.0 * rate_ * yf(issue, settlement, basis_)?;
-    let frac = yf(settlement, maturity, basis_)?;
-    Ok((future / (price + accrued) - 1.0) / frac)
+    let b = days_in_year_for_mat(issue, settlement, basis_)?;
+    let dim = dd(issue, maturity, basis_)?;
+    let a = dd(issue, settlement, basis_)?;
+    let dsm = dim - a;
+    let term1 = dim / b * rate_ + 1.0 - price / 100.0 - a / b * rate_;
+    let term2 = price / 100.0 + a / b * rate_;
+    let term3 = b / dsm;
+    Ok(term1 / term2 * term3)
 }
 pub fn yielddisc_kernel(
     settlement: f64,
@@ -820,6 +885,7 @@ mod tests {
         let m = serial(2025, 12, 31);
         let i = serial(2024, 1, 1);
         let p = pricemat_kernel(s, m, i, 0.0525, 0.061, Some(1.0)).unwrap();
+        close(p, 98.598_113_405_460_48, 1e-12);
         close(
             yieldmat_kernel(s, m, i, 0.0525, p, Some(1.0)).unwrap(),
             0.061,

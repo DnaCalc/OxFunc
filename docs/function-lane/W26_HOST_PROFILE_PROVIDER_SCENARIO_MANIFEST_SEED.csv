@@ -1,0 +1,8 @@
+scenario_id,lane,formula,expected_text,expected_value2,tolerance,notes
+asc_passthrough_current_host,ASC,"ASC(""ＡＢＣ　１２３"")","ＡＢＣ　１２３",,,Current host/profile leaves full-width ASCII text unchanged
+dbcs_passthrough_current_host,DBCS,"DBCS(""ABC ｶﾞ"")","ABC ｶﾞ",,,Current host/profile leaves mixed ASCII/half-width kana unchanged
+jis_unavailable_current_host,JIS,"JIS(""ABC ｶﾞ"")",#NAME?,,,Current host/profile does not expose JIS as a worksheet function
+numbervalue_omitted_defaults_error,NUMBERVALUE,"NUMBERVALUE(""1,234.5%"")",#VALUE!,,,Omitted separator defaults follow current host locale/profile and reject this English-style sample
+numbervalue_explicit_separators_ok,NUMBERVALUE,"NUMBERVALUE(""1,234.5%"",""."","","")",,12.345,1E-12,Explicit separators bypass the host default ambiguity
+translate_same_language_passthrough,TRANSLATE,"TRANSLATE(""hola"",""es"",""es"")","hola",,,Same-language translation returns the input text
+translate_provider_busy,TRANSLATE,"TRANSLATE(""hello"",""en"",""es"")",#BUSY!,,,Cross-language translation is provider-bound on the current host baseline
