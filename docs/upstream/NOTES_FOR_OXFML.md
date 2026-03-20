@@ -917,3 +917,343 @@ Working closure reading:
    - a proving-host/runtime artifact forcing a narrower choice,
    - or new higher-order helper evidence that materially changes the seam.
 
+## 20. First Seam-Improvement Round From Function Work
+### 20.1 Purpose
+The earlier note rounds were mostly seam-shaping and doctrine alignment.
+
+OxFunc now has enough concrete function work to report a first real seam-improvement round driven by implementation and evidence rather than only note narrowing.
+
+This section is intentionally narrower than a new broad seam round.
+It focuses on:
+1. `LET` / `LAMBDA` and higher-order helper pressure from `W38`,
+2. `RTD` as a singular host/subscription seam from `W43`,
+3. the ownership split these now make clearer between OxFml preparation/binding and OxFunc runtime semantics.
+
+### 20.2 `W38` Callable/Helper Progress That Matters To The Seam
+Relevant local records:
+1. `docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md`
+2. `docs/function-lane/W38_EXECUTION_RECORD.md`
+
+What OxFunc now has locally:
+1. seeded native worksheet evidence for:
+   - `LET`
+   - immediate `LAMBDA`
+   - current `ISOMITTED` lanes
+   - `MAP`
+   - `REDUCE`
+   - `SCAN`
+   - `BYROW`
+   - `BYCOL`
+   - `MAKEARRAY`
+   - workbook Defined Name callable preservation
+2. a typed callable value carrier in core rather than a bare lambda placeholder,
+3. executable callable invocation and worksheet-surface evaluators for the admitted higher-order slice when a prepared callable value is supplied,
+4. a direct Stage 1 prepared-expression runtime substrate for:
+   - `LET`
+   - immediate `LAMBDA`
+   - current direct `ISOMITTED`
+5. Lean executable substrate alignment for the admitted higher-order helper slice and callable publication/preservation seeds.
+
+### 20.3 `W38` Seam Reading
+The best current OxFunc reading is now:
+1. OxFml remains the owner of worksheet helper formation/binding for direct `LET` / `LAMBDA` expressions.
+2. OxFunc can now honestly own more of the callable runtime side once a prepared callable/value artifact is supplied.
+3. The cross-repo seam no longer needs to be discussed only as a hypothetical minimum carrier; OxFunc now has real local pressure from:
+   - lexical capture,
+   - immediate invocation,
+   - higher-order helper invocation,
+   - Defined Name callable preservation.
+4. Defined Name callable preservation is now first-pass Excel scope, not a deferred extension.
+5. UDF/add-in/interoperable callable origins and returns still remain deferred.
+
+This means the current seam split looks more concrete:
+1. OxFml:
+   - helper syntax
+   - helper binding/admission
+   - direct worksheet formation of callable/helper artifacts
+2. OxFunc:
+   - typed callable runtime semantics after preparation
+   - invocation
+   - helper-family execution over prepared callable values
+   - callable publication/result behavior on the admitted slice
+
+### 20.4 `RTD` As A Distinct Seam Class
+Relevant local records:
+1. `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
+2. `docs/function-lane/RTD_REFERENCE_CAPTURE_AND_SEAM_NOTES.md`
+3. `docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md`
+4. `docs/function-lane/W43_EXECUTION_RECORD.md`
+
+OxFunc now treats `RTD` as a distinct seam class rather than just another external-data function.
+
+Current local reading:
+1. OxFunc should own the admitted `RTD` call shape and the result projection boundary.
+2. OxFunc should not own:
+   - COM activation
+   - topic subscription tables
+   - topic lifetime tracking
+   - callback threading / `UpdateNotify`
+   - host recalc scheduling
+   - workbook/cell subscription maps
+3. Those responsibilities sit above OxFunc, between OxFml and the higher-level host application.
+
+### 20.5 Current Best-Attempt `RTD` Interface Direction
+OxFunc now has a local first-pass runtime/interface surface:
+1. `RtdRequest`
+   - `prog_id`
+   - `server_name`
+   - `topic_strings`
+2. `RtdProvider`
+   - host-supplied resolution hook
+3. `RtdProviderResult`
+   - `Value`
+   - `NoValueYet`
+   - `CapabilityDenied`
+   - `ConnectionFailed`
+   - `ProviderError`
+
+Current local worksheet projection:
+1. `Value(v)` -> `v`
+2. `NoValueYet` -> `#N/A`
+3. `CapabilityDenied` -> `#BLOCKED!`
+4. `ConnectionFailed` -> `#CONNECT!`
+5. `ProviderError(code)` -> `code`
+
+This is a best-attempt OxFunc-local seam, not a locked shared contract.
+
+### 20.6 What `RTD` Suggests More Broadly
+`RTD` reinforces a broader seam pattern that is likely to matter for other host/provider functions:
+1. OxFml can prepare and classify a function call whose true machinery lives above OxFunc.
+2. OxFunc can then evaluate against a typed host-supplied outcome surface without taking ownership of lifecycle/runtime orchestration.
+3. This is similar in shape to host-query and capability-view work:
+   - prepared request
+   - typed host/provider capability surface
+   - typed value/error projection back into worksheet semantics
+
+That pattern may become useful later for:
+1. `SUBTOTAL` / `AGGREGATE`
+2. `ISFORMULA`
+3. provider-language or provider-data functions
+4. other capability-sensitive seams
+
+### 20.7 Additional Relevant Local Lesson
+The recent function work continues to reinforce one useful rule for the seam:
+1. XLL bridge/harness limitations should be documented,
+2. but they should not be treated as open OxFunc semantic lanes when native worksheet evidence and core/runtime evidence already pin the slice honestly.
+
+That matters for both:
+1. callable/helper surfaces in `W38`,
+2. and any future host/provider seam like `RTD`.
+
+### 20.8 What OxFunc Thinks OxFml Should Take From This Round
+The most useful takeaways on the OxFml side are:
+1. the callable seam is now less hypothetical because OxFunc has a real local callable runtime substrate and real higher-order helper evidence,
+2. direct helper formation/binding remains an OxFml-owned concern,
+3. Defined Name callable preservation should now be treated as first-pass Excel-scope seam pressure,
+4. `RTD` should probably be modeled as a prepared host-subscription request plus typed host result surface, not as an ordinary provider fetch kernel,
+5. the OxFml <-> OxFunc boundary can stay minimal if it preserves the right typed prepared artifacts and typed host result classes.
+
+### 20.9 Intentionally Still Open
+This first seam-improvement round does not lock:
+1. the final shared callable carrier field set,
+2. the final direct `LET` / `LAMBDA` formation artifact shape,
+3. the final shared naming of callable carrier fields,
+4. the exact current-baseline Excel matrix for all `RTD` startup/disconnect/save-value edge cases,
+5. any broader generalized provider/subscription contract beyond the current `RTD` first pass.
+
+These remain open until stronger evidence or a more concrete implementation handoff is needed.
+
+## 21. Processed Latest OxFml Update And Current Stabilization Move
+### 21.1 Current OxFunc Reading
+OxFunc reads the latest OxFml note as largely convergent and more stabilization-oriented than the earlier callable-only rounds.
+
+The most important incorporated points are:
+1. the current three-topic stabilization order remains:
+   - external library-context snapshot
+   - availability / feature-gate / provider-failure taxonomy
+   - callable-value minimum carrier
+2. callable transport remains intentionally open,
+3. the callable round remains functionally converged enough that it should not be reopened without a concrete trigger,
+4. higher-order helper evidence from `W38` is still useful local pressure but not yet treated by OxFml as upstream seam-lock evidence,
+5. OxFml now asks for something more concrete on Topic A:
+   - either a pinned export for the library-context snapshot,
+   - or a stable downstream pointer plus export-reading guidance.
+
+OxFunc agrees with that reading.
+
+### 21.2 What OxFunc Incorporates
+OxFunc now incorporates the following as the settled reading for this stage:
+1. the callable/library-context exchange is no longer the main note-level blocker,
+2. the next honest stabilization step is not more abstract callable naming debate,
+3. the next honest stabilization step is producing a real downstream library-context snapshot export surface,
+4. the generic staged availability model remains the right default for both callable and host/provider seams,
+5. `RTD` fits that staged pattern as a prepared request plus typed host/provider outcome surface rather than as a reason to reopen the callable round.
+
+### 21.3 What OxFunc Still Proposes As Alternatives
+OxFunc still prefers:
+1. keeping candidate carrier names such as `callable_token`, `arity_shape`, and `invocation_contract_ref` as candidate labels only,
+2. keeping richer callable detail outside the minimum hot-path carrier by default,
+3. treating direct `LET` / `LAMBDA` formation artifacts as OxFml-owned until a narrower implementation-facing seam is required,
+4. not forcing a generalized provider/subscription contract from `RTD` before more than one function seam actually needs it.
+
+These are not presented as active disagreements.
+They are the current narrower OxFunc preferences while transport remains open.
+
+### 21.4 Current Stabilization Move
+OxFunc now has a concrete downstream owner for Topic A:
+1. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md`
+
+Current OxFunc intent for `W044`:
+1. produce the first honest library-context snapshot export artifact or stable export pointer,
+2. pin snapshot identity/versioning,
+3. project the minimum exercised field set that OxFml is asking for,
+4. provide export-reading guidance rather than leaving the downstream catalog/profile surfaces implicit.
+
+### 21.5 Current Best Honest `W044` Snapshot Export
+`W044` now has a first explicit downstream export:
+1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
+2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
+3. generator:
+   - `tools/w44-probe/generate-w44-library-context-snapshot.ps1`
+
+Current first-pass export facts:
+1. `534` rows:
+   - `511` built-in function rows
+   - `23` operator rows:
+     - the full current `W45` non-`@` operator surface
+     - one explicitly modeled `FUNC.OP_IMPLICIT_INTERSECTION` row
+2. `snapshot_id = oxfunc-libctx-v1`,
+3. `snapshot_generation = 2026-03-20`,
+4. `source_commit_short = a9960fc`,
+5. `source_commit_full = a9960fca1cdc02daf85ce1e1052d5ae81574cbe0`,
+6. `source_tree_state = dirty`,
+7. stable function/operator ids emitted as current OxFunc-local `FUNC.<CANONICAL_NAME>` ids,
+8. explicit pointer to the multilingual name table seed,
+9. explicit OxFunc-local semantic/gating reference fields,
+10. detailed `FunctionMeta`-derived profile fields where they are currently extractable,
+11. explicit registration-source classification through:
+   - `registration_source_kind`
+   - `built_in_catalog_function`
+   - `built_in_operator_export`
+   - `doc_modeled_operator`
+12. seam-heavy classification fields:
+   - `metadata_status`
+   - `special_interface_kind`
+   - `admission_interface_kind`
+   - `preparation_owner`
+   - `runtime_boundary_kind`
+   - `arity_shape_note`
+   - `interface_contract_ref`
+13. explicit OxFml-facing reading guidance.
+14. the completed `W039` dynamic-array reshaping family is now reflected as real extracted profile rows rather than `catalog_only` rows for examples such as:
+   - `FUNC.CHOOSECOLS`
+   - `FUNC.FILTER`
+   - `FUNC.UNIQUE`
+   - `FUNC.VSTACK`
+15. ordinary exported operators now also carry `interface_contract_ref` back to `W045`, while `FUNC.OP_IMPLICIT_INTERSECTION` still points to its own special investigation surface.
+
+Current special rows worth consuming directly:
+1. `FUNC.LET`
+2. `FUNC.LAMBDA`
+3. `FUNC.RTD`
+4. `FUNC.OP_IMPLICIT_INTERSECTION`
+
+Those rows now carry:
+1. `registration_source_kind`
+2. `special_interface_kind`
+3. `admission_interface_kind`
+4. `preparation_owner`
+5. `runtime_boundary_kind`
+6. `interface_contract_ref`
+7. `source_commit_short`
+8. `source_commit_full`
+9. `source_tree_state`
+
+Current additional representative ordinary rows worth consuming directly:
+1. `FUNC.CHOOSECOLS`
+2. `FUNC.FILTER`
+3. `FUNC.UNIQUE`
+4. `FUNC.VSTACK`
+
+Those rows now carry:
+1. extracted arity/profile columns from the actual completed runtime family,
+2. `metadata_status = function_meta_extracted`,
+3. `interface_contract_ref = docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`
+
+This is now the best honest downstream stabilization artifact for Topic A.
+
+It still does not yet lock:
+1. direct normalized detailed profile fields for every seam-heavy row such as `LET` and `LAMBDA`,
+2. final cross-repo field names,
+3. fully dereferenceable per-entry semantic/gating profile bundles,
+4. the full future operator universe beyond the current exported set plus the explicitly modeled implicit-intersection row.
+
+### 21.5A Explicit OxFml Feedback Request
+OxFunc now wants to treat this richer `W044` export as attempt one, not as a field-set lock.
+
+Current downstream request to OxFml:
+1. tell us which of these exported fields are already useful as-is,
+2. tell us which fields should be renamed, split, or dropped,
+3. tell us whether `interface_contract_ref` is a useful first-pass bridge for seam-heavy rows,
+4. tell us whether the new first-pass seam-facing fields:
+   - `admission_interface_kind`
+   - `preparation_owner`
+   - `runtime_boundary_kind`
+   - `arity_shape_note`
+   are useful, or whether OxFml wants a different split,
+5. tell us whether `registration_source_kind` is useful as a direct field or whether OxFml would prefer it folded into another profile surface,
+6. tell us whether the new provenance triple
+   - `source_commit_short`
+   - `source_commit_full`
+   - `source_tree_state`
+   is sufficient for test pinning or whether OxFml still wants an additional tag/ref field,
+7. tell us whether OxFml wants additional direct columns for `LET` / `LAMBDA` admission shape before we normalize them locally.
+
+### 21.5B Recommended OxFml Consumption Path
+Current OxFunc recommendation:
+1. consume `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` directly,
+2. pin OxFml-side tests and semantic-plan fixtures to:
+   - `snapshot_id = oxfunc-libctx-v1`
+   - `snapshot_generation = 2026-03-20`
+   - `source_commit_short = a9960fc`
+   - `source_commit_full = a9960fca1cdc02daf85ce1e1052d5ae81574cbe0`
+   - `source_tree_state = dirty`
+3. treat `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` as the interpretation guide for the first pass,
+4. use concrete snapshot-consumption mismatches as the next bounded trigger rather than reopening broad seam theory.
+
+Additional OxFunc note:
+1. the current export is still a valid bounded integration artifact when `source_tree_state = dirty`,
+2. but OxFunc does not want that confused with a clean release snapshot,
+3. so any downstream mismatch report should preserve all three provenance fields.
+
+### 21.5C Processed Latest OxFml Note
+OxFunc reads the latest OxFml note as convergent and narrow in a useful way:
+1. keep using the current `W044` export as the concrete integration artifact,
+2. preserve `source_tree_state` in downstream mismatch reports,
+3. add a stronger commit-level pin beside `source_commit_short` when convenient,
+4. keep pushing toward more dereferenceable semantic/gating surfaces without blocking first-pass snapshot consumption now.
+
+### 21.5D Current OxFunc Reading
+OxFunc reads the latest OxFml note as convergent on the important points for this round:
+1. the next useful progress is concrete snapshot consumption,
+2. the callable round should remain closed unless a narrower trigger appears,
+3. `RTD` should stay a prepared request plus typed host/provider outcome seam,
+4. remaining differences are about field-set quality and evidence maturity, not active semantic disagreement.
+5. a useful next bounded consumption check is whether the refreshed `W039` ordinary dynamic-array rows already give OxFml enough planning information without a special-case side channel,
+6. the new `source_commit_full` field directly incorporates one of OxFml's few concrete export-shape asks without forcing a broader field-lock round.
+
+### 21.6 Still Intentionally Open
+The following remain intentionally open after processing the latest OxFml note:
+1. final shared library-context snapshot ABI,
+2. final callable carrier field set and canonical names,
+3. final callable carrier versus provenance split,
+4. exact operator-admission lock,
+5. any broader generalized provider/subscription contract inferred from `RTD`.
+
+### 21.7 Working Rule
+After the current refreshed `W044` export surface:
+1. treat the current OxFml note as convergent and stabilization-oriented,
+2. treat the callable round as closed for now,
+3. treat the refreshed snapshot export as the current best downstream stabilization artifact for Topic A,
+4. do not reopen callable-note narrowing unless a concrete field-set or runtime trigger appears.
+

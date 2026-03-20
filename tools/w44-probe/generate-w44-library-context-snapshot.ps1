@@ -6,8 +6,12 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\")
 Set-Location $repoRoot
+$sourceCommitShort = (git rev-parse --short HEAD).Trim()
+$sourceCommitFull = (git rev-parse HEAD).Trim()
+$sourceTreeState = if ([string]::IsNullOrWhiteSpace((git status --porcelain))) { "clean" } else { "dirty" }
 
 $metaPattern = 'function_id:\s*"(?<id>[^"]+)"[\s\S]*?arity:\s*Arity\s*\{\s*min:\s*(?<min>\d+),\s*max:\s*(?<max>\d+)\s*\}[\s\S]*?determinism:\s*DeterminismClass::(?<det>\w+)[\s\S]*?volatility:\s*VolatilityClass::(?<vol>\w+)[\s\S]*?host_interaction:\s*HostInteractionClass::(?<host>\w+)[\s\S]*?thread_safety:\s*ThreadSafetyClass::(?<thread>\w+)[\s\S]*?arg_preparation_profile:\s*ArgPreparationProfile::(?<arg>\w+)[\s\S]*?coercion_lift_profile:\s*CoercionLiftProfile::(?<coercion>\w+)[\s\S]*?kernel_signature_class:\s*KernelSignatureClass::(?<kernel>\w+)[\s\S]*?fec_dependency_profile:\s*FecDependencyProfile::(?<fec>\w+)[\s\S]*?surface_fec_dependency_profile:\s*FecDependencyProfile::(?<surface>\w+)'
+$reshapeMetaPattern = 'pub const \w+_META:\s*FunctionMeta\s*=\s*reshape_meta!\("(?<id>[^"]+)",\s*(?<min>\d+),\s*(?<max>\d+)\);'
 
 $metaById = @{}
 Get-ChildItem "crates/oxfunc_core/src/functions" -Filter *.rs | ForEach-Object {
@@ -26,6 +30,24 @@ Get-ChildItem "crates/oxfunc_core/src/functions" -Filter *.rs | ForEach-Object {
             fec_dependency_profile = $m.Groups['fec'].Value
             surface_fec_dependency_profile = $m.Groups['surface'].Value
             metadata_status = "function_meta_extracted"
+        }
+    }
+    foreach ($m in [regex]::Matches($text, $reshapeMetaPattern)) {
+        if (-not $metaById.ContainsKey($m.Groups['id'].Value)) {
+            $metaById[$m.Groups['id'].Value] = [ordered]@{
+                arity_min = $m.Groups['min'].Value
+                arity_max = $m.Groups['max'].Value
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_extracted"
+            }
         }
     }
 }
@@ -66,6 +88,10 @@ function Get-InterfaceContractRef {
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "docs/function-lane/IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md" }
     }
 
+    if ($StableId -like "FUNC.OP_*") {
+        return "docs/worksets/W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md"
+    }
+
     switch ($CanonicalName) {
         "LET" { return "docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md" }
         "LAMBDA" { return "docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md" }
@@ -76,6 +102,21 @@ function Get-InterfaceContractRef {
         "BYROW" { return "docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md" }
         "BYCOL" { return "docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md" }
         "MAKEARRAY" { return "docs/worksets/W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md" }
+        "CHOOSECOLS" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "CHOOSEROWS" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "DROP" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "EXPAND" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "FILTER" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "SORT" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "SORTBY" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "TAKE" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "TOCOL" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "TOROW" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "TRANSPOSE" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "UNIQUE" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "VSTACK" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "WRAPCOLS" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
+        "WRAPROWS" { return "docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md" }
         default { return "" }
     }
 }
@@ -206,8 +247,12 @@ $functionRows = Import-Csv "docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE
     [pscustomobject]([ordered]@{
         snapshot_id = "oxfunc-libctx-v1"
         snapshot_generation = "2026-03-20"
+        source_commit_short = $sourceCommitShort
+        source_commit_full = $sourceCommitFull
+        source_tree_state = $sourceTreeState
         lane_id = "oxfunc"
         entry_kind = "built_in_function"
+        registration_source_kind = "built_in_catalog_function"
         surface_stable_id = $stableId
         canonical_surface_name = $_.function_name
         name_resolution_table_ref = "docs/function-lane/W28_FUNCTION_NAME_LOCALIZATION_LIBRARY_SEED.csv"
@@ -249,8 +294,12 @@ $operatorRows = foreach ($operatorId in $operatorIds) {
     [pscustomobject]([ordered]@{
         snapshot_id = "oxfunc-libctx-v1"
         snapshot_generation = "2026-03-20"
+        source_commit_short = $sourceCommitShort
+        source_commit_full = $sourceCommitFull
+        source_tree_state = $sourceTreeState
         lane_id = "oxfunc"
         entry_kind = "built_in_operator"
+        registration_source_kind = "built_in_operator_export"
         surface_stable_id = $operatorId
         canonical_surface_name = $canonical
         name_resolution_table_ref = "oxfunc.local.names.operators.current_baseline.v1"
@@ -284,8 +333,12 @@ $operatorRows = foreach ($operatorId in $operatorIds) {
 $implicitIntersectionRow = [pscustomobject]([ordered]@{
     snapshot_id = "oxfunc-libctx-v1"
     snapshot_generation = "2026-03-20"
+    source_commit_short = $sourceCommitShort
+    source_commit_full = $sourceCommitFull
+    source_tree_state = $sourceTreeState
     lane_id = "oxfunc"
     entry_kind = "built_in_operator"
+    registration_source_kind = "doc_modeled_operator"
     surface_stable_id = "FUNC.OP_IMPLICIT_INTERSECTION"
     canonical_surface_name = "OP_IMPLICIT_INTERSECTION"
     name_resolution_table_ref = "oxfunc.local.names.operators.current_baseline.v1"
@@ -320,7 +373,48 @@ if (-not ($rows | Where-Object { $_.surface_stable_id -eq "FUNC.OP_IMPLICIT_INTE
     $rows += $implicitIntersectionRow
 }
 
-$rows | Sort-Object entry_kind, surface_stable_id | Export-Csv $OutCsv -NoTypeInformation
+$columnOrder = @(
+    "snapshot_id",
+    "snapshot_generation",
+    "source_commit_short",
+    "source_commit_full",
+    "source_tree_state",
+    "lane_id",
+    "entry_kind",
+    "registration_source_kind",
+    "surface_stable_id",
+    "canonical_surface_name",
+    "name_resolution_table_ref",
+    "semantic_trait_profile_ref",
+    "gating_profile_ref",
+    "version_marker",
+    "category",
+    "interesting",
+    "arity_min",
+    "arity_max",
+    "arg_preparation_profile",
+    "coercion_lift_profile",
+    "kernel_signature_class",
+    "determinism_class",
+    "volatility_class",
+    "host_interaction_class",
+    "thread_safety_class",
+    "fec_dependency_profile",
+    "surface_fec_dependency_profile",
+    "metadata_status",
+    "special_interface_kind",
+    "admission_interface_kind",
+    "preparation_owner",
+    "runtime_boundary_kind",
+    "arity_shape_note",
+    "interface_contract_ref",
+    "source_catalog_ref"
+)
+
+$rows |
+    Sort-Object entry_kind, surface_stable_id |
+    Select-Object $columnOrder |
+    Export-Csv $OutCsv -NoTypeInformation
 
 $grouped = $rows | Group-Object entry_kind | ForEach-Object { "$($_.Name)=$($_.Count)" }
 Write-Output ("wrote " + $rows.Count + " rows: " + ($grouped -join ", "))

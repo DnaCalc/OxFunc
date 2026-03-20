@@ -132,5 +132,7 @@ Legacy CSE interaction baseline:
 4. What worksheet-visible outcome should OxFunc expect when caller-relative selection fails to pick a unique item?
 5. Which reference-seam operators must already exist before `@` can be implemented honestly?
    - current answer: `OP_SPILL_REF` must exist somewhere in the overall architecture, but current seam doctrine leaves it primarily on the OxFml side unless future evidence proves OxFunc needs spill-sensitive provenance.
+6. Does legacy Control+Shift+Enter (`{=...}`) array-formula context require any OxFunc-visible semantic mode, or is it entirely an OxFml/admission/publication concern?
+   - current note: keep this explicitly open; it may interact with `@` migration/scalarization behavior and with whether some array-era formulas need a distinct prepared-call or publication mode even when the function kernel is unchanged.
 6. Can the OxFml -> OxFunc seam expose `@` as a function-evaluation mode rather than requiring OxFunc to inspect general parse structure?
    - current answer: possibly for bound function-call operands, but not as the only model for all `@` operands.
