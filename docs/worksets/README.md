@@ -49,6 +49,8 @@ Kickoff worksets:
 41. `W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md` (W41)
 42. `W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md` (W42)
 43. `W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md` (W43)
+44. `W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md` (W44)
+45. `W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md` (W45)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -77,5 +79,7 @@ Replay rollout sequence after `W016`:
 7. `W028` is complete for its declared discovery-and-library-seed scope.
 8. `W029` is complete as a benchmark-and-classification packet; `W032` repaired the reopened finance packet and extracted the remaining large-root `XIRR` precision lane to `W037`.
 9. `W030` and `W031` are now complete as seam-definition/reconciliation packets; successor ownership moved to `W034`, `W035`, and `W036`.
+10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
+11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
 
 

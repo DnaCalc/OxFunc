@@ -131,6 +131,9 @@ import OxFunc.Functions.Now
 import OxFunc.Functions.Odd
 import OxFunc.Functions.OrFn
 import OxFunc.Functions.OpAdd
+import OxFunc.Functions.OperatorArithmeticFamily
+import OxFunc.Functions.OperatorCompareConcatFamily
+import OxFunc.Functions.OperatorReferenceFamily
 import OxFunc.Functions.PearsonFn
 import OxFunc.Functions.PhiFn
 import OxFunc.Functions.SpillRef

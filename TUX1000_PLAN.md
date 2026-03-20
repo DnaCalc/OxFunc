@@ -257,4 +257,10 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 36. `W43` RTD COM activation and topic lifecycle seam:
    - `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
    - goal: separate `RTD` from the generic provider packet and pin the minimal OxFml/OxFunc seam around ProgID/topic-string shape, host-managed topic lifetime, and external invalidation/value projection.
+37. `W44` library-context snapshot export baseline:
+   - `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md`
+   - goal: produce the first honest OxFunc-local export or stable pointer for the external library-context snapshot that OxFml is now asking to consume directly.
+38. `W45` non-`@` operator universe closure pass:
+   - `docs/worksets/W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md`
+   - goal: run one dedicated operator packet for every evaluable non-`@` operator surface across contract, runtime, Lean/formal, empirical Excel validation, replay/test evidence, and library-context export refinement, while leaving `W014` as the dedicated implicit-intersection owner.
 

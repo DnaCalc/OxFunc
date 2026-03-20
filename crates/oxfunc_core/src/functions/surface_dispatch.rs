@@ -262,6 +262,27 @@ use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
+use crate::functions::operator_arithmetic_family::{
+    OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
+    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_divide_surface, eval_op_multiply_surface,
+    eval_op_negate_surface, eval_op_percent_surface, eval_op_power_surface,
+    eval_op_subtract_surface, eval_op_unary_plus_surface, map_operator_binary_error_to_ws,
+    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
+    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
+};
+use crate::functions::operator_compare_concat_family::{
+    OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
+    OP_LESS_THAN_META, OP_NOT_EQUAL_META, eval_op_concat_surface, eval_op_equal_surface,
+    eval_op_greater_equal_surface, eval_op_greater_than_surface, eval_op_less_equal_surface,
+    eval_op_less_than_surface, eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws,
+};
+use crate::functions::operator_reference_family::{
+    OP_INTERSECTION_REF_META, OP_RANGE_REF_META, OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META,
+    OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META, eval_op_intersection_ref_surface,
+    eval_op_range_ref_surface, eval_op_trim_ref_both_surface, eval_op_trim_ref_leading_surface,
+    eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
+    map_operator_reference_error_to_ws,
+};
 use crate::functions::or_fn::{eval_or_surface, map_or_error_to_ws};
 use crate::functions::pearson_fn::{eval_pearson_surface, map_pearson_error_to_ws};
 use crate::functions::percentile_exc_fn::{
@@ -708,7 +729,27 @@ pub const FUNC_ID_ODDLYIELD: &str = "FUNC.ODDLYIELD";
 pub const FUNC_ID_OR: &str = "FUNC.OR";
 pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
 pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
+pub const FUNC_ID_OP_CONCAT: &str = "FUNC.OP_CONCAT";
+pub const FUNC_ID_OP_DIVIDE: &str = "FUNC.OP_DIVIDE";
+pub const FUNC_ID_OP_EQUAL: &str = "FUNC.OP_EQUAL";
+pub const FUNC_ID_OP_GREATER_EQUAL: &str = "FUNC.OP_GREATER_EQUAL";
+pub const FUNC_ID_OP_GREATER_THAN: &str = "FUNC.OP_GREATER_THAN";
+pub const FUNC_ID_OP_INTERSECTION_REF: &str = "FUNC.OP_INTERSECTION_REF";
+pub const FUNC_ID_OP_LESS_EQUAL: &str = "FUNC.OP_LESS_EQUAL";
+pub const FUNC_ID_OP_LESS_THAN: &str = "FUNC.OP_LESS_THAN";
+pub const FUNC_ID_OP_MULTIPLY: &str = "FUNC.OP_MULTIPLY";
+pub const FUNC_ID_OP_NEGATE: &str = "FUNC.OP_NEGATE";
+pub const FUNC_ID_OP_NOT_EQUAL: &str = "FUNC.OP_NOT_EQUAL";
+pub const FUNC_ID_OP_PERCENT: &str = "FUNC.OP_PERCENT";
+pub const FUNC_ID_OP_POWER: &str = "FUNC.OP_POWER";
+pub const FUNC_ID_OP_RANGE_REF: &str = "FUNC.OP_RANGE_REF";
 pub const FUNC_ID_OP_SPILL_REF: &str = "FUNC.OP_SPILL_REF";
+pub const FUNC_ID_OP_SUBTRACT: &str = "FUNC.OP_SUBTRACT";
+pub const FUNC_ID_OP_TRIM_REF_BOTH: &str = "FUNC.OP_TRIM_REF_BOTH";
+pub const FUNC_ID_OP_TRIM_REF_LEADING: &str = "FUNC.OP_TRIM_REF_LEADING";
+pub const FUNC_ID_OP_TRIM_REF_TRAILING: &str = "FUNC.OP_TRIM_REF_TRAILING";
+pub const FUNC_ID_OP_UNARY_PLUS: &str = "FUNC.OP_UNARY_PLUS";
+pub const FUNC_ID_OP_UNION_REF: &str = "FUNC.OP_UNION_REF";
 pub const FUNC_ID_PEARSON: &str = "FUNC.PEARSON";
 pub const FUNC_ID_PDURATION: &str = "FUNC.PDURATION";
 pub const FUNC_ID_PERMUT: &str = "FUNC.PERMUT";
@@ -1699,9 +1740,29 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_OR => Some(crate::functions::or_fn::OR_META.arg_preparation_profile),
         FUNC_ID_OFFSET => Some(crate::functions::offset::OFFSET_META.arg_preparation_profile),
         FUNC_ID_OP_ADD => Some(crate::functions::op_add::OP_ADD_META.arg_preparation_profile),
+        FUNC_ID_OP_CONCAT => Some(OP_CONCAT_META.arg_preparation_profile),
+        FUNC_ID_OP_DIVIDE => Some(OP_DIVIDE_META.arg_preparation_profile),
+        FUNC_ID_OP_EQUAL => Some(OP_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_GREATER_EQUAL => Some(OP_GREATER_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_GREATER_THAN => Some(OP_GREATER_THAN_META.arg_preparation_profile),
+        FUNC_ID_OP_INTERSECTION_REF => Some(OP_INTERSECTION_REF_META.arg_preparation_profile),
+        FUNC_ID_OP_LESS_EQUAL => Some(OP_LESS_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_LESS_THAN => Some(OP_LESS_THAN_META.arg_preparation_profile),
+        FUNC_ID_OP_MULTIPLY => Some(OP_MULTIPLY_META.arg_preparation_profile),
+        FUNC_ID_OP_NEGATE => Some(OP_NEGATE_META.arg_preparation_profile),
+        FUNC_ID_OP_NOT_EQUAL => Some(OP_NOT_EQUAL_META.arg_preparation_profile),
+        FUNC_ID_OP_PERCENT => Some(OP_PERCENT_META.arg_preparation_profile),
+        FUNC_ID_OP_POWER => Some(OP_POWER_META.arg_preparation_profile),
+        FUNC_ID_OP_RANGE_REF => Some(OP_RANGE_REF_META.arg_preparation_profile),
         FUNC_ID_OP_SPILL_REF => {
             Some(crate::functions::op_spill_ref::OP_SPILL_REF_META.arg_preparation_profile)
         }
+        FUNC_ID_OP_SUBTRACT => Some(OP_SUBTRACT_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_BOTH => Some(OP_TRIM_REF_BOTH_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_LEADING => Some(OP_TRIM_REF_LEADING_META.arg_preparation_profile),
+        FUNC_ID_OP_TRIM_REF_TRAILING => Some(OP_TRIM_REF_TRAILING_META.arg_preparation_profile),
+        FUNC_ID_OP_UNARY_PLUS => Some(OP_UNARY_PLUS_META.arg_preparation_profile),
+        FUNC_ID_OP_UNION_REF => Some(OP_UNION_REF_META.arg_preparation_profile),
         FUNC_ID_PEARSON => Some(crate::functions::pearson_fn::PEARSON_META.arg_preparation_profile),
         FUNC_ID_PDURATION => Some(
             crate::functions::financial_time_value_family::PDURATION_META.arg_preparation_profile,
@@ -3115,9 +3176,53 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_OP_ADD => {
             eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e))
         }
+        FUNC_ID_OP_CONCAT => eval_op_concat_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_DIVIDE => {
+            eval_op_divide_surface(args, resolver).map_err(|e| map_operator_binary_error_to_ws(&e))
+        }
+        FUNC_ID_OP_EQUAL => eval_op_equal_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_GREATER_EQUAL => eval_op_greater_equal_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_GREATER_THAN => eval_op_greater_than_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_INTERSECTION_REF => eval_op_intersection_ref_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
+        FUNC_ID_OP_LESS_EQUAL => eval_op_less_equal_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_LESS_THAN => eval_op_less_than_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_MULTIPLY => eval_op_multiply_surface(args, resolver)
+            .map_err(|e| map_operator_binary_error_to_ws(&e)),
+        FUNC_ID_OP_NEGATE => {
+            eval_op_negate_surface(args, resolver).map_err(|e| map_operator_unary_error_to_ws(&e))
+        }
+        FUNC_ID_OP_NOT_EQUAL => eval_op_not_equal_surface(args, resolver)
+            .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_PERCENT => {
+            eval_op_percent_surface(args, resolver).map_err(|e| map_operator_unary_error_to_ws(&e))
+        }
+        FUNC_ID_OP_POWER => {
+            eval_op_power_surface(args, resolver).map_err(|e| map_operator_binary_error_to_ws(&e))
+        }
+        FUNC_ID_OP_RANGE_REF => eval_op_range_ref_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
         FUNC_ID_OP_SPILL_REF => {
             eval_op_spill_ref_surface(args, resolver).map_err(|e| map_op_spill_ref_error_to_ws(&e))
         }
+        FUNC_ID_OP_SUBTRACT => eval_op_subtract_surface(args, resolver)
+            .map_err(|e| map_operator_binary_error_to_ws(&e)),
+        FUNC_ID_OP_TRIM_REF_BOTH => eval_op_trim_ref_both_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
+        FUNC_ID_OP_TRIM_REF_LEADING => eval_op_trim_ref_leading_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
+        FUNC_ID_OP_TRIM_REF_TRAILING => eval_op_trim_ref_trailing_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
+        FUNC_ID_OP_UNARY_PLUS => eval_op_unary_plus_surface(args, resolver)
+            .map_err(|e| map_operator_unary_error_to_ws(&e)),
+        FUNC_ID_OP_UNION_REF => eval_op_union_ref_surface(args, resolver)
+            .map_err(|e| map_operator_reference_error_to_ws(&e)),
         FUNC_ID_T => eval_t_surface(args, resolver).map_err(|e| map_t_error_to_ws(&e)),
         FUNC_ID_TAN => eval_tan_surface(args, resolver).map_err(|e| map_tan_error_to_ws(&e)),
         FUNC_ID_TANH => eval_tanh_surface(args, resolver).map_err(|e| map_tanh_error_to_ws(&e)),
@@ -3304,6 +3409,9 @@ pub fn eval_surface_q_unary_number(
         FUNC_ID_LN => ln_kernel(value),
         FUNC_ID_LOG10 => log10_kernel(value),
         FUNC_ID_ODD => odd_kernel(value),
+        FUNC_ID_OP_NEGATE => op_negate_kernel(value),
+        FUNC_ID_OP_PERCENT => op_percent_kernel(value),
+        FUNC_ID_OP_UNARY_PLUS => op_unary_plus_kernel(value),
         FUNC_ID_RADIANS => Ok(radians_kernel(value)),
         FUNC_ID_SEC => sec_kernel(value),
         FUNC_ID_SECH => sech_kernel(value),
@@ -3337,7 +3445,11 @@ pub fn eval_surface_q_binary_number(
         FUNC_ID_MOD => mod_kernel(lhs, rhs),
         FUNC_ID_MROUND => mround_kernel(lhs, rhs),
         FUNC_ID_OP_ADD => Ok(op_add_kernel(lhs, rhs)),
+        FUNC_ID_OP_DIVIDE => op_divide_kernel(lhs, rhs),
+        FUNC_ID_OP_MULTIPLY => op_multiply_kernel(lhs, rhs),
+        FUNC_ID_OP_POWER => power_kernel(lhs, rhs),
         FUNC_ID_POWER => power_kernel(lhs, rhs),
+        FUNC_ID_OP_SUBTRACT => op_subtract_kernel(lhs, rhs),
         FUNC_ID_QUOTIENT => quotient_kernel(lhs, rhs),
         FUNC_ID_ROUND => Ok(round_kernel(lhs, rhs.trunc() as i32)),
         FUNC_ID_TRUNC => Ok(trunc_kernel(lhs, rhs.trunc() as i32)),

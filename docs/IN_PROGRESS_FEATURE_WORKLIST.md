@@ -3,7 +3,7 @@
 Canonical repo-level register of feature areas that are in-progress under workset completion doctrine.
 
 Status: active.
-Last updated: 2026-03-18.
+Last updated: 2026-03-20.
 
 ## Status Vocabulary
 
@@ -17,8 +17,8 @@ Last updated: 2026-03-18.
 
 - **Status**: in-progress
 - **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
-- **Remaining gaps**: the host/metadata/database successor packet `W023`, successor seam packets `W034` / `W035` / `W036`, reopened `XIRR` precision repair in `W037`, the newly opened interesting-function packets `W038` / `W039` / `W040` / `W041` / `W043`, and operator-as-function (`OP_*`) semantics for undeclared operators.
-- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet and extracted the remaining `XIRR` precision lane to `W037`, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, and the next interesting families are now packeted explicitly instead of remaining as an undifferentiated backlog.
+- **Remaining gaps**: the host/metadata/database successor packet `W023`, successor seam packets `W034` / `W035` / `W036`, reopened `XIRR` precision repair in `W037`, the newly opened interesting-function packets `W038` / `W039` / `W040` / `W041` / `W043`, and deferred implicit intersection in `W014`.
+- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet and extracted the remaining `XIRR` precision lane to `W037`, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, `W045` closes the current non-`@` operator universe, and the next interesting families are now packeted explicitly instead of remaining as an undifferentiated backlog.
 - **Canonical owner**: ongoing across worksets, currently `W023` / `W034` / `W035` / `W036` / `W037` for the residual low-interest universe, `W038` / `W039` / `W040` / `W041` / `W043` for the remaining interesting-function universe, and `W014` for deferred `@`.
 
 ### IP-02: Locale and Version Sweeps
@@ -84,3 +84,11 @@ Last updated: 2026-03-18.
 - **Remaining gaps**: version-marker extraction, normative variation matching against `MS-OE376`, normalization of localized function names against canonical OxFunc ids, and eventual library-context export for OxFml parse/bind use.
 - **Why still open**: `W28` completed its declared discovery-and-seed scope, but the actual localization library and normative reconciliation work remain follow-on packets.
 - **Canonical owner**: `W028`.
+
+### IP-10: Library-Context Snapshot Export
+
+- **Status**: in-progress
+- **Current floor**: OxFunc now exposes a first explicit snapshot artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` with identity/version semantics, first-pass function and operator rows, metadata profiles, and reading guidance in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`.
+- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, and an OxFml consumer example.
+- **Why still open**: the first-pass snapshot is now real and usable, but it is still an attempt-one stabilization artifact rather than a locked cross-repo ABI.
+- **Canonical owner**: `W044`.
