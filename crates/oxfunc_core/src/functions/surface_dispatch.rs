@@ -156,6 +156,15 @@ use crate::functions::dollar_fn::{eval_dollar_surface, map_dollar_error_to_ws};
 use crate::functions::dollar_fraction_family::{
     eval_dollarde_surface, eval_dollarfr_surface, map_dollar_fraction_error_to_ws,
 };
+use crate::functions::dynamic_array_reshape_family::{
+    CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
+    TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
+    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
+    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
+    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
+    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
+    map_dynamic_array_reshape_error_to_ws,
+};
 use crate::functions::engineering_radix_family::{
     eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
     eval_dec2hex_surface, eval_dec2oct_surface, eval_hex2bin_surface, eval_hex2dec_surface,
@@ -470,6 +479,8 @@ pub const FUNC_ID_CEILING_PRECISE: &str = "FUNC.CEILING.PRECISE";
 pub const FUNC_ID_CHIDIST: &str = "FUNC.CHIDIST";
 pub const FUNC_ID_CHIINV: &str = "FUNC.CHIINV";
 pub const FUNC_ID_CHOOSE: &str = "FUNC.CHOOSE";
+pub const FUNC_ID_CHOOSECOLS: &str = "FUNC.CHOOSECOLS";
+pub const FUNC_ID_CHOOSEROWS: &str = "FUNC.CHOOSEROWS";
 pub const FUNC_ID_CHISQ_DIST: &str = "FUNC.CHISQ.DIST";
 pub const FUNC_ID_CHISQ_DIST_RT: &str = "FUNC.CHISQ.DIST.RT";
 pub const FUNC_ID_CHISQ_INV: &str = "FUNC.CHISQ.INV";
@@ -526,6 +537,7 @@ pub const FUNC_ID_EDATE: &str = "FUNC.EDATE";
 pub const FUNC_ID_EOMONTH: &str = "FUNC.EOMONTH";
 pub const FUNC_ID_EFFECT: &str = "FUNC.EFFECT";
 pub const FUNC_ID_EUROCONVERT: &str = "FUNC.EUROCONVERT";
+pub const FUNC_ID_EXPAND: &str = "FUNC.EXPAND";
 pub const FUNC_ID_DECIMAL: &str = "FUNC.DECIMAL";
 pub const FUNC_ID_DDB: &str = "FUNC.DDB";
 pub const FUNC_ID_DCOUNT: &str = "FUNC.DCOUNT";
@@ -540,6 +552,7 @@ pub const FUNC_ID_DSTDEVP: &str = "FUNC.DSTDEVP";
 pub const FUNC_ID_DSUM: &str = "FUNC.DSUM";
 pub const FUNC_ID_DVAR: &str = "FUNC.DVAR";
 pub const FUNC_ID_DVARP: &str = "FUNC.DVARP";
+pub const FUNC_ID_DROP: &str = "FUNC.DROP";
 pub const FUNC_ID_DEVSQ: &str = "FUNC.DEVSQ";
 pub const FUNC_ID_DEGREES: &str = "FUNC.DEGREES";
 pub const FUNC_ID_DELTA: &str = "FUNC.DELTA";
@@ -575,6 +588,7 @@ pub const FUNC_ID_FISHER: &str = "FUNC.FISHER";
 pub const FUNC_ID_FISHERINV: &str = "FUNC.FISHERINV";
 pub const FUNC_ID_FIND: &str = "FUNC.FIND";
 pub const FUNC_ID_FINDB: &str = "FUNC.FINDB";
+pub const FUNC_ID_FILTER: &str = "FUNC.FILTER";
 pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
 pub const FUNC_ID_FLOOR: &str = "FUNC.FLOOR";
 pub const FUNC_ID_FLOOR_MATH: &str = "FUNC.FLOOR.MATH";
@@ -802,6 +816,8 @@ pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
 pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
 pub const FUNC_ID_SCAN: &str = "FUNC.SCAN";
+pub const FUNC_ID_SORT: &str = "FUNC.SORT";
+pub const FUNC_ID_SORTBY: &str = "FUNC.SORTBY";
 pub const FUNC_ID_SEC: &str = "FUNC.SEC";
 pub const FUNC_ID_SERIESSUM: &str = "FUNC.SERIESSUM";
 pub const FUNC_ID_SECH: &str = "FUNC.SECH";
@@ -832,6 +848,7 @@ pub const FUNC_ID_SUMXMY2: &str = "FUNC.SUMXMY2";
 pub const FUNC_ID_SUMSQ: &str = "FUNC.SUMSQ";
 pub const FUNC_ID_SWITCH: &str = "FUNC.SWITCH";
 pub const FUNC_ID_T: &str = "FUNC.T";
+pub const FUNC_ID_TAKE: &str = "FUNC.TAKE";
 pub const FUNC_ID_T_DIST: &str = "FUNC.T.DIST";
 pub const FUNC_ID_T_DIST_2T: &str = "FUNC.T.DIST.2T";
 pub const FUNC_ID_T_DIST_RT: &str = "FUNC.T.DIST.RT";
@@ -846,6 +863,8 @@ pub const FUNC_ID_TANH: &str = "FUNC.TANH";
 pub const FUNC_ID_TBILLEQ: &str = "FUNC.TBILLEQ";
 pub const FUNC_ID_TBILLPRICE: &str = "FUNC.TBILLPRICE";
 pub const FUNC_ID_TBILLYIELD: &str = "FUNC.TBILLYIELD";
+pub const FUNC_ID_TOCOL: &str = "FUNC.TOCOL";
+pub const FUNC_ID_TOROW: &str = "FUNC.TOROW";
 pub const FUNC_ID_LEFT: &str = "FUNC.LEFT";
 pub const FUNC_ID_LEFTB: &str = "FUNC.LEFTB";
 pub const FUNC_ID_LEN: &str = "FUNC.LEN";
@@ -870,10 +889,12 @@ pub const FUNC_ID_TRANSLATE: &str = "FUNC.TRANSLATE";
 pub const FUNC_ID_TRIMMEAN: &str = "FUNC.TRIMMEAN";
 pub const FUNC_ID_TRUE: &str = "FUNC.TRUE";
 pub const FUNC_ID_TREND: &str = "FUNC.TREND";
+pub const FUNC_ID_TRANSPOSE: &str = "FUNC.TRANSPOSE";
 pub const FUNC_ID_TRUNC: &str = "FUNC.TRUNC";
 pub const FUNC_ID_TRIM: &str = "FUNC.TRIM";
 pub const FUNC_ID_TTEST: &str = "FUNC.TTEST";
 pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
+pub const FUNC_ID_UNIQUE: &str = "FUNC.UNIQUE";
 pub const FUNC_ID_UNICHAR: &str = "FUNC.UNICHAR";
 pub const FUNC_ID_UNICODE: &str = "FUNC.UNICODE";
 pub const FUNC_ID_UPPER: &str = "FUNC.UPPER";
@@ -885,10 +906,13 @@ pub const FUNC_ID_VARA: &str = "FUNC.VARA";
 pub const FUNC_ID_VARP: &str = "FUNC.VARP";
 pub const FUNC_ID_VARPA: &str = "FUNC.VARPA";
 pub const FUNC_ID_VDB: &str = "FUNC.VDB";
+pub const FUNC_ID_VSTACK: &str = "FUNC.VSTACK";
 pub const FUNC_ID_HLOOKUP: &str = "FUNC.HLOOKUP";
 pub const FUNC_ID_VLOOKUP: &str = "FUNC.VLOOKUP";
 pub const FUNC_ID_WEIBULL: &str = "FUNC.WEIBULL";
 pub const FUNC_ID_WEIBULL_DIST: &str = "FUNC.WEIBULL.DIST";
+pub const FUNC_ID_WRAPCOLS: &str = "FUNC.WRAPCOLS";
+pub const FUNC_ID_WRAPROWS: &str = "FUNC.WRAPROWS";
 pub const FUNC_ID_XLOOKUP: &str = "FUNC.XLOOKUP";
 pub const FUNC_ID_XIRR: &str = "FUNC.XIRR";
 pub const FUNC_ID_XNPV: &str = "FUNC.XNPV";
@@ -1130,6 +1154,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_CHOOSE => {
             Some(crate::functions::choose_ifs_family::CHOOSE_META.arg_preparation_profile)
         }
+        FUNC_ID_CHOOSECOLS => Some(CHOOSECOLS_META.arg_preparation_profile),
+        FUNC_ID_CHOOSEROWS => Some(CHOOSEROWS_META.arg_preparation_profile),
         FUNC_ID_CHISQ_DIST => {
             Some(crate::functions::chi_f_t_family::CHISQ_DIST_META.arg_preparation_profile)
         }
@@ -1256,6 +1282,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_EUROCONVERT => {
             Some(crate::functions::misc_conversion_family::EUROCONVERT_META.arg_preparation_profile)
         }
+        FUNC_ID_EXPAND => Some(EXPAND_META.arg_preparation_profile),
         FUNC_ID_DECIMAL => Some(crate::functions::decimal_fn::DECIMAL_META.arg_preparation_profile),
         FUNC_ID_DDB => {
             Some(crate::functions::depreciation_family::DDB_META.arg_preparation_profile)
@@ -1286,6 +1313,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_DVARP => {
             Some(crate::functions::database_family::DVARP_META.arg_preparation_profile)
         }
+        FUNC_ID_DROP => Some(DROP_META.arg_preparation_profile),
         FUNC_ID_DEVSQ => Some(crate::functions::devsq_fn::DEVSQ_META.arg_preparation_profile),
         FUNC_ID_DEGREES => Some(crate::functions::degrees::DEGREES_META.arg_preparation_profile),
         FUNC_ID_DELTA => Some(crate::functions::delta_fn::DELTA_META.arg_preparation_profile),
@@ -1365,6 +1393,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_FINDB => {
             Some(crate::functions::text_b_compat_family::FINDB_META.arg_preparation_profile)
         }
+        FUNC_ID_FILTER => Some(FILTER_META.arg_preparation_profile),
         FUNC_ID_FIXED => Some(crate::functions::fixed_fn::FIXED_META.arg_preparation_profile),
         FUNC_ID_FLOOR => {
             Some(crate::functions::ceiling_floor_family::FLOOR_META.arg_preparation_profile)
@@ -1414,6 +1443,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::date_parts_family::HOUR_META.arg_preparation_profile)
         }
         FUNC_ID_HSTACK => Some(crate::functions::hstack::HSTACK_META.arg_preparation_profile),
+        FUNC_ID_SORT => Some(SORT_META.arg_preparation_profile),
+        FUNC_ID_SORTBY => Some(SORTBY_META.arg_preparation_profile),
         FUNC_ID_INFO => Some(crate::functions::info_fn::INFO_META.arg_preparation_profile),
         FUNC_ID_ISOMITTED => Some(ISOMITTED_META.arg_preparation_profile),
         FUNC_ID_IRR => {
@@ -1937,6 +1968,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::misc_switch_info_family::SWITCH_META.arg_preparation_profile)
         }
         FUNC_ID_T => Some(crate::functions::t_fn::T_META.arg_preparation_profile),
+        FUNC_ID_TAKE => Some(TAKE_META.arg_preparation_profile),
         FUNC_ID_T_DIST => {
             Some(crate::functions::chi_f_t_family::T_DIST_META.arg_preparation_profile)
         }
@@ -1966,6 +1998,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             crate::functions::discount_bill_yearfrac_family::TBILLYIELD_META
                 .arg_preparation_profile,
         ),
+        FUNC_ID_TOCOL => Some(TOCOL_META.arg_preparation_profile),
+        FUNC_ID_TOROW => Some(TOROW_META.arg_preparation_profile),
         FUNC_ID_TDIST => Some(crate::functions::chi_f_t_family::TDIST_META.arg_preparation_profile),
         FUNC_ID_TINV => Some(crate::functions::chi_f_t_family::TINV_META.arg_preparation_profile),
         FUNC_ID_SYD => {
@@ -2005,6 +2039,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_TRIMMEAN => {
             Some(crate::functions::moment_stats_family::TRIMMEAN_META.arg_preparation_profile)
         }
+        FUNC_ID_TRANSPOSE => Some(TRANSPOSE_META.arg_preparation_profile),
         FUNC_ID_TRUE => Some(crate::functions::true_fn::TRUE_META.arg_preparation_profile),
         FUNC_ID_TREND => {
             Some(crate::functions::regression_forecast_family::TREND_META.arg_preparation_profile)
@@ -2015,6 +2050,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::statistical_tests_family::TTEST_META.arg_preparation_profile)
         }
         FUNC_ID_TYPE => Some(crate::functions::type_fn::TYPE_META.arg_preparation_profile),
+        FUNC_ID_UNIQUE => Some(UNIQUE_META.arg_preparation_profile),
         FUNC_ID_UNICHAR => {
             Some(crate::functions::text_unicode_fn::UNICHAR_META.arg_preparation_profile)
         }
@@ -2034,6 +2070,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_VDB => {
             Some(crate::functions::depreciation_family::VDB_META.arg_preparation_profile)
         }
+        FUNC_ID_VSTACK => Some(VSTACK_META.arg_preparation_profile),
         FUNC_ID_HLOOKUP => {
             Some(crate::functions::vhlookup_family::HLOOKUP_META.arg_preparation_profile)
         }
@@ -2046,6 +2083,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_WEIBULL_DIST => {
             Some(crate::functions::special_dist_family::WEIBULL_DIST_META.arg_preparation_profile)
         }
+        FUNC_ID_WRAPCOLS => Some(WRAPCOLS_META.arg_preparation_profile),
+        FUNC_ID_WRAPROWS => Some(WRAPROWS_META.arg_preparation_profile),
         FUNC_ID_XIRR => {
             Some(crate::functions::cashflow_rate_family::XIRR_META.arg_preparation_profile)
         }
@@ -2258,6 +2297,10 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_CHOOSE => {
             eval_choose_surface(args, resolver).map_err(|e| map_choose_ifs_error_to_ws(&e))
         }
+        FUNC_ID_CHOOSECOLS => eval_choosecols_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
+        FUNC_ID_CHOOSEROWS => eval_chooserows_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_CHISQ_DIST => {
             eval_chisq_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
         }
@@ -2399,6 +2442,8 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_financial_time_value_error_to_ws(&e)),
         FUNC_ID_EUROCONVERT => eval_euroconvert_surface(args, resolver)
             .map_err(|e| map_misc_conversion_error_to_ws(&e)),
+        FUNC_ID_EXPAND => eval_expand_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_DECIMAL => {
             eval_decimal_surface(args, resolver).map_err(|e| map_decimal_error_to_ws(&e))
         }
@@ -2429,6 +2474,9 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_DVAR => eval_dvar_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e)),
         FUNC_ID_DVARP => {
             eval_dvarp_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
+        }
+        FUNC_ID_DROP => {
+            eval_drop_surface(args, resolver).map_err(|e| map_dynamic_array_reshape_error_to_ws(&e))
         }
         FUNC_ID_DEVSQ => eval_devsq_surface(args, resolver).map_err(|e| map_devsq_error_to_ws(&e)),
         FUNC_ID_DEGREES => {
@@ -2518,6 +2566,8 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_FINDB => {
             eval_findb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
         }
+        FUNC_ID_FILTER => eval_filter_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_FIXED => {
             let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
             eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e))
@@ -2579,6 +2629,13 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_HSTACK => {
             eval_hstack_surface(args, resolver).map_err(|e| map_hstack_error_to_ws(&e))
         }
+        FUNC_ID_SORT => {
+            eval_sort_surface(args, resolver).map_err(|e| map_dynamic_array_reshape_error_to_ws(&e))
+        }
+        FUNC_ID_SORTBY => eval_sortby_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
+        FUNC_ID_VSTACK => eval_vstack_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_INFO => {
             eval_info_surface(args, resolver, host_info).map_err(|e| map_info_error_to_ws(&e))
         }
@@ -3232,6 +3289,13 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
         FUNC_ID_TBILLYIELD => eval_tbillyield_surface(args, resolver)
             .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
+        FUNC_ID_TAKE => {
+            eval_take_surface(args, resolver).map_err(|e| map_dynamic_array_reshape_error_to_ws(&e))
+        }
+        FUNC_ID_TOCOL => eval_tocol_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
+        FUNC_ID_TOROW => eval_torow_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_SEARCH => {
             eval_search_surface(args, resolver).map_err(|e| map_text_search_replace_error_to_ws(&e))
         }
@@ -3274,6 +3338,8 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_TRIMMEAN => {
             eval_trimmean_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
         }
+        FUNC_ID_TRANSPOSE => eval_transpose_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_TRUE => eval_true_surface(args),
         FUNC_ID_TREND => {
             eval_trend_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
@@ -3286,6 +3352,8 @@ pub fn eval_surface_value_call_with_callable(
             eval_ttest_surface(args, resolver).map_err(|e| map_statistical_tests_error_to_ws(&e))
         }
         FUNC_ID_TYPE => eval_type_surface(args, resolver).map_err(|e| map_type_error_to_ws(&e)),
+        FUNC_ID_UNIQUE => eval_unique_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_UNICHAR => {
             eval_unichar_surface(args, resolver).map_err(|e| map_text_unicode_error_to_ws(&e))
         }
@@ -3308,6 +3376,10 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_VDB => {
             eval_vdb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
         }
+        FUNC_ID_WRAPCOLS => eval_wrapcols_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
+        FUNC_ID_WRAPROWS => eval_wraprows_surface(args, resolver)
+            .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_HLOOKUP => {
             eval_hlookup_surface(args, resolver).map_err(|e| map_vhlookup_error_to_ws(&e))
         }

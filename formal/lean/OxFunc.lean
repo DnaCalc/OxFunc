@@ -64,6 +64,7 @@ import OxFunc.Functions.Date
 import OxFunc.Functions.DatePartsFamily
 import OxFunc.Functions.DateValueFamily
 import OxFunc.Functions.DateWeekFamily
+import OxFunc.Functions.DynamicArrayReshapeFamily
 import OxFunc.Functions.DecimalFn
 import OxFunc.Functions.Degrees
 import OxFunc.Functions.DeltaFn

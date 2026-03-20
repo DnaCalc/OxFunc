@@ -1,0 +1,16 @@
+function_id,status,owner_packet,notes
+FUNC.CHOOSECOLS,done,W39,Admitted current-baseline slice closed.
+FUNC.CHOOSEROWS,done,W39,Admitted current-baseline slice closed.
+FUNC.DROP,done,W39,Admitted current-baseline slice closed.
+FUNC.EXPAND,done,W39,Admitted current-baseline slice closed.
+FUNC.FILTER,done,W39,Admitted current-baseline slice closed.
+FUNC.SORT,done,W39,Admitted current-baseline slice closed.
+FUNC.SORTBY,done,W39,Admitted current-baseline slice closed.
+FUNC.TAKE,done,W39,Admitted current-baseline slice closed.
+FUNC.TOCOL,done,W39,Admitted current-baseline slice closed.
+FUNC.TOROW,done,W39,Admitted current-baseline slice closed.
+FUNC.TRANSPOSE,done,W39,Admitted current-baseline slice closed.
+FUNC.UNIQUE,done,W39,Admitted current-baseline slice closed.
+FUNC.VSTACK,done,W39,Admitted current-baseline slice closed.
+FUNC.WRAPCOLS,done,W39,Admitted current-baseline slice closed.
+FUNC.WRAPROWS,done,W39,Admitted current-baseline slice closed.

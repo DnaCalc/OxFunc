@@ -65,12 +65,15 @@ This workset can only be reported `scope_complete` when:
 4. Lean/formal alignment for the primary array-shaping substrate is integrated,
 5. no known function-semantic gap remains in declared current-baseline scope for the admitted slice.
 
-## 8. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+## 8. Packet Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no packet-specific scenario manifest yet
-   - no shaping/reshaping family contract yet
-   - spill/publication edge matrix still unstarted
+   - none in declared `W39` scope
+
+## 9. Packet Result
+1. all fifteen family members now have runtime implementation, dispatch/export coverage, Lean substrate coverage, and native Excel packet evidence for the admitted current-baseline slice.
+2. the packet uses one shared contract surface plus one seeded native Excel manifest covering all fifteen rows.
+3. the family remains separate from helper/callable seam work and from `@` / legacy CSE seam work.

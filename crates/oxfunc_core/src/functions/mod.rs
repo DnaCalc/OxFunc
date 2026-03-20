@@ -73,6 +73,7 @@ pub mod discount_bill_yearfrac_family;
 pub mod discrete_dist_family;
 pub mod dollar_fn;
 pub mod dollar_fraction_family;
+pub mod dynamic_array_reshape_family;
 pub mod engineering_radix_family;
 pub mod error_type_fn;
 pub mod even_fn;
