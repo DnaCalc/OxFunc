@@ -1,0 +1,8 @@
+case_id,guess,expected_status,expected_observable,note
+xirr_large_root_guess_0.0001,0.0001,ok,165601347.17440003,Positive-root two-cashflow lane with very small positive guess
+xirr_large_root_guess_0.01,0.01,ok,165601345.28000006,Positive-root two-cashflow lane with small positive guess
+xirr_large_root_guess_0.1,0.1,ok,165601345.60000005,Benchmark lane originally reopened by W29
+xirr_large_root_guess_1,1,ok,165601347,Positive-root two-cashflow lane with unit positive guess
+xirr_large_root_guess_10,10,ok,165601346.25,Positive-root two-cashflow lane with large positive guess
+xirr_large_root_guess_100,100,ok,165601345.3125,Positive-root two-cashflow lane with very large positive guess
+xirr_large_root_guess_1000,1000,ok,165601346.6796875,Positive-root two-cashflow lane with extreme positive guess

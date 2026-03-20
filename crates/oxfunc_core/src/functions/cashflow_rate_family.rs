@@ -10,6 +10,8 @@ const ROOT_TOLERANCE: f64 = 1e-8;
 const ROOT_DERIVATIVE_EPS: f64 = 1e-12;
 const ROOT_MAX_ITERATIONS: usize = 100;
 const MIN_VALID_RATE: f64 = -0.999_999_999;
+const XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE: f64 = 2e-8;
+const XIRR_TWO_CASHFLOW_MAX_BRACKET_EXPANSIONS: usize = 128;
 
 const CASHFLOW_RATE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CASHFLOW_RATE_BASE",
@@ -393,6 +395,64 @@ fn xirr_two_cashflow_root(values: &[f64], dates: &[i64]) -> Result<f64, Workshee
     }
 }
 
+fn xirr_two_cashflow_positive_root_excel_like(
+    values: &[f64],
+    dates: &[i64],
+    guess: f64,
+) -> Result<f64, WorksheetErrorCode> {
+    if !guess.is_finite() || guess <= 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+
+    let mut lower = 0.0;
+    let mut lower_value = xnpv_kernel_raw(lower, values, dates)?;
+    let mut upper = guess;
+    let mut upper_value = xnpv_kernel_raw(upper, values, dates)?;
+
+    if lower_value == 0.0 {
+        return Ok(lower);
+    }
+    if upper_value == 0.0 {
+        return Ok(upper);
+    }
+
+    let mut expansions = 0usize;
+    while lower_value.signum() == upper_value.signum() {
+        lower = upper;
+        lower_value = upper_value;
+        upper *= 2.0;
+        if !upper.is_finite() || upper <= MIN_VALID_RATE {
+            return Err(WorksheetErrorCode::Num);
+        }
+        upper_value = xnpv_kernel_raw(upper, values, dates)?;
+        expansions += 1;
+        if expansions > XIRR_TWO_CASHFLOW_MAX_BRACKET_EXPANSIONS {
+            return Err(WorksheetErrorCode::Num);
+        }
+    }
+
+    for _ in 0..ROOT_MAX_ITERATIONS {
+        let midpoint = (lower + upper) / 2.0;
+        let relative_width = (upper - lower) / midpoint.abs().max(1.0);
+        if relative_width <= XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE {
+            return Ok(midpoint);
+        }
+
+        let midpoint_value = xnpv_kernel_raw(midpoint, values, dates)?;
+        if midpoint_value == 0.0 {
+            return Ok(midpoint);
+        }
+        if lower_value.signum() == midpoint_value.signum() {
+            lower = midpoint;
+            lower_value = midpoint_value;
+        } else {
+            upper = midpoint;
+        }
+    }
+
+    Err(WorksheetErrorCode::Num)
+}
+
 fn xirr_kernel(
     values: &[f64],
     dates: &[i64],
@@ -404,6 +464,9 @@ fn xirr_kernel(
         let root = xirr_two_cashflow_root(values, dates)?;
         if root >= 0.0 && guess < 0.0 {
             return Err(WorksheetErrorCode::Num);
+        }
+        if root >= 0.0 {
+            return xirr_two_cashflow_positive_root_excel_like(values, dates, guess);
         }
         return Ok(root);
     }
@@ -605,6 +668,26 @@ mod tests {
             ),
             Err(WorksheetErrorCode::Num)
         );
+    }
+
+    #[test]
+    fn xirr_two_cashflow_positive_root_matches_excel_guess_matrix() {
+        let values = [15_108_163.384_092_3, -75_382_259.662_842_4];
+        let dates = [36585, 36616];
+        let cases = [
+            (0.0001, 165_601_347.174_400_03),
+            (0.01, 165_601_345.280_000_06),
+            (0.1, 165_601_345.600_000_05),
+            (1.0, 165_601_347.0),
+            (10.0, 165_601_346.25),
+            (100.0, 165_601_345.312_5),
+            (1000.0, 165_601_346.679_687_5),
+        ];
+
+        for (guess, expected) in cases {
+            let got = xirr_kernel(&values, &dates, Some(guess)).unwrap();
+            assert_close(got, expected);
+        }
     }
 
     #[test]

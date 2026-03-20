@@ -2,20 +2,11 @@
 
 Status: active blockers recorded.
 
-Last reviewed: 2026-03-18.
+Last reviewed: 2026-03-21.
 
 ---
 
 ## Active Blockers
-
-### BLK-FN-011: `XIRR` large positive-root precision still differs from direct Excel after `W32`
-
-- **Status**: active
-- **Impact**: `W037` now owns the remaining `XIRR` precision residual; the large-root positive lane is not yet closure-grade against the direct Excel observable.
-- **Current state**: `W32` repaired `XNPV` negative-rate worksheet admission and the reopened `XIRR` negative-root / negative-guess lanes, but the large positive-root two-cashflow lane still differs from direct Excel (`165601346.134845703840256` vs `165601345.60000005`).
-- **Exact unblock steps**: characterize Excel's large-root stopping/tolerance policy directly, decide whether the difference is algorithmic or publication-level, repair `XIRR` or explicitly bound the lane in `W037`, and rerun the three-way benchmark.
-- **Recommendation**: workaround
-- **Opened**: 2026-03-18
 
 ### BLK-FN-003: W023 host-integrated, metadata-query, and visibility-sensitive residuals need new FEC/host seams
 
@@ -42,11 +33,21 @@ Last reviewed: 2026-03-18.
 
 - **Status**: resolved
 - **Impact**: had blocked `W032` cashflow-rate repair.
-- **Current state**: `W32` repaired `XNPV` negative-rate worksheet admission to match direct Excel `#NUM!`, repaired the reopened `XIRR` negative-root lane, and repaired the negative-guess rejection lane for the positive-root-only benchmark case. The only remaining `XIRR` issue is now the extracted large-root precision lane under `BLK-FN-011` / `W037`.
-- **Exact unblock steps**: none inside `W032`; residual ownership moved to `W037`
+- **Current state**: `W32` repaired `XNPV` negative-rate worksheet admission to match direct Excel `#NUM!`, repaired the reopened `XIRR` negative-root lane, and repaired the negative-guess rejection lane for the positive-root-only benchmark case. The previously extracted large-root precision lane is now also repaired and closed by `W037`.
+- **Exact unblock steps**: none
 - **Recommendation**: continue
 - **Opened**: 2026-03-18
 - **Resolved**: 2026-03-19
+
+### BLK-FN-011: `XIRR` large positive-root publication mismatch after `W32`
+
+- **Status**: resolved
+- **Impact**: had blocked full finance closure after `W32`.
+- **Current state**: `W037` characterized Excel's published-result policy on the large positive-root two-cashflow lane directly, replaced the old exact closed-form shortcut with an Excel-like bracket-and-bisection publication solver for the admitted slice, reran the `W29` benchmark, and matched the installed Excel guess matrix exactly.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-18
+- **Resolved**: 2026-03-21
 
 ### BLK-FN-009: `COUPDAYS` leap-year actual/actual parity is reopened by `W29`
 

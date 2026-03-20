@@ -31,16 +31,14 @@ Record the repair-and-reconciliation packet for the finance parity gaps reopened
    - the negative-guess rejection lane for the positive-root-only two-cashflow case.
 
 ## 5. Residual Extraction
-1. The positive large-root `XIRR` lane still differs from direct Excel on the installed baseline:
-   - OxFunc: `165601346.134845703840256`
-   - Excel: `165601345.60000005`
-2. That residual moves to successor `W037`.
+1. `W32` originally extracted the positive large-root `XIRR` lane to successor `W037`.
+2. That extracted publication-level residual is now repaired and closed by `W037`.
 
 ## 6. Benchmark Result After Repair
 From the rerun `W29` ledger:
 1. `7` lanes align across OxFunc, F#, and Excel.
-2. `5` lanes now show OxFunc matching Excel while F# differs.
-3. `1` lane remains `all_diverge_or_inconclusive`, namely the extracted large-root `XIRR` precision lane.
+2. `6` lanes now show OxFunc matching Excel while F# differs.
+3. `0` lanes remain `all_diverge_or_inconclusive`.
 
 ## 7. Scope Reconciliation
 See:

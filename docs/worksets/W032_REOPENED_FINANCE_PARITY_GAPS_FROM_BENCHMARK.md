@@ -36,4 +36,4 @@ Current members:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none in declared `W32` scope after reconciliation; residual large-root `XIRR` precision now belongs to `W037`.
+   - none in declared `W32` scope after reconciliation; the formerly extracted large-root `XIRR` publication lane is now closed by `W037`.

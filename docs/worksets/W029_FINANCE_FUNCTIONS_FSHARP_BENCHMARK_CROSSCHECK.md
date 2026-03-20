@@ -68,9 +68,9 @@ Public sources:
 3. The public F# unit-test project was also run locally and passed `3221` tests.
 4. Current classification outcome after the `W32` rerun:
    - `7` benchmark lanes aligned across OxFunc, F#, and Excel,
-   - `5` lanes showed OxFunc matching Excel while F# differed,
-   - `1` lane remained `all_diverge_or_inconclusive`.
-5. `W29` therefore remains complete as a benchmark-and-classification packet; the broad repair work moved to `W032`, and the remaining large-root `XIRR` precision residual now belongs to `W037`.
+   - `6` lanes showed OxFunc matching Excel while F# differed,
+   - `0` lanes remained `all_diverge_or_inconclusive`.
+5. `W29` therefore remains complete as a benchmark-and-classification packet; the broad repair work moved to `W032`, and `W037` subsequently closed the former large-root `XIRR` residual.
 
 ## 10. Status
 1. execution_state: `complete`

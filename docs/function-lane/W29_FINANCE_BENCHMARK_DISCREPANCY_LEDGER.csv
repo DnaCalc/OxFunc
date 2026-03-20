@@ -8,7 +8,7 @@
 "rate_seed_sample","financial_time_value_family","0.010000000000000","0.010000000000004","0.009999999999999969","aligned_all_three","Representative seeded RATE inversion lane from W24 Batch 11"
 "xirr_negative_rate_case1_guess_neg","cashflow_rate_family","-0.960452194979854","-0.960452194979853","-0.9604521892964839","aligned_all_three","Negative-rate XIRR lane from the public F# compatibility note"
 "xirr_negative_rate_case2_guess_neg","cashflow_rate_family","#NUM!","165601346.134900808334351","#NUM!","oxfunc_matches_excel_fsharp_differs","Negative-root XIRR lane from the public F# compatibility note"
-"xirr_negative_rate_case2_guess_pos","cashflow_rate_family","165601346.134845703840256","165601346.134856402873993","165601345.60000005","all_diverge_or_inconclusive","Large-root XIRR lane from the public F# compatibility note"
+"xirr_negative_rate_case2_guess_pos","cashflow_rate_family","165601345.600000053644180","165601346.134856402873993","165601345.60000005","oxfunc_matches_excel_fsharp_differs","Large-root XIRR lane from the public F# compatibility note"
 "xnpv_negative_rate_case1","cashflow_rate_family","#NUM!","-0.008917063474655","#NUM!","oxfunc_matches_excel_fsharp_differs","Negative-rate XNPV lane from the public F# compatibility note"
 "xnpv_negative_rate_case2","cashflow_rate_family","#NUM!","2.646784514188766","#NUM!","oxfunc_matches_excel_fsharp_differs","Negative-rate XNPV companion lane from the public F# compatibility note"
 "yieldmat_basis1_seed","bond_core_family","0.061000000000000","0.061000000000000","0.061000000000000561","aligned_all_three","Repaired W27 basis-1 maturity-security inversion lane"

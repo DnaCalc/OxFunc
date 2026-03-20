@@ -22,16 +22,16 @@ Current total:
 Members:
 1. `XIRR`
 
-## 4. First Work Streams
-1. characterize Excel's large-root stopping/tolerance policy on at least one additional rooted lane,
-2. compare the current OxFunc closed-form/two-cashflow result against Excel's published observable to determine whether the difference is algorithmic or publication-level,
-3. repair or explicitly bound the large-root precision lane without regressing the already repaired negative-root behavior.
+## 4. Executed Work Streams
+1. characterized Excel's large-root published-result policy directly on a positive-guess matrix for the two-cashflow rooted lane,
+2. compared the old OxFunc exact closed-form/two-cashflow result against Excel's published observable and confirmed the residual was publication-level rather than a missing root,
+3. repaired the admitted lane with an Excel-like bracket-and-bisection publication solver without regressing the already repaired negative-root behavior,
+4. reran the `W29` benchmark so the residual lane is no longer classified as `all_diverge_or_inconclusive`.
 
 ## 5. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - the large positive-root `XIRR` observable still differs from direct Excel,
-   - no Excel tolerance/termination policy is pinned yet for this lane.
+   - none in declared `W37` scope.

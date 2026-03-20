@@ -42,8 +42,8 @@ From `docs/function-lane/W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`:
    - derived coupon identity lane,
    - two negative-rate `XNPV` lanes,
    - negative-guess `XIRR` rejection on the positive-root-only case.
-3. `1` targeted lane remains `all_diverge_or_inconclusive`:
-   - the large positive-root `XIRR` lane where Excel still differs from both OxFunc and F#.
+3. `1` additional targeted lane now also shows OxFunc matching Excel while F# differs:
+   - the large positive-root `XIRR` lane where Excel publishes a guess-sensitive bracketed result rather than the exact mathematical root.
 
 ## 5. Classification
 1. `W29` is complete as a benchmark-and-classification packet.
@@ -52,12 +52,12 @@ From `docs/function-lane/W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`:
    - `COUPDAYS`,
    - `XNPV`,
    - `XIRR`.
-4. After the `W32` repair rerun, only the large positive-root `XIRR` precision lane remains open and now belongs to `W037`.
+4. After the `W32` repair rerun and the `W37` follow-up, no benchmark residual lane remains open.
 5. The already repaired `W27` bond and odd-last lanes now have explicit three-way evidence showing that the current OxFunc fixes align with both the public F# benchmark and direct Excel.
 
 ## 6. Successor Ownership
 1. The reopened OxFunc parity gaps moved to `W032`.
-2. After `W32`, the only remaining residual from this benchmark packet is the large positive-root `XIRR` precision lane in `W037`.
+2. `W037` closed the last residual benchmark lane, so no declared-scope `W29` residual remains open.
 3. The public F# qualitative notes on `RATE` and `ODDFYIELD` remain watchlist evidence only in this pass because no concrete OxFunc-vs-Excel mismatch was established on the seeded benchmark lanes.
 
 ## 7. Verification Runs
@@ -71,4 +71,4 @@ From `docs/function-lane/W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none in declared `W29` scope; successor repair/extraction work is now owned by `W032` and `W037`
+   - none in declared `W29` scope; successor repair work was owned by `W032`, and the former extracted `XIRR` publication lane is now closed by `W037`

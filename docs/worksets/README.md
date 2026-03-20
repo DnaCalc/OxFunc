@@ -77,7 +77,7 @@ Replay rollout sequence after `W016`:
 5. `W021` emits the first live `W15` replay-adapter bundle against that declared target and records the result in `W21_EXECUTION_RECORD.md`.
 6. `W024` is now reconciled: ordinary rows are either closed in `W24` or extracted to successor handling; `W025`, `W026`, and `W027` are now closed for their declared scopes.
 7. `W028` is complete for its declared discovery-and-library-seed scope.
-8. `W029` is complete as a benchmark-and-classification packet; `W032` repaired the reopened finance packet and extracted the remaining large-root `XIRR` precision lane to `W037`.
+8. `W029` is complete as a benchmark-and-classification packet; `W032` repaired the reopened finance packet, and `W037` closed the remaining large-root `XIRR` publication lane.
 9. `W030` and `W031` are now complete as seam-definition/reconciliation packets; successor ownership moved to `W034`, `W035`, and `W036`.
 10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
