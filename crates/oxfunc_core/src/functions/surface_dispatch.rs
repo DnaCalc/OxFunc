@@ -302,6 +302,7 @@ use crate::functions::rounddown_fn::{eval_rounddown_surface, map_rounddown_error
 use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws};
 use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
+use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
 use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
 use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
@@ -745,6 +746,7 @@ pub const FUNC_ID_RANK_AVG: &str = "FUNC.RANK.AVG";
 pub const FUNC_ID_RANK_EQ: &str = "FUNC.RANK.EQ";
 pub const FUNC_ID_ROW: &str = "FUNC.ROW";
 pub const FUNC_ID_RRI: &str = "FUNC.RRI";
+pub const FUNC_ID_RTD: &str = "FUNC.RTD";
 pub const FUNC_ID_ROMAN: &str = "FUNC.ROMAN";
 pub const FUNC_ID_ROUND: &str = "FUNC.ROUND";
 pub const FUNC_ID_ROUNDDOWN: &str = "FUNC.ROUNDDOWN";
@@ -1787,6 +1789,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_RRI => {
             Some(crate::functions::financial_time_value_family::RRI_META.arg_preparation_profile)
         }
+        FUNC_ID_RTD => Some(crate::functions::rtd_fn::RTD_META.arg_preparation_profile),
         FUNC_ID_ROMAN => Some(crate::functions::roman_fn::ROMAN_META.arg_preparation_profile),
         FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
         FUNC_ID_ROUNDDOWN => {
@@ -2046,6 +2049,7 @@ pub fn eval_surface_value_call(
         locale_ctx,
         host_info,
         None,
+        None,
     )
 }
 
@@ -2058,6 +2062,7 @@ pub fn eval_surface_value_call_with_callable(
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
     callable_invoker: Option<&dyn CallableInvoker>,
+    rtd_provider: Option<&dyn RtdProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
@@ -3028,6 +3033,9 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_RRI => {
             eval_rri_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
         }
+        FUNC_ID_RTD => {
+            eval_rtd_surface(args, resolver, rtd_provider).map_err(|e| map_rtd_error_to_ws(&e))
+        }
         FUNC_ID_ROUND => eval_round_surface(args, resolver).map_err(|e| map_round_error_to_ws(&e)),
         FUNC_ID_ROUNDDOWN => {
             eval_rounddown_surface(args, resolver).map_err(|e| map_rounddown_error_to_ws(&e))
@@ -3478,6 +3486,7 @@ mod tests {
             None,
             None,
             Some(&TestCallableInvoker),
+            None,
         );
         let expected = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(2.0),

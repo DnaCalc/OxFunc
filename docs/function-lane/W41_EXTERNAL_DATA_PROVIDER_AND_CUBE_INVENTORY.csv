@@ -8,6 +8,5 @@
 "CUBEVALUE","W041","4","high_interest","cube_context","Cube value retrieval."
 "ENCODEURL","W041","4","high_interest","external_data_or_services","External/web function with platform/provider implications."
 "FILTERXML","W041","4","high_interest","external_data_or_services","External/web/XML surface with platform restrictions."
-"RTD","W041","5","critical_interest","external_data_or_services","COM automation real-time data surface."
 "STOCKHISTORY","W041","4","high_interest","external_data_or_services","Provider/data-service historical market data surface."
 "WEBSERVICE","W041","4","high_interest","external_data_or_services","Web-service fetch surface."

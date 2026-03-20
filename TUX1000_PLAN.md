@@ -254,4 +254,7 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 35. `W42` deferred callable seam field lock and higher-order evidence:
    - `docs/worksets/W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md`
    - goal: hold the remaining callable/library-context seam locks until stronger empirical or implementation-facing evidence exists, instead of forcing premature closure from note-only reasoning.
+36. `W43` RTD COM activation and topic lifecycle seam:
+   - `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
+   - goal: separate `RTD` from the generic provider packet and pin the minimal OxFml/OxFunc seam around ProgID/topic-string shape, host-managed topic lifetime, and external invalidation/value projection.
 

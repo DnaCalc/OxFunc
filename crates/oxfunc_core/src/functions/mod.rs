@@ -168,6 +168,7 @@ pub mod rounddown_fn;
 pub mod roundup_fn;
 pub mod row_fn;
 pub mod rsq_fn;
+pub mod rtd_fn;
 pub mod sec;
 pub mod sech;
 pub mod sequence;

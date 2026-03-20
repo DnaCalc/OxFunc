@@ -1,0 +1,2 @@
+"function_name","packet","interest_tier","interest_label","semantic_cluster","notes"
+"RTD","W043","5","critical_interest","rtd_com_topic_lifecycle","Dedicated RTD packet: COM activation, topic strings, host-managed topic lifetime, external invalidation, and result projection."
