@@ -66,12 +66,11 @@ Public sources:
    - `docs/function-lane/W29_EXECUTION_RECORD.md`
    - `.tmp/w29-finance-summary.json`
 3. The public F# unit-test project was also run locally and passed `3221` tests.
-4. Current classification outcome:
-   - `6` benchmark lanes aligned across OxFunc, F#, and Excel,
-   - `4` lanes showed OxFunc matching F# but not Excel,
-   - `1` lane showed F# matching Excel while OxFunc differed,
-   - `2` lanes showed both OxFunc and F# diverging from Excel.
-5. `W29` therefore completes as a benchmark-and-classification packet and reopens concrete OxFunc parity repair work in `W32`.
+4. Current classification outcome after the `W32` rerun:
+   - `7` benchmark lanes aligned across OxFunc, F#, and Excel,
+   - `5` lanes showed OxFunc matching Excel while F# differed,
+   - `1` lane remained `all_diverge_or_inconclusive`.
+5. `W29` therefore remains complete as a benchmark-and-classification packet; the broad repair work moved to `W032`, and the remaining large-root `XIRR` precision residual now belongs to `W037`.
 
 ## 10. Status
 1. execution_state: `complete`

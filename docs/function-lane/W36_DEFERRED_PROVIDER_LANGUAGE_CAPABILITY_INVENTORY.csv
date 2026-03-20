@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+provider_language_capability,W31_scope_reconciliation,1,"TRANSLATE","Current host replay proves provider-state behavior and same-language local bypass semantics that require an explicit provider-language capability contract"

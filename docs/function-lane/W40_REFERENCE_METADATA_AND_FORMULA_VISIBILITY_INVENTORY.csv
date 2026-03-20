@@ -1,0 +1,6 @@
+"function_name","packet","interest_tier","interest_label","semantic_cluster","notes"
+"ADDRESS","W040","3","medium_interest","grid_reference_sensitive","Reference-to-address string with sheet/absolute-mode options."
+"AREAS","W040","3","medium_interest","grid_reference_sensitive","Multi-area reference cardinality."
+"FORMULATEXT","W040","3","medium_interest","grid_reference_sensitive","Stored formula visibility from a referenced cell."
+"SHEET","W040","3","medium_interest","grid_reference_sensitive","Sheet identity query by reference or omitted argument."
+"SHEETS","W040","3","medium_interest","grid_reference_sensitive","Sheet count over workbook or reference scope."

@@ -31,10 +31,9 @@ Current members:
 3. speculative `RATE` / `ODDFYIELD` follow-on work without a concrete mismatch lane.
 
 ## 6. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no repair packet has executed yet,
-   - historical closure surfaces still need full reconciliation against the reopened evidence.
+   - none in declared `W32` scope after reconciliation; residual large-root `XIRR` precision now belongs to `W037`.

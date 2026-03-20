@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+locale_default_profile_sensitive,W30_scope_reconciliation,1,"NUMBERVALUE","The omitted-separator defaults depend on locale/profile inputs even though explicit-separator lanes remain locally modelable"

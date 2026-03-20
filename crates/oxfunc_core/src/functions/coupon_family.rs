@@ -78,6 +78,7 @@ struct CouponContext {
     maturity: i64,
     frequency: i64,
     basis: CouponBasis,
+    maturity_anchor_day: i64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -137,6 +138,22 @@ fn add_months_clamped(serial: i64, months: i64) -> Option<i64> {
     } else {
         day.min(days_in_month(target_year, target_month))
     };
+    Some(excel_serial_from_ymd_unbounded_1900(
+        target_year,
+        target_month,
+        target_day,
+    ))
+}
+
+fn add_months_with_anchor_day(serial: i64, months: i64, anchor_day: i64) -> Option<i64> {
+    let (year, month, _day) = ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)?;
+    let month_index = year
+        .checked_mul(12)?
+        .checked_add(month - 1)?
+        .checked_add(months)?;
+    let target_year = month_index.div_euclid(12);
+    let target_month = month_index.rem_euclid(12) + 1;
+    let target_day = anchor_day.min(days_in_month(target_year, target_month));
     Some(excel_serial_from_ymd_unbounded_1900(
         target_year,
         target_month,
@@ -264,6 +281,9 @@ fn parse_coupon_context(
     let maturity = parse_coupon_date(maturity)?;
     let frequency = parse_frequency(frequency)?;
     let basis = parse_basis(basis.unwrap_or(0.0))?;
+    let (_, _, maturity_anchor_day) =
+        ymd_from_excel_serial(WorkbookDateSystem::System1900, maturity as f64)
+            .ok_or(WorksheetErrorCode::Num)?;
     if settlement >= maturity {
         return Err(WorksheetErrorCode::Num);
     }
@@ -272,6 +292,7 @@ fn parse_coupon_context(
         maturity,
         frequency,
         basis,
+        maturity_anchor_day,
     })
 }
 
@@ -283,11 +304,14 @@ fn locate_coupon_period(ctx: CouponContext) -> Result<CouponPeriod, WorksheetErr
         let previous =
             add_months_clamped(next, -months_per_coupon).ok_or(WorksheetErrorCode::Num)?;
         if previous <= ctx.settlement {
+            let raw_previous =
+                add_months_with_anchor_day(next, -months_per_coupon, ctx.maturity_anchor_day)
+                    .ok_or(WorksheetErrorCode::Num)?;
             let mut period = CouponPeriod {
                 previous: previous.max(0),
                 next,
                 remaining_coupons: coupons,
-                raw_previous: previous,
+                raw_previous,
             };
             if ctx.settlement == period.next {
                 let forward_next = add_months_clamped(period.next, months_per_coupon)

@@ -365,7 +365,32 @@ fn irr_kernel(cashflows: &[f64], guess: Option<f64>) -> Result<f64, WorksheetErr
 }
 
 pub fn xnpv_kernel(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
+    if rate < 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
     xnpv_kernel_raw(rate, values, dates)
+}
+
+fn xirr_two_cashflow_root(values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
+    if values.len() != 2 || dates.len() != 2 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let first = values[0];
+    let second = values[1];
+    let years = (dates[1] - dates[0]) as f64 / 365.0;
+    if years <= 0.0 || first == 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let ratio = -second / first;
+    if !ratio.is_finite() || ratio <= 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    let root = ratio.powf(1.0 / years) - 1.0;
+    if root.is_finite() && root > MIN_VALID_RATE {
+        Ok(root)
+    } else {
+        Err(WorksheetErrorCode::Num)
+    }
 }
 
 fn xirr_kernel(
@@ -374,8 +399,16 @@ fn xirr_kernel(
     guess: Option<f64>,
 ) -> Result<f64, WorksheetErrorCode> {
     validate_xcashflow_inputs(values, dates)?;
+    let guess = guess.unwrap_or(0.1);
+    if values.len() == 2 && dates.len() == 2 {
+        let root = xirr_two_cashflow_root(values, dates)?;
+        if root >= 0.0 && guess < 0.0 {
+            return Err(WorksheetErrorCode::Num);
+        }
+        return Ok(root);
+    }
     bounded_rate_solve(
-        guess.unwrap_or(0.1),
+        guess,
         |rate| xnpv_kernel_raw(rate, values, dates),
         |rate| xnpv_derivative(rate, values, dates),
     )
@@ -518,6 +551,18 @@ mod tests {
     }
 
     #[test]
+    fn xnpv_rejects_negative_rate_on_surface() {
+        assert_eq!(
+            xnpv_kernel(
+                -0.1,
+                &[206_101_714.849_377, -156_650_972.542_65],
+                &[36584, 36615]
+            ),
+            Err(WorksheetErrorCode::Num)
+        );
+    }
+
+    #[test]
     fn xirr_matches_simple_one_year_identity() {
         let got = xirr_kernel(&[-100.0, 121.0], &[45000, 45365], None).unwrap();
         assert_close(got, 0.21);
@@ -535,6 +580,29 @@ mod tests {
     fn xirr_requires_sign_change() {
         assert_eq!(
             xirr_kernel(&[100.0, 121.0], &[45000, 45365], None),
+            Err(WorksheetErrorCode::Num)
+        );
+    }
+
+    #[test]
+    fn xirr_finds_negative_root_when_it_is_the_only_root() {
+        let got = xirr_kernel(
+            &[206_101_714.849_377, -156_650_972.542_65],
+            &[36585, 36616],
+            Some(-0.1),
+        )
+        .unwrap();
+        assert_close(got, -0.960_452_189_296_483_9);
+    }
+
+    #[test]
+    fn xirr_negative_guess_does_not_jump_to_positive_root_only_domain() {
+        assert_eq!(
+            xirr_kernel(
+                &[15_108_163.384_092_3, -75_382_259.662_842_4],
+                &[36585, 36616],
+                Some(-0.1),
+            ),
             Err(WorksheetErrorCode::Num)
         );
     }

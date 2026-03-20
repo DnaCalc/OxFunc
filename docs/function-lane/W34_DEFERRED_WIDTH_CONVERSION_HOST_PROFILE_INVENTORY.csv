@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+width_conversion_host_profile_sensitive,W30_scope_reconciliation,3,"ASC; DBCS; JIS","Current host replay shows pass-through or `#NAME?` behavior that depends on host/profile availability rather than an honest current-boundary pure-kernel contract"

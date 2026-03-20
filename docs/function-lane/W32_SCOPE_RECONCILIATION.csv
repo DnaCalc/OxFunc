@@ -1,0 +1,3 @@
+resolution_class,source,target_count,functions,action,reason
+repaired_in_w32,W32_repair_packet,2,"COUPDAYS; XNPV",repaired,"The leap-year actual/actual COUPDAYS lane and the negative-rate XNPV lanes now align with direct Excel on the benchmark packet"
+repaired_and_extracted_in_w32,W32_repair_packet,1,"XIRR",partial_repair_then_successor_w37,"The negative-root and negative-guess XIRR lanes now align with direct Excel, but the large positive-root precision lane still differs from Excel and moves to W37"

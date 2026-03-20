@@ -30,10 +30,9 @@ Members:
 3. decide whether these functions remain OxFunc-owned pure kernels with profile-gated admission or move behind a typed locale/profile capability seam.
 
 ## 5. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no host/profile matrix is pinned yet,
-   - no honest current-boundary runtime strategy is agreed yet.
+   - none in declared `W30` scope after reconciliation; successor ownership moved to `W034` and `W035`.

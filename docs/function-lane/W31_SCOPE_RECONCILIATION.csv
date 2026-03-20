@@ -1,0 +1,2 @@
+resolution_class,source,target_count,functions,action,reason
+successor_w36,W31_current_boundary,1,"TRANSLATE",deferred_to_w36,"Current host replay proves same-language pass-through and cross-language provider-busy behavior, so TRANSLATE belongs to a provider-language capability packet rather than a pure local function packet"

@@ -1,0 +1,2 @@
+residual_class,source,target_count,functions,reason
+xirr_large_root_precision,W32_scope_reconciliation,1,"XIRR","The current two-cashflow positive large-root observable still differs from direct Excel even though the reopened negative-root and negative-guess lanes are repaired"

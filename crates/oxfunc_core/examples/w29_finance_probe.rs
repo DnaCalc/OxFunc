@@ -43,8 +43,26 @@ fn print_num(case_id: &str, source: &str, value: f64) {
     println!("{case_id},{source},{:.15}", value);
 }
 
+fn worksheet_error_text(code: WorksheetErrorCode) -> &'static str {
+    match code {
+        WorksheetErrorCode::Null => "#NULL!",
+        WorksheetErrorCode::Div0 => "#DIV/0!",
+        WorksheetErrorCode::Value => "#VALUE!",
+        WorksheetErrorCode::Ref => "#REF!",
+        WorksheetErrorCode::Name => "#NAME?",
+        WorksheetErrorCode::Num => "#NUM!",
+        WorksheetErrorCode::NA => "#N/A",
+        WorksheetErrorCode::GettingData => "#GETTING_DATA",
+        WorksheetErrorCode::Spill => "#SPILL!",
+        WorksheetErrorCode::Calc => "#CALC!",
+        WorksheetErrorCode::Field => "#FIELD!",
+        WorksheetErrorCode::Blocked => "#BLOCKED!",
+        WorksheetErrorCode::Connect => "#CONNECT!",
+    }
+}
+
 fn print_ws_error(case_id: &str, source: &str, code: WorksheetErrorCode) {
-    println!("{case_id},{source},#{code:?}");
+    println!("{case_id},{source},{}", worksheet_error_text(code));
 }
 
 fn main() {
@@ -90,7 +108,12 @@ fn main() {
         Ok(EvalValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case1_guess_neg", "oxfunc", code)
         }
-        Err(err) => println!("xirr_negative_rate_case1_guess_neg,oxfunc,ERR:{err:?}"),
+        Err(err) => match err {
+            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
+                print_ws_error("xirr_negative_rate_case1_guess_neg", "oxfunc", code)
+            }
+            _ => println!("xirr_negative_rate_case1_guess_neg,oxfunc,ERR:{err:?}"),
+        },
         _ => println!("xirr_negative_rate_case1_guess_neg,oxfunc,ERR:unexpected"),
     }
 
@@ -108,7 +131,12 @@ fn main() {
         Ok(EvalValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case2_guess_neg", "oxfunc", code)
         }
-        Err(err) => println!("xirr_negative_rate_case2_guess_neg,oxfunc,ERR:{err:?}"),
+        Err(err) => match err {
+            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
+                print_ws_error("xirr_negative_rate_case2_guess_neg", "oxfunc", code)
+            }
+            _ => println!("xirr_negative_rate_case2_guess_neg,oxfunc,ERR:{err:?}"),
+        },
         _ => println!("xirr_negative_rate_case2_guess_neg,oxfunc,ERR:unexpected"),
     }
     match eval_xirr_surface(
@@ -123,7 +151,12 @@ fn main() {
         Ok(EvalValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case2_guess_pos", "oxfunc", code)
         }
-        Err(err) => println!("xirr_negative_rate_case2_guess_pos,oxfunc,ERR:{err:?}"),
+        Err(err) => match err {
+            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
+                print_ws_error("xirr_negative_rate_case2_guess_pos", "oxfunc", code)
+            }
+            _ => println!("xirr_negative_rate_case2_guess_pos,oxfunc,ERR:{err:?}"),
+        },
         _ => println!("xirr_negative_rate_case2_guess_pos,oxfunc,ERR:unexpected"),
     }
 

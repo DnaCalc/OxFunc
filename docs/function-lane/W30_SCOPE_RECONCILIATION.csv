@@ -1,0 +1,3 @@
+resolution_class,source,target_count,functions,action,reason
+successor_w34,W30_current_boundary,3,"ASC; DBCS; JIS",deferred_to_w34,"Current host replay proves that width-conversion availability and behavior are host-profile-sensitive rather than honest pure-kernel closure targets on the current boundary"
+successor_w35,W30_current_boundary,1,"NUMBERVALUE",deferred_to_w35,"Omitted separator defaults depend on locale/profile inputs and therefore belong to a typed locale-default parsing seam packet rather than ordinary pure closure"

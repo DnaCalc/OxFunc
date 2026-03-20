@@ -8,39 +8,12 @@ Last reviewed: 2026-03-18.
 
 ## Active Blockers
 
-### BLK-FN-010: `XNPV` / `XIRR` negative-rate and root-finding parity is reopened by `W29`
+### BLK-FN-011: `XIRR` large positive-root precision still differs from direct Excel after `W32`
 
 - **Status**: active
-- **Impact**: `W032` now owns reopened cashflow-rate parity repair work; `FDEF-053` and the older `W24` cashflow-rate packet can no longer be treated as closure-grade on those lanes.
-- **Current state**: the `W29` three-way benchmark showed `XNPV` negative-rate cases where OxFunc and the public ExcelFinancialFunctions F# library both returned finite values while direct Excel returned `#NUM!`, plus `XIRR` lanes where OxFunc either rejected a negative root that both F# and Excel accept or converged to a large positive root where Excel returned a different result or `#NUM!`.
-- **Exact unblock steps**: characterize the negative-rate admissibility and root-selection policy directly against Excel in `W032`, repair the `cashflow_rate_family` solver/admission behavior, and rerun the benchmark ledger until the reopened lanes are reconciled honestly.
-- **Recommendation**: workaround
-- **Opened**: 2026-03-18
-
-### BLK-FN-009: `COUPDAYS` leap-year actual/actual parity is reopened by `W29`
-
-- **Status**: active
-- **Impact**: `W032` now owns reopened coupon-family parity repair work; `FDEF-054` and the older `W24` coupon packet can no longer be treated as closure-grade for `COUPDAYS` on the reopened lane.
-- **Current state**: the `W29` three-way benchmark showed a leap-year actual/actual case where OxFunc and the public ExcelFinancialFunctions F# library both returned `182` while direct Excel returned `184`, with the related `COUPDAYBS` and `COUPDAYSNC` lanes still matching Excel on the same case.
-- **Exact unblock steps**: characterize Excel's leap-year actual/actual coupon-period sizing rule in `W032`, repair `COUPDAYS` without regressing the aligned coupon-family lanes, and rerun both the direct Excel packet and the benchmark ledger.
-- **Recommendation**: workaround
-- **Opened**: 2026-03-18
-
-### BLK-FN-005: `ASC` / `DBCS` / `JIS` are host-profile-sensitive rather than ordinary pure text functions
-
-- **Status**: active
-- **Impact**: `W030` now owns the locale-width conversion subset after `W026` completed as a characterization-and-extraction packet.
-- **Current state**: the existing Rust kernel in `crates/oxfunc_core/src/functions/text_compat_locale_family.rs` assumes Japanese width-conversion semantics. Native Excel replay on `2026-03-18` and the dedicated `W26` packet showed `ASC("ＡＢＣ　１２３")` and `DBCS("ABC ｶﾞ")` as pass-through on the current host/profile, while `JIS(...)` returned `#NAME?`. That means function availability and conversion behavior are profile-sensitive at the host/locale layer, not fixed pure semantics.
-- **Exact unblock steps**: define a host/profile-aware seam or version/profile matrix for width-conversion availability and behavior under `W030`, then revisit runtime admission and semantics honestly.
-- **Recommendation**: workaround
-- **Opened**: 2026-03-18
-
-### BLK-FN-006: `NUMBERVALUE` default separators and `TRANSLATE` provider behavior do not fit the ordinary pure mega-batch
-
-- **Status**: active
-- **Impact**: `W030` now owns `NUMBERVALUE` and `W031` now owns `TRANSLATE` after `W026` completed as a characterization-and-extraction packet.
-- **Current state**: native Excel replay on `2026-03-18` and the dedicated `W26` packet showed `NUMBERVALUE("1,234.5%") -> #VALUE!` on this host/profile while explicit separator lanes still work, so omitted separator defaults are locale-profile-sensitive. The same replay showed `TRANSLATE("hello","en","es") -> #BUSY!` while same-language `TRANSLATE("hola","es","es") -> "hola"`, confirming an external-provider seam rather than a pure local function.
-- **Exact unblock steps**: characterize `NUMBERVALUE` omitted-default semantics in `W030` and characterize `TRANSLATE` in `W031`, then revisit runtime admission and semantics honestly.
+- **Impact**: `W037` now owns the remaining `XIRR` precision residual; the large-root positive lane is not yet closure-grade against the direct Excel observable.
+- **Current state**: `W32` repaired `XNPV` negative-rate worksheet admission and the reopened `XIRR` negative-root / negative-guess lanes, but the large positive-root two-cashflow lane still differs from direct Excel (`165601346.134845703840256` vs `165601345.60000005`).
+- **Exact unblock steps**: characterize Excel's large-root stopping/tolerance policy directly, decide whether the difference is algorithmic or publication-level, repair `XIRR` or explicitly bound the lane in `W037`, and rerun the three-way benchmark.
 - **Recommendation**: workaround
 - **Opened**: 2026-03-18
 
@@ -64,6 +37,46 @@ Last reviewed: 2026-03-18.
 - **Recommendation**: continue
 - **Opened**: 2026-03-18
 - **Resolved**: 2026-03-18
+
+### BLK-FN-010: `XNPV` / `XIRR` negative-rate and root-finding parity is reopened by `W29`
+
+- **Status**: resolved
+- **Impact**: had blocked `W032` cashflow-rate repair.
+- **Current state**: `W32` repaired `XNPV` negative-rate worksheet admission to match direct Excel `#NUM!`, repaired the reopened `XIRR` negative-root lane, and repaired the negative-guess rejection lane for the positive-root-only benchmark case. The only remaining `XIRR` issue is now the extracted large-root precision lane under `BLK-FN-011` / `W037`.
+- **Exact unblock steps**: none inside `W032`; residual ownership moved to `W037`
+- **Recommendation**: continue
+- **Opened**: 2026-03-18
+- **Resolved**: 2026-03-19
+
+### BLK-FN-009: `COUPDAYS` leap-year actual/actual parity is reopened by `W29`
+
+- **Status**: resolved
+- **Impact**: had blocked `W032` coupon-family repair.
+- **Current state**: `W32` repaired `COUPDAYS` on the reopened leap-year actual/actual lane by using the maturity-day nominal previous coupon date for period-size calculation while preserving the aligned `COUPDAYBS` / `COUPDAYSNC` lanes.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-18
+- **Resolved**: 2026-03-19
+
+### BLK-FN-006: `NUMBERVALUE` default separators and `TRANSLATE` provider behavior do not fit the ordinary pure mega-batch
+
+- **Status**: resolved
+- **Impact**: had blocked honest closure claims inside the ordinary mega-batch and then `W030` / `W031`.
+- **Current state**: `W30` and `W31` completed as seam-definition/reconciliation packets. `NUMBERVALUE` now moves to `W035`, and `TRANSLATE` now moves to `W036`.
+- **Exact unblock steps**: none inside `W030` / `W031`; successor worksets now own the residual function work.
+- **Recommendation**: continue
+- **Opened**: 2026-03-18
+- **Resolved**: 2026-03-19
+
+### BLK-FN-005: `ASC` / `DBCS` / `JIS` are host-profile-sensitive rather than ordinary pure text functions
+
+- **Status**: resolved
+- **Impact**: had blocked honest closure claims inside the ordinary mega-batch and then `W030`.
+- **Current state**: `W30` completed as a seam-definition/reconciliation packet. `ASC`, `DBCS`, and `JIS` now move to `W034`.
+- **Exact unblock steps**: none inside `W030`; successor workset `W034` now owns the residual function work.
+- **Recommendation**: continue
+- **Opened**: 2026-03-18
+- **Resolved**: 2026-03-19
 
 ### BLK-FN-007: Bond core basis-`1` parity is not yet closure-grade for `PRICEMAT` / `YIELDMAT`
 

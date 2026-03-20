@@ -31,31 +31,34 @@ Artifacts created or updated:
 
 ## 4. Benchmark Result
 From `docs/function-lane/W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`:
-1. `6` targeted lanes aligned across OxFunc, F#, and Excel:
+1. `7` targeted lanes now align across OxFunc, F#, and Excel:
    - seeded `RATE`,
    - repaired `PRICEMAT` / `YIELDMAT`,
    - repaired `ODDLPRICE` / `ODDLYIELD`,
-   - seeded `ODDFYIELD`.
-2. `4` targeted lanes showed OxFunc matching F# but not Excel:
+   - seeded `ODDFYIELD`,
+   - repaired negative-root `XIRR`.
+2. `5` targeted lanes now show OxFunc matching Excel while F# differs:
    - `COUPDAYS` leap-year actual/actual lane,
    - derived coupon identity lane,
-   - two negative-rate `XNPV` lanes.
-3. `1` targeted lane showed F# matching Excel while OxFunc differed:
-   - one negative-rate `XIRR` lane returned `#NUM!` in OxFunc while F# and Excel both returned the negative root.
-4. `2` targeted `XIRR` lanes showed both OxFunc and F# differing from Excel on the public compatibility examples.
+   - two negative-rate `XNPV` lanes,
+   - negative-guess `XIRR` rejection on the positive-root-only case.
+3. `1` targeted lane remains `all_diverge_or_inconclusive`:
+   - the large positive-root `XIRR` lane where Excel still differs from both OxFunc and F#.
 
 ## 5. Classification
 1. `W29` is complete as a benchmark-and-classification packet.
 2. It does not claim that the discrepant OxFunc families are semantically closed.
-3. `W29` reopens current OxFunc parity concerns for:
+3. `W29` originally reopened current OxFunc parity concerns for:
    - `COUPDAYS`,
    - `XNPV`,
    - `XIRR`.
-4. The already repaired `W27` bond and odd-last lanes now have explicit three-way evidence showing that the current OxFunc fixes align with both the public F# benchmark and direct Excel.
+4. After the `W32` repair rerun, only the large positive-root `XIRR` precision lane remains open and now belongs to `W037`.
+5. The already repaired `W27` bond and odd-last lanes now have explicit three-way evidence showing that the current OxFunc fixes align with both the public F# benchmark and direct Excel.
 
 ## 6. Successor Ownership
-1. The reopened OxFunc parity gaps now move to `W032`.
-2. The public F# qualitative notes on `RATE` and `ODDFYIELD` remain watchlist evidence only in this pass because no concrete OxFunc-vs-Excel mismatch was established on the seeded benchmark lanes.
+1. The reopened OxFunc parity gaps moved to `W032`.
+2. After `W32`, the only remaining residual from this benchmark packet is the large positive-root `XIRR` precision lane in `W037`.
+3. The public F# qualitative notes on `RATE` and `ODDFYIELD` remain watchlist evidence only in this pass because no concrete OxFunc-vs-Excel mismatch was established on the seeded benchmark lanes.
 
 ## 7. Verification Runs
 1. `dotnet test .tmp/ExcelFinancialFunctions/tests/ExcelFinancialFunctions.Tests/ExcelFinancialFunctions.Tests.fsproj -v minimal`
@@ -68,4 +71,4 @@ From `docs/function-lane/W29_FINANCE_BENCHMARK_DISCREPANCY_LEDGER.csv`:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none in declared `W29` scope; successor repair work is owned by `W032`
+   - none in declared `W29` scope; successor repair/extraction work is now owned by `W032` and `W037`
