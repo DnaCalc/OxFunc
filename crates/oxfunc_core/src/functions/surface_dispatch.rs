@@ -45,6 +45,12 @@ use crate::functions::bond_core_family::{
     eval_price_surface, eval_pricemat_surface, eval_yield_surface, eval_yielddisc_surface,
     eval_yieldmat_surface, map_bond_core_error_to_ws,
 };
+use crate::functions::callable_helpers::{
+    BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
+    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_surface, eval_byrow_surface,
+    eval_isomitted_surface, eval_makearray_surface, eval_map_surface, eval_reduce_surface,
+    eval_scan_surface, map_lambda_helper_error_to_ws,
+};
 use crate::functions::cashflow_rate_family::{
     eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
 };
@@ -433,6 +439,8 @@ pub const FUNC_ID_BITLSHIFT: &str = "FUNC.BITLSHIFT";
 pub const FUNC_ID_BITOR: &str = "FUNC.BITOR";
 pub const FUNC_ID_BITRSHIFT: &str = "FUNC.BITRSHIFT";
 pub const FUNC_ID_BITXOR: &str = "FUNC.BITXOR";
+pub const FUNC_ID_BYCOL: &str = "FUNC.BYCOL";
+pub const FUNC_ID_BYROW: &str = "FUNC.BYROW";
 pub const FUNC_ID_CELL: &str = "FUNC.CELL";
 pub const FUNC_ID_CEILING: &str = "FUNC.CEILING";
 pub const FUNC_ID_CEILING_MATH: &str = "FUNC.CEILING.MATH";
@@ -570,6 +578,7 @@ pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
 pub const FUNC_ID_HOUR: &str = "FUNC.HOUR";
 pub const FUNC_ID_HSTACK: &str = "FUNC.HSTACK";
 pub const FUNC_ID_INFO: &str = "FUNC.INFO";
+pub const FUNC_ID_ISOMITTED: &str = "FUNC.ISOMITTED";
 pub const FUNC_ID_IMABS: &str = "FUNC.IMABS";
 pub const FUNC_ID_IMAGINARY: &str = "FUNC.IMAGINARY";
 pub const FUNC_ID_IMARGUMENT: &str = "FUNC.IMARGUMENT";
@@ -639,6 +648,8 @@ pub const FUNC_ID_MAXA: &str = "FUNC.MAXA";
 pub const FUNC_ID_MAXIFS: &str = "FUNC.MAXIFS";
 pub const FUNC_ID_MEDIAN: &str = "FUNC.MEDIAN";
 pub const FUNC_ID_MATCH: &str = "FUNC.MATCH";
+pub const FUNC_ID_MAKEARRAY: &str = "FUNC.MAKEARRAY";
+pub const FUNC_ID_MAP: &str = "FUNC.MAP";
 pub const FUNC_ID_MDETERM: &str = "FUNC.MDETERM";
 pub const FUNC_ID_MDURATION: &str = "FUNC.MDURATION";
 pub const FUNC_ID_MINVERSE: &str = "FUNC.MINVERSE";
@@ -726,6 +737,7 @@ pub const FUNC_ID_QUARTILE_INC: &str = "FUNC.QUARTILE.INC";
 pub const FUNC_ID_QUARTILE: &str = "FUNC.QUARTILE";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
 pub const FUNC_ID_RANDARRAY: &str = "FUNC.RANDARRAY";
+pub const FUNC_ID_REDUCE: &str = "FUNC.REDUCE";
 pub const FUNC_ID_RATE: &str = "FUNC.RATE";
 pub const FUNC_ID_RADIANS: &str = "FUNC.RADIANS";
 pub const FUNC_ID_RANK: &str = "FUNC.RANK";
@@ -746,6 +758,7 @@ pub const FUNC_ID_ROUNDUP: &str = "FUNC.ROUNDUP";
 pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
 pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
+pub const FUNC_ID_SCAN: &str = "FUNC.SCAN";
 pub const FUNC_ID_SEC: &str = "FUNC.SEC";
 pub const FUNC_ID_SERIESSUM: &str = "FUNC.SERIESSUM";
 pub const FUNC_ID_SECH: &str = "FUNC.SECH";
@@ -932,6 +945,20 @@ impl RandomArrayProvider for FixedRandomProvider {
     }
 }
 
+struct RejectingCallableInvoker;
+
+impl CallableInvoker for RejectingCallableInvoker {
+    fn invoke(
+        &self,
+        callable: &crate::value::LambdaValue,
+        _args: &[crate::functions::adapters::PreparedArgValue],
+    ) -> Result<crate::functions::adapters::PreparedArgValue, CallableInvocationError> {
+        Err(CallableInvocationError::UnsupportedCallableToken(
+            callable.callable_token.clone(),
+        ))
+    }
+}
+
 fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
     // Core value model does not yet carry full array payloads in prepared call-args.
     // Keep singleton passthrough until array payload/value expansion is implemented.
@@ -1039,6 +1066,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::bitrshift_fn::BITRSHIFT_META.arg_preparation_profile)
         }
         FUNC_ID_BITXOR => Some(crate::functions::bitxor_fn::BITXOR_META.arg_preparation_profile),
+        FUNC_ID_BYCOL => Some(BYCOL_META.arg_preparation_profile),
+        FUNC_ID_BYROW => Some(BYROW_META.arg_preparation_profile),
         FUNC_ID_CELL => Some(crate::functions::cell::CELL_META.arg_preparation_profile),
         FUNC_ID_CEILING => {
             Some(crate::functions::ceiling_floor_family::CEILING_META.arg_preparation_profile)
@@ -1343,6 +1372,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_HSTACK => Some(crate::functions::hstack::HSTACK_META.arg_preparation_profile),
         FUNC_ID_INFO => Some(crate::functions::info_fn::INFO_META.arg_preparation_profile),
+        FUNC_ID_ISOMITTED => Some(ISOMITTED_META.arg_preparation_profile),
         FUNC_ID_IRR => {
             Some(crate::functions::cashflow_rate_family::IRR_META.arg_preparation_profile)
         }
@@ -1523,6 +1553,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_MEDIAN => Some(crate::functions::median_fn::MEDIAN_META.arg_preparation_profile),
         FUNC_ID_MATCH => Some(crate::functions::match_fn::MATCH_META.arg_preparation_profile),
+        FUNC_ID_MAKEARRAY => Some(MAKEARRAY_META.arg_preparation_profile),
+        FUNC_ID_MAP => Some(MAP_META.arg_preparation_profile),
         FUNC_ID_MDETERM => {
             Some(crate::functions::matrix_family::MDETERM_META.arg_preparation_profile)
         }
@@ -1741,6 +1773,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_RANDARRAY => {
             Some(crate::functions::misc_conversion_family::RANDARRAY_META.arg_preparation_profile)
         }
+        FUNC_ID_REDUCE => Some(REDUCE_META.arg_preparation_profile),
         FUNC_ID_RATE => {
             Some(crate::functions::financial_time_value_family::RATE_META.arg_preparation_profile)
         }
@@ -1785,6 +1818,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::date_parts_family::SECOND_META.arg_preparation_profile)
         }
         FUNC_ID_SEQUENCE => Some(crate::functions::sequence::SEQUENCE_META.arg_preparation_profile),
+        FUNC_ID_SCAN => Some(SCAN_META.arg_preparation_profile),
         FUNC_ID_SEC => Some(crate::functions::sec::SEC_META.arg_preparation_profile),
         FUNC_ID_SECH => Some(crate::functions::sech::SECH_META.arg_preparation_profile),
         FUNC_ID_SERIESSUM => {
@@ -2003,6 +2037,30 @@ pub fn eval_surface_value_call(
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
+    eval_surface_value_call_with_callable(
+        function_id,
+        args,
+        resolver,
+        now_serial,
+        random_value,
+        locale_ctx,
+        host_info,
+        None,
+    )
+}
+
+pub fn eval_surface_value_call_with_callable(
+    function_id: &str,
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    now_serial: Option<f64>,
+    random_value: Option<f64>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+    callable_invoker: Option<&dyn CallableInvoker>,
+) -> Result<EvalValue, WorksheetErrorCode> {
+    let rejecting_invoker = RejectingCallableInvoker;
+    let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
     match function_id {
         FUNC_ID_ACOS => eval_acos_surface(args, resolver).map_err(|e| map_acos_error_to_ws(&e)),
         FUNC_ID_ACOT => eval_acot_surface(args, resolver).map_err(|e| map_acot_error_to_ws(&e)),
@@ -2110,6 +2168,10 @@ pub fn eval_surface_value_call(
         FUNC_ID_BITXOR => {
             eval_bitxor_surface(args, resolver).map_err(|e| map_bitxor_error_to_ws(&e))
         }
+        FUNC_ID_BYCOL => eval_bycol_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
+        FUNC_ID_BYROW => eval_byrow_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_CELL => {
             eval_cell_surface(args, resolver, host_info).map_err(|e| map_cell_error_to_ws(&e))
         }
@@ -2454,6 +2516,9 @@ pub fn eval_surface_value_call(
         FUNC_ID_INFO => {
             eval_info_surface(args, resolver, host_info).map_err(|e| map_info_error_to_ws(&e))
         }
+        FUNC_ID_ISOMITTED => {
+            eval_isomitted_surface(args, resolver).map_err(|e| map_lambda_helper_error_to_ws(&e))
+        }
         FUNC_ID_IRR => {
             eval_irr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
         }
@@ -2654,6 +2719,10 @@ pub fn eval_surface_value_call(
             eval_match_surface(&args[0], &lookup_array, match_type, resolver)
                 .map_err(|e| map_match_error_to_ws(&e))
         }
+        FUNC_ID_MAKEARRAY => eval_makearray_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
+        FUNC_ID_MAP => eval_map_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_MDETERM => {
             eval_mdeterm_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
         }
@@ -2917,6 +2986,17 @@ pub fn eval_surface_value_call(
             eval_RANDARRAY_surface(args, resolver, &provider)
                 .map_err(|e| map_misc_conversion_error_to_ws(&e))
         }
+        FUNC_ID_REDUCE => eval_reduce_surface(args, resolver, callable_invoker)
+            .map(|value| match value {
+                crate::functions::adapters::PreparedArgValue::Eval(v) => v,
+                crate::functions::adapters::PreparedArgValue::MissingArg => {
+                    EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
+                }
+                crate::functions::adapters::PreparedArgValue::EmptyCell => EvalValue::Array(
+                    crate::value::EvalArray::from_scalar(crate::value::ArrayCellValue::EmptyCell),
+                ),
+            })
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_RAND => {
             let value = random_value.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedRandomProvider { value };
@@ -2982,6 +3062,8 @@ pub fn eval_surface_value_call(
         FUNC_ID_SEQUENCE => {
             eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
         }
+        FUNC_ID_SCAN => eval_scan_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_SIGN => eval_sign_surface(args, resolver).map_err(|e| map_sign_error_to_ws(&e)),
         FUNC_ID_SIN => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
         FUNC_ID_SINH => eval_sinh_surface(args, resolver).map_err(|e| map_sinh_error_to_ws(&e)),
@@ -3269,10 +3351,16 @@ pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, Worksheet
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::functions::adapters::PreparedArgValue;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::value::{
+        ArrayCellValue, CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue,
+        ReferenceLike,
+    };
 
     struct NoReferenceResolver;
+
+    struct TestCallableInvoker;
 
     impl ReferenceResolver for NoReferenceResolver {
         fn capabilities(&self) -> ResolverCapabilities {
@@ -3286,6 +3374,28 @@ mod tests {
             Err(RefResolutionError::UnresolvedReference {
                 target: reference.target.clone(),
             })
+        }
+    }
+
+    impl CallableInvoker for TestCallableInvoker {
+        fn invoke(
+            &self,
+            callable: &LambdaValue,
+            args: &[PreparedArgValue],
+        ) -> Result<PreparedArgValue, CallableInvocationError> {
+            match callable.callable_token.as_str() {
+                "helper.add1" => match args {
+                    [PreparedArgValue::Eval(EvalValue::Number(n))] => {
+                        Ok(PreparedArgValue::Eval(EvalValue::Number(*n + 1.0)))
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                _ => Err(CallableInvocationError::UnsupportedCallableToken(
+                    callable.callable_token.clone(),
+                )),
+            }
         }
     }
 
@@ -3341,6 +3451,40 @@ mod tests {
                 "ID".encode_utf16().collect(),
             )))
         );
+    }
+
+    #[test]
+    fn eval_surface_value_call_with_callable_supports_map_helper_surface() {
+        let array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+        ]])
+        .expect("row vector");
+        let callable = LambdaValue::helper_lambda(
+            "helper.add1",
+            CallableArityShape::exact(1),
+            CallableCaptureMode::NoCapture,
+            "lambda.map.add1",
+        );
+        let got = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(array)),
+                CallArgValue::Eval(EvalValue::Lambda(callable)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+        );
+        let expected = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(EvalValue::Array(expected)));
     }
 
     #[test]

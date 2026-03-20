@@ -36,6 +36,10 @@ Record known limitations in the Rust XLL verification seam so they are not mista
 8. The bridge baseline can improve independently of core function closure:
    - `CLEAN` extra-C1 removal and `DATE(1900,1,0)` are now parity-closed through the rebuilt XLL baseline,
    - but that kind of bridge improvement does not change the rule that XLL limitations must be documented whenever they materially affect evidence claims.
+9. Callable/lambda worksheet values are not yet transportable through the current XLL bridge:
+   - helper-family worksheet surfaces such as `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, and workbook Defined Name callable invocation may be wired through core dispatch/export admission,
+   - but the present XLL seam does not yet carry callable worksheet values or workbook Defined Name callable bindings into OxFunc in a way that can prove Excel parity end-to-end through the bridge,
+   - so `W38` evidence remains a combination of native Excel worksheet replay and core/runtime dispatch tests rather than XLL bridge replay.
 
 ## 4. Primary Evidence Records
 1. `docs/function-lane/XLL_ADDIN_BRIDGE_EXECUTION_RECORD.md`

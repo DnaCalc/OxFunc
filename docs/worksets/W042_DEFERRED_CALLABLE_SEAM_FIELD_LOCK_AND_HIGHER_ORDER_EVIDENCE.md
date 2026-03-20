@@ -23,7 +23,7 @@ This workset owns future evidence-driven narrowing for:
 2. final callable carrier versus provenance/replay split,
 3. any need for an explicit invocation-model field beyond the current semantic invocation-reference idea,
 4. higher-order helper seam pressure from `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, and `ISOMITTED`,
-5. fuller defined-name, UDF, and interoperable callable transport,
+5. fuller UDF, add-in, and interoperable callable transport beyond the Excel-supported Defined Name callable surface,
 6. any callable/provider-stage refinement beyond the generic staged availability model.
 
 ## 4. Out Of Scope
@@ -37,7 +37,7 @@ This workset should become active only when one or more of the following occurs:
 1. OxFunc needs a concrete callable field set for implementation-facing boundary work,
 2. a proving-host or runtime artifact forces a narrower callable carrier decision,
 3. `W38` or its successors produce higher-order helper evidence that materially changes the callable seam,
-4. defined-name/UDF/interoperable callable transport becomes implementation-ready enough to need explicit boundary locking,
+4. UDF/add-in/interoperable callable transport becomes implementation-ready enough to need explicit boundary locking,
 5. callable/provider-stage behavior proves the generic staged availability model insufficient.
 
 ## 6. Expected Deliverables
@@ -54,5 +54,5 @@ This workset should become active only when one or more of the following occurs:
 5. open_lanes:
    - no field-lock artifact exists yet,
    - no higher-order helper seam lock exists yet,
-   - no defined-name/UDF/interoperable callable transport lock exists yet,
+   - no UDF/add-in/interoperable callable transport lock exists yet,
    - no callable/provider-stage refinement evidence exists yet beyond the generic staged model.

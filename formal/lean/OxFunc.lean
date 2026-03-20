@@ -83,6 +83,7 @@ import OxFunc.Functions.FisherInvFn
 import OxFunc.Functions.FalseFn
 import OxFunc.Functions.FinancialTimeValueFamily
 import OxFunc.Functions.Fixed
+import OxFunc.Functions.FunctionalLambdaHelpers
 import OxFunc.Functions.GaussFn
 import OxFunc.Functions.GcdFn
 import OxFunc.Functions.GeoMeanFn

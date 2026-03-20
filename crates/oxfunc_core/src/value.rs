@@ -44,6 +44,40 @@ pub enum ValueTag {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallableOriginKind {
+    HelperLambda,
+    DefinedNameCallable,
+    BuiltInCallable,
+    ExternalRegisteredCallable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallableCaptureMode {
+    NoCapture,
+    LexicalCapture,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CallableArityShape {
+    pub min: usize,
+    pub max: usize,
+}
+
+impl CallableArityShape {
+    pub const fn exact(n: usize) -> Self {
+        Self { min: n, max: n }
+    }
+
+    pub const fn range(min: usize, max: usize) -> Self {
+        Self { min, max }
+    }
+
+    pub const fn accepts(self, argc: usize) -> bool {
+        argc >= self.min && argc <= self.max
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ReferenceKind {
     A1,
     Area,
@@ -194,6 +228,63 @@ impl EvalArray {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LambdaValue {
+    pub callable_token: String,
+    pub origin_kind: CallableOriginKind,
+    pub arity_shape: CallableArityShape,
+    pub capture_mode: CallableCaptureMode,
+    pub invocation_contract_ref: String,
+}
+
+impl LambdaValue {
+    pub fn new(
+        callable_token: impl Into<String>,
+        origin_kind: CallableOriginKind,
+        arity_shape: CallableArityShape,
+        capture_mode: CallableCaptureMode,
+        invocation_contract_ref: impl Into<String>,
+    ) -> Self {
+        Self {
+            callable_token: callable_token.into(),
+            origin_kind,
+            arity_shape,
+            capture_mode,
+            invocation_contract_ref: invocation_contract_ref.into(),
+        }
+    }
+
+    pub fn helper_lambda(
+        callable_token: impl Into<String>,
+        arity_shape: CallableArityShape,
+        capture_mode: CallableCaptureMode,
+        invocation_contract_ref: impl Into<String>,
+    ) -> Self {
+        Self::new(
+            callable_token,
+            CallableOriginKind::HelperLambda,
+            arity_shape,
+            capture_mode,
+            invocation_contract_ref,
+        )
+    }
+
+    pub fn defined_name_callable(
+        callable_token: impl Into<String>,
+        arity_shape: CallableArityShape,
+        capture_mode: CallableCaptureMode,
+        invocation_contract_ref: impl Into<String>,
+    ) -> Self {
+        Self::new(
+            callable_token,
+            CallableOriginKind::DefinedNameCallable,
+            arity_shape,
+            capture_mode,
+            invocation_contract_ref,
+        )
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum EvalValue {
     Number(f64),
@@ -202,7 +293,7 @@ pub enum EvalValue {
     Error(WorksheetErrorCode),
     Array(EvalArray),
     Reference(ReferenceLike),
-    Lambda(String),
+    Lambda(LambdaValue),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -326,8 +417,9 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayCellValue, ArrayShape, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalArray, ExcelText,
-        ValueBoundary, ValueTag,
+        ArrayCellValue, ArrayShape, CallableArityShape, CallableCaptureMode, CallableOriginKind,
+        EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalArray, ExcelText, LambdaValue, ValueBoundary,
+        ValueTag,
     };
 
     #[test]
@@ -397,5 +489,38 @@ mod tests {
         assert_eq!(array.get(0, 0), Some(&ArrayCellValue::Number(1.0)));
         assert_eq!(array.get(1, 1), Some(&ArrayCellValue::EmptyCell));
         assert_eq!(array.iter_row_major().count(), 4);
+    }
+
+    #[test]
+    fn callable_arity_shape_exact_accepts_only_matching_arity() {
+        let arity = CallableArityShape::exact(2);
+        assert!(!arity.accepts(1));
+        assert!(arity.accepts(2));
+        assert!(!arity.accepts(3));
+    }
+
+    #[test]
+    fn helper_and_defined_name_lambda_constructors_preserve_metadata() {
+        let helper = LambdaValue::helper_lambda(
+            "helper.lambda.1",
+            CallableArityShape::exact(1),
+            CallableCaptureMode::LexicalCapture,
+            "helper.invoke.v1",
+        );
+        assert_eq!(helper.origin_kind, CallableOriginKind::HelperLambda);
+        assert_eq!(helper.arity_shape, CallableArityShape::exact(1));
+        assert_eq!(helper.capture_mode, CallableCaptureMode::LexicalCapture);
+        assert_eq!(helper.invocation_contract_ref, "helper.invoke.v1");
+
+        let defined = LambdaValue::defined_name_callable(
+            "name.MyAdder",
+            CallableArityShape::range(1, 1),
+            CallableCaptureMode::NoCapture,
+            "name.invoke.v1",
+        );
+        assert_eq!(defined.origin_kind, CallableOriginKind::DefinedNameCallable);
+        assert_eq!(defined.arity_shape, CallableArityShape::exact(1));
+        assert_eq!(defined.capture_mode, CallableCaptureMode::NoCapture);
+        assert_eq!(defined.invocation_contract_ref, "name.invoke.v1");
     }
 }

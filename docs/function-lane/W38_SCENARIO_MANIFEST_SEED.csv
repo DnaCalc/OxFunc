@@ -1,0 +1,18 @@
+scenario_id,lane,formula,expected_status,expected_text,expected_value2,tolerance,notes
+let_basic,LET,"LET(x,2,x+3)",set_ok,,5,1E-12,Basic single-binding LET
+let_two_names,LET,"LET(a,1,b,2,a+b)",set_ok,,3,1E-12,Sequential bindings can reference prior names
+let_array_sum,LET,"LET(x,{1,2},SUM(x))",set_ok,,3,1E-12,Array-valued binding feeds later expression
+let_nested,LET,"LET(a,1,LET(b,2,a+b))",set_ok,,3,1E-12,Nested LET preserves outer binding visibility
+let_duplicate_name,LET,"LET(x,2,x,5,x+1)",set_err,,,,"Duplicate local names are rejected on admission"
+let_nested_lambda_capture,LET,"LET(x,2,LAMBDA(y,x+y)(3))",set_ok,,5,1E-12,LAMBDA captures outer LET binding
+lambda_immediate,LAMBDA,"LAMBDA(x,x+1)(5)",set_ok,,6,1E-12,Immediate single-argument invocation
+lambda_two_args,LAMBDA,"LAMBDA(x,y,x*y)(3,4)",set_ok,,12,1E-12,Immediate multi-argument invocation
+lambda_bare,LAMBDA,"LAMBDA(x,x+1)",set_ok,#CALC!,,,Bare lambda is not a worksheet value
+lambda_arity_low,LAMBDA,"LAMBDA(x,y,x+y)(1)",set_ok,#VALUE!,,,Under-application on direct invoke returns #VALUE!
+lambda_arity_high,LAMBDA,"LAMBDA(x,x+1)(1,2)",set_ok,#VALUE!,,,Over-application on direct invoke returns #VALUE!
+lambda_duplicate_params,LAMBDA,"LAMBDA(x,x,x+1)(2)",set_err,,,,"Duplicate parameter names are rejected on admission"
+lambda_let_inner,LAMBDA,"LAMBDA(x,LET(y,2,x+y))(3)",set_ok,,5,1E-12,LET works inside lambda body
+isomitted_top_level_false,ISOMITTED,"ISOMITTED(1)",set_ok,FALSE,,,Direct top-level call with present arg returns FALSE on current baseline
+isomitted_noargs,ISOMITTED,"ISOMITTED()",set_err,,,,"Zero-argument ISOMITTED is rejected on admission"
+isomitted_present_in_lambda,ISOMITTED,"LAMBDA(a,ISOMITTED(a))(3)",set_ok,FALSE,,,Present lambda arg is not omitted
+isomitted_missing_in_lambda,ISOMITTED,"LAMBDA(a,ISOMITTED(a))()",set_ok,#VALUE!,,,Direct under-application does not expose an omitted-argument channel

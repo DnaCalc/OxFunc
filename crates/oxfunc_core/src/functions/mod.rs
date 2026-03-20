@@ -29,6 +29,8 @@ pub mod bitor_fn;
 pub mod bitrshift_fn;
 pub mod bitxor_fn;
 pub mod bond_core_family;
+pub mod callable_helpers;
+pub mod callable_stage1_prepared;
 pub mod cashflow_rate_family;
 pub mod ceiling_floor_family;
 pub mod cell;

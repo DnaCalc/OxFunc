@@ -1,0 +1,15 @@
+scenario_id,lane,anchor_cell,formula,expected_status,expected_text,expected_value2,tolerance,inspect_range,expected_spill_text,notes
+map_sum_unary,MAP,A1,"SUM(MAP({1,2},LAMBDA(a,a+1)))",set_ok,,5,1E-12,,,Unary MAP aggregated through SUM
+map_sum_binary,MAP,A4,"SUM(MAP({1,2},{10,20},LAMBDA(a,b,a+b)))",set_ok,,33,1E-12,,,Binary MAP over paired arrays
+map_bare_spill,MAP,A7,"MAP({1,2},LAMBDA(a,a+1))",set_ok,,2,1E-12,A7:B7,"2|3",Bare MAP spills row result
+map_mismatch_arrays,MAP,A10,"MAP({1,2},{10},LAMBDA(a,b,a+b))",set_ok,,11,1E-12,A10:B10,"11|#N/A",Missing partner element becomes #N/A in spill
+map_lambda_arity_low,MAP,A13,"MAP({1,2},LAMBDA(a,b,a+b))",set_ok,#VALUE!,,,,,Runtime lambda arity mismatch
+map_lambda_malformed_high,MAP,A16,"MAP({1,2},LAMBDA(a,a+1,99))",set_err,,,,,,Malformed lambda declaration is rejected on admission
+map_isomitted_present,MAP,A19,"SUM(--MAP({1,2},LAMBDA(a,NOT(ISOMITTED(a)))))",set_ok,,2,1E-12,,,Present MAP arguments are not omitted
+reduce_sum,REDUCE,A22,"REDUCE(0,{1,2,3},LAMBDA(a,b,a+b))",set_ok,,6,1E-12,,,Basic additive reduce
+reduce_mul,REDUCE,A25,"REDUCE(1,{2,3,4},LAMBDA(a,b,a*b))",set_ok,,24,1E-12,,,Basic multiplicative reduce
+reduce_lambda_arity_low,REDUCE,A28,"REDUCE(0,{1,2},LAMBDA(a,a+1))",set_ok,#VALUE!,,,,,Runtime lambda arity mismatch
+reduce_isomitted_present,REDUCE,A31,"REDUCE(0,{1,2},LAMBDA(a,b,IF(AND(NOT(ISOMITTED(a)),NOT(ISOMITTED(b))),a+b,999)))",set_ok,,3,1E-12,,,Present REDUCE arguments are not omitted
+scan_sum_total,SCAN,A34,"SUM(SCAN(0,{1,2,3},LAMBDA(a,b,a+b)))",set_ok,,10,1E-12,,,Aggregated SCAN intermediates
+scan_bare_spill,SCAN,A37,"SCAN(0,{1,2,3},LAMBDA(a,b,a+b))",set_ok,,1,1E-12,A37:C37,"1|3|6",Bare SCAN spills intermediate accumulations
+scan_lambda_arity_low,SCAN,A40,"SCAN(0,{1,2},LAMBDA(a,a+1))",set_ok,#VALUE!,,,,,Runtime lambda arity mismatch

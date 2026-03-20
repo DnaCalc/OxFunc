@@ -808,7 +808,7 @@ The focused reply is now:
 
 Current OxFunc position:
 1. lexical meaning, exact capture truth, and callable-first-class status are now accepted as fixed enough for the next narrowing round,
-2. the smallest honest callable carrier currently looks like:
+2. the earlier OxFunc narrowing candidate for the smallest honest callable carrier looked like:
    - opaque `callable_token`,
    - `origin_kind`,
    - `arity_shape`,
@@ -816,6 +816,11 @@ Current OxFunc position:
    - `invocation_contract_ref`,
 3. exact parameter-name and capture-name surfaces should remain provenance/replay detail for now rather than minimum carrier fields,
 4. typed invocation over an opaque callable token is the preferred invocation boundary.
+
+Reading rule after round closure:
+1. this section records the narrowed candidate that shaped the exchange,
+2. it should not be read as a post-closure field lock,
+3. the active post-closure position is in Sections `19.8` and `19.9`.
 
 ### 19.3 Why This Is The Current Boundary
 This is the smallest boundary that still fits the local evidence:
@@ -827,7 +832,7 @@ This is the smallest boundary that still fits the local evidence:
 ### 19.4 What Remains Open
 This still intentionally leaves open:
 1. final callable ABI/transport,
-2. full defined-name and UDF/interoperable callable transport,
+2. fuller UDF/interoperable callable transport beyond the Excel-supported Defined Name callable surface,
 3. `BYROW`, `BYCOL`, and `MAKEARRAY`,
 4. broader callable/provider interaction beyond the generic staged availability model.
 
@@ -900,7 +905,7 @@ Deferred topics:
 2. final carrier-versus-provenance split for parameter, capture, and body detail,
 3. whether an additional invocation-model field is needed beyond the current `invocation_contract_ref` idea,
 4. higher-order helper seam pressure from `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, `MAKEARRAY`, and `ISOMITTED`,
-5. fuller defined-name, UDF, and interoperable callable transport,
+5. fuller UDF, add-in, and interoperable callable transport beyond the Excel-supported Defined Name callable surface,
 6. any callable/provider-stage refinement beyond the generic staged availability model.
 
 Working closure reading:
