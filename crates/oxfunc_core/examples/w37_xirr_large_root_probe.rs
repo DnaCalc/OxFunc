@@ -90,9 +90,9 @@ fn main() {
             Ok(EvalValue::Number(v)) => print_num(case_id, guess, v),
             Ok(EvalValue::Error(code)) => print_ws_error(case_id, guess, code),
             Err(err) => match err {
-                oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
-                    print_ws_error(case_id, guess, code)
-                }
+                oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(
+                    code,
+                ) => print_ws_error(case_id, guess, code),
                 _ => println!("{case_id},{guess:.10},oxfunc,ERR:{err:?}"),
             },
             _ => println!("{case_id},{guess:.10},oxfunc,ERR:unexpected"),
