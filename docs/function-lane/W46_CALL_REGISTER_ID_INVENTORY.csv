@@ -1,0 +1,3 @@
+function_name,packet,interest_tier,interest_label,semantic_cluster,notes
+CALL,W046,4,high_interest,udf_registration_and_invocation,Worksheet call-through to registered DLL/code-resource procedures.
+REGISTER.ID,W046,4,high_interest,udf_registration_and_invocation,Returns register id for a previously registered DLL/code resource.

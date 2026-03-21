@@ -8,3 +8,6 @@ license = "MIT"
 name = "oxfunc_core"
 path = "src/lib.rs"
 
+[dependencies]
+sxd-document = "0.3.2"
+sxd-xpath = "0.4.2"

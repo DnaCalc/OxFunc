@@ -8,12 +8,12 @@ Last reviewed: 2026-03-21.
 
 ## Active Blockers
 
-### BLK-FN-003: W023 host-integrated, metadata-query, and visibility-sensitive residuals need new FEC/host seams
+### BLK-FN-003: W023 remaining publication/provider residuals still need richer host seams
 
 - **Status**: active
-- **Impact**: `W023` cannot close the host-sensitive and metadata-query subset until the required host/query seams exist. Current known members: `CALL`, `COPILOT`, `DETECTLANGUAGE`, `GETPIVOTDATA`, `HYPERLINK`, `IMAGE`, `PHONETIC`, `REGISTER.ID`, `ISFORMULA`, plus row-visibility-sensitive `SUBTOTAL` and `AGGREGATE`.
-- **Current state**: `W16` is closed, `W022` reconciled the criteria family, and these rows are now extracted to `W023`. Core OxFunc can close pure and low-risk spreadsheet semantics, but these lanes still require workbook/application/pivot/link/ui/visibility or cell-formula-metadata facts that are not presently available through the admitted typed seams. No honest in-core pure implementation exists for them on the current boundary.
-- **Exact unblock steps**: define typed evaluator/host capabilities for link/pivot/selection/row-visibility/query state in OxFml/FEC, or explicitly reclassify the affected functions out of `W017`.
+- **Impact**: `W023` remains partial until the remaining publication/provider seams are pinned honestly for `HYPERLINK` and `IMAGE`.
+- **Current state**: `ISFORMULA`, `SUBTOTAL`, and `AGGREGATE` now have typed host-query seams and admitted current-baseline OxFunc closure. The blocker is narrowed to `HYPERLINK` publication metadata/clickability and the richer provider/value/publication model pressure from `IMAGE`.
+- **Exact unblock steps**: define the host-facing publication seam for hyperlink decoration/click behavior and either (a) pin `IMAGE` as a host-managed rich value/publication object or (b) explicitly classify it as an external/provider surface above the current OxFunc value boundary.
 - **Recommendation**: workaround
 - **Opened**: 2026-03-15
 

@@ -1,0 +1,9 @@
+scenario_id,lane,formula,expected_kind,expected_value,notes
+W41-WEBXML-001,encodeurl_spaces_plus,"ENCODEURL(""a b+c"")",text,a%20b%2Bc,"Space and plus encoding"
+W41-WEBXML-002,encodeurl_number,"ENCODEURL(123)",text,123,"Numeric scalar coerces to text"
+W41-WEBXML-003,encodeurl_logical,"ENCODEURL(TRUE)",text,TRUE,"Logical scalar coerces to text"
+W41-WEBXML-004,filterxml_nodeset_spill,"FILTERXML(""<root><a>1</a><a>2</a></root>"",""//a"")",spill_text,1|2,"Node-set spills vertically"
+W41-WEBXML-005,filterxml_single_text,"FILTERXML(""<root><a>hello</a></root>"",""//a"")",text,hello,"Single node returns scalar text"
+W41-WEBXML-006,filterxml_empty_nodeset,"FILTERXML(""<root><a>1</a></root>"",""//b"")",error,#VALUE!,"No matching nodes"
+W41-WEBXML-007,filterxml_bad_xml,"FILTERXML(""not xml"",""//a"")",error,#VALUE!,"Malformed XML"
+W41-WEBXML-008,filterxml_non_nodeset_xpath,"FILTERXML(""<root><a attr='x'/></root>"",""string(//a/@attr)"")",error,#VALUE!,"Scalar XPath result type not admitted"

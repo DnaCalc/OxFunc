@@ -644,6 +644,7 @@ fn map_ws_err_to_excel(code: WorksheetErrorCode) -> i32 {
         WorksheetErrorCode::Name => XLERR_NAME,
         WorksheetErrorCode::Num => XLERR_NUM,
         WorksheetErrorCode::NA => XLERR_NA,
+        WorksheetErrorCode::Busy => XLERR_VALUE,
         WorksheetErrorCode::GettingData => XLERR_GETTING_DATA,
         WorksheetErrorCode::Spill => XLERR_VALUE,
         WorksheetErrorCode::Calc => XLERR_VALUE,

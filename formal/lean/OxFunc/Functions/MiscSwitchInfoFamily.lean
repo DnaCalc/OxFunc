@@ -28,7 +28,7 @@ def isformulaMeta : FunctionMeta := {
   argPreparationProfile := ArgPreparationProfile.refsVisibleInAdapter
   coercionLiftProfile := CoercionLiftProfile.custom
   kernelSignatureClass := KernelSignatureClass.custom
-  fecDependencyProfile := FecDependencyProfile.externalProvider
+  fecDependencyProfile := FecDependencyProfile.composite
   surfaceFecDependencyProfile := FecDependencyProfile.composite
 }
 
@@ -42,7 +42,7 @@ theorem miscSwitchInfo_profiles :
     switchMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
     ∧ switchMeta.hostInteraction = HostInteractionClass.none
     ∧ isformulaMeta.hostInteraction = HostInteractionClass.workbookState
-    ∧ isformulaMeta.fecDependencyProfile = FecDependencyProfile.externalProvider := by
+    ∧ isformulaMeta.fecDependencyProfile = FecDependencyProfile.composite := by
   simp [switchMeta, isformulaMeta]
 
 end OxFunc.Functions

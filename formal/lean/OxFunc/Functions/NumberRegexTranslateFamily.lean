@@ -1,4 +1,6 @@
 import OxFunc.FunctionCore
+import OxFunc.HostInfoSeam
+import OxFunc.LocaleFormat
 
 namespace OxFunc.Functions
 
@@ -22,6 +24,8 @@ def numbervalueMeta : FunctionMeta := {
   numberRegexTranslateBase with
   functionId := "FUNC.NUMBERVALUE"
   arity := { min := 1, max := 3 }
+  fecDependencyProfile := FecDependencyProfile.localeProfile
+  surfaceFecDependencyProfile := FecDependencyProfile.localeProfile
 }
 
 def regexextractMeta : FunctionMeta := {
@@ -52,8 +56,20 @@ def translateMeta : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.externalProvider
 }
 
+def numbervalueDefaultSeparators (profile : LocaleProfileId) : String × String :=
+  match profile with
+  | .enUs => (".", ",")
+  | .currentExcelHost => (".", " ")
+
+def translateCurrentHostBaseline (request : TranslateRequest) : TranslateProviderResult :=
+  if request.sourceLanguage = request.targetLanguage then
+    .text request.text
+  else
+    .busy
+
 theorem number_regex_translate_profiles :
     numbervalueMeta.argPreparationProfile = ArgPreparationProfile.valuesOnlyPreAdapter
+    ∧ numbervalueMeta.fecDependencyProfile = FecDependencyProfile.localeProfile
     ∧ regexextractMeta.arity.max = 4
     ∧ regexreplaceMeta.kernelSignatureClass = KernelSignatureClass.custom
     ∧ regextestMeta.functionId = "FUNC.REGEXTEST"
@@ -61,5 +77,20 @@ theorem number_regex_translate_profiles :
     ∧ translateMeta.surfaceFecDependencyProfile = FecDependencyProfile.externalProvider := by
   simp [numberRegexTranslateBase, numbervalueMeta, regexextractMeta, regexreplaceMeta,
     regextestMeta, translateMeta]
+
+theorem numbervalueDefaultSeparators_align_with_seeded_profiles :
+    numbervalueDefaultSeparators .enUs = (".", ",")
+    ∧ numbervalueDefaultSeparators .currentExcelHost = (".", " ") := by
+  simp [numbervalueDefaultSeparators]
+
+theorem translateCurrentHostBaseline_matches_seeded_lanes :
+    translateCurrentHostBaseline
+      { text := "hola", sourceLanguage := some "es", targetLanguage := some "es" } =
+        TranslateProviderResult.text "hola"
+    ∧
+    translateCurrentHostBaseline
+      { text := "hello", sourceLanguage := some "en", targetLanguage := some "es" } =
+        TranslateProviderResult.busy := by
+  simp [translateCurrentHostBaseline]
 
 end OxFunc.Functions

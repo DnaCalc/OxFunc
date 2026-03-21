@@ -4,6 +4,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
+use crate::host_info::{
+    HostInfoError, HostInfoProvider, WidthConversionFunction, WidthConversionMode,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
@@ -12,13 +15,13 @@ const TEXT_COMPAT_LOCALE_BASE_META: FunctionMeta = FunctionMeta {
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
-    host_interaction: HostInteractionClass::None,
-    thread_safety: ThreadSafetyClass::SafePure,
+    host_interaction: HostInteractionClass::ApplicationState,
+    thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
     coercion_lift_profile: CoercionLiftProfile::None,
     kernel_signature_class: KernelSignatureClass::Custom,
-    fec_dependency_profile: FecDependencyProfile::None,
-    surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    fec_dependency_profile: FecDependencyProfile::Composite,
+    surface_fec_dependency_profile: FecDependencyProfile::Composite,
 };
 
 pub const ASC_META: FunctionMeta = FunctionMeta {
@@ -42,10 +45,8 @@ pub enum TextCompatLocaleEvalError {
         actual: usize,
     },
     Coercion(CoercionError),
-}
-
-fn text_value(units: Vec<u16>) -> EvalValue {
-    EvalValue::Text(ExcelText::from_utf16_code_units(units))
+    HostInfoProviderMissing(&'static str),
+    HostInfo(HostInfoError),
 }
 
 fn narrow_basic_width(unit: u16) -> Option<u16> {
@@ -301,72 +302,86 @@ fn jis_kernel(text: &ExcelText) -> ExcelText {
     ExcelText::from_utf16_code_units(out)
 }
 
-pub fn eval_asc_surface(
+fn render_text_for_mode(text: &ExcelText, mode: WidthConversionMode) -> EvalValue {
+    match mode {
+        WidthConversionMode::PassThrough => EvalValue::Text(text.clone()),
+        WidthConversionMode::NarrowBasicWidthAndKana => EvalValue::Text(asc_kernel(text)),
+        WidthConversionMode::WidenBasicWidthAndKana => EvalValue::Text(jis_kernel(text)),
+        WidthConversionMode::Unavailable => EvalValue::Error(WorksheetErrorCode::Name),
+    }
+}
+
+fn eval_width_conversion_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
+    function: WidthConversionFunction,
+    meta: &FunctionMeta,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
     run_values_only_prepared(
         args,
         resolver,
         |prepared| {
-            if !ASC_META.arity.accepts(prepared.len()) {
+            if !meta.arity.accepts(prepared.len()) {
                 return Err(TextCompatLocaleEvalError::ArityMismatch {
-                    expected_min: ASC_META.arity.min,
-                    expected_max: ASC_META.arity.max,
+                    expected_min: meta.arity.min,
+                    expected_max: meta.arity.max,
                     actual: prepared.len(),
                 });
             }
             let text = coerce_prepared_to_text(&prepared[0])
                 .map_err(TextCompatLocaleEvalError::Coercion)?;
-            Ok(text_value(asc_kernel(&text).utf16_code_units().to_vec()))
+            let provider = host_info.ok_or(TextCompatLocaleEvalError::HostInfoProviderMissing(
+                "width_conversion_mode",
+            ))?;
+            let mode = provider
+                .query_width_conversion_mode(function)
+                .map_err(TextCompatLocaleEvalError::HostInfo)?;
+            Ok(render_text_for_mode(&text, mode))
         },
         TextCompatLocaleEvalError::Coercion,
+    )
+}
+
+pub fn eval_asc_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<EvalValue, TextCompatLocaleEvalError> {
+    eval_width_conversion_surface(
+        args,
+        resolver,
+        host_info,
+        WidthConversionFunction::Asc,
+        &ASC_META,
     )
 }
 
 pub fn eval_dbcs_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
-    run_values_only_prepared(
+    eval_width_conversion_surface(
         args,
         resolver,
-        |prepared| {
-            if !DBCS_META.arity.accepts(prepared.len()) {
-                return Err(TextCompatLocaleEvalError::ArityMismatch {
-                    expected_min: DBCS_META.arity.min,
-                    expected_max: DBCS_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let text = coerce_prepared_to_text(&prepared[0])
-                .map_err(TextCompatLocaleEvalError::Coercion)?;
-            Ok(text_value(jis_kernel(&text).utf16_code_units().to_vec()))
-        },
-        TextCompatLocaleEvalError::Coercion,
+        host_info,
+        WidthConversionFunction::Dbcs,
+        &DBCS_META,
     )
 }
 
 pub fn eval_jis_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
-    run_values_only_prepared(
+    eval_width_conversion_surface(
         args,
         resolver,
-        |prepared| {
-            if !JIS_META.arity.accepts(prepared.len()) {
-                return Err(TextCompatLocaleEvalError::ArityMismatch {
-                    expected_min: JIS_META.arity.min,
-                    expected_max: JIS_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let text = coerce_prepared_to_text(&prepared[0])
-                .map_err(TextCompatLocaleEvalError::Coercion)?;
-            Ok(text_value(jis_kernel(&text).utf16_code_units().to_vec()))
-        },
-        TextCompatLocaleEvalError::Coercion,
+        host_info,
+        WidthConversionFunction::Jis,
+        &JIS_META,
     )
 }
 
@@ -374,6 +389,22 @@ pub fn map_text_compat_locale_error_to_ws(error: &TextCompatLocaleEvalError) -> 
     match error {
         TextCompatLocaleEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         TextCompatLocaleEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
+        TextCompatLocaleEvalError::HostInfoProviderMissing(_) => WorksheetErrorCode::Value,
+        TextCompatLocaleEvalError::HostInfo(HostInfoError::ProviderFailure { .. }) => {
+            WorksheetErrorCode::Value
+        }
+        TextCompatLocaleEvalError::HostInfo(
+            HostInfoError::UnsupportedWidthConversionProfileQuery(_),
+        ) => WorksheetErrorCode::Value,
+        TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedTranslateQuery)
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedCellInfoQuery(_))
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedInfoQuery(_))
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedFormulaTextQuery)
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedSheetIndexQuery)
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedSheetCountQuery)
+        | TextCompatLocaleEvalError::HostInfo(
+            HostInfoError::UnsupportedAggregateReferenceContextQuery,
+        ) => WorksheetErrorCode::Value,
         TextCompatLocaleEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }
 }
@@ -381,6 +412,7 @@ pub fn map_text_compat_locale_error_to_ws(error: &TextCompatLocaleEvalError) -> 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::host_info::{WidthConversionFunction, WidthConversionMode};
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::ReferenceLike;
 
@@ -397,6 +429,37 @@ mod tests {
         ) -> Result<EvalValue, RefResolutionError> {
             Err(RefResolutionError::UnresolvedReference {
                 target: reference.target.clone(),
+            })
+        }
+    }
+
+    struct MockWidthConversionProvider;
+
+    impl HostInfoProvider for MockWidthConversionProvider {
+        fn query_width_conversion_mode(
+            &self,
+            function: WidthConversionFunction,
+        ) -> Result<WidthConversionMode, HostInfoError> {
+            Ok(match function {
+                WidthConversionFunction::Asc => WidthConversionMode::PassThrough,
+                WidthConversionFunction::Dbcs => WidthConversionMode::PassThrough,
+                WidthConversionFunction::Jis => WidthConversionMode::Unavailable,
+            })
+        }
+    }
+
+    struct ConvertingWidthProvider;
+
+    impl HostInfoProvider for ConvertingWidthProvider {
+        fn query_width_conversion_mode(
+            &self,
+            function: WidthConversionFunction,
+        ) -> Result<WidthConversionMode, HostInfoError> {
+            Ok(match function {
+                WidthConversionFunction::Asc | WidthConversionFunction::Dbcs => {
+                    WidthConversionMode::NarrowBasicWidthAndKana
+                }
+                WidthConversionFunction::Jis => WidthConversionMode::WidenBasicWidthAndKana,
             })
         }
     }
@@ -418,8 +481,12 @@ mod tests {
         assert_eq!(ASC_META.arity, Arity::exact(1));
         assert_eq!(DBCS_META.function_id, "FUNC.DBCS");
         assert_eq!(
-            JIS_META.arg_preparation_profile,
-            ArgPreparationProfile::ValuesOnlyPreAdapter
+            ASC_META.host_interaction,
+            HostInteractionClass::ApplicationState
+        );
+        assert_eq!(
+            JIS_META.surface_fec_dependency_profile,
+            FecDependencyProfile::Composite
         );
     }
 
@@ -448,24 +515,40 @@ mod tests {
         let resolver = NoResolver;
         let args = [text_arg("ABC ｶﾞ")];
         assert_eq!(
-            eval_dbcs_surface(&args, &resolver),
-            eval_jis_surface(&args, &resolver)
+            eval_dbcs_surface(&args, &resolver, Some(&MockWidthConversionProvider)),
+            Ok(EvalValue::Text(txt("ABC ｶﾞ")))
+        );
+        assert_eq!(
+            eval_jis_surface(&args, &resolver, Some(&MockWidthConversionProvider)),
+            Ok(EvalValue::Error(WorksheetErrorCode::Name))
         );
     }
 
     #[test]
-    fn surface_evaluators_textify_numbers_logicals_and_blanks() {
+    fn surface_evaluators_follow_host_mode_and_textify_values() {
         let resolver = NoResolver;
         assert_eq!(
-            eval_asc_surface(&[number_arg(123.0)], &resolver),
+            eval_asc_surface(
+                &[number_arg(123.0)],
+                &resolver,
+                Some(&ConvertingWidthProvider)
+            ),
             Ok(EvalValue::Text(txt("123")))
         );
         assert_eq!(
-            eval_jis_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &resolver),
+            eval_jis_surface(
+                &[CallArgValue::Eval(EvalValue::Logical(true))],
+                &resolver,
+                Some(&ConvertingWidthProvider)
+            ),
             Ok(EvalValue::Text(txt("ＴＲＵＥ")))
         );
         assert_eq!(
-            eval_dbcs_surface(&[CallArgValue::EmptyCell], &resolver),
+            eval_dbcs_surface(
+                &[CallArgValue::EmptyCell],
+                &resolver,
+                Some(&ConvertingWidthProvider)
+            ),
             Ok(EvalValue::Text(txt("")))
         );
     }
@@ -474,12 +557,18 @@ mod tests {
     fn error_mapping_and_arity_lanes_are_pinned() {
         let resolver = NoResolver;
         assert_eq!(
-            eval_asc_surface(&[], &resolver),
+            eval_asc_surface(&[], &resolver, Some(&MockWidthConversionProvider)),
             Err(TextCompatLocaleEvalError::ArityMismatch {
                 expected_min: 1,
                 expected_max: 1,
                 actual: 0,
             })
+        );
+        assert_eq!(
+            map_text_compat_locale_error_to_ws(
+                &TextCompatLocaleEvalError::HostInfoProviderMissing("width_conversion_mode")
+            ),
+            WorksheetErrorCode::Value
         );
         assert_eq!(
             map_text_compat_locale_error_to_ws(&TextCompatLocaleEvalError::Coercion(

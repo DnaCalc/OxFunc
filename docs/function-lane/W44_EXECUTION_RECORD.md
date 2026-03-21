@@ -16,7 +16,7 @@ Convert the library-context snapshot discussion from a note-only seam topic into
 ## 4. Current Export Produced
 Current first-pass export:
 1. `snapshot_id`: `oxfunc-libctx-v1`
-2. `snapshot_generation`: `2026-03-20`
+2. `snapshot_generation`: current generation date emitted by the export script
 3. `source_commit_short`: current repo commit that generated the export
 4. `source_commit_full`: full current repo commit hash that generated the export
 5. `source_tree_state`: `clean` or `dirty` local tree state for the export run
@@ -100,8 +100,16 @@ That was useful but insufficient because it did not by itself pin:
 6. key special-row fields inspected manually for:
    - `LET`
    - `LAMBDA`
+   - `ASC`
+   - `DBCS`
+   - `JIS`
+   - `NUMBERVALUE`
+   - `NOW`
+   - `TODAY`
+   - `HYPERLINK`
    - `MAP`
    - `RTD`
+   - `TRANSLATE`
    - `OP_IMPLICIT_INTERSECTION`
    - representative `W039` rows:
      - `CHOOSECOLS`
@@ -112,6 +120,7 @@ That was useful but insufficient because it did not by itself pin:
    - `source_commit_short`
    - `source_commit_full`
    - `source_tree_state`
+   - `snapshot_generation`
 
 ## 8. Status
 1. scope_completeness: `scope_partial`

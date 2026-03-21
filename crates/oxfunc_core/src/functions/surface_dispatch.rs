@@ -195,6 +195,9 @@ use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws
 use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
 use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
+use crate::functions::hyperlink_fn::{
+    eval_hyperlink_surface, eval_hyperlink_surface_extended, map_hyperlink_error_to_ws,
+};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
 use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
@@ -258,7 +261,9 @@ use crate::functions::normal_log_family::{
     map_normal_log_error_to_ws,
 };
 use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
-use crate::functions::now_fn::{NowProvider, eval_now_surface, map_now_error_to_ws};
+use crate::functions::now_fn::{
+    NowProvider, eval_now_surface, eval_now_surface_extended, map_now_error_to_ws,
+};
 use crate::functions::number_regex_translate_family::{
     eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
     eval_regextest_surface, eval_translate_surface, map_number_regex_translate_error_to_ws,
@@ -402,7 +407,9 @@ use crate::functions::text_unicode_fn::{
     eval_unichar_surface, eval_unicode_surface, map_text_unicode_error_to_ws,
 };
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
-use crate::functions::today_fn::{TodayProvider, eval_today_surface, map_today_error_to_ws};
+use crate::functions::today_fn::{
+    TodayProvider, eval_today_surface, eval_today_surface_extended, map_today_error_to_ws,
+};
 use crate::functions::true_fn::eval_true_surface;
 use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
@@ -416,6 +423,9 @@ use crate::functions::varpa_fn::{eval_varpa_surface, map_varpa_error_to_ws};
 use crate::functions::vhlookup_family::{
     eval_hlookup_surface, eval_vlookup_surface, map_vhlookup_error_to_ws,
 };
+use crate::functions::web_text_xml_family::{
+    eval_encodeurl_surface, eval_filterxml_surface, map_web_text_xml_error_to_ws,
+};
 use crate::functions::workday_networkdays_family::{
     eval_networkdays_intl_surface, eval_networkdays_surface, eval_workday_intl_surface,
     eval_workday_surface, map_workday_networkdays_error_to_ws,
@@ -428,7 +438,7 @@ use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
 use crate::resolver::RefResolutionError;
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalError, EvalValue, Value, WorksheetErrorCode};
+use crate::value::{CallArgValue, EvalError, EvalValue, ExtendedValue, Value, WorksheetErrorCode};
 
 pub const FUNC_ID_ACOS: &str = "FUNC.ACOS";
 pub const FUNC_ID_ACOT: &str = "FUNC.ACOT";
@@ -437,6 +447,7 @@ pub const FUNC_ID_ACOTH: &str = "FUNC.ACOTH";
 pub const FUNC_ID_ABS: &str = "FUNC.ABS";
 pub const FUNC_ID_ACCRINT: &str = "FUNC.ACCRINT";
 pub const FUNC_ID_ACCRINTM: &str = "FUNC.ACCRINTM";
+pub const FUNC_ID_AGGREGATE: &str = "FUNC.AGGREGATE";
 pub const FUNC_ID_AMORDEGRC: &str = "FUNC.AMORDEGRC";
 pub const FUNC_ID_AMORLINC: &str = "FUNC.AMORLINC";
 pub const FUNC_ID_ATAN: &str = "FUNC.ATAN";
@@ -546,6 +557,7 @@ pub const FUNC_ID_EFFECT: &str = "FUNC.EFFECT";
 pub const FUNC_ID_EUROCONVERT: &str = "FUNC.EUROCONVERT";
 pub const FUNC_ID_EXPAND: &str = "FUNC.EXPAND";
 pub const FUNC_ID_DECIMAL: &str = "FUNC.DECIMAL";
+pub const FUNC_ID_ENCODEURL: &str = "FUNC.ENCODEURL";
 pub const FUNC_ID_DDB: &str = "FUNC.DDB";
 pub const FUNC_ID_DCOUNT: &str = "FUNC.DCOUNT";
 pub const FUNC_ID_DCOUNTA: &str = "FUNC.DCOUNTA";
@@ -596,6 +608,7 @@ pub const FUNC_ID_FISHERINV: &str = "FUNC.FISHERINV";
 pub const FUNC_ID_FIND: &str = "FUNC.FIND";
 pub const FUNC_ID_FINDB: &str = "FUNC.FINDB";
 pub const FUNC_ID_FILTER: &str = "FUNC.FILTER";
+pub const FUNC_ID_FILTERXML: &str = "FUNC.FILTERXML";
 pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
 pub const FUNC_ID_FLOOR: &str = "FUNC.FLOOR";
 pub const FUNC_ID_FLOOR_MATH: &str = "FUNC.FLOOR.MATH";
@@ -617,6 +630,7 @@ pub const FUNC_ID_GROWTH: &str = "FUNC.GROWTH";
 pub const FUNC_ID_FORECAST: &str = "FUNC.FORECAST";
 pub const FUNC_ID_FORECAST_LINEAR: &str = "FUNC.FORECAST.LINEAR";
 pub const FUNC_ID_HARMEAN: &str = "FUNC.HARMEAN";
+pub const FUNC_ID_HYPERLINK: &str = "FUNC.HYPERLINK";
 pub const FUNC_ID_HYPGEOM_DIST: &str = "FUNC.HYPGEOM.DIST";
 pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
 pub const FUNC_ID_HOUR: &str = "FUNC.HOUR";
@@ -849,6 +863,7 @@ pub const FUNC_ID_STDEVP: &str = "FUNC.STDEVP";
 pub const FUNC_ID_STDEVA: &str = "FUNC.STDEVA";
 pub const FUNC_ID_STDEVPA: &str = "FUNC.STDEVPA";
 pub const FUNC_ID_STANDARDIZE: &str = "FUNC.STANDARDIZE";
+pub const FUNC_ID_SUBTOTAL: &str = "FUNC.SUBTOTAL";
 pub const FUNC_ID_SUM: &str = "FUNC.SUM";
 pub const FUNC_ID_SUMIFS: &str = "FUNC.SUMIFS";
 pub const FUNC_ID_SUMPRODUCT: &str = "FUNC.SUMPRODUCT";
@@ -1055,6 +1070,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_ACCRINTM => {
             Some(crate::functions::bond_core_family::ACCRINTM_META.arg_preparation_profile)
         }
+        FUNC_ID_AGGREGATE => Some(
+            crate::functions::subtotal_aggregate_family::AGGREGATE_META.arg_preparation_profile,
+        ),
         FUNC_ID_AMORDEGRC => {
             Some(crate::functions::amor_depreciation_family::AMORDEGRC_META.arg_preparation_profile)
         }
@@ -1296,6 +1314,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_EXPAND => Some(EXPAND_META.arg_preparation_profile),
         FUNC_ID_DECIMAL => Some(crate::functions::decimal_fn::DECIMAL_META.arg_preparation_profile),
+        FUNC_ID_ENCODEURL => {
+            Some(crate::functions::web_text_xml_family::ENCODEURL_META.arg_preparation_profile)
+        }
         FUNC_ID_DDB => {
             Some(crate::functions::depreciation_family::DDB_META.arg_preparation_profile)
         }
@@ -1406,6 +1427,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::text_b_compat_family::FINDB_META.arg_preparation_profile)
         }
         FUNC_ID_FILTER => Some(FILTER_META.arg_preparation_profile),
+        FUNC_ID_FILTERXML => {
+            Some(crate::functions::web_text_xml_family::FILTERXML_META.arg_preparation_profile)
+        }
         FUNC_ID_FIXED => Some(crate::functions::fixed_fn::FIXED_META.arg_preparation_profile),
         FUNC_ID_FLOOR => {
             Some(crate::functions::ceiling_floor_family::FLOOR_META.arg_preparation_profile)
@@ -1446,6 +1470,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::regression_forecast_family::GROWTH_META.arg_preparation_profile)
         }
         FUNC_ID_HARMEAN => Some(crate::functions::harmean_fn::HARMEAN_META.arg_preparation_profile),
+        FUNC_ID_HYPERLINK => {
+            Some(crate::functions::hyperlink_fn::HYPERLINK_META.arg_preparation_profile)
+        }
         FUNC_ID_HYPGEOM_DIST => {
             Some(crate::functions::discrete_dist_family::HYPGEOM_DIST_META.arg_preparation_profile)
         }
@@ -1962,6 +1989,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_STANDARDIZE => {
             Some(crate::functions::standardize_fn::STANDARDIZE_META.arg_preparation_profile)
         }
+        FUNC_ID_SUBTOTAL => {
+            Some(crate::functions::subtotal_aggregate_family::SUBTOTAL_META.arg_preparation_profile)
+        }
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
         FUNC_ID_SUMIFS => {
             Some(crate::functions::criteria_family::SUMIFS_META.arg_preparation_profile)
@@ -2168,6 +2198,43 @@ pub fn eval_surface_value_call(
     )
 }
 
+pub fn eval_surface_extended_call(
+    function_id: &str,
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    now_serial: Option<f64>,
+    random_value: Option<f64>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<ExtendedValue, WorksheetErrorCode> {
+    match function_id {
+        FUNC_ID_HYPERLINK => eval_hyperlink_surface_extended(args, resolver)
+            .map_err(|e| map_hyperlink_error_to_ws(&e)),
+        FUNC_ID_NOW => {
+            let provider = FixedNowProvider {
+                serial: now_serial.unwrap_or(0.0),
+            };
+            eval_now_surface_extended(args, &provider).map_err(|e| map_now_error_to_ws(&e))
+        }
+        FUNC_ID_TODAY => {
+            let provider = FixedNowProvider {
+                serial: now_serial.unwrap_or(0.0),
+            };
+            eval_today_surface_extended(args, &provider).map_err(|e| map_today_error_to_ws(&e))
+        }
+        _ => eval_surface_value_call(
+            function_id,
+            args,
+            resolver,
+            now_serial,
+            random_value,
+            locale_ctx,
+            host_info,
+        )
+        .map(ExtendedValue::Core),
+    }
+}
+
 pub fn eval_surface_value_call_with_callable(
     function_id: &str,
     args: &[CallArgValue],
@@ -2193,6 +2260,12 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_ACCRINTM => {
             eval_accrintm_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
         }
+        FUNC_ID_AGGREGATE => crate::functions::subtotal_aggregate_family::eval_aggregate_surface(
+            args, resolver, host_info,
+        )
+        .map_err(|e| {
+            crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(&e)
+        }),
         FUNC_ID_ATAN => eval_atan_surface(args, resolver).map_err(|e| map_atan_error_to_ws(&e)),
         FUNC_ID_ASIN => eval_asin_surface(args, resolver).map_err(|e| map_asin_error_to_ws(&e)),
         FUNC_ID_ASINH => eval_asinh_surface(args, resolver).map_err(|e| map_asinh_error_to_ws(&e)),
@@ -2212,9 +2285,8 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_ARRAYTOTEXT => eval_arraytotext_surface(args, resolver)
             .map_err(|e| map_array_text_split_error_to_ws(&e)),
-        FUNC_ID_ASC => {
-            eval_asc_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
-        }
+        FUNC_ID_ASC => eval_asc_surface(args, resolver, host_info)
+            .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
         FUNC_ID_AREAS => {
             eval_areas_surface(args).map_err(|e| map_reference_metadata_error_to_ws(&e))
         }
@@ -2440,9 +2512,8 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_DATEVALUE => eval_datevalue_surface(args, resolver)
             .map_err(|e| map_date_value_family_error_to_ws(&e)),
-        FUNC_ID_DBCS => {
-            eval_dbcs_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
-        }
+        FUNC_ID_DBCS => eval_dbcs_surface(args, resolver, host_info)
+            .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
         FUNC_ID_DB => eval_db_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e)),
         FUNC_ID_DEC2BIN => {
             eval_dec2bin_surface(args, resolver).map_err(|e| map_engineering_radix_error_to_ws(&e))
@@ -2467,6 +2538,9 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
         FUNC_ID_DECIMAL => {
             eval_decimal_surface(args, resolver).map_err(|e| map_decimal_error_to_ws(&e))
+        }
+        FUNC_ID_ENCODEURL => {
+            eval_encodeurl_surface(args, resolver).map_err(|e| map_web_text_xml_error_to_ws(&e))
         }
         FUNC_ID_DDB => {
             eval_ddb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
@@ -2589,6 +2663,9 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_FILTER => eval_filter_surface(args, resolver)
             .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
+        FUNC_ID_FILTERXML => {
+            eval_filterxml_surface(args, resolver).map_err(|e| map_web_text_xml_error_to_ws(&e))
+        }
         FUNC_ID_FIXED => {
             let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
             eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e))
@@ -2639,6 +2716,9 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_regression_forecast_error_to_ws(&e)),
         FUNC_ID_HARMEAN => {
             eval_harmean_surface(args, resolver).map_err(|e| map_harmean_error_to_ws(&e))
+        }
+        FUNC_ID_HYPERLINK => {
+            eval_hyperlink_surface(args, resolver).map_err(|e| map_hyperlink_error_to_ws(&e))
         }
         FUNC_ID_HYPGEOM_DIST => {
             eval_hypgeom_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
@@ -2748,6 +2828,12 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_PRODUCT => {
             eval_product_surface(args, resolver).map_err(|e| map_product_error_to_ws(&e))
         }
+        FUNC_ID_SUBTOTAL => crate::functions::subtotal_aggregate_family::eval_subtotal_surface(
+            args, resolver, host_info,
+        )
+        .map_err(|e| {
+            crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(&e)
+        }),
         FUNC_ID_SUM => eval_sum_surface(args, resolver).map_err(|e| map_sum_error_to_ws(&e)),
         FUNC_ID_SUMIFS => {
             eval_sumifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
@@ -2818,9 +2904,8 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_ISO_CEILING => {
             eval_iso_ceiling_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
         }
-        FUNC_ID_JIS => {
-            eval_jis_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
-        }
+        FUNC_ID_JIS => eval_jis_surface(args, resolver, host_info)
+            .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
         FUNC_ID_LN => eval_ln_surface(args, resolver).map_err(|e| map_ln_error_to_ws(&e)),
         FUNC_ID_LOOKUP => eval_lookup_surface(args, resolver)
             .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
@@ -2944,7 +3029,7 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_NPV => {
             eval_npv_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
         }
-        FUNC_ID_NUMBERVALUE => eval_numbervalue_surface(args, resolver)
+        FUNC_ID_NUMBERVALUE => eval_numbervalue_surface(args, resolver, locale_ctx)
             .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
         FUNC_ID_NEGBINOM_DIST => eval_negbinom_dist_surface(args, resolver)
             .map_err(|e| map_discrete_dist_error_to_ws(&e)),
@@ -3361,7 +3446,7 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_TIMEVALUE => eval_timevalue_surface(args, resolver)
             .map_err(|e| map_date_value_family_error_to_ws(&e)),
-        FUNC_ID_TRANSLATE => eval_translate_surface(args, resolver)
+        FUNC_ID_TRANSLATE => eval_translate_surface(args, resolver, host_info)
             .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
         FUNC_ID_TRIMMEAN => {
             eval_trimmean_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
@@ -3574,8 +3659,8 @@ mod tests {
     use crate::functions::adapters::PreparedArgValue;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{
-        ArrayCellValue, CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue,
-        ReferenceLike,
+        ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
+        ExcelText, ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, ReferenceLike,
     };
 
     struct NoReferenceResolver;
@@ -3706,6 +3791,71 @@ mod tests {
         ]])
         .expect("row vector");
         assert_eq!(got, Ok(EvalValue::Array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_extended_call_wraps_now_with_number_format_hint() {
+        let got = eval_surface_extended_call(
+            FUNC_ID_NOW,
+            &[],
+            &NoReferenceResolver,
+            Some(46000.25),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(ExtendedValue::ValueWithPresentation {
+                value: EvalValue::Number(46000.25),
+                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+            })
+        );
+    }
+
+    #[test]
+    fn eval_surface_extended_call_wraps_today_with_number_format_hint() {
+        let got = eval_surface_extended_call(
+            FUNC_ID_TODAY,
+            &[],
+            &NoReferenceResolver,
+            Some(46000.75),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(ExtendedValue::ValueWithPresentation {
+                value: EvalValue::Number(46000.0),
+                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+            })
+        );
+    }
+
+    #[test]
+    fn eval_surface_extended_call_wraps_hyperlink_with_style_hint() {
+        let got = eval_surface_extended_call(
+            FUNC_ID_HYPERLINK,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "https://example.com",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Go"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(ExtendedValue::ValueWithPresentation {
+                value: EvalValue::Text(ExcelText::from_interop_assignment("Go")),
+                hint: PresentationHint::style(CellStyleHint::Hyperlink),
+            })
+        );
     }
 
     #[test]

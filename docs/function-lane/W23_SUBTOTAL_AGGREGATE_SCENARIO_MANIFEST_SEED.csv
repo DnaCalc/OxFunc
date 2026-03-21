@@ -1,0 +1,17 @@
+scenario_id,lane,formula,expected_text,notes
+W23-STA-001,subtotal_manual_visible,"SUBTOTAL(9,A2:A5)",70,Includes manually hidden row but ignores nested subtotal
+W23-STA-002,subtotal_manual_hidden_ignored,"SUBTOTAL(109,A2:A5)",50,Ignores manually hidden row and nested subtotal
+W23-STA-003,aggregate_opt0_manual,"AGGREGATE(9,0,A2:A5)",70,Ignores nested aggregate only
+W23-STA-004,aggregate_opt1_manual,"AGGREGATE(9,1,A2:A5)",50,Ignores hidden rows and nested aggregates
+W23-STA-005,aggregate_opt4_manual,"AGGREGATE(9,4,A2:A5)",100,Includes hidden rows and nested aggregate value
+W23-STA-006,aggregate_opt5_manual,"AGGREGATE(9,5,A2:A5)",80,Ignores hidden rows but includes nested aggregate value
+W23-STA-007,subtotal_filter_visible,"SUBTOTAL(9,D10:D13)",50,Filtered rows are always ignored
+W23-STA-008,subtotal_filter_hidden_ignored,"SUBTOTAL(109,D10:D13)",50,Filtered rows remain ignored in 109-code lane
+W23-STA-009,aggregate_opt0_filter,"AGGREGATE(9,0,D10:D13)",70,Includes filtered row but ignores nested aggregate
+W23-STA-010,aggregate_opt1_filter,"AGGREGATE(9,1,D10:D13)",50,Ignores filtered row and nested aggregate
+W23-STA-011,aggregate_opt4_filter,"AGGREGATE(9,4,D10:D13)",80,Includes filtered row and nested aggregate value
+W23-STA-012,aggregate_opt5_filter,"AGGREGATE(9,5,D10:D13)",60,Ignores filtered row but includes nested aggregate value
+W23-STA-013,aggregate_opt0_error,"AGGREGATE(9,0,H20:H24)",#N/A,Errors propagate when not ignored
+W23-STA-014,aggregate_opt3_error_hidden,"AGGREGATE(9,3,H20:H24)",50,Ignores hidden rows nested aggregate and errors
+W23-STA-015,aggregate_opt6_error_only,"AGGREGATE(9,6,H20:H24)",100,Ignores errors only but still includes nested aggregate and hidden rows
+W23-STA-016,aggregate_large_opt5,"AGGREGATE(14,5,K30:K34,2)",5,Array-form large lane with hidden-row suppression

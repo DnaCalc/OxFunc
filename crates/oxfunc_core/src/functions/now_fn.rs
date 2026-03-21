@@ -2,7 +2,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    CallArgValue, EvalValue, ExtendedValue, NumberFormatHint, PresentationHint, WorksheetErrorCode,
+};
 
 pub const NOW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NOW",
@@ -47,6 +49,17 @@ pub fn eval_now_surface(
     Ok(EvalValue::Number(serial))
 }
 
+pub fn eval_now_surface_extended(
+    args: &[CallArgValue],
+    provider: &impl NowProvider,
+) -> Result<ExtendedValue, NowEvalError> {
+    let value = eval_now_surface(args, provider)?;
+    Ok(ExtendedValue::ValueWithPresentation {
+        value,
+        hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+    })
+}
+
 pub fn map_now_error_to_ws(e: &NowEvalError) -> WorksheetErrorCode {
     match e {
         NowEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
@@ -73,6 +86,19 @@ mod tests {
         let provider = FixedNowProvider { serial: 46000.25 };
         let got = eval_now_surface(&[], &provider);
         assert_eq!(got, Ok(EvalValue::Number(46000.25)));
+    }
+
+    #[test]
+    fn eval_now_extended_wraps_value_with_number_format_hint() {
+        let provider = FixedNowProvider { serial: 46000.25 };
+        let got = eval_now_surface_extended(&[], &provider);
+        assert_eq!(
+            got,
+            Ok(ExtendedValue::ValueWithPresentation {
+                value: EvalValue::Number(46000.25),
+                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+            })
+        );
     }
 
     #[test]

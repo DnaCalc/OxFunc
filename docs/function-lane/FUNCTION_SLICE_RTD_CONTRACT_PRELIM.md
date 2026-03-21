@@ -36,8 +36,8 @@ OxFunc does not own:
 
 Those responsibilities stay above OxFunc, between OxFml and the higher-level host application.
 
-## 5. Candidate Minimal OxFml <-> OxFunc Interface
-Current OxFunc-local interface direction:
+## 5. Current Minimal OxFml <-> OxFunc Interface
+Current OxFunc-side interface direction:
 1. `RtdRequest`
    - `prog_id`
    - `server_name`
@@ -50,6 +50,11 @@ Current OxFunc-local interface direction:
    - `CapabilityDenied`
    - `ConnectionFailed`
    - `ProviderError(WorksheetErrorCode)`
+
+Uniform current reading:
+1. the host/OxFml side owns any RTD server startup, topic connect/disconnect, cached-topic state, and cell-topic mapping,
+2. the host callback returns either the current RTD value or a classified provider/runtime outcome,
+3. OxFunc then returns the projected worksheet value/error for that supplied outcome.
 
 This is a best-attempt local seam design, not a locked cross-repo ABI.
 
@@ -81,6 +86,6 @@ Reference captures:
 1. `RTD_REFERENCE_CAPTURE_AND_SEAM_NOTES.md`
 
 ## 8. Known Limits
-1. This contract does not prove the exact current Excel mapping for every live-server startup/disconnect edge case.
+1. This contract intentionally does not model live-server startup/disconnect/save-value edge cases inside OxFunc, because those belong to the host-side RTD lifecycle and subscription state above OxFunc.
 2. The plain XLL bridge in this repo does not supply a real RTD provider, so end-to-end RTD host replay remains above the current OxFunc test seam.
-3. Workbook-saved-value and reconnect semantics remain unmodeled in OxFunc.
+3. Workbook-saved-value and reconnect semantics remain host-side concerns unless a later seam need proves otherwise.

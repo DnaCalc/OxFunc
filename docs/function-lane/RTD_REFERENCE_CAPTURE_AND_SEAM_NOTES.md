@@ -98,3 +98,16 @@ Current OxFunc-local first pass:
    - `ConnectionFailed` -> `#CONNECT!`
    - `ProviderError(code)` -> `code`
 4. This is intentionally only the OxFunc-local semantic boundary, not a full RTD host implementation.
+
+## 10. Current OxFml Sync Bundle
+For the next OxFml sync, the current bounded RTD bundle is:
+1. this note,
+2. `docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md`,
+3. `docs/function-lane/W43_EXECUTION_RECORD.md`,
+4. `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`,
+5. the stored raw captures under `docs/function-lane/reference-captures/rtd/`.
+
+Current message from OxFunc to OxFml:
+1. lifecycle/state ownership stays above OxFunc,
+2. OxFunc only needs the prepared `RtdRequest` and a typed host callback returning current value or classified outcome,
+3. OxFunc then projects that result into the worksheet value/error universe.

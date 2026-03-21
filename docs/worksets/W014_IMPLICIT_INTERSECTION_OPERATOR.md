@@ -121,6 +121,8 @@ Legacy CSE interaction baseline:
 2. implicit intersection is the ordinary-formula scalarization story; legacy CSE formulas instead opt into array calculation throughout.
 3. dynamic-array Excel makes old implicit intersection visible as `@`, while legacy-array compatibility may rewrite or preserve formulas differently on roundtrip.
 4. mixed formulas combining explicit `@` and array-calculation behavior are a dedicated characterization lane rather than a safe simplifying assumption.
+5. future `@` / operator refresh passes should be checked against Microsoft's operator reference page:
+   `https://support.microsoft.com/en-us/office/calculation-operators-and-precedence-in-excel-48be406d-4975-4d31-b2b8-7af9e0e2878a`
 
 ## 7. Immediate Questions
 1. Does `@` need a new primary semantic substrate in OxFunc rather than being forced into an existing reference family?

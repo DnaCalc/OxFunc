@@ -14,6 +14,7 @@ The universe is decomposed into boundary-specific sets:
 4. `CallArgValue`
 5. `ReferenceLike`
 6. `ExtendedValue`
+7. `RichValueData`
 
 Interpretation rule:
 1. these sets are boundary views over one common tag algebra,
@@ -31,8 +32,9 @@ Canonical tag list for W3 baseline:
 7. `missing_arg`
 8. `empty_cell`
 9. `lambda_value`
-10. `extended_wrapper`
-11. `null_like` (reserved disputed category; not admitted in baseline boundaries)
+10. `rich_value`
+11. `extended_wrapper`
+12. `null_like` (reserved disputed category; not admitted in baseline boundaries)
 
 Machine-readable table:
 1. `VALUE_UNIVERSE_TAG_TABLE.csv`
@@ -41,10 +43,10 @@ Machine-readable table:
 1. `CellContentValue` admits:
    - `number`, `text`, `logical`, `error`, `empty_cell`
 2. `RawFunctionReturn` admits:
-   - `number`, `text`, `logical`, `error`, `array`, `reference_like`, `lambda_value`, `empty_cell`
+   - `number`, `text`, `logical`, `error`, `array`, `rich_value`, `reference_like`, `lambda_value`, `empty_cell`
    - and explicitly does **not** admit `missing_arg`, `null_like`
 3. `PublishedFormulaResult` admits:
-   - `number`, `text`, `logical`, `error`, `array`, `reference_like`, `lambda_value`
+   - `number`, `text`, `logical`, `error`, `array`, `rich_value`, `reference_like`, `lambda_value`
    - and explicitly does **not** admit `missing_arg`, `empty_cell`, `null_like`
 4. `CallArgValue` admits:
    - all `PublishedFormulaResult` tags plus `missing_arg` and `empty_cell`
@@ -52,6 +54,10 @@ Machine-readable table:
    - `reference_like` only
 6. `ExtendedValue` boundary admits:
    - `extended_wrapper` plus pass-through of core evaluable tags
+7. `RichValueData` admits:
+   - scalar data (`number`, `text`, `logical`, `error`, `empty_cell`)
+   - `rich_array`
+   - nested `rich_value`
 
 ## 5. Disputed Categories
 ### 5.1 Missing
@@ -93,10 +99,60 @@ Evidence binding:
 
 ## 8. Arrays, Lambda, and References
 1. arrays are first-class `RawFunctionReturn` and `PublishedFormulaResult` tags; materialization policy is downstream (W4/W5/W6).
-2. lambda values are intermediate-eval tags, not baseline cell content tags.
-3. 3D references are modeled as a `reference_like` subtype (`reference_kind=three_d`) and require resolver-policy handling in W4.
+2. the current `array` tag models ordinary worksheet arrays (`EvalArray`) whose cells are scalar worksheet-like atoms.
+3. spec `rich array` is different: it is a rich-value-data container whose elements may themselves be rich value data, including nested rich values.
+4. lambda values are intermediate-eval tags, not baseline cell content tags.
+5. 3D references are modeled as a `reference_like` subtype (`reference_kind=three_d`) and require resolver-policy handling in W4.
 
-## 9. Lean/Rust Mirror Rule
+## 9. Rich Value Alignment
+The value universe now uses the SpreadsheetML rich-value vocabulary explicitly:
+1. `rich value`
+   - represented as:
+     - `rich value type`
+     - `rich value fallback`
+     - key/value pairs
+2. `rich value type`
+   - represented as:
+     - type name
+     - required keys
+     - key-flag declarations
+3. `rich value data`
+   - represented as the recursive domain:
+     - scalar atom
+     - `rich array`
+     - nested `rich value`
+4. `rich array`
+   - represented as a shaped 2D container over `rich value data`
+5. `extended_wrapper`
+   - remains as a backward-compatible bucket for non-rich extensions such as format hints and enriched error-surface metadata.
+
+Current design reading:
+1. `IMAGE` pressures `rich_value`, not just `extended_wrapper`.
+2. `HYPERLINK` still looks like ordinary text plus publication/style behavior, not a rich value.
+3. dynamic-array functions currently operate over ordinary worksheet arrays, but the model now has an explicit place for future rich-array-bearing cells and nested rich-data values.
+
+## 9A. Presentation Hint Alignment
+For worksheet-facing cases where Excel applies formatting or styling without changing the underlying scalar value, the model now uses a uniform presentation wrapper:
+1. `ValueWithPresentation`
+   - carries an ordinary `EvalValue`
+   - plus a `PresentationHint`
+2. `PresentationHint`
+   - `number_format`
+   - `style`
+3. baseline examples:
+   - `TODAY()` / `NOW()`:
+     - numeric serial value
+     - plus `number_format` hint
+   - `HYPERLINK(...)`:
+     - ordinary text value
+     - plus `style=hyperlink` hint
+
+Design consequence:
+1. number-format hints and style hints remain distinct semantic subfields,
+2. but they share one wrapper so OxFml and the host-facing publication layer can consume them uniformly.
+3. the current first-pass runtime hook for these cases is `eval_surface_extended_call(...)` in `crates/oxfunc_core/src/functions/surface_dispatch.rs`.
+
+## 10. Lean/Rust Mirror Rule
 W3 baseline requires shared tag vocabulary in:
 1. Rust: `crates/oxfunc_core/src/value.rs`
 2. Lean: `formal/lean/OxFunc/ValueUniverse.lean`
@@ -106,13 +162,13 @@ Invariant objectives for baseline:
 2. `RawFunctionReturn` admits `empty_cell` but excludes `missing_arg` and `null_like`.
 3. text-cap primitive encodes `<= 32767` UTF-16 code units.
 
-## 10. Integration Hooks
+## 11. Integration Hooks
 1. W4 consumes tag/boundary policy for coercion and `Ref -> PublishedFormulaResult` seam typing.
 2. W5 consumes numeric/error/array policy for `ABS`.
 3. W6 consumes text/reference/error policy for `XMATCH`.
 4. W9 consumes raw-return versus publication normalization policy for XLL/UDF seam characterization.
 
-## 11. Raw Return vs Published Result Rule
+## 12. Raw Return vs Published Result Rule
 Observed XLL/UDF probe evidence on `2026-03-12` (`W9-XLL-NIL-20260312`) now pins the following baseline rule:
 1. raw scalar `xltypeNil` can be returned from an XLL function,
 2. but it does not survive as an outer-observable scalar value in ordinary nested formula evaluation,
@@ -126,8 +182,9 @@ Design consequence for the current model:
 2. The publication/scalarization map is semantically important and must stay explicit in doctrine.
 3. Built-in function completion should continue to target `PublishedFormulaResult` semantics even when OxFunc also models broader raw interop/UDF return shapes.
 
-## 12. Open Points
+## 13. Open Points
 1. explicit handling for modern dynamic-array error transfer across UDF/XLL boundaries,
 2. empirical evidence for any first-class `null_like` behavior,
 3. final decision on whether internal OxFunc runtime should store text as UTF-16 code-unit vectors end-to-end or only at boundary adapters,
-4. whether the W3 Lean/Rust mirrors should grow a first-class `publish_result` normalization model rather than staying boundary-table only.
+4. whether ordinary worksheet arrays (`array`) and spec rich arrays should share one runtime carrier or stay split,
+5. whether the W3 Lean/Rust mirrors should grow a first-class `publish_result` normalization model rather than staying boundary-table only.

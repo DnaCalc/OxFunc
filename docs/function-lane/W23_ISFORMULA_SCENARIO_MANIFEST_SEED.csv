@@ -1,0 +1,5 @@
+scenario_id,lane,formula,expected_text,notes
+W23-ISF-001,isformula_formula_cell,"ISFORMULA(A1)",TRUE,Formula cell returns TRUE
+W23-ISF-002,isformula_value_cell,"ISFORMULA(A2)",FALSE,Plain value cell returns FALSE
+W23-ISF-003,isformula_formula_text_cell,"ISFORMULA(A3)",TRUE,Formula returning text still counts as formula
+W23-ISF-004,isformula_scalar_invalid,"ISFORMULA(1)",#VALUE!,Non-reference operand is invalid

@@ -33,6 +33,9 @@ Relevant context:
 6. `docs/function-lane/FUNCTION_SLICE_OP_SPILL_REF_CONTRACT_PRELIM.md`
 7. `docs/function-lane/W044_EXECUTION_RECORD.md`
 8. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
+9. operator/preference cross-check note:
+   - future operator refresh passes should be checked against Microsoft's operator reference page:
+     `https://support.microsoft.com/en-us/office/calculation-operators-and-precedence-in-excel-48be406d-4975-4d31-b2b8-7af9e0e2878a`
 
 ## 3. Scope
 Machine-readable inventory:

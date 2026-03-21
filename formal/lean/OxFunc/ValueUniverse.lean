@@ -22,6 +22,7 @@ inductive ValueTag where
   | logical
   | error
   | array
+  | richValue
   | referenceLike
   | missingArg
   | emptyCell
@@ -78,6 +79,7 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .rawFunctionReturn, .logical => true
   | .rawFunctionReturn, .error => true
   | .rawFunctionReturn, .array => true
+  | .rawFunctionReturn, .richValue => true
   | .rawFunctionReturn, .referenceLike => true
   | .rawFunctionReturn, .emptyCell => true
   | .rawFunctionReturn, .lambdaValue => true
@@ -86,6 +88,7 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .publishedFormulaResult, .logical => true
   | .publishedFormulaResult, .error => true
   | .publishedFormulaResult, .array => true
+  | .publishedFormulaResult, .richValue => true
   | .publishedFormulaResult, .referenceLike => true
   | .publishedFormulaResult, .lambdaValue => true
   | .callArg, .number => true
@@ -93,6 +96,7 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .callArg, .logical => true
   | .callArg, .error => true
   | .callArg, .array => true
+  | .callArg, .richValue => true
   | .callArg, .referenceLike => true
   | .callArg, .missingArg => true
   | .callArg, .emptyCell => true
@@ -103,10 +107,74 @@ def boundaryAllows : ValueBoundary → ValueTag → Bool
   | .extendedDomain, .logical => true
   | .extendedDomain, .error => true
   | .extendedDomain, .array => true
+  | .extendedDomain, .richValue => true
   | .extendedDomain, .referenceLike => true
   | .extendedDomain, .lambdaValue => true
   | .extendedDomain, .extendedWrapper => true
   | _, _ => false
+
+structure RichValueKeyFlag where
+  key : String
+  flag : String
+  value : Bool
+  deriving DecidableEq, Repr
+
+structure RichValueType where
+  typeName : String
+  requiredKeys : List String
+  keyFlags : List RichValueKeyFlag
+  deriving DecidableEq, Repr
+
+inductive NumberFormatHint where
+  | general
+  | dateLike
+  | percentage
+  | currency
+  | scientific
+  | fraction
+  | custom
+  deriving DecidableEq, Repr
+
+inductive CellStyleHint where
+  | hyperlink
+  deriving DecidableEq, Repr
+
+structure PresentationHint where
+  numberFormat : Option NumberFormatHint
+  style : Option CellStyleHint
+  deriving DecidableEq, Repr
+
+mutual
+  inductive RichValueData where
+    | number (n : Float)
+    | text (t : ExcelText)
+    | logical (b : Bool)
+    | error (code : WorksheetErrorCode)
+    | emptyCell
+    | array (arr : RichArray)
+    | richValue (value : RichValue)
+    deriving Repr
+
+  structure RichArray where
+    rows : Nat
+    cols : Nat
+    cells : List RichValueData
+    deriving Repr
+
+  structure RichValueKeyValue where
+    key : String
+    value : RichValueData
+    deriving Repr
+
+  structure RichValue where
+    valueType : RichValueType
+    fallback : RichValueData
+    kvps : List RichValueKeyValue
+    deriving Repr
+end
+
+def RichArray.wellFormed (arr : RichArray) : Prop :=
+  arr.rows > 0 ∧ arr.cols > 0 ∧ arr.cells.length = arr.rows * arr.cols
 
 theorem published_formula_result_disallows_missing_empty_null :
     boundaryAllows .publishedFormulaResult .missingArg = false ∧
@@ -131,5 +199,17 @@ theorem reference_domain_only_reference :
     boundaryAllows .referenceDomain .number = false ∧
     boundaryAllows .referenceDomain .array = false := by
   simp [boundaryAllows]
+
+theorem published_formula_result_allows_rich_value :
+    boundaryAllows .publishedFormulaResult .richValue = true ∧
+    boundaryAllows .callArg .richValue = true ∧
+    boundaryAllows .extendedDomain .richValue = true := by
+  simp [boundaryAllows]
+
+def hyperlinkPresentationHint : PresentationHint :=
+  { numberFormat := none, style := some .hyperlink }
+
+def todayPresentationHint : PresentationHint :=
+  { numberFormat := some .dateLike, style := none }
 
 end OxFunc

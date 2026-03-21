@@ -21,16 +21,16 @@ Current total:
 Members:
 1. `NUMBERVALUE`
 
-## 4. First Work Streams
-1. characterize omitted-default decimal/group separator behavior against locale/profile inputs,
-2. define the minimum typed locale-default seam OxFunc needs from OxFml/FEC,
-3. keep explicit-separator lanes separate from omitted-default lanes in future closure claims.
+## 4. Executed Work
+1. pinned the native current-host omitted-default baseline from `W26`,
+2. defined the locale-default seam through `LocaleFormatContext`,
+3. separated explicit-separator OxFunc-local behavior from omitted-default profile behavior,
+4. aligned the Lean substrate with the same locale-default reading.
 
 ## 5. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - omitted-default parsing policy is not yet pinned beyond the current host baseline,
-   - no typed locale-default profile contract is pinned yet.
+   - none in declared `W035` scope

@@ -62,13 +62,24 @@ This workset can only be reported `scope_complete` when:
 4. topic lifetime, invalidation, and callback responsibilities are explicitly assigned above OxFunc,
 5. any residual empirical uncertainty is either probed or pushed into an explicit successor packet.
 
-## 8. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+## 8. Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no dedicated `RTD` scenario manifest yet
-   - no explicit OxFml handoff note yet for the minimal `RTD` seam
-   - current-baseline worksheet outcome matrix for `RTD` is not yet pinned
-   - live-server startup/disconnect/save-value lanes are not yet empirically classified
+   - none in declared `W043` OxFunc-side scope
+
+## 9. Current Closure Reading
+`W043` is complete on the OxFunc side because:
+1. the reference corpus is captured locally,
+2. the minimal `RtdRequest` / `RtdProvider` / `RtdProviderResult` seam is implemented and tested,
+3. lifecycle/state ownership is explicitly assigned above OxFunc,
+4. the current OxFml sync bundle is explicit.
+
+The following are intentionally not counted as OxFunc-local open lanes:
+1. RTD server activation,
+2. topic connect/disconnect ownership,
+3. cell-topic map ownership,
+4. host-side callback scheduling,
+5. workbook-saved-value and reconnect policy.

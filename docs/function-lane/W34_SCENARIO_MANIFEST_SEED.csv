@@ -1,0 +1,5 @@
+"scenario_id","function_id","formula","expected_text","expected_value2","notes"
+"w34_asc_passthrough_current_host","FUNC.ASC","=ASC(""ＡＢＣ　１２３"")","ＡＢＣ　１２３","","Current host/profile leaves seeded full-width text unchanged"
+"w34_dbcs_passthrough_current_host","FUNC.DBCS","=DBCS(""ABC ｶﾞ"")","ABC ｶﾞ","","Current host/profile leaves seeded mixed ASCII/half-width kana unchanged"
+"w34_jis_unavailable_current_host","FUNC.JIS","=JIS(""ABC ｶﾞ"")","#NAME?","-2146826259","Current host/profile does not admit JIS on the worksheet baseline"
+

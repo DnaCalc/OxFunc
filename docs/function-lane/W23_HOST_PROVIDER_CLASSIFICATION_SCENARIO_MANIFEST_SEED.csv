@@ -1,0 +1,5 @@
+scenario_id,lane,formula,expected_text,notes
+W23-HOST-001,hyperlink_omitted_friendly_name,"HYPERLINK(""https://example.com"")",https://example.com,"Value side is link text when friendly name is omitted"
+W23-HOST-002,hyperlink_friendly_name,"HYPERLINK(""https://example.com"",""Go"")",Go,"Value side is friendly name"
+W23-HOST-003,image_provider_state,"IMAGE(""https://example.com/test.png"")",#CONNECT!,"Current baseline projects provider/binding failure rather than a local scalar"
+W23-HOST-004,copilot_absent_addin,"COPILOT(""hello"")",#NAME?,"Current baseline treats COPILOT as absent feature/add-in"

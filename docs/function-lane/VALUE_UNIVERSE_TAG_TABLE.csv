@@ -4,9 +4,10 @@ text,yes,yes,yes,yes,no,yes,provisional,Boundary-faithful text modeled as UTF-16
 logical,yes,yes,yes,yes,no,yes,provisional,Scalar boolean value.
 error,yes,yes,yes,yes,no,yes,provisional,Scalar worksheet error value with code metadata.
 array,no,yes,yes,yes,no,yes,provisional,Array value is raw-return/published/call/extended domain.
+rich_value,no,yes,yes,yes,no,yes,provisional,Spec-aligned rich value with type fallback and key-value pairs; may also appear nested inside rich value data.
 reference_like,no,yes,yes,yes,yes,yes,provisional,Reference-domain entity including 3D/structured/spill-anchor forms.
 missing_arg,no,no,no,yes,no,no,provisional,Omitted argument marker at call boundary.
 empty_cell,yes,yes,no,yes,no,no,provisional,Empty cell state; distinct from missing arg and null-like. Raw scalar return is admitted only at raw-return boundary, not at published-result boundary.
 lambda_value,no,yes,yes,yes,no,yes,provisional,Intermediate lambda/function value; not baseline cell content.
-extended_wrapper,no,no,no,no,no,yes,provisional,Wrapper for rich metadata surfaces (format hints, error enrichment).
+extended_wrapper,no,no,no,no,no,yes,provisional,Wrapper for rich metadata surfaces including presentation hints (number-format or style) and error enrichment.
 null_like,no,no,no,no,no,no,draft,Reserved disputed category with no baseline boundary admission.

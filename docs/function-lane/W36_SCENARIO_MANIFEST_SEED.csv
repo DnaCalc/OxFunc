@@ -1,0 +1,4 @@
+"scenario_id","function_id","formula","expected_text","expected_value2","notes"
+"w36_translate_same_language_passthrough","FUNC.TRANSLATE","=TRANSLATE(""hola"",""es"",""es"")","hola","","Same-language translation returns the input text locally"
+"w36_translate_provider_busy","FUNC.TRANSLATE","=TRANSLATE(""hello"",""en"",""es"")","#BUSY!","-2146826237","Cross-language translation is provider-bound on the current host baseline"
+

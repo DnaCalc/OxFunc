@@ -1169,6 +1169,45 @@ Those rows now carry:
 8. `source_commit_full`
 9. `source_tree_state`
 
+Current additional seam-relevant presentation rows worth consuming directly:
+1. `FUNC.NOW`
+2. `FUNC.TODAY`
+3. `FUNC.HYPERLINK`
+
+Those rows now carry:
+1. extracted arity/profile columns from the actual runtime metadata,
+2. `special_interface_kind = presentation_hinting_function`,
+3. `runtime_boundary_kind = extended_value_with_presentation_hint`,
+4. specific `interface_contract_ref` values back to the current function-slice contract or value-model note,
+5. first-pass reading:
+   - ordinary value production still exists,
+   - but the publication-aware OxFunc path now returns value plus presentation hint rather than plain value only.
+
+Current additional locale/profile/provider seam rows worth consuming directly:
+1. `FUNC.ASC`
+2. `FUNC.DBCS`
+3. `FUNC.JIS`
+4. `FUNC.NUMBERVALUE`
+5. `FUNC.TRANSLATE`
+
+Those rows now carry:
+1. curated arity/profile columns,
+2. `special_interface_kind = width_conversion_host_profile` for `ASC` / `DBCS` / `JIS`,
+3. `special_interface_kind = locale_default_profiled_parse` for `NUMBERVALUE`,
+4. `special_interface_kind = provider_language_request` for `TRANSLATE`,
+5. `runtime_boundary_kind = typed_host_width_conversion_mode` for the width-conversion family,
+6. `runtime_boundary_kind = ordinary_eval_with_locale_defaults` for `NUMBERVALUE`,
+7. `runtime_boundary_kind = host_provider_projection` for `TRANSLATE`,
+8. direct `interface_contract_ref` values to:
+   - `docs/function-lane/FUNCTION_SLICE_WIDTH_CONVERSION_HOST_PROFILE_CONTRACT_PRELIM.md`
+   - `docs/function-lane/FUNCTION_SLICE_NUMBERVALUE_LOCALE_DEFAULT_CONTRACT_PRELIM.md`
+   - `docs/function-lane/FUNCTION_SLICE_TRANSLATE_PROVIDER_LANGUAGE_CONTRACT_PRELIM.md`
+
+Current reading:
+1. the locale/profile/provider residuals from `W034` / `W035` / `W036` are now closed on the OxFunc side,
+2. OxFml now mainly needs to consume the typed context/query seams rather than wait on more local OxFunc kernel work,
+3. the refreshed `W044` export should now be read as the current best downstream source for those rows as well, not just for `LET` / `LAMBDA` / `RTD` / presentation-hint rows.
+
 Current additional representative ordinary rows worth consuming directly:
 1. `FUNC.CHOOSECOLS`
 2. `FUNC.FILTER`
@@ -1214,9 +1253,9 @@ Current OxFunc recommendation:
 1. consume `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` directly,
 2. pin OxFml-side tests and semantic-plan fixtures to:
    - `snapshot_id = oxfunc-libctx-v1`
-   - `snapshot_generation = 2026-03-20`
-   - `source_commit_short = a9960fc`
-   - `source_commit_full = a9960fca1cdc02daf85ce1e1052d5ae81574cbe0`
+   - `snapshot_generation = 2026-03-21`
+   - `source_commit_short = 717831e`
+   - `source_commit_full = 717831ed354bcf713c0defe718c5910016b07d3a`
    - `source_tree_state = dirty`
 3. treat `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` as the interpretation guide for the first pass,
 4. use concrete snapshot-consumption mismatches as the next bounded trigger rather than reopening broad seam theory.
@@ -1231,7 +1270,8 @@ OxFunc reads the latest OxFml note as convergent and narrow in a useful way:
 1. keep using the current `W044` export as the concrete integration artifact,
 2. preserve `source_tree_state` in downstream mismatch reports,
 3. add a stronger commit-level pin beside `source_commit_short` when convenient,
-4. keep pushing toward more dereferenceable semantic/gating surfaces without blocking first-pass snapshot consumption now.
+4. keep pushing toward more dereferenceable semantic/gating surfaces without blocking first-pass snapshot consumption now,
+5. for `NOW`, `TODAY`, and `HYPERLINK`, start reading `runtime_boundary_kind = extended_value_with_presentation_hint` as the current OxFunc-side answer for value-plus-format/style publication behavior.
 
 ### 21.5D Current OxFunc Reading
 OxFunc reads the latest OxFml note as convergent on the important points for this round:
@@ -1241,6 +1281,21 @@ OxFunc reads the latest OxFml note as convergent on the important points for thi
 4. remaining differences are about field-set quality and evidence maturity, not active semantic disagreement.
 5. a useful next bounded consumption check is whether the refreshed `W039` ordinary dynamic-array rows already give OxFml enough planning information without a special-case side channel,
 6. the new `source_commit_full` field directly incorporates one of OxFml's few concrete export-shape asks without forcing a broader field-lock round.
+
+### 21.5E Current RTD Sync Bundle
+For the next RTD sync, OxFunc now wants OxFml to read the following as one bounded bundle:
+1. `docs/function-lane/RTD_REFERENCE_CAPTURE_AND_SEAM_NOTES.md`
+2. `docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md`
+3. `docs/function-lane/W43_EXECUTION_RECORD.md`
+4. `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
+5. the raw captures under `docs/function-lane/reference-captures/rtd/`
+
+Current OxFunc reading:
+1. lifecycle/state ownership for `RTD` is above OxFunc and should stay there,
+2. OxFunc should only see a prepared `RtdRequest` plus a typed host callback/result surface,
+3. for uniformity, the host callback returns either the current RTD value or a classified provider/runtime outcome,
+4. OxFunc then projects that supplied result into the worksheet value/error universe,
+5. OxFunc does not need any stronger RTD-local state model unless a later concrete integration need proves otherwise.
 
 ### 21.6 Still Intentionally Open
 The following remain intentionally open after processing the latest OxFml note:

@@ -178,6 +178,34 @@ Current intended use:
 7. This export does not carry runtime capability, provider availability, caller-context, or host-query payload facts.
 8. The exact final shared field set and field names are still not locked cross-repo.
 
+Current presentation-aware examples:
+1. `FUNC.NOW`
+2. `FUNC.TODAY`
+3. `FUNC.HYPERLINK`
+
+Those rows now expose:
+1. extracted `FunctionMeta` profile columns,
+2. `special_interface_kind = presentation_hinting_function`,
+3. `runtime_boundary_kind = extended_value_with_presentation_hint`,
+4. specific `interface_contract_ref` values back to the current function-slice contract or value-model note.
+
+Current locale/profile/provider seam examples:
+1. `FUNC.ASC`
+2. `FUNC.DBCS`
+3. `FUNC.JIS`
+4. `FUNC.NUMBERVALUE`
+5. `FUNC.TRANSLATE`
+
+Those rows now expose:
+1. curated detailed profile columns,
+2. `special_interface_kind = width_conversion_host_profile` for `ASC` / `DBCS` / `JIS`,
+3. `special_interface_kind = locale_default_profiled_parse` for `NUMBERVALUE`,
+4. `special_interface_kind = provider_language_request` for `TRANSLATE`,
+5. `runtime_boundary_kind = typed_host_width_conversion_mode` for the width-conversion family,
+6. `runtime_boundary_kind = ordinary_eval_with_locale_defaults` for `NUMBERVALUE`,
+7. `runtime_boundary_kind = host_provider_projection` for `TRANSLATE`,
+8. direct `interface_contract_ref` pointers to the current `W034` / `W035` / `W036` contract notes.
+
 ## 7. Authoritative Sources
 Current authoritative source surfaces:
 1. `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`

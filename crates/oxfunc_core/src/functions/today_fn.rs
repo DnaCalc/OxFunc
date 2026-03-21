@@ -2,7 +2,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    CallArgValue, EvalValue, ExtendedValue, NumberFormatHint, PresentationHint, WorksheetErrorCode,
+};
 
 pub const TODAY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TODAY",
@@ -47,6 +49,17 @@ pub fn eval_today_surface(
     Ok(EvalValue::Number(serial.floor()))
 }
 
+pub fn eval_today_surface_extended(
+    args: &[CallArgValue],
+    provider: &impl TodayProvider,
+) -> Result<ExtendedValue, TodayEvalError> {
+    let value = eval_today_surface(args, provider)?;
+    Ok(ExtendedValue::ValueWithPresentation {
+        value,
+        hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+    })
+}
+
 pub fn map_today_error_to_ws(e: &TodayEvalError) -> WorksheetErrorCode {
     match e {
         TodayEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
@@ -72,6 +85,18 @@ mod tests {
     fn eval_today_floors_provider_serial() {
         let got = eval_today_surface(&[], &FixedTodayProvider { serial: 46000.75 });
         assert_eq!(got, Ok(EvalValue::Number(46000.0)));
+    }
+
+    #[test]
+    fn eval_today_extended_wraps_value_with_number_format_hint() {
+        let got = eval_today_surface_extended(&[], &FixedTodayProvider { serial: 46000.75 });
+        assert_eq!(
+            got,
+            Ok(ExtendedValue::ValueWithPresentation {
+                value: EvalValue::Number(46000.0),
+                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+            })
+        );
     }
 
     #[test]

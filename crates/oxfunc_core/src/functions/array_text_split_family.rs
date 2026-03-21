@@ -66,6 +66,7 @@ fn worksheet_error_literal(code: WorksheetErrorCode) -> &'static str {
         WorksheetErrorCode::Name => "#NAME?",
         WorksheetErrorCode::Num => "#NUM!",
         WorksheetErrorCode::NA => "#N/A",
+        WorksheetErrorCode::Busy => "#BUSY!",
         WorksheetErrorCode::GettingData => "#GETTING_DATA",
         WorksheetErrorCode::Spill => "#SPILL!",
         WorksheetErrorCode::Calc => "#CALC!",

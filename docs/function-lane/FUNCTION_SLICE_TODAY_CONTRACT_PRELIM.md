@@ -39,8 +39,10 @@
 2. provider and arity failures map to worksheet-visible `#VALUE!` in the current runtime seam.
 3. worksheet-surface semantics also include a post-evaluation format hint:
    - when `TODAY()` is entered into a cell previously formatted as `General`, built-in Excel changes the caller cell to a date format in the observed/documented baseline.
-4. this format hint is part of semantic characterization for `TODAY`, but application of the hint is an engine/FEC/F3E responsibility rather than a pure kernel obligation.
-5. current XLL verification does not require reproducing caller-cell format application; that seam limitation is tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+4. in the current value-universe model this is represented as an ordinary numeric value plus a presentation hint carrying `number_format`.
+5. application of the hint is an engine/FEC/F3E responsibility rather than a pure kernel obligation.
+6. current XLL verification does not require reproducing caller-cell format application; that seam limitation is tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+7. the first-pass runtime hook for this publication-aware path is `eval_today_surface_extended(...)` and the shared dispatch entry point `eval_surface_extended_call(...)`.
 
 ## 7. Version Scope (Required Axes)
 1. Excel application version/channel scope:

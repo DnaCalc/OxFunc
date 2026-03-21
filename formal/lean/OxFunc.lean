@@ -179,6 +179,7 @@ import OxFunc.Functions.SumSq
 import OxFunc.Functions.SumproductFamily
 import OxFunc.Functions.StdevFn
 import OxFunc.Functions.StandardizeFn
+import OxFunc.Functions.SubtotalAggregateFamily
 import OxFunc.Functions.VarFn
 import OxFunc.Functions.Text
 import OxFunc.Functions.TextSearchReplaceFamily
@@ -226,6 +227,7 @@ import OxFunc.Functions.StdevPCompatFn
 import OxFunc.Functions.VarCompatFn
 import OxFunc.Functions.VarPCompatFn
 import OxFunc.Functions.VhlookupFamily
+import OxFunc.Functions.WebTextXmlFamily
 import OxFunc.Functions.WorkdayNetworkdaysFamily
 
 

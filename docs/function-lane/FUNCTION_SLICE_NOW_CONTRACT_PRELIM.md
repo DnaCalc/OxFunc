@@ -33,8 +33,10 @@
 1. successful evaluation returns a scalar numeric serial value.
 2. worksheet-surface semantics also include a post-evaluation format hint:
    - when `NOW()` is entered into a cell previously formatted as `General`, built-in Excel changes the caller cell to a date-time number format in the observed baseline.
-3. this format hint is part of semantic characterization for `NOW`, but application of the hint is an engine/FEC/F3E responsibility rather than a pure kernel obligation.
-4. current XLL verification does not require reproducing caller-cell format application; that seam limitation is tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+3. in the current value-universe model this is represented as an ordinary numeric value plus a presentation hint carrying `number_format`.
+4. application of the hint is an engine/FEC/F3E responsibility rather than a pure kernel obligation.
+5. current XLL verification does not require reproducing caller-cell format application; that seam limitation is tracked in `docs/function-lane/XLL_VERIFICATION_SEAM_LIMITATIONS.md`.
+6. the first-pass runtime hook for this publication-aware path is `eval_now_surface_extended(...)` and the shared dispatch entry point `eval_surface_extended_call(...)`.
 
 ## 6. Version Scope (Required Axes)
 1. Excel application version/channel scope:

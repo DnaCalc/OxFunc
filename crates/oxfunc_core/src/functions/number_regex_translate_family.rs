@@ -6,6 +6,10 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
+use crate::host_info::{
+    HostInfoError, HostInfoProvider, TranslateProviderResult, TranslateRequest,
+};
+use crate::locale_format::LocaleFormatContext;
 use crate::resolver::ReferenceResolver;
 use crate::value::{
     CallArgValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalValue, ExcelText, WorksheetErrorCode,
@@ -28,6 +32,8 @@ const NUMBER_REGEX_TRANSLATE_BASE_META: FunctionMeta = FunctionMeta {
 pub const NUMBERVALUE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NUMBERVALUE",
     arity: Arity { min: 1, max: 3 },
+    fec_dependency_profile: FecDependencyProfile::LocaleProfile,
+    surface_fec_dependency_profile: FecDependencyProfile::LocaleProfile,
     ..NUMBER_REGEX_TRANSLATE_BASE_META
 };
 
@@ -68,6 +74,9 @@ pub enum NumberRegexTranslateEvalError {
     },
     Coercion(CoercionError),
     Domain(WorksheetErrorCode),
+    LocaleContextMissing,
+    HostInfoProviderMissing(&'static str),
+    HostInfo(HostInfoError),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -204,6 +213,27 @@ fn parse_optional_separator(
         (Some(ch), None) => Ok(Some(ch)),
         _ => Err(value_error()),
     }
+}
+
+fn parse_locale_default_separator(
+    locale_ctx: &LocaleFormatContext,
+    decimal_separator: bool,
+) -> Result<Option<char>, NumberRegexTranslateEvalError> {
+    let raw = if decimal_separator {
+        locale_ctx.profile.decimal_separator
+    } else {
+        locale_ctx.profile.thousands_separator
+    };
+    let mut chars = raw.chars();
+    match (chars.next(), chars.next()) {
+        (None, _) => Ok(None),
+        (Some(ch), None) => Ok(Some(ch)),
+        _ => Err(value_error()),
+    }
+}
+
+fn normalize_language_tag(text: &ExcelText) -> String {
+    text.to_string_lossy().trim().to_ascii_lowercase()
 }
 
 pub fn numbervalue_kernel(
@@ -757,11 +787,28 @@ pub fn translate_kernel(
 pub fn eval_numbervalue_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    locale_ctx: Option<&LocaleFormatContext>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&NUMBERVALUE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
-    let decimal_separator = parse_optional_separator(prepared.get(1), Some('.'))?;
-    let group_separator = parse_optional_separator(prepared.get(2), Some(','))?;
+    let decimal_separator = if matches!(
+        prepared.get(1),
+        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell)
+    ) {
+        let ctx = locale_ctx.ok_or(NumberRegexTranslateEvalError::LocaleContextMissing)?;
+        parse_locale_default_separator(ctx, true)?
+    } else {
+        parse_optional_separator(prepared.get(1), None)?
+    };
+    let group_separator = if matches!(
+        prepared.get(2),
+        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell)
+    ) {
+        let ctx = locale_ctx.ok_or(NumberRegexTranslateEvalError::LocaleContextMissing)?;
+        parse_locale_default_separator(ctx, false)?
+    } else {
+        parse_optional_separator(prepared.get(2), None)?
+    };
     Ok(EvalValue::Number(
         numbervalue_kernel(&text, decimal_separator, group_separator)
             .map_err(NumberRegexTranslateEvalError::Domain)?,
@@ -816,15 +863,41 @@ pub fn eval_regextest_surface(
 pub fn eval_translate_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
+    host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&TRANSLATE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
     let source = optional_text_arg(prepared.get(1))?;
     let target = optional_text_arg(prepared.get(2))?;
-    Ok(EvalValue::Text(
-        translate_kernel(&text, source.as_ref(), target.as_ref())
-            .map_err(NumberRegexTranslateEvalError::Domain)?,
-    ))
+    if source
+        .as_ref()
+        .zip(target.as_ref())
+        .is_some_and(|(src, dst)| {
+            !normalize_language_tag(src).is_empty()
+                && normalize_language_tag(src) == normalize_language_tag(dst)
+        })
+    {
+        return Ok(EvalValue::Text(text));
+    }
+    let provider = host_info.ok_or(NumberRegexTranslateEvalError::HostInfoProviderMissing(
+        "translate_provider",
+    ))?;
+    let request = TranslateRequest {
+        text,
+        source_language: source,
+        target_language: target,
+    };
+    match provider
+        .query_translate(&request)
+        .map_err(NumberRegexTranslateEvalError::HostInfo)?
+    {
+        TranslateProviderResult::Text(text) => Ok(EvalValue::Text(text)),
+        TranslateProviderResult::Busy => Ok(EvalValue::Error(WorksheetErrorCode::Busy)),
+        TranslateProviderResult::CapabilityDenied => {
+            Ok(EvalValue::Error(WorksheetErrorCode::Blocked))
+        }
+        TranslateProviderResult::ProviderError(code) => Ok(EvalValue::Error(code)),
+    }
 }
 
 pub fn map_number_regex_translate_error_to_ws(
@@ -835,12 +908,29 @@ pub fn map_number_regex_translate_error_to_ws(
         NumberRegexTranslateEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         NumberRegexTranslateEvalError::Coercion(_) => WorksheetErrorCode::Value,
         NumberRegexTranslateEvalError::Domain(code) => *code,
+        NumberRegexTranslateEvalError::LocaleContextMissing => WorksheetErrorCode::Value,
+        NumberRegexTranslateEvalError::HostInfoProviderMissing(_) => WorksheetErrorCode::Value,
+        NumberRegexTranslateEvalError::HostInfo(HostInfoError::ProviderFailure { .. }) => {
+            WorksheetErrorCode::Value
+        }
+        NumberRegexTranslateEvalError::HostInfo(
+            HostInfoError::UnsupportedTranslateQuery
+            | HostInfoError::UnsupportedWidthConversionProfileQuery(_)
+            | HostInfoError::UnsupportedCellInfoQuery(_)
+            | HostInfoError::UnsupportedInfoQuery(_)
+            | HostInfoError::UnsupportedFormulaTextQuery
+            | HostInfoError::UnsupportedSheetIndexQuery
+            | HostInfoError::UnsupportedSheetCountQuery
+            | HostInfoError::UnsupportedAggregateReferenceContextQuery,
+        ) => WorksheetErrorCode::Value,
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::host_info::{HostInfoProvider, TranslateProviderResult, TranslateRequest};
+    use crate::locale_format::{current_excel_host_context, en_us_context};
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{EvalValue, ReferenceKind, ReferenceLike};
 
@@ -862,6 +952,20 @@ mod tests {
             Err(RefResolutionError::UnresolvedReference {
                 target: reference.target.clone(),
             })
+        }
+    }
+
+    struct MockTranslateProvider {
+        result: TranslateProviderResult,
+    }
+
+    impl HostInfoProvider for MockTranslateProvider {
+        fn query_translate(
+            &self,
+            request: &TranslateRequest,
+        ) -> Result<TranslateProviderResult, HostInfoError> {
+            assert_eq!(request.text.to_string_lossy(), "hello");
+            Ok(self.result.clone())
         }
     }
 
@@ -923,27 +1027,73 @@ mod tests {
     }
 
     #[test]
-    fn translate_supports_same_language_noop() {
-        let got = translate_kernel(&txt("plain text"), Some(&txt("en")), Some(&txt("en")));
-        assert_eq!(got, Ok(txt("plain text")));
+    fn translate_same_language_passthrough_is_local() {
+        let resolver = DummyResolver;
+        let got = eval_translate_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(txt("plain text"))),
+                CallArgValue::Eval(EvalValue::Text(txt("es"))),
+                CallArgValue::Eval(EvalValue::Text(txt("es"))),
+            ],
+            &resolver,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Text(txt("plain text"))));
     }
 
     #[test]
-    fn translate_supports_bounded_phrasebook() {
-        let got = translate_kernel(&txt("hello, world!"), Some(&txt("en")), Some(&txt("es")));
-        assert_eq!(got, Ok(txt("hola mundo!")));
+    fn numbervalue_omitted_defaults_use_locale_context() {
+        let resolver = DummyResolver;
+        let current_host = current_excel_host_context();
+        let en_us = en_us_context();
+        let host_default = eval_numbervalue_surface(
+            &[CallArgValue::Eval(EvalValue::Text(txt("1,234.5%")))],
+            &resolver,
+            Some(&current_host),
+        );
+        assert_eq!(
+            host_default,
+            Err(NumberRegexTranslateEvalError::Domain(
+                WorksheetErrorCode::Value
+            ))
+        );
+        let en_us_default = eval_numbervalue_surface(
+            &[CallArgValue::Eval(EvalValue::Text(txt("1,234.5%")))],
+            &resolver,
+            Some(&en_us),
+        );
+        assert_eq!(en_us_default, Ok(EvalValue::Number(12.345)));
     }
 
     #[test]
-    fn translate_can_infer_source_when_target_is_given() {
-        let got = translate_kernel(&txt("bonjour"), None, Some(&txt("en")));
-        assert_eq!(got, Ok(txt("good morning")));
+    fn numbervalue_omitted_defaults_require_locale_context() {
+        let resolver = DummyResolver;
+        let got = eval_numbervalue_surface(
+            &[CallArgValue::Eval(EvalValue::Text(txt("1,234.5%")))],
+            &resolver,
+            None,
+        );
+        assert_eq!(
+            got,
+            Err(NumberRegexTranslateEvalError::LocaleContextMissing)
+        );
     }
 
     #[test]
-    fn translate_rejects_omitted_target_in_bounded_slice() {
-        let got = translate_kernel(&txt("bonjour"), Some(&txt("fr")), None);
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    fn translate_uses_provider_for_cross_language_lane() {
+        let resolver = DummyResolver;
+        let got = eval_translate_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(txt("hello"))),
+                CallArgValue::Eval(EvalValue::Text(txt("en"))),
+                CallArgValue::Eval(EvalValue::Text(txt("es"))),
+            ],
+            &resolver,
+            Some(&MockTranslateProvider {
+                result: TranslateProviderResult::Busy,
+            }),
+        );
+        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Busy)));
     }
 
     #[test]
@@ -956,6 +1106,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(txt("."))),
             ],
             &resolver,
+            None,
         );
         assert_eq!(got, Ok(EvalValue::Number(1234.5)));
     }
@@ -987,17 +1138,20 @@ mod tests {
     }
 
     #[test]
-    fn translate_surface_returns_bounded_phrasebook_result() {
+    fn translate_surface_maps_capability_denial() {
         let resolver = DummyResolver;
         let got = eval_translate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(txt("thank you"))),
+                CallArgValue::Eval(EvalValue::Text(txt("hello"))),
                 CallArgValue::Eval(EvalValue::Text(txt("en"))),
                 CallArgValue::Eval(EvalValue::Text(txt("es"))),
             ],
             &resolver,
+            Some(&MockTranslateProvider {
+                result: TranslateProviderResult::CapabilityDenied,
+            }),
         );
-        assert_eq!(got, Ok(EvalValue::Text(txt("gracias"))));
+        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Blocked)));
     }
 
     #[test]

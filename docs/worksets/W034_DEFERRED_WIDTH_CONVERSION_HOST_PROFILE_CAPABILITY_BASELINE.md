@@ -23,16 +23,16 @@ Members:
 2. `DBCS`
 3. `JIS`
 
-## 4. First Work Streams
-1. define the host/profile availability matrix for width-conversion functions,
-2. decide whether capability admission lives in library context, runtime capability views, or both,
-3. characterize the profile-sensitive pass-through and unavailable lanes against at least one additional host/profile when available.
+## 4. Executed Work
+1. pinned the native current-host baseline from `W26`,
+2. defined a typed width-conversion host/profile seam in `host_info.rs`,
+3. moved `ASC`, `DBCS`, and `JIS` onto host-supplied width-conversion modes,
+4. aligned the Lean host-seam and function metadata surfaces.
 
 ## 5. Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no typed width-conversion capability seam is pinned yet,
-   - no cross-profile matrix exists yet beyond the current host baseline.
+   - none in declared `W034` scope

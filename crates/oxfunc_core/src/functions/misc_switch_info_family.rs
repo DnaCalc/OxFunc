@@ -171,24 +171,17 @@ pub fn map_misc_switch_info_error_to_ws(e: &MiscSwitchInfoEvalError) -> Workshee
     match e {
         MiscSwitchInfoEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         MiscSwitchInfoEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::ProviderFailure { .. }) => {
-            WorksheetErrorCode::Value
-        }
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedCellInfoQuery(_)) => {
-            WorksheetErrorCode::Value
-        }
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedInfoQuery(_)) => {
-            WorksheetErrorCode::Value
-        }
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedFormulaTextQuery) => {
-            WorksheetErrorCode::Value
-        }
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedSheetIndexQuery) => {
-            WorksheetErrorCode::Value
-        }
-        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedSheetCountQuery) => {
-            WorksheetErrorCode::Value
-        }
+        MiscSwitchInfoEvalError::HostInfo(
+            HostInfoError::ProviderFailure { .. }
+            | HostInfoError::UnsupportedCellInfoQuery(_)
+            | HostInfoError::UnsupportedInfoQuery(_)
+            | HostInfoError::UnsupportedFormulaTextQuery
+            | HostInfoError::UnsupportedSheetIndexQuery
+            | HostInfoError::UnsupportedSheetCountQuery
+            | HostInfoError::UnsupportedAggregateReferenceContextQuery
+            | HostInfoError::UnsupportedWidthConversionProfileQuery(_)
+            | HostInfoError::UnsupportedTranslateQuery,
+        ) => WorksheetErrorCode::Value,
         MiscSwitchInfoEvalError::InvalidOperand => WorksheetErrorCode::Value,
         MiscSwitchInfoEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }

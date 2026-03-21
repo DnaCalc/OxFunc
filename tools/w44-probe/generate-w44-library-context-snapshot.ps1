@@ -6,20 +6,23 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\")
 Set-Location $repoRoot
+$snapshotGeneration = Get-Date -Format "yyyy-MM-dd"
 $sourceCommitShort = (git rev-parse --short HEAD).Trim()
 $sourceCommitFull = (git rev-parse HEAD).Trim()
 $sourceTreeState = if ([string]::IsNullOrWhiteSpace((git status --porcelain))) { "clean" } else { "dirty" }
 
-$metaPattern = 'function_id:\s*"(?<id>[^"]+)"[\s\S]*?arity:\s*Arity\s*\{\s*min:\s*(?<min>\d+),\s*max:\s*(?<max>\d+)\s*\}[\s\S]*?determinism:\s*DeterminismClass::(?<det>\w+)[\s\S]*?volatility:\s*VolatilityClass::(?<vol>\w+)[\s\S]*?host_interaction:\s*HostInteractionClass::(?<host>\w+)[\s\S]*?thread_safety:\s*ThreadSafetyClass::(?<thread>\w+)[\s\S]*?arg_preparation_profile:\s*ArgPreparationProfile::(?<arg>\w+)[\s\S]*?coercion_lift_profile:\s*CoercionLiftProfile::(?<coercion>\w+)[\s\S]*?kernel_signature_class:\s*KernelSignatureClass::(?<kernel>\w+)[\s\S]*?fec_dependency_profile:\s*FecDependencyProfile::(?<fec>\w+)[\s\S]*?surface_fec_dependency_profile:\s*FecDependencyProfile::(?<surface>\w+)'
+$metaPattern = 'function_id:\s*"(?<id>[^"]+)"[\s\S]*?arity:\s*(?:Arity::exact\((?<exact>\d+)\)|Arity\s*\{\s*min:\s*(?<min>\d+),\s*max:\s*(?<max>\d+)\s*\})[\s\S]*?determinism:\s*DeterminismClass::(?<det>\w+)[\s\S]*?volatility:\s*VolatilityClass::(?<vol>\w+)[\s\S]*?host_interaction:\s*HostInteractionClass::(?<host>\w+)[\s\S]*?thread_safety:\s*ThreadSafetyClass::(?<thread>\w+)[\s\S]*?arg_preparation_profile:\s*ArgPreparationProfile::(?<arg>\w+)[\s\S]*?coercion_lift_profile:\s*CoercionLiftProfile::(?<coercion>\w+)[\s\S]*?kernel_signature_class:\s*KernelSignatureClass::(?<kernel>\w+)[\s\S]*?fec_dependency_profile:\s*FecDependencyProfile::(?<fec>\w+)[\s\S]*?surface_fec_dependency_profile:\s*FecDependencyProfile::(?<surface>\w+)'
 $reshapeMetaPattern = 'pub const \w+_META:\s*FunctionMeta\s*=\s*reshape_meta!\("(?<id>[^"]+)",\s*(?<min>\d+),\s*(?<max>\d+)\);'
 
 $metaById = @{}
 Get-ChildItem "crates/oxfunc_core/src/functions" -Filter *.rs | ForEach-Object {
     $text = Get-Content $_.FullName -Raw
     foreach ($m in [regex]::Matches($text, $metaPattern)) {
+        $arityMin = if ($m.Groups['exact'].Success) { $m.Groups['exact'].Value } else { $m.Groups['min'].Value }
+        $arityMax = if ($m.Groups['exact'].Success) { $m.Groups['exact'].Value } else { $m.Groups['max'].Value }
         $metaById[$m.Groups['id'].Value] = [ordered]@{
-            arity_min = $m.Groups['min'].Value
-            arity_max = $m.Groups['max'].Value
+            arity_min = $arityMin
+            arity_max = $arityMax
             arg_preparation_profile = $m.Groups['arg'].Value
             coercion_lift_profile = $m.Groups['coercion'].Value
             kernel_signature_class = $m.Groups['kernel'].Value
@@ -61,6 +64,14 @@ function Get-SpecialInterfaceKind {
     switch ($StableId) {
         "FUNC.RTD" { return "host_subscription_provider" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "implicit_intersection_operator" }
+        "FUNC.NOW" { return "presentation_hinting_function" }
+        "FUNC.TODAY" { return "presentation_hinting_function" }
+        "FUNC.HYPERLINK" { return "presentation_hinting_function" }
+        "FUNC.ASC" { return "width_conversion_host_profile" }
+        "FUNC.DBCS" { return "width_conversion_host_profile" }
+        "FUNC.JIS" { return "width_conversion_host_profile" }
+        "FUNC.NUMBERVALUE" { return "locale_default_profiled_parse" }
+        "FUNC.TRANSLATE" { return "provider_language_request" }
     }
 
     switch ($CanonicalName) {
@@ -86,6 +97,14 @@ function Get-InterfaceContractRef {
     switch ($StableId) {
         "FUNC.RTD" { return "docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "docs/function-lane/IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md" }
+        "FUNC.NOW" { return "docs/function-lane/FUNCTION_SLICE_NOW_CONTRACT_PRELIM.md" }
+        "FUNC.TODAY" { return "docs/function-lane/FUNCTION_SLICE_TODAY_CONTRACT_PRELIM.md" }
+        "FUNC.HYPERLINK" { return "docs/function-lane/FUNCTION_SLICE_HYPERLINK_IMAGE_VALUE_MODEL_PRELIM.md" }
+        "FUNC.ASC" { return "docs/function-lane/FUNCTION_SLICE_WIDTH_CONVERSION_HOST_PROFILE_CONTRACT_PRELIM.md" }
+        "FUNC.DBCS" { return "docs/function-lane/FUNCTION_SLICE_WIDTH_CONVERSION_HOST_PROFILE_CONTRACT_PRELIM.md" }
+        "FUNC.JIS" { return "docs/function-lane/FUNCTION_SLICE_WIDTH_CONVERSION_HOST_PROFILE_CONTRACT_PRELIM.md" }
+        "FUNC.NUMBERVALUE" { return "docs/function-lane/FUNCTION_SLICE_NUMBERVALUE_LOCALE_DEFAULT_CONTRACT_PRELIM.md" }
+        "FUNC.TRANSLATE" { return "docs/function-lane/FUNCTION_SLICE_TRANSLATE_PROVIDER_LANGUAGE_CONTRACT_PRELIM.md" }
     }
 
     if ($StableId -like "FUNC.OP_*") {
@@ -183,6 +202,14 @@ function Get-RuntimeBoundaryKind {
         "FUNC.RTD" { return "host_provider_projection" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "caller_context_scalarization" }
         "FUNC.OP_ADD" { return "ordinary_eval" }
+        "FUNC.NOW" { return "extended_value_with_presentation_hint" }
+        "FUNC.TODAY" { return "extended_value_with_presentation_hint" }
+        "FUNC.HYPERLINK" { return "extended_value_with_presentation_hint" }
+        "FUNC.ASC" { return "typed_host_width_conversion_mode" }
+        "FUNC.DBCS" { return "typed_host_width_conversion_mode" }
+        "FUNC.JIS" { return "typed_host_width_conversion_mode" }
+        "FUNC.NUMBERVALUE" { return "ordinary_eval_with_locale_defaults" }
+        "FUNC.TRANSLATE" { return "host_provider_projection" }
     }
 
     switch ($CanonicalName) {
@@ -209,6 +236,14 @@ function Get-ArityShapeNote {
         "FUNC.RTD" { return "prog_id, server_name, then ordered topic strings" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "single operand/operator source" }
         "FUNC.OP_ADD" { return "binary operator operands" }
+        "FUNC.NOW" { return "nullary ordinary call; extended path returns numeric value plus number_format hint" }
+        "FUNC.TODAY" { return "nullary ordinary call; extended path returns numeric value plus number_format hint" }
+        "FUNC.HYPERLINK" { return "link location plus optional friendly name; extended path returns text value plus style=hyperlink hint" }
+        "FUNC.ASC" { return "single text arg; host profile supplies pass-through or narrow conversion mode" }
+        "FUNC.DBCS" { return "single text arg; host profile supplies pass-through or narrow conversion mode" }
+        "FUNC.JIS" { return "single text arg; host profile supplies widen or unavailable mode" }
+        "FUNC.NUMBERVALUE" { return "text plus optional decimal/group separators; omitted separators come from locale profile" }
+        "FUNC.TRANSLATE" { return "text plus optional source/target language tags; same-language local passthrough, otherwise provider query" }
     }
 
     switch ($CanonicalName) {
@@ -240,13 +275,108 @@ $defaultMeta = [ordered]@{
     metadata_status = "catalog_only"
 }
 
+function Get-ManualMetaOverride {
+    param([string]$StableId)
+
+    switch ($StableId) {
+        "FUNC.ASC" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "None"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "ApplicationState"
+                thread_safety_class = "HostSerialized"
+                fec_dependency_profile = "Composite"
+                surface_fec_dependency_profile = "Composite"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DBCS" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "None"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "ApplicationState"
+                thread_safety_class = "HostSerialized"
+                fec_dependency_profile = "Composite"
+                surface_fec_dependency_profile = "Composite"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.JIS" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "None"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "ApplicationState"
+                thread_safety_class = "HostSerialized"
+                fec_dependency_profile = "Composite"
+                surface_fec_dependency_profile = "Composite"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.NUMBERVALUE" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "LocaleProfile"
+                surface_fec_dependency_profile = "LocaleProfile"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.TRANSLATE" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "ExternalProvider"
+                thread_safety_class = "HostSerialized"
+                fec_dependency_profile = "ExternalProvider"
+                surface_fec_dependency_profile = "ExternalProvider"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        default { return $null }
+    }
+}
+
 $functionRows = Import-Csv "docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv" | ForEach-Object {
     $stableId = "FUNC.$($_.function_name.ToUpperInvariant())"
     $gatingRef = if ([string]::IsNullOrWhiteSpace($_.version_marker)) { "oxfunc.local.gating.current_baseline.default.v1" } else { "oxfunc.local.gating.version_marker.$($_.version_marker)" }
-    $meta = if ($metaById.ContainsKey($stableId)) { $metaById[$stableId] } else { $defaultMeta }
+    $manualMeta = Get-ManualMetaOverride -StableId $stableId
+    $meta = if ($metaById.ContainsKey($stableId)) {
+        $metaById[$stableId]
+    } elseif ($null -ne $manualMeta) {
+        $manualMeta
+    } else {
+        $defaultMeta
+    }
     [pscustomobject]([ordered]@{
         snapshot_id = "oxfunc-libctx-v1"
-        snapshot_generation = "2026-03-20"
+        snapshot_generation = $snapshotGeneration
         source_commit_short = $sourceCommitShort
         source_commit_full = $sourceCommitFull
         source_tree_state = $sourceTreeState
@@ -283,6 +413,51 @@ $functionRows = Import-Csv "docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE
     })
 }
 
+$functionRows | Where-Object { $_.surface_stable_id -in @("FUNC.ASC", "FUNC.DBCS", "FUNC.JIS") } | ForEach-Object {
+    $_.arity_min = "1"
+    $_.arity_max = "1"
+    $_.arg_preparation_profile = "ValuesOnlyPreAdapter"
+    $_.coercion_lift_profile = "None"
+    $_.kernel_signature_class = "Custom"
+    $_.determinism_class = "Deterministic"
+    $_.volatility_class = "NonVolatile"
+    $_.host_interaction_class = "ApplicationState"
+    $_.thread_safety_class = "HostSerialized"
+    $_.fec_dependency_profile = "Composite"
+    $_.surface_fec_dependency_profile = "Composite"
+    $_.metadata_status = "function_meta_curated"
+}
+
+$functionRows | Where-Object { $_.surface_stable_id -eq "FUNC.NUMBERVALUE" } | ForEach-Object {
+    $_.arity_min = "1"
+    $_.arity_max = "3"
+    $_.arg_preparation_profile = "ValuesOnlyPreAdapter"
+    $_.coercion_lift_profile = "Custom"
+    $_.kernel_signature_class = "Custom"
+    $_.determinism_class = "Deterministic"
+    $_.volatility_class = "NonVolatile"
+    $_.host_interaction_class = "None"
+    $_.thread_safety_class = "SafePure"
+    $_.fec_dependency_profile = "LocaleProfile"
+    $_.surface_fec_dependency_profile = "LocaleProfile"
+    $_.metadata_status = "function_meta_curated"
+}
+
+$functionRows | Where-Object { $_.surface_stable_id -eq "FUNC.TRANSLATE" } | ForEach-Object {
+    $_.arity_min = "1"
+    $_.arity_max = "3"
+    $_.arg_preparation_profile = "ValuesOnlyPreAdapter"
+    $_.coercion_lift_profile = "Custom"
+    $_.kernel_signature_class = "Custom"
+    $_.determinism_class = "Deterministic"
+    $_.volatility_class = "NonVolatile"
+    $_.host_interaction_class = "ExternalProvider"
+    $_.thread_safety_class = "HostSerialized"
+    $_.fec_dependency_profile = "ExternalProvider"
+    $_.surface_fec_dependency_profile = "ExternalProvider"
+    $_.metadata_status = "function_meta_curated"
+}
+
 $operatorIds = Import-Csv "tools/xll-addin/oxfunc_xll/export_specs.csv" |
     Where-Object { $_.function_id -like "FUNC.OP_*" } |
     Select-Object -ExpandProperty function_id -Unique |
@@ -293,7 +468,7 @@ $operatorRows = foreach ($operatorId in $operatorIds) {
     $meta = if ($metaById.ContainsKey($operatorId)) { $metaById[$operatorId] } else { $defaultMeta }
     [pscustomobject]([ordered]@{
         snapshot_id = "oxfunc-libctx-v1"
-        snapshot_generation = "2026-03-20"
+        snapshot_generation = $snapshotGeneration
         source_commit_short = $sourceCommitShort
         source_commit_full = $sourceCommitFull
         source_tree_state = $sourceTreeState
@@ -332,7 +507,7 @@ $operatorRows = foreach ($operatorId in $operatorIds) {
 
 $implicitIntersectionRow = [pscustomobject]([ordered]@{
     snapshot_id = "oxfunc-libctx-v1"
-    snapshot_generation = "2026-03-20"
+    snapshot_generation = $snapshotGeneration
     source_commit_short = $sourceCommitShort
     source_commit_full = $sourceCommitFull
     source_tree_state = $sourceTreeState

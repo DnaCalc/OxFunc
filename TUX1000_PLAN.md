@@ -119,6 +119,9 @@ Mandatory outputs across W1-W7:
 4. machine-readable correlation/evidence links where applicable.
 5. explicit unknowns register (never implicit drift).
 
+## 8. Later Successor Packets
+1. `W046` now owns the `CALL` / `REGISTER.ID` worksheet UDF-registration seam as a distinct successor packet rather than leaving it buried in `W023`.
+
 ## 8. Foundation Handoff Expectations
 For each completed workset, prepare a Foundation-consumable handoff bundle:
 1. claimed scope and profile bounds,

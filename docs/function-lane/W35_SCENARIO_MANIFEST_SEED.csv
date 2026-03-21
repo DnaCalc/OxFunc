@@ -1,0 +1,4 @@
+"scenario_id","function_id","formula","expected_text","expected_value2","notes"
+"w35_numbervalue_omitted_defaults_error","FUNC.NUMBERVALUE","=NUMBERVALUE(""1,234.5%"")","#VALUE!","-2146826273","Omitted defaults follow current host locale/profile and reject the seeded English-style sample"
+"w35_numbervalue_explicit_separators_ok","FUNC.NUMBERVALUE","=NUMBERVALUE(""1,234.5%"",""."","","")","12.345","12.345","Explicit separators bypass locale-default ambiguity"
+

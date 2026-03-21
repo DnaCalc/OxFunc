@@ -5,6 +5,9 @@ This folder is the mutable working set for the OxFunc scope (`F3E` value types +
 Current packet highlights:
 1. `W39` now carries the dynamic-array shaping and reshaping family as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`, `W39_SCENARIO_MANIFEST_SEED.csv`, and `W39_EXECUTION_RECORD.md`.
 2. `W40` now carries the reference metadata and formula visibility packet as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md`, `W40_SCENARIO_MANIFEST_SEED.csv`, and `W40_EXECUTION_RECORD.md`.
+3. `W23` now has a real database-family packet slice plus host/provider classification evidence through `FUNCTION_SLICE_DATABASE_FAMILY_CONTRACT_PRELIM.md`, `W23_DATABASE_SCENARIO_MANIFEST_SEED.csv`, and `W23_EXECUTION_RECORD.md`.
+4. `W41` now has a real local `ENCODEURL` / `FILTERXML` slice through `FUNCTION_SLICE_WEB_TEXT_XML_LOCAL_FUNCTIONS_CONTRACT_PRELIM.md`, `W41_WEB_TEXT_XML_SCENARIO_MANIFEST_SEED.csv`, and `W41_EXECUTION_RECORD.md`.
+5. `W046` now owns the worksheet `CALL` / `REGISTER.ID` UDF-registration seam as a distinct future packet.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`
@@ -287,6 +290,15 @@ Primary files:
 278. `W45_WAVEC_OPERATOR_REFERENCE_SCENARIO_MANIFEST_SEED.csv`
 279. `W45_WAVEC_RUNTIME_REQUIREMENTS.md`
 280. `W45_SCOPE_RECONCILIATION.csv`
+281. `FUNCTION_SLICE_WIDTH_CONVERSION_HOST_PROFILE_CONTRACT_PRELIM.md`
+282. `FUNCTION_SLICE_NUMBERVALUE_LOCALE_DEFAULT_CONTRACT_PRELIM.md`
+283. `FUNCTION_SLICE_TRANSLATE_PROVIDER_LANGUAGE_CONTRACT_PRELIM.md`
+284. `W34_SCENARIO_MANIFEST_SEED.csv`
+285. `W35_SCENARIO_MANIFEST_SEED.csv`
+286. `W36_SCENARIO_MANIFEST_SEED.csv`
+287. `W34_EXECUTION_RECORD.md`
+288. `W35_EXECUTION_RECORD.md`
+289. `W36_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`
