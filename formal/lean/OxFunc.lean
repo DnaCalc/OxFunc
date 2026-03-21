@@ -156,6 +156,7 @@ import OxFunc.Functions.RankAvgFn
 import OxFunc.Functions.RankCompatFn
 import OxFunc.Functions.RankEqFn
 import OxFunc.Functions.RegressionForecastFamily
+import OxFunc.Functions.ReferenceMetadataFamily
 import OxFunc.Functions.RsqFn
 import OxFunc.Functions.Round
 import OxFunc.Functions.RoundDownFn

@@ -165,6 +165,7 @@ pub mod rank_avg_fn;
 pub mod rank_common;
 pub mod rank_eq_fn;
 pub mod rank_fn;
+pub mod reference_metadata_family;
 pub mod regression_forecast_family;
 pub mod roman_fn;
 pub mod round_fn;

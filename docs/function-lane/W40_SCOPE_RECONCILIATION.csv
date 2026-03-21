@@ -1,0 +1,6 @@
+function_id,status,owner_packet,notes
+FUNC.ADDRESS,done,W40,Admitted current-baseline slice closed.
+FUNC.AREAS,done,W40,Admitted current-baseline slice closed.
+FUNC.FORMULATEXT,done,W40,Admitted current-baseline slice closed through typed host callback surface.
+FUNC.SHEET,done,W40,Admitted current-baseline slice closed through typed host callback surface.
+FUNC.SHEETS,done,W40,Admitted current-baseline slice closed through typed host callback surface.

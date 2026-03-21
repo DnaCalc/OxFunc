@@ -4,6 +4,7 @@ This folder is the mutable working set for the OxFunc scope (`F3E` value types +
 
 Current packet highlights:
 1. `W39` now carries the dynamic-array shaping and reshaping family as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`, `W39_SCENARIO_MANIFEST_SEED.csv`, and `W39_EXECUTION_RECORD.md`.
+2. `W40` now carries the reference metadata and formula visibility packet as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md`, `W40_SCENARIO_MANIFEST_SEED.csv`, and `W40_EXECUTION_RECORD.md`.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`

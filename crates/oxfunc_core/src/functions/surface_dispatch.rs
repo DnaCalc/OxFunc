@@ -322,6 +322,11 @@ use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_erro
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
+use crate::functions::reference_metadata_family::{
+    ADDRESS_META, AREAS_META, FORMULATEXT_META, SHEET_META, SHEETS_META, eval_address_surface,
+    eval_areas_surface, eval_formulatext_surface, eval_sheet_surface, eval_sheets_surface,
+    map_reference_metadata_error_to_ws,
+};
 use crate::functions::regression_forecast_family::{
     eval_forecast_linear_surface, eval_forecast_surface, eval_growth_surface, eval_linest_surface,
     eval_logest_surface, eval_trend_surface, map_regression_forecast_error_to_ws,
@@ -441,8 +446,10 @@ pub const FUNC_ID_ATAN2: &str = "FUNC.ATAN2";
 pub const FUNC_ID_ATANH: &str = "FUNC.ATANH";
 pub const FUNC_ID_AND: &str = "FUNC.AND";
 pub const FUNC_ID_ARABIC: &str = "FUNC.ARABIC";
+pub const FUNC_ID_ADDRESS: &str = "FUNC.ADDRESS";
 pub const FUNC_ID_ARRAYTOTEXT: &str = "FUNC.ARRAYTOTEXT";
 pub const FUNC_ID_ASC: &str = "FUNC.ASC";
+pub const FUNC_ID_AREAS: &str = "FUNC.AREAS";
 pub const FUNC_ID_AVEDEV: &str = "FUNC.AVEDEV";
 pub const FUNC_ID_AVERAGE: &str = "FUNC.AVERAGE";
 pub const FUNC_ID_AVERAGEIF: &str = "FUNC.AVERAGEIF";
@@ -593,6 +600,7 @@ pub const FUNC_ID_FIXED: &str = "FUNC.FIXED";
 pub const FUNC_ID_FLOOR: &str = "FUNC.FLOOR";
 pub const FUNC_ID_FLOOR_MATH: &str = "FUNC.FLOOR.MATH";
 pub const FUNC_ID_FLOOR_PRECISE: &str = "FUNC.FLOOR.PRECISE";
+pub const FUNC_ID_FORMULATEXT: &str = "FUNC.FORMULATEXT";
 pub const FUNC_ID_IRR: &str = "FUNC.IRR";
 pub const FUNC_ID_GAUSS: &str = "FUNC.GAUSS";
 pub const FUNC_ID_GAMMA: &str = "FUNC.GAMMA";
@@ -816,6 +824,8 @@ pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
 pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
 pub const FUNC_ID_SEQUENCE: &str = "FUNC.SEQUENCE";
 pub const FUNC_ID_SCAN: &str = "FUNC.SCAN";
+pub const FUNC_ID_SHEET: &str = "FUNC.SHEET";
+pub const FUNC_ID_SHEETS: &str = "FUNC.SHEETS";
 pub const FUNC_ID_SORT: &str = "FUNC.SORT";
 pub const FUNC_ID_SORTBY: &str = "FUNC.SORTBY";
 pub const FUNC_ID_SEC: &str = "FUNC.SEC";
@@ -1058,12 +1068,14 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_ATANH => Some(crate::functions::atanh::ATANH_META.arg_preparation_profile),
         FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
         FUNC_ID_ARABIC => Some(crate::functions::arabic_fn::ARABIC_META.arg_preparation_profile),
+        FUNC_ID_ADDRESS => Some(ADDRESS_META.arg_preparation_profile),
         FUNC_ID_ARRAYTOTEXT => Some(
             crate::functions::array_text_split_family::ARRAYTOTEXT_META.arg_preparation_profile,
         ),
         FUNC_ID_ASC => {
             Some(crate::functions::text_compat_locale_family::ASC_META.arg_preparation_profile)
         }
+        FUNC_ID_AREAS => Some(AREAS_META.arg_preparation_profile),
         FUNC_ID_AVEDEV => Some(crate::functions::avedev_fn::AVEDEV_META.arg_preparation_profile),
         FUNC_ID_AVERAGE => Some(crate::functions::average::AVERAGE_META.arg_preparation_profile),
         FUNC_ID_AVERAGEIF => {
@@ -1404,6 +1416,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_FLOOR_PRECISE => {
             Some(crate::functions::ceiling_floor_family::FLOOR_PRECISE_META.arg_preparation_profile)
         }
+        FUNC_ID_FORMULATEXT => Some(FORMULATEXT_META.arg_preparation_profile),
         FUNC_ID_GAUSS => Some(crate::functions::gauss_fn::GAUSS_META.arg_preparation_profile),
         FUNC_ID_GAMMA => {
             Some(crate::functions::special_dist_family::GAMMA_META.arg_preparation_profile)
@@ -1916,6 +1929,8 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_SCAN => Some(SCAN_META.arg_preparation_profile),
         FUNC_ID_SEC => Some(crate::functions::sec::SEC_META.arg_preparation_profile),
         FUNC_ID_SECH => Some(crate::functions::sech::SECH_META.arg_preparation_profile),
+        FUNC_ID_SHEET => Some(SHEET_META.arg_preparation_profile),
+        FUNC_ID_SHEETS => Some(SHEETS_META.arg_preparation_profile),
         FUNC_ID_SERIESSUM => {
             Some(crate::functions::sumproduct_family::SERIESSUM_META.arg_preparation_profile)
         }
@@ -2192,10 +2207,16 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_ARABIC => {
             eval_arabic_surface(args, resolver).map_err(|e| map_arabic_error_to_ws(&e))
         }
+        FUNC_ID_ADDRESS => {
+            eval_address_surface(args, resolver).map_err(|e| map_reference_metadata_error_to_ws(&e))
+        }
         FUNC_ID_ARRAYTOTEXT => eval_arraytotext_surface(args, resolver)
             .map_err(|e| map_array_text_split_error_to_ws(&e)),
         FUNC_ID_ASC => {
             eval_asc_surface(args, resolver).map_err(|e| map_text_compat_locale_error_to_ws(&e))
+        }
+        FUNC_ID_AREAS => {
+            eval_areas_surface(args).map_err(|e| map_reference_metadata_error_to_ws(&e))
         }
         FUNC_ID_AVEDEV => {
             eval_avedev_surface(args, resolver).map_err(|e| map_avedev_error_to_ws(&e))
@@ -2580,6 +2601,8 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_FLOOR_PRECISE => eval_floor_precise_surface(args, resolver)
             .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
+        FUNC_ID_FORMULATEXT => eval_formulatext_surface(args, host_info)
+            .map_err(|e| map_reference_metadata_error_to_ws(&e)),
         FUNC_ID_GAUSS => eval_gauss_surface(args, resolver).map_err(|e| map_gauss_error_to_ws(&e)),
         FUNC_ID_GAMMA => {
             eval_gamma_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
@@ -3181,6 +3204,11 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_SEC => eval_sec_surface(args, resolver).map_err(|e| map_sec_error_to_ws(&e)),
         FUNC_ID_SECH => eval_sech_surface(args, resolver).map_err(|e| map_sech_error_to_ws(&e)),
+        FUNC_ID_SHEET => eval_sheet_surface(args, resolver, host_info)
+            .map_err(|e| map_reference_metadata_error_to_ws(&e)),
+        FUNC_ID_SHEETS => {
+            eval_sheets_surface(args, host_info).map_err(|e| map_reference_metadata_error_to_ws(&e))
+        }
         FUNC_ID_SERIESSUM => {
             eval_seriessum_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
         }

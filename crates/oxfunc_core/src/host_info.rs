@@ -35,7 +35,23 @@ pub enum InfoQuery {
 pub enum HostInfoError {
     UnsupportedCellInfoQuery(CellInfoQuery),
     UnsupportedInfoQuery(InfoQuery),
+    UnsupportedFormulaTextQuery,
+    UnsupportedSheetIndexQuery,
+    UnsupportedSheetCountQuery,
     ProviderFailure { detail: String },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SheetIdentitySpec {
+    CurrentSheet,
+    Reference(ReferenceLike),
+    SheetNameText(String),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SheetCountSpec {
+    Workbook,
+    Reference(ReferenceLike),
 }
 
 pub trait HostInfoProvider {
@@ -49,6 +65,18 @@ pub trait HostInfoProvider {
 
     fn query_info(&self, query: InfoQuery) -> Result<EvalValue, HostInfoError> {
         Err(HostInfoError::UnsupportedInfoQuery(query))
+    }
+
+    fn query_formula_text(&self, _reference: &ReferenceLike) -> Result<EvalValue, HostInfoError> {
+        Err(HostInfoError::UnsupportedFormulaTextQuery)
+    }
+
+    fn query_sheet_index(&self, _spec: &SheetIdentitySpec) -> Result<EvalValue, HostInfoError> {
+        Err(HostInfoError::UnsupportedSheetIndexQuery)
+    }
+
+    fn query_sheet_count(&self, _spec: &SheetCountSpec) -> Result<EvalValue, HostInfoError> {
+        Err(HostInfoError::UnsupportedSheetCountQuery)
     }
 }
 
@@ -86,6 +114,29 @@ mod tests {
         assert_eq!(
             got,
             Err(HostInfoError::UnsupportedInfoQuery(InfoQuery::Directory))
+        );
+    }
+
+    #[test]
+    fn default_provider_rejects_formula_text_query() {
+        let provider = EmptyProvider;
+        let got = provider.query_formula_text(&ReferenceLike {
+            kind: ReferenceKind::A1,
+            target: "A1".to_string(),
+        });
+        assert_eq!(got, Err(HostInfoError::UnsupportedFormulaTextQuery));
+    }
+
+    #[test]
+    fn default_provider_rejects_sheet_queries() {
+        let provider = EmptyProvider;
+        assert_eq!(
+            provider.query_sheet_index(&SheetIdentitySpec::CurrentSheet),
+            Err(HostInfoError::UnsupportedSheetIndexQuery)
+        );
+        assert_eq!(
+            provider.query_sheet_count(&SheetCountSpec::Workbook),
+            Err(HostInfoError::UnsupportedSheetCountQuery)
         );
     }
 }

@@ -180,6 +180,15 @@ pub fn map_misc_switch_info_error_to_ws(e: &MiscSwitchInfoEvalError) -> Workshee
         MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedInfoQuery(_)) => {
             WorksheetErrorCode::Value
         }
+        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedFormulaTextQuery) => {
+            WorksheetErrorCode::Value
+        }
+        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedSheetIndexQuery) => {
+            WorksheetErrorCode::Value
+        }
+        MiscSwitchInfoEvalError::HostInfo(HostInfoError::UnsupportedSheetCountQuery) => {
+            WorksheetErrorCode::Value
+        }
         MiscSwitchInfoEvalError::InvalidOperand => WorksheetErrorCode::Value,
         MiscSwitchInfoEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }

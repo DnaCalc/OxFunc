@@ -8,10 +8,12 @@ OX_ACOSH,ox_ACOSH,QU,arg1,FUNC.ACOSH,1,u_arity_1,unary_scalar_or_array_elementwi
 OX_ACOT,ox_ACOT,QU,arg1,FUNC.ACOT,1,u_arity_1,unary_scalar_or_array_elementwise,false
 OX_ACOTH,ox_ACOTH,QU,arg1,FUNC.ACOTH,1,u_arity_1,unary_scalar_or_array_elementwise,false
 OX_ACOT_Q,ox_ACOT_Q,BB,value,FUNC.ACOT,1,q_unary_number,,false
+OX_ADDRESS,ox_ADDRESS,QUUUUU,"arg1,arg2,arg3,arg4,arg5",FUNC.ADDRESS,2,u_arity_5,scalar_only,false
 OX_AMORDEGRC,ox_AMORDEGRC,QUUUUUUU,"arg1,arg2,arg3,arg4,arg5,arg6,arg7",FUNC.AMORDEGRC,6,u_arity_7,scalar_only,false
 OX_AMORLINC,ox_AMORLINC,QUUUUUUU,"arg1,arg2,arg3,arg4,arg5,arg6,arg7",FUNC.AMORLINC,6,u_arity_7,scalar_only,false
 OX_AND,ox_AND,QUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU,,FUNC.AND,1,u_arity_254,scalar_only,false
 OX_ARABIC,ox_ARABIC,QU,arg1,FUNC.ARABIC,1,u_arity_1,scalar_only,false
+OX_AREAS,ox_AREAS,QU,arg1,FUNC.AREAS,1,u_arity_1,scalar_only,true
 OX_ARRAYTOTEXT,ox_ARRAYTOTEXT,QUU,"arg1,arg2",FUNC.ARRAYTOTEXT,1,u_arity_2,scalar_only,false
 OX_ASC,ox_ASC,QU,arg1,FUNC.ASC,1,u_arity_1,scalar_only,false
 OX_ASIN,ox_ASIN,QU,arg1,FUNC.ASIN,1,u_arity_1,unary_scalar_or_array_elementwise,false
@@ -180,6 +182,7 @@ OX_FLOOR_MATH,ox_FLOOR_MATH,QUUU,"arg1,arg2,arg3",FUNC.FLOOR.MATH,1,u_arity_3,sc
 OX_FLOOR_PRECISE,ox_FLOOR_PRECISE,QUU,"arg1,arg2",FUNC.FLOOR.PRECISE,1,u_arity_2,scalar_only,false
 OX_FORECAST,ox_FORECAST,QUUU,"arg1,arg2,arg3",FUNC.FORECAST,3,u_arity_3,scalar_only,true
 OX_FORECAST_LINEAR,ox_FORECAST_LINEAR,QUUU,"arg1,arg2,arg3",FUNC.FORECAST.LINEAR,3,u_arity_3,scalar_only,true
+OX_FORMULATEXT,ox_FORMULATEXT,QU,arg1,FUNC.FORMULATEXT,1,u_arity_1,scalar_only,true
 OX_FREQUENCY,ox_FREQUENCY,QUU,"arg1,arg2",FUNC.FREQUENCY,2,u_arity_2,scalar_only,true
 OX_FTEST,ox_FTEST,QUU,"arg1,arg2",FUNC.FTEST,2,u_arity_2,scalar_only,true
 OX_FV,ox_FV,QUUUUU,"arg1,arg2,arg3,arg4,arg5",FUNC.FV,3,u_arity_5,scalar_only,true
@@ -446,6 +449,8 @@ OX_SECOND,ox_SECOND,QU,arg1,FUNC.SECOND,1,u_arity_1,scalar_only,false
 OX_SEC_Q,ox_SEC_Q,BB,value,FUNC.SEC,1,q_unary_number,,false
 OX_SEQUENCE,ox_SEQUENCE,QUUUU,"arg1,arg2,arg3,arg4",FUNC.SEQUENCE,1,u_arity_4,scalar_only,false
 OX_SERIESSUM,ox_SERIESSUM,QUUUU,"arg1,arg2,arg3,arg4",FUNC.SERIESSUM,4,u_arity_4,scalar_only,true
+OX_SHEET,ox_SHEET,QU,arg1,FUNC.SHEET,0,u_arity_1,scalar_only,true
+OX_SHEETS,ox_SHEETS,QU,arg1,FUNC.SHEETS,0,u_arity_1,scalar_only,true
 OX_SIGN,ox_SIGN,QU,arg1,FUNC.SIGN,1,u_arity_1,unary_scalar_or_array_elementwise,false
 OX_SIGN_Q,ox_SIGN_Q,BB,value,FUNC.SIGN,1,q_unary_number,,false
 OX_SIN,ox_SIN,QU,arg1,FUNC.SIN,1,u_arity_1,unary_scalar_or_array_elementwise,false

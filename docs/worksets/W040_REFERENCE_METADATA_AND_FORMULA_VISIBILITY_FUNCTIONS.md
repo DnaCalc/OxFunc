@@ -56,12 +56,10 @@ This workset can only be reported `scope_complete` when:
 3. runtime and seam artifacts are honest for the admitted slice,
 4. no known function-semantic gap remains in declared current-baseline scope for the admitted slice.
 
-## 8. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+## 8. Current Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - no packet-specific scenario manifest yet
-   - no reference-metadata contract yet
-   - formula-storage and sheet-identity seam still unstarted
+   - none in declared `W040` scope
