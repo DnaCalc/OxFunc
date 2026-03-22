@@ -52,6 +52,9 @@ Kickoff worksets:
 44. `W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md` (W44)
 45. `W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md` (W45)
 46. `W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md` (W46)
+47. `W047_TYPED_CONTEXT_AND_QUERY_BUNDLE_FREEZE.md` (W47)
+48. `W048_RETURN_SURFACE_AND_PUBLICATION_HINT_FREEZE.md` (W48)
+49. `W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` (W49)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -82,5 +85,6 @@ Replay rollout sequence after `W016`:
 9. `W030` and `W031` are now complete as seam-definition/reconciliation packets; successor ownership moved to `W034`, `W035`, and `W036`.
 10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
+12. `W047`, `W048`, and `W049` are now the next seam-hardening successors for first application usability: typed context/query bundle freeze, return-surface/publication-hint freeze, and the runtime provider/snapshot consumer model.
 
 

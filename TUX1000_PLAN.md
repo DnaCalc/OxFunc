@@ -266,4 +266,16 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 38. `W45` non-`@` operator universe closure pass:
    - `docs/worksets/W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md`
    - goal: run one dedicated operator packet for every evaluable non-`@` operator surface across contract, runtime, Lean/formal, empirical Excel validation, replay/test evidence, and library-context export refinement, while leaving `W014` as the dedicated implicit-intersection owner.
+39. `W46` `CALL` / `REGISTER.ID` UDF registration seam:
+   - `docs/worksets/W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md`
+   - goal: separate worksheet registration/invocation semantics from generic host metadata work and align the future registration path with the library-context snapshot direction.
+40. `W47` typed context and query bundle freeze:
+   - `docs/worksets/W047_TYPED_CONTEXT_AND_QUERY_BUNDLE_FREEZE.md`
+   - goal: lock the first shared typed context/query bundle for the already-covered seam-heavy functions so OxFml can wire them without side channels.
+41. `W48` return surface and publication-hint freeze:
+   - `docs/worksets/W048_RETURN_SURFACE_AND_PUBLICATION_HINT_FREEZE.md`
+   - goal: lock the first shared return-surface split for ordinary values, presentation-aware values, and typed host/provider outcome projection.
+42. `W49` runtime library-context provider consumer model:
+   - `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
+   - goal: turn the agreed runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction into a concrete first-pass consumer/modeling artifact beyond the current CSV interchange pin.
 

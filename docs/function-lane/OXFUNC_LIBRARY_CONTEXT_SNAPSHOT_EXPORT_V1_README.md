@@ -241,3 +241,12 @@ Current authoritative source surfaces:
 4. refine gating-profile projection beyond the current packet-wide default plus version-marker split,
 5. add explicit export-reading examples if OxFml needs them,
 6. adjust the first-pass seam-facing fields if OxFml wants a different split or naming.
+
+## 9. Preferred Long-Term Runtime Direction
+Current OxFunc reading:
+1. this CSV export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting,
+2. but the preferred long-term implementation seam should be a runtime-ingested:
+   - `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+3. function registration or removal should produce explicit new snapshot generations rather than mutating downstream state invisibly,
+4. OxFml should therefore treat CSV ingestion as a current integration mechanism, not as the desired permanent runtime coupling.

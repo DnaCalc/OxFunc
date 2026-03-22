@@ -38,6 +38,15 @@ What it does not yet have is one explicit downstream artifact that honestly serv
 4. final operator-admission lock,
 5. full callable-carrier lock.
 
+## 4A. Current Long-Term Direction
+Current OxFunc reading after the latest OxFml round:
+1. the CSV export remains the right pinned interchange and debugging artifact for bounded integration rounds,
+2. but the preferred long-term implementation seam should be:
+   - runtime `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - explicit snapshot generations when registration/removal changes the library context,
+3. downstream runtime integration should not stay coupled to build-time CSV ingestion as the normative implementation path.
+
 ## 5. Candidate Inputs
 1. `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
 2. `docs/function-lane/W28_FUNCTION_NAME_LOCALIZATION_LIBRARY_SEED.csv`
@@ -61,8 +70,9 @@ This packet can only be reported `scope_complete` when:
 5. open_lanes:
    - first-pass export exists and now includes the full current `W45` non-`@` operator surface plus one doc-modeled implicit-intersection row
    - seam-heavy rows like `LET` and `LAMBDA` still rely partly on linked contract artifacts rather than fully normalized direct profile fields
-   - OxFml-facing reading guidance now exists, but no consumer example is pinned yet
+   - OxFml has now accepted the current first-pass callable-row split for one bounded round, but no runtime consumer/model example is pinned yet
    - exact per-entry semantic/gating profile dereferenceability is not yet frozen
+   - the preferred runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction is now explicit, but the concrete shared runtime shape is not yet pinned and now moves to `W049`
 
 ## 8. Current Outputs
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`

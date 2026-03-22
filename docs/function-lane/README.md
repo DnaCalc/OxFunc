@@ -8,6 +8,7 @@ Current packet highlights:
 3. `W23` now has a real database-family packet slice plus host/provider classification evidence through `FUNCTION_SLICE_DATABASE_FAMILY_CONTRACT_PRELIM.md`, `W23_DATABASE_SCENARIO_MANIFEST_SEED.csv`, and `W23_EXECUTION_RECORD.md`.
 4. `W41` now has a real local `ENCODEURL` / `FILTERXML` slice through `FUNCTION_SLICE_WEB_TEXT_XML_LOCAL_FUNCTIONS_CONTRACT_PRELIM.md`, `W41_WEB_TEXT_XML_SCENARIO_MANIFEST_SEED.csv`, and `W41_EXECUTION_RECORD.md`.
 5. `W046` now owns the worksheet `CALL` / `REGISTER.ID` UDF-registration seam as a distinct future packet.
+6. The next agreed seam-hardening packets are now `W047`, `W048`, and `W049`: typed context/query bundle freeze, return-surface/publication-hint freeze, and runtime provider/snapshot consumer modeling.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`

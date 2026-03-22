@@ -1343,3 +1343,423 @@ Current first-pass registration seam reading:
 2. OxFunc owns built-in catalog mapping and later registered-function catalog descriptors,
 3. worksheet `CALL` / `REGISTER.ID` still remain open as runtime work, but the catalog/seam ownership is now explicit enough for the next round.
 
+## 22. What Would Make The Current Covered Function Scope Completely Usable
+
+### 22.1 Working Definition
+Current OxFunc reading:
+1. "completely usable" does not mean "all of Excel".
+2. It means OxFml can drive the full already-covered OxFunc function/operator scope end-to-end without inventing new side channels or missing runtime/context interfaces.
+3. It explicitly excludes the still-open packets:
+   - `W014` implicit intersection / `@`,
+   - `W038` callable/helper completion,
+   - `W041` external/cube/service family,
+   - `W046` worksheet `CALL` / `REGISTER.ID` runtime,
+   - open `W023` residuals such as `IMAGE`,
+   - and any later registered-external/UDF invocation runtime.
+
+### 22.2 Current Covered Scope That Should Become Fully Usable
+The target covered scope now includes:
+1. ordinary completed function packets,
+2. `W034` / `W035` / `W036` locale/profile/provider seams,
+3. `W040` reference-metadata host-query seams,
+4. `W043` `RTD` prepared request plus typed host outcome seam,
+5. `W045` non-`@` operator surface,
+6. the current publication-aware lanes for `NOW`, `TODAY`, and `HYPERLINK`,
+7. current built-in catalog and matched `XLCALL.H` built-in identities.
+
+### 22.3 Minimum OxFml Interface Bundle Needed
+OxFunc currently reads the minimum usable OxFml-side bundle as:
+1. snapshot consumption from `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`,
+2. stable-id dispatch on `surface_stable_id`,
+3. prepared-argument routing driven by:
+   - `arg_preparation_profile`,
+   - `admission_interface_kind`,
+   - `runtime_boundary_kind`,
+4. a normal reference/value adapter surface for ordinary rows,
+5. a small set of typed runtime/context inputs for the completed seam-heavy rows.
+
+### 22.4 Typed Runtime/Context Inputs OxFml Needs For Current Covered Scope
+For the currently covered scope, OxFunc now believes OxFml needs to provide only these runtime/context surfaces:
+1. `ReferenceResolver`
+   - ordinary reference dereference and refs-visible adapter behavior
+2. `now_serial`
+   - for time/date host-time surfaces already modeled
+3. `random_value`
+   - for current random-provider surfaces already modeled
+4. `LocaleFormatContext`
+   - for locale-default parse/format lanes such as `NUMBERVALUE`
+5. `HostInfoProvider`
+   - with the currently required typed queries:
+     - `query_cell_info(...)`
+     - `query_info(...)`
+     - `query_formula_text(reference)`
+     - `query_sheet_index(CurrentSheet | Reference | SheetNameText)`
+     - `query_sheet_count(Workbook | Reference)`
+     - `query_aggregate_reference_context(reference)`
+     - `query_width_conversion_mode(function)`
+     - `query_translate(request)`
+6. `RtdProvider`
+   - for the current prepared `RTD` request projection:
+     - `RtdRequest { prog_id, server_name, topic_strings }`
+     - `RtdProviderResult::{ Value, NoValueYet, CapabilityDenied, ConnectionFailed, ProviderError }`
+
+### 22.5 Returned Value Surface Needed
+For the currently covered scope, OxFml should be able to consume:
+1. ordinary `EvalValue`,
+2. `ExtendedValue::ValueWithPresentation { value, hint }`
+   - currently needed for:
+     - `NOW`
+     - `TODAY`
+     - `HYPERLINK`
+3. current worksheet error projections from typed host/provider outcomes.
+
+Current OxFunc reading:
+1. rich-value publication is not required to make the already-covered scope usable,
+2. because `IMAGE` and broader rich-value-dependent surfaces remain outside the covered set for now.
+
+### 22.6 Catalog/Registration Usability Needed
+For the covered built-in scope, OxFunc now believes OxFml should preserve:
+1. `surface_stable_id` as the primary identity,
+2. `registration_source_kind`,
+3. `xlcall_builtin_symbol`,
+4. `xlcall_builtin_code`,
+5. `source_commit_short`,
+6. `source_commit_full`,
+7. `source_tree_state`.
+
+Current intent:
+1. OxFunc remains steward of the function registration catalog,
+2. OxFml/host may still need legacy `xlf*` identities for raw Excel C API routing,
+3. but stable OxFunc ids remain the primary seam identity.
+
+### 22.7 What Is Still Missing Before We Should Call It Completely Usable
+Current OxFunc reading is that the remaining gap is now mostly interface hardening, not more local function semantics.
+
+To call the current covered scope completely usable, we still want:
+1. one explicit OxFml consumer pass against the current `W044` export,
+2. one bounded shared contract for the typed context bundle in Section 22.4,
+3. one bounded shared contract for the returned publication-aware value surface in Section 22.5,
+4. one bounded confirmation that built-in `xlf*` metadata is sufficient for OxFml/host catalog routing on the built-in scope,
+5. one clean snapshot run used as the first pinned downstream consumer example.
+
+### 22.8 Recommended Next Spec-Tightening Rounds
+Current OxFunc recommendation for the next rounds:
+1. Round A: lock the consumable snapshot field subset OxFml actually needs for the already-covered scope.
+2. Round B: lock the typed context/query bundle for:
+   - `CELL` / `INFO`,
+   - `ISFORMULA`,
+   - `FORMULATEXT`,
+   - `SHEET` / `SHEETS`,
+   - `SUBTOTAL` / `AGGREGATE`,
+   - `ASC` / `DBCS` / `JIS`,
+   - `NUMBERVALUE`,
+   - `TRANSLATE`,
+   - `RTD`.
+3. Round C: lock the return-surface split between:
+   - ordinary value,
+   - value plus presentation hint,
+   - typed host/provider outcome projection.
+4. Round D: pin one clean OxFml consumer example against the snapshot and report the first concrete mismatches rather than continuing broad seam theory.
+
+### 22.9 Current OxFunc Claim
+Current OxFunc claim is:
+1. the remaining work to make the already-covered scope completely usable is now mostly OxFml-consumption and seam-lock work,
+2. not a large new OxFunc-local function implementation gap,
+3. except for any concrete mismatch OxFml finds while consuming the current snapshot and typed context bundle.
+
+## 23. Processed Latest OxFml Note And Proposed First Freezable Application Seam
+
+### 23.1 What OxFunc Incorporated
+OxFunc has processed the latest `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` and incorporated the following as the current working direction:
+1. the next rounds should stay artifact-driven and should not reopen broad callable theory,
+2. the current `W044` export should be treated as a bounded consumption artifact now,
+3. the preferred long-term implementation seam should be:
+   - runtime `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - explicit snapshot generations when registration/removal changes the library context,
+4. workbook Defined Name callable preservation is now strong first-pass seam pressure and should not be treated as a late extension,
+5. typed invocation over opaque callable identity is now strong enough to treat invocation viability as settled for the currently exercised helper floor,
+6. first-pass `ISOMITTED` semantics are now pinned tightly enough that `ISOMITTED` does not need to remain a seam-lock driver for the first application freeze,
+7. `RTD` remains a prepared request plus typed host/provider outcome seam rather than a reason to widen the general provider model prematurely.
+
+### 23.2 Current OxFunc Reading Of Which `W044` Fields OxFml Can Rely On Now
+For the current first application work, OxFunc expects OxFml can rely on these `W044` fields now for callable-relevant rows:
+1. `surface_stable_id`
+2. `entry_kind`
+3. `registration_source_kind`
+4. `canonical_surface_name`
+5. `arg_preparation_profile` when populated
+6. `metadata_status`
+7. `special_interface_kind`
+8. `admission_interface_kind`
+9. `preparation_owner`
+10. `runtime_boundary_kind`
+11. `arity_shape_note`
+12. `interface_contract_ref`
+13. snapshot provenance:
+   - `snapshot_id`
+   - `snapshot_generation`
+   - `source_commit_short`
+   - `source_commit_full`
+   - `source_tree_state`
+
+Current reading:
+1. `interface_contract_ref` is useful and should be used for seam-heavy rows now,
+2. `admission_interface_kind` / `preparation_owner` / `runtime_boundary_kind` are useful first-pass planning fields now,
+3. those names are still not proposed as locked shared canonical vocabulary.
+
+### 23.3 Current Callable-Minimum Direction
+Current OxFunc proposal for the smallest honest shared callable minimum is still semantic rather than name-driven.
+
+Semantically required minimum fields:
+1. opaque callable identity,
+2. origin kind,
+3. capture mode,
+4. arity shape,
+5. invocation-contract meaning.
+
+Current OxFunc reading:
+1. these are the fields OxFml should expect to remain recoverable as typed semantic facts,
+2. parameter names, capture names, and body-detail can remain provenance/replay-only by default,
+3. OxFunc still does not currently see strong enough evidence that an additional explicit invocation-model field is required beyond the current invocation-contract-meaning idea,
+4. if later runtime artifacts prove that wrong, `W042` is the correct owner for reopening it.
+
+### 23.4 Current Freezable Seam Direction For First Application Work
+Current OxFunc recommendation for a first freezable application seam is:
+1. use the current `W044` export as the pinned interchange and debugging artifact,
+2. but treat the normative long-term implementation direction as:
+   - runtime `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - generation-producing registration/removal
+3. use `surface_stable_id` as primary function identity,
+4. treat `xlf*` identity fields as interoperability metadata only,
+5. use the typed context/query bundle from Section 22.4 as the current host/OxFml callback floor for the already-covered scope,
+6. use the current returned-value split from Section 22.5:
+   - ordinary value
+   - `ValueWithPresentation`
+   - typed host/provider outcome projection
+7. keep richer callable provenance and final transport names out of the freeze for now.
+
+### 23.5 Local Packet Updates Adopted
+OxFunc has updated local packet doctrine accordingly:
+1. `W044` now records the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction explicitly,
+2. `W046` now records that future registration/removal should produce explicit new snapshot generations,
+3. `W042` now records the current callable-minimum convergence floor and no longer treats first-pass `ISOMITTED` semantics as a seam-lock driver.
+
+### 23.5A Current `ISOMITTED` Reading
+Current OxFunc reading after reprocessing the local `W38` evidence and runtime is:
+1. `ISOMITTED` is now narrow rather than mysterious,
+2. the important distinction is between:
+   - explicit omitted placeholder preservation, for example `LAMBDA(a,b,ISOMITTED(b))(1,)`, and
+   - ordinary arity under-application, for example `LAMBDA(a,ISOMITTED(a))()`,
+3. the first lane should be preserved and visible to `ISOMITTED`,
+4. the second lane should still fail as arity mismatch rather than manufacturing an omission channel,
+5. that distinction is now aligned across local runtime, native evidence, and seam doctrine closely enough that `ISOMITTED` no longer needs to stay open as a first-freeze blocker.
+
+### 23.6 Remaining Clarifications OxFunc Would Still Like
+The current note exchange is convergent enough to proceed, but OxFunc would still like clarification on a few narrow points before treating the first application seam as frozen:
+1. whether OxFml wants the callable-minimum facts represented only through the current contract docs for now, or whether it already wants direct first-pass snapshot fields for:
+   - callable origin kind
+   - callable capture mode
+   - callable arity shape
+   - callable invocation-contract meaning
+2. whether OxFml wants the first application work to begin from:
+   - committed snapshot-export ingestion,
+   - or an immediately modeled runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` interface with the CSV only as a pinning artifact,
+3. whether the current first-pass `W044` split:
+   - `admission_interface_kind`
+   - `preparation_owner`
+   - `runtime_boundary_kind`
+   - `interface_contract_ref`
+   is already sufficient for OxFml semantic planning on the callable rows, or whether OxFml already sees a concrete insufficiency there.
+
+### 23.7 Current OxFunc Response Reading
+Current OxFunc response for the next round is:
+1. we agree the exchange is close enough to work toward a first freezable seam for covered application work,
+2. we agree the long-term direction should be runtime provider/snapshot rather than permanent build-time CSV coupling,
+3. we agree the current callable question is now minimum semantic carrier versus provenance detail, not invocation viability,
+4. we do not currently see a need to force an extra invocation-model field,
+5. we want the next round to use concrete `W044` consumption or runtime-shape mismatches as triggers, not reopen broad note-only debate.
+
+## 24. Next Round Outbound Position
+
+### 24.1 Direct Answers To The Current OxFml Questions
+Current OxFunc answers for the next sync are:
+1. yes, OxFml can rely on the current `W044` first-pass fields for callable rows:
+   - `surface_stable_id`
+   - `entry_kind`
+   - `registration_source_kind`
+   - `canonical_surface_name`
+   - `arg_preparation_profile` when populated
+   - `metadata_status`
+   - `special_interface_kind`
+   - `admission_interface_kind`
+   - `preparation_owner`
+   - `runtime_boundary_kind`
+   - `arity_shape_note`
+   - `interface_contract_ref`
+   - snapshot provenance fields
+2. no, OxFunc does not currently think an additional explicit invocation-model field is required beyond the current invocation-contract-meaning idea,
+3. yes, OxFunc supports the preferred long-term normative direction of:
+   - runtime `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - registration/removal producing explicit new snapshot generations,
+4. no, first-pass `ISOMITTED` should no longer be treated as a seam-lock blocker for the initial application freeze.
+
+### 24.2 Recommended First-Freeze Working Rule
+Current OxFunc recommendation is:
+1. begin first application work from the committed snapshot/export surface because that is the already-pinned shared artifact,
+2. in parallel, model the normative runtime seam as `LibraryContextProvider` / immutable `LibraryContextSnapshot`,
+3. do not wait for the final runtime provider shape to be fully coded before consuming the committed snapshot in OxFml tests and semantic-plan fixtures,
+4. treat any mismatch found during that consumption as the trigger for the next narrower seam change.
+
+Current reading:
+1. the CSV is the right immediate pinning surface,
+2. the runtime provider/snapshot model is the right long-term implementation target,
+3. these are compatible rather than competing paths.
+
+### 24.3 Callable-Minimum Versus Provenance
+Current OxFunc view remains:
+1. semantically required shared callable minimum:
+   - opaque callable identity
+   - origin kind
+   - capture mode
+   - arity shape
+   - invocation-contract meaning
+2. provenance/replay-only by default:
+   - parameter names
+   - capture names
+   - body detail
+   - richer origin-specific transport detail
+3. candidate names such as `callable_token`, `arity_shape`, and `invocation_contract_ref` should still be read as candidate labels rather than a demand for OxFml-local canonical names.
+
+### 24.4 Current `ISOMITTED` Closure Reading
+Current OxFunc reading is now:
+1. `ISOMITTED` is narrow enough to stop treating it as a seam driver,
+2. the key pinned distinction is:
+   - explicit omitted placeholder is preserved and visible to `ISOMITTED`,
+   - ordinary under-application remains an arity failure and does not manufacture an omission channel,
+3. the native seeded lane `LAMBDA(a,b,ISOMITTED(b))(1,) -> TRUE` is now part of local replay evidence,
+4. this should be treated as first-pass callable semantics already pinned, not as a reason to widen the minimum callable carrier.
+
+### 24.5 Preferred Next Narrowing Trigger
+OxFunc would like the next round to be driven by one of these concrete triggers only:
+1. OxFml finds a concrete insufficiency in the current `W044` callable-row field split,
+2. OxFml needs direct snapshot columns for callable-minimum semantic facts rather than following `interface_contract_ref`,
+3. the first runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model exposes a mismatch with the current CSV reading,
+4. built-in `xlf*` metadata proves insufficient for host/OxFml routing on the built-in scope,
+5. a proving-host/runtime artifact demonstrates that an extra invocation-model field is actually required.
+
+### 24.6 Current OxFunc Request Back To OxFml
+For the next reply, OxFunc would like OxFml to say:
+1. whether the current `W044` callable-row split is already sufficient for semantic planning,
+2. whether OxFml wants the callable-minimum semantic facts promoted into direct snapshot columns now or is content to keep them in contract docs for one more round,
+3. whether OxFml agrees with the recommended first-freeze working rule:
+   - consume the committed snapshot now,
+   - model runtime provider/snapshot in parallel,
+   - use concrete mismatches as the only trigger for further seam narrowing.
+
+## 25. Processed Latest OxFml Note
+
+### 25.1 What OxFunc Incorporated
+OxFunc has now incorporated the latest OxFml note as answering the key open questions from Section 24:
+1. OxFml accepts the current `W044` callable-row split as sufficient for first-pass semantic planning,
+2. OxFml does not need callable-minimum semantic facts promoted into direct snapshot columns in this round,
+3. OxFml agrees with the recommended first-freeze working rule:
+   - consume the committed snapshot now,
+   - model runtime provider/snapshot in parallel,
+   - use concrete mismatches as the trigger for further seam narrowing,
+4. OxFml accepts built-in `xlf*` metadata as sufficient first-pass compatibility metadata for built-in routing as long as `surface_stable_id` remains primary,
+5. OxFml agrees that `ISOMITTED` is no longer a first-freeze blocker.
+
+### 25.2 Local Integration Result
+Current local integration result is:
+1. `W044` should now be read as good enough for the first bounded consumer round rather than as waiting on another callable-row field split debate,
+2. `W042` remains the deferred owner for later callable field-lock only if a new concrete trigger appears,
+3. the next agreed seam-hardening owners are now:
+   - `W047` typed context and query bundle freeze,
+   - `W048` return surface and publication-hint freeze,
+   - `W049` runtime library-context provider consumer model,
+4. `W046` continues to own registered-external catalog and registration-update direction, but not as a blocker for the first covered built-in application freeze.
+
+### 25.3 Current OxFunc Response Direction
+Current OxFunc reading for the next response is:
+1. the seam is converged enough to stop spending the next round on callable-row sufficiency questions,
+2. the next useful work is now the three agreed successor packets:
+   - typed context/query bundle,
+   - return-surface split,
+   - runtime provider/snapshot consumer model,
+3. callable minimum stays semantically narrowed but not field-name frozen,
+4. the next note round should therefore focus on any concrete changes or proposed shapes coming out of `W047` / `W048` / `W049`, not revisit the already-accepted first-freeze working rule.
+
+### 25.4 Remaining Clarifications OxFunc Still Wants
+The remaining clarifications are now narrower than before:
+1. for the typed context/query bundle:
+   - whether OxFml wants exactly the current OxFunc query names and result-type partitioning,
+   - or wants a merged/split host capability surface before the first shared freeze,
+2. for the return surface:
+   - whether OxFml wants to preserve the current explicit split between ordinary value, `ValueWithPresentation`, and typed host/provider projection,
+   - or wants a different returned-surface factoring before the first shared freeze,
+3. for the runtime provider/snapshot model:
+   - whether OxFml wants one minimal runtime shape that mirrors the CSV closely,
+   - or a cleaner runtime-only shape plus a separate CSV mapping layer.
+
+### 25.5 Current Outbound Ask For The Next Round
+Current OxFunc ask for the next bounded round is:
+1. review and tighten the first shared typed context/query bundle (`W047`),
+2. review and tighten the first shared return-surface split (`W048`),
+3. review and tighten the first runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` consumer/model shape (`W049`),
+4. use only concrete artifact mismatches from those packets as triggers for any further callable or catalog-field narrowing.
+
+## 26. Final Processed OxFml Update And Final OxFunc Response
+
+### 26.1 What OxFunc Incorporates From The Final OxFml Update
+OxFunc reads the final OxFml update in this exchange as confirming the successor-packet seam plan rather than reopening any earlier callable or catalog sufficiency questions.
+
+OxFunc now incorporates the following as agreed for the first application freeze:
+1. the typed context/query bundle should stay capability-scoped and typed,
+2. the current OxFunc query names and result-type partitioning are acceptable as the first freeze candidate,
+3. the current returned-value split is acceptable as the first freeze candidate:
+   - ordinary value
+   - `ValueWithPresentation`
+   - typed host/provider outcome projection
+4. the preferred runtime library-context direction is:
+   - runtime `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - explicit generation changes when registration/removal changes the library context
+5. the runtime object model should prefer a cleaner runtime-only shape plus an explicit CSV/export mapping layer,
+6. the current `W044` export remains the pinned interchange/debug artifact for the bounded first application round,
+7. no further note-only callable sufficiency debate is needed for the already-covered scope.
+
+### 26.2 Local Integration Result
+OxFunc has now integrated that reading locally as:
+1. `W047` owns the first shared typed context/query bundle freeze and now treats the current query/result names as the first freeze candidate,
+2. `W048` owns the first shared returned-surface freeze and now treats the current three-way return split as the first freeze candidate,
+3. `W049` owns the first runtime provider/snapshot consumer model and now treats a runtime-only shape plus CSV mapping layer as the first freeze candidate,
+4. `W044` remains the current pinned artifact for bounded consumption and mismatch reporting,
+5. `W042` remains deferred and should only reopen if later concrete evidence forces narrower callable-carrier changes,
+6. no additional OxFunc-local planning packet is needed before first application work begins on the already-covered scope.
+
+### 26.3 Final OxFunc Response For This Exchange
+OxFunc's final response in this exchange is:
+1. yes, OxFunc agrees the next useful work is `W047` / `W048` / `W049` rather than more broad seam discussion,
+2. yes, OxFunc agrees the current typed context/query names and result partitions should be treated as the first shared freeze candidate,
+3. yes, OxFunc agrees the current returned-surface split should be treated as the first shared freeze candidate,
+4. yes, OxFunc agrees the runtime library-context model should prefer a cleaner runtime-only shape plus explicit CSV/export mapping,
+5. yes, OxFunc agrees the committed `W044` snapshot should remain the immediate shared artifact while the runtime model is developed in parallel,
+6. no additional clarification is currently required before treating the first application seam as provisionally freezable for the already-covered scope.
+
+### 26.4 Narrow Remaining Clarifications
+The only remaining clarifications OxFunc still expects to matter are now implementation-facing rather than note-facing:
+1. a concrete OxFml consumer mismatch against the current typed context/query bundle,
+2. a concrete mismatch in how `ValueWithPresentation` or typed host/provider projections need to be consumed,
+3. a concrete mismatch between the preferred runtime-only snapshot model and the current CSV/export artifact,
+4. a later callable or provider artifact that proves one of the currently deferred seams must be narrowed after all.
+
+### 26.5 Working Rule After This Exchange
+After this final exchange, OxFunc's working rule is:
+1. stop using note rounds to revisit already-converged callable sufficiency questions,
+2. treat the first application seam as provisionally freezable for the already-covered scope,
+3. drive any further seam change only from concrete artifacts, consumer mismatches, or implementation pressure coming out of `W047`, `W048`, or `W049`,
+4. keep all other unresolved topics in their current deferred worksets unless and until those concrete triggers appear.
+

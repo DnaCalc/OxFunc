@@ -40,7 +40,8 @@ Members:
 2. define the minimal OxFml ↔ host ↔ OxFunc seam for worksheet `CALL` / `REGISTER.ID`,
 3. ingest the local `XLCALL.H` built-in function identities into the OxFunc catalog surfaces,
 4. decide what is intentionally out of current supported scope,
-5. avoid treating these functions as ordinary host-query leftovers.
+5. avoid treating these functions as ordinary host-query leftovers,
+6. align the future registration path with the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction.
 
 ## 6. Out Of Scope
 1. full DLL/code-resource invocation support,
@@ -57,3 +58,4 @@ Members:
    - no empirical worksheet replay packet yet for `CALL` / `REGISTER.ID`
    - no host-backed invocation/runtime implementation yet
    - current repo floor is XLL self-registration plus `XLCALL.H` identity ingest, not worksheet closure
+   - registered-external descriptor shape and snapshot-generation behavior are not yet pinned

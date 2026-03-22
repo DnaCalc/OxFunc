@@ -38,7 +38,8 @@ Current best-attempt registration direction:
    - declared arity/signature information,
    - volatility / thread / reference-argument posture,
    - origin kind,
-4. later worksheet `CALL`-style invocation routes through that registered descriptor.
+4. registration or removal should produce an explicit new immutable library-context snapshot generation rather than mutating downstream catalog truth invisibly,
+5. later worksheet `CALL`-style invocation routes through that registered descriptor.
 
 Current constraint:
 1. OxFunc should not own DLL loading, code-resource lookup, or external call execution itself.
@@ -77,4 +78,5 @@ What is real now:
 What remains open:
 1. empirical worksheet baseline for `CALL` / `REGISTER.ID`,
 2. final registered-external descriptor shape,
-3. full host registration and invocation path.
+3. full host registration and invocation path,
+4. exact runtime `LibraryContextProvider` / `LibraryContextSnapshot` registration-update shape.

@@ -82,6 +82,7 @@ That was useful but insufficient because it did not by itself pin:
 7. full commit identity for stronger downstream fixture pinning.
 8. current local tree cleanliness for honest downstream fixture pinning.
 9. built-in `XLCALL.H` identity interop for host C API routing.
+10. the distinction between a pinned interchange export and the preferred long-term runtime snapshot/provider seam.
 
 ## 6. Current Honest Limits
 1. operator coverage now includes the full current `W45` non-`@` operator surface plus one doc-modeled implicit-intersection row, but this is still not a claim about every future operator the architecture may eventually expose
@@ -93,6 +94,7 @@ That was useful but insufficient because it did not by itself pin:
 7. the new seam-facing guidance fields are still first-pass OxFunc vocabulary rather than locked shared names
 8. final cross-repo field names and ABI remain open
 9. `xlcall_builtin_*` currently covers matched built-in `xlf*` rows only, not commands, auxiliary callbacks, or future registered-external rows
+10. the export is still an interchange/debug artifact; the preferred long-term implementation seam is a runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model with explicit generation changes on registration/removal
 
 ## 7. Verification
 1. generated from `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
@@ -141,6 +143,7 @@ That was useful but insufficient because it did not by itself pin:
 4. open_lanes:
    - the export is materially better after `W45`, but it is still a first-pass stabilization artifact rather than a locked final ABI
    - seam-heavy rows like `LET` and `LAMBDA` still need more normalized direct profile fields
-   - the export is now more honest about local source state, but OxFml still has no pinned clean-release consumer example
+   - OxFml now accepts the current callable-row split for one bounded round, but no pinned runtime consumer/model example exists yet
    - per-entry semantic/gating profile dereferenceability is still coarse
    - no formal consumer example for OxFml exists yet
+   - the concrete shared runtime shape for `LibraryContextProvider` / immutable `LibraryContextSnapshot` is not yet pinned and is now successor-owned by `W049`

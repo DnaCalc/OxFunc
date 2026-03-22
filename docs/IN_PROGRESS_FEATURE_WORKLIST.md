@@ -57,9 +57,9 @@ Last updated: 2026-03-21.
 
 - **Status**: in-progress
 - **Current floor**: interface constraints documented in `docs/upstream/NOTES_FOR_OXFML.md`; provisional sketches for provenance carriers and boundary contracts.
-- **Remaining gaps**: finalized upstream provenance vocabulary; reference-identity carrier; prepared-call contract; evaluation-mode contract.
-- **Why still open**: upstream interface is actively evolving; OxFunc observations inform but do not control OxFml design. The latest callable/library-context note round is now intentionally closed with the remaining callable field-lock questions deferred to `W042` until stronger evidence appears.
-- **Canonical owner**: cross-repo; tracked via upstream observation ledger, with deferred OxFunc callable follow-up in `W042`.
+- **Remaining gaps**: first shared typed context/query bundle, first shared return-surface split, runtime provider/snapshot consumer model, finalized upstream provenance vocabulary, reference-identity carrier, prepared-call contract, evaluation-mode contract.
+- **Why still open**: the latest OxFml note now accepts the first-freeze working rule and the current `W044` callable-row split for one round, but the next seam locks still need explicit packet owners and shared artifacts. Callable field-lock follow-up remains deferred to `W042`; the next agreed seam-hardening owners are `W047`, `W048`, and `W049`.
+- **Canonical owner**: cross-repo; tracked via upstream observation ledger, with OxFunc-local seam hardening in `W042`, `W047`, `W048`, and `W049`.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 
@@ -89,6 +89,6 @@ Last updated: 2026-03-21.
 
 - **Status**: in-progress
 - **Current floor**: OxFunc now exposes a first explicit snapshot artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` with identity/version semantics, first-pass function and operator rows, metadata profiles, and reading guidance in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`.
-- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, and an OxFml consumer example.
-- **Why still open**: the first-pass snapshot is now real and usable, but it is still an attempt-one stabilization artifact rather than a locked cross-repo ABI.
-- **Canonical owner**: `W044`.
+- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, and a pinned runtime consumer/model beyond the CSV interchange artifact.
+- **Why still open**: the first-pass snapshot is now real and usable, and OxFml has accepted the current first-freeze working rule, but the next step is a concrete runtime provider/snapshot consumer model rather than more note-only agreement.
+- **Canonical owner**: `W044` for the export artifact, with follow-on consumer/model work in `W049`.
