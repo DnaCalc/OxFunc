@@ -299,6 +299,9 @@ Primary files:
 287. `W34_EXECUTION_RECORD.md`
 288. `W35_EXECUTION_RECORD.md`
 289. `W36_EXECUTION_RECORD.md`
+290. `XLCALL_CODE_CATALOG.csv`
+291. `FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md`
+292. `W46_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

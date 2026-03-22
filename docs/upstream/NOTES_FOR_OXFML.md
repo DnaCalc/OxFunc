@@ -1123,9 +1123,9 @@ Current first-pass export facts:
      - the full current `W45` non-`@` operator surface
      - one explicitly modeled `FUNC.OP_IMPLICIT_INTERSECTION` row
 2. `snapshot_id = oxfunc-libctx-v1`,
-3. `snapshot_generation = 2026-03-20`,
-4. `source_commit_short = a9960fc`,
-5. `source_commit_full = a9960fca1cdc02daf85ce1e1052d5ae81574cbe0`,
+3. `snapshot_generation = 2026-03-21`,
+4. `source_commit_short = f5ec5ac`,
+5. `source_commit_full = f5ec5ac6c64c05ec1f3d59fadc092105b7ae5d01`,
 6. `source_tree_state = dirty`,
 7. stable function/operator ids emitted as current OxFunc-local `FUNC.<CANONICAL_NAME>` ids,
 8. explicit pointer to the multilingual name table seed,
@@ -1144,13 +1144,16 @@ Current first-pass export facts:
    - `runtime_boundary_kind`
    - `arity_shape_note`
    - `interface_contract_ref`
-13. explicit OxFml-facing reading guidance.
-14. the completed `W039` dynamic-array reshaping family is now reflected as real extracted profile rows rather than `catalog_only` rows for examples such as:
+13. built-in C API interop fields for matched built-in rows:
+   - `xlcall_builtin_symbol`
+   - `xlcall_builtin_code`
+14. explicit OxFml-facing reading guidance.
+15. the completed `W039` dynamic-array reshaping family is now reflected as real extracted profile rows rather than `catalog_only` rows for examples such as:
    - `FUNC.CHOOSECOLS`
    - `FUNC.FILTER`
    - `FUNC.UNIQUE`
    - `FUNC.VSTACK`
-15. ordinary exported operators now also carry `interface_contract_ref` back to `W045`, while `FUNC.OP_IMPLICIT_INTERSECTION` still points to its own special investigation surface.
+16. ordinary exported operators now also carry `interface_contract_ref` back to `W045`, while `FUNC.OP_IMPLICIT_INTERSECTION` still points to its own special investigation surface.
 
 Current special rows worth consuming directly:
 1. `FUNC.LET`
@@ -1254,8 +1257,8 @@ Current OxFunc recommendation:
 2. pin OxFml-side tests and semantic-plan fixtures to:
    - `snapshot_id = oxfunc-libctx-v1`
    - `snapshot_generation = 2026-03-21`
-   - `source_commit_short = 717831e`
-   - `source_commit_full = 717831ed354bcf713c0defe718c5910016b07d3a`
+   - `source_commit_short = f5ec5ac`
+   - `source_commit_full = f5ec5ac6c64c05ec1f3d59fadc092105b7ae5d01`
    - `source_tree_state = dirty`
 3. treat `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` as the interpretation guide for the first pass,
 4. use concrete snapshot-consumption mismatches as the next bounded trigger rather than reopening broad seam theory.
@@ -1311,4 +1314,32 @@ After the current refreshed `W044` export surface:
 2. treat the callable round as closed for now,
 3. treat the refreshed snapshot export as the current best downstream stabilization artifact for Topic A,
 4. do not reopen callable-note narrowing unless a concrete field-set or runtime trigger appears.
+
+### 21.8 Built-In C API Identity And Registration Seam
+OxFunc now wants to include one additional concrete seam-improvement item in the next exchange: built-in `XLCALL.H` identity ingest plus the first-pass `CALL` / `REGISTER.ID` registration seam.
+
+Current new artifacts:
+1. `docs/function-lane/XLCALL_CODE_CATALOG.csv`
+2. `docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md`
+3. `docs/function-lane/W46_EXECUTION_RECORD.md`
+
+Current OxFunc reading:
+1. OxFunc should act as steward of the function registration catalog.
+2. The host side should continue to own the raw Excel C API callback surface and external invocation runtime.
+3. Built-in `xlf*` codes from `XLCALL.H` should be treated as compatibility/interoperability metadata attached to OxFunc built-in rows, not as replacements for `surface_stable_id`.
+4. The refreshed `W044` export now exposes:
+   - `xlcall_builtin_symbol`
+   - `xlcall_builtin_code`
+   on matched built-in rows.
+5. That should let OxFml preserve stable OxFunc ids as primary identity while still routing host C API built-ins through their legacy `xlf*` identities where needed.
+
+Current special rows worth consuming directly:
+1. `FUNC.CALL`
+2. `FUNC.REGISTER.ID`
+3. `FUNC.RTD`
+
+Current first-pass registration seam reading:
+1. host/OxFml resolves raw C API built-in dispatch and host registration/runtime concerns,
+2. OxFunc owns built-in catalog mapping and later registered-function catalog descriptors,
+3. worksheet `CALL` / `REGISTER.ID` still remain open as runtime work, but the catalog/seam ownership is now explicit enough for the next round.
 

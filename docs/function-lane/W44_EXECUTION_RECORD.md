@@ -12,6 +12,7 @@ Convert the library-context snapshot discussion from a note-only seam topic into
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
 3. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 4. `docs/upstream/NOTES_FOR_OXFML.md`
+5. `docs/function-lane/XLCALL_CODE_CATALOG.csv`
 
 ## 4. Current Export Produced
 Current first-pass export:
@@ -38,32 +39,34 @@ Current row fields:
 7. `entry_kind`
 8. `registration_source_kind`
 9. `surface_stable_id`
-10. `canonical_surface_name`
-11. `name_resolution_table_ref`
-12. `semantic_trait_profile_ref`
-13. `gating_profile_ref`
-14. `version_marker`
-15. `category`
-16. `interesting`
-17. `arity_min`
-18. `arity_max`
-19. `arg_preparation_profile`
-20. `coercion_lift_profile`
-21. `kernel_signature_class`
-22. `determinism_class`
-23. `volatility_class`
-24. `host_interaction_class`
-25. `thread_safety_class`
-26. `fec_dependency_profile`
-27. `surface_fec_dependency_profile`
-28. `metadata_status`
-29. `special_interface_kind`
-30. `admission_interface_kind`
-31. `preparation_owner`
-32. `runtime_boundary_kind`
-33. `arity_shape_note`
-34. `interface_contract_ref`
-35. `source_catalog_ref`
+10. `xlcall_builtin_symbol`
+11. `xlcall_builtin_code`
+12. `canonical_surface_name`
+13. `name_resolution_table_ref`
+14. `semantic_trait_profile_ref`
+15. `gating_profile_ref`
+16. `version_marker`
+17. `category`
+18. `interesting`
+19. `arity_min`
+20. `arity_max`
+21. `arg_preparation_profile`
+22. `coercion_lift_profile`
+23. `kernel_signature_class`
+24. `determinism_class`
+25. `volatility_class`
+26. `host_interaction_class`
+27. `thread_safety_class`
+28. `fec_dependency_profile`
+29. `surface_fec_dependency_profile`
+30. `metadata_status`
+31. `special_interface_kind`
+32. `admission_interface_kind`
+33. `preparation_owner`
+34. `runtime_boundary_kind`
+35. `arity_shape_note`
+36. `interface_contract_ref`
+37. `source_catalog_ref`
 
 ## 5. Why This Is Better Than The Old Pointer
 Before this packet, the best downstream pointer was only:
@@ -78,6 +81,7 @@ That was useful but insufficient because it did not by itself pin:
 6. source commit identity for reproducible test pinning.
 7. full commit identity for stronger downstream fixture pinning.
 8. current local tree cleanliness for honest downstream fixture pinning.
+9. built-in `XLCALL.H` identity interop for host C API routing.
 
 ## 6. Current Honest Limits
 1. operator coverage now includes the full current `W45` non-`@` operator surface plus one doc-modeled implicit-intersection row, but this is still not a claim about every future operator the architecture may eventually expose
@@ -88,6 +92,7 @@ That was useful but insufficient because it did not by itself pin:
 6. runtime capability/provider state is intentionally excluded
 7. the new seam-facing guidance fields are still first-pass OxFunc vocabulary rather than locked shared names
 8. final cross-repo field names and ABI remain open
+9. `xlcall_builtin_*` currently covers matched built-in `xlf*` rows only, not commands, auxiliary callbacks, or future registered-external rows
 
 ## 7. Verification
 1. generated from `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
@@ -98,6 +103,8 @@ That was useful but insufficient because it did not by itself pin:
    - `23` operator rows
 5. current export inspected manually for header shape and special-row stability
 6. key special-row fields inspected manually for:
+   - `CALL`
+   - `REGISTER.ID`
    - `LET`
    - `LAMBDA`
    - `ASC`
@@ -121,6 +128,11 @@ That was useful but insufficient because it did not by itself pin:
    - `source_commit_full`
    - `source_tree_state`
    - `snapshot_generation`
+8. `XLCALL.H` ingest generated and inspected manually for representative rows:
+   - `SUM`
+   - `CALL`
+   - `REGISTER.ID`
+   - `RTD`
 
 ## 8. Status
 1. scope_completeness: `scope_partial`

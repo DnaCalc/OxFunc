@@ -34,32 +34,34 @@ Current fields:
 7. `entry_kind`
 8. `registration_source_kind`
 9. `surface_stable_id`
-10. `canonical_surface_name`
-11. `name_resolution_table_ref`
-12. `semantic_trait_profile_ref`
-13. `gating_profile_ref`
-14. `version_marker`
-15. `category`
-16. `interesting`
-17. `arity_min`
-18. `arity_max`
-19. `arg_preparation_profile`
-20. `coercion_lift_profile`
-21. `kernel_signature_class`
-22. `determinism_class`
-23. `volatility_class`
-24. `host_interaction_class`
-25. `thread_safety_class`
-26. `fec_dependency_profile`
-27. `surface_fec_dependency_profile`
-28. `metadata_status`
-29. `special_interface_kind`
-30. `admission_interface_kind`
-31. `preparation_owner`
-32. `runtime_boundary_kind`
-33. `arity_shape_note`
-34. `interface_contract_ref`
-35. `source_catalog_ref`
+10. `xlcall_builtin_symbol`
+11. `xlcall_builtin_code`
+12. `canonical_surface_name`
+13. `name_resolution_table_ref`
+14. `semantic_trait_profile_ref`
+15. `gating_profile_ref`
+16. `version_marker`
+17. `category`
+18. `interesting`
+19. `arity_min`
+20. `arity_max`
+21. `arg_preparation_profile`
+22. `coercion_lift_profile`
+23. `kernel_signature_class`
+24. `determinism_class`
+25. `volatility_class`
+26. `host_interaction_class`
+27. `thread_safety_class`
+28. `fec_dependency_profile`
+29. `surface_fec_dependency_profile`
+30. `metadata_status`
+31. `special_interface_kind`
+32. `admission_interface_kind`
+33. `preparation_owner`
+34. `runtime_boundary_kind`
+35. `arity_shape_note`
+36. `interface_contract_ref`
+37. `source_catalog_ref`
 
 ## 4. Field Meaning
 1. `snapshot_id`
@@ -83,58 +85,62 @@ Current fields:
      - `doc_modeled_operator`
 9. `surface_stable_id`
    - current OxFunc-local stable function id candidate, emitted as `FUNC.<CANONICAL_NAME>`
-10. `canonical_surface_name`
+10. `xlcall_builtin_symbol`
+   - current `XLCALL.H` built-in `xlf*` symbol when a matched built-in code exists for the row
+11. `xlcall_builtin_code`
+   - current `XLCALL.H` numeric built-in function code when a matched built-in code exists for the row
+12. `canonical_surface_name`
    - canonical English surface name from the current local catalog, or current operator canonical name
-11. `name_resolution_table_ref`
+13. `name_resolution_table_ref`
    - pointer to the current multilingual name table seed used for localized function resolution work, or the current operator-name placeholder ref
-12. `semantic_trait_profile_ref`
+14. `semantic_trait_profile_ref`
    - current OxFunc-local profile-family ref for function-surface semantics/admission
-13. `gating_profile_ref`
+15. `gating_profile_ref`
    - current OxFunc-local static gating family ref
-14. `version_marker`
+16. `version_marker`
    - current support-harvest version marker when present
-15. `category`
+17. `category`
    - support-page category carried through from the canonical catalog
-16. `interesting`
+18. `interesting`
    - current planning-interest flag from the canonical catalog
-17. `arity_min` / `arity_max`
+19. `arity_min` / `arity_max`
    - first-pass arity exposure for OxFml parse/bind work
-18. `arg_preparation_profile`
+20. `arg_preparation_profile`
    - first-pass statement of whether arguments are expected values-only or refs-visible at the adapter seam
-19. `coercion_lift_profile`
+21. `coercion_lift_profile`
    - current OxFunc-local coercion/admission family indicator
-20. `kernel_signature_class`
+22. `kernel_signature_class`
    - coarse kernel-shape classification
-21. `determinism_class`
+23. `determinism_class`
    - deterministic, time-dependent, pseudo-random, or external-event dependent
-22. `volatility_class`
+24. `volatility_class`
    - current recalc/invalidation posture
-23. `host_interaction_class`
+25. `host_interaction_class`
    - current host/session interaction class
-24. `thread_safety_class`
+26. `thread_safety_class`
    - current runtime thread-safety posture
-25. `fec_dependency_profile`
+27. `fec_dependency_profile`
    - current adapter-level dependency summary
-26. `surface_fec_dependency_profile`
+28. `surface_fec_dependency_profile`
    - current surface pipeline dependency summary
-27. `metadata_status`
+29. `metadata_status`
    - current extraction status for the detailed profile columns:
      - `function_meta_extracted`
      - `catalog_only`
      - `doc_modeled`
-28. `special_interface_kind`
+30. `special_interface_kind`
    - first-pass signal that a row is seam-heavy rather than ordinary
-29. `admission_interface_kind`
+31. `admission_interface_kind`
    - first-pass indication of whether the row is an ordinary call, helper-formation form, higher-order call, operator form, or host-subscription call
-30. `preparation_owner`
+32. `preparation_owner`
    - first-pass indication of where preparation/formation responsibility mainly sits
-31. `runtime_boundary_kind`
+33. `runtime_boundary_kind`
    - first-pass indication of the runtime seam OxFml should expect after preparation
-32. `arity_shape_note`
+34. `arity_shape_note`
    - free-form first-pass note for special argument-shape or helper/operator admission details
-33. `interface_contract_ref`
+35. `interface_contract_ref`
    - current best contract/workset artifact to follow for seam-heavy rows
-34. `source_catalog_ref`
+36. `source_catalog_ref`
    - authoritative source row family for this export generation
 
 ## 5. Reading Guidance For OxFml
@@ -167,6 +173,8 @@ Current intended use:
    - preserve `source_commit_full`
    - preserve `source_tree_state`
    - preserve `surface_stable_id`
+   - preserve `xlcall_builtin_symbol`
+   - preserve `xlcall_builtin_code`
 
 ## 6. Current Honest Limits
 1. This export includes the full current `W45` non-`@` operator surface plus one explicitly modeled `FUNC.OP_IMPLICIT_INTERSECTION` row, not the full future operator universe.
@@ -177,6 +185,18 @@ Current intended use:
 6. This export does not itself inline localized names; it points to the current multilingual seed table.
 7. This export does not carry runtime capability, provider availability, caller-context, or host-query payload facts.
 8. The exact final shared field set and field names are still not locked cross-repo.
+
+Current built-in C API interop examples:
+1. `FUNC.SUM`
+2. `FUNC.CALL`
+3. `FUNC.REGISTER.ID`
+4. `FUNC.RTD`
+
+Those rows now expose:
+1. `xlcall_builtin_symbol`
+2. `xlcall_builtin_code`
+3. the OxFunc stable id on the same row,
+4. seam refs through `interface_contract_ref`.
 
 Current presentation-aware examples:
 1. `FUNC.NOW`

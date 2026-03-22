@@ -10,6 +10,19 @@ $snapshotGeneration = Get-Date -Format "yyyy-MM-dd"
 $sourceCommitShort = (git rev-parse --short HEAD).Trim()
 $sourceCommitFull = (git rev-parse HEAD).Trim()
 $sourceTreeState = if ([string]::IsNullOrWhiteSpace((git status --porcelain))) { "clean" } else { "dirty" }
+$xlcallCatalogPath = "docs/function-lane/XLCALL_CODE_CATALOG.csv"
+$xlcallByStableId = @{}
+if (Test-Path $xlcallCatalogPath) {
+    Import-Csv $xlcallCatalogPath |
+        Where-Object {
+            $_.xlcall_category -eq "built_in_function" -and
+            $_.oxfunc_match_status -eq "matched_current_catalog" -and
+            -not [string]::IsNullOrWhiteSpace($_.oxfunc_surface_stable_id)
+        } |
+        ForEach-Object {
+            $xlcallByStableId[$_.oxfunc_surface_stable_id] = $_
+        }
+}
 
 $metaPattern = 'function_id:\s*"(?<id>[^"]+)"[\s\S]*?arity:\s*(?:Arity::exact\((?<exact>\d+)\)|Arity\s*\{\s*min:\s*(?<min>\d+),\s*max:\s*(?<max>\d+)\s*\})[\s\S]*?determinism:\s*DeterminismClass::(?<det>\w+)[\s\S]*?volatility:\s*VolatilityClass::(?<vol>\w+)[\s\S]*?host_interaction:\s*HostInteractionClass::(?<host>\w+)[\s\S]*?thread_safety:\s*ThreadSafetyClass::(?<thread>\w+)[\s\S]*?arg_preparation_profile:\s*ArgPreparationProfile::(?<arg>\w+)[\s\S]*?coercion_lift_profile:\s*CoercionLiftProfile::(?<coercion>\w+)[\s\S]*?kernel_signature_class:\s*KernelSignatureClass::(?<kernel>\w+)[\s\S]*?fec_dependency_profile:\s*FecDependencyProfile::(?<fec>\w+)[\s\S]*?surface_fec_dependency_profile:\s*FecDependencyProfile::(?<surface>\w+)'
 $reshapeMetaPattern = 'pub const \w+_META:\s*FunctionMeta\s*=\s*reshape_meta!\("(?<id>[^"]+)",\s*(?<min>\d+),\s*(?<max>\d+)\);'
@@ -384,6 +397,8 @@ $functionRows = Import-Csv "docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE
         entry_kind = "built_in_function"
         registration_source_kind = "built_in_catalog_function"
         surface_stable_id = $stableId
+        xlcall_builtin_symbol = if ($xlcallByStableId.ContainsKey($stableId)) { $xlcallByStableId[$stableId].xlcall_symbol } else { "" }
+        xlcall_builtin_code = if ($xlcallByStableId.ContainsKey($stableId)) { $xlcallByStableId[$stableId].xlcall_numeric_code } else { "" }
         canonical_surface_name = $_.function_name
         name_resolution_table_ref = "docs/function-lane/W28_FUNCTION_NAME_LOCALIZATION_LIBRARY_SEED.csv"
         semantic_trait_profile_ref = "oxfunc.local.profile.function_surface.current_baseline.v1"
@@ -458,6 +473,13 @@ $functionRows | Where-Object { $_.surface_stable_id -eq "FUNC.TRANSLATE" } | For
     $_.metadata_status = "function_meta_curated"
 }
 
+$functionRows | ForEach-Object {
+    if ($xlcallByStableId.ContainsKey($_.surface_stable_id)) {
+        $_.xlcall_builtin_symbol = $xlcallByStableId[$_.surface_stable_id].xlcall_symbol
+        $_.xlcall_builtin_code = $xlcallByStableId[$_.surface_stable_id].xlcall_numeric_code
+    }
+}
+
 $operatorIds = Import-Csv "tools/xll-addin/oxfunc_xll/export_specs.csv" |
     Where-Object { $_.function_id -like "FUNC.OP_*" } |
     Select-Object -ExpandProperty function_id -Unique |
@@ -476,6 +498,8 @@ $operatorRows = foreach ($operatorId in $operatorIds) {
         entry_kind = "built_in_operator"
         registration_source_kind = "built_in_operator_export"
         surface_stable_id = $operatorId
+        xlcall_builtin_symbol = ""
+        xlcall_builtin_code = ""
         canonical_surface_name = $canonical
         name_resolution_table_ref = "oxfunc.local.names.operators.current_baseline.v1"
         semantic_trait_profile_ref = "oxfunc.local.profile.operator_surface.current_baseline.v1"
@@ -515,6 +539,8 @@ $implicitIntersectionRow = [pscustomobject]([ordered]@{
     entry_kind = "built_in_operator"
     registration_source_kind = "doc_modeled_operator"
     surface_stable_id = "FUNC.OP_IMPLICIT_INTERSECTION"
+    xlcall_builtin_symbol = ""
+    xlcall_builtin_code = ""
     canonical_surface_name = "OP_IMPLICIT_INTERSECTION"
     name_resolution_table_ref = "oxfunc.local.names.operators.current_baseline.v1"
     semantic_trait_profile_ref = "oxfunc.local.profile.operator_surface.current_baseline.v1"
@@ -558,6 +584,8 @@ $columnOrder = @(
     "entry_kind",
     "registration_source_kind",
     "surface_stable_id",
+    "xlcall_builtin_symbol",
+    "xlcall_builtin_code",
     "canonical_surface_name",
     "name_resolution_table_ref",
     "semantic_trait_profile_ref",

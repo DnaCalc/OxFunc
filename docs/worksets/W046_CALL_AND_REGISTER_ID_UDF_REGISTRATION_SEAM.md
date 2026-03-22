@@ -13,6 +13,8 @@ Relevant context:
 2. `tools/fp-probe/xll/README.md`
 3. `tools/fp-probe/xll/FpEdgeHarnessContract.md`
 4. `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
+5. `docs/function-lane/XLCALL_CODE_CATALOG.csv`
+6. `docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md`
 
 ## 3. Scope
 Machine-readable inventory:
@@ -36,8 +38,9 @@ Members:
 ## 5. In Scope
 1. classify the current repo floor for registration plumbing that already exists,
 2. define the minimal OxFml ↔ host ↔ OxFunc seam for worksheet `CALL` / `REGISTER.ID`,
-3. decide what is intentionally out of current supported scope,
-4. avoid treating these functions as ordinary host-query leftovers.
+3. ingest the local `XLCALL.H` built-in function identities into the OxFunc catalog surfaces,
+4. decide what is intentionally out of current supported scope,
+5. avoid treating these functions as ordinary host-query leftovers.
 
 ## 6. Out Of Scope
 1. full DLL/code-resource invocation support,
@@ -51,5 +54,6 @@ Members:
 4. integration_completeness: `partial`
 5. open_lanes:
    - no packet-specific scenario manifest yet
-   - no contract yet for worksheet registration/invocation semantics
-   - current repo floor is only XLL self-registration infrastructure, not worksheet closure
+   - no empirical worksheet replay packet yet for `CALL` / `REGISTER.ID`
+   - no host-backed invocation/runtime implementation yet
+   - current repo floor is XLL self-registration plus `XLCALL.H` identity ingest, not worksheet closure
