@@ -11,7 +11,7 @@ Evidence IDs:
 1. open `W38` with the first admitted current-baseline worksheet slice for the helper/callable family:
    - `LET`,
    - immediate-invoked `LAMBDA`,
-   - the currently observable `ISOMITTED` lanes.
+   - the admitted direct `ISOMITTED` lanes.
 
 ## 2. Scope
 Artifacts created or updated:
@@ -55,7 +55,7 @@ Artifacts created or updated:
 
 ## 4. Empirical Findings
 From `.tmp/w38-lambda-helper-stage1-results.csv`:
-1. all `17` seeded Stage 1 rows matched expected behavior on the current reference baseline.
+1. all `18` seeded Stage 1 rows matched expected behavior on the current reference baseline.
 2. `LET` supports sequential bindings, nested bindings, and array-valued bindings in the admitted slice.
 3. Duplicate local `LET` names are rejected at formula-admission time (`set_err`) rather than producing a later worksheet error.
 4. `LAMBDA` supports immediate single- and multi-argument invocation in the admitted slice.
@@ -64,7 +64,8 @@ From `.tmp/w38-lambda-helper-stage1-results.csv`:
 7. Duplicate lambda parameter names are rejected at formula-admission time.
 8. `LET` bindings are lexically captured by immediately invoked lambdas in the admitted slice.
 9. `ISOMITTED` returns `FALSE` for present arguments in the seeded direct lanes.
-10. Direct lambda under-application does not expose an omitted-argument channel; the call fails with `#VALUE!` before `ISOMITTED` becomes useful.
+10. `ISOMITTED` returns `TRUE` for an explicit omitted placeholder in the seeded direct lambda lane `LAMBDA(a,b,ISOMITTED(b))(1,)`.
+11. Direct lambda under-application is a different lane and does not expose an omitted-argument channel; the call fails with `#VALUE!` before `ISOMITTED` becomes useful.
 
 From `.tmp/w38-map-reduce-scan-stage2-results.csv`:
 11. all `14` seeded Stage 2 rows matched expected behavior on the current reference baseline.
@@ -74,32 +75,32 @@ From `.tmp/w38-map-reduce-scan-stage2-results.csv`:
 15. `SCAN` spills intermediate accumulations, and the visible spill excludes the initial accumulator as a separate leading element.
 16. Runtime lambda arity mismatch inside `MAP`, `REDUCE`, and `SCAN` returns `#VALUE!`.
 17. Malformed helper lambda declaration with an extra body argument is rejected at formula admission.
-18. In the seeded `MAP` and `REDUCE` lanes, present helper arguments are not omitted.
+19. In the seeded `MAP` and `REDUCE` lanes, present helper arguments are not omitted.
 
 From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
-19. all `15` seeded Stage 3 rows matched expected behavior on the current reference baseline.
-20. `BYROW` returns one scalar result per source row in the admitted slice.
-21. `BYCOL` returns one scalar result per source column in the admitted slice.
-22. `BYROW` and `BYCOL` return `#CALC!` when the supplied lambda body yields a non-scalar result in the seeded lanes.
-23. `BYROW` runtime lambda arity mismatch returns `#VALUE!`.
-24. malformed `BYCOL` lambda declaration with an extra body argument is rejected at formula admission.
-25. `MAKEARRAY` uses 1-based generated row and column coordinates in the seeded slice.
-26. `MAKEARRAY` runtime lambda arity mismatch returns `#VALUE!`.
-27. in the seeded `MAKEARRAY` lane, generated coordinate arguments are present rather than omitted.
-28. workbook Defined Names preserve callable lambda values in the admitted slice.
-29. direct invocation through a Defined Name callable works.
-30. `MAP` can invoke a workbook Defined Name callable.
-31. lexical capture preserved inside a workbook Defined Name callable remains visible in the seeded slice.
-32. bare publication of a workbook Defined Name callable yields `#CALC!`.
-33. OxFunc core now carries a typed callable value placeholder instead of a bare lambda string placeholder.
-34. That typed carrier currently preserves:
+20. all `15` seeded Stage 3 rows matched expected behavior on the current reference baseline.
+21. `BYROW` returns one scalar result per source row in the admitted slice.
+22. `BYCOL` returns one scalar result per source column in the admitted slice.
+23. `BYROW` and `BYCOL` return `#CALC!` when the supplied lambda body yields a non-scalar result in the seeded lanes.
+24. `BYROW` runtime lambda arity mismatch returns `#VALUE!`.
+25. malformed `BYCOL` lambda declaration with an extra body argument is rejected at formula admission.
+26. `MAKEARRAY` uses 1-based generated row and column coordinates in the seeded slice.
+27. `MAKEARRAY` runtime lambda arity mismatch returns `#VALUE!`.
+28. in the seeded `MAKEARRAY` lane, generated coordinate arguments are present rather than omitted.
+29. workbook Defined Names preserve callable lambda values in the admitted slice.
+30. direct invocation through a Defined Name callable works.
+31. `MAP` can invoke a workbook Defined Name callable.
+32. lexical capture preserved inside a workbook Defined Name callable remains visible in the seeded slice.
+33. bare publication of a workbook Defined Name callable yields `#CALC!`.
+34. OxFunc core now carries a typed callable value placeholder instead of a bare lambda string placeholder.
+35. That typed carrier currently preserves:
    - callable token
    - origin kind
    - arity shape
    - capture mode
    - invocation-contract reference
-35. The typed carrier now has an executable companion substrate in `crates/oxfunc_core/src/functions/callable_helpers.rs`.
-36. That substrate currently supports:
+36. The typed carrier now has an executable companion substrate in `crates/oxfunc_core/src/functions/callable_helpers.rs`.
+37. That substrate currently supports:
    - direct token-driven callable invocation with arity enforcement,
    - token-driven `MAP` over the admitted prepared-array slice,
    - token-driven `REDUCE` over the admitted prepared-array slice,
@@ -108,13 +109,13 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
    - token-driven `BYCOL` over the admitted prepared-array slice with scalar-result enforcement,
    - token-driven `MAKEARRAY` over generated 1-based row/column coordinates in the admitted slice,
    - and direct Defined Name callable invocation through the same typed boundary.
-37. The new substrate also now has worksheet-surface evaluator functions for the admitted higher-order helper slice when the callable value is already prepared as an `EvalValue::Lambda`.
-38. These worksheet-surface evaluators are now wired into core dispatch/export/catalog admission for the admitted higher-order helper slice when a prepared callable value is supplied.
-39. The current XLL bridge does not yet carry callable worksheet values or workbook Defined Name callable bindings end-to-end.
-40. For `W38`, that is recorded as an external seam limitation rather than a packet-open semantic lane.
-41. The native Excel `W38` suite runner now replays all three empirical stages in one step.
-42. Lean now has an executable callable/helper substrate in `formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean`.
-43. That substrate aligns the admitted helper metadata plus seeded executable cases for:
+38. The new substrate also now has worksheet-surface evaluator functions for the admitted higher-order helper slice when the callable value is already prepared as an `EvalValue::Lambda`.
+39. These worksheet-surface evaluators are now wired into core dispatch/export/catalog admission for the admitted higher-order helper slice when a prepared callable value is supplied.
+40. The current XLL bridge does not yet carry callable worksheet values or workbook Defined Name callable bindings end-to-end.
+41. For `W38`, that is recorded as an external seam limitation rather than a packet-open semantic lane.
+42. The native Excel `W38` suite runner now replays all three empirical stages in one step.
+43. Lean now has an executable callable/helper substrate in `formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean`.
+44. That substrate aligns the admitted helper metadata plus seeded executable cases for:
    - `ISOMITTED`,
    - direct callable arity mismatch,
    - `MAP`,
@@ -125,8 +126,8 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
    - `MAKEARRAY`,
    - bare callable publication to `#CALC!`,
    - and workbook Defined Name callable invocation/preservation on the admitted slice.
-44. OxFunc core now also has a separate Stage 1 prepared-expression runtime substrate in `crates/oxfunc_core/src/functions/callable_stage1_prepared.rs`.
-45. That substrate executes the admitted direct worksheet-semantics slice for:
+45. OxFunc core now also has a separate Stage 1 prepared-expression runtime substrate in `crates/oxfunc_core/src/functions/callable_stage1_prepared.rs`.
+46. That substrate executes the admitted direct worksheet-semantics slice for:
    - `LET`,
    - immediate `LAMBDA`,
    - direct `ISOMITTED`,
@@ -134,7 +135,7 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
    - duplicate-name rejection,
    - direct arity mismatch,
    - and bare callable publication to `#CALC!`.
-46. The current remaining gap for that Stage 1 slice is no longer missing runtime semantics in OxFunc core; it is the still-open worksheet helper formation/binding path that remains OxFml-owned at the seam.
+47. The current remaining gap for that Stage 1 slice is no longer missing runtime semantics in OxFunc core; it is the still-open worksheet helper formation/binding path that remains OxFml-owned at the seam.
 
 ## 5. Current Packet Result
 1. `W38` now has a real Stage 1 native packet and a first honest contract for the helper/callable family.
@@ -146,7 +147,7 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
    - admission-time helper errors,
    - immediate lambda invocation behavior,
    - lexical capture across `LET` and `LAMBDA`,
-   - the limited currently observed `ISOMITTED` behavior,
+   - the admitted direct `ISOMITTED` behavior, including explicit omitted-placeholder visibility distinct from arity under-application,
    - first higher-order helper invocation and spill-shape behavior for `MAP`, `REDUCE`, and `SCAN`,
    - row-wise and column-wise scalarity requirements for `BYROW` and `BYCOL`,
    - coordinate-driven helper invocation for `MAKEARRAY`,

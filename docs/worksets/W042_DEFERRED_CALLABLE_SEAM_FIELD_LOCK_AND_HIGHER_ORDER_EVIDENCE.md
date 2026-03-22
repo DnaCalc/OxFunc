@@ -17,6 +17,18 @@ Relevant context:
 3. `docs/upstream/NOTES_FOR_OXFML.md`
 4. `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 
+Current convergence floor:
+1. typed invocation over opaque callable identity is now exercised on both sides for the currently admitted higher-order helper floor,
+2. workbook Defined Name callable preservation is now real first-pass seam pressure rather than a late extension,
+3. the likeliest minimum semantic callable fields currently look like:
+   - opaque callable identity,
+   - origin kind,
+   - capture mode,
+   - arity shape,
+   - invocation-contract meaning,
+4. first-pass `ISOMITTED` omission semantics are now pinned locally enough that `ISOMITTED` no longer needs to drive the minimum-carrier freeze by itself,
+5. only future broader callable transport or additional higher-order omission artifacts should be allowed to reopen omission transport narrowing.
+
 ## 3. Scope
 This workset owns future evidence-driven narrowing for:
 1. minimum callable carrier field lock beyond the current candidate set,

@@ -77,7 +77,7 @@ This workset can only be reported `scope_complete` when:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - Stage 1 covers `LET`, immediate `LAMBDA`, and the currently observable `ISOMITTED` lanes
+   - Stage 1 covers `LET`, immediate `LAMBDA`, and the admitted direct `ISOMITTED` lanes, including explicit omitted-placeholder visibility versus arity under-application
    - Stage 2 covers `MAP`, `REDUCE`, and `SCAN` on an admitted array-constant slice
    - Stage 3 covers `BYROW`, `BYCOL`, `MAKEARRAY`, and workbook Defined Name callable preservation on the admitted slice
    - a typed callable value carrier now exists, and token-driven executable callable invocation plus worksheet-surface evaluators now exist for admitted direct-invocation, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, and `MAKEARRAY` lanes inside core unit-tested runtime helpers

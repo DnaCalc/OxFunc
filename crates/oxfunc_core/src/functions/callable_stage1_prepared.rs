@@ -468,6 +468,26 @@ mod tests {
     }
 
     #[test]
+    fn isomitted_explicit_missing_placeholder_returns_true() {
+        let expr = Stage1Expr::Invoke {
+            callee: Box::new(Stage1Expr::Lambda {
+                params: vec!["x".to_string(), "y".to_string()],
+                body: Box::new(Stage1Expr::IsOmitted(Box::new(Stage1Expr::Name(
+                    "y".to_string(),
+                )))),
+            }),
+            args: vec![
+                num(1.0),
+                Stage1Expr::Prepared(PreparedArgValue::MissingArg),
+            ],
+        };
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(EvalValue::Logical(true))
+        );
+    }
+
+    #[test]
     fn isomitted_top_level_literal_is_false() {
         let expr = Stage1Expr::IsOmitted(Box::new(num(1.0)));
         assert_eq!(

@@ -25,8 +25,9 @@ Primary Functions: `LET`, `LAMBDA`, `ISOMITTED`
 3. `ISOMITTED`
    - returns `FALSE` for present arguments in the admitted direct lambda lanes,
    - returns `FALSE` on the seeded top-level direct-call lane `ISOMITTED(1)`,
+   - returns `TRUE` for an explicit omitted placeholder in the admitted direct lambda lane `LAMBDA(a,b,ISOMITTED(b))(1,)`,
    - `ISOMITTED()` with no argument is rejected at formula-admission time,
-   - ordinary direct lambda under-application does not create an omission channel; it fails with `#VALUE!` before any useful omitted-argument behavior is exposed.
+   - ordinary direct lambda under-application is a different lane from explicit omission and does not create an omission channel; it fails with `#VALUE!` before any useful omitted-argument behavior is exposed.
 
 ## 3. Stage 1 Seams Made Explicit
 1. Helper syntax, sequential binding, and lexical environment formation remain primarily OxFml-owned concerns.
@@ -39,6 +40,7 @@ Primary Functions: `LET`, `LAMBDA`, `ISOMITTED`
 5. The admitted Stage 1 slice therefore depends on an honest split between:
    - parse/admission behavior,
    - callable creation and immediate invocation,
+   - explicit omitted-argument placeholder preservation for callable invocation,
    - worksheet-surface publication behavior (`#CALC!`, `#VALUE!`).
 
 ## 4. Metadata Shape

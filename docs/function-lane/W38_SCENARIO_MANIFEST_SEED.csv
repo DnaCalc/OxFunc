@@ -15,4 +15,5 @@ lambda_let_inner,LAMBDA,"LAMBDA(x,LET(y,2,x+y))(3)",set_ok,,5,1E-12,LET works in
 isomitted_top_level_false,ISOMITTED,"ISOMITTED(1)",set_ok,FALSE,,,Direct top-level call with present arg returns FALSE on current baseline
 isomitted_noargs,ISOMITTED,"ISOMITTED()",set_err,,,,"Zero-argument ISOMITTED is rejected on admission"
 isomitted_present_in_lambda,ISOMITTED,"LAMBDA(a,ISOMITTED(a))(3)",set_ok,FALSE,,,Present lambda arg is not omitted
+isomitted_explicit_missing_placeholder,ISOMITTED,"LAMBDA(a,b,ISOMITTED(b))(1,)",set_ok,TRUE,,,Explicit omitted placeholder is visible to ISOMITTED
 isomitted_missing_in_lambda,ISOMITTED,"LAMBDA(a,ISOMITTED(a))()",set_ok,#VALUE!,,,Direct under-application does not expose an omitted-argument channel
