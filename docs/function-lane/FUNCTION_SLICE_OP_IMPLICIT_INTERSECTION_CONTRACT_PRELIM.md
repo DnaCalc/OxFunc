@@ -47,7 +47,7 @@ Current working model, pending further empirical closure:
 2. if the operand yields a single item, `@` returns that item unchanged.
 3. if the operand yields a range/reference result, `@` applies caller-context-dependent scalarization:
    - same-row or same-column selection for the current formula anchor,
-   - open lane remains for exact no-alignment failure behavior and any multi-axis ambiguity cases not yet pinned.
+   - current admitted 2-D range lane on the native baseline yields `#VALUE!`.
 4. if the operand yields an array payload rather than a reference identity, `@` scalarizes to the top-left item.
 5. explicit `@` is a modern surface marker for implicit-intersection behavior that older Excel performed silently.
 6. removing `@` from a spill-capable expression changes the publication surface from scalarization to spill, subject to host spill rules.
@@ -167,6 +167,10 @@ Goals:
 1. acceptance/rejection behavior,
 2. stored formula text,
 3. whether explicit `@` survives, normalizes away, or rewrites on save/open.
+
+Current seeded storage result on the native baseline:
+1. `.Formula` normalizes away explicit `@` for the seeded `=@A1:A3`, `=@A1:C1`, `=@SEQUENCE(3)`, `=@B1#`, and `=@OFFSET(...)` lanes.
+2. `.Formula2` preserves explicit `@` on those same lanes.
 
 ### 10.2 OxFunc Semantic Lanes
 1. scalar passthrough:

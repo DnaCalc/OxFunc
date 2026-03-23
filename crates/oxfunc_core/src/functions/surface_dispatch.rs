@@ -45,6 +45,10 @@ use crate::functions::bond_core_family::{
     eval_price_surface, eval_pricemat_surface, eval_yield_surface, eval_yielddisc_surface,
     eval_yieldmat_surface, map_bond_core_error_to_ws,
 };
+use crate::functions::call_register_id_family::{
+    CALL_META, REGISTER_ID_META, RegisteredExternalProvider, eval_call_surface,
+    eval_register_id_surface, map_call_register_id_error_to_ws,
+};
 use crate::functions::callable_helpers::{
     BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
     MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_surface, eval_byrow_surface,
@@ -275,6 +279,10 @@ use crate::functions::odd_bond_family::{
 use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel};
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
+use crate::functions::op_implicit_intersection::{
+    OP_IMPLICIT_INTERSECTION_META, eval_op_implicit_intersection_surface,
+    map_op_implicit_intersection_error_to_ws,
+};
 use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
 use crate::functions::operator_arithmetic_family::{
     OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
@@ -764,12 +772,14 @@ pub const FUNC_ID_ODDLPRICE: &str = "FUNC.ODDLPRICE";
 pub const FUNC_ID_ODDLYIELD: &str = "FUNC.ODDLYIELD";
 pub const FUNC_ID_OR: &str = "FUNC.OR";
 pub const FUNC_ID_OFFSET: &str = "FUNC.OFFSET";
+pub const FUNC_ID_CALL: &str = "FUNC.CALL";
 pub const FUNC_ID_OP_ADD: &str = "FUNC.OP_ADD";
 pub const FUNC_ID_OP_CONCAT: &str = "FUNC.OP_CONCAT";
 pub const FUNC_ID_OP_DIVIDE: &str = "FUNC.OP_DIVIDE";
 pub const FUNC_ID_OP_EQUAL: &str = "FUNC.OP_EQUAL";
 pub const FUNC_ID_OP_GREATER_EQUAL: &str = "FUNC.OP_GREATER_EQUAL";
 pub const FUNC_ID_OP_GREATER_THAN: &str = "FUNC.OP_GREATER_THAN";
+pub const FUNC_ID_OP_IMPLICIT_INTERSECTION: &str = "FUNC.OP_IMPLICIT_INTERSECTION";
 pub const FUNC_ID_OP_INTERSECTION_REF: &str = "FUNC.OP_INTERSECTION_REF";
 pub const FUNC_ID_OP_LESS_EQUAL: &str = "FUNC.OP_LESS_EQUAL";
 pub const FUNC_ID_OP_LESS_THAN: &str = "FUNC.OP_LESS_THAN";
@@ -833,6 +843,7 @@ pub const FUNC_ID_RECEIVED: &str = "FUNC.RECEIVED";
 pub const FUNC_ID_REGEXEXTRACT: &str = "FUNC.REGEXEXTRACT";
 pub const FUNC_ID_REGEXREPLACE: &str = "FUNC.REGEXREPLACE";
 pub const FUNC_ID_REGEXTEST: &str = "FUNC.REGEXTEST";
+pub const FUNC_ID_REGISTER_ID: &str = "FUNC.REGISTER.ID";
 pub const FUNC_ID_ROUNDUP: &str = "FUNC.ROUNDUP";
 pub const FUNC_ID_RSQ: &str = "FUNC.RSQ";
 pub const FUNC_ID_SECOND: &str = "FUNC.SECOND";
@@ -1086,6 +1097,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_ATANH => Some(crate::functions::atanh::ATANH_META.arg_preparation_profile),
         FUNC_ID_AND => Some(crate::functions::and_fn::AND_META.arg_preparation_profile),
         FUNC_ID_ARABIC => Some(crate::functions::arabic_fn::ARABIC_META.arg_preparation_profile),
+        FUNC_ID_CALL => Some(CALL_META.arg_preparation_profile),
         FUNC_ID_ADDRESS => Some(ADDRESS_META.arg_preparation_profile),
         FUNC_ID_ARRAYTOTEXT => Some(
             crate::functions::array_text_split_family::ARRAYTOTEXT_META.arg_preparation_profile,
@@ -1816,6 +1828,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_OP_EQUAL => Some(OP_EQUAL_META.arg_preparation_profile),
         FUNC_ID_OP_GREATER_EQUAL => Some(OP_GREATER_EQUAL_META.arg_preparation_profile),
         FUNC_ID_OP_GREATER_THAN => Some(OP_GREATER_THAN_META.arg_preparation_profile),
+        FUNC_ID_OP_IMPLICIT_INTERSECTION => {
+            Some(OP_IMPLICIT_INTERSECTION_META.arg_preparation_profile)
+        }
         FUNC_ID_OP_INTERSECTION_REF => Some(OP_INTERSECTION_REF_META.arg_preparation_profile),
         FUNC_ID_OP_LESS_EQUAL => Some(OP_LESS_EQUAL_META.arg_preparation_profile),
         FUNC_ID_OP_LESS_THAN => Some(OP_LESS_THAN_META.arg_preparation_profile),
@@ -1922,6 +1937,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::financial_time_value_family::RRI_META.arg_preparation_profile)
         }
         FUNC_ID_RTD => Some(crate::functions::rtd_fn::RTD_META.arg_preparation_profile),
+        FUNC_ID_REGISTER_ID => Some(REGISTER_ID_META.arg_preparation_profile),
         FUNC_ID_ROMAN => Some(crate::functions::roman_fn::ROMAN_META.arg_preparation_profile),
         FUNC_ID_ROUND => Some(crate::functions::round_fn::ROUND_META.arg_preparation_profile),
         FUNC_ID_ROUNDDOWN => {
@@ -2195,6 +2211,7 @@ pub fn eval_surface_value_call(
         host_info,
         None,
         None,
+        None,
     )
 }
 
@@ -2245,6 +2262,7 @@ pub fn eval_surface_value_call_with_callable(
     host_info: Option<&dyn HostInfoProvider>,
     callable_invoker: Option<&dyn CallableInvoker>,
     rtd_provider: Option<&dyn RtdProvider>,
+    registered_external_provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
@@ -2280,6 +2298,8 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_ARABIC => {
             eval_arabic_surface(args, resolver).map_err(|e| map_arabic_error_to_ws(&e))
         }
+        FUNC_ID_CALL => eval_call_surface(args, resolver, registered_external_provider)
+            .map_err(|e| map_call_register_id_error_to_ws(&e)),
         FUNC_ID_ADDRESS => {
             eval_address_surface(args, resolver).map_err(|e| map_reference_metadata_error_to_ws(&e))
         }
@@ -3279,6 +3299,10 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
         FUNC_ID_REGEXTEST => eval_regextest_surface(args, resolver)
             .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
+        FUNC_ID_REGISTER_ID => {
+            eval_register_id_surface(args, resolver, registered_external_provider)
+                .map_err(|e| map_call_register_id_error_to_ws(&e))
+        }
         FUNC_ID_ROUNDUP => {
             eval_roundup_surface(args, resolver).map_err(|e| map_roundup_error_to_ws(&e))
         }
@@ -3357,6 +3381,8 @@ pub fn eval_surface_value_call_with_callable(
             .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
         FUNC_ID_OP_GREATER_THAN => eval_op_greater_than_surface(args, resolver)
             .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
+        FUNC_ID_OP_IMPLICIT_INTERSECTION => eval_op_implicit_intersection_surface(args, resolver)
+            .map_err(|e| map_op_implicit_intersection_error_to_ws(&e)),
         FUNC_ID_OP_INTERSECTION_REF => eval_op_intersection_ref_surface(args, resolver)
             .map_err(|e| map_operator_reference_error_to_ws(&e)),
         FUNC_ID_OP_LESS_EQUAL => eval_op_less_equal_surface(args, resolver)
@@ -3783,6 +3809,7 @@ mod tests {
             None,
             None,
             Some(&TestCallableInvoker),
+            None,
             None,
         );
         let expected = EvalArray::from_rows(vec![vec![

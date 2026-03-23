@@ -104,17 +104,16 @@ Completeness axes:
 3. `integration_completeness`: `partial`
 
 Open lanes:
-1. full 2-D reference-selection semantics for `@` remain only partially characterized.
-2. no OxFunc runtime module or Lean module exists yet for `OP_IMPLICIT_INTERSECTION`.
+1. structured-reference/table-context `@` remains outside the current W14 closure target.
+2. compatibility-version and pre-dynamic-array serialization behavior still need a dedicated replay matrix.
 3. OxFml/FEC provenance carrier and trace placement for scalarization are not yet acknowledged upstream.
-4. compatibility-version and pre-dynamic-array serialization behavior need a dedicated replay matrix.
-5. structured-reference/table-context `@` remains outside the current W14 closure target.
+4. current native baseline now pins the previously open 2-D seed lane as `#VALUE!`, but broader compatibility/version sweeps remain open.
 
 Reference-related prework inventory:
 1. `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return lanes are already `function-phase-complete` for the current reference baseline from W10/W12.
 2. `OP_SPILL_REF` (`#`) is now explicit in OxFunc docs/runtime/formal artifacts, but current seam doctrine does not require spill provenance to cross from OxFml into OxFunc.
 3. current working position is that `#` should be discharged on the OxFml side into the current resolved spill region or error before OxFunc evaluation, unless later evidence proves a true OxFunc-owned spill-sensitive semantic lane.
-4. current W14 implementation follow-on therefore targets `@` scalarization over resolved operand classes rather than preserving spill-link provenance by default.
+4. current W14 implementation now targets `@` scalarization over resolved operand classes rather than preserving spill-link provenance by default.
 
 Legacy CSE interaction baseline:
 1. ordinary formula mode and legacy Ctrl+Shift+Enter array mode are distinct evaluation contexts.

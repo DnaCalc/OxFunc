@@ -14,11 +14,10 @@ Completeness axes:
 3. `integration_completeness`: `partial`
 
 Open lanes:
-1. 2-D reference-selection detail is not yet empirically pinned for the current baseline.
-2. no Rust surface module or Lean module exists yet for `OP_IMPLICIT_INTERSECTION`.
-3. OxFml/FEC seam changes are identified but not yet acknowledged upstream.
-4. compatibility-version and legacy serialization behavior are only partially characterized.
-5. the reference-family prework inventory is now explicit:
+1. OxFml/FEC seam changes are identified but not yet acknowledged upstream.
+2. compatibility-version and legacy serialization behavior are only partially characterized.
+3. structured-reference/table-context interaction remains outside the admitted slice.
+4. the reference-family prework inventory is now explicit:
    - `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return are already closed in OxFunc,
    - `OP_SPILL_REF` is now explicit in Rust/Lean/docs,
    - current seam doctrine does not require spill-link provenance to cross into OxFunc,
@@ -56,6 +55,14 @@ Quick local confirmation on `2026-03-14`:
    - `SINGLE(OX_PROBE_ECHO(B1#))` versus `SINGLE(OX_PROBE_ECHO(B1:B3))`
 2. observed rows aligned identically (`1`, `2`, `3`) and non-aligned rows failed identically with `#VALUE!`.
 3. this does not prove equivalence for all future cases, but it is current positive evidence against carrying spill-link provenance into OxFunc by default.
+
+Native replay confirmation on `2026-03-22` from `.tmp/w14-implicit-intersection-results.csv`:
+1. `=@A1:B2` at `C3` currently yields `#VALUE!`.
+2. `=@B1#` with `B1:=SEQUENCE(3)` currently yields `1`.
+3. `.Formula` strips explicit `@` on the seeded lanes:
+   - `=@A1:A3` stores as `=A1:A3`
+   - `=@SEQUENCE(3)` stores as `=SEQUENCE(3)`
+4. `.Formula2` preserves explicit `@` on the same lanes.
 
 ## 3. OxFunc Semantic Fit
 Current substrate vocabulary does not fit `@` cleanly.
@@ -240,9 +247,8 @@ Current recommendation for the implementation spike:
 4. treat `@` as a boundary-pressure operator that connects formula language, FEC preparation, function semantics, and spill publication.
 
 ## 10. Next OxFunc Actions
-1. add the proposed new substrate classification or record the temporary mismatch explicitly.
-2. implement the first empirical replay pack from the W14 seed manifest.
-3. prototype a Rust surface module using existing `offset` and `row`/`column` patterns.
-4. add the Lean substrate/binding module only after the first replay lane settles the reference-vs-array and caller-anchor rules.
+1. tighten the admitted runtime slice around the now-pinned 2-D `#VALUE!` lane and stored-form normalization split.
+2. keep compatibility-version and `_xlfn.SINGLE(...)` roundtrip characterization open as the next replay pressure.
+3. drive remaining seam changes only from concrete OxFml/FEC consumer mismatches or compatibility-version evidence.
 
 
