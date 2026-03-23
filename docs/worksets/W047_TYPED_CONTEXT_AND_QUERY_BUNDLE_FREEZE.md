@@ -35,13 +35,20 @@ This packet owns the bounded shared context/query bundle for the already-covered
    - `NUMBERVALUE`
    - `TRANSLATE`
 5. `RtdProvider` request/result shape for `RTD`
+6. `RegisteredExternalProvider` request/result shape for `CALL` / `REGISTER.ID`
 
 ## 4. Out Of Scope
 1. final callable carrier lock,
-2. final registration/runtime for `CALL` / `REGISTER.ID`,
-3. rich-value publication for `IMAGE`,
-4. implicit intersection / `@`,
-5. broader provider/subscription generalization beyond the already-covered scope.
+2. broader provider/subscription generalization beyond the already-covered scope.
+
+Clarification:
+1. `IMAGE` and `@` remain in the current overall program scope but are not owned by this packet,
+2. `CALL` / `REGISTER.ID` stay primarily owned by `W046`,
+3. however the shared `RegisteredExternalProvider` bundle member belongs here because OxFml needs it in the first frozen typed runtime bundle,
+4. the primary owners remain:
+   - `W046` for `CALL` / `REGISTER.ID`,
+   - `W023` residual publication/rich-value work for `IMAGE`,
+   - `W014` for implicit intersection / `@`.
 
 ## 5. Expected Deliverables
 1. one shared typed context/query bundle note with explicit query names and result types,
@@ -51,15 +58,12 @@ This packet owns the bounded shared context/query bundle for the already-covered
 5. one explicit statement of which current query/result names are treated as the first freeze candidate.
 
 ## 6. Initial Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - no packet-specific shared bundle artifact exists yet
-   - no machine-readable dependency map exists yet
-   - current query/result naming is spread across several packet-local contract notes
-   - no explicit freeze-candidate list is pinned yet for the current query/result names
+   - current frozen bundle is pinned locally but not yet acknowledged as the shared first bounded consumer model
 
 ## 7. Current Freeze Candidate Reading
 After the final OxFml update in this exchange, the current first freeze candidate for `W047` is:

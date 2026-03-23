@@ -26,9 +26,13 @@ This packet owns:
 
 ## 4. Out Of Scope
 1. final cross-repo ABI lock,
-2. full registered-external runtime support,
-3. the final callable minimum carrier lock,
-4. host/provider runtime capability state.
+2. the final callable minimum carrier lock,
+3. host/provider runtime capability state.
+
+Clarification:
+1. `CALL` / `REGISTER.ID` and registered-external runtime remain in the current overall scope through `W046`,
+2. but `W049` only owns the shared runtime library-context consumer/model layer,
+3. not the packet-specific worksheet registration/runtime closure.
 
 ## 5. Expected Deliverables
 1. one runtime provider/snapshot model note,
@@ -52,3 +56,11 @@ After the final OxFml update in this exchange, the current first freeze candidat
 1. a cleaner runtime-only `LibraryContextProvider` / immutable `LibraryContextSnapshot` model,
 2. a separate mapping layer from the CSV/export artifact into that runtime shape,
 3. no requirement that the runtime object model mirror the CSV column-for-column unless a concrete implementation mismatch proves that necessary.
+
+## 8. Current Status
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `partial`
+5. open_lanes:
+   - current runtime model is pinned locally but not yet acknowledged as the shared first bounded consumer model

@@ -1,0 +1,5 @@
+artifact_id,topic,status,detail,next_action
+W49-RUNTIME-001,ProviderSnapshotSplit,accepted_no_mismatch,Final OxFml note accepted runtime provider plus immutable snapshot direction,hold current first-freeze candidate
+W49-RUNTIME-002,RuntimeNotCsvMirror,accepted_no_mismatch,Final OxFml note accepted cleaner runtime model plus mapping layer,hold current first-freeze candidate
+W49-RUNTIME-003,GenerationUpdateModel,accepted_no_mismatch,Final OxFml note accepted explicit generation changes on registration or removal,hold current first-freeze candidate
+W49-RUNTIME-004,CsvAsInterchangeArtifact,accepted_no_mismatch,Final OxFml note accepted CSV as bounded interchange artifact rather than normative runtime ABI,hold current first-freeze candidate

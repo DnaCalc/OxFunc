@@ -1,0 +1,5 @@
+artifact_id,topic,status,detail,next_action
+W48-RETURN-001,OrdinaryValue,accepted_no_mismatch,Final OxFml note accepted ordinary value as the default class,hold current first-freeze candidate
+W48-RETURN-002,ValueWithPresentation,accepted_no_mismatch,Final OxFml note accepted shared publication-aware carrier,hold current first-freeze candidate
+W48-RETURN-003,TypedOutcomeProjection,accepted_no_mismatch,Final OxFml note accepted explicit typed host/provider outcome projection,hold current first-freeze candidate
+W48-RETURN-004,ImageSiblingPressure,accepted_no_mismatch,Final OxFml note did not request widening the freeze to absorb IMAGE now,keep IMAGE as sibling packet pressure

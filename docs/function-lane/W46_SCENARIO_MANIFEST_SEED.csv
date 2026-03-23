@@ -1,0 +1,8 @@
+"scenario_id","lane","status","scenario_kind","function_or_operator","setup_macro","probe_macro","expected_status","expected_observable","notes"
+"W46-001","W46-A","ready","excel4_macro","REGISTER.ID","","REGISTER.ID(""Kernel32"",""GetTickCount"",""J!"")","observed","value_kind:number","Worksheet/macro evaluation returns a numeric register id for the seeded Win32 lane."
+"W46-002","W46-A","ready","excel4_macro","CALL","REGISTER.ID(""Kernel32"",""GetTickCount"",""J!"")","CALL({setup_result})","observed","value_kind:number","CALL by register id returns a numeric value for the seeded zero-argument lane."
+"W46-003","W46-B","ready","excel4_macro","CALL","","CALL(""Kernel32"",""GetTickCount"",""J!"")","observed","value_kind:number","Direct CALL with explicit type_text succeeds on the seeded zero-argument lane."
+"W46-004","W46-C","ready","excel4_macro","CALL","","CALL(""Kernel32"",""MulDiv"",""JJJJ"",6,7,3)","observed","primary_value2_eq:14","Direct CALL transports numeric arguments on the seeded Win32 lane."
+"W46-005","W46-C","ready","excel4_macro","CALL","REGISTER.ID(""Kernel32"",""MulDiv"",""JJJJ"")","CALL({setup_result},6,7,3)","observed","primary_value2_eq:14","CALL by register id transports numeric arguments on the seeded Win32 lane."
+"W46-006","W46-D","ready","excel4_macro","REGISTER.ID","","REGISTER.ID(""Kernel32"",""GetTickCount"")","observed","value_kind:number","Current seeded zero-argument lane succeeds when REGISTER.ID omits type_text."
+"W46-007","W46-D","ready","excel4_macro","CALL","","CALL(""Kernel32"",""GetTickCount"")","observed","value_kind:number","Current seeded zero-argument lane succeeds when direct CALL omits type_text."

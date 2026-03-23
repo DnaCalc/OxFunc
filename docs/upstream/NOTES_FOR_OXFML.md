@@ -1414,8 +1414,8 @@ For the currently covered scope, OxFml should be able to consume:
 3. current worksheet error projections from typed host/provider outcomes.
 
 Current OxFunc reading:
-1. rich-value publication is not required to make the already-covered scope usable,
-2. because `IMAGE` and broader rich-value-dependent surfaces remain outside the covered set for now.
+1. rich-value publication is not required to make the seam-freeze packets (`W047` / `W048` / `W049`) usable,
+2. but `IMAGE` remains in the current overall completion scope as a sibling rich-value/publication packet rather than a deferred out-of-scope item.
 
 ### 22.6 Catalog/Registration Usability Needed
 For the covered built-in scope, OxFunc now believes OxFml should preserve:
@@ -1738,7 +1738,10 @@ OxFunc has now integrated that reading locally as:
 3. `W049` owns the first runtime provider/snapshot consumer model and now treats a runtime-only shape plus CSV mapping layer as the first freeze candidate,
 4. `W044` remains the current pinned artifact for bounded consumption and mismatch reporting,
 5. `W042` remains deferred and should only reopen if later concrete evidence forces narrower callable-carrier changes,
-6. no additional OxFunc-local planning packet is needed before first application work begins on the already-covered scope.
+6. the remaining current-scope hard packets after the seam freeze remain:
+   - `W014` for `@` / `SINGLE`,
+   - `W046` for worksheet `CALL` / `REGISTER.ID`,
+   - residual `W023` publication/rich-value work for `HYPERLINK` / `IMAGE`.
 
 ### 26.3 Final OxFunc Response For This Exchange
 OxFunc's final response in this exchange is:
@@ -1747,7 +1750,8 @@ OxFunc's final response in this exchange is:
 3. yes, OxFunc agrees the current returned-surface split should be treated as the first shared freeze candidate,
 4. yes, OxFunc agrees the runtime library-context model should prefer a cleaner runtime-only shape plus explicit CSV/export mapping,
 5. yes, OxFunc agrees the committed `W044` snapshot should remain the immediate shared artifact while the runtime model is developed in parallel,
-6. no additional clarification is currently required before treating the first application seam as provisionally freezable for the already-covered scope.
+6. no additional clarification is currently required before treating the first application seam as provisionally freezable for the already-covered scope,
+7. that freezable seam does not by itself remove `W014`, `W046`, or residual `W023` `IMAGE` / `HYPERLINK` work from the current completion target.
 
 ### 26.4 Narrow Remaining Clarifications
 The only remaining clarifications OxFunc still expects to matter are now implementation-facing rather than note-facing:
@@ -1761,5 +1765,175 @@ After this final exchange, OxFunc's working rule is:
 1. stop using note rounds to revisit already-converged callable sufficiency questions,
 2. treat the first application seam as provisionally freezable for the already-covered scope,
 3. drive any further seam change only from concrete artifacts, consumer mismatches, or implementation pressure coming out of `W047`, `W048`, or `W049`,
-4. keep all other unresolved topics in their current deferred worksets unless and until those concrete triggers appear.
+4. continue in parallel or immediately afterward with the remaining current-scope packets:
+   - `W014`
+   - `W046`
+   - residual `W023` `IMAGE` / `HYPERLINK`,
+5. keep only genuinely deferred topics in their deferred worksets unless and until concrete triggers appear.
+
+## 27. W47 Typed Context And Query Bundle Freeze - First Packet Output
+
+### 27.1 Current Frozen Bundle Artifact
+OxFunc has now turned `W047` into a concrete artifact set:
+1. `docs/function-lane/FUNCTION_SLICE_TYPED_CONTEXT_AND_QUERY_BUNDLE_CONTRACT_PRELIM.md`
+2. `docs/function-lane/W47_TYPED_CONTEXT_QUERY_DEPENDENCY_MAP.csv`
+3. `docs/function-lane/W47_EXECUTION_RECORD.md`
+
+### 27.2 Current First-Freeze Candidate
+The current first-freeze candidate remains:
+1. `ReferenceResolver`
+2. `NowProvider`
+3. `TodayProvider`
+4. `RandomProvider`
+5. `LocaleFormatContext`
+6. `HostInfoProvider`
+7. `RtdProvider`
+8. `RegisteredExternalProvider`
+
+Current OxFunc reading:
+1. the current query names and result partitions remain good enough as the first shared freeze candidate,
+2. `RtdProvider` remains separate from `HostInfoProvider`,
+3. `RegisteredExternalProvider` should also remain separate from `HostInfoProvider`,
+4. the bundle remains capability-scoped and typed rather than collapsing into raw workbook/host objects.
+
+### 27.3 Concrete Ask Back To OxFml
+For `W047`, OxFunc now only wants OxFml to report concrete mismatches against:
+1. the current query/result names,
+2. the current dependency map,
+3. the current separation between:
+   - `ReferenceResolver`
+   - time/random providers
+   - `LocaleFormatContext`
+   - `HostInfoProvider`
+   - `RtdProvider`
+   - `RegisteredExternalProvider`
+
+### 27.4 Reconciliation Artifact
+OxFunc has now added explicit reconciliation artifacts for `W047`:
+1. `docs/function-lane/W47_OXFML_CONSUMER_RECONCILIATION.md`
+2. `docs/function-lane/W47_CONSUMER_MISMATCH_LEDGER.csv`
+
+Current reading:
+1. the final OxFml note introduced no concrete mismatch against the current `W047` bundle,
+2. the packet is now locally pinned at `scope_complete` / `target_complete`,
+3. integration remains partial until OxFml consumes the frozen bundle in the bounded first application round.
+
+## 28. W48 Return Surface And Publication Hint Freeze - First Packet Output
+
+### 28.1 Current Frozen Return Artifact
+OxFunc has now turned `W048` into a concrete artifact set:
+1. `docs/function-lane/FUNCTION_SLICE_RETURN_SURFACE_AND_PUBLICATION_HINT_CONTRACT_PRELIM.md`
+2. `docs/function-lane/W48_RETURN_SURFACE_CLASS_MAP.csv`
+3. `docs/function-lane/W48_EXECUTION_RECORD.md`
+
+### 28.2 Current First-Freeze Candidate
+The current first-freeze candidate remains:
+1. ordinary value
+2. `ValueWithPresentation`
+3. typed host/provider outcome projection
+
+Current OxFunc reading:
+1. `ValueWithPresentation` is now the shared publication-aware class for:
+   - `NOW`
+   - `TODAY`
+   - `HYPERLINK`
+2. typed provider-outcome projection remains explicit for:
+   - `TRANSLATE`
+   - `RTD`
+3. `IMAGE` remains a sibling rich-value/publication packet pressure, not a reason to widen the `W048` freeze prematurely.
+
+### 28.3 Concrete Ask Back To OxFml
+For `W048`, OxFunc now only wants OxFml to report concrete mismatches against:
+1. the current three-way return split,
+2. the current classification map,
+3. the current reading that typed provider outcomes remain explicit at the callback boundary even when the final worksheet-visible result lands in ordinary value/error space.
+
+### 28.4 Reconciliation Artifact
+OxFunc has now added explicit reconciliation artifacts for `W048`:
+1. `docs/function-lane/W48_OXFML_CONSUMER_RECONCILIATION.md`
+2. `docs/function-lane/W48_CONSUMER_MISMATCH_LEDGER.csv`
+
+Current reading:
+1. the final OxFml note introduced no concrete mismatch against the current `W048` return split,
+2. the packet is now locally pinned at `scope_complete` / `target_complete`,
+3. integration remains partial until OxFml consumes the frozen split in the bounded first application round.
+
+## 29. W49 Runtime Library Context Provider Consumer Model - First Packet Output
+
+### 29.1 Current Runtime Model Artifact
+OxFunc has now turned `W049` into a concrete artifact set:
+1. `docs/function-lane/FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`
+2. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CSV_TO_RUNTIME_MAPPING.csv`
+3. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
+4. `docs/function-lane/W49_EXECUTION_RECORD.md`
+
+### 29.2 Current First-Freeze Candidate
+The current first-freeze runtime model remains:
+1. `LibraryContextProvider`
+2. immutable `LibraryContextSnapshot`
+3. grouped runtime entry model
+4. explicit CSV/export mapping layer
+5. explicit generation changes on registration/removal
+
+Current OxFunc reading:
+1. the runtime model should not mirror the CSV column-for-column,
+2. the CSV remains the pinned interchange/debug artifact,
+3. runtime consumers should group fields by identity, naming, planner-visible semantics, seam guidance, and provenance,
+4. future registered-external change pressure from `W046` should produce fresh immutable snapshot generations rather than mutating current snapshot meaning silently.
+
+### 29.3 Concrete Ask Back To OxFml
+For `W049`, OxFunc now only wants OxFml to report concrete mismatches against:
+1. the current runtime provider/snapshot split,
+2. the current CSV-to-runtime mapping,
+3. the current consumer walkthrough,
+4. the current reading that runtime implementation should use a cleaner object model plus mapping layer rather than direct CSV mirroring.
+
+### 29.4 Reconciliation Artifact
+OxFunc has now added explicit reconciliation artifacts for `W049`:
+1. `docs/function-lane/W49_OXFML_CONSUMER_RECONCILIATION.md`
+2. `docs/function-lane/W49_CONSUMER_MISMATCH_LEDGER.csv`
+
+Current reading:
+1. the final OxFml note introduced no concrete mismatch against the current `W049` runtime model,
+2. the packet is now locally pinned at `scope_complete` / `target_complete`,
+3. integration remains partial until OxFml consumes the frozen runtime model in the bounded first application round.
+
+## 30. W46 CALL / REGISTER.ID Runtime Narrowing
+
+### 30.1 Current Admitted Runtime Artifact
+OxFunc has now moved `W046` beyond catalog-only planning:
+1. `docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md`
+2. `docs/function-lane/W46_SCENARIO_MANIFEST_SEED.csv`
+3. `docs/function-lane/W46_RUNTIME_REQUIREMENTS.md`
+4. `docs/function-lane/W46_EXECUTION_RECORD.md`
+
+### 30.2 Current OxFunc Runtime Reading
+Current typed seam is:
+1. `RegisterIdRequest`
+2. `RegisteredExternalDescriptor`
+3. `RegisteredExternalCallRequest`
+4. `RegisteredExternalProvider`
+
+Current reading:
+1. `REGISTER.ID` normalizes a typed registration request and receives a typed descriptor from host/OxFml,
+2. `CALL` normalizes either:
+   - numeric register-id target, or
+   - direct `{ library, procedure, optional type_text }` target,
+3. host/OxFml still owns registration-handle allocation and actual external invocation,
+4. OxFunc only projects the worksheet-visible result.
+
+### 30.3 Seeded Native Baseline
+Pinned native Excel4 replay now shows:
+1. `REGISTER.ID("Kernel32","GetTickCount","J!")` returns a numeric register id,
+2. `CALL(register_id)` succeeds on the seeded zero-argument lane,
+3. `CALL("Kernel32","GetTickCount","J!")` succeeds directly,
+4. `CALL("Kernel32","MulDiv","JJJJ",6,7,3)` returns `14`,
+5. `CALL(register_id,6,7,3)` returns `14`,
+6. the seeded zero-argument `GetTickCount` lane also succeeds when `type_text` is omitted.
+
+### 30.4 Concrete Ask Back To OxFml
+For the next round, OxFunc only wants clarification on:
+1. whether OxFml agrees `RegisteredExternalProvider` should stay separate from `HostInfoProvider`,
+2. whether the first bounded consumer model should carry `RegisterIdRequest` / `RegisteredExternalDescriptor` directly or only through the `W049` runtime snapshot/provider layer,
+3. whether OxFml sees any concrete mismatch with the current reading that `CALL` runtime stays above OxFunc except for request normalization and result projection.
 

@@ -30,10 +30,14 @@ This packet owns:
 4. the split between value semantics and host-side publication/application of presentation hints.
 
 ## 4. Out Of Scope
-1. rich-value/publication closure for `IMAGE`,
-2. final callable publication policy,
-3. generalized future provider outcome families beyond current covered seams,
-4. any requirement that OxFunc itself apply presentation hints.
+1. final callable publication policy,
+2. generalized future provider outcome families beyond current covered seams,
+3. any requirement that OxFunc itself apply presentation hints.
+
+Clarification:
+1. `IMAGE` rich-value return/publication work remains in the current overall program scope,
+2. but `W048` only owns the shared return-surface freeze that `IMAGE` should align to,
+3. not the full packet-specific `IMAGE` closure.
 
 ## 5. Expected Deliverables
 1. one shared return-surface contract note,
@@ -43,14 +47,12 @@ This packet owns:
 5. one explicit statement of the accepted first freeze candidate for the returned split.
 
 ## 6. Initial Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - no shared return-surface freeze artifact exists yet
-   - covered functions using presentation hints and provider projections are not yet listed in one place
-   - date versus date-time presentation-hint granularity is not yet separately pinned
+   - current frozen return split is pinned locally but not yet acknowledged as the shared first bounded consumer model
 
 ## 7. Current Freeze Candidate Reading
 After the final OxFml update in this exchange, the current first freeze candidate for `W048` is:

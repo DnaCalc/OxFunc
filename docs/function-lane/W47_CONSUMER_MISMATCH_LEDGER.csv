@@ -1,0 +1,7 @@
+artifact_id,topic,status,detail,next_action
+W47-BUNDLE-001,ReferenceResolver,accepted_no_mismatch,Final OxFml note did not request rename or merge,hold current first-freeze candidate
+W47-BUNDLE-002,TimeAndRandomProviders,accepted_no_mismatch,Final OxFml note did not request merge into host info,hold current first-freeze candidate
+W47-BUNDLE-003,LocaleFormatContext,accepted_no_mismatch,Final OxFml note did not request alternate locale carrier,hold current first-freeze candidate
+W47-BUNDLE-004,HostInfoProvider,accepted_no_mismatch,Final OxFml note accepted current query/result partitioning,hold current first-freeze candidate
+W47-BUNDLE-005,RtdProviderSeparation,accepted_no_mismatch,Final OxFml note did not request merge into HostInfoProvider,hold current first-freeze candidate
+W47-BUNDLE-006,RegisteredExternalProvider,local_extension_pending_next_round,W046 runtime now requires a distinct typed provider for REGISTER.ID and CALL,carry into next OxFml round and hold separate from HostInfoProvider unless a consumer mismatch proves otherwise

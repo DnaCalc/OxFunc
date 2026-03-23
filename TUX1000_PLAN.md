@@ -278,4 +278,12 @@ Each divergence becomes a replayable case and a tracked closure obligation.
 42. `W49` runtime library-context provider consumer model:
    - `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
    - goal: turn the agreed runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction into a concrete first-pass consumer/modeling artifact beyond the current CSV interchange pin.
+43. Post-freeze current-scope completion:
+   - `docs/worksets/W014_IMPLICIT_INTERSECTION_OPERATOR.md`
+   - `docs/worksets/W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md`
+   - `docs/worksets/W023_DEFERRED_HOST_METADATA_AND_DATABASE_FUNCTIONS.md`
+   - goal: after `W047` / `W048` / `W049`, complete the remaining in-scope hard packets rather than treating them as deferred:
+     - `@` / `SINGLE`,
+     - worksheet `CALL` / `REGISTER.ID`,
+     - residual `IMAGE` rich-value/publication and `HYPERLINK` publication behavior.
 

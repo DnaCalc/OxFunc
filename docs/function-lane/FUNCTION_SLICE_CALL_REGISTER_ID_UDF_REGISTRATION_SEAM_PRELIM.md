@@ -1,15 +1,24 @@
 # FUNCTION SLICE - CALL and REGISTER.ID UDF Registration Seam Prelim
 
 ## 1. Purpose
-Pin the current OxFunc-side registration/catalog role for worksheet `CALL` and `REGISTER.ID` without collapsing the Excel C API host surface, DLL/code-resource loading, or external invocation runtime into OxFunc.
+Pin the admitted OxFunc-side runtime seam for worksheet/macro `REGISTER.ID` and macro-sheet `CALL` without collapsing raw Excel C API exposure, DLL/code-resource loading, or external invocation execution into OxFunc.
 
 ## 2. Current OxFunc Reading
-OxFunc should act as steward of the function registration catalog.
+OxFunc is steward of the function registration catalog and of the worksheet-facing normalization for `REGISTER.ID` / `CALL`.
 
 That means:
-1. OxFunc owns the catalog identity of built-in worksheet functions and their legacy `XLCALL.H` built-in codes where those exist.
-2. OxFunc should also own the catalog identity of host-registered external functions once the host/OxFml side supplies their registration descriptors.
-3. The host side still owns exposure of the Excel C API surface and any actual external DLL/code-resource invocation.
+1. OxFunc owns the catalog identity of built-in worksheet functions and their legacy `XLCALL.H` codes where those exist.
+2. OxFunc should also own the catalog identity of host-registered external functions once the host/OxFml side supplies registration descriptors.
+3. OxFunc owns:
+   - `REGISTER.ID` request normalization,
+   - `CALL` target normalization,
+   - register-id lookup vs direct-call target split,
+   - worksheet result projection.
+4. Host/OxFml still owns:
+   - raw Excel C API dispatch,
+   - registration handle allocation,
+   - DLL/code-resource lookup and loading,
+   - actual external invocation.
 
 ## 3. Built-In Function Identity Layer
 Current built-in ingest artifacts:
@@ -17,66 +26,87 @@ Current built-in ingest artifacts:
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
 
 Current intended reading:
-1. `XLCALL.H` built-in `xlf*` numbers are treated as legacy built-in aliases for OxFunc catalog rows, not as replacements for OxFunc stable ids.
+1. `XLCALL.H` built-in `xlf*` numbers are legacy built-in aliases for OxFunc catalog rows, not replacements for OxFunc stable ids.
 2. The preferred downstream identity remains `surface_stable_id`.
-3. The `xlf*` code and symbol should travel as compatibility/interoperability metadata for host C API routing.
+3. `xlf*` code and symbol travel as compatibility/interoperability metadata for host C API routing.
 
-## 4. Minimal OxFml <-> Host <-> OxFunc Seam
-Current first-pass seam split:
-1. host owns the Excel C API callback surface and raw function-number dispatch (`xlf*`, `xlc*`, `xlSpecial`, `xlUDF`),
-2. OxFunc owns the catalog mapping from built-in `xlf*` rows to OxFunc stable ids,
-3. host/OxFml should call into OxFunc using stable ids and prepared arguments once built-in dispatch is resolved,
-4. host owns any eventual external-registration handle allocation and raw external call execution.
+## 4. Admitted Current-Baseline Excel Reading
+Pinned from `ExecuteExcel4Macro(...)` on the seeded Windows baseline:
+1. `REGISTER.ID("Kernel32","GetTickCount","J!")` returns a numeric register id.
+2. `CALL(register_id)` succeeds for the seeded zero-argument `GetTickCount` lane.
+3. `CALL("Kernel32","GetTickCount","J!")` succeeds directly.
+4. `CALL("Kernel32","MulDiv","JJJJ",6,7,3)` succeeds and returns `14`.
+5. `CALL(register_id,6,7,3)` succeeds for the seeded `MulDiv` lane and returns `14`.
+6. The seeded zero-argument `GetTickCount` lane also succeeds when `type_text` is omitted:
+   - `REGISTER.ID("Kernel32","GetTickCount")`
+   - `CALL("Kernel32","GetTickCount")`
+7. This does not yet pin a general omission rule for argument-bearing direct-call lanes.
 
-## 5. UDF Registration Direction
-Current best-attempt registration direction:
-1. host/OxFml observes or receives a registration request analogous to `REGISTER.ID` / host-side `xlfRegister`,
-2. host registers the external routine with the host runtime,
-3. OxFunc receives or stores a catalog descriptor for the registered function:
-   - stable catalog id or host registration handle,
-   - surface name,
-   - declared arity/signature information,
-   - volatility / thread / reference-argument posture,
-   - origin kind,
-4. registration or removal should produce an explicit new immutable library-context snapshot generation rather than mutating downstream catalog truth invisibly,
-5. later worksheet `CALL`-style invocation routes through that registered descriptor.
+Important admission distinction:
+1. Microsoft documents `CALL` as an Excel 4 macro-sheet function.
+2. `REGISTER.ID` is documented as worksheet-usable.
+3. The current replay artifact uses `ExecuteExcel4Macro(...)` to avoid conflating host sheet admission rules with the function-side registration seam.
 
-Current constraint:
-1. OxFunc should not own DLL loading, code-resource lookup, or external call execution itself.
+## 5. Typed OxFunc Runtime Seam
+Current first-pass runtime seam is:
+1. `RegisterIdRequest`
+2. `RegisteredExternalDescriptor`
+3. `RegisteredExternalCallRequest`
+4. `RegisteredExternalProvider`
 
-## 6. Current Catalog Fields Expected To Matter
-For built-in rows, OxFml should expect:
-1. `surface_stable_id`
-2. `canonical_surface_name`
-3. `registration_source_kind`
-4. `xlcall_builtin_symbol`
-5. `xlcall_builtin_code`
+Current request/target shape:
+1. `REGISTER.ID`
+   - `library_name`
+   - `procedure`
+   - optional `declared_type_text`
+2. `CALL`
+   - by register id, or
+   - direct target `{ library_name, procedure, optional declared_type_text }`
+   - plus trailing invocation args preserved as raw `CallArgValue`
 
-For future registered external rows, OxFunc will likely need:
-1. a stable registration/catalog id,
-2. registration source kind,
-3. declared signature / arity metadata,
-4. host invocation boundary kind.
+Current descriptor shape:
+1. `stable_registration_id`
+2. `register_id`
+3. `origin_kind`
+4. `display_name`
+5. `library_name`
+6. `procedure`
+7. `declared_type_text`
 
-## 7. What Is Intentionally Above OxFunc
-Not OxFunc-owned:
-1. raw `Excel12v` / callback dispatch,
-2. `XLCALL.H` command execution,
-3. DLL/code-resource discovery and loading,
-4. VBA/Automation integration runtime,
-5. host-side registration handle allocation,
-6. actual external invocation.
+## 6. Provider Ownership Split
+Current first-pass split:
+1. host/OxFml resolves `REGISTER.ID` requests into a `RegisteredExternalDescriptor`,
+2. host/OxFml looks up existing descriptors by numeric register id,
+3. host/OxFml performs the actual external invocation,
+4. OxFunc returns the projected worksheet value/error from the host-supplied outcome.
+
+Why this is above OxFunc:
+1. registration state is global host state,
+2. external routine loading/execution is not function-kernel work,
+3. registration/removal must later align with `W049` immutable snapshot generation.
+
+## 7. Relation To W047 / W049
+This packet pressures the first-freeze runtime seam in two places:
+1. `W047`
+   - `RegisteredExternalProvider` should be a distinct typed bundle member rather than hidden inside `HostInfoProvider`.
+2. `W049`
+   - future registered-external additions/removals should publish a fresh immutable `LibraryContextSnapshot` generation.
 
 ## 8. Current Honest Status
-This is a first-pass seam definition, not worksheet-semantic closure for `CALL` / `REGISTER.ID`.
+This is no longer only a note-only seam.
 
 What is real now:
 1. local SDK `XLCALL.H` ingest is reproducible,
-2. built-in `xlf*` codes are now cataloged against current OxFunc stable ids where possible,
-3. the preferred registration/catalog ownership split is explicit for the next OxFml exchange.
+2. built-in `xlf*` codes are cataloged against current OxFunc stable ids where possible,
+3. native Excel macro replay exists for seeded `REGISTER.ID` / `CALL` lanes,
+4. OxFunc core now has:
+   - typed `RegisteredExternalProvider`,
+   - typed request/descriptor/call-request structs,
+   - `REGISTER.ID` runtime surface,
+   - `CALL` runtime surface.
 
 What remains open:
-1. empirical worksheet baseline for `CALL` / `REGISTER.ID`,
-2. final registered-external descriptor shape,
-3. full host registration and invocation path,
-4. exact runtime `LibraryContextProvider` / `LibraryContextSnapshot` registration-update shape.
+1. no host-backed registered-external provider exists in-repo yet,
+2. the broader argument-bearing omitted-`type_text` matrix is not pinned,
+3. worksheet-vs-macro-sheet admission/version matrix is not fully pinned,
+4. final registered-external runtime-snapshot row shape is not locked yet.

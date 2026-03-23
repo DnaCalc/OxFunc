@@ -17,9 +17,9 @@ Last updated: 2026-03-21.
 
 - **Status**: in-progress
 - **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
-- **Remaining gaps**: the host/metadata/database residual packet `W023`, the remaining interesting-function packets `W038` / `W041` / `W043`, the worksheet UDF-registration seam packet `W046`, and deferred implicit intersection in `W014`.
+- **Remaining gaps**: the host/metadata/database residual packet `W023` (now mainly `HYPERLINK` / `IMAGE` publication and rich-value closure), the remaining interesting-function packets `W038` / `W041`, the worksheet UDF-registration seam packet `W046`, and current-scope implicit intersection in `W014`.
 - **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, `W034` / `W035` / `W036` now close the locale/profile/provider residual seam packets, `W037` closes the remaining large-root `XIRR` publication lane, `W040` closes the reference-metadata family, and `W045` closes the current non-`@` operator universe.
-- **Canonical owner**: ongoing across worksets, currently `W023` for the residual host/database/publication universe, `W038` / `W041` / `W043` / `W046` for the remaining interesting-function universe, and `W014` for deferred `@`.
+- **Canonical owner**: ongoing across worksets, currently `W023` for the residual host/database/publication universe, `W038` / `W041` / `W046` for the remaining interesting-function universe, `W043` as the completed OxFunc-side `RTD` seam baseline, and `W014` for `@`.
 
 ### IP-02: Locale and Version Sweeps
 
@@ -60,6 +60,7 @@ Last updated: 2026-03-21.
 - **Remaining gaps**: first shared typed context/query bundle, first shared return-surface split, runtime provider/snapshot consumer model, finalized upstream provenance vocabulary, reference-identity carrier, prepared-call contract, evaluation-mode contract.
 - **Why still open**: the latest OxFml note now accepts the first-freeze working rule and the current `W044` callable-row split for one round, but the next seam locks still need explicit packet owners and shared artifacts. Callable field-lock follow-up remains deferred to `W042`; the next agreed seam-hardening owners are `W047`, `W048`, and `W049`.
 - **Canonical owner**: cross-repo; tracked via upstream observation ledger, with OxFunc-local seam hardening in `W042`, `W047`, `W048`, and `W049`.
+- **Immediate follow-on after seam freeze**: continue current-scope completion through `W014` (`@`), `W046` (`CALL` / `REGISTER.ID`), and `W023` residual `IMAGE` / `HYPERLINK` publication work rather than treating them as deferred out-of-scope.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 
@@ -68,6 +69,7 @@ Last updated: 2026-03-21.
 - **Remaining gaps**: precise caller-context scalarization semantics, spill-anchor/reference-result provenance, compatibility-version mapping for `@` vs `SINGLE`/`_xlfn.SINGLE`, runtime implementation, Lean executable model, and deterministic replay artifacts.
 - **Why still open**: current evidence proves syntax and migration pressure, but not a fully implemented scalarization seam across OxFunc, OxFml, and FEC/F3E.
 - **Canonical owner**: `W014`.
+- **Scope note**: this remains in current scope; it is difficult, not deferred out-of-scope.
 
 ### IP-08: Replay Appliance Packet Adapter Rollout
 

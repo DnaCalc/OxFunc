@@ -39,7 +39,7 @@ Members:
 1. classify the current repo floor for registration plumbing that already exists,
 2. define the minimal OxFml ↔ host ↔ OxFunc seam for worksheet `CALL` / `REGISTER.ID`,
 3. ingest the local `XLCALL.H` built-in function identities into the OxFunc catalog surfaces,
-4. decide what is intentionally out of current supported scope,
+4. pin an admitted current-baseline Excel replay slice for `REGISTER.ID` / `CALL`,
 5. avoid treating these functions as ordinary host-query leftovers,
 6. align the future registration path with the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction.
 
@@ -54,8 +54,7 @@ Members:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - no packet-specific scenario manifest yet
-   - no empirical worksheet replay packet yet for `CALL` / `REGISTER.ID`
-   - no host-backed invocation/runtime implementation yet
-   - current repo floor is XLL self-registration plus `XLCALL.H` identity ingest, not worksheet closure
-   - registered-external descriptor shape and snapshot-generation behavior are not yet pinned
+   - no host-backed `RegisteredExternalProvider` exists in-repo yet
+   - broader argument-bearing omitted-`type_text` matrix is not pinned
+   - worksheet-vs-macro-sheet admission/version matrix is not fully pinned
+   - final registered-external runtime-snapshot row shape is not locked yet

@@ -86,5 +86,6 @@ Replay rollout sequence after `W016`:
 10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
 12. `W047`, `W048`, and `W049` are now the next seam-hardening successors for first application usability: typed context/query bundle freeze, return-surface/publication-hint freeze, and the runtime provider/snapshot consumer model.
+13. Those seam-hardening packets do not remove the remaining current-scope hard packets from the completion target: `W014` (`@`), `W046` (`CALL` / `REGISTER.ID`), and the residual `W023` `IMAGE` / `HYPERLINK` publication work remain in scope after the freeze packets.
 
 

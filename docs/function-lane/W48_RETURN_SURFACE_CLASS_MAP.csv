@@ -1,0 +1,5 @@
+"surface_class","carrier_or_pattern","functions","notes"
+"ordinary_value","EvalValue","CELL; INFO; ISFORMULA; FORMULATEXT; SHEET; SHEETS; SUBTOTAL; AGGREGATE; ASC; DBCS; JIS; NUMBERVALUE; RAND","Default published-value class"
+"value_with_presentation","ExtendedValue::ValueWithPresentation","NOW; TODAY; HYPERLINK","Underlying scalar value remains ordinary; hint application stays above OxFunc"
+"typed_outcome_projection","Typed upstream outcome enum projected by OxFunc","TRANSLATE; RTD","The projected worksheet result normally lands back in ordinary value/error space"
+"future_rich_value_sibling","RichValue / rich publication seam","IMAGE","Current overall scope item, but not frozen inside W48"

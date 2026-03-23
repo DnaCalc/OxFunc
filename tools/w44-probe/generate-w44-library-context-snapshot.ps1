@@ -75,6 +75,8 @@ function Get-SpecialInterfaceKind {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "registered_external_invocation" }
+        "FUNC.REGISTER.ID" { return "registered_external_registration" }
         "FUNC.RTD" { return "host_subscription_provider" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "implicit_intersection_operator" }
         "FUNC.NOW" { return "presentation_hinting_function" }
@@ -108,6 +110,8 @@ function Get-InterfaceContractRef {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md" }
+        "FUNC.REGISTER.ID" { return "docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md" }
         "FUNC.RTD" { return "docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "docs/function-lane/IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md" }
         "FUNC.NOW" { return "docs/function-lane/FUNCTION_SLICE_NOW_CONTRACT_PRELIM.md" }
@@ -160,6 +164,8 @@ function Get-AdmissionInterfaceKind {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "macro_or_host_registered_call" }
+        "FUNC.REGISTER.ID" { return "registered_external_lookup" }
         "FUNC.RTD" { return "host_subscription_call" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "operator_form" }
         "FUNC.OP_ADD" { return "operator_form" }
@@ -186,6 +192,8 @@ function Get-PreparationOwner {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "oxfml_then_oxfunc_then_host_registered_external" }
+        "FUNC.REGISTER.ID" { return "oxfml_then_oxfunc_then_host_registered_external" }
         "FUNC.RTD" { return "host_above_oxfunc_then_oxfunc_projection" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "oxfml_then_oxfunc" }
         "FUNC.OP_ADD" { return "oxfml_then_oxfunc" }
@@ -212,6 +220,8 @@ function Get-RuntimeBoundaryKind {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "registered_external_provider_projection" }
+        "FUNC.REGISTER.ID" { return "registered_external_provider_projection" }
         "FUNC.RTD" { return "host_provider_projection" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "caller_context_scalarization" }
         "FUNC.OP_ADD" { return "ordinary_eval" }
@@ -246,6 +256,8 @@ function Get-ArityShapeNote {
     )
 
     switch ($StableId) {
+        "FUNC.CALL" { return "either numeric register_id target or direct library/procedure[/type_text] target; trailing args stay raw for host external invocation" }
+        "FUNC.REGISTER.ID" { return "library name, procedure name/ordinal, optional type_text; returns numeric register id from host registration seam" }
         "FUNC.RTD" { return "prog_id, server_name, then ordered topic strings" }
         "FUNC.OP_IMPLICIT_INTERSECTION" { return "single operand/operator source" }
         "FUNC.OP_ADD" { return "binary operator operands" }
