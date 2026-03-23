@@ -476,10 +476,7 @@ mod tests {
                     "y".to_string(),
                 )))),
             }),
-            args: vec![
-                num(1.0),
-                Stage1Expr::Prepared(PreparedArgValue::MissingArg),
-            ],
+            args: vec![num(1.0), Stage1Expr::Prepared(PreparedArgValue::MissingArg)],
         };
         assert_eq!(
             evaluate_stage1_worksheet(&expr),
