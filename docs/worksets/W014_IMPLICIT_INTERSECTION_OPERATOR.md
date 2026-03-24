@@ -26,6 +26,10 @@ Reviewed inbound observations:
 1. `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` reviewed on `2026-03-14`.
 2. Current state: sibling `docs/upstream/` directory exists in `OxFml`, but `NOTES_FOR_OXFUNC.md` is absent.
 
+Backlog ownership note:
+1. `W014` remains the provenance/evidence owner for `@`.
+2. Active current-version backlog tracking now sits in `W051`.
+
 ## 3. Scope
 In scope for W14:
 1. canonical semantic identity for the operator as `OP_IMPLICIT_INTERSECTION` with surface token `@`.

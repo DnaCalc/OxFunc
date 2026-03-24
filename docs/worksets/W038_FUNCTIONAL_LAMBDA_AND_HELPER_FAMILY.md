@@ -18,6 +18,10 @@ Relevant upstream/local context:
 4. `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 5. `docs/function-lane/INTERESTING_FUNCTIONS_INITIAL_CLASSIFICATION.csv`
 
+Backlog ownership note:
+1. `W038` remains the provenance/evidence owner and likely execution owner for the callable-helper family.
+2. Active current-version backlog tracking now sits in `W051`.
+
 ## 3. Scope
 Machine-readable inventory:
 1. `docs/function-lane/W38_FUNCTIONAL_LAMBDA_AND_HELPER_INVENTORY.csv`

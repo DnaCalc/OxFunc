@@ -18,6 +18,10 @@ Relevant context:
 4. `docs/worksets/W036_DEFERRED_PROVIDER_LANGUAGE_CAPABILITY_BASELINE.md`
 5. `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
 
+Backlog ownership note:
+1. `W041` remains the provenance/evidence owner for the deferred external/provider/cube family.
+2. Active deferred-current-version tracking now sits in `W050`.
+
 Classification note:
 1. `TRANSLATE` belongs to the same broad external-service family as `STOCKHISTORY`, `WEBSERVICE`, and related provider-bound functions.
 2. It is intentionally not kept in this packet because it is built into modern Excel and was small enough to close as a dedicated seam packet in `W036`.

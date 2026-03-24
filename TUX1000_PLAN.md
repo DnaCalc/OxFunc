@@ -258,6 +258,12 @@ Each divergence becomes a replayable case and a tracked closure obligation.
    - `docs/worksets/W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md`
    - goal: hold the remaining callable/library-context seam locks until stronger empirical or implementation-facing evidence exists, instead of forcing premature closure from note-only reasoning.
 36. `W43` RTD COM activation and topic lifecycle seam:
+37. `W50` deferred current-version surface:
+   - `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md`
+   - goal: centralize the Excel rows explicitly deferred from the current version target, replacing scattered deferred ownership across older packets.
+38. `W51` in-scope current-version not-complete surface:
+   - `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
+   - goal: centralize the active current-version function/operator backlog, including `@`, trim-reference operators, residual callable work, registered-external work, and latent unpacketed gaps such as `TRIMRANGE`, `GROUPBY`, and `PIVOTBY`.
    - `docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md`
    - goal: separate `RTD` from the generic provider packet and pin the minimal OxFml/OxFunc seam around ProgID/topic-string shape, host-managed topic lifetime, and external invalidation/value projection.
 37. `W44` library-context snapshot export baseline:

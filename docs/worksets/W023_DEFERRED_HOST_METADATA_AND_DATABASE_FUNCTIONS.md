@@ -12,6 +12,10 @@ This packet originally gathered:
 ## 2. Provenance
 Opened as a successor extraction from `W17`.
 
+Backlog ownership note:
+1. `W023` remains the provenance/evidence owner for the residual `HYPERLINK` / `IMAGE` work.
+2. Active current-version backlog tracking now sits in `W051`.
+
 Source artifacts:
 1. `docs/worksets/W017_DEFERRED_LOW_INTEREST_FUNCTIONS_REQUIRING_HARDENING_AND_HOST_SEAMS.md`
 2. `docs/function-lane/W17_DEFERRED_LOW_INTEREST_INVENTORY.csv`

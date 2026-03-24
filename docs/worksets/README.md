@@ -55,6 +55,8 @@ Kickoff worksets:
 47. `W047_TYPED_CONTEXT_AND_QUERY_BUNDLE_FREEZE.md` (W47)
 48. `W048_RETURN_SURFACE_AND_PUBLICATION_HINT_FREEZE.md` (W48)
 49. `W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` (W49)
+50. `W050_DEFERRED_CURRENT_VERSION_SURFACE.md` (W50)
+51. `W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` (W51)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -87,5 +89,9 @@ Replay rollout sequence after `W016`:
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
 12. `W047`, `W048`, and `W049` are now the next seam-hardening successors for first application usability: typed context/query bundle freeze, return-surface/publication-hint freeze, and the runtime provider/snapshot consumer model.
 13. Those seam-hardening packets do not remove the remaining current-scope hard packets from the completion target: `W014` (`@`), `W046` (`CALL` / `REGISTER.ID`), and the residual `W023` `IMAGE` / `HYPERLINK` publication work remain in scope after the freeze packets.
+14. `W050` and `W051` now centralize current-version backlog tracking:
+    - `W050` is the canonical deferred-current-version list,
+    - `W051` is the canonical in-scope-but-not-complete list,
+    - older family packets remain provenance/evidence owners rather than the active central tracker.
 
 

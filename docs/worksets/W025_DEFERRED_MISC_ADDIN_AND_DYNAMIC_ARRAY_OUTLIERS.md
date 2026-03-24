@@ -6,6 +6,11 @@ Classify and reconcile the two `W24` outliers that proved not to be ordinary cur
 ## 2. Provenance
 Opened by `W24 Batch 15` extraction.
 
+Backlog ownership note:
+1. `W025` remains provenance-only for the earlier `EUROCONVERT` / `RANDARRAY` classification split.
+2. Current-version deferred ownership now sits in `W050` for `EUROCONVERT`.
+3. Current-version in-scope not-complete ownership now sits in `W051` for `RANDARRAY`.
+
 Source artifacts:
 1. `docs/worksets/W024_ORDINARY_FUNCTIONS_MEGA_BATCH_EXECUTION_PLAN.md`
 2. `docs/function-lane/W24_BATCH15_MISC_ORDINARY_CONVERSION_EXECUTION_RECORD.md`

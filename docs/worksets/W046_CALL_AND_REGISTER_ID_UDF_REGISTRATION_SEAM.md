@@ -8,6 +8,10 @@ These functions are not ordinary worksheet kernels. They sit on the boundary bet
 ## 2. Provenance
 Opened as an extraction from `W023` after the host/database packet was narrowed.
 
+Backlog ownership note:
+1. `W046` remains the provenance/evidence owner and likely execution owner for `CALL` / `REGISTER.ID`.
+2. Active current-version backlog tracking now sits in `W051`.
+
 Relevant context:
 1. `docs/worksets/W023_DEFERRED_HOST_METADATA_AND_DATABASE_FUNCTIONS.md`
 2. `tools/fp-probe/xll/README.md`

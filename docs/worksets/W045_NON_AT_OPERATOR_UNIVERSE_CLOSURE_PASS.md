@@ -37,6 +37,10 @@ Relevant context:
    - future operator refresh passes should be checked against Microsoft's operator reference page:
      `https://support.microsoft.com/en-us/office/calculation-operators-and-precedence-in-excel-48be406d-4975-4d31-b2b8-7af9e0e2878a`
 
+Backlog ownership note:
+1. `W045` remains complete for its declared non-`@` operator packet scope.
+2. The trim-reference operators are nevertheless carried in `W051` as an active current-version backlog item because later planning now treats the full trim-reference feature area as not yet fully closed.
+
 ## 3. Scope
 Machine-readable inventory:
 1. `docs/function-lane/W45_NON_AT_OPERATOR_INVENTORY.csv`
