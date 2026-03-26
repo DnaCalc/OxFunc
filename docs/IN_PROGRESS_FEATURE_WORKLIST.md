@@ -3,7 +3,7 @@
 Canonical repo-level register of feature areas that are in-progress under workset completion doctrine.
 
 Status: active.
-Last updated: 2026-03-21.
+Last updated: 2026-03-26.
 
 ## Status Vocabulary
 
@@ -16,7 +16,7 @@ Last updated: 2026-03-21.
 ### IP-01: Function Catalog Expansion
 
 - **Status**: in-progress
-- **Current floor**: 40 functions at `function-phase-complete` across W001-W015, with the criteria-family shape batch (`COUNTIF`, `COUNTIFS`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`) now reconciled out of `W17` through `W022`.
+- **Current floor**: 40+ functions at `function-phase-complete` across W001-W015 and follow-on closure packets, with the standalone `SUMIF` gap now closed through `W052` and the low-order `ASINH` / `PV` / `FV` / `PMT` publication residuals now closed through `W053`.
 - **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns deferred-current-version rows (`W041` family plus `EUROCONVERT`), while `W051` owns in-scope not-complete rows (`W014`, residual `W023`, `W038`, `W046`, trim-reference operators, and latent gaps such as `TRIMRANGE`, `GROUPBY`, `PIVOTBY`, `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, and `RANDARRAY`).
 - **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, `W034` / `W035` / `W036` now close the locale/profile/provider residual seam packets, `W037` closes the remaining large-root `XIRR` publication lane, `W040` closes the reference-metadata family, and `W045` closes the current non-`@` operator universe.
 - **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`).

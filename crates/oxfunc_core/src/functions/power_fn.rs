@@ -22,12 +22,51 @@ pub const POWER_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
+fn exact_integer_exponent(power: f64) -> Option<i64> {
+    if !power.is_finite() {
+        return None;
+    }
+    let truncated = power.trunc();
+    if power != truncated || truncated < i64::MIN as f64 || truncated > i64::MAX as f64 {
+        None
+    } else {
+        Some(truncated as i64)
+    }
+}
+
+fn powi_excel_publication(number: f64, power: i64) -> f64 {
+    if power == 0 {
+        return 1.0;
+    }
+
+    let negative = power < 0;
+    let mut exponent = power.unsigned_abs();
+    let mut base = number;
+    let mut result = 1.0;
+
+    while exponent > 0 {
+        if exponent & 1 == 1 {
+            result *= base;
+        }
+        exponent >>= 1;
+        if exponent > 0 {
+            base *= base;
+        }
+    }
+
+    if negative { 1.0 / result } else { result }
+}
+
 pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> {
     if number == 0.0 && power < 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
 
-    let result = number.powf(power);
+    let result = if let Some(integer_power) = exact_integer_exponent(power) {
+        powi_excel_publication(number, integer_power)
+    } else {
+        number.powf(power)
+    };
     if result.is_nan() {
         Err(WorksheetErrorCode::Num)
     } else {
@@ -58,7 +97,18 @@ mod tests {
     #[test]
     fn power_kernel_matches_excel_domain_lanes() {
         assert_eq!(power_kernel(2.0, 3.0), Ok(8.0));
+        assert_eq!(power_kernel(2.0, -3.0), Ok(0.125));
         assert_eq!(power_kernel(0.0, -1.0), Err(WorksheetErrorCode::Div0));
         assert_eq!(power_kernel(-1.0, 0.5), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn power_kernel_matches_excel_integer_publication_rows() {
+        assert_eq!(power_kernel(1.05, 10.0), Ok(1.6288946267774416));
+        assert_eq!(power_kernel(1.01, 48.0), Ok(1.6122260776824653));
+        assert_eq!(
+            power_kernel(1.0 + 0.08 / 12.0, 10.0),
+            Ok(1.0687026403740616)
+        );
     }
 }

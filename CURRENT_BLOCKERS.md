@@ -2,7 +2,7 @@
 
 Status: active blockers recorded.
 
-Last reviewed: 2026-03-21.
+Last reviewed: 2026-03-26.
 
 ---
 
@@ -18,6 +18,36 @@ Last reviewed: 2026-03-21.
 - **Opened**: 2026-03-15
 
 ## Resolved Blockers
+
+### BLK-FN-014: Low-order current-baseline publication drift in `PV`, `FV`, and `PMT` is repaired
+
+- **Status**: resolved
+- **Impact**: had kept the broad function corpus partial and finance publication confidence qualified after the OxFml seam corrections.
+- **Current state**: `W053` first narrowed the issue with direct Excel `Value2` evidence, then showed the residual was not finance-specific: live Excel `POWER(base, integer_n)` publication matched an exponentiation-by-squaring path rather than the earlier platform `powf` path. OxFunc now applies that integer-exponent publication path in `crates/oxfunc_core/src/functions/power_fn.rs`, and the finance growth helper in `crates/oxfunc_core/src/functions/financial_time_value_family.rs` consumes the same helper. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --test oxfml_seam_integration -- --nocapture` now passes cleanly.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-26
+- **Resolved**: 2026-03-26
+
+### BLK-FN-012: OxFml seam handling of unary negative literals is now verified clean
+
+- **Status**: resolved
+- **Impact**: had blocked honest interpretation of `SIGN`, `PV`, and `FV` in the broad `W049` / `W050` adapter corpus because the failure sat before value comparison.
+- **Current state**: OxFml processed the March 26 residual note in `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` Section 29, reported local parser/binder correction for unary signed literals, and OxFunc-side rerun confirmed that the prior seam failures are gone. The remaining `PV` / `FV` rows are now ordinary low-order value mismatches rather than seam failures.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-26
+- **Resolved**: 2026-03-26
+
+### BLK-FN-013: OxFml blank single-cell stand-in resolution is now verified clean
+
+- **Status**: resolved
+- **Impact**: had blocked honest interpretation of blank-sensitive seam cases, surfaced by `ISBLANK(A1)` in the broad function corpus.
+- **Current state**: OxFml processed the March 26 residual note in `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` Section 29, reported local correction so absent single-cell worksheet references materialize as blank-cell stand-ins rather than unresolved-reference failures, and OxFunc-side rerun confirmed the prior `ISBLANK` seam failure is gone.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-26
+- **Resolved**: 2026-03-26
 
 ### BLK-FN-008: Odd-bond `ODDL*` parity is not yet closure-grade
 

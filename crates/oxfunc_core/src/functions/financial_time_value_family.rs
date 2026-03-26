@@ -6,6 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
+use crate::functions::power_fn::power_kernel;
 use crate::resolver::{ReferenceResolver, resolve_eval_value};
 use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
 use std::fmt;
@@ -152,7 +153,12 @@ fn growth(periodic_rate: f64, periods: f64) -> Result<f64, FinancialError> {
     if base <= 0.0 {
         return Err(FinancialError::Num);
     }
-    let factor = base.powf(periods);
+    let factor = match power_kernel(base, periods) {
+        Ok(factor) => factor,
+        Err(WorksheetErrorCode::Div0) => return Err(FinancialError::Div0),
+        Err(WorksheetErrorCode::Num) => return Err(FinancialError::Num),
+        Err(_) => return Err(FinancialError::Value),
+    };
     if factor.is_finite() {
         Ok(factor)
     } else {
@@ -1124,6 +1130,22 @@ mod tests {
         )
         .expect("nper");
         assert_close(recovered_nper, periods, 1e-9);
+    }
+
+    #[test]
+    fn core_annuity_functions_match_pinned_excel_publication_rows() {
+        assert_eq!(
+            pv(0.05, 10.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(772.1734929184813)
+        );
+        assert_eq!(
+            fv(0.05, 10.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(1257.789253554883)
+        );
+        assert_eq!(
+            pmt(0.05, 10.0, 1000.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(-129.50457496545667)
+        );
     }
 
     #[test]

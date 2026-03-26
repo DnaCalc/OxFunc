@@ -9,6 +9,8 @@ Current packet highlights:
 4. `W41` now has a real local `ENCODEURL` / `FILTERXML` slice through `FUNCTION_SLICE_WEB_TEXT_XML_LOCAL_FUNCTIONS_CONTRACT_PRELIM.md`, `W41_WEB_TEXT_XML_SCENARIO_MANIFEST_SEED.csv`, and `W41_EXECUTION_RECORD.md`.
 5. `W046` now owns the worksheet `CALL` / `REGISTER.ID` UDF-registration seam as a distinct future packet.
 6. The next agreed seam-hardening packets are now `W047`, `W048`, and `W049`: typed context/query bundle freeze, return-surface/publication-hint freeze, and runtime provider/snapshot consumer modeling.
+7. `W052` now closes the standalone `SUMIF` gap on the shared criteria-family substrate through `W52_SUMIF_SCENARIO_MANIFEST_SEED.csv` and `W52_EXECUTION_RECORD.md`.
+8. `W053` now closes the low-order publication drift packet for `ASINH`, `PV`, `FV`, and `PMT`; the decisive repair was shared integer-exponent `POWER` publication alignment rather than a finance-only rewrite.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`
@@ -322,6 +324,9 @@ Primary files:
 306. `W48_CONSUMER_MISMATCH_LEDGER.csv`
 307. `W49_OXFML_CONSUMER_RECONCILIATION.md`
 308. `W49_CONSUMER_MISMATCH_LEDGER.csv`
+309. `W52_SUMIF_SCENARIO_MANIFEST_SEED.csv`
+310. `W52_SUMIF_RUNTIME_REQUIREMENTS.md`
+311. `W52_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

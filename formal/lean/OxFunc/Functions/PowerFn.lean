@@ -27,6 +27,17 @@ def powerMeta : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
 }
 
+def powerNatPublication : Rat → Nat → Rat
+  | _, 0 => 1
+  | base, n + 1 => powerNatPublication base n * base
+
+def powerIntPublication (base : Rat) : Int → Rat
+  | .ofNat n => powerNatPublication base n
+  | .negSucc n => 1 / powerNatPublication base (n + 1)
+
+def usesIntegerPublicationLane (power : Rat) : Bool :=
+  power.den = 1
+
 def evalPowerSurfaceClass (x y : CoercionInput) : Except WorksheetErrorCode String :=
   match coerceToNumber x, coerceToNumber y with
   | .ok 0, .ok p => if p < 0 then .error .div0 else .ok "number"
@@ -39,6 +50,19 @@ def evalPowerSurfaceClass (x y : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalPower_zero_negative_power_is_div0 :
     evalPowerSurfaceClass (.number 0) (.number (-1)) = .error .div0 := by
+  native_decide
+
+theorem power_integer_publication_seed_105_10 :
+    powerNatPublication (21 / 20 : Rat) 10 = (16679880978201 / 10240000000000 : Rat) := by
+  native_decide
+
+theorem power_integer_publication_seed_151_150_10 :
+    powerNatPublication (151 / 150 : Rat) 10 =
+      (6162677950336718514001 / 5766503906250000000000 : Rat) := by
+  native_decide
+
+theorem power_integer_publication_negative_seed :
+    powerIntPublication (2 : Rat) (-3) = (1 / 8 : Rat) := by
   native_decide
 
 theorem powerMeta_profiles :
