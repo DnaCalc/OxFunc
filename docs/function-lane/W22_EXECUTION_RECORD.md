@@ -70,7 +70,7 @@ Current-baseline interpretation:
 ## 8. Standing
 1. the old `W16` / `W17` criteria-family open issue was too broad,
 2. the current baseline split is now evidenced and implemented,
-3. the family is now function-phase-complete for the current reference Excel baseline,
+3. the seven-function `W22` criteria-family slice is now function-phase-complete for the current reference Excel baseline,
 4. no criteria-family-specific XLL verification-seam limitation is presently known for the admitted slice beyond the generic bridge limits already tracked centrally,
 5. the next criteria-family work should only reopen if a version/locale sweep or a broader range-shape case disproves the current baseline rule.
 

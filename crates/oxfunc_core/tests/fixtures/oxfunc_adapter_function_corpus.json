@@ -1,0 +1,2156 @@
+[
+  {
+    "scenario_id": "FN-ABS-01",
+    "seam_family": "function_coverage",
+    "formula": "=ABS(0-5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ABS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ACOS-01",
+    "seam_family": "function_coverage",
+    "formula": "=ACOS(0.5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ACOS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1.0471975511965979)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ACOSH-01",
+    "seam_family": "function_coverage",
+    "formula": "=ACOSH(2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ACOSH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1.3169578969248166)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ACOT-01",
+    "seam_family": "function_coverage",
+    "formula": "=ACOT(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ACOT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.7853981633974483)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ACOTH-01",
+    "seam_family": "function_coverage",
+    "formula": "=ACOTH(2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ACOTH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.5493061443340549)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ASIN-01",
+    "seam_family": "function_coverage",
+    "formula": "=ASIN(0.5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ASIN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.5235987755982989)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ASINH-01",
+    "seam_family": "function_coverage",
+    "formula": "=ASINH(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ASINH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.8813735870195429)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ATAN-01",
+    "seam_family": "function_coverage",
+    "formula": "=ATAN(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ATAN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.7853981633974483)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ATANH-01",
+    "seam_family": "function_coverage",
+    "formula": "=ATANH(0.5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ATANH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.5493061443340549)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COS-01",
+    "seam_family": "function_coverage",
+    "formula": "=COS(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COSH-01",
+    "seam_family": "function_coverage",
+    "formula": "=COSH(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COSH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COT-01",
+    "seam_family": "function_coverage",
+    "formula": "=COT(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.6420926159343306)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COTH-01",
+    "seam_family": "function_coverage",
+    "formula": "=COTH(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COTH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1.3130352854993312)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CSC-01",
+    "seam_family": "function_coverage",
+    "formula": "=CSC(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CSC",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1.1883951057781212)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CSCH-01",
+    "seam_family": "function_coverage",
+    "formula": "=CSCH(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CSCH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.8509181282393216)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-DEGREES-01",
+    "seam_family": "function_coverage",
+    "formula": "=DEGREES(3.141592653589793)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "DEGREES",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(180)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-EXP-01",
+    "seam_family": "function_coverage",
+    "formula": "=EXP(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "EXP",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2.718281828459045)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-FACT-01",
+    "seam_family": "function_coverage",
+    "formula": "=FACT(5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "FACT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(120)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-INT-01",
+    "seam_family": "function_coverage",
+    "formula": "=INT(3.7)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "INT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LN-01",
+    "seam_family": "function_coverage",
+    "formula": "=LN(2.718281828459045)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LOG10-01",
+    "seam_family": "function_coverage",
+    "formula": "=LOG10(100)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LOG10",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ODD-01",
+    "seam_family": "function_coverage",
+    "formula": "=ODD(2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ODD",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-EVEN-01",
+    "seam_family": "function_coverage",
+    "formula": "=EVEN(3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "EVEN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(4)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-RADIANS-01",
+    "seam_family": "function_coverage",
+    "formula": "=RADIANS(180)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "RADIANS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3.141592653589793)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SEC-01",
+    "seam_family": "function_coverage",
+    "formula": "=SEC(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SEC",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SECH-01",
+    "seam_family": "function_coverage",
+    "formula": "=SECH(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SECH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SIGN-01",
+    "seam_family": "function_coverage",
+    "formula": "=SIGN(-5)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SIGN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(-1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SIN-01",
+    "seam_family": "function_coverage",
+    "formula": "=SIN(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SIN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SINH-01",
+    "seam_family": "function_coverage",
+    "formula": "=SINH(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SINH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SQRT-01",
+    "seam_family": "function_coverage",
+    "formula": "=SQRT(16)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SQRT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(4)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TAN-01",
+    "seam_family": "function_coverage",
+    "formula": "=TAN(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TAN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TANH-01",
+    "seam_family": "function_coverage",
+    "formula": "=TANH(0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TANH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ATAN2-01",
+    "seam_family": "function_coverage",
+    "formula": "=ATAN2(1,1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ATAN2",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(0.7853981633974483)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COMBIN-01",
+    "seam_family": "function_coverage",
+    "formula": "=COMBIN(10,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COMBIN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(120)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COMBINA-01",
+    "seam_family": "function_coverage",
+    "formula": "=COMBINA(10,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COMBINA",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(220)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MOD-01",
+    "seam_family": "function_coverage",
+    "formula": "=MOD(10,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MOD",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-POWER-01",
+    "seam_family": "function_coverage",
+    "formula": "=POWER(2,10)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "POWER",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1024)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-QUOTIENT-01",
+    "seam_family": "function_coverage",
+    "formula": "=QUOTIENT(10,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "QUOTIENT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ROUND-01",
+    "seam_family": "function_coverage",
+    "formula": "=ROUND(3.14159,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ROUND",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3.14)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ROUNDDOWN-01",
+    "seam_family": "function_coverage",
+    "formula": "=ROUNDDOWN(3.149,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ROUNDDOWN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3.14)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ROUNDUP-01",
+    "seam_family": "function_coverage",
+    "formula": "=ROUNDUP(3.141,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ROUNDUP",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3.15)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TRUNC-01",
+    "seam_family": "function_coverage",
+    "formula": "=TRUNC(3.7)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TRUNC",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LOG-01",
+    "seam_family": "function_coverage",
+    "formula": "=LOG(100,10)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LOG",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SQRTPI-01",
+    "seam_family": "function_coverage",
+    "formula": "=SQRTPI(1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SQRTPI",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1.7724538509055159)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-AVERAGE-01",
+    "seam_family": "function_coverage",
+    "formula": "=AVERAGE(2,4,6)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "AVERAGE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(4)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COUNT-01",
+    "seam_family": "function_coverage",
+    "formula": "=COUNT(1,2,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COUNT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COUNTA-01",
+    "seam_family": "function_coverage",
+    "formula": "=COUNTA(1,\"a\",TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "COUNTA",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MAX-01",
+    "seam_family": "function_coverage",
+    "formula": "=MAX(1,5,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MAX",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MIN-01",
+    "seam_family": "function_coverage",
+    "formula": "=MIN(1,5,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MIN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-PRODUCT-01",
+    "seam_family": "function_coverage",
+    "formula": "=PRODUCT(2,3,4)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "PRODUCT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(24)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SUMSQ-01",
+    "seam_family": "function_coverage",
+    "formula": "=SUMSQ(3,4)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SUMSQ",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(25)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-EXACT-01",
+    "seam_family": "function_coverage",
+    "formula": "=EXACT(\"hello\",\"hello\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "EXACT",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LEFT-01",
+    "seam_family": "function_coverage",
+    "formula": "=LEFT(\"hello\",3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LEFT",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(hel)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LEN-01",
+    "seam_family": "function_coverage",
+    "formula": "=LEN(\"hello\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LEN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LOWER-01",
+    "seam_family": "function_coverage",
+    "formula": "=LOWER(\"HELLO\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LOWER",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(hello)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MID-01",
+    "seam_family": "function_coverage",
+    "formula": "=MID(\"hello\",2,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MID",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(ell)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-REPT-01",
+    "seam_family": "function_coverage",
+    "formula": "=REPT(\"ab\",3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "REPT",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(ababab)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-RIGHT-01",
+    "seam_family": "function_coverage",
+    "formula": "=RIGHT(\"hello\",3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "RIGHT",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(llo)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TRIM-01",
+    "seam_family": "function_coverage",
+    "formula": "=TRIM(\"  hello  \")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TRIM",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(hello)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-UPPER-01",
+    "seam_family": "function_coverage",
+    "formula": "=UPPER(\"hello\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "UPPER",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(HELLO)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CHAR-01",
+    "seam_family": "function_coverage",
+    "formula": "=CHAR(65)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CHAR",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(A)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CODE-01",
+    "seam_family": "function_coverage",
+    "formula": "=CODE(\"A\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CODE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(65)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CLEAN-01",
+    "seam_family": "function_coverage",
+    "formula": "=CLEAN(\"test\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CLEAN",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(test)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COLUMNS-01",
+    "seam_family": "function_coverage",
+    "formula": "=COLUMNS(A1:C1)",
+    "caller_row": 1,
+    "caller_col": 4,
+    "snapshot_surface_name": "COLUMNS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ReferenceVisible"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-INDEX-01",
+    "seam_family": "function_coverage",
+    "formula": "=INDEX({1,2;3,4},2,1)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "INDEX",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-INDEX-02",
+    "seam_family": "function_coverage",
+    "formula": "=INDEX(A1:B3,2,2)",
+    "caller_row": 1,
+    "caller_col": 3,
+    "snapshot_surface_name": "INDEX",
+    "cell_fixture": {
+      "A1": "Number(10)",
+      "B1": "Number(20)",
+      "A2": "Number(30)",
+      "B2": "Number(40)",
+      "A3": "Number(50)",
+      "B3": "Number(60)"
+    },
+    "expected_value_summary": "Reference(B2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": null,
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MATCH-01-PLACEHOLDER",
+    "seam_family": "function_coverage",
+    "formula": "=MATCH(3,{1,2,3,4},0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MATCH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": null,
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MATCH-01",
+    "seam_family": "function_coverage",
+    "formula": "=MATCH(3,{1,2,3,4},0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MATCH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "ArrayLike",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-DATE-01",
+    "seam_family": "function_coverage",
+    "formula": "=DATE(2026,3,25)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "DATE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(46106)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-YEAR-01",
+    "seam_family": "function_coverage",
+    "formula": "=YEAR(46107)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "YEAR",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2026)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MONTH-01",
+    "seam_family": "function_coverage",
+    "formula": "=MONTH(46107)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MONTH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-DAY-01",
+    "seam_family": "function_coverage",
+    "formula": "=DAY(46107)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "DAY",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(26)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TODAY-01",
+    "seam_family": "function_coverage",
+    "formula": "=TODAY()",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TODAY",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(45000)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": null,
+    "expected_prepared_argument_sources": null,
+    "now_serial": 45000.5,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-EDATE-01",
+    "seam_family": "function_coverage",
+    "formula": "=EDATE(46107,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "EDATE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(46199)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-EOMONTH-01",
+    "seam_family": "function_coverage",
+    "formula": "=EOMONTH(46107,0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "EOMONTH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(46112)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-IF-01",
+    "seam_family": "function_coverage",
+    "formula": "=IF(TRUE,1,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "IF",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-IF-02",
+    "seam_family": "function_coverage",
+    "formula": "=IF(FALSE,1,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "IF",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-AND-01",
+    "seam_family": "function_coverage",
+    "formula": "=AND(TRUE,TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "AND",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-OR-01",
+    "seam_family": "function_coverage",
+    "formula": "=OR(FALSE,TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "OR",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-NOT-01",
+    "seam_family": "function_coverage",
+    "formula": "=NOT(TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "NOT",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(false)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-XOR-01",
+    "seam_family": "function_coverage",
+    "formula": "=XOR(TRUE,FALSE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "XOR",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-IFERROR-01",
+    "seam_family": "function_coverage",
+    "formula": "=IFERROR(1/0,42)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "IFERROR",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(42)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-IFNA-01",
+    "seam_family": "function_coverage",
+    "formula": "=IFNA(A1,0)",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "IFNA",
+    "cell_fixture": {
+      "A1": "Error(#N/A)"
+    },
+    "expected_value_summary": "Number(0)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ReferenceVisible",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISBLANK-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISBLANK(A1)",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "ISBLANK",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISERROR-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISERROR(A1)",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "ISERROR",
+    "cell_fixture": {
+      "A1": "Error(#VALUE!)"
+    },
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISNUMBER-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISNUMBER(42)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ISNUMBER",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISTEXT-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISTEXT(\"hello\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ISTEXT",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISLOGICAL-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISLOGICAL(TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ISLOGICAL",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-N-01",
+    "seam_family": "function_coverage",
+    "formula": "=N(TRUE)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "N",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-T-01",
+    "seam_family": "function_coverage",
+    "formula": "=T(\"hello\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "T",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(hello)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TYPE-01",
+    "seam_family": "function_coverage",
+    "formula": "=TYPE(42)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TYPE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SEQUENCE-01",
+    "seam_family": "function_coverage",
+    "formula": "=SEQUENCE(3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SEQUENCE",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(3x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SEQUENCE-02",
+    "seam_family": "function_coverage",
+    "formula": "=SEQUENCE(2,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SEQUENCE",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(2x3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-HSTACK-01",
+    "seam_family": "function_coverage",
+    "formula": "=HSTACK(1,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "HSTACK",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(1x2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-VSTACK-01",
+    "seam_family": "function_coverage",
+    "formula": "=VSTACK(1,2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "VSTACK",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(2x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-PV-01",
+    "seam_family": "function_coverage",
+    "formula": "=PV(0.05,10,-100)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "PV",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(772.1734929184813)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-FV-01",
+    "seam_family": "function_coverage",
+    "formula": "=FV(0.05,10,-100)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "FV",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1257.789253554883)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-PMT-01",
+    "seam_family": "function_coverage",
+    "formula": "=PMT(0.05,10,1000)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "PMT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(-129.50457496545667)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SUMPRODUCT-01",
+    "seam_family": "function_coverage",
+    "formula": "=SUMPRODUCT({1,2,3},{4,5,6})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SUMPRODUCT",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(32)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike",
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-LARGE-01",
+    "seam_family": "function_coverage",
+    "formula": "=LARGE({3,1,4,1,5,9},2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "LARGE",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SMALL-01",
+    "seam_family": "function_coverage",
+    "formula": "=SMALL({3,1,4,1,5,9},2)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SMALL",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COUNTBLANK-01",
+    "seam_family": "function_coverage",
+    "formula": "=COUNTBLANK(A1:A3)",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "COUNTBLANK",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "A3": "Number(3)"
+    },
+    "expected_value_summary": "Number(1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-COUNTIF-01",
+    "seam_family": "function_coverage",
+    "formula": "=COUNTIF(A1:A5,\">3\")",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "COUNTIF",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "A2": "Number(2)",
+      "A3": "Number(4)",
+      "A4": "Number(5)",
+      "A5": "Number(6)"
+    },
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ReferenceVisible",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SUMIF-01",
+    "seam_family": "function_coverage",
+    "formula": "=SUMIF(A1:A3,\">1\")",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "SUMIF",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "A2": "Number(2)",
+      "A3": "Number(3)"
+    },
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ReferenceVisible",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-AVERAGEIF-01",
+    "seam_family": "function_coverage",
+    "formula": "=AVERAGEIF(A1:A4,\">2\")",
+    "caller_row": 1,
+    "caller_col": 2,
+    "snapshot_surface_name": "AVERAGEIF",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "A2": "Number(2)",
+      "A3": "Number(3)",
+      "A4": "Number(4)"
+    },
+    "expected_value_summary": "Number(3.5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ReferenceVisible",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-MEDIAN-01",
+    "seam_family": "function_coverage",
+    "formula": "=MEDIAN(1,3,5,7,9)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "MEDIAN",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(5)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-CHOOSE-01",
+    "seam_family": "function_coverage",
+    "formula": "=CHOOSE(2,\"a\",\"b\",\"c\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "CHOOSE",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(b)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SWITCH-01",
+    "seam_family": "function_coverage",
+    "formula": "=SWITCH(2,1,\"one\",2,\"two\",3,\"three\")",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SWITCH",
+    "cell_fixture": {},
+    "expected_value_summary": "Text(two)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-IFS-01",
+    "seam_family": "function_coverage",
+    "formula": "=IFS(FALSE,1,TRUE,2,TRUE,3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "IFS",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-HLOOKUP-01",
+    "seam_family": "function_coverage",
+    "formula": "=HLOOKUP(2,A1:C2,2,FALSE)",
+    "caller_row": 3,
+    "caller_col": 1,
+    "snapshot_surface_name": "HLOOKUP",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "B1": "Number(2)",
+      "C1": "Number(3)",
+      "A2": "Number(10)",
+      "B2": "Number(20)",
+      "C2": "Number(30)"
+    },
+    "expected_value_summary": "Number(20)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": null,
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-XLOOKUP-01",
+    "seam_family": "function_coverage",
+    "formula": "=XLOOKUP(2,A1:A3,B1:B3)",
+    "caller_row": 1,
+    "caller_col": 3,
+    "snapshot_surface_name": "XLOOKUP",
+    "cell_fixture": {
+      "A1": "Number(1)",
+      "A2": "Number(2)",
+      "A3": "Number(3)",
+      "B1": "Text(one)",
+      "B2": "Text(two)",
+      "B3": "Text(three)"
+    },
+    "expected_value_summary": "Reference(B2)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": null,
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-XMATCH-01",
+    "seam_family": "function_coverage",
+    "formula": "=XMATCH(3,{1,2,3,4})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "XMATCH",
+    "cell_fixture": {},
+    "expected_value_summary": "Number(3)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-SORT-01",
+    "seam_family": "function_coverage",
+    "formula": "=SORT({3;1;2})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "SORT",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(3x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-UNIQUE-01",
+    "seam_family": "function_coverage",
+    "formula": "=UNIQUE({1;2;2;3;3;3})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "UNIQUE",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(3x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-FILTER-01",
+    "seam_family": "function_coverage",
+    "formula": "=FILTER({1;2;3;4;5},{TRUE;FALSE;TRUE;FALSE;TRUE})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "FILTER",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(3x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike",
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TRANSPOSE-01",
+    "seam_family": "function_coverage",
+    "formula": "=TRANSPOSE({1,2,3})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TRANSPOSE",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(3x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TOCOL-01",
+    "seam_family": "function_coverage",
+    "formula": "=TOCOL({1,2;3,4})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TOCOL",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(4x1)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-TOROW-01",
+    "seam_family": "function_coverage",
+    "formula": "=TOROW({1,2;3,4})",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "TOROW",
+    "cell_fixture": {},
+    "expected_value_summary": "Array(1x4)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "ArrayLike"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISEVEN-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISEVEN(4)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ISEVEN",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
+    "scenario_id": "FN-ISODD-01",
+    "seam_family": "function_coverage",
+    "formula": "=ISODD(3)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "ISODD",
+    "cell_fixture": {},
+    "expected_value_summary": "Logical(true)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  }
+]

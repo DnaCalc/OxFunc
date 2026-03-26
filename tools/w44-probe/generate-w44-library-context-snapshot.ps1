@@ -384,6 +384,22 @@ function Get-ManualMetaOverride {
                 metadata_status = "function_meta_curated"
             }
         }
+        "FUNC.SUMIF" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
         default { return $null }
     }
 }

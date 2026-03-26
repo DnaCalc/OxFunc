@@ -54,6 +54,7 @@ use crate::functions::{
     choose_ifs_family::{CHOOSE_META, IFS_META},
     clean_fn::CLEAN_META,
     column_fn::COLUMN_META,
+    columns_fn::COLUMNS_META,
     combin::COMBIN_META,
     combina::COMBINA_META,
     complex_family::{
@@ -79,7 +80,7 @@ use crate::functions::{
     covariance_s_fn::COVARIANCE_S_META,
     criteria_family::{
         AVERAGEIF_META, AVERAGEIFS_META, COUNTIF_META, COUNTIFS_META, MAXIFS_META, MINIFS_META,
-        SUMIFS_META,
+        SUMIF_META, SUMIFS_META,
     },
     csc::CSC_META,
     csch::CSCH_META,
@@ -137,6 +138,7 @@ use crate::functions::{
     gcd_fn::GCD_META,
     geomean_fn::GEOMEAN_META,
     gestep_fn::GESTEP_META,
+    groupby_fn::GROUPBY_META,
     harmean_fn::HARMEAN_META,
     hstack::HSTACK_META,
     hyperlink_fn::HYPERLINK_META,
@@ -218,6 +220,7 @@ use crate::functions::{
     permutationa_fn::PERMUTATIONA_META,
     phi_fn::PHI_META,
     pi::PI_META,
+    pivotby_fn::PIVOTBY_META,
     power_fn::POWER_META,
     product::PRODUCT_META,
     quartile_exc_fn::QUARTILE_EXC_META,
@@ -225,6 +228,7 @@ use crate::functions::{
     quotient_fn::QUOTIENT_META,
     radians::RADIANS_META,
     rand_fn::RAND_META,
+    randbetween_fn::RANDBETWEEN_META,
     rank_avg_fn::RANK_AVG_META,
     rank_eq_fn::RANK_EQ_META,
     rank_fn::RANK_META,
@@ -239,6 +243,7 @@ use crate::functions::{
     rounddown_fn::ROUNDDOWN_META,
     roundup_fn::ROUNDUP_META,
     row_fn::ROW_META,
+    rows_fn::ROWS_META,
     rsq_fn::RSQ_META,
     rtd_fn::RTD_META,
     sec::SEC_META,
@@ -290,9 +295,11 @@ use crate::functions::{
     textjoin::TEXTJOIN_META,
     today_fn::TODAY_META,
     true_fn::TRUE_META,
+    trimrange_fn::TRIMRANGE_META,
     trunc_fn::TRUNC_META,
     type_fn::TYPE_META,
     value_fn::VALUE_META,
+    valuetotext_fn::VALUETOTEXT_META,
     var_fn::VAR_META,
     var_p_fn::VAR_P_META,
     var_s_fn::VAR_S_META,
@@ -405,6 +412,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     CHITEST_META,
     CHAR_META,
     COLUMN_META,
+    COLUMNS_META,
     CODE_META,
     COMBIN_META,
     COMBINA_META,
@@ -529,6 +537,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     GCD_META,
     GEOMEAN_META,
     GESTEP_META,
+    GROUPBY_META,
     GROWTH_META,
     HARMEAN_META,
     HYPERLINK_META,
@@ -706,6 +715,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     PERMUT_META,
     PERMUTATIONA_META,
     PI_META,
+    PIVOTBY_META,
     PMT_META,
     PPMT_META,
     PERCENTOF_META,
@@ -726,12 +736,14 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     RANK_AVG_META,
     RANK_EQ_META,
     RAND_META,
+    RANDBETWEEN_META,
     RANDARRAY_META,
     RATE_META,
     REDUCE_META,
     REGISTER_ID_META,
     ROMAN_META,
     ROW_META,
+    ROWS_META,
     RSQ_META,
     ROUND_META,
     ROUNDDOWN_META,
@@ -769,6 +781,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     STANDARDIZE_META,
     SUBTOTAL_META,
     SUM_META,
+    SUMIF_META,
     SUMIFS_META,
     SUMSQ_META,
     SUMPRODUCT_META,
@@ -810,6 +823,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     TRANSPOSE_META,
     TRIMMEAN_META,
     TRUE_META,
+    TRIMRANGE_META,
     TREND_META,
     TINV_META,
     TRUNC_META,
@@ -821,6 +835,7 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     UNICODE_META,
     UPPER_META,
     VALUE_META,
+    VALUETOTEXT_META,
     VAR_META,
     VAR_P_META,
     VAR_S_META,
@@ -855,11 +870,35 @@ const FUNCTION_CATALOG: &[FunctionMeta] = &[
     Z_TEST_META,
 ];
 
+fn canonical_surface_name(function_id: &str) -> &str {
+    function_id.strip_prefix("FUNC.").unwrap_or(function_id)
+}
+
+pub fn function_catalog() -> &'static [FunctionMeta] {
+    FUNCTION_CATALOG
+}
+
+pub fn lookup_function_meta_by_id(function_id: &str) -> Option<FunctionMeta> {
+    function_catalog()
+        .iter()
+        .copied()
+        .find(|meta| meta.function_id.eq_ignore_ascii_case(function_id))
+}
+
+pub fn lookup_function_meta_by_surface_name(surface_name: &str) -> Option<FunctionMeta> {
+    function_catalog()
+        .iter()
+        .copied()
+        .find(|meta| canonical_surface_name(meta.function_id).eq_ignore_ascii_case(surface_name))
+}
+
+pub fn lookup_function_meta(name_or_id: &str) -> Option<FunctionMeta> {
+    lookup_function_meta_by_id(name_or_id)
+        .or_else(|| lookup_function_meta_by_surface_name(name_or_id))
+}
+
 fn function_suffix(function_id: &str) -> String {
-    function_id
-        .strip_prefix("FUNC.")
-        .unwrap_or(function_id)
-        .replace('.', "_")
+    canonical_surface_name(function_id).replace('.', "_")
 }
 
 fn csv_escape(field: &str) -> String {

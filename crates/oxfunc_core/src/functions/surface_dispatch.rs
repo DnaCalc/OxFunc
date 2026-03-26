@@ -76,6 +76,7 @@ use crate::functions::choose_ifs_family::{
 };
 use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
 use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
+use crate::functions::columns_fn::{eval_columns_surface, map_columns_error_to_ws};
 use crate::functions::combin::{combin_kernel, eval_combin_surface, map_combin_error_to_ws};
 use crate::functions::combina::{combina_kernel, eval_combina_surface, map_combina_error_to_ws};
 use crate::functions::complex_family::{
@@ -109,7 +110,8 @@ use crate::functions::covariance_p_fn::{eval_covariance_p_surface, map_covarianc
 use crate::functions::covariance_s_fn::{eval_covariance_s_surface, map_covariance_s_error_to_ws};
 use crate::functions::criteria_family::{
     eval_averageif_surface, eval_averageifs_surface, eval_countif_surface, eval_countifs_surface,
-    eval_maxifs_surface, eval_minifs_surface, eval_sumifs_surface, map_criteria_error_to_ws,
+    eval_maxifs_surface, eval_minifs_surface, eval_sumif_surface, eval_sumifs_surface,
+    map_criteria_error_to_ws,
 };
 use crate::functions::csc::{csc_kernel, eval_csc_surface, map_csc_error_to_ws};
 use crate::functions::csch::{csch_kernel, eval_csch_surface, map_csch_error_to_ws};
@@ -197,6 +199,7 @@ use crate::functions::gauss_fn::{eval_gauss_surface, map_gauss_error_to_ws};
 use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
 use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
 use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
+use crate::functions::groupby_fn::eval_groupby_surface;
 use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::hyperlink_fn::{
@@ -323,6 +326,7 @@ use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
 use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
 use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws};
 use crate::functions::pi::eval_pi;
+use crate::functions::pivotby_fn::eval_pivotby_surface;
 use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
 use crate::functions::product::{eval_product_surface, map_product_error_to_ws};
 use crate::functions::quartile_exc_fn::{eval_quartile_exc_surface, map_quartile_exc_error_to_ws};
@@ -332,6 +336,9 @@ use crate::functions::quotient_fn::{
 };
 use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
+use crate::functions::randbetween_fn::{
+    eval_randbetween_surface, map_randbetween_error_to_ws,
+};
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
@@ -349,6 +356,7 @@ use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, roun
 use crate::functions::rounddown_fn::{eval_rounddown_surface, map_rounddown_error_to_ws};
 use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws};
 use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
+use crate::functions::rows_fn::{eval_rows_surface, map_rows_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
 use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
 use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
@@ -419,9 +427,11 @@ use crate::functions::today_fn::{
     TodayProvider, eval_today_surface, eval_today_surface_extended, map_today_error_to_ws,
 };
 use crate::functions::true_fn::eval_true_surface;
+use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
 use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
 use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
+use crate::functions::valuetotext_fn::{eval_valuetotext_surface, map_valuetotext_error_to_ws};
 use crate::functions::var_fn::{eval_var_surface, map_var_error_to_ws};
 use crate::functions::var_p_fn::{eval_var_p_surface, map_var_p_error_to_ws};
 use crate::functions::var_s_fn::{eval_var_s_surface, map_var_s_error_to_ws};
@@ -515,6 +525,7 @@ pub const FUNC_ID_CHISQ_TEST: &str = "FUNC.CHISQ.TEST";
 pub const FUNC_ID_CHITEST: &str = "FUNC.CHITEST";
 pub const FUNC_ID_CHAR: &str = "FUNC.CHAR";
 pub const FUNC_ID_COLUMN: &str = "FUNC.COLUMN";
+pub const FUNC_ID_COLUMNS: &str = "FUNC.COLUMNS";
 pub const FUNC_ID_CODE: &str = "FUNC.CODE";
 pub const FUNC_ID_COMBIN: &str = "FUNC.COMBIN";
 pub const FUNC_ID_COMBINA: &str = "FUNC.COMBINA";
@@ -634,6 +645,7 @@ pub const FUNC_ID_GAMMALN_PRECISE: &str = "FUNC.GAMMALN.PRECISE";
 pub const FUNC_ID_GCD: &str = "FUNC.GCD";
 pub const FUNC_ID_GEOMEAN: &str = "FUNC.GEOMEAN";
 pub const FUNC_ID_GESTEP: &str = "FUNC.GESTEP";
+pub const FUNC_ID_GROUPBY: &str = "FUNC.GROUPBY";
 pub const FUNC_ID_GROWTH: &str = "FUNC.GROWTH";
 pub const FUNC_ID_FORECAST: &str = "FUNC.FORECAST";
 pub const FUNC_ID_FORECAST_LINEAR: &str = "FUNC.FORECAST.LINEAR";
@@ -808,6 +820,7 @@ pub const FUNC_ID_PERCENTRANK_INC: &str = "FUNC.PERCENTRANK.INC";
 pub const FUNC_ID_PERCENTRANK: &str = "FUNC.PERCENTRANK";
 pub const FUNC_ID_PHI: &str = "FUNC.PHI";
 pub const FUNC_ID_PI: &str = "FUNC.PI";
+pub const FUNC_ID_PIVOTBY: &str = "FUNC.PIVOTBY";
 pub const FUNC_ID_PMT: &str = "FUNC.PMT";
 pub const FUNC_ID_PPMT: &str = "FUNC.PPMT";
 pub const FUNC_ID_PERCENTOF: &str = "FUNC.PERCENTOF";
@@ -825,6 +838,7 @@ pub const FUNC_ID_QUARTILE_INC: &str = "FUNC.QUARTILE.INC";
 pub const FUNC_ID_QUARTILE: &str = "FUNC.QUARTILE";
 pub const FUNC_ID_RAND: &str = "FUNC.RAND";
 pub const FUNC_ID_RANDARRAY: &str = "FUNC.RANDARRAY";
+pub const FUNC_ID_RANDBETWEEN: &str = "FUNC.RANDBETWEEN";
 pub const FUNC_ID_REDUCE: &str = "FUNC.REDUCE";
 pub const FUNC_ID_RATE: &str = "FUNC.RATE";
 pub const FUNC_ID_RADIANS: &str = "FUNC.RADIANS";
@@ -832,6 +846,7 @@ pub const FUNC_ID_RANK: &str = "FUNC.RANK";
 pub const FUNC_ID_RANK_AVG: &str = "FUNC.RANK.AVG";
 pub const FUNC_ID_RANK_EQ: &str = "FUNC.RANK.EQ";
 pub const FUNC_ID_ROW: &str = "FUNC.ROW";
+pub const FUNC_ID_ROWS: &str = "FUNC.ROWS";
 pub const FUNC_ID_RRI: &str = "FUNC.RRI";
 pub const FUNC_ID_RTD: &str = "FUNC.RTD";
 pub const FUNC_ID_ROMAN: &str = "FUNC.ROMAN";
@@ -876,6 +891,7 @@ pub const FUNC_ID_STDEVPA: &str = "FUNC.STDEVPA";
 pub const FUNC_ID_STANDARDIZE: &str = "FUNC.STANDARDIZE";
 pub const FUNC_ID_SUBTOTAL: &str = "FUNC.SUBTOTAL";
 pub const FUNC_ID_SUM: &str = "FUNC.SUM";
+pub const FUNC_ID_SUMIF: &str = "FUNC.SUMIF";
 pub const FUNC_ID_SUMIFS: &str = "FUNC.SUMIFS";
 pub const FUNC_ID_SUMPRODUCT: &str = "FUNC.SUMPRODUCT";
 pub const FUNC_ID_SUMX2MY2: &str = "FUNC.SUMX2MY2";
@@ -928,6 +944,7 @@ pub const FUNC_ID_TREND: &str = "FUNC.TREND";
 pub const FUNC_ID_TRANSPOSE: &str = "FUNC.TRANSPOSE";
 pub const FUNC_ID_TRUNC: &str = "FUNC.TRUNC";
 pub const FUNC_ID_TRIM: &str = "FUNC.TRIM";
+pub const FUNC_ID_TRIMRANGE: &str = "FUNC.TRIMRANGE";
 pub const FUNC_ID_TTEST: &str = "FUNC.TTEST";
 pub const FUNC_ID_TYPE: &str = "FUNC.TYPE";
 pub const FUNC_ID_UNIQUE: &str = "FUNC.UNIQUE";
@@ -935,6 +952,7 @@ pub const FUNC_ID_UNICHAR: &str = "FUNC.UNICHAR";
 pub const FUNC_ID_UNICODE: &str = "FUNC.UNICODE";
 pub const FUNC_ID_UPPER: &str = "FUNC.UPPER";
 pub const FUNC_ID_VALUE: &str = "FUNC.VALUE";
+pub const FUNC_ID_VALUETOTEXT: &str = "FUNC.VALUETOTEXT";
 pub const FUNC_ID_VAR: &str = "FUNC.VAR";
 pub const FUNC_ID_VAR_P: &str = "FUNC.VAR.P";
 pub const FUNC_ID_VAR_S: &str = "FUNC.VAR.S";
@@ -1218,6 +1236,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_CHAR => Some(crate::functions::text_scalar_misc::CHAR_META.arg_preparation_profile),
         FUNC_ID_COLUMN => Some(crate::functions::column_fn::COLUMN_META.arg_preparation_profile),
+        FUNC_ID_COLUMNS => {
+            Some(crate::functions::columns_fn::COLUMNS_META.arg_preparation_profile)
+        }
         FUNC_ID_CODE => Some(crate::functions::text_scalar_misc::CODE_META.arg_preparation_profile),
         FUNC_ID_COMBIN => Some(crate::functions::combin::COMBIN_META.arg_preparation_profile),
         FUNC_ID_COMBINA => Some(crate::functions::combina::COMBINA_META.arg_preparation_profile),
@@ -1478,6 +1499,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_GCD => Some(crate::functions::gcd_fn::GCD_META.arg_preparation_profile),
         FUNC_ID_GEOMEAN => Some(crate::functions::geomean_fn::GEOMEAN_META.arg_preparation_profile),
         FUNC_ID_GESTEP => Some(crate::functions::gestep_fn::GESTEP_META.arg_preparation_profile),
+        FUNC_ID_GROUPBY => {
+            Some(crate::functions::groupby_fn::GROUPBY_META.arg_preparation_profile)
+        }
         FUNC_ID_GROWTH => {
             Some(crate::functions::regression_forecast_family::GROWTH_META.arg_preparation_profile)
         }
@@ -1877,6 +1901,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         ),
         FUNC_ID_PHI => Some(crate::functions::phi_fn::PHI_META.arg_preparation_profile),
         FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
+        FUNC_ID_PIVOTBY => {
+            Some(crate::functions::pivotby_fn::PIVOTBY_META.arg_preparation_profile)
+        }
         FUNC_ID_PMT => {
             Some(crate::functions::financial_time_value_family::PMT_META.arg_preparation_profile)
         }
@@ -1922,6 +1949,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_RANDARRAY => {
             Some(crate::functions::misc_conversion_family::RANDARRAY_META.arg_preparation_profile)
         }
+        FUNC_ID_RANDBETWEEN => {
+            Some(crate::functions::randbetween_fn::RANDBETWEEN_META.arg_preparation_profile)
+        }
         FUNC_ID_REDUCE => Some(REDUCE_META.arg_preparation_profile),
         FUNC_ID_RATE => {
             Some(crate::functions::financial_time_value_family::RATE_META.arg_preparation_profile)
@@ -1933,6 +1963,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_RANK_EQ => Some(crate::functions::rank_eq_fn::RANK_EQ_META.arg_preparation_profile),
         FUNC_ID_ROW => Some(crate::functions::row_fn::ROW_META.arg_preparation_profile),
+        FUNC_ID_ROWS => Some(crate::functions::rows_fn::ROWS_META.arg_preparation_profile),
         FUNC_ID_RRI => {
             Some(crate::functions::financial_time_value_family::RRI_META.arg_preparation_profile)
         }
@@ -2009,6 +2040,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::subtotal_aggregate_family::SUBTOTAL_META.arg_preparation_profile)
         }
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
+        FUNC_ID_SUMIF => Some(crate::functions::criteria_family::SUMIF_META.arg_preparation_profile),
         FUNC_ID_SUMIFS => {
             Some(crate::functions::criteria_family::SUMIFS_META.arg_preparation_profile)
         }
@@ -2107,6 +2139,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_TRUNC => Some(crate::functions::trunc_fn::TRUNC_META.arg_preparation_profile),
         FUNC_ID_TRIM => Some(crate::functions::text_scalar_misc::TRIM_META.arg_preparation_profile),
+        FUNC_ID_TRIMRANGE => {
+            Some(crate::functions::trimrange_fn::TRIMRANGE_META.arg_preparation_profile)
+        }
         FUNC_ID_TTEST => {
             Some(crate::functions::statistical_tests_family::TTEST_META.arg_preparation_profile)
         }
@@ -2122,6 +2157,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::text_scalar_misc::UPPER_META.arg_preparation_profile)
         }
         FUNC_ID_VALUE => Some(crate::functions::value_fn::VALUE_META.arg_preparation_profile),
+        FUNC_ID_VALUETOTEXT => {
+            Some(crate::functions::valuetotext_fn::VALUETOTEXT_META.arg_preparation_profile)
+        }
         FUNC_ID_VAR => Some(crate::functions::var_fn::VAR_META.arg_preparation_profile),
         FUNC_ID_VAR_P => Some(crate::functions::var_p_fn::VAR_P_META.arg_preparation_profile),
         FUNC_ID_VAR_S => Some(crate::functions::var_s_fn::VAR_S_META.arg_preparation_profile),
@@ -2456,6 +2494,7 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_COLUMN => {
             eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e))
         }
+        FUNC_ID_COLUMNS => eval_columns_surface(args).map_err(|e| map_columns_error_to_ws(&e)),
         FUNC_ID_COS => eval_cos_surface(args, resolver).map_err(|e| map_cos_error_to_ws(&e)),
         FUNC_ID_COSH => eval_cosh_surface(args, resolver).map_err(|e| map_cosh_error_to_ws(&e)),
         FUNC_ID_CORREL => {
@@ -2727,6 +2766,8 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_GESTEP => {
             eval_gestep_surface(args, resolver).map_err(|e| map_gestep_error_to_ws(&e))
         }
+        FUNC_ID_GROUPBY => eval_groupby_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_GROWTH => {
             eval_growth_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
         }
@@ -2855,6 +2896,9 @@ pub fn eval_surface_value_call_with_callable(
             crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(&e)
         }),
         FUNC_ID_SUM => eval_sum_surface(args, resolver).map_err(|e| map_sum_error_to_ws(&e)),
+        FUNC_ID_SUMIF => {
+            eval_sumif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
+        }
         FUNC_ID_SUMIFS => {
             eval_sumifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
         }
@@ -3253,6 +3297,12 @@ pub fn eval_surface_value_call_with_callable(
             let provider = FixedRandomProvider { value };
             eval_rand_surface(args, &provider).map_err(|e| map_rand_error_to_ws(&e))
         }
+        FUNC_ID_RANDBETWEEN => {
+            let value = random_value.ok_or(WorksheetErrorCode::Value)?;
+            let provider = FixedRandomProvider { value };
+            eval_randbetween_surface(args, resolver, &provider)
+                .map_err(|e| map_randbetween_error_to_ws(&e))
+        }
         FUNC_ID_RATE => {
             eval_rate_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
         }
@@ -3276,6 +3326,7 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_QUARTILE => eval_quartile_surface(args, resolver)
             .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
         FUNC_ID_ROW => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
+        FUNC_ID_ROWS => eval_rows_surface(args).map_err(|e| map_rows_error_to_ws(&e)),
         FUNC_ID_RRI => {
             eval_rri_surface(args, resolver).map_err(|e| map_financial_time_value_error_to_ws(&e))
         }
@@ -3484,6 +3535,9 @@ pub fn eval_surface_value_call_with_callable(
             eval_trend_surface(args, resolver).map_err(|e| map_regression_forecast_error_to_ws(&e))
         }
         FUNC_ID_TRUNC => eval_trunc_surface(args, resolver).map_err(|e| map_trunc_error_to_ws(&e)),
+        FUNC_ID_TRIMRANGE => {
+            eval_trimrange_surface(args, resolver).map_err(|e| map_trimrange_error_to_ws(&e))
+        }
         FUNC_ID_TRIM => {
             eval_trim_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
         }
@@ -3505,6 +3559,9 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_VALUE => {
             let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
             eval_value_surface(args, resolver, ctx).map_err(|e| map_value_error_to_ws(&e))
+        }
+        FUNC_ID_VALUETOTEXT => {
+            eval_valuetotext_surface(args, resolver).map_err(|e| map_valuetotext_error_to_ws(&e))
         }
         FUNC_ID_VAR => eval_var_surface(args, resolver).map_err(|e| map_var_error_to_ws(&e)),
         FUNC_ID_VAR_P => eval_var_p_surface(args, resolver).map_err(|e| map_var_p_error_to_ws(&e)),
@@ -3587,6 +3644,8 @@ pub fn eval_surface_value_call_with_callable(
                 Err(e) => Err(map_eval_error_to_ws(&e)),
             }
         }
+        FUNC_ID_PIVOTBY => eval_pivotby_surface(args, resolver, callable_invoker)
+            .map_err(|e| map_lambda_helper_error_to_ws(&e)),
         FUNC_ID_POWER => eval_power_surface(args, resolver).map_err(|e| map_power_error_to_ws(&e)),
         FUNC_ID_QUOTIENT => {
             eval_quotient_surface(args, resolver).map_err(|e| map_quotient_error_to_ws(&e))

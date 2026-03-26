@@ -38,6 +38,11 @@ pub const COUNTIFS_META: FunctionMeta = FunctionMeta {
     arity: Arity { min: 2, max: 254 },
     ..CRITERIA_BASE_META
 };
+pub const SUMIF_META: FunctionMeta = FunctionMeta {
+    function_id: "FUNC.SUMIF",
+    arity: Arity { min: 2, max: 3 },
+    ..CRITERIA_BASE_META
+};
 pub const SUMIFS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMIFS",
     arity: Arity { min: 3, max: 255 },
@@ -592,6 +597,44 @@ pub fn eval_sumifs_surface(
     eval_sum_filtered(&sum_range, &matching_mask(&pairs)?)
 }
 
+pub fn eval_sumif_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, CriteriaEvalError> {
+    if !SUMIF_META.arity.accepts(args.len()) {
+        return Err(CriteriaEvalError::ArityMismatch {
+            expected_min: SUMIF_META.arity.min,
+            expected_max: SUMIF_META.arity.max,
+            actual: args.len(),
+        });
+    }
+    let criteria_range = flatten_arg(&args[0], resolver)?;
+    let prepared =
+        prepare_arg_values_only(&args[1], resolver).map_err(CriteriaEvalError::Coercion)?;
+    let criteria = criteria_from_prepared(&prepared)?;
+    let sum_range = if let Some(range) = args.get(2) {
+        let direct = flatten_arg(range, resolver)?;
+        if direct.shape == criteria_range.shape {
+            direct
+        } else if let Some(anchored) =
+            try_anchor_reference_to_shape(range, criteria_range.shape, resolver)?
+        {
+            anchored
+        } else {
+            direct
+        }
+    } else {
+        criteria_range.clone()
+    };
+    ensure_same_shape(&[&criteria_range, &sum_range])?;
+    let mask = criteria_range
+        .cells
+        .iter()
+        .map(|cell| criteria_matches_cell(&criteria, cell))
+        .collect::<Vec<_>>();
+    eval_sum_filtered(&sum_range, &mask)
+}
+
 pub fn eval_averageif_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -876,6 +919,65 @@ mod tests {
     }
 
     #[test]
+    fn sumif_uses_omitted_sum_range_and_anchors_reference_sum_range() {
+        let direct = eval_sumif_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]]),
+                scalar_text(">1"),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(direct, Ok(EvalValue::Number(5.0)));
+
+        let resolver = MapResolver {
+            refs: HashMap::from([
+                (
+                    "A1:A3".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(1.0)],
+                            vec![ArrayCellValue::Number(1.0)],
+                            vec![ArrayCellValue::Number(1.0)],
+                        ])
+                        .unwrap(),
+                    ),
+                ),
+                ("B2".to_string(), EvalValue::Number(20.0)),
+                (
+                    "B2:B4".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(20.0)],
+                            vec![ArrayCellValue::Number(30.0)],
+                            vec![ArrayCellValue::Number(40.0)],
+                        ])
+                        .unwrap(),
+                    ),
+                ),
+            ]),
+        };
+        let anchored = eval_sumif_surface(
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::Area,
+                    target: "A1:A3".to_string(),
+                }),
+                scalar_text("1"),
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::A1,
+                    target: "B2".to_string(),
+                }),
+            ],
+            &resolver,
+        );
+        assert_eq!(anchored, Ok(EvalValue::Number(90.0)));
+    }
+
+    #[test]
     fn averageif_uses_omitted_average_range_and_returns_div0_on_no_numeric_matches() {
         let direct = eval_averageif_surface(
             &[
@@ -1080,6 +1182,7 @@ mod tests {
     fn criteria_meta_shapes_match_family() {
         assert_eq!(COUNTIF_META.function_id, "FUNC.COUNTIF");
         assert_eq!(COUNTIFS_META.function_id, "FUNC.COUNTIFS");
+        assert_eq!(SUMIF_META.function_id, "FUNC.SUMIF");
         assert_eq!(SUMIFS_META.function_id, "FUNC.SUMIFS");
         assert_eq!(AVERAGEIF_META.function_id, "FUNC.AVERAGEIF");
         assert_eq!(AVERAGEIFS_META.function_id, "FUNC.AVERAGEIFS");

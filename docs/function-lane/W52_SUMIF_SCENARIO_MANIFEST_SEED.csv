@@ -1,0 +1,6 @@
+scenario_id,lane,setup_values,formula,expected_text,notes
+W52SUMIF-001,W52-SUMIF,"A1:=1|A2:=2|A3:=3","SUMIF(A1:A3,"">1"")","5","Omitted sum_range uses the criteria range directly."
+W52SUMIF-002,W52-SUMIF,"A1:=1|A2:=1|A3:=1|A4:=1|A5:=1|A6:=1|B1:=10|B2:=20|B3:=30|B4:=40|B5:=50|B6:=60","SUMIF(A1:A3,1,B2)","90","A single-cell explicit sum_range anchors from its top-left reference over the criteria-range shape."
+W52SUMIF-003,W52-SUMIF,"A1:=1|A2:=1|A3:=1|A4:=1|A5:=1|A6:=1|B1:=10|B2:=20|B3:=30|B4:=40|B5:=50|B6:=60","SUMIF(A1:A4,1,B2:B3)","140","A smaller explicit sum_range anchors from its top-left reference and expands to the criteria-range height."
+W52SUMIF-004,W52-SUMIF,"A1:=1|A2:=1|A3:=1|B1:=""x""|B2:=10|B3:=""""","SUMIF(A1:A3,1,B1:B3)","10","SUMIF ignores text and blank target cells when summing."
+W52SUMIF-005,W52-SUMIF,"A1:=1|A2:=2|A3:=3|B1:=10|B2:=FORMULA(=1/0)|B3:=30","SUMIF(A1:A3,2,B1:B3)","#DIV/0!","Target-side worksheet errors propagate when the admitted criteria mask reaches the error cell."

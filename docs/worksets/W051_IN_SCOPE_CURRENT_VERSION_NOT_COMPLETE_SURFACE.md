@@ -20,45 +20,43 @@ Machine-readable inventory:
 1. `docs/function-lane/W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv`
 
 Current total:
-1. `21` function rows.
-2. `4` operator rows.
-3. `25` total rows.
+1. `15` function rows.
+2. `1` operator rows.
+3. `16` total rows.
+
+Completed and removed from this inventory (moved to function-phase-complete):
+- `COLUMNS`, `RANDARRAY`, `RANDBETWEEN`, `ROWS`, `TRIMRANGE`, `VALUETOTEXT` (6 functions)
+- `OP_TRIM_REF_LEADING`, `OP_TRIM_REF_TRAILING`, `OP_TRIM_REF_BOTH` (3 operators, verified against W045 structural slice)
+
+Scaffold-partial (W038-blocked, remain in inventory):
+- `GROUPBY`, `PIVOTBY` (2 functions, callable invocation depends on W038)
 
 Functions:
 1. `BYCOL`
 2. `BYROW`
 3. `CALL`
-4. `COLUMNS`
-5. `GROUPBY`
-6. `HYPERLINK`
-7. `IMAGE`
-8. `ISOMITTED`
-9. `LAMBDA`
-10. `LET`
-11. `MAKEARRAY`
-12. `MAP`
-13. `PIVOTBY`
-14. `RANDARRAY`
-15. `RANDBETWEEN`
-16. `REDUCE`
-17. `REGISTER.ID`
-18. `ROWS`
-19. `SCAN`
-20. `TRIMRANGE`
-21. `VALUETOTEXT`
+4. `GROUPBY`
+5. `HYPERLINK`
+6. `IMAGE`
+7. `ISOMITTED`
+8. `LAMBDA`
+9. `LET`
+10. `MAKEARRAY`
+11. `MAP`
+12. `PIVOTBY`
+13. `REDUCE`
+14. `REGISTER.ID`
+15. `SCAN`
 
 Operators:
 1. `OP_IMPLICIT_INTERSECTION` (`@`, legacy alias `SINGLE`)
-2. `OP_TRIM_REF_LEADING`
-3. `OP_TRIM_REF_TRAILING`
-4. `OP_TRIM_REF_BOTH`
 
 ## 4. Current-Version Rule
 For the current version target:
 1. every row not listed in `W050` and not already complete must appear here,
-2. trim-reference operators are treated as still-open current-version work even though `W045` closed a bounded structural slice,
-3. `PIVOTBY` is not complete and belongs here,
-4. `RANDARRAY` is not deferred for current-version tracking and belongs here.
+2. `GROUPBY` and `PIVOTBY` are scaffold-partial (blocked on W038 callable infrastructure) and remain here,
+3. `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, `RANDARRAY`, `TRIMRANGE` are now function-phase-complete and removed,
+4. trim-reference operators (`OP_TRIM_REF_*`) are verified against W045 structural slice and removed.
 
 ## 5. Ownership Rule
 1. `W51` is the canonical current-version not-complete list.

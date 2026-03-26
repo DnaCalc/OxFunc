@@ -1,0 +1,321 @@
+use std::collections::BTreeMap;
+use std::fs;
+use std::path::PathBuf;
+
+use oxfml_core::interface::TypedContextQueryBundle;
+use oxfml_core::oxfunc_adapter::{OxFuncAdapterRequest, run_oxfunc_preparation_adapter};
+use oxfml_core::seam::Locus;
+use oxfml_core::semantics::{
+    LibraryAvailabilityState, LibraryContextSnapshot, LibraryContextSnapshotEntry,
+    RegistrationSourceKind,
+};
+use oxfunc_core::value::{EvalValue, ExcelText, WorksheetErrorCode};
+use serde::Deserialize;
+
+// ---------------------------------------------------------------------------
+// Fixture types — identical to OxFml's W050 schema for portability
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Deserialize)]
+struct FixtureCase {
+    scenario_id: String,
+    seam_family: String,
+    formula: String,
+    caller_row: u32,
+    caller_col: u32,
+    snapshot_surface_name: String,
+    cell_fixture: BTreeMap<String, String>,
+    expected_value_summary: String,
+    expected_returned_value_surface_kind: String,
+    expected_commit_decision_kind: Option<String>,
+    expected_reject_code: Option<String>,
+    expected_prepared_argument_structures: Option<Vec<String>>,
+    expected_prepared_argument_sources: Option<Vec<String>>,
+    now_serial: Option<f64>,
+    random_value: Option<f64>,
+}
+
+// ---------------------------------------------------------------------------
+// Test runner core — shared by all fixture-driven tests
+// ---------------------------------------------------------------------------
+
+fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
+    let mut failures = Vec::new();
+
+    for fixture in fixtures {
+        let provider = oxfml_core::interface::InMemoryLibraryContextProvider::new(
+            test_snapshot(&fixture.snapshot_surface_name),
+        );
+
+        let mut request = OxFuncAdapterRequest::new(
+            fixture.scenario_id.clone(),
+            format!("formula:{}", fixture.scenario_id),
+            fixture.formula.clone(),
+            locus(fixture.caller_row, fixture.caller_col),
+            TypedContextQueryBundle::new(
+                None,
+                None,
+                None,
+                fixture.now_serial,
+                fixture.random_value,
+            ),
+        );
+        request.library_context_provider = Some(&provider);
+
+        for (target, summary) in &fixture.cell_fixture {
+            request
+                .cell_fixture
+                .insert(target.clone(), parse_eval_value_summary(summary));
+        }
+
+        let run = match run_oxfunc_preparation_adapter(request) {
+            Ok(run) => run,
+            Err(err) => {
+                failures.push(format!(
+                    "{} [{}] adapter failed: {err}",
+                    fixture.scenario_id, fixture.seam_family
+                ));
+                continue;
+            }
+        };
+
+        // Check worksheet value
+        let actual_value_summary = eval_value_summary(&run.evaluation_artifact.worksheet_value);
+        if actual_value_summary != fixture.expected_value_summary {
+            failures.push(format!(
+                "{} [{}] worksheet-value mismatch: expected {}, got {}",
+                fixture.scenario_id,
+                fixture.seam_family,
+                fixture.expected_value_summary,
+                actual_value_summary
+            ));
+        }
+
+        // Check return surface kind
+        let actual_surface_kind =
+            format!("{:?}", run.evaluation_artifact.returned_value_surface.kind);
+        if actual_surface_kind != fixture.expected_returned_value_surface_kind {
+            failures.push(format!(
+                "{} [{}] return surface mismatch: expected {}, got {}",
+                fixture.scenario_id,
+                fixture.seam_family,
+                fixture.expected_returned_value_surface_kind,
+                actual_surface_kind
+            ));
+        }
+
+        // Check prepared argument structures
+        if let Some(expected_structures) = &fixture.expected_prepared_argument_structures {
+            let Some(prepared_call) = run.preparation_artifact.prepared_calls.first() else {
+                failures.push(format!(
+                    "{} [{}] expected prepared structures {:?}, but no prepared calls emitted",
+                    fixture.scenario_id, fixture.seam_family, expected_structures
+                ));
+                continue;
+            };
+            let actual: Vec<String> = prepared_call
+                .prepared_arguments
+                .iter()
+                .map(|arg| format!("{:?}", arg.structure_class))
+                .collect();
+            if &actual != expected_structures {
+                failures.push(format!(
+                    "{} [{}] prepared structure mismatch: expected {:?}, got {:?}",
+                    fixture.scenario_id, fixture.seam_family, expected_structures, actual
+                ));
+            }
+        }
+
+        // Check prepared argument sources
+        if let Some(expected_sources) = &fixture.expected_prepared_argument_sources {
+            let Some(prepared_call) = run.preparation_artifact.prepared_calls.first() else {
+                failures.push(format!(
+                    "{} [{}] expected prepared sources {:?}, but no prepared calls emitted",
+                    fixture.scenario_id, fixture.seam_family, expected_sources
+                ));
+                continue;
+            };
+            let actual: Vec<String> = prepared_call
+                .prepared_arguments
+                .iter()
+                .map(|arg| format!("{:?}", arg.source_class))
+                .collect();
+            if &actual != expected_sources {
+                failures.push(format!(
+                    "{} [{}] prepared source mismatch: expected {:?}, got {:?}",
+                    fixture.scenario_id, fixture.seam_family, expected_sources, actual
+                ));
+            }
+        }
+
+        // Check commit decision
+        let expected_commit = fixture
+            .expected_commit_decision_kind
+            .as_deref()
+            .unwrap_or("accepted");
+        if run.evaluation_artifact.commit_decision_kind != expected_commit {
+            failures.push(format!(
+                "{} [{}] commit decision mismatch: expected {}, got {}",
+                fixture.scenario_id,
+                fixture.seam_family,
+                expected_commit,
+                run.evaluation_artifact.commit_decision_kind
+            ));
+        }
+
+        // Check reject code
+        let actual_reject_code = run
+            .evaluation_artifact
+            .reject_code
+            .map(|code| format!("{code:?}"));
+        if actual_reject_code.as_deref() != fixture.expected_reject_code.as_deref() {
+            failures.push(format!(
+                "{} [{}] reject code mismatch: expected {:?}, got {:?}",
+                fixture.scenario_id,
+                fixture.seam_family,
+                fixture.expected_reject_code,
+                actual_reject_code
+            ));
+        }
+    }
+
+    failures
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+#[test]
+fn w050_seam_scenarios_pass_from_oxfunc_side() {
+    let fixtures = load_json_fixtures("w050_oxfunc_admitted_fixture_cases.json");
+    let failures = run_fixture_corpus(&fixtures);
+    assert!(
+        failures.is_empty(),
+        "W050 seam scenarios diverged when run from OxFunc side:\n{}",
+        failures.join("\n")
+    );
+}
+
+#[test]
+fn oxfunc_function_corpus_passes_through_adapter() {
+    let fixtures = load_json_fixtures("oxfunc_adapter_function_corpus.json");
+    let failures = run_fixture_corpus(&fixtures);
+    assert!(
+        failures.is_empty(),
+        "OxFunc function corpus diverged:\n{}",
+        failures.join("\n")
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+fn load_json_fixtures(filename: &str) -> Vec<FixtureCase> {
+    let mut path = fixture_dir();
+    path.push(filename);
+    let content = fs::read_to_string(&path)
+        .unwrap_or_else(|_| panic!("fixture file should exist: {}", path.display()));
+    serde_json::from_str(&content)
+        .unwrap_or_else(|e| panic!("fixture file should deserialize: {} — {e}", path.display()))
+}
+
+fn fixture_dir() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("tests")
+        .join("fixtures")
+}
+
+fn parse_eval_value_summary(summary: &str) -> EvalValue {
+    if let Some(number) = summary
+        .strip_prefix("Number(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        return EvalValue::Number(number.parse().expect("numeric summary should parse"));
+    }
+    if let Some(text) = summary
+        .strip_prefix("Text(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        return EvalValue::Text(ExcelText::from_utf16_code_units(
+            text.encode_utf16().collect(),
+        ));
+    }
+    if let Some(logical) = summary
+        .strip_prefix("Logical(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        return EvalValue::Logical(matches!(logical, "TRUE" | "True" | "true"));
+    }
+    if let Some(code) = summary
+        .strip_prefix("Error(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        let code = match code {
+            "#NULL!" => WorksheetErrorCode::Null,
+            "#DIV/0!" => WorksheetErrorCode::Div0,
+            "#VALUE!" => WorksheetErrorCode::Value,
+            "#REF!" => WorksheetErrorCode::Ref,
+            "#NAME?" => WorksheetErrorCode::Name,
+            "#NUM!" => WorksheetErrorCode::Num,
+            "#N/A" => WorksheetErrorCode::NA,
+            "#CALC!" => WorksheetErrorCode::Calc,
+            "#SPILL!" => WorksheetErrorCode::Spill,
+            other => panic!("unsupported error summary: {other}"),
+        };
+        return EvalValue::Error(code);
+    }
+
+    panic!("unsupported cell summary: {summary}");
+}
+
+fn eval_value_summary(value: &EvalValue) -> String {
+    match value {
+        EvalValue::Number(n) => format!("Number({n})"),
+        EvalValue::Text(t) => format!("Text({})", t.to_string_lossy()),
+        EvalValue::Logical(b) => format!("Logical({b})"),
+        EvalValue::Error(code) => format!("Error({code:?})"),
+        EvalValue::Array(array) => {
+            let shape = array.shape();
+            format!("Array({}x{})", shape.rows, shape.cols)
+        }
+        EvalValue::Reference(reference) => format!("Reference({})", reference.target),
+        EvalValue::Lambda(lambda) => format!("Lambda({})", lambda.callable_token),
+    }
+}
+
+fn locus(row: u32, col: u32) -> Locus {
+    Locus {
+        sheet_id: "sheet:default".to_string(),
+        row,
+        col,
+    }
+}
+
+fn test_snapshot(surface_name: &str) -> LibraryContextSnapshot {
+    LibraryContextSnapshot {
+        snapshot_id: "oxfunc-libctx-v1".to_string(),
+        snapshot_version: "2026-03-22".to_string(),
+        entries: vec![LibraryContextSnapshotEntry {
+            surface_name: surface_name.to_string(),
+            canonical_id: Some(format!("FUNC.{surface_name}")),
+            surface_stable_id: Some(format!("surface:{surface_name}")),
+            name_resolution_table_ref: Some("name-table:v1".to_string()),
+            semantic_trait_profile_ref: Some("traits:v1".to_string()),
+            gating_profile_ref: Some("gating:v1".to_string()),
+            metadata_status: Some("runtime".to_string()),
+            special_interface_kind: None,
+            admission_interface_kind: Some("ordinary".to_string()),
+            preparation_owner: Some("oxfunc".to_string()),
+            runtime_boundary_kind: Some("ordinary_eval".to_string()),
+            arity_shape_note: None,
+            interface_contract_ref: Some("iface:v1".to_string()),
+            registration_source_kind: RegistrationSourceKind::BuiltIn,
+            parse_bind_state: LibraryAvailabilityState::CatalogKnown,
+            semantic_plan_state: LibraryAvailabilityState::CatalogKnown,
+            runtime_capability_state: Some(LibraryAvailabilityState::CatalogKnown),
+            post_dispatch_state: Some(LibraryAvailabilityState::CatalogKnown),
+        }],
+    }
+}

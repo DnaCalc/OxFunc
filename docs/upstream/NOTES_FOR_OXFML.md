@@ -1898,6 +1898,245 @@ Current reading:
 2. the packet is now locally pinned at `scope_complete` / `target_complete`,
 3. integration remains partial until OxFml consumes the frozen runtime model in the bounded first application round.
 
+## 31. Seam Requirements Consolidation And Evaluation Adapter Request (2026-03-24)
+
+### 31.1 What Changed
+
+OxFunc has completed a W051 execution round bringing 6 more functions to `function-phase-complete` (ROWS, COLUMNS, RANDBETWEEN, VALUETOTEXT, RANDARRAY, TRIMRANGE), scaffolding 2 more as `scaffold-partial` waiting on W038 callable infrastructure (GROUPBY, PIVOTBY), and closing 3 trim-reference operators.
+
+The W051 inventory dropped from 25 to 16 rows. The remaining rows are either W038-blocked (callable family), W014-blocked (`@`), W023-blocked (HYPERLINK/IMAGE publication), or W046-blocked (CALL/REGISTER.ID).
+
+Two of those blockers — W038 and W014 — depend on OxFml seam progress. OxFunc has now consolidated all scattered seam requirements into one document and defined a concrete integration test artifact.
+
+### 31.2 New Document: Consolidated Seam Requirements
+
+**File:** `docs/upstream/OXFUNC_OXFML_SEAM_REQUIREMENTS_CONSOLIDATED.md`
+
+This replaces no existing note, but it is now the single reference for what OxFunc needs from OxFml and why. It consolidates requirements from 10 source documents into 7 numbered requirement groups:
+
+1. **SR-ARG-01 through SR-ARG-04**: Prepared argument seam — direct scalar vs array-like, omitted/empty/error distinction, reference identity preservation, caller context.
+2. **SR-CALL-01 through SR-CALL-05**: Callable value seam — carrier minimum fields, typed invocation interface, lexical capture, arity checking, parse-time rejection of duplicate names/params.
+3. **SR-AT-01 through SR-AT-04**: Implicit intersection (`@`) seam — explicit `@` survival, operand provenance, caller context, trace distinguishability.
+4. **SR-RET-01 through SR-RET-03**: Return surface — all value types, presentation hints, lambda publication restriction.
+5. **SR-LIB-01 through SR-LIB-03**: Library context / catalog — per-entry fields, snapshot identity, current freeze artifact.
+6. **SR-AVAIL-01 through SR-AVAIL-03**: Availability / gating taxonomy — parse/bind, runtime, post-dispatch stages.
+
+Each requirement has: what OxFunc needs, why (which functions break without it), and the evidence source.
+
+### 31.3 New Requirement: Evaluation Adapter Artifact
+
+Section 10 of the consolidated document specifies a concrete artifact OxFml must provide:
+
+**"OxFml Evaluation Adapter for OxFunc Seam Validation"**
+
+Purpose: OxFunc has 1042 unit tests, all using mock resolvers. None exercise OxFml's real preparation pipeline. Both sides can pass their own tests while the seam is broken. The adapter closes this gap.
+
+Shape:
+1. Accepts a formula string, a caller cell address, and a cell-value fixture.
+2. Uses OxFml's real parser, binder, and argument preparation logic.
+3. Calls into OxFunc's real surface dispatch.
+4. Returns the result value plus trace metadata showing which `ArgPreparationProfile` was used and what provenance each argument received.
+
+The document defines 38 validation scenarios across 6 categories:
+- **A (10):** Argument preparation — scalar/array coercion, omitted args, reference preservation, caller context
+- **B (7):** `@` implicit intersection — all scalarization modes, provenance preservation
+- **C (14):** Callable/LAMBDA/LET — binding, invocation, lexical capture, higher-order helpers, error cases
+- **D (6):** Return surface — all value types
+- **E (3):** Volatile/provider functions — random seed, time injection
+- **F (5):** Cross-seam stress tests — combining multiple requirements
+
+The critical diagnostic scenarios are:
+- **A02 vs A03**: `SUM("2",TRUE)` must return 3 while `SUM({"2",TRUE})` must return 0. If both return the same value, SR-ARG-01 is violated.
+- **C05**: `=LET(x,1,f,LAMBDA(y,x+y),LET(x,99,f(10)))` must return 11, not 109. If it returns 109, SR-CALL-03 (lexical capture) is violated.
+- **B01**: `=@A1:A3` at caller B2 with A1=10,A2=20,A3=30 must return 20 (not 10). If it returns 10, SR-AT-02 (operand provenance) is violated.
+
+### 31.4 Open Questions For This Round
+
+The consolidated document (§8) lists 4 decisions OxFunc is waiting on:
+
+1. **Q1:** Who evaluates `@`? OxFunc-side operator, or OxFml evaluates upstream?
+2. **Q2:** What prepared-operand vocabulary will OxFml implement?
+3. **Q3:** When will OxFml produce `LambdaValue` carriers for LET/LAMBDA?
+4. **Q4:** Will OxFml provide a real `CallableInvoker` implementation?
+
+OxFunc does not need all four answered at once. Any one of them unblocks meaningful progress. Q4 + Q3 together unblock the entire callable family (11 functions). Q1 + Q2 together unblock `@`.
+
+### 31.5 What OxFunc Has Ready For Integration
+
+| Component | Status |
+|-----------|--------|
+| `LambdaValue` type | Implemented in `value.rs` |
+| `CallableInvoker` trait | Implemented in `callable_helpers.rs` |
+| Stage1 expression interpreter (LET/LAMBDA/ISOMITTED) | Implemented in `callable_stage1_prepared.rs` |
+| MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY | Fully implemented + tested |
+| `@` operator | Fully implemented + 8 empirical scenarios passing |
+| Library context snapshot | First freeze published (`OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`) |
+| 40+ functions at `function-phase-complete` | Full artifact stack (Rust + Lean + contract + tests) |
+| Surface dispatch with 1042 passing tests | Ready to accept real prepared arguments |
+
+### 31.6 Suggested Reading Order For OxFml
+
+1. Start: `docs/upstream/OXFUNC_OXFML_SEAM_REQUIREMENTS_CONSOLIDATED.md` — the whole document, especially §2 (prepared args), §3 (callables), §4 (`@`), §10 (evaluation adapter).
+2. If callable-focused: `crates/oxfunc_core/src/functions/callable_helpers.rs` (the `CallableInvoker` trait and higher-order helper implementations).
+3. If `@`-focused: `docs/handoffs/HANDOFF_W014_IMPLICIT_INTERSECTION_TO_OXFML.md` and `crates/oxfunc_core/src/functions/op_implicit_intersection.rs`.
+4. For catalog context: `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` and its README.
+
+OxFunc is ready to iterate. Respond to any subset of Q1–Q4 or propose alternatives.
+
+## 32. Processed OxFml §25 Response — Adapter Agreement And First-Wave Narrowing (2026-03-24)
+
+### 32.1 What OxFunc Reads From OxFml §25
+
+OxFml agrees:
+1. The concrete adapter artifact is the right next closure step.
+2. It is a bounded test/integration packet, not the normative production host API.
+3. The committed W044 snapshot/export is the first pinning artifact.
+4. CALL/REGISTER.ID and richer publication families are explicitly deferred from the first wave.
+
+OxFml proposes richer adapter input than OxFunc's initial spec:
+- adds `formula_channel`, `active_selection_anchor`, defined-name bindings, table packet inputs, typed context/query bundle, pinned `library_context_snapshot_ref`
+- wants three output artifact families: preparation, evaluation, mismatch report
+- wants fixture families organized by seam pressure rather than only by function name
+
+OxFml assigns W049 (adapter harness) and W050 (fixture families) as owners.
+
+### 32.2 OxFunc Accepts
+
+1. **Bounded test artifact, not production API.** Agreed. OxFunc will not treat the adapter as normative production interface.
+2. **W044 as first pinning artifact.** Agreed. OxFunc's current `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` is the committed snapshot.
+3. **CALL/REGISTER.ID deferred from first wave.** Agreed. W046 remains a separate seam lane.
+4. **Three output artifact families.** Agreed. The preparation artifact is the most critical for OxFunc — it shows whether argument provenance survived OxFml's pipeline.
+5. **Fixture families by seam pressure.** Agreed and preferred. OxFunc's 38 scenarios are already organized by seam category (A=args, B=`@`, C=callable, D=returns, E=volatile, F=cross-seam). This maps directly to OxFml's proposed pressure families.
+
+### 32.3 OxFunc Accepts With Clarification
+
+1. **`formula_channel`**: OxFunc does not currently model channel-dependent function behavior (locale/version sweeps are IP-02, still planned). For the first wave, a single default channel is sufficient. OxFunc will not reject a channel field — it just won't exercise it yet.
+
+2. **`active_selection_anchor`**: No current OxFunc function depends on selection anchor (as distinct from caller anchor). OxFunc accepts the field as optional and will not populate it in the first 38 scenarios. If OxFml has evidence that a function depends on it, that would be a new finding.
+
+3. **Defined-name bindings**: Required for the callable scenarios (C01–C14 involve LET/LAMBDA, which are formula-level, not defined-name). For the first wave, defined-name bindings can be empty unless OxFml wants to exercise the defined-name callable lane. OxFunc accepts the field.
+
+4. **Table packet inputs**: No current OxFunc scenario uses structured references. OxFunc accepts the field as optional. Structured-reference interaction is explicitly out of W014 scope.
+
+5. **Typed context/query bundle**: OxFunc already has `HostInfoProvider`, `LocaleFormatContext`, `RtdProvider`, `RegisteredExternalProvider` as typed query surfaces. For the first wave, only `LocaleFormatContext` matters (for TEXT, DOLLAR, VALUE). The others can be stub/absent.
+
+### 32.4 What OxFunc Needs In Return
+
+The OxFml §25 response is convergent on the adapter shape but does not answer Q1–Q4 from the consolidated requirements. OxFunc reads this as: OxFml will surface answers through the adapter implementation itself, not through another note round.
+
+OxFunc accepts this posture. The adapter implementation will concretely answer:
+- **Q2 (prepared-operand vocabulary):** The preparation artifact output will show what provenance OxFml actually assigns. If it doesn't distinguish direct-scalar from array-like (SR-ARG-01), scenario A02 vs A03 will fail.
+- **Q1 (who evaluates `@`):** If OxFml's adapter can pass scenarios B01–B07, the answer is demonstrated regardless of which side technically evaluates.
+- **Q3 and Q4 (callable carriers and invoker):** If scenarios C01–C14 pass, callable formation and invocation work. If they fail, the mismatch report will show exactly where.
+
+### 32.5 OxFunc Concrete Next Steps
+
+1. OxFunc will keep the 38 scenarios stable as the canonical first-wave fixture set. They are in `docs/upstream/OXFUNC_OXFML_SEAM_REQUIREMENTS_CONSOLIDATED.md` §10.4.
+2. OxFunc will add new scenarios only if concrete mismatches from the adapter surface new distinctions.
+3. OxFunc will not reopen callable carrier or `@` seam debates unless the adapter exposes a real contradiction.
+4. OxFunc considers this round convergent on shape. The next productive artifact is the adapter itself.
+
+### 32.6 Reply To OxFml §24 (Editor Help / Signature Packet)
+
+OxFunc notes OxFml's §24 proposal for editor help and signature metadata.
+
+Quick answers to OxFml's asks:
+1. **Help/signature retrieval:** A sibling help provider keyed by the same snapshot identity is fine. No need to overload the hot-path semantic snapshot.
+2. **Response shape:** The proposed fields (`stable_function_id`, `display_name`, `signature_forms`, `short_description`, `availability_summary`, `deferred_or_profile_limited`, optional `documentation_ref`) are sufficient for first editor/signature-help use.
+3. **Semantic truth vs presentation prose:** `stable_function_id`, `signature_forms` (parameter labels, arity bounds), and `availability_summary` are semantic truth. `short_description` and `documentation_ref` are presentation prose. `display_name` is presentation-first but should be consistent with the catalog canonical name.
+4. **Runtime-registered extension functions:** These should appear under snapshot identity with `entry_kind = external_registered_function` and whatever metadata the registration provides. If registration metadata is incomplete, the help provider should return a minimal response (id + arity) rather than refusing.
+
+This lane should remain a bounded editor/help packet. OxFunc considers it low-priority relative to the adapter artifact but non-blocking.
+
+## 33. Processed OxFml §26–§27 — Adapter Convergence And First-Wave Readback (2026-03-25)
+
+### 33.1 What OxFunc Reads From OxFml §26
+
+OxFml accepts:
+1. The narrower first-wave reading for the adapter.
+2. The OxFunc W047/W048/W049 packet artifacts as pinned downstream freeze candidates.
+3. No note-level mismatch against those three packets.
+4. The next honest reply should be implementation-facing and mismatch-driven.
+
+OxFunc accepts this. Round convergent on adapter shape — confirmed.
+
+### 33.2 What OxFunc Reads From OxFml §27
+
+This is the critical update. OxFml has now:
+1. Built a real W049 adapter against OxFunc's real surface dispatch.
+2. Established a first pinned W050 fixture corpus in machine-readable form.
+3. Passed 43 of 45 scenarios.
+4. Deferred only C12 and C14.
+5. Made concrete local widenings to reach this floor:
+   - parser correction for inline-array element separation,
+   - trailing omitted-argument trimming at the call boundary,
+   - wider local semantic metadata (ROWS, COLUMNS, PI, CONCAT, RANDBETWEEN, VALUETOTEXT, VLOOKUP),
+   - explicit `@` precedence and scalarization alignment through the OxFunc implicit-intersection operator surface,
+   - lambda over-application surfacing as worksheet `#VALUE!` rather than adapter failure.
+
+### 33.3 Scenario Count Clarification
+
+OxFml is correct. The authoritative first-wave table in `docs/upstream/OXFUNC_OXFML_SEAM_REQUIREMENTS_CONSOLIDATED.md` §10.4 enumerates 45 scenario ids (A01–A10, B01–B07, C01–C14, D01–D06, E01–E03, F01–F05). The "38" in earlier OxFunc prose was a pre-publication planning estimate that was superseded when the full table was written. OxFunc corrects its own earlier wording: the authoritative first-wave count is **45**, not 38. OxFml should continue treating the published 45-id table as the pinned first-wave fixture catalog.
+
+### 33.4 C12 and C14 Residuals
+
+**C12 (`=LAMBDA(x, x+1)` → expected `#CALC!`):**
+
+OxFunc reads OxFml's deferral as: OxFml currently preserves the callable value at the publication boundary rather than mapping an uninvoked LAMBDA to `#CALC!`.
+
+OxFunc position:
+1. The empirical Excel fact is pinned: bare uninvoked `LAMBDA(...)` publishes as `#CALC!` on the current baseline (W38 evidence, LET_LAMBDA_PIN_DOWN_RESPONSE §3 item 5).
+2. This is a publication-boundary rule, not a semantic-value rule. The callable value exists internally — it just cannot be displayed in a cell.
+3. OxFunc does not require OxFml to implement this mapping immediately. It is acceptable for the first adapter wave to defer C12 as long as:
+   - the callable value is correctly formed internally (SR-CALL-01),
+   - the deferral is explicitly tracked,
+   - a future wave maps uninvoked callable → `#CALC!` at the publication boundary.
+4. OxFunc does not treat this deferral as a seam violation. It is a publication-policy residual.
+
+**C14 (`=LET(x, 1, x, 2, x)` → expected parse error):**
+
+OxFunc reads OxFml's deferral as: duplicate LET-name rejection needs a dedicated bind/reject artifact rather than silent evaluation fallback.
+
+OxFunc position:
+1. The empirical Excel fact is pinned: duplicate LET names are rejected at formula admission (W38 evidence, LET_LAMBDA_PIN_DOWN_RESPONSE §3 item 1).
+2. This is a parse/bind responsibility (SR-CALL-05). OxFunc expects OxFml to reject this formula before it reaches evaluation.
+3. OxFunc does not require this in the first adapter wave. It is acceptable to defer as long as:
+   - the deferral is explicitly tracked,
+   - a future wave rejects the formula at bind time rather than silently evaluating.
+4. OxFunc does not treat this deferral as a seam violation. It is a bind-time validation residual.
+
+### 33.5 Assessment
+
+**The seam is now functionally validated for the admitted first-wave slice.**
+
+43/45 scenarios passing through OxFml's real parser/binder/preparation pipeline into OxFunc's real surface dispatch is the strongest integration evidence to date. The two deferred residuals (C12, C14) are both narrow publication/validation policy questions, not structural seam gaps.
+
+Concrete implications:
+1. **SR-ARG-01 (scalar vs array):** Validated. A02 and A03 return different results through the real pipeline.
+2. **SR-ARG-02 (omitted args):** Validated. A05 exercises omitted-argument preservation.
+3. **SR-ARG-03 (reference identity):** Validated. A07, A08 exercise reference-visible functions.
+4. **SR-ARG-04 (caller context):** Validated. A09, A10, B01–B02 exercise caller-relative behavior.
+5. **SR-AT-01 through SR-AT-04 (`@`):** Validated. B01–B07 pass through the real `@` scalarization path.
+6. **SR-CALL-01 through SR-CALL-04 (callable):** Validated. C01–C11, C13 exercise LET, LAMBDA, lexical capture, higher-order helpers, and arity rejection.
+7. **SR-CALL-05 (duplicate name rejection):** Deferred (C14). Tracked, not blocking.
+8. **SR-RET-01 through SR-RET-03 (returns):** SR-RET-01 and SR-RET-02 validated (D01–D06). SR-RET-03 deferred (C12). Tracked, not blocking.
+
+### 33.6 What This Unblocks
+
+With the seam functionally validated, OxFunc can now:
+1. **Claim integration-level evidence** for functions exercised through the adapter (not just unit-test-level).
+2. **Move W014 (`@`) toward closure** — the adapter proves the `@` operand provenance seam works end-to-end.
+3. **Move W038 callable family toward closure** — the adapter proves callable formation and invocation work end-to-end for the admitted direct-invocation, LET, LAMBDA, MAP, REDUCE, SCAN, BYROW, BYCOL, MAKEARRAY slice.
+4. **Unblock GROUPBY and PIVOTBY** — if the adapter's `CallableInvoker` works for C06–C11, it can work for GROUPBY/PIVOTBY with built-in aggregation functions.
+
+### 33.7 OxFunc Concrete Next Steps
+
+1. OxFunc considers this round convergent. No note-level objections.
+2. OxFunc will track C12 and C14 as residuals for a future adapter wave, not as blockers.
+3. OxFunc will use the 43-passing adapter results as integration evidence in completion claims for W014, W038, and function-phase-complete promotions.
+4. The next useful OxFunc work is to exercise the adapter's `CallableInvoker` for GROUPBY and PIVOTBY, and to update the W051 inventory to reflect the new integration floor.
+5. OxFunc does not request another note round. The seam is working. Future mismatches should surface through the adapter fixture corpus, not through notes.
+
 ## 30. W46 CALL / REGISTER.ID Runtime Narrowing
 
 ### 30.1 Current Admitted Runtime Artifact
@@ -1937,3 +2176,97 @@ For the next round, OxFunc only wants clarification on:
 2. whether the first bounded consumer model should carry `RegisterIdRequest` / `RegisteredExternalDescriptor` directly or only through the `W049` runtime snapshot/provider layer,
 3. whether OxFml sees any concrete mismatch with the current reading that `CALL` runtime stays above OxFunc except for request normalization and result projection.
 
+## 34. Post-W52 Residual Seam Corrections For OxFml (2026-03-26)
+
+After the standalone `SUMIF` completion packet and a cleanup pass over the broader OxFunc-side adapter corpus, OxFunc now narrows the next OxFml-facing note to two seam corrections only.
+
+This is not a request to change OxFunc function definitions or metadata profiles. The remaining OxFml-facing ask is:
+1. unary negative literal handling through the OxFml adapter path,
+2. blank single-cell stand-in resolution for ordinary worksheet references.
+
+### 34.1 Unary Negative Literal Evidence
+
+Direct Excel readback on `2026-03-26` confirms:
+1. `=SIGN(-5)` -> `-1`
+2. `=PV(0.05,10,-100)` -> `772.1734929184813`
+3. `=FV(0.05,10,-100)` -> `1257.789253554883`
+
+Current OxFunc-side seam run still fails these rows before worksheet-value comparison:
+1. `FN-SIGN-01` -> `OxFunc surface evaluation failed for SIGN: Value`
+2. `FN-PV-01` -> `OxFunc surface evaluation failed for PV: Value`
+3. `FN-FV-01` -> `OxFunc surface evaluation failed for FV: Value`
+
+Current OxFunc reading:
+1. the shared pressure is the negative literal, not the function family,
+2. this now looks like an OxFml-side parse/bind/evaluation seam issue rather than an OxFunc function-kernel issue,
+3. OxFunc is therefore filing this as a seam-correction ask rather than touching `SIGN`, `PV`, or `FV` locally.
+
+### 34.2 Blank Single-Cell Stand-In Evidence
+
+Direct Excel readback on `2026-03-26` confirms:
+1. `=ISBLANK(A1)` on a blank `A1` -> `TRUE`
+
+Current OxFunc-side seam run still fails this row with:
+1. `FN-ISBLANK-01` -> `reference resolution failed: UnresolvedReference { target: "A1" }`
+
+Current OxFunc reading:
+1. OxFml's stand-in local resolver is currently treating absent single-cell worksheet references as unresolved,
+2. the same stand-in path already treats absent cells inside area-reference expansion as blank cells,
+3. the single-cell path should be aligned to the same blank-cell semantics for this packet.
+
+### 34.3 What OxFunc Already Corrected Locally
+
+OxFunc has already corrected its local broad-corpus fixture expectations where the fixtures themselves were wrong. That local cleanup should not be read as an OxFml action item by itself.
+
+Rows corrected locally on the OxFunc side:
+1. `ASIN`
+2. `DATE`
+3. `DAY`
+4. `EDATE`
+5. `IFNA`
+6. `PV`
+7. `FV`
+8. `LARGE`
+9. `SMALL`
+10. `COUNTIF`
+11. `AVERAGEIF`
+
+These rows were fixture/value or fixture/profile corrections in OxFunc's local broader corpus, not new OxFml semantic obligations unless OxFml mirrors the same broader corpus.
+
+### 34.4 What OxFunc Is Not Asking OxFml To Own
+
+The remaining reviewed residuals:
+1. `ASINH` low-order publication drift
+2. `PMT` low-order publication drift
+
+are not being handed to OxFml as seam defects. OxFunc currently treats those as local residuals unless new evidence says otherwise.
+
+### 34.5 Filed Handoff Packet
+
+This note is paired with:
+1. `docs/handoffs/HANDOFF_W052_UNARY_NEGATIVE_AND_BLANK_SINGLE_CELL_TO_OXFML.md`
+2. `docs/handoffs/HANDOFF_REGISTER.csv` row `HO-FN-003`
+
+## 35. Processed OxFml §29 Response - Residual Seam Fixes Confirmed (2026-03-26)
+
+OxFunc has now processed OxFml Section 29 from `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` and verified the claimed seam corrections from the OxFunc side.
+
+What OxFunc reads from OxFml Section 29:
+1. OxFml corrected unary signed-literal parsing/binding locally.
+2. OxFml corrected absent single-cell stand-in resolution so blank worksheet references no longer fail as unresolved references.
+3. OxFml explicitly preserved blank-cell identity rather than collapsing blank to empty string.
+4. OxFml does not reopen broader callable/catalog note lanes as part of these corrections.
+
+OxFunc verification:
+1. reran `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --test oxfml_seam_integration -- --nocapture`
+2. prior seam failures for `SIGN`, `PV`, `FV`, and `ISBLANK` no longer fail as seam defects
+3. the broad residual set is now reduced to worksheet-value mismatches only:
+   - `ASINH`
+   - `PV`
+   - `FV`
+   - `PMT`
+
+Current OxFunc reading:
+1. `HO-FN-003` is acknowledged on the OxFml side and verified from the OxFunc side.
+2. `BLK-FN-012` and `BLK-FN-013` are resolved.
+3. the remaining work now sits entirely in OxFunc-local publication/parity investigation under `W053`.
