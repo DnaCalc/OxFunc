@@ -110,8 +110,7 @@ Completeness axes:
 Open lanes:
 1. structured-reference/table-context `@` remains outside the current W14 closure target.
 2. compatibility-version and pre-dynamic-array serialization behavior still need a dedicated replay matrix.
-3. OxFml/FEC provenance carrier and trace placement for scalarization are not yet acknowledged upstream.
-4. current native baseline now pins the previously open 2-D seed lane as `#VALUE!`, but broader compatibility/version sweeps remain open.
+3. current native baseline now pins the previously open 2-D seed lane as `#VALUE!`, and the OxFml adapter now exercises the admitted `@` scalarization path end-to-end, but broader compatibility/version sweeps remain open.
 
 Reference-related prework inventory:
 1. `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return lanes are already `function-phase-complete` for the current reference baseline from W10/W12.
@@ -126,6 +125,18 @@ Legacy CSE interaction baseline:
 4. mixed formulas combining explicit `@` and array-calculation behavior are a dedicated characterization lane rather than a safe simplifying assumption.
 5. future `@` / operator refresh passes should be checked against Microsoft's operator reference page:
    `https://support.microsoft.com/en-us/office/calculation-operators-and-precedence-in-excel-48be406d-4975-4d31-b2b8-7af9e0e2878a`
+
+Current OxFunc-side completion reading:
+1. the admitted current-baseline OxFunc runtime slice is real:
+   - Rust implementation exists,
+   - Lean binding exists,
+   - native Excel replay exists,
+   - and the OxFml adapter now exercises the seeded `@` lanes end-to-end.
+2. the remaining open work is therefore no longer "implement `@` in OxFunc core".
+3. the remaining work is:
+   - compatibility/serialization characterization,
+   - structured-reference context outside the admitted slice,
+   - and future seam vocabulary tightening only if a concrete OxFml/FEC mismatch appears.
 
 ## 7. Immediate Questions
 1. Does `@` need a new primary semantic substrate in OxFunc rather than being forced into an existing reference family?

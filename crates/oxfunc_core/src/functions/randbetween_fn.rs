@@ -34,7 +34,11 @@ pub enum RandbetweenEvalError {
     ProviderOutOfRange(f64),
 }
 
-pub fn randbetween_kernel(provider: &impl RandomProvider, bottom: f64, top: f64) -> Result<EvalValue, RandbetweenEvalError> {
+pub fn randbetween_kernel(
+    provider: &impl RandomProvider,
+    bottom: f64,
+    top: f64,
+) -> Result<EvalValue, RandbetweenEvalError> {
     // Excel truncates bottom upward (ceil) and top downward (floor) to integers.
     let lo = bottom.ceil();
     let hi = top.floor();
@@ -77,8 +81,10 @@ pub fn eval_randbetween_surface(
         args,
         resolver,
         |prepared| {
-            let bottom = coerce_prepared_to_number(&prepared[0]).map_err(RandbetweenEvalError::Coercion)?;
-            let top = coerce_prepared_to_number(&prepared[1]).map_err(RandbetweenEvalError::Coercion)?;
+            let bottom = coerce_prepared_to_number(&prepared[0])
+                .map_err(RandbetweenEvalError::Coercion)?;
+            let top =
+                coerce_prepared_to_number(&prepared[1]).map_err(RandbetweenEvalError::Coercion)?;
             randbetween_kernel(provider, bottom, top)
         },
         RandbetweenEvalError::Coercion,
@@ -98,9 +104,8 @@ pub fn map_randbetween_error_to_ws(e: &RandbetweenEvalError) -> WorksheetErrorCo
 mod tests {
     use super::*;
     use crate::function::{DeterminismClass, FecDependencyProfile, VolatilityClass};
-    use crate::functions::adapters::PreparedArgValue;
     use crate::resolver::{CallerContext, RefResolutionError, ResolverCapabilities};
-    use crate::value::{ReferenceLike, ReferenceKind};
+    use crate::value::ReferenceLike;
 
     struct FixedProvider {
         value: f64,
@@ -160,7 +165,8 @@ mod tests {
 
     #[test]
     fn randbetween_rejects_one_arg() {
-        let got = eval_randbetween_surface(&[num(1.0)], &MockResolver, &FixedProvider { value: 0.5 });
+        let got =
+            eval_randbetween_surface(&[num(1.0)], &MockResolver, &FixedProvider { value: 0.5 });
         assert!(matches!(got, Err(RandbetweenEvalError::ArityMismatch { .. })));
     }
 

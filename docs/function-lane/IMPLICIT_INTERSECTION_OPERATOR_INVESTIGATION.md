@@ -14,10 +14,9 @@ Completeness axes:
 3. `integration_completeness`: `partial`
 
 Open lanes:
-1. OxFml/FEC seam changes are identified but not yet acknowledged upstream.
-2. compatibility-version and legacy serialization behavior are only partially characterized.
-3. structured-reference/table-context interaction remains outside the admitted slice.
-4. the reference-family prework inventory is now explicit:
+1. compatibility-version and legacy serialization behavior are only partially characterized.
+2. structured-reference/table-context interaction remains outside the admitted slice.
+3. the reference-family prework inventory is now explicit:
    - `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return are already closed in OxFunc,
    - `OP_SPILL_REF` is now explicit in Rust/Lean/docs,
    - current seam doctrine does not require spill-link provenance to cross into OxFunc,
@@ -245,10 +244,14 @@ Current recommendation for the implementation spike:
 2. do not model `@` as generic top-left scalarization.
 3. do not let OxFml erase reference-vs-array provenance before `@` semantics are decided.
 4. treat `@` as a boundary-pressure operator that connects formula language, FEC preparation, function semantics, and spill publication.
+5. current evidence now supports a sharper reading:
+   - the admitted OxFunc-side runtime and formal slice is already in place,
+   - the OxFml adapter has exercised that slice end-to-end on the seeded corpus,
+   - so the live residual is compatibility/serialization characterization rather than a missing OxFunc kernel.
 
 ## 10. Next OxFunc Actions
-1. tighten the admitted runtime slice around the now-pinned 2-D `#VALUE!` lane and stored-form normalization split.
-2. keep compatibility-version and `_xlfn.SINGLE(...)` roundtrip characterization open as the next replay pressure.
+1. keep compatibility-version and `_xlfn.SINGLE(...)` roundtrip characterization open as the next replay pressure.
+2. treat the current OxFml adapter evidence for `@` as integration-level proof for the admitted modern/current-baseline slice.
 3. drive remaining seam changes only from concrete OxFml/FEC consumer mismatches or compatibility-version evidence.
 
 

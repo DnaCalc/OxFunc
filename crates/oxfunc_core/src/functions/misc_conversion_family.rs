@@ -539,7 +539,7 @@ fn validate_random_unit(value: f64) -> Result<f64, MiscConversionError> {
     }
 }
 
-pub fn RANDARRAY_kernel(
+pub fn randarray_kernel(
     provider: &impl RandomArrayProvider,
     rows: usize,
     cols: usize,
@@ -710,7 +710,7 @@ pub fn eval_percentof_surface(
     ))
 }
 
-pub fn eval_RANDARRAY_surface(
+pub fn eval_randarray_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
     provider: &impl RandomArrayProvider,
@@ -752,7 +752,7 @@ pub fn eval_RANDARRAY_surface(
             if rows < 1.0 || cols < 1.0 {
                 return Err(MiscConversionError::Domain(WorksheetErrorCode::Value));
             }
-            RANDARRAY_kernel(
+            randarray_kernel(
                 provider,
                 rows as usize,
                 cols as usize,
@@ -885,12 +885,12 @@ mod tests {
     }
 
     #[test]
-    fn RANDARRAY_builds_scalar_and_rectangular_outputs() {
+    fn randarray_builds_scalar_and_rectangular_outputs() {
         let scalar_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([0.25])),
         };
         assert_eq!(
-            RANDARRAY_kernel(&scalar_provider, 1, 1, 0.0, 1.0, false).unwrap(),
+            randarray_kernel(&scalar_provider, 1, 1, 0.0, 1.0, false).unwrap(),
             EvalValue::Array(
                 EvalArray::from_rows(vec![vec![ArrayCellValue::Number(0.25)]]).unwrap()
             )
@@ -900,7 +900,7 @@ mod tests {
             values: RefCell::new(VecDeque::from([0.0, 0.49, 0.50, 0.99])),
         };
         assert_eq!(
-            RANDARRAY_kernel(&grid_provider, 2, 2, 10.0, 12.0, true).unwrap(),
+            randarray_kernel(&grid_provider, 2, 2, 10.0, 12.0, true).unwrap(),
             EvalValue::Array(
                 EvalArray::from_rows(vec![
                     vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(11.0)],
@@ -912,19 +912,19 @@ mod tests {
     }
 
     #[test]
-    fn RANDARRAY_rejects_bad_provider_values_and_invalid_ranges() {
+    fn randarray_rejects_bad_provider_values_and_invalid_ranges() {
         let bad_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([1.5])),
         };
         assert_eq!(
-            RANDARRAY_kernel(&bad_provider, 1, 1, 0.0, 1.0, false),
+            randarray_kernel(&bad_provider, 1, 1, 0.0, 1.0, false),
             Err(MiscConversionError::RandomProviderOutOfRange(1.5))
         );
         let range_provider = QueueRandomProvider {
             values: RefCell::new(VecDeque::from([0.0])),
         };
         assert_eq!(
-            RANDARRAY_kernel(&range_provider, 1, 1, 5.0, 4.0, false),
+            randarray_kernel(&range_provider, 1, 1, 5.0, 4.0, false),
             Err(MiscConversionError::Domain(WorksheetErrorCode::Num))
         );
     }

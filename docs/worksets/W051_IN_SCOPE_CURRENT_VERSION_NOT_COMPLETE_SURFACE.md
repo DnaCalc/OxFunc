@@ -28,8 +28,20 @@ Completed and removed from this inventory (moved to function-phase-complete):
 - `COLUMNS`, `RANDARRAY`, `RANDBETWEEN`, `ROWS`, `TRIMRANGE`, `VALUETOTEXT` (6 functions)
 - `OP_TRIM_REF_LEADING`, `OP_TRIM_REF_TRAILING`, `OP_TRIM_REF_BOTH` (3 operators, verified against W045 structural slice)
 
-Scaffold-partial (W038-blocked, remain in inventory):
-- `GROUPBY`, `PIVOTBY` (2 functions, callable invocation depends on W038)
+Runtime-partial (remain in inventory):
+- `GROUPBY`, `PIVOTBY` (2 functions, OxFunc now has callable-backed runtime kernels on the admitted current-baseline slice, but the next proving gap is real OxFml adapter coverage for callable-backed grouped/pivot aggregation, followed by wider completion promotion work)
+
+Important current reading:
+- some rows remain here because the cross-repo/current-surface packet is not yet fully closed, not because OxFunc still lacks a real runtime kernel.
+- that narrower reading now applies to:
+  - `OP_IMPLICIT_INTERSECTION`
+  - the callable-helper family rows from `W038`
+  - `HYPERLINK`
+  - `CALL` / `REGISTER.ID`
+- the rows that still represent a genuinely open OxFunc semantic boundary are now mainly:
+  - `IMAGE`
+  - the registered-external provider/admission packet under `W046`
+  - the broader promotion/documentation lane for `GROUPBY` / `PIVOTBY`
 
 Functions:
 1. `BYCOL`
@@ -54,7 +66,7 @@ Operators:
 ## 4. Current-Version Rule
 For the current version target:
 1. every row not listed in `W050` and not already complete must appear here,
-2. `GROUPBY` and `PIVOTBY` are scaffold-partial (blocked on W038 callable infrastructure) and remain here,
+2. `GROUPBY` and `PIVOTBY` are no longer W038-blocked scaffolds; they remain here because their current-surface promotion packet is still open,
 3. `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, `RANDARRAY`, `TRIMRANGE` are now function-phase-complete and removed,
 4. trim-reference operators (`OP_TRIM_REF_*`) are verified against W045 structural slice and removed.
 
@@ -70,3 +82,4 @@ For the current version target:
 4. integration_completeness: `integrated`
 5. open_lanes:
    - execution still lives across the provenance packets and future follow-on packets
+   - several rows now have real OxFunc runtime/formal/evidence closure on the admitted slice, but remain in `W051` until the surrounding seam or promotion packet is explicitly closed

@@ -244,7 +244,7 @@ use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
 use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
 use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
 use crate::functions::misc_conversion_family::{
-    RandomArrayProvider, eval_RANDARRAY_surface, eval_bahttext_surface, eval_convert_surface,
+    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_randarray_surface,
     eval_euroconvert_surface, eval_percentof_surface, map_misc_conversion_error_to_ws,
 };
 use crate::functions::misc_switch_info_family::{
@@ -3278,7 +3278,7 @@ pub fn eval_surface_value_call_with_callable(
         FUNC_ID_RANDARRAY => {
             let value = random_value.ok_or(WorksheetErrorCode::Value)?;
             let provider = FixedRandomProvider { value };
-            eval_RANDARRAY_surface(args, resolver, &provider)
+            eval_randarray_surface(args, resolver, &provider)
                 .map_err(|e| map_misc_conversion_error_to_ws(&e))
         }
         FUNC_ID_REDUCE => eval_reduce_surface(args, resolver, callable_invoker)

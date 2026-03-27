@@ -17,7 +17,8 @@ Last updated: 2026-03-26.
 
 - **Status**: in-progress
 - **Current floor**: 40+ functions at `function-phase-complete` across W001-W015 and follow-on closure packets, with the standalone `SUMIF` gap now closed through `W052` and the low-order `ASINH` / `PV` / `FV` / `PMT` publication residuals now closed through `W053`.
-- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns deferred-current-version rows (`W041` family plus `EUROCONVERT`), while `W051` owns in-scope not-complete rows (`W014`, residual `W023`, `W038`, `W046`, trim-reference operators, and latent gaps such as `TRIMRANGE`, `GROUPBY`, `PIVOTBY`, `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, and `RANDARRAY`).
+- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns deferred-current-version rows (`W041` family plus `EUROCONVERT`), while `W051` owns in-scope not-complete rows (`W014`, residual `W023`, `W038`, `W046`, and the current `GROUPBY` / `PIVOTBY` promotion lane after the new OxFunc runtime implementation).
+- **Current narrowing**: `W014` and `W038` are no longer "missing OxFunc kernel" packets. Their remaining work is now mostly seam-vocabulary, compatibility/serialization, and bind/admission ownership tightening after the OxFml adapter validated the admitted `@` and callable-helper slices end-to-end.
 - **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, `W034` / `W035` / `W036` now close the locale/profile/provider residual seam packets, `W037` closes the remaining large-root `XIRR` publication lane, `W040` closes the reference-metadata family, and `W045` closes the current non-`@` operator universe.
 - **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`).
 
@@ -65,9 +66,9 @@ Last updated: 2026-03-26.
 ### IP-07: Implicit Intersection and Scalarization Semantics
 
 - **Status**: in-progress
-- **Current floor**: provisional canonicalization row `FDEF-018`; OxFml formula-language rules preserve `@` parse acceptance; W14 now records a dedicated OxFunc investigation slice and upstream handoff packet.
-- **Remaining gaps**: precise caller-context scalarization semantics, spill-anchor/reference-result provenance, compatibility-version mapping for `@` vs `SINGLE`/`_xlfn.SINGLE`, runtime implementation, Lean executable model, and deterministic replay artifacts.
-- **Why still open**: current evidence proves syntax and migration pressure, but not a fully implemented scalarization seam across OxFunc, OxFml, and FEC/F3E.
+- **Current floor**: canonicalization row `FDEF-018`; native Excel replay for seeded `@` lanes; Rust runtime in `op_implicit_intersection.rs`; Lean binding in `ImplicitIntersection.lean`; and OxFml adapter evidence for seeded `@` scalarization lanes `B01` through `B07`.
+- **Remaining gaps**: compatibility-version mapping for `@` vs `SINGLE`/`_xlfn.SINGLE`, broader pre-dynamic-array serialization/roundtrip characterization, and structured-reference/table-context interaction outside the admitted slice.
+- **Why still open**: the remaining work is now compatibility/interop characterization rather than a missing OxFunc-side scalarization kernel.
 - **Canonical owner**: `W014`.
 - **Scope note**: this remains in current scope; it is difficult, not deferred out-of-scope.
 

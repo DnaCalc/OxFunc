@@ -28,7 +28,7 @@ pub const TRIMRANGE_META: FunctionMeta = FunctionMeta {
 /// Trim direction: which edges to strip.
 /// 0 = none, 1 = trailing only (default), 2 = leading only, 3 = both.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum TrimType {
+pub(crate) enum TrimType {
     None,
     Trailing,
     Leading,
@@ -94,20 +94,12 @@ fn is_blank_cell(cell: &ArrayCellValue) -> bool {
 
 fn is_row_blank(array: &EvalArray, row: usize) -> bool {
     let cols = array.shape().cols;
-    (0..cols).all(|col| {
-        array
-            .get(row, col)
-            .map_or(true, is_blank_cell)
-    })
+    (0..cols).all(|col| array.get(row, col).map_or(true, is_blank_cell))
 }
 
 fn is_col_blank(array: &EvalArray, col: usize) -> bool {
     let rows = array.shape().rows;
-    (0..rows).all(|row| {
-        array
-            .get(row, col)
-            .map_or(true, is_blank_cell)
-    })
+    (0..rows).all(|row| array.get(row, col).map_or(true, is_blank_cell))
 }
 
 fn materialize_input(prepared: &PreparedArgValue) -> EvalArray {
@@ -129,7 +121,7 @@ fn materialize_input(prepared: &PreparedArgValue) -> EvalArray {
     }
 }
 
-pub fn trimrange_kernel(
+pub(crate) fn trimrange_kernel(
     array: &EvalArray,
     trim_rows: TrimType,
     trim_cols: TrimType,
@@ -159,7 +151,10 @@ pub fn trimrange_kernel(
                     last_data_row -= 1;
                 }
                 // Check if the last remaining data row is also blank.
-                if last_data_row == first_data_row && is_row_blank(array, last_data_row) && data_start == 0 {
+                if last_data_row == first_data_row
+                    && is_row_blank(array, last_data_row)
+                    && data_start == 0
+                {
                     // All rows blank — will produce empty result.
                 }
             }

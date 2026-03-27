@@ -95,6 +95,7 @@ pub mod gcd_lcm_common;
 pub mod geomean_fn;
 pub mod gestep_fn;
 pub mod groupby_fn;
+pub mod group_pivot_common;
 pub mod harmean_fn;
 pub mod hstack;
 pub mod hyperlink_fn;

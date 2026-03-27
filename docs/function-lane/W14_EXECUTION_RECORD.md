@@ -55,4 +55,11 @@ Primary verification surfaces:
 5. open_lanes:
    - structured-reference/table-context interaction remains outside the admitted slice
    - compatibility-version and `_xlfn.SINGLE(...)` serialization behavior are still only partially pinned
-   - OxFml/FEC-side acknowledgment of the scalarization seam remains pending
+
+## 7. Current Completion Reading
+1. the admitted current-baseline OxFunc-side `@` slice is no longer a missing runtime lane:
+   - Rust runtime exists,
+   - Lean binding exists,
+   - native replay exists,
+   - and the OxFml adapter now exercises the seeded `@` rows end-to-end.
+2. the remaining `W14` work is compatibility/serialization characterization and structured-reference context outside the admitted slice, not a missing OxFunc kernel.
