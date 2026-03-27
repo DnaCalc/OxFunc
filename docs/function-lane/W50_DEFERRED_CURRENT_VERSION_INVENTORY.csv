@@ -14,4 +14,5 @@ FILTERXML,function,W041,"Deferred with the current W041 family despite bounded l
 GETPIVOTDATA,function,W041,"Deferred until PivotTable structure/topology is in scope above OxFunc."
 PHONETIC,function,W041,"Deferred external/stored-metadata surface."
 STOCKHISTORY,function,W041,"Deferred external/provider function."
+TRANSLATE,function,W036,"Deferred from the current-version completion target even though W036 already pinned a narrow provider-language seam baseline."
 WEBSERVICE,function,W041,"Deferred external/provider function."

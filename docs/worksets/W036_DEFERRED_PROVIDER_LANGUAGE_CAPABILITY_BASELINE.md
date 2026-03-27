@@ -3,7 +3,9 @@
 ## 1. Purpose
 Own the extracted built-in language-service seam whose current-boundary behavior depends on an external language provider rather than a pure local kernel.
 
-`TRANSLATE` is conceptually part of the broader external-services family, but it is tracked separately from `W041` because it was small enough to reconcile cleanly as its own focused packet and is not add-in-owned like `EUROCONVERT`.
+`TRANSLATE` is conceptually part of the broader external-services family, but it was extracted from `W041` because it was small enough to reconcile cleanly as its own focused seam packet and is not add-in-owned like `EUROCONVERT`.
+
+This packet now remains the provenance/evidence owner for that narrow seam baseline only. Active deferred-current-version tracking for `TRANSLATE` sits in `W050`.
 
 ## 2. Provenance
 Opened by `W31` scope reconciliation on `2026-03-19`.
@@ -23,6 +25,10 @@ Current total:
 Members:
 1. `TRANSLATE`
 
+Classification note:
+1. `W036` no longer acts as the active current-version closure tracker for `TRANSLATE`.
+2. `W050` now owns the question of whether `TRANSLATE` is deferred from the current OxFunc completion target.
+
 ## 4. Executed Work
 1. pinned the native current-host provider-language baseline from `W26`,
 2. defined a typed translate-provider request/result seam,
@@ -36,3 +42,7 @@ Members:
 4. integration_completeness: `integrated`
 5. open_lanes:
    - none in declared `W036` scope
+
+Status note:
+1. `complete` here means the declared `W036` seam-baseline packet is closed.
+2. It does not mean `TRANSLATE` is counted as current-target complete; that classification now lives in `W050`.

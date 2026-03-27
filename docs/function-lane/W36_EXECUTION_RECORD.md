@@ -4,7 +4,7 @@ Status: `complete`
 Workset: `W036`
 
 ## 1. Purpose
-Close the OxFunc-side seam for `TRANSLATE` without pretending cross-language translation is a local kernel.
+Close the OxFunc-side seam baseline for `TRANSLATE` without pretending cross-language translation is a local kernel.
 
 ## 2. Empirical Baseline
 Native replay source:
@@ -29,6 +29,10 @@ Pinned seam:
 2. OxFunc keeps same-language passthrough local,
 3. OxFunc maps provider outcomes to worksheet projections.
 
+Classification note:
+1. This record closes the declared `W036` seam-baseline scope.
+2. It does not, by itself, keep `TRANSLATE` out of the deferred-current-version tracker; that ownership now sits in `W050`.
+
 ## 4. Verification
 Ran:
 1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml number_regex_translate_family -- --nocapture`
@@ -47,3 +51,6 @@ Ran:
 4. integration_completeness: `integrated`
 5. open_lanes:
    - none in declared `W036` scope
+
+Current-target note:
+1. `TRANSLATE` is now listed in `W050` as deferred from the current OxFunc completion target.

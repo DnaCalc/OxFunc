@@ -7,7 +7,7 @@ This packet exists to group the high-interest functions whose semantics are shap
 
 ## 2. Provenance
 Opened after the interesting-function review identified a coherent external/provider cluster separate from:
-1. the extracted built-in language-service `TRANSLATE` seam already closed through `W031` / `W036`,
+1. the extracted built-in language-service `TRANSLATE` seam packet characterized through `W031` / `W036`,
 2. host/database metadata work in `W023`,
 3. lambda and dynamic-array families in `W038` and `W039`.
 
@@ -24,8 +24,9 @@ Backlog ownership note:
 
 Classification note:
 1. `TRANSLATE` belongs to the same broad external-service family as `STOCKHISTORY`, `WEBSERVICE`, and related provider-bound functions.
-2. It is intentionally not kept in this packet because it is built into modern Excel and was small enough to close as a dedicated seam packet in `W036`.
-3. That makes it unlike `EUROCONVERT`, which is add-in-owned rather than a built-in external-service request surface.
+2. It is intentionally not kept in this packet because it is built into modern Excel and was small enough to characterize as a dedicated seam packet in `W036`.
+3. Active deferred-current-version tracking for `TRANSLATE` now sits in `W050`, not here.
+4. That makes it unlike `EUROCONVERT`, which is add-in-owned rather than a built-in external-service request surface.
 
 ## 3. Scope
 Machine-readable inventory:
@@ -62,7 +63,7 @@ Members:
 4. They are interesting precisely because they cannot be honestly reduced to ordinary pure kernels.
 5. `RTD` is intentionally excluded because its dominant seam is COM/topic lifecycle rather than generic provider-fetch semantics.
 6. `ENCODEURL` and the admitted current-baseline `FILTERXML` slice are retained here for inventory continuity, but this packet now records that they are locally implementable utility semantics rather than live provider calls.
-7. `TRANSLATE` is the useful precedent showing that some external-service functions can still be split out and closed separately when the seam is narrow enough.
+7. `TRANSLATE` remains the useful precedent showing that some external-service functions can still be split out for seam characterization when the seam is narrow enough, even if the current-version target later keeps the function deferred.
 
 ## 5. In Scope
 1. empirical characterization of admitted current-baseline presence and failure surfaces,
@@ -73,7 +74,7 @@ Members:
 
 ## 6. Out Of Scope
 1. full provider implementation or live external-service integration,
-2. the already-closed extracted `TRANSLATE` language-service seam in `W036`,
+2. the extracted `TRANSLATE` language-service seam packet in `W036`,
 3. unrelated host/database metadata work in `W023`,
 4. dynamic-array or lambda-family semantics.
 

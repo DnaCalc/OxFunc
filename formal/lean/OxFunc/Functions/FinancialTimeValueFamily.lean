@@ -19,8 +19,29 @@ def financialTimeValuePureMeta (functionId : String) : FunctionMeta := {
   surfaceFecDependencyProfile := FecDependencyProfile.refOnly
 }
 
+def pvMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.PV") with arity := { min := 3, max := 5 } }
+
+def fvMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.FV") with arity := { min := 3, max := 5 } }
+
+def pmtMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.PMT") with arity := { min := 3, max := 5 } }
+
+def nperMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.NPER") with arity := { min := 3, max := 5 } }
+
 def rateMeta : FunctionMeta :=
   { (financialTimeValuePureMeta "FUNC.RATE") with arity := { min := 3, max := 6 } }
+
+def ipmtMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.IPMT") with arity := { min := 4, max := 6 } }
+
+def ppmtMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.PPMT") with arity := { min := 4, max := 6 } }
+
+def ispmtMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.ISPMT") with arity := Arity.exact 4 }
 
 def irregularFinancialMeta (functionId : String) : FunctionMeta :=
   { (financialTimeValuePureMeta functionId) with arity := { min := 2, max := 3 } }
@@ -90,11 +111,17 @@ helper. The full floating-point solver/publication family still remains outside
 the current Lean scope.
 -/
 theorem financial_time_value_family_profiles :
-    (financialTimeValuePureMeta "FUNC.PV").hostInteraction = HostInteractionClass.none
-    ∧ (financialTimeValuePureMeta "FUNC.PMT").threadSafety = ThreadSafetyClass.safePure
+    pvMeta.hostInteraction = HostInteractionClass.none
+    ∧ fvMeta.arity = { min := 3, max := 5 }
+    ∧ pmtMeta.threadSafety = ThreadSafetyClass.safePure
+    ∧ nperMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly
     ∧ rateMeta.arity = { min := 3, max := 6 }
+    ∧ ipmtMeta.arity = { min := 4, max := 6 }
+    ∧ ppmtMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
+    ∧ ispmtMeta.arity = Arity.exact 4
     ∧ (irregularFinancialMeta "FUNC.MIRR").surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
-  simp [financialTimeValuePureMeta, rateMeta, irregularFinancialMeta]
+  simp [financialTimeValuePureMeta, pvMeta, fvMeta, pmtMeta, nperMeta, rateMeta, ipmtMeta,
+    ppmtMeta, ispmtMeta, irregularFinancialMeta]
 
 theorem growth_integer_publication_seed_05_10 :
     growthIntegerPublication (1 / 20 : Rat) 10 = (16679880978201 / 10240000000000 : Rat) := by
