@@ -106,7 +106,45 @@ What is real now:
    - `CALL` runtime surface.
 
 What remains open:
-1. no host-backed registered-external provider exists in-repo yet,
-2. the broader argument-bearing omitted-`type_text` matrix is not pinned,
-3. worksheet-vs-macro-sheet admission/version matrix is not fully pinned,
-4. final registered-external runtime-snapshot row shape is not locked yet.
+1. OxFml now has a real proving-host floor for:
+   - worksheet `REGISTER.ID`,
+   - worksheet `CALL`,
+   - reference-visible `CALL` arguments,
+   - host API registration,
+   - VBA shim registration,
+   - unregister packet carriage.
+2. direct adoption of OxFunc-owned `RegisterIdRequest`, `RegisteredExternalDescriptor`, and `RegisteredExternalCallRequest` packet types is now exercised on the OxFml side.
+3. the remaining shared-note decisions are now narrower:
+   - exact shared field naming,
+   - the minimum final `RegisteredExternalDescriptor` field set needed for OxFunc-owned dereference/coercion decisions,
+   - whether `RegisteredExternalCatalogMutation*` / `RegisteredExternalCatalogController` stay OxFml-owned funnel packets or become shared OxFunc-owned runtime packet families,
+   - minimum register/unregister consequences for `LibraryContextSnapshot` generation.
+4. broader omitted-`type_text` and worksheet-vs-macro-sheet admission characterization remain useful evidence topics, but OxFml no longer treats them as the primary live shared-note freeze items.
+
+## 9. Current Closure Suggestions
+1. shared field naming:
+   - freeze the current packet names and field names exactly as they already exist
+   - no rename round is currently justified
+2. minimum `RegisteredExternalDescriptor` field set:
+   - keep the current shared descriptor shape:
+     - `stable_registration_id`
+     - `register_id`
+     - `origin_kind`
+     - `display_name`
+     - `library_name`
+     - `procedure`
+     - `declared_type_text`
+   - OxFunc currently needs no additional descriptor fields for dereference/coercion decisions
+3. mutation/controller family ownership:
+   - keep `RegisteredExternalCatalogMutation*` and `RegisteredExternalCatalogController` OxFml-owned funnel packets for the current phase
+   - revisit only if OxFunc or another downstream consumer needs to consume them directly as shared runtime ABI
+4. snapshot-generation consequences:
+   - bind-visible registration or unregister should publish a new `LibraryContextSnapshot` generation
+   - descriptor mutation used only through worksheet `CALL` / `REGISTER.ID` should default to targeted reevaluation rather than broad rebinding
+5. non-blocking follow-on evidence:
+   - omitted-`type_text` widening
+   - worksheet-vs-macro-sheet admission/version widening
+6. current closure read:
+   - the OxFunc/OxFml seam note now converges on this packet split
+   - remaining work is no longer first-pass packet design
+   - remaining work is shared seam-freeze promotion and any later OxCalc-side acknowledgment

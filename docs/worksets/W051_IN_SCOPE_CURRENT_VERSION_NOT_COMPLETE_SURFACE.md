@@ -20,27 +20,26 @@ Machine-readable inventory:
 1. `docs/function-lane/W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv`
 
 Current total:
-1. `15` function rows.
+1. `14` function rows.
 2. `1` operator rows.
-3. `16` total rows.
+3. `15` total rows.
 
 Completed and removed from this inventory (moved to function-phase-complete):
 - `COLUMNS`, `RANDARRAY`, `RANDBETWEEN`, `ROWS`, `TRIMRANGE`, `VALUETOTEXT` (6 functions)
 - `OP_TRIM_REF_LEADING`, `OP_TRIM_REF_TRAILING`, `OP_TRIM_REF_BOTH` (3 operators, verified against W045 structural slice)
 
 Runtime-partial (remain in inventory):
-- `GROUPBY`, `PIVOTBY` (2 functions, OxFunc now has callable-backed runtime kernels on the admitted current-baseline slice, but the next proving gap is real OxFml adapter coverage for callable-backed grouped/pivot aggregation, followed by wider completion promotion work)
+- `GROUPBY`, `PIVOTBY` (2 functions, OxFunc now has callable-backed runtime kernels and bounded OxFml adapter coverage on the admitted current-baseline slice; the remaining gap is wider completion promotion/documentation rather than first adapter proof)
 
 Important current reading:
 - some rows remain here because the cross-repo/current-surface packet is not yet fully closed, not because OxFunc still lacks a real runtime kernel.
 - that narrower reading now applies to:
   - `OP_IMPLICIT_INTERSECTION`
   - the callable-helper family rows from `W038`
-  - `HYPERLINK`
   - `CALL` / `REGISTER.ID`
-- the rows that still represent a genuinely open OxFunc semantic boundary are now mainly:
-  - `IMAGE`
-  - the registered-external provider/admission packet under `W046`
+- the rows that still represent a genuinely open current-surface boundary are now mainly:
+  - `IMAGE` first-freeze/promotion work after the newly exercised local OxFml lane
+  - the registered-external packet-freeze/admission/snapshot lane under `W046`
   - the broader promotion/documentation lane for `GROUPBY` / `PIVOTBY`
 
 Functions:
@@ -48,17 +47,16 @@ Functions:
 2. `BYROW`
 3. `CALL`
 4. `GROUPBY`
-5. `HYPERLINK`
-6. `IMAGE`
-7. `ISOMITTED`
-8. `LAMBDA`
-9. `LET`
-10. `MAKEARRAY`
-11. `MAP`
-12. `PIVOTBY`
-13. `REDUCE`
-14. `REGISTER.ID`
-15. `SCAN`
+5. `IMAGE`
+6. `ISOMITTED`
+7. `LAMBDA`
+8. `LET`
+9. `MAKEARRAY`
+10. `MAP`
+11. `PIVOTBY`
+12. `REDUCE`
+13. `REGISTER.ID`
+14. `SCAN`
 
 Operators:
 1. `OP_IMPLICIT_INTERSECTION` (`@`, legacy alias `SINGLE`)
@@ -67,8 +65,9 @@ Operators:
 For the current version target:
 1. every row not listed in `W050` and not already complete must appear here,
 2. `GROUPBY` and `PIVOTBY` are no longer W038-blocked scaffolds; they remain here because their current-surface promotion packet is still open,
-3. `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, `RANDARRAY`, `TRIMRANGE` are now function-phase-complete and removed,
-4. trim-reference operators (`OP_TRIM_REF_*`) are verified against W045 structural slice and removed.
+3. `HYPERLINK` is now treated as complete on the OxFunc side and therefore removed from `W051`; host publication application remains above OxFunc rather than an OxFunc function gap,
+4. `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, `RANDARRAY`, `TRIMRANGE` are now function-phase-complete and removed,
+5. trim-reference operators (`OP_TRIM_REF_*`) are verified against W045 structural slice and removed.
 
 ## 5. Ownership Rule
 1. `W51` is the canonical current-version not-complete list.

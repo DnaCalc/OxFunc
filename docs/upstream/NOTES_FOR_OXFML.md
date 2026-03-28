@@ -17,9 +17,9 @@ Current OxFunc reading:
 1. the admitted `@` slice is real in OxFunc runtime, Lean alignment, native Excel replay, and the current OxFml adapter corpus.
 2. the admitted `W038` callable/helper slice is also real in OxFunc runtime, Lean alignment, native Excel replay, and the current OxFml adapter corpus.
 3. `HYPERLINK` is no longer a missing OxFunc kernel; it is value semantics plus publication intent, with actual style/click behavior above OxFunc.
-4. `IMAGE` remains a real rich-value/publication seam.
+4. `IMAGE` now has a pinned rich-value return carrier in OxFunc, and the latest OxFml note says the local evaluator/host/adapter lane is now exercised.
 5. `CALL` / `REGISTER.ID` remain a real typed registered-external provider/admission/runtime seam.
-6. `GROUPBY` and `PIVOTBY` now have real OxFunc callable-backed kernels, but still need stronger adapter-level proving coverage before honest closure promotion.
+6. `GROUPBY` and `PIVOTBY` now have real OxFunc callable-backed kernels plus bounded OxFml adapter coverage on real grouped-aggregation lanes; the remaining work is broader promotion/documentation rather than first adapter proof.
 
 ## 3. Current Seam Floor OxFunc Depends On
 
@@ -53,8 +53,8 @@ Current OxFunc reading:
 1. `LET`, `LAMBDA`, `ISOMITTED`, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, and `MAKEARRAY` are no longer blocked by missing OxFunc kernels on the admitted slice.
 2. the current adapter corpus already proves admitted direct/helper/higher-order lanes through the real OxFml parser/binder/preparation path.
 3. the remaining live seam pressure is narrowed to:
-   - bind-time rejection parity where Excel rejects before evaluation
    - final callable-carrier tightening
+   - any wider helper-bind rejection matrix beyond the currently exercised duplicate/malformed bounded cases
 
 Current OxFml implication:
 1. keep helper formation and validation on the bind/admission side where Excel already rejects before evaluation
@@ -65,12 +65,13 @@ Current OxFml implication:
 Current OxFunc reading:
 1. OxFunc now has real callable-backed runtime kernels for both functions on an admitted current-baseline slice.
 2. these rows are no longer blocked on missing OxFunc callable infrastructure.
-3. the next proving gap is real OxFml adapter coverage for callable-backed grouped aggregation.
+3. OxFml now has bounded real adapter coverage for callable-backed grouped aggregation through the live parser/binder/preparation/evaluation path.
+4. the remaining live work is broader promotion/documentation and any later widening beyond the currently exercised option lanes.
 
 Current OxFml implication:
-1. the adapter should be able to carry the same callable/helper seam facts already proven for `W038` into `GROUPBY` and `PIVOTBY`.
+1. keep the existing grouped-aggregation adapter corpus stable as a real seam regression floor.
 2. OxFunc does not need a new generic callable ABI round to proceed.
-3. OxFunc does need bounded real adapter cases that exercise these functions through the actual seam.
+3. future widening should be evidence-driven rather than reopening the first bounded adapter ask.
 
 ## 7. `HYPERLINK` / `IMAGE`
 
@@ -90,41 +91,77 @@ Current OxFml implication:
 ### 7.2 `IMAGE`
 
 Current OxFunc reading:
-1. `IMAGE` is still an open rich-value/publication seam.
-2. OxFunc does not currently want `IMAGE` scalarized into plain text, a URL string, or a fake placeholder scalar.
+1. `IMAGE` is still an open rich-value/publication seam, but it is no longer waiting on first local OxFml lane evidence.
+2. OxFunc now has a real `IMAGE` runtime surface:
+   - strict Excel-style argument validation for `source`, `alt_text`, `sizing`, `height`, and `width`
+   - typed `HostInfoProvider::query_image(...)` request normalization for upstream file/web helpers
+   - provider-classified `#CONNECT!` / `#BLOCKED!` / provider-error mapping
+   - extended return shape `ExtendedValue::RichValue(_webimage)`
+3. OxFunc still does not want `IMAGE` scalarized into plain text, a URL string, or a fake placeholder scalar.
+4. OxFunc now treats that rich value as the semantic return carrier for successful `IMAGE(...)` evaluation. The published worksheet fallback string is a separate host-visible projection, not the semantic carrier.
+5. the latest OxFml note is useful because it confirms explicit local `IMAGE(...)` evaluator/host/adapter evidence, generic non-ordinary return-surface preservation, explicit `_webimage` packet evidence, `TypedContextQueryFamily::Image`, and separation of the published fallback from the semantic carrier.
 
 Current OxFml implication:
 1. preserve the semantic class that `IMAGE` is richer than plain text or ordinary reference return
-2. keep enough result-class/capability truth for a host-managed rich-value/publication model
+2. keep `ReturnedValueSurfaceKind::RichValue` plus `rich_value_type_name = "_webimage"` intact for admitted `IMAGE(...)` lanes
+3. keep the published worksheet fallback separate from the semantic return carrier rather than letting publication rewrite the carrier class
+4. `TypedContextQueryFamily::Image` looks like the right first freeze name for the typed host-query family
+5. OxFunc does not currently need extra returned-value fields beyond the present `W042` vocabulary for current-phase `IMAGE` work
+6. keep enough result-class/capability truth for a host-managed rich-value/publication model
 
 ## 8. `CALL` / `REGISTER.ID`
 
 Current OxFunc reading:
 1. OxFunc already has typed request normalization and worksheet result projection for the admitted slice.
-2. the remaining open work is not ordinary function-kernel work.
-3. the remaining open work is:
-   - host-backed registered-external provider behavior
-   - broader admission/omitted-`type_text` matrix
-   - final runtime provider/snapshot ownership tightening
+2. OxFml now has a real `W052` proving-host floor for:
+   - worksheet `REGISTER.ID`
+   - worksheet `CALL`
+   - reference-visible `CALL` arguments
+   - host API registration
+   - VBA shim registration
+   - unregister packet carriage
+3. direct adoption of OxFunc-owned `RegisterIdRequest`, `RegisteredExternalDescriptor`, and `RegisteredExternalCallRequest` packet types is now real on the OxFml side and is the right current direction.
+4. the remaining open work is not ordinary function-kernel work.
+5. the remaining open work is:
+   - exact shared field naming
+   - minimum `RegisteredExternalDescriptor` facts needed for descriptor-driven dereference and general type coercion
+   - whether `RegisteredExternalCatalogMutation*` and controller surfaces should become OxFunc-owned shared runtime packet families or remain OxFml-owned funnel packets over OxFunc-owned catalog truth
+   - minimum register/unregister consequences for `LibraryContextSnapshot` generation
+
+Current OxFunc closure suggestions:
+1. shared field naming:
+   - freeze the current shared names as-is:
+     - `RegisterIdRequest { library_name, procedure, declared_type_text }`
+     - `RegisteredExternalDescriptor { stable_registration_id, register_id, origin_kind, display_name, library_name, procedure, declared_type_text }`
+     - `RegisteredExternalCallRequest { target, invocation_args }`
+     - `RegisteredExternalTarget::{RegisterId, Direct}`
+2. minimum shared `RegisteredExternalDescriptor` field set:
+   - keep the current `7`-field descriptor as the shared descriptor
+   - OxFunc currently needs no additional descriptor fields beyond the present shape for descriptor-driven dereference/coercion decisions
+3. mutation/controller family ownership:
+   - for the current phase, keep `RegisteredExternalCatalogMutation*` and `RegisteredExternalCatalogController` OxFml-owned funnel packets over OxFunc-owned catalog truth
+4. minimum snapshot-generation consequences:
+   - bind-visible registration/unregister => new `LibraryContextSnapshot` generation plus bind invalidation where the visible function/name world changes
+   - `CALL` / `REGISTER.ID`-only descriptor mutation => targeted reevaluation by default
+5. downgraded from packet-freeze blockers:
+   - broader omitted-`type_text` characterization
+   - worksheet-vs-macro-sheet admission/version characterization
+   - useful evidence, but not current shared packet-freeze blockers
 
 Current OxFml implication:
 1. keep `RegisteredExternalProvider` distinct from ordinary host-info/query seams
 2. preserve typed registration and invocation packets as real runtime objects, not just note-level ideas
+3. keep the current `W052` proving-host corpus stable as a real seam regression floor while the remaining packet fields are frozen
 
-## 9. Bounded Adapter Expansion Requested
+## 9. Current Bounded Ask
 
 OxFunc's current bounded ask to OxFml is:
-1. add one or more real `GROUPBY` adapter cases:
-   - built-in aggregation callable lane such as `SUM`
-   - prepared lambda lane if admitted by the current carrier
-   - at least one totals/filter/header/sort-sensitive lane
-2. add one or more real `PIVOTBY` adapter cases:
-   - default callable-backed pivot lane
-   - at least one totals/filter/header-band lane
-3. add bind-time rejection adapter cases for helper forms that should fail before OxFunc evaluation:
-   - duplicate `LET` names
-   - duplicate `LAMBDA` parameter names
-   - malformed helper lambda declarations already pinned in `W38`
+1. keep the current `W053` grouped-aggregation adapter corpus stable enough to act as a real seam regression floor for `GROUPBY` / `PIVOTBY`.
+2. preserve the bind-side classification that duplicate and malformed helper declarations are OxFml-owned admission failures rather than OxFunc runtime cleanup.
+3. keep publication-sensitive returned-value distinctions explicit for `HYPERLINK` and keep the locked `_webimage` rich-value carrier explicit for `IMAGE`.
+4. continue tightening the typed runtime packet for `CALL` / `REGISTER.ID` rather than widening note traffic.
+5. for `W052`, reply with concrete field-freeze decisions rather than a parallel wrapper vocabulary unless OxFunc explicitly asks for one.
+6. treat direct adoption of `RegisterIdRequest`, `RegisteredExternalDescriptor`, and `RegisteredExternalCallRequest` as settled unless a concrete mismatch forces reopening.
 
 ## 10. What OxFunc Is Not Asking For
 
@@ -132,14 +169,14 @@ OxFunc is not currently asking OxFml for:
 1. a final callable ABI
 2. a generic provenance redesign
 3. a generic callable-note round
-4. broad one-shot completion of the full `GROUPBY` / `PIVOTBY` option matrix
+4. a re-open of the first bounded `GROUPBY` / `PIVOTBY` adapter expansion that OxFml has now already landed
 5. premature scalarization of `IMAGE`
 
 ## 11. Current Closing Sequence
 
 Current OxFunc reading of the best next sequence is:
 1. use the existing adapter floor to finish narrowing `W038` and `W014`
-2. extend the adapter with bounded `GROUPBY` / `PIVOTBY` and helper-bind rejection cases
+2. treat the landed `W053` grouped-aggregation and helper-bind rejection corpus as the current callable-heavy regression floor
 3. keep `HYPERLINK` / `IMAGE` publication-class distinctions explicit
 4. continue `CALL` / `REGISTER.ID` as a typed registered-external seam packet rather than ordinary function work
 
@@ -147,6 +184,9 @@ Current OxFunc reading of the best next sequence is:
 
 Current OxFunc position to OxFml:
 1. `@` and the admitted helper family are already real end-to-end seam facts, not note-only topics.
-2. the next useful adapter work is callable-backed grouped aggregation plus bind-time helper rejection coverage.
-3. `HYPERLINK` should preserve publication intent, and `IMAGE` should preserve rich-value/publication classification.
-4. `CALL` / `REGISTER.ID` remain a typed registered-external seam, not an ordinary function-family cleanup lane.
+2. callable-backed grouped aggregation plus bounded helper bind-time rejection coverage is now real and verified.
+3. `HYPERLINK` should preserve publication intent, and `IMAGE` should preserve the locked `_webimage` rich-value carrier while keeping published fallback separate.
+4. the latest OxFml note sharpens `IMAGE` by confirming a real local `IMAGE(...)` evaluator/host/adapter lane, `TypedContextQueryFamily::Image`, and preserved `_webimage` rich-value carriage.
+5. `CALL` / `REGISTER.ID` now have a real typed `W052` interface floor, but exact field freeze, admission matrix, and snapshot/mutation consequences are still open.
+6. OxFml's latest closure packet narrows `W052` to four shared decisions only: exact field naming, minimum `RegisteredExternalDescriptor` field set, mutation/controller family ownership, and snapshot-generation consequences.
+7. the latest OxFml note now records those four `W052` decisions as converged at OxFunc/OxFml note level; the remaining work is OxCalc-side acknowledgment and promotion into shared seam-freeze text.

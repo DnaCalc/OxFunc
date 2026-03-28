@@ -2,22 +2,35 @@
 
 Status: active blockers recorded.
 
-Last reviewed: 2026-03-26.
+Last reviewed: 2026-03-27.
 
 ---
 
 ## Active Blockers
 
-### BLK-FN-003: W023 remaining publication/provider residuals still need richer host seams
-
-- **Status**: active
-- **Impact**: `W023` remains partial until the remaining publication/provider seams are pinned honestly for `HYPERLINK` and `IMAGE`.
-- **Current state**: `ISFORMULA`, `SUBTOTAL`, and `AGGREGATE` now have typed host-query seams and admitted current-baseline OxFunc closure. The blocker is narrowed to `HYPERLINK` publication metadata/clickability and the richer provider/value/publication model pressure from `IMAGE`.
-- **Exact unblock steps**: define the host-facing publication seam for hyperlink decoration/click behavior and either (a) pin `IMAGE` as a host-managed rich value/publication object or (b) explicitly classify it as an external/provider surface above the current OxFunc value boundary.
-- **Recommendation**: workaround
-- **Opened**: 2026-03-15
+None currently recorded.
 
 ## Resolved Blockers
+
+### BLK-FN-003: W023 remaining `IMAGE` lane still needs admitted end-to-end corpus coverage
+
+- **Status**: resolved
+- **Impact**: had kept `W023` partial while the `IMAGE(...)` seam lane was still only a note-level ask.
+- **Current state**: OxFml's latest `NOTES_FOR_OXFUNC` now claims and the local tree now verifies a real `IMAGE(...)` floor through evaluator, host, and adapter paths. Verified local OxFml tests are `evaluator_preserves_image_rich_value_surface_through_host_query_lane`, `single_formula_host_preserves_image_rich_value_surface`, `adapter_preserves_image_rich_value_surface`, and the matching blocked-provider lanes in `evaluator_tests.rs`, `host_tests.rs`, and `w049_oxfunc_adapter_tests.rs`. The OxFml side also now carries `TypedContextQueryFamily::Image`, preserves `ReturnedValueSurfaceKind::RichValue` with `rich_value_type_name = "_webimage"`, and keeps the published fallback separate from the semantic carrier.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-15
+- **Resolved**: 2026-03-28
+
+### BLK-FN-015: Latest OxFml generic return-surface widening reopened broad seam-fixture alignment, then was reconciled as stale local fixtures
+
+- **Status**: resolved
+- **Impact**: had temporarily reopened OxFunc-side `oxfml_seam_integration` after the latest OxFml return-surface widening.
+- **Current state**: the mismatch was fixture-side, not runtime-side. OxFunc already publishes `NOW` and `TODAY` as `ValueWithPresentation` with date-like presentation hints, and OxFml's current tests and authoritative `W050` corpus agree. The stale local OxFunc rows were `E03` in `crates/oxfunc_core/tests/fixtures/w050_oxfunc_admitted_fixture_cases.json` and `FN-TODAY-01` in `crates/oxfunc_core/tests/fixtures/oxfunc_adapter_function_corpus.json`. After correcting those expectations and reverting accidental unrelated flips on `A01` / `FN-EDATE-01`, `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --test oxfml_seam_integration -- --nocapture` passes cleanly again.
+- **Exact unblock steps**: none
+- **Recommendation**: continue
+- **Opened**: 2026-03-27
+- **Resolved**: 2026-03-27
 
 ### BLK-FN-014: Low-order current-baseline publication drift in `PV`, `FV`, and `PMT` is repaired
 

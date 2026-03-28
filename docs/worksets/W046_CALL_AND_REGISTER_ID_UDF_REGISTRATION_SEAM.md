@@ -58,7 +58,42 @@ Members:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - no host-backed `RegisteredExternalProvider` exists in-repo yet
-   - broader argument-bearing omitted-`type_text` matrix is not pinned
-   - worksheet-vs-macro-sheet admission/version matrix is not fully pinned
-   - final registered-external runtime-snapshot row shape is not locked yet
+   - `W052` is now converged at OxFunc/OxFml note level, but not yet promoted into shared seam-freeze text
+   - OxCalc-side acknowledgment of the narrowed `W052` packet split is still outstanding
+   - wider omitted-`type_text` and worksheet-vs-macro-sheet admission characterization remain useful evidence follow-ons, but not primary shared-freeze blockers
+
+## 8. Current OxFunc Closure Suggestions For W052
+1. exact shared field naming:
+   - close by freezing the existing shared packet names exactly as they already exist in OxFunc and OxFml:
+     - `RegisterIdRequest { library_name, procedure, declared_type_text }`
+     - `RegisteredExternalDescriptor { stable_registration_id, register_id, origin_kind, display_name, library_name, procedure, declared_type_text }`
+     - `RegisteredExternalCallRequest { target, invocation_args }`
+     - `RegisteredExternalTarget::{RegisterId, Direct}`
+   - do not reopen a rename pass unless a concrete runtime mismatch appears
+2. minimum `RegisteredExternalDescriptor` field set:
+   - close by keeping the existing `7`-field descriptor as the shared descriptor
+   - OxFunc's coercion/dereference-critical facts are:
+     - `stable_registration_id`
+     - `register_id`
+     - `library_name`
+     - `procedure`
+     - `declared_type_text`
+   - `origin_kind` should remain as useful provenance
+   - `display_name` should remain as harmless host metadata rather than forcing a narrower second descriptor type
+3. mutation/controller family ownership:
+   - close by keeping `RegisteredExternalCatalogMutation*` and `RegisteredExternalCatalogController` OxFml-owned funnel packets for the current phase
+   - current reason:
+     - they preserve initiating-channel and host-coordinator facts
+     - they sit above OxFunc-owned catalog truth
+     - OxFunc does not yet need them as first-class shared runtime ABI for `CALL` / `REGISTER.ID` normalization
+4. snapshot-generation consequences:
+   - close by freezing the split OxFml proposed:
+     - bind-visible registration/unregister => new `LibraryContextSnapshot` generation plus bind invalidation where the visible function/name world changes
+     - `CALL` / `REGISTER.ID`-only descriptor mutation => targeted reevaluation by default, not broad rebinding
+5. downgraded from shared-note blockers:
+   - broader omitted-`type_text` characterization
+   - worksheet-vs-macro-sheet admission characterization
+   - these remain useful evidence lanes, but not primary packet-freeze blockers
+6. current read after the latest OxFml note:
+   - the four packet-freeze decisions are now converged at note level across OxFunc and OxFml
+   - the remaining cross-program work is to carry this narrowed packet into OxCalc and promote it from note-level convergence into shared seam-freeze text

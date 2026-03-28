@@ -37,13 +37,17 @@ Capture the current-baseline OxFunc-side reading of what crosses the value bound
 2. the current OxFunc runtime shape for that is:
    - plain value path: `eval_hyperlink_surface(...) -> EvalValue::Text(...)`
    - extended publication-aware path: `eval_hyperlink_surface_extended(...) -> ValueWithPresentation(value=text, style=hyperlink)`
-3. `IMAGE` should remain deferred until the value/publication seam is pinned more carefully:
-   - likely host-managed rich value or publication object,
-   - with classified provider outcomes when image fetch/bind fails.
+3. `IMAGE` return carriage is now pinned more carefully:
+   - semantic return carrier: `ExtendedValue::RichValue(_webimage)` with typed request-normalized metadata
+   - published worksheet value: provider-supplied fallback text on success, or classified provider-style worksheet errors such as `#CONNECT!` / `#BLOCKED!`
+   - file/web access itself remains host/provider-owned through upstream helpers
+   - the published worksheet fallback is not the semantic return carrier
+   - OxFml now exercises a real `IMAGE(...)` lane through evaluator, host, and adapter paths, including `TypedContextQueryFamily::Image`
+   - the remaining gap is no longer carrier definition; it is first-freeze cleanup on the host-query family name and any last returned-value-field questions
 
 ## 5. Status
 1. runtime_status: `evidenced`
-2. seam_status: `value_boundary_characterized_but_not_locked`
+2. seam_status: `return_carrier_locked_and_exercised`
 3. closure_reading:
    - `HYPERLINK` value side and first-pass presentation-hint carrier are now understood,
-   - `IMAGE` remains an open rich-value / publication seam.
+   - `IMAGE` runtime and return carrier are now real on the OxFunc side, and OxFml now has exercised evaluator/host/adapter coverage for the admitted lane.

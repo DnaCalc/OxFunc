@@ -397,6 +397,7 @@ pub fn map_text_compat_locale_error_to_ws(error: &TextCompatLocaleEvalError) -> 
             HostInfoError::UnsupportedWidthConversionProfileQuery(_),
         ) => WorksheetErrorCode::Value,
         TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedTranslateQuery)
+        | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedImageQuery)
         | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedCellInfoQuery(_))
         | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedInfoQuery(_))
         | TextCompatLocaleEvalError::HostInfo(HostInfoError::UnsupportedFormulaTextQuery)

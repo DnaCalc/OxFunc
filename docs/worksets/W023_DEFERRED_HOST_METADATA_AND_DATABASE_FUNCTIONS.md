@@ -32,12 +32,13 @@ Packet total:
 1. `17` functions passed through `W23`.
 
 Current residual open set:
-1. `2` functions remain open in `W23`.
+1. `1` function remains open in `W23`.
 
 Current standing by cluster:
 1. `12` database functions are now evidenced in-packet.
 2. `3` metadata / visibility functions are now evidenced in-packet (`ISFORMULA`, `SUBTOTAL`, `AGGREGATE`).
-3. `2` publication/provider-sensitive functions remain in packet scope (`HYPERLINK`, `IMAGE`), but only `IMAGE` remains a fully open value/publication seam.
+3. `HYPERLINK` is now complete on the OxFunc side for current-phase purposes.
+4. `1` publication/provider-sensitive function remains open in packet scope: `IMAGE`.
 
 ## 4. Why These Functions Were Out of the Ordinary Pure Lane
 1. `AGGREGATE` and `SUBTOTAL` depend on hidden-row / filtered-row / nested-aggregate visibility semantics.
@@ -84,7 +85,15 @@ Current standing by cluster:
 3. `SUBTOTAL` and `AGGREGATE` now have a typed row-visibility callback seam and current-baseline OxFunc closure for the admitted reference-form slice.
 4. the remaining deferred residual in `W23` is now only:
    - `IMAGE`
-5. `HYPERLINK` now has a first-pass OxFunc-side presentation-hint carrier, but application of the style/clickability remains host-owned.
+5. `HYPERLINK` is complete on the OxFunc side: value semantics and presentation intent are modeled, while actual style/clickability application remains host-owned and therefore above the OxFunc function boundary.
+6. `IMAGE` now also has a real OxFunc runtime surface:
+   - strict Excel-style argument validation,
+   - typed `HostInfoProvider::query_image(...)` request normalization,
+   - provider-classified `#CONNECT!` / `#BLOCKED!` / provider-error mapping,
+   - and an extended `_webimage` rich-value return path.
+7. the latest OxFml note confirms generic non-ordinary return-surface preservation and explicit `_webimage` packet evidence locally. The current joint seam reading is now that the semantic success carrier is `ExtendedValue::RichValue(_webimage)`, while the published worksheet fallback remains a separate host-visible projection.
+8. OxFml now also claims and the local tree now verifies a real `IMAGE(...)` floor through evaluator, host, and adapter paths, including `TypedContextQueryFamily::Image`.
+9. OxFunc also has a local `SingleFormulaHost` regression proving the same split from the OxFunc side.
 
 ## 9. Status
 1. execution_state: `in_progress`
@@ -92,5 +101,6 @@ Current standing by cluster:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - `HYPERLINK` style-hint application and clickability remain above the current OxFunc value surface even though the value-plus-style-hint carrier is now modeled
-   - `IMAGE` still pressures a richer host-managed value/publication seam
+   - first-freeze cleanup around `TypedContextQueryFamily::Image`
+   - confirm the current `W042` returned-value vocabulary is sufficient for current-phase `IMAGE` closure
+   - broader current-phase promotion/closure work for the `IMAGE` lane

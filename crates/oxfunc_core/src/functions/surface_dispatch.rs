@@ -205,6 +205,9 @@ use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::hyperlink_fn::{
     eval_hyperlink_surface, eval_hyperlink_surface_extended, map_hyperlink_error_to_ws,
 };
+use crate::functions::image_fn::{
+    eval_image_surface, eval_image_surface_extended, map_image_error_to_ws,
+};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
 use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
@@ -651,6 +654,7 @@ pub const FUNC_ID_FORECAST: &str = "FUNC.FORECAST";
 pub const FUNC_ID_FORECAST_LINEAR: &str = "FUNC.FORECAST.LINEAR";
 pub const FUNC_ID_HARMEAN: &str = "FUNC.HARMEAN";
 pub const FUNC_ID_HYPERLINK: &str = "FUNC.HYPERLINK";
+pub const FUNC_ID_IMAGE: &str = "FUNC.IMAGE";
 pub const FUNC_ID_HYPGEOM_DIST: &str = "FUNC.HYPGEOM.DIST";
 pub const FUNC_ID_HYPGEOMDIST: &str = "FUNC.HYPGEOMDIST";
 pub const FUNC_ID_HOUR: &str = "FUNC.HOUR";
@@ -1509,6 +1513,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_HYPERLINK => {
             Some(crate::functions::hyperlink_fn::HYPERLINK_META.arg_preparation_profile)
         }
+        FUNC_ID_IMAGE => Some(crate::functions::image_fn::IMAGE_META.arg_preparation_profile),
         FUNC_ID_HYPGEOM_DIST => {
             Some(crate::functions::discrete_dist_family::HYPGEOM_DIST_META.arg_preparation_profile)
         }
@@ -2265,6 +2270,8 @@ pub fn eval_surface_extended_call(
     match function_id {
         FUNC_ID_HYPERLINK => eval_hyperlink_surface_extended(args, resolver)
             .map_err(|e| map_hyperlink_error_to_ws(&e)),
+        FUNC_ID_IMAGE => eval_image_surface_extended(args, resolver, host_info)
+            .map_err(|e| map_image_error_to_ws(&e)),
         FUNC_ID_NOW => {
             let provider = FixedNowProvider {
                 serial: now_serial.unwrap_or(0.0),
@@ -2780,6 +2787,9 @@ pub fn eval_surface_value_call_with_callable(
         }
         FUNC_ID_HYPERLINK => {
             eval_hyperlink_surface(args, resolver).map_err(|e| map_hyperlink_error_to_ws(&e))
+        }
+        FUNC_ID_IMAGE => {
+            eval_image_surface(args, resolver, host_info).map_err(|e| map_image_error_to_ws(&e))
         }
         FUNC_ID_HYPGEOM_DIST => {
             eval_hypgeom_dist_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
@@ -3742,15 +3752,21 @@ pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, Worksheet
 mod tests {
     use super::*;
     use crate::functions::adapters::PreparedArgValue;
+    use crate::host_info::{
+        HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
+    };
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{
         ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
         ExcelText, ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, ReferenceLike,
+        RichValueData,
     };
 
     struct NoReferenceResolver;
 
     struct TestCallableInvoker;
+
+    struct TestImageProvider;
 
     impl ReferenceResolver for NoReferenceResolver {
         fn capabilities(&self) -> ResolverCapabilities {
@@ -3786,6 +3802,15 @@ mod tests {
                     callable.callable_token.clone(),
                 )),
             }
+        }
+    }
+
+    impl HostInfoProvider for TestImageProvider {
+        fn query_image(&self, _request: &ImageRequest) -> Result<ImageProviderResult, HostInfoError> {
+            Ok(ImageProviderResult::Image(ResolvedWebImage {
+                web_image_identifier: "img-1".to_string(),
+                published_fallback: ExcelText::from_interop_assignment("-2146826273"),
+            }))
         }
     }
 
@@ -3941,6 +3966,55 @@ mod tests {
                 value: EvalValue::Text(ExcelText::from_interop_assignment("Go")),
                 hint: PresentationHint::style(CellStyleHint::Hyperlink),
             })
+        );
+    }
+
+    #[test]
+    fn eval_surface_extended_call_wraps_image_with_rich_value() {
+        let got = eval_surface_extended_call(
+            FUNC_ID_IMAGE,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "https://example.com/image.png",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Sphere"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            Some(&TestImageProvider),
+        );
+        match got {
+            Ok(ExtendedValue::RichValue(rich)) => {
+                assert_eq!(rich.value_type.type_name, "_webimage");
+                assert!(matches!(rich.fallback, RichValueData::Text(_)));
+            }
+            other => panic!("expected rich image surface, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_image_through_host_provider() {
+        let got = eval_surface_value_call(
+            FUNC_ID_IMAGE,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "https://example.com/image.png",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Sphere"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            Some(&TestImageProvider),
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "-2146826273"
+            )))
         );
     }
 

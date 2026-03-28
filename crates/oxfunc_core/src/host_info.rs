@@ -41,6 +41,7 @@ pub enum HostInfoError {
     UnsupportedAggregateReferenceContextQuery,
     UnsupportedWidthConversionProfileQuery(WidthConversionFunction),
     UnsupportedTranslateQuery,
+    UnsupportedImageQuery,
     ProviderFailure { detail: String },
 }
 
@@ -72,6 +73,14 @@ pub enum WidthConversionMode {
     Unavailable,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ImageSizingMode {
+    FitCell,
+    FillCell,
+    OriginalSize,
+    Custom,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TranslateRequest {
     pub text: ExcelText,
@@ -83,6 +92,29 @@ pub struct TranslateRequest {
 pub enum TranslateProviderResult {
     Text(ExcelText),
     Busy,
+    CapabilityDenied,
+    ProviderError(WorksheetErrorCode),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ImageRequest {
+    pub source: ExcelText,
+    pub alt_text: Option<ExcelText>,
+    pub sizing: ImageSizingMode,
+    pub height: Option<f64>,
+    pub width: Option<f64>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ResolvedWebImage {
+    pub web_image_identifier: String,
+    pub published_fallback: ExcelText,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ImageProviderResult {
+    Image(ResolvedWebImage),
+    ConnectionFailed,
     CapabilityDenied,
     ProviderError(WorksheetErrorCode),
 }
@@ -164,6 +196,10 @@ pub trait HostInfoProvider {
     ) -> Result<TranslateProviderResult, HostInfoError> {
         Err(HostInfoError::UnsupportedTranslateQuery)
     }
+
+    fn query_image(&self, _request: &ImageRequest) -> Result<ImageProviderResult, HostInfoError> {
+        Err(HostInfoError::UnsupportedImageQuery)
+    }
 }
 
 #[cfg(test)]
@@ -239,7 +275,7 @@ mod tests {
     }
 
     #[test]
-    fn default_provider_rejects_width_conversion_and_translate_queries() {
+    fn default_provider_rejects_width_conversion_translate_and_image_queries() {
         let provider = EmptyProvider;
         assert_eq!(
             provider.query_width_conversion_mode(WidthConversionFunction::Asc),
@@ -258,6 +294,20 @@ mod tests {
                 )),
             }),
             Err(HostInfoError::UnsupportedTranslateQuery)
+        );
+        assert_eq!(
+            provider.query_image(&ImageRequest {
+                source: ExcelText::from_utf16_code_units(
+                    "https://example.com/image.png".encode_utf16().collect()
+                ),
+                alt_text: Some(ExcelText::from_utf16_code_units(
+                    "Example".encode_utf16().collect()
+                )),
+                sizing: ImageSizingMode::FitCell,
+                height: None,
+                width: None,
+            }),
+            Err(HostInfoError::UnsupportedImageQuery)
         );
     }
 

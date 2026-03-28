@@ -916,6 +916,7 @@ pub fn map_number_regex_translate_error_to_ws(
         NumberRegexTranslateEvalError::HostInfo(
             HostInfoError::UnsupportedTranslateQuery
             | HostInfoError::UnsupportedWidthConversionProfileQuery(_)
+            | HostInfoError::UnsupportedImageQuery
             | HostInfoError::UnsupportedCellInfoQuery(_)
             | HostInfoError::UnsupportedInfoQuery(_)
             | HostInfoError::UnsupportedFormulaTextQuery

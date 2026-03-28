@@ -180,6 +180,7 @@ pub fn map_misc_switch_info_error_to_ws(e: &MiscSwitchInfoEvalError) -> Workshee
             | HostInfoError::UnsupportedSheetCountQuery
             | HostInfoError::UnsupportedAggregateReferenceContextQuery
             | HostInfoError::UnsupportedWidthConversionProfileQuery(_)
+            | HostInfoError::UnsupportedImageQuery
             | HostInfoError::UnsupportedTranslateQuery,
         ) => WorksheetErrorCode::Value,
         MiscSwitchInfoEvalError::InvalidOperand => WorksheetErrorCode::Value,

@@ -99,6 +99,7 @@ pub mod group_pivot_common;
 pub mod harmean_fn;
 pub mod hstack;
 pub mod hyperlink_fn;
+pub mod image_fn;
 pub mod if_fn;
 pub mod iferror;
 pub mod ifna_fn;
