@@ -14,6 +14,7 @@ Current packet highlights:
 9. `W056` now adds native Excel replay and executable Lean grouped-aggregation evidence for `GROUPBY` / `PIVOTBY`, so the earlier `W055` promotion now rests on native replay, OxFunc runtime tests, OxFml adapter coverage, and executable Lean alignment together.
 10. `W068` now closes the final ordinary backlog residuals through `FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md`, `W68_SCENARIO_MANIFEST_SEED.csv`, and `W68_EXECUTION_RECORD.md`, draining the non-deferred hidden backlog completely for the current version target.
 11. `W054` is now complete for parked current-phase formalization reconciliation: the non-deferred surface no longer carries an active Rust-vs-Lean missing-id or modern-alias mismatch.
+12. `docs/PARKED_CURRENT_BASELINE_20260401.md` is now the short parked-baseline anchor for downstream readers, pointing at `W051`, `W054`, and the published library-context export/readme.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`

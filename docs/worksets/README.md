@@ -6,6 +6,7 @@ Supersession note:
 1. Any older reading that `W051` contains only the explicit `15`-row residual preview cluster is superseded by `W051` itself.
 2. For current non-deferred outstanding-row truth, use `W051` rather than older family packets or snapshot-only readings.
 3. For the current OxFunc-owned shared-interface freeze candidate, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+4. For the parked current non-deferred baseline, use `docs/PARKED_CURRENT_BASELINE_20260401.md`.
 
 Primary kickoff orchestration:
 1. `W000_KICKOFF_PROGRAM_W001_W006.md`
