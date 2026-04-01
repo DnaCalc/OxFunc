@@ -37,12 +37,12 @@ Current consumer-facing report from `W051`:
 1. `534` published rows total:
    - `511` functions,
    - `23` operators.
-2. `374` rows are currently usable on a first-pass consumer read:
-   - `374` supported,
+2. `517` rows are currently usable on a first-pass consumer read:
+   - `517` supported,
    - `0` preview.
 3. `17` rows are deferred through `W050`.
-4. `143` hidden snapshot entries are non-deferred current-version backlog on the consumer-facing published-catalog reading.
-5. the ordinary-backlog execution program now operates on `150` normalized function rows after `W060`.
+4. `0` hidden snapshot entries are non-deferred current-version backlog on the consumer-facing published-catalog reading.
+5. the ordinary-backlog execution program is now fully drained for the current non-deferred surface after `W068`.
 6. the exact first-pass stale-row set still lives in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` as refresh provenance, but those rows are no longer stale in the current published snapshot export.
 
 ### 2.2 W050 Deferred (Current-Version Excluded)
@@ -71,11 +71,11 @@ Definition (from `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFA
 2. not yet fully complete,
 3. many have real OxFunc runtime/formal/evidence work on their admitted slice, but remain listed because the surrounding seam, promotion, or documentation packet is still open.
 
-Current working members: `150` functions + `0` operators = `150` total normalized execution rows.
+Current working members: `0` functions + `0` operators = `0` total normalized execution rows.
 Current split:
 1. `0` explicit preview-cluster rows,
-2. `143` hidden non-deferred snapshot entries now centralized through `W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`,
-3. `150` normalized execution rows now centralized through `W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`.
+2. `0` hidden non-deferred snapshot entries now centralized through `W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`,
+3. `0` normalized execution rows now centralized through `W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`.
 
 Important current narrowing:
 1. there is no remaining explicit preview-cluster row in `W051`,
@@ -84,10 +84,10 @@ Important current narrowing:
 4. the callable-helper family, `IMAGE`, and `CALL` / `REGISTER.ID` are now promoted out of `W051` after shared-freeze acknowledgment and packet-local closure.
 
 Downstream reading:
-1. the remaining `143` hidden snapshot entries are real non-deferred current-version backlog and should not be silently treated as supported just because they were omitted from the older narrow `W051` packet reading,
-2. those `143` entries correspond to `150` machine-clean execution rows for closure planning,
-3. those rows are ordinary backlog, not the current shared-interface acknowledgement scope for OxFunc ↔ OxFml freeze work,
-4. `W051`, not this policy note, is the authoritative owner for current row membership and counts.
+1. there is no remaining active non-deferred current-version backlog in `W051`,
+2. `W051` now acts as the completed provenance/owner packet for the drained non-deferred backlog rather than as a live current row list,
+3. any future reopened non-deferred gap must be re-added there explicitly,
+4. `W051`, not this policy note, remains the authoritative owner for current row membership and counts.
 
 ## 3. Seam-Heavy Row Honest Status
 
@@ -105,7 +105,7 @@ Downstream consumers should assign one of the following admission-category label
 
 | Admission Category | Snapshot Export Reading | Label for Downstream |
 |-------------------|----------------------|---------------------|
-| function-phase-complete | Row present, not in W050 or W051, `metadata_status` is `function_meta_extracted` or `function_meta_curated` | `supported` |
+| function-phase-complete | Row present, not in W050 or W051, and `metadata_status` is `function_meta_extracted`, `function_meta_curated`, or an intentionally modeled complete row such as `doc_modeled` | `supported` |
 | W051 with real runtime | Row present, listed in W051, W051 notes confirm real kernel | `preview` |
 | W051 without real runtime | Row present, listed in W051, W051 notes indicate open boundary | `experimental` |
 | W050 deferred | Row present, listed in W050 | `deferred` |
@@ -114,6 +114,7 @@ Downstream consumers should assign one of the following admission-category label
 Current warning:
 1. the old simple reading "`catalog_only` and absent from W050/W051 means standalone catalog-only backlog" is superseded by `W051`;
 2. snapshot status alone is still not authoritative for backlog truth; `W051` remains the owner for current row membership.
+3. the `preview`, `experimental`, and `catalog_only` `W051` rows are currently unused because `W051` is empty for the parked non-deferred surface.
 
 ### 4.2 Labeling By Surface
 

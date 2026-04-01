@@ -205,12 +205,12 @@ use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::hyperlink_fn::{
     eval_hyperlink_surface, eval_hyperlink_surface_extended, map_hyperlink_error_to_ws,
 };
-use crate::functions::image_fn::{
-    eval_image_surface, eval_image_surface_extended, map_image_error_to_ws,
-};
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
 use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
+use crate::functions::image_fn::{
+    eval_image_surface, eval_image_surface_extended, map_image_error_to_ws,
+};
 use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
 use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
@@ -247,8 +247,8 @@ use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
 use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
 use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
 use crate::functions::misc_conversion_family::{
-    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_randarray_surface,
-    eval_euroconvert_surface, eval_percentof_surface, map_misc_conversion_error_to_ws,
+    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface,
+    eval_percentof_surface, eval_randarray_surface, map_misc_conversion_error_to_ws,
 };
 use crate::functions::misc_switch_info_family::{
     eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
@@ -339,9 +339,7 @@ use crate::functions::quotient_fn::{
 };
 use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
-use crate::functions::randbetween_fn::{
-    eval_randbetween_surface, map_randbetween_error_to_ws,
-};
+use crate::functions::randbetween_fn::{eval_randbetween_surface, map_randbetween_error_to_ws};
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
@@ -429,8 +427,8 @@ use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws
 use crate::functions::today_fn::{
     TodayProvider, eval_today_surface, eval_today_surface_extended, map_today_error_to_ws,
 };
-use crate::functions::true_fn::eval_true_surface;
 use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
+use crate::functions::true_fn::eval_true_surface;
 use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
 use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
@@ -1240,9 +1238,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         }
         FUNC_ID_CHAR => Some(crate::functions::text_scalar_misc::CHAR_META.arg_preparation_profile),
         FUNC_ID_COLUMN => Some(crate::functions::column_fn::COLUMN_META.arg_preparation_profile),
-        FUNC_ID_COLUMNS => {
-            Some(crate::functions::columns_fn::COLUMNS_META.arg_preparation_profile)
-        }
+        FUNC_ID_COLUMNS => Some(crate::functions::columns_fn::COLUMNS_META.arg_preparation_profile),
         FUNC_ID_CODE => Some(crate::functions::text_scalar_misc::CODE_META.arg_preparation_profile),
         FUNC_ID_COMBIN => Some(crate::functions::combin::COMBIN_META.arg_preparation_profile),
         FUNC_ID_COMBINA => Some(crate::functions::combina::COMBINA_META.arg_preparation_profile),
@@ -1503,9 +1499,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         FUNC_ID_GCD => Some(crate::functions::gcd_fn::GCD_META.arg_preparation_profile),
         FUNC_ID_GEOMEAN => Some(crate::functions::geomean_fn::GEOMEAN_META.arg_preparation_profile),
         FUNC_ID_GESTEP => Some(crate::functions::gestep_fn::GESTEP_META.arg_preparation_profile),
-        FUNC_ID_GROUPBY => {
-            Some(crate::functions::groupby_fn::GROUPBY_META.arg_preparation_profile)
-        }
+        FUNC_ID_GROUPBY => Some(crate::functions::groupby_fn::GROUPBY_META.arg_preparation_profile),
         FUNC_ID_GROWTH => {
             Some(crate::functions::regression_forecast_family::GROWTH_META.arg_preparation_profile)
         }
@@ -1906,9 +1900,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
         ),
         FUNC_ID_PHI => Some(crate::functions::phi_fn::PHI_META.arg_preparation_profile),
         FUNC_ID_PI => Some(crate::functions::pi::PI_META.arg_preparation_profile),
-        FUNC_ID_PIVOTBY => {
-            Some(crate::functions::pivotby_fn::PIVOTBY_META.arg_preparation_profile)
-        }
+        FUNC_ID_PIVOTBY => Some(crate::functions::pivotby_fn::PIVOTBY_META.arg_preparation_profile),
         FUNC_ID_PMT => {
             Some(crate::functions::financial_time_value_family::PMT_META.arg_preparation_profile)
         }
@@ -2045,7 +2037,9 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
             Some(crate::functions::subtotal_aggregate_family::SUBTOTAL_META.arg_preparation_profile)
         }
         FUNC_ID_SUM => Some(crate::functions::sum::SUM_META.arg_preparation_profile),
-        FUNC_ID_SUMIF => Some(crate::functions::criteria_family::SUMIF_META.arg_preparation_profile),
+        FUNC_ID_SUMIF => {
+            Some(crate::functions::criteria_family::SUMIF_META.arg_preparation_profile)
+        }
         FUNC_ID_SUMIFS => {
             Some(crate::functions::criteria_family::SUMIFS_META.arg_preparation_profile)
         }
@@ -3806,7 +3800,10 @@ mod tests {
     }
 
     impl HostInfoProvider for TestImageProvider {
-        fn query_image(&self, _request: &ImageRequest) -> Result<ImageProviderResult, HostInfoError> {
+        fn query_image(
+            &self,
+            _request: &ImageRequest,
+        ) -> Result<ImageProviderResult, HostInfoError> {
             Ok(ImageProviderResult::Image(ResolvedWebImage {
                 web_image_identifier: "img-1".to_string(),
                 published_fallback: ExcelText::from_interop_assignment("-2146826273"),
@@ -3977,7 +3974,9 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
                     "https://example.com/image.png",
                 ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Sphere"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "Sphere",
+                ))),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -4002,7 +4001,9 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
                     "https://example.com/image.png",
                 ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Sphere"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "Sphere",
+                ))),
             ],
             &NoReferenceResolver,
             Some(46000.0),

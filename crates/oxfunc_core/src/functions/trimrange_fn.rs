@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -48,16 +48,13 @@ pub enum TrimRangeEvalError {
     EmptyResult,
 }
 
-fn parse_trim_type(
-    prepared: Option<&PreparedArgValue>,
-) -> Result<TrimType, TrimRangeEvalError> {
+fn parse_trim_type(prepared: Option<&PreparedArgValue>) -> Result<TrimType, TrimRangeEvalError> {
     match prepared {
         None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => {
             Ok(TrimType::Trailing)
         }
         Some(arg) => {
-            let raw =
-                coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
+            let raw = coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
             if !raw.is_finite() {
                 return Err(TrimRangeEvalError::InvalidTrimType(raw));
             }
@@ -72,14 +69,11 @@ fn parse_trim_type(
     }
 }
 
-fn parse_headers_count(
-    prepared: Option<&PreparedArgValue>,
-) -> Result<usize, TrimRangeEvalError> {
+fn parse_headers_count(prepared: Option<&PreparedArgValue>) -> Result<usize, TrimRangeEvalError> {
     match prepared {
         None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(0),
         Some(arg) => {
-            let raw =
-                coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
+            let raw = coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
             if !raw.is_finite() || raw < 0.0 {
                 return Err(TrimRangeEvalError::InvalidHeadersCount(raw));
             }
@@ -233,13 +227,21 @@ pub(crate) fn trimrange_kernel(
             ArrayCellValue::Text(t) => EvalValue::Text(t.clone()),
             ArrayCellValue::Logical(b) => EvalValue::Logical(*b),
             ArrayCellValue::Error(code) => EvalValue::Error(*code),
-            ArrayCellValue::EmptyCell => EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new())),
+            ArrayCellValue::EmptyCell => {
+                EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
+            }
         });
     }
 
     Ok(EvalValue::Array(
-        EvalArray::new(ArrayShape { rows: out_rows, cols: out_cols }, cells)
-            .expect("trimrange shape valid"),
+        EvalArray::new(
+            ArrayShape {
+                rows: out_rows,
+                cols: out_cols,
+            },
+            cells,
+        )
+        .expect("trimrange shape valid"),
     ))
 }
 
@@ -341,11 +343,11 @@ mod tests {
     #[test]
     fn trimrange_trims_trailing_blank_rows_and_cols() {
         // 3x3 grid: data in top-left 2x2, blank right col and bottom row
-        let arr = make_array(3, 3, vec![
-            n(1.0), n(2.0), e(),
-            n(3.0), n(4.0), e(),
-            e(),    e(),    e(),
-        ]);
+        let arr = make_array(
+            3,
+            3,
+            vec![n(1.0), n(2.0), e(), n(3.0), n(4.0), e(), e(), e(), e()],
+        );
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
         let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
@@ -355,11 +357,7 @@ mod tests {
 
     #[test]
     fn trimrange_trims_leading_blank_rows() {
-        let arr = make_array(3, 2, vec![
-            e(),    e(),
-            n(1.0), n(2.0),
-            n(3.0), n(4.0),
-        ]);
+        let arr = make_array(3, 2, vec![e(), e(), n(1.0), n(2.0), n(3.0), n(4.0)]);
         let got = trimrange_kernel(&arr, TrimType::Leading, TrimType::None, 0).unwrap();
         let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
@@ -369,12 +367,28 @@ mod tests {
 
     #[test]
     fn trimrange_trims_both_edges() {
-        let arr = make_array(4, 4, vec![
-            e(),    e(),    e(),    e(),
-            e(),    n(1.0), n(2.0), e(),
-            e(),    n(3.0), n(4.0), e(),
-            e(),    e(),    e(),    e(),
-        ]);
+        let arr = make_array(
+            4,
+            4,
+            vec![
+                e(),
+                e(),
+                e(),
+                e(),
+                e(),
+                n(1.0),
+                n(2.0),
+                e(),
+                e(),
+                n(3.0),
+                n(4.0),
+                e(),
+                e(),
+                e(),
+                e(),
+                e(),
+            ],
+        );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::Both, 0).unwrap();
         let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
@@ -395,11 +409,18 @@ mod tests {
     #[test]
     fn trimrange_preserves_header_rows() {
         // Header row is blank but should not be trimmed with leading trim.
-        let arr = make_array(3, 2, vec![
-            e(),    e(),     // header row (blank)
-            n(1.0), n(2.0),
-            e(),    e(),     // trailing blank
-        ]);
+        let arr = make_array(
+            3,
+            2,
+            vec![
+                e(),
+                e(), // header row (blank)
+                n(1.0),
+                n(2.0),
+                e(),
+                e(), // trailing blank
+            ],
+        );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::None, 1).unwrap();
         // Header row kept + data row kept, trailing blank trimmed.
         let expected = EvalValue::Array(make_array(2, 2, vec![e(), e(), n(1.0), n(2.0)]));

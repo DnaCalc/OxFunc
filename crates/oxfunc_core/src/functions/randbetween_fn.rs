@@ -81,8 +81,8 @@ pub fn eval_randbetween_surface(
         args,
         resolver,
         |prepared| {
-            let bottom = coerce_prepared_to_number(&prepared[0])
-                .map_err(RandbetweenEvalError::Coercion)?;
+            let bottom =
+                coerce_prepared_to_number(&prepared[0]).map_err(RandbetweenEvalError::Coercion)?;
             let top =
                 coerce_prepared_to_number(&prepared[1]).map_err(RandbetweenEvalError::Coercion)?;
             randbetween_kernel(provider, bottom, top)
@@ -167,7 +167,10 @@ mod tests {
     fn randbetween_rejects_one_arg() {
         let got =
             eval_randbetween_surface(&[num(1.0)], &MockResolver, &FixedProvider { value: 0.5 });
-        assert!(matches!(got, Err(RandbetweenEvalError::ArityMismatch { .. })));
+        assert!(matches!(
+            got,
+            Err(RandbetweenEvalError::ArityMismatch { .. })
+        ));
     }
 
     #[test]
@@ -177,7 +180,10 @@ mod tests {
             &MockResolver,
             &FixedProvider { value: 0.5 },
         );
-        assert!(matches!(got, Err(RandbetweenEvalError::ArityMismatch { .. })));
+        assert!(matches!(
+            got,
+            Err(RandbetweenEvalError::ArityMismatch { .. })
+        ));
     }
 
     // --- Kernel tests ---

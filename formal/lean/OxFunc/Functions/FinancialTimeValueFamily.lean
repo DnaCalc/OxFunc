@@ -31,6 +31,9 @@ def pmtMeta : FunctionMeta :=
 def nperMeta : FunctionMeta :=
   { (financialTimeValuePureMeta "FUNC.NPER") with arity := { min := 3, max := 5 } }
 
+def npvMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.NPV") with arity := { min := 2, max := 255 } }
+
 def rateMeta : FunctionMeta :=
   { (financialTimeValuePureMeta "FUNC.RATE") with arity := { min := 3, max := 6 } }
 
@@ -42,6 +45,21 @@ def ppmtMeta : FunctionMeta :=
 
 def ispmtMeta : FunctionMeta :=
   { (financialTimeValuePureMeta "FUNC.ISPMT") with arity := Arity.exact 4 }
+
+def fvscheduleMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.FVSCHEDULE") with arity := Arity.exact 2 }
+
+def pdurationMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.PDURATION") with arity := Arity.exact 3 }
+
+def rriMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.RRI") with arity := Arity.exact 3 }
+
+def nominalMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.NOMINAL") with arity := Arity.exact 2 }
+
+def effectMeta : FunctionMeta :=
+  { (financialTimeValuePureMeta "FUNC.EFFECT") with arity := Arity.exact 2 }
 
 def irregularFinancialMeta (functionId : String) : FunctionMeta :=
   { (financialTimeValuePureMeta functionId) with arity := { min := 2, max := 3 } }
@@ -115,13 +133,20 @@ theorem financial_time_value_family_profiles :
     ∧ fvMeta.arity = { min := 3, max := 5 }
     ∧ pmtMeta.threadSafety = ThreadSafetyClass.safePure
     ∧ nperMeta.surfaceFecDependencyProfile = FecDependencyProfile.refOnly
+    ∧ npvMeta.arity = { min := 2, max := 255 }
     ∧ rateMeta.arity = { min := 3, max := 6 }
     ∧ ipmtMeta.arity = { min := 4, max := 6 }
     ∧ ppmtMeta.argPreparationProfile = ArgPreparationProfile.refsVisibleInAdapter
     ∧ ispmtMeta.arity = Arity.exact 4
+    ∧ fvscheduleMeta.arity = Arity.exact 2
+    ∧ pdurationMeta.arity = Arity.exact 3
+    ∧ rriMeta.arity = Arity.exact 3
+    ∧ nominalMeta.arity = Arity.exact 2
+    ∧ effectMeta.arity = Arity.exact 2
     ∧ (irregularFinancialMeta "FUNC.MIRR").surfaceFecDependencyProfile = FecDependencyProfile.refOnly := by
-  simp [financialTimeValuePureMeta, pvMeta, fvMeta, pmtMeta, nperMeta, rateMeta, ipmtMeta,
-    ppmtMeta, ispmtMeta, irregularFinancialMeta]
+  simp [financialTimeValuePureMeta, pvMeta, fvMeta, pmtMeta, nperMeta, npvMeta, rateMeta,
+    ipmtMeta, ppmtMeta, ispmtMeta, fvscheduleMeta, pdurationMeta, rriMeta, nominalMeta,
+    effectMeta, irregularFinancialMeta]
 
 theorem growth_integer_publication_seed_05_10 :
     growthIntegerPublication (1 / 20 : Rat) 10 = (16679880978201 / 10240000000000 : Rat) := by

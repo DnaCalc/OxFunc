@@ -41,7 +41,7 @@ The following fields are safe for downstream consumers to treat as stable identi
 | `xlcall_builtin_code` | XLL interop identity | `XLCALL.H` derived |
 | `arity_min` / `arity_max` | Arity bounds | Current catalog truth |
 | `category` | Display grouping | Current catalog truth |
-| `metadata_status` | Profile depth indicator | Locked vocabulary: `function_meta_extracted`, `catalog_only`, `doc_modeled` |
+| `metadata_status` | Profile depth indicator | Locked vocabulary: `function_meta_extracted`, `function_meta_curated`, `catalog_only`, `doc_modeled` |
 
 ### 3.2 Usable-But-Provisional Fields
 The following fields carry real current-tree information and are safe to consume for display, completion, and planning, but their exact vocabulary, granularity, or coverage may evolve without a breaking-change gate.

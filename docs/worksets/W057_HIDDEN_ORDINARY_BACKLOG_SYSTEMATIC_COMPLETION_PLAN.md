@@ -41,7 +41,7 @@ Current target:
 1. `185` hidden snapshot entries.
 2. `0` operators.
 3. all current `W051` membership after `W014` closure.
-4. machine-clean execution counterpart after `W058`: `192` function rows, now reduced to `150` remaining rows after `W060`.
+4. machine-clean execution counterpart after `W058`: `192` function rows, now reduced to `0` remaining rows after `W068`.
 
 Current packet split:
 1. `P0` normalization and grouped-row cleanup (`7` grouped entries)
@@ -52,7 +52,7 @@ Current packet split:
 6. `P5` date/time and business-day family (`18`)
 7. `P6` financial core misc family (`15`)
 8. `P7` database family (`12`)
-9. `P8` text core and compatibility family (`9`)
+9. `P8` text core and compatibility family (`23`)
 10. `P9` math/matrix/rounding family (`15`)
 11. `P10` lookup/logical residuals (`3`)
 
@@ -197,5 +197,4 @@ The broader ordinary backlog program is complete only when every row is either:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - successor packet execution `W061` through `W068` remains open after `W060`
-   - the machine-clean successor split now lives in `W58_SUCCESSOR_PACKET_SPLIT.csv`
+   - none

@@ -3,12 +3,12 @@ use std::fs;
 use std::path::PathBuf;
 
 use oxfml_core::interface::TypedContextQueryBundle;
-use oxfml_core::oxfunc_adapter::{OxFuncAdapterRequest, run_oxfunc_preparation_adapter};
 use oxfml_core::seam::Locus;
 use oxfml_core::semantics::{
     LibraryAvailabilityState, LibraryContextSnapshot, LibraryContextSnapshotEntry,
     RegistrationSourceKind,
 };
+use oxfml_core::substrate::oxfunc_adapter::{OxFuncAdapterRequest, run_oxfunc_preparation_adapter};
 use oxfunc_core::value::{EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
 
@@ -43,9 +43,9 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
     let mut failures = Vec::new();
 
     for fixture in fixtures {
-        let provider = oxfml_core::interface::InMemoryLibraryContextProvider::new(
-            test_snapshot(&fixture.snapshot_surface_name),
-        );
+        let provider = oxfml_core::interface::InMemoryLibraryContextProvider::new(test_snapshot(
+            &fixture.snapshot_surface_name,
+        ));
 
         let mut request = OxFuncAdapterRequest::new(
             fixture.scenario_id.clone(),

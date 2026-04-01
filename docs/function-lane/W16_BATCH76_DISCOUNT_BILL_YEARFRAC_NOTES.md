@@ -35,5 +35,5 @@ Evidence ID: `W16-BATCH76-DISCOUNT-BILL-YEARFRAC-20260316`
 5. `INTRATE(DATE(2008,2,15),DATE(2008,5,15),1000000,1014420,2) -> 5.77%`
 6. `RECEIVED(DATE(2008,2,15),DATE(2008,5,15),1000000,5.75%,2) -> 1014584.65`
 7. `TBILLPRICE(DATE(2008,3,31),DATE(2008,6,1),9%) -> 98.45`
-8. `TBILLYIELD(DATE(2008,3,31),DATE(2008,6,1),98.45) -> 9.14%`
-9. `TBILLEQ(DATE(2008,3,31),DATE(2008,6,1),9.14%) -> 9.42%`
+8. `TBILLYIELD(DATE(2008,3,31),DATE(2008,6,1),98.45) -> 9.1416963%` on current-baseline `value2` output (`9.14%` rounded display in support-style prose).
+9. `TBILLEQ(DATE(2008,3,31),DATE(2008,6,1),9.14%) -> 9.4151494%` on current-baseline `value2` output (`9.42%` rounded display in support-style prose).

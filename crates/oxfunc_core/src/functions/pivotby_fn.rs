@@ -5,7 +5,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
-use crate::functions::callable_helpers::{CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws};
+use crate::functions::callable_helpers::{
+    CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
+};
 use crate::functions::group_pivot_common::{
     CellKey, FieldHeadersMode, default_column_field_headers, default_row_field_headers,
     default_value_headers, group_indices_by_key, invoke_group_aggregate, key_from_cells,
@@ -52,9 +54,7 @@ fn header_mode_shows_output(mode: FieldHeadersMode, had_headers: bool) -> bool {
     }
 }
 
-fn parse_total_depth(
-    prepared: Option<&PreparedArgValue>,
-) -> Result<i32, LambdaHelperEvalError> {
+fn parse_total_depth(prepared: Option<&PreparedArgValue>) -> Result<i32, LambdaHelperEvalError> {
     let depth = crate::functions::group_pivot_common::coerce_optional_i32(prepared)?.unwrap_or(1);
     if depth == 0 || depth == 1 {
         return Ok(depth);
@@ -71,7 +71,9 @@ fn compare_cell(a: &ArrayCellValue, b: &ArrayCellValue) -> Ordering {
         (ArrayCellValue::Number(x), ArrayCellValue::Number(y)) => {
             x.partial_cmp(y).unwrap_or(Ordering::Equal)
         }
-        (ArrayCellValue::Text(x), ArrayCellValue::Text(y)) => x.to_string_lossy().cmp(&y.to_string_lossy()),
+        (ArrayCellValue::Text(x), ArrayCellValue::Text(y)) => {
+            x.to_string_lossy().cmp(&y.to_string_lossy())
+        }
         (ArrayCellValue::Logical(x), ArrayCellValue::Logical(y)) => x.cmp(y),
         (ArrayCellValue::EmptyCell, ArrayCellValue::EmptyCell) => Ordering::Equal,
         (ArrayCellValue::Error(x), ArrayCellValue::Error(y)) => (*x as u8).cmp(&(*y as u8)),
@@ -159,7 +161,10 @@ fn aggregate_totals_for_groups(
 }
 
 fn build_axis_groups(rows: &[Vec<ArrayCellValue>]) -> Vec<AxisGroup> {
-    let keys = rows.iter().map(|row| key_from_cells(row)).collect::<Vec<_>>();
+    let keys = rows
+        .iter()
+        .map(|row| key_from_cells(row))
+        .collect::<Vec<_>>();
     group_indices_by_key(rows.len(), &keys)
         .into_iter()
         .map(|row_indices| {
@@ -178,8 +183,17 @@ fn extract_filtered_rows(
     col_fields: &EvalArray,
     values: &EvalArray,
     filter: Option<&[bool]>,
-) -> Result<(Vec<Vec<ArrayCellValue>>, Vec<Vec<ArrayCellValue>>, Vec<Vec<ArrayCellValue>>), LambdaHelperEvalError> {
-    if row_fields.shape().rows != col_fields.shape().rows || row_fields.shape().rows != values.shape().rows {
+) -> Result<
+    (
+        Vec<Vec<ArrayCellValue>>,
+        Vec<Vec<ArrayCellValue>>,
+        Vec<Vec<ArrayCellValue>>,
+    ),
+    LambdaHelperEvalError,
+> {
+    if row_fields.shape().rows != col_fields.shape().rows
+        || row_fields.shape().rows != values.shape().rows
+    {
         return Err(LambdaHelperEvalError::Invocation(
             crate::functions::callable_helpers::CallableInvocationError::Worksheet(
                 WorksheetErrorCode::Value,
@@ -230,9 +244,15 @@ pub fn eval_pivotby_surface(
         return Err(surface_arity_error(args.len()));
     }
 
-    let prepared = prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[3])?;
-    if prepared.get(10).is_some_and(|arg| !matches!(arg, PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell)) {
+    if prepared.get(10).is_some_and(|arg| {
+        !matches!(
+            arg,
+            PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell
+        )
+    }) {
         return Err(LambdaHelperEvalError::Invocation(
             crate::functions::callable_helpers::CallableInvocationError::Worksheet(
                 WorksheetErrorCode::Value,
@@ -277,8 +297,18 @@ pub fn eval_pivotby_surface(
     let mut col_groups = build_axis_groups(&col_rows);
     let row_totals = aggregate_totals_for_groups(&row_groups, &value_rows, callable, invoker)?;
     let col_totals = aggregate_totals_for_groups(&col_groups, &value_rows, callable, invoker)?;
-    apply_axis_sort(&mut row_groups, &row_totals, &row_sort_orders, split_rows.array.shape().cols);
-    apply_axis_sort(&mut col_groups, &col_totals, &col_sort_orders, split_cols.array.shape().cols);
+    apply_axis_sort(
+        &mut row_groups,
+        &row_totals,
+        &row_sort_orders,
+        split_rows.array.shape().cols,
+    );
+    apply_axis_sort(
+        &mut col_groups,
+        &col_totals,
+        &col_sort_orders,
+        split_cols.array.shape().cols,
+    );
 
     let mut rows = Vec::new();
     let show_headers = header_mode_shows_output(field_headers_mode, split_values.had_headers);
@@ -376,7 +406,10 @@ pub fn eval_pivotby_surface(
             }
         }
         if col_total_depth != 0 || row_total_depth != 0 {
-            let members = value_rows.iter().map(|row| row[0].clone()).collect::<Vec<_>>();
+            let members = value_rows
+                .iter()
+                .map(|row| row[0].clone())
+                .collect::<Vec<_>>();
             total_row.push(invoke_group_aggregate(callable, &members, invoker)?);
         }
         rows.push(total_row);
@@ -401,7 +434,9 @@ mod tests {
     use crate::functions::adapters::PreparedArgValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue, ReferenceLike};
+    use crate::value::{
+        CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue, ReferenceLike,
+    };
 
     struct NoResolver;
     struct TestInvoker;
@@ -439,7 +474,9 @@ mod tests {
                             .sum::<f64>();
                         Ok(PreparedArgValue::Eval(EvalValue::Number(total)))
                     }
-                    _ => Err(CallableInvocationError::Worksheet(WorksheetErrorCode::Value)),
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
                 },
                 other => Err(CallableInvocationError::UnsupportedCallableToken(
                     other.to_string(),
@@ -473,8 +510,16 @@ mod tests {
 
     #[test]
     fn pivotby_default_lane_matches_empirical_matrix() {
-        let row_fields = EvalArray::from_rows(vec![vec![t("East")], vec![t("East")], vec![t("West")], vec![t("West")]]).unwrap();
-        let col_fields = EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]]).unwrap();
+        let row_fields = EvalArray::from_rows(vec![
+            vec![t("East")],
+            vec![t("East")],
+            vec![t("West")],
+            vec![t("West")],
+        ])
+        .unwrap();
+        let col_fields =
+            EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+                .unwrap();
         let values = EvalArray::from_rows(vec![
             vec![ArrayCellValue::Number(10.0)],
             vec![ArrayCellValue::Number(20.0)],
@@ -498,9 +543,24 @@ mod tests {
         };
         let expected = EvalArray::from_rows(vec![
             vec![ArrayCellValue::EmptyCell, t("A"), t("B"), t("Total")],
-            vec![t("East"), ArrayCellValue::Number(10.0), ArrayCellValue::Number(20.0), ArrayCellValue::Number(30.0)],
-            vec![t("West"), ArrayCellValue::Number(40.0), ArrayCellValue::Number(50.0), ArrayCellValue::Number(90.0)],
-            vec![t("Total"), ArrayCellValue::Number(50.0), ArrayCellValue::Number(70.0), ArrayCellValue::Number(120.0)],
+            vec![
+                t("East"),
+                ArrayCellValue::Number(10.0),
+                ArrayCellValue::Number(20.0),
+                ArrayCellValue::Number(30.0),
+            ],
+            vec![
+                t("West"),
+                ArrayCellValue::Number(40.0),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(90.0),
+            ],
+            vec![
+                t("Total"),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(70.0),
+                ArrayCellValue::Number(120.0),
+            ],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -508,8 +568,16 @@ mod tests {
 
     #[test]
     fn pivotby_supports_zero_totals_and_filter() {
-        let row_fields = EvalArray::from_rows(vec![vec![t("East")], vec![t("East")], vec![t("West")], vec![t("West")]]).unwrap();
-        let col_fields = EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]]).unwrap();
+        let row_fields = EvalArray::from_rows(vec![
+            vec![t("East")],
+            vec![t("East")],
+            vec![t("West")],
+            vec![t("West")],
+        ])
+        .unwrap();
+        let col_fields =
+            EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+                .unwrap();
         let values = EvalArray::from_rows(vec![
             vec![ArrayCellValue::Number(10.0)],
             vec![ArrayCellValue::Number(20.0)],
@@ -555,8 +623,16 @@ mod tests {
 
     #[test]
     fn pivotby_supports_row_and_column_total_sort() {
-        let row_fields = EvalArray::from_rows(vec![vec![t("East")], vec![t("East")], vec![t("West")], vec![t("West")]]).unwrap();
-        let col_fields = EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]]).unwrap();
+        let row_fields = EvalArray::from_rows(vec![
+            vec![t("East")],
+            vec![t("East")],
+            vec![t("West")],
+            vec![t("West")],
+        ])
+        .unwrap();
+        let col_fields =
+            EvalArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+                .unwrap();
         let values = EvalArray::from_rows(vec![
             vec![ArrayCellValue::Number(10.0)],
             vec![ArrayCellValue::Number(20.0)],
@@ -585,9 +661,24 @@ mod tests {
         };
         let expected = EvalArray::from_rows(vec![
             vec![ArrayCellValue::EmptyCell, t("B"), t("A"), t("Total")],
-            vec![t("West"), ArrayCellValue::Number(50.0), ArrayCellValue::Number(40.0), ArrayCellValue::Number(90.0)],
-            vec![t("East"), ArrayCellValue::Number(20.0), ArrayCellValue::Number(10.0), ArrayCellValue::Number(30.0)],
-            vec![t("Total"), ArrayCellValue::Number(70.0), ArrayCellValue::Number(50.0), ArrayCellValue::Number(120.0)],
+            vec![
+                t("West"),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(40.0),
+                ArrayCellValue::Number(90.0),
+            ],
+            vec![
+                t("East"),
+                ArrayCellValue::Number(20.0),
+                ArrayCellValue::Number(10.0),
+                ArrayCellValue::Number(30.0),
+            ],
+            vec![
+                t("Total"),
+                ArrayCellValue::Number(70.0),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(120.0),
+            ],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -595,8 +686,11 @@ mod tests {
 
     #[test]
     fn pivotby_visible_headers_emit_empirical_header_bands() {
-        let row_fields = EvalArray::from_rows(vec![vec![t("Region")], vec![t("East")], vec![t("West")]]).unwrap();
-        let col_fields = EvalArray::from_rows(vec![vec![t("Product")], vec![t("A")], vec![t("B")]]).unwrap();
+        let row_fields =
+            EvalArray::from_rows(vec![vec![t("Region")], vec![t("East")], vec![t("West")]])
+                .unwrap();
+        let col_fields =
+            EvalArray::from_rows(vec![vec![t("Product")], vec![t("A")], vec![t("B")]]).unwrap();
         let values = EvalArray::from_rows(vec![
             vec![t("Sales")],
             vec![ArrayCellValue::Number(40.0)],
@@ -619,12 +713,32 @@ mod tests {
             panic!("expected array");
         };
         let expected = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::EmptyCell, t("Product"), ArrayCellValue::EmptyCell, ArrayCellValue::EmptyCell],
+            vec![
+                ArrayCellValue::EmptyCell,
+                t("Product"),
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::EmptyCell,
+            ],
             vec![ArrayCellValue::EmptyCell, t("A"), t("B"), t("Total")],
             vec![t("Region"), t("Sales"), t("Sales"), t("Sales")],
-            vec![t("East"), ArrayCellValue::Number(40.0), ArrayCellValue::Number(0.0), ArrayCellValue::Number(40.0)],
-            vec![t("West"), ArrayCellValue::Number(0.0), ArrayCellValue::Number(50.0), ArrayCellValue::Number(50.0)],
-            vec![t("Total"), ArrayCellValue::Number(40.0), ArrayCellValue::Number(50.0), ArrayCellValue::Number(90.0)],
+            vec![
+                t("East"),
+                ArrayCellValue::Number(40.0),
+                ArrayCellValue::Number(0.0),
+                ArrayCellValue::Number(40.0),
+            ],
+            vec![
+                t("West"),
+                ArrayCellValue::Number(0.0),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(50.0),
+            ],
+            vec![
+                t("Total"),
+                ArrayCellValue::Number(40.0),
+                ArrayCellValue::Number(50.0),
+                ArrayCellValue::Number(90.0),
+            ],
         ])
         .unwrap();
         assert_eq!(array, expected);

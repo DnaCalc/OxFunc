@@ -20,10 +20,10 @@ Supersession note:
 ### IP-01: Function Catalog Expansion
 
 - **Status**: in-progress
-- **Current consumer-facing report**: `W051` now records `534` published rows (`511` functions, `23` operators), with `374` currently usable rows (`374` supported, `0` preview), `17` deferred rows in `W050`, and `143` hidden non-deferred backlog snapshot entries. After `W060`, the same ordinary backlog now stands at `150` normalized execution rows across `W061` through `W068`.
-- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns the `17` deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` now owns the remaining non-deferred outstanding rows: the centralized ordinary backlog, now reduced by `W060` to `150` execution rows across `W061` through `W068`.
+- **Current consumer-facing report**: `W051` now records `534` published rows (`511` functions, `23` operators), with `517` currently usable rows (`517` supported, `0` preview), `17` deferred rows in `W050`, and `0` hidden non-deferred backlog snapshot entries. After `W068`, the ordinary non-deferred backlog is fully drained (`0` normalized execution rows).
+- **Remaining gaps**: current-version backlog tracking remains centralized in `W050` and `W051`. `W050` owns the `17` deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` is now complete for declared non-deferred current-version scope and therefore empty.
 - **Current narrowing**: `W014`, `W023`, `W038`, `W046`, and `W055` are now complete for declared current-phase scope and no longer contribute rows to `W051`.
-- **Why still open**: the repo now has one main residual semantic backlog class (`W051`), plus broader `W044` field-normalization work. The exact `114` documented-complete snapshot-stale rows have now been refreshed into the published catalog artifact, `W058` removed grouped-row ambiguity from the ordinary execution backlog, and `W059` / `W060` have now closed the first `42` rows of that program.
+- **Why still open**: current-version closure still intentionally excludes the `17` deferred `W050` rows, and broader `W044` field-normalization work remains beyond the current first-pass export. The exact `114` documented-complete snapshot-stale rows have now been refreshed into the published catalog artifact, `W058` removed grouped-row ambiguity from the ordinary execution backlog, and `W059` / `W060` / `W061` / `W062` / `W063` / `W064` / `W065` / `W066` / `W067` / `W068` have now closed the full `192`-row ordinary execution program.
 - **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`), and snapshot/export alignment remains coupled to `W044`.
 
 ### IP-02: Locale and Version Sweeps
@@ -46,9 +46,10 @@ Supersession note:
 
 - **Status**: in-progress
 - **Current floor**: Lean substrate-level executable models and bindings for admitted slices per formalization strategy.
-- **Remaining gaps**: deeper proof obligations beyond substrate alignment; property and metamorphic proof coverage for complex function families; and the explicit missing-function-id formalization backlog now pinned in `W054`.
-- **Why still open**: formalization strategy permits substrate-level work for current phase; deeper obligations are tracked but deferred, and `W054` now owns the first explicit Rust-vs-Lean function-id gap reconciliation pass.
-- **Canonical owner**: `W054` for explicit missing-function-id reconciliation, with deeper proof work ongoing across function packets.
+- **Current parking reading**: `W054` is now complete for the explicit Rust-vs-Lean function-id reconciliation of the non-deferred parked surface; no active missing-id or modern-alias mismatch remains for those rows.
+- **Remaining gaps**: deeper proof obligations beyond substrate alignment; property and metamorphic proof coverage for complex function families; and any future formalization follow-on for the intentionally deferred `W050` set.
+- **Why still open**: current-phase doctrine is satisfied by substrate-level executable models, bindings, and alignment for the parked non-deferred surface, but deeper proof work remains a separate long-run lane.
+- **Canonical owner**: `W054` as the closed provenance packet for current non-deferred id reconciliation, with future proof-deepening work distributed across later function packets.
 
 ### IP-05: XLL Seam Hardening
 
@@ -60,23 +61,23 @@ Supersession note:
 
 ### IP-06: OxFml/FEC/F3E Interface Refinement
 
-- **Status**: in-progress
-- **Current floor**: the narrowed seam families now have a consolidated OxFunc candidate, a completed OxFunc-side comparison delta, and an OxFml-acknowledged `HO-FN-004` promotion handoff.
+- **Status**: planned
+- **Current floor**: the narrowed seam families now have an OxFml-acknowledged shared freeze reading, propagated through the local owner packets and downstream summary docs for the parked current-phase surface.
 - **Current freeze candidate**: the current OxFunc-owned consolidated candidate now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 - **Current outbound promotion packet**: `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`.
-- **Remaining gaps**: explicit promotion and propagation of the acknowledged shared freeze text across the local owner packets and any downstream coordinator-facing consumers, plus any later concrete mismatch-driven corrections.
-- **Why still open**: OxFml now reads the handoff as acceptable shared freeze wording for the narrowed seam families, but `W046` and the row-level interesting backlog still retain packet-local promotion and downstream propagation work after the cross-repo freeze acknowledgment.
+- **Remaining gaps**: only future mismatch-driven corrections or later post-parking seam redesign work beyond the current shared freeze wording.
+- **Why still open**: there is no active current-phase blocker left in this lane, but the cross-repo seam remains an evolvable program surface rather than a forever-frozen ABI.
 - **Canonical owner**: cross-repo; tracked via the upstream observation ledger and `HO-FN-004`, with the current OxFunc-side freeze candidate assembled from `W042`, `W046`, `W047`, `W048`, and `W049`.
-- **Immediate follow-on after freeze promotion**: continue current-scope completion through the hidden ordinary backlog execution program; `W059` and `W060` are now complete, leaving `W061` through `W068`, while `W023`, `W038`, `W046`, and `W055` are now promoted out for declared current-phase scope.
+- **Current parking reading**: the hidden ordinary backlog execution program is fully drained through `W068`; the remaining current-version exclusions are the intentional `W050` deferred set.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 
-- **Status**: in-progress
+- **Status**: planned
 - **Current floor**: canonicalization row `FDEF-018`; native Excel replay for seeded `@` lanes plus current-baseline `_xlfn.SINGLE(...)` normalization; Rust runtime in `op_implicit_intersection.rs`; Lean binding in `ImplicitIntersection.lean`; and OxFml adapter/evaluator/semantic-plan evidence for explicit `@` and legacy-single compatibility semantics.
 - **Remaining gaps**: broader pre-dynamic-array serialization/roundtrip sweeps and structured-reference/table-context interaction outside the admitted current-phase slice.
-- **Why still open**: the OxFunc-side current-baseline target is complete; only orthogonal future validation/interop lanes remain.
+- **Why still open**: the OxFunc-side current-baseline target is complete; only orthogonal future validation and interop sweeps remain.
 - **Canonical owner**: `W014`.
-- **Scope note**: this remains in current scope; it is difficult, not deferred out-of-scope.
+- **Scope note**: no active current-phase blocker remains; any future work here is validation/deepening rather than baseline closure.
 
 ### IP-08: Replay Appliance Packet Adapter Rollout
 
@@ -98,6 +99,6 @@ Supersession note:
 
 - **Status**: in-progress
 - **Current floor**: OxFunc now exposes a first explicit snapshot artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` with identity/version semantics, first-pass function and operator rows, metadata profiles, and reading guidance in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`. Downstream metadata and help contract is now documented in `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`, and surface admission and labeling policy for downstream consumers is documented in `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`.
-- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, a pinned runtime consumer/model beyond the CSV interchange artifact, and structured help/signature payload population (help prose, argument names/descriptions, and signature display strings are not yet available from OxFunc).
-- **Why still open**: the first-pass snapshot is now real and usable, OxFml has accepted the current first-freeze working rule, and downstream contract/labeling docs are now explicit, but the next step is a concrete runtime provider/snapshot consumer model and structured help payload population rather than more note-only agreement.
-- **Canonical owner**: `W044` for the export artifact, with follow-on consumer/model work in `W049`.
+- **Remaining gaps**: richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, runtime witness attachment beyond the CSV interchange artifact, and structured help/signature/semantic-witness payload population.
+- **Why still open**: the first-pass snapshot is now real and usable, but the highest-leverage next step is no longer just more profile columns. It is the `W069` `Semantic Witness Snapshot V2` direction: structured help, signature, evidence, and formal-reference payloads attached to the library-context model.
+- **Canonical owner**: `W044` for the `V1` export artifact, `W049` for the runtime provider/snapshot model, and `W069` for the `V2` semantic witness plan.

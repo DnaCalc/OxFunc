@@ -753,13 +753,13 @@ mod tests {
         );
         assert_close(
             tbillyield_kernel(settlement, maturity, 98.45).unwrap(),
-            0.091_416_612_915_331_8,
-            5.0e-7,
+            0.091_416_962_925_342_6,
+            1.0e-12,
         );
         assert_close(
             tbilleq_kernel(settlement, maturity, 0.0914).unwrap(),
-            0.094_151_329_243_353_78,
-            5.0e-7,
+            0.094_151_493_565_943,
+            1.0e-12,
         );
     }
 

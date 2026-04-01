@@ -53,9 +53,7 @@ fn worksheet_error_literal(code: WorksheetErrorCode) -> &'static str {
     }
 }
 
-fn parse_format_flag(
-    prepared: Option<&PreparedArgValue>,
-) -> Result<bool, ValueToTextEvalError> {
+fn parse_format_flag(prepared: Option<&PreparedArgValue>) -> Result<bool, ValueToTextEvalError> {
     match prepared {
         None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(false),
         Some(arg) => {
@@ -76,7 +74,9 @@ fn value_concise(value: &PreparedArgValue) -> String {
     match value {
         PreparedArgValue::Eval(EvalValue::Number(n)) => format!("{n}"),
         PreparedArgValue::Eval(EvalValue::Text(t)) => t.to_string_lossy(),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => {
+            if *b { "TRUE" } else { "FALSE" }.to_string()
+        }
         PreparedArgValue::Eval(EvalValue::Error(code)) => {
             worksheet_error_literal(*code).to_string()
         }
@@ -94,7 +94,9 @@ fn value_strict(value: &PreparedArgValue) -> String {
             let escaped = t.to_string_lossy().replace('"', "\"\"");
             format!("\"{escaped}\"")
         }
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => {
+            if *b { "TRUE" } else { "FALSE" }.to_string()
+        }
         PreparedArgValue::Eval(EvalValue::Error(code)) => {
             worksheet_error_literal(*code).to_string()
         }
@@ -190,7 +192,10 @@ mod tests {
 
     #[test]
     fn valuetotext_meta_deterministic() {
-        assert_eq!(VALUETOTEXT_META.determinism, DeterminismClass::Deterministic);
+        assert_eq!(
+            VALUETOTEXT_META.determinism,
+            DeterminismClass::Deterministic
+        );
         assert_eq!(VALUETOTEXT_META.volatility, VolatilityClass::NonVolatile);
     }
 
@@ -207,13 +212,19 @@ mod tests {
     #[test]
     fn valuetotext_rejects_zero_args() {
         let got = eval_valuetotext_surface(&[], &MockResolver);
-        assert!(matches!(got, Err(ValueToTextEvalError::ArityMismatch { .. })));
+        assert!(matches!(
+            got,
+            Err(ValueToTextEvalError::ArityMismatch { .. })
+        ));
     }
 
     #[test]
     fn valuetotext_rejects_three_args() {
         let got = eval_valuetotext_surface(&[num(1.0), num(0.0), num(0.0)], &MockResolver);
-        assert!(matches!(got, Err(ValueToTextEvalError::ArityMismatch { .. })));
+        assert!(matches!(
+            got,
+            Err(ValueToTextEvalError::ArityMismatch { .. })
+        ));
     }
 
     // --- Concise mode (default, format=0) ---

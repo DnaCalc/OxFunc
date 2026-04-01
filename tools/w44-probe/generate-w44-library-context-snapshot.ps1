@@ -125,22 +125,198 @@ $complexFamilyCuratedMetaById = @{
     "FUNC.IMTAN" = @{ arity_min = "1"; arity_max = "1" }
 }
 foreach ($stableId in $complexFamilyCuratedMetaById.Keys) {
-    if (-not $metaById.ContainsKey($stableId)) {
-        $arity = $complexFamilyCuratedMetaById[$stableId]
-        $metaById[$stableId] = [ordered]@{
-            arity_min = $arity.arity_min
-            arity_max = $arity.arity_max
-            arg_preparation_profile = "ValuesOnlyPreAdapter"
-            coercion_lift_profile = "Custom"
-            kernel_signature_class = "Custom"
-            determinism_class = "Deterministic"
-            volatility_class = "NonVolatile"
-            host_interaction_class = "None"
-            thread_safety_class = "SafePure"
-            fec_dependency_profile = "None"
-            surface_fec_dependency_profile = "None"
-            metadata_status = "function_meta_curated"
-        }
+    $arity = $complexFamilyCuratedMetaById[$stableId]
+    $metaById[$stableId] = [ordered]@{
+        arity_min = $arity.arity_min
+        arity_max = $arity.arity_max
+        arg_preparation_profile = "ValuesOnlyPreAdapter"
+        coercion_lift_profile = "Custom"
+        kernel_signature_class = "Custom"
+        determinism_class = "Deterministic"
+        volatility_class = "NonVolatile"
+        host_interaction_class = "None"
+        thread_safety_class = "SafePure"
+        fec_dependency_profile = "None"
+        surface_fec_dependency_profile = "None"
+        metadata_status = "function_meta_curated"
+    }
+}
+
+$w061CuratedMetaById = @{
+    "FUNC.BETA.DIST" = @{ arity_min = "4"; arity_max = "6"; surface_fec_dependency_profile = "None" }
+    "FUNC.BETA.INV" = @{ arity_min = "3"; arity_max = "5"; surface_fec_dependency_profile = "None" }
+    "FUNC.BETADIST" = @{ arity_min = "3"; arity_max = "5"; surface_fec_dependency_profile = "None" }
+    "FUNC.BETAINV" = @{ arity_min = "3"; arity_max = "5"; surface_fec_dependency_profile = "None" }
+    "FUNC.BINOM.DIST" = @{ arity_min = "4"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.BINOM.DIST.RANGE" = @{ arity_min = "3"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.BINOM.INV" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.BINOMDIST" = @{ arity_min = "4"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHIDIST" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHIINV" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHISQ.DIST" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHISQ.DIST.RT" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHISQ.INV" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CHISQ.INV.RT" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CONFIDENCE" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CONFIDENCE.NORM" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CRITBINOM" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.EXPON.DIST" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.EXPONDIST" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.F.DIST" = @{ arity_min = "4"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.F.DIST.RT" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.F.INV" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.F.INV.RT" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.FDIST" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.FINV" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.GAMMA.DIST" = @{ arity_min = "4"; arity_max = "4"; surface_fec_dependency_profile = "None" }
+    "FUNC.GAMMA.INV" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "None" }
+    "FUNC.GAMMADIST" = @{ arity_min = "4"; arity_max = "4"; surface_fec_dependency_profile = "None" }
+    "FUNC.GAMMAINV" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "None" }
+}
+foreach ($stableId in $w061CuratedMetaById.Keys) {
+    $meta = $w061CuratedMetaById[$stableId]
+    $metaById[$stableId] = [ordered]@{
+        arity_min = $meta.arity_min
+        arity_max = $meta.arity_max
+        arg_preparation_profile = "ValuesOnlyPreAdapter"
+        coercion_lift_profile = "Custom"
+        kernel_signature_class = "Custom"
+        determinism_class = "Deterministic"
+        volatility_class = "NonVolatile"
+        host_interaction_class = "None"
+        thread_safety_class = "SafePure"
+        fec_dependency_profile = "None"
+        surface_fec_dependency_profile = $meta.surface_fec_dependency_profile
+        metadata_status = "function_meta_curated"
+    }
+}
+
+$w062CuratedMetaById = @{
+    "FUNC.COVAR" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.HYPGEOM.DIST" = @{ arity_min = "5"; arity_max = "5"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.HYPGEOMDIST" = @{ arity_min = "4"; arity_max = "4"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.KURT" = @{ arity_min = "1"; arity_max = "255"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "AggregateDirectAndRangeDualPolicy"; kernel_signature_class = "NumsToNum"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LOGINV" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LOGNORM.DIST" = @{ arity_min = "4"; arity_max = "4"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LOGNORM.INV" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LOGNORMDIST" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.MODE" = @{ arity_min = "1"; arity_max = "255"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NEGBINOM.DIST" = @{ arity_min = "4"; arity_max = "4"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NEGBINOMDIST" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORM.DIST" = @{ arity_min = "4"; arity_max = "4"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORM.INV" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORM.S.DIST" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORM.S.INV" = @{ arity_min = "1"; arity_max = "1"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORMDIST" = @{ arity_min = "4"; arity_max = "4"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORMINV" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORMSDIST" = @{ arity_min = "1"; arity_max = "1"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NORMSINV" = @{ arity_min = "1"; arity_max = "1"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.PERCENTILE" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.PERCENTRANK" = @{ arity_min = "2"; arity_max = "3"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.POISSON" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.POISSON.DIST" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.QUARTILE" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "RefsVisibleInAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "RefOnly"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.SKEW" = @{ arity_min = "1"; arity_max = "255"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "AggregateDirectAndRangeDualPolicy"; kernel_signature_class = "NumsToNum"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.SKEW.P" = @{ arity_min = "1"; arity_max = "255"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "AggregateDirectAndRangeDualPolicy"; kernel_signature_class = "NumsToNum"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.STEYX" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.T.DIST" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.T.DIST.2T" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.T.DIST.RT" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.T.INV" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.T.INV.2T" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.TDIST" = @{ arity_min = "3"; arity_max = "3"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.TINV" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.TRIMMEAN" = @{ arity_min = "2"; arity_max = "2"; arg_preparation_profile = "ValuesOnlyPreAdapter"; coercion_lift_profile = "AggregateDirectAndRangeDualPolicy"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+}
+foreach ($stableId in $w062CuratedMetaById.Keys) {
+    $meta = $w062CuratedMetaById[$stableId]
+    $metaById[$stableId] = [ordered]@{
+        arity_min = $meta.arity_min
+        arity_max = $meta.arity_max
+        arg_preparation_profile = $meta.arg_preparation_profile
+        coercion_lift_profile = $meta.coercion_lift_profile
+        kernel_signature_class = $meta.kernel_signature_class
+        determinism_class = "Deterministic"
+        volatility_class = "NonVolatile"
+        host_interaction_class = "None"
+        thread_safety_class = "SafePure"
+        fec_dependency_profile = $meta.fec_dependency_profile
+        surface_fec_dependency_profile = $meta.surface_fec_dependency_profile
+        metadata_status = "function_meta_curated"
+    }
+}
+
+$w063CuratedMetaById = @{
+    "FUNC.DAY" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.DAYS" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.EDATE" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.EOMONTH" = @{ arity_min = "2"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.HOUR" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.ISOWEEKNUM" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.MINUTE" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.MONTH" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NETWORKDAYS" = @{ arity_min = "2"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.NETWORKDAYS.INTL" = @{ arity_min = "2"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.SECOND" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.TIME" = @{ arity_min = "3"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.WEEKDAY" = @{ arity_min = "1"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.WEEKNUM" = @{ arity_min = "1"; arity_max = "2"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.WORKDAY" = @{ arity_min = "2"; arity_max = "3"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.WORKDAY.INTL" = @{ arity_min = "2"; arity_max = "4"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.YEAR" = @{ arity_min = "1"; arity_max = "1"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.YEARFRAC" = @{ arity_min = "2"; arity_max = "3"; surface_fec_dependency_profile = "None" }
+}
+foreach ($stableId in $w063CuratedMetaById.Keys) {
+    $meta = $w063CuratedMetaById[$stableId]
+    $metaById[$stableId] = [ordered]@{
+        arity_min = $meta.arity_min
+        arity_max = $meta.arity_max
+        arg_preparation_profile = "ValuesOnlyPreAdapter"
+        coercion_lift_profile = "Custom"
+        kernel_signature_class = "Custom"
+        determinism_class = "Deterministic"
+        volatility_class = "NonVolatile"
+        host_interaction_class = "None"
+        thread_safety_class = "SafePure"
+        fec_dependency_profile = "None"
+        surface_fec_dependency_profile = $meta.surface_fec_dependency_profile
+        metadata_status = "function_meta_curated"
+    }
+}
+
+$w066CuratedMetaById = @{
+    "FUNC.CODE" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.CONCATENATE" = @{ arity_min = "1"; arity_max = "255"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.FIND, FINDB" = @{ arity_min = "2"; arity_max = "3"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LEFT, LEFTB" = @{ arity_min = "1"; arity_max = "2"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LEN, LENB" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.LOWER" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "TextToText"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.MID, MIDB" = @{ arity_min = "3"; arity_max = "3"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.PROPER" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.REPLACE, REPLACEB" = @{ arity_min = "4"; arity_max = "4"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.REPT" = @{ arity_min = "2"; arity_max = "2"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.RIGHT, RIGHTB" = @{ arity_min = "1"; arity_max = "2"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.SEARCH, SEARCHB" = @{ arity_min = "2"; arity_max = "3"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.SUBSTITUTE" = @{ arity_min = "3"; arity_max = "4"; coercion_lift_profile = "None"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.TRIM" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "TextToText"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.UNICODE" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "Custom"; kernel_signature_class = "Custom"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+    "FUNC.UPPER" = @{ arity_min = "1"; arity_max = "1"; coercion_lift_profile = "None"; kernel_signature_class = "TextToText"; fec_dependency_profile = "None"; surface_fec_dependency_profile = "RefOnly" }
+}
+foreach ($stableId in $w066CuratedMetaById.Keys) {
+    $meta = $w066CuratedMetaById[$stableId]
+    $metaById[$stableId] = [ordered]@{
+        arity_min = $meta.arity_min
+        arity_max = $meta.arity_max
+        arg_preparation_profile = "ValuesOnlyPreAdapter"
+        coercion_lift_profile = $meta.coercion_lift_profile
+        kernel_signature_class = $meta.kernel_signature_class
+        determinism_class = "Deterministic"
+        volatility_class = "NonVolatile"
+        host_interaction_class = "None"
+        thread_safety_class = "SafePure"
+        fec_dependency_profile = $meta.fec_dependency_profile
+        surface_fec_dependency_profile = $meta.surface_fec_dependency_profile
+        metadata_status = "function_meta_curated"
     }
 }
 
@@ -460,6 +636,198 @@ function Get-ManualMetaOverride {
                 metadata_status = "function_meta_curated"
             }
         }
+        "FUNC.IFS" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "254"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.HLOOKUP" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "4"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "LookupMatch"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "WorkbookState"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.VLOOKUP" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "4"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "LookupMatch"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "WorkbookState"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.BYCOL" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.BYROW" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.ISOMITTED" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.LAMBDA" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "254"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.LET" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "253"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MAKEARRAY" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MAP" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "254"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.REDUCE" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SCAN" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
         "FUNC.SUMIF" {
             return [ordered]@{
                 arity_min = "2"
@@ -540,6 +908,678 @@ function Get-ManualMetaOverride {
                 metadata_status = "function_meta_curated"
             }
         }
+        "FUNC.CUMIPMT" {
+            return [ordered]@{
+                arity_min = "6"
+                arity_max = "6"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.CUMPRINC" {
+            return [ordered]@{
+                arity_min = "6"
+                arity_max = "6"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.CEILING.MATH" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.CEILING.PRECISE" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.FLOOR" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.FLOOR.MATH" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.FLOOR.PRECISE" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.ISO.CEILING" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MDETERM" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MINVERSE" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MMULT" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.MUNIT" {
+            return [ordered]@{
+                arity_min = "1"
+                arity_max = "1"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SERIESSUM" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "4"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SUMPRODUCT" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "255"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SUMX2MY2" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SUMX2PY2" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SUMXMY2" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SLN" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.SYD" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "4"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DB" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DDB" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.VDB" {
+            return [ordered]@{
+                arity_min = "5"
+                arity_max = "7"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DOLLARFR" {
+            return [ordered]@{
+                arity_min = "2"
+                arity_max = "2"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DISC" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.INTRATE" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.PRICEDISC" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.RECEIVED" {
+            return [ordered]@{
+                arity_min = "4"
+                arity_max = "5"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.TBILLEQ" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.TBILLPRICE" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.TBILLYIELD" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "ValuesOnlyPreAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "None"
+                surface_fec_dependency_profile = "None"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DAVERAGE" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DCOUNT" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DCOUNTA" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DGET" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DMAX" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DMIN" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DPRODUCT" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DSTDEV" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DSTDEVP" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DSUM" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DVAR" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
+        "FUNC.DVARP" {
+            return [ordered]@{
+                arity_min = "3"
+                arity_max = "3"
+                arg_preparation_profile = "RefsVisibleInAdapter"
+                coercion_lift_profile = "Custom"
+                kernel_signature_class = "Custom"
+                determinism_class = "Deterministic"
+                volatility_class = "NonVolatile"
+                host_interaction_class = "None"
+                thread_safety_class = "SafePure"
+                fec_dependency_profile = "RefOnly"
+                surface_fec_dependency_profile = "RefOnly"
+                metadata_status = "function_meta_curated"
+            }
+        }
         default { return $null }
     }
 }
@@ -548,10 +1588,10 @@ $functionRows = Import-Csv "docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE
     $stableId = "FUNC.$($_.function_name.ToUpperInvariant())"
     $gatingRef = if ([string]::IsNullOrWhiteSpace($_.version_marker)) { "oxfunc.local.gating.current_baseline.default.v1" } else { "oxfunc.local.gating.version_marker.$($_.version_marker)" }
     $manualMeta = Get-ManualMetaOverride -StableId $stableId
-    $meta = if ($metaById.ContainsKey($stableId)) {
-        $metaById[$stableId]
-    } elseif ($null -ne $manualMeta) {
+    $meta = if ($null -ne $manualMeta) {
         $manualMeta
+    } elseif ($metaById.ContainsKey($stableId)) {
+        $metaById[$stableId]
     } else {
         $defaultMeta
     }

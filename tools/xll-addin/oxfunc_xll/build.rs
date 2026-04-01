@@ -151,10 +151,7 @@ fn main() {
         .join("functions")
         .join("surface_dispatch.rs");
     println!("cargo:rerun-if-changed={}", core_specs.display());
-    println!(
-        "cargo:rerun-if-changed={}",
-        core_surface_dispatch.display()
-    );
+    println!("cargo:rerun-if-changed={}", core_surface_dispatch.display());
 
     let generated = emit_generated();
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR"));

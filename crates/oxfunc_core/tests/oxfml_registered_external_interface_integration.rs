@@ -1,11 +1,12 @@
 use std::cell::RefCell;
 
+use oxfml_core::TypedContextQueryBundleSpec;
 use oxfml_core::interface::{
     RegisteredExternalCatalogController, RegisteredExternalCatalogMutationRequest,
     RegisteredExternalCatalogMutationResult, RegisteredExternalHostRegistrationRequest,
     RegisteredExternalRegistrationChannel, TypedContextQueryFamily,
 };
-use oxfml_core::{SingleFormulaHost, TypedContextQueryBundleSpec};
+use oxfml_core::substrate::host::SingleFormulaHost;
 use oxfunc_core::functions::call_register_id_family::{
     RegisterIdRequest, RegisteredExternalDescriptor, RegisteredExternalOriginKind,
     RegisteredExternalProvider, RegisteredExternalProviderError, RegisteredExternalTarget,
@@ -59,7 +60,10 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
         .recalc_with_registered_external_provider(None, Some(&provider), None, None)
         .expect("call host recalc");
 
-    assert_eq!(call_output.published_worksheet_value, EvalValue::Number(14.0));
+    assert_eq!(
+        call_output.published_worksheet_value,
+        EvalValue::Number(14.0)
+    );
     match call_output.evaluation.trace.prepared_calls[0]
         .registered_external_call_request
         .as_ref()
@@ -83,8 +87,8 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
                 Some("JJJJ".to_string())
             );
             assert_eq!(
-                invocation_args,
-                &vec![
+                invocation_args.as_slice(),
+                [
                     CallArgValue::Eval(EvalValue::Number(6.0)),
                     CallArgValue::Eval(EvalValue::Number(7.0)),
                     CallArgValue::Eval(EvalValue::Number(3.0)),
@@ -104,7 +108,10 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
         .recalc_with_registered_external_provider(None, Some(&provider), None, None)
         .expect("call by register id host recalc");
 
-    assert_eq!(by_id_output.published_worksheet_value, EvalValue::Number(14.0));
+    assert_eq!(
+        by_id_output.published_worksheet_value,
+        EvalValue::Number(14.0)
+    );
     assert_eq!(provider.last_lookup.borrow().as_ref(), Some(&4242.0));
 
     let mut ref_host = SingleFormulaHost::new(
@@ -117,7 +124,10 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
         .recalc_with_registered_external_provider(None, Some(&provider), None, None)
         .expect("call with reference host recalc");
 
-    assert_eq!(ref_output.published_worksheet_value, EvalValue::Number(99.0));
+    assert_eq!(
+        ref_output.published_worksheet_value,
+        EvalValue::Number(99.0)
+    );
     let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
     assert_eq!(
         args,
@@ -260,9 +270,9 @@ impl RecordingRegisteredExternalProvider {
             ),
             register_id: 4242.0,
             origin_kind,
-            display_name: Some(ExcelText::from_interop_assignment(
-                &procedure_display_name(&request.procedure),
-            )),
+            display_name: Some(ExcelText::from_interop_assignment(&procedure_display_name(
+                &request.procedure,
+            ))),
             library_name: request.library_name.clone(),
             procedure: request.procedure.clone(),
             declared_type_text: request.declared_type_text.clone(),

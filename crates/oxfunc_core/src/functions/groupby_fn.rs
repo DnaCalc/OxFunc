@@ -5,12 +5,14 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
-use crate::functions::callable_helpers::{CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws};
+use crate::functions::callable_helpers::{
+    CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
+};
 use crate::functions::group_pivot_common::{
-    CellKey, FieldHeadersMode, FieldRelationship, default_row_field_headers,
-    default_value_headers, group_indices_by_key, invoke_group_aggregate, key_from_cells,
-    parse_field_headers_mode, parse_field_relationship, parse_filter_vector, parse_sort_orders,
-    prepared_to_array, require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
+    CellKey, FieldHeadersMode, FieldRelationship, default_row_field_headers, default_value_headers,
+    group_indices_by_key, invoke_group_aggregate, key_from_cells, parse_field_headers_mode,
+    parse_field_relationship, parse_filter_vector, parse_sort_orders, prepared_to_array,
+    require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
@@ -45,7 +47,12 @@ struct LeafGroup {
     aggregates: Vec<ArrayCellValue>,
 }
 
-fn header_mode_shows_output(mode: FieldHeadersMode, had_headers: bool, row_cols: usize, value_cols: usize) -> bool {
+fn header_mode_shows_output(
+    mode: FieldHeadersMode,
+    had_headers: bool,
+    row_cols: usize,
+    value_cols: usize,
+) -> bool {
     match mode {
         FieldHeadersMode::YesShow | FieldHeadersMode::NoGenerate => true,
         FieldHeadersMode::YesHide | FieldHeadersMode::No => false,
@@ -105,7 +112,9 @@ fn compare_cell(a: &ArrayCellValue, b: &ArrayCellValue) -> Ordering {
         (ArrayCellValue::Number(x), ArrayCellValue::Number(y)) => {
             x.partial_cmp(y).unwrap_or(Ordering::Equal)
         }
-        (ArrayCellValue::Text(x), ArrayCellValue::Text(y)) => x.to_string_lossy().cmp(&y.to_string_lossy()),
+        (ArrayCellValue::Text(x), ArrayCellValue::Text(y)) => {
+            x.to_string_lossy().cmp(&y.to_string_lossy())
+        }
         (ArrayCellValue::Logical(x), ArrayCellValue::Logical(y)) => x.cmp(y),
         (ArrayCellValue::EmptyCell, ArrayCellValue::EmptyCell) => Ordering::Equal,
         (ArrayCellValue::Error(x), ArrayCellValue::Error(y)) => (*x as u8).cmp(&(*y as u8)),
@@ -161,7 +170,10 @@ fn build_leaf_groups(
         return Ok(Vec::new());
     }
 
-    let keys = key_rows.iter().map(|row| key_from_cells(row)).collect::<Vec<_>>();
+    let keys = key_rows
+        .iter()
+        .map(|row| key_from_cells(row))
+        .collect::<Vec<_>>();
     let grouped = group_indices_by_key(key_rows.len(), &keys);
     let value_cols = value_rows.first().map_or(1, Vec::len);
 
@@ -187,7 +199,11 @@ fn build_leaf_groups(
         .collect()
 }
 
-fn subtotal_row(prefix: &[ArrayCellValue], total_cols: usize, aggregates: Vec<ArrayCellValue>) -> Vec<ArrayCellValue> {
+fn subtotal_row(
+    prefix: &[ArrayCellValue],
+    total_cols: usize,
+    aggregates: Vec<ArrayCellValue>,
+) -> Vec<ArrayCellValue> {
     let mut row = vec![ArrayCellValue::EmptyCell; total_cols];
     for (idx, cell) in prefix.iter().enumerate() {
         row[idx] = cell.clone();
@@ -296,7 +312,8 @@ pub fn eval_groupby_surface(
         return Err(surface_arity_error(args.len()));
     }
 
-    let prepared = prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[2])?;
 
     let field_headers_mode = parse_field_headers_mode(prepared.get(3))?;
@@ -309,7 +326,8 @@ pub fn eval_groupby_surface(
     let split_rows = split_header_row(&raw_row_fields, field_headers_mode)?;
     let split_values = split_header_row(&raw_values, field_headers_mode)?;
 
-    let total_depth = parse_total_depth(prepared.get(4), relationship, split_rows.array.shape().cols)?;
+    let total_depth =
+        parse_total_depth(prepared.get(4), relationship, split_rows.array.shape().cols)?;
     let sort_orders = parse_sort_orders(prepared.get(5))?;
     let filter = parse_filter_vector(prepared.get(6), split_rows.array.shape().rows)?;
 
@@ -370,7 +388,9 @@ mod tests {
     use crate::functions::adapters::PreparedArgValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue, ReferenceLike};
+    use crate::value::{
+        CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue, ReferenceLike,
+    };
 
     struct NoResolver;
     struct TestInvoker;
@@ -407,16 +427,18 @@ mod tests {
                                 ArrayCellValue::Logical(_) => {
                                     return Err(CallableInvocationError::Worksheet(
                                         WorksheetErrorCode::Value,
-                                    ))
+                                    ));
                                 }
                                 ArrayCellValue::Error(code) => {
-                                    return Err(CallableInvocationError::Worksheet(*code))
+                                    return Err(CallableInvocationError::Worksheet(*code));
                                 }
                             }
                         }
                         Ok(PreparedArgValue::Eval(EvalValue::Number(total)))
                     }
-                    _ => Err(CallableInvocationError::Worksheet(WorksheetErrorCode::Value)),
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
                 },
                 other => Err(CallableInvocationError::UnsupportedCallableToken(
                     other.to_string(),
@@ -520,13 +542,41 @@ mod tests {
             panic!("expected array");
         };
         let expected = EvalArray::from_rows(vec![
-            vec![text_cell_value("East"), text_cell_value("A"), ArrayCellValue::Number(40.0)],
-            vec![text_cell_value("East"), text_cell_value("B"), ArrayCellValue::Number(20.0)],
-            vec![text_cell_value("East"), ArrayCellValue::EmptyCell, ArrayCellValue::Number(60.0)],
-            vec![text_cell_value("West"), text_cell_value("A"), ArrayCellValue::Number(40.0)],
-            vec![text_cell_value("West"), text_cell_value("B"), ArrayCellValue::Number(50.0)],
-            vec![text_cell_value("West"), ArrayCellValue::EmptyCell, ArrayCellValue::Number(90.0)],
-            vec![text_cell_value("Grand Total"), ArrayCellValue::EmptyCell, ArrayCellValue::Number(150.0)],
+            vec![
+                text_cell_value("East"),
+                text_cell_value("A"),
+                ArrayCellValue::Number(40.0),
+            ],
+            vec![
+                text_cell_value("East"),
+                text_cell_value("B"),
+                ArrayCellValue::Number(20.0),
+            ],
+            vec![
+                text_cell_value("East"),
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::Number(60.0),
+            ],
+            vec![
+                text_cell_value("West"),
+                text_cell_value("A"),
+                ArrayCellValue::Number(40.0),
+            ],
+            vec![
+                text_cell_value("West"),
+                text_cell_value("B"),
+                ArrayCellValue::Number(50.0),
+            ],
+            vec![
+                text_cell_value("West"),
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::Number(90.0),
+            ],
+            vec![
+                text_cell_value("Grand Total"),
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::Number(150.0),
+            ],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -609,10 +659,26 @@ mod tests {
             panic!("expected array");
         };
         let expected = EvalArray::from_rows(vec![
-            vec![text_cell_value("Region"), text_cell_value("Product"), text_cell_value("Sales")],
-            vec![text_cell_value("East"), text_cell_value("A"), ArrayCellValue::Number(10.0)],
-            vec![text_cell_value("East"), text_cell_value("B"), ArrayCellValue::Number(20.0)],
-            vec![text_cell_value("Total"), ArrayCellValue::EmptyCell, ArrayCellValue::Number(30.0)],
+            vec![
+                text_cell_value("Region"),
+                text_cell_value("Product"),
+                text_cell_value("Sales"),
+            ],
+            vec![
+                text_cell_value("East"),
+                text_cell_value("A"),
+                ArrayCellValue::Number(10.0),
+            ],
+            vec![
+                text_cell_value("East"),
+                text_cell_value("B"),
+                ArrayCellValue::Number(20.0),
+            ],
+            vec![
+                text_cell_value("Total"),
+                ArrayCellValue::EmptyCell,
+                ArrayCellValue::Number(30.0),
+            ],
         ])
         .unwrap();
         assert_eq!(array, expected);

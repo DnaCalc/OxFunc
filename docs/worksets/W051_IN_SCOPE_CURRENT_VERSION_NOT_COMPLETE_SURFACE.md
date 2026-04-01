@@ -42,34 +42,42 @@ Machine-readable working inputs:
 7. `docs/function-lane/W58_SUCCESSOR_PACKET_SPLIT.csv`
 8. `docs/function-lane/W59_SCOPE_RECONCILIATION.csv`
 9. `docs/function-lane/W60_SCOPE_RECONCILIATION.csv`
-10. `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`
-11. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
+10. `docs/function-lane/W61_SCOPE_RECONCILIATION.csv`
+11. `docs/function-lane/W62_SCOPE_RECONCILIATION.csv`
+12. `docs/function-lane/W63_SCOPE_RECONCILIATION.csv`
+13. `docs/function-lane/W64_SCOPE_RECONCILIATION.csv`
+14. `docs/function-lane/W65_SCOPE_RECONCILIATION.csv`
+15. `docs/function-lane/W66_SCOPE_RECONCILIATION.csv`
+16. `docs/function-lane/W67_SCOPE_RECONCILIATION.csv`
+17. `docs/function-lane/W68_SCOPE_RECONCILIATION.csv`
+18. `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`
+19. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
 
 Current working total:
-1. `150` function rows.
+1. `0` function rows.
 2. `0` operator rows.
-3. `150` total rows.
+3. `0` total rows.
 4. current working backlog split:
    - `0` explicitly tracked residual rows with real runtime/formal/evidence floors or packet-specific open lanes,
-   - `150` normalized ordinary execution rows remaining after `W060`.
+   - `0` normalized ordinary execution rows remaining after `W068`.
 5. current shared-interface-acknowledgement split:
    - the prior seam-heavy non-deferred surface is now acknowledged and promoted out of `W051`,
    - no explicit residual seam-heavy row remains in current `W051`,
-   - `143` hidden non-interesting snapshot entries are excluded from the shared-interface pass and treated as ordinary backlog unless a later concrete mismatch proves otherwise.
+   - no hidden non-interesting snapshot entry remains in the active ordinary backlog after `W068`.
 6. current hidden-backlog identity split:
-   - `143` hidden snapshot entries remain in the current published-catalog reading after `W060`,
-   - the grouped text-compat rows still account for the `7`-row delta between snapshot-entry and execution-row views,
-   - the remaining ordinary execution program therefore now operates on `150` machine-clean function rows.
+   - `0` hidden snapshot entries remain in the current published-catalog reading after `W068`,
+   - the grouped text-compat rows have now been cleared out of the live backlog,
+   - the ordinary execution program is now fully drained for the current non-deferred surface.
 
 First-pass published-catalog reading:
 1. `534` published rows in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`:
    - `511` functions,
    - `23` operators.
-2. `374` rows are currently usable on a first-pass consumer read:
-   - `374` supported/complete,
+2. `517` rows are currently usable on a first-pass consumer read:
+   - `517` supported/complete,
    - `0` preview.
 3. `17` rows are deferred in the current version target through `W050`.
-4. `143` snapshot entries are non-deferred but not yet supported and are now centralized here as the current hidden ordinary backlog.
+4. `0` snapshot entries are non-deferred and not yet supported; the current hidden ordinary backlog is now drained.
 5. the exact `114` documented-complete snapshot-stale rows from the first-pass reconciliation have now been refreshed out of false `catalog_only` state in the published snapshot export and are not included in the W51 backlog totals.
 
 First-pass documented-complete snapshot-stale groups now refreshed in the current export:
@@ -94,9 +102,17 @@ Exact-inventory note:
    - legacy `RANDARRAY` cleanup: `1`
 4. `W058` preserves the original hidden-backlog `185` snapshot entries as provenance while creating the machine-clean `192`-row execution inventory used for ordinary backlog closure.
 5. `W059` then removes `16` rows from the active ordinary backlog.
-6. `W060` then removes a further `26` rows, leaving:
-   - `143` current snapshot-entry backlog rows,
-   - `150` current normalized execution backlog rows.
+6. `W060` then removes a further `26` rows.
+7. `W061` then removes a further `29` rows.
+8. `W062` then removes a further `35` rows.
+9. `W063` then removes a further `18` rows.
+10. `W064` then removes a further `15` rows.
+11. `W065` then removes a further `12` rows.
+12. `W066` then removes a further `23` normalized text-family rows.
+13. `W067` then removes a further `15` rows.
+14. `W068` then removes the final `3` rows, leaving:
+   - `0` current snapshot-entry backlog rows,
+   - `0` current normalized execution backlog rows.
 
 Completed and removed from this inventory (moved to function-phase-complete):
 - `BYCOL`, `BYROW`, `CALL`, `IMAGE`, `ISOMITTED`, `LAMBDA`, `LET`, `MAKEARRAY`, `MAP`, `REDUCE`, `REGISTER.ID`, `SCAN` (12 rows after packet-local closure and shared-freeze promotion)
@@ -104,6 +120,14 @@ Completed and removed from this inventory (moved to function-phase-complete):
 - `OP_IMPLICIT_INTERSECTION` (1 operator after current-baseline implicit-intersection and legacy-single closure in `W014`)
 - `BESSELI`, `BESSELJ`, `BESSELK`, `BESSELY`, `BIN2DEC`, `BIN2HEX`, `BIN2OCT`, `DEC2BIN`, `DEC2HEX`, `DEC2OCT`, `HEX2BIN`, `HEX2DEC`, `HEX2OCT`, `OCT2BIN`, `OCT2DEC`, `OCT2HEX` (16 functions after `W059`)
 - `COMPLEX`, `IMABS`, `IMAGINARY`, `IMARGUMENT`, `IMCONJUGATE`, `IMCOS`, `IMCOSH`, `IMCOT`, `IMCSC`, `IMCSCH`, `IMDIV`, `IMEXP`, `IMLN`, `IMLOG10`, `IMLOG2`, `IMPOWER`, `IMPRODUCT`, `IMREAL`, `IMSEC`, `IMSECH`, `IMSIN`, `IMSINH`, `IMSQRT`, `IMSUB`, `IMSUM`, `IMTAN` (26 functions after `W060`)
+- `BETA.DIST`, `BETA.INV`, `BETADIST`, `BETAINV`, `BINOM.DIST`, `BINOM.DIST.RANGE`, `BINOM.INV`, `BINOMDIST`, `CHIDIST`, `CHIINV`, `CHISQ.DIST`, `CHISQ.DIST.RT`, `CHISQ.INV`, `CHISQ.INV.RT`, `CONFIDENCE`, `CONFIDENCE.NORM`, `CRITBINOM`, `EXPON.DIST`, `EXPONDIST`, `F.DIST`, `F.DIST.RT`, `F.INV`, `F.INV.RT`, `FDIST`, `FINV`, `GAMMA.DIST`, `GAMMA.INV`, `GAMMADIST`, `GAMMAINV` (29 functions after `W061`)
+- `COVAR`, `HYPGEOM.DIST`, `HYPGEOMDIST`, `KURT`, `LOGINV`, `LOGNORM.DIST`, `LOGNORM.INV`, `LOGNORMDIST`, `MODE`, `NEGBINOM.DIST`, `NEGBINOMDIST`, `NORM.DIST`, `NORM.INV`, `NORM.S.DIST`, `NORM.S.INV`, `NORMDIST`, `NORMINV`, `NORMSDIST`, `NORMSINV`, `PERCENTILE`, `PERCENTRANK`, `POISSON`, `POISSON.DIST`, `QUARTILE`, `SKEW`, `SKEW.P`, `STEYX`, `T.DIST`, `T.DIST.2T`, `T.DIST.RT`, `T.INV`, `T.INV.2T`, `TDIST`, `TINV`, `TRIMMEAN` (35 functions after `W062`)
+- `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MINUTE`, `MONTH`, `NETWORKDAYS`, `NETWORKDAYS.INTL`, `SECOND`, `TIME`, `WEEKDAY`, `WEEKNUM`, `WORKDAY`, `WORKDAY.INTL`, `YEAR`, `YEARFRAC` (18 functions after `W063`)
+- `CUMIPMT`, `CUMPRINC`, `DB`, `DDB`, `DISC`, `DOLLARFR`, `INTRATE`, `PRICEDISC`, `RECEIVED`, `SLN`, `SYD`, `TBILLEQ`, `TBILLPRICE`, `TBILLYIELD`, `VDB` (15 functions after `W064`)
+- `DAVERAGE`, `DCOUNT`, `DCOUNTA`, `DGET`, `DMAX`, `DMIN`, `DPRODUCT`, `DSTDEV`, `DSTDEVP`, `DSUM`, `DVAR`, `DVARP` (12 functions after `W065`)
+- `CODE`, `CONCATENATE`, `FIND`, `FINDB`, `LEFT`, `LEFTB`, `LEN`, `LENB`, `LOWER`, `MID`, `MIDB`, `PROPER`, `REPLACE`, `REPLACEB`, `REPT`, `RIGHT`, `RIGHTB`, `SEARCH`, `SEARCHB`, `SUBSTITUTE`, `TRIM`, `UNICODE`, `UPPER` (23 functions after `W066`)
+- `CEILING.MATH`, `CEILING.PRECISE`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `ISO.CEILING`, `MDETERM`, `MINVERSE`, `MMULT`, `MUNIT`, `SERIESSUM`, `SUMPRODUCT`, `SUMX2MY2`, `SUMX2PY2`, `SUMXMY2` (15 functions after `W067`)
+- `HLOOKUP`, `IFS`, `VLOOKUP` (3 functions after `W068`)
 - `COLUMNS`, `RANDARRAY`, `RANDBETWEEN`, `ROWS`, `TRIMRANGE`, `VALUETOTEXT` (6 functions)
 - `OP_TRIM_REF_LEADING`, `OP_TRIM_REF_TRAILING`, `OP_TRIM_REF_BOTH` (3 operators, verified against W045 structural slice)
 
@@ -111,8 +135,8 @@ Important current reading:
 - the exact packet-local work split for any future explicit residual rows is pinned through `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`; it is currently empty because no explicit preview-cluster row remains.
 - there is no remaining explicit preview-cluster row; the only residual `W051` membership is now the hidden ordinary backlog.
 - the active current hidden backlog is now:
-  - `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv` for the `143` residual snapshot entries,
-  - `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv` for the `150` residual execution rows.
+  - `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`,
+  - `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`.
 - the original hidden `185`-row appendix remains provenance only:
   - these rows were still `catalog_only` in the published snapshot,
   - they were not in `W050`,
@@ -124,16 +148,17 @@ Important current reading:
   - `docs/function-lane/W58_SUCCESSOR_PACKET_SPLIT.csv` freezes the exact `W059` through `W068` ownership counts.
 - `W059` is now complete and removed from the active backlog.
 - `W060` is now complete and removed from the active backlog.
-- for shared-interface acknowledgement purposes, the remaining hidden ordinary backlog should currently be read as ordinary built-in backlog rather than open OxFml-shape backlog.
-- current remaining successor execution split after `W060`:
-  - `W061`: `29`
-  - `W062`: `35`
-  - `W063`: `18`
-  - `W064`: `15`
-  - `W065`: `12`
-  - `W066`: `23`
-  - `W067`: `15`
-  - `W068`: `3`
+- `W061` is now complete and removed from the active backlog.
+- `W062` is now complete and removed from the active backlog.
+- `W063` is now complete and removed from the active backlog.
+- `W064` is now complete and removed from the active backlog.
+- `W065` is now complete and removed from the active backlog.
+- `W066` is now complete and removed from the active backlog.
+- `W067` is now complete and removed from the active backlog.
+- `W068` is now complete and removes the final ordinary rows from the active backlog.
+- for shared-interface acknowledgement purposes, there is no remaining hidden ordinary backlog in the active current-version non-deferred surface.
+- current remaining successor execution split after `W068`:
+  - none.
 
 Explicit preview-cluster functions:
 None.
@@ -186,8 +211,16 @@ For the current version target:
 10. Completed in the current pass: `W058` froze the normalized ordinary backlog into narrower successor execution packets by family rather than leaving it as one mega-list.
 11. Completed in the current pass: `W059` closes the engineering radix conversion family plus the Bessel quartet and removes `16` rows from active `W051` backlog membership.
 12. Completed in the current pass: `W060` closes the complex-number family and removes a further `26` rows from active `W051` backlog membership.
-13. Keep `W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` aligned with each closure wave so the catalog does not get ahead of the executable/formal doctrine again.
-14. Regenerate the published consumer surface after each closure wave:
+13. Completed in the current pass: `W061` closes the first statistical-distribution and compatibility wave, reconciles the matching `W054` Lean-id gaps, and removes a further `29` rows from active `W051` backlog membership.
+14. Completed in the current pass: `W062` closes the second statistical-distribution and compatibility wave, reconciles the remaining T-family `W054` Lean-id gaps for that slice, and removes a further `35` rows from active `W051` backlog membership.
+15. Completed in the current pass: `W063` closes the date/time and business-day family and removes a further `18` rows from active `W051` backlog membership.
+16. Completed in the current pass: `W064` closes the financial core miscellaneous family and removes a further `15` rows from active `W051` backlog membership.
+17. Completed in the current pass: `W065` promotes the already-evidenced database family, refreshes those `12` rows out of hidden `catalog_only` publication drift, and removes them from active `W051` backlog membership.
+18. Completed in the current pass: `W066` promotes the already-evidenced text core and compatibility family, refreshes those `16` hidden snapshot entries out of `catalog_only` publication drift, and removes the matching `23` normalized rows from active `W051` backlog membership.
+19. Completed in the current pass: `W067` promotes the already-evidenced rounding, matrix, and sumproduct-family rows, refreshes those `15` hidden snapshot entries out of `catalog_only` publication drift, and removes the matching `15` normalized rows from active `W051` backlog membership.
+20. Completed in the current pass: `W068` promotes the final lookup/logical residuals, refreshes those `3` hidden snapshot entries out of `catalog_only` publication drift, and removes the final `3` normalized rows from active `W051` backlog membership.
+21. Completed in the current pass: `W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` is now fully reconciled for the non-deferred parked surface; no active Rust-vs-Lean missing-id gap remains for those rows.
+22. Regenerate the published consumer surface after each closure wave:
    - snapshot export
    - labeling policy
    - consumer-facing counts
@@ -200,10 +233,9 @@ Exit condition:
 - downstream consumer docs can report one aligned set of counts without relying on stale side packets.
 
 ## 7. Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - `150` normalized hidden ordinary execution rows still lack semantic closure packets
-   - successor execution work `W061` through `W068` remains open
+   - none

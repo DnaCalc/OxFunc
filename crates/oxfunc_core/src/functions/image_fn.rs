@@ -114,8 +114,12 @@ fn validate_image_request(request: &ImageRequest) -> Result<(), ImageEvalError> 
             if request.height.is_none() && request.width.is_none() {
                 return Err(ImageEvalError::Domain(WorksheetErrorCode::Value));
             }
-            if request.height.is_some_and(|value| !custom_dimension_valid(value))
-                || request.width.is_some_and(|value| !custom_dimension_valid(value))
+            if request
+                .height
+                .is_some_and(|value| !custom_dimension_valid(value))
+                || request
+                    .width
+                    .is_some_and(|value| !custom_dimension_valid(value))
             {
                 return Err(ImageEvalError::Domain(WorksheetErrorCode::Value));
             }
@@ -265,7 +269,9 @@ pub fn map_image_error_to_ws(error: &ImageEvalError) -> WorksheetErrorCode {
         ImageEvalError::Preparation(_) => WorksheetErrorCode::Value,
         ImageEvalError::Domain(code) => *code,
         ImageEvalError::HostInfoProviderMissing(_) => WorksheetErrorCode::Value,
-        ImageEvalError::HostInfo(HostInfoError::ProviderFailure { .. }) => WorksheetErrorCode::Value,
+        ImageEvalError::HostInfo(HostInfoError::ProviderFailure { .. }) => {
+            WorksheetErrorCode::Value
+        }
         ImageEvalError::HostInfo(
             HostInfoError::UnsupportedImageQuery
             | HostInfoError::UnsupportedTranslateQuery
@@ -309,7 +315,10 @@ mod tests {
     }
 
     impl HostInfoProvider for MockImageProvider {
-        fn query_image(&self, _request: &ImageRequest) -> Result<ImageProviderResult, HostInfoError> {
+        fn query_image(
+            &self,
+            _request: &ImageRequest,
+        ) -> Result<ImageProviderResult, HostInfoError> {
             Ok(self.result.clone())
         }
     }
@@ -325,12 +334,18 @@ mod tests {
     #[test]
     fn parse_image_request_defaults_to_fit_cell() {
         let request = parse_image_request(
-            &[text_arg("https://example.com/image.png"), text_arg("Sphere")],
+            &[
+                text_arg("https://example.com/image.png"),
+                text_arg("Sphere"),
+            ],
             &MockResolver,
         )
         .expect("request");
 
-        assert_eq!(request.source.to_string_lossy(), "https://example.com/image.png");
+        assert_eq!(
+            request.source.to_string_lossy(),
+            "https://example.com/image.png"
+        );
         assert_eq!(
             request.alt_text.as_ref().map(ExcelText::to_string_lossy),
             Some("Sphere".to_string())
@@ -361,10 +376,17 @@ mod tests {
     #[test]
     fn parse_image_request_rejects_non_text_and_non_https_inputs() {
         let non_text = parse_image_request(&[number_arg(1.0)], &MockResolver);
-        assert_eq!(non_text, Err(ImageEvalError::Domain(WorksheetErrorCode::Value)));
+        assert_eq!(
+            non_text,
+            Err(ImageEvalError::Domain(WorksheetErrorCode::Value))
+        );
 
-        let non_https = parse_image_request(&[text_arg("http://example.com/image.png")], &MockResolver);
-        assert_eq!(non_https, Err(ImageEvalError::Domain(WorksheetErrorCode::Value)));
+        let non_https =
+            parse_image_request(&[text_arg("http://example.com/image.png")], &MockResolver);
+        assert_eq!(
+            non_https,
+            Err(ImageEvalError::Domain(WorksheetErrorCode::Value))
+        );
     }
 
     #[test]
@@ -406,7 +428,10 @@ mod tests {
             }),
         };
         let got = eval_image_surface(
-            &[text_arg("https://example.com/image.png"), text_arg("Sphere")],
+            &[
+                text_arg("https://example.com/image.png"),
+                text_arg("Sphere"),
+            ],
             &MockResolver,
             Some(&provider),
         );
@@ -480,7 +505,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(ExtendedValue::Core(EvalValue::Error(WorksheetErrorCode::Connect)))
+            Ok(ExtendedValue::Core(EvalValue::Error(
+                WorksheetErrorCode::Connect
+            )))
         );
     }
 

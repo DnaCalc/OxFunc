@@ -1,5 +1,6 @@
 use oxfml_core::seam::AcceptDecision;
-use oxfml_core::{ReturnedValueSurfaceKind, SingleFormulaHost, ValuePayload};
+use oxfml_core::substrate::host::SingleFormulaHost;
+use oxfml_core::{ReturnedValueSurfaceKind, ValuePayload};
 use oxfunc_core::host_info::{
     HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ImageSizingMode,
     ResolvedWebImage,
@@ -46,7 +47,10 @@ fn image_formula_preserves_webimage_rich_value_carrier_from_oxfunc_side() {
         run.published_worksheet_value,
         EvalValue::Text(ExcelText::from_interop_assignment("-2146826273"))
     );
-    assert_eq!(run.returned_value_surface.kind, ReturnedValueSurfaceKind::RichValue);
+    assert_eq!(
+        run.returned_value_surface.kind,
+        ReturnedValueSurfaceKind::RichValue
+    );
     assert_eq!(
         run.returned_value_surface.payload_summary,
         "RichValue(_webimage)"
@@ -67,7 +71,10 @@ fn image_formula_preserves_webimage_rich_value_carrier_from_oxfunc_side() {
                 ReturnedValueSurfaceKind::RichValue
             );
             assert_eq!(
-                bundle.returned_value_surface.rich_value_type_name.as_deref(),
+                bundle
+                    .returned_value_surface
+                    .rich_value_type_name
+                    .as_deref(),
                 Some("_webimage")
             );
             assert_eq!(

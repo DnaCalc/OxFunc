@@ -33,8 +33,8 @@ Machine-readable inventory:
 Current total:
 1. `37` function rows in the opening gap set.
 
-Current remaining after the first reconciled wave:
-1. `32` function rows still marked missing or alias-misaligned in the inventory.
+Current remaining after the current parking reconciliation:
+1. `0` function rows remain marked missing or alias-misaligned in the inventory for the non-deferred parked surface.
 
 Families in the opening gap set:
 1. beta/gamma stats modern + legacy ids,
@@ -83,18 +83,17 @@ This packet can only be reported `scope_complete` when:
 2. the remaining formalization-deepening register reflects the reduced gap honestly,
 3. no function in the opening W54 inventory is still silently missing from Lean coverage.
 
-## 9. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+## 9. Current Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - beta/gamma stats family Lean coverage
-   - chi/f/t distribution and inverse family Lean coverage
-   - finance follow-on Lean coverage beyond the current shared publication substrate
-   - host/service function Lean coverage for `HYPERLINK` and `RTD`
-   - modern dotted `STDEV.P` / `VAR.P` id alignment
+   - none in declared `W054` scope
 
 Progress note:
 1. The first `W054` finance wave reconciled `FV`, `NPER`, `IPMT`, `PPMT`, and `ISPMT` into `formal/lean/OxFunc/Functions/FinancialTimeValueFamily.lean`.
-2. The direct Rust-vs-Lean function-id diff now reports `32` remaining rows after applying the packet exclusions.
+2. `W061` then reconciled the beta/gamma ids plus the chi/F ids needed for the first statistical-distribution wave into `formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean` and `formal/lean/OxFunc/Functions/ChiFTFamily.lean`.
+3. `W062` then reconciled the remaining T-family ids needed for the second statistical-distribution wave into `formal/lean/OxFunc/Functions/ChiFTFamily.lean`.
+4. The current parking reconciliation then added explicit Lean rows for `NPV`, `FVSCHEDULE`, `PDURATION`, `RRI`, `NOMINAL`, `EFFECT`, `HYPERLINK`, `RTD`, `STDEV.P`, and `VAR.P` through `FinancialTimeValueFamily.lean`, `HostServiceSurface.lean`, `StdevPFn.lean`, and `VarPFn.lean`.
+5. The direct Rust-vs-Lean function-id gap inventory for the parked non-deferred surface now reports `0` remaining missing or alias-misaligned rows.

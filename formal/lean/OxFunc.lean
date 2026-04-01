@@ -23,6 +23,7 @@ import OxFunc.Functions.Atan2
 import OxFunc.Functions.Atanh
 import OxFunc.Functions.BaseFn
 import OxFunc.Functions.BesselConvertFamily
+import OxFunc.Functions.BetaGammaStatsFamily
 import OxFunc.Functions.Column
 import OxFunc.Functions.Average
 import OxFunc.Functions.BondCoreFamily
@@ -92,6 +93,7 @@ import OxFunc.Functions.GeoMeanFn
 import OxFunc.Functions.GestepFn
 import OxFunc.Functions.HarMeanFn
 import OxFunc.Functions.Hstack
+import OxFunc.Functions.HostServiceSurface
 import OxFunc.Functions.Info
 import OxFunc.Functions.IfFn
 import OxFunc.Functions.IfError

@@ -10,7 +10,8 @@ use oxfunc_core::functions::a1_refs::{
     parse_a1_reference,
 };
 use oxfunc_core::functions::surface_dispatch::{
-    eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number, eval_surface_value_call,
+    eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number,
+    eval_surface_value_call,
 };
 use oxfunc_core::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider, InfoQuery};
 use oxfunc_core::locale_format::current_excel_host_context;
@@ -363,7 +364,6 @@ const MANUAL_PROBE_REGISTRATION_SPECS: &[ManualRegistrationSpec] = &[
         arg_names: "type_num",
         macro_type: 1,
     },
-
 ];
 
 #[allow(dead_code)]
@@ -832,7 +832,10 @@ fn current_caller_context() -> Option<CallerContext> {
         }
         _ => None,
     };
-    if matches!(out.xltype & XLTYPE_MASK, XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI) {
+    if matches!(
+        out.xltype & XLTYPE_MASK,
+        XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI
+    ) {
         call_excel_free(&mut out);
     }
     caller
@@ -855,10 +858,7 @@ fn push_trace_entry(entry: String) {
 }
 
 fn dump_trace_log() -> String {
-    trace_log()
-        .lock()
-        .expect("trace log poisoned")
-        .join(" || ")
+    trace_log().lock().expect("trace log poisoned").join(" || ")
 }
 
 fn format_caller_context(caller: Option<CallerContext>) -> String {
@@ -918,9 +918,9 @@ fn owned_reference_oper_from_a1(reference: &A1Reference) -> Option<OwnedReferenc
 fn resolved_eval_from_call_arg(arg: CallArgValue) -> EvalValue {
     match arg {
         CallArgValue::Eval(value) => value,
-        CallArgValue::EmptyCell | CallArgValue::MissingArg => EvalValue::Array(EvalArray::from_scalar(
-            ArrayCellValue::EmptyCell,
-        )),
+        CallArgValue::EmptyCell | CallArgValue::MissingArg => {
+            EvalValue::Array(EvalArray::from_scalar(ArrayCellValue::EmptyCell))
+        }
         CallArgValue::Reference(reference) => EvalValue::Reference(reference),
     }
 }
@@ -938,7 +938,10 @@ fn clone_excel_return_to_owned(value: *const XLOPER12, preserve_refs: bool) -> X
 }
 
 fn free_excel_result_if_needed(value: &mut XLOPER12) {
-    if matches!(value.xltype & XLTYPE_MASK, XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI) {
+    if matches!(
+        value.xltype & XLTYPE_MASK,
+        XLTYPE_REF | XLTYPE_SREF | XLTYPE_STR | XLTYPE_MULTI
+    ) {
         call_excel_free(value);
     }
 }
@@ -976,7 +979,10 @@ fn resolve_reference_via_excel(reference: &ReferenceLike) -> Result<EvalValue, R
     })?;
     let mut temp_ref = owned_reference_oper_from_a1(&parsed).ok_or_else(|| {
         RefResolutionError::ProviderFailure {
-            detail: format!("unable to construct Excel reference for {}", reference.target),
+            detail: format!(
+                "unable to construct Excel reference for {}",
+                reference.target
+            ),
         }
     })?;
     let mut out = XLOPER12 {
@@ -1188,18 +1194,16 @@ fn flag_experiments_enabled() -> bool {
 }
 
 fn register_flag_experiment_aliases(module_path: &str) -> bool {
-    FLAG_EXPERIMENT_REGISTRATION_SPECS
-        .iter()
-        .all(|spec| {
-            register_one_dynamic(
-                module_path,
-                spec.export_name,
-                spec.type_text,
-                spec.function_name,
-                spec.arg_names,
-                spec.macro_type,
-            )
-        })
+    FLAG_EXPERIMENT_REGISTRATION_SPECS.iter().all(|spec| {
+        register_one_dynamic(
+            module_path,
+            spec.export_name,
+            spec.type_text,
+            spec.function_name,
+            spec.arg_names,
+            spec.macro_type,
+        )
+    })
 }
 
 fn register_all(module_path: &str) -> bool {
@@ -1506,7 +1510,9 @@ fn probe_ret_array_nil() -> *mut XLOPER12 {
 
 fn probe_array_desc(raw: *mut XLOPER12) -> *mut XLOPER12 {
     let description = match call_arg_from_xloper(raw, false) {
-        CallArgValue::Eval(EvalValue::Array(array)) => describe_eval_value(&EvalValue::Array(array)),
+        CallArgValue::Eval(EvalValue::Array(array)) => {
+            describe_eval_value(&EvalValue::Array(array))
+        }
         other => describe_call_arg(&other),
     };
     alloc_result(make_xloper_text(&description))
@@ -1572,7 +1578,8 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
         return alloc_result(make_xloper_err(XLERR_VALUE));
     }
 
-    if raw_args.len() == 1 && matches!(spec.lift_policy, ULiftPolicy::UnaryScalarOrArrayElementwise) {
+    if raw_args.len() == 1 && matches!(spec.lift_policy, ULiftPolicy::UnaryScalarOrArrayElementwise)
+    {
         let raw = raw_args[0];
         let mut temp = XLOPER12 {
             val: XLOPER12Value { w: 0 },
@@ -1837,8 +1844,6 @@ pub extern "system" fn OX_GET_WORKSPACE(type_num: *mut XLOPER12) -> *mut XLOPER1
     probe_info_unary(XLF_GET_WORKSPACE, type_num, true)
 }
 
-
-
 #[unsafe(no_mangle)]
 pub extern "system" fn xlAutoOpen() -> i32 {
     let Some(module_path) = current_module_path() else {
@@ -1907,27 +1912,3 @@ pub extern "system" fn xlAutoFree12(to_free: *mut XLOPER12) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

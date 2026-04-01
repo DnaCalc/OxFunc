@@ -50,8 +50,7 @@ pub fn eval_rows_surface(args: &[CallArgValue]) -> Result<EvalValue, RowsEvalErr
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
         _ => return Err(RowsEvalError::InvalidReferenceArg),
     };
-    let parsed =
-        parse_a1_reference(&reference.target).ok_or(RowsEvalError::InvalidReferenceArg)?;
+    let parsed = parse_a1_reference(&reference.target).ok_or(RowsEvalError::InvalidReferenceArg)?;
     let count = parsed.end_row - parsed.start_row + 1;
     Ok(EvalValue::Number(count as f64))
 }
@@ -134,7 +133,10 @@ mod tests {
 
     #[test]
     fn rows_single_cell_returns_one() {
-        assert_eq!(eval_rows_surface(&[ref_arg("B2")]), Ok(EvalValue::Number(1.0)));
+        assert_eq!(
+            eval_rows_surface(&[ref_arg("B2")]),
+            Ok(EvalValue::Number(1.0))
+        );
     }
 
     #[test]

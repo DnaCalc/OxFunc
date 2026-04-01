@@ -71,6 +71,15 @@ Kickoff worksets:
 58. `W058_GROUPED_ROW_NORMALIZATION_AND_HIDDEN_BACKLOG_SPLIT.md` (W58)
 59. `W059_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY.md` (W59)
 60. `W060_COMPLEX_NUMBER_FAMILY.md` (W60)
+61. `W061_STATISTICAL_DISTRIBUTIONS_AND_COMPAT_A.md` (W61)
+62. `W062_STATISTICAL_DISTRIBUTIONS_AND_COMPAT_B.md` (W62)
+63. `W063_DATE_TIME_AND_BUSINESS_DAY_FAMILY.md` (W63)
+64. `W064_FINANCIAL_CORE_MISC_FAMILY.md` (W64)
+65. `W065_DATABASE_FAMILY_PROMOTION.md` (W65)
+66. `W066_TEXT_CORE_AND_COMPATIBILITY_FAMILY.md` (W66)
+67. `W067_MATH_MATRIX_AND_ROUNDING_FAMILY.md` (W67)
+68. `W068_LOOKUP_AND_LOGICAL_RESIDUALS.md` (W68)
+69. `W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md` (W69)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -101,21 +110,21 @@ Replay rollout sequence after `W016`:
 9. `W030` and `W031` are now complete as seam-definition/reconciliation packets; successor ownership moved to `W034`, `W035`, and `W036`.
 10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
-12. `W047`, `W048`, and `W049` are now the next seam-hardening successors for first application usability: typed context/query bundle freeze, return-surface/publication-hint freeze, and the runtime provider/snapshot consumer model.
-13. Those seam-hardening packets no longer block the already-closed current-phase packets `W023`, `W038`, `W046`, and `W055`; the remaining current-scope hard packet is now `W014` (`@`) plus the hidden ordinary-backlog extraction lane under `W051`.
+12. `W047`, `W048`, and `W049` are now complete for declared current-phase scope and remain as shared-freeze provenance for typed context/query, return-surface publication, and runtime provider/snapshot consumer modeling.
+13. The previously seam-heavy packets `W023`, `W038`, `W046`, and `W055` are now complete for declared current-phase scope, `W014` is now complete for declared current-phase scope, and the hidden ordinary backlog has been fully drained through `W068`.
 14. `W050` and `W051` now centralize current-version backlog tracking:
     - `W050` is the canonical deferred-current-version list,
     - `W051` is the canonical in-scope-but-not-complete list and now also the first-pass reconciliation hub for hidden non-deferred `catalog_only` rows,
     - older family packets remain provenance/evidence owners rather than the active central tracker.
 15. Current `W051` totals are:
-    - `150` normalized non-deferred outstanding execution rows (`150` functions, `0` operators),
-    - derived from `143` hidden non-deferred backlog snapshot entries after `W060`,
-    - split into `0` explicit preview-cluster rows plus `150` hidden ordinary execution rows,
+    - `0` normalized non-deferred outstanding execution rows (`0` functions, `0` operators),
+    - derived from `0` hidden non-deferred backlog snapshot entries after `W068`,
+    - split into `0` explicit preview-cluster rows plus `0` hidden ordinary execution rows,
     - and the first-pass `114` documented-complete snapshot-stale rows have now been refreshed into the published export.
 16. Current interface-finalization reading:
     - the prior seam-heavy non-deferred surface is now acknowledged across OxFunc and OxFml and promoted out of `W051`,
     - no explicit residual preview row remains after `W014` current-phase closure,
-    - the hidden ordinary backlog now reads as `143` snapshot entries / `150` normalized execution rows after `W060` and is excluded from the current shared-interface acknowledgement pass unless a concrete mismatch later proves otherwise,
+    - the hidden ordinary backlog is now fully drained after `W068`,
     - the current OxFunc-owned consolidated candidate lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 
