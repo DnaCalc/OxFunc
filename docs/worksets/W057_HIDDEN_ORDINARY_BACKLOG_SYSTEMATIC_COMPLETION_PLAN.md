@@ -1,7 +1,7 @@
 # WORKSET - Hidden Ordinary Backlog Systematic Completion Plan (W57)
 
 ## 1. Purpose
-Turn the remaining `185` hidden non-deferred ordinary backlog rows from a reconciled backlog list into an executable closure program that can be run family-by-family without lowering OxFunc evidence standards.
+Turn the hidden non-deferred ordinary backlog from a reconciled backlog list into an executable closure program that can be run family-by-family without lowering OxFunc evidence standards.
 
 This packet exists to replace “one big hidden backlog” with:
 1. a deterministic packet sequence,
@@ -24,7 +24,7 @@ Dependencies:
 
 ## 3. Scope
 In scope for `W57`:
-1. the full current `185`-row hidden non-deferred ordinary backlog from `W051`,
+1. the full hidden non-deferred ordinary backlog program inherited from `W051`,
 2. execution packetization of those rows into quality-preserving family packets,
 3. normalization of the seven grouped-name rows before semantic closure starts,
 4. a shared output contract and verification contract for every successor packet,
@@ -41,7 +41,7 @@ Current target:
 1. `185` hidden snapshot entries.
 2. `0` operators.
 3. all current `W051` membership after `W014` closure.
-4. machine-clean execution counterpart after `W058`: `192` function rows.
+4. machine-clean execution counterpart after `W058`: `192` function rows, now reduced to `150` remaining rows after `W060`.
 
 Current packet split:
 1. `P0` normalization and grouped-row cleanup (`7` grouped entries)
@@ -197,5 +197,5 @@ The broader ordinary backlog program is complete only when every row is either:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - successor packet execution `W059` through `W068` has not started yet
+   - successor packet execution `W061` through `W068` remains open after `W060`
    - the machine-clean successor split now lives in `W58_SUCCESSOR_PACKET_SPLIT.csv`

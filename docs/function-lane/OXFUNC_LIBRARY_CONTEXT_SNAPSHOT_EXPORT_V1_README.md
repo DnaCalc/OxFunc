@@ -192,9 +192,9 @@ Current intended use:
 7. This export does not carry runtime capability, provider availability, caller-context, or host-query payload facts.
 8. The exact final shared field set and field names are still not locked cross-repo.
 9. The current `V1` export now carries the exact `W44` stale-row refresh:
-   - `185` non-deferred backlog rows remain centralized in `W051`,
+   - `143` hidden backlog snapshot entries remain centralized in `W051` after `W060`,
    - the exact `114` documented-complete rows from the first-pass stale inventory have been refreshed out of false `catalog_only` state.
-10. `W058` normalized the hidden ordinary backlog for execution purposes, but the published `V1` snapshot artifact still reflects the original `185` hidden snapshot entries rather than the machine-clean `192`-row execution split.
+10. `W058` normalized the hidden ordinary backlog for execution purposes, and `W059` / `W060` have now removed the first `42` rows; the published `V1` snapshot artifact now aligns to `143` current hidden snapshot entries, while the remaining machine-clean execution split is `150` rows.
 
 Current built-in C API interop examples:
 1. `FUNC.SUM`
@@ -255,21 +255,22 @@ Downstream consumers such as `DNA OneCalc` should read this export together with
 This export must be read together with `W050` and `W051`, not by itself:
 1. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md` - `17` explicitly deferred functions,
 2. `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` - current authoritative non-deferred outstanding-row report,
-3. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` - `185` hidden non-deferred backlog snapshot entries now centralized by `W051`,
-4. `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv` - `192` machine-clean execution rows for the same ordinary backlog after `W058`.
+3. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv` - `143` current hidden non-deferred backlog snapshot entries,
+4. `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv` - `150` current machine-clean execution rows for the same ordinary backlog,
+5. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` - original first-pass provenance inventory.
 
 A row present in the snapshot export does not by itself mean the function is fully supported. The downstream consumer must read the snapshot together with `W050` and `W051` to determine the correct admission category. Current `W051` consumer-facing totals are:
-1. `332` supported rows,
+1. `374` supported rows,
 2. `0` preview rows,
 3. `17` deferred rows,
-4. `185` hidden non-deferred backlog snapshot entries,
-5. `192` normalized hidden ordinary execution rows after `W058`,
+4. `143` hidden non-deferred backlog snapshot entries,
+5. `150` normalized hidden ordinary execution rows after `W060`,
 6. the exact first-pass stale-row set still lives in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` as refresh provenance.
 
 Current shared-interface reading:
 1. no explicit `W051` preview row remains after `W014` current-phase closure,
-2. the `185` hidden non-deferred snapshot entries are ordinary backlog rather than the current shared-interface acknowledgement scope,
-3. `W058` now provides the machine-clean `192`-row execution split for the same backlog,
+2. the `143` hidden non-deferred snapshot entries are ordinary backlog rather than the current shared-interface acknowledgement scope,
+3. the current machine-clean execution split for the same backlog is `150` rows after `W060`,
 4. the current OxFunc-owned shared-interface candidate is documented separately in `OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 ### 8.3 Stability Tiers

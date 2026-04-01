@@ -3,7 +3,7 @@
 Canonical repo-level register of feature areas that are in-progress under workset completion doctrine.
 
 Status: active.
-Last updated: 2026-03-31.
+Last updated: 2026-04-01.
 
 Supersession note:
 - For current catalog-truth counts and non-deferred backlog membership, `IP-01` is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
@@ -20,10 +20,10 @@ Supersession note:
 ### IP-01: Function Catalog Expansion
 
 - **Status**: in-progress
-- **Current consumer-facing report**: `W051` now records `534` published rows (`511` functions, `23` operators), with `332` currently usable rows (`332` supported, `0` preview), `17` deferred rows in `W050`, and `185` hidden non-deferred backlog snapshot entries. After `W058`, the same ordinary backlog is now execution-normalized to `192` function rows.
-- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns the `17` deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` now owns the remaining non-deferred outstanding rows: the centralized ordinary backlog, execution-normalized by `W058` into `192` rows across `W059` through `W068`.
+- **Current consumer-facing report**: `W051` now records `534` published rows (`511` functions, `23` operators), with `374` currently usable rows (`374` supported, `0` preview), `17` deferred rows in `W050`, and `143` hidden non-deferred backlog snapshot entries. After `W060`, the same ordinary backlog now stands at `150` normalized execution rows across `W061` through `W068`.
+- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns the `17` deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` now owns the remaining non-deferred outstanding rows: the centralized ordinary backlog, now reduced by `W060` to `150` execution rows across `W061` through `W068`.
 - **Current narrowing**: `W014`, `W023`, `W038`, `W046`, and `W055` are now complete for declared current-phase scope and no longer contribute rows to `W051`.
-- **Why still open**: the repo now has one main residual semantic backlog class (`W051`), plus broader `W044` field-normalization work. The exact `114` documented-complete snapshot-stale rows have now been refreshed into the published catalog artifact, and `W058` has removed grouped-row ambiguity from the ordinary execution backlog.
+- **Why still open**: the repo now has one main residual semantic backlog class (`W051`), plus broader `W044` field-normalization work. The exact `114` documented-complete snapshot-stale rows have now been refreshed into the published catalog artifact, `W058` removed grouped-row ambiguity from the ordinary execution backlog, and `W059` / `W060` have now closed the first `42` rows of that program.
 - **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`), and snapshot/export alignment remains coupled to `W044`.
 
 ### IP-02: Locale and Version Sweeps
@@ -67,7 +67,7 @@ Supersession note:
 - **Remaining gaps**: explicit promotion and propagation of the acknowledged shared freeze text across the local owner packets and any downstream coordinator-facing consumers, plus any later concrete mismatch-driven corrections.
 - **Why still open**: OxFml now reads the handoff as acceptable shared freeze wording for the narrowed seam families, but `W046` and the row-level interesting backlog still retain packet-local promotion and downstream propagation work after the cross-repo freeze acknowledgment.
 - **Canonical owner**: cross-repo; tracked via the upstream observation ledger and `HO-FN-004`, with the current OxFunc-side freeze candidate assembled from `W042`, `W046`, `W047`, `W048`, and `W049`.
-- **Immediate follow-on after freeze promotion**: continue current-scope completion through the hidden ordinary backlog execution program; `W058` has normalized that program to `192` rows across `W059` through `W068`, while `W023`, `W038`, `W046`, and `W055` are now promoted out for declared current-phase scope.
+- **Immediate follow-on after freeze promotion**: continue current-scope completion through the hidden ordinary backlog execution program; `W059` and `W060` are now complete, leaving `W061` through `W068`, while `W023`, `W038`, `W046`, and `W055` are now promoted out for declared current-phase scope.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 

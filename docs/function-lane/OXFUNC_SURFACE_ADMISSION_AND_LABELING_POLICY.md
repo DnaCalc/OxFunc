@@ -1,7 +1,7 @@
 # OxFunc Surface Admission And Labeling Policy
 
 Status: `active`
-Date: 2026-03-31
+Date: 2026-04-01
 
 Supersession note:
 1. For current row counts, backlog membership, and the consumer-facing admission report, this document is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
@@ -37,12 +37,12 @@ Current consumer-facing report from `W051`:
 1. `534` published rows total:
    - `511` functions,
    - `23` operators.
-2. `332` rows are currently usable on a first-pass consumer read:
-   - `332` supported,
+2. `374` rows are currently usable on a first-pass consumer read:
+   - `374` supported,
    - `0` preview.
 3. `17` rows are deferred through `W050`.
-4. `185` hidden snapshot entries are non-deferred current-version backlog on the consumer-facing published-catalog reading.
-5. the ordinary-backlog execution program now operates on `192` normalized function rows after `W058`.
+4. `143` hidden snapshot entries are non-deferred current-version backlog on the consumer-facing published-catalog reading.
+5. the ordinary-backlog execution program now operates on `150` normalized function rows after `W060`.
 6. the exact first-pass stale-row set still lives in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` as refresh provenance, but those rows are no longer stale in the current published snapshot export.
 
 ### 2.2 W050 Deferred (Current-Version Excluded)
@@ -71,11 +71,11 @@ Definition (from `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFA
 2. not yet fully complete,
 3. many have real OxFunc runtime/formal/evidence work on their admitted slice, but remain listed because the surrounding seam, promotion, or documentation packet is still open.
 
-Current working members: `192` functions + `0` operators = `192` total normalized execution rows.
+Current working members: `150` functions + `0` operators = `150` total normalized execution rows.
 Current split:
 1. `0` explicit preview-cluster rows,
-2. `185` hidden non-deferred snapshot entries now centralized through `W051` and `W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`,
-3. `192` normalized execution rows now centralized through `W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`.
+2. `143` hidden non-deferred snapshot entries now centralized through `W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`,
+3. `150` normalized execution rows now centralized through `W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`.
 
 Important current narrowing:
 1. there is no remaining explicit preview-cluster row in `W051`,
@@ -84,8 +84,8 @@ Important current narrowing:
 4. the callable-helper family, `IMAGE`, and `CALL` / `REGISTER.ID` are now promoted out of `W051` after shared-freeze acknowledgment and packet-local closure.
 
 Downstream reading:
-1. the remaining `185` hidden snapshot entries are real non-deferred current-version backlog and should not be silently treated as supported just because they were omitted from the older narrow `W051` packet reading,
-2. those `185` entries correspond to `192` machine-clean execution rows for closure planning,
+1. the remaining `143` hidden snapshot entries are real non-deferred current-version backlog and should not be silently treated as supported just because they were omitted from the older narrow `W051` packet reading,
+2. those `143` entries correspond to `150` machine-clean execution rows for closure planning,
 3. those rows are ordinary backlog, not the current shared-interface acknowledgement scope for OxFunc ↔ OxFml freeze work,
 4. `W051`, not this policy note, is the authoritative owner for current row membership and counts.
 
@@ -155,7 +155,7 @@ Current warning:
 
 ### 4.3 Labeling Implementation Rule
 1. OneCalc must derive the admission category by joining the snapshot export against the current W050 and W051 inventories, not by reading the snapshot export alone.
-2. The old narrow join against only `W50_DEFERRED_CURRENT_VERSION_INVENTORY.csv` and `W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv` is no longer sufficient by itself; current non-deferred outstanding-row truth also requires `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` and `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`. For execution-owner truth, also use `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`.
+2. The old narrow join against only `W50_DEFERRED_CURRENT_VERSION_INVENTORY.csv` and `W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv` is no longer sufficient by itself; current non-deferred outstanding-row truth also requires `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`, `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`, and `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`. The older first-pass `W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` remains provenance only.
 3. Any row present in the snapshot export and explicitly classified by `W051` as part of the preview cluster should be labeled `preview` or `experimental` based on the W051 notes.
 4. Any row present in `W050` should be labeled `deferred`.
 5. Any row present in the W051 hidden-backlog appendix should be labeled `catalog_only` until promoted.
@@ -177,7 +177,8 @@ Current warning:
 5. `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
 6. `docs/function-lane/W50_DEFERRED_CURRENT_VERSION_INVENTORY.csv`
 7. `docs/function-lane/W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv`
-8. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`
-9. `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`
-10. `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`
-11. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
+8. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`
+9. `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`
+10. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`
+11. `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`
+12. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`

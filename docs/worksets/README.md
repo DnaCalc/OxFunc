@@ -69,6 +69,8 @@ Kickoff worksets:
 56. `W056_GROUPED_AGGREGATION_NATIVE_AND_FORMAL_BASELINE.md` (W56)
 57. `W057_HIDDEN_ORDINARY_BACKLOG_SYSTEMATIC_COMPLETION_PLAN.md` (W57)
 58. `W058_GROUPED_ROW_NORMALIZATION_AND_HIDDEN_BACKLOG_SPLIT.md` (W58)
+59. `W059_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY.md` (W59)
+60. `W060_COMPLEX_NUMBER_FAMILY.md` (W60)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -106,14 +108,14 @@ Replay rollout sequence after `W016`:
     - `W051` is the canonical in-scope-but-not-complete list and now also the first-pass reconciliation hub for hidden non-deferred `catalog_only` rows,
     - older family packets remain provenance/evidence owners rather than the active central tracker.
 15. Current `W051` totals are:
-    - `192` normalized non-deferred outstanding execution rows (`192` functions, `0` operators),
-    - derived from `185` hidden non-deferred backlog snapshot entries after `W058`,
-    - split into `0` explicit preview-cluster rows plus `192` hidden ordinary execution rows,
+    - `150` normalized non-deferred outstanding execution rows (`150` functions, `0` operators),
+    - derived from `143` hidden non-deferred backlog snapshot entries after `W060`,
+    - split into `0` explicit preview-cluster rows plus `150` hidden ordinary execution rows,
     - and the first-pass `114` documented-complete snapshot-stale rows have now been refreshed into the published export.
 16. Current interface-finalization reading:
     - the prior seam-heavy non-deferred surface is now acknowledged across OxFunc and OxFml and promoted out of `W051`,
     - no explicit residual preview row remains after `W014` current-phase closure,
-    - the hidden ordinary backlog now reads as `185` snapshot entries / `192` normalized execution rows after `W058` and is excluded from the current shared-interface acknowledgement pass unless a concrete mismatch later proves otherwise,
+    - the hidden ordinary backlog now reads as `143` snapshot entries / `150` normalized execution rows after `W060` and is excluded from the current shared-interface acknowledgement pass unless a concrete mismatch later proves otherwise,
     - the current OxFunc-owned consolidated candidate lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 

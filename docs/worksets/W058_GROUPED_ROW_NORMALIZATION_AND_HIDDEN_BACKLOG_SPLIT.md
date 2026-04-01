@@ -84,4 +84,4 @@ The frozen normalized successor-packet split is:
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - semantic closure work for normalized successor packets `W059` through `W068` has not started yet
+   - semantic closure work remains open for normalized successor packets `W061` through `W068`
