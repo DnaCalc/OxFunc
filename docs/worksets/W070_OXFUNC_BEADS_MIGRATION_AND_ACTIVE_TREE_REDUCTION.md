@@ -386,6 +386,26 @@ Exit condition:
 1. active tree is materially smaller,
 2. active docs describe present truth rather than historical path.
 
+Current execution encoding:
+1. active-tree reduction epic:
+   - `oxf-7xi`
+2. archive-wave rollout and execution beads:
+   - `oxf-7xi.1` rollout the first explicit archive/removal wave,
+   - `oxf-7xi.2` execute wave 1 on early historical worksets and redirect stubs,
+   - `oxf-7xi.3` execute wave 2 on closed seam packets, handoffs, and historical helper inventories,
+   - `oxf-7xi.4` execute wave 3 on late closed packets and bridge-contract residue,
+   - `oxf-7xi.5` execute wave 4 on packet-local evidence tails and residual historical families
+3. tracker/index cleanup epic:
+   - `oxf-o62`
+4. tracker/index cleanup beads:
+   - `oxf-o62.1` bridge-posture narrowing after bead bootstrap,
+   - `oxf-o62.2` retire `CURRENT_BLOCKERS.md` as an ordinary execution tracker,
+   - `oxf-o62.3` shrink workset and function-lane indexes to active-surface maps only,
+   - `oxf-o62.4` reduce the feature register to a high-level map after archive-wave execution
+
+Phase note:
+1. live progress for Phase E is now owned by `.beads/`; this packet names the intended wave structure but is no longer the execution tracker.
+
 ### Phase F: Reconcile Current Truth Surfaces
 Deliverables:
 1. ensure current downstream-facing docs still agree after cleanup,
@@ -395,6 +415,16 @@ Deliverables:
 Exit condition:
 1. no current supported claim depends on a removed active-tree file whose truth
    was not re-homed.
+
+Current execution encoding:
+1. truth-surface reconciliation epic:
+   - `oxf-pyf`
+2. reconciliation beads:
+   - `oxf-pyf.1` reconcile surviving doctrine, export, and parked-baseline surfaces after archive reduction,
+   - `oxf-pyf.2` prove that surviving support claims no longer depend on removed active-tree files
+
+Phase note:
+1. live progress for Phase F is now owned by `.beads/`; this packet names the intended proof and reconciliation surfaces but is no longer the execution tracker.
 
 ### Phase G: First Post-Migration Execution
 Deliverables:
@@ -408,6 +438,17 @@ Planned first candidate:
 Exit condition:
 1. one real OxFunc workset has executed under the new bead doctrine,
 2. the repo no longer relies on the old ad hoc model for active work.
+
+Current execution encoding:
+1. post-migration rollout epic:
+   - `oxf-xw6`
+2. rollout and closure beads:
+   - `oxf-xw6.1` roll out `W069` child epics and first execution beads,
+   - `oxf-xw6.2` execute the first real post-migration `W069` bead and record proof-of-use,
+   - `oxf-xw6.3` record `W070` closure evidence and demote this packet to plan-only status
+
+Phase note:
+1. live progress for Phase G is now owned by `.beads/`; this packet names the intended closure path but is no longer the execution tracker.
 
 ## 11. Recommended First Live Sequencing
 Recommended order:
@@ -452,6 +493,12 @@ Every migration round should report against this workset using:
 6. next migration phase.
 
 Do not report migration progress as a generic cleanup note with no phase anchor.
+
+Execution-state note:
+1. live issue state for the remaining `W070` phases now lives in `.beads/`,
+2. the remaining Phase E, Phase F, and Phase G work is fully encoded there through the `oxf-7xi*`, `oxf-o62*`, `oxf-pyf*`, and `oxf-xw6*` issue families,
+3. this packet remains the migration plan and closure-criteria surface,
+4. it should no longer be used as a checklist substitute for the bead graph.
 
 ## 14. Closure Condition
 `W070` is complete only when all hold:
