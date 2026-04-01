@@ -3,7 +3,11 @@
 Canonical repo-level register of feature areas that are in-progress under workset completion doctrine.
 
 Status: active.
-Last updated: 2026-03-26.
+Last updated: 2026-03-31.
+
+Supersession note:
+- For current catalog-truth counts and non-deferred backlog membership, `IP-01` is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
+- For the current shared-interface freeze candidate over the seam-relevant non-deferred surface, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 ## Status Vocabulary
 
@@ -16,11 +20,11 @@ Last updated: 2026-03-26.
 ### IP-01: Function Catalog Expansion
 
 - **Status**: in-progress
-- **Current floor**: 40+ functions at `function-phase-complete` across W001-W015 and follow-on closure packets, with the standalone `SUMIF` gap now closed through `W052` and the low-order `ASINH` / `PV` / `FV` / `PMT` publication residuals now closed through `W053`.
-- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` owns in-scope not-complete rows (`W014`, residual `W023` now narrowed to `IMAGE` first-freeze/promotion work after the new OxFml local lane, `W038`, `W046`, and the current `GROUPBY` / `PIVOTBY` promotion lane after the new OxFunc runtime implementation and bounded OxFml adapter proof).
-- **Current narrowing**: `W014` and `W038` are no longer "missing OxFunc kernel" packets. Their remaining work is now mostly seam-vocabulary, compatibility/serialization, and bind/admission ownership tightening after the OxFml adapter validated the admitted `@` and callable-helper slices end-to-end.
-- **Why still open**: `W016` is closed, `W022` closes the criteria-family residual, `W024` is reconciled, `W025` is resolved as a classification packet, `W026` is resolved as a characterization-and-extraction packet, `W027` is packet-complete for its declared scope, `W028` corrected the local canonical catalog to `511` names, `W029` is complete as a benchmark/classification packet, `W030` and `W031` are now closed as seam-definition packets, `W032` repaired the reopened finance packet, `W033` closes the newly promoted information-predicate and forecast-compatibility packet, `W034` / `W035` now close the locale/profile residual seam packets, `W036` remains the provenance/evidence owner for the extracted `TRANSLATE` seam baseline while `W050` now carries the current-target deferment, `W037` closes the remaining large-root `XIRR` publication lane, `W040` closes the reference-metadata family, and `W045` closes the current non-`@` operator universe.
-- **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`).
+- **Current consumer-facing report**: `W051` now records `534` published rows (`511` functions, `23` operators), with `332` currently usable rows (`332` supported, `0` preview), `17` deferred rows in `W050`, and `185` hidden non-deferred backlog snapshot entries. After `W058`, the same ordinary backlog is now execution-normalized to `192` function rows.
+- **Remaining gaps**: current-version backlog tracking is now centralized in `W050` and `W051`. `W050` owns the `17` deferred-current-version rows (`W041` family plus `TRANSLATE` and `EUROCONVERT`), while `W051` now owns the remaining non-deferred outstanding rows: the centralized ordinary backlog, execution-normalized by `W058` into `192` rows across `W059` through `W068`.
+- **Current narrowing**: `W014`, `W023`, `W038`, `W046`, and `W055` are now complete for declared current-phase scope and no longer contribute rows to `W051`.
+- **Why still open**: the repo now has one main residual semantic backlog class (`W051`), plus broader `W044` field-normalization work. The exact `114` documented-complete snapshot-stale rows have now been refreshed into the published catalog artifact, and `W058` has removed grouped-row ambiguity from the ordinary execution backlog.
+- **Canonical owner**: aggregate current-version tracking now lives in `W050` / `W051`; family provenance and execution ownership remain with the narrower packets (`W014`, `W023`, `W038`, `W041`, `W045`, `W046`, `W025`), and snapshot/export alignment remains coupled to `W044`.
 
 ### IP-02: Locale and Version Sweeps
 
@@ -57,18 +61,20 @@ Last updated: 2026-03-26.
 ### IP-06: OxFml/FEC/F3E Interface Refinement
 
 - **Status**: in-progress
-- **Current floor**: interface constraints documented in `docs/upstream/NOTES_FOR_OXFML.md`; provisional sketches for provenance carriers and boundary contracts.
-- **Remaining gaps**: first shared typed context/query bundle, first shared return-surface split, runtime provider/snapshot consumer model, finalized upstream provenance vocabulary, reference-identity carrier, prepared-call contract, evaluation-mode contract.
-- **Why still open**: the latest OxFml note now accepts the first-freeze working rule and the current `W044` callable-row split for one round, but the next seam locks still need explicit packet owners and shared artifacts. Callable field-lock follow-up remains deferred to `W042`; the next agreed seam-hardening owners are `W047`, `W048`, and `W049`.
-- **Canonical owner**: cross-repo; tracked via upstream observation ledger, with OxFunc-local seam hardening in `W042`, `W047`, `W048`, and `W049`.
-- **Immediate follow-on after seam freeze**: continue current-scope completion through `W014` (`@`), `W046` (`CALL` / `REGISTER.ID` exact packet freeze plus admission/snapshot closure), and the residual `W023` `IMAGE` first-freeze/promotion lane rather than treating it as deferred out-of-scope.
+- **Current floor**: the narrowed seam families now have a consolidated OxFunc candidate, a completed OxFunc-side comparison delta, and an OxFml-acknowledged `HO-FN-004` promotion handoff.
+- **Current freeze candidate**: the current OxFunc-owned consolidated candidate now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+- **Current outbound promotion packet**: `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`.
+- **Remaining gaps**: explicit promotion and propagation of the acknowledged shared freeze text across the local owner packets and any downstream coordinator-facing consumers, plus any later concrete mismatch-driven corrections.
+- **Why still open**: OxFml now reads the handoff as acceptable shared freeze wording for the narrowed seam families, but `W046` and the row-level interesting backlog still retain packet-local promotion and downstream propagation work after the cross-repo freeze acknowledgment.
+- **Canonical owner**: cross-repo; tracked via the upstream observation ledger and `HO-FN-004`, with the current OxFunc-side freeze candidate assembled from `W042`, `W046`, `W047`, `W048`, and `W049`.
+- **Immediate follow-on after freeze promotion**: continue current-scope completion through the hidden ordinary backlog execution program; `W058` has normalized that program to `192` rows across `W059` through `W068`, while `W023`, `W038`, `W046`, and `W055` are now promoted out for declared current-phase scope.
 
 ### IP-07: Implicit Intersection and Scalarization Semantics
 
 - **Status**: in-progress
-- **Current floor**: canonicalization row `FDEF-018`; native Excel replay for seeded `@` lanes; Rust runtime in `op_implicit_intersection.rs`; Lean binding in `ImplicitIntersection.lean`; and OxFml adapter evidence for seeded `@` scalarization lanes `B01` through `B07`.
-- **Remaining gaps**: compatibility-version mapping for `@` vs `SINGLE`/`_xlfn.SINGLE`, broader pre-dynamic-array serialization/roundtrip characterization, and structured-reference/table-context interaction outside the admitted slice.
-- **Why still open**: the remaining work is now compatibility/interop characterization rather than a missing OxFunc-side scalarization kernel.
+- **Current floor**: canonicalization row `FDEF-018`; native Excel replay for seeded `@` lanes plus current-baseline `_xlfn.SINGLE(...)` normalization; Rust runtime in `op_implicit_intersection.rs`; Lean binding in `ImplicitIntersection.lean`; and OxFml adapter/evaluator/semantic-plan evidence for explicit `@` and legacy-single compatibility semantics.
+- **Remaining gaps**: broader pre-dynamic-array serialization/roundtrip sweeps and structured-reference/table-context interaction outside the admitted current-phase slice.
+- **Why still open**: the OxFunc-side current-baseline target is complete; only orthogonal future validation/interop lanes remain.
 - **Canonical owner**: `W014`.
 - **Scope note**: this remains in current scope; it is difficult, not deferred out-of-scope.
 
@@ -91,7 +97,7 @@ Last updated: 2026-03-26.
 ### IP-10: Library-Context Snapshot Export
 
 - **Status**: in-progress
-- **Current floor**: OxFunc now exposes a first explicit snapshot artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` with identity/version semantics, first-pass function and operator rows, metadata profiles, and reading guidance in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`.
-- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, and a pinned runtime consumer/model beyond the CSV interchange artifact.
-- **Why still open**: the first-pass snapshot is now real and usable, and OxFml has accepted the current first-freeze working rule, but the next step is a concrete runtime provider/snapshot consumer model rather than more note-only agreement.
+- **Current floor**: OxFunc now exposes a first explicit snapshot artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` with identity/version semantics, first-pass function and operator rows, metadata profiles, and reading guidance in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`. Downstream metadata and help contract is now documented in `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`, and surface admission and labeling policy for downstream consumers is documented in `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`.
+- **Remaining gaps**: refinement of field coverage, richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, a pinned runtime consumer/model beyond the CSV interchange artifact, and structured help/signature payload population (help prose, argument names/descriptions, and signature display strings are not yet available from OxFunc).
+- **Why still open**: the first-pass snapshot is now real and usable, OxFml has accepted the current first-freeze working rule, and downstream contract/labeling docs are now explicit, but the next step is a concrete runtime provider/snapshot consumer model and structured help payload population rather than more note-only agreement.
 - **Canonical owner**: `W044` for the export artifact, with follow-on consumer/model work in `W049`.

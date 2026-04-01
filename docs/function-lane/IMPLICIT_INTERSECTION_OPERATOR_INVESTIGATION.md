@@ -6,16 +6,19 @@ Workset: `W14`
 
 ## 1. Current Status
 Execution state:
-1. `in_progress`
+1. `complete`
 
 Completeness axes:
-1. `scope_completeness`: `scope_partial`
-2. `target_completeness`: `target_partial`
-3. `integration_completeness`: `partial`
+1. `scope_completeness`: `scope_complete`
+2. `target_completeness`: `target_complete`
+3. `integration_completeness`: `integrated`
 
 Open lanes:
-1. compatibility-version and legacy serialization behavior are only partially characterized.
-2. structured-reference/table-context interaction remains outside the admitted slice.
+1. none in declared current-phase scope.
+
+Orthogonal future validation/interop lanes:
+1. broader pre-dynamic-array compatibility-version sweep.
+2. structured-reference/table-context interaction as a separate syntax-context packet.
 3. the reference-family prework inventory is now explicit:
    - `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return are already closed in OxFunc,
    - `OP_SPILL_REF` is now explicit in Rust/Lean/docs,
@@ -62,6 +65,7 @@ Native replay confirmation on `2026-03-22` from `.tmp/w14-implicit-intersection-
    - `=@A1:A3` stores as `=A1:A3`
    - `=@SEQUENCE(3)` stores as `=SEQUENCE(3)`
 4. `.Formula2` preserves explicit `@` on the same lanes.
+5. `_xlfn.SINGLE(A1:A3)` currently evaluates to `20`, stores as `=A1:A3` through `.Formula`, and normalizes to `=@A1:A3` through `.Formula2`.
 
 ## 3. OxFunc Semantic Fit
 Current substrate vocabulary does not fit `@` cleanly.
@@ -246,12 +250,13 @@ Current recommendation for the implementation spike:
 4. treat `@` as a boundary-pressure operator that connects formula language, FEC preparation, function semantics, and spill publication.
 5. current evidence now supports a sharper reading:
    - the admitted OxFunc-side runtime and formal slice is already in place,
-   - the OxFml adapter has exercised that slice end-to-end on the seeded corpus,
-   - so the live residual is compatibility/serialization characterization rather than a missing OxFunc kernel.
+   - the OxFml adapter and semantic-plan lanes have exercised that slice end-to-end on the seeded corpus,
+   - the current host baseline also pins `_xlfn.SINGLE(...)` as compatibility syntax that normalizes back onto modern `@`,
+   - so the declared OxFunc current-phase target is complete.
 
 ## 10. Next OxFunc Actions
-1. keep compatibility-version and `_xlfn.SINGLE(...)` roundtrip characterization open as the next replay pressure.
-2. treat the current OxFml adapter evidence for `@` as integration-level proof for the admitted modern/current-baseline slice.
-3. drive remaining seam changes only from concrete OxFml/FEC consumer mismatches or compatibility-version evidence.
+1. treat the current OxFml adapter evidence for `@` and `_xlfn.SINGLE(...)` as integration-level proof for the admitted modern/current-baseline slice.
+2. treat broader compatibility-version sweep work as orthogonal follow-on validation rather than current-version backlog.
+3. drive any future seam changes only from concrete OxFml/FEC consumer mismatches or structured-reference/interop evidence.
 
 

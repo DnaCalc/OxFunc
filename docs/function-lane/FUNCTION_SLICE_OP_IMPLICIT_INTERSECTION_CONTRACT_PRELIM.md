@@ -5,7 +5,7 @@
 2. `display_name`: `OP_IMPLICIT_INTERSECTION`
 3. `surface_syntax`: unary operator `@<expr>`
 4. `owner_lane`: `OxFunc`
-5. `status`: `draft`
+5. `status`: `function-phase-complete`
 6. `primary_substrate_candidate`: `ContextualScalarization`
 
 ## 2. Signature and Admission Contract
@@ -38,7 +38,7 @@
 11. `compile_eval_class`: `runtime_context_dependent`
 
 ## 4. Proposed Core Outcome Model
-Current working model, pending further empirical closure:
+Current current-baseline model:
 1. evaluate the operand without erasing whether it is:
    - already scalar,
    - a reference/range result,
@@ -51,7 +51,7 @@ Current working model, pending further empirical closure:
 4. if the operand yields an array payload rather than a reference identity, `@` scalarizes to the top-left item.
 5. explicit `@` is a modern surface marker for implicit-intersection behavior that older Excel performed silently.
 6. removing `@` from a spill-capable expression changes the publication surface from scalarization to spill, subject to host spill rules.
-7. `SINGLE` / `_xlfn.SINGLE` aliasing is compatibility metadata only; it does not create a second semantic operator.
+7. `SINGLE` / `_xlfn.SINGLE` aliasing is compatibility metadata only; it does not create a second semantic operator, and the current host baseline normalizes `_xlfn.SINGLE(...)` back onto explicit `@` in `.Formula2`.
 
 ## 5. Pre-call Preparation Requirements
 OxFunc cannot implement this operator correctly from plain values alone.
@@ -217,9 +217,9 @@ Goals:
 
 ## 11. Version Scope (Required Axes)
 1. Excel application version/channel scope:
-   - current local reference baseline starts from the existing OxFml/Foundation dynamic-array evidence pack plus local Excel `16.0 (build 19725)` observations.
+   - current local reference baseline starts from the existing OxFml/Foundation dynamic-array evidence pack plus local Excel `16.0.19822.20114` observations.
 2. Workbook Compatibility Version scope:
-   - explicitly version-scoped and still open; this is a primary W14 investigation lane rather than a closed assumption.
+   - `default` current reference baseline.
 
 ## 12. Evidence Posture
 1. `spec_anchor`:
@@ -237,12 +237,17 @@ Goals:
 4. supporting program notes:
    - `docs/function-lane/IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md`
    - `docs/function-lane/W14_IMPLICIT_INTERSECTION_SCENARIO_MANIFEST_SEED.csv`
+   - `docs/function-lane/W14_EXECUTION_RECORD.md`
    - `docs/upstream/NOTES_FOR_OXFML.md`
    - `docs/handoffs/HANDOFF_W014_IMPLICIT_INTERSECTION_TO_OXFML.md`
 
-## 13. Explicit Open Lanes
-1. exact failure/result policy when caller row/column does not align with a reference/range input
-2. precise distinction between reference-result scalarization and already-materialized array top-left selection in mixed spill cases
-3. compatibility-version mapping for when explicit `@` is surface-visible, normalized away, or serialized as `_xlfn.SINGLE(...)`
-4. structured-reference interaction beyond the already-known `[@Col]` lexical overlap
-5. exact OxFml -> OxFunc lowering shape if `@` is exposed as a bound function-call evaluation mode for some operand classes
+Current status rationale:
+1. the admitted current-baseline scalarization kernel is implemented in Rust and aligned in Lean,
+2. native Excel replay now pins same-row, same-column, array top-left, spill-source, reference-returning, two-dimensional `#VALUE!`, explicit-`@` storage, and `_xlfn.SINGLE(...)` normalization lanes,
+3. OxFml preserves both explicit `@` and legacy-single compatibility semantics without requiring a second OxFunc runtime path,
+4. no known function-semantic gap remains in declared current-phase scope.
+
+## 13. Orthogonal Future Validation Lanes
+1. broader pre-dynamic-array compatibility-version mapping beyond the current reference baseline
+2. structured-reference interaction beyond the already-known `[@Col]` lexical overlap
+3. exact OxFml -> OxFunc lowering shape if `@` is exposed as a bound function-call evaluation mode for some operand classes as an optimization rather than the current semantic model

@@ -10,6 +10,15 @@ $snapshotGeneration = Get-Date -Format "yyyy-MM-dd"
 $sourceCommitShort = (git rev-parse --short HEAD).Trim()
 $sourceCommitFull = (git rev-parse HEAD).Trim()
 $sourceTreeState = if ([string]::IsNullOrWhiteSpace((git status --porcelain))) { "clean" } else { "dirty" }
+$documentedCompleteSnapshotRefreshIds = @{}
+$staleInventoryPath = "docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv"
+if (Test-Path $staleInventoryPath) {
+    Import-Csv $staleInventoryPath | ForEach-Object {
+        if (-not [string]::IsNullOrWhiteSpace($_.surface_stable_id)) {
+            $documentedCompleteSnapshotRefreshIds[$_.surface_stable_id] = $_
+        }
+    }
+}
 $xlcallCatalogPath = "docs/function-lane/XLCALL_CODE_CATALOG.csv"
 $xlcallByStableId = @{}
 if (Test-Path $xlcallCatalogPath) {
@@ -601,6 +610,15 @@ $rows = @($functionRows) + @($operatorRows)
 if (-not ($rows | Where-Object { $_.surface_stable_id -eq "FUNC.OP_IMPLICIT_INTERSECTION" })) {
     $rows += $implicitIntersectionRow
 }
+
+$rows |
+    Where-Object {
+        $documentedCompleteSnapshotRefreshIds.ContainsKey($_.surface_stable_id) -and
+        $_.metadata_status -eq "catalog_only"
+    } |
+    ForEach-Object {
+        $_.metadata_status = "function_meta_curated"
+    }
 
 $columnOrder = @(
     "snapshot_id",

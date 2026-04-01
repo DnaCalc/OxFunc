@@ -1,5 +1,10 @@
 # OxFunc Library Context Snapshot Export V1
 
+Supersession note:
+1. For current admission counts and outstanding-row truth, this readme is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
+2. This file remains the field-level description of the `V1` snapshot artifact, but it does not override the current `W051` reconciliation of supported, preview, deferred, hidden-backlog, and snapshot-stale rows.
+3. For the current OxFunc-owned shared-interface freeze candidate over the seam-relevant non-deferred surface, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+
 ## 1. Purpose
 This is the first explicit OxFunc-local export artifact intended to serve as the external library-context snapshot for OxFml parse, bind, semantic planning, and replay correlation.
 
@@ -126,6 +131,7 @@ Current fields:
 29. `metadata_status`
    - current extraction status for the detailed profile columns:
      - `function_meta_extracted`
+     - `function_meta_curated`
      - `catalog_only`
      - `doc_modeled`
 30. `special_interface_kind`
@@ -152,7 +158,7 @@ Current intended use:
    - use `surface_stable_id`
    - use `entry_kind`
    - use `gating_profile_ref`
-   - use the detailed profile columns when `metadata_status = function_meta_extracted` or `doc_modeled`
+   - use the detailed profile columns when `metadata_status = function_meta_extracted`, `function_meta_curated`, or `doc_modeled`
    - when `special_interface_kind <> ordinary`, also use:
      - `admission_interface_kind`
      - `preparation_owner`
@@ -185,6 +191,10 @@ Current intended use:
 6. This export does not itself inline localized names; it points to the current multilingual seed table.
 7. This export does not carry runtime capability, provider availability, caller-context, or host-query payload facts.
 8. The exact final shared field set and field names are still not locked cross-repo.
+9. The current `V1` export now carries the exact `W44` stale-row refresh:
+   - `185` non-deferred backlog rows remain centralized in `W051`,
+   - the exact `114` documented-complete rows from the first-pass stale inventory have been refreshed out of false `catalog_only` state.
+10. `W058` normalized the hidden ordinary backlog for execution purposes, but the published `V1` snapshot artifact still reflects the original `185` hidden snapshot entries rather than the machine-clean `192`-row execution split.
 
 Current built-in C API interop examples:
 1. `FUNC.SUM`
@@ -234,15 +244,60 @@ Current authoritative source surfaces:
 4. `docs/function-lane/OXFML_OXFUNC_MINIMUM_STABILIZATION_RESPONSE_V2.md`
 5. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md`
 
-## 8. Next Expected Refinements
+## 8. Downstream Consumer Guidance (DNA OneCalc And Other Hosts)
+
+### 8.1 Reading This Export As A Downstream Consumer
+Downstream consumers such as `DNA OneCalc` should read this export together with two companion documents:
+1. `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` - field stability classification, help/signature payload shape, and runtime direction,
+2. `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` - admission categories, labeling rules, and honest seam-heavy row status.
+
+### 8.2 Mandatory Overlay Reading
+This export must be read together with `W050` and `W051`, not by itself:
+1. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md` - `17` explicitly deferred functions,
+2. `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` - current authoritative non-deferred outstanding-row report,
+3. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` - `185` hidden non-deferred backlog snapshot entries now centralized by `W051`,
+4. `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv` - `192` machine-clean execution rows for the same ordinary backlog after `W058`.
+
+A row present in the snapshot export does not by itself mean the function is fully supported. The downstream consumer must read the snapshot together with `W050` and `W051` to determine the correct admission category. Current `W051` consumer-facing totals are:
+1. `332` supported rows,
+2. `0` preview rows,
+3. `17` deferred rows,
+4. `185` hidden non-deferred backlog snapshot entries,
+5. `192` normalized hidden ordinary execution rows after `W058`,
+6. the exact first-pass stale-row set still lives in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` as refresh provenance.
+
+Current shared-interface reading:
+1. no explicit `W051` preview row remains after `W014` current-phase closure,
+2. the `185` hidden non-deferred snapshot entries are ordinary backlog rather than the current shared-interface acknowledgement scope,
+3. `W058` now provides the machine-clean `192`-row execution split for the same backlog,
+4. the current OxFunc-owned shared-interface candidate is documented separately in `OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+
+### 8.3 Stability Tiers
+The downstream metadata contract classifies every export field into one of three stability tiers:
+1. **Stable** - safe to treat as durable identity and structural facts,
+2. **Usable-but-provisional** - safe to consume for display and planning, but vocabulary/coverage may evolve,
+3. **Current-tree-hint-only** - informational pointers, not for hard coupling.
+
+See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 3 for the full classification table.
+
+### 8.4 Help And Signature Payloads
+No OxFunc-backed help or signature payload retrieval is frozen yet. The downstream metadata contract defines the preferred first OneCalc-facing payload shapes for function help, argument help, and signature help metadata. See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.
+
+### 8.5 This Export Is A Stabilization Artifact
+This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`.
+
+## 9. Next Expected Refinements
 1. widen operator coverage beyond the current exported operator set plus `OP_IMPLICIT_INTERSECTION`,
 2. normalize direct detailed-profile fields for seam-heavy rows like `LET` and `LAMBDA`,
 3. improve per-entry semantic/admission profile dereferenceability,
 4. refine gating-profile projection beyond the current packet-wide default plus version-marker split,
-5. add explicit export-reading examples if OxFml needs them,
-6. adjust the first-pass seam-facing fields if OxFml wants a different split or naming.
+5. keep the exact `W44` stale-row refresh generation-based so later documented-complete rows do not drift back to false `catalog_only` state,
+6. normalize the grouped-row names at the snapshot/catalog-source layer if a future export-generation pass wants the published artifact itself to stop using grouped entries,
+7. add explicit export-reading examples if OxFml needs them,
+8. adjust the first-pass seam-facing fields if OxFml wants a different split or naming,
+9. populate structured help/signature payload fields when available (see `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4).
 
-## 9. Preferred Long-Term Runtime Direction
+## 10. Preferred Long-Term Runtime Direction
 Current OxFunc reading:
 1. this CSV export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting,
 2. but the preferred long-term implementation seam should be a runtime-ingested:

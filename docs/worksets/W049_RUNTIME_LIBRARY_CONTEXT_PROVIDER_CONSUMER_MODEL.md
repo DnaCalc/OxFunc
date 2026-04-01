@@ -1,7 +1,7 @@
 # WORKSET - Runtime Library Context Provider Consumer Model (W49)
 
 ## 1. Purpose
-Turn the agreed long-term `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction into one concrete first-pass runtime consumer/modeling artifact rather than leaving it as note-only convergence.
+Turn the agreed long-term `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction into one concrete current-phase shared runtime consumer/modeling artifact rather than leaving it as note-only convergence.
 
 ## 2. Provenance
 Opened after:
@@ -38,29 +38,25 @@ Clarification:
 1. one runtime provider/snapshot model note,
 2. one mapping from CSV export fields to runtime snapshot fields,
 3. one consumer example or pseudo-consumer walkthrough,
-4. one narrowed outbound note section for the final OxFunc response in this exchange,
-5. one explicit statement on whether the runtime model should mirror the CSV or use a cleaner runtime-only shape.
+4. one narrowed outbound note section for the consolidated shared freeze candidate,
+5. one explicit statement on whether the runtime model should mirror the CSV or use a cleaner runtime-only shape,
+6. one explicit statement on the role of `LibraryContextSnapshotRef` in the shared runtime consumer shape.
 
-## 6. Initial Status
-1. execution_state: `planned`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - no runtime provider/snapshot model artifact exists yet
-   - no field-by-field CSV-to-runtime mapping exists yet
-   - no consumer example is pinned yet
+## 6. Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+
+Current status reading:
+1. OxFml's mirrored packet now accepts the runtime model including `LibraryContextSnapshotRef` as shared freeze wording for the narrowed seam families,
+2. future runtime widening remains mismatch-driven rather than an open current-phase lane.
 
 ## 7. Current Freeze Candidate Reading
 After the final OxFml update in this exchange, the current first freeze candidate for `W049` is:
 1. a cleaner runtime-only `LibraryContextProvider` / immutable `LibraryContextSnapshot` model,
-2. a separate mapping layer from the CSV/export artifact into that runtime shape,
-3. no requirement that the runtime object model mirror the CSV column-for-column unless a concrete implementation mismatch proves that necessary.
-
-## 8. Current Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - current runtime model is pinned locally but not yet acknowledged as the shared first bounded consumer model
+2. `LibraryContextSnapshotRef`,
+3. a separate mapping layer from the CSV/export artifact into that runtime shape,
+4. no requirement that the runtime object model mirror the CSV column-for-column unless a concrete implementation mismatch proves that necessary,
+5. new snapshot generations should occur when built-in or bind-visible registered-external catalog truth changes,
+6. descriptor mutation used only through worksheet `CALL` / `REGISTER.ID` should default to targeted reevaluation rather than broad rebinding.

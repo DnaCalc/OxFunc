@@ -3,7 +3,7 @@
 ## 1. Packet
 1. workset: `W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM`
 2. functions: `CALL`, `REGISTER.ID`
-3. execution_state: `in_progress`
+3. execution_state: `complete`
 
 ## 2. Objective
 Move `W046` from catalog-only seam notes to a real OxFunc-side runtime packet:
@@ -76,11 +76,11 @@ Pinned by `.tmp/w46-call-register-id-results.csv`:
 8. `lake build`
 
 ## 7. Status
-1. scope_completeness: `scope_partial`
-2. target_completeness: `target_partial`
-3. integration_completeness: `partial`
-4. open_lanes:
-   - no host-backed `RegisteredExternalProvider` exists in-repo yet
-   - broader argument-bearing omitted-`type_text` matrix is not pinned
-   - worksheet-vs-macro-sheet admission/version matrix is not fully pinned
-   - final registered-external runtime-snapshot row shape is not locked yet
+1. scope_completeness: `scope_complete`
+2. target_completeness: `target_complete`
+3. integration_completeness: `integrated`
+
+Current phase reading:
+1. the typed registered-external seam is now exercised in OxFunc core and in OxFml-side integration tests in-tree.
+2. a host-backed production provider implementation is above the declared OxFunc packet scope; a proving-host provider seam exists and is sufficient for current-phase closure.
+3. broader omitted-`type_text` and worksheet-vs-macro-sheet widening remain follow-on evidence, not blockers.

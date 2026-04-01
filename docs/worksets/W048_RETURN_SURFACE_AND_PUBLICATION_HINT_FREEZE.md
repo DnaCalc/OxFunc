@@ -4,7 +4,8 @@
 Lock the first shared return-surface split for the already-covered OxFunc scope:
 1. ordinary value,
 2. value plus presentation hint,
-3. typed host/provider outcome projection.
+3. rich value,
+4. typed host/provider outcome projection.
 
 ## 2. Provenance
 Opened after:
@@ -26,8 +27,9 @@ Relevant context:
 This packet owns:
 1. the shared interpretation of ordinary `EvalValue`,
 2. the shared interpretation of `ExtendedValue::ValueWithPresentation`,
-3. the current typed host/provider outcome projection family for the already-covered scope,
-4. the split between value semantics and host-side publication/application of presentation hints.
+3. the shared interpretation of `ExtendedValue::RichValue`,
+4. the current typed host/provider outcome projection family for the already-covered scope,
+5. the split between value semantics and host-side publication/application of presentation hints.
 
 ## 4. Out Of Scope
 1. final callable publication policy,
@@ -47,16 +49,19 @@ Clarification:
 5. one explicit statement of the accepted first freeze candidate for the returned split.
 
 ## 6. Initial Status
-1. execution_state: `in_progress`
+1. execution_state: `complete`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_complete`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - current frozen return split is pinned locally but not yet acknowledged as the shared first bounded consumer model
+4. integration_completeness: `integrated`
+
+Current status reading:
+1. OxFml's mirrored packet now accepts the current four-way return split as shared freeze wording for the narrowed seam families,
+2. future widening remains mismatch-driven rather than an open current-phase lane.
 
 ## 7. Current Freeze Candidate Reading
 After the final OxFml update in this exchange, the current first freeze candidate for `W048` is:
 1. ordinary value,
 2. `ValueWithPresentation`,
-3. typed host/provider outcome projection,
-4. no further factorization unless concrete implementation evidence exposes a mismatch.
+3. `RichValue`,
+4. typed host/provider outcome projection,
+5. no further factorization unless concrete implementation evidence exposes a mismatch.

@@ -5,12 +5,13 @@ This folder is the mutable working set for the OxFunc scope (`F3E` value types +
 Current packet highlights:
 1. `W39` now carries the dynamic-array shaping and reshaping family as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`, `W39_SCENARIO_MANIFEST_SEED.csv`, and `W39_EXECUTION_RECORD.md`.
 2. `W40` now carries the reference metadata and formula visibility packet as a real runtime/formal/native-evidence packet through `FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md`, `W40_SCENARIO_MANIFEST_SEED.csv`, and `W40_EXECUTION_RECORD.md`.
-3. `W23` now has a real database-family packet slice plus host/provider classification evidence through `FUNCTION_SLICE_DATABASE_FAMILY_CONTRACT_PRELIM.md`, `W23_DATABASE_SCENARIO_MANIFEST_SEED.csv`, and `W23_EXECUTION_RECORD.md`.
+3. `W23` now has a real database-family packet slice plus host/provider classification evidence through `FUNCTION_SLICE_DATABASE_FAMILY_CONTRACT_PRELIM.md`, `W23_DATABASE_SCENARIO_MANIFEST_SEED.csv`, and `W23_EXECUTION_RECORD.md`, and is complete for declared current-phase scope including `IMAGE`.
 4. `W41` now has a real local `ENCODEURL` / `FILTERXML` slice through `FUNCTION_SLICE_WEB_TEXT_XML_LOCAL_FUNCTIONS_CONTRACT_PRELIM.md`, `W41_WEB_TEXT_XML_SCENARIO_MANIFEST_SEED.csv`, and `W41_EXECUTION_RECORD.md`.
-5. `W046` now owns the worksheet `CALL` / `REGISTER.ID` UDF-registration seam as a distinct future packet.
+5. `W046` now carries the worksheet `CALL` / `REGISTER.ID` UDF-registration seam and is complete for declared current-phase scope.
 6. The next agreed seam-hardening packets are now `W047`, `W048`, and `W049`: typed context/query bundle freeze, return-surface/publication-hint freeze, and runtime provider/snapshot consumer modeling.
 7. `W052` now closes the standalone `SUMIF` gap on the shared criteria-family substrate through `W52_SUMIF_SCENARIO_MANIFEST_SEED.csv` and `W52_EXECUTION_RECORD.md`.
 8. `W053` now closes the low-order publication drift packet for `ASINH`, `PV`, `FV`, and `PMT`; the decisive repair was shared integer-exponent `POWER` publication alignment rather than a finance-only rewrite.
+9. `W056` now adds native Excel replay and executable Lean grouped-aggregation evidence for `GROUPBY` / `PIVOTBY`, so the earlier `W055` promotion now rests on native replay, OxFunc runtime tests, OxFml adapter coverage, and executable Lean alignment together.
 
 Primary files:
 1. `EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`
@@ -327,6 +328,10 @@ Primary files:
 309. `W52_SUMIF_SCENARIO_MANIFEST_SEED.csv`
 310. `W52_SUMIF_RUNTIME_REQUIREMENTS.md`
 311. `W52_EXECUTION_RECORD.md`
+312. `W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`
+313. `W58_GROUPED_ROW_NORMALIZATION_MAP.csv`
+314. `W58_SUCCESSOR_PACKET_SPLIT.csv`
+315. `W58_EXECUTION_RECORD.md`
 
 Consumed Foundation references (read-only for routine OxFunc iteration):
 1. `../../../Foundation/reference/conformance/excel-worksheet-engine/functions/XLL_SDK_REGISTRATION_AND_TYPES_REFERENCE.md`

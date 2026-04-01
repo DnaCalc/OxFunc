@@ -30,6 +30,7 @@ What it does not yet have is one explicit downstream artifact that honestly serv
 3. state which current OxFunc artifacts remain authoritative sources for those exported fields,
 4. provide export-reading guidance for OxFml,
 5. keep runtime capability/session/provider truth out of the snapshot.
+6. own the exact refresh inventory for documented-complete rows that the current export still mislabels as `catalog_only`.
 
 ## 4. Out Of Scope
 1. locking the final cross-repo snapshot ABI,
@@ -72,9 +73,21 @@ This packet can only be reported `scope_complete` when:
    - seam-heavy rows like `LET` and `LAMBDA` still rely partly on linked contract artifacts rather than fully normalized direct profile fields
    - OxFml has now accepted the current first-pass callable-row split for one bounded round, but no runtime consumer/model example is pinned yet
    - exact per-entry semantic/gating profile dereferenceability is not yet frozen
-   - the preferred runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction is now explicit, but the concrete shared runtime shape is not yet pinned and now moves to `W049`
+   - the preferred runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` direction is now explicit and the concrete shared runtime shape now lives in successor `W049`
+   - the exact documented-complete snapshot-stale refresh set is now pinned in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
+   - that exact refresh set is `114` unique rows, with source split:
+     - `W024`: `62`
+     - `W022`: `7`
+     - `W027`: `13`
+     - `W033`: `11`
+     - `W037`: `1`
+     - `W045`: `19`
+     - legacy `RANDARRAY` cleanup: `1`
+   - that refresh is now generator-driven in `tools/w44-probe/generate-w44-library-context-snapshot.ps1` and applied in the current export
+   - the next honest W44 lane is broader metadata-field refinement and consumer-shape normalization rather than another prose-only stale/backlog recount
 
 ## 8. Current Outputs
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 3. `docs/function-lane/W44_EXECUTION_RECORD.md`
+4. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`

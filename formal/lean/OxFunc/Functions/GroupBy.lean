@@ -1,4 +1,5 @@
 import OxFunc.FunctionCore
+import OxFunc.Functions.GroupedAggregation
 
 namespace OxFunc.Functions
 
@@ -32,5 +33,29 @@ theorem groupByMeta_arity :
 theorem groupByMeta_deterministic :
     groupByMeta.determinism = DeterminismClass.deterministic := by
   simp [groupByMeta]
+
+theorem groupBy_default_example :
+    groupByDefaultExample =
+      [ [GroupCell.text "2024", GroupCell.number 30]
+      , [GroupCell.text "2025", GroupCell.number 70]
+      , [GroupCell.text "Total", GroupCell.number 100] ] := by
+  rfl
+
+theorem groupBy_filter_sort_example :
+    groupByFilterSortExample =
+      [ [GroupCell.text "A", GroupCell.number 50]
+      , [GroupCell.text "Total", GroupCell.number 50] ] := by
+  rfl
+
+theorem groupBy_hierarchical_subtotal_example :
+    groupByHierarchicalSubtotalExample =
+      [ [GroupCell.text "East", GroupCell.text "A", GroupCell.number 40]
+      , [GroupCell.text "East", GroupCell.text "B", GroupCell.number 20]
+      , [GroupCell.text "East", GroupCell.blank, GroupCell.number 60]
+      , [GroupCell.text "West", GroupCell.text "A", GroupCell.number 40]
+      , [GroupCell.text "West", GroupCell.text "B", GroupCell.number 50]
+      , [GroupCell.text "West", GroupCell.blank, GroupCell.number 90]
+      , [GroupCell.text "Grand Total", GroupCell.blank, GroupCell.number 150] ] := by
+  rfl
 
 end OxFunc.Functions

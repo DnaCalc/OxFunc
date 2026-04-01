@@ -11,6 +11,15 @@ Capture the current OxFunc reading of what OxFml should preserve or prove next a
 This is a current-state note, not a historical ledger.
 It keeps only the distinctions, ownership splits, and bounded asks that still matter for current OxFunc closure work.
 
+Canonical current-phase shared-model note:
+1. `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
+
+Current outbound promotion packet:
+1. `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`
+
+Current reply-processing read:
+1. OxFml's mirrored packet now treats `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.
+
 ## 2. Current Summary
 
 Current OxFunc reading:
@@ -33,15 +42,15 @@ OxFunc currently depends on these seam facts remaining true:
 ## 4. `@` / `OP_IMPLICIT_INTERSECTION`
 
 Current OxFunc reading:
-1. `@` is no longer blocked by a missing OxFunc kernel.
-2. the admitted current-baseline slice is already covered by:
+1. `@` / `OP_IMPLICIT_INTERSECTION` is now complete for declared current-phase OxFunc scope.
+2. the admitted current-baseline slice is covered by:
    - Rust runtime
    - Lean binding
    - native replay
    - OxFml adapter cases `B01` through `B07`
-3. the remaining live work is:
-   - compatibility-version and `_xlfn.SINGLE(...)` roundtrip characterization
-   - structured-reference/table-context interaction outside the admitted slice
+   - OxFml semantic-plan and evaluator legacy-single compatibility tests
+   - current-baseline `_xlfn.SINGLE(...)` host normalization back onto explicit `@`
+3. broader pre-dynamic-array roundtrip sweeps and structured-reference/table-context interaction are orthogonal future validation/interop lanes rather than current-version blockers on the OxFunc side.
 
 Current OxFml implication:
 1. preserve explicit `@` provenance and caller-context scalarization semantics
@@ -53,8 +62,19 @@ Current OxFunc reading:
 1. `LET`, `LAMBDA`, `ISOMITTED`, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, and `MAKEARRAY` are no longer blocked by missing OxFunc kernels on the admitted slice.
 2. the current adapter corpus already proves admitted direct/helper/higher-order lanes through the real OxFml parser/binder/preparation path.
 3. the remaining live seam pressure is narrowed to:
-   - final callable-carrier tightening
+   - promotion of the current minimum callable carrier into shared freeze text
    - any wider helper-bind rejection matrix beyond the currently exercised duplicate/malformed bounded cases
+
+Current callable freeze candidate:
+1. minimum shared callable carrier:
+   - opaque callable identity/token
+   - `origin_kind`
+   - `arity_shape`
+   - `capture_mode`
+   - `invocation_contract_ref`
+2. typed invocation over the opaque callable token remains the preferred boundary,
+3. parameter-name lists, exact capture-name lists, and helper/body detail stay out of the shared minimum carrier,
+4. if advanced replay/explain/serialization scenarios need richer callable detail, OxFml and OxFunc can cooperatively preserve that richer detail without widening the shared minimum carrier for the current phase.
 
 Current OxFml implication:
 1. keep helper formation and validation on the bind/admission side where Excel already rejects before evaluation
@@ -166,7 +186,7 @@ OxFunc's current bounded ask to OxFml is:
 ## 10. What OxFunc Is Not Asking For
 
 OxFunc is not currently asking OxFml for:
-1. a final callable ABI
+1. a broad callable ABI beyond the current minimum shared callable carrier
 2. a generic provenance redesign
 3. a generic callable-note round
 4. a re-open of the first bounded `GROUPBY` / `PIVOTBY` adapter expansion that OxFml has now already landed
@@ -179,6 +199,8 @@ Current OxFunc reading of the best next sequence is:
 2. treat the landed `W053` grouped-aggregation and helper-bind rejection corpus as the current callable-heavy regression floor
 3. keep `HYPERLINK` / `IMAGE` publication-class distinctions explicit
 4. continue `CALL` / `REGISTER.ID` as a typed registered-external seam packet rather than ordinary function work
+5. treat `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md` as acknowledged from the OxFml side
+6. use the mirrored packet plus `HO-FN-004` as the shared freeze floor for local owner-packet promotion and propagation
 
 ## 12. Current Summary To OxFml
 
@@ -187,6 +209,9 @@ Current OxFunc position to OxFml:
 2. callable-backed grouped aggregation plus bounded helper bind-time rejection coverage is now real and verified.
 3. `HYPERLINK` should preserve publication intent, and `IMAGE` should preserve the locked `_webimage` rich-value carrier while keeping published fallback separate.
 4. the latest OxFml note sharpens `IMAGE` by confirming a real local `IMAGE(...)` evaluator/host/adapter lane, `TypedContextQueryFamily::Image`, and preserved `_webimage` rich-value carriage.
-5. `CALL` / `REGISTER.ID` now have a real typed `W052` interface floor, but exact field freeze, admission matrix, and snapshot/mutation consequences are still open.
+5. `CALL` / `REGISTER.ID` now have a real typed `W052` interface floor and OxFml now treats the narrowed packet freeze as acceptable current shared freeze wording.
 6. OxFml's latest closure packet narrows `W052` to four shared decisions only: exact field naming, minimum `RegisteredExternalDescriptor` field set, mutation/controller family ownership, and snapshot-generation consequences.
-7. the latest OxFml note now records those four `W052` decisions as converged at OxFunc/OxFml note level; the remaining work is OxCalc-side acknowledgment and promotion into shared seam-freeze text.
+7. the latest OxFml note now records those four `W052` decisions as acknowledged on the OxFml side; the remaining work is coordinator-facing propagation and canonical promotion rather than packet-shape redesign.
+8. the current OxFunc-owned consolidated freeze candidate for the seam-relevant non-deferred surface now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+9. the active OxFunc outbound update note for the next round now lives in `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`.
+10. OxFml's mirrored packet now reads `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.

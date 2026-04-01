@@ -42,7 +42,7 @@ In scope for W14:
 4. compatibility/serialization seams:
    - legacy implicit-intersection preservation,
    - explicit `@` in modern formulas,
-   - `_xlfn.SINGLE(...)` compatibility representation in pre-dynamic-array contexts.
+   - `_xlfn.SINGLE(...)` compatibility representation on the current reference baseline.
 5. OxFml/FEC prepared-call requirements:
    - provenance retention,
    - caller anchor/context,
@@ -54,8 +54,9 @@ In scope for W14:
 Out of current W14 closure target:
 1. alternate locale sweeps.
 2. cross-channel/build-wide replay beyond the current reference baseline.
-3. full structured-reference/table `[@Column]` closure as a separate syntax-context packet.
-4. final OxFml acknowledgment or integration of seam changes.
+3. full pre-dynamic-array compatibility-version sweep as an orthogonal version/interop phase rather than a blocker to current-baseline OxFunc support.
+4. full structured-reference/table `[@Column]` closure as a separate syntax-context packet.
+5. final OxFml acknowledgment or integration of seam changes.
 
 ## 4. Deliverables
 1. W14 workset spec.
@@ -94,23 +95,21 @@ Pass when:
 
 ## 6. Current Status
 Execution state:
-1. `in_progress`
+1. `complete`
 
 Claim confidence:
-1. `draft`
+1. `provisional`
 
 Assurance maturity:
 1. `exercised`
 
 Completeness axes:
-1. `scope_completeness`: `scope_partial`
-2. `target_completeness`: `target_partial`
-3. `integration_completeness`: `partial`
+1. `scope_completeness`: `scope_complete`
+2. `target_completeness`: `target_complete`
+3. `integration_completeness`: `integrated`
 
 Open lanes:
-1. structured-reference/table-context `@` remains outside the current W14 closure target.
-2. compatibility-version and pre-dynamic-array serialization behavior still need a dedicated replay matrix.
-3. current native baseline now pins the previously open 2-D seed lane as `#VALUE!`, and the OxFml adapter now exercises the admitted `@` scalarization path end-to-end, but broader compatibility/version sweeps remain open.
+1. none in declared W14 current-phase scope.
 
 Reference-related prework inventory:
 1. `INDEX`, `INDIRECT`, `OFFSET`, and `XLOOKUP` reference-return lanes are already `function-phase-complete` for the current reference baseline from W10/W12.
@@ -131,14 +130,13 @@ Current OxFunc-side completion reading:
    - Rust implementation exists,
    - Lean binding exists,
    - native Excel replay exists,
-   - and the OxFml adapter now exercises the seeded `@` lanes end-to-end.
-2. the remaining open work is therefore no longer "implement `@` in OxFunc core".
-3. the remaining work is:
-   - compatibility/serialization characterization,
-   - structured-reference context outside the admitted slice,
-   - and future seam vocabulary tightening only if a concrete OxFml/FEC mismatch appears.
+   - the current Excel host baseline now pins `_xlfn.SINGLE(...)` normalization onto the same modern `@` surface,
+   - and the OxFml adapter and semantic-plan lanes exercise both explicit `@` and legacy-single compatibility semantics end-to-end.
+2. `W14` is therefore complete for declared current-phase OxFunc scope.
+3. broader pre-dynamic-array compatibility-version sweeps and structured-reference context remain future validation/interop lanes rather than blockers to the current-baseline OxFunc support claim.
 
-## 7. Immediate Questions
+## 7. Future Questions (Non-Blocking)
+These no longer block declared current-phase support for `W014`, but they remain useful follow-on questions for future validation or architecture refinement:
 1. Does `@` need a new primary semantic substrate in OxFunc rather than being forced into an existing reference family?
 2. Should scalarization happen inside OxFunc as an operator-function, or earlier in OxFml/FEC with explicit trace/provenance?
 3. What is the minimum prepared-argument vocabulary that preserves the distinction between:
@@ -150,5 +148,5 @@ Current OxFunc-side completion reading:
    - current answer: `OP_SPILL_REF` must exist somewhere in the overall architecture, but current seam doctrine leaves it primarily on the OxFml side unless future evidence proves OxFunc needs spill-sensitive provenance.
 6. Does legacy Control+Shift+Enter (`{=...}`) array-formula context require any OxFunc-visible semantic mode, or is it entirely an OxFml/admission/publication concern?
    - current note: keep this explicitly open; it may interact with `@` migration/scalarization behavior and with whether some array-era formulas need a distinct prepared-call or publication mode even when the function kernel is unchanged.
-6. Can the OxFml -> OxFunc seam expose `@` as a function-evaluation mode rather than requiring OxFunc to inspect general parse structure?
+7. Can the OxFml -> OxFunc seam expose `@` as a function-evaluation mode rather than requiring OxFunc to inspect general parse structure?
    - current answer: possibly for bound function-call operands, but not as the only model for all `@` operands.

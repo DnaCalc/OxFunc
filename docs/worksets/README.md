@@ -2,6 +2,11 @@
 
 Worksets are sequence-based execution packets for cross-cutting OxFunc slices.
 
+Supersession note:
+1. Any older reading that `W051` contains only the explicit `15`-row residual preview cluster is superseded by `W051` itself.
+2. For current non-deferred outstanding-row truth, use `W051` rather than older family packets or snapshot-only readings.
+3. For the current OxFunc-owned shared-interface freeze candidate, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+
 Primary kickoff orchestration:
 1. `W000_KICKOFF_PROGRAM_W001_W006.md`
 
@@ -60,6 +65,10 @@ Kickoff worksets:
 52. `W052_SUMIF_CRITERIA_FAMILY_COMPLETION.md` (W52)
 53. `W053_LOW_ORDER_PUBLICATION_DRIFT_ASINH_PMT.md` (W53)
 54. `W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` (W54)
+55. `W055_GROUPED_AGGREGATION_CURRENT_BASELINE_PROMOTION.md` (W55)
+56. `W056_GROUPED_AGGREGATION_NATIVE_AND_FORMAL_BASELINE.md` (W56)
+57. `W057_HIDDEN_ORDINARY_BACKLOG_SYSTEMATIC_COMPLETION_PLAN.md` (W57)
+58. `W058_GROUPED_ROW_NORMALIZATION_AND_HIDDEN_BACKLOG_SPLIT.md` (W58)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
@@ -91,10 +100,20 @@ Replay rollout sequence after `W016`:
 10. `W044` is now in progress with a first real downstream export artifact in `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`; further refinement remains open.
 11. `W045` is now complete for its declared scope: the full current non-`@` evaluable operator universe is covered across contract, runtime, Lean/formal, empirical Excel validation, and library-context export refinement, leaving `W014` as the dedicated `@` packet.
 12. `W047`, `W048`, and `W049` are now the next seam-hardening successors for first application usability: typed context/query bundle freeze, return-surface/publication-hint freeze, and the runtime provider/snapshot consumer model.
-13. Those seam-hardening packets do not remove the remaining current-scope hard packets from the completion target: `W014` (`@`), `W046` (`CALL` / `REGISTER.ID`), and the residual `W023` `IMAGE` / `HYPERLINK` publication work remain in scope after the freeze packets.
+13. Those seam-hardening packets no longer block the already-closed current-phase packets `W023`, `W038`, `W046`, and `W055`; the remaining current-scope hard packet is now `W014` (`@`) plus the hidden ordinary-backlog extraction lane under `W051`.
 14. `W050` and `W051` now centralize current-version backlog tracking:
     - `W050` is the canonical deferred-current-version list,
-    - `W051` is the canonical in-scope-but-not-complete list,
+    - `W051` is the canonical in-scope-but-not-complete list and now also the first-pass reconciliation hub for hidden non-deferred `catalog_only` rows,
     - older family packets remain provenance/evidence owners rather than the active central tracker.
+15. Current `W051` totals are:
+    - `192` normalized non-deferred outstanding execution rows (`192` functions, `0` operators),
+    - derived from `185` hidden non-deferred backlog snapshot entries after `W058`,
+    - split into `0` explicit preview-cluster rows plus `192` hidden ordinary execution rows,
+    - and the first-pass `114` documented-complete snapshot-stale rows have now been refreshed into the published export.
+16. Current interface-finalization reading:
+    - the prior seam-heavy non-deferred surface is now acknowledged across OxFunc and OxFml and promoted out of `W051`,
+    - no explicit residual preview row remains after `W014` current-phase closure,
+    - the hidden ordinary backlog now reads as `185` snapshot entries / `192` normalized execution rows after `W058` and is excluded from the current shared-interface acknowledgement pass unless a concrete mismatch later proves otherwise,
+    - the current OxFunc-owned consolidated candidate lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 

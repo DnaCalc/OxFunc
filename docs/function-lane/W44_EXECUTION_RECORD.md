@@ -135,6 +135,7 @@ That was useful but insufficient because it did not by itself pin:
    - `CALL`
    - `REGISTER.ID`
    - `RTD`
+9. the exact `114` documented-complete rows from `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` are now refreshed out of false `catalog_only` state by the export generator rather than by ad hoc CSV edits
 
 ## 8. Status
 1. scope_completeness: `scope_partial`
@@ -143,7 +144,6 @@ That was useful but insufficient because it did not by itself pin:
 4. open_lanes:
    - the export is materially better after `W45`, but it is still a first-pass stabilization artifact rather than a locked final ABI
    - seam-heavy rows like `LET` and `LAMBDA` still need more normalized direct profile fields
-   - OxFml now accepts the current callable-row split for one bounded round, but no pinned runtime consumer/model example exists yet
+   - the shared runtime consumer/model example now exists in successor `W049`, but the export still carries only first-pass dereferenceable profile families
    - per-entry semantic/gating profile dereferenceability is still coarse
-   - no formal consumer example for OxFml exists yet
-   - the concrete shared runtime shape for `LibraryContextProvider` / immutable `LibraryContextSnapshot` is not yet pinned and is now successor-owned by `W049`
+   - the export remains an interchange/debug artifact rather than the long-term runtime seam

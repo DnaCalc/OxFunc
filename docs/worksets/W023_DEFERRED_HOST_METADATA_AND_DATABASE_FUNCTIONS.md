@@ -13,7 +13,7 @@ This packet originally gathered:
 Opened as a successor extraction from `W17`.
 
 Backlog ownership note:
-1. `W023` remains the provenance/evidence owner for the residual `HYPERLINK` / `IMAGE` work.
+1. `W023` remains the provenance/evidence owner for the `HYPERLINK` / `IMAGE` work, now closed for declared current-phase scope.
 2. Active current-version backlog tracking now sits in `W051`.
 
 Source artifacts:
@@ -32,13 +32,13 @@ Packet total:
 1. `17` functions passed through `W23`.
 
 Current residual open set:
-1. `1` function remains open in `W23`.
+1. `0` functions remain open in `W23` for the declared current-phase scope.
 
 Current standing by cluster:
 1. `12` database functions are now evidenced in-packet.
 2. `3` metadata / visibility functions are now evidenced in-packet (`ISFORMULA`, `SUBTOTAL`, `AGGREGATE`).
 3. `HYPERLINK` is now complete on the OxFunc side for current-phase purposes.
-4. `1` publication/provider-sensitive function remains open in packet scope: `IMAGE`.
+4. `IMAGE` is now also complete for the declared current-phase OxFunc scope.
 
 ## 4. Why These Functions Were Out of the Ordinary Pure Lane
 1. `AGGREGATE` and `SUBTOTAL` depend on hidden-row / filtered-row / nested-aggregate visibility semantics.
@@ -83,8 +83,7 @@ Current standing by cluster:
 1. the database family now has runtime, Lean, and native Excel evidence inside `W23`.
 2. `ISFORMULA` now has a typed host-query seam and current-baseline OxFunc closure.
 3. `SUBTOTAL` and `AGGREGATE` now have a typed row-visibility callback seam and current-baseline OxFunc closure for the admitted reference-form slice.
-4. the remaining deferred residual in `W23` is now only:
-   - `IMAGE`
+4. no residual current-phase open function remains in `W23`.
 5. `HYPERLINK` is complete on the OxFunc side: value semantics and presentation intent are modeled, while actual style/clickability application remains host-owned and therefore above the OxFunc function boundary.
 6. `IMAGE` now also has a real OxFunc runtime surface:
    - strict Excel-style argument validation,
@@ -96,11 +95,12 @@ Current standing by cluster:
 9. OxFunc also has a local `SingleFormulaHost` regression proving the same split from the OxFunc side.
 
 ## 9. Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - first-freeze cleanup around `TypedContextQueryFamily::Image`
-   - confirm the current `W042` returned-value vocabulary is sufficient for current-phase `IMAGE` closure
-   - broader current-phase promotion/closure work for the `IMAGE` lane
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+
+Current status reading:
+1. `W23` is now complete for its declared current-phase OxFunc scope.
+2. `IMAGE` remains non-ordinary and must stay documented as semantic `_webimage` rich value plus separate published worksheet fallback.
+3. any broader rich-value/publication widening is later scope, not a current `W23` blocker.

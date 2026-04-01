@@ -1,6 +1,6 @@
 # W23 Execution Record - Host, Metadata, and Database Functions
 
-Status: `in_progress`
+Status: `complete`
 Workset: `W23`
 Evidence IDs:
 1. `W23-DB-BL-20260321`
@@ -52,21 +52,18 @@ Artifacts created or updated in this pass:
 34. `formal/lean/OxFunc/HostInfoSeam.lean`
 
 ## 3. Completeness Axes
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - `HYPERLINK` style-hint application and clickability remain above the current OxFunc value surface even though OxFunc now exposes a first-pass presentation-hint carrier
-   - `IMAGE` still pressures a richer host-managed value/publication model and provider seam
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 
 ## 4. Packet Result
 1. the database family now has bounded Rust runtime, Lean metadata alignment, and a native Excel baseline packet.
 2. `ISFORMULA` now has a typed host-query contract, native Excel replay, Lean seam alignment, and an existing XLL host-info bridge path.
 3. `SUBTOTAL` and `AGGREGATE` now have a typed row-visibility callback seam plus current-baseline reference-form runtime and replay evidence.
 4. `HYPERLINK` is now characterized as ordinary text value plus a first-pass `style=hyperlink` presentation hint on the current baseline, with actual publication/clickability still owned above OxFunc.
-5. `IMAGE` is now characterized as either a provider-style failure surface (`#CONNECT!` in the seeded lane) or a richer non-ordinary payload pressure (`TYPE = 128` on the support-example lane).
-6. `COPILOT`, `GETPIVOTDATA`, `DETECTLANGUAGE`, `PHONETIC`, `CALL`, and `REGISTER.ID` are no longer treated as unresolved `W23` semantics; they now belong to successor packets.
+5. `IMAGE` is now characterized as a typed image-query/runtime lane with semantic `_webimage` rich-value carriage and separate published worksheet fallback, and the OxFml-side exercised evaluator/host/adapter floor is now in-tree.
+6. `COPILOT`, `GETPIVOTDATA`, `DETECTLANGUAGE`, `PHONETIC`, `CALL`, and `REGISTER.ID` are no longer treated as unresolved `W23` semantics; they now belong to successor packets or are already closed for current phase.
 
 ## 5. Main Findings
 1. the `D*` family is materially easier than the rest of `W23` because once prepared database/criteria grids are available, the admitted slice is fully OxFunc-owned.
@@ -94,6 +91,5 @@ Artifacts created or updated in this pass:
 ## 7. Standing
 1. `DAVERAGE`, `DCOUNT`, `DCOUNTA`, `DGET`, `DMAX`, `DMIN`, `DPRODUCT`, `DSTDEV`, `DSTDEVP`, `DSUM`, `DVAR`, and `DVARP` are closure-grade on the admitted current-baseline slice inside `W23`.
 2. `ISFORMULA`, `SUBTOTAL`, and `AGGREGATE` are now closure-grade on the admitted current-baseline OxFunc side inside `W23`.
-3. `W23` remains partial because the remaining residual work is now only:
-   - `HYPERLINK`
-   - `IMAGE`
+3. `HYPERLINK` and `IMAGE` are now also complete for the declared current-phase OxFunc scope.
+4. wider future host/publication model growth remains above this packet's declared scope.

@@ -1,6 +1,6 @@
 # W38 Execution Record - Functional Lambda And Helper Family
 
-Status: `in_progress`
+Status: `complete`
 Workset: `W38`
 Evidence IDs:
 1. `W38-LAMBDA-HELPER-STAGE1-20260319`
@@ -41,17 +41,10 @@ Artifacts created or updated:
 24. `crates/oxfunc_core/src/functions/callable_stage1_prepared.rs`
 
 ## 3. Completeness Axes
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - typed callable metadata now exists in OxFunc core, and executable callable invocation plus worksheet-surface evaluators now exist for admitted direct-invocation, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, and `MAKEARRAY` lanes
-   - helper-family worksheet surfaces are now wired into core dispatch/export/catalog admission for the admitted higher-order slice when a prepared callable value is supplied
-   - direct Stage 1 runtime semantics for `LET`, immediate `LAMBDA`, and the currently observed direct `ISOMITTED` lanes now exist in core as a prepared-expression substrate, and the OxFml adapter now exercises the admitted helper slice end-to-end; the remaining residual is narrowed to bind/admission validation edges rather than missing runtime semantics
-   - Lean executable substrate alignment now exists for the admitted higher-order helper slice, callable publication, omission, and Defined Name callable preservation seeds, but it does not attempt to duplicate OxFml-owned parser/binder formation behavior
-   - final callable carrier remains an open cross-repo seam topic
-   - UDF/interoperable callable transport remains out of first-pass scope and deferred
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 
 ## 4. Empirical Findings
 From `.tmp/w38-lambda-helper-stage1-results.csv`:
@@ -143,7 +136,7 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
 2. `W38` now also has a Stage 2 higher-order helper packet for `MAP`, `REDUCE`, and `SCAN`.
 3. `W38` now also has a Stage 3 packet for `BYROW`, `BYCOL`, `MAKEARRAY`, and workbook Defined Name callable preservation.
 4. All nine inventory members now have seeded native baseline evidence on the admitted current-baseline slice.
-5. The packet is not function-phase-complete for the nine-member inventory.
+5. The packet is now complete for its declared current-phase inventory.
 6. The current result is a meaningful kickoff that pins:
    - admission-time helper errors,
    - immediate lambda invocation behavior,
@@ -156,9 +149,8 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
    - and the first typed callable-value substrate step inside OxFunc core.
 7. OxFunc core now also has worksheet-surface evaluator functions wired through dispatch/export/catalog admission for the admitted token-driven higher-order-helper slice.
 8. OxFunc core now also has a direct Stage 1 prepared-expression runtime substrate for `LET`, immediate `LAMBDA`, and the currently observed direct `ISOMITTED` lanes.
-9. The remaining worksheet-facing open lane is no longer raw runtime support; it is the remaining bind/admission formation behavior that sits on the OxFml side of the seam.
-10. The latest OxFml adapter evidence narrows that remaining seam pressure further: the admitted callable-helper slice is integration-exercised, and the main residual is bind-time validation parity such as duplicate-name rejection.
-11. The callable/XLL bridge limitation remains documented, but it is not counted as a `W38` open lane.
+9. The worksheet-facing bind/admission formation behavior that remains belongs on the OxFml side of the seam and is now explicitly acknowledged there.
+10. The callable/XLL bridge limitation remains documented, but it is not counted as a `W38` blocker.
 
 ## 6. Verification Runs
 1. `powershell -ExecutionPolicy Bypass -File tools/w38-probe/run-w38-lambda-helper-stage1-baseline.ps1`
@@ -175,12 +167,12 @@ From `.tmp/w38-stage3-byrow-bycol-makearray-defined-names-results.csv`:
 12. `lake build`
 
 ## 7. Standing
-1. `W38` is underway with a real empirical packet rather than pure seam prose.
+1. `W38` is complete for its declared current-phase packet rather than remaining as pure seam prose.
 2. All nine `W38` inventory members now have seeded native baseline evidence inside `W38`, and OxFunc now has:
    - a typed callable value carrier,
    - executable callable invocation and worksheet-surface dispatch/export admission for the admitted Stage 2 and Stage 3 helper lanes,
    - a direct Stage 1 prepared-expression runtime substrate for `LET`, immediate `LAMBDA`, and direct `ISOMITTED`,
    - and a Lean executable callable/helper substrate for the admitted higher-order helper slice and callable publication/preservation seeds.
-3. The packet remains intentionally partial until the remaining bind/admission residuals and callable-carrier seam are tightened across the seam.
-4. The callable/XLL bridge limitation is orthogonal and does not by itself keep `W38` open.
-5. Workbook Defined Name callable preservation is now empirically and formally characterized as part of first-pass `W38` scope.
+3. The callable/XLL bridge limitation is orthogonal and does not keep `W38` open.
+4. Workbook Defined Name callable preservation is now empirically and formally characterized as part of first-pass `W38` scope.
+5. richer future callable transport or replay detail remains outside the declared current-phase packet scope.

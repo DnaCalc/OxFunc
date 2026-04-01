@@ -1,7 +1,7 @@
 # WORKSET - CALL and REGISTER.ID UDF Registration Seam (W46)
 
 ## 1. Purpose
-Own the `CALL` / `REGISTER.ID` pair as a distinct worksheet-to-UDF-registration seam packet rather than leaving them mixed into generic host metadata work.
+Own the `CALL` / `REGISTER.ID` pair as the current-phase shared registered-external interaction packet rather than leaving them mixed into generic host metadata work.
 
 These functions are not ordinary worksheet kernels. They sit on the boundary between formula evaluation, XLL/C API registration, DLL/code-resource lookup, and broader add-in/VBA automation worlds.
 
@@ -53,16 +53,16 @@ Members:
 3. pretending the existing XLL registration evidence already closes worksheet `CALL` / `REGISTER.ID`.
 
 ## 7. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - `W052` is now converged at OxFunc/OxFml note level, but not yet promoted into shared seam-freeze text
-   - OxCalc-side acknowledgment of the narrowed `W052` packet split is still outstanding
-   - wider omitted-`type_text` and worksheet-vs-macro-sheet admission characterization remain useful evidence follow-ons, but not primary shared-freeze blockers
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+Current status reading:
+1. `W046` is now complete for its declared current-phase OxFunc scope.
+2. the narrowed `W052` packet is acknowledged from the OxFml side as acceptable shared freeze wording and the current in-repo runtime/integration corpus exercises the admitted packet family.
+3. wider omitted-`type_text` and worksheet-vs-macro-sheet admission characterization remain useful follow-on evidence, but not blockers to current `W046` closure.
 
-## 8. Current OxFunc Closure Suggestions For W052
+## 8. Current Shared Freeze Candidate For W052
 1. exact shared field naming:
    - close by freezing the existing shared packet names exactly as they already exist in OxFunc and OxFml:
      - `RegisterIdRequest { library_name, procedure, declared_type_text }`
@@ -95,5 +95,5 @@ Members:
    - worksheet-vs-macro-sheet admission characterization
    - these remain useful evidence lanes, but not primary packet-freeze blockers
 6. current read after the latest OxFml note:
-   - the four packet-freeze decisions are now converged at note level across OxFunc and OxFml
-   - the remaining cross-program work is to carry this narrowed packet into OxCalc and promote it from note-level convergence into shared seam-freeze text
+   - the four packet-freeze decisions are now acknowledged from the OxFml side as acceptable current shared freeze wording for the narrowed `W052` packet family
+   - the remaining work is coordinator-facing propagation and canonical promotion, not further OxFml/OxFunc packet-shape redesign

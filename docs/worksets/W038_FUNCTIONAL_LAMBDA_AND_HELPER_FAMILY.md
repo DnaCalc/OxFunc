@@ -56,7 +56,7 @@ Members:
 7. Defined Name preservation of callable/lambda values on the current Excel-supported surface.
 
 ## 6. Out Of Scope
-1. final cross-repo carrier lock for callable values,
+1. broad future callable transport/ABI beyond the current minimum shared callable carrier,
 2. final `@` / `SINGLE` placement,
 3. unrelated dynamic-array reshaping functions that do not intrinsically require lambda/helper semantics,
 4. external-provider or host-query functions,
@@ -76,20 +76,15 @@ This workset can only be reported `scope_complete` when:
 5. no known function-semantic gap remains in declared current-baseline scope for the admitted slice.
 
 ## 8. Initial Status
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - Stage 1 covers `LET`, immediate `LAMBDA`, and the admitted direct `ISOMITTED` lanes, including explicit omitted-placeholder visibility versus arity under-application
-   - Stage 2 covers `MAP`, `REDUCE`, and `SCAN` on an admitted array-constant slice
-   - Stage 3 covers `BYROW`, `BYCOL`, `MAKEARRAY`, and workbook Defined Name callable preservation on the admitted slice
-   - a typed callable value carrier now exists, and token-driven executable callable invocation plus worksheet-surface evaluators now exist for admitted direct-invocation, `MAP`, `REDUCE`, `SCAN`, `BYROW`, `BYCOL`, and `MAKEARRAY` lanes inside core unit-tested runtime helpers
-   - helper-family worksheet surfaces are now wired through core dispatch/export/catalog admission for the admitted higher-order slice when a prepared callable value is supplied
-   - a direct Stage 1 prepared-expression runtime substrate now exists in core for `LET`, immediate `LAMBDA`, and the currently observed direct `ISOMITTED` lanes
-   - the OxFml adapter now exercises the admitted Stage 1/2/3 callable-helper slice end-to-end on the pinned corpus; the remaining direct Stage 1 residual is narrowed to bind-time validation edges such as duplicate-name rejection rather than missing OxFunc runtime semantics
-   - a Lean executable callable/helper substrate now exists for the admitted higher-order helper slice, callable publication, omission, and Defined Name callable preservation seeds
-   - cross-repo callable carrier remains intentionally open
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+
+Current status reading:
+1. the admitted Stage 1/2/3 callable-helper slice is now complete for declared current-phase scope across OxFunc runtime/formal/native evidence and the OxFml adapter corpus.
+2. formation and bind validation remain explicitly OxFml-owned where Excel rejects before evaluation.
+3. richer callable replay/explain/serialization detail remains a cooperative future concern with OxFml, not a blocker to current `W38` closure.
 
 ## 9. XLL Seam Note
 1. The current XLL bridge does not carry callable worksheet values or workbook Defined Name callable bindings end-to-end.
@@ -98,8 +93,6 @@ This workset can only be reported `scope_complete` when:
 
 Current OxFunc-side completion reading:
 1. all nine inventory members now have native current-baseline evidence and OxFunc-side runtime/formal artifacts for the admitted slice.
-2. the remaining live work is no longer to invent helper semantics in OxFunc core.
-3. the remaining live work is to:
-   - keep the callable carrier and bind/admission vocabulary honest across the seam,
-   - preserve duplicate-name and malformed-helper rejection as OxFml-owned bind behavior where Excel rejects before evaluation,
-   - and widen beyond the admitted slice only with new evidence.
+2. the OxFml/OxFunc callable freeze now keeps the minimum shared carrier and bind/admission ownership honest across the seam.
+3. duplicate-name and malformed-helper rejection remain explicit OxFml-owned bind behavior where Excel rejects before evaluation.
+4. widening beyond the admitted slice remains evidence-driven future scope, not a blocker to current `W38` closure.

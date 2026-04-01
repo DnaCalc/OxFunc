@@ -1,0 +1,177 @@
+# OxFunc Downstream Metadata And Help Contract
+
+Status: `active`
+Date: 2026-03-29
+
+## 1. Purpose
+Define the downstream metadata, help, and signature contract that `DNA OneCalc` and other consuming hosts should read from OxFunc.
+
+This document answers three questions:
+1. Which fields in the current snapshot export are safe for downstream consumers to treat as stable now?
+2. What is the preferred first OneCalc-facing payload shape for function help, argument help, and signature help metadata?
+3. How should downstream consumers align with the longer-term runtime provider or immutable snapshot direction?
+
+This is an OxFunc-owned contract note. It does not override Foundation doctrine or OxFml language-service ownership.
+
+## 2. Authoritative Source Chain
+Downstream consumers should read in this order:
+1. this document for field stability and help-payload shape,
+2. `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` for surface-labeling and admission-category rules,
+3. `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` for field definitions and current export mechanics,
+4. `W050` and `W051` for deferred/not-complete overlay truth,
+5. `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md` for the preferred long-term runtime shape.
+
+## 3. Snapshot Export Field Stability Classification
+
+### 3.1 Stable Fields
+The following fields are safe for downstream consumers to treat as stable identity and structural facts now. Their meaning and presence will not change without an explicit snapshot-generation bump and downstream notification.
+
+| Field | Downstream Use | Stability Basis |
+|-------|---------------|-----------------|
+| `snapshot_id` | Snapshot family identity | Fixed per export family |
+| `snapshot_generation` | Generation identity and pinning | Explicit per emission |
+| `source_commit_short` | Provenance | Mechanical |
+| `source_commit_full` | Provenance | Mechanical |
+| `source_tree_state` | Provenance quality | Mechanical |
+| `lane_id` | Lane identity | Fixed `oxfunc` |
+| `entry_kind` | Row kind discrimination | Locked vocabulary: `built_in_function`, `built_in_operator` |
+| `surface_stable_id` | Primary stable identity key | Locked pattern `FUNC.<NAME>` or `OP.<NAME>` |
+| `canonical_surface_name` | Display name and parse seed | Current catalog truth |
+| `xlcall_builtin_symbol` | XLL interop identity | `XLCALL.H` derived |
+| `xlcall_builtin_code` | XLL interop identity | `XLCALL.H` derived |
+| `arity_min` / `arity_max` | Arity bounds | Current catalog truth |
+| `category` | Display grouping | Current catalog truth |
+| `metadata_status` | Profile depth indicator | Locked vocabulary: `function_meta_extracted`, `catalog_only`, `doc_modeled` |
+
+### 3.2 Usable-But-Provisional Fields
+The following fields carry real current-tree information and are safe to consume for display, completion, and planning, but their exact vocabulary, granularity, or coverage may evolve without a breaking-change gate.
+
+| Field | Downstream Use | Provisionality Reason |
+|-------|---------------|----------------------|
+| `registration_source_kind` | Row origin discrimination | Vocabulary may grow |
+| `version_marker` | Version-gating display | Extraction coverage incomplete |
+| `interesting` | Planning/priority hint | Planning flag, not semantic |
+| `determinism_class` | Scheduling hint | Vocabulary stable but per-row extraction ongoing |
+| `volatility_class` | Recalc hint | Same as above |
+| `host_interaction_class` | Host-coupling hint | Same as above |
+| `thread_safety_class` | Concurrency hint | Same as above |
+| `arg_preparation_profile` | Adapter shape hint | Vocabulary may refine |
+| `coercion_lift_profile` | Admission family hint | Family refs, not per-row contracts |
+| `kernel_signature_class` | Kernel shape hint | Vocabulary may refine |
+| `fec_dependency_profile` | Dependency hint | Vocabulary may refine |
+| `surface_fec_dependency_profile` | Pipeline dependency hint | Vocabulary may refine |
+| `special_interface_kind` | Seam-heavy signal | Vocabulary actively growing |
+| `admission_interface_kind` | Admission shape hint | Not yet locked shared vocabulary |
+| `preparation_owner` | Formation responsibility hint | Not yet locked shared vocabulary |
+| `runtime_boundary_kind` | Runtime seam shape hint | Not yet locked shared vocabulary |
+
+### 3.3 Current-Tree-Hint-Only Fields
+The following fields are informational pointers into OxFunc internals. Downstream consumers may display them for debugging or tracing but should not build hard coupling against their values.
+
+| Field | Downstream Use | Why Hint-Only |
+|-------|---------------|---------------|
+| `name_resolution_table_ref` | Localization table pointer | Points to current seed, not locked localization library |
+| `semantic_trait_profile_ref` | Profile family ref | Family-level, not dereferenceable per-row |
+| `gating_profile_ref` | Gating family ref | Family-level, not dereferenceable per-row |
+| `arity_shape_note` | Free-form shape note | Unstable free text |
+| `interface_contract_ref` | Seam contract pointer | Points to current workset/prelim docs |
+| `source_catalog_ref` | Source row family | Internal generation detail |
+
+## 4. Help And Signature Payload Shape
+
+### 4.1 Current State
+No OxFunc-backed help or signature payload retrieval is frozen yet. This is an acknowledged active seam gap.
+
+Current available truth for downstream help surfaces:
+1. `canonical_surface_name` and `surface_stable_id` from the snapshot export,
+2. `arity_min` / `arity_max` for basic arity display,
+3. `category` for grouping,
+4. `metadata_status` to determine profile depth,
+5. `special_interface_kind` and `admission_interface_kind` for seam-category labeling,
+6. `determinism_class` / `volatility_class` / `host_interaction_class` for behavioral classification.
+
+### 4.2 Preferred First OneCalc-Facing Payload Shape
+The preferred first payload shape for each help surface is:
+
+#### Function Help
+```
+FunctionHelpPayload:
+  surface_stable_id: string          # from snapshot, stable
+  canonical_surface_name: string     # from snapshot, stable
+  category: string                   # from snapshot, stable
+  arity_min: integer                 # from snapshot, stable
+  arity_max: integer | null          # from snapshot, stable
+  determinism_class: string          # from snapshot, usable
+  volatility_class: string           # from snapshot, usable
+  host_interaction_class: string     # from snapshot, usable
+  special_interface_kind: string     # from snapshot, usable
+  admission_category: string         # from labeling policy, see OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md
+  implementation_status_label: string # from labeling policy
+  help_summary: string | null        # NOT YET AVAILABLE from OxFunc
+  help_detail: string | null         # NOT YET AVAILABLE from OxFunc
+```
+
+#### Argument Help
+```
+ArgumentHelpPayload:
+  surface_stable_id: string          # parent function
+  arg_index: integer                 # 0-based
+  arg_name: string | null            # NOT YET AVAILABLE from OxFunc
+  arg_description: string | null     # NOT YET AVAILABLE from OxFunc
+  arg_required: boolean | null       # derivable from arity_min vs index
+  arg_type_hint: string | null       # NOT YET AVAILABLE from OxFunc
+```
+
+#### Signature Help Metadata
+```
+SignatureHelpMetadata:
+  surface_stable_id: string          # from snapshot, stable
+  canonical_surface_name: string     # from snapshot, stable
+  arity_min: integer                 # from snapshot, stable
+  arity_max: integer | null          # from snapshot, stable
+  arg_preparation_profile: string    # from snapshot, usable
+  special_interface_kind: string     # from snapshot, usable
+  admission_interface_kind: string   # from snapshot, usable
+  arg_names: [string] | null         # NOT YET AVAILABLE from OxFunc
+  signature_display: string | null   # NOT YET AVAILABLE from OxFunc
+```
+
+### 4.3 What Is Available Now vs What Requires Upstream Work
+Available now from the snapshot export:
+1. identity, arity, category, behavioral classification, and seam-category fields.
+2. enough to populate completion lists, basic tooltips, and surface-labeling UI.
+
+Requires upstream OxFunc or OxFml work:
+1. `help_summary` and `help_detail` prose content per function,
+2. per-argument names, descriptions, and type hints,
+3. `signature_display` formatted signature strings,
+4. localized help content.
+
+### 4.4 Interim OneCalc Guidance
+Until OxFunc publishes structured help payloads:
+1. populate function help from snapshot export stable and usable fields,
+2. populate completion lists from `canonical_surface_name`, `category`, `arity_min`/`arity_max`, and `admission_category` from the labeling policy,
+3. show `special_interface_kind` and `admission_interface_kind` as visible metadata in help and scenario UI rather than hiding them,
+4. do not invent local prose help content that would become a private second truth,
+5. do not claim help coverage beyond what the snapshot export and labeling policy provide.
+
+### 4.5 Alignment With Runtime Provider Direction
+The preferred long-term direction is:
+1. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate (see `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`),
+2. help and signature payloads should eventually be fields on `LibraryContextEntry` in the runtime model rather than separate retrieval surfaces,
+3. the current CSV export remains the pinned interchange artifact for bounded integration, test pinning, and debugging,
+4. downstream consumers should design against an immutable snapshot-shaped help/catalog source even if the first implementation is CSV-backed.
+
+Transition rule:
+1. OneCalc should consume the snapshot export through a local adapter that projects stable and usable fields into the payload shapes above,
+2. when the runtime provider model materializes, OneCalc should swap the adapter backing from CSV to runtime snapshot without changing the consumer-facing payload shape,
+3. help prose fields (`help_summary`, `help_detail`, `arg_name`, `arg_description`) should be treated as nullable until OxFunc populates them.
+
+## 5. Authoritative Upstream References
+1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
+2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
+3. `docs/function-lane/FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`
+4. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
+5. `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`
+6. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md`
+7. `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`

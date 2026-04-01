@@ -1,0 +1,11 @@
+execution_owner,packet_name,normalized_member_count,source_kind,notes
+W059,"Engineering conversions and Bessel family",16,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W060,"Complex-number family",26,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W061,"Statistical distributions and compat A",29,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W062,"Statistical distributions and compat B",35,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W063,"Date/time and business-day family",18,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W064,"Financial core miscellaneous family",15,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W065,"Database family",12,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W066,"Text core and compatibility family",23,"W58 normalized execution split","Includes the fourteen split members from the seven grouped text-compat snapshot rows."
+W067,"Math, matrix, and rounding family",15,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."
+W068,"Lookup and logical residuals",3,"W58 normalized execution split","Frozen by W58 from the first-pass hidden backlog inventory."

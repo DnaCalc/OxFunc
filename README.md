@@ -36,6 +36,8 @@ Out of slice:
 - `docs/worksets/W000_KICKOFF_PROGRAM_W001_W006.md` - combined kickoff orchestration for worksets 1..7.
 - `docs/worksets/` - sequence-based execution worksets for cross-cutting slices.
 - `docs/function-lane/` - mutable function/value working artifacts.
+- `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` - downstream metadata, help, and signature contract for DNA OneCalc and other consuming hosts.
+- `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` - surface admission categories and labeling rules for downstream consumers.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
 - `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md` - suggested Foundation repo updates from OxFunc execution.
 - `crates/` - Rust runtime/function scaffolding for executable slices.

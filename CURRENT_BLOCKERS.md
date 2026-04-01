@@ -2,13 +2,14 @@
 
 Status: active blockers recorded.
 
-Last reviewed: 2026-03-27.
+Last reviewed: 2026-03-31.
 
 ---
 
 ## Active Blockers
 
 None currently recorded.
+Current grouped-aggregation review (`W055`) found no active blocker preventing `GROUPBY` / `PIVOTBY` promotion.
 
 ## Resolved Blockers
 
