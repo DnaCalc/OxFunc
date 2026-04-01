@@ -102,3 +102,11 @@ Supersession note:
 - **Remaining gaps**: richer per-entry semantic/gating refs, broader operator coverage beyond the currently exported universe, runtime witness attachment beyond the CSV interchange artifact, and structured help/signature/semantic-witness payload population.
 - **Why still open**: the first-pass snapshot is now real and usable, but the highest-leverage next step is no longer just more profile columns. It is the `W069` `Semantic Witness Snapshot V2` direction: structured help, signature, evidence, and formal-reference payloads attached to the library-context model.
 - **Canonical owner**: `W044` for the `V1` export artifact, `W049` for the runtime provider/snapshot model, and `W069` for the `V2` semantic witness plan.
+
+### IP-11: Execution Doctrine Migration And Active Tree Reduction
+
+- **Status**: planned
+- **Current floor**: OxFunc has a parked non-deferred baseline, a clean active branch tip, a stable recovery tag anchor in `OxFunc_V1`, and a mature but document-heavy workset-plus-evidence execution style.
+- **Remaining gaps**: no dedicated workset register, no `.beads/` execution-state surface, no local `BEADS.md`, and too much historical execution/provenance material still present in the active tree.
+- **Why still open**: the repo is ready for a doctrine shift, but execution truth is still split across worksets, execution records, blocker ledgers, and feature lists rather than a bead graph.
+- **Canonical owner**: `W070`.

@@ -81,6 +81,7 @@ Kickoff worksets:
 67. `W067_MATH_MATRIX_AND_ROUNDING_FAMILY.md` (W67)
 68. `W068_LOOKUP_AND_LOGICAL_RESIDUALS.md` (W68)
 69. `W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md` (W69)
+70. `W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md` (W70)
 
 Common rules:
 1. Worksets are sequence/gate driven, never date driven.
