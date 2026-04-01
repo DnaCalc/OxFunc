@@ -17,8 +17,7 @@ When guidance conflicts, precedence is:
 2. `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md` (architecture constraints),
 3. `../Foundation/OPERATIONS.md` (program operations),
 4. `CHARTER.md` in this repository (OxFunc lane scope and execution constraints under Foundation doctrine),
-5. `OPERATIONS.md` in this repository,
-6. `TUX1000_PLAN.md` in this repository (aspirational, non-overriding).
+5. `OPERATIONS.md` in this repository.
 
 Values ordering for OxFunc decisions:
 1. Correctness with explicit semantics.
@@ -161,7 +160,7 @@ Language rule:
 5. Use `function-phase-complete` for a function only when the current implementation-phase goal is satisfied and the only remaining work is orthogonal validation-phase expansion (for example locale/version sweeps) or external XLL seam hardening.
 
 ## 8. Kickoff Program and Dependency Intent
-Current kickoff bundle is the ordered `TUX1000` workset chain (`W1..W7`):
+Historical kickoff bundle is the ordered kickoff workset chain (`W1..W7`):
 1. `PI()` method seed,
 2. floating-point behavior characterization,
 3. value-universe closure,
@@ -203,6 +202,5 @@ Completeness claim rule:
 
 ## 11. Relationship to Operating and Aspirational Docs
 1. `OPERATIONS.md` in this repository is the lane-level execution doctrine.
-2. `TUX1000_PLAN.md` is the aspirational execution adjunct.
-3. Workset files under `docs/worksets/` define sequence-level execution packets under this charter.
-4. Foundation conformance/model docs remain authoritative for cross-program protocol and evidence governance.
+2. Workset files under `docs/worksets/` define sequence-level execution packets under this charter.
+3. Foundation conformance/model docs remain authoritative for cross-program protocol and evidence governance.

@@ -1,5 +1,10 @@
 # OxFunc Worksets
 
+Current workset-truth note:
+1. `docs/WORKSET_REGISTER.md` is now the canonical ordered workset surface.
+2. `.beads/` now owns live execution-state truth.
+3. This file is now a workset index and historical packet map, not a live execution-state surface.
+
 Worksets are sequence-based execution packets for cross-cutting OxFunc slices.
 
 Supersession note:
@@ -97,7 +102,8 @@ Mega-batch planning note:
 Process references:
 - Pre-closure checklist: `OPERATIONS.md` Section 12.
 - Completion claim self-audit: `OPERATIONS.md` Section 14.
-- Active blockers: `CURRENT_BLOCKERS.md`.
+- Live execution blockers: `.beads/`.
+- Transitional prose blocker ledger: `CURRENT_BLOCKERS.md`.
 - In-progress feature register: `docs/IN_PROGRESS_FEATURE_WORKLIST.md`.
 
 Replay rollout sequence after `W016`:

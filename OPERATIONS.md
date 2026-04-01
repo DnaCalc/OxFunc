@@ -11,8 +11,9 @@ When guidance conflicts, precedence is:
 2. `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`
 3. `../Foundation/OPERATIONS.md`
 4. `CHARTER.md` in this repository
-5. This document (`OPERATIONS.md`)
-6. `TUX1000_PLAN.md` (aspirational execution plan; non-doctrinal where conflict exists).
+5. this document (`OPERATIONS.md`)
+6. `docs/WORKSET_REGISTER.md`
+7. `docs/BEADS.md`
 
 Non-negotiable carry-over:
 1. Clean-room evidence discipline.
@@ -33,7 +34,22 @@ Non-negotiable carry-over:
 10. XLL verification-seam limits must be documented centrally in the seam project and repeated in function verification records when they materially qualify a function claim.
 
 ## 4. Execution Model
-OxFunc executes as coupled lanes for each function/operator slice.
+OxFunc executes through:
+1. `docs/WORKSET_REGISTER.md`
+2. `workset -> epic -> bead`
+3. the coupled assurance lanes required for each function/operator slice
+
+Execution-state rule:
+1. worksets are planning units, not execution-state objects,
+2. epics are the main execution lanes under a workset,
+3. beads are the unit of executable progress,
+4. `.beads/` owns readiness, blockers, in-progress state, and closure.
+
+Transition rule:
+1. OxFunc is currently between `W070` Phase D and Phase E,
+2. `.beads/` is now bootstrapped as the live execution-state surface,
+3. `CURRENT_BLOCKERS.md` remains a transitional prose-only blocker ledger pending narrower retention or retirement,
+4. no new ad hoc execution-state notes should be introduced to compensate.
 
 ### 4.1 Coupled Lanes
 1. Contract lane:
@@ -150,6 +166,7 @@ This template is the generalization seed for `SIN`, `SUM`, `ROW`, and later fami
 7. Probe suites should produce an analyzer report with mismatch and drift classification against prior baselines when available.
 8. Cross-cutting worksets must instantiate a cross-boundary invariant checklist (formula, interop ingress, reference reuse, persistence/interchange, and any additional active boundaries).
 9. Boundary evidence must report seam-level status and function semantic status separately so adversarial seam tests do not pollute function conformance failure counts.
+10. Execution-state mutation must happen through `br`, not by editing bead files directly.
 
 ### 8.1 Replay Appliance Rule
 Replay bundles, adapter manifests, explain records, and witness lifecycle records are Logistics-layer artifacts.
@@ -172,7 +189,7 @@ When the user explicitly enables AutoRun for a named scope and sets an exit gate
 ## 9. Doctrine and Plan Change Workflow
 1. Routine function-row and implementation updates do not require synthesis runs by default.
 2. Doctrine-shifting changes (gate model, evidence policy, status semantics, profile rules) must include a logged synthesis/decision record.
-3. `TUX1000_PLAN.md` is updated as execution intent evolves, but cannot override charter/doctrine.
+3. Current execution-direction changes should be expressed in active worksets, the feature register, or explicit migration packets rather than in a separate aspirational top-level plan.
 
 ## 10. Definition of Done (Per Function Slice)
 A function slice is done for a declared profile only when:
@@ -220,7 +237,7 @@ All items must be "yes" for a completion claim. Any "no" means the item is `in_p
 | 10 | No known semantic gap remains in declared scope? | |
 | 11 | Completion language audit passed (no premature "done"/"complete" per AGENTS.md anti-premature-completion rules)? | |
 | 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | |
-| 13 | `CURRENT_BLOCKERS.md` updated (new/resolved)? | |
+| 13 | execution-state blocker surface updated (`.beads/` for ordinary blockers; prose blocker ledger only for exceptional narrative blockers)? | |
 
 ## 13. Expanded Definition of Done
 
@@ -318,3 +335,27 @@ Agents starting work on OxFunc interface or contract design must:
 2. Note any unresolved observations that are relevant to current scope.
 3. Include a "reviewed inbound observations" line in the workset status report.
 4. When a design decision addresses an inbound observation, reference the observation entry explicitly.
+
+## 17. Bead Execution Transition
+
+### 17.1 Current Transition State
+OxFunc is currently migrating under `W070`.
+
+Current posture:
+1. Phase A and Phase B are complete.
+2. Phase C doctrinal reorientation is complete.
+3. Phase D bead bootstrap is complete.
+4. `.beads/` now exists as the live execution-state surface.
+
+### 17.2 Immediate Working Rule
+Until the later `W070` archive waves land:
+1. use `docs/WORKSET_REGISTER.md` as the ordered workset authority,
+2. use `docs/BEADS.md` as the bead-method authority,
+3. keep ordinary execution-state truth in `.beads/`,
+4. keep blocker truth in `.beads/` except for exceptional prose-only narratives that have not yet been retired from `CURRENT_BLOCKERS.md`.
+
+### 17.3 Post-Bootstrap Rule
+After `.beads/` exists:
+1. ordinary execution state belongs in `.beads/`,
+2. `CURRENT_BLOCKERS.md` should retire or narrow to exceptional prose-only blocker cases,
+3. `docs/worksets/README.md` should no longer be treated as a live execution-status surface.

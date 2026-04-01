@@ -1,6 +1,6 @@
 # W070 OxFunc Beads Migration And Active Tree Reduction
 
-Status: `planned`
+Status: `in_progress`
 Date: 2026-04-01
 Tag anchor: `OxFunc_V1`
 Parked baseline commit: `ac9d6be`
@@ -277,6 +277,9 @@ Deliverables:
 Exit condition:
 1. pre-migration OxFunc state is recoverable by tag without narrative memory.
 
+Current state:
+1. complete, with tag `OxFunc_V1` anchored at parked-baseline commit `ac9d6be`.
+
 ### Phase B: Inventory And Triage
 Deliverables:
 1. classify current docs as `active_canonical`, `active_evidence`,
@@ -287,6 +290,34 @@ Deliverables:
 Exit condition:
 1. every live doc class has an owner decision,
 2. there is no ambiguous "leave it for now" pile.
+
+Current state:
+1. complete, with the triage register established in `docs/W070_ACTIVE_TREE_TRIAGE_REGISTER.csv`.
+2. current inventory baseline:
+   - `624` docs under `docs/`
+   - `72` workset docs under `docs/worksets/`
+   - `533` docs under `docs/function-lane/`
+3. currently quantified function-lane families include:
+   - `98` contract-prelim docs
+   - `75` execution records
+   - `80` scenario manifests
+   - `56` runtime-requirement notes
+   - `21` scope-reconciliation ledgers
+4. active doctrine no longer treats `TUX1000_PLAN.md` as a live authority; that plan has been removed from the active tree and reclassified as `historical_provenance`.
+5. current Phase B split now distinguishes:
+   - live later workset anchors that remain active (`W041`, `W043`, `W044`, `W049`, `W050`, `W051`, `W054`, `W069`, `W070`)
+   - closed later packets queued for archive waves
+   - research/investigation notes that still anchor current empirical or seam understanding (`FLOATING_POINT_BEHAVIOR_RESEARCH_NOTES.md`, `STRING_BEHAVIOR_RESEARCH_NOTES.md`, `IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md`)
+   - function contract prelim docs as a conservative keep-for-now family pending a narrower subwave review
+6. packet-local evidence tails are now split into:
+   - `7` active packet-local artifacts attached to live worksets (`W041`, `W043`, `W044`, `W049`, `W054`)
+   - roughly `225` historical packet-local artifacts (`EXECUTION_RECORD`, `SCENARIO_MANIFEST`, `RUNTIME_REQUIREMENTS`, `SCOPE_RECONCILIATION`) queued for archive waves unless a later review promotes them into the active subset
+7. the remaining uncategorized function-lane tail is now grouped into:
+   - semantic-core support surfaces to keep for now,
+   - XLL/replay-support surfaces to keep for now,
+   - live deferred/runtime/export inventories tied to `W041` / `W043` / `W044` / `W049` / `W050` / `W051`,
+   - large historical note/inventory families (`W16_BATCH*`, old localization and deferred inventories, closed seam-review notes, packet registers and normalization maps) queued for archive waves
+8. the triage register now gives every major current doc family an explicit bucket and target action; there is no remaining large "unclassified" document pile blocking doctrine rewrite.
 
 ### Phase C: Doctrinal Reorientation
 Deliverables:
@@ -308,6 +339,13 @@ Exit condition:
 2. no active doctrine file still presents worksets as the live execution-state
    surface.
 
+Current state:
+1. complete:
+   - `docs/WORKSET_REGISTER.md` created,
+   - `docs/BEADS.md` created,
+   - `OPERATIONS.md`, `AGENTS.md`, and `README.md` rewritten around the new model,
+   - `docs/worksets/README.md` now explicitly defers workset truth to `docs/WORKSET_REGISTER.md`.
+
 ### Phase D: Bead Workspace Bootstrap
 Deliverables:
 1. initialize `.beads/`,
@@ -322,6 +360,13 @@ Bootstrap rule:
 Exit condition:
 1. OxFunc has a live bead workspace,
 2. current open execution can be inspected via `br`/`bv`.
+
+Current state:
+1. complete:
+   - `.beads/` is now bootstrapped under the OxFunc root,
+   - `scripts/check-worksets.ps1` now validates the active workset register and live bead workspace shape,
+   - `scripts/seed-beads-from-worksets.ps1` now seeds the first live OxFunc graph from the active execution-target worksets,
+   - the current bead graph now contains `16` seeded issues, with the initial ready path on the first Phase E `W070` archive-wave bead and blocked follow-on rollout for `W069` / `W044` / `W049`.
 
 ### Phase E: Active-Tree Reduction
 Deliverables:
@@ -420,7 +465,6 @@ Do not report migration progress as a generic cleanup note with no phase anchor.
 
 ## 15. Immediate Next Step
 The next correct move under this plan is:
-1. Phase B inventory and triage,
-2. producing a machine-readable or compact reviewable classification of current
-   docs into the four migration buckets,
-3. before any doctrinal rewrite or active-tree removals.
+1. Phase E active-tree reduction,
+2. first archive/removal waves anchored to the triage register,
+3. narrowing or retiring transitional tracker surfaces that are now superseded by `.beads/`.

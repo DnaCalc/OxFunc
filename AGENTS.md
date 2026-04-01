@@ -4,21 +4,23 @@
 1. `README.md`
 2. `CHARTER.md`
 3. `OPERATIONS.md`
-4. `TUX1000_PLAN.md`
-5. `docs/worksets/README.md`
-6. `docs/function-lane/README.md`
-7. `docs/FOUNDATION_SPEC_INDEX.md`
-8. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
-9. `CURRENT_BLOCKERS.md`
-10. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
-11. Inbound observation ledgers from upstream repos (see OPERATIONS.md Section 16.3):
+4. `docs/WORKSET_REGISTER.md`
+5. `docs/BEADS.md`
+6. `docs/worksets/README.md`
+7. `docs/function-lane/README.md`
+8. `docs/FOUNDATION_SPEC_INDEX.md`
+9. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
+10. `CURRENT_BLOCKERS.md`
+11. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
+12. Inbound observation ledgers from upstream repos (see OPERATIONS.md Section 16.3):
    - `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 
 ## Source-of-Truth Rules
 - For OxFunc-local work, treat `CHARTER.md` in this directory as the working charter.
 - For OxFunc execution doctrine, treat `OPERATIONS.md` as normative unless it conflicts with charter/Foundation doctrine.
+- Treat `docs/WORKSET_REGISTER.md` as the canonical ordered workset surface.
+- Treat `docs/BEADS.md` as the canonical local bead-method surface.
 - For cross-program doctrine and architecture constraints, treat Foundation docs as authoritative.
-- Treat `TUX1000_PLAN.md` as aspirational planning guidance; it does not override doctrinal docs.
 - For mutable function-definition work, use `docs/function-lane/*` in this repo.
 - For Excel reference/spec corpus and program-level conformance registry, use links listed in `docs/FOUNDATION_SPEC_INDEX.md`.
 
@@ -100,19 +102,28 @@ Mode: **checkpoint-at-gates** with mature-repo calibration.
 7. During AutoRun, partial progress must be recorded in repository artifacts, checklist rows, and blocker entries rather than emitted as chat status.
 8. If a response is required because all remaining paths are blocked, the response must be a blocker summary only; it must not be framed as a checkpoint or partial completion report.
 
+Transition note:
+1. OxFunc is currently in `W070` Phase E-prep state.
+2. `.beads/` is now bootstrapped and is the ordinary blocker surface.
+3. `CURRENT_BLOCKERS.md` remains only as a transitional prose ledger pending narrower retention or retirement during later `W070` archive waves.
+4. do not create new ordinary blocker entries in `CURRENT_BLOCKERS.md` unless the blocker cannot be represented cleanly in the bead graph.
+
 Mature-repo note: OxFunc has 13+ worksets and 38 function-phase-complete functions, exceeding the 5-workset threshold for conservative gate-pausing. Gate discipline remains mandatory but the agent has demonstrated execution history to support scope-bounded autonomy between gates.
 
 ## Blocker Handling
 
 When a blocker is encountered:
 
-1. Create or update `CURRENT_BLOCKERS.md` with a structured `BLK-FN-NNN` entry.
+1. Record the blocker in `.beads/` through the ordinary bead graph.
 2. Continue with other non-blocked work within scope.
 3. If all paths are blocked, emit a structured summary:
    - blocked items with `BLK-*` identifiers,
    - current state of each,
    - exact unblock steps required,
    - recommendation (wait / escalate / workaround).
+
+Post-bootstrap rule:
+1. ordinary blockers belong in the bead graph rather than in new prose blocker notes.
 
 ## Change Discipline
 

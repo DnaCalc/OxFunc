@@ -105,8 +105,9 @@ Supersession note:
 
 ### IP-11: Execution Doctrine Migration And Active Tree Reduction
 
-- **Status**: planned
+- **Status**: in-progress
 - **Current floor**: OxFunc has a parked non-deferred baseline, a clean active branch tip, a stable recovery tag anchor in `OxFunc_V1`, and a mature but document-heavy workset-plus-evidence execution style.
-- **Remaining gaps**: no dedicated workset register, no `.beads/` execution-state surface, no local `BEADS.md`, and too much historical execution/provenance material still present in the active tree.
-- **Why still open**: the repo is ready for a doctrine shift, but execution truth is still split across worksets, execution records, blocker ledgers, and feature lists rather than a bead graph.
+- **Current phase**: `W070` Phase A, Phase B, Phase C, and Phase D are complete; Phase E active-tree reduction is next.
+- **Remaining gaps**: too much historical execution/provenance material still remains in the active tree, `CURRENT_BLOCKERS.md` and other bridge surfaces still need to narrow or retire, and the first real post-migration workset execution under beads still remains even though the live bead workspace now exists (`16` seeded issues, `1` ready path).
+- **Why still open**: doctrine and bead bootstrap are now in place, but the active-tree reduction waves and the first real post-migration execution still remain.
 - **Canonical owner**: `W070`.
