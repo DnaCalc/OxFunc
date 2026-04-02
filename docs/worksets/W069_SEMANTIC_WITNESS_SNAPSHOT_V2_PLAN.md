@@ -344,6 +344,35 @@ Those gaps are already covered by the current bead graph:
 
 No additional execution lane was discovered by the audit.
 
+## 11D. First Generator Validation Readout
+The first generator-backed `HLOOKUP` / `VLOOKUP` seed validation confirms that
+the bounded family survives the deterministic generation path.
+
+Validated results:
+1. `tools/w69-probe/run-w69-hvlookup-witness-generator.ps1` now regenerates
+   `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+   directly from the retained `V1` export plus bounded family templates and
+   retained contract/evidence/formal refs.
+2. The generated artifact remains family-bounded and ordered by
+   `surface_stable_id`:
+   - `FUNC.HLOOKUP`
+   - `FUNC.VLOOKUP`
+3. The regenerated rows preserve the required copied fields from `V1`,
+   including:
+   - `snapshot_generation`
+   - `source_commit_short`
+   - `source_commit_full`
+   - `source_tree_state`
+4. The generated rows still carry the required first-slice provenance coverage:
+   - `catalog_export`
+   - `contract_artifact`
+   - `native_excel_replay`
+   - `runtime_test`
+   - `formal_artifact`
+5. The current first seeded family therefore survives the generator path without
+   reopening removed packet-local artifacts or creating a second catalog-owner
+   surface.
+
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
 1. one explicit `V2` schema exists,
