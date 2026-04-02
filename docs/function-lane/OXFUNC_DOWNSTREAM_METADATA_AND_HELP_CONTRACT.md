@@ -434,7 +434,8 @@ The first bounded `V2` seed artifact now lives at:
 Current role:
 1. it is the first concrete `SemanticWitnessEntry` projection exercise for the shared `HLOOKUP` / `VLOOKUP` family,
 2. it demonstrates that the `V2` schema can be populated from the retained `V1` export, current contract surfaces, replay evidence, runtime source, and Lean formal refs without reopening removed packet-local files,
-3. it is a seed artifact, not yet the full generator or the full supported-surface rollout.
+3. `tools/w69-probe/run-w69-hvlookup-witness-generator.ps1` is now the bounded first generator path for this family,
+4. it is a seed artifact, not yet the full generator or the full supported-surface rollout.
 
 ### 4.10 First Schema Audit Findings
 The first `W069` schema/seed audit against the required `V2` payload families found

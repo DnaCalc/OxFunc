@@ -240,6 +240,8 @@ The first-seed source surfaces for this family are:
    - `crates/oxfunc_core/src/functions/surface_dispatch.rs`
 6. first concrete witness seed artifact:
    - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+7. first bounded generator path:
+   - `tools/w69-probe/run-w69-hvlookup-witness-generator.ps1`
 
 The first-seed witness lane should exclude `IFS` initially.
 Reason:
