@@ -9,3 +9,6 @@ tools/fp-probe/FpProbeRunner/
 tools/xll-addin/**/target/
 tools/xll-addin/**/bin/
 tools/xll-addin/**/obj/
+
+# bv (beads viewer) local config and caches
+.bv/

@@ -288,6 +288,30 @@ Generator rule:
 2. do not author `V2` as a second unrelated catalog,
 3. do not duplicate ownership of identity/profile facts that already belong to `V1`.
 
+## 11B. Current Execution Encoding
+Live `W069` execution now runs through `.beads/` under:
+1. workset rollout:
+   - `oxf-jbk` `W069 Semantic Witness Snapshot V2 rollout`
+2. lane epics:
+   - `oxf-jbk.1` schema and stability tiers
+   - `oxf-jbk.2` witness-generation pipeline
+   - `oxf-jbk.3` runtime attachment and consumer mapping
+   - `oxf-jbk.4` seeded family rollout
+3. first execution child beads:
+   - `oxf-jbk.1.1` audit current schema/seed/contract against required payload families
+   - `oxf-jbk.1.2` finalize bounded field ownership and stability tiers
+   - `oxf-jbk.2.1` define deterministic `V1` + `W049` + enrichment input map
+   - `oxf-jbk.2.2` implement the first deterministic `HLOOKUP` / `VLOOKUP` witness generator
+   - `oxf-jbk.3.1` narrow `W049` witness-bearing runtime attachment
+   - `oxf-jbk.3.2` specify seeded-slice projection and generation semantics
+   - `oxf-jbk.4.1` refresh the `HLOOKUP` / `VLOOKUP` seed through the generator
+   - `oxf-jbk.4.2` choose the first mixed-seed tranche and downstream reading-guide shape
+   - `oxf-jbk.4.3` populate the first mixed-seed tranche beyond `HLOOKUP` / `VLOOKUP`
+
+Current ready path:
+1. `oxf-jbk.1.1` is the first ready bead.
+2. Later beads remain dependency-blocked until schema audit and field-ownership tightening land.
+
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
 1. one explicit `V2` schema exists,
@@ -305,11 +329,11 @@ This packet can only be reported `scope_complete` when:
 5. trying to widen to all `517` rows before the model is proven on a seed set.
 
 ## 14. Status
-1. execution_state: `planned`
+1. execution_state: `in_progress`
 2. scope_completeness: `scope_partial`
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - define the runtime attachment to `LibraryContextSnapshot`
-   - choose the first seed-set export format
-   - populate the bounded seed set
+   - complete `oxf-jbk.1.1` and `oxf-jbk.1.2` to stabilize the first generator-backed schema slice
+   - complete `oxf-jbk.2.*` and `oxf-jbk.3.*` to establish deterministic generation and `W049` runtime attachment
+   - complete `oxf-jbk.4.*` to refresh the `HLOOKUP` / `VLOOKUP` seed and widen into the first mixed seed tranche
