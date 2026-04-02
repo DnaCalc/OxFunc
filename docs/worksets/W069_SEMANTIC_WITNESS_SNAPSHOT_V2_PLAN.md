@@ -424,6 +424,15 @@ The bounded gap set is:
 4. the field-by-field bridge from `V1` and `W049` into curated witness
    enrichment is not yet fully explicit.
 
+The current supported-surface gap inventory is now pinned in:
+1. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md`
+2. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_INVENTORY.csv`
+
+That ledger reconciles the full supported surface as:
+1. `517` supported non-deferred rows,
+2. `10` witness-covered rows,
+3. `507` remaining supported rows without `V2` witness coverage.
+
 Those gaps are already covered by the current bead graph:
 1. `oxf-jbk.1.2`
 2. `oxf-jbk.2.1`
