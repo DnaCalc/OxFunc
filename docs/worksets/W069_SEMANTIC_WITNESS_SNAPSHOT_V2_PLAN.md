@@ -312,6 +312,27 @@ Current ready path:
 1. `oxf-jbk.1.1` is the first ready bead.
 2. Later beads remain dependency-blocked until schema audit and field-ownership tightening land.
 
+## 11C. First Schema Audit Readout
+The first live audit bead (`oxf-jbk.1.1`) found that the current `V2` schema and
+the `HLOOKUP` / `VLOOKUP` seed are viable, but not yet sufficiently tightened
+for the first generator-backed slice.
+
+The bounded gap set is:
+1. help/signature requiredness and derivation rules are not yet explicit for the
+   first generator-backed slice,
+2. minimum semantic witness payload expectations are not yet locked for a seeded
+   supported row,
+3. minimum provenance coverage is not yet locked for a seeded supported row,
+4. the field-by-field bridge from `V1` and `W049` into curated witness
+   enrichment is not yet fully explicit.
+
+Those gaps are already covered by the current bead graph:
+1. `oxf-jbk.1.2`
+2. `oxf-jbk.2.1`
+3. `oxf-jbk.3.1`
+
+No additional execution lane was discovered by the audit.
+
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
 1. one explicit `V2` schema exists,

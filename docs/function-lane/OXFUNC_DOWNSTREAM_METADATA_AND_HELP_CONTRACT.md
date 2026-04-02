@@ -309,6 +309,46 @@ Current role:
 2. it demonstrates that the `V2` schema can be populated from the retained `V1` export, current contract surfaces, replay evidence, runtime source, and Lean formal refs without reopening removed packet-local files,
 3. it is a seed artifact, not yet the full generator or the full supported-surface rollout.
 
+### 4.10 First Schema Audit Findings
+The first `W069` schema/seed audit against the required `V2` payload families found
+that the current contract and `HLOOKUP` / `VLOOKUP` seed are directionally sound
+but still leave four bounded gaps before the first generator-backed slice is
+honestly locked.
+
+Gap set:
+1. help/signature payload ownership is present, but the first slice does not yet
+   say which help/signature fields are required, optional, or derived for
+   generator-backed emission.
+2. semantic witness payload shape is present, but the first slice does not yet
+   state the minimum required witness content for a supported seeded row:
+   semantic modes, witness examples, admitted-slice note, and support-basis
+   text are all present in the seed but not yet tightened as slice-level rules.
+3. provenance payload shape is present, but the first slice does not yet lock the
+   minimum provenance coverage rule for a generator-backed seeded row:
+   catalog export, contract, replay/evidence, runtime, and formal refs should
+   all be present for the first supported family slice.
+4. stable-vs-enrichment ownership is present at the family level, but the first
+   slice does not yet finish the field-by-field bridge between:
+   - copied `V1` facts,
+   - `W049` runtime attachment facts,
+   - OxFunc-curated witness enrichment facts.
+
+Existing bead mapping for these gaps:
+1. `oxf-jbk.1.2`
+   - finalize bounded field ownership, requiredness, and stability-tier rules
+     for the first generator-backed slice
+2. `oxf-jbk.2.1`
+   - define the deterministic field-source map from `V1`, `W049`, and witness
+     enrichment surfaces
+3. `oxf-jbk.3.1`
+   - narrow the retained `W049` witness-bearing runtime attachment shape
+
+Audit result:
+1. no new bead creation is required from this first audit pass,
+2. the current graph already covers the discovered gaps,
+3. the first seed artifact remains valid as a seed/projection exercise, but not
+   yet as a fully generator-backed witness slice.
+
 ## 5. Authoritative Upstream References
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
