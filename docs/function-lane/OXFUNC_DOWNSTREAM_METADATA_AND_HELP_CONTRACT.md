@@ -348,6 +348,32 @@ Optional provenance for the first slice:
 1. `seam_or_handoff` refs are optional and only appear when the seeded family
    genuinely depends on a retained seam packet or handoff surface.
 
+### 4.8B First Seeded Slice Field-Source Map
+The first generator-backed `HLOOKUP` / `VLOOKUP` slice now has an explicit
+field-source map with no unowned fields.
+
+| Field family | Owning source surface(s) | First-slice extraction rule |
+|-------------|---------------------------|-----------------------------|
+| `witness_schema_version` | `V2` generator config | emit the generator's current schema/version constant |
+| `surface_stable_id`, `canonical_surface_name`, `category`, `metadata_status` | `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` | copy directly from the current `V1` row keyed by `surface_stable_id` |
+| `snapshot_generation`, `source_commit_short`, `source_commit_full`, `source_tree_state` | `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` | copy directly from the same `V1` row and snapshot header fields |
+| `signature_display` | `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md` plus generator family templates | emit from the bounded `HLOOKUP` / `VLOOKUP` family template anchored in the retained contract |
+| `arg_specs` | `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md` plus generator family templates | emit ordered argument specs from the same bounded family template, including requiredness and current-baseline behavior notes |
+| `help_summary`, `help_detail` | `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md` | derive bounded consumer-facing help from the retained current-baseline contract text; do not invent downstream-only help |
+| `semantic_modes`, `admitted_slice_note`, `current_support_basis` | `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md`, `docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md`, `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` | derive current admitted-slice and support-basis wording from the retained contract and parked-baseline reading |
+| `orthogonal_validation_status` | `docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md` and parked-baseline doctrine | emit the current orthogonal validation posture for the seeded slice; presently `locale_version_sweeps_pending` |
+| `witness_examples` | `tools/w68-probe/run-w68-lookup-logical-baseline.ps1`, `.tmp/w68-lookup-logical-results.csv`, `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md` | project seeded success and validation/error examples from the retained replay bundle and bounded contract |
+| `provenance_refs.catalog_export` | `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` | emit one catalog-export ref for the exact `surface_stable_id` row |
+| `provenance_refs.contract_artifact` | `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md` | emit the retained family contract as the current contract ref |
+| `provenance_refs.native_excel_replay` | `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`, `tools/w68-probe/run-w68-lookup-logical-baseline.ps1` | emit the seeded replay evidence id `W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401` and the retained probe ref |
+| `provenance_refs.runtime_test` | `crates/oxfunc_core/src/functions/vhlookup_family.rs` | emit the retained runtime implementation anchor for the shared lookup family |
+| `provenance_refs.formal_artifact` | `formal/lean/OxFunc/Functions/VhlookupFamily.lean` | emit the retained formal substrate ref for the shared lookup-selection family |
+
+Unowned-field result:
+1. there are no first-slice fields whose source surface remains unidentified,
+2. the current remaining work is generatorization and runtime attachment, not
+   source-surface discovery.
+
 ### 4.9 First Seed Artifact
 The first bounded `V2` seed artifact now lives at:
 1. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
