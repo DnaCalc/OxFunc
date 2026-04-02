@@ -446,6 +446,7 @@ The current supported-surface gap inventory is now pinned in:
 5. `docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md`
 6. `docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md`
 7. `docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv`
+8. `docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md`
 8. `docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md`
 
 That ledger reconciles the full supported surface as:
