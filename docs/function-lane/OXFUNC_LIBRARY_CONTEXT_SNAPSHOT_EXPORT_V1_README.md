@@ -288,6 +288,31 @@ No OxFunc-backed help or signature payload retrieval is frozen yet. The downstre
 
 See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.
 
+### 8.4A First Mixed Witness Reading Rule
+The first widened mixed `V2` tranche after the bounded `HLOOKUP` / `VLOOKUP`
+seed is:
+1. `FUNC.SUM`
+2. `FUNC.IF`
+3. `FUNC.XLOOKUP`
+4. `FUNC.LET`
+5. `FUNC.IMAGE`
+6. `FUNC.HYPERLINK`
+7. `FUNC.GROUPBY`
+8. `FUNC.OP_IMPLICIT_INTERSECTION`
+
+Current intentional exclusion:
+1. `FUNC.RTD`
+   - leave outside the first widened tranche until the retained `W043` seam
+     lane is narrowed further for witness-facing rollout.
+
+Downstream reading rule:
+1. join `V2` witness rows to `V1` export rows on `surface_stable_id`,
+2. continue to read support status and deferred/not-complete overlay truth from
+   `V1` plus `W050` / `W051`,
+3. use witness rows only as semantic/help/provenance enrichment,
+4. do not infer support solely from witness presence,
+5. if a row has no witness payload yet, keep reading it from `V1` only.
+
 ### 8.5 This Export Is A Stabilization Artifact
 This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. It also serves as the retained structural seed for `W069` witness generation. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`.
 

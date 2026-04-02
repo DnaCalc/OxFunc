@@ -437,6 +437,46 @@ Current role:
 3. `tools/w69-probe/run-w69-hvlookup-witness-generator.ps1` is now the bounded first generator path for this family,
 4. it is a seed artifact, not yet the full generator or the full supported-surface rollout.
 
+### 4.9A First Mixed-Seed Tranche And Reading Rule
+The first widened mixed tranche beyond the bounded `HLOOKUP` / `VLOOKUP`
+family seed should be:
+1. `FUNC.SUM`
+2. `FUNC.IF`
+3. `FUNC.XLOOKUP`
+4. `FUNC.LET`
+5. `FUNC.IMAGE`
+6. `FUNC.HYPERLINK`
+7. `FUNC.GROUPBY`
+8. `FUNC.OP_IMPLICIT_INTERSECTION`
+
+Current intentional exclusion:
+1. `FUNC.RTD`
+   - leave outside the first widened tranche until the retained `W043` RTD
+     seam lane is narrowed further for witness-facing rollout.
+
+First downstream reading rule for mixed witness rollout:
+1. join witness rows to `V1` rows on `surface_stable_id`,
+2. keep `V1` plus `W050` / `W051` as the owner of identity, deferred-status,
+   and supported-surface overlay truth,
+3. treat witness presence as enrichment rather than a second support-status
+   system,
+4. when a witness row exists, prefer it for:
+   - `signature_display`
+   - `arg_specs`
+   - `help_summary`
+   - `help_detail`
+   - `semantic_modes`
+   - `witness_examples`
+   - `admitted_slice_note`
+   - `orthogonal_validation_status`
+   - `current_support_basis`
+   - `provenance_refs`
+5. when no witness row exists yet, continue to read the row from `V1` alone and
+   do not invent downstream-private help or witness content,
+6. seam-heavy or modeled rows in the widened tranche should continue to display
+   `metadata_status` and `special_interface_kind` alongside the witness
+   payload.
+
 ### 4.10 First Schema Audit Findings
 The first `W069` schema/seed audit against the required `V2` payload families found
 that the current contract and `HLOOKUP` / `VLOOKUP` seed are directionally sound

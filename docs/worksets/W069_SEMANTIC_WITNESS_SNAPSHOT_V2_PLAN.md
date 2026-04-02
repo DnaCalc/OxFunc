@@ -248,6 +248,33 @@ Reason:
 1. `IFS` shares the `W068` packet but not the same lookup-selection semantic substrate,
 2. starting with `HLOOKUP` and `VLOOKUP` gives one cleaner family-shaped witness rollout before mixing lazy pair-scanning control flow into the same seed.
 
+## 10B. First Mixed-Seed Tranche
+After the bounded `HLOOKUP` / `VLOOKUP` family seed, the first widened mixed
+tranche should be:
+1. `FUNC.SUM`
+2. `FUNC.IF`
+3. `FUNC.XLOOKUP`
+4. `FUNC.LET`
+5. `FUNC.IMAGE`
+6. `FUNC.HYPERLINK`
+7. `FUNC.GROUPBY`
+8. `FUNC.OP_IMPLICIT_INTERSECTION`
+
+Why this tranche:
+1. it covers ordinary scalar aggregation (`SUM`),
+2. logical control flow (`IF`),
+3. modern lookup (`XLOOKUP`),
+4. callable/helper formation (`LET`),
+5. rich-value publication (`IMAGE`),
+6. presentation-aware output (`HYPERLINK`),
+7. grouped aggregation (`GROUPBY`),
+8. modeled operator semantics (`OP_IMPLICIT_INTERSECTION`).
+
+Current exclusion from this first widened tranche:
+1. `FUNC.RTD`
+   - intentionally excluded until the retained `W043` RTD seam lane is
+     narrowed further for witness-facing rollout.
+
 ## 11. Execution Sequence
 1. define the `SemanticWitnessEntry` schema and stability tiers,
 2. define `V1` -> `V2` field mapping,
@@ -372,6 +399,37 @@ Validated results:
 5. The current first seeded family therefore survives the generator path without
    reopening removed packet-local artifacts or creating a second catalog-owner
    surface.
+
+## 11E. First Downstream Reading Guide Shape
+Downstream consumers should read `V2` witness rollout in three layers:
+1. identity and support overlay
+   - join on `surface_stable_id`
+   - keep `V1` plus `W050` / `W051` as the owner of identity, counts, deferred
+     status, and supported-surface overlay truth
+2. witness enrichment
+   - when a `V2` witness row exists, use it for:
+     - `signature_display`
+     - `arg_specs`
+     - `help_summary`
+     - `help_detail`
+     - `semantic_modes`
+     - `witness_examples`
+     - `admitted_slice_note`
+     - `orthogonal_validation_status`
+     - `current_support_basis`
+     - `provenance_refs`
+3. fallback behavior
+   - when no `V2` witness row exists yet, continue to read the row from `V1`
+     only and do not invent downstream-private help or witness content.
+
+Mixed-tranche reading rule:
+1. witness presence is an enrichment signal, not a second support-status
+   system,
+2. seam-heavy or modeled rows in the mixed tranche should still surface their
+   `metadata_status` and `special_interface_kind` alongside witness payloads,
+3. downstream consumers should therefore be able to render one mixed witness UI
+   without pretending that every supported row already has `V2` payload
+   coverage.
 
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
