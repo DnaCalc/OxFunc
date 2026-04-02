@@ -391,6 +391,42 @@ First-slice interpretation:
 3. serialized `V2` artifacts are projections of that attachment model rather
    than the owner of runtime identity.
 
+### 4.8D First Serialized Projection Rule
+The first deterministic serialized `V2` artifact for a bounded seeded slice is a
+JSON document with:
+1. one witness-snapshot header,
+2. one bounded seeded-family marker,
+3. an ordered `entries` array of `SemanticWitnessEntry` rows.
+
+First bounded header shape:
+1. `witness_snapshot_id`
+2. `witness_schema_version`
+3. `source_snapshot_ref`
+4. `seed_family`
+5. `entries`
+
+Deterministic generation rule:
+1. the header must be emitted in the same field order on every run,
+2. `entries` must be sorted by `surface_stable_id` ascending,
+3. each entry must carry the copied `snapshot_generation` and
+   `source_commit_*` / `source_tree_state` facts from the current `V1` export
+   row used for generation,
+4. the serialized artifact must not inline a second runtime identity object or a
+   CSV-mirroring runtime object model,
+5. the serialized artifact is therefore the deterministic projection of the
+   witness payload attached to snapshot entries, not a replacement for the
+   `W049` runtime carrier.
+
+First-slice publication rule:
+1. the first generator-backed artifact may remain family-bounded
+   (`HLOOKUP` / `VLOOKUP`) rather than pretending to be a full-surface `V2`,
+2. later mixed-seed tranches may either:
+   - widen the same JSON family artifact shape, or
+   - publish an adjacent tranche artifact with the same header/entry rules,
+3. downstream consumers should treat the first bounded artifact as a
+   deterministic witness projection format, not yet the final all-surface
+   packaging decision.
+
 ### 4.9 First Seed Artifact
 The first bounded `V2` seed artifact now lives at:
 1. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`

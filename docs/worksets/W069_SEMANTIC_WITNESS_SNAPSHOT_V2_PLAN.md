@@ -288,6 +288,15 @@ Generator rule:
 2. do not author `V2` as a second unrelated catalog,
 3. do not duplicate ownership of identity/profile facts that already belong to `V1`.
 
+First serialized projection note:
+1. the first bounded generator-backed `V2` artifact should remain a deterministic
+   JSON seeded-family projection,
+2. it should carry one witness-snapshot header plus an ordered `entries` array,
+3. it should sort entries by `surface_stable_id`,
+4. it should copy snapshot provenance from the `V1` rows used for generation,
+5. it should not attempt to serialize a second runtime identity layer distinct
+   from the retained `W049` attachment model.
+
 ## 11B. Current Execution Encoding
 Live `W069` execution now runs through `.beads/` under:
 1. workset rollout:
