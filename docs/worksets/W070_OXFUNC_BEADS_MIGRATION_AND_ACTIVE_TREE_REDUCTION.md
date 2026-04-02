@@ -186,10 +186,10 @@ Current role:
 2. partial execution-state surface.
 
 Target role:
-1. retire as an ordinary live tracker,
+1. remove from the active tree,
 2. move ordinary blockers into `.beads/`,
-3. if retained at all, keep only exceptional prose blockers that cannot be
-   represented cleanly in bead fields.
+3. preserve any historical blocker narrative only through `docs/HISTORY.md`,
+   git history, and tag `OxFunc_V1`.
 
 ### 8.4 Workset Docs
 Current role:
@@ -284,7 +284,7 @@ Current state:
 Deliverables:
 1. classify current docs as `active_canonical`, `active_evidence`,
    `historical_provenance`, or `disposable_transitional`,
-2. produce an explicit triage register,
+2. produce an explicit migration triage register,
 3. identify which current docs remain active inputs for current support claims.
 
 Exit condition:
@@ -292,7 +292,7 @@ Exit condition:
 2. there is no ambiguous "leave it for now" pile.
 
 Current state:
-1. complete, with the triage register established in `docs/W070_ACTIVE_TREE_TRIAGE_REGISTER.csv`.
+1. complete; the migration triage pass has been executed and now survives only as closed provenance through this packet, [docs/HISTORY.md](/C:/Work/DnaCalc/OxFunc/docs/HISTORY.md), git history, and tag `OxFunc_V1`.
 2. current inventory baseline:
    - `624` docs under `docs/`
    - `72` workset docs under `docs/worksets/`
@@ -317,7 +317,7 @@ Current state:
    - XLL/replay-support surfaces to keep for now,
    - live deferred/runtime/export inventories tied to `W041` / `W043` / `W044` / `W049` / `W050` / `W051`,
    - large historical note/inventory families (`W16_BATCH*`, old localization and deferred inventories, closed seam-review notes, packet registers and normalization maps) queued for archive waves
-8. the triage register now gives every major current doc family an explicit bucket and target action; there is no remaining large "unclassified" document pile blocking doctrine rewrite.
+8. the migration triage pass gave every major current doc family an explicit bucket and target action; there is no remaining large "unclassified" document pile blocking doctrine rewrite.
 
 ### Phase C: Doctrinal Reorientation
 Deliverables:
@@ -373,7 +373,7 @@ Deliverables:
 1. remove superseded historical execution docs from `main`,
 2. demote workset and function-lane indexes to active-only surfaces,
 3. shrink `docs/worksets/README.md` or retire it,
-4. shrink or retire `CURRENT_BLOCKERS.md`,
+4. remove `CURRENT_BLOCKERS.md`,
 5. remove stale packet-local helper lists not needed for current truth.
 
 Default removal set:
@@ -399,7 +399,7 @@ Current execution encoding:
    - `oxf-o62`
 4. tracker/index cleanup beads:
    - `oxf-o62.1` bridge-posture narrowing after bead bootstrap,
-   - `oxf-o62.2` retire `CURRENT_BLOCKERS.md` as an ordinary execution tracker,
+   - `oxf-o62.2` remove `CURRENT_BLOCKERS.md` from active operation,
    - `oxf-o62.3` shrink workset and function-lane indexes to active-surface maps only,
    - `oxf-o62.4` reduce the feature register to a high-level map after archive-wave execution
 
@@ -426,6 +426,32 @@ Current execution encoding:
 Phase note:
 1. live progress for Phase F is now owned by `.beads/`; this packet names the intended proof and reconciliation surfaces but is no longer the execution tracker.
 
+Current proof reading after archive reduction:
+1. the active parked-baseline and downstream guidance surfaces now agree on the same current parked reading:
+   - `534` published rows,
+   - `517` supported rows,
+   - `17` deferred rows,
+   - `0` non-deferred backlog rows.
+2. those current counts and ownership rules are now aligned across:
+   - `docs/PARKED_CURRENT_BASELINE_20260401.md`,
+   - `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`,
+   - `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`,
+   - `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`,
+   - `docs/WORKSET_REGISTER.md`,
+   - `docs/worksets/README.md`,
+   - `docs/IN_PROGRESS_FEATURE_WORKLIST.md`.
+3. the active tree no longer depends on the removed wave-3 and wave-4 packet-local artifacts as live truth surfaces; retained references to those removed files now survive only in:
+   - `docs/HISTORY.md`,
+   - git history and tag `OxFunc_V1`.
+4. current support and evidence claims remain reproducible from the surviving live set:
+   - active workset authorities,
+   - retained function-slice contract prelims,
+   - `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`,
+   - retained probe scripts under `tools/`,
+   - source implementations under `crates/oxfunc_core/src/functions/`,
+   - surviving Lean artifacts under `formal/lean/`,
+   - the parked `V1` export and readme surfaces.
+
 ### Phase G: First Post-Migration Execution
 Deliverables:
 1. choose the first workset to execute under beads,
@@ -449,6 +475,15 @@ Current execution encoding:
 
 Phase note:
 1. live progress for Phase G is now owned by `.beads/`; this packet names the intended closure path but is no longer the execution tracker.
+
+Current proof-of-use note:
+1. the first real post-migration `W069` execution output is now the bounded seed witness artifact:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+2. that artifact proves the repo has moved from migration-only cleanup into ordinary post-migration work under beads because it:
+   - was added through a live `W069` bead after the graph migration completed,
+   - projects retained `V1` export facts into the new witness shape,
+   - ties the first seeded family (`HLOOKUP` / `VLOOKUP`) to surviving contract, replay, runtime, and Lean surfaces,
+   - lands as an ordinary live truth artifact rather than a migration-only note.
 
 ## 11. Recommended First Live Sequencing
 Recommended order:
@@ -500,6 +535,13 @@ Execution-state note:
 3. this packet remains the migration plan and closure-criteria surface,
 4. it should no longer be used as a checklist substitute for the bead graph.
 
+Closed reading after the final closure-proof bead:
+1. all Phase A through Phase G conditions are now satisfied for the migration itself,
+2. `.beads/` owns live execution truth,
+3. `docs/WORKSET_REGISTER.md` owns ordered workset truth,
+4. this packet now remains as migration plan and provenance only,
+5. ordinary follow-on execution proceeds through the live workset register and bead graph rather than through `W070`.
+
 ## 14. Closure Condition
 `W070` is complete only when all hold:
 1. OxFunc doctrine consistently describes the bead model,
@@ -512,6 +554,14 @@ Execution-state note:
 
 ## 15. Immediate Next Step
 The next correct move under this plan is:
-1. Phase E active-tree reduction,
-2. first archive/removal waves anchored to the triage register,
-3. narrowing or retiring transitional tracker surfaces that are now superseded by `.beads/`.
+1. continue ordinary post-migration execution under the live workset register and bead graph,
+2. widen `W069` from the first `HLOOKUP` / `VLOOKUP` seed artifact into a broader witness-generation path,
+3. keep `W070` as closure provenance only unless a later migration mismatch explicitly reopens it.
+
+## 16. Status
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+5. open_lanes:
+   - none

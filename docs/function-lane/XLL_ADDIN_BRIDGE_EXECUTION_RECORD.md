@@ -56,7 +56,7 @@ Outputs:
 ### G2 - Shim Contract Closure
 1. Status: `closed`.
 2. Evidence:
-   - `docs/function-lane/XLL_ADDIN_BRIDGE_SHIM_CONTRACT_PRELIM.md`
+   - `docs/HISTORY.md`
    - `tools/xll-addin/oxfunc_xll/src/lib.rs`
    - `crates/oxfunc_core/src/xll_export_specs.rs`
    - `tools/xll-addin/oxfunc_xll/export_specs.csv`

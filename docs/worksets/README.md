@@ -1,71 +1,41 @@
 # OxFunc Worksets
 
-Current workset-truth note:
-1. `docs/WORKSET_REGISTER.md` is now the canonical ordered workset surface.
-2. `.beads/` now owns live execution-state truth.
-3. This file is now a workset index and historical packet map, not a live execution-state surface.
+This folder is the compact active map for workset-level OxFunc planning and
+provenance.
 
-Worksets are sequence-based planning and provenance packets for cross-cutting OxFunc slices.
+It is not a live execution tracker.
+For ordered workset truth use [WORKSET_REGISTER.md](/C:/Work/DnaCalc/OxFunc/docs/WORKSET_REGISTER.md).
+For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.beads/issues.jsonl) through `br`.
 
-Supersession note:
-1. Any older reading that `W051` contains only the explicit `15`-row residual preview cluster is superseded by `W051` itself.
-2. For current non-deferred outstanding-row truth, use `W051` rather than older family packets or snapshot-only readings.
-3. For the current OxFunc-owned shared-interface freeze candidate, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
-4. For the parked current non-deferred baseline, use `docs/PARKED_CURRENT_BASELINE_20260401.md`.
+## Current Rules
+1. Worksets are planning and provenance packets, not the owner of ready or blocked state.
+2. `.beads/` owns live execution truth.
+3. Closed historical worksets removed from `main` are preserved through [HISTORY.md](/C:/Work/DnaCalc/OxFunc/docs/HISTORY.md) and tag `OxFunc_V1`.
 
-Primary kickoff orchestration:
-1. historical kickoff packets through `W021` now live behind `docs/HISTORY.md` and the `OxFunc_V1` tag.
+## Active Workset Set
+1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md)
+2. [W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md)
+3. [W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md)
+4. [W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md)
+5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md)
+6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md)
+7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md)
+8. [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md)
 
-Current active worksets:
-1. `W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md` (W41)
-2. `W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md` (W43)
-3. `W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md` (W44)
-4. `W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` (W49)
-5. `W050_DEFERRED_CURRENT_VERSION_SURFACE.md` (W50)
-6. `W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md` (W51)
-7. `W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` (W54)
-8. `W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md` (W69)
-9. `W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md` (W70)
+## Active Role Split
+1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
+2. [W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W043_RTD_COM_ACTIVATION_AND_TOPIC_LIFECYCLE_SEAM.md) remains the live RTD seam authority.
+3. [W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md) remains the live V1 export provenance owner.
+4. [W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md) remains the retained runtime carrier model.
+5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md) remains the canonical deferred tracker.
+6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) remains the parked non-deferred tracker and currently records zero open rows.
+7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md) remains the parked Lean reconciliation authority.
+8. [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md) is the next substantive execution target.
 
-Historical packet note:
-1. closed historical worksets removed from `main` are indexed in `docs/HISTORY.md` and preserved at tag `OxFunc_V1`.
-
-Common rules:
-1. Worksets are sequence/gate driven, never date driven.
-2. Each workset must declare dependencies, deliverables, and gate criteria.
-3. Completion is recorded by gate closure and explicit status updates.
-4. Claim confidence (`draft/provisional/validated`) and assurance maturity (`exercised/green-validated`) must be stated separately.
-
-Mega-batch planning note:
-1. If native replay shows that a row is host/profile-sensitive, provider-bound, or absent on the current host surface, extract it early to a successor packet instead of carrying it as an ordinary mega-batch member.
-2. For advanced finance families, add at least one direct Excel-valued parity row early; internally consistent local tests are not enough by themselves.
-3. Mega-batch packets should define the reconciliation rule up front: every row must end as either `done` or `extracted`, with no silent residual state.
-
-Process references:
-- Pre-closure checklist: `OPERATIONS.md` Section 12.
-- Completion claim self-audit: `OPERATIONS.md` Section 14.
-- Live execution blockers: `.beads/`.
-- Exceptional prose blocker ledger only: `CURRENT_BLOCKERS.md`.
-- In-progress feature register: `docs/IN_PROGRESS_FEATURE_WORKLIST.md`.
-
-Replay rollout sequence after `W016`:
-1. Historical replay rollout packets `W017` through `W021` are preserved behind `docs/HISTORY.md` and `OxFunc_V1`.
-2. The surviving live replay surfaces are the replay-support docs in `docs/function-lane/` and the active feature/register lanes in `docs/IN_PROGRESS_FEATURE_WORKLIST.md` and `docs/WORKSET_REGISTER.md`.
-3. `W047`, `W048`, and `W049` are complete for declared current-phase scope and remain as shared-freeze provenance for typed context/query, return-surface publication, and runtime provider/snapshot consumer modeling.
-4. The previously seam-heavy packets `W023`, `W038`, `W046`, `W055`, and `W014` are complete for declared current-phase scope, and the hidden ordinary backlog was fully drained through `W068`.
-5. `W050` and `W051` now centralize current-version backlog truth:
-   - `W050` is the canonical deferred-current-version list.
-   - `W051` is the canonical in-scope current-version backlog surface and currently records no remaining non-deferred backlog.
-   - Older family packets remain provenance/evidence owners rather than the active central tracker.
-6. Current `W051` totals are:
-   - `0` normalized non-deferred outstanding execution rows (`0` functions, `0` operators).
-   - `0` hidden non-deferred backlog snapshot entries after `W068`.
-   - `0` explicit preview-cluster rows plus `0` hidden ordinary execution rows.
-   - The first-pass `114` documented-complete snapshot-stale rows have been refreshed into the published export.
-7. Current interface-finalization reading:
-   - the prior seam-heavy non-deferred surface is acknowledged across OxFunc and OxFml and promoted out of `W051`,
-   - no explicit residual preview row remains after `W014` current-phase closure,
-   - the hidden ordinary backlog is fully drained after `W068`,
-   - the current OxFunc-owned consolidated candidate lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
-
-
+## Use These Instead
+1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.
+2. Use [WORKSET_REGISTER.md](/C:/Work/DnaCalc/OxFunc/docs/WORKSET_REGISTER.md) for ordered workset truth.
+3. Use [BEADS.md](/C:/Work/DnaCalc/OxFunc/docs/BEADS.md) for the local bead method.
+4. Use [IN_PROGRESS_FEATURE_WORKLIST.md](/C:/Work/DnaCalc/OxFunc/docs/IN_PROGRESS_FEATURE_WORKLIST.md) only as a high-level feature map.
+5. Use [HISTORY.md](/C:/Work/DnaCalc/OxFunc/docs/HISTORY.md) and tag `OxFunc_V1` for removed workset packets and retired migration aids.
+6. Use [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) only as closed migration provenance, not as active workset authority.

@@ -11,7 +11,7 @@ Record the current-boundary seam decision for the `W26` locale/profile-sensitive
 4. `NUMBERVALUE`
 
 ## 2. Evidence Used
-1. `CURRENT_BLOCKERS.md`
+1. `docs/HISTORY.md`
 2. `docs/worksets/W030_DEFERRED_LOCALE_PROFILE_SENSITIVE_TEXT_AND_NUMBER_FUNCTIONS.md`
 3. `docs/function-lane/W30_DEFERRED_LOCALE_PROFILE_SENSITIVE_TEXT_AND_NUMBER_INVENTORY.csv`
 4. `docs/function-lane/W26_EXECUTION_RECORD.md`

@@ -1,6 +1,6 @@
 # W48 Execution Record - Return Surface And Publication Hint Freeze
 
-Status: `in_progress`
+Status: `complete`
 Workset: `W048`
 
 ## 1. Purpose
@@ -11,8 +11,8 @@ Freeze the first shared return-surface split for the already-covered OxFunc scop
 
 ## 2. Packet Outputs
 Artifacts produced or updated in this packet:
-1. `docs/worksets/W048_RETURN_SURFACE_AND_PUBLICATION_HINT_FREEZE.md`
-2. `docs/function-lane/FUNCTION_SLICE_RETURN_SURFACE_AND_PUBLICATION_HINT_CONTRACT_PRELIM.md`
+1. `docs/HISTORY.md`
+2. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
 3. `docs/function-lane/W48_RETURN_SURFACE_CLASS_MAP.csv`
 4. `docs/function-lane/W48_EXECUTION_RECORD.md`
 5. `docs/function-lane/W48_OXFML_CONSUMER_RECONCILIATION.md`
@@ -44,9 +44,9 @@ Primary reviewed artifacts:
 8. `docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md`
 
 ## 6. Completeness Axes
-1. execution_state: `in_progress`
+1. execution_state: `complete`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_complete`
-4. integration_completeness: `partial`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - current frozen return split is pinned locally but not yet acknowledged as the shared first bounded consumer model
+   - later witness-bearing runtime attachment remains follow-on work under `W069`, not an open current-phase freeze gap

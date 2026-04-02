@@ -2,7 +2,7 @@
 
 ## 1. Packet
 1. workset: `W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE`
-2. execution_state: `in_progress`
+2. execution_state: `complete`
 
 ## 2. Objective
 Convert the library-context snapshot discussion from a note-only seam topic into one explicit downstream export artifact or stable export pointer that OxFml can consume.
@@ -95,6 +95,7 @@ That was useful but insufficient because it did not by itself pin:
 8. final cross-repo field names and ABI remain open
 9. `xlcall_builtin_*` currently covers matched built-in `xlf*` rows only, not commands, auxiliary callbacks, or future registered-external rows
 10. the export is still an interchange/debug artifact; the preferred long-term implementation seam is a runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model with explicit generation changes on registration/removal
+11. the export is now also the retained structural seed for `W069` witness generation; it is not the intended final downstream destination surface
 
 ## 7. Verification
 1. generated from `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`

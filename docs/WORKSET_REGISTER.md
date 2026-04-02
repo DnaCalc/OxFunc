@@ -21,9 +21,9 @@ Planning and execution truth in OxFunc is split as follows:
 5. current function-lane and workset evidence artifacts remain the supporting truth surfaces for supported claims.
 
 Transition note:
-1. OxFunc is currently in `W070` Phase E-prep state.
+1. OxFunc is currently in `W070` active-tree reduction under the live bead graph.
 2. `.beads/` is now bootstrapped and owns live execution-state truth.
-3. this register remains authoritative for workset order and [W070](worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) remains the migration authority while the active-tree reduction waves continue.
+3. this register remains authoritative for workset order, and [W070](worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) now survives as the closed migration plan/provenance packet rather than a live tracker.
 
 ## 3. Use Rule
 Use this document as:
@@ -170,7 +170,7 @@ It does mean:
    `OxFml`
 5. closure_condition:
    the RTD seam is either explicitly narrowed and retained as deferred/open truth
-   or rolled into a future honest execution packet with active evidence.
+   or rolled into a future honest workset-led execution lane with active evidence.
 6. initial_epic_lanes:
    seam authority cleanup, RTD evidence preservation, future-rollout preparation
 7. rollout_mode:

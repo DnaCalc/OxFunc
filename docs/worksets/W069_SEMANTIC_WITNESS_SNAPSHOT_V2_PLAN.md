@@ -212,6 +212,40 @@ Reason:
 
 If the model works for that seed, it will probably generalize honestly.
 
+## 10A. First Seeded Family Selection
+The first bounded seeded family for actual `V2` witness rollout should be the shared lookup-selection family:
+1. `HLOOKUP`
+2. `VLOOKUP`
+
+Why this family should go first:
+1. it already has a stable `V1` identity/profile surface,
+2. it has a dedicated closure packet and replay bundle under `W068`,
+3. it has a clear shared Lean substrate in `formal/lean/OxFunc/Functions/VhlookupFamily.lean`,
+4. it is semantically rich enough to exercise signature/help/evidence/formal refs without immediately pulling in richer provider or callable seams,
+5. `VLOOKUP` is already the concrete explanatory example used earlier in this plan.
+
+The first-seed source surfaces for this family are:
+1. identity/profile seed:
+   - `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
+2. contract/help-seed inputs:
+   - `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md`
+3. runtime evidence and closure provenance:
+   - `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`
+   - `docs/HISTORY.md`
+   - `tools/w68-probe/run-w68-lookup-logical-baseline.ps1`
+4. formal refs:
+   - `formal/lean/OxFunc/Functions/VhlookupFamily.lean`
+5. runtime implementation anchors:
+   - `crates/oxfunc_core/src/functions/vhlookup_family.rs`
+   - `crates/oxfunc_core/src/functions/surface_dispatch.rs`
+6. first concrete witness seed artifact:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+
+The first-seed witness lane should exclude `IFS` initially.
+Reason:
+1. `IFS` shares the `W068` packet but not the same lookup-selection semantic substrate,
+2. starting with `HLOOKUP` and `VLOOKUP` gives one cleaner family-shaped witness rollout before mixing lazy pair-scanning control flow into the same seed.
+
 ## 11. Execution Sequence
 1. define the `SemanticWitnessEntry` schema and stability tiers,
 2. define `V1` -> `V2` field mapping,
@@ -222,7 +256,37 @@ If the model works for that seed, it will probably generalize honestly.
 
 Schema anchor note:
 1. the first live `SemanticWitnessEntry` schema and stability tiers now live in `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.6 and Section 4.7,
-2. downstream readers should cite that contract directly rather than restating the schema in packet-local notes.
+2. the first explicit `V1` plus `W049` to `V2` projection rule now lives in `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.8,
+3. the first bounded seed artifact now lives in `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`,
+4. downstream readers should cite the contract for schema ownership and the seed artifact for the first concrete witness projection rather than restating the schema in packet-local notes.
+
+## 11A. First Bridge Shape
+The first honest bridge into `V2` is:
+1. `V1` export row as the stable identity and structural seed,
+2. `W049` runtime model as the runtime attachment and immutable snapshot carrier,
+3. OxFunc-curated witness enrichment as the semantic/help/provenance layer.
+
+That means:
+1. `V1` still owns:
+   - `surface_stable_id`
+   - `canonical_surface_name`
+   - category/profile-bearing row facts
+   - snapshot provenance fields
+2. `W049` still owns:
+   - `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - generation semantics
+   - runtime grouping rather than CSV mirroring
+3. `V2` owns:
+   - structured help/signature payloads
+   - semantic witness examples and modes
+   - admitted-slice and orthogonal-validation summaries
+   - machine-readable provenance refs
+
+Generator rule:
+1. generate `SemanticWitnessEntry` from `V1` plus `W049` plus enrichment surfaces,
+2. do not author `V2` as a second unrelated catalog,
+3. do not duplicate ownership of identity/profile facts that already belong to `V1`.
 
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:

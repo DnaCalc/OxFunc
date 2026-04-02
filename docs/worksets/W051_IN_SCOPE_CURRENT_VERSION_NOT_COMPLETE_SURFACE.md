@@ -15,21 +15,21 @@ This packet also records the current shared-interface acknowledgement outcome fo
 3. the `17` deferred rows in `W050` remain excluded from the current acknowledgement scope and may reopen only on the same concrete-mismatch basis in a later round.
 
 ## 2. Provenance
-This packet consolidates active current-version backlog ownership from:
-1. `W014_IMPLICIT_INTERSECTION_OPERATOR.md`
-2. `W023_DEFERRED_HOST_METADATA_AND_DATABASE_FUNCTIONS.md`
-3. `W025_DEFERRED_MISC_ADDIN_AND_DYNAMIC_ARRAY_OUTLIERS.md`
-4. `W038_FUNCTIONAL_LAMBDA_AND_HELPER_FAMILY.md`
-5. `W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md`
-6. `W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md`
-7. latent catalog gaps visible through `W044`
-8. later packet-complete evidence checked during the first-pass catalog reconciliation:
-   - `W022_CRITERIA_FAMILY_SHAPE_HARDENING.md`
-   - `W024_ORDINARY_FUNCTIONS_MEGA_BATCH_EXECUTION_PLAN.md`
-   - `W027_DEFERRED_ADVANCED_BOND_AND_ODD_BOND_HARDENING.md`
-   - `W033_INFORMATION_PREDICATES_AND_FORECAST_COMPATIBILITY_CLOSURE.md`
-   - `W037_REOPENED_XIRR_LARGE_ROOT_SOLVER_PRECISION.md`
-   - `W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md`
+This packet now survives primarily as a parked-baseline completion summary.
+
+Active surviving provenance and control inputs:
+1. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md`
+2. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
+3. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md`
+4. `docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md`
+5. the live `W51_*` inventories in `docs/function-lane/`
+6. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
+7. `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`
+
+Historical packet-chain provenance for the removed closed worksets now lives behind:
+1. `docs/HISTORY.md`
+2. git tag `OxFunc_V1`
+3. the archived `W058` normalization packet and the archived `W055` through `W068` closure chain
 
 ## 3. Scope
 Machine-readable working inputs:
@@ -37,21 +37,8 @@ Machine-readable working inputs:
 2. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`
 3. `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`
 4. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`
-5. `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`
-6. `docs/function-lane/W58_GROUPED_ROW_NORMALIZATION_MAP.csv`
-7. `docs/function-lane/W58_SUCCESSOR_PACKET_SPLIT.csv`
-8. `docs/function-lane/W59_SCOPE_RECONCILIATION.csv`
-9. `docs/function-lane/W60_SCOPE_RECONCILIATION.csv`
-10. `docs/function-lane/W61_SCOPE_RECONCILIATION.csv`
-11. `docs/function-lane/W62_SCOPE_RECONCILIATION.csv`
-12. `docs/function-lane/W63_SCOPE_RECONCILIATION.csv`
-13. `docs/function-lane/W64_SCOPE_RECONCILIATION.csv`
-14. `docs/function-lane/W65_SCOPE_RECONCILIATION.csv`
-15. `docs/function-lane/W66_SCOPE_RECONCILIATION.csv`
-16. `docs/function-lane/W67_SCOPE_RECONCILIATION.csv`
-17. `docs/function-lane/W68_SCOPE_RECONCILIATION.csv`
-18. `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`
-19. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
+5. `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`
+6. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
 
 Current working total:
 1. `0` function rows.
@@ -100,17 +87,8 @@ Exact-inventory note:
    - `W037`: `1`
    - `W045`: `19`
    - legacy `RANDARRAY` cleanup: `1`
-4. `W058` preserves the original hidden-backlog `185` snapshot entries as provenance while creating the machine-clean `192`-row execution inventory used for ordinary backlog closure.
-5. `W059` then removes `16` rows from the active ordinary backlog.
-6. `W060` then removes a further `26` rows.
-7. `W061` then removes a further `29` rows.
-8. `W062` then removes a further `35` rows.
-9. `W063` then removes a further `18` rows.
-10. `W064` then removes a further `15` rows.
-11. `W065` then removes a further `12` rows.
-12. `W066` then removes a further `23` normalized text-family rows.
-13. `W067` then removes a further `15` rows.
-14. `W068` then removes the final `3` rows, leaving:
+4. the archived `W058` normalization packet preserved the original hidden-backlog `185` snapshot entries as provenance while creating the machine-clean `192`-row execution inventory used for ordinary backlog closure.
+5. the archived `W059` through `W068` packet chain then drained that ordinary backlog to zero, leaving:
    - `0` current snapshot-entry backlog rows,
    - `0` current normalized execution backlog rows.
 
@@ -142,20 +120,8 @@ Important current reading:
   - they were not in `W050`,
   - they were not in legacy `W051`,
   - and this first pass did not find a later packet already closing them.
-- `W058` now supplies the authoritative machine-clean execution view of that same backlog:
-  - `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv` is the execution inventory,
-  - `docs/function-lane/W58_GROUPED_ROW_NORMALIZATION_MAP.csv` pins the seven grouped-row splits,
-  - `docs/function-lane/W58_SUCCESSOR_PACKET_SPLIT.csv` freezes the exact `W059` through `W068` ownership counts.
-- `W059` is now complete and removed from the active backlog.
-- `W060` is now complete and removed from the active backlog.
-- `W061` is now complete and removed from the active backlog.
-- `W062` is now complete and removed from the active backlog.
-- `W063` is now complete and removed from the active backlog.
-- `W064` is now complete and removed from the active backlog.
-- `W065` is now complete and removed from the active backlog.
-- `W066` is now complete and removed from the active backlog.
-- `W067` is now complete and removed from the active backlog.
-- `W068` is now complete and removes the final ordinary rows from the active backlog.
+- the archived `W058` packet supplies the machine-clean execution view of that same backlog in the `OxFunc_V1` history slice.
+- the archived `W059` through `W068` packet chain removed the ordinary rows from the active backlog.
 - for shared-interface acknowledgement purposes, there is no remaining hidden ordinary backlog in the active current-version non-deferred surface.
 - current remaining successor execution split after `W068`:
   - none.
@@ -176,55 +142,27 @@ For the current version target:
 6. `ROWS`, `COLUMNS`, `RANDBETWEEN`, `VALUETOTEXT`, `RANDARRAY`, `TRIMRANGE` are now function-phase-complete and removed,
 7. trim-reference operators (`OP_TRIM_REF_*`) are verified against W045 structural slice and removed,
 8. rows with later complete packet evidence should be kept out of W51 and instead recorded as snapshot/export drift until metadata refresh catches up.
-9. the current shared-interface freeze/promotion pass is owned by:
-   - `W042` for the callable minimum carrier,
-   - `W046` for registered-external packet shape,
-   - `W047` for typed context/query bundle,
-   - `W048` for return-surface split,
-   - `W049` for runtime library-context provider/snapshot model,
-   - `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md` as the consolidated outbound model.
+9. the archived shared-interface freeze chain is preserved behind `docs/HISTORY.md` and `OxFunc_V1`; the surviving active anchors are:
+   - `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
+   - `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
 
 ## 5. Ownership Rule
 1. `W51` is the canonical current-version not-complete working backlog for all non-deferred outstanding rows.
 2. Older packets remain provenance/evidence owners and, where applicable, execution owners for the explicit family-specific residual rows.
 3. `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` remains provenance for the original hidden snapshot-entry discovery.
 4. `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv` is the authoritative current execution-owner inventory for the remaining ordinary backlog.
-5. `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv` remains the full post-normalization provenance inventory and freezes the original successor ownership through `W059` to `W068`.
-6. New latent gaps or reconciliation findings should be added here immediately, then extracted into narrower execution packets as needed.
+5. the archived `W058` packet remains the post-normalization provenance owner behind `docs/HISTORY.md` and `OxFunc_V1`.
+6. New latent gaps or reconciliation findings should be added here immediately, then extracted into narrower workset and bead execution lanes as needed.
 
 ## 6. Cleanup And Completion Sequence
-1. Finalize the remaining shared-model owner packets for the interesting backlog:
-   - `W042`
-   - `W046`
-   - `W047`
-   - `W048`
-   - `W049`
-2. Consolidate those owner-packet readings into one outbound current-phase model note:
-   - `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
-3. Completed in the current pass: the OxFunc ↔ OxFml notes interchange against that single consolidated model no longer shows a material interface mismatch for the interesting non-deferred surface.
-4. Completed in the current pass: the shared-interface model is now acknowledged across OxFunc and OxFml and promoted into the current owner-packet reading across `W042`, `W046`, `W047`, `W048`, `W049`, and `W051`.
-5. Completed in the current pass: close the packet-local promotion/doc lanes for `W023`, `W038`, and `W046`, removing `IMAGE`, the nine callable-helper rows, and `CALL` / `REGISTER.ID` from `W051`.
-6. Completed in the current pass: refresh the exact `114` documented-complete snapshot-stale rows listed in `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv` out of false `catalog_only` state in the published library-context snapshot and downstream labeling guidance.
-7. Completed in the current pass: promote `GROUPBY` and `PIVOTBY` through `W055`, removing them from the residual preview cluster and narrowing the explicit `W051` surface to `OP_IMPLICIT_INTERSECTION` only.
-8. Completed in the current pass: close `W014` for declared current-phase scope after pinning current-baseline `_xlfn.SINGLE(...)` normalization and removing `OP_IMPLICIT_INTERSECTION` from `W051`.
-9. Completed in the current pass: `W058` normalized grouped-name rows in the hidden backlog appendix (`FIND, FINDB`; `LEFT, LEFTB`; `LEN, LENB`; `MID, MIDB`; `REPLACE, REPLACEB`; `RIGHT, RIGHTB`; `SEARCH, SEARCHB`) into machine-clean row identities.
-10. Completed in the current pass: `W058` froze the normalized ordinary backlog into narrower successor execution packets by family rather than leaving it as one mega-list.
-11. Completed in the current pass: `W059` closes the engineering radix conversion family plus the Bessel quartet and removes `16` rows from active `W051` backlog membership.
-12. Completed in the current pass: `W060` closes the complex-number family and removes a further `26` rows from active `W051` backlog membership.
-13. Completed in the current pass: `W061` closes the first statistical-distribution and compatibility wave, reconciles the matching `W054` Lean-id gaps, and removes a further `29` rows from active `W051` backlog membership.
-14. Completed in the current pass: `W062` closes the second statistical-distribution and compatibility wave, reconciles the remaining T-family `W054` Lean-id gaps for that slice, and removes a further `35` rows from active `W051` backlog membership.
-15. Completed in the current pass: `W063` closes the date/time and business-day family and removes a further `18` rows from active `W051` backlog membership.
-16. Completed in the current pass: `W064` closes the financial core miscellaneous family and removes a further `15` rows from active `W051` backlog membership.
-17. Completed in the current pass: `W065` promotes the already-evidenced database family, refreshes those `12` rows out of hidden `catalog_only` publication drift, and removes them from active `W051` backlog membership.
-18. Completed in the current pass: `W066` promotes the already-evidenced text core and compatibility family, refreshes those `16` hidden snapshot entries out of `catalog_only` publication drift, and removes the matching `23` normalized rows from active `W051` backlog membership.
-19. Completed in the current pass: `W067` promotes the already-evidenced rounding, matrix, and sumproduct-family rows, refreshes those `15` hidden snapshot entries out of `catalog_only` publication drift, and removes the matching `15` normalized rows from active `W051` backlog membership.
-20. Completed in the current pass: `W068` promotes the final lookup/logical residuals, refreshes those `3` hidden snapshot entries out of `catalog_only` publication drift, and removes the final `3` normalized rows from active `W051` backlog membership.
-21. Completed in the current pass: `W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` is now fully reconciled for the non-deferred parked surface; no active Rust-vs-Lean missing-id gap remains for those rows.
-22. Regenerate the published consumer surface after each closure wave:
-   - snapshot export
-   - labeling policy
-   - consumer-facing counts
-   - `W051` membership
+The active non-deferred closure sequence is complete.
+
+The surviving current anchors are:
+1. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md` for the published consumer export surface,
+2. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` for the retained runtime carrier model,
+3. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md` for the excluded deferred rows,
+4. `docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md` for the parked Lean-alignment result,
+5. `docs/HISTORY.md` plus `OxFunc_V1` for the archived closure chain that drained the former preview and hidden ordinary backlog.
 
 Exit condition:
 - `W051` contains every non-deferred row that is still not honestly supported.

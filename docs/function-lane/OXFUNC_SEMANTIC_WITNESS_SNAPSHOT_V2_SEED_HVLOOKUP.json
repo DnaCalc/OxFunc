@@ -1,0 +1,234 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-seed-hvlookup",
+  "witness_schema_version": "v0.seed",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "seed_family": "vhlookup",
+  "entries": [
+    {
+      "witness_schema_version": "v0.seed",
+      "surface_stable_id": "FUNC.HLOOKUP",
+      "canonical_surface_name": "HLOOKUP",
+      "category": "Lookup and reference functions",
+      "metadata_status": "function_meta_curated",
+      "signature_display": "HLOOKUP(lookup_value, table_array, row_index_num, [range_lookup])",
+      "arg_specs": [
+        {
+          "arg_index": 1,
+          "arg_name": "lookup_value",
+          "arg_required": true,
+          "arg_type_hint": "scalar",
+          "arg_behavior_note": "Supports exact and approximate lookup, including the current-baseline wildcard text lane."
+        },
+        {
+          "arg_index": 2,
+          "arg_name": "table_array",
+          "arg_required": true,
+          "arg_type_hint": "reference_or_array",
+          "arg_behavior_note": "Reference and array structure stays visible through the adapter seam."
+        },
+        {
+          "arg_index": 3,
+          "arg_name": "row_index_num",
+          "arg_required": true,
+          "arg_type_hint": "number",
+          "arg_behavior_note": "Truncates toward zero before validation."
+        },
+        {
+          "arg_index": 4,
+          "arg_name": "range_lookup",
+          "arg_required": false,
+          "arg_type_hint": "logical",
+          "arg_behavior_note": "Omitted means approximate-match mode."
+        }
+      ],
+      "help_summary": "Looks for a value in the first row of a table and returns a value from a specified row.",
+      "help_detail": "Current-baseline OxFunc support covers exact and approximate numeric lookup, wildcard text lookup on the exact lane, logical lookup values, and row-index validation.",
+      "semantic_modes": [
+        "exact_match",
+        "approximate_match_sorted",
+        "wildcard_text_lookup",
+        "row_index_validation"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W68-HLOOKUP-001",
+          "summary": "Exact numeric HLOOKUP baseline.",
+          "outcome_note": "Returns 20 for HLOOKUP(2,{1,2,3;10,20,30},2,FALSE).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-HLOOKUP-002",
+          "summary": "Approximate HLOOKUP defaults when range_lookup is omitted.",
+          "outcome_note": "Returns 20 for HLOOKUP(2.9,{1,2,3;10,20,30},2).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-HLOOKUP-003",
+          "summary": "Exact HLOOKUP supports the current-baseline wildcard lane.",
+          "outcome_note": "Returns 20 for HLOOKUP(\"b*\",{\"abc\",\"bcd\";10,20},2,FALSE).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-HLOOKUP-ERR-003",
+          "summary": "Row index beyond table height returns #REF!.",
+          "outcome_note": "Range/index validation is part of the admitted slice.",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        }
+      ],
+      "admitted_slice_note": "Current-baseline OxFunc support for HLOOKUP covers exact and approximate lookup, wildcard matching on the exact lane, logical lookup values, row-index truncation/validation, and the replayed error lanes captured in W68.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked non-deferred baseline through the retained W68 contract, replay probe, runtime implementation, formal lookup substrate, and V1 export row.",
+      "provenance_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.HLOOKUP",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "contract_doc",
+          "ref_value": "docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "evidence_id",
+          "ref_value": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "tools/w68-probe/run-w68-lookup-logical-baseline.ps1",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/vhlookup_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/VhlookupFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "snapshot_generation": "2026-04-02",
+      "source_commit_short": "87ef585",
+      "source_commit_full": "87ef5853451f61c19c4d955782094a9d7ae0771f",
+      "source_tree_state": "dirty"
+    },
+    {
+      "witness_schema_version": "v0.seed",
+      "surface_stable_id": "FUNC.VLOOKUP",
+      "canonical_surface_name": "VLOOKUP",
+      "category": "Lookup and reference functions",
+      "metadata_status": "function_meta_curated",
+      "signature_display": "VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])",
+      "arg_specs": [
+        {
+          "arg_index": 1,
+          "arg_name": "lookup_value",
+          "arg_required": true,
+          "arg_type_hint": "scalar",
+          "arg_behavior_note": "Supports exact and approximate lookup, including the current-baseline wildcard text lane."
+        },
+        {
+          "arg_index": 2,
+          "arg_name": "table_array",
+          "arg_required": true,
+          "arg_type_hint": "reference_or_array",
+          "arg_behavior_note": "Reference and array structure stays visible through the adapter seam."
+        },
+        {
+          "arg_index": 3,
+          "arg_name": "col_index_num",
+          "arg_required": true,
+          "arg_type_hint": "number",
+          "arg_behavior_note": "Truncates toward zero before validation."
+        },
+        {
+          "arg_index": 4,
+          "arg_name": "range_lookup",
+          "arg_required": false,
+          "arg_type_hint": "logical",
+          "arg_behavior_note": "Omitted means approximate-match mode."
+        }
+      ],
+      "help_summary": "Looks for a value in the first column of a table and returns a value from a specified column.",
+      "help_detail": "Current-baseline OxFunc support covers exact and approximate numeric lookup, wildcard text lookup on the exact lane, logical lookup values, and column-index validation.",
+      "semantic_modes": [
+        "exact_match",
+        "approximate_match_sorted",
+        "wildcard_text_lookup",
+        "column_index_validation"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W68-VLOOKUP-001",
+          "summary": "Exact numeric VLOOKUP baseline.",
+          "outcome_note": "Returns 20 for VLOOKUP(2,{1,10;2,20;3,30},2,FALSE).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-VLOOKUP-002",
+          "summary": "Approximate VLOOKUP defaults when range_lookup is omitted.",
+          "outcome_note": "Returns 20 for VLOOKUP(2.9,{1,10;2,20;3,30},2).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-VLOOKUP-003",
+          "summary": "Exact VLOOKUP supports the current-baseline wildcard lane.",
+          "outcome_note": "Returns 20 for VLOOKUP(\"b*\",{\"abc\",10;\"bcd\",20},2,FALSE).",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        },
+        {
+          "example_id": "W68-VLOOKUP-ERR-003",
+          "summary": "Column index beyond table width returns #REF!.",
+          "outcome_note": "Range/index validation is part of the admitted slice.",
+          "evidence_ref_hint": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401"
+        }
+      ],
+      "admitted_slice_note": "Current-baseline OxFunc support for VLOOKUP covers exact and approximate lookup, wildcard matching on the exact lane, logical lookup values, column-index truncation/validation, and the replayed error lanes captured in W68.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked non-deferred baseline through the retained W68 contract, replay probe, runtime implementation, formal lookup substrate, and V1 export row.",
+      "provenance_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.VLOOKUP",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "contract_doc",
+          "ref_value": "docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "evidence_id",
+          "ref_value": "W68-LOOKUP-LOGICAL-RESIDUALS-BL-20260401",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "tools/w68-probe/run-w68-lookup-logical-baseline.ps1",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/vhlookup_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/VhlookupFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "snapshot_generation": "2026-04-02",
+      "source_commit_short": "87ef585",
+      "source_commit_full": "87ef5853451f61c19c4d955782094a9d7ae0771f",
+      "source_tree_state": "dirty"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # W47 Execution Record - Typed Context And Query Bundle Freeze
 
-Status: `in_progress`
+Status: `complete`
 Workset: `W047`
 
 ## 1. Purpose
@@ -8,8 +8,8 @@ Freeze the first shared typed context/query bundle for the already-covered seam-
 
 ## 2. Packet Outputs
 Artifacts produced or updated in this packet:
-1. `docs/worksets/W047_TYPED_CONTEXT_AND_QUERY_BUNDLE_FREEZE.md`
-2. `docs/function-lane/FUNCTION_SLICE_TYPED_CONTEXT_AND_QUERY_BUNDLE_CONTRACT_PRELIM.md`
+1. `docs/HISTORY.md`
+2. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
 3. `docs/function-lane/W47_TYPED_CONTEXT_QUERY_DEPENDENCY_MAP.csv`
 4. `docs/function-lane/W47_EXECUTION_RECORD.md`
 5. `docs/function-lane/W47_OXFML_CONSUMER_RECONCILIATION.md`
@@ -31,7 +31,7 @@ Pinned shared bundle members:
 
 Pinned current reading:
 1. the bundle remains capability-scoped and typed,
-2. the current OxFunc query names and result partitions are the first freeze candidate,
+2. the current OxFunc query names and result partitions are archived freeze provenance and are summarized by the retained `W049` runtime model,
 3. OxFunc keeps query classification and worksheet result/error projection,
 4. OxFml / host keeps live workbook/application/environment/provider truth.
 
@@ -81,9 +81,9 @@ Code surfaces reviewed:
 8. `crates/oxfunc_core/src/functions/rand_fn.rs`
 
 ## 6. Completeness Axes
-1. execution_state: `in_progress`
+1. execution_state: `complete`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_complete`
-4. integration_completeness: `partial`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - current frozen bundle is pinned locally but not yet acknowledged as the shared first bounded consumer model
+   - later witness-bearing runtime consumption remains follow-on work under `W069`, not an open current-phase freeze gap

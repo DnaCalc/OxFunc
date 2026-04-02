@@ -16,7 +16,7 @@ Move `W046` from catalog-only seam notes to a real OxFunc-side runtime packet:
 2. `docs/function-lane/FUNCTION_SLICE_CALL_REGISTER_ID_UDF_REGISTRATION_SEAM_PRELIM.md`
 3. `docs/function-lane/W46_SCENARIO_MANIFEST_SEED.csv`
 4. `docs/function-lane/W46_RUNTIME_REQUIREMENTS.md`
-5. `docs/worksets/W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md`
+5. `docs/HISTORY.md`
 6. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
 7. `tools/w46-probe/generate-xlcall-code-catalog.ps1`
 8. `tools/w46-probe/run-w46-call-register-id-baseline.ps1`

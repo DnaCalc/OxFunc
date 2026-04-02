@@ -239,7 +239,7 @@ Goals:
    - `docs/function-lane/W14_IMPLICIT_INTERSECTION_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W14_EXECUTION_RECORD.md`
    - `docs/upstream/NOTES_FOR_OXFML.md`
-   - `docs/handoffs/HANDOFF_W014_IMPLICIT_INTERSECTION_TO_OXFML.md`
+   - archived OxFunc handoff provenance behind `OxFunc_V1`
    - `docs/HISTORY.md` (`W014` wave-1 archive entry)
 
 Current status rationale:

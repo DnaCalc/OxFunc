@@ -289,7 +289,7 @@ No OxFunc-backed help or signature payload retrieval is frozen yet. The downstre
 See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.
 
 ### 8.5 This Export Is A Stabilization Artifact
-This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`.
+This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. It also serves as the retained structural seed for `W069` witness generation. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`.
 
 ## 9. Next Expected Refinements
 1. widen operator coverage beyond the current exported operator set plus `OP_IMPLICIT_INTERSECTION`,
@@ -305,8 +305,9 @@ This export is the right pinned interchange artifact for bounded integration rou
 ## 10. Preferred Long-Term Runtime Direction
 Current OxFunc reading:
 1. this CSV export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting,
-2. but the preferred long-term implementation seam should be a runtime-ingested:
+2. it should also be treated as the retained `V1` seed for `W069` witness generation rather than as the final downstream destination surface,
+3. but the preferred long-term implementation seam should be a runtime-ingested:
    - `LibraryContextProvider`
    - immutable `LibraryContextSnapshot`
-3. function registration or removal should produce explicit new snapshot generations rather than mutating downstream state invisibly,
-4. OxFml should therefore treat CSV ingestion as a current integration mechanism, not as the desired permanent runtime coupling.
+4. function registration or removal should produce explicit new snapshot generations rather than mutating downstream state invisibly,
+5. OxFml should therefore treat CSV ingestion as a current integration mechanism and witness-generation seed, not as the desired permanent runtime coupling.

@@ -102,10 +102,10 @@ Mode: **checkpoint-at-gates** with mature-repo calibration.
 8. If a response is required because all remaining paths are blocked, the response must be a blocker summary only; it must not be framed as a checkpoint or partial completion report.
 
 Transition note:
-1. OxFunc is currently in `W070` Phase E-prep state.
+1. OxFunc has completed the `W070` doctrine migration and now runs ordinary work through `docs/WORKSET_REGISTER.md` plus `.beads/`.
 2. `.beads/` is now bootstrapped and is the ordinary blocker surface.
-3. `CURRENT_BLOCKERS.md` is retained only for exceptional prose blocker narratives and is no longer part of ordinary execution tracking or default context load.
-4. do not create new ordinary blocker entries in `CURRENT_BLOCKERS.md` unless the blocker cannot be represented cleanly in the bead graph.
+3. `CURRENT_BLOCKERS.md` has been removed from the active tree.
+4. blocker history now survives only through `docs/HISTORY.md`, git history, and tag `OxFunc_V1`.
 
 Mature-repo note: OxFunc has 13+ worksets and 38 function-phase-complete functions, exceeding the 5-workset threshold for conservative gate-pausing. Gate discipline remains mandatory but the agent has demonstrated execution history to support scope-bounded autonomy between gates.
 

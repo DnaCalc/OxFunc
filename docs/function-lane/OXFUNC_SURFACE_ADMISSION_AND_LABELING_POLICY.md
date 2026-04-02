@@ -5,7 +5,7 @@ Date: 2026-04-01
 
 Supersession note:
 1. For current row counts, backlog membership, and the consumer-facing admission report, this document is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
-2. For backlog execution ownership, use `W051` plus `docs/function-lane/W58_HIDDEN_ORDINARY_BACKLOG_NORMALIZED.csv`; `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv` remains provenance for the original hidden snapshot-entry discovery.
+2. For backlog execution ownership, use `W051` plus the live `W51_*` inventories; the older `W51_HIDDEN_NON_DEFERRED_BACKLOG_FIRST_PASS.csv`, the `W058` normalization artifacts, and the successor packet split now survive as historical provenance behind `docs/HISTORY.md` and `OxFunc_V1`.
 3. The labeling vocabulary below remains active unless it conflicts with `W051`.
 4. For the current OxFunc-owned shared-interface freeze candidate over the seam-relevant non-deferred surface, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 

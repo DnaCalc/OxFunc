@@ -14,7 +14,7 @@ Evidence IDs:
 
 ## 2. Scope
 Artifacts created or updated in the packet:
-1. `docs/worksets/W045_NON_AT_OPERATOR_UNIVERSE_CLOSURE_PASS.md`
+1. `docs/HISTORY.md`
 2. `docs/function-lane/W45_NON_AT_OPERATOR_INVENTORY.csv`
 3. `docs/function-lane/W45_SCOPE_RECONCILIATION.csv`
 4. `docs/function-lane/FUNCTION_SLICE_OPERATOR_ARITHMETIC_FAMILY_CONTRACT_PRELIM.md`

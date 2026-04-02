@@ -43,7 +43,6 @@ Out of slice:
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
 - `crates/` - Rust runtime/function scaffolding for executable slices.
 - `formal/lean/` - Lean formalization scaffolding for function/value proofs.
-- `CURRENT_BLOCKERS.md` - exceptional prose blocker ledger only; ordinary execution blockers live in `.beads/`.
 - `docs/IN_PROGRESS_FEATURE_WORKLIST.md` - in-progress feature register.
 - `docs/PARKED_CURRENT_BASELINE_20260401.md` - parked non-deferred baseline note.
 - `docs/HISTORY.md` - compact pointer for historical packets removed from the active tree.

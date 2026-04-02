@@ -25,7 +25,7 @@ Execution date:
 1. `2026-03-26`
 
 Artifacts created or updated:
-1. `docs/worksets/W052_SUMIF_CRITERIA_FAMILY_COMPLETION.md`
+1. `docs/HISTORY.md`
 2. `docs/function-lane/W52_SUMIF_SCENARIO_MANIFEST_SEED.csv`
 3. `docs/function-lane/W52_SUMIF_RUNTIME_REQUIREMENTS.md`
 4. `tools/w52-probe/run-w52-sumif-baseline.ps1`
@@ -101,7 +101,7 @@ Current-baseline interpretation:
 10. No known semantic gap remains in declared scope? `yes`
 11. Completion language audit passed (no premature "done"/"complete" per AGENTS.md anti-premature-completion rules)? `yes`
 12. `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? `yes`
-13. `CURRENT_BLOCKERS.md` updated (new/resolved)? `yes`
+13. blocker provenance updated where relevant? `yes`
 
 ## 11. Completion Claim Self-Audit
 1. Step 1 Scope Re-Read: `pass`

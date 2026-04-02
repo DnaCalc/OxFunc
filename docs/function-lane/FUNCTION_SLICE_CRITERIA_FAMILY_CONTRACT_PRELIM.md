@@ -123,7 +123,7 @@
 2. Lean: `formal/lean/OxFunc/Functions/CriteriaFamily.lean`
 3. worksets:
    - `docs/worksets/W022_CRITERIA_FAMILY_SHAPE_HARDENING.md`
-   - `docs/worksets/W052_SUMIF_CRITERIA_FAMILY_COMPLETION.md`
+   - `docs/HISTORY.md`
 4. scenario manifests:
    - `docs/function-lane/W22_CRITERIA_SHAPE_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W52_SUMIF_SCENARIO_MANIFEST_SEED.csv`

@@ -43,6 +43,6 @@ Record known limitations in the Rust XLL verification seam so they are not mista
 
 ## 4. Primary Evidence Records
 1. `docs/function-lane/XLL_ADDIN_BRIDGE_EXECUTION_RECORD.md`
-2. `docs/function-lane/XLL_ADDIN_BRIDGE_SHIM_CONTRACT_PRELIM.md`
+2. `docs/function-lane/XLL_ADDIN_BRIDGE_REGISTRATION_NOTES.md`
 3. `docs/function-lane/XLL_REGISTRATION_FLAG_EXECUTION_RECORD.md`
 4. `docs/function-lane/XLL_NIL_PROPAGATION_EXECUTION_RECORD.md`

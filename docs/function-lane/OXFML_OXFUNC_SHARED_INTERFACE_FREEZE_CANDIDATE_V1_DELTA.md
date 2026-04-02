@@ -16,7 +16,7 @@ Current overall read:
 1. the two packets are substantively aligned on the shared packet/carrier model,
 2. the remaining differences are now mostly framing, scope presentation, and local-context detail,
 3. no new broad callable, return-surface, or library-context model disagreement is visible in this comparison pass,
-4. OxFml's mirrored packet now treats `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md` as acceptable current shared freeze wording for the narrowed seam families.
+4. OxFml's mirrored packet now treats the archived freeze-promotion handoff behind `OxFunc_V1` as acceptable current shared freeze wording for the narrowed seam families.
 
 ## 3. Section Comparison
 

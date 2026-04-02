@@ -157,7 +157,7 @@ Current read of `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` and the mirrored pa
 3. OxFml has mirrored the four-way returned-value split and explicitly treats `TypedContextQueryFamily::Image` as the right first freeze name,
 4. OxFml's mirrored packet narrows the typed query family set to `ReferenceResolver`, `CellInfo`, `Info`, `Rtd`, and `Image`,
 5. OxFml's mirrored runtime consumer shape explicitly includes `LibraryContextSnapshotRef`,
-6. OxFml now reads `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md` as acceptable current shared freeze wording for the narrowed seam families,
+6. OxFml now reads the archived freeze-promotion handoff behind `OxFunc_V1` as acceptable current shared freeze wording for the narrowed seam families,
 7. the remaining joint work is now local promotion and propagation of the acknowledged shared freeze text, rather than another broad seam redesign.
 
 ## 11. Current Shared Freeze Read

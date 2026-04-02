@@ -53,22 +53,19 @@
 1. Rust: `crates/oxfunc_core/src/functions/groupby_fn.rs`
 2. Lean: `formal/lean/OxFunc/Functions/GroupBy.lean`
 3. grouped-aggregation substrate: `formal/lean/OxFunc/Functions/GroupedAggregation.lean`
-4. worksets:
-   - `docs/worksets/W055_GROUPED_AGGREGATION_CURRENT_BASELINE_PROMOTION.md`
-   - `docs/worksets/W056_GROUPED_AGGREGATION_NATIVE_AND_FORMAL_BASELINE.md`
-5. execution records:
-   - `docs/function-lane/W55_EXECUTION_RECORD.md`
-   - `docs/function-lane/W56_EXECUTION_RECORD.md`
-6. XLL: exported through the ordinary catalog surface.
+4. historical packet chain:
+   - `docs/HISTORY.md`
+   - git tag `OxFunc_V1`
+5. XLL: exported through the ordinary catalog surface.
 
 ## 8. Evidence Posture
 1. public-reference anchors:
    - `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv` row `203`
    - linked Microsoft support page `https://support.microsoft.com/en-us/office/groupby-function-5e08ae8c-6800-4b72-b623-c41773611505`
 2. deterministic replay and exercised-runtime anchors:
-   - `docs/function-lane/W56_GROUPED_AGGREGATION_SCENARIO_MANIFEST_SEED.csv`
+   - `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`
+   - `docs/HISTORY.md`
    - `tools/w56-probe/run-w56-grouped-aggregation-baseline.ps1`
-   - `.tmp/w56-grouped-aggregation-results.csv`
    - `crates/oxfunc_core/src/functions/groupby_fn.rs`
    - `crates/oxfunc_core/tests/oxfml_grouped_aggregation_adapter_integration.rs`
    - `..\OxFml\crates\oxfml_core\tests\w053_grouped_aggregation_adapter_tests.rs`

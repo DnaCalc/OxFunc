@@ -261,6 +261,54 @@ Downstream rule:
 2. treat tier `C` as consumer-facing but OxFunc-curated semantic content,
 3. treat tier `D` as traceable provenance intended for diagnostics, trust UI, and auditability rather than immutable ABI coupling.
 
+### 4.8 V1 And W049 To V2 Projection Rule
+The first `V2` witness generator must project from existing OxFunc truth surfaces rather than inventing a second ownership layer.
+
+Projection rule:
+1. `V1` remains the owner of row identity, category, and current profile-bearing metadata facts.
+2. `W049` remains the owner of the preferred runtime attachment model:
+   - `LibraryContextProvider`
+   - immutable `LibraryContextSnapshot`
+   - snapshot-generation semantics
+   - runtime entry grouping rather than CSV mirroring
+3. `V2` adds witness-bearing enrichment keyed by the same `surface_stable_id` and pinned to the same snapshot generation.
+
+The intended first projection path is:
+
+```text
+V1 export row
+  -> stable identity and structural seed
+  -> runtime attachment through the W049 provider/snapshot model
+  -> witness enrichment from OxFunc-owned help, contract, evidence, and formal refs
+  -> SemanticWitnessEntry
+```
+
+Field-family ownership for the first bridge is:
+
+| V2 field family | Current owner | Bridge rule |
+|-----------------|---------------|-------------|
+| `surface_stable_id`, `canonical_surface_name`, `category`, `metadata_status` | `V1` export | copy directly from the current snapshot export |
+| `snapshot_generation`, `source_commit_*`, `source_tree_state` | `V1` export | copy directly from the current snapshot export |
+| runtime attachment to immutable snapshot | `W049` runtime model | project into a witness-bearing runtime entry keyed by `surface_stable_id` plus snapshot generation; do not mirror CSV columns one-for-one |
+| `signature_display`, `arg_specs`, `help_summary`, `help_detail` | `V2` curated layer | add as nullable witness enrichment owned by OxFunc |
+| `semantic_modes`, `witness_examples`, `admitted_slice_note`, `orthogonal_validation_status`, `current_support_basis` | `V2` curated layer | add as curated semantic payload keyed to the current supported reading |
+| `provenance_refs` | mixed current OxFunc evidence surfaces | emit machine-readable refs to contracts, execution records, formal artifacts, runtime tests, replay artifacts, and export provenance |
+
+No-duplication rule:
+1. `V2` must not restate or fork `V1` identity/profile ownership.
+2. `V2` must not treat the CSV as the runtime ABI; the runtime carrier stays the `W049` provider/snapshot direction.
+3. When a fact exists in both `V1` and a witness row, `V1` remains the primary owner unless OxFunc explicitly promotes that fact into a later runtime-owned witness contract.
+4. `V2` should therefore be generated from `V1` plus `W049` plus enrichment surfaces, not authored as an unrelated second catalog.
+
+### 4.9 First Seed Artifact
+The first bounded `V2` seed artifact now lives at:
+1. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+
+Current role:
+1. it is the first concrete `SemanticWitnessEntry` projection exercise for the shared `HLOOKUP` / `VLOOKUP` family,
+2. it demonstrates that the `V2` schema can be populated from the retained `V1` export, current contract surfaces, replay evidence, runtime source, and Lean formal refs without reopening removed packet-local files,
+3. it is a seed artifact, not yet the full generator or the full supported-surface rollout.
+
 ## 5. Authoritative Upstream References
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
@@ -269,3 +317,4 @@ Downstream rule:
 5. `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`
 6. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md`
 7. `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
+8. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`

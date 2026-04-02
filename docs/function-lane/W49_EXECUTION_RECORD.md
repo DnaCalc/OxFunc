@@ -1,10 +1,10 @@
 # W49 Execution Record - Runtime Library Context Provider Consumer Model
 
-Status: `in_progress`
+Status: `complete`
 Workset: `W049`
 
 ## 1. Purpose
-Freeze the first runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` consumer model for the already-covered scope.
+Freeze the first runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` consumer model for the already-covered scope and preserve it as the retained runtime carrier for later witness-bearing consumption.
 
 ## 2. Packet Outputs
 Artifacts produced or updated in this packet:
@@ -43,13 +43,13 @@ Primary reviewed artifacts:
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 3. `docs/function-lane/W44_EXECUTION_RECORD.md`
 4. `docs/function-lane/XLCALL_CODE_CATALOG.csv`
-5. `docs/worksets/W046_CALL_AND_REGISTER_ID_UDF_REGISTRATION_SEAM.md`
+5. `docs/HISTORY.md`
 6. `docs/upstream/NOTES_FOR_OXFML.md`
 
 ## 6. Completeness Axes
-1. execution_state: `in_progress`
+1. execution_state: `complete`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_complete`
-4. integration_completeness: `partial`
+4. integration_completeness: `integrated`
 5. open_lanes:
-   - current runtime model is pinned locally but not yet acknowledged as the shared first bounded consumer model
+   - later witness-bearing runtime attachment remains follow-on under `W069`, not an open current-phase seam-freeze gap

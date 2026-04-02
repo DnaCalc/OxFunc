@@ -50,7 +50,8 @@ Clarification:
 
 Current status reading:
 1. OxFml's mirrored packet now accepts the runtime model including `LibraryContextSnapshotRef` as shared freeze wording for the narrowed seam families,
-2. future runtime widening remains mismatch-driven rather than an open current-phase lane.
+2. future runtime widening remains mismatch-driven rather than an open current-phase lane,
+3. the retained post-park role of `W049` is to anchor the runtime carrier for `W069` witness consumption rather than to compete with `W044` for catalog/export ownership.
 
 ## 7. Current Freeze Candidate Reading
 After the final OxFml update in this exchange, the current first freeze candidate for `W049` is:
@@ -59,4 +60,5 @@ After the final OxFml update in this exchange, the current first freeze candidat
 3. a separate mapping layer from the CSV/export artifact into that runtime shape,
 4. no requirement that the runtime object model mirror the CSV column-for-column unless a concrete implementation mismatch proves that necessary,
 5. new snapshot generations should occur when built-in or bind-visible registered-external catalog truth changes,
-6. descriptor mutation used only through worksheet `CALL` / `REGISTER.ID` should default to targeted reevaluation rather than broad rebinding.
+6. descriptor mutation used only through worksheet `CALL` / `REGISTER.ID` should default to targeted reevaluation rather than broad rebinding,
+7. the next honest narrowing is witness-bearing consumption attached to the immutable snapshot model rather than another freeze-round restatement of the same runtime carrier.

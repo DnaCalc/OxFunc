@@ -60,4 +60,4 @@ Primary Functions: `DAY`, `DAYS`, `EDATE`, `EOMONTH`, `HOUR`, `ISOWEEKNUM`, `MIN
 3. runtime harness:
    - `tools/w63-probe/run-w63-date-time-business-day-baseline.ps1`
 4. packet execution record:
-   - `docs/function-lane/W63_EXECUTION_RECORD.md`
+   - `docs/HISTORY.md`

@@ -15,7 +15,7 @@ Canonical current-phase shared-model note:
 1. `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
 
 Current outbound promotion packet:
-1. `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`
+1. the acknowledged freeze-promotion handoff now lives behind `OxFunc_V1`; use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md` plus this ledger as the live shared-model surface
 
 Current reply-processing read:
 1. OxFml's mirrored packet now treats `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.
@@ -199,7 +199,7 @@ Current OxFunc reading of the best next sequence is:
 2. treat the landed `W053` grouped-aggregation and helper-bind rejection corpus as the current callable-heavy regression floor
 3. keep `HYPERLINK` / `IMAGE` publication-class distinctions explicit
 4. continue `CALL` / `REGISTER.ID` as a typed registered-external seam packet rather than ordinary function work
-5. treat `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md` as acknowledged from the OxFml side
+5. treat the archived freeze-promotion handoff behind `OxFunc_V1` as acknowledged from the OxFml side
 6. use the mirrored packet plus `HO-FN-004` as the shared freeze floor for local owner-packet promotion and propagation
 
 ## 12. Current Summary To OxFml
@@ -213,5 +213,5 @@ Current OxFunc position to OxFml:
 6. OxFml's latest closure packet narrows `W052` to four shared decisions only: exact field naming, minimum `RegisteredExternalDescriptor` field set, mutation/controller family ownership, and snapshot-generation consequences.
 7. the latest OxFml note now records those four `W052` decisions as acknowledged on the OxFml side; the remaining work is coordinator-facing propagation and canonical promotion rather than packet-shape redesign.
 8. the current OxFunc-owned consolidated freeze candidate for the seam-relevant non-deferred surface now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
-9. the active OxFunc outbound update note for the next round now lives in `docs/handoffs/HANDOFF_SHARED_INTERFACE_FREEZE_PROMOTION_TO_OXFML_V1.md`.
+9. the active OxFunc outbound shared-model reference for the next round now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 10. OxFml's mirrored packet now reads `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.

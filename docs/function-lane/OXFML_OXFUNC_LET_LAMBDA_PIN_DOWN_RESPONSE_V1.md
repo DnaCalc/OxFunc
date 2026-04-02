@@ -7,7 +7,7 @@ Purpose: answer the then-current OxFml `LET` / `LAMBDA` pin-down prep note with 
 Round-position note:
 1. this note records an earlier narrowing candidate rather than the final callable/library-context round closure,
 2. the active round-closure reading now lives in `docs/upstream/NOTES_FOR_OXFML.md`,
-3. the remaining callable field-lock and higher-order helper seam questions are now deferred to `docs/worksets/W042_DEFERRED_CALLABLE_SEAM_FIELD_LOCK_AND_HIGHER_ORDER_EVIDENCE.md`.
+3. the earlier callable field-lock follow-on is now historical provenance behind `OxFunc_V1`; the active parked shared-model anchor is `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 
 Primary upstream counterpart:
 1. `../OxFml/docs/spec/formula-language/OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_PREP.md`

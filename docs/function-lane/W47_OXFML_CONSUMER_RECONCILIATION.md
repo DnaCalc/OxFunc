@@ -5,8 +5,9 @@ Packet: `W047`
 
 ## 1. Basis
 This reconciliation note records the final OxFml note reading against the frozen `W047` bundle artifacts:
-1. `FUNCTION_SLICE_TYPED_CONTEXT_AND_QUERY_BUNDLE_CONTRACT_PRELIM.md`
+1. `docs/HISTORY.md`
 2. `W47_TYPED_CONTEXT_QUERY_DEPENDENCY_MAP.csv`
+3. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
 
 ## 2. Result
 Current OxFunc reading of the final OxFml note is:

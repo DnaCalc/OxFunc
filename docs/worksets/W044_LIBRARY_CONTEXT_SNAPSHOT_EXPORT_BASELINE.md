@@ -42,11 +42,12 @@ What it does not yet have is one explicit downstream artifact that honestly serv
 ## 4A. Current Long-Term Direction
 Current OxFunc reading after the latest OxFml round:
 1. the CSV export remains the right pinned interchange and debugging artifact for bounded integration rounds,
-2. but the preferred long-term implementation seam should be:
+2. the CSV export is now also the retained structural seed for `W069` witness generation rather than the long-term destination surface,
+3. but the preferred long-term implementation seam should be:
    - runtime `LibraryContextProvider`
    - immutable `LibraryContextSnapshot`
    - explicit snapshot generations when registration/removal changes the library context,
-3. downstream runtime integration should not stay coupled to build-time CSV ingestion as the normative implementation path.
+4. downstream runtime integration should not stay coupled to build-time CSV ingestion as the normative implementation path.
 
 ## 5. Candidate Inputs
 1. `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
@@ -82,9 +83,10 @@ This packet can only be reported `scope_complete` when:
      - `W033`: `11`
      - `W037`: `1`
      - `W045`: `19`
-     - legacy `RANDARRAY` cleanup: `1`
+   - legacy `RANDARRAY` cleanup: `1`
    - that refresh is now generator-driven in `tools/w44-probe/generate-w44-library-context-snapshot.ps1` and applied in the current export
    - the next honest W44 lane is broader metadata-field refinement and consumer-shape normalization rather than another prose-only stale/backlog recount
+   - `W044` now remains as the pinned `V1` export provenance owner and `W069` bridge input, not as the final downstream destination surface
 
 ## 8. Current Outputs
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`

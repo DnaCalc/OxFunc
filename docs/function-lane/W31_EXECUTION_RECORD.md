@@ -7,7 +7,7 @@ Workset: `W31`
 Record the current-boundary seam decision for provider-bound language functions beginning with `TRANSLATE`.
 
 ## 2. Evidence Used
-1. `CURRENT_BLOCKERS.md`
+1. `docs/HISTORY.md`
 2. `docs/worksets/W031_DEFERRED_PROVIDER_LANGUAGE_FUNCTIONS.md`
 3. `docs/function-lane/W31_DEFERRED_PROVIDER_LANGUAGE_FUNCTIONS_INVENTORY.csv`
 4. `docs/function-lane/W26_EXECUTION_RECORD.md`
