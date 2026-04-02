@@ -184,6 +184,60 @@ This packet should aim for:
 4. one downstream-consumer reading guide,
 5. one runtime-model alignment note showing how the witness payload attaches to `LibraryContextSnapshot`.
 
+## 9A. Full-Coverage Target
+`W069` now owns the full supported-surface witness rollout target for the parked
+non-deferred baseline.
+
+Full-coverage target:
+1. every currently supported non-deferred `V1` row should eventually have a
+   `V2` witness row keyed by the same `surface_stable_id`,
+2. the target surface is the current `517` supported rows from the parked
+   baseline,
+3. the `17` deferred rows tracked in `W050` remain out of scope until
+   intentionally reopened,
+4. rows whose witness rollout depends on retained live seam authorities such as
+   `W043` or `W049` remain in-scope for `W069`, but their final closure may be
+   dependency-gated by those retained worksets.
+
+Current coverage accounting:
+1. current witness-covered rows: `10`
+2. current remaining supported rows without `V2` witness coverage: `507`
+3. current covered set:
+   - `FUNC.GROUPBY`
+   - `FUNC.HLOOKUP`
+   - `FUNC.HYPERLINK`
+   - `FUNC.IF`
+   - `FUNC.IMAGE`
+   - `FUNC.LET`
+   - `FUNC.OP_IMPLICIT_INTERSECTION`
+   - `FUNC.SUM`
+   - `FUNC.VLOOKUP`
+   - `FUNC.XLOOKUP`
+
+## 9B. Full-Coverage Rollout Shape
+The widened `W069` program should proceed in explicit stages rather than as one
+undifferentiated “finish the rest” lane.
+
+Stage set:
+1. coverage accounting and tranche register
+   - derive the exact remaining supported-surface witness gap set
+   - freeze the tranche order for the remaining `507` supported rows
+2. ordinary extracted-surface rollout
+   - generalize generator-backed witness emission for large ordinary
+     `function_meta_extracted` families
+   - drain the bulk of non-seam-heavy supported rows in tranche waves
+3. curated and seam-heavy supported rollout
+   - cover callable/helper, rich-value, presentation-aware, grouped, and other
+     retained supported rows that need more curated witness payloads
+4. operator and modeled-surface rollout
+   - widen witness conventions beyond `OP_IMPLICIT_INTERSECTION` to the rest of
+     the supported operator surface and any remaining modeled rows
+5. final coverage reconciliation and publication
+   - prove that every supported row is either:
+     - witness-covered, or
+     - explicitly dependency-blocked on a retained live authority
+   - publish the full-surface reading rule and coverage ledger
+
 ## 10. Suggested Seed Set
 Do not start with all `517` supported rows.
 Start with a deliberately mixed seed:
@@ -458,7 +512,12 @@ This packet can only be reported `scope_complete` when:
 3. the artifact includes structured help, signature, evidence refs, and formal refs,
 4. the runtime `LibraryContextSnapshot` direction is reflected in the design,
 5. at least one mixed seed set is populated and reviewable,
-6. downstream consumers can tell clearly what `V2` adds beyond `V1`.
+6. downstream consumers can tell clearly what `V2` adds beyond `V1`,
+7. every currently supported non-deferred row is either:
+   - covered by a generated or curated `V2` witness row, or
+   - explicitly dependency-blocked on a retained live authority such as `W043`
+     or `W049` with that dependency recorded in the bead graph and in the final
+     coverage ledger.
 
 ## 13. Risks
 1. bloating the snapshot with prose before the schema is stable,
@@ -473,6 +532,10 @@ This packet can only be reported `scope_complete` when:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - complete `oxf-jbk.1.1` and `oxf-jbk.1.2` to stabilize the first generator-backed schema slice
-   - complete `oxf-jbk.2.*` and `oxf-jbk.3.*` to establish deterministic generation and `W049` runtime attachment
-   - complete `oxf-jbk.4.*` to refresh the `HLOOKUP` / `VLOOKUP` seed and widen into the first mixed seed tranche
+   - reopen `W069` under a new full-coverage bead graph for the remaining
+     `507` supported rows
+   - freeze the full supported-surface tranche register
+   - generalize ordinary extracted-surface witness generation
+   - drain curated and seam-heavy supported rows
+   - widen operator and modeled-surface witness coverage
+   - publish final supported-surface coverage reconciliation

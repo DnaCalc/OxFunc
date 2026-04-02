@@ -131,10 +131,12 @@ It does mean:
 4. upstream_dependencies:
    `OxFml`, downstream consumers such as `DnaOneCalc`
 5. closure_condition:
-   the first real V2 witness surface exists with explicit schema, stable
-   generation path, and at least one exercised function-family slice.
+   the `V2` witness surface has an explicit schema, a stable generation path,
+   and a staged rollout plan toward full supported-surface coverage, with the
+   eventual target that every supported non-deferred row is either witness-
+   covered or explicitly dependency-blocked on a retained live authority.
 6. initial_epic_lanes:
-   schema and stability tiers, witness-generation pipeline, seeded function-family rollout
+   schema and stability tiers, witness-generation pipeline, seeded function-family rollout, full-coverage tranche register, ordinary rollout, seam-heavy rollout, operator/modeled rollout, final coverage reconciliation
 7. rollout_mode:
    `execution_target`
 
