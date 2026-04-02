@@ -72,6 +72,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 38. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json)
 39. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md)
 40. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv)
+41. [W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md)
 
 ## Function Contract Surfaces
 1. The live function contract set remains the `FUNCTION_SLICE_*_CONTRACT_PRELIM.md` family that still anchors supported, deferred, and seam-sensitive claims.
