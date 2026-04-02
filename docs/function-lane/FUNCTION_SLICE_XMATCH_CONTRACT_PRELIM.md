@@ -68,7 +68,7 @@
    - `W6-XMATCH-EXP-20260310`
 3. policy decision anchors:
    - `docs/function-lane/XMATCH_EXECUTION_RECORD.md`
-   - `docs/worksets/W006_XMATCH_DETERMINISTIC_QUIRKS.md`
+   - `docs/HISTORY.md` (`W006` wave-1 archive entry)
 4. current status rationale:
    - function-phase-complete and locally verified for the current reference Excel baseline,
    - blank-vs-empty lookup behavior, wildcard escaping, binary duplicate selection, binary invalid-result lanes, and reference-fed/spill-fed workbook rows are replayed and test-backed,

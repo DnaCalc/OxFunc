@@ -111,5 +111,5 @@
 1. Rust: `crates/oxfunc_core/src/functions/cell.rs`
 2. Lean: `formal/lean/OxFunc/Functions/Cell.lean`
 3. side-note linkage: `docs/function-lane/W12_PROFILE_SYSTEM_SIDE_NOTES.md` (notes 7 and 8)
-4. active follow-on workset: `docs/worksets/W015_CELL_AND_INFO_HOST_QUERY_FUNCTIONS.md`
+4. parked host-query provenance: `docs/HISTORY.md` (`W015` wave-1 archive entry)
 5. active seam note: `docs/function-lane/CELL_INFO_HOST_QUERY_SEAM_PRELIM.md`

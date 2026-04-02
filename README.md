@@ -41,12 +41,12 @@ Out of slice:
 - `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` - downstream metadata, help, and signature contract for DNA OneCalc and other consuming hosts.
 - `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` - surface admission categories and labeling rules for downstream consumers.
 - `docs/FOUNDATION_SPEC_INDEX.md` - indexed read links into Foundation doctrine and reference corpus.
-- `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md` - suggested Foundation repo updates from OxFunc execution.
 - `crates/` - Rust runtime/function scaffolding for executable slices.
 - `formal/lean/` - Lean formalization scaffolding for function/value proofs.
-- `CURRENT_BLOCKERS.md` - transitional blocker ledger pending narrower Phase E retention or retirement.
+- `CURRENT_BLOCKERS.md` - exceptional prose blocker ledger only; ordinary execution blockers live in `.beads/`.
 - `docs/IN_PROGRESS_FEATURE_WORKLIST.md` - in-progress feature register.
 - `docs/PARKED_CURRENT_BASELINE_20260401.md` - parked non-deferred baseline note.
+- `docs/HISTORY.md` - compact pointer for historical packets removed from the active tree.
 - `docs/decisions/README.md` - decision register (`ODR-FN-NNN` entries).
 - `docs/handoffs/HANDOFF_REGISTER.csv` - cross-repo handoff register.
 - `docs/upstream/NOTES_FOR_OXFML.md` - outbound observation ledger for OxFml.

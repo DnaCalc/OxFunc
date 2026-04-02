@@ -1,15 +1,18 @@
 # CURRENT_BLOCKERS.md — OxFunc
 
-Status: active blockers recorded.
+Status: transitional prose-only blocker ledger.
 
-Last reviewed: 2026-03-31.
+Last reviewed: 2026-04-02.
+
+Ordinary execution blockers now live in `.beads/`.
+This file is retained only for exceptional blocker narratives that cannot be
+represented cleanly in bead fields during `W070` archive waves.
 
 ---
 
-## Active Blockers
+## Exceptional Prose Blockers
 
 None currently recorded.
-Current grouped-aggregation review (`W055`) found no active blocker preventing `GROUPBY` / `PIVOTBY` promotion.
 
 ## Resolved Blockers
 

@@ -9,13 +9,12 @@ Freeze the first runtime `LibraryContextProvider` / immutable `LibraryContextSna
 ## 2. Packet Outputs
 Artifacts produced or updated in this packet:
 1. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
-2. `docs/function-lane/FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`
-3. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CSV_TO_RUNTIME_MAPPING.csv`
-4. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
-5. `docs/function-lane/W49_EXECUTION_RECORD.md`
-6. `docs/function-lane/W49_OXFML_CONSUMER_RECONCILIATION.md`
-7. `docs/function-lane/W49_CONSUMER_MISMATCH_LEDGER.csv`
-8. `docs/upstream/NOTES_FOR_OXFML.md`
+2. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CSV_TO_RUNTIME_MAPPING.csv`
+3. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
+4. `docs/function-lane/W49_EXECUTION_RECORD.md`
+5. `docs/function-lane/W49_OXFML_CONSUMER_RECONCILIATION.md`
+6. `docs/function-lane/W49_CONSUMER_MISMATCH_LEDGER.csv`
+7. `docs/upstream/NOTES_FOR_OXFML.md`
 
 ## 3. Current Result
 The current first-freeze runtime model is now explicit:

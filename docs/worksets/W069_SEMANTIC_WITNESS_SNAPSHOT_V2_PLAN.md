@@ -220,6 +220,10 @@ If the model works for that seed, it will probably generalize honestly.
 5. validate that downstream help/signature UI can be driven entirely from that witness payload,
 6. only then widen to the broader supported surface.
 
+Schema anchor note:
+1. the first live `SemanticWitnessEntry` schema and stability tiers now live in `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.6 and Section 4.7,
+2. downstream readers should cite that contract directly rather than restating the schema in packet-local notes.
+
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
 1. one explicit `V2` schema exists,
@@ -242,7 +246,6 @@ This packet can only be reported `scope_complete` when:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - define the `V2` witness schema
    - define the runtime attachment to `LibraryContextSnapshot`
    - choose the first seed-set export format
    - populate the bounded seed set

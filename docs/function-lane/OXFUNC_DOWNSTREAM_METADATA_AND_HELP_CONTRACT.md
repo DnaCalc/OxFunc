@@ -9,7 +9,8 @@ Define the downstream metadata, help, and signature contract that `DNA OneCalc` 
 This document answers three questions:
 1. Which fields in the current snapshot export are safe for downstream consumers to treat as stable now?
 2. What is the preferred first OneCalc-facing payload shape for function help, argument help, and signature help metadata?
-3. How should downstream consumers align with the longer-term runtime provider or immutable snapshot direction?
+3. What is the preferred first `SemanticWitnessEntry` schema and stability model for `V2` witness payloads?
+4. How should downstream consumers align with the longer-term runtime provider or immutable snapshot direction?
 
 This is an OxFunc-owned contract note. It does not override Foundation doctrine or OxFml language-service ownership.
 
@@ -19,7 +20,7 @@ Downstream consumers should read in this order:
 2. `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` for surface-labeling and admission-category rules,
 3. `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` for field definitions and current export mechanics,
 4. `W050` and `W051` for deferred/not-complete overlay truth,
-5. `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md` for the preferred long-term runtime shape.
+5. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` for the preferred long-term runtime shape.
 
 ## 3. Snapshot Export Field Stability Classification
 
@@ -157,7 +158,7 @@ Until OxFunc publishes structured help payloads:
 
 ### 4.5 Alignment With Runtime Provider Direction
 The preferred long-term direction is:
-1. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate (see `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`),
+1. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate (see `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`),
 2. help and signature payloads should eventually be fields on `LibraryContextEntry` in the runtime model rather than separate retrieval surfaces,
 3. the current CSV export remains the pinned interchange artifact for bounded integration, test pinning, and debugging,
 4. downstream consumers should design against an immutable snapshot-shaped help/catalog source even if the first implementation is CSV-backed.
@@ -167,10 +168,103 @@ Transition rule:
 2. when the runtime provider model materializes, OneCalc should swap the adapter backing from CSV to runtime snapshot without changing the consumer-facing payload shape,
 3. help prose fields (`help_summary`, `help_detail`, `arg_name`, `arg_description`) should be treated as nullable until OxFunc populates them.
 
+### 4.6 Semantic Witness Entry V2 Schema
+The first explicit `V2` witness contract is:
+
+```text
+SemanticWitnessEntry:
+  witness_schema_version: string
+  surface_stable_id: string
+  canonical_surface_name: string
+  category: string | null
+  metadata_status: string
+  signature_display: string | null
+  arg_specs: [SemanticWitnessArgSpec] | null
+  help_summary: string | null
+  help_detail: string | null
+  semantic_modes: [string] | null
+  witness_examples: [SemanticWitnessExample] | null
+  admitted_slice_note: string | null
+  orthogonal_validation_status: [string] | null
+  current_support_basis: string | null
+  provenance_refs: [SemanticWitnessRef]
+  snapshot_generation: string
+  source_commit_short: string
+  source_commit_full: string
+  source_tree_state: string
+
+SemanticWitnessArgSpec:
+  arg_index: integer
+  arg_name: string
+  arg_required: boolean
+  arg_type_hint: string | null
+  arg_behavior_note: string | null
+
+SemanticWitnessExample:
+  example_id: string
+  summary: string
+  outcome_note: string | null
+  evidence_ref_hint: string | null
+
+SemanticWitnessRef:
+  ref_kind: string
+  ref_value: string
+  provenance_category: string
+```
+
+The current locked `provenance_category` vocabulary for this first contract is:
+1. `native_excel_replay`
+2. `runtime_test`
+3. `formal_artifact`
+4. `contract_artifact`
+5. `execution_record`
+6. `catalog_export`
+7. `seam_or_handoff`
+
+### 4.7 Semantic Witness Stability Tiers
+`SemanticWitnessEntry` fields are grouped into four stability tiers:
+
+1. `tier_a_identity_stable`
+   - durable identity keys and schema presence
+   - fields:
+     - `witness_schema_version`
+     - `surface_stable_id`
+     - `canonical_surface_name`
+2. `tier_b_structural_stable`
+   - structural fields whose shape is intended to stay stable across bounded `V2` revisions
+   - fields:
+     - `category`
+     - `metadata_status`
+     - `snapshot_generation`
+     - `source_commit_short`
+     - `source_commit_full`
+     - `source_tree_state`
+3. `tier_c_curated_semantic`
+   - OxFunc-curated semantic/help content that is expected to grow and refine without identity churn
+   - fields:
+     - `signature_display`
+     - `arg_specs`
+     - `help_summary`
+     - `help_detail`
+     - `semantic_modes`
+     - `witness_examples`
+     - `admitted_slice_note`
+     - `orthogonal_validation_status`
+     - `current_support_basis`
+4. `tier_d_live_provenance`
+   - current-tree references that are designed to remain machine-readable but may change as packets, exports, or formal artifacts evolve
+   - fields:
+     - `provenance_refs`
+
+Downstream rule:
+1. treat tiers `A` and `B` as the first hard-coupling surface for `V2`,
+2. treat tier `C` as consumer-facing but OxFunc-curated semantic content,
+3. treat tier `D` as traceable provenance intended for diagnostics, trust UI, and auditability rather than immutable ABI coupling.
+
 ## 5. Authoritative Upstream References
 1. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
 2. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`
-3. `docs/function-lane/FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`
+3. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
 4. `docs/function-lane/W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
 5. `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`
 6. `docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md`

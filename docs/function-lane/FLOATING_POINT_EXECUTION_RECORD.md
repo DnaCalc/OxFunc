@@ -85,4 +85,4 @@ Output artifacts:
    - `tools/fp-probe/xll/README.md`
    - includes controlled lock rotation path (`-UpdateLock`) for audited hash drift updates.
 3. Foundation editorial handoff prompts are prepared:
-   - `docs/FOUNDATION_EDITOR_PROMPTS_FROM_OXFUNC.md`.
+   - now preserved behind `docs/HISTORY.md` and the `OxFunc_V1` tag.

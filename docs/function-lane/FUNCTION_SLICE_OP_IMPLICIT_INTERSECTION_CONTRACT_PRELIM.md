@@ -233,13 +233,14 @@ Goals:
    - `P2-FML-008`
 3. OxFunc anchors:
    - `FDEF-018`
-   - `docs/worksets/W014_IMPLICIT_INTERSECTION_OPERATOR.md`
+   - `docs/PARKED_CURRENT_BASELINE_20260401.md`
 4. supporting program notes:
    - `docs/function-lane/IMPLICIT_INTERSECTION_OPERATOR_INVESTIGATION.md`
    - `docs/function-lane/W14_IMPLICIT_INTERSECTION_SCENARIO_MANIFEST_SEED.csv`
    - `docs/function-lane/W14_EXECUTION_RECORD.md`
    - `docs/upstream/NOTES_FOR_OXFML.md`
    - `docs/handoffs/HANDOFF_W014_IMPLICIT_INTERSECTION_TO_OXFML.md`
+   - `docs/HISTORY.md` (`W014` wave-1 archive entry)
 
 Current status rationale:
 1. the admitted current-baseline scalarization kernel is implemented in Rust and aligned in Lean,

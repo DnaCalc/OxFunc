@@ -12,7 +12,7 @@ Supersession note:
 ## Status Vocabulary
 
 - `in-progress`: partial implementation exists, parity/completeness not yet achieved.
-- `blocked`: in-progress with active blocker (see CURRENT_BLOCKERS.md).
+- `blocked`: in-progress with an active blocker recorded in `.beads/`; `CURRENT_BLOCKERS.md` is exceptional prose-only if used at all.
 - `planned`: explicitly accepted into scope, no shipped work yet.
 
 ## Active Feature Register
@@ -108,6 +108,6 @@ Supersession note:
 - **Status**: in-progress
 - **Current floor**: OxFunc has a parked non-deferred baseline, a clean active branch tip, a stable recovery tag anchor in `OxFunc_V1`, and a mature but document-heavy workset-plus-evidence execution style.
 - **Current phase**: `W070` Phase A, Phase B, Phase C, and Phase D are complete; Phase E active-tree reduction is next.
-- **Remaining gaps**: too much historical execution/provenance material still remains in the active tree, `CURRENT_BLOCKERS.md` and other bridge surfaces still need to narrow or retire, and the first real post-migration workset execution under beads still remains even though the live bead workspace now exists (`16` seeded issues, `1` ready path).
+- **Remaining gaps**: too much historical execution/provenance material still remains in the active tree, transitional bridge surfaces still need to narrow or retire, and the first real post-migration workset execution under beads still remains even though the live bead workspace and remaining `W070` graph are now fully encoded in `.beads/`.
 - **Why still open**: doctrine and bead bootstrap are now in place, but the active-tree reduction waves and the first real post-migration execution still remain.
 - **Canonical owner**: `W070`.

@@ -92,7 +92,7 @@ Observed current-baseline outcomes on `2026-03-15`:
 10. cross-repo typed host-query seam acknowledgment is now recorded for `HO-FN-002`; no declared-scope integration gap remains for the current-baseline slice
 
 ## 10. Artifact Bindings
-1. workset: `docs/worksets/W015_CELL_AND_INFO_HOST_QUERY_FUNCTIONS.md`
+1. parked host-query provenance: `docs/HISTORY.md` (`W015` wave-1 archive entry)
 2. seam note: `docs/function-lane/CELL_INFO_HOST_QUERY_SEAM_PRELIM.md`
 3. scenario manifest: `docs/function-lane/W15_INFO_PRE_SCENARIO_MANIFEST_SEED.csv`
 4. execution record: `docs/function-lane/W15_EXECUTION_RECORD.md`

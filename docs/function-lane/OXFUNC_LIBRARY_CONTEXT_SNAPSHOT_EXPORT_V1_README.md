@@ -282,10 +282,14 @@ The downstream metadata contract classifies every export field into one of three
 See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 3 for the full classification table.
 
 ### 8.4 Help And Signature Payloads
-No OxFunc-backed help or signature payload retrieval is frozen yet. The downstream metadata contract defines the preferred first OneCalc-facing payload shapes for function help, argument help, and signature help metadata. See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.
+No OxFunc-backed help or signature payload retrieval is frozen yet. The downstream metadata contract now defines both:
+1. the preferred first OneCalc-facing payload shapes for function help, argument help, and signature help metadata, and
+2. the first explicit `SemanticWitnessEntry` `V2` schema and stability tiers.
+
+See `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` Section 4.
 
 ### 8.5 This Export Is A Stabilization Artifact
-This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`.
+This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`.
 
 ## 9. Next Expected Refinements
 1. widen operator coverage beyond the current exported operator set plus `OP_IMPLICIT_INTERSECTION`,

@@ -5,7 +5,7 @@ Packet: `W049`
 
 ## 1. Basis
 This reconciliation note records the final OxFml note reading against the frozen `W049` runtime model artifacts:
-1. `FUNCTION_SLICE_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL_PRELIM.md`
+1. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
 2. `W49_RUNTIME_LIBRARY_CONTEXT_CSV_TO_RUNTIME_MAPPING.csv`
 3. `W49_RUNTIME_LIBRARY_CONTEXT_CONSUMER_WALKTHROUGH.md`
 

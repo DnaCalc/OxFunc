@@ -10,9 +10,8 @@
 7. `docs/function-lane/README.md`
 8. `docs/FOUNDATION_SPEC_INDEX.md`
 9. Foundation doctrine docs referenced from the index (`../Foundation/CHARTER.md`, `../Foundation/ARCHITECTURE_AND_REQUIREMENTS.md`, `../Foundation/OPERATIONS.md`)
-10. `CURRENT_BLOCKERS.md`
-11. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
-12. Inbound observation ledgers from upstream repos (see OPERATIONS.md Section 16.3):
+10. `docs/IN_PROGRESS_FEATURE_WORKLIST.md`
+11. Inbound observation ledgers from upstream repos (see OPERATIONS.md Section 16.3):
    - `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 
 ## Source-of-Truth Rules
@@ -97,7 +96,7 @@ Mode: **checkpoint-at-gates** with mature-repo calibration.
 4. Between gates, the agent may proceed autonomously within the declared workset scope (scope-bounded autonomous execution).
 5. When AutoRun is explicitly enabled and the user sets a named exit gate, the agent must remain silent until one of only two conditions holds:
    - the declared AutoRun exit gate has been reached, or
-   - all remaining in-scope paths are blocked and `CURRENT_BLOCKERS.md` has been updated.
+   - all remaining in-scope paths are blocked and the bead graph blocker state has been updated.
 6. User messages such as `continue`, `go on`, or equivalent resume nudges do not create a checkpoint and do not justify an interim status reply while an AutoRun gate remains open.
 7. During AutoRun, partial progress must be recorded in repository artifacts, checklist rows, and blocker entries rather than emitted as chat status.
 8. If a response is required because all remaining paths are blocked, the response must be a blocker summary only; it must not be framed as a checkpoint or partial completion report.
@@ -105,7 +104,7 @@ Mode: **checkpoint-at-gates** with mature-repo calibration.
 Transition note:
 1. OxFunc is currently in `W070` Phase E-prep state.
 2. `.beads/` is now bootstrapped and is the ordinary blocker surface.
-3. `CURRENT_BLOCKERS.md` remains only as a transitional prose ledger pending narrower retention or retirement during later `W070` archive waves.
+3. `CURRENT_BLOCKERS.md` is retained only for exceptional prose blocker narratives and is no longer part of ordinary execution tracking or default context load.
 4. do not create new ordinary blocker entries in `CURRENT_BLOCKERS.md` unless the blocker cannot be represented cleanly in the bead graph.
 
 Mature-repo note: OxFunc has 13+ worksets and 38 function-phase-complete functions, exceeding the 5-workset threshold for conservative gate-pausing. Gate discipline remains mandatory but the agent has demonstrated execution history to support scope-bounded autonomy between gates.

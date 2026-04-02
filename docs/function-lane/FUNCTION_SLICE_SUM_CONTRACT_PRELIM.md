@@ -68,7 +68,7 @@
 3. policy decision anchors:
    - `docs/function-lane/W10_PROFILE_SYSTEM_SIDE_NOTES.md` (note 1)
    - `docs/function-lane/W10_EXECUTION_RECORD.md`
-   - `docs/function-lane/NOTES_FOR_OXFML.md`
+   - `docs/upstream/NOTES_FOR_OXFML.md`
 4. current status rationale:
    - function-phase-complete and locally verified for the current reference Excel baseline,
    - direct-scalar versus array-scan behavior is now empirically pinned for `SUM("2",TRUE)`, `SUM({"2",TRUE})`, and `SUM(range-with-text-and-logical)`,

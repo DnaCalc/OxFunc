@@ -48,7 +48,7 @@ Execution-state rule:
 Transition rule:
 1. OxFunc is currently between `W070` Phase D and Phase E,
 2. `.beads/` is now bootstrapped as the live execution-state surface,
-3. `CURRENT_BLOCKERS.md` remains a transitional prose-only blocker ledger pending narrower retention or retirement,
+3. `CURRENT_BLOCKERS.md` is retained only as an exceptional prose-only blocker ledger and is no longer part of ordinary execution tracking,
 4. no new ad hoc execution-state notes should be introduced to compensate.
 
 ### 4.1 Coupled Lanes
@@ -352,10 +352,10 @@ Until the later `W070` archive waves land:
 1. use `docs/WORKSET_REGISTER.md` as the ordered workset authority,
 2. use `docs/BEADS.md` as the bead-method authority,
 3. keep ordinary execution-state truth in `.beads/`,
-4. keep blocker truth in `.beads/` except for exceptional prose-only narratives that have not yet been retired from `CURRENT_BLOCKERS.md`.
+4. keep blocker truth in `.beads/` except for exceptional prose-only narratives that are intentionally preserved in `CURRENT_BLOCKERS.md`.
 
 ### 17.3 Post-Bootstrap Rule
 After `.beads/` exists:
 1. ordinary execution state belongs in `.beads/`,
-2. `CURRENT_BLOCKERS.md` should retire or narrow to exceptional prose-only blocker cases,
+2. `CURRENT_BLOCKERS.md` should remain only as an exceptional prose-only blocker surface if it survives at all,
 3. `docs/worksets/README.md` should no longer be treated as a live execution-status surface.
