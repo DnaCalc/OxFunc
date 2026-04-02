@@ -300,6 +300,54 @@ No-duplication rule:
 3. When a fact exists in both `V1` and a witness row, `V1` remains the primary owner unless OxFunc explicitly promotes that fact into a later runtime-owned witness contract.
 4. `V2` should therefore be generated from `V1` plus `W049` plus enrichment surfaces, not authored as an unrelated second catalog.
 
+### 4.8A First Generator-Backed Slice Rules
+For the first generator-backed `HLOOKUP` / `VLOOKUP` slice, each field is now
+classified as copied, generated, required curated enrichment, or optional
+curated enrichment.
+
+| Field | First-slice rule | Owner / source | Stability tier |
+|-------|------------------|----------------|----------------|
+| `witness_schema_version` | required generated constant | `V2` generator version constant | `tier_a_identity_stable` |
+| `surface_stable_id` | required copied | `V1` export | `tier_a_identity_stable` |
+| `canonical_surface_name` | required copied | `V1` export | `tier_a_identity_stable` |
+| `category` | required copied | `V1` export | `tier_b_structural_stable` |
+| `metadata_status` | required copied | `V1` export | `tier_b_structural_stable` |
+| `signature_display` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `arg_specs` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `help_summary` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `help_detail` | optional curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `semantic_modes` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `witness_examples` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `admitted_slice_note` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `orthogonal_validation_status` | optional curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `current_support_basis` | required curated enrichment | OxFunc witness layer | `tier_c_curated_semantic` |
+| `provenance_refs` | required generated mixed provenance set | `V1` + contract + evidence + runtime + formal surfaces | `tier_d_live_provenance` |
+| `snapshot_generation` | required copied | `V1` export | `tier_b_structural_stable` |
+| `source_commit_short` | required copied | `V1` export | `tier_b_structural_stable` |
+| `source_commit_full` | required copied | `V1` export | `tier_b_structural_stable` |
+| `source_tree_state` | required copied | `V1` export | `tier_b_structural_stable` |
+
+First-slice minimum payload rule:
+1. a supported seeded row must emit every required field above,
+2. `help_detail` and `orthogonal_validation_status` may be `null` or omitted
+   from generator-backed authoring only when the seeded row has no bounded extra
+   detail beyond the required fields,
+3. `arg_specs` must include all surfaced arguments in positional order,
+4. `witness_examples` must contain at least one success lane and one validation
+   or error lane for the first seeded supported family slice.
+
+First-slice provenance coverage rule:
+1. every generated seeded row must include at least one `catalog_export` ref,
+2. at least one `contract_artifact` ref,
+3. at least one replay-bearing ref from `native_excel_replay` or
+   `execution_record`,
+4. at least one `runtime_test` ref,
+5. at least one `formal_artifact` ref.
+
+Optional provenance for the first slice:
+1. `seam_or_handoff` refs are optional and only appear when the seeded family
+   genuinely depends on a retained seam packet or handoff surface.
+
 ### 4.9 First Seed Artifact
 The first bounded `V2` seed artifact now lives at:
 1. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
