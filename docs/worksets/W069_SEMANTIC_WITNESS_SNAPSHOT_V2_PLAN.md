@@ -441,6 +441,9 @@ The bounded gap set is:
 The current supported-surface gap inventory is now pinned in:
 1. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md`
 2. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_INVENTORY.csv`
+3. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_LEDGER.md`
+4. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv`
+5. `docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md`
 
 That ledger reconciles the full supported surface as:
 1. `517` supported non-deferred rows,
