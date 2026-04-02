@@ -62,3 +62,34 @@ After the final OxFml update in this exchange, the current first freeze candidat
 5. new snapshot generations should occur when built-in or bind-visible registered-external catalog truth changes,
 6. descriptor mutation used only through worksheet `CALL` / `REGISTER.ID` should default to targeted reevaluation rather than broad rebinding,
 7. the next honest narrowing is witness-bearing consumption attached to the immutable snapshot model rather than another freeze-round restatement of the same runtime carrier.
+
+## 8. Witness-Bearing Runtime Attachment
+For the first `W069`-driven witness slice, `W049` now narrows the retained
+runtime attachment model as follows:
+
+1. `LibraryContextProvider` remains the owner of runtime snapshot creation.
+2. `LibraryContextSnapshot` remains immutable once published.
+3. witness-bearing enrichment attaches at the runtime entry layer, keyed by:
+   - `surface_stable_id`
+   - `LibraryContextSnapshotRef`
+4. the runtime entry does not mirror the `V1` CSV row column-for-column.
+5. the runtime entry may therefore be read as:
+   - stable structural seed owned by the snapshot/provider model,
+   - optional witness payload owned by the `W069` witness layer.
+
+First bounded rule:
+1. if a row has no current `V2` witness payload yet, the runtime entry still
+   exists without a witness attachment,
+2. when a row does have a witness payload, that payload is attached as snapshot-
+   generation-specific enrichment rather than a second identity object,
+3. runtime consumers should join on `surface_stable_id` plus
+   `LibraryContextSnapshotRef`, not by inventing a new witness identity system.
+
+Current `W069` consequence:
+1. the first seeded `HLOOKUP` / `VLOOKUP` witness slice should be thought of as
+   two layers:
+   - runtime entry owned by `W049`,
+   - witness payload owned by `W069`
+2. the generator/export path may serialize that witness payload independently,
+   but the preferred runtime model remains witness attachment to immutable
+   snapshot entries rather than a parallel catalog.

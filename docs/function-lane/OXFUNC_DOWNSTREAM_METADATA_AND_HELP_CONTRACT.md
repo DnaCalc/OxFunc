@@ -374,6 +374,23 @@ Unowned-field result:
 2. the current remaining work is generatorization and runtime attachment, not
    source-surface discovery.
 
+### 4.8C First Runtime Attachment Rule
+The first bounded runtime attachment rule for `V2` witness payloads is:
+1. `W049` owns the runtime entry and immutable snapshot attachment model,
+2. `W069` owns the witness payload attached to that runtime entry,
+3. runtime consumers join witness-bearing rows on:
+   - `surface_stable_id`
+   - `LibraryContextSnapshotRef`
+4. the witness payload does not create a second runtime identity system,
+5. rows without current witness payloads remain valid runtime entries without
+   witness attachment.
+
+First-slice interpretation:
+1. the seeded `HLOOKUP` / `VLOOKUP` slice is not a second catalog,
+2. it is witness enrichment attached to the retained runtime entry shape,
+3. serialized `V2` artifacts are projections of that attachment model rather
+   than the owner of runtime identity.
+
 ### 4.9 First Seed Artifact
 The first bounded `V2` seed artifact now lives at:
 1. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
