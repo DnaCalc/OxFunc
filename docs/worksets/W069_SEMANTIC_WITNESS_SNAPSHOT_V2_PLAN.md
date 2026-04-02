@@ -214,6 +214,19 @@ Current coverage accounting:
    - `FUNC.VLOOKUP`
    - `FUNC.XLOOKUP`
 
+Current gap partition:
+1. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md`
+2. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_INVENTORY.csv`
+3. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_LEDGER.md`
+4. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv`
+
+Frozen tranche counts for the remaining `507` rows:
+1. `201` ordinary extracted non-operator rows
+2. `267` ordinary curated non-operator rows
+3. `22` operator rows
+4. `5` special extracted rows
+5. `12` special curated rows
+
 ## 9B. Full-Coverage Rollout Shape
 The widened `W069` program should proceed in explicit stages rather than as one
 undifferentiated “finish the rest” lane.
@@ -237,6 +250,7 @@ Stage set:
      - witness-covered, or
      - explicitly dependency-blocked on a retained live authority
    - publish the full-surface reading rule and coverage ledger
+   - reconcile the ledger against the frozen tranche partition above
 
 ## 10. Suggested Seed Set
 Do not start with all `517` supported rows.
@@ -527,6 +541,8 @@ This packet can only be reported `scope_complete` when:
    - explicitly dependency-blocked on a retained live authority such as `W043`
      or `W049` with that dependency recorded in the bead graph and in the final
      coverage ledger.
+8. the frozen tranche ledger and row-level tranche register reconcile exactly to
+   the current supported-surface remainder set.
 
 ## 13. Risks
 1. bloating the snapshot with prose before the schema is stable,
