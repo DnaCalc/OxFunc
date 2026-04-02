@@ -485,6 +485,10 @@ Validated results:
 5. The current first seeded family therefore survives the generator path without
    reopening removed packet-local artifacts or creating a second catalog-owner
    surface.
+6. The first bulk ordinary extracted tranche is now seeded in:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json`
+   - `tools/w69-probe/run-w69-ordinary-tranche-t1-generator.ps1`
+   - it covers `201` ordinary extracted non-operator rows.
 
 ## 11E. First Downstream Reading Guide Shape
 Downstream consumers should read `V2` witness rollout in three layers:

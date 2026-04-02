@@ -69,6 +69,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 35. [OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md)
 36. [OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1_DELTA.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1_DELTA.md)
 37. [OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md)
+38. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json)
 
 ## Function Contract Surfaces
 1. The live function contract set remains the `FUNCTION_SLICE_*_CONTRACT_PRELIM.md` family that still anchors supported, deferred, and seam-sensitive claims.
