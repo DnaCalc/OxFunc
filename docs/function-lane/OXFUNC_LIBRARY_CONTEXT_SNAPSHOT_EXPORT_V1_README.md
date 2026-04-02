@@ -305,6 +305,12 @@ Current intentional exclusion:
    - leave outside the first widened tranche until the retained `W043` seam
      lane is narrowed further for witness-facing rollout.
 
+Current widened witness surfaces:
+1. artifact:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_MIXED_TRANCHE_A.json`
+2. generator:
+   - `tools/w69-probe/run-w69-mixed-tranche-a-witness-generator.ps1`
+
 Downstream reading rule:
 1. join `V2` witness rows to `V1` export rows on `surface_stable_id`,
 2. continue to read support status and deferred/not-complete overlay truth from
@@ -312,6 +318,16 @@ Downstream reading rule:
 3. use witness rows only as semantic/help/provenance enrichment,
 4. do not infer support solely from witness presence,
 5. if a row has no witness payload yet, keep reading it from `V1` only.
+
+Current widened artifact contents:
+1. `FUNC.GROUPBY`
+2. `FUNC.HYPERLINK`
+3. `FUNC.IF`
+4. `FUNC.IMAGE`
+5. `FUNC.LET`
+6. `FUNC.OP_IMPLICIT_INTERSECTION`
+7. `FUNC.SUM`
+8. `FUNC.XLOOKUP`
 
 ### 8.5 This Export Is A Stabilization Artifact
 This export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting. It is not a final cross-repo ABI. It also serves as the retained structural seed for `W069` witness generation. The preferred long-term direction is the runtime `LibraryContextProvider` / immutable `LibraryContextSnapshot` model described in `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`.

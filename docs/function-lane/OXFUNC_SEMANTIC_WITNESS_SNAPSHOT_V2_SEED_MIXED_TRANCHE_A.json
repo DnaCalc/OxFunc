@@ -1,0 +1,720 @@
+{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-seed-mixed-tranche-a",
+    "witness_schema_version":  "v0.seed",
+    "source_snapshot_ref":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "seed_family":  "mixed_tranche_a",
+    "entries":  [
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.GROUPBY",
+                        "canonical_surface_name":  "GROUPBY",
+                        "category":  "Lookup and reference functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "GROUPBY(row_fields, values, function, [field_headers], [total_depth], [sort_order], [filter_array], [field_relationship])",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "row_fields",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "array_or_reference",
+                                              "arg_behavior_note":  "Grouping keys used to partition the input rows."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "values",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "array_or_reference",
+                                              "arg_behavior_note":  "Value vector or matrix aggregated within each group."
+                                          },
+                                          {
+                                              "arg_index":  3,
+                                              "arg_name":  "function",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "callable_or_aggregate",
+                                              "arg_behavior_note":  "Current parked baseline supports the admitted grouped-aggregation callable/aggregate slice."
+                                          }
+                                      ],
+                        "help_summary":  "Groups rows by key fields and returns aggregated results.",
+                        "help_detail":  "The first widened tranche uses GROUPBY as the grouped-aggregation representative for witness rollout.",
+                        "semantic_modes":  [
+                                               "grouped_aggregation",
+                                               "header_total_rendering",
+                                               "filter_sensitive_sorting"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W56-GROUPBY-001",
+                                                     "summary":  "Native Excel GROUPBY baseline on the admitted sum-backed slice.",
+                                                     "outcome_note":  "Current baseline evidence pins grouped aggregation, header rendering, and totals behavior.",
+                                                     "evidence_ref_hint":  "W56-GROUPED-AGGREGATION-NATIVE-FORMAL-BL-20260331"
+                                                 },
+                                                 {
+                                                     "example_id":  "W56-GROUPBY-002",
+                                                     "summary":  "The widened witness tranche preserves the OxFml adapter-backed grouped callable lane.",
+                                                     "outcome_note":  "Current grouped-aggregation promotion evidence keeps the admitted callable carriage in scope.",
+                                                     "evidence_ref_hint":  "W55-GROUPED-AGGREGATION-PROMOTION-20260331"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses GROUPBY as the grouped-aggregation representative for the admitted current-baseline sum-backed slice, including headers, totals, and filter-sensitive sorting.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through retained grouped-aggregation promotion/native-baseline packets, runtime implementation, and executable Lean grouped-aggregation substrate.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.GROUPBY",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_GROUPBY_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W56-GROUPED-AGGREGATION-NATIVE-FORMAL-BL-20260331",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/groupby_fn.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/GroupBy.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.HYPERLINK",
+                        "canonical_surface_name":  "HYPERLINK",
+                        "category":  "Lookup and reference functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "HYPERLINK(link_location, [friendly_name])",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "link_location",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "text",
+                                              "arg_behavior_note":  "Target URL or workbook-local hyperlink location."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "friendly_name",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "value",
+                                              "arg_behavior_note":  "Optional display value carried alongside hyperlink formatting hints."
+                                          }
+                                      ],
+                        "help_summary":  "Creates a hyperlink and returns the displayed text or value for the linked cell.",
+                        "help_detail":  "The first widened tranche uses HYPERLINK as the presentation-aware value representative.",
+                        "semantic_modes":  [
+                                               "presentation_hinting",
+                                               "text_value_projection",
+                                               "host_formatting_hint"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W23-HYPERLINK-001",
+                                                     "summary":  "HYPERLINK returns an ordinary value with hyperlink-style formatting hints.",
+                                                     "outcome_note":  "Current baseline evidence pins the value boundary as plain text while preserving presentation hints.",
+                                                     "evidence_ref_hint":  "W23-HI-VALMODEL-20260321"
+                                                 },
+                                                 {
+                                                     "example_id":  "W23-HYPERLINK-002",
+                                                     "summary":  "Friendly-name lanes stay in the same presentation-aware value family.",
+                                                     "outcome_note":  "The retained host/provider classification packet keeps HYPERLINK in the admitted presentation-hinting slice.",
+                                                     "evidence_ref_hint":  "W23-HOST-CLASS-BL-20260321"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses HYPERLINK as the presentation-aware value representative and preserves the distinction between plain value projection and host formatting hints.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through the retained HYPERLINK/IMAGE value-model packet, runtime implementation, and HostServiceSurface formal bridge.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.HYPERLINK",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_HYPERLINK_IMAGE_VALUE_MODEL_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W23-HI-VALMODEL-20260321",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/hyperlink_fn.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/HostServiceSurface.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.IF",
+                        "canonical_surface_name":  "IF",
+                        "category":  "Our 10 featured functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "IF(logical_test, value_if_true, [value_if_false])",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "logical_test",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "scalar",
+                                              "arg_behavior_note":  "Condition evaluation drives the branch selection."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "value_if_true",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "value",
+                                              "arg_behavior_note":  "Returned when the logical test evaluates truthy."
+                                          },
+                                          {
+                                              "arg_index":  3,
+                                              "arg_name":  "value_if_false",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "value",
+                                              "arg_behavior_note":  "Optional false branch; omission follows the current baseline IF defaulting rules."
+                                          }
+                                      ],
+                        "help_summary":  "Returns one value when a condition is true and another value when it is false.",
+                        "help_detail":  "The first widened tranche uses IF as the control-flow anchor for mixed witness rollout.",
+                        "semantic_modes":  [
+                                               "branching_control",
+                                               "omittable_false_branch",
+                                               "scalar_condition"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W10-IF-001",
+                                                     "summary":  "Direct true-branch baseline.",
+                                                     "outcome_note":  "Returns the true branch when logical_test evaluates true.",
+                                                     "evidence_ref_hint":  "W10-TENMIX-SEED-20260308"
+                                                 },
+                                                 {
+                                                     "example_id":  "W10-IF-002",
+                                                     "summary":  "Direct false-branch baseline.",
+                                                     "outcome_note":  "Returns the false branch when logical_test evaluates false.",
+                                                     "evidence_ref_hint":  "W10-TENMIX-SEED-20260308"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses IF as the ordinary logical-control representative and carries forward the parked direct-branch baseline.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as the primary logical-control surface, with retained contract, runtime, and formal anchors.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.IF",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_IF_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W10-TENMIX-SEED-20260308",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/if_fn.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/IfFn.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.IMAGE",
+                        "canonical_surface_name":  "IMAGE",
+                        "category":  "Lookup and reference functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "IMAGE(source, [alt_text], [sizing], [height], [width])",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "source",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "text",
+                                              "arg_behavior_note":  "Image source or provider-backed locator string."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "alt_text",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "text",
+                                              "arg_behavior_note":  "Optional alternate text for presentation-aware hosts."
+                                          },
+                                          {
+                                              "arg_index":  3,
+                                              "arg_name":  "sizing",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "number",
+                                              "arg_behavior_note":  "Optional sizing mode selection."
+                                          },
+                                          {
+                                              "arg_index":  4,
+                                              "arg_name":  "height",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "number",
+                                              "arg_behavior_note":  "Optional explicit height input."
+                                          },
+                                          {
+                                              "arg_index":  5,
+                                              "arg_name":  "width",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "number",
+                                              "arg_behavior_note":  "Optional explicit width input."
+                                          }
+                                      ],
+                        "help_summary":  "Returns a host-managed image value from a source URL or equivalent image locator.",
+                        "help_detail":  "The first widened tranche uses IMAGE as the rich-value publication representative rather than an ordinary scalar-return function.",
+                        "semantic_modes":  [
+                                               "rich_value_publication",
+                                               "provider_bound_media",
+                                               "presentation_aware_output"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W23-IMAGE-001",
+                                                     "summary":  "Support-example IMAGE lane preserves a non-ordinary payload.",
+                                                     "outcome_note":  "Current baseline evidence records IMAGE as a retained rich-value/publication surface rather than plain text.",
+                                                     "evidence_ref_hint":  "W23-HI-VALMODEL-20260321"
+                                                 },
+                                                 {
+                                                     "example_id":  "W23-IMAGE-002",
+                                                     "summary":  "The seeded IMAGE lane also captures provider/media-bound failure posture.",
+                                                     "outcome_note":  "Current host/provider classification evidence includes a #CONNECT! lane on the installed baseline.",
+                                                     "evidence_ref_hint":  "W23-HOST-CLASS-BL-20260321"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses IMAGE as the rich-value and provider-aware publication representative, with witness payloads pointing back to the retained value-model packet rather than flattening the row to ordinary scalar behavior.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through the retained HYPERLINK/IMAGE value-model packet, runtime image implementation, and the HostServiceSurface formal bridge.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.IMAGE",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_HYPERLINK_IMAGE_VALUE_MODEL_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W23-HI-VALMODEL-20260321",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/image_fn.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/HostServiceSurface.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.LET",
+                        "canonical_surface_name":  "LET",
+                        "category":  "Our 10 featured functions",
+                        "metadata_status":  "function_meta_curated",
+                        "signature_display":  "LET(name1, value1, calculation_or_name2, [value2], ...)",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "name1",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "name",
+                                              "arg_behavior_note":  "Introduces the first lexical binding."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "value1",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "value",
+                                              "arg_behavior_note":  "Supplies the first bound value or expression result."
+                                          },
+                                          {
+                                              "arg_index":  3,
+                                              "arg_name":  "calculation_or_name2",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "value_or_name",
+                                              "arg_behavior_note":  "Either begins the final calculation or continues the binding chain."
+                                          }
+                                      ],
+                        "help_summary":  "Assigns names to calculation results and reuses them inside a single formula.",
+                        "help_detail":  "The first widened tranche uses LET as the callable/helper formation representative without reopening the cross-repo callable freeze.",
+                        "semantic_modes":  [
+                                               "lexical_binding",
+                                               "sequential_name_value_pairs",
+                                               "final_calculation_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W38-LET-001",
+                                                     "summary":  "Sequential LET binding baseline.",
+                                                     "outcome_note":  "Current baseline evidence pins sequential LET bindings and reuse inside the final calculation.",
+                                                     "evidence_ref_hint":  "W38-LAMBDA-HELPER-STAGE1-20260319"
+                                                 },
+                                                 {
+                                                     "example_id":  "W38-LET-002",
+                                                     "summary":  "LET carries the lexical-capture lane into immediately invoked LAMBDA usage.",
+                                                     "outcome_note":  "The retained Stage 1 helper packet pins lexical capture through the admitted callable slice.",
+                                                     "evidence_ref_hint":  "W38-LAMBDA-HELPER-STAGE1-20260319"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses LET as the callable/helper representative for lexical binding and final-calculation projection in the admitted Stage 1 helper slice.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through the retained helper Stage 1 contract, native replay evidence, runtime helper implementation, and formal callable-helper substrate.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.LET",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_AND_HELPER_STAGE1_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W38-LAMBDA-HELPER-STAGE1-20260319",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.OP_IMPLICIT_INTERSECTION",
+                        "canonical_surface_name":  "OP_IMPLICIT_INTERSECTION",
+                        "category":  "Operators",
+                        "metadata_status":  "doc_modeled",
+                        "signature_display":  "@ reference_or_array",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "reference_or_array",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "reference_or_array",
+                                              "arg_behavior_note":  "The operator projects an implicit-intersection scalar from the current context."
+                                          }
+                                      ],
+                        "help_summary":  "Projects the implicit-intersection result for a reference or array in the current formula context.",
+                        "help_detail":  "The first widened tranche uses OP_IMPLICIT_INTERSECTION as the modeled operator representative.",
+                        "semantic_modes":  [
+                                               "implicit_intersection_projection",
+                                               "legacy_single_compatibility",
+                                               "context_sensitive_scalarization"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W14-AT-001",
+                                                     "summary":  "Current-baseline @ operator projection lane.",
+                                                     "outcome_note":  "The retained baseline pins worksheet-visible implicit-intersection behavior.",
+                                                     "evidence_ref_hint":  "W14-IMPLICIT-INTERSECTION-BL-20260401"
+                                                 },
+                                                 {
+                                                     "example_id":  "W14-SINGLE-001",
+                                                     "summary":  "Legacy _xlfn.SINGLE compatibility normalizes to the same semantic surface.",
+                                                     "outcome_note":  "Current baseline evidence preserves SINGLE as compatibility syntax rather than a second runtime operator.",
+                                                     "evidence_ref_hint":  "W14-IMPLICIT-INTERSECTION-BL-20260401"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses OP_IMPLICIT_INTERSECTION as the modeled operator representative, including the parked legacy SINGLE compatibility reading.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through the retained implicit-intersection investigation, runtime operator implementation, and Lean implicit-intersection substrate.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_IMPLICIT_INTERSECTION",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_OP_IMPLICIT_INTERSECTION_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W14-IMPLICIT-INTERSECTION-BL-20260401",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/op_implicit_intersection.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/ImplicitIntersection.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.SUM",
+                        "canonical_surface_name":  "SUM",
+                        "category":  "Our 10 featured functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "SUM(number1, [number2], ...)",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "number1",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "scalar_or_reference",
+                                              "arg_behavior_note":  "Starts the additive fold and admits ordinary scalar and reference-fed lanes."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "number2",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "scalar_or_reference",
+                                              "arg_behavior_note":  "Represents the repeated optional additive arguments for the bounded witness slice."
+                                          }
+                                      ],
+                        "help_summary":  "Adds numbers, references, and arrays and returns their total.",
+                        "help_detail":  "The first mixed tranche treats SUM as the ordinary scalar/aggregate anchor for downstream witness rendering.",
+                        "semantic_modes":  [
+                                               "scalar_aggregate",
+                                               "reference_fold",
+                                               "high_arity_repeat"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W9-SUM-001",
+                                                     "summary":  "Ordinary SUM scalar addition baseline.",
+                                                     "outcome_note":  "Returns 6 for SUM(1,2,3).",
+                                                     "evidence_ref_hint":  "W9-XLL-BL-20260308"
+                                                 },
+                                                 {
+                                                     "example_id":  "W9-SUM-REF-001",
+                                                     "summary":  "Reference-fed SUM lanes stay in the ordinary aggregate family.",
+                                                     "outcome_note":  "Current baseline evidence includes aggregate SUM rows through the retained bridge and replay surfaces.",
+                                                     "evidence_ref_hint":  "W9-XLL-BL-20260308"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses SUM as the ordinary aggregate anchor and carries forward the parked baseline aggregate behavior rather than a seam-heavy special case.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an ordinary aggregate function with retained runtime and formal anchors plus bridge-backed replay evidence.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SUM",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_SUM_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W9-XLL-BL-20260308",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/sum.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/Sum.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    },
+                    {
+                        "witness_schema_version":  "v0.seed",
+                        "surface_stable_id":  "FUNC.XLOOKUP",
+                        "canonical_surface_name":  "XLOOKUP",
+                        "category":  "Our 10 featured functions",
+                        "metadata_status":  "function_meta_extracted",
+                        "signature_display":  "XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])",
+                        "arg_specs":  [
+                                          {
+                                              "arg_index":  1,
+                                              "arg_name":  "lookup_value",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "scalar",
+                                              "arg_behavior_note":  "Current mixed tranche carries the modern lookup-value entry point."
+                                          },
+                                          {
+                                              "arg_index":  2,
+                                              "arg_name":  "lookup_array",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "reference_or_array",
+                                              "arg_behavior_note":  "Lookup vector used for match search."
+                                          },
+                                          {
+                                              "arg_index":  3,
+                                              "arg_name":  "return_array",
+                                              "arg_required":  true,
+                                              "arg_type_hint":  "reference_or_array",
+                                              "arg_behavior_note":  "Return vector or area paired to the lookup array."
+                                          },
+                                          {
+                                              "arg_index":  4,
+                                              "arg_name":  "if_not_found",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "value",
+                                              "arg_behavior_note":  "Optional not-found projection lane."
+                                          },
+                                          {
+                                              "arg_index":  5,
+                                              "arg_name":  "match_mode",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "number",
+                                              "arg_behavior_note":  "Controls exact, approximate, and wildcard matching."
+                                          },
+                                          {
+                                              "arg_index":  6,
+                                              "arg_name":  "search_mode",
+                                              "arg_required":  false,
+                                              "arg_type_hint":  "number",
+                                              "arg_behavior_note":  "Controls forward, reverse, and binary-style search direction."
+                                          }
+                                      ],
+                        "help_summary":  "Searches a range or array and returns a corresponding item from a second range or array.",
+                        "help_detail":  "The first widened tranche uses XLOOKUP as the modern lookup representative beyond the bounded HVLOOKUP family seed.",
+                        "semantic_modes":  [
+                                               "modern_lookup",
+                                               "not_found_projection",
+                                               "match_mode_selection",
+                                               "search_mode_selection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "example_id":  "W10-XLOOKUP-001",
+                                                     "summary":  "Direct exact-match XLOOKUP baseline.",
+                                                     "outcome_note":  "Returns the paired return-array value for an exact match.",
+                                                     "evidence_ref_hint":  "W10-LOOKUP-XLL-20260310"
+                                                 },
+                                                 {
+                                                     "example_id":  "W10-XLOOKUP-002",
+                                                     "summary":  "Reference-return XLOOKUP lanes remain visible in the widened witness tranche.",
+                                                     "outcome_note":  "Retained bridge evidence captures current baseline address/range-composition parity.",
+                                                     "evidence_ref_hint":  "W10-LOOKUP-XLL-20260310"
+                                                 }
+                                             ],
+                        "admitted_slice_note":  "The first widened tranche uses XLOOKUP as the modern lookup representative with the parked baseline match/search and return-array behavior.",
+                        "orthogonal_validation_status":  [
+                                                             "locale_version_sweeps_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline through the retained XLOOKUP contract, lookup bridge evidence, runtime implementation, and Lean lookup model.",
+                        "provenance_refs":  [
+                                                {
+                                                    "ref_kind":  "catalog_export_row",
+                                                    "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.XLOOKUP",
+                                                    "provenance_category":  "catalog_export"
+                                                },
+                                                {
+                                                    "ref_kind":  "contract_doc",
+                                                    "ref_value":  "docs/function-lane/FUNCTION_SLICE_XLOOKUP_CONTRACT_PRELIM.md",
+                                                    "provenance_category":  "contract_artifact"
+                                                },
+                                                {
+                                                    "ref_kind":  "evidence_id",
+                                                    "ref_value":  "W10-LOOKUP-XLL-20260310",
+                                                    "provenance_category":  "native_excel_replay"
+                                                },
+                                                {
+                                                    "ref_kind":  "runtime_source",
+                                                    "ref_value":  "crates/oxfunc_core/src/functions/xlookup.rs",
+                                                    "provenance_category":  "runtime_test"
+                                                },
+                                                {
+                                                    "ref_kind":  "formal_artifact",
+                                                    "ref_value":  "formal/lean/OxFunc/Functions/Xlookup.lean",
+                                                    "provenance_category":  "formal_artifact"
+                                                }
+                                            ],
+                        "snapshot_generation":  "2026-04-02",
+                        "source_commit_short":  "87ef585",
+                        "source_commit_full":  "87ef5853451f61c19c4d955782094a9d7ae0771f",
+                        "source_tree_state":  "dirty"
+                    }
+                ]
+}

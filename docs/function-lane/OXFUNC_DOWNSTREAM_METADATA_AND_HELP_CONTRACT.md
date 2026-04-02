@@ -454,6 +454,12 @@ Current intentional exclusion:
    - leave outside the first widened tranche until the retained `W043` RTD
      seam lane is narrowed further for witness-facing rollout.
 
+Current widened artifact surfaces:
+1. artifact:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_MIXED_TRANCHE_A.json`
+2. generator:
+   - `tools/w69-probe/run-w69-mixed-tranche-a-witness-generator.ps1`
+
 First downstream reading rule for mixed witness rollout:
 1. join witness rows to `V1` rows on `surface_stable_id`,
 2. keep `V1` plus `W050` / `W051` as the owner of identity, deferred-status,
@@ -476,6 +482,20 @@ First downstream reading rule for mixed witness rollout:
 6. seam-heavy or modeled rows in the widened tranche should continue to display
    `metadata_status` and `special_interface_kind` alongside the witness
    payload.
+
+Current widened artifact result:
+1. the first mixed artifact is now emitted as an adjacent bounded `V2`
+   projection rather than widening the `HLOOKUP` / `VLOOKUP` family artifact in
+   place,
+2. it currently carries:
+   - `FUNC.GROUPBY`
+   - `FUNC.HYPERLINK`
+   - `FUNC.IF`
+   - `FUNC.IMAGE`
+   - `FUNC.LET`
+   - `FUNC.OP_IMPLICIT_INTERSECTION`
+   - `FUNC.SUM`
+   - `FUNC.XLOOKUP`
 
 ### 4.10 First Schema Audit Findings
 The first `W069` schema/seed audit against the required `V2` payload families found

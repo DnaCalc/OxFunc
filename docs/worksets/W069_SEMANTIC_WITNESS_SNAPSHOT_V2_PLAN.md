@@ -275,6 +275,12 @@ Current exclusion from this first widened tranche:
    - intentionally excluded until the retained `W043` RTD seam lane is
      narrowed further for witness-facing rollout.
 
+First widened artifact surfaces:
+1. artifact:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_MIXED_TRANCHE_A.json`
+2. generator:
+   - `tools/w69-probe/run-w69-mixed-tranche-a-witness-generator.ps1`
+
 ## 11. Execution Sequence
 1. define the `SemanticWitnessEntry` schema and stability tiers,
 2. define `V1` -> `V2` field mapping,
@@ -430,6 +436,20 @@ Mixed-tranche reading rule:
 3. downstream consumers should therefore be able to render one mixed witness UI
    without pretending that every supported row already has `V2` payload
    coverage.
+
+Current widened-tranche result:
+1. the first mixed artifact is now generated as an adjacent bounded `V2`
+   projection rather than widening the `HLOOKUP` / `VLOOKUP` family artifact in
+   place,
+2. the generated artifact currently contains:
+   - `FUNC.GROUPBY`
+   - `FUNC.HYPERLINK`
+   - `FUNC.IF`
+   - `FUNC.IMAGE`
+   - `FUNC.LET`
+   - `FUNC.OP_IMPLICIT_INTERSECTION`
+   - `FUNC.SUM`
+   - `FUNC.XLOOKUP`
 
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
