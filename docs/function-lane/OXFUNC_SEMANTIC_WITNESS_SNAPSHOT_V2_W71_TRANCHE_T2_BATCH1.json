@@ -1,214 +1,208 @@
 {
-    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch1",
-    "witness_schema_version": "v0.tranche",
-    "tranche_id": "T2",
-    "tranche_name": "ordinary_curated_non_operator",
-    "selection_rule": "tranche_register.tranche_id=T2 and sequence between 202 and 204",
-    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
-    "source_commit_short": "f7a9632",
-    "source_commit_full": "f7a96327fc7b88f9c3e6d7a9f4d3f11e37a1e7aa",
-    "source_tree_state": "dirty",
-    "entries": [
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch1",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T2",
+  "tranche_name": "ordinary_curated_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T2 and sequence between 202 and 204",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "42191b0",
+  "source_commit_full": "42191b0d6c7e8f9a0b1c2d3e4f5061728394a5b6",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.ACCRINT",
+      "canonical_surface_name": "ACCRINT",
+      "metadata_status": "function_meta_curated",
+      "category": "Financial functions",
+      "signature_display": "ACCRINT(issue, first_interest, settlement, rate, par, frequency, [basis], [calc_method])",
+      "help_summary": "ACCRINT witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for ACCRINT and keeps the accrued-interest lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "accrued_interest_projection",
+        "curated_financial_surface",
+        "compatibility_financial_surface"
+      ],
+      "witness_examples": [
         {
-            "witness_schema_version": "v0.tranche",
-            "tranche_id": "T2",
-            "tranche_name": "ordinary_curated_non_operator",
-            "surface_stable_id": "FUNC.ACCRINT",
-            "canonical_surface_name": "ACCRINT",
-            "metadata_status": "function_meta_curated",
-            "category": "Financial functions",
-            "special_interface_kind": "ordinary",
-            "admission_interface_kind": "ordinary_call",
-            "arity_min": 6,
-            "arity_max": 8,
-            "signature_display": "ACCRINT(issue, first_interest, settlement, rate, par, frequency, [basis], [calc_method])",
-            "help_summary": "Accrued-interest witness row for the bond-core tranche.",
-            "help_detail": "Captures the parked baseline bond-core semantics for accrued interest, including the repaired Excel-style date handling and basis-sensitive accrual used in the W27 bond packet.",
-            "semantic_modes": ["bond_accrual", "basis_sensitive", "coupon_schedule"],
-            "witness_examples": [
-                {
-                    "example_id": "W71-T2-ACCRINT-001",
-                    "summary": "Bond-core accrued-interest baseline.",
-                    "outcome_note": "Matches the parked bond-core behavior pinned in W27.",
-                    "evidence_ref_hint": "W27-BOND-ODD-BOND-20260318"
-                }
-            ],
-            "evidence_refs": [
-                {
-                    "ref_kind": "catalog_export_row",
-                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACCRINT",
-                    "provenance_category": "catalog_export"
-                },
-                {
-                    "ref_kind": "tranche_register_row",
-                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACCRINT",
-                    "provenance_category": "tranche_register"
-                },
-                {
-                    "ref_kind": "contract_artifact",
-                    "ref_value": "docs/function-lane/FUNCTION_SLICE_BOND_CORE_FAMILY_CONTRACT_PRELIM.md",
-                    "provenance_category": "contract_artifact"
-                },
-                {
-                    "ref_kind": "evidence_id",
-                    "ref_value": "W27-BOND-ODD-BOND-20260318",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "replay_probe",
-                    "ref_value": "tools/w27-probe/run-w27-bond-odd-bond-baseline.ps1",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "runtime_source",
-                    "ref_value": "crates/oxfunc_core/src/functions/bond_core_family.rs",
-                    "provenance_category": "runtime_test"
-                },
-                {
-                    "ref_kind": "formal_artifact",
-                    "ref_value": "formal/lean/OxFunc/Functions/BondCoreFamily.lean",
-                    "provenance_category": "formal_artifact"
-                }
-            ],
-            "formal_refs": ["formal/lean/OxFunc/Functions/BondCoreFamily.lean"],
-            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_BOND_CORE_FAMILY_CONTRACT_PRELIM.md"],
-            "admitted_slice_note": "Bond-core witness row for the parked baseline accrued-interest slice.",
-            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
-            "current_support_basis": "Supported in the parked baseline through the bond-core runtime family, the W27 replay packet, and the frozen V1 export row."
-        },
-        {
-            "witness_schema_version": "v0.tranche",
-            "tranche_id": "T2",
-            "tranche_name": "ordinary_curated_non_operator",
-            "surface_stable_id": "FUNC.ACCRINTM",
-            "canonical_surface_name": "ACCRINTM",
-            "metadata_status": "function_meta_curated",
-            "category": "Financial functions",
-            "special_interface_kind": "ordinary",
-            "admission_interface_kind": "ordinary_call",
-            "arity_min": 3,
-            "arity_max": 5,
-            "signature_display": "ACCRINTM(issue, settlement, rate, par, [basis])",
-            "help_summary": "Maturity-accrual witness row for the bond-core tranche.",
-            "help_detail": "Captures the parked baseline maturity-security semantics for accrued interest at maturity and keeps the admitted slice distinct from the odd-bond family.",
-            "semantic_modes": ["bond_accrual_at_maturity", "basis_sensitive", "coupon_schedule"],
-            "witness_examples": [
-                {
-                    "example_id": "W71-T2-ACCRINTM-001",
-                    "summary": "Bond-core maturity-accrual baseline.",
-                    "outcome_note": "Matches the parked bond-core behavior pinned in W27.",
-                    "evidence_ref_hint": "W27-BOND-ODD-BOND-20260318"
-                }
-            ],
-            "evidence_refs": [
-                {
-                    "ref_kind": "catalog_export_row",
-                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACCRINTM",
-                    "provenance_category": "catalog_export"
-                },
-                {
-                    "ref_kind": "tranche_register_row",
-                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACCRINTM",
-                    "provenance_category": "tranche_register"
-                },
-                {
-                    "ref_kind": "contract_artifact",
-                    "ref_value": "docs/function-lane/FUNCTION_SLICE_BOND_CORE_FAMILY_CONTRACT_PRELIM.md",
-                    "provenance_category": "contract_artifact"
-                },
-                {
-                    "ref_kind": "evidence_id",
-                    "ref_value": "W27-BOND-ODD-BOND-20260318",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "replay_probe",
-                    "ref_value": "tools/w27-probe/run-w27-bond-odd-bond-baseline.ps1",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "runtime_source",
-                    "ref_value": "crates/oxfunc_core/src/functions/bond_core_family.rs",
-                    "provenance_category": "runtime_test"
-                },
-                {
-                    "ref_kind": "formal_artifact",
-                    "ref_value": "formal/lean/OxFunc/Functions/BondCoreFamily.lean",
-                    "provenance_category": "formal_artifact"
-                }
-            ],
-            "formal_refs": ["formal/lean/OxFunc/Functions/BondCoreFamily.lean"],
-            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_BOND_CORE_FAMILY_CONTRACT_PRELIM.md"],
-            "admitted_slice_note": "Bond-core witness row for the parked baseline maturity-accrual slice.",
-            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
-            "current_support_basis": "Supported in the parked baseline through the bond-core runtime family, the W27 replay packet, and the frozen V1 export row."
-        },
-        {
-            "witness_schema_version": "v0.tranche",
-            "tranche_id": "T2",
-            "tranche_name": "ordinary_curated_non_operator",
-            "surface_stable_id": "FUNC.AMORDEGRC",
-            "canonical_surface_name": "AMORDEGRC",
-            "metadata_status": "function_meta_curated",
-            "category": "Financial functions",
-            "special_interface_kind": "ordinary",
-            "admission_interface_kind": "ordinary_call",
-            "arity_min": 6,
-            "arity_max": 7,
-            "signature_display": "AMORDEGRC(cost, date_purchased, first_period, salvage, period, rate, [basis])",
-            "help_summary": "Depreciation witness row for the coefficient-based AMOR lane.",
-            "help_detail": "Captures the admitted AMOR depreciation semantics, including the basis-sensitive first-period behavior and the fractional-period normalization rules pinned in the W24 batch-14 evidence.",
-            "semantic_modes": ["depreciation_schedule", "basis_sensitive", "fractional_period_normalization"],
-            "witness_examples": [
-                {
-                    "example_id": "W71-T2-AMORDEGRC-001",
-                    "summary": "Coefficient-based depreciation baseline.",
-                    "outcome_note": "Matches the parked AMOR depreciation behavior pinned in W24 batch 14.",
-                    "evidence_ref_hint": "W24-B14-AMOR-DEPRECIATION-20260318"
-                }
-            ],
-            "evidence_refs": [
-                {
-                    "ref_kind": "catalog_export_row",
-                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AMORDEGRC",
-                    "provenance_category": "catalog_export"
-                },
-                {
-                    "ref_kind": "tranche_register_row",
-                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AMORDEGRC",
-                    "provenance_category": "tranche_register"
-                },
-                {
-                    "ref_kind": "contract_artifact",
-                    "ref_value": "docs/function-lane/FUNCTION_SLICE_AMOR_DEPRECIATION_FAMILY_CONTRACT_PRELIM.md",
-                    "provenance_category": "contract_artifact"
-                },
-                {
-                    "ref_kind": "evidence_id",
-                    "ref_value": "W24-B14-AMOR-DEPRECIATION-20260318",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "replay_probe",
-                    "ref_value": "tools/w24-probe/run-w24-batch14-amor-depreciation-baseline.ps1",
-                    "provenance_category": "native_excel_replay"
-                },
-                {
-                    "ref_kind": "runtime_source",
-                    "ref_value": "crates/oxfunc_core/src/functions/amor_depreciation_family.rs",
-                    "provenance_category": "runtime_test"
-                },
-                {
-                    "ref_kind": "formal_artifact",
-                    "ref_value": "formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean",
-                    "provenance_category": "formal_artifact"
-                }
-            ],
-            "formal_refs": ["formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean"],
-            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_AMOR_DEPRECIATION_FAMILY_CONTRACT_PRELIM.md"],
-            "admitted_slice_note": "Coefficient-based depreciation witness row for the parked baseline AMOR slice.",
-            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
-            "current_support_basis": "Supported in the parked baseline through the AMOR runtime family, the W24 replay packet, and the frozen V1 export row."
+          "example_id": "W71-T2-ACCRINT-001",
+          "summary": "Accrued-interest baseline.",
+          "outcome_note": "Returns the seeded positive accrued-interest value for the curated support example and preserves the admitted accrued-interest lane.",
+          "evidence_ref_hint": "W71-T2-ACCRINT-001"
         }
-    ]
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACCRINT",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACCRINT",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/bond_core_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/BondCoreFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/BondCoreFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "ACCRINT witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.ACCRINTM",
+      "canonical_surface_name": "ACCRINTM",
+      "metadata_status": "function_meta_curated",
+      "category": "Financial functions",
+      "signature_display": "ACCRINTM(issue, settlement, rate, par, [basis])",
+      "help_summary": "ACCRINTM witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for ACCRINTM and keeps the maturity accrued-interest lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "maturity_accrued_interest_projection",
+        "curated_financial_surface",
+        "compatibility_financial_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-ACCRINTM-001",
+          "summary": "Maturity accrued-interest baseline.",
+          "outcome_note": "Returns the seeded support-example value for the curated maturity accrued-interest lane.",
+          "evidence_ref_hint": "W71-T2-ACCRINTM-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACCRINTM",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACCRINTM",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/bond_core_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/BondCoreFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/BondCoreFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "ACCRINTM witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.AMORDEGRC",
+      "canonical_surface_name": "AMORDEGRC",
+      "metadata_status": "function_meta_curated",
+      "category": "Financial functions",
+      "signature_display": "AMORDEGRC(cost, date_purchased, first_period, salvage, period, rate, [basis])",
+      "help_summary": "AMORDEGRC witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for AMORDEGRC and keeps the depreciation lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "depreciation_projection",
+        "curated_financial_surface",
+        "compatibility_financial_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-AMORDEGRC-001",
+          "summary": "Depreciation baseline.",
+          "outcome_note": "Returns the seeded support-example depreciation values for the curated AMORDEGRC lane.",
+          "evidence_ref_hint": "W71-T2-AMORDEGRC-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AMORDEGRC",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AMORDEGRC",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/amor_depreciation_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "AMORDEGRC witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
 }
