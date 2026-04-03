@@ -6,7 +6,7 @@ the frozen W069 tranche and coverage ledgers.
 ## 1. Reconciliation Summary
 The parked non-deferred supported surface remains:
 1. `517` supported rows total,
-2. `196` rows already witness-covered in the seeded V2 surface,
+2. `199` rows already witness-covered in the seeded V2 surface,
 3. `321` rows still requiring W071 witness population.
 
 The remaining rows are partitioned exactly as the frozen tranche ledger states.
@@ -41,6 +41,7 @@ That means:
 1. W071 has a live execution path for the remaining supported-surface rollout.
 2. The frozen gap inventory and tranche register remain consistent.
 3. This reconciliation is the first W071 row-level control artifact.
+
 
 
 
