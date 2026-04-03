@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch56",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 166 and 168",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "c1b204a",
+  "source_commit_full": "c1b204a2d3a2af6c5f7ce31d2a2b6a0f5ecf6d39",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.STDEV.S",
+      "canonical_surface_name": "STDEV.S",
+      "metadata_status": "function_meta_extracted",
+      "category": "Statistical functions",
+      "signature_display": "STDEV.S(number1, [number2], ...)",
+      "help_summary": "STDEV.S witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for STDEV.S and keeps the sample-standard-deviation lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "sample_standard_deviation",
+        "aggregate_range_dual_policy",
+        "deterministic_variance_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-STDEVS-001",
+          "summary": "Sample deviation baseline.",
+          "outcome_note": "Returns 1 for STDEV.S(1,2,3) and preserves the admitted sample-deviation lane.",
+          "evidence_ref_hint": "W71-T1-STDEVS-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.STDEV.S",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.STDEV.S",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/stdev_s_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/StdevSFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/StdevSFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "STDEV.S witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.STDEVA",
+      "canonical_surface_name": "STDEVA",
+      "metadata_status": "function_meta_extracted",
+      "category": "Statistical functions",
+      "signature_display": "STDEVA(number1, [number2], ...)",
+      "help_summary": "STDEVA witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for STDEVA and keeps the compatibility-aware sample-deviation lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "sample_standard_deviation_with_compatibility_coercion",
+        "aggregate_range_dual_policy",
+        "deterministic_variance_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-STDEVA-001",
+          "summary": "Compatibility sample deviation baseline.",
+          "outcome_note": "Returns 1 for STDEVA(1,2,3) and preserves the compatibility-aware sample-deviation lane.",
+          "evidence_ref_hint": "W71-T1-STDEVA-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.STDEVA",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.STDEVA",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/stdeva_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/StdevAFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/StdevAFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "STDEVA witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.STDEVP",
+      "canonical_surface_name": "STDEVP",
+      "metadata_status": "function_meta_extracted",
+      "category": "Compatibility",
+      "signature_display": "STDEVP(number1, [number2], ...)",
+      "help_summary": "STDEVP witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for STDEVP and keeps the population-deviation compatibility lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "population_standard_deviation",
+        "aggregate_range_dual_policy",
+        "deterministic_variance_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-STDEVP-001",
+          "summary": "Population deviation baseline.",
+          "outcome_note": "Returns 0.816496580927726 for STDEVP(1,2,3) and preserves the admitted population-deviation compatibility lane.",
+          "evidence_ref_hint": "W71-T1-STDEVP-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.STDEVP",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.STDEVP",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/stdevp_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/StdevPCompatFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/StdevPCompatFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "STDEVP witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
