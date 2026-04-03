@@ -1,0 +1,229 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch34",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 100 and 102",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "5917eef",
+  "source_commit_full": "5917eef4d83c4d83c1b47f07a2f68c23c7f1fa6c",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.LOG",
+      "canonical_surface_name": "LOG",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "2",
+      "signature_display": "LOG(number, [base])",
+      "help_summary": "LOG witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for LOG and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "logarithm",
+        "numeric_scalar_or_array",
+        "base_adjustable_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-LOG-001",
+          "summary": "Logarithm baseline.",
+          "outcome_note": "Returns the logarithm of the supplied positive number, optionally using the supplied base.",
+          "evidence_ref_hint": "W71-T1-LOG-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.LOG",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.LOG",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/log_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/LogFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/LogFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "LOG witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.LOG10",
+      "canonical_surface_name": "LOG10",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "1",
+      "signature_display": "LOG10(number)",
+      "help_summary": "LOG10 witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for LOG10 and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "base10_logarithm",
+        "numeric_scalar_or_array",
+        "real_valued_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-LOG10-001",
+          "summary": "Base-10 logarithm baseline.",
+          "outcome_note": "Returns the base-10 logarithm of the supplied positive number.",
+          "evidence_ref_hint": "W71-T1-LOG10-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.LOG10",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.LOG10",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/log10_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/Log10.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/Log10.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "LOG10 witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.MATCH",
+      "canonical_surface_name": "MATCH",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "2",
+      "arity_max": "3",
+      "signature_display": "MATCH(lookup_value, lookup_array, [match_type])",
+      "help_summary": "MATCH witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for MATCH and keeps the lookup lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "lookup_position",
+        "match_type_dispatch",
+        "reference_scalar_or_array"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-MATCH-001",
+          "summary": "Match-position baseline.",
+          "outcome_note": "Returns the position of the lookup value in the lookup array according to the requested match type.",
+          "evidence_ref_hint": "W71-T1-MATCH-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MATCH",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.MATCH",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/match_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/MatchFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/MatchFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "MATCH witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
