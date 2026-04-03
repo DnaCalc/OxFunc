@@ -161,6 +161,9 @@ The tenth ordinary extracted witness batch is seeded in:
 The third ordinary curated witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json)
 
+The fourth ordinary curated witness batch is seeded in:
+1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH4.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH4.json)
+
 The third operator witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH3.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH3.json)
 
