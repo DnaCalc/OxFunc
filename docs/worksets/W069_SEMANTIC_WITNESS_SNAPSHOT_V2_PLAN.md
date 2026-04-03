@@ -238,6 +238,11 @@ The frozen W069 support-surface ledgers that define that split are:
 8. `docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md`
 9. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md`
 
+The final coverage ledger above is the canonical publication rule for the full
+supported surface. Downstream readers should treat it as the authoritative
+`W069` publication surface, with the other ledgers serving as its supporting
+gap, tranche, seam-heavy, and operator/modeled anchors.
+
 ## 9B. Full-Coverage Rollout Shape
 The widened `W069` program should proceed in explicit stages rather than as one
 undifferentiated “finish the rest” lane.

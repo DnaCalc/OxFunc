@@ -82,6 +82,9 @@ below rather than through the ordinary tranche templates.
 
 Operator and modeled rows are read through the dedicated conventions note
 above, not through the ordinary tranche templates.
+The final coverage ledger is the canonical publication rule for the full
+supported surface; the other W69 ledgers remain supporting anchors for the
+frozen gap, tranche, seam-heavy, and operator/modeled views.
 
 The `W69` support-surface witness family is read as a frozen chain in the
 following order:
