@@ -1,0 +1,889 @@
+﻿{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-tranche-sh1-seam-heavy",
+    "witness_schema_version":  "v0.tranche",
+    "tranche_id":  "SH1",
+    "tranche_name":  "seam_heavy_supported_surface",
+    "selection_rule":  "W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv retained rows",
+    "source_snapshot_ref":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_inventory_ref":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv",
+    "source_authoring_rules_ref":  "docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md",
+    "source_commit_short":  "5a37d56",
+    "source_commit_full":  "5a37d56b40f5b176b0be86ba3765233023521abb",
+    "source_tree_state":  "clean",
+    "entries":  [
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.ASC",
+                        "canonical_surface_name":  "ASC",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Text functions",
+                        "special_interface_kind":  "width_conversion_host_profile",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "1",
+                        "signature_display":  "ASC(...)",
+                        "help_summary":  "Seam-heavy witness seed for ASC.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "width_conversion",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.ASC-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.ASC"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ASC",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.ASC",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.BYCOL",
+                        "canonical_surface_name":  "BYCOL",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "2",
+                        "arity_max":  "2",
+                        "signature_display":  "BYCOL(...)",
+                        "help_summary":  "Seam-heavy witness seed for BYCOL.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.BYCOL-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.BYCOL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BYCOL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.BYCOL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.BYROW",
+                        "canonical_surface_name":  "BYROW",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "2",
+                        "arity_max":  "2",
+                        "signature_display":  "BYROW(...)",
+                        "help_summary":  "Seam-heavy witness seed for BYROW.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.BYROW-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.BYROW"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BYROW",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.BYROW",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.CALL",
+                        "canonical_surface_name":  "CALL",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "User defined functions that are installed with add-ins",
+                        "special_interface_kind":  "registered_external_invocation",
+                        "admission_interface_kind":  "macro_or_host_registered_call",
+                        "dependency_gate":  "W041",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "255",
+                        "signature_display":  "CALL(...)",
+                        "help_summary":  "Seam-heavy witness seed for CALL.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W041 remains visible in the payload.",
+                        "semantic_modes":  "registered_external_invocation",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W041 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.CALL-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.CALL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CALL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.CALL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W041."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.DBCS",
+                        "canonical_surface_name":  "DBCS",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Text functions",
+                        "special_interface_kind":  "width_conversion_host_profile",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "1",
+                        "signature_display":  "DBCS(...)",
+                        "help_summary":  "Seam-heavy witness seed for DBCS.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "width_conversion",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.DBCS-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.DBCS"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.DBCS",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.DBCS",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.ISOMITTED",
+                        "canonical_surface_name":  "ISOMITTED",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Information functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "callable_runtime_helper",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "1",
+                        "signature_display":  "ISOMITTED(...)",
+                        "help_summary":  "Seam-heavy witness seed for ISOMITTED.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.ISOMITTED-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.ISOMITTED"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ISOMITTED",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.ISOMITTED",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.JIS",
+                        "canonical_surface_name":  "JIS",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Compatibility",
+                        "special_interface_kind":  "width_conversion_host_profile",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "1",
+                        "signature_display":  "JIS(...)",
+                        "help_summary":  "Seam-heavy witness seed for JIS.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "width_conversion",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.JIS-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.JIS"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.JIS",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.JIS",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.LAMBDA",
+                        "canonical_surface_name":  "LAMBDA",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_formation",
+                        "admission_interface_kind":  "helper_formation",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "254",
+                        "signature_display":  "LAMBDA(...)",
+                        "help_summary":  "Seam-heavy witness seed for LAMBDA.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_formation",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.LAMBDA-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.LAMBDA"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.LAMBDA",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.LAMBDA",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.MAKEARRAY",
+                        "canonical_surface_name":  "MAKEARRAY",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "3",
+                        "arity_max":  "3",
+                        "signature_display":  "MAKEARRAY(...)",
+                        "help_summary":  "Seam-heavy witness seed for MAKEARRAY.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.MAKEARRAY-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.MAKEARRAY"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MAKEARRAY",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.MAKEARRAY",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.MAP",
+                        "canonical_surface_name":  "MAP",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "2",
+                        "arity_max":  "254",
+                        "signature_display":  "MAP(...)",
+                        "help_summary":  "Seam-heavy witness seed for MAP.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.MAP-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.MAP"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MAP",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.MAP",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.NOW",
+                        "canonical_surface_name":  "NOW",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Date and time functions",
+                        "special_interface_kind":  "presentation_hinting_function",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "0",
+                        "arity_max":  "0",
+                        "signature_display":  "NOW(...)",
+                        "help_summary":  "Seam-heavy witness seed for NOW.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "presentation_hinting",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.NOW-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.NOW"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.NOW",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.NOW",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.NUMBERVALUE",
+                        "canonical_surface_name":  "NUMBERVALUE",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Text functions",
+                        "special_interface_kind":  "locale_default_profiled_parse",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "1",
+                        "arity_max":  "3",
+                        "signature_display":  "NUMBERVALUE(...)",
+                        "help_summary":  "Seam-heavy witness seed for NUMBERVALUE.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "locale_profiled_parse",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.NUMBERVALUE-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.NUMBERVALUE"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.NUMBERVALUE",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.NUMBERVALUE",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.REDUCE",
+                        "canonical_surface_name":  "REDUCE",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "3",
+                        "arity_max":  "3",
+                        "signature_display":  "REDUCE(...)",
+                        "help_summary":  "Seam-heavy witness seed for REDUCE.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.REDUCE-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.REDUCE"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.REDUCE",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.REDUCE",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.REGISTER.ID",
+                        "canonical_surface_name":  "REGISTER.ID",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "User defined functions that are installed with add-ins",
+                        "special_interface_kind":  "registered_external_registration",
+                        "admission_interface_kind":  "registered_external_lookup",
+                        "dependency_gate":  "W041",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "2",
+                        "arity_max":  "3",
+                        "signature_display":  "REGISTER.ID(...)",
+                        "help_summary":  "Seam-heavy witness seed for REGISTER.ID.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W041 remains visible in the payload.",
+                        "semantic_modes":  "registered_external_registration",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W041 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.REGISTER.ID-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.REGISTER.ID"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.REGISTER.ID",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.REGISTER.ID",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W041."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.RTD",
+                        "canonical_surface_name":  "RTD",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Lookup and reference functions",
+                        "special_interface_kind":  "host_subscription_provider",
+                        "admission_interface_kind":  "host_subscription_call",
+                        "dependency_gate":  "W043",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "3",
+                        "arity_max":  "255",
+                        "signature_display":  "RTD(...)",
+                        "help_summary":  "Seam-heavy witness seed for RTD.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W043 remains visible in the payload.",
+                        "semantic_modes":  "host_subscription_provider",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W043 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.RTD-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.RTD"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.RTD",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.RTD",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W043."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.SCAN",
+                        "canonical_surface_name":  "SCAN",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Logical functions",
+                        "special_interface_kind":  "callable_helper_runtime",
+                        "admission_interface_kind":  "higher_order_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "3",
+                        "arity_max":  "3",
+                        "signature_display":  "SCAN(...)",
+                        "help_summary":  "Seam-heavy witness seed for SCAN.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  [
+                                               "callable_helper_runtime",
+                                               "higher_order"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.SCAN-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.SCAN"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SCAN",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.SCAN",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "SH1",
+                        "tranche_name":  "seam_heavy_supported_surface",
+                        "surface_stable_id":  "FUNC.TODAY",
+                        "canonical_surface_name":  "TODAY",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Date and time functions",
+                        "special_interface_kind":  "presentation_hinting_function",
+                        "admission_interface_kind":  "ordinary_call",
+                        "dependency_gate":  "W049",
+                        "seam_note":  "remaining_supported_surface_without_v2_witness",
+                        "arity_min":  "0",
+                        "arity_max":  "0",
+                        "signature_display":  "TODAY(...)",
+                        "help_summary":  "Seam-heavy witness seed for TODAY.",
+                        "help_detail":  "Seeded from the parked baseline V1 export and the seam-heavy authoring rules; dependency gate W049 remains visible in the payload.",
+                        "semantic_modes":  "presentation_hinting",
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Dependency-gated seam-heavy witness seed.",
+                                                     "outcome_note":  "Retained W69 seam gate W049 remains explicit in the witness row.",
+                                                     "example_id":  "FUNC.TODAY-SEAM-SEED-001",
+                                                     "evidence_ref_hint":  "W69-SEAM-HEAVY-FUNC.TODAY"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.TODAY",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.TODAY",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "seam_inventory_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Seam-heavy witness seed pending fuller dependency-gated W069 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "live_gate_dependency_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a seam-heavy row with retained dependency gate W049."
+                    }
+                ]
+}
