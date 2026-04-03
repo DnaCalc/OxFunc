@@ -1,0 +1,217 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t3-batch3",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T3",
+    "tranche_name": "operator_surface",
+    "selection_rule": "tranche_register.tranche_id=T3 and sequence between 475 and 477",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "2bd241e",
+    "source_commit_full": "2bd241e626ddb1a7185e7dc0f22fd5303cdde740",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T3",
+            "tranche_name": "operator_surface",
+            "surface_stable_id": "FUNC.OP_INTERSECTION_REF",
+            "canonical_surface_name": "OP_INTERSECTION_REF",
+            "metadata_status": "function_meta_curated",
+            "category": "Operators",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "dependency_gate": "",
+            "arity_min": 2,
+            "arity_max": 2,
+            "signature_display": "A B",
+            "help_summary": "Operator reference witness row for the reference lane.",
+            "help_detail": "Captures the ordinary operator reference-formation semantics and keeps the intersection behavior aligned to the W45 wave-C evidence.",
+            "semantic_modes": ["operator_surface", "reference_formation", "intersection_behavior"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T3-OPINTERSECTION-001",
+                    "summary": "Reference-formation baseline.",
+                    "outcome_note": "Matches the parked OP_INTERSECTION_REF behavior pinned in W45.",
+                    "evidence_ref_hint": "W45-OP-REF-WAVEC-20260320"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_INTERSECTION_REF",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_INTERSECTION_REF",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_OPERATOR_REFERENCE_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W45-OP-REF-WAVEC-20260320",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/operator_reference_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/OperatorReferenceFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/OperatorReferenceFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_OPERATOR_REFERENCE_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Reference-formation witness row for the parked baseline operator lane.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the reference operator runtime family, the W45 wave-C replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T3",
+            "tranche_name": "operator_surface",
+            "surface_stable_id": "FUNC.OP_LESS_EQUAL",
+            "canonical_surface_name": "OP_LESS_EQUAL",
+            "metadata_status": "function_meta_curated",
+            "category": "Operators",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "dependency_gate": "",
+            "arity_min": 2,
+            "arity_max": 2,
+            "signature_display": "A <= B",
+            "help_summary": "Operator less-equal witness row for the compare lane.",
+            "help_detail": "Captures the ordinary operator less-or-equal semantics and keeps the mixed-type comparison behavior aligned to the W45 wave-B evidence.",
+            "semantic_modes": ["operator_comparison", "mixed_type_compare", "binary_operator_form"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T3-OPLE-001",
+                    "summary": "Less-equal baseline.",
+                    "outcome_note": "Matches the parked operator compare behavior pinned in W45.",
+                    "evidence_ref_hint": "W45-OP-CMP-WAVEB-20260320"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_LESS_EQUAL",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_LESS_EQUAL",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W45-OP-CMP-WAVEB-20260320",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/operator_compare_concat_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/OperatorCompareConcatFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/OperatorCompareConcatFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Comparison operator witness row for the parked baseline operator lane.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the compare/concat operator runtime family, the W45 wave-B replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T3",
+            "tranche_name": "operator_surface",
+            "surface_stable_id": "FUNC.OP_LESS_THAN",
+            "canonical_surface_name": "OP_LESS_THAN",
+            "metadata_status": "function_meta_curated",
+            "category": "Operators",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "dependency_gate": "",
+            "arity_min": 2,
+            "arity_max": 2,
+            "signature_display": "A < B",
+            "help_summary": "Operator less-than witness row for the compare lane.",
+            "help_detail": "Captures the ordinary operator less-than semantics and keeps the mixed-type comparison behavior aligned to the W45 wave-B evidence.",
+            "semantic_modes": ["operator_comparison", "mixed_type_compare", "binary_operator_form"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T3-OPLT-001",
+                    "summary": "Less-than baseline.",
+                    "outcome_note": "Matches the parked operator compare behavior pinned in W45.",
+                    "evidence_ref_hint": "W45-OP-CMP-WAVEB-20260320"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_LESS_THAN",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_LESS_THAN",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W45-OP-CMP-WAVEB-20260320",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/operator_compare_concat_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/OperatorCompareConcatFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/OperatorCompareConcatFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Comparison operator witness row for the parked baseline operator lane.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the compare/concat operator runtime family, the W45 wave-B replay packet, and the frozen V1 export row."
+        }
+    ]
+}
