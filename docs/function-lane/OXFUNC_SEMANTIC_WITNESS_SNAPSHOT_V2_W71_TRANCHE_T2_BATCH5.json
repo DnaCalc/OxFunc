@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch5",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T2",
+  "tranche_name": "ordinary_curated_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T2 and sequence between 214 and 216",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "ce2f776",
+  "source_commit_full": "ce2f776f112233445566778899aabbccddeeff00",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.BETA.INV",
+      "canonical_surface_name": "BETA.INV",
+      "metadata_status": "function_meta_curated",
+      "category": "Statistical functions",
+      "signature_display": "BETA.INV(probability, alpha, beta, [A], [B])",
+      "help_summary": "BETA.INV witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for BETA.INV and keeps the beta inverse lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "beta_inverse_distribution",
+        "curated_statistical_surface",
+        "compatibility_statistical_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-BETA.INV-001",
+          "summary": "Beta inverse baseline.",
+          "outcome_note": "Returns 0.444500002 for BETA.INV(0.6,2,3) and preserves the admitted beta inverse lane.",
+          "evidence_ref_hint": "W71-T2-BETA.INV-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BETA.INV",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BETA.INV",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/beta_gamma_stats_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "BETA.INV witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.BETADIST",
+      "canonical_surface_name": "BETADIST",
+      "metadata_status": "function_meta_curated",
+      "category": "Compatibility",
+      "signature_display": "BETADIST(x, alpha, beta, [A], [B])",
+      "help_summary": "BETADIST witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for BETADIST and keeps the legacy beta CDF lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "beta_cumulative_distribution",
+        "curated_compatibility_surface",
+        "compatibility_legacy_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-BETADIST-001",
+          "summary": "Legacy beta cumulative distribution baseline.",
+          "outcome_note": "Returns 0.6875 for BETADIST(0.5,2,3) and preserves the admitted legacy beta CDF lane.",
+          "evidence_ref_hint": "W71-T2-BETADIST-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BETADIST",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BETADIST",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/beta_gamma_stats_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "BETADIST witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.BETAINV",
+      "canonical_surface_name": "BETAINV",
+      "metadata_status": "function_meta_curated",
+      "category": "Compatibility",
+      "signature_display": "BETAINV(probability, alpha, beta, [A], [B])",
+      "help_summary": "BETAINV witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for BETAINV and keeps the legacy beta inverse lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "beta_inverse_distribution",
+        "curated_compatibility_surface",
+        "compatibility_legacy_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-BETAINV-001",
+          "summary": "Legacy beta inverse baseline.",
+          "outcome_note": "Returns 0.444500002 for BETAINV(0.6,2,3) and preserves the admitted legacy beta inverse lane.",
+          "evidence_ref_hint": "W71-T2-BETAINV-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BETAINV",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BETAINV",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/beta_gamma_stats_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/BetaGammaStatsFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "BETAINV witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
