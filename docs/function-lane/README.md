@@ -71,6 +71,9 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 37. [OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFML_OXFUNC_LET_LAMBDA_PIN_DOWN_RESPONSE_V1.md)
 38. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json)
 39. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T2_ORDINARY_CURATED.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T2_ORDINARY_CURATED.json)
+The seam-heavy remainder set is dependency-gated by `W041`, `W043`, and
+`W049`, and should be read through the ledger, inventory, and authoring rules
+below rather than through the ordinary tranche templates.
 40. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md)
 41. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv)
 42. [W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md)

@@ -541,6 +541,14 @@ Mixed-tranche reading rule:
    without pretending that every supported row already has `V2` payload
    coverage.
 
+Seam-heavy reading rule:
+1. the retained seam-heavy tranche is dependency-gated by `W041`, `W043`, and
+   `W049`,
+2. the seam-heavy ledger and inventory remain the canonical row-level anchor for
+   that gated remainder set,
+3. downstream readers should follow the seam-heavy authoring rules rather than
+   the ordinary-row template when rendering those rows.
+
 Current widened-tranche result:
 1. the first mixed artifact is now generated as an adjacent bounded `V2`
    projection rather than widening the `HLOOKUP` / `VLOOKUP` family artifact in
