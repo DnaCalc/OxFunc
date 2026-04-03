@@ -45,7 +45,22 @@ That means:
 4. ordinary seed artifacts must remain clearly labeled as tranche seeds until
    their later enrichment beads close them.
 
-## 4. Closure Rule
+## 4. Remaining Support-Surface Closure Rule
+The remaining supported non-deferred rows may only be considered covered when
+each row is assigned to exactly one of these states:
+1. `witness_covered`
+2. `queued_in_tranche`
+3. `dependency_blocked`
+
+That closure rule means:
+1. no supported row may be left outside the final coverage ledger,
+2. every queued row must point at a deterministic tranche or generator path,
+3. every dependency-blocked row must name the retained live authority that
+   keeps the gate open,
+4. the final published ledger must reconcile exactly to the parked `V1`
+   support surface and the deferred `W050` inventory.
+
+## 5. Closure Rule
 W069 may claim full supported-surface witness coverage only when:
 1. every supported non-deferred row in the parked baseline is either witness
    covered, queued in a frozen tranche, or explicitly dependency-blocked,
@@ -57,8 +72,7 @@ W069 may claim full supported-surface witness coverage only when:
    and the deferred `W050` inventory,
 5. no live row remains outside the coverage ledger.
 
-## 5. Notes
+## 6. Notes
 This ledger is a publication rule, not a second catalog.
 It exists so the `V2` rollout can widen from seeds to the full supported
 surface without collapsing witness coverage into support status.
-
