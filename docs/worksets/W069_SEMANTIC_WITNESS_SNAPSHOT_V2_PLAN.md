@@ -505,6 +505,10 @@ Validated results:
    - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T1_ORDINARY_EXTRACTED.json`
    - `tools/w69-probe/run-w69-ordinary-tranche-t1-generator.ps1`
    - it covers `201` ordinary extracted non-operator rows.
+7. The second bulk ordinary curated tranche is now seeded in:
+   - `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_T2_ORDINARY_CURATED.json`
+   - `tools/w69-probe/run-w69-ordinary-tranche-t2-generator.ps1`
+   - it covers `267` ordinary curated non-operator rows.
 
 ## 11E. First Downstream Reading Guide Shape
 Downstream consumers should read `V2` witness rollout in three layers:
@@ -550,6 +554,9 @@ Current widened-tranche result:
    - `FUNC.OP_IMPLICIT_INTERSECTION`
    - `FUNC.SUM`
    - `FUNC.XLOOKUP`
+3. the ordinary seeded tranche output is now represented by both the `T1`
+   extracted artifact and the `T2` curated artifact, neither of which should be
+   read as final full-surface coverage.
 
 Downstream reading-guide rule:
 1. cite the frozen gap, tranche, seam-heavy, operator, and final coverage
