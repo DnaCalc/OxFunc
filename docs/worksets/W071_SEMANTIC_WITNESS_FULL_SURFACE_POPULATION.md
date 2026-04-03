@@ -109,3 +109,6 @@ W071 may claim completion only when:
 W069 is the closed framework and seed packet.
 W071 is the live execution workset for filling the remaining semantic detail
 surface.
+
+The first ordinary curated witness batch is seeded in:
+1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH1.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH1.json)
