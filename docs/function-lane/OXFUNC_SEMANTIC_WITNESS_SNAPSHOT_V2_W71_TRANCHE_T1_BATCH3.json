@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch3",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 7 and 9",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "8abf78e",
+    "source_commit_full": "8abf78ee96d3c2df49ab38bf0fa8a5d01de130c4",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.AGGREGATE",
+            "canonical_surface_name": "AGGREGATE",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 3,
+            "arity_max": 255,
+            "signature_display": "AGGREGATE(function_num, options, ref1, [ref2], ...)",
+            "help_summary": "Aggregate-reference witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for AGGREGATE and keeps the admitted row-visibility and nested-aggregate behavior aligned to the W23 subtotal/aggregate packet.",
+            "semantic_modes": ["reference_aggregate", "row_visibility", "nested_aggregate_handling"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-AGGREGATE-001",
+                    "summary": "Aggregate-reference baseline.",
+                    "outcome_note": "Matches the parked AGGREGATE behavior pinned in W23.",
+                    "evidence_ref_hint": "W23-STA-BL-20260321"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AGGREGATE",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AGGREGATE",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_SUBTOTAL_AGGREGATE_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W23-STA-BL-20260321",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w23-probe/run-w23-subtotal-aggregate-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/subtotal_aggregate_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/SubtotalAggregateFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/SubtotalAggregateFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_SUBTOTAL_AGGREGATE_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Aggregate-reference witness row for the parked baseline visibility slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the subtotal/aggregate runtime family, the W23 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.AND",
+            "canonical_surface_name": "AND",
+            "metadata_status": "function_meta_extracted",
+            "category": "Logical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 255,
+            "signature_display": "AND(logical1, [logical2], ...)",
+            "help_summary": "Logical-fold witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for AND and keeps the admitted truthiness, ignore-policy, and all-ignored error behavior aligned to the W12 moderate packet.",
+            "semantic_modes": ["logical_fold", "truthiness", "reference_ignore_policy"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-AND-001",
+                    "summary": "Logical-fold baseline.",
+                    "outcome_note": "Matches the parked AND behavior pinned in W12.",
+                    "evidence_ref_hint": "W12-MODERATE-BL-20260309"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AND",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AND",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_AND_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W12-MODERATE-BL-20260309",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W12_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/and_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/AndFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/AndFn.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_AND_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Logical-fold witness row for the parked baseline logical slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the AND runtime family, the W12 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ARABIC",
+            "canonical_surface_name": "ARABIC",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ARABIC(text)",
+            "help_summary": "Roman-to-Arabic conversion witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ARABIC and keeps the admitted numeral-conversion and validation behavior aligned to the W16 base-ARABIC packet.",
+            "semantic_modes": ["roman_numeral_conversion", "input_validation", "numeric_conversion"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ARABIC-001",
+                    "summary": "Roman-to-Arabic baseline.",
+                    "outcome_note": "Matches the parked ARABIC behavior pinned in W16.",
+                    "evidence_ref_hint": "W16-BATCH24-BASE-ARABIC-20260315"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ARABIC",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ARABIC",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MISC_ORDINARY_CONVERSION_TRIAD_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W16-BATCH24-BASE-ARABIC-20260315",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W16_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/arabic_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/ArabicFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/ArabicFn.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MISC_ORDINARY_CONVERSION_TRIAD_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Roman-to-Arabic witness row for the parked baseline numeral-conversion slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ARABIC runtime family, the W16 replay packet, and the frozen V1 export row."
+        }
+    ]
+}
