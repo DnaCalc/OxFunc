@@ -1,0 +1,6 @@
+"tranche_id","tranche_name","surface_kind","register_basis","current_state","notes"
+"T1","ordinary_extracted_non_operator","function_meta_extracted","frozen W69 tranche register","open","Consumes ordinary extracted rows in register sequence order."
+"T2","ordinary_curated_non_operator","function_meta_curated","frozen W69 tranche register","open","Consumes curated ordinary rows after T1."
+"T3","operator_surface","operator","frozen W69 tranche register","open","Consumes operator rows after T2."
+"T4","special_extracted_surface","dependency_gated","live authorities W041/W043/W049","open","Consumes retained seam-heavy extracted rows."
+"T5","special_curated_surface","dependency_gated","live authorities W041/W043/W049","open","Consumes retained seam-heavy curated rows."

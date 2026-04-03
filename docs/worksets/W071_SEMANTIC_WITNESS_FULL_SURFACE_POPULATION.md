@@ -119,6 +119,12 @@ The second ordinary curated witness batch is seeded in:
 The first ordinary extracted witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH1.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH1.json)
 
+The tranche-control note is in:
+1. [W71_TRANCHE_CONTROL_RULE.md](../function-lane/W71_TRANCHE_CONTROL_RULE.md)
+
+The tranche register overlay is in:
+1. [W71_TRANCHE_REGISTER.csv](../function-lane/W71_TRANCHE_REGISTER.csv)
+
 The second ordinary extracted witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH2.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH2.json)
 
