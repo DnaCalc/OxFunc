@@ -140,11 +140,11 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 106. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH2.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH2.json)
 107. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json)
 108. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH3.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH3.json)
+109. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH4.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH4.json)
 The seam-heavy remainder set is dependency-gated by `W041`, `W043`, and
 `W049`, and the frozen chain below mirrors that rule through the ledger,
 inventory, and authoring notes rather than through the ordinary tranche
 templates.
-109. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH4.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH4.json)
 110. [W71_TRANCHE_CONTROL_RULE.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W71_TRANCHE_CONTROL_RULE.md)
 111. [W71_TRANCHE_REGISTER.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W71_TRANCHE_REGISTER.csv)
 112. [W71_FINAL_RECONCILIATION_PUBLICATION_RULE.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W71_FINAL_RECONCILIATION_PUBLICATION_RULE.md)
