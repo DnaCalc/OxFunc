@@ -1,0 +1,79 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch36",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 106 and 108",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "b062340",
+  "source_commit_full": "b062340d25b36c51da3fda1c3f6f6932da8a8e8a",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.MIN",
+      "canonical_surface_name": "MIN",
+      "metadata_status": "function_meta_extracted",
+      "category": "Statistical functions",
+      "signature_display": "MIN(number1, [number2], ...)",
+      "help_summary": "MIN witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for MIN and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": ["minimum_selection", "numeric_scalar_or_array", "ranked_value_projection"],
+      "witness_examples": [{"example_id": "W71-T1-MIN-001", "summary": "Minimum baseline.", "outcome_note": "Returns the smallest number in the supplied set of numbers.", "evidence_ref_hint": "W71-T1-MIN-001"}],
+      "evidence_refs": [
+        {"ref_kind": "catalog_export_row", "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MIN", "provenance_category": "catalog_export"},
+        {"ref_kind": "tranche_register_row", "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.MIN", "provenance_category": "tranche_register"},
+        {"ref_kind": "runtime_source", "ref_value": "crates/oxfunc_core/src/functions/min_fn.rs", "provenance_category": "runtime_test"},
+        {"ref_kind": "formal_artifact", "ref_value": "formal/lean/OxFunc/Functions/MinFn.lean", "provenance_category": "formal_artifact"}
+      ],
+      "formal_refs": ["formal/lean/OxFunc/Functions/MinFn.lean"],
+      "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+      "admitted_slice_note": "MIN witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.MINA",
+      "canonical_surface_name": "MINA",
+      "metadata_status": "function_meta_extracted",
+      "category": "Statistical functions",
+      "signature_display": "MINA(number1, [number2], ...)",
+      "help_summary": "MINA witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for MINA and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": ["minimum_selection_with_text_and_logicals", "numeric_scalar_or_array", "ranked_value_projection"],
+      "witness_examples": [{"example_id": "W71-T1-MINA-001", "summary": "MINA baseline.", "outcome_note": "Returns the smallest value after including text and logicals according to Excel MINA rules.", "evidence_ref_hint": "W71-T1-MINA-001"}],
+      "evidence_refs": [
+        {"ref_kind": "catalog_export_row", "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MINA", "provenance_category": "catalog_export"},
+        {"ref_kind": "tranche_register_row", "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.MINA", "provenance_category": "tranche_register"},
+        {"ref_kind": "runtime_source", "ref_value": "crates/oxfunc_core/src/functions/mina_fn.rs", "provenance_category": "runtime_test"},
+        {"ref_kind": "formal_artifact", "ref_value": "formal/lean/OxFunc/Functions/MinAFn.lean", "provenance_category": "formal_artifact"}
+      ],
+      "formal_refs": ["formal/lean/OxFunc/Functions/MinAFn.lean"],
+      "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+      "admitted_slice_note": "MINA witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.MOD",
+      "canonical_surface_name": "MOD",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "signature_display": "MOD(number, divisor)",
+      "help_summary": "MOD witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for MOD and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": ["remainder_after_division", "numeric_scalar_or_array", "integer_projection"],
+      "witness_examples": [{"example_id": "W71-T1-MOD-001", "summary": "Remainder baseline.", "outcome_note": "Returns the remainder after dividing the number by the divisor.", "evidence_ref_hint": "W71-T1-MOD-001"}],
+      "evidence_refs": [
+        {"ref_kind": "catalog_export_row", "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MOD", "provenance_category": "catalog_export"},
+        {"ref_kind": "tranche_register_row", "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.MOD", "provenance_category": "tranche_register"},
+        {"ref_kind": "runtime_source", "ref_value": "crates/oxfunc_core/src/functions/mod_fn.rs", "provenance_category": "runtime_test"},
+        {"ref_kind": "formal_artifact", "ref_value": "formal/lean/OxFunc/Functions/ModFn.lean", "provenance_category": "formal_artifact"}
+      ],
+      "formal_refs": ["formal/lean/OxFunc/Functions/ModFn.lean"],
+      "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+      "admitted_slice_note": "MOD witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}

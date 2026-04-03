@@ -1,7 +1,7 @@
 kind,key,count,source,notes
 surface,supported_non_deferred_rows,517,W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md,parked supported surface total
-surface,witness_covered_rows,127,W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md,seeded V2 witness surface
-surface,remaining_witness_gap_rows,390,W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md,rows remaining for W071
+surface,witness_covered_rows,130,W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md,seeded V2 witness surface
+surface,remaining_witness_gap_rows,387,W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md,rows remaining for W071
 tranche,T1_ordinary_extracted_non_operator,201,W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv,frozen tranche count
 tranche,T2_ordinary_curated_non_operator,267,W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv,frozen tranche count
 tranche,T3_operator_surface,22,W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv,frozen tranche count
