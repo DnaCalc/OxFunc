@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch11",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T2",
+  "tranche_name": "ordinary_curated_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T2 and sequence between 232 and 234",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "73480ca",
+  "source_commit_full": "73480ca392b20dffc0665181b5a7c91a2ab0998b",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.COMPLEX",
+      "canonical_surface_name": "COMPLEX",
+      "metadata_status": "function_meta_curated",
+      "category": "Engineering functions",
+      "signature_display": "COMPLEX(real_num, i_num, [suffix])",
+      "help_summary": "COMPLEX witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for COMPLEX and keeps the complex-number construction lane aligned to the W071 ordinary curated program.",
+      "semantic_modes": [
+        "complex_number_construction",
+        "curated_engineering_surface",
+        "compatibility_engineering_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-COMPLEX-001",
+          "summary": "Complex-number construction baseline.",
+          "outcome_note": "Returns 3+4i for COMPLEX(3,4) and preserves the admitted default-suffix lane.",
+          "evidence_ref_hint": "W71-T2-COMPLEX-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COMPLEX",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COMPLEX",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/complex_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/ComplexFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/ComplexFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "COMPLEX witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.CONCATENATE",
+      "canonical_surface_name": "CONCATENATE",
+      "metadata_status": "function_meta_curated",
+      "category": "Compatibility",
+      "signature_display": "CONCATENATE(text1, [text2], ...)",
+      "help_summary": "CONCATENATE witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for CONCATENATE and keeps the variadic text-join lane aligned to the W071 ordinary curated program.",
+      "semantic_modes": [
+        "variadic_text_concat",
+        "curated_text_surface",
+        "compatibility_text_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CONCATENATE-001",
+          "summary": "Variadic text concatenation baseline.",
+          "outcome_note": "Returns a1TRUE for CONCATENATE(\"a\",1,TRUE) and preserves the admitted text-join lane.",
+          "evidence_ref_hint": "W71-T2-CONCATENATE-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CONCATENATE",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CONCATENATE",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/concat_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/ConcatFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/ConcatFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CONCATENATE witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.CONFIDENCE",
+      "canonical_surface_name": "CONFIDENCE",
+      "metadata_status": "function_meta_curated",
+      "category": "Compatibility",
+      "signature_display": "CONFIDENCE(alpha, standard_dev, size)",
+      "help_summary": "CONFIDENCE witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for CONFIDENCE and keeps the legacy confidence-interval lane aligned to the W071 ordinary curated program.",
+      "semantic_modes": [
+        "normal_confidence_interval",
+        "curated_statistical_surface",
+        "compatibility_statistical_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CONFIDENCE-001",
+          "summary": "Legacy confidence interval baseline.",
+          "outcome_note": "Returns 0.489990996 after rounding for CONFIDENCE(0.05,2.5,100) and preserves the admitted confidence lane.",
+          "evidence_ref_hint": "W71-T2-CONFIDENCE-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CONFIDENCE",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CONFIDENCE",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/normal_log_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/NormalLogFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/NormalLogFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CONFIDENCE witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
