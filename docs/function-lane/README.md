@@ -92,7 +92,7 @@ The `W69` support-surface witness family is read as a frozen chain in the
 following order:
 1. gap ledger and inventory
 2. tranche ledger and register
-3. ordinary-row generation rules and tranche output
+3. ordinary-row generation rules, T3 confirmation artifact, and tranche output
 4. seam-heavy ledger, inventory, and authoring rules
 5. operator/model conventions
 6. final supported-surface coverage reconciliation artifact
