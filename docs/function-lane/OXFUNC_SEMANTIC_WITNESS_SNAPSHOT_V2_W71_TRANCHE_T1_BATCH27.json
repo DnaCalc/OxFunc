@@ -1,0 +1,229 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch27",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 79 and 81",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "532666c",
+  "source_commit_full": "532666cb2727412ee8723e17febff5252c22b460",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.GCD",
+      "canonical_surface_name": "GCD",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "255",
+      "signature_display": "GCD(number1, [number2], ...)",
+      "help_summary": "GCD witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for GCD and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "greatest_common_divisor",
+        "integer_domain_validation",
+        "numeric_scalar_or_array"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-GCD-001",
+          "summary": "GCD baseline.",
+          "outcome_note": "Returns the greatest common divisor of the supplied integers.",
+          "evidence_ref_hint": "W71-T1-GCD-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.GCD",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.GCD",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/gcd_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/GcdFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/GcdFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "GCD witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.GEOMEAN",
+      "canonical_surface_name": "GEOMEAN",
+      "metadata_status": "function_meta_extracted",
+      "category": "Statistical functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "255",
+      "signature_display": "GEOMEAN(number1, [number2], ...)",
+      "help_summary": "GeoMean witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for GEOMEAN and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "geometric_mean",
+        "numeric_domain_validation",
+        "numeric_scalar_or_array"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-GEOMEAN-001",
+          "summary": "Geometric mean baseline.",
+          "outcome_note": "Returns the geometric mean of the supplied numbers.",
+          "evidence_ref_hint": "W71-T1-GEOMEAN-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.GEOMEAN",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.GEOMEAN",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/geomean_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/GeoMeanFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/GeoMeanFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "GeoMean witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.GESTEP",
+      "canonical_surface_name": "GESTEP",
+      "metadata_status": "function_meta_extracted",
+      "category": "Engineering functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "2",
+      "signature_display": "GESTEP(number, [step])",
+      "help_summary": "Gestep witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for GESTEP and keeps the engineering lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "greater_than_or_equal_step",
+        "threshold_validation",
+        "numeric_scalar_or_array"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-GESTEP-001",
+          "summary": "Gestep baseline.",
+          "outcome_note": "Returns 1 when the value meets or exceeds the step threshold, otherwise 0.",
+          "evidence_ref_hint": "W71-T1-GESTEP-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.GESTEP",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.GESTEP",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/gestep_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/GestepFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/GestepFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "Gestep witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}

@@ -14,8 +14,8 @@ remaining supported surface.
 Current OxFunc has:
 1. a parked `V1` catalog/profile export,
 2. a live `V2` witness schema and publication convention,
-3. `100` seeded witness rows,
-4. a frozen remaining-surface gap inventory for `417` supported rows,
+3. `103` seeded witness rows,
+4. a frozen remaining-surface gap inventory for `414` supported rows,
 5. a tranche register that partitions the remaining rows into deterministic
    ordinary, curated, operator, and seam-heavy lanes.
 
@@ -55,8 +55,8 @@ baseline.
 
 Target surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `100`
-3. current remaining supported rows needing witness population: `417`
+2. current witness-covered rows: `103`
+3. current remaining supported rows needing witness population: `414`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
