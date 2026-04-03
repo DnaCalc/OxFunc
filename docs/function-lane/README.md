@@ -78,13 +78,15 @@ below rather than through the ordinary tranche templates.
 41. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv)
 42. [W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md)
 43. [W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md)
-44. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
+44. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json)
+45. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
 
 Operator and modeled rows are read through the dedicated conventions note
 above, not through the ordinary tranche templates.
-The final coverage ledger is the canonical publication rule for the full
-supported surface; the other W69 ledgers remain supporting anchors for the
-frozen gap, tranche, seam-heavy, and operator/modeled views.
+The final coverage reconciliation artifact is the canonical publication
+surface for the full supported set; the final coverage ledger and the other
+W69 ledgers remain supporting anchors for the frozen gap, tranche, seam-heavy,
+and operator/modeled views.
 
 The `W69` support-surface witness family is read as a frozen chain in the
 following order:
@@ -93,7 +95,8 @@ following order:
 3. ordinary-row generation rules and tranche output
 4. seam-heavy ledger, inventory, and authoring rules
 5. operator/model conventions
-6. final supported-surface coverage ledger
+6. final supported-surface coverage reconciliation artifact
+7. final supported-surface coverage ledger
 
 ## Function Contract Surfaces
 1. The live function contract set remains the `FUNCTION_SLICE_*_CONTRACT_PRELIM.md` family that still anchors supported, deferred, and seam-sensitive claims.
