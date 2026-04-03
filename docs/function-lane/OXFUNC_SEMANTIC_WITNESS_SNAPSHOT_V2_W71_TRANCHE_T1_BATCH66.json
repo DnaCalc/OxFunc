@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch66",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 196 and 198",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "9bebda8",
+  "source_commit_full": "9bebda8fb6f4c3e2d19081726354455aa77bb88c",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.VSTACK",
+      "canonical_surface_name": "VSTACK",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "VSTACK(array1, [array2], ...)",
+      "help_summary": "VSTACK witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for VSTACK and keeps the vertical-stack lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "vertical_stack_projection",
+        "dynamic_array_spill",
+        "compatibility_array_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-VSTACK-001",
+          "summary": "Vertical stack baseline.",
+          "outcome_note": "Stacks {1,2} over {3,4} for VSTACK({1,2},{3,4}) and preserves the admitted vertical-stack lane.",
+          "evidence_ref_hint": "W71-T1-VSTACK-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.VSTACK",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.VSTACK",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/dynamic_array_reshape_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "VSTACK witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.WRAPCOLS",
+      "canonical_surface_name": "WRAPCOLS",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "WRAPCOLS(array, wrap_count, [pad_with])",
+      "help_summary": "WRAPCOLS witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for WRAPCOLS and keeps the wrap-columns lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "column_wrapping_projection",
+        "dynamic_array_spill",
+        "compatibility_array_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-WRAPCOLS-001",
+          "summary": "Wrap-columns baseline.",
+          "outcome_note": "Wraps 1..6 into two columns for WRAPCOLS({1,2,3,4,5,6},2) and preserves the admitted wrap-columns lane.",
+          "evidence_ref_hint": "W71-T1-WRAPCOLS-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.WRAPCOLS",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.WRAPCOLS",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/dynamic_array_reshape_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "WRAPCOLS witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.WRAPROWS",
+      "canonical_surface_name": "WRAPROWS",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "WRAPROWS(array, wrap_count, [pad_with])",
+      "help_summary": "WRAPROWS witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for WRAPROWS and keeps the wrap-rows lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "row_wrapping_projection",
+        "dynamic_array_spill",
+        "compatibility_array_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-WRAPROWS-001",
+          "summary": "Wrap-rows baseline.",
+          "outcome_note": "Wraps 1..6 into two rows for WRAPROWS({1,2,3,4,5,6},2) and preserves the admitted wrap-rows lane.",
+          "evidence_ref_hint": "W71-T1-WRAPROWS-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.WRAPROWS",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.WRAPROWS",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/dynamic_array_reshape_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "WRAPROWS witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
