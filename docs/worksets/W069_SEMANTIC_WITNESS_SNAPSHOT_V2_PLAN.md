@@ -570,7 +570,9 @@ Seam-heavy reading rule:
 2. the seam-heavy ledger and inventory remain the canonical row-level anchor for
    that gated remainder set,
 3. downstream readers should follow the seam-heavy authoring rules rather than
-   the ordinary-row template when rendering those rows.
+   the ordinary-row template when rendering those rows,
+4. the W069 reading guide mirrors this rule in its frozen chain so the gated
+   remainder set stays visible without being recast as ordinary coverage.
 
 Operator/model reading rule:
 1. the operator tranche and `doc_modeled` operator seed should be read through
