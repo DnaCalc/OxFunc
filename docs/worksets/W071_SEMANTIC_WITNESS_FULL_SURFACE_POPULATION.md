@@ -118,3 +118,6 @@ The first ordinary extracted witness batch is seeded in:
 
 The first operator witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH1.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH1.json)
+
+The first seam-heavy witness batch is seeded in:
+1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH1.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH1.json)
