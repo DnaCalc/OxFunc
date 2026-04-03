@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch1",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 1 and 3",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "f7a9632",
+    "source_commit_full": "f7a96327fc7b88f9c3e6d7a9f4d3f11e37a1e7aa",
+    "source_tree_state": "dirty",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ABS",
+            "canonical_surface_name": "ABS",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ABS(number)",
+            "help_summary": "Absolute-value witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ABS and keeps the scalar coercion behavior aligned to the W67 math, matrix, and rounding packet.",
+            "semantic_modes": ["absolute_value", "scalar_coercion", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ABS-001",
+                    "summary": "Absolute-value baseline.",
+                    "outcome_note": "Matches the parked ABS behavior pinned in W67.",
+                    "evidence_ref_hint": "W67-MATH-MATRIX-ROUNDING-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ABS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ABS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W67-MATH-MATRIX-ROUNDING-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/abs.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Abs.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Abs.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Absolute-value witness row for the parked baseline math slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ABS runtime family, the W67 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ACOS",
+            "canonical_surface_name": "ACOS",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ACOS(number)",
+            "help_summary": "Inverse-cosine witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ACOS and keeps the admitted domain/rounding behavior aligned to the W67 math, matrix, and rounding packet.",
+            "semantic_modes": ["inverse_trig", "domain_validation", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ACOS-001",
+                    "summary": "Inverse-cosine baseline.",
+                    "outcome_note": "Matches the parked ACOS behavior pinned in W67.",
+                    "evidence_ref_hint": "W67-MATH-MATRIX-ROUNDING-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACOS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACOS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W67-MATH-MATRIX-ROUNDING-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/acos.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Acos.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Acos.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Inverse-cosine witness row for the parked baseline math slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ACOS runtime family, the W67 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ACOSH",
+            "canonical_surface_name": "ACOSH",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ACOSH(number)",
+            "help_summary": "Inverse-hyperbolic-cosine witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ACOSH and keeps the admitted domain behavior aligned to the W67 math, matrix, and rounding packet.",
+            "semantic_modes": ["inverse_hyperbolic_trig", "domain_validation", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ACOSH-001",
+                    "summary": "Inverse-hyperbolic-cosine baseline.",
+                    "outcome_note": "Matches the parked ACOSH behavior pinned in W67.",
+                    "evidence_ref_hint": "W67-MATH-MATRIX-ROUNDING-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACOSH",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACOSH",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W67-MATH-MATRIX-ROUNDING-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/acosh.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Acosh.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Acosh.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Inverse-hyperbolic-cosine witness row for the parked baseline math slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ACOSH runtime family, the W67 replay packet, and the frozen V1 export row."
+        }
+    ]
+}
