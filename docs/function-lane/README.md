@@ -76,6 +76,15 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 42. [W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md)
 43. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
 
+The `W69` support-surface witness family is read as a frozen chain in the
+following order:
+1. gap ledger and inventory
+2. tranche ledger and register
+3. ordinary-row generation rules and tranche output
+4. seam-heavy ledger, inventory, and authoring rules
+5. operator/model conventions
+6. final supported-surface coverage ledger
+
 ## Function Contract Surfaces
 1. The live function contract set remains the `FUNCTION_SLICE_*_CONTRACT_PRELIM.md` family that still anchors supported, deferred, and seam-sensitive claims.
 2. Treat [EXCEL_FUNCTION_DEFINITION_PRELIM_CONFORMANCE.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/EXCEL_FUNCTION_DEFINITION_PRELIM_CONFORMANCE.csv) as the index into that contract family.

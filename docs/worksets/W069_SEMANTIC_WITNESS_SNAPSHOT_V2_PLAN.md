@@ -227,6 +227,17 @@ Frozen tranche counts for the remaining `507` rows:
 4. `5` special extracted rows
 5. `12` special curated rows
 
+The frozen W069 support-surface ledgers that define that split are:
+1. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md`
+2. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_INVENTORY.csv`
+3. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_LEDGER.md`
+4. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv`
+5. `docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_LEDGER.md`
+6. `docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv`
+7. `docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md`
+8. `docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md`
+9. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md`
+
 ## 9B. Full-Coverage Rollout Shape
 The widened `W069` program should proceed in explicit stages rather than as one
 undifferentiated “finish the rest” lane.
@@ -539,6 +550,14 @@ Current widened-tranche result:
    - `FUNC.OP_IMPLICIT_INTERSECTION`
    - `FUNC.SUM`
    - `FUNC.XLOOKUP`
+
+Downstream reading-guide rule:
+1. cite the frozen gap, tranche, seam-heavy, operator, and final coverage
+   ledgers above as the canonical `W069` support-surface anchors,
+2. treat the first tranche artifact as seeded witness output, not as the final
+   supported-surface publication,
+3. use the plan plus the function-lane index to navigate from the seed artifacts
+   to the frozen ledgers in the order above.
 
 ## 12. Gate Criteria
 This packet can only be reported `scope_complete` when:
