@@ -55,8 +55,8 @@ baseline.
 
 Target surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `85`
-3. current remaining supported rows needing witness population: `432`
+2. current witness-covered rows: `88`
+3. current remaining supported rows needing witness population: `429`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
@@ -169,3 +169,5 @@ The first seam-heavy witness batch is seeded in:
 
 The second seam-heavy witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH2.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_SH1_BATCH2.json)
+
+
