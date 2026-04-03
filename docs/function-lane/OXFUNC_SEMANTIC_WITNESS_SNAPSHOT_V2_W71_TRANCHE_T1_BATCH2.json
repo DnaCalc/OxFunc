@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch2",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 4 and 6",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "39bd682",
+    "source_commit_full": "39bd682f4b0f2f8c8430dbbf8e89f2f0f3e8f882",
+    "source_tree_state": "dirty",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ACOT",
+            "canonical_surface_name": "ACOT",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ACOT(number)",
+            "help_summary": "Inverse-cotangent witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ACOT and keeps the admitted numeric-domain behavior aligned to the W67 math, matrix, and rounding packet.",
+            "semantic_modes": ["inverse_trig", "domain_validation", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ACOT-001",
+                    "summary": "Inverse-cotangent baseline.",
+                    "outcome_note": "Matches the parked ACOT behavior pinned in W67.",
+                    "evidence_ref_hint": "W67-MATH-MATRIX-ROUNDING-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACOT",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACOT",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W67-MATH-MATRIX-ROUNDING-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/acot.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Acot.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Acot.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Inverse-cotangent witness row for the parked baseline math slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ACOT runtime family, the W67 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ACOTH",
+            "canonical_surface_name": "ACOTH",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 1,
+            "signature_display": "ACOTH(number)",
+            "help_summary": "Inverse-hyperbolic-cotangent witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the ordinary extracted baseline for ACOTH and keeps the admitted numeric-domain behavior aligned to the W67 math, matrix, and rounding packet.",
+            "semantic_modes": ["inverse_hyperbolic_trig", "domain_validation", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ACOTH-001",
+                    "summary": "Inverse-hyperbolic-cotangent baseline.",
+                    "outcome_note": "Matches the parked ACOTH behavior pinned in W67.",
+                    "evidence_ref_hint": "W67-MATH-MATRIX-ROUNDING-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ACOTH",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ACOTH",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W67-MATH-MATRIX-ROUNDING-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w67-probe/run-w67-math-matrix-rounding-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/acoth.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Acoth.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Acoth.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_MATH_MATRIX_AND_ROUNDING_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Inverse-hyperbolic-cotangent witness row for the parked baseline math slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the ACOTH runtime family, the W67 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.ADDRESS",
+            "canonical_surface_name": "ADDRESS",
+            "metadata_status": "function_meta_extracted",
+            "category": "Lookup and reference functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 2,
+            "arity_max": 5,
+            "signature_display": "ADDRESS(row_num, column_num, [abs_num], [a1], [sheet_text])",
+            "help_summary": "Reference-address witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the reference-metadata baseline for ADDRESS and keeps the A1/R1C1 formatting behavior aligned to the W40 reference-metadata packet and the retained reference-metadata runtime surface.",
+            "semantic_modes": ["address_formatting", "reference_metadata", "sheet_text_quoting"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-ADDRESS-001",
+                    "summary": "Reference-address baseline.",
+                    "outcome_note": "Matches the parked ADDRESS behavior pinned in W40.",
+                    "evidence_ref_hint": "W40-REFMETA-BL-20260321"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ADDRESS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ADDRESS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W40-REFMETA-BL-20260321",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w40-probe/run-w40-reference-metadata-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/reference_metadata_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Reference-address witness row for the parked baseline reference-metadata slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the reference-metadata runtime family, the W40 replay packet, and the frozen V1 export row."
+        }
+    ]
+}

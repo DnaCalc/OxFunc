@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch2",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T2",
+    "tranche_name": "ordinary_curated_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T2 and sequence between 205 and 207",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "39bd682",
+    "source_commit_full": "39bd682f4b0f2f8c8430dbbf8e89f2f0f3e8f882",
+    "source_tree_state": "dirty",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.AMORLINC",
+            "canonical_surface_name": "AMORLINC",
+            "metadata_status": "function_meta_curated",
+            "category": "Financial functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 6,
+            "arity_max": 7,
+            "signature_display": "AMORLINC(cost, date_purchased, first_period, salvage, period, rate, [basis])",
+            "help_summary": "Straight-line depreciation witness row for the AMOR lane.",
+            "help_detail": "Captures the admitted AMOR straight-line depreciation semantics and keeps the first-period proration and basis behavior aligned to the W24 batch-14 evidence.",
+            "semantic_modes": ["depreciation_schedule", "basis_sensitive", "first_period_proration"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-AMORLINC-001",
+                    "summary": "Straight-line depreciation baseline.",
+                    "outcome_note": "Matches the parked AMOR depreciation behavior pinned in W24 batch 14.",
+                    "evidence_ref_hint": "W24-B14-AMOR-DEPRECIATION-20260318"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AMORLINC",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AMORLINC",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_AMOR_DEPRECIATION_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W24-B14-AMOR-DEPRECIATION-20260318",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w24-probe/run-w24-batch14-amor-depreciation-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/amor_depreciation_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/AmorDepreciationFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_AMOR_DEPRECIATION_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Straight-line depreciation witness row for the parked baseline AMOR slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the AMOR runtime family, the W24 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.ARRAYTOTEXT",
+            "canonical_surface_name": "ARRAYTOTEXT",
+            "metadata_status": "function_meta_curated",
+            "category": "Text functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 1,
+            "arity_max": 2,
+            "signature_display": "ARRAYTOTEXT(array, [format])",
+            "help_summary": "Array-rendering witness row for the array/text bridge.",
+            "help_detail": "Captures the current-baseline array-to-text rendering semantics and keeps the concise/strict array-rendering behavior tied back to the W24 array/text split packet.",
+            "semantic_modes": ["array_rendering", "concise_vs_strict_format", "text_bridge"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-ARRAYTOTEXT-001",
+                    "summary": "Array-to-text render baseline.",
+                    "outcome_note": "Matches the parked array/text bridge behavior pinned in W24 batch 04.",
+                    "evidence_ref_hint": "W24-B04-ARRAY-TEXT-SPLIT-20260318"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ARRAYTOTEXT",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ARRAYTOTEXT",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_ARRAY_TEXT_SPLIT_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W24-B04-ARRAY-TEXT-SPLIT-20260318",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w24-probe/run-w24-batch04-array-text-split-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/array_text_split_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/ArrayTextSplitFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/ArrayTextSplitFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_ARRAY_TEXT_SPLIT_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Array-to-text witness row for the parked baseline array/text bridge.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the array/text runtime family, the W24 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.AVERAGEIF",
+            "canonical_surface_name": "AVERAGEIF",
+            "metadata_status": "function_meta_curated",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 2,
+            "arity_max": 3,
+            "signature_display": "AVERAGEIF(range, criteria, [average_range])",
+            "help_summary": "Criteria-gated average witness row for the criteria family.",
+            "help_detail": "Captures the current-baseline criteria-family semantics for AVERAGEIF, including the anchored-range behavior that distinguishes it from the exact-shape *IFS members on the parked surface.",
+            "semantic_modes": ["criteria_anchor", "optional_average_range", "top_left_mismatch_tolerant"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-AVERAGEIF-001",
+                    "summary": "Criteria-family anchored average baseline.",
+                    "outcome_note": "Matches the parked criteria-family behavior pinned in W22.",
+                    "evidence_ref_hint": "W22-CRITERIA-SHAPE-20260318"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AVERAGEIF",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AVERAGEIF",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W22-CRITERIA-SHAPE-20260318",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w22-probe/run-w22-criteria-shape-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/criteria_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CriteriaFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CriteriaFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Criteria-family witness row for the parked baseline AVERAGEIF slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the criteria runtime family, the W22 replay packet, and the frozen V1 export row."
+        }
+    ]
+}
