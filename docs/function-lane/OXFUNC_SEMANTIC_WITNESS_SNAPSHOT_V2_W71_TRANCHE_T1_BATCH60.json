@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch60",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 178 and 180",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "89e6bbe",
+  "source_commit_full": "89e6bbe8e4987a72e8464b00d02e0efe6e9b2ba1",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.TEXTJOIN",
+      "canonical_surface_name": "TEXTJOIN",
+      "metadata_status": "function_meta_extracted",
+      "category": "Text functions",
+      "signature_display": "TEXTJOIN(delimiter, ignore_empty, text1, [text2], ...)",
+      "help_summary": "TEXTJOIN witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for TEXTJOIN and keeps the delimiter-join lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "delimiter_join",
+        "deterministic_string_reduction",
+        "compatibility_empty_text_coercion"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-TEXTJOIN-001",
+          "summary": "Delimiter-join baseline.",
+          "outcome_note": "Returns \"a-b-c\" for TEXTJOIN(\"-\",TRUE,\"a\",\"b\",\"c\") and preserves the admitted delimiter-join lane.",
+          "evidence_ref_hint": "W71-T1-TEXTJOIN-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.TEXTJOIN",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.TEXTJOIN",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/textjoin.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/TextJoin.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/TextJoin.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "TEXTJOIN witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.TOCOL",
+      "canonical_surface_name": "TOCOL",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "TOCOL(array, [ignore], [scan_by_column])",
+      "help_summary": "TOCOL witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for TOCOL and keeps the reshape-to-column lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "column_reshape",
+        "deterministic_shape_projection",
+        "compatibility_dynamic_array_spill"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-TOCOL-001",
+          "summary": "Column-reshape baseline.",
+          "outcome_note": "Returns the column spill {1;2;3} for TOCOL({1,2,3}) and preserves the admitted reshape-to-column lane.",
+          "evidence_ref_hint": "W71-T1-TOCOL-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.TOCOL",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.TOCOL",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/dynamic_array_reshape_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "TOCOL witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.TOROW",
+      "canonical_surface_name": "TOROW",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "TOROW(array, [ignore], [scan_by_column])",
+      "help_summary": "TOROW witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for TOROW and keeps the reshape-to-row lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "row_reshape",
+        "deterministic_shape_projection",
+        "compatibility_dynamic_array_spill"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-TOROW-001",
+          "summary": "Row-reshape baseline.",
+          "outcome_note": "Returns the row spill {1,2,3} for TOROW({1;2;3}) and preserves the admitted reshape-to-row lane.",
+          "evidence_ref_hint": "W71-T1-TOROW-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.TOROW",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.TOROW",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/dynamic_array_reshape_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DynamicArrayReshapeFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "TOROW witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
