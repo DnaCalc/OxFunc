@@ -1,0 +1,15 @@
+﻿{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-tranche-t3-ordinary-exhausted",
+    "witness_schema_version":  "v0.tranche",
+    "tranche_id":  "T3",
+    "tranche_name":  "ordinary_exhausted_confirmation",
+    "selection_rule":  "ordinary non-operator surface exhausted after T1/T2",
+    "source_snapshot_ref":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short":  "9e21120",
+    "source_commit_full":  "9e211205ad6c938f6816aa5a8fd51117a1014441",
+    "source_tree_state":  "clean",
+    "entries":  [
+
+                ],
+    "note":  "No additional ordinary non-operator rows remain after the frozen T1 and T2 tranche artifacts."
+}

@@ -88,3 +88,8 @@ This ruleset is intended to make the `T1` ordinary extracted tranche reusable.
 Later tranches may reuse the same structure, but they are not required to use
 the same evidence density or prose depth.
 
+The current frozen tranche register shows that the ordinary non-operator
+surface is exhausted by the `T1` and `T2` artifacts already seeded in `W069`.
+If a later ordinary-row generator is run, it should emit an explicit
+zero-entry confirmation artifact rather than inventing a phantom ordinary
+tranche.
