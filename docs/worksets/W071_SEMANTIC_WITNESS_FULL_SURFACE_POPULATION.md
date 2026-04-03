@@ -14,8 +14,8 @@ remaining supported surface.
 Current OxFunc has:
 1. a parked `V1` catalog/profile export,
 2. a live `V2` witness schema and publication convention,
-3. `130` seeded witness rows,
-4. a frozen remaining-surface gap inventory for `387` supported rows,
+3. `133` seeded witness rows,
+4. a frozen remaining-surface gap inventory for `384` supported rows,
 5. a tranche register that partitions the remaining rows into deterministic
    ordinary, curated, operator, and seam-heavy lanes.
 
@@ -55,8 +55,8 @@ baseline.
 
 Target surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `130`
-3. current remaining supported rows needing witness population: `387`
+2. current witness-covered rows: `133`
+3. current remaining supported rows needing witness population: `384`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
@@ -75,7 +75,7 @@ explicit where the row remains seam-sensitive.
 
 ## 7. Initial Deliverables
 This packet should produce:
-1. tranche-level generation rules for the remaining 387 rows,
+1. tranche-level generation rules for the remaining 384 rows,
 2. actual witness-row batches for the ordinary extracted tranche,
 3. actual witness-row batches for the ordinary curated tranche,
 4. actual witness-row batches for the operator and seam-heavy tranches,
