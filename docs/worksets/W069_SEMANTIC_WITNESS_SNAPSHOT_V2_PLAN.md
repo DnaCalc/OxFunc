@@ -549,6 +549,16 @@ Seam-heavy reading rule:
 3. downstream readers should follow the seam-heavy authoring rules rather than
    the ordinary-row template when rendering those rows.
 
+Operator/model reading rule:
+1. the operator tranche and `doc_modeled` operator seed should be read through
+   [W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md](
+   /C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md)
+   rather than the ordinary-row template,
+2. `FUNC.OP_IMPLICIT_INTERSECTION` remains the model row for the operator
+   family and should stay explicit in the witness payload,
+3. downstream readers should keep the operator form visible and avoid
+   collapsing operator rows into generic function-call prose.
+
 Current widened-tranche result:
 1. the first mixed artifact is now generated as an adjacent bounded `V2`
    projection rather than widening the `HLOOKUP` / `VLOOKUP` family artifact in

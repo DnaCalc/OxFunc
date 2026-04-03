@@ -80,6 +80,9 @@ below rather than through the ordinary tranche templates.
 43. [W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md)
 44. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
 
+Operator and modeled rows are read through the dedicated conventions note
+above, not through the ordinary tranche templates.
+
 The `W69` support-surface witness family is read as a frozen chain in the
 following order:
 1. gap ledger and inventory
