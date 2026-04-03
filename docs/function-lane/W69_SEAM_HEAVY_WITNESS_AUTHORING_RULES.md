@@ -107,3 +107,7 @@ This ruleset is the authoring companion to the seam-heavy inventory ledger.
 It is intended to make the later `W069` seam-heavy rollout explicit without
 forcing the ordinary extracted template onto special-interface surfaces.
 
+The retained seam-heavy inventory is fully represented by the seeded `SH1`
+artifact already emitted in `W069`. Any later seam-heavy generator run should
+therefore emit a zero-entry confirmation artifact unless new seam-heavy rows
+are intentionally added to the parked baseline.

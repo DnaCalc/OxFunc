@@ -1,0 +1,16 @@
+﻿{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-tranche-sh2-seam-heavy-empty",
+    "witness_schema_version":  "v0.tranche",
+    "tranche_id":  "SH2",
+    "tranche_name":  "seam_heavy_exhausted_confirmation",
+    "selection_rule":  "no seam-heavy rows remain after SH1",
+    "source_inventory_ref":  "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv",
+    "source_authoring_rules_ref":  "docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md",
+    "source_commit_short":  "ea792f0",
+    "source_commit_full":  "ea792f04cddb48ad8a1b762ca17d4eae4b400d48",
+    "source_tree_state":  "clean",
+    "entries":  [
+
+                ],
+    "note":  "The retained seam-heavy inventory is already fully covered by the SH1 seed artifact."
+}
