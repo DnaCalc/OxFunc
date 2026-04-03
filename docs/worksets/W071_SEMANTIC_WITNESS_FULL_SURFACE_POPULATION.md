@@ -79,7 +79,11 @@ This packet should produce:
 2. actual witness-row batches for the ordinary extracted tranche,
 3. actual witness-row batches for the ordinary curated tranche,
 4. actual witness-row batches for the operator and seam-heavy tranches,
-5. a final reconciliation artifact proving that the remaining supported surface
+5. a frozen gap reconciliation artifact proving that the remaining supported
+   surface still matches the tranche control surface before row-filling starts,
+6. a final reconciliation draft proving the eventual publication shape for the
+   remaining supported surface,
+7. a final reconciliation artifact proving that the remaining supported surface
    has been populated in witness form.
 
 ## 8. Design Rules
