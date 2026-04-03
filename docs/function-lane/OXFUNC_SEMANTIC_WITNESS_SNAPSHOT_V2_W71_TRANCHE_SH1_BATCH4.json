@@ -1,0 +1,211 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-sh1-batch4",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "SH1",
+    "tranche_name": "seam_heavy_supported",
+    "selection_rule": "dependency_gate=W049 and sequence between 10 and 12",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "e9495d2",
+    "source_commit_full": "e9495d28cbb7f11dc8f6ad2f4df4b5cfd8b2e5e2",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.NUMBERVALUE",
+            "canonical_surface_name": "NUMBERVALUE",
+            "metadata_status": "function_meta_curated",
+            "category": "Text functions",
+            "special_interface_kind": "locale_default_profiled_parse",
+            "admission_interface_kind": "ordinary_eval_with_locale_defaults",
+            "dependency_gate": "W049",
+            "signature_display": "NUMBERVALUE(text, [decimal_separator], [group_separator])",
+            "help_summary": "Locale-default parsing witness row for the retained W049 seam.",
+            "help_detail": "Captures the parser lane that supplies omitted separator defaults from the active locale/profile while keeping explicit-separator parsing separate from host defaults. The seam remains explicit because the current baseline distinguishes omitted-default and explicit-separator behavior.",
+            "semantic_modes": ["locale_default_parsing", "explicit_separator_parsing", "locale_profile_sensitive_parse"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-NUMBERVALUE-001",
+                    "summary": "Locale-default omitted separator baseline.",
+                    "outcome_note": "Matches the omitted-default rejection and explicit-separator success pinned in W35/W26.",
+                    "evidence_ref_hint": "W35-NUMBERVALUE-LOCALE-20260321"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.NUMBERVALUE",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.NUMBERVALUE",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_NUMBERVALUE_LOCALE_DEFAULT_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W35-NUMBERVALUE-LOCALE-20260321",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W35_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/number_regex_translate_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/NumberRegexTranslateFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/NumberRegexTranslateFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_NUMBERVALUE_LOCALE_DEFAULT_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Locale-default parsing witness row for the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the W35 omitted-default locale seam evidence, the W26 host-profile characterization, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.NOW",
+            "canonical_surface_name": "NOW",
+            "metadata_status": "function_meta_extracted",
+            "category": "Date and time functions",
+            "special_interface_kind": "presentation_hinting_function",
+            "admission_interface_kind": "ordinary_call",
+            "dependency_gate": "W049",
+            "signature_display": "NOW()",
+            "help_summary": "Time-format hint witness row for the retained W049 seam.",
+            "help_detail": "Captures the runtime-bound NOW lane together with the observed caller-cell format hint. The row stays seam-visible because the application of the format hint is handled by the engine surface rather than by OxFunc alone.",
+            "semantic_modes": ["volatile_time_provider", "caller_format_hint", "worksheet_boundary_projection"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-NOW-001",
+                    "summary": "General-cell NOW format-hint baseline.",
+                    "outcome_note": "Matches the current baseline that applies yyyy/mm/dd hh:mm when NOW enters a General cell.",
+                    "evidence_ref_hint": "W10-W12-TFMT-20260310"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.NOW",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.NOW",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_NOW_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W10-W12-TFMT-20260310",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/time-format-hint-probe/run-time-format-hint-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/now_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Now.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Now.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_NOW_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Caller-cell format-hint witness row for the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the W10-W12 time-format hint evidence and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.TODAY",
+            "canonical_surface_name": "TODAY",
+            "metadata_status": "function_meta_extracted",
+            "category": "Date and time functions",
+            "special_interface_kind": "presentation_hinting_function",
+            "admission_interface_kind": "ordinary_call",
+            "dependency_gate": "W049",
+            "signature_display": "TODAY()",
+            "help_summary": "Time-format hint witness row for the retained W049 seam.",
+            "help_detail": "Captures the runtime-bound TODAY lane together with the observed caller-cell format hint. The row stays seam-visible because the application of the format hint is handled by the engine surface rather than by OxFunc alone.",
+            "semantic_modes": ["volatile_time_provider", "caller_format_hint", "worksheet_boundary_projection"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-TODAY-001",
+                    "summary": "General-cell TODAY format-hint baseline.",
+                    "outcome_note": "Matches the current baseline that applies yyyy/mm/dd when TODAY enters a General cell.",
+                    "evidence_ref_hint": "W10-W12-TFMT-20260310"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.TODAY",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.TODAY",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_TODAY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W10-W12-TFMT-20260310",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/time-format-hint-probe/run-time-format-hint-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/today_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Today.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Today.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_TODAY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Caller-cell format-hint witness row for the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the W10-W12 time-format hint evidence and the frozen V1 export row."
+        }
+    ]
+}
