@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch44",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 130 and 132",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "f158f38",
+  "source_commit_full": "f158f38df8998d49025e0bcba3aa5555d196e178",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.PIVOTBY",
+      "canonical_surface_name": "PIVOTBY",
+      "metadata_status": "function_meta_extracted",
+      "category": "Lookup and reference functions",
+      "signature_display": "PIVOTBY(row_fields, column_fields, values, array_agg, ...)",
+      "help_summary": "PIVOTBY witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for PIVOTBY and keeps the lookup/reference lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "pivot_axis_grouping",
+        "header_band_publication",
+        "callable_aggregate_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-PIVOTBY-001",
+          "summary": "Default pivot matrix baseline.",
+          "outcome_note": "Returns the East/West by A/B totals matrix with row and column totals for the empirical baseline example.",
+          "evidence_ref_hint": "W71-T1-PIVOTBY-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.PIVOTBY",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.PIVOTBY",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/pivotby_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/PivotBy.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/PivotBy.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "PIVOTBY witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.POWER",
+      "canonical_surface_name": "POWER",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "signature_display": "POWER(number, power)",
+      "help_summary": "POWER witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for POWER and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "binary_numeric_publication",
+        "integer_exponent_publication_lane",
+        "domain_error_publication"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-POWER-001",
+          "summary": "Power publication baseline.",
+          "outcome_note": "Returns 8 for POWER(2, 3) and preserves the admitted integer-exponent publication lane.",
+          "evidence_ref_hint": "W71-T1-POWER-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.POWER",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.POWER",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/power_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/PowerFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/PowerFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "POWER witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.PRODUCT",
+      "canonical_surface_name": "PRODUCT",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "signature_display": "PRODUCT(number1, [number2], ...)",
+      "help_summary": "PRODUCT witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for PRODUCT and keeps the math lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "multiplicative_aggregation",
+        "dual_policy_numeric_coercion",
+        "empty_surface_zero_result"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-PRODUCT-001",
+          "summary": "Multiplicative aggregation baseline.",
+          "outcome_note": "Returns 24 for PRODUCT(2, 3, 4) and uses the ordinary multiplicative aggregation lane.",
+          "evidence_ref_hint": "W71-T1-PRODUCT-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.PRODUCT",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.PRODUCT",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/product.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/Product.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/Product.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "PRODUCT witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
