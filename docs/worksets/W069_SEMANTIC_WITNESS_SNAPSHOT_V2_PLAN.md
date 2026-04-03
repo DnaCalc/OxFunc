@@ -185,8 +185,8 @@ This packet should aim for:
 5. one runtime-model alignment note showing how the witness payload attaches to `LibraryContextSnapshot`.
 
 ## 9A. Full-Coverage Target
-`W069` now owns the full supported-surface witness rollout target for the parked
-non-deferred baseline.
+`W069` defines the frozen full supported-surface witness target for the parked
+non-deferred baseline. `W071` owns the actual row-filling execution.
 
 Full-coverage target:
 1. every currently supported non-deferred `V1` row should eventually have a

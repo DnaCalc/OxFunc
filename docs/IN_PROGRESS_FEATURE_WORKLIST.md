@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-04-02
+Last updated: 2026-04-03
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -17,7 +17,8 @@ Use rule:
 Supersession note:
 1. this file no longer acts as a second execution tracker,
 2. detailed migration progress for the doctrine reset belongs to [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) plus `.beads/`,
-3. detailed `V2` schema and witness work belongs to [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md).
+3. detailed `V2` schema and witness-framework work belongs to [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md),
+4. the remaining full-surface population work belongs to [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md).
 
 ## Active Feature Map
 
@@ -25,7 +26,7 @@ Supersession note:
 - Current state: the non-deferred current-version surface is parked and complete; the remaining excluded rows are the intentional deferred `W050` set.
 - Canonical owner: [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) and [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W050_DEFERRED_CURRENT_VERSION_SURFACE.md).
 
-### IP-02 Semantic Witness Snapshot V2
+### IP-02 Semantic Witness Snapshot V2 Framework
 - Current state: planned and partially scaffolded through schema and bridge-definition work.
 - Canonical owner: [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md), [OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md), and [W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md).
 
@@ -53,6 +54,10 @@ Supersession note:
 - Current state: parked complete; doctrine rewrite, bead bootstrap, archive reduction, reconciliation, and closure proof are complete.
 - Canonical owner: [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) as migration provenance, with ordinary live execution now owned by [WORKSET_REGISTER.md](C:\Work\DnaCalc\OxFunc\docs\WORKSET_REGISTER.md) plus `.beads/`.
 
+### IP-09 Semantic Witness Full-Surface Population
+- Current state: planned successor execution lane for filling the remaining supported non-deferred witness rows.
+- Canonical owner: [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md), [WORKSET_REGISTER.md](C:\Work\DnaCalc\OxFunc\docs\WORKSET_REGISTER.md), and `.beads/`.
+
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
 - `active`: live lane with current owner surfaces.
@@ -62,4 +67,5 @@ Current reading:
 1. `IP-01` is `parked`,
 2. `IP-02`, `IP-03`, `IP-04`, `IP-05`, and `IP-06` are `active`,
 3. `IP-07` is `planned`,
-4. `IP-08` is `parked`.
+4. `IP-08` is `parked`,
+5. `IP-09` is `planned`.

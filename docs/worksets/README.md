@@ -20,7 +20,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md)
 6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md)
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md)
-8. [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md)
+8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -30,7 +30,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md) remains the canonical deferred tracker.
 6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) remains the parked non-deferred tracker and currently records zero open rows.
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md) remains the parked Lean reconciliation authority.
-8. [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md) is the next substantive execution target.
+8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md) is the next substantive execution target.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.
@@ -38,4 +38,5 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 3. Use [BEADS.md](/C:/Work/DnaCalc/OxFunc/docs/BEADS.md) for the local bead method.
 4. Use [IN_PROGRESS_FEATURE_WORKLIST.md](/C:/Work/DnaCalc/OxFunc/docs/IN_PROGRESS_FEATURE_WORKLIST.md) only as a high-level feature map.
 5. Use [HISTORY.md](/C:/Work/DnaCalc/OxFunc/docs/HISTORY.md) and tag `OxFunc_V1` for removed workset packets and retired migration aids.
-6. Use [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) only as closed migration provenance, not as active workset authority.
+6. Use [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md) only as closed framework provenance, not as active execution authority.
+7. Use [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) only as closed migration provenance, not as active workset authority.

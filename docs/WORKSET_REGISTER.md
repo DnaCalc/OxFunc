@@ -21,9 +21,9 @@ Planning and execution truth in OxFunc is split as follows:
 5. current function-lane and workset evidence artifacts remain the supporting truth surfaces for supported claims.
 
 Transition note:
-1. OxFunc is currently in `W070` active-tree reduction under the live bead graph.
-2. `.beads/` is now bootstrapped and owns live execution-state truth.
-3. this register remains authoritative for workset order, and [W070](worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) now survives as the closed migration plan/provenance packet rather than a live tracker.
+1. OxFunc is now operating under the bead graph for live execution state.
+2. `.beads/` owns ready, blocked, in-progress, and closed execution truth.
+3. this register remains authoritative for workset order, while [W070](worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) survives only as closed migration provenance.
 
 ## 3. Use Rule
 Use this document as:
@@ -131,12 +131,31 @@ It does mean:
 4. upstream_dependencies:
    `OxFml`, downstream consumers such as `DnaOneCalc`
 5. closure_condition:
-   the `V2` witness surface has an explicit schema, a stable generation path,
-   and a staged rollout plan toward full supported-surface coverage, with the
-   eventual target that every supported non-deferred row is either witness-
-   covered or explicitly dependency-blocked on a retained live authority.
+   the `V2` witness framework and seeded surfaces remain coherent as closed
+   provenance for later execution work.
 6. initial_epic_lanes:
-   schema and stability tiers, witness-generation pipeline, seeded function-family rollout, full-coverage tranche register, ordinary rollout, seam-heavy rollout, operator/modeled rollout, final coverage reconciliation
+   schema and stability tiers, witness-generation pipeline, seeded function-family rollout
+7. rollout_mode:
+   `tracking_anchor`
+
+### W071 Semantic Witness Full-Surface Population
+1. purpose:
+   populate the remaining supported non-deferred surface with actual semantic
+   witness rows keyed by the frozen `W069` tranche and gap ledgers.
+2. depends_on:
+   `W069`, `W044`, `W049`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md`,
+   `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`
+4. upstream_dependencies:
+   `OxFml`, downstream consumers such as `DnaOneCalc`
+5. closure_condition:
+   the remaining supported rows in the parked baseline have actual witness
+   rows or explicit dependency-gated witness records, and the final
+   reconciliation shows no leftover supported-row witness gap.
+6. initial_epic_lanes:
+   tranche controls, ordinary extracted rollout, ordinary curated rollout,
+   seam-heavy rollout, operator/model rollout, final reconciliation
 7. rollout_mode:
    `execution_target`
 
