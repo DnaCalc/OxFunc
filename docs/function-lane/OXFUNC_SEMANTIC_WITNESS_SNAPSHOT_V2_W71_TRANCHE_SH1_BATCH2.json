@@ -1,0 +1,211 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-sh1-batch2",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "SH1",
+    "tranche_name": "seam_heavy_supported",
+    "selection_rule": "dependency_gate=W049 and sequence between 4 and 6",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "71f3106",
+    "source_commit_full": "71f3106b5af3e8b45d0b3e7d6c2d5f9f0a0d3a77",
+    "source_tree_state": "dirty",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.ISOMITTED",
+            "canonical_surface_name": "ISOMITTED",
+            "metadata_status": "function_meta_curated",
+            "category": "Information functions",
+            "special_interface_kind": "callable_helper_runtime",
+            "admission_interface_kind": "callable_runtime_helper",
+            "dependency_gate": "W049",
+            "signature_display": "ISOMITTED(value)",
+            "help_summary": "Omitted-argument helper witness row for the retained W049 seam.",
+            "help_detail": "Captures the runtime helper lane that detects whether an argument was omitted. The W049 carrier keeps the helper visible as a seam-authored witness rather than collapsing it into ordinary row prose.",
+            "semantic_modes": ["omitted_argument_detection", "callable_runtime_helper", "seam_visible_helper"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-ISOMITTED-001",
+                    "summary": "Present-argument omitted check baseline.",
+                    "outcome_note": "Matches the helper/callable behavior pinned in W38 stage 1.",
+                    "evidence_ref_hint": "W38-LAMBDA-HELPER-STAGE1-20260319"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ISOMITTED",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.ISOMITTED",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_AND_HELPER_STAGE1_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W38-LAMBDA-HELPER-STAGE1-20260319",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w38-probe/run-w38-lambda-helper-stage1-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_AND_HELPER_STAGE1_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Callable helper witness row for omitted-argument detection on the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the callable-helper runtime carrier, the W38 stage 1 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.MAKEARRAY",
+            "canonical_surface_name": "MAKEARRAY",
+            "metadata_status": "function_meta_curated",
+            "category": "Logical functions",
+            "special_interface_kind": "callable_helper_runtime",
+            "admission_interface_kind": "higher_order_call",
+            "dependency_gate": "W049",
+            "signature_display": "MAKEARRAY(rows, cols, lambda)",
+            "help_summary": "Generated-array witness row for the retained W049 seam.",
+            "help_detail": "Captures the higher-order helper lane that generates an array from row and column coordinates. The W049 carrier keeps the helper runtime visible, so the seam remains explicit in the witness payload.",
+            "semantic_modes": ["higher_order_call", "generated_array", "scalar_result_contract"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-MAKEARRAY-001",
+                    "summary": "Generated-array baseline.",
+                    "outcome_note": "Matches the helper/callable behavior pinned in W38 stage 3.",
+                    "evidence_ref_hint": "W38-BYROW-BYCOL-MAKEARRAY-DEFINED-NAMES-STAGE3-20260319"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MAKEARRAY",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.MAKEARRAY",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE3_BYROW_BYCOL_MAKEARRAY_DEFINED_NAMES_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W38-BYROW-BYCOL-MAKEARRAY-DEFINED-NAMES-STAGE3-20260319",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w38-probe/run-w38-stage3-byrow-bycol-makearray-defined-names-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE3_BYROW_BYCOL_MAKEARRAY_DEFINED_NAMES_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Callable helper witness row for generated arrays on the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the callable-helper runtime carrier, the W38 stage 3 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.MAP",
+            "canonical_surface_name": "MAP",
+            "metadata_status": "function_meta_curated",
+            "category": "Logical functions",
+            "special_interface_kind": "callable_helper_runtime",
+            "admission_interface_kind": "higher_order_call",
+            "dependency_gate": "W049",
+            "signature_display": "MAP(array1, [array2, ...], lambda)",
+            "help_summary": "Mapped-callable witness row for the retained W049 seam.",
+            "help_detail": "Captures the higher-order helper lane that maps a callable across one or more arrays. The W049 carrier keeps the helper runtime visible, so the seam remains explicit in the witness payload.",
+            "semantic_modes": ["higher_order_call", "mapped_application", "scalar_result_contract"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-MAP-001",
+                    "summary": "Mapped helper baseline.",
+                    "outcome_note": "Matches the helper/callable behavior pinned in W38 stage 2.",
+                    "evidence_ref_hint": "W38-MAP-REDUCE-SCAN-STAGE2-20260319"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.MAP",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.MAP",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W38-MAP-REDUCE-SCAN-STAGE2-20260319",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w38-probe/run-w38-map-reduce-scan-stage2-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Mapped-callable witness row for the retained W049 seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the callable-helper runtime carrier, the W38 stage 2 replay packet, and the frozen V1 export row."
+        }
+    ]
+}
