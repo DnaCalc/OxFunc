@@ -1,0 +1,199 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch15",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 43 and 45",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "e909f0e",
+    "source_commit_full": "e909f0e7f9a1ce8e7e8bb5f0a5c0a4bf0d4eb1d3",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COS",
+            "canonical_surface_name": "COS",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "COS(number)",
+            "help_summary": "Cosine witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COS and keeps the trigonometric lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["trigonometric_evaluation", "domain_validation", "numeric_scalar_or_array"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COS-001",
+                    "summary": "Cosine baseline.",
+                    "outcome_note": "Returns the cosine of the supplied angle.",
+                    "evidence_ref_hint": "W71-T1-COS-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/cos_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CosFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CosFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Cosine witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COSH",
+            "canonical_surface_name": "COSH",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "COSH(number)",
+            "help_summary": "Hyperbolic-cosine witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COSH and keeps the trigonometric lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["hyperbolic_trigonometric_evaluation", "domain_validation", "numeric_scalar_or_array"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COSH-001",
+                    "summary": "Hyperbolic cosine baseline.",
+                    "outcome_note": "Returns the hyperbolic cosine of the supplied angle.",
+                    "evidence_ref_hint": "W71-T1-COSH-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COSH",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COSH",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/cosh_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CoshFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CoshFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Hyperbolic-cosine witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COT",
+            "canonical_surface_name": "COT",
+            "metadata_status": "function_meta_extracted",
+            "category": "Math and trigonometry functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "COT(number)",
+            "help_summary": "Cotangent witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COT and keeps the trigonometric lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["trigonometric_evaluation", "domain_validation", "numeric_scalar_or_array"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COT-001",
+                    "summary": "Cotangent baseline.",
+                    "outcome_note": "Returns the cotangent of the supplied angle.",
+                    "evidence_ref_hint": "W71-T1-COT-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COT",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COT",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/cot_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CotFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CotFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Cotangent witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        }
+    ]
+}
