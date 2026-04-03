@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch51",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 151 and 153",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "6ae04c8",
+  "source_commit_full": "6ae04c8c2587da641926ca061ead41200f6e1bdc",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.SEQUENCE",
+      "canonical_surface_name": "SEQUENCE",
+      "metadata_status": "function_meta_extracted",
+      "category": "Math and trigonometry functions",
+      "signature_display": "SEQUENCE(rows, [columns], [start], [step])",
+      "help_summary": "SEQUENCE witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for SEQUENCE and keeps the spill-generation lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "sequence_spill_generation",
+        "row_column_defaults",
+        "deterministic_spill_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-SEQUENCE-001",
+          "summary": "Spill-generation baseline.",
+          "outcome_note": "Returns a 2x3 spill starting at 10 and stepping by 2 for SEQUENCE(2, 3, 10, 2).",
+          "evidence_ref_hint": "W71-T1-SEQUENCE-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SEQUENCE",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.SEQUENCE",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/sequence.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/Sequence.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/Sequence.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "SEQUENCE witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.SHEET",
+      "canonical_surface_name": "SHEET",
+      "metadata_status": "function_meta_extracted",
+      "category": "Information functions",
+      "signature_display": "SHEET([reference])",
+      "help_summary": "SHEET witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for SHEET and keeps the workbook-state lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "current_sheet_number",
+        "reference_identity_lookup",
+        "workbook_state_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-SHEET-001",
+          "summary": "Current-sheet baseline.",
+          "outcome_note": "Returns 3 for SHEET() on the seeded workbook baseline and preserves the admitted workbook-state lane.",
+          "evidence_ref_hint": "W40-SHEET-01"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SHEET",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.SHEET",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/reference_metadata_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "SHEET witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W40/W71 gap ledgers."
+    },
+    {
+      "surface_stable_id": "FUNC.SHEETS",
+      "canonical_surface_name": "SHEETS",
+      "metadata_status": "function_meta_extracted",
+      "category": "Information functions",
+      "signature_display": "SHEETS([reference])",
+      "help_summary": "SHEETS witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for SHEETS and keeps the workbook-state lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "workbook_sheet_count",
+        "reference_span_count",
+        "workbook_state_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-SHEETS-001",
+          "summary": "Workbook-sheet-count baseline.",
+          "outcome_note": "Returns 3 for SHEETS() on the seeded workbook baseline and preserves the admitted workbook-state lane.",
+          "evidence_ref_hint": "W40-SHEETS-01"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SHEETS",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.SHEETS",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/reference_metadata_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/ReferenceMetadataFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "SHEETS witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W40/W71 gap ledgers."
+    }
+  ]
+}
