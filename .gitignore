@@ -12,3 +12,4 @@ tools/xll-addin/**/obj/
 
 # bv (beads viewer) local config and caches
 .bv/
+.beads/.br_recovery/
