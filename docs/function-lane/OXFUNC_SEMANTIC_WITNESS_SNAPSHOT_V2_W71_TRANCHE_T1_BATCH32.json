@@ -1,0 +1,229 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch32",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T1",
+  "tranche_name": "ordinary_extracted_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T1 and sequence between 94 and 96",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "e2c160e",
+  "source_commit_full": "e2c160e7f6f1f84ff0f8d4e9b1fdf4f5ef3e6864",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.ISEVEN",
+      "canonical_surface_name": "ISEVEN",
+      "metadata_status": "function_meta_extracted",
+      "category": "Information functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "1",
+      "signature_display": "ISEVEN(number)",
+      "help_summary": "ISEVEN witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for ISEVEN and keeps the information lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "evenness_test",
+        "numeric_scalar_or_array",
+        "boolean_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-ISEVEN-001",
+          "summary": "Evenness baseline.",
+          "outcome_note": "Returns TRUE when the supplied numeric value is even and FALSE otherwise.",
+          "evidence_ref_hint": "W71-T1-ISEVEN-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ISEVEN",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ISEVEN",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/iseven_fn.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/IsEvenFn.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/IsEvenFn.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "ISEVEN witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.ISFORMULA",
+      "canonical_surface_name": "ISFORMULA",
+      "metadata_status": "function_meta_extracted",
+      "category": "Information functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "1",
+      "signature_display": "ISFORMULA(reference)",
+      "help_summary": "ISFORMULA witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for ISFORMULA and keeps the information lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "formula_presence_test",
+        "reference_scalar_or_array",
+        "boolean_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-ISFORMULA-001",
+          "summary": "Formula detection baseline.",
+          "outcome_note": "Returns TRUE when the supplied reference points to a cell containing a formula and FALSE otherwise.",
+          "evidence_ref_hint": "W71-T1-ISFORMULA-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ISFORMULA",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ISFORMULA",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/misc_switch_info_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/MiscSwitchInfoFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/MiscSwitchInfoFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "ISFORMULA witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "witness_schema_version": "v0.tranche",
+      "tranche_id": "T1",
+      "tranche_name": "ordinary_extracted_non_operator",
+      "surface_stable_id": "FUNC.ISNUMBER",
+      "canonical_surface_name": "ISNUMBER",
+      "metadata_status": "function_meta_extracted",
+      "category": "Information functions",
+      "special_interface_kind": "ordinary",
+      "admission_interface_kind": "ordinary_call",
+      "arity_min": "1",
+      "arity_max": "1",
+      "signature_display": "ISNUMBER(value)",
+      "help_summary": "ISNUMBER witness row for the ordinary extracted tranche.",
+      "help_detail": "Captures the admitted baseline for ISNUMBER and keeps the information lane aligned to the W71 ordinary extracted program.",
+      "semantic_modes": [
+        "numeric_type_test",
+        "value_scalar_or_array",
+        "boolean_projection"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T1-ISNUMBER-001",
+          "summary": "Number detection baseline.",
+          "outcome_note": "Returns TRUE when the supplied value is numeric and FALSE otherwise.",
+          "evidence_ref_hint": "W71-T1-ISNUMBER-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.ISNUMBER",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.ISNUMBER",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/isnumber.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/IsNumber.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/IsNumber.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "ISNUMBER witness row for the ordinary extracted tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
