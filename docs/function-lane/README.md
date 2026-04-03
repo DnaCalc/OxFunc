@@ -79,11 +79,15 @@ templates.
 41. [W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv)
 42. [W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md)
 43. [W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md)
-44. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json)
-45. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
+44. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_OM2_OPERATOR_MODEL_EMPTY.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_OM2_OPERATOR_MODEL_EMPTY.json)
+45. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json)
+46. [W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md)
 
 Operator and modeled rows are read through the dedicated conventions note
 above, not through the ordinary tranche templates.
+The operator/model conventions note and its zero-entry confirmation artifact
+keep the `OP_IMPLICIT_INTERSECTION` lane visible without reusing the ordinary
+template.
 The final coverage reconciliation artifact is the canonical publication
 surface for the full supported set; the final coverage ledger and the other
 W69 ledgers remain supporting anchors for the frozen gap, tranche, seam-heavy,
@@ -95,7 +99,7 @@ following order:
 2. tranche ledger and register
 3. ordinary-row generation rules, T3 confirmation artifact, and tranche output
 4. seam-heavy ledger, inventory, and authoring rules
-5. operator/model conventions
+5. operator/model conventions and OM2 confirmation artifact
 6. final supported-surface coverage reconciliation artifact
 7. final supported-surface coverage ledger
 

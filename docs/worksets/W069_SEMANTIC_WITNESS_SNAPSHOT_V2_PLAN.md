@@ -250,9 +250,13 @@ The frozen W069 support-surface ledgers that define that split are:
    8. `docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv`
    9. `docs/function-lane/W69_SEAM_HEAVY_WITNESS_AUTHORING_RULES.md`
    10. `docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md`
-   11. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json`
-   12. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md`
+   11. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_TRANCHE_OM2_OPERATOR_MODEL_EMPTY.json`
+   12. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_RECONCILIATION.json`
+   13. `docs/function-lane/W69_FINAL_SUPPORTED_SURFACE_COVERAGE_LEDGER.md`
 
+The operator/model conventions note above, together with the zero-entry OM2
+confirmation artifact, keeps the `OP_IMPLICIT_INTERSECTION` lane visible
+without reusing the ordinary template.
 The final coverage reconciliation artifact above is the canonical publication
 surface for the full supported surface. Downstream readers should treat it as
 the authoritative `W069` publication surface, with the final coverage ledger
