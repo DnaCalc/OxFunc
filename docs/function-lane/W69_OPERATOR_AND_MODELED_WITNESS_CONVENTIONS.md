@@ -67,3 +67,8 @@ This ruleset is the operator companion to the seam-heavy and ordinary-row
 authoring notes. It gives the `W069` operator tranche a shared witness shape
 without collapsing it into the ordinary extracted template.
 
+The current seeded operator/model artifact already covers the parked operator
+surface together with the `doc_modeled` `FUNC.OP_IMPLICIT_INTERSECTION` row.
+Any later operator/model generator run should therefore emit a zero-entry
+confirmation artifact unless new operator rows are intentionally added to the
+parked baseline.
