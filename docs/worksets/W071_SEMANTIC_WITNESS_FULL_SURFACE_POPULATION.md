@@ -14,7 +14,7 @@ remaining supported surface.
 Current OxFunc has:
 1. a parked `V1` catalog/profile export,
 2. a live `V2` witness schema and publication convention,
-3. `13` seeded witness rows,
+3. `16` seeded witness rows,
 4. a frozen remaining-surface gap inventory for `507` supported rows,
 5. a tranche register that partitions the remaining rows into deterministic
    ordinary, curated, operator, and seam-heavy lanes.
@@ -55,8 +55,8 @@ baseline.
 
 Target surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `13`
-3. current remaining supported rows needing witness population: `504`
+2. current witness-covered rows: `16`
+3. current remaining supported rows needing witness population: `501`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
@@ -75,7 +75,7 @@ explicit where the row remains seam-sensitive.
 
 ## 7. Initial Deliverables
 This packet should produce:
-1. tranche-level generation rules for the remaining 504 rows,
+1. tranche-level generation rules for the remaining 501 rows,
 2. actual witness-row batches for the ordinary extracted tranche,
 3. actual witness-row batches for the ordinary curated tranche,
 4. actual witness-row batches for the operator and seam-heavy tranches,
@@ -124,6 +124,9 @@ The second ordinary extracted witness batch is seeded in:
 
 The third ordinary extracted witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH3.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH3.json)
+
+The third ordinary curated witness batch is seeded in:
+1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T2_BATCH3.json)
 
 The first operator witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH1.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T3_BATCH1.json)

@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch3",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T2",
+    "tranche_name": "ordinary_curated_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T2 and sequence between 208 and 210",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "8abf78e",
+    "source_commit_full": "8abf78ee96d3c2df49ab38bf0fa8a5d01de130c4",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.AVERAGEIFS",
+            "canonical_surface_name": "AVERAGEIFS",
+            "metadata_status": "function_meta_curated",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 3,
+            "arity_max": 255,
+            "signature_display": "AVERAGEIFS(average_range, criteria_range1, criteria1, [criteria_range2, criteria2], ...)",
+            "help_summary": "Multiple-criteria average witness row for the ordinary curated tranche.",
+            "help_detail": "Captures the ordinary curated baseline for AVERAGEIFS and keeps the exact-shape multiple-criteria behavior aligned to the W22 criteria packet.",
+            "semantic_modes": ["multi_criteria_average", "shape_validation", "numeric_domain_validation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-AVERAGEIFS-001",
+                    "summary": "Multiple-criteria average baseline.",
+                    "outcome_note": "Matches the parked AVERAGEIFS behavior pinned in W22.",
+                    "evidence_ref_hint": "W22-CRITERIA-SHAPE-20260318"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AVERAGEIFS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AVERAGEIFS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W22-CRITERIA-SHAPE-20260318",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w22-probe/run-w22-criteria-shape-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/criteria_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CriteriaFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CriteriaFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Multiple-criteria average witness row for the parked baseline criteria slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the criteria runtime family, the W22 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.BESSELI",
+            "canonical_surface_name": "BESSELI",
+            "metadata_status": "function_meta_curated",
+            "category": "Engineering functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 2,
+            "arity_max": 2,
+            "signature_display": "BESSELI(x, n)",
+            "help_summary": "Modified Bessel witness row for the ordinary curated tranche.",
+            "help_detail": "Captures the ordinary curated baseline for BESSELI and keeps the admitted modified-Bessel domain and sign-parity behavior aligned to the W59 engineering packet.",
+            "semantic_modes": ["bessel_modified", "order_domain_validation", "sign_parity"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-BESSELI-001",
+                    "summary": "Modified Bessel baseline.",
+                    "outcome_note": "Matches the parked BESSELI behavior pinned in W59.",
+                    "evidence_ref_hint": "W59-ENGINEERING-CONVERSIONS-BESSEL-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BESSELI",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BESSELI",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W59-ENGINEERING-CONVERSIONS-BESSEL-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w59-probe/run-w59-engineering-conversions-bessel-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/bessel_convert_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/BesselConvertFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/BesselConvertFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Modified Bessel witness row for the parked baseline engineering slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the BESSELI runtime family, the W59 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T2",
+            "tranche_name": "ordinary_curated_non_operator",
+            "surface_stable_id": "FUNC.BESSELJ",
+            "canonical_surface_name": "BESSELJ",
+            "metadata_status": "function_meta_curated",
+            "category": "Engineering functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": 2,
+            "arity_max": 2,
+            "signature_display": "BESSELJ(x, n)",
+            "help_summary": "Bessel J witness row for the ordinary curated tranche.",
+            "help_detail": "Captures the ordinary curated baseline for BESSELJ and keeps the admitted Bessel J domain and sign-parity behavior aligned to the W59 engineering packet.",
+            "semantic_modes": ["bessel_j", "order_domain_validation", "sign_parity"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T2-BESSELJ-001",
+                    "summary": "Bessel J baseline.",
+                    "outcome_note": "Matches the parked BESSELJ behavior pinned in W59.",
+                    "evidence_ref_hint": "W59-ENGINEERING-CONVERSIONS-BESSEL-BL-20260401"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BESSELJ",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BESSELJ",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W59-ENGINEERING-CONVERSIONS-BESSEL-BL-20260401",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w59-probe/run-w59-engineering-conversions-bessel-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/bessel_convert_family.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/BesselConvertFamily.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/BesselConvertFamily.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_ENGINEERING_CONVERSIONS_AND_BESSEL_FAMILY_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Bessel J witness row for the parked baseline engineering slice.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the BESSELJ runtime family, the W59 replay packet, and the frozen V1 export row."
+        }
+    ]
+}
