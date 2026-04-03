@@ -1,0 +1,214 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch6",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 16 and 18",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "a39ae5c",
+    "source_commit_full": "a39ae5c9e3be9a9fed99547057b7f1c1d9f27e46",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.AVEDEV",
+            "canonical_surface_name": "AVEDEV",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "255",
+            "signature_display": "AVEDEV(number1, [number2], ...)",
+            "help_summary": "Average-deviation witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for AVEDEV and keeps the inclusive-deviation lane aligned to the W16 average/deviation packet.",
+            "semantic_modes": ["deviation_measure", "numeric_filtering", "aggregate_direct_and_range"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-AVEDEV-001",
+                    "summary": "Inclusive deviation baseline.",
+                    "outcome_note": "Matches the parked AVEDEV behavior pinned in W16, including #NUM! on the empty-survivor case.",
+                    "evidence_ref_hint": "W16-BATCH19-AVERAGEA-AVEDEV-DEVSQ-20260315"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AVEDEV",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AVEDEV",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W16_EXECUTION_RECORD.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W16-BATCH19-AVERAGEA-AVEDEV-DEVSQ-20260315",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W16_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/avedev_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/AveDevFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/AveDevFn.lean"],
+            "contract_refs": ["docs/function-lane/W16_EXECUTION_RECORD.md"],
+            "admitted_slice_note": "Average-deviation witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W16 inclusive average/deviation packet."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.AVERAGE",
+            "canonical_surface_name": "AVERAGE",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "255",
+            "signature_display": "AVERAGE(number1, [number2], ...)",
+            "help_summary": "Arithmetic-mean witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for AVERAGE and keeps the ordinary arithmetic-mean lane aligned to the W12 aggregate trio packet.",
+            "semantic_modes": ["aggregate_mean", "numeric_filtering", "direct_scalar_and_range"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-AVERAGE-001",
+                    "summary": "Arithmetic-mean baseline.",
+                    "outcome_note": "Matches the parked AVERAGE behavior pinned in W12.",
+                    "evidence_ref_hint": "W12-MODERATE-BL-20260309"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AVERAGE",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AVERAGE",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W12_EXECUTION_RECORD.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W12-MODERATE-BL-20260309",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W12_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/average.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/Average.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/Average.lean"],
+            "contract_refs": ["docs/function-lane/W12_EXECUTION_RECORD.md"],
+            "admitted_slice_note": "Arithmetic-mean witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W12 aggregate trio packet."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.AVERAGEA",
+            "canonical_surface_name": "AVERAGEA",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "255",
+            "signature_display": "AVERAGEA(number1, [number2], ...)",
+            "help_summary": "Inclusive arithmetic-mean witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for AVERAGEA and keeps the inclusive mean lane aligned to the W16 average/deviation packet.",
+            "semantic_modes": ["aggregate_mean", "inclusive_filtering", "direct_scalar_and_range"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-AVERAGEA-001",
+                    "summary": "Inclusive arithmetic-mean baseline.",
+                    "outcome_note": "Returns 0.5 for AVERAGEA(G1:G2) and matches the parked W16 inclusive-average behavior.",
+                    "evidence_ref_hint": "W16-BATCH19-AVERAGEA-AVEDEV-DEVSQ-20260315"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.AVERAGEA",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.AVERAGEA",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W16_EXECUTION_RECORD.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W16-BATCH19-AVERAGEA-AVEDEV-DEVSQ-20260315",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W16_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/averagea_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/AverageAFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/AverageAFn.lean"],
+            "contract_refs": ["docs/function-lane/W16_EXECUTION_RECORD.md"],
+            "admitted_slice_note": "Inclusive arithmetic-mean witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W16 inclusive average/deviation packet."
+        }
+    ]
+}
