@@ -125,6 +125,12 @@ The tranche-control note is in:
 The tranche register overlay is in:
 1. [W71_TRANCHE_REGISTER.csv](../function-lane/W71_TRANCHE_REGISTER.csv)
 
+The final reconciliation publication rule is in:
+1. [W71_FINAL_RECONCILIATION_PUBLICATION_RULE.md](../function-lane/W71_FINAL_RECONCILIATION_PUBLICATION_RULE.md)
+
+The final reconciliation draft is in:
+1. [W71_FINAL_RECONCILIATION_DRAFT.md](../function-lane/W71_FINAL_RECONCILIATION_DRAFT.md)
+
 The second ordinary extracted witness batch is seeded in:
 1. [OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH2.json](../function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_W71_TRANCHE_T1_BATCH2.json)
 
