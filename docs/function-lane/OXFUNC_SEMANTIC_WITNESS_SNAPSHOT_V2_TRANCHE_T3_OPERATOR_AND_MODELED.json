@@ -1,0 +1,1142 @@
+﻿{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-tranche-t3-operator-and-modeled",
+    "witness_schema_version":  "v0.tranche",
+    "tranche_id":  "T3",
+    "tranche_name":  "operator_surface_and_modeled_seed",
+    "selection_rule":  "W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv tranche_id=T3 plus doc_modeled OP_IMPLICIT_INTERSECTION",
+    "source_snapshot_ref":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_register_ref":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv",
+    "source_conventions_ref":  "docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md",
+    "source_commit_short":  "89bf147",
+    "source_commit_full":  "89bf147395ff3a2cf70a3c6febba6e9746df6f09",
+    "source_tree_state":  "clean",
+    "entries":  [
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_ADD",
+                        "canonical_surface_name":  "OP_ADD",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "operator_form",
+                        "signature_display":  "A + B",
+                        "help_summary":  "Operator witness seed for OP_ADD.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_ADD-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_ADD"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_ADD",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_ADD",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_CONCAT",
+                        "canonical_surface_name":  "OP_CONCAT",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "OP_CONCAT",
+                        "help_summary":  "Operator witness seed for OP_CONCAT.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_CONCAT-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_CONCAT"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_CONCAT",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_CONCAT",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_DIVIDE",
+                        "canonical_surface_name":  "OP_DIVIDE",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A / B",
+                        "help_summary":  "Operator witness seed for OP_DIVIDE.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_DIVIDE-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_DIVIDE"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_DIVIDE",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_DIVIDE",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_EQUAL",
+                        "canonical_surface_name":  "OP_EQUAL",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A = B",
+                        "help_summary":  "Operator witness seed for OP_EQUAL.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_EQUAL-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_EQUAL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_EQUAL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_EQUAL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_GREATER_EQUAL",
+                        "canonical_surface_name":  "OP_GREATER_EQUAL",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A \u003e= B",
+                        "help_summary":  "Operator witness seed for OP_GREATER_EQUAL.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_GREATER_EQUAL-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_GREATER_EQUAL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_GREATER_EQUAL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_GREATER_EQUAL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_GREATER_THAN",
+                        "canonical_surface_name":  "OP_GREATER_THAN",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A \u003e B",
+                        "help_summary":  "Operator witness seed for OP_GREATER_THAN.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_GREATER_THAN-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_GREATER_THAN"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_GREATER_THAN",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_GREATER_THAN",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_INTERSECTION_REF",
+                        "canonical_surface_name":  "OP_INTERSECTION_REF",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A B",
+                        "help_summary":  "Operator witness seed for OP_INTERSECTION_REF.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "reference_formation"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_INTERSECTION_REF-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_INTERSECTION_REF"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_INTERSECTION_REF",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_INTERSECTION_REF",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_LESS_EQUAL",
+                        "canonical_surface_name":  "OP_LESS_EQUAL",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A \u003c= B",
+                        "help_summary":  "Operator witness seed for OP_LESS_EQUAL.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_LESS_EQUAL-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_LESS_EQUAL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_LESS_EQUAL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_LESS_EQUAL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_LESS_THAN",
+                        "canonical_surface_name":  "OP_LESS_THAN",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A \u003c B",
+                        "help_summary":  "Operator witness seed for OP_LESS_THAN.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_LESS_THAN-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_LESS_THAN"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_LESS_THAN",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_LESS_THAN",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_MULTIPLY",
+                        "canonical_surface_name":  "OP_MULTIPLY",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A * B",
+                        "help_summary":  "Operator witness seed for OP_MULTIPLY.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_MULTIPLY-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_MULTIPLY"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_MULTIPLY",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_MULTIPLY",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_NEGATE",
+                        "canonical_surface_name":  "OP_NEGATE",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "-A",
+                        "help_summary":  "Operator witness seed for OP_NEGATE.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "unary_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_NEGATE-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_NEGATE"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_NEGATE",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_NEGATE",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_NOT_EQUAL",
+                        "canonical_surface_name":  "OP_NOT_EQUAL",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A \u003c\u003e B",
+                        "help_summary":  "Operator witness seed for OP_NOT_EQUAL.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "comparison_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_NOT_EQUAL-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_NOT_EQUAL"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_NOT_EQUAL",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_NOT_EQUAL",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_PERCENT",
+                        "canonical_surface_name":  "OP_PERCENT",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A%",
+                        "help_summary":  "Operator witness seed for OP_PERCENT.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_PERCENT-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_PERCENT"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_PERCENT",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_PERCENT",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_POWER",
+                        "canonical_surface_name":  "OP_POWER",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A ^ B",
+                        "help_summary":  "Operator witness seed for OP_POWER.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_POWER-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_POWER"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_POWER",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_POWER",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_RANGE_REF",
+                        "canonical_surface_name":  "OP_RANGE_REF",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A:B",
+                        "help_summary":  "Operator witness seed for OP_RANGE_REF.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "reference_formation"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_RANGE_REF-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_RANGE_REF"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_RANGE_REF",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_RANGE_REF",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_SPILL_REF",
+                        "canonical_surface_name":  "OP_SPILL_REF",
+                        "metadata_status":  "function_meta_extracted",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A#",
+                        "help_summary":  "Operator witness seed for OP_SPILL_REF.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "spill_reference_shaping"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_SPILL_REF-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_SPILL_REF"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_SPILL_REF",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_SPILL_REF",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_SUBTRACT",
+                        "canonical_surface_name":  "OP_SUBTRACT",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A - B",
+                        "help_summary":  "Operator witness seed for OP_SUBTRACT.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "arithmetic_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_SUBTRACT-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_SUBTRACT"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_SUBTRACT",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_SUBTRACT",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_TRIM_REF_BOTH",
+                        "canonical_surface_name":  "OP_TRIM_REF_BOTH",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A @? B",
+                        "help_summary":  "Operator witness seed for OP_TRIM_REF_BOTH.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "spill_reference_shaping"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_TRIM_REF_BOTH-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_TRIM_REF_BOTH"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_TRIM_REF_BOTH",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_TRIM_REF_BOTH",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_TRIM_REF_LEADING",
+                        "canonical_surface_name":  "OP_TRIM_REF_LEADING",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "@A",
+                        "help_summary":  "Operator witness seed for OP_TRIM_REF_LEADING.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "spill_reference_shaping"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_TRIM_REF_LEADING-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_TRIM_REF_LEADING"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_TRIM_REF_LEADING",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_TRIM_REF_LEADING",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_TRIM_REF_TRAILING",
+                        "canonical_surface_name":  "OP_TRIM_REF_TRAILING",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A@",
+                        "help_summary":  "Operator witness seed for OP_TRIM_REF_TRAILING.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "spill_reference_shaping"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_TRIM_REF_TRAILING-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_TRIM_REF_TRAILING"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_TRIM_REF_TRAILING",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_TRIM_REF_TRAILING",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_UNARY_PLUS",
+                        "canonical_surface_name":  "OP_UNARY_PLUS",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "+A",
+                        "help_summary":  "Operator witness seed for OP_UNARY_PLUS.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "unary_projection"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_UNARY_PLUS-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_UNARY_PLUS"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_UNARY_PLUS",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_UNARY_PLUS",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_UNION_REF",
+                        "canonical_surface_name":  "OP_UNION_REF",
+                        "metadata_status":  "function_meta_curated",
+                        "category":  "Operators",
+                        "special_interface_kind":  "ordinary",
+                        "admission_interface_kind":  "ordinary_call",
+                        "signature_display":  "A, B",
+                        "help_summary":  "Operator witness seed for OP_UNION_REF.",
+                        "help_detail":  "Seeded from the frozen T3 operator tranche; operator syntax remains explicit and the witness payload must not collapse into ordinary function-call prose.",
+                        "semantic_modes":  [
+                                               "operator_surface",
+                                               "reference_formation"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Operator surface witness seed.",
+                                                     "outcome_note":  "Operator witness seed retains the surfaced operator form.",
+                                                     "example_id":  "FUNC.OP_UNION_REF-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W69-OPERATOR-FUNC.OP_UNION_REF"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_UNION_REF",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.OP_UNION_REF",
+                                                  "provenance_category":  "tranche_register",
+                                                  "ref_kind":  "tranche_register_row"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Operator witness seed pending fuller V2 enrichment.",
+                        "orthogonal_validation_status":  [
+                                                             "operator_syntax_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as an operator row; seeded through the frozen T3 register."
+                    },
+                    {
+                        "witness_schema_version":  "v0.tranche",
+                        "tranche_id":  "T3",
+                        "tranche_name":  "operator_surface_and_modeled_seed",
+                        "surface_stable_id":  "FUNC.OP_IMPLICIT_INTERSECTION",
+                        "canonical_surface_name":  "OP_IMPLICIT_INTERSECTION",
+                        "metadata_status":  "doc_modeled",
+                        "category":  "Operators",
+                        "special_interface_kind":  "implicit_intersection_operator",
+                        "admission_interface_kind":  "operator_form",
+                        "signature_display":  "@A",
+                        "help_summary":  "Doc-modeled operator seed for implicit intersection.",
+                        "help_detail":  "This row keeps the legacy @ and _xlfn.SINGLE compatibility story explicit while remaining a doc-modeled operator seed aligned to the operator family conventions.",
+                        "semantic_modes":  [
+                                               "implicit_intersection",
+                                               "doc_modeled_operator",
+                                               "context_sensitive_scalarization"
+                                           ],
+                        "witness_examples":  [
+                                                 {
+                                                     "summary":  "Doc-modeled operator seed.",
+                                                     "outcome_note":  "The @ / _xlfn.SINGLE compatibility story stays explicit in the witness row.",
+                                                     "example_id":  "FUNC.OP_IMPLICIT_INTERSECTION-OP-SEED-001",
+                                                     "evidence_ref_hint":  "W14-IMPLICIT-INTERSECTION-BL-20260401"
+                                                 }
+                                             ],
+                        "evidence_refs":  [
+                                              {
+                                                  "ref_value":  "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.OP_IMPLICIT_INTERSECTION",
+                                                  "provenance_category":  "catalog_export",
+                                                  "ref_kind":  "catalog_export_row"
+                                              },
+                                              {
+                                                  "ref_value":  "docs/function-lane/W69_OPERATOR_AND_MODELED_WITNESS_CONVENTIONS.md",
+                                                  "provenance_category":  "authoring_rules",
+                                                  "ref_kind":  "operator_conventions_note"
+                                              }
+                                          ],
+                        "formal_refs":  [
+
+                                        ],
+                        "contract_refs":  [
+
+                                          ],
+                        "admitted_slice_note":  "Doc-modeled operator seed retained for compatibility and context-sensitive scalarization.",
+                        "orthogonal_validation_status":  [
+                                                             "legacy_compatibility_review_pending"
+                                                         ],
+                        "current_support_basis":  "Supported in the parked baseline as a doc-modeled operator seed retained for compatibility."
+                    }
+                ]
+}
