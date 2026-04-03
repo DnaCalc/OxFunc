@@ -1,0 +1,69 @@
+﻿{
+    "witness_snapshot_id":  "oxfunc-semantic-witness-v2-final-supported-surface-reconciliation",
+    "witness_schema_version":  "v0.reconciliation",
+    "source_tranche_register_ref":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv",
+    "source_tranche_ledger_ref":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_LEDGER.md",
+    "source_gap_ledger_ref":  "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md",
+    "supported_non_deferred_rows":  517,
+    "witness_covered_rows":  10,
+    "remaining_witness_gap_rows":  507,
+    "queued_in_tranche_rows":  490,
+    "dependency_blocked_rows":  17,
+    "tranche_counts":  [
+                           {
+                               "tranche_id":  "T1",
+                               "tranche_name":  "ordinary_extracted_non_operator",
+                               "count":  201,
+                               "dependency_gate":  null
+                           },
+                           {
+                               "tranche_id":  "T2",
+                               "tranche_name":  "ordinary_curated_non_operator",
+                               "count":  267,
+                               "dependency_gate":  null
+                           },
+                           {
+                               "tranche_id":  "T3",
+                               "tranche_name":  "operator_surface",
+                               "count":  22,
+                               "dependency_gate":  null
+                           },
+                           {
+                               "tranche_id":  "T4",
+                               "tranche_name":  "special_extracted_surface",
+                               "count":  5,
+                               "dependency_gate":  "W041"
+                           },
+                           {
+                               "tranche_id":  "T5",
+                               "tranche_name":  "special_curated_surface",
+                               "count":  12,
+                               "dependency_gate":  "W049"
+                           }
+                       ],
+    "dependency_blocked_by_gate":  [
+                                       {
+                                           "dependency_gate":  "W041",
+                                           "count":  2,
+                                           "tranche_id":  "T4",
+                                           "tranche_name":  "special_extracted_surface"
+                                       },
+                                       {
+                                           "dependency_gate":  "W043",
+                                           "count":  1,
+                                           "tranche_id":  "T4",
+                                           "tranche_name":  "special_extracted_surface"
+                                       },
+                                       {
+                                           "dependency_gate":  "W049",
+                                           "count":  14,
+                                           "tranche_id":  "T4",
+                                           "tranche_name":  "special_extracted_surface"
+                                       }
+                                   ],
+    "publication_rule":  "Every supported non-deferred row must be either witness-covered, queued in one of the frozen tranches, or dependency-blocked on a retained live authority.",
+    "source_commit_short":  "5ec345a",
+    "source_commit_full":  "5ec345a0414eb7329363dbbbec723b6ba27c9be4",
+    "source_tree_state":  "dirty",
+    "note":  "This reconciliation is a publication surface for the frozen W069 support-surface ledger; it is not a second catalog."
+}
