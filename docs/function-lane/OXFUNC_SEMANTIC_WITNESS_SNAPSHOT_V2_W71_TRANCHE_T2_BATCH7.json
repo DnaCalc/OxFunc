@@ -1,0 +1,208 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch7",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T2",
+  "tranche_name": "ordinary_curated_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T2 and sequence between 220 and 222",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "9d00603",
+  "source_commit_full": "9d0060340bf44c5a1a2b416487acd2ea5424a15d",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.BINOMDIST",
+      "canonical_surface_name": "BINOMDIST",
+      "metadata_status": "function_meta_curated",
+      "category": "Compatibility",
+      "signature_display": "BINOMDIST(number_s, trials, probability_s, cumulative)",
+      "help_summary": "BINOMDIST witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for BINOMDIST and keeps the legacy binomial lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "binomial_probability",
+        "curated_compatibility_surface",
+        "compatibility_legacy_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-BINOMDIST-001",
+          "summary": "Legacy binomial alias baseline.",
+          "outcome_note": "Returns 0.2109375 for BINOMDIST(2,4,0.25,FALSE) and preserves the admitted legacy binomial lane.",
+          "evidence_ref_hint": "W71-T2-BINOMDIST-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.BINOMDIST",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.BINOMDIST",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/discrete_dist_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/DiscreteDistFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/DiscreteDistFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "BINOMDIST witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.CEILING.MATH",
+      "canonical_surface_name": "CEILING.MATH",
+      "metadata_status": "function_meta_curated",
+      "category": "Math and trigonometry functions",
+      "signature_display": "CEILING.MATH(number, [significance], [mode])",
+      "help_summary": "CEILING.MATH witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for CEILING.MATH and keeps the modern ceiling lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "ceiling_math_rounding",
+        "curated_math_surface",
+        "compatibility_math_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CEILING.MATH-001",
+          "summary": "Modern ceiling rounding baseline.",
+          "outcome_note": "Returns -4.0 for CEILING.MATH(-4.3,2) and preserves the admitted modern ceiling lane.",
+          "evidence_ref_hint": "W71-T2-CEILING.MATH-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CEILING.MATH",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CEILING.MATH",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/ceiling_floor_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/CeilingFloorFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/CeilingFloorFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CEILING.MATH witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    },
+    {
+      "surface_stable_id": "FUNC.CEILING.PRECISE",
+      "canonical_surface_name": "CEILING.PRECISE",
+      "metadata_status": "function_meta_curated",
+      "category": "Math and trigonometry functions",
+      "signature_display": "CEILING.PRECISE(number, [significance])",
+      "help_summary": "CEILING.PRECISE witness row for the ordinary curated tranche.",
+      "help_detail": "Captures the admitted baseline for CEILING.PRECISE and keeps the precise ceiling lane aligned to the W71 ordinary curated program.",
+      "semantic_modes": [
+        "ceiling_precise_rounding",
+        "curated_math_surface",
+        "compatibility_math_surface"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CEILING.PRECISE-001",
+          "summary": "Precise ceiling rounding baseline.",
+          "outcome_note": "Returns -4.0 for CEILING.PRECISE(-4.3,2) and preserves the admitted precise ceiling lane.",
+          "evidence_ref_hint": "W71-T2-CEILING.PRECISE-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CEILING.PRECISE",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CEILING.PRECISE",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/ceiling_floor_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/CeilingFloorFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/CeilingFloorFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CEILING.PRECISE witness row for the ordinary curated tranche.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+    }
+  ]
+}
