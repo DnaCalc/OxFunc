@@ -227,6 +227,18 @@ Frozen tranche counts for the remaining `507` rows:
 4. `5` special extracted rows
 5. `12` special curated rows
 
+Tranche sequencing rule:
+1. the remaining supported rows are staged in the frozen tranche order
+   `T1 -> T2 -> T3 -> T4 -> T5`,
+2. `T1` covers ordinary extracted non-operator rows,
+3. `T2` covers ordinary curated non-operator rows,
+4. `T3` covers operator rows,
+5. `T4` covers special extracted rows,
+6. `T5` covers special curated rows,
+7. the seam-heavy remainder set is processed as a parallel dependency-gated
+   lane under `W041`, `W043`, and `W049` and does not change the tranche
+   ordering above.
+
 The frozen W069 support-surface ledgers that define that split are:
 1. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md`
 2. `docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_INVENTORY.csv`
