@@ -1,0 +1,211 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-sh1-batch3",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "SH1",
+    "tranche_name": "seam_heavy_supported",
+    "selection_rule": "dependency_gate in {W049, W043} and sequence between 7 and 9",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "2bd241e",
+    "source_commit_full": "2bd241e626ddb1a7185e7dc0f22fd5303cdde740",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.REDUCE",
+            "canonical_surface_name": "REDUCE",
+            "metadata_status": "function_meta_curated",
+            "category": "Logical functions",
+            "special_interface_kind": "callable_helper_runtime",
+            "admission_interface_kind": "higher_order_call",
+            "dependency_gate": "W049",
+            "signature_display": "REDUCE(initial_value, array, lambda)",
+            "help_summary": "Reduction callable witness row for the retained W049 seam.",
+            "help_detail": "Captures the higher-order helper lane that reduces an array through a callable. The retained W049 carrier keeps the helper runtime visible, so the seam remains explicit in the witness payload.",
+            "semantic_modes": ["higher_order_call", "reduction", "scalar_result_contract"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-REDUCE-001",
+                    "summary": "Reduction helper baseline.",
+                    "outcome_note": "Matches the helper/callable behavior pinned in W38 stage 2.",
+                    "evidence_ref_hint": "W38-MAP-REDUCE-SCAN-STAGE2-20260319"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.REDUCE",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.REDUCE",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W38-MAP-REDUCE-SCAN-STAGE2-20260319",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w38-probe/run-w38-map-reduce-scan-stage2-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Callable reduction witness row for the retained W049 helper seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the callable-helper runtime carrier, the W38 stage 2 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.SCAN",
+            "canonical_surface_name": "SCAN",
+            "metadata_status": "function_meta_curated",
+            "category": "Logical functions",
+            "special_interface_kind": "callable_helper_runtime",
+            "admission_interface_kind": "higher_order_call",
+            "dependency_gate": "W049",
+            "signature_display": "SCAN(initial_value, array, lambda)",
+            "help_summary": "Scan callable witness row for the retained W049 seam.",
+            "help_detail": "Captures the higher-order helper lane that scans an array through a callable. The retained W049 carrier keeps the helper runtime visible, so the seam remains explicit in the witness payload.",
+            "semantic_modes": ["higher_order_call", "scan", "array_result_contract"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-SCAN-001",
+                    "summary": "Scan helper baseline.",
+                    "outcome_note": "Matches the helper/callable behavior pinned in W38 stage 2.",
+                    "evidence_ref_hint": "W38-MAP-REDUCE-SCAN-STAGE2-20260319"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.SCAN",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.SCAN",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W38-MAP-REDUCE-SCAN-STAGE2-20260319",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "tools/w38-probe/run-w38-map-reduce-scan-stage2-baseline.ps1",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/callable_helpers.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/FunctionalLambdaHelpers.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_FUNCTIONAL_LAMBDA_HELPERS_STAGE2_MAP_REDUCE_SCAN_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "Callable scan witness row for the retained W049 helper seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the callable-helper runtime carrier, the W38 stage 2 replay packet, and the frozen V1 export row."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "SH1",
+            "tranche_name": "seam_heavy_supported",
+            "surface_stable_id": "FUNC.RTD",
+            "canonical_surface_name": "RTD",
+            "metadata_status": "function_meta_extracted",
+            "category": "Lookup and reference functions",
+            "special_interface_kind": "host_subscription_provider",
+            "admission_interface_kind": "host_subscription_call",
+            "dependency_gate": "W043",
+            "signature_display": "RTD(prog_id, server, topic1, [topic2], ...)",
+            "help_summary": "RTD seam witness row for the retained W043 seam.",
+            "help_detail": "Captures the local RTD call path while keeping host lifecycle and topic-management responsibilities outside OxFunc. The retained W043 carrier keeps the seam explicit in the witness payload.",
+            "semantic_modes": ["host_subscription", "provider_projection", "seam_visible_call"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-SH1-RTD-001",
+                    "summary": "RTD seam baseline.",
+                    "outcome_note": "Matches the local RTD seam pinned in W43.",
+                    "evidence_ref_hint": "W43-RTD-SEAM-FIRSTPASS-20260320"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.RTD",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SEAM_HEAVY_SUPPORTED_SURFACE_INVENTORY.csv#FUNC.RTD",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "evidence_id",
+                    "ref_value": "W43-RTD-SEAM-FIRSTPASS-20260320",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W43_EXECUTION_RECORD.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/rtd_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/HostServiceSurface.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/HostServiceSurface.lean"],
+            "contract_refs": ["docs/function-lane/FUNCTION_SLICE_RTD_CONTRACT_PRELIM.md"],
+            "admitted_slice_note": "RTD seam witness row for the retained W043 host-service seam.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline through the RTD runtime family, the W43 seam record, and the frozen V1 export row."
+        }
+    ]
+}
