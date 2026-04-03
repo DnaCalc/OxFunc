@@ -1,0 +1,199 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch17",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 49 and 51",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "f1550ce",
+    "source_commit_full": "f1550ce8c4c8bb6c0d3a5a0b6cc4e3f4f8c0d1ad",
+    "source_tree_state": "dirty",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COUNTBLANK",
+            "canonical_surface_name": "COUNTBLANK",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "COUNTBLANK(range)",
+            "help_summary": "CountBlank witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COUNTBLANK and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["count_blank_values", "range_and_reference_validation", "scalar_or_array_arguments"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COUNTBLANK-001",
+                    "summary": "COUNTBLANK baseline.",
+                    "outcome_note": "Returns the count of blank values in the supplied range.",
+                    "evidence_ref_hint": "W71-T1-COUNTBLANK-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COUNTBLANK",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COUNTBLANK",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/countblank_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CountBlankFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CountBlankFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "CountBlank witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COVARIANCE.P",
+            "canonical_surface_name": "COVARIANCE.P",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "2",
+            "arity_max": "255",
+            "signature_display": "COVARIANCE.P(array1, array2)",
+            "help_summary": "Covariance.P witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COVARIANCE.P and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["population_covariance", "paired_array_validation", "numeric_scalar_or_array"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COVARIANCE.P-001",
+                    "summary": "Population covariance baseline.",
+                    "outcome_note": "Returns the population covariance of the paired numeric arrays.",
+                    "evidence_ref_hint": "W71-T1-COVARIANCE.P-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COVARIANCE.P",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COVARIANCE.P",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/covariance_p_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CovariancePFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CovariancePFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Covariance.P witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COVARIANCE.S",
+            "canonical_surface_name": "COVARIANCE.S",
+            "metadata_status": "function_meta_extracted",
+            "category": "Statistical functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "2",
+            "arity_max": "255",
+            "signature_display": "COVARIANCE.S(array1, array2)",
+            "help_summary": "Covariance.S witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COVARIANCE.S and keeps the statistical lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["sample_covariance", "paired_array_validation", "numeric_scalar_or_array"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COVARIANCE.S-001",
+                    "summary": "Sample covariance baseline.",
+                    "outcome_note": "Returns the sample covariance of the paired numeric arrays.",
+                    "evidence_ref_hint": "W71-T1-COVARIANCE.S-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COVARIANCE.S",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COVARIANCE.S",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/covariance_s_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CovarianceSFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CovarianceSFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Covariance.S witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        }
+    ]
+}

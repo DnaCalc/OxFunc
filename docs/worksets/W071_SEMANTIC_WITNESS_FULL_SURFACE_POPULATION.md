@@ -55,8 +55,8 @@ baseline.
 
 Target surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `70`
-3. current remaining supported rows needing witness population: `447`
+2. current witness-covered rows: `73`
+3. current remaining supported rows needing witness population: `444`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
