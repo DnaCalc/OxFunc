@@ -1,0 +1,199 @@
+{
+    "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t1-batch12",
+    "witness_schema_version": "v0.tranche",
+    "tranche_id": "T1",
+    "tranche_name": "ordinary_extracted_non_operator",
+    "selection_rule": "tranche_register.tranche_id=T1 and sequence between 34 and 36",
+    "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    "source_commit_short": "10e4032",
+    "source_commit_full": "10e40322a26d90c42b7d0dd69a7a6f7a1f6e0f85",
+    "source_tree_state": "clean",
+    "entries": [
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.CHOOSEROWS",
+            "canonical_surface_name": "CHOOSEROWS",
+            "metadata_status": "function_meta_extracted",
+            "category": "Lookup and reference functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "2",
+            "arity_max": "254",
+            "signature_display": "CHOOSEROWS(array, row_num1, [row_num2], ...)",
+            "help_summary": "Row-selection witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for CHOOSEROWS and keeps the array-selection lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["row_selection", "index_validation", "array_shape_preservation"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-CHOOSEROWS-001",
+                    "summary": "Row selection baseline.",
+                    "outcome_note": "Returns the selected rows from the array while preserving spill shape.",
+                    "evidence_ref_hint": "W71-T1-CHOOSEROWS-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CHOOSEROWS",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CHOOSEROWS",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/chooserows_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/ChooseRowsFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/ChooseRowsFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Row-selection witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.CLEAN",
+            "canonical_surface_name": "CLEAN",
+            "metadata_status": "function_meta_extracted",
+            "category": "Text functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "CLEAN(text)",
+            "help_summary": "Text-cleaning witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for CLEAN and keeps the text-normalization lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["control_character_removal", "text_normalization", "scalar_or_array_arguments"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-CLEAN-001",
+                    "summary": "Text cleaning baseline.",
+                    "outcome_note": "Removes non-printable control characters from the supplied text while preserving printable content.",
+                    "evidence_ref_hint": "W71-T1-CLEAN-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CLEAN",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CLEAN",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/clean_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/CleanFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/CleanFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Text-cleaning witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        },
+        {
+            "witness_schema_version": "v0.tranche",
+            "tranche_id": "T1",
+            "tranche_name": "ordinary_extracted_non_operator",
+            "surface_stable_id": "FUNC.COLUMN",
+            "canonical_surface_name": "COLUMN",
+            "metadata_status": "function_meta_extracted",
+            "category": "Lookup and reference functions",
+            "special_interface_kind": "ordinary",
+            "admission_interface_kind": "ordinary_call",
+            "arity_min": "1",
+            "arity_max": "1",
+            "signature_display": "COLUMN(reference)",
+            "help_summary": "Column-index witness row for the ordinary extracted tranche.",
+            "help_detail": "Captures the admitted baseline for COLUMN and keeps the reference-evaluation lane aligned to the W71 ordinary extracted program.",
+            "semantic_modes": ["column_index_resolution", "reference_validation", "scalar_or_array_arguments"],
+            "witness_examples": [
+                {
+                    "example_id": "W71-T1-COLUMN-001",
+                    "summary": "Column index baseline.",
+                    "outcome_note": "Returns the column index of the supplied reference in the parked baseline lane.",
+                    "evidence_ref_hint": "W71-T1-COLUMN-001"
+                }
+            ],
+            "evidence_refs": [
+                {
+                    "ref_kind": "catalog_export_row",
+                    "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COLUMN",
+                    "provenance_category": "catalog_export"
+                },
+                {
+                    "ref_kind": "tranche_register_row",
+                    "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COLUMN",
+                    "provenance_category": "tranche_register"
+                },
+                {
+                    "ref_kind": "contract_artifact",
+                    "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+                    "provenance_category": "contract_artifact"
+                },
+                {
+                    "ref_kind": "replay_probe",
+                    "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+                    "provenance_category": "native_excel_replay"
+                },
+                {
+                    "ref_kind": "runtime_source",
+                    "ref_value": "crates/oxfunc_core/src/functions/column_fn.rs",
+                    "provenance_category": "runtime_test"
+                },
+                {
+                    "ref_kind": "formal_artifact",
+                    "ref_value": "formal/lean/OxFunc/Functions/ColumnFn.lean",
+                    "provenance_category": "formal_artifact"
+                }
+            ],
+            "formal_refs": ["formal/lean/OxFunc/Functions/ColumnFn.lean"],
+            "contract_refs": ["docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"],
+            "admitted_slice_note": "Column-index witness row for the ordinary extracted tranche.",
+            "orthogonal_validation_status": ["locale_version_sweeps_pending"],
+            "current_support_basis": "Supported in the parked baseline as an ordinary extracted row; witness tranche seeded from the V1 snapshot and the W71 gap ledger."
+        }
+    ]
+}
