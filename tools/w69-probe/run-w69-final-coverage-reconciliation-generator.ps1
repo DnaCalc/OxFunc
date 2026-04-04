@@ -10,9 +10,36 @@ $trancheLedgerPath = 'docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_L
 $gapLedgerPath = 'docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_GAP_LEDGER.md'
 
 $register = Import-Csv -Path $trancheRegisterPath
-$totalSupportedRows = 517
-$witnessCoveredRows = 10
-$remainingWitnessGapRows = 507
+$witnessRows = @{}
+$supportedRows = @{}
+
+foreach ($row in $register) {
+    $supportedRows[$row.surface_stable_id] = $true
+}
+
+$snapshotFiles = Get-ChildItem -Path 'docs/function-lane/' -Filter 'OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2*.json'
+foreach ($file in $snapshotFiles) {
+    $snapshot = Get-Content -Path $file.FullName | ConvertFrom-Json
+    if ($null -eq $snapshot.entries) {
+        continue
+    }
+    foreach ($entry in $snapshot.entries) {
+        $supportedRows[$entry.surface_stable_id] = $true
+        $witnessRows[$entry.surface_stable_id] = $true
+    }
+}
+
+$registerIds = [System.Collections.Generic.HashSet[string]]::new([string[]]$register.surface_stable_id)
+$remainingGapRows = [System.Collections.Generic.List[string]]::new()
+foreach ($id in $registerIds) {
+    if (-not $witnessRows.ContainsKey($id)) {
+        $remainingGapRows.Add($id)
+    }
+}
+
+$totalSupportedRows = $supportedRows.Count
+$witnessCoveredRows = $witnessRows.Count
+$remainingWitnessGapRows = $remainingGapRows.Count
 $treeState = if ((git status --short).Trim()) { 'dirty' } else { 'clean' }
 
 $trancheCounts = foreach ($group in ($register | Group-Object tranche_id | Sort-Object Name)) {

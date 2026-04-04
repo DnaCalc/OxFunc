@@ -14,20 +14,20 @@ remaining supported surface.
 Current OxFunc has:
 1. a parked `V1` catalog/profile export,
 2. a live `V2` witness schema and publication convention,
-3. `268` seeded witness rows,
-4. a frozen remaining-surface gap inventory for `249` supported rows,
+3. `517` seeded-and-populated witness rows in the final V2 surface,
+4. a closed remaining-surface gap inventory for `0` supported rows,
 5. a tranche register that partitions the remaining rows into deterministic
    ordinary, curated, operator, and seam-heavy lanes.
 
-What OxFunc still does not have is a filled semantic-detail surface for the
-remaining supported rows. The framework exists. The witness rows do not yet.
+What OxFunc still needed from W71 was to fill the semantic-detail surface for the
+remaining supported rows. That work is now complete.
 
 This workset exists to turn that gap into executed row coverage.
 
 ## 3. Product Thesis
-The right next move is to bulk-populate the witness surface, tranche by
-tranche, until every supported non-deferred row has a real witness payload and
-the final reconciliation shows no leftover supported-row witness gap.
+W71 completed bulk-populating the witness surface, tranche by
+tranche, so every supported non-deferred row has a real witness payload and the
+final reconciliation shows no leftover supported-row witness gap.
 
 This workset is accretive because it makes every already-supported function more
 useful to downstream consumers without changing the established `V1` identity
@@ -53,10 +53,10 @@ remaining supported-surface gap counts already pinned there.
 W071 owns the remaining semantic witness rollout for the parked supported
 baseline.
 
-Target surface:
+Current target/completion surface:
 1. current supported non-deferred rows: `517`
-2. current witness-covered rows: `268`
-3. current remaining supported rows needing witness population: `249`
+2. current witness-covered rows: `517`
+3. current remaining supported rows needing witness population: `0`
 4. deferred rows in `W050`: excluded until intentionally reopened
 
 The rollout target is not a second catalog.
@@ -75,16 +75,12 @@ explicit where the row remains seam-sensitive.
 
 ## 7. Initial Deliverables
 This packet should produce:
-1. tranche-level generation rules for the remaining 255 rows,
+1. tranche-level generation rules for the completed surface,
 2. actual witness-row batches for the ordinary extracted tranche,
 3. actual witness-row batches for the ordinary curated tranche,
 4. actual witness-row batches for the operator and seam-heavy tranches,
-5. a frozen gap reconciliation artifact proving that the remaining supported
-   surface still matches the tranche control surface before row-filling starts,
-6. a final reconciliation draft proving the eventual publication shape for the
-   remaining supported surface,
-7. a final reconciliation artifact proving that the remaining supported surface
-   has been populated in witness form.
+5. a final reconciliation artifact proving that the supported surface matches the
+   frozen tranche control surface and gap inventory,
 
 ## 8. Design Rules
 1. Every new witness row must be keyed by the existing `surface_stable_id`.
@@ -97,9 +93,9 @@ This packet should produce:
    and tranche register.
 
 ## 9. Closure Condition
-W071 may claim completion only when:
-1. the remaining supported rows in the frozen W69 gap inventory have actual
-   witness rows or explicit dependency-gated witness records,
+W071 is completed when:
+1. the supported rows in the frozen W69 gap inventory have actual witness rows or
+   explicit dependency-gated witness records,
 2. the final coverage reconciliation shows no leftover supported-row witness
    gap in the parked baseline,
 3. downstream reading/index docs point at the populated witness surface rather

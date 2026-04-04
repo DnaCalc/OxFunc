@@ -1,12 +1,12 @@
 # W71 Final Reconciliation Draft
 
-This draft records the current W71 coverage shape before the remaining batches
-are finished.
+This draft records the W71 coverage shape after the remaining batches are
+finished and the final reconciliation has been emitted.
 
 ## 1. Current Counts
 1. supported non-deferred rows: `517`
-2. witness-covered rows: `268`
-3. remaining supported rows: `249`
+2. witness-covered rows: `517`
+3. remaining supported rows: `0`
 4. seam-heavy retained rows: `17`
 
 ## 2. Publication Shape

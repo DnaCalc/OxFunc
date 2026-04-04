@@ -6,10 +6,10 @@ program.
 ## 1. Current Coverage State
 The parked non-deferred supported surface is:
 1. `517` supported rows total,
-2. `10` rows already witness-covered in the current V2 seed surface,
-3. `507` rows still awaiting V2 witness coverage.
+2. `517` rows already witness-covered in V2 witness payloads,
+3. `0` rows still awaiting V2 witness coverage.
 
-The remaining `507` rows are partitioned as:
+The frozen tranche decomposition remains:
 1. `201` ordinary extracted non-operator rows,
 2. `267` ordinary curated non-operator rows,
 3. `22` operator rows,
