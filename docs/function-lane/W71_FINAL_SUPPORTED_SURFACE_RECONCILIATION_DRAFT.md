@@ -15,8 +15,8 @@ This draft is the reviewable shape for that final publication surface.
 ## 2. Current Surface
 The parked non-deferred supported surface remains:
 1. `517` supported rows total,
-2. `10` witness-covered rows in the seeded V2 surface,
-3. `507` rows still awaiting W071 witness population.
+2. `268` witness-covered rows in the populated V2 witness surface,
+3. `249` rows still awaiting W071 completion or explicit dependency-gated publication.
 
 The sealed tranche breakdown is:
 1. `201` ordinary extracted non-operator rows,
@@ -56,4 +56,3 @@ W071 can only close once the final reconciliation surface is populated with:
 2. explicit dependency-gated witness records for the retained seam-heavy rows.
 
 This draft is therefore the next control checkpoint, not the terminal proof.
-

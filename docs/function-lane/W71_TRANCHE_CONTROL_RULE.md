@@ -23,14 +23,9 @@ must keep `surface_stable_id` stable.
 
 ## 3. Current Known State
 The current parked baseline remains:
-1. `118` witness-covered rows
-2. `399` remaining supported rows
+1. `268` witness-covered rows
+2. `249` remaining supported rows
 3. `17` seam-heavy rows retained behind live authorities `W041`, `W043`, and `W049`
-
-The batch-32 control slice is:
-1. `ISEVEN`
-2. `ISFORMULA`
-3. `ISNUMBER`
 
 ## 4. Closure Rule
 A W71 tranche bead may close only when:

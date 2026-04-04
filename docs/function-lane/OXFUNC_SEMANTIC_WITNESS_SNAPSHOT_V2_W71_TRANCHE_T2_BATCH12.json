@@ -1,0 +1,235 @@
+{
+  "witness_snapshot_id": "oxfunc-semantic-witness-v2-w71-tranche-t2-batch12",
+  "witness_schema_version": "v0.tranche",
+  "tranche_id": "T2",
+  "tranche_name": "ordinary_curated_non_operator",
+  "selection_rule": "tranche_register.tranche_id=T2 and sequence between 235 and 237",
+  "source_snapshot_ref": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+  "source_commit_short": "7d91b63",
+  "source_commit_full": "7d91b632bbbc35bc7f6b2651ca35f07b2179e136",
+  "source_tree_state": "dirty",
+  "entries": [
+    {
+      "surface_stable_id": "FUNC.CONFIDENCE.NORM",
+      "canonical_surface_name": "CONFIDENCE.NORM",
+      "metadata_status": "function_meta_curated",
+      "category": "Statistical functions",
+      "signature_display": "CONFIDENCE.NORM(alpha, standard_dev, size)",
+      "help_summary": "Computes the half-width for a two-sided normal-confidence interval.",
+      "help_detail": "Aligns CONFIDENCE.NORM to the shared normal-confidence kernel and explicit #NUM! domain failure lane for invalid alpha, sigma, or sample-size inputs.",
+      "semantic_modes": [
+        "normal_confidence_interval",
+        "error_on_invalid_domain",
+        "statistical_compatibility_slice"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CONFIDENCE.NORM-001",
+          "summary": "Normal-confidence baseline and numeric output.",
+          "outcome_note": "CONFIDENCE.NORM(0.05,2.5,100) returns 0.489990996.",
+          "evidence_ref_hint": "W61-SCN-STAT-001"
+        },
+        {
+          "example_id": "W71-T2-CONFIDENCE.NORM-002",
+          "summary": "Invalid probability/domain lane.",
+          "outcome_note": "CONFIDENCE.NORM(0,2.5,10) returns #NUM!.",
+          "evidence_ref_hint": "W61-SCN-STAT-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CONFIDENCE.NORM",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CONFIDENCE.NORM",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/normal_log_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/NormalLogFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/NormalLogFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/FUNCTION_SLICE_STATISTICAL_DISTRIBUTIONS_AND_COMPAT_A_CONTRACT_PRELIM.md",
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CONFIDENCE.NORM shares the same current-baseline normal-confidence semantics as CONFIDENCE and is now witness-covered in T2.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the frozen W69 register and W61 normal-confidence coverage."
+    },
+    {
+      "surface_stable_id": "FUNC.CONVERT",
+      "canonical_surface_name": "CONVERT",
+      "metadata_status": "function_meta_curated",
+      "category": "Engineering functions",
+      "signature_display": "CONVERT(number, from_unit, to_unit)",
+      "help_summary": "Converts numbers between a bounded set of unit symbols.",
+      "help_detail": "Converts between documented metric-prefix and temperature units within the cataloged lane and returns #N/A for unsupported unit conversions.",
+      "semantic_modes": [
+        "linear_unit_conversion",
+        "temperature_conversion",
+        "unsupported_unit_error"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-CONVERT-001",
+          "summary": "Mass conversion baseline.",
+          "outcome_note": "CONVERT(1,\"lbm\",\"kg\") returns 0.45359237.",
+          "evidence_ref_hint": "W24-B15-MISC-ORDINARY-CONVERSION-20260318"
+        },
+        {
+          "example_id": "W71-T2-CONVERT-002",
+          "summary": "Temperature conversion baseline.",
+          "outcome_note": "CONVERT(68,\"F\",\"C\") returns 20.",
+          "evidence_ref_hint": "W24-B15-MISC-ORDINARY-CONVERSION-20260318"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.CONVERT",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.CONVERT",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/FUNCTION_SLICE_MISC_ORDINARY_CONVERSION_TRIAD_CONTRACT_PRELIM.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/misc_conversion_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/MiscConversionFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/MiscConversionFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/FUNCTION_SLICE_MISC_ORDINARY_CONVERSION_TRIAD_CONTRACT_PRELIM.md",
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "CONVERT is covered for the current baselined unit-conversion lane and explicit unsupported-dimension errors.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the frozen W69 register and misc conversion evidence package."
+    },
+    {
+      "surface_stable_id": "FUNC.COUNTIF",
+      "canonical_surface_name": "COUNTIF",
+      "metadata_status": "function_meta_curated",
+      "category": "Statistical functions",
+      "signature_display": "COUNTIF(range, criteria)",
+      "help_summary": "Counts cells in a range that match a criteria expression.",
+      "help_detail": "Applies criteria parsing with wildcard/text matching and numeric comparators; counts matching single-range entries.",
+      "semantic_modes": [
+        "criteria_matching",
+        "wildcard_text_filter",
+        "blank_match_support"
+      ],
+      "witness_examples": [
+        {
+          "example_id": "W71-T2-COUNTIF-001",
+          "summary": "Comparator lane baseline.",
+          "outcome_note": "COUNTIF({1,2,3,3},\">=2\") returns 3.",
+          "evidence_ref_hint": "W71-BATCH-CNT-001"
+        },
+        {
+          "example_id": "W71-T2-COUNTIF-002",
+          "summary": "Wildcard lane baseline.",
+          "outcome_note": "COUNTIF({\"alpha\",\"beta\",\"alp~*\",\"alpine\"},\"alp*\") returns 3.",
+          "evidence_ref_hint": "W71-BATCH-CNT-001"
+        },
+        {
+          "example_id": "W71-T2-COUNTIF-003",
+          "summary": "Blank criteria lane.",
+          "outcome_note": "COUNTIF({\"\", \"\", 1}, \"\") returns 2.",
+          "evidence_ref_hint": "W71-BATCH-CNT-001"
+        }
+      ],
+      "evidence_refs": [
+        {
+          "ref_kind": "catalog_export_row",
+          "ref_value": "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv#FUNC.COUNTIF",
+          "provenance_category": "catalog_export"
+        },
+        {
+          "ref_kind": "tranche_register_row",
+          "ref_value": "docs/function-lane/W69_SUPPORTED_SURFACE_WITNESS_TRANCHE_REGISTER.csv#FUNC.COUNTIF",
+          "provenance_category": "tranche_register"
+        },
+        {
+          "ref_kind": "contract_artifact",
+          "ref_value": "docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md",
+          "provenance_category": "contract_artifact"
+        },
+        {
+          "ref_kind": "replay_probe",
+          "ref_value": "docs/function-lane/W71_FROZEN_GAP_RECONCILIATION.md",
+          "provenance_category": "native_excel_replay"
+        },
+        {
+          "ref_kind": "runtime_source",
+          "ref_value": "crates/oxfunc_core/src/functions/criteria_family.rs",
+          "provenance_category": "runtime_test"
+        },
+        {
+          "ref_kind": "formal_artifact",
+          "ref_value": "formal/lean/OxFunc/Functions/CriteriaFamily.lean",
+          "provenance_category": "formal_artifact"
+        }
+      ],
+      "formal_refs": [
+        "formal/lean/OxFunc/Functions/CriteriaFamily.lean"
+      ],
+      "contract_refs": [
+        "docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md",
+        "docs/function-lane/W69_ORDINARY_ROW_WITNESS_GENERATION_RULES.md"
+      ],
+      "admitted_slice_note": "COUNTIF now has witness coverage for the admitted single-criteria comparison slice, including wildcard and blank matching behavior.",
+      "orthogonal_validation_status": [
+        "locale_version_sweeps_pending"
+      ],
+      "current_support_basis": "Supported in the parked baseline as an ordinary curated row; witness tranche seeded from the W69 tranche and criteria-family evidence artifacts."
+    }
+  ]
+}

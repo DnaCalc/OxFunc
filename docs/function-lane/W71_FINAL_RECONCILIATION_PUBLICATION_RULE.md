@@ -23,8 +23,8 @@ The final reconciliation publishes only when:
 ## 3. Current Draft Shape
 The draft shape remains:
 1. supported rows: `517`
-2. witness-covered rows: `118`
-3. remaining supported rows: `399`
+2. witness-covered rows: `268`
+3. remaining supported rows: `249`
 4. dependency-gated seam-heavy rows retained behind `W041`, `W043`, and `W049`
 
 This note is the publication policy only. It does not claim final closure.

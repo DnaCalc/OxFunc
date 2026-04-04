@@ -5,8 +5,8 @@ are finished.
 
 ## 1. Current Counts
 1. supported non-deferred rows: `517`
-2. witness-covered rows: `118`
-3. remaining supported rows: `399`
+2. witness-covered rows: `268`
+3. remaining supported rows: `249`
 4. seam-heavy retained rows: `17`
 
 ## 2. Publication Shape

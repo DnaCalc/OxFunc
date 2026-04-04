@@ -6,8 +6,8 @@ the frozen W069 tranche and coverage ledgers.
 ## 1. Reconciliation Summary
 The parked non-deferred supported surface remains:
 1. `517` supported rows total,
-2. `265` rows already witness-covered in the seeded V2 surface,
-3. `252` rows still requiring W071 witness population.
+2. `268` rows already witness-covered in the seeded V2 surface,
+3. `249` rows still requiring W071 witness population.
 
 The remaining rows are partitioned exactly as the frozen tranche ledger states.
 
