@@ -20,14 +20,30 @@ Primary Rows: `OP_UNARY_PLUS`, `OP_NEGATE`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DI
    - postfix numeric scaling by `1/100`,
    - elementwise array lift on the admitted local slice.
 4. `OP_SUBTRACT`
-   - binary numeric coercion over the values-only path.
+   - binary numeric coercion over the values-only path,
+   - ordinary-operator broadcast on the current local substrate for:
+     scalar/scalar, scalar/array, array/scalar, same-shape array/array, and
+     row-vs-column outer-product spill grids,
+   - coordinates neither operand can supply on the broadcast grid return `#N/A`.
 5. `OP_MULTIPLY`
-   - binary numeric coercion over the values-only path.
+   - binary numeric coercion over the values-only path,
+   - ordinary-operator broadcast on the current local substrate for:
+     scalar/scalar, scalar/array, array/scalar, same-shape array/array, and
+     row-vs-column outer-product spill grids,
+   - coordinates neither operand can supply on the broadcast grid return `#N/A`.
 6. `OP_DIVIDE`
    - binary numeric coercion,
+   - ordinary-operator broadcast on the current local substrate for:
+     scalar/scalar, scalar/array, array/scalar, same-shape array/array, and
+     row-vs-column outer-product spill grids,
+   - coordinates neither operand can supply on the broadcast grid return `#N/A`,
    - divide-by-zero returns `#DIV/0!`.
 7. `OP_POWER`
    - binary numeric coercion,
+   - ordinary-operator broadcast on the current local substrate for:
+     scalar/scalar, scalar/array, array/scalar, same-shape array/array, and
+     row-vs-column outer-product spill grids,
+   - coordinates neither operand can supply on the broadcast grid return `#N/A`,
    - shares the admitted `POWER` kernel domain behavior for the current baseline, including `0^-n -> #DIV/0!` and real-domain `NaN` cases as `#NUM!`.
 
 ## 3. Metadata Shape
@@ -51,7 +67,8 @@ Primary Rows: `OP_UNARY_PLUS`, `OP_NEGATE`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DI
 3. reference composition operators,
 4. `@`,
 5. full operator parser ownership and precedence lock with OxFml,
-6. native Excel evidence beyond the seeded Wave-A packet.
+6. native Excel evidence beyond the refreshed Wave-A packet,
+7. broader operator-family widening outside arithmetic/unary/postfix numeric rows.
 
 ## 5. Evidence Basis
 1. Rust runtime/tests: `crates/oxfunc_core/src/functions/operator_arithmetic_family.rs`

@@ -1,6 +1,6 @@
 # W40 Execution Record - Reference Metadata And Formula Visibility Functions
 
-Status: `complete`
+Status: `complete_with_reopened_follow_up`
 Workset: `W040`
 Evidence IDs:
 1. `W40-REFMETA-BL-20260321`
@@ -33,11 +33,11 @@ Artifacts created or updated in this packet:
 
 ## 3. Completeness Axes
 1. execution_state: `complete`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none in declared `W040` scope
+   - `BUG-FUNC-003` / `W075`: local `AREAS` now consumes only first-class `MultiArea` for same-sheet union carriers and rejects the old legacy wrapper form; focused validation is recorded, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-006` remain open before `W040` can be reported as a settled full-surface closure again
 
 ## 4. Packet Result
 1. all five functions now have an admitted current-baseline Rust runtime packet.
@@ -53,7 +53,7 @@ Artifacts created or updated in this packet:
 
 ## 5. Main Findings
 1. `ADDRESS` is pure OxFunc-owned rendering once scalar args are admitted; no host callback is needed.
-2. `AREAS` is OxFunc-owned once multi-area reference shape is preserved.
+2. `AREAS` is OxFunc-owned once first-class multi-area reference shape is preserved.
 3. `FORMULATEXT` cannot be reduced to value-only semantics; it needs stored formula text from the host/grid.
 4. `SHEET` and `SHEETS` need sheet identity/topology truth, but OxFunc can still own argument admission and worksheet result projection.
 5. the exact host callback surface is small and typed; OxFunc does not need workbook object access or a large callback API here.
@@ -68,5 +68,5 @@ Artifacts created or updated in this packet:
 
 ## 7. Standing
 1. `W040` is no longer a planning-only or native-only packet.
-2. all `5` reference-metadata rows are reconciled as `done` in `W40_SCOPE_RECONCILIATION.csv`.
+2. `W040` closure wording is now qualified by `BUG-FUNC-003` / `W075`: `AREAS` has a validated local correction onto first-class `MultiArea` and no longer carries the legacy wrapper fallback, but landed-ref promotion and downstream acknowledgement remain open.
 3. `ISFORMULA` remains with `W023`; `CELL` / `INFO` remain with `W015`; `@` remains with `W014`.

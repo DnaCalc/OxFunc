@@ -1,7 +1,7 @@
 # OxFunc Workset Register
 
 Status: `active_register`
-Date: 2026-04-02
+Date: 2026-04-06
 
 ## 1. Purpose
 This is the live ordered workset register for post-parked-baseline OxFunc.
@@ -156,6 +156,108 @@ It does mean:
 6. initial_epic_lanes:
    tranche controls, ordinary extracted rollout, ordinary curated rollout,
    seam-heavy rollout, operator/model rollout, final reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W072 Bug Intake Root-Cause And Regression Stream Protocol
+1. purpose:
+   establish a canonical OxFunc bug-intake and regression-stream mechanism so
+   defects are recorded against exact refs, grouped into canonical streams, and
+   carried through root-cause and similar-risk analysis without reintroducing a
+   second blocker tracker.
+2. depends_on:
+   `W070`
+3. parent_doctrine_and_spec_surfaces:
+   `OPERATIONS.md`,
+   `docs/bugs/README.md`,
+   `docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md`
+4. upstream_dependencies:
+   `OxFml` reference shape only
+5. closure_condition:
+   the bug protocol is live in `OPERATIONS.md`, `docs/bugs/` contains the
+   canonical registers/templates/directories, duplicate and exact-ref rules are
+   explicit, and the ordered workset surfaces expose the packet.
+6. initial_epic_lanes:
+   doctrine text, bug-register scaffolding, workset/index integration
+7. rollout_mode:
+   `execution_target`
+
+### W073 Operator Value Surface And Array-Lift Expansion
+1. purpose:
+   own the confirmed ordinary-operator seam gap where array-involved binary
+   arithmetic cannot yet travel through the current OxFunc value surface without
+   downstream fallback, and reconcile the related current-gap and closure
+   surfaces honestly.
+2. depends_on:
+   `W070`, `W072`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md`,
+   `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`,
+   `docs/function-lane/FUNCTION_SLICE_OPERATOR_ARITHMETIC_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/bugs/streams/BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   the admitted binary operator array-lift lane is implemented or honestly
+   reclassified, local validation is recorded, the downstream fallback can be
+   removed or explicitly reclassified, and the current-gap plus closure surfaces
+   no longer overclaim the ordinary-operator state.
+6. initial_epic_lanes:
+   current-surface intake, binary value-surface widening, adjacent-family review,
+   downstream seam reconciliation, current-gap truth correction
+7. rollout_mode:
+   `execution_target`
+
+### W074 Ordinary Operator Broadcast Reconciliation
+1. purpose:
+   reconcile the broader ordinary-operator broadcast rule now proven by local
+   Excel comparison, widen arithmetic plus compare/concat onto that rule, and
+   refresh the downstream seam truth needed to remove temporary OxFml
+   compatibility fallbacks honestly.
+2. depends_on:
+   `W070`, `W072`, `W073`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md`,
+   `docs/function-lane/W45_EXECUTION_RECORD.md`,
+   `docs/bugs/streams/BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   the current ordinary arithmetic and compare/concat surfaces either follow the
+   observed broadcast rule or are honestly reclassified, refreshed native probe
+   evidence is recorded, the required downstream handoff is filed if the seam
+   changed materially, and the active truth surfaces no longer overclaim the
+   ordinary-operator state.
+6. initial_epic_lanes:
+   empirical broadcast characterization, runtime widening, probe refresh and
+   validation, downstream handoff, truth-surface reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W075 Multi-Area Reference Seam Correction
+1. purpose:
+   reconcile the OxFunc-side same-sheet multi-area reference seam so union
+   formation, `AREAS`, and `INDEX(..., area_num)` use first-class
+   `ReferenceKind::MultiArea` rather than an `Area` plus parenthesized-string
+   convention.
+2. depends_on:
+   `W070`, `W072`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md`,
+   `docs/function-lane/FUNCTION_SLICE_OPERATOR_REFERENCE_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/FUNCTION_SLICE_INDEX_CONTRACT_PRELIM.md`,
+   `docs/function-lane/FUNCTION_SLICE_REFERENCE_METADATA_AND_FORMULA_VISIBILITY_CONTRACT_PRELIM.md`,
+   `docs/bugs/streams/BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   `OP_UNION_REF` returns first-class `MultiArea`, named consumers consume that
+   shape and reject the old non-`MultiArea` wrapper carrier, local validation is
+   recorded, the downstream handoff is filed, and the active truth surfaces no
+   longer overclaim the old area-string seam.
+6. initial_epic_lanes:
+   inbound note intake, runtime correction, consumer alignment, truth-surface
+   reconciliation, downstream handoff
 7. rollout_mode:
    `execution_target`
 

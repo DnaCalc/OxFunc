@@ -54,10 +54,7 @@ pub trait ReferenceResolver {
 }
 
 pub fn normalize_reference(reference: &ReferenceLike) -> ReferenceLike {
-    ReferenceLike {
-        kind: reference.kind,
-        target: reference.target.trim().to_string(),
-    }
+    reference.clone().normalized()
 }
 
 pub fn resolve_eval_value(
@@ -78,6 +75,7 @@ pub fn resolve_eval_value(
                 capability: "allow_three_d_refs",
             });
         }
+        ReferenceKind::MultiArea => {}
         ReferenceKind::Structured if !caps.allow_structured_refs => {
             return Err(RefResolutionError::CapabilityDenied {
                 kind: normalized.kind,

@@ -4,8 +4,9 @@ Workset: `W45`
 Evidence ID: `W45-OP-CMP-WAVEB-20260320`
 
 ## 1. Goal
-1. pin the admitted scalar compare/concat operator slice against the current Excel baseline,
-2. keep mixed-type ordering and blank-comparison behavior explicit rather than inferred from other families.
+1. pin the admitted compare/concat operator slice against the current Excel baseline,
+2. keep mixed-type ordering and blank-comparison behavior explicit rather than inferred from other families,
+3. capture array broadcast spill grids and `#N/A` padding where the current baseline exposes them.
 
 ## 2. Required Artifacts
 1. scenario manifest: `docs/function-lane/W45_WAVEB_OPERATOR_COMPARE_CONCAT_SCENARIO_MANIFEST_SEED.csv`

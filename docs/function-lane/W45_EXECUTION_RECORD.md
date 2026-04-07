@@ -1,6 +1,6 @@
 # W45 Execution Record - Non-@ Operator Universe Closure Pass
 
-Status: `complete`
+Status: `complete_with_reopened_follow_up`
 Workset: `W45`
 Evidence IDs:
 1. `W45-OP-ARITH-WAVEA-20260320`
@@ -48,11 +48,12 @@ Artifacts created or updated in the packet:
 
 ## 3. Completeness Axes
 1. execution_state: `complete`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none in declared `W45` scope after reconciliation
+   - `BUG-FUNC-002` / `W074`: local broadcast widening and refreshed native evidence now exist for ordinary arithmetic plus compare/concat, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-005` remain open before this packet can be reported as a settled full-surface closure again
+   - `BUG-FUNC-003` / `W075`: local union correction now returns first-class `MultiArea` and focused reference-family validation is recorded, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-006` remain open before this packet can be reported as a settled full-surface closure again
 
 ## 4. Packet Result
 1. Wave A now covers:
@@ -89,6 +90,8 @@ Artifacts created or updated in the packet:
    - postfix percent scales by `1/100`
    - divide-by-zero surfaces `#DIV/0!`
    - `(-1)^0.5` surfaces `#NUM!`
+   - row-vs-column arithmetic inputs broadcast as 2-D spill grids
+   - extra coordinates beyond a non-singleton extent surface `#N/A`
 2. compare/concat wave:
    - `="a"&1 -> "a1"`
    - `=1&TRUE -> "1TRUE"`
@@ -96,27 +99,29 @@ Artifacts created or updated in the packet:
    - direct `1="1"` is `FALSE`; the operator does not numeric-coerce text on the admitted scalar slice
    - mixed-type ordering is now pinned for the seeded slice
    - blank cells compare as `0`, `""`, or `FALSE` depending on counterpart type
+   - compare/concat now follow the same singleton-dimension broadcast rule as arithmetic
+   - row-vs-column compare/concat inputs spill as 2-D grids
+   - non-broadcastable compare/concat coordinates surface `#N/A`
 3. reference wave:
    - range operator preserves the rectangular span and normalizes reversed bounds
    - intersection returns the overlap area and surfaces `#NULL!` when empty
-   - union forms the same parenthesized multi-area shape already consumed by `INDEX`
+   - union now returns first-class `ReferenceKind::MultiArea` rather than overloading `Area` with a parenthesized target string
    - trim-ref family is now treated as structural reference-target normalization with native transparency evidence
 
 ## 6. Verification Runs
 1. `cargo fmt --manifest-path crates/oxfunc_core/Cargo.toml`
-2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml operator_arithmetic_family -- --nocapture`
-3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml operator_compare_concat_family -- --nocapture`
-4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml operator_reference_family -- --nocapture`
-5. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml all_catalog_functions_have_at_least_one_export -- --nocapture`
-6. `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml`
-7. `powershell -ExecutionPolicy Bypass -File tools/xll-addin/sync-export-specs.ps1`
-8. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavea-operator-arithmetic-baseline.ps1`
-9. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1`
-10. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1`
-11. `lake build`
-12. `powershell -ExecutionPolicy Bypass -File tools/w44-probe/generate-w44-library-context-snapshot.ps1`
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib binary_numeric -- --nocapture`
+3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib op_add -- --nocapture`
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib operator_arithmetic_family -- --nocapture`
+5. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib operator_compare_concat_family -- --nocapture`
+6. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
+7. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavea-operator-arithmetic-baseline.ps1`
+8. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1`
+9. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1`
 
 ## 7. Standing
 1. `W45` is no longer a planning-only packet.
-2. all `22` non-`@` operator rows are now reconciled as `done` in `W45`.
-3. legacy CSE array-formula context remains an orthogonal seam topic tracked outside `W45`; it does not qualify the declared packet closure.
+2. `W45` still preserves the wave-level runtime, Lean, export, and native-evidence packet that admitted the current local non-`@` operator families.
+3. current closure wording is now qualified by `BUG-FUNC-002` / `W074`: local broadcast widening and refreshed native validation now exist for ordinary arithmetic plus compare/concat, but the packet is still not reported as a settled full non-`@` operator closure until landed-ref promotion and downstream acknowledgement under `HO-FN-005` close.
+4. the current `W45` contracts now explicitly admit the broadcast-sensitive arithmetic and compare/concat lanes proven by refreshed native probes.
+5. legacy CSE array-formula context remains an orthogonal seam topic tracked outside `W45`.

@@ -4,10 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared,
+    BroadcastPreparedPair, PreparedArgValue, coerce_prepared_to_text, expand_binary_broadcast_grid,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 const OP_CONCAT_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_CONCAT_BASE",
@@ -189,6 +192,53 @@ fn compare_values(op: CompareOp, lhs: CompareValue, rhs: CompareValue) -> bool {
     }
 }
 
+fn eval_compare_scalar_pair(
+    lhs: &PreparedArgValue,
+    rhs: &PreparedArgValue,
+    op: CompareOp,
+) -> Result<EvalValue, OperatorCompareConcatError> {
+    let lhs = compare_value_from_prepared(lhs)?;
+    let rhs = compare_value_from_prepared(rhs)?;
+    Ok(EvalValue::Logical(compare_values(op, lhs, rhs)))
+}
+
+fn map_compare_item(
+    lhs: &PreparedArgValue,
+    rhs: &PreparedArgValue,
+    op: CompareOp,
+) -> ArrayCellValue {
+    match eval_compare_scalar_pair(lhs, rhs, op) {
+        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(OperatorCompareConcatError::Coercion(CoercionError::WorksheetError(code))) => {
+            ArrayCellValue::Error(code)
+        }
+        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    }
+}
+
+fn eval_concat_scalar_pair(
+    lhs: &PreparedArgValue,
+    rhs: &PreparedArgValue,
+) -> Result<EvalValue, OperatorCompareConcatError> {
+    let lhs = coerce_prepared_to_text(lhs).map_err(OperatorCompareConcatError::Coercion)?;
+    let rhs = coerce_prepared_to_text(rhs).map_err(OperatorCompareConcatError::Coercion)?;
+    let mut out = lhs.utf16_code_units().to_vec();
+    out.extend_from_slice(rhs.utf16_code_units());
+    Ok(EvalValue::Text(ExcelText::from_utf16_code_units(out)))
+}
+
+fn map_concat_item(lhs: &PreparedArgValue, rhs: &PreparedArgValue) -> ArrayCellValue {
+    match eval_concat_scalar_pair(lhs, rhs) {
+        Ok(EvalValue::Text(value)) => ArrayCellValue::Text(value),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(OperatorCompareConcatError::Coercion(CoercionError::WorksheetError(code))) => {
+            ArrayCellValue::Error(code)
+        }
+        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    }
+}
+
 fn eval_operator_compare_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -204,9 +254,22 @@ fn eval_operator_compare_surface(
                     actual: prepared.len(),
                 });
             }
-            let lhs = compare_value_from_prepared(&prepared[0])?;
-            let rhs = compare_value_from_prepared(&prepared[1])?;
-            Ok(EvalValue::Logical(compare_values(op, lhs, rhs)))
+            if let Some((shape, cells)) = expand_binary_broadcast_grid(&prepared[0], &prepared[1]) {
+                let mapped = cells
+                    .into_iter()
+                    .map(|cell| match cell {
+                        BroadcastPreparedPair::Pair(lhs, rhs) => map_compare_item(&lhs, &rhs, op),
+                        BroadcastPreparedPair::MissingCoordinate => {
+                            ArrayCellValue::Error(WorksheetErrorCode::NA)
+                        }
+                    })
+                    .collect();
+                Ok(EvalValue::Array(
+                    EvalArray::new(shape, mapped).expect("shape preserved"),
+                ))
+            } else {
+                eval_compare_scalar_pair(&prepared[0], &prepared[1], op)
+            }
         },
         OperatorCompareConcatError::Coercion,
     )
@@ -226,13 +289,22 @@ pub fn eval_op_concat_surface(
                     actual: prepared.len(),
                 });
             }
-            let lhs = coerce_prepared_to_text(&prepared[0])
-                .map_err(OperatorCompareConcatError::Coercion)?;
-            let rhs = coerce_prepared_to_text(&prepared[1])
-                .map_err(OperatorCompareConcatError::Coercion)?;
-            let mut out = lhs.utf16_code_units().to_vec();
-            out.extend_from_slice(rhs.utf16_code_units());
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(out)))
+            if let Some((shape, cells)) = expand_binary_broadcast_grid(&prepared[0], &prepared[1]) {
+                let mapped = cells
+                    .into_iter()
+                    .map(|cell| match cell {
+                        BroadcastPreparedPair::Pair(lhs, rhs) => map_concat_item(&lhs, &rhs),
+                        BroadcastPreparedPair::MissingCoordinate => {
+                            ArrayCellValue::Error(WorksheetErrorCode::NA)
+                        }
+                    })
+                    .collect();
+                Ok(EvalValue::Array(
+                    EvalArray::new(shape, mapped).expect("shape preserved"),
+                ))
+            } else {
+                eval_concat_scalar_pair(&prepared[0], &prepared[1])
+            }
         },
         OperatorCompareConcatError::Coercion,
     )
@@ -294,7 +366,7 @@ pub fn map_operator_compare_concat_error_to_ws(
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::value::{ArrayCellValue, ReferenceLike};
 
     struct NoResolver;
 
@@ -315,6 +387,10 @@ mod tests {
 
     fn txt(s: &str) -> EvalValue {
         EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    }
+
+    fn text_cell(s: &str) -> ArrayCellValue {
+        ArrayCellValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     #[test]
@@ -437,6 +513,144 @@ mod tests {
             Err(OperatorCompareConcatError::Coercion(
                 CoercionError::WorksheetError(WorksheetErrorCode::NA,)
             ))
+        );
+    }
+
+    #[test]
+    fn concat_surface_broadcasts_arrays() {
+        let got = eval_op_concat_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![text_cell("x")], vec![text_cell("y")]]).unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![text_cell("ax"), text_cell("bx")],
+                    vec![text_cell("ay"), text_cell("by")],
+                ])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn concat_surface_marks_missing_broadcast_coordinates_as_na() {
+        let got = eval_op_concat_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        text_cell("x"),
+                        text_cell("y"),
+                        text_cell("z"),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    text_cell("ax"),
+                    text_cell("by"),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn compare_surface_broadcasts_arrays() {
+        let got = eval_op_equal_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(false)
+                    ],
+                    vec![
+                        ArrayCellValue::Logical(false),
+                        ArrayCellValue::Logical(true)
+                    ],
+                ])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn compare_surface_marks_missing_broadcast_coordinates_as_na() {
+        let got = eval_op_equal_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
         );
     }
 }

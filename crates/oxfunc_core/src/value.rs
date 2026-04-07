@@ -83,6 +83,7 @@ impl CallableArityShape {
 pub enum ReferenceKind {
     A1,
     Area,
+    MultiArea,
     ThreeD,
     Structured,
     SpillAnchor,
@@ -92,6 +93,110 @@ pub enum ReferenceKind {
 pub struct ReferenceLike {
     pub kind: ReferenceKind,
     pub target: String,
+}
+
+impl ReferenceLike {
+    pub fn new(kind: ReferenceKind, target: impl Into<String>) -> Self {
+        Self {
+            kind,
+            target: target.into(),
+        }
+    }
+
+    pub fn multi_area(targets: Vec<String>) -> Option<Self> {
+        let normalized = normalize_multi_area_parts(targets)?;
+        Some(Self {
+            kind: ReferenceKind::MultiArea,
+            target: format!("({})", normalized.join(",")),
+        })
+    }
+
+    pub fn normalized(self) -> Self {
+        match self.kind {
+            ReferenceKind::MultiArea => {
+                if let Some(parts) = self.multi_area_targets() {
+                    return Self::multi_area(parts).unwrap_or(self);
+                }
+                Self {
+                    kind: self.kind,
+                    target: self.target.trim().to_string(),
+                }
+            }
+            _ => Self {
+                kind: self.kind,
+                target: self.target.trim().to_string(),
+            },
+        }
+    }
+
+    pub fn multi_area_targets(&self) -> Option<Vec<String>> {
+        if !matches!(self.kind, ReferenceKind::MultiArea) {
+            return None;
+        }
+        split_multi_area_target(&self.target)
+    }
+
+    pub fn area_count(&self) -> usize {
+        self.multi_area_targets().map_or(1, |parts| parts.len())
+    }
+}
+
+fn normalize_multi_area_parts(targets: Vec<String>) -> Option<Vec<String>> {
+    let mut normalized = Vec::with_capacity(targets.len());
+    for target in targets {
+        let trimmed = target.trim();
+        if trimmed.is_empty() {
+            return None;
+        }
+        normalized.push(trimmed.to_string());
+    }
+    if normalized.len() < 2 {
+        return None;
+    }
+    Some(normalized)
+}
+
+fn split_multi_area_target(target: &str) -> Option<Vec<String>> {
+    let trimmed = target.trim();
+    if !(trimmed.starts_with('(') && trimmed.ends_with(')')) {
+        return None;
+    }
+
+    let inner = &trimmed[1..trimmed.len() - 1];
+    let mut parts = Vec::new();
+    let mut depth = 0usize;
+    let mut in_single_quote = false;
+    let mut bracket_depth = 0usize;
+    let mut start = 0usize;
+    for (index, ch) in inner.char_indices() {
+        match ch {
+            '\'' => in_single_quote = !in_single_quote,
+            '[' if !in_single_quote => bracket_depth += 1,
+            ']' if !in_single_quote && bracket_depth > 0 => bracket_depth -= 1,
+            '(' if !in_single_quote && bracket_depth == 0 => depth += 1,
+            ')' if !in_single_quote && bracket_depth == 0 => depth = depth.checked_sub(1)?,
+            ',' if !in_single_quote && bracket_depth == 0 && depth == 0 => {
+                let part = inner[start..index].trim();
+                if part.is_empty() {
+                    return None;
+                }
+                parts.push(part.to_string());
+                start = index + ch.len_utf8();
+            }
+            _ => {}
+        }
+    }
+
+    if depth != 0 {
+        return None;
+    }
+
+    let tail = inner[start..].trim();
+    if tail.is_empty() {
+        return None;
+    }
+    parts.push(tail.to_string());
+    Some(parts)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

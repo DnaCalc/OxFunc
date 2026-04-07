@@ -1,1 +1,4 @@
 "entry_name","entry_kind","execution_owner","local_work_class","local_work_summary"
+"ordinary_operator_binary_array_lift","operator_family_gap","W073","bug_follow_up","BUG-FUNC-001 tracks the current OxFml handoff for array-involved binary arithmetic through the OxFunc operator surface and the related closure-surface correction work."
+"ordinary_operator_broadcast_reconciliation","operator_family_gap","W074","bug_follow_up","BUG-FUNC-002 tracks the broader ordinary-operator broadcast rule proven by local Excel comparison and the downstream handoff needed to remove OxFml fallback behavior honestly."
+"multi_area_reference_seam_correction","reference_family_gap","W075","bug_follow_up","BUG-FUNC-003 tracks the first-class same-sheet MultiArea seam correction across OP_UNION_REF, AREAS, INDEX, and related reference-sensitive transport surfaces."

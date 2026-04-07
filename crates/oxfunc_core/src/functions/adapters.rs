@@ -3,7 +3,7 @@ use crate::resolver::{
     RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
 };
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -249,6 +249,83 @@ pub fn map_values_only_prepared<Out>(
         .collect()
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum BroadcastPreparedPair {
+    Pair(PreparedArgValue, PreparedArgValue),
+    MissingCoordinate,
+}
+
+fn prepared_shape(value: &PreparedArgValue) -> ArrayShape {
+    match value {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => array.shape(),
+        _ => ArrayShape { rows: 1, cols: 1 },
+    }
+}
+
+fn prepared_broadcast_value_at(
+    value: &PreparedArgValue,
+    row: usize,
+    col: usize,
+) -> Option<PreparedArgValue> {
+    match value {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let shape = array.shape();
+            let source_row = if shape.rows == 1 {
+                0
+            } else if row < shape.rows {
+                row
+            } else {
+                return None;
+            };
+            let source_col = if shape.cols == 1 {
+                0
+            } else if col < shape.cols {
+                col
+            } else {
+                return None;
+            };
+            array
+                .get(source_row, source_col)
+                .map(prepared_from_array_cell)
+        }
+        scalar => Some(scalar.clone()),
+    }
+}
+
+pub fn expand_binary_broadcast_grid(
+    lhs: &PreparedArgValue,
+    rhs: &PreparedArgValue,
+) -> Option<(ArrayShape, Vec<BroadcastPreparedPair>)> {
+    let lhs_shape = prepared_shape(lhs);
+    let rhs_shape = prepared_shape(rhs);
+    if lhs_shape == (ArrayShape { rows: 1, cols: 1 })
+        && rhs_shape == (ArrayShape { rows: 1, cols: 1 })
+    {
+        return None;
+    }
+
+    let shape = ArrayShape {
+        rows: lhs_shape.rows.max(rhs_shape.rows),
+        cols: lhs_shape.cols.max(rhs_shape.cols),
+    };
+    let mut cells = Vec::with_capacity(shape.cell_count());
+    for row in 0..shape.rows {
+        for col in 0..shape.cols {
+            match (
+                prepared_broadcast_value_at(lhs, row, col),
+                prepared_broadcast_value_at(rhs, row, col),
+            ) {
+                (Some(lhs_value), Some(rhs_value)) => {
+                    cells.push(BroadcastPreparedPair::Pair(lhs_value, rhs_value))
+                }
+                _ => cells.push(BroadcastPreparedPair::MissingCoordinate),
+            }
+        }
+    }
+
+    Some((shape, cells))
+}
+
 struct NoReferenceResolver;
 
 impl ReferenceResolver for NoReferenceResolver {
@@ -270,6 +347,7 @@ impl ReferenceResolver for NoReferenceResolver {
             kind: match reference.kind {
                 ReferenceKind::A1 => ReferenceKind::A1,
                 ReferenceKind::Area => ReferenceKind::Area,
+                ReferenceKind::MultiArea => ReferenceKind::MultiArea,
                 ReferenceKind::ThreeD => ReferenceKind::ThreeD,
                 ReferenceKind::Structured => ReferenceKind::Structured,
                 ReferenceKind::SpillAnchor => ReferenceKind::SpillAnchor,

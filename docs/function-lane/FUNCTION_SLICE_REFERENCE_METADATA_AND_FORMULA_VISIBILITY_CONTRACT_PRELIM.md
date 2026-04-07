@@ -24,7 +24,7 @@ This slice covers the admitted current-baseline packet for:
    - explicit `sheet_text`, including quoted sheet names with spaces.
 2. `AREAS`
    - single-area reference cardinality,
-   - multi-area union reference cardinality.
+   - first-class same-sheet multi-area reference cardinality.
 3. `FORMULATEXT`
    - formula visibility for a referenced formula cell,
    - `#N/A` when the referenced cell stores a plain value rather than a formula.
@@ -80,7 +80,7 @@ This slice covers the admitted current-baseline packet for:
    - pure text/reference rendering once the scalar args are admitted,
    - does not require workbook topology when `sheet_text` is supplied explicitly.
 2. `AREAS`
-   - requires the prepared reference to preserve multi-area shape,
+   - requires the prepared reference to preserve first-class multi-area shape,
    - does not need additional host metadata beyond the reference structure itself.
 3. `FORMULATEXT`
    - requires host/grid access to the stored formula text for the referenced cell,

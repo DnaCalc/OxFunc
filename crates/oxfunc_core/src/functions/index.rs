@@ -94,43 +94,31 @@ fn project_reference(base: &ReferenceLike, row: usize, col: usize) -> EvalValue 
     })
 }
 
-fn split_union_parts(target: &str) -> Vec<&str> {
-    let trimmed = target.trim();
-    let body = if trimmed.starts_with('(') && trimmed.ends_with(')') {
-        &trimmed[1..trimmed.len() - 1]
-    } else {
-        trimmed
-    };
-
-    let mut parts = Vec::new();
-    let mut start = 0usize;
-    let mut in_quote = false;
-    let mut bracket_depth = 0usize;
-    for (idx, ch) in body.char_indices() {
-        match ch {
-            '\'' => in_quote = !in_quote,
-            '[' if !in_quote => bracket_depth += 1,
-            ']' if !in_quote && bracket_depth > 0 => bracket_depth -= 1,
-            ',' if !in_quote && bracket_depth == 0 => {
-                parts.push(body[start..idx].trim());
-                start = idx + ch.len_utf8();
-            }
-            _ => {}
-        }
-    }
-    parts.push(body[start..].trim());
-    parts.into_iter().filter(|part| !part.is_empty()).collect()
+fn has_legacy_multi_area_carrier(reference: &ReferenceLike) -> bool {
+    !matches!(reference.kind, ReferenceKind::MultiArea)
+        && reference.target.trim().starts_with('(')
+        && reference.target.trim().ends_with(')')
 }
 
-fn parse_reference_areas(target: &str) -> Result<Option<Vec<A1Reference>>, IndexEvalError> {
-    let parts = split_union_parts(target);
+fn parse_reference_areas(
+    reference: &ReferenceLike,
+) -> Result<Option<Vec<A1Reference>>, IndexEvalError> {
+    let parts: Vec<String> = if matches!(reference.kind, ReferenceKind::MultiArea) {
+        reference
+            .multi_area_targets()
+            .ok_or(IndexEvalError::UnsupportedSource(
+                "invalid_multi_area_reference",
+            ))?
+    } else {
+        return Ok(None);
+    };
     if parts.is_empty() {
         return Ok(None);
     }
 
     let mut areas = Vec::with_capacity(parts.len());
     for part in parts {
-        let Some(area) = parse_a1_reference(part) else {
+        let Some(area) = parse_a1_reference(&part) else {
             return Ok(None);
         };
         areas.push(area);
@@ -301,11 +289,15 @@ pub fn eval_index_surface(
 
     match &args[0] {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
-            if let Some(areas) = parse_reference_areas(&r.target)? {
+            if let Some(areas) = parse_reference_areas(r)? {
                 let Some(selected_area) = areas.get(area - 1) else {
                     return Err(IndexEvalError::InvalidAreaNumber(area as f64));
                 };
                 reference_from_a1(select_a1_reference(selected_area, row, col)?)
+            } else if has_legacy_multi_area_carrier(r) {
+                Err(IndexEvalError::UnsupportedSource(
+                    "legacy_multi_area_carrier_removed",
+                ))
             } else if area != 1 {
                 Err(IndexEvalError::InvalidAreaNumber(area as f64))
             } else if let Some(parsed) = parse_a1_reference(&r.target) {
@@ -502,7 +494,7 @@ mod tests {
     fn eval_index_multi_area_reference_selects_area_num() {
         let args = [
             CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
+                kind: ReferenceKind::MultiArea,
                 target: "(A1:A2,G1:G2)".to_string(),
             }),
             CallArgValue::Eval(EvalValue::Number(2.0)),
@@ -523,7 +515,7 @@ mod tests {
     fn eval_index_mixed_sheet_multi_area_is_rejected() {
         let args = [
             CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
+                kind: ReferenceKind::MultiArea,
                 target: "(Sheet1!A1:A2,Sheet2!G1:G2)".to_string(),
             }),
             CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -533,6 +525,26 @@ mod tests {
         assert_eq!(
             got,
             Err(IndexEvalError::UnsupportedSource("mixed_sheet_multi_area"))
+        );
+    }
+
+    #[test]
+    fn eval_index_rejects_legacy_parenthesized_area_carrier() {
+        let args = [
+            CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "(A1:A2,G1:G2)".to_string(),
+            }),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+            CallArgValue::Eval(EvalValue::Number(1.0)),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Err(IndexEvalError::UnsupportedSource(
+                "legacy_multi_area_carrier_removed"
+            ))
         );
     }
 }

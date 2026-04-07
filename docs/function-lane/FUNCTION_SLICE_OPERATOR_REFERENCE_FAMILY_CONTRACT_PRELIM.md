@@ -15,13 +15,13 @@ This slice covers the non-`@` reference-composition rows:
 ## 2. Admitted Current-Baseline Slice
 1. `OP_RANGE_REF`, `OP_INTERSECTION_REF`, and `OP_UNION_REF` operate on reference-visible operands,
 2. `OP_RANGE_REF` and `OP_INTERSECTION_REF` currently admit A1/area/whole-row/whole-column operands that parse through the local A1 reference substrate,
-3. `OP_UNION_REF` currently admits structural multi-area target formation through the existing parenthesized target representation already consumed by `INDEX`,
+3. `OP_UNION_REF` currently admits same-sheet multi-area formation as a first-class `ReferenceKind::MultiArea` reference value,
 4. `OP_TRIM_REF_*` currently admit structural reference-target normalization only,
 5. `OP_SPILL_REF` remains the explicit spill-anchor operator slice already owned in the function lane and is reconciled into `W45` as part of the reference family.
 
 ## 3. Out Of Slice
 1. `@` / implicit intersection,
-2. fully general multi-area resolver materialization,
+2. fully general multi-area resolver materialization beyond the named current consumers,
 3. mixed-prefix range/intersection composition,
 4. CSE publication and scalarization interaction,
 5. parser-only whitespace ownership beyond the admitted trim-normalization slice.
@@ -35,6 +35,7 @@ This slice covers the non-`@` reference-composition rows:
 6. `SUM((A1,B1)) -> 4`
 7. `INDEX((A1:A2,B1:B2),2,1,2) -> 4`
 8. whitespace-trimmed reference forms such as `SUM(( A1 ))` remain transparent on the seeded slice
+9. current local seam direction is that union result identity is `ReferenceKind::MultiArea`, and the old non-`MultiArea` parenthesized carrier is no longer admitted on the named local consumers
 
 ## 5. Artifacts
 1. runtime modules:

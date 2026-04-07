@@ -15,7 +15,8 @@ This packet also records the current shared-interface acknowledgement outcome fo
 3. the `17` deferred rows in `W050` remain excluded from the current acknowledgement scope and may reopen only on the same concrete-mismatch basis in a later round.
 
 ## 2. Provenance
-This packet now survives primarily as a parked-baseline completion summary.
+This packet now survives primarily as a parked-baseline summary plus the active
+tracker for any reopened non-deferred current-version gap.
 
 Active surviving provenance and control inputs:
 1. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md`
@@ -41,11 +42,11 @@ Machine-readable working inputs:
 6. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
 
 Current working total:
-1. `0` function rows.
-2. `0` operator rows.
-3. `0` total rows.
+1. `2` function rows.
+2. `13` operator rows.
+3. `15` total rows.
 4. current working backlog split:
-   - `0` explicitly tracked residual rows with real runtime/formal/evidence floors or packet-specific open lanes,
+   - `15` explicitly tracked residual rows with real runtime/formal/evidence floors or packet-specific open lanes,
    - `0` normalized ordinary execution rows remaining after `W068`.
 5. current shared-interface-acknowledgement split:
    - the prior seam-heavy non-deferred surface is now acknowledged and promoted out of `W051`,
@@ -60,12 +61,16 @@ First-pass published-catalog reading:
 1. `534` published rows in `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`:
    - `511` functions,
    - `23` operators.
-2. `517` rows are currently usable on a first-pass consumer read:
-   - `517` supported/complete,
+2. `502` rows are currently usable on a first-pass consumer read:
+   - `502` supported/complete,
    - `0` preview.
 3. `17` rows are deferred in the current version target through `W050`.
-4. `0` snapshot entries are non-deferred and not yet supported; the current hidden ordinary backlog is now drained.
-5. the exact `114` documented-complete snapshot-stale rows from the first-pass reconciliation have now been refreshed out of false `catalog_only` state in the published snapshot export and are not included in the W51 backlog totals.
+4. `15` snapshot entries are non-deferred and not yet honestly supported on the current working read; the current hidden ordinary backlog is still drained.
+5. later concrete current-version gaps reopened:
+   - the ordinary arithmetic and compare/concat operator rows under `BUG-FUNC-001` / `W073` and then `BUG-FUNC-002` / `W074`,
+   - the first-class same-sheet multi-area reference seam for `OP_UNION_REF`, `AREAS`, and `INDEX` under `BUG-FUNC-003` / `W075`.
+   Local runtime correction and focused validation now exist, but landed-ref promotion and downstream seam acknowledgment are still open.
+6. the exact `114` documented-complete snapshot-stale rows from the first-pass reconciliation have now been refreshed out of false `catalog_only` state in the published snapshot export and are not included in the W51 backlog totals.
 
 First-pass documented-complete snapshot-stale groups now refreshed in the current export:
 1. `W024` ordinary-done rows: `62`.
@@ -110,11 +115,13 @@ Completed and removed from this inventory (moved to function-phase-complete):
 - `OP_TRIM_REF_LEADING`, `OP_TRIM_REF_TRAILING`, `OP_TRIM_REF_BOTH` (3 operators, verified against W045 structural slice)
 
 Important current reading:
-- the exact packet-local work split for any future explicit residual rows is pinned through `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`; it is currently empty because no explicit preview-cluster row remains.
-- there is no remaining explicit preview-cluster row; the only residual `W051` membership is now the hidden ordinary backlog.
+- the exact packet-local work split for reopened explicit residual rows is pinned through `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`; it now carries the original `ordinary_operator_binary_array_lift` follow-up, the broader `ordinary_operator_broadcast_reconciliation` follow-up, and the `multi_area_reference_seam_correction` follow-up owned by `W075`.
+- the hidden ordinary backlog remains empty, but `W051` is no longer empty because the reopened operator lane now sits in the explicit current-gap inventory.
 - the active current hidden backlog is now:
   - `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`,
   - `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`.
+- the current explicit reopened residual lane is:
+  - `docs/function-lane/W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv`, now carrying `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, `OP_GREATER_EQUAL`, `OP_UNION_REF`, `AREAS`, and `INDEX` under `BUG-FUNC-001` / `BUG-FUNC-002` / `BUG-FUNC-003` and `W074` / `W075` until the landed-ref and downstream seam follow-up closes.
 - the original hidden `185`-row appendix remains provenance only:
   - these rows were still `catalog_only` in the published snapshot,
   - they were not in `W050`,
@@ -124,13 +131,28 @@ Important current reading:
 - the archived `W059` through `W068` packet chain removed the ordinary rows from the active backlog.
 - for shared-interface acknowledgement purposes, there is no remaining hidden ordinary backlog in the active current-version non-deferred surface.
 - current remaining successor execution split after `W068`:
-  - none.
+  - `W073` for the original OxFml handoff intake and first arithmetic widening,
+  - `W074` for the broader ordinary-operator broadcast reconciliation and downstream handoff,
+  - `W075` for the first-class same-sheet multi-area reference seam correction.
 
 Explicit preview-cluster functions:
-None.
+1. `AREAS`
+2. `INDEX`
 
 Explicit preview-cluster operators:
-None.
+1. `OP_ADD`
+2. `OP_SUBTRACT`
+3. `OP_MULTIPLY`
+4. `OP_DIVIDE`
+5. `OP_POWER`
+6. `OP_CONCAT`
+7. `OP_EQUAL`
+8. `OP_NOT_EQUAL`
+9. `OP_LESS_THAN`
+10. `OP_LESS_EQUAL`
+11. `OP_GREATER_THAN`
+12. `OP_GREATER_EQUAL`
+13. `OP_UNION_REF`
 
 ## 4. Current-Version Rule
 For the current version target:
@@ -145,6 +167,8 @@ For the current version target:
 9. the archived shared-interface freeze chain is preserved behind `docs/HISTORY.md` and `OxFunc_V1`; the surviving active anchors are:
    - `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
    - `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
+10. `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, and `OP_GREATER_EQUAL` remain reopened here for the current version target because the local broadcast widening is not yet represented by a landed ref and still awaits downstream seam acknowledgment under `HO-FN-005`.
+11. `OP_UNION_REF`, `AREAS`, and `INDEX` remain reopened here for the current version target because the local first-class multi-area correction is not yet represented by a landed ref and still awaits downstream seam acknowledgment under `HO-FN-006`.
 
 ## 5. Ownership Rule
 1. `W51` is the canonical current-version not-complete working backlog for all non-deferred outstanding rows.
@@ -155,7 +179,7 @@ For the current version target:
 6. New latent gaps or reconciliation findings should be added here immediately, then extracted into narrower workset and bead execution lanes as needed.
 
 ## 6. Cleanup And Completion Sequence
-The active non-deferred closure sequence is complete.
+The prior non-deferred closure sequence is now qualified by a reopened operator gap.
 
 The surviving current anchors are:
 1. `docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md` for the published consumer export surface,
@@ -168,12 +192,15 @@ Exit condition:
 - `W051` contains every non-deferred row that is still not honestly supported.
 - the shared-interface model for the interesting non-deferred surface is explicitly frozen across OxFunc and OxFml.
 - documented-complete rows are no longer misreported as `catalog_only` in the published snapshot.
+- the reopened `BUG-FUNC-001` / `BUG-FUNC-002` / `W074` operator lane is either fully published and acknowledged or honestly reclassified.
+- the reopened `BUG-FUNC-003` / `W075` multi-area reference lane is either fully published and acknowledged or honestly reclassified.
 - downstream consumer docs can report one aligned set of counts without relying on stale side packets.
 
 ## 7. Status
-1. execution_state: `complete`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - none
+   - `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, and `OP_GREATER_EQUAL` remain open under `BUG-FUNC-001` / `BUG-FUNC-002` / `W074` until the local broadcast widening is landed on a committed ref and acknowledged downstream through `HO-FN-005`
+   - `OP_UNION_REF`, `AREAS`, and `INDEX` remain open under `BUG-FUNC-003` / `W075` until the local first-class MultiArea correction is landed on a committed ref and acknowledged downstream through `HO-FN-006`

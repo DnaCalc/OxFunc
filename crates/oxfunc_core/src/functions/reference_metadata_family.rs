@@ -250,21 +250,18 @@ fn format_address_body(
     Ok(address)
 }
 
-fn count_reference_areas(reference: &ReferenceLike) -> usize {
-    let mut target = reference.target.trim();
-    if target.starts_with('(') && target.ends_with(')') && target.len() >= 2 {
-        target = &target[1..target.len() - 1];
+fn has_legacy_multi_area_carrier(reference: &ReferenceLike) -> bool {
+    !reference.target.is_empty()
+        && reference.target.trim().starts_with('(')
+        && reference.target.trim().ends_with(')')
+        && reference.multi_area_targets().is_none()
+}
+
+fn count_reference_areas(reference: &ReferenceLike) -> Result<usize, ReferenceMetadataEvalError> {
+    if has_legacy_multi_area_carrier(reference) {
+        return Err(ReferenceMetadataEvalError::InvalidReferenceArg);
     }
-    let mut count = 1usize;
-    let mut in_single_quote = false;
-    for ch in target.chars() {
-        match ch {
-            '\'' => in_single_quote = !in_single_quote,
-            ',' if !in_single_quote => count += 1,
-            _ => {}
-        }
-    }
-    count
+    Ok(reference.area_count())
 }
 
 pub fn eval_address_surface(
@@ -302,7 +299,7 @@ pub fn eval_areas_surface(args: &[CallArgValue]) -> Result<EvalValue, ReferenceM
         });
     }
     let reference = parse_reference_arg(&args[0])?;
-    Ok(EvalValue::Number(count_reference_areas(&reference) as f64))
+    Ok(EvalValue::Number(count_reference_areas(&reference)? as f64))
 }
 
 pub fn eval_formulatext_surface(
@@ -516,8 +513,16 @@ mod tests {
     }
 
     #[test]
-    fn areas_counts_union_members() {
+    fn areas_rejects_legacy_parenthesized_area_carrier() {
         let got = eval_areas_surface(&[ref_arg("(A1,B2:B3)")]);
+        assert_eq!(got, Err(ReferenceMetadataEvalError::InvalidReferenceArg));
+    }
+
+    #[test]
+    fn areas_counts_first_class_multi_area_members() {
+        let got = eval_areas_surface(&[CallArgValue::Reference(
+            ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
+        )]);
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
     }
 

@@ -13,7 +13,7 @@
 2. admission policy:
    - admitted for `INDEX(array_or_ref, row_num[, col_num[, area_num]])`.
    - source may be array-form or reference-form.
-   - multi-area reference-form is admitted when the referenced areas are same-sheet A1-style areas.
+   - multi-area reference-form is admitted when the referenced areas are same-sheet A1-style areas and should travel through the seam as first-class `ReferenceKind::MultiArea`.
 
 ## 3. Semantic Class Axes
 1. `determinism_class`: `deterministic`
@@ -46,7 +46,7 @@
    - `col_num = 0` returns a one-row array slice,
    - `row_num = 0` and `col_num = 0` return the whole array payload.
 4. whole-column and whole-row A1 references are admitted through the shared A1 reference parser.
-5. same-sheet multi-area selection is supported; mixed-sheet multi-area references are rejected as an unsupported source in the current OxFunc seam and surface to worksheet `#VALUE!`.
+5. same-sheet multi-area selection is supported through first-class `MultiArea`; mixed-sheet multi-area references are rejected as an unsupported source in the current OxFunc seam and surface to worksheet `#VALUE!`.
 
 ## 6. Post-call Adaptation Policy
 1. successful evaluation may return:

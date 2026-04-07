@@ -359,3 +359,144 @@ After `.beads/` exists:
 1. ordinary execution state belongs in `.beads/`,
 2. no separate blocker ledger should survive in the active tree,
 3. `docs/worksets/README.md` should no longer be treated as a live execution-status surface.
+
+## 18. Bug Intake And Regression Stream Protocol
+
+### 18.1 Purpose And Ownership Split
+OxFunc bug handling uses a separate defect-intake and canonical-bug-stream surface so regressions, duplicates, and adjacent-risk findings are preserved without blurring execution-state ownership.
+
+Rules:
+1. `docs/bugs/` owns bug intake, duplicate linkage, root-cause tracking, similar-risk scanning, and stream-level closure records.
+2. worksets remain the bounded owner for implementation/spec/test/handoff delivery.
+3. `.beads/` remains the live execution-state and blocker surface for bug work just as it does for ordinary work; do not reintroduce `CURRENT_BLOCKERS.md` or another prose blocker ledger for bug handling.
+4. cross-repo seam changes or non-local ownership still require the ordinary handoff flow in `docs/handoffs/HANDOFF_REGISTER.csv`.
+
+### 18.2 Artifact Set And Identities
+Canonical bug-tracking artifacts live under `docs/bugs/`:
+1. `BUG_REPORT_REGISTER.csv`
+   - one row per incoming report
+2. `BUG_STREAM_REGISTER.csv`
+   - one row per canonical known-bug stream
+3. `reports/BUGREP-FUNC-NNN*.md`
+   - individual incoming-report notes
+4. `streams/BUG-FUNC-NNN*.md`
+   - canonical bug-stream notes
+
+Identity rules:
+1. incoming reports use `BUGREP-FUNC-NNN`,
+2. canonical bug streams use `BUG-FUNC-NNN`,
+3. every incoming report gets a report record even if it is immediately recognized as a duplicate,
+4. every non-trivial unique bug gets or links to a canonical `BUG-FUNC-*` stream.
+
+### 18.3 Status Vocabulary
+Report-status vocabulary:
+1. `reported`
+2. `triaged`
+3. `linked_duplicate`
+4. `closed_no_action`
+
+Canonical-stream-status vocabulary:
+1. `reported`
+2. `triaged`
+3. `investigating`
+4. `fix_in_progress`
+5. `fixed_pending_validation`
+6. `validated_local`
+7. `handed_off`
+8. `blocked`
+9. `closed`
+
+Interpretation rule:
+1. report rows are intake artifacts and duplicate-linkage records,
+2. canonical bug streams own the longer defect lifecycle and closure state.
+
+### 18.4 Exact Source-Ref Capture Rule
+Every report and stream must record the exact source ref against which the defect was observed.
+
+Required rule:
+1. preferred: released version/tag,
+2. fallback: exact git commit SHA,
+3. if neither is known, record `unknown` and say why in the report or stream note,
+4. the report register must also record `reported_against_kind` as `release`, `commit`, or `unknown`,
+5. the canonical stream should additionally record `reproduced_on_ref`, `introduced_in_ref`, and `fixed_in_ref` when those become known.
+
+### 18.5 Duplicate Linking And Canonicalization Rule
+Canonicalization is mechanical:
+1. intake creates a `BUGREP-FUNC-*` report row first,
+2. triage either links the report to an existing `BUG-FUNC-*` stream or opens a new canonical stream,
+3. duplicate reports are not discarded and must remain in the report register,
+4. a duplicate report must set `canonical_bug_id` to the owning stream, move to `linked_duplicate`, and explain the linkage in the report note,
+5. a canonical stream must list all known linked reports,
+6. a report may be `closed_no_action` only when triage concludes there is no actionable OxFunc bug stream to pursue.
+
+### 18.6 Ownership And Root-Cause Classification
+Every canonical bug stream must classify ownership as exactly one of:
+1. `OxFunc-owned bug`
+2. `OxFml-owned bug`
+3. `shared seam gap`
+4. `external dependency`
+5. `unknown`
+
+Every canonical bug stream must classify root cause as exactly one of:
+1. `code_regression`
+2. `initial_impl_gap`
+3. `spec_mismatch`
+4. `vague_spec`
+5. `test_gap`
+6. `external_dependency`
+7. `unknown`
+
+Interpretation rules:
+1. ownership classification is required even when it remains `unknown`,
+2. non-OxFunc ownership does not eliminate the need for a canonical bug stream when the issue materially affects OxFunc consumers or seam claims,
+3. if seam or sibling ownership requires action outside this repo, record the ownership class, keep the stream status honest, and file the required handoff.
+
+### 18.7 Required Canonical Stream Contents
+Every canonical bug stream must include:
+1. deterministic reproduction information or an explicit statement that reproduction remains open,
+2. the current owner workset or `none yet`,
+3. a `Why did we get this wrong?` section that answers:
+   - whether the spec was already correct and code was wrong,
+   - whether the spec was vague or missing,
+   - whether the code was once correct and later regressed,
+   - if regression is suspected, which ref likely introduced it,
+4. a similar-risk scan that identifies:
+   - adjacent semantic families likely to share the failure mode,
+   - how they were checked,
+   - what the results were,
+   - whether follow-on bug streams or worksets were opened,
+5. linked-report ids for every known duplicate or related intake report,
+6. validation evidence and any required spec/matrix/handoff references.
+
+### 18.8 Required Processing Sequence
+Bug handling follows this ordered sequence:
+1. `intake`
+   - create `BUGREP-FUNC-*`,
+   - record the exact observed source ref
+2. `canonicalization`
+   - create or link `BUG-FUNC-*`,
+   - preserve duplicates as linked reports rather than discarding them
+3. `reproduction`
+   - capture deterministic reproduction evidence where feasible
+4. `ownership`
+   - classify OxFunc/OxFml/shared seam/external/unknown ownership
+5. `root_cause`
+   - record why the bug exists and, where possible, when it was introduced
+6. `similar_risk_scan`
+   - inspect adjacent semantic families and record findings plus follow-on openings
+7. `fix`
+   - land the necessary code/spec/test/handoff changes under the owning workset
+8. `validation`
+   - run the relevant local validation floor and record the result
+9. `closure`
+   - close only after the stream, reports, registers, and linked workset/handoff records all reflect the final state
+
+### 18.9 Closure Rule
+A canonical bug stream may move to `closed` only when all required closure conditions hold:
+1. the fix landed, or non-OxFunc ownership is explicitly recorded and any needed handoff was filed,
+2. validation was run and recorded,
+3. root cause is recorded,
+4. similar-risk scan is recorded,
+5. spec/matrix/contract updates are recorded if needed,
+6. linked reports are updated,
+7. any execution blockers discovered during the work are represented in `.beads/`, not in a second bug-side blocker ledger.

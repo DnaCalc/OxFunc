@@ -5,7 +5,8 @@ Evidence ID: `W45-OP-REF-WAVEC-20260320`
 
 ## 1. Goal
 1. pin the current-baseline structural reference-composition slice for non-`@` operators,
-2. keep multi-area reference shape and `#NULL!` intersection behavior explicit in native evidence.
+2. keep multi-area reference shape and `#NULL!` intersection behavior explicit in native evidence,
+3. use the same spill-aware probe capture shape as the other `W45` operator waves so the family remains evidence-coherent.
 
 ## 2. Required Artifacts
 1. scenario manifest: `docs/function-lane/W45_WAVEC_OPERATOR_REFERENCE_SCENARIO_MANIFEST_SEED.csv`

@@ -144,6 +144,9 @@ fn scalarize_reference(
                 .map_err(ImplicitIntersectionError::RefResolution)?;
             scalarize_eval_value(resolved, resolver, caller)
         }
+        ReferenceKind::MultiArea => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
+            "multi_area_reference",
+        )),
         ReferenceKind::ThreeD => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
             "three_d_reference",
         )),

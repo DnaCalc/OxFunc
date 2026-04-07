@@ -283,6 +283,115 @@ mod tests {
     }
 
     #[test]
+    fn binary_operator_surfaces_cover_handoff_array_lift_cases() {
+        let multiply = eval_op_multiply_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![
+                            ArrayCellValue::Number(1.0),
+                            ArrayCellValue::Number(2.0),
+                            ArrayCellValue::Number(3.0),
+                        ],
+                        vec![
+                            ArrayCellValue::Number(2.0),
+                            ArrayCellValue::Number(3.0),
+                            ArrayCellValue::Number(4.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(-1.0)),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            multiply,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(-1.0),
+                        ArrayCellValue::Number(-2.0),
+                        ArrayCellValue::Number(-3.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(-2.0),
+                        ArrayCellValue::Number(-3.0),
+                        ArrayCellValue::Number(-4.0),
+                    ],
+                ])
+                .unwrap()
+            )
+        );
+
+        let add = eval_op_subtract_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(11.0), ArrayCellValue::Number(22.0)],
+                        vec![ArrayCellValue::Number(33.0), ArrayCellValue::Number(44.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(20.0)],
+                        vec![ArrayCellValue::Number(30.0), ArrayCellValue::Number(40.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            add,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap()
+            )
+        );
+
+        let divide = eval_op_divide_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(6.0), ArrayCellValue::Number(8.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(0.0)],
+                        vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            divide,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Error(WorksheetErrorCode::Div0)
+                    ],
+                    vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
     fn power_preserves_excel_domain_errors() {
         let got = eval_op_power_surface(
             &[

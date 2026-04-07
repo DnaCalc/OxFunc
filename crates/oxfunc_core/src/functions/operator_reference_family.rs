@@ -146,6 +146,22 @@ fn trim_reference(reference: ReferenceLike, mode: TrimMode) -> EvalValue {
     })
 }
 
+fn union_targets(reference: &ReferenceLike) -> Result<Vec<String>, OperatorReferenceError> {
+    if matches!(reference.kind, ReferenceKind::MultiArea) {
+        return reference.multi_area_targets().ok_or(
+            OperatorReferenceError::UnsupportedReferenceSource("invalid_multi_area_reference"),
+        );
+    }
+
+    let target = reference.target.trim();
+    if target.is_empty() {
+        return Err(OperatorReferenceError::UnsupportedReferenceSource(
+            "invalid_multi_area_reference",
+        ));
+    }
+    Ok(vec![target.to_string()])
+}
+
 pub fn eval_op_range_ref_surface(
     args: &[CallArgValue],
     _resolver: &impl ReferenceResolver,
@@ -215,10 +231,12 @@ pub fn eval_op_union_ref_surface(
     }
     let lhs = reference_arg(&args[0])?;
     let rhs = reference_arg(&args[1])?;
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: ReferenceKind::Area,
-        target: format!("({},{})", lhs.target.trim(), rhs.target.trim()),
-    }))
+    let mut targets = union_targets(&lhs)?;
+    targets.extend(union_targets(&rhs)?);
+    let multi = ReferenceLike::multi_area(targets).ok_or(
+        OperatorReferenceError::UnsupportedReferenceSource("invalid_multi_area_reference"),
+    )?;
+    Ok(EvalValue::Reference(multi))
 }
 
 pub fn eval_op_trim_ref_leading_surface(
@@ -333,13 +351,29 @@ mod tests {
     }
 
     #[test]
-    fn union_operator_preserves_multi_area_target_shape() {
+    fn union_operator_returns_first_class_multi_area_reference() {
         let got = eval_op_union_ref_surface(&[area("A1:A2"), area("G1:G2")], &NoResolver);
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
+                kind: ReferenceKind::MultiArea,
                 target: "(A1:A2,G1:G2)".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn union_operator_flattens_existing_multi_area_operands() {
+        let lhs = CallArgValue::Reference(
+            ReferenceLike::multi_area(vec!["A1:A2".to_string(), "G1:G2".to_string()]).unwrap(),
+        );
+        let rhs = area("J1:J2");
+        let got = eval_op_union_ref_surface(&[lhs, rhs], &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::MultiArea,
+                target: "(A1:A2,G1:G2,J1:J2)".to_string(),
             }))
         );
     }

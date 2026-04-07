@@ -21,6 +21,10 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md)
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md)
 8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md)
+9. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md)
+10. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md)
+11. [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md)
+12. [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -28,9 +32,13 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 3. [W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W044_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_BASELINE.md) remains the live V1 export provenance owner.
 4. [W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md) remains the retained runtime carrier model.
 5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md) remains the canonical deferred tracker.
-6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) remains the parked non-deferred tracker and currently records zero open rows.
+6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) remains the parked non-deferred tracker and currently records reopened ordinary-operator plus multi-area reference rows.
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md) remains the parked Lean reconciliation authority.
 8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md) is the next substantive execution target.
+9. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md) is the local process authority for bug intake, duplicate linkage, canonical bug streams, and regression-family tracking.
+10. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md) owns the current operator value-surface and array-lift seam follow-up opened from `HANDOFF-OXFUNC-001` and `BUG-FUNC-001`.
+11. [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md) owns the broadened ordinary-operator broadcast reconciliation opened from local Excel comparison and `BUG-FUNC-002`.
+12. [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md) owns the first-class same-sheet multi-area reference seam correction opened from the current OxFml upstream note and `BUG-FUNC-003`.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

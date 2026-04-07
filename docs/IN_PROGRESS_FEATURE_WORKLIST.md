@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-04-03
+Last updated: 2026-04-07
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -23,8 +23,8 @@ Supersession note:
 ## Active Feature Map
 
 ### IP-01 Parked Function Surface
-- Current state: the non-deferred current-version surface is parked and complete; the remaining excluded rows are the intentional deferred `W050` set.
-- Canonical owner: [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) and [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W050_DEFERRED_CURRENT_VERSION_SURFACE.md).
+- Current state: the non-deferred current-version surface remains largely parked, but a concrete ordinary-operator gap has reopened the active current-gap lane for array-involved binary arithmetic.
+- Canonical owner: [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md), [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md), and [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W050_DEFERRED_CURRENT_VERSION_SURFACE.md).
 
 ### IP-02 Semantic Witness Snapshot V2 Framework
 - Current state: planned and partially scaffolded through schema and bridge-definition work.
@@ -58,14 +58,23 @@ Supersession note:
 - Current state: planned successor execution lane for filling the remaining supported non-deferred witness rows.
 - Canonical owner: [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md), [WORKSET_REGISTER.md](C:\Work\DnaCalc\OxFunc\docs\WORKSET_REGISTER.md), and `.beads/`.
 
+### IP-10 Ordinary Operator Value-Surface Expansion
+- Current state: active cross-repo follow-up with the local OxFunc broadcast pass validated and handed off; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment/removal of the temporary fallback under `HO-FN-005`.
+- Canonical owner: [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md), [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md), [BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md), [BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-11 Multi-Area Reference Seam
+- Current state: active cross-repo seam follow-up with the local OxFunc caller sweep and legacy-wrapper fallback removal validated and handed off; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment under `HO-FN-006`.
+- Canonical owner: [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md), [BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
 - `active`: live lane with current owner surfaces.
 - `parked`: current baseline or parked authority exists; reopen only by explicit future work.
 
 Current reading:
-1. `IP-01` is `parked`,
+1. `IP-01` is `active`,
 2. `IP-02`, `IP-03`, `IP-04`, `IP-05`, and `IP-06` are `active`,
 3. `IP-07` is `planned`,
 4. `IP-08` is `parked`,
-5. `IP-09` is `planned`.
+5. `IP-09` is `planned`,
+6. `IP-10` and `IP-11` are `active`.

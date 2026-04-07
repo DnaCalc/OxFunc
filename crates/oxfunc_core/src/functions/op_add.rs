@@ -1,10 +1,10 @@
-use crate::coercion::CoercionError;
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+use crate::functions::binary_numeric::{
+    BinaryNumericSurfaceError, eval_binary_numeric_prepared, eval_binary_numeric_surface,
+    map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -23,48 +23,27 @@ pub const OP_ADD_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum OpAddEvalError {
-    ArityMismatch { expected: usize, actual: usize },
-    Coercion(CoercionError),
-}
+pub type OpAddEvalError = BinaryNumericSurfaceError;
 
 pub fn op_add_kernel(lhs: f64, rhs: f64) -> f64 {
     lhs + rhs
 }
 
 pub fn eval_op_add_adapter_prepared(
-    args: &[PreparedArgValue],
+    args: &[crate::functions::adapters::PreparedArgValue],
 ) -> Result<EvalValue, OpAddEvalError> {
-    if !OP_ADD_META.arity.accepts(args.len()) {
-        return Err(OpAddEvalError::ArityMismatch {
-            expected: OP_ADD_META.arity.min,
-            actual: args.len(),
-        });
-    }
-    let lhs = coerce_prepared_to_number(&args[0]).map_err(OpAddEvalError::Coercion)?;
-    let rhs = coerce_prepared_to_number(&args[1]).map_err(OpAddEvalError::Coercion)?;
-    Ok(EvalValue::Number(op_add_kernel(lhs, rhs)))
+    eval_binary_numeric_prepared(args, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
 }
 
 pub fn eval_op_add_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, OpAddEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_op_add_adapter_prepared,
-        OpAddEvalError::Coercion,
-    )
+    eval_binary_numeric_surface(args, resolver, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
 }
 
 pub fn map_op_add_error_to_ws(e: &OpAddEvalError) -> WorksheetErrorCode {
-    match e {
-        OpAddEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
-        OpAddEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
-        OpAddEvalError::Coercion(_) => WorksheetErrorCode::Value,
-    }
+    map_binary_numeric_error_to_ws(e)
 }
 
 #[cfg(test)]
@@ -120,5 +99,84 @@ mod tests {
         ];
         let got = eval_op_add_surface(&args, &NoResolver);
         assert!(matches!(got, Err(OpAddEvalError::Coercion(_))));
+    }
+
+    #[test]
+    fn eval_op_add_lifts_array_involved_calls() {
+        let scalar_array = eval_op_add_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(10.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![vec![
+                        crate::value::ArrayCellValue::Number(1.0),
+                        crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "2".encode_utf16().collect(),
+                        )),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            scalar_array,
+            EvalValue::Array(
+                crate::value::EvalArray::from_rows(vec![vec![
+                    crate::value::ArrayCellValue::Number(11.0),
+                    crate::value::ArrayCellValue::Number(12.0),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let array_array = eval_op_add_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![
+                        vec![
+                            crate::value::ArrayCellValue::Number(1.0),
+                            crate::value::ArrayCellValue::Number(2.0),
+                        ],
+                        vec![
+                            crate::value::ArrayCellValue::Number(3.0),
+                            crate::value::ArrayCellValue::Number(4.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![
+                        vec![
+                            crate::value::ArrayCellValue::Number(10.0),
+                            crate::value::ArrayCellValue::Number(20.0),
+                        ],
+                        vec![
+                            crate::value::ArrayCellValue::Number(30.0),
+                            crate::value::ArrayCellValue::Number(40.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            array_array,
+            EvalValue::Array(
+                crate::value::EvalArray::from_rows(vec![
+                    vec![
+                        crate::value::ArrayCellValue::Number(11.0),
+                        crate::value::ArrayCellValue::Number(22.0),
+                    ],
+                    vec![
+                        crate::value::ArrayCellValue::Number(33.0),
+                        crate::value::ArrayCellValue::Number(44.0),
+                    ],
+                ])
+                .unwrap()
+            )
+        );
     }
 }

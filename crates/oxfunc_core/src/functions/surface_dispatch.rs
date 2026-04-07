@@ -3752,8 +3752,8 @@ mod tests {
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{
         ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
-        ExcelText, ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, ReferenceLike,
-        RichValueData,
+        ExcelText, ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, ReferenceKind,
+        ReferenceLike, RichValueData,
     };
 
     struct NoReferenceResolver;
@@ -3826,6 +3826,279 @@ mod tests {
             None,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_add_lifts_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(20.0)],
+                        vec![ArrayCellValue::Number(30.0), ArrayCellValue::Number(40.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(11.0), ArrayCellValue::Number(22.0)],
+                    vec![ArrayCellValue::Number(33.0), ArrayCellValue::Number(44.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_add_broadcasts_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_equal_broadcasts_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_EQUAL,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(false)
+                    ],
+                    vec![
+                        ArrayCellValue::Logical(false),
+                        ArrayCellValue::Logical(true)
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_concat_marks_missing_broadcast_coordinates_as_na() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_CONCAT,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("y")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("z")),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("ax")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("by")),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_range_ref_normalizes_bounds() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_RANGE_REF,
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::A1,
+                    target: "B2".to_string(),
+                }),
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::A1,
+                    target: "A1".to_string(),
+                }),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "A1:B2".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_op_union_ref_returns_multi_area_reference() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_UNION_REF,
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::Area,
+                    target: "A1:A2".to_string(),
+                }),
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::Area,
+                    target: "G1:G2".to_string(),
+                }),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::MultiArea,
+                target: "(A1:A2,G1:G2)".to_string(),
+            }))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_areas_counts_multi_area_reference() {
+        let got = eval_surface_value_call(
+            FUNC_ID_AREAS,
+            &[CallArgValue::Reference(
+                ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_areas_rejects_legacy_parenthesized_area_carrier() {
+        let got = eval_surface_value_call(
+            FUNC_ID_AREAS,
+            &[CallArgValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "(A1,B2:B3)".to_string(),
+            })],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn eval_surface_value_call_index_rejects_legacy_parenthesized_area_carrier() {
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Reference(ReferenceLike {
+                    kind: ReferenceKind::Area,
+                    target: "(A1:A2,G1:G2)".to_string(),
+                }),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 
     #[test]
