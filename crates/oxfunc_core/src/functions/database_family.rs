@@ -4,6 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values, variance_from_values};
 use crate::functions::xmatch::wildcard_match;
 use crate::resolver::{ReferenceResolver, resolve_eval_value};
@@ -343,13 +344,14 @@ fn criteria_from_cell(cell: &ArrayCellValue) -> Result<Option<CriteriaSpec>, Dat
 }
 
 fn compare_numbers(op: CompareOp, lhs: f64, rhs: f64) -> bool {
+    let ord = compare_excel_numbers(lhs, rhs);
     match op {
-        CompareOp::Eq => lhs == rhs,
-        CompareOp::Ne => lhs != rhs,
-        CompareOp::Lt => lhs < rhs,
-        CompareOp::Le => lhs <= rhs,
-        CompareOp::Gt => lhs > rhs,
-        CompareOp::Ge => lhs >= rhs,
+        CompareOp::Eq => ord == std::cmp::Ordering::Equal,
+        CompareOp::Ne => ord != std::cmp::Ordering::Equal,
+        CompareOp::Lt => ord == std::cmp::Ordering::Less,
+        CompareOp::Le => ord != std::cmp::Ordering::Greater,
+        CompareOp::Gt => ord == std::cmp::Ordering::Greater,
+        CompareOp::Ge => ord != std::cmp::Ordering::Less,
     }
 }
 
@@ -971,6 +973,10 @@ mod tests {
                         vec![text("<500"), ArrayCellValue::EmptyCell],
                     ]),
                 ),
+                (
+                    "CRIT_FLOAT_EQ".to_string(),
+                    array(vec![vec![text("Sales")], vec![text("0.30000000000000004")]]),
+                ),
             ]),
         }
     }
@@ -1026,6 +1032,112 @@ mod tests {
                 &resolver
             ),
             Ok(EvalValue::Number(2.0))
+        );
+    }
+
+    #[test]
+    fn database_numeric_criteria_use_excel_near_equal_matching() {
+        let resolver = MockResolver {
+            cells: HashMap::from([
+                (
+                    "DB_FLOAT".to_string(),
+                    array(vec![
+                        vec![text("V"), text("Flag")],
+                        vec![ArrayCellValue::Number(0.3), ArrayCellValue::Number(1.0)],
+                    ]),
+                ),
+                (
+                    "CRIT_FLOAT".to_string(),
+                    array(vec![vec![text("V")], vec![text("0.30000000000000004")]]),
+                ),
+            ]),
+        };
+
+        assert_eq!(
+            eval_dcount_surface(
+                &[ref_arg("DB_FLOAT"), field_text("V"), ref_arg("CRIT_FLOAT")],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(1.0))
+        );
+        assert_eq!(
+            eval_dsum_surface(
+                &[ref_arg("DB_FLOAT"), field_text("V"), ref_arg("CRIT_FLOAT")],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(0.3))
+        );
+    }
+
+    #[test]
+    fn database_boundary_pair_uses_excel_truncation_style_matching() {
+        let boundary_probe = ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25;
+        let boundary_stored = ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25;
+        let resolver = MockResolver {
+            cells: HashMap::from([
+                (
+                    "DB_FLOAT_BOUNDARY".to_string(),
+                    array(vec![
+                        vec![text("V"), text("Flag")],
+                        vec![
+                            ArrayCellValue::Number(boundary_stored),
+                            ArrayCellValue::Number(1.0),
+                        ],
+                    ]),
+                ),
+                (
+                    "CRIT_FLOAT_BOUNDARY".to_string(),
+                    array(vec![
+                        vec![text("V")],
+                        vec![ArrayCellValue::Number(boundary_probe)],
+                    ]),
+                ),
+            ]),
+        };
+
+        assert_eq!(
+            eval_dcount_surface(
+                &[
+                    ref_arg("DB_FLOAT_BOUNDARY"),
+                    field_text("V"),
+                    ref_arg("CRIT_FLOAT_BOUNDARY"),
+                ],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(1.0))
+        );
+        assert_eq!(
+            eval_dsum_surface(
+                &[
+                    ref_arg("DB_FLOAT_BOUNDARY"),
+                    field_text("V"),
+                    ref_arg("CRIT_FLOAT_BOUNDARY"),
+                ],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(boundary_stored))
+        );
+        assert_eq!(
+            eval_daverage_surface(
+                &[
+                    ref_arg("DB_FLOAT_BOUNDARY"),
+                    field_text("V"),
+                    ref_arg("CRIT_FLOAT_BOUNDARY"),
+                ],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(boundary_stored))
+        );
+        assert_eq!(
+            eval_dget_surface(
+                &[
+                    ref_arg("DB_FLOAT_BOUNDARY"),
+                    field_text("V"),
+                    ref_arg("CRIT_FLOAT_BOUNDARY"),
+                ],
+                &resolver,
+            ),
+            Ok(EvalValue::Number(boundary_stored))
         );
     }
 

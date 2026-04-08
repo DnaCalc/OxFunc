@@ -53,7 +53,10 @@ Artifacts created or updated in the packet:
 4. integration_completeness: `integrated`
 5. open_lanes:
    - `BUG-FUNC-002` / `W074`: local broadcast widening and refreshed native evidence now exist for ordinary arithmetic plus compare/concat, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-005` remain open before this packet can be reported as a settled full-surface closure again
+   - `BUG-FUNC-004` / `W077`: compare/concat now also carries the reopened numeric near-equality tolerance lane proven by 2026-04-08 live Excel replay, and the corrected helper plus refreshed evidence are still awaiting landed-ref promotion and downstream acknowledgement under `HO-FN-008`
+   - `BUG-FUNC-005` / `W078`: live Excel on 2026-04-08 pinned `0^0 -> #NUM!` and `POWER(0,0) -> #NUM!`, reopening the shared power kernel lane because the current local `power_kernel` still published `1` on zero exponent before the bug fix landed on a committed ref
    - `BUG-FUNC-003` / `W075`: local union correction now returns first-class `MultiArea` and focused reference-family validation is recorded, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-006` remain open before this packet can be reported as a settled full-surface closure again
+   - `HANDOFF-OXFUNC-002` / `W076`: same-sheet `MultiArea` value-required materialization now runs through OxFunc-owned resolver-driven combination semantics locally, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-007` remain open before this packet can be reported as a settled full-surface closure again
 
 ## 4. Packet Result
 1. Wave A now covers:
@@ -89,6 +92,7 @@ Artifacts created or updated in the packet:
    - unary negate coerces `TRUE` to `1` before negation
    - postfix percent scales by `1/100`
    - divide-by-zero surfaces `#DIV/0!`
+   - `0^0` surfaces `#NUM!`
    - `(-1)^0.5` surfaces `#NUM!`
    - row-vs-column arithmetic inputs broadcast as 2-D spill grids
    - extra coordinates beyond a non-singleton extent surface `#N/A`
@@ -99,6 +103,7 @@ Artifacts created or updated in the packet:
    - direct `1="1"` is `FALSE`; the operator does not numeric-coerce text on the admitted scalar slice
    - mixed-type ordering is now pinned for the seeded slice
    - blank cells compare as `0`, `""`, or `FALSE` depending on counterpart type
+  - near-equality numeric comparisons follow the observed Excel tolerance lane on both the baseline `0.1+0.2` rows and the stronger arithmetic-generated 15-digit boundary pair `((123456789012345*10)+5)/1E25` versus `((123456789012345*10)+4)/1E25`
    - compare/concat now follow the same singleton-dimension broadcast rule as arithmetic
    - row-vs-column compare/concat inputs spill as 2-D grids
    - non-broadcastable compare/concat coordinates surface `#N/A`
@@ -106,6 +111,7 @@ Artifacts created or updated in the packet:
    - range operator preserves the rectangular span and normalizes reversed bounds
    - intersection returns the overlap area and surfaces `#NULL!` when empty
    - union now returns first-class `ReferenceKind::MultiArea` rather than overloading `Area` with a parenthesized target string
+   - same-sheet `MultiArea` now materializes for current value-required lanes as a row-major row vector in member order through OxFunc-owned resolver-driven combination semantics
    - trim-ref family is now treated as structural reference-target normalization with native transparency evidence
 
 ## 6. Verification Runs
@@ -115,9 +121,13 @@ Artifacts created or updated in the packet:
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib operator_arithmetic_family -- --nocapture`
 5. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib operator_compare_concat_family -- --nocapture`
 6. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
-7. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavea-operator-arithmetic-baseline.ps1`
-8. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1`
-9. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1`
+7. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib resolver -- --nocapture`
+8. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib adapters -- --nocapture`
+9. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib sum -- --nocapture`
+10. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib xmatch_surface -- --nocapture`
+11. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavea-operator-arithmetic-baseline.ps1`
+12. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-waveb-operator-compare-concat-baseline.ps1`
+13. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1`
 
 ## 7. Standing
 1. `W45` is no longer a planning-only packet.

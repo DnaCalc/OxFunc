@@ -10,7 +10,7 @@ use crate::functions::xmatch::{
     prepared_lookup_candidate_comparable, prepared_lookup_comparable,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 use std::cmp::Ordering;
 
 pub const MATCH_META: FunctionMeta = FunctionMeta {
@@ -235,6 +235,78 @@ fn eval_match_approximate_prepared(
     Ok(EvalValue::Number(index as f64))
 }
 
+fn prepared_from_lookup_value_cell(
+    cell: &ArrayCellValue,
+) -> crate::functions::adapters::PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(*n))
+        }
+        ArrayCellValue::Text(t) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Text(t.clone()))
+        }
+        ArrayCellValue::Logical(b) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Logical(*b))
+        }
+        ArrayCellValue::Error(code) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Error(*code))
+        }
+        ArrayCellValue::EmptyCell => crate::functions::adapters::PreparedArgValue::EmptyCell,
+    }
+}
+
+fn match_result_to_array_cell(result: Result<EvalValue, MatchEvalError>) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_match_error_to_ws(&err)),
+    }
+}
+
+fn eval_match_surface_prepared(
+    prepared_lookup_value: &crate::functions::adapters::PreparedArgValue,
+    prepared_lookup_array: &[crate::functions::adapters::PreparedArgValue],
+    prepared_match_type: Option<&crate::functions::adapters::PreparedArgValue>,
+) -> Result<EvalValue, MatchEvalError> {
+    let match_type_value = match prepared_match_type {
+        None | Some(crate::functions::adapters::PreparedArgValue::MissingArg) => None,
+        Some(arg) => Some(match arg {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(n)) => *n,
+            other => crate::functions::adapters::coerce_prepared_to_number(other)
+                .map_err(MatchEvalError::Coercion)?,
+        }),
+    };
+
+    match match_type_value {
+        None | Some(1.0) => eval_match_approximate_prepared(
+            prepared_lookup_value,
+            prepared_lookup_array,
+            MatchApproximateMode::AscendingNextSmaller,
+        ),
+        Some(-1.0) => eval_match_approximate_prepared(
+            prepared_lookup_value,
+            prepared_lookup_array,
+            MatchApproximateMode::DescendingNextLarger,
+        ),
+        Some(0.0) => {
+            let xmatch_match_mode = crate::functions::adapters::PreparedArgValue::Eval(
+                EvalValue::Number(match_type_to_xmatch_mode(prepared_lookup_value, 0.0)?),
+            );
+            eval_xmatch_adapter_prepared_with_blank_behavior(
+                prepared_lookup_value,
+                prepared_lookup_array,
+                Some(&xmatch_match_mode),
+                None,
+                BlankLookupBehavior::NotAvailable,
+            )
+            .map(EvalValue::Number)
+            .map_err(map_xmatch_error)
+        }
+        Some(other) => Err(MatchEvalError::InvalidMatchType(other)),
+    }
+}
+
 pub fn eval_match_surface(
     lookup_value: &CallArgValue,
     lookup_array: &[CallArgValue],
@@ -265,41 +337,28 @@ pub fn eval_match_surface(
         }
     };
 
-    let match_type_value = match prepared_match_type.as_ref() {
-        None | Some(crate::functions::adapters::PreparedArgValue::MissingArg) => None,
-        Some(arg) => Some(match arg {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(n)) => *n,
-            other => crate::functions::adapters::coerce_prepared_to_number(other)
-                .map_err(MatchEvalError::Coercion)?,
-        }),
-    };
-
-    match match_type_value {
-        None | Some(1.0) => eval_match_approximate_prepared(
-            &prepared_lookup_value,
-            &prepared_lookup_array,
-            MatchApproximateMode::AscendingNextSmaller,
-        ),
-        Some(-1.0) => eval_match_approximate_prepared(
-            &prepared_lookup_value,
-            &prepared_lookup_array,
-            MatchApproximateMode::DescendingNextLarger,
-        ),
-        Some(0.0) => {
-            let xmatch_match_mode = crate::functions::adapters::PreparedArgValue::Eval(
-                EvalValue::Number(match_type_to_xmatch_mode(&prepared_lookup_value, 0.0)?),
-            );
-            eval_xmatch_adapter_prepared_with_blank_behavior(
-                &prepared_lookup_value,
-                &prepared_lookup_array,
-                Some(&xmatch_match_mode),
-                None,
-                BlankLookupBehavior::NotAvailable,
-            )
-            .map(EvalValue::Number)
-            .map_err(map_xmatch_error)
+    match &prepared_lookup_value {
+        crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array
+                .iter_row_major()
+                .map(prepared_from_lookup_value_cell)
+                .map(|cell| {
+                    match_result_to_array_cell(eval_match_surface_prepared(
+                        &cell,
+                        &prepared_lookup_array,
+                        prepared_match_type.as_ref(),
+                    ))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells).expect("lookup-value array shape is valid"),
+            ))
         }
-        Some(other) => Err(MatchEvalError::InvalidMatchType(other)),
+        _ => eval_match_surface_prepared(
+            &prepared_lookup_value,
+            &prepared_lookup_array,
+            prepared_match_type.as_ref(),
+        ),
     }
 }
 
@@ -343,6 +402,27 @@ mod tests {
     }
 
     #[test]
+    fn match_exact_mode_keeps_near_equal_numbers_distinct() {
+        let got = eval_match_surface(
+            &CallArgValue::Eval(EvalValue::Number(0.1 + 0.2)),
+            &[CallArgValue::Eval(EvalValue::Number(0.3))],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Err(MatchEvalError::NotAvailable));
+
+        let boundary_probe = ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25;
+        let boundary_stored = ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25;
+        let boundary = eval_match_surface(
+            &CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+            &[CallArgValue::Eval(EvalValue::Number(boundary_stored))],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            &NoResolver,
+        );
+        assert_eq!(boundary, Err(MatchEvalError::NotAvailable));
+    }
+
+    #[test]
     fn eval_match_exact_returns_first_index() {
         let got = eval_match_surface(
             &CallArgValue::Eval(EvalValue::Number(3.0)),
@@ -354,6 +434,42 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_match_surface_spills_array_lookup_value_results() {
+        let got = eval_match_surface(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                    ArrayCellValue::Number(8.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&CallArgValue::Eval(EvalValue::Number(0.0))),
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap(),
+            ))
+        );
     }
 
     #[test]

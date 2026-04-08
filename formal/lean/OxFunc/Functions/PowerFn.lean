@@ -40,7 +40,8 @@ def usesIntegerPublicationLane (power : Rat) : Bool :=
 
 def evalPowerSurfaceClass (x y : CoercionInput) : Except WorksheetErrorCode String :=
   match coerceToNumber x, coerceToNumber y with
-  | .ok 0, .ok p => if p < 0 then .error .div0 else .ok "number"
+  | .ok 0, .ok p =>
+      if p = 0 then .error .num else if p < 0 then .error .div0 else .ok "number"
   | .ok n, .ok p =>
       if n < 0 ∧ p.den ≠ 1 then .error .num else .ok "number"
   | .error (.worksheetError code), _ => .error code
@@ -50,6 +51,10 @@ def evalPowerSurfaceClass (x y : CoercionInput) : Except WorksheetErrorCode Stri
 
 theorem evalPower_zero_negative_power_is_div0 :
     evalPowerSurfaceClass (.number 0) (.number (-1)) = .error .div0 := by
+  native_decide
+
+theorem evalPower_zero_zero_is_num :
+    evalPowerSurfaceClass (.number 0) (.number 0) = .error .num := by
   native_decide
 
 theorem power_integer_publication_seed_105_10 :

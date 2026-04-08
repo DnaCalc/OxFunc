@@ -1,6 +1,6 @@
 # W10 Ten-Function Mixed Seams Execution Record
 
-Status: `complete-provisional`
+Status: `reopened`
 Workset: `W10`
 Evidence ID: `W10-TENMIX-SEED-20260308`
 Follow-Up Evidence IDs:
@@ -21,20 +21,21 @@ Track W10 execution status across runtime, formalization, empirical replay, and 
 10. `OP_ADD`
 
 ## 2. Completeness Axes
-1. execution_state: `complete`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
+   - lookup-selection array-valued `lookup_value` lifting reopened on
+     2026-04-08 for `MATCH`, with adjacent `XLOOKUP` follow-on still open under
+     `BUG-FUNC-006` / `W079`.
    - external XLL verification-seam limits remain and must not be mistaken for function-semantic gaps.
 6. function-phase-complete slices within W10:
    - `SUM`
    - `IF`
    - `INDEX`
-   - `MATCH`
    - `ISNUMBER`
    - `NOW`
-   - `XLOOKUP`
    - `INDIRECT`
    - `SEQUENCE`
    - `OP_ADD`
@@ -133,7 +134,13 @@ Landed artifacts:
 5. `SEQUENCE` is not shape-only:
    - W10 now models materialized row-major payloads,
    - explicit blank `rows`, `columns`, `start`, and `step` positions all use Excel defaults in the observed baseline.
-6. lookup-family closure remains intact after the W10 closeout:
-   - `MATCH` and `XLOOKUP` stayed green under the widened packet replay,
-   - the widened XLL bridge manifest is now green across scalar lookup, blank lookup, reference-return address, and reference-return range-composition lanes for the current scope.
+6. the older lookup-family packet remained green only for the previously
+   admitted scalar lookup-value scope:
+   - `MATCH` stayed green under the widened packet replay that was actually
+     exercised,
+   - `XLOOKUP` stayed green under the scalar lookup-value, blank lookup, and
+     reference-return lanes that were actually exercised,
+   - live Excel COM replay on 2026-04-08 later proved that array-valued
+     lookup-value lifting is a missing current-baseline lane for `MATCH`, with
+     adjacent `XLOOKUP` follow-on still open.
 7. `NOW` remains evidenced across provider/recalc, registration, and format-hint lanes, with format-hint application assigned to the engine boundary rather than the pure kernel.

@@ -28,6 +28,14 @@ This slice covers the non-`@` scalar operator rows:
    - blank vs number -> `0`
    - blank vs text -> `""`
    - blank vs logical -> `FALSE`
+9. numeric-vs-numeric comparisons on the admitted ordinary-operator slice use the
+   current empirically pinned Excel tolerance lane rather than exact
+   IEEE-double equality/order:
+   - observed baseline lane: `0.1+0.2` versus `0.3`,
+   - stronger arithmetic-generated boundary lane:
+     `((123456789012345*10)+5)/1E25` versus `((123456789012345*10)+4)/1E25`,
+   - current local model is truncation-style normalization to 15 significant
+     decimal digits on the tested compare paths, not round-to-nearest.
 
 ## 3. Out Of Slice
 1. locale/collation-sensitive text ordering beyond the current installed baseline,
@@ -47,6 +55,12 @@ This slice covers the non-`@` scalar operator rows:
 10. `={"a","b"}&{"x";"y"} -> ax|bx|ay|by`
 11. `={1,2}={1;2} -> TRUE|FALSE|FALSE|TRUE`
 12. `={"a","b"}&{"x","y","z"} -> ax|by|#N/A`
+13. `=0.1+0.2=0.3 -> TRUE`
+14. `=0.1+0.2<>0.3 -> FALSE`
+15. `=0.1+0.2<0.3 -> FALSE`
+16. `=0.1+0.2<=0.3 -> TRUE`
+17. `=0.1+0.2>0.3 -> FALSE`
+18. `=0.1+0.2>=0.3 -> TRUE`
 
 ## 5. Artifacts
 1. runtime module: `crates/oxfunc_core/src/functions/operator_compare_concat_family.rs`

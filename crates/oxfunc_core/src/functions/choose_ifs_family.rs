@@ -330,4 +330,15 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn ifs_empty_text_condition_returns_value_error() {
+        let got = eval_ifs_surface(&[text_arg(""), number_arg(1.0)], &MockResolver);
+        assert_eq!(
+            got,
+            Err(ChooseIfsEvalError::ConditionCoercion(
+                CoercionError::NonNumericText("".to_string())
+            ))
+        );
+    }
 }

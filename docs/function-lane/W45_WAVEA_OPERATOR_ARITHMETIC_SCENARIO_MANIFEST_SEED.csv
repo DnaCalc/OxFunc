@@ -10,3 +10,4 @@
 "W45A-009","W45-A","(-1)^0.5","","","#NUM!","","","","","Real-domain invalid power lane."
 "W45A-010","W45-A","{1,2}+{1;2}","","","","2|3|3|4","2","2","0","Row-vs-column arithmetic broadcasts as an outer-product grid."
 "W45A-011","W45-A","{1,2}+{1,2,3}","","","","2|4|#N/A","1","3","0","Non-broadcastable arithmetic coordinates surface #N/A."
+"W45A-012","W45-A","0^0","","","#NUM!","","","","","Zero-to-zero power lane surfaces #NUM! in Excel."

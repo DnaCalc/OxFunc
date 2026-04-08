@@ -415,10 +415,12 @@ mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+    use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ResolverCapabilities,
         resolved_value: Option<EvalValue>,
+        by_target: BTreeMap<String, EvalValue>,
     }
 
     impl ReferenceResolver for MockResolver {
@@ -430,6 +432,9 @@ mod tests {
             &self,
             reference: &ReferenceLike,
         ) -> Result<EvalValue, RefResolutionError> {
+            if let Some(value) = self.by_target.get(&reference.target) {
+                return Ok(value.clone());
+            }
             self.resolved_value
                 .clone()
                 .ok_or(RefResolutionError::UnresolvedReference {
@@ -442,6 +447,7 @@ mod tests {
         MockResolver {
             caps: ResolverCapabilities::permissive_local(),
             resolved_value: Some(value),
+            by_target: BTreeMap::new(),
         }
     }
 
@@ -485,6 +491,77 @@ mod tests {
                 &resolver_with(EvalValue::Number(1.0))
             ),
             Ok(PreparedArgValue::EmptyCell)
+        );
+    }
+
+    #[test]
+    fn prepare_values_only_materializes_multi_area_reference_into_row_vector() {
+        let mut by_target = BTreeMap::new();
+        by_target.insert(
+            "Alpha!A1:A2".to_string(),
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(11.0)],
+                ])
+                .unwrap(),
+            ),
+        );
+        by_target.insert("Alpha!B2".to_string(), EvalValue::Number(13.0));
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved_value: None,
+            by_target,
+        };
+        let arg = CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::MultiArea,
+            "(Alpha!A1:A2,Alpha!B2)",
+        ));
+
+        let prepared = prepare_arg_values_only(&arg, &resolver);
+        assert_eq!(
+            prepared,
+            Ok(PreparedArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(7.0),
+                    ArrayCellValue::Number(11.0),
+                    ArrayCellValue::Number(13.0),
+                ]])
+                .unwrap()
+            )))
+        );
+    }
+
+    #[test]
+    fn expand_lookup_vector_materializes_multi_area_reference_in_member_order() {
+        let mut by_target = BTreeMap::new();
+        by_target.insert(
+            "A1:A2".to_string(),
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                ])
+                .unwrap(),
+            ),
+        );
+        by_target.insert("C1".to_string(), EvalValue::Number(3.0));
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved_value: None,
+            by_target,
+        };
+        let arg =
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)"));
+
+        let prepared = expand_lookup_vector_arg(&arg, &resolver);
+        assert_eq!(
+            prepared,
+            Ok(vec![
+                PreparedArgValue::Eval(EvalValue::Number(1.0)),
+                PreparedArgValue::Eval(EvalValue::Number(2.0)),
+                PreparedArgValue::Eval(EvalValue::Number(3.0)),
+            ])
         );
     }
 
@@ -583,6 +660,7 @@ mod tests {
                 allow_external_refs: false,
             },
             resolved_value: None,
+            by_target: BTreeMap::new(),
         };
 
         let got = map_values_only_prepared(

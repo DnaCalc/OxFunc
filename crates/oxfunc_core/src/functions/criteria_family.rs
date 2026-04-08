@@ -7,6 +7,7 @@ use crate::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
 use crate::resolver::{ReferenceResolver, resolve_eval_value};
 use crate::value::{
@@ -344,13 +345,14 @@ fn criteria_from_prepared(prepared: &PreparedArgValue) -> Result<CriteriaSpec, C
 }
 
 fn compare_numbers(op: CompareOp, lhs: f64, rhs: f64) -> bool {
+    let ord = compare_excel_numbers(lhs, rhs);
     match op {
-        CompareOp::Eq => lhs == rhs,
-        CompareOp::Ne => lhs != rhs,
-        CompareOp::Lt => lhs < rhs,
-        CompareOp::Le => lhs <= rhs,
-        CompareOp::Gt => lhs > rhs,
-        CompareOp::Ge => lhs >= rhs,
+        CompareOp::Eq => ord == std::cmp::Ordering::Equal,
+        CompareOp::Ne => ord != std::cmp::Ordering::Equal,
+        CompareOp::Lt => ord == std::cmp::Ordering::Less,
+        CompareOp::Le => ord != std::cmp::Ordering::Greater,
+        CompareOp::Gt => ord == std::cmp::Ordering::Greater,
+        CompareOp::Ge => ord != std::cmp::Ordering::Less,
     }
 }
 fn compare_bools(op: CompareOp, lhs: bool, rhs: bool) -> bool {
@@ -829,6 +831,133 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(eq_text, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn countif_uses_excel_near_equal_numeric_comparisons() {
+        let range = array(vec![vec![ArrayCellValue::Number(0.3)]]);
+        assert_eq!(
+            eval_countif_surface(
+                &[
+                    range.clone(),
+                    CallArgValue::Eval(EvalValue::Number(0.1 + 0.2))
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(1.0))
+        );
+        assert_eq!(
+            eval_countif_surface(
+                &[range.clone(), scalar_text("<>0.30000000000000004")],
+                &NoResolver
+            ),
+            Ok(EvalValue::Number(0.0))
+        );
+        assert_eq!(
+            eval_countif_surface(
+                &[range.clone(), scalar_text("<0.30000000000000004")],
+                &NoResolver
+            ),
+            Ok(EvalValue::Number(0.0))
+        );
+        assert_eq!(
+            eval_countif_surface(
+                &[range.clone(), scalar_text("<=0.30000000000000004")],
+                &NoResolver
+            ),
+            Ok(EvalValue::Number(1.0))
+        );
+        assert_eq!(
+            eval_countif_surface(
+                &[range.clone(), scalar_text(">0.30000000000000004")],
+                &NoResolver
+            ),
+            Ok(EvalValue::Number(0.0))
+        );
+        assert_eq!(
+            eval_countif_surface(&[range, scalar_text(">=0.30000000000000004")], &NoResolver),
+            Ok(EvalValue::Number(1.0))
+        );
+    }
+
+    #[test]
+    fn criteria_boundary_pair_uses_excel_truncation_style_matching_across_ifs_family() {
+        let boundary_probe = ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25;
+        let boundary_stored = ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25;
+        let criteria_range = array(vec![vec![
+            ArrayCellValue::Number(boundary_stored),
+            ArrayCellValue::Number(2.0),
+        ]]);
+        let target_range = array(vec![vec![
+            ArrayCellValue::Number(10.0),
+            ArrayCellValue::Number(20.0),
+        ]]);
+        let tag_range = array(vec![vec![text("Y"), text("Y")]]);
+
+        assert_eq!(
+            eval_countifs_surface(
+                &[
+                    criteria_range.clone(),
+                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    tag_range.clone(),
+                    scalar_text("Y"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(1.0))
+        );
+        assert_eq!(
+            eval_sumifs_surface(
+                &[
+                    target_range.clone(),
+                    criteria_range.clone(),
+                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    tag_range.clone(),
+                    scalar_text("Y"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(10.0))
+        );
+        assert_eq!(
+            eval_averageifs_surface(
+                &[
+                    target_range.clone(),
+                    criteria_range.clone(),
+                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    tag_range.clone(),
+                    scalar_text("Y"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(10.0))
+        );
+        assert_eq!(
+            eval_maxifs_surface(
+                &[
+                    target_range.clone(),
+                    criteria_range.clone(),
+                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    tag_range.clone(),
+                    scalar_text("Y"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(10.0))
+        );
+        assert_eq!(
+            eval_minifs_surface(
+                &[
+                    target_range,
+                    criteria_range,
+                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    tag_range,
+                    scalar_text("Y"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Number(10.0))
+        );
     }
 
     #[test]

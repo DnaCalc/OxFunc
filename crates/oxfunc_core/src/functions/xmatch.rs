@@ -704,6 +704,22 @@ mod tests {
     }
 
     #[test]
+    fn eval_xmatch_adapter_prepared_exact_mode_keeps_near_equal_numbers_distinct() {
+        let got = eval_xmatch_adapter_prepared(&num(0.1 + 0.2), &[num(0.3)], Some(&num(0.0)), None);
+        assert_eq!(got, Err(XmatchEvalError::NotAvailable));
+
+        let boundary_probe = num(((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25);
+        let boundary_stored = num(((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25);
+        let boundary = eval_xmatch_adapter_prepared(
+            &boundary_probe,
+            &[boundary_stored],
+            Some(&num(0.0)),
+            None,
+        );
+        assert_eq!(boundary, Err(XmatchEvalError::NotAvailable));
+    }
+
+    #[test]
     fn eval_xmatch_adapter_prepared_text_match_is_case_insensitive() {
         let got =
             eval_xmatch_adapter_prepared(&text("Abc"), &[text("abc"), text("zzz")], None, None);

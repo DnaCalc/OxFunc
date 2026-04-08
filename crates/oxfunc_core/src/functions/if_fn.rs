@@ -148,4 +148,22 @@ mod tests {
         let got = eval_if_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Logical(false)));
     }
+
+    #[test]
+    fn eval_if_empty_text_condition_returns_value_error() {
+        let args = vec![
+            CallArgValue::Eval(EvalValue::Text(
+                crate::value::ExcelText::from_interop_assignment(""),
+            )),
+            CallArgValue::Eval(EvalValue::Number(1.0)),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let got = eval_if_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Err(IfEvalError::ConditionCoercion(
+                CoercionError::NonNumericText("".to_string())
+            ))
+        );
+    }
 }

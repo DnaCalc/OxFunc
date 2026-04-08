@@ -4,6 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::excel_numeric_compare::excel_numbers_equal;
 use crate::functions::xmatch::{XmatchEvalError, comparable_eq, prepared_lookup_comparable};
 use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::ReferenceResolver;
@@ -93,7 +94,13 @@ fn switch_values_equal(
         _ => {
             let lhs = prepared_lookup_comparable(lhs).map_err(map_xmatch_coercion)?;
             let rhs = prepared_lookup_comparable(rhs).map_err(map_xmatch_coercion)?;
-            Ok(comparable_eq(&lhs, &rhs))
+            Ok(match (&lhs, &rhs) {
+                (
+                    crate::functions::xmatch::XmatchComparable::Number(lhs),
+                    crate::functions::xmatch::XmatchComparable::Number(rhs),
+                ) => excel_numbers_equal(*lhs, *rhs),
+                _ => comparable_eq(&lhs, &rhs),
+            })
         }
     }
 }
@@ -292,6 +299,46 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(no_default, Ok(EvalValue::Error(WorksheetErrorCode::NA)));
+    }
+
+    #[test]
+    fn switch_uses_excel_near_equal_numeric_equality() {
+        let near_equal = eval_switch_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(5.0 + 2.0e-15)),
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(near_equal, Ok(EvalValue::Number(1.0)));
+
+        let far_equal = eval_switch_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1.0 + 1.0e-14)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(far_equal, Ok(EvalValue::Number(2.0)));
+
+        let boundary_equal = eval_switch_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(
+                    ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25,
+                )),
+                CallArgValue::Eval(EvalValue::Number(
+                    ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25,
+                )),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(boundary_equal, Ok(EvalValue::Number(1.0)));
     }
 
     #[test]

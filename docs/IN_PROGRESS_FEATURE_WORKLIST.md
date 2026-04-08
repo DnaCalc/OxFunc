@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-04-07
+Last updated: 2026-04-08
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -63,8 +63,24 @@ Supersession note:
 - Canonical owner: [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md), [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md), [BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md), [BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-11 Multi-Area Reference Seam
-- Current state: active cross-repo seam follow-up with the local OxFunc caller sweep and legacy-wrapper fallback removal validated and handed off; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment under `HO-FN-006`.
-- Canonical owner: [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md), [BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+- Current state: active cross-repo seam follow-up with the local OxFunc first-class `MultiArea` identity correction and the Style A value-materialization implementation both now validated locally; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment under `HO-FN-006` and `HO-FN-007`.
+- Canonical owner: [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md), [W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md), [BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-003_multi_area_reference_seam_collapses_to_area_string.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-12 Numeric Comparison Tolerance Follow-On
+- Current state: active local follow-up from the corpus replay. `IF` / `IFS` empty-text condition is now pinned as no local bug, while ordinary compare operators, criteria/database selection, and `SWITCH` reopen under one numeric-comparison tolerance packet. The current local fix is validated against both the original `0.1+0.2` rows and the stronger arithmetic-generated 15-digit boundary rows; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment under `HO-FN-008`.
+- Canonical owner: [W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md), [BUG-FUNC-004_numeric_comparison_tolerance_family_split.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-004_numeric_comparison_tolerance_family_split.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-13 Power Zero-To-Zero Parity
+- Current state: active local follow-up from live Excel replay. `POWER(0,0)` and `0^0` are now pinned as `#NUM!` in Excel, reopening the shared power-kernel lane because the pre-fix local runtime/formal path published `1`. The local correction and focused validation are on the working tree; the remaining open lane is landed-ref promotion.
+- Canonical owner: [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md), [BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-14 Lookup-Family Array Lookup-Value Lifting
+- Current state: active local follow-up from live Excel replay. `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` are now pinned as array-lifting over an array-valued `lookup_value`, reopening the lookup family because the pre-fix local surfaces rejected or mishandled that lane. The working-tree correction now covers those four functions; adjacent `XLOOKUP` risk remains open rather than silently bundled into the same closure claim.
+- Canonical owner: [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md), [BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-15 Function Array-Support Review
+- Current state: active local review seed. `LEFT`, `RIGHT`, and `MID` are now pinned as spilling over array-valued count/start inputs in live Excel, the working-tree correction also carries through the current-baseline `*B` delegates, and the remaining open lane is the broader systematic review of array-support semantics across the supported function surface.
+- Canonical owner: [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md), [BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
@@ -77,4 +93,4 @@ Current reading:
 3. `IP-07` is `planned`,
 4. `IP-08` is `parked`,
 5. `IP-09` is `planned`,
-6. `IP-10` and `IP-11` are `active`.
+6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-14`, and `IP-15` are `active`.

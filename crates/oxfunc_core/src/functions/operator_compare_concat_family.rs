@@ -7,6 +7,7 @@ use crate::functions::adapters::{
     BroadcastPreparedPair, PreparedArgValue, coerce_prepared_to_text, expand_binary_broadcast_grid,
     run_values_only_prepared,
 };
+use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::resolver::ReferenceResolver;
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
@@ -171,9 +172,7 @@ fn ordering_for_values(lhs: CompareValue, rhs: CompareValue) -> std::cmp::Orderi
     let (lhs, rhs) = normalize_blank_pair(lhs, rhs);
     match (&lhs, &rhs) {
         (CompareValue::Blank, CompareValue::Blank) => std::cmp::Ordering::Equal,
-        (CompareValue::Number(lhs), CompareValue::Number(rhs)) => {
-            lhs.partial_cmp(rhs).unwrap_or(std::cmp::Ordering::Equal)
-        }
+        (CompareValue::Number(lhs), CompareValue::Number(rhs)) => compare_excel_numbers(*lhs, *rhs),
         (CompareValue::Text(lhs), CompareValue::Text(rhs)) => text_cmp(lhs, rhs),
         (CompareValue::Logical(lhs), CompareValue::Logical(rhs)) => lhs.cmp(rhs),
         _ => type_rank(&lhs).cmp(&type_rank(&rhs)),
@@ -651,6 +650,80 @@ mod tests {
                 ]])
                 .unwrap()
             )
+        );
+    }
+
+    #[test]
+    fn comparisons_use_excel_near_equal_numeric_ordering() {
+        let lhs = CallArgValue::Eval(EvalValue::Number(0.1 + 0.2));
+        let rhs = CallArgValue::Eval(EvalValue::Number(0.3));
+        assert_eq!(
+            eval_op_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(true))
+        );
+        assert_eq!(
+            eval_op_not_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_less_than_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_less_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(true))
+        );
+        assert_eq!(
+            eval_op_greater_than_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_greater_equal_surface(&[lhs, rhs], &NoResolver),
+            Ok(EvalValue::Logical(true))
+        );
+        assert_eq!(
+            eval_op_equal_surface(
+                &[
+                    CallArgValue::Eval(EvalValue::Number(1.0 + 1.0e-14)),
+                    CallArgValue::Eval(EvalValue::Number(1.0)),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Logical(false))
+        );
+
+        let boundary_lhs = CallArgValue::Eval(EvalValue::Number(
+            ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25,
+        ));
+        let boundary_rhs = CallArgValue::Eval(EvalValue::Number(
+            ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25,
+        ));
+        assert_eq!(
+            eval_op_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(true))
+        );
+        assert_eq!(
+            eval_op_not_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_less_than_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_less_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
+            Ok(EvalValue::Logical(true))
+        );
+        assert_eq!(
+            eval_op_greater_than_surface(
+                &[boundary_lhs.clone(), boundary_rhs.clone()],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Logical(false))
+        );
+        assert_eq!(
+            eval_op_greater_equal_surface(&[boundary_lhs, boundary_rhs], &NoResolver),
+            Ok(EvalValue::Logical(true))
         );
     }
 }

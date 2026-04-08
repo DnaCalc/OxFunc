@@ -404,5 +404,17 @@ mod tests {
             got,
             Err(BinaryNumericSurfaceError::Domain(WorksheetErrorCode::Num))
         );
+
+        let zero_zero = eval_op_power_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            zero_zero,
+            Err(BinaryNumericSurfaceError::Domain(WorksheetErrorCode::Num))
+        );
     }
 }

@@ -4,10 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 const TEXT_SLICE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT_SLICE_BASE",
@@ -120,6 +123,109 @@ fn take_mid_units(text: &ExcelText, start_one_based: usize, count: usize) -> Exc
     ExcelText::from_utf16_code_units(text.utf16_code_units()[start_index..end_index].to_vec())
 }
 
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn text_slice_result_to_array_cell(
+    result: Result<EvalValue, TextSliceEvalError>,
+) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_text_slice_error_to_ws(&err)),
+    }
+}
+
+fn eval_text_slice_with_single_array_lift(
+    prepared: &[PreparedArgValue],
+    eval_scalar: impl Fn(&[PreparedArgValue]) -> Result<EvalValue, TextSliceEvalError>,
+) -> Result<EvalValue, TextSliceEvalError> {
+    let array_args = prepared
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, arg)| match arg {
+            PreparedArgValue::Eval(EvalValue::Array(array)) => Some((idx, array)),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+
+    match array_args.as_slice() {
+        [] => eval_scalar(prepared),
+        [(arg_index, array)] => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let mut scalar_args = prepared.to_vec();
+                    scalar_args[*arg_index] = prepared_from_array_cell(cell);
+                    text_slice_result_to_array_cell(eval_scalar(&scalar_args))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("text-slice lifted array shape remains valid"),
+            ))
+        }
+        _ => eval_scalar(prepared),
+    }
+}
+
+fn eval_left_prepared_value(
+    prepared: &[PreparedArgValue],
+) -> Result<EvalValue, TextSliceEvalError> {
+    if !LEFT_META.arity.accepts(prepared.len()) {
+        return Err(TextSliceEvalError::ArityMismatch {
+            expected_min: LEFT_META.arity.min,
+            expected_max: LEFT_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+
+    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
+    let count = resolve_optional_count(prepared)?;
+    Ok(EvalValue::Text(take_left_units(&text, count)))
+}
+
+fn eval_right_prepared_value(
+    prepared: &[PreparedArgValue],
+) -> Result<EvalValue, TextSliceEvalError> {
+    if !RIGHT_META.arity.accepts(prepared.len()) {
+        return Err(TextSliceEvalError::ArityMismatch {
+            expected_min: RIGHT_META.arity.min,
+            expected_max: RIGHT_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+
+    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
+    let count = resolve_optional_count(prepared)?;
+    Ok(EvalValue::Text(take_right_units(&text, count)))
+}
+
+fn eval_mid_prepared_value(prepared: &[PreparedArgValue]) -> Result<EvalValue, TextSliceEvalError> {
+    if !MID_META.arity.accepts(prepared.len()) {
+        return Err(TextSliceEvalError::ArityMismatch {
+            expected_min: MID_META.arity.min,
+            expected_max: MID_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+
+    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
+    let start = coerce_prepared_to_number(&prepared[1]).map_err(TextSliceEvalError::Coercion)?;
+    let count = coerce_prepared_to_number(&prepared[2]).map_err(TextSliceEvalError::Coercion)?;
+    let start = one_based_start_from_number(start)?;
+    let count = nonnegative_count_from_number(count)?;
+    Ok(EvalValue::Text(take_mid_units(&text, start, count)))
+}
+
 pub fn eval_len_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -157,80 +263,27 @@ pub fn eval_left_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSliceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !LEFT_META.arity.accepts(prepared.len()) {
-                return Err(TextSliceEvalError::ArityMismatch {
-                    expected_min: LEFT_META.arity.min,
-                    expected_max: LEFT_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-
-            let text =
-                coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-            let count = resolve_optional_count(prepared)?;
-            Ok(EvalValue::Text(take_left_units(&text, count)))
-        },
-        TextSliceEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
+    eval_text_slice_with_single_array_lift(&prepared, eval_left_prepared_value)
 }
 
 pub fn eval_right_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSliceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !RIGHT_META.arity.accepts(prepared.len()) {
-                return Err(TextSliceEvalError::ArityMismatch {
-                    expected_min: RIGHT_META.arity.min,
-                    expected_max: RIGHT_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-
-            let text =
-                coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-            let count = resolve_optional_count(prepared)?;
-            Ok(EvalValue::Text(take_right_units(&text, count)))
-        },
-        TextSliceEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
+    eval_text_slice_with_single_array_lift(&prepared, eval_right_prepared_value)
 }
 
 pub fn eval_mid_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSliceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !MID_META.arity.accepts(prepared.len()) {
-                return Err(TextSliceEvalError::ArityMismatch {
-                    expected_min: MID_META.arity.min,
-                    expected_max: MID_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-
-            let text =
-                coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-            let start =
-                coerce_prepared_to_number(&prepared[1]).map_err(TextSliceEvalError::Coercion)?;
-            let count =
-                coerce_prepared_to_number(&prepared[2]).map_err(TextSliceEvalError::Coercion)?;
-            let start = one_based_start_from_number(start)?;
-            let count = nonnegative_count_from_number(count)?;
-            Ok(EvalValue::Text(take_mid_units(&text, start, count)))
-        },
-        TextSliceEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
+    eval_text_slice_with_single_array_lift(&prepared, eval_mid_prepared_value)
 }
 
 pub fn map_text_slice_error_to_ws(e: &TextSliceEvalError) -> WorksheetErrorCode {
@@ -493,6 +546,144 @@ mod tests {
             ),
             Ok(EvalValue::Text(
                 ExcelText::from_utf16_code_units(Vec::new())
+            ))
+        );
+    }
+
+    #[test]
+    fn left_spills_array_counts() {
+        let got = eval_left_surface(
+            &[
+                text_value("MISSISSIPPI".encode_utf16().collect()),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "M".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "MI".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "MIS".encode_utf16().collect(),
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn right_spills_array_counts() {
+        let got = eval_right_surface(
+            &[
+                text_value("MISSISSIPPI".encode_utf16().collect()),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "I".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "PI".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "PPI".encode_utf16().collect(),
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn mid_spills_array_start_positions() {
+        let got = eval_mid_surface(
+            &[
+                text_value("MISSISSIPPI".encode_utf16().collect()),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                        vec![ArrayCellValue::Number(4.0)],
+                        vec![ArrayCellValue::Number(5.0)],
+                        vec![ArrayCellValue::Number(6.0)],
+                        vec![ArrayCellValue::Number(7.0)],
+                        vec![ArrayCellValue::Number(8.0)],
+                        vec![ArrayCellValue::Number(9.0)],
+                        vec![ArrayCellValue::Number(10.0)],
+                        vec![ArrayCellValue::Number(11.0)],
+                    ])
+                    .unwrap(),
+                )),
+                number_value(1.0),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "M".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "I".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "S".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "S".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "I".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "S".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "S".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "I".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "P".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "P".encode_utf16().collect(),
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "I".encode_utf16().collect(),
+                    ))],
+                ])
+                .unwrap()
             ))
         );
     }

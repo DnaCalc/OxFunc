@@ -6,7 +6,7 @@ use crate::functions::xmatch::{
     validate_xmatch_surface_arity,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 fn prepare_lookup_vector(
     lookup_array: &[CallArgValue],
@@ -18,6 +18,73 @@ fn prepare_lookup_vector(
             .extend(expand_lookup_vector_arg(arg, resolver).map_err(XmatchEvalError::Coercion)?);
     }
     Ok(prepared)
+}
+
+fn prepared_from_lookup_value_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn map_xmatch_error_to_ws(e: &XmatchEvalError) -> WorksheetErrorCode {
+    match e {
+        XmatchEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyLookupArray => WorksheetErrorCode::NA,
+        XmatchEvalError::MissingArg => WorksheetErrorCode::Value,
+        XmatchEvalError::EmptyCell => WorksheetErrorCode::NA,
+        XmatchEvalError::Coercion(crate::coercion::CoercionError::WorksheetError(code)) => *code,
+        XmatchEvalError::InvalidMatchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::InvalidSearchMode(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::UnsupportedMatchModeForSeed(_)
+        | XmatchEvalError::UnsupportedSearchModeForSeed(_) => WorksheetErrorCode::Value,
+        XmatchEvalError::NotAvailable => WorksheetErrorCode::NA,
+        XmatchEvalError::Coercion(_) | XmatchEvalError::UnsupportedValueKind(_) => {
+            WorksheetErrorCode::Value
+        }
+    }
+}
+
+fn xmatch_result_to_array_cell(result: Result<EvalValue, XmatchEvalError>) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_xmatch_error_to_ws(&err)),
+    }
+}
+
+fn eval_xmatch_surface_prepared_value(
+    lookup_value: &PreparedArgValue,
+    lookup_array: &[PreparedArgValue],
+    match_mode: Option<&PreparedArgValue>,
+    search_mode: Option<&PreparedArgValue>,
+) -> Result<EvalValue, XmatchEvalError> {
+    match lookup_value {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array
+                .iter_row_major()
+                .map(prepared_from_lookup_value_cell)
+                .map(|cell| {
+                    xmatch_result_to_array_cell(eval_xmatch_adapter_prepared_value(
+                        &cell,
+                        lookup_array,
+                        match_mode,
+                        search_mode,
+                    ))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells).expect("lookup-value array shape is valid"),
+            ))
+        }
+        _ => {
+            eval_xmatch_adapter_prepared_value(lookup_value, lookup_array, match_mode, search_mode)
+        }
+    }
 }
 
 pub fn eval_xmatch_surface(
@@ -72,7 +139,7 @@ pub fn eval_xmatch_surface_value(
         .transpose()
         .map_err(XmatchEvalError::Coercion)?;
 
-    eval_xmatch_adapter_prepared_value(
+    eval_xmatch_surface_prepared_value(
         &prepared_lookup_value,
         &prepared_lookup_array,
         prepared_match_mode.as_ref(),
@@ -89,10 +156,12 @@ mod tests {
     use crate::value::{
         ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
     };
+    use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ResolverCapabilities,
         resolved_value: Option<EvalValue>,
+        by_target: BTreeMap<String, EvalValue>,
     }
 
     impl ReferenceResolver for MockResolver {
@@ -104,6 +173,9 @@ mod tests {
             &self,
             reference: &ReferenceLike,
         ) -> Result<EvalValue, RefResolutionError> {
+            if let Some(value) = self.by_target.get(&reference.target) {
+                return Ok(value.clone());
+            }
             self.resolved_value
                 .clone()
                 .ok_or(RefResolutionError::UnresolvedReference {
@@ -116,6 +188,7 @@ mod tests {
         MockResolver {
             caps: ResolverCapabilities::permissive_local(),
             resolved_value: None,
+            by_target: BTreeMap::new(),
         }
     }
 
@@ -130,6 +203,7 @@ mod tests {
         let r = MockResolver {
             caps: ResolverCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(2.0)),
+            by_target: BTreeMap::new(),
         };
 
         let got = eval_xmatch_surface(
@@ -203,6 +277,43 @@ mod tests {
     }
 
     #[test]
+    fn eval_xmatch_surface_value_spills_array_lookup_value_results() {
+        let got = eval_xmatch_surface_value(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                    ArrayCellValue::Number(8.0),
+                ]])
+                .unwrap(),
+            ))],
+            None,
+            None,
+            &resolver(),
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap(),
+            ))
+        );
+    }
+
+    #[test]
     fn eval_xmatch_surface_search_mode_uses_prepared_coercion() {
         let got = eval_xmatch_surface(
             &CallArgValue::Eval(EvalValue::Number(2.0)),
@@ -215,6 +326,39 @@ mod tests {
             &resolver(),
         );
         assert_eq!(got, Ok(2.0));
+    }
+
+    #[test]
+    fn eval_xmatch_surface_flattens_multi_area_lookup_array_argument() {
+        let mut by_target = BTreeMap::new();
+        by_target.insert(
+            "A1:A2".to_string(),
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                ])
+                .unwrap(),
+            ),
+        );
+        by_target.insert("C1".to_string(), EvalValue::Number(3.0));
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved_value: None,
+            by_target,
+        };
+
+        let got = eval_xmatch_surface(
+            &CallArgValue::Eval(EvalValue::Number(3.0)),
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,C1)",
+            ))],
+            None,
+            None,
+            &resolver,
+        );
+        assert_eq!(got, Ok(3.0));
     }
 
     #[test]

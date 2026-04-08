@@ -18,6 +18,12 @@ This note is intentionally not final policy; it is a planning input for the floa
    - https://learn.microsoft.com/en-us/office/client-developer/excel/xlfevaluate
 5. Microsoft Learn (xlCoerce):
    - https://learn.microsoft.com/en-us/office/client-developer/excel/xlcoerce
+6. Grid reverse-engineering note on Excel floating-point arithmetic:
+   - https://docs.grid.is/apiary/explain/excel-floating-point-arithmetic/
+7. Wikipedia overview of numeric precision in Microsoft Excel:
+   - https://en.wikipedia.org/wiki/Numeric_precision_in_Microsoft_Excel
+8. Newton Excel Bach note on floating-point comparison behavior:
+   - https://newtonexcelbach.com/2012/01/07/comparing-floating-point-numbers/
 
 ## 3. Current Working Interpretations
 1. Excel numeric core uses IEEE-754 double precision representation.
@@ -135,3 +141,47 @@ Deferral rationale:
 1. Promotions are deferred pending cross-build/channel and non-default compatibility reruns.
 2. Promotions are deferred pending Foundation-side `EMP-*` ID assignment and acceptance review.
 3. Historical Foundation editorial prompts now live behind `docs/HISTORY.md` and the `OxFunc_V1` tag.
+
+## 12. Numeric Comparison Follow-On (2026-04-08)
+Observed scope:
+1. Live Excel replay plus manifest-driven `FP-E` run for:
+   - `IF` / `IFS` empty-text conditions,
+   - ordinary operator near-equality comparisons,
+   - criteria/database numeric criteria matching,
+   - `SWITCH`,
+   - exact-match contrast lanes for `MATCH`, `XMATCH`, and `DELTA`,
+   - arithmetic-generated 15-significant-digit boundary rows that distinguish
+     truncation-style comparison normalization from round-to-nearest.
+2. Baseline metadata:
+   - Excel `16.0 (build 19822)`,
+   - channel `http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60`,
+   - compatibility `default|CalculationVersion=191029|CheckCompatibility=False|FileFormat=51`,
+   - locale `en-US`.
+
+Key outcomes:
+1. `IF("",1,2)` and `IFS("",1,TRUE,2)` both return `#VALUE!`; the earlier
+   false-branch hypothesis was not supported by replay.
+2. Ordinary compare operators use a tolerant near-equality lane on the tested
+   cases, including the arithmetic-generated boundary pair
+   `((123456789012345*10)+5)/1E25` versus `((123456789012345*10)+4)/1E25`.
+3. Criteria/database numeric criteria matching and `SWITCH` share that tolerant
+   lane on the tested cases, including the same arithmetic-generated boundary
+   pair.
+4. `MATCH`, `XMATCH`, and `DELTA` exact-match paths remain exact on the tested
+   near-equality cases, including the arithmetic-generated boundary pair, and
+   therefore must not be folded into the tolerant helper by default.
+5. The current observed compare rule is consistent with truncation toward zero
+   to 15 significant decimal digits on the tolerant families' tested paths; the
+   earlier round-to-nearest surrogate is too weak and diverges on the stronger
+   boundary pair.
+
+Working policy consequence:
+1. near-equality numeric comparison is not one global OxFunc rule.
+2. it must be carried only by the families empirically shown to share it:
+   - ordinary compare operators,
+   - criteria family,
+   - database family,
+   - `SWITCH`.
+3. the tolerant-family helper must follow the truncation-style 15-significant-
+   digit boundary currently pinned by replay, not round-to-nearest.
+4. exact-match contrast families remain separate until contrary evidence exists.

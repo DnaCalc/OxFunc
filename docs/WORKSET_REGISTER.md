@@ -261,6 +261,135 @@ It does mean:
 7. rollout_mode:
    `execution_target`
 
+### W076 Multi-Area Value Materialization Style A
+1. purpose:
+   move same-sheet `ReferenceKind::MultiArea` value materialization into
+   OxFunc-owned resolver-driven combination semantics for current value-required
+   lanes, matching `HANDOFF-OXFUNC-002`.
+2. depends_on:
+   `W070`, `W075`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md`,
+   `docs/function-lane/FUNCTION_SLICE_OPERATOR_REFERENCE_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/handoffs/HO-FN-007_multiarea_value_materialization_style_a.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   same-sheet `MultiArea` materializes through OxFunc-owned resolver-driven
+   combination semantics for the admitted value-required callers, mixed-sheet
+   multi-area remains an explicit rejection path, focused local validation is
+   recorded, and the downstream reply handoff is filed.
+6. initial_epic_lanes:
+   handoff intake, materialization helper, caller alignment, focused validation,
+   downstream reply handoff
+7. rollout_mode:
+   `execution_target`
+
+### W077 Corpus IF Condition And Numeric Comparison Tolerance
+1. purpose:
+   own the current corpus follow-on around `IF` empty-text condition triage and
+   the broader numeric comparison tolerance family split across ordinary
+   operators, criteria/database selection, and `SWITCH`.
+2. depends_on:
+   `W070`, `W072`, `W045`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md`,
+   `docs/bugs/streams/BUG-FUNC-004_numeric_comparison_tolerance_family_split.md`,
+   `docs/function-lane/FLOATING_POINT_EXECUTION_RECORD.md`,
+   `docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/FUNCTION_SLICE_CRITERIA_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/FUNCTION_SLICE_DATABASE_FAMILY_CONTRACT_PRELIM.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   the inbound `IF` report is either fixed or honestly closed as no local bug,
+   the tolerant numeric comparison family split is pinned with replayable Excel
+   evidence, the local tolerant families are corrected without changing the
+   exact-match contrast families, focused validation is recorded, and the reply
+   handoff is filed.
+6. initial_epic_lanes:
+   handoff intake, empirical replay, tolerant-family runtime correction, truth
+   surface reconciliation, downstream reply
+7. rollout_mode:
+   `execution_target`
+
+### W078 Power Zero-To-Zero Num Error Parity
+1. purpose:
+   own the local parity correction for the shared power-kernel lane where Excel
+   surfaces `#NUM!` for both `0^0` and `POWER(0,0)` but the current local power
+   path still published `1`.
+2. depends_on:
+   `W070`, `W072`, `W045`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md`,
+   `docs/bugs/streams/BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md`,
+   `docs/function-lane/W45_WAVEA_OPERATOR_ARITHMETIC_SCENARIO_MANIFEST_SEED.csv`,
+   `docs/function-lane/W53_NUMERIC_FORENSICS_20260326.md`,
+   `formal/lean/OxFunc/Functions/PowerFn.lean`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   `POWER(0,0)` and `0^0` both surface `#NUM!` locally, the shared Rust and
+   Lean power lanes agree, focused validation is recorded, and the current-gap
+   surfaces no longer overclaim `POWER`.
+6. initial_epic_lanes:
+   bug intake, shared power-kernel correction, Lean alignment, focused
+   validation, truth-surface reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W079 Lookup-Family Array Lookup-Value Lifting
+1. purpose:
+   own the local lookup-family correction where Excel spills array-valued
+   `lookup_value` inputs for `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` but
+   the current local surface rejects or mishandles them.
+2. depends_on:
+   `W070`, `W072`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md`,
+   `docs/bugs/streams/BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md`,
+   `docs/function-lane/XMATCH_EXECUTION_RECORD.md`,
+   `docs/function-lane/W10_EXECUTION_RECORD.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` all spill array-valued
+   `lookup_value` lanes locally, focused validation is recorded, current-gap
+   truth is reconciled honestly, and any unresolved adjacent `XLOOKUP`
+   follow-on remains explicit rather than hidden behind stale closure language.
+6. initial_epic_lanes:
+   bug intake, live Excel replay, `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP`
+   surface correction,
+   focused validation, truth-surface reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W080 Function Array Support Review
+1. purpose:
+   own the bounded seed for systematic function array-support review, starting
+   with the immediate `LEFT` / `RIGHT` / `MID` spill correction and carrying
+   that learning into an explicit next-batch review program for ordinary
+   function array-expansion semantics.
+2. depends_on:
+   `W070`, `W072`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`,
+   `docs/bugs/streams/BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md`,
+   `docs/function-lane/FUNCTION_SLICE_TEXT_CORE_AND_COMPATIBILITY_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   the immediate text-slice seed correction is validated locally, current-gap
+   truth is reconciled honestly, and the broader function-array-support review
+   has an explicit bounded owner plus next-batch sequencing without claiming
+   the full supported surface has already been reviewed.
+6. initial_epic_lanes:
+   text-slice bug intake, immediate seed correction, focused validation,
+   current-gap reconciliation, broader review framing
+7. rollout_mode:
+   `execution_target`
+
 ### W041 External Data Provider And Cube Functions
 1. purpose:
    remain the current deferred/open authority for provider-bound and cube-context

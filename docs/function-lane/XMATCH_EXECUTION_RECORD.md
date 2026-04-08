@@ -1,6 +1,6 @@
 # XMATCH Deterministic-Quirks Execution Record
 
-Status: `function-phase-complete`
+Status: `reopened`
 Workset: `W6`
 Conformance row: `FDEF-031`
 Evidence IDs:
@@ -12,11 +12,14 @@ Evidence IDs:
 Track execution status and reproducible evidence for W6 `XMATCH` current-phase closure.
 
 ## 2. Completeness Axes
-1. execution_state: `complete`
-2. scope_completeness: `scope_complete`
-3. target_completeness: `target_complete`
-4. integration_completeness: `integrated`
+1. execution_state: `in_progress`
+2. scope_completeness: `scope_partial`
+3. target_completeness: `target_partial`
+4. integration_completeness: `partial`
 5. open_lanes:
+   - array-valued `lookup_value` lifting reopened on 2026-04-08 under
+     `BUG-FUNC-006` / `W079`; local correction and focused validation now exist
+     on the working tree but no landed ref exists yet.
    - locale and alternate Excel-version sweeps remain orthogonal validation-phase work.
    - richer collation expansion remains evidence-hardening work unless it reveals a concrete semantic mismatch in the tracked baseline.
 
@@ -141,7 +144,15 @@ Template:
    - literal empty string lookup matches formula-empty text cells,
    - literal empty string does not match a true blank cell.
 9. Binary duplicate-selection and selected unsorted invalid-result lanes are now pinned empirically and reproduced by the runtime.
-10. Array-constant `built-in` vs `ox_XMATCH` parity is green in the dedicated lookup bridge manifest.
+10. Array-constant `built-in` vs `ox_XMATCH` parity is green in the dedicated
+    lookup bridge manifest, but that older bridge scope did not exercise
+    array-valued `lookup_value` spill behavior.
+11. Live Excel COM replay on 2026-04-08 reopened a missing current-baseline
+    lane:
+    - `=XMATCH({1,2,3},{2,4,6,8}) -> {#N/A,1,#N/A}`
+    - the composed `FILTER + ISNUMBER + XMATCH` set-intersection formula returns
+      `6`
+    - the pre-fix local surface rejected the same lane with `#VALUE!`
 
 ## 8. Recording Rules
 1. Keep expected failures explicit through `expected_status` + `expected_observable`.
@@ -150,8 +161,11 @@ Template:
 4. Keep unresolved parity lanes explicit and bounded in slice docs and runtime notes.
 
 ## 9. Promotion Status
-1. W6 now satisfies current-phase function closure for `XMATCH`.
-2. Remaining work is orthogonal validation-phase expansion (for example locale/version sweeps and broader collation hardening) rather than a known current-baseline function-semantic gap.
+1. W6 no longer satisfies current-phase function closure for `XMATCH` because
+   array-valued `lookup_value` lifting is now a known current-baseline semantic
+   gap.
+2. `BUG-FUNC-006` / `W079` owns the reopened correction and truth-surface
+   reconciliation.
 
 ## 10. Post-Closure Policy Notes
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.

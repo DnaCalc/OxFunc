@@ -58,6 +58,10 @@ fn powi_excel_publication(number: f64, power: i64) -> f64 {
 }
 
 pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> {
+    if number == 0.0 && power == 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+
     if number == 0.0 && power < 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
@@ -98,6 +102,8 @@ mod tests {
     fn power_kernel_matches_excel_domain_lanes() {
         assert_eq!(power_kernel(2.0, 3.0), Ok(8.0));
         assert_eq!(power_kernel(2.0, -3.0), Ok(0.125));
+        assert_eq!(power_kernel(0.0, 0.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(power_kernel(-0.0, 0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(0.0, -1.0), Err(WorksheetErrorCode::Div0));
         assert_eq!(power_kernel(-1.0, 0.5), Err(WorksheetErrorCode::Num));
     }

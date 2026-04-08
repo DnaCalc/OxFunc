@@ -3829,6 +3829,25 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_power_zero_to_zero_returns_num_error() {
+        for function_id in [FUNC_ID_OP_POWER, FUNC_ID_POWER] {
+            let got = eval_surface_value_call(
+                function_id,
+                &[
+                    CallArgValue::Eval(EvalValue::Number(0.0)),
+                    CallArgValue::Eval(EvalValue::Number(0.0)),
+                ],
+                &NoReferenceResolver,
+                Some(46000.0),
+                Some(0.5),
+                None,
+                None,
+            );
+            assert_eq!(got, Err(WorksheetErrorCode::Num));
+        }
+    }
+
+    #[test]
     fn eval_surface_value_call_op_add_lifts_arrays() {
         let got = eval_surface_value_call(
             FUNC_ID_OP_ADD,
@@ -4047,6 +4066,261 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_vlookup_spills_array_lookup_value_results() {
+        let got = eval_surface_value_call(
+            FUNC_ID_VLOOKUP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(20.0)],
+                        vec![ArrayCellValue::Number(4.0), ArrayCellValue::Number(40.0)],
+                        vec![ArrayCellValue::Number(6.0), ArrayCellValue::Number(60.0)],
+                        vec![ArrayCellValue::Number(8.0), ArrayCellValue::Number(80.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_hlookup_spills_array_lookup_value_results() {
+        let got = eval_surface_value_call(
+            FUNC_ID_HLOOKUP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![
+                            ArrayCellValue::Number(2.0),
+                            ArrayCellValue::Number(4.0),
+                            ArrayCellValue::Number(6.0),
+                            ArrayCellValue::Number(8.0),
+                        ],
+                        vec![
+                            ArrayCellValue::Number(20.0),
+                            ArrayCellValue::Number(40.0),
+                            ArrayCellValue::Number(60.0),
+                            ArrayCellValue::Number(80.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_left_spills_array_counts() {
+        let got = eval_surface_value_call(
+            FUNC_ID_LEFT,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "MISSISSIPPI",
+                ))),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "M"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "MI"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "MIS"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_right_spills_array_counts() {
+        let got = eval_surface_value_call(
+            FUNC_ID_RIGHT,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "MISSISSIPPI",
+                ))),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "I"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "PI"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "PPI"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_mid_spills_array_start_positions() {
+        let got = eval_surface_value_call(
+            FUNC_ID_MID,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "MISSISSIPPI",
+                ))),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                        vec![ArrayCellValue::Number(4.0)],
+                        vec![ArrayCellValue::Number(5.0)],
+                        vec![ArrayCellValue::Number(6.0)],
+                        vec![ArrayCellValue::Number(7.0)],
+                        vec![ArrayCellValue::Number(8.0)],
+                        vec![ArrayCellValue::Number(9.0)],
+                        vec![ArrayCellValue::Number(10.0)],
+                        vec![ArrayCellValue::Number(11.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "M"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "I"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "S"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "S"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "I"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "S"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "S"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "I"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "P"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "P"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "I"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
     fn eval_surface_value_call_areas_counts_multi_area_reference() {
         let got = eval_surface_value_call(
             FUNC_ID_AREAS,
@@ -4169,6 +4443,79 @@ mod tests {
         let expected = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(2.0),
             ArrayCellValue::Number(3.0),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(EvalValue::Array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_xmatch_spills_array_lookup_value_results() {
+        let lookup_values = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(6.0),
+            ArrayCellValue::Number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Array(lookup_values)),
+                CallArgValue::Eval(EvalValue::Array(lookup_array)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        let expected = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(EvalValue::Array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_match_spills_array_lookup_value_results() {
+        let lookup_values = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(6.0),
+            ArrayCellValue::Number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Array(lookup_values)),
+                CallArgValue::Eval(EvalValue::Array(lookup_array)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        let expected = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
         ]])
         .expect("row vector");
         assert_eq!(got, Ok(EvalValue::Array(expected)));

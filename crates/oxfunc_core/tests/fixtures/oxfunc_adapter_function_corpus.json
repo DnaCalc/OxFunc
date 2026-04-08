@@ -634,6 +634,24 @@
     "random_value": null
   },
   {
+    "scenario_id": "FN-POWER-02",
+    "seam_family": "function_coverage",
+    "formula": "=POWER(0,0)",
+    "caller_row": 1,
+    "caller_col": 1,
+    "snapshot_surface_name": "POWER",
+    "cell_fixture": {},
+    "expected_value_summary": "Error(#NUM!)",
+    "expected_returned_value_surface_kind": "OrdinaryValue",
+    "expected_prepared_argument_structures": [
+      "DirectScalar",
+      "DirectScalar"
+    ],
+    "expected_prepared_argument_sources": null,
+    "now_serial": null,
+    "random_value": null
+  },
+  {
     "scenario_id": "FN-QUOTIENT-01",
     "seam_family": "function_coverage",
     "formula": "=QUOTIENT(10,3)",

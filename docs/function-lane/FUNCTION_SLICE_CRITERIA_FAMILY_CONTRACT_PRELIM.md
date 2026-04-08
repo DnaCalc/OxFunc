@@ -12,7 +12,7 @@
    - `FUNC.MINIFS`
 2. `display_family_name`: `Criteria Family`
 3. `owner_lane`: `OxFunc`
-4. `status`: `function-phase-complete`
+4. `status`: `reopened_under_W077`
 
 ## 2. Signature and Admission Contract
 1. admitted signatures:
@@ -55,7 +55,14 @@
 2. criteria ranges and target ranges are flattened after reference resolution.
 3. wildcard criteria are case-insensitive and honor Excel `*`, `?`, and `~` escaping.
 4. blank criteria match true blanks and zero-length text according to the existing criteria kernel policy.
-5. target aggregation is numeric-only:
+5. numeric criteria comparisons use the current empirically pinned Excel
+   tolerance lane rather than exact IEEE-double equality/order:
+   - observed baseline lane: `0.3` versus `0.1+0.2`,
+   - stronger arithmetic-generated boundary lane:
+     `((123456789012345*10)+5)/1E25` versus `((123456789012345*10)+4)/1E25`,
+   - current local model is truncation-style normalization to 15 significant
+     decimal digits on the tested criteria-family compare paths.
+6. target aggregation is numeric-only:
    - text, logical, and blank target cells are ignored in `SUMIF`, `SUMIFS`, `AVERAGEIF(S)`, `MAXIFS`, and `MINIFS`.
    - target-side worksheet errors propagate.
 
@@ -116,7 +123,10 @@
    - exact-shape rejection for `AVERAGEIFS`, `SUMIFS`, `MAXIFS`, and `MINIFS`,
    - `MAXIFS` / `MINIFS` zero-on-no-numeric-match behavior.
 3. Lean coverage for the admitted current-phase slice remains the shared metadata/alignment substrate in `formal/lean/OxFunc/Functions/CriteriaFamily.lean`.
-4. no known semantic gap remains in the declared current-baseline slice for these eight functions.
+4. the earlier promoted slice is now reopened under `W077` for numeric
+   comparison tolerance until the corrected truncation-style helper and
+   refreshed boundary evidence are landed on a committed ref and acknowledged
+   downstream.
 
 ## 10. Artifact Bindings
 1. Rust: `crates/oxfunc_core/src/functions/criteria_family.rs`

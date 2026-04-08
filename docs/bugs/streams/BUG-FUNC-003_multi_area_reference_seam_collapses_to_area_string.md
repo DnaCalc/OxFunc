@@ -4,7 +4,7 @@
 - **Bug id**: `BUG-FUNC-003`
 - **Opened**: 2026-04-07
 - **Status**: handed_off
-- **Owner workset**: `W075`
+- **Owner workset**: `W076`
 
 ## Source Refs
 - **Reported against ref**: `9e9c573a46d97e248a0373938fb53dcac916fac2`
@@ -13,8 +13,8 @@
 - **Fixed in ref**: `not yet fixed`
 - **Ref notes**: The OxFml upstream note identified a current seam mismatch on the
   working tree: OxFunc exposed `ReferenceKind::MultiArea` helpers but did not
-  use them consistently across union formation and reference-sensitive
-  consumers.
+  use them consistently across union formation, reference-sensitive consumers,
+  and current value-required materialization lanes.
 
 ## Ownership And Root Cause
 - **Ownership class**: shared seam gap
@@ -23,7 +23,9 @@
   `ReferenceKind::MultiArea` carrier, but `OP_UNION_REF` still emitted
   `ReferenceKind::Area` and downstream consumers such as `INDEX` and `AREAS`
   still started from raw parenthesized target parsing rather than the
-  first-class helper APIs.
+  first-class helper APIs. Value-required callers likewise depended on
+  downstream OxFml-local aggregation instead of OxFunc-owned resolver-driven
+  combination semantics.
 
 ## Why Did We Get This Wrong?
 - **Spec already correct and code was wrong?**: yes
@@ -79,16 +81,28 @@
    explicitly and added focused dispatcher-level coverage.
 9. 2026-04-07: Filed `HO-FN-006` back to OxFml with the local correction and
    remaining landed-ref / downstream-ack lane.
-10. 2026-04-07: Re-ran the existing `W40` and `W45` native Excel reference
-    probe floors to confirm the local correction remains consistent with the
-    admitted reference packet behavior.
+10. 2026-04-07: Opened bounded follow-on owner `W076` for same-sheet
+    `MultiArea` value-required materialization through OxFunc-owned resolver
+    combination semantics.
+11. 2026-04-07: Implemented local resolver-driven same-sheet `MultiArea`
+    materialization, preserving member order and combining resolved payloads as
+    one row-major row vector for current value-required lanes.
+12. 2026-04-07: Updated values-only, aggregate, and lookup-vector callers to
+    consume that local resolver-owned materialization path rather than relying
+    on a downstream OxFml-local helper.
+13. 2026-04-07: Filed `HO-FN-007` back to OxFml with the Style A local
+    materialization result and remaining landed-ref / downstream-ack lane.
+14. 2026-04-07: Re-ran the existing `W45` native Excel reference probe floor
+    and focused local Rust validation to confirm the local correction remains
+    consistent with the admitted reference packet behavior.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
 1. `AREAS`
 2. `INDEX(..., area_num)`
-3. implicit intersection and any other `ReferenceKind` pattern matches
-4. resolver normalization and capability checks
+3. values-only / aggregate / lookup-vector preparation paths
+4. implicit intersection and any other `ReferenceKind` pattern matches
+5. resolver normalization and capability checks
 
 ### Check method
 1. searched all current OxFunc `ReferenceKind` pattern matches,
@@ -97,30 +111,37 @@
 3. added focused local runtime tests at function and dispatch level.
 
 ### Results
-1. `AREAS` and `INDEX` were the concrete consumer gaps and are now updated.
-2. resolver normalization/capability handling already preserved
+1. `AREAS` and `INDEX` were the first concrete consumer gaps and are now
+   updated.
+2. values-only, aggregate, and lookup-vector preparation were the follow-on
+   current-value gap and now route through OxFunc-owned resolver combination.
+3. resolver normalization/capability handling already preserved
    `ReferenceKind::MultiArea`.
-3. `op_implicit_intersection` needed an explicit `MultiArea` path; it now
+4. `op_implicit_intersection` needed an explicit `MultiArea` path; it now
    rejects that source rather than relying on a non-exhaustive match.
-4. no broader reference-family consumer was changed in this pass because the
+5. no broader reference-family consumer was changed in this pass because the
    current concrete seam pressure was limited to union formation and the named
    consumers; the remaining local consumers continue to treat unsupported
    multi-area use as out of slice rather than reparsing a wrapper string.
 
 ### Follow-on Openings
 1. `W075`
-2. `HO-FN-006`
+2. `W076`
+3. `HO-FN-006`
+4. `HO-FN-007`
 
 ## Validation
 1. focused local validation passed on the current working tree:
    - `cargo fmt --manifest-path crates/oxfunc_core/Cargo.toml`
+   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib resolver -- --nocapture`
+   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib adapters -- --nocapture`
+   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib sum -- --nocapture`
+   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib xmatch_surface -- --nocapture`
    - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib operator_reference_family -- --nocapture`
    - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib index -- --nocapture`
-   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib reference_metadata_family -- --nocapture`
    - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
-   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib op_implicit_intersection -- --nocapture`
-   - `powershell -ExecutionPolicy Bypass -File tools/w40-probe/run-w40-reference-metadata-baseline.ps1`
    - `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavec-operator-reference-baseline.ps1`
+   - `powershell -ExecutionPolicy Bypass -File scripts/check-worksets.ps1`
 
 ## Linked Reports
 1. `BUGREP-FUNC-003`
@@ -135,6 +156,7 @@
 7. `crates/oxfunc_core/src/functions/op_implicit_intersection.rs`
 8. `crates/oxfunc_core/src/functions/surface_dispatch.rs`
 9. `docs/handoffs/HO-FN-006_multi_area_reference_seam_correction.md`
+10. `docs/handoffs/HO-FN-007_multiarea_value_materialization_style_a.md`
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded

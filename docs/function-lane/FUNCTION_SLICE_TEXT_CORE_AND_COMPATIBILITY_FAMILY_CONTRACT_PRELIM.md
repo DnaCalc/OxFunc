@@ -41,6 +41,9 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
 6. the `*B` compatibility rows are admitted as current-baseline delegates to the non-`B` text functions rather than a separate historical DBCS-byte-semantic claim.
 7. `UNICODE` returns the first Unicode scalar, not merely the first raw UTF-16 unit, and rejects invalid leading surrogate structures.
 8. `TRIM` collapses ASCII spaces but preserves non-breaking spaces on the admitted slice.
+9. `LEFT`, `RIGHT`, and `MID` spill over a single array-valued count/start
+   input on the current baseline, and the current-baseline `LEFTB`, `RIGHTB`,
+   and `MIDB` delegates inherit the same working-tree correction.
 
 ## 4. Main Rules Carried Into W066
 1. `CODE` rejects empty text with `#VALUE!` and reads only the first UTF-16 code unit.
@@ -54,6 +57,9 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
 9. `FIND` is case-sensitive and treats wildcard characters literally.
 10. `SEARCH` is case-insensitive on the current ASCII-seeded baseline and honors `*`, `?`, and `~`.
 11. `FINDB`, `LEFTB`, `LENB`, `MIDB`, `REPLACEB`, `RIGHTB`, and `SEARCHB` match the current Unicode-baseline delegate posture documented in `W16_BATCH73`.
+12. The broader function-array-support question remains open beyond the seeded
+    text-slice lanes and is now explicitly owned under `BUG-FUNC-007` / `W080`
+    rather than assumed closed.
 
 ## 5. Runtime / Formal Anchors
 Runtime anchors:

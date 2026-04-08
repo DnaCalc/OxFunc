@@ -1,7 +1,7 @@
 # Function Slice - Database Family Contract (Prelim)
 
-Status: `provisional`
-Workset: `W23`
+Status: `reopened_under_W077`
+Workset: `W23` with reopened numeric-comparison follow-on under `W077`
 
 ## 1. Purpose
 1. define the admitted current-baseline semantic slice for the `D*` database family,
@@ -36,9 +36,16 @@ Workset: `W23`
 3. multiple criteria rows are `OR`.
 4. duplicate criteria headers in the same row are also `OR`.
 5. plain text criteria on the admitted slice use Excel-style prefix matching.
-6. `DGET` returns `#NUM!` when more than one record matches and `#VALUE!` when no record matches.
-7. `DCOUNT` with omitted field counts records that match the criteria.
-8. sample vs population formulas for `DSTDEV` / `DSTDEVP` / `DVAR` / `DVARP` follow the ordinary statistical distinction over the matched records.
+6. numeric criteria comparisons use the current empirically pinned Excel
+   tolerance lane rather than exact IEEE-double equality/order:
+   - observed baseline lane: `0.3` versus `0.1+0.2`,
+   - stronger arithmetic-generated boundary lane:
+     `((123456789012345*10)+5)/1E25` versus `((123456789012345*10)+4)/1E25`,
+   - current local model is truncation-style normalization to 15 significant
+     decimal digits on the tested database-family compare paths.
+7. `DGET` returns `#NUM!` when more than one record matches and `#VALUE!` when no record matches.
+8. `DCOUNT` with omitted field counts records that match the criteria.
+9. sample vs population formulas for `DSTDEV` / `DSTDEVP` / `DVAR` / `DVARP` follow the ordinary statistical distinction over the matched records.
 
 ## 5. Out Of Scope
 1. criteria formulas evaluated in full worksheet context.

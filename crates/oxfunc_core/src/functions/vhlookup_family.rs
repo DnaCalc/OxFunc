@@ -164,12 +164,49 @@ fn match_index(
     lookup_vector: CallArgValue,
     match_type: &CallArgValue,
     resolver: &impl ReferenceResolver,
-) -> Result<usize, VhlookupEvalError> {
-    let got = eval_match_surface(lookup_value, &[lookup_vector], Some(match_type), resolver)
-        .map_err(|e| VhlookupEvalError::Domain(map_match_error_to_ws(&e)))?;
-    match got {
+) -> Result<EvalValue, VhlookupEvalError> {
+    eval_match_surface(lookup_value, &[lookup_vector], Some(match_type), resolver)
+        .map_err(|e| VhlookupEvalError::Domain(map_match_error_to_ws(&e)))
+}
+
+fn match_result_to_index(cell: &ArrayCellValue) -> Result<usize, WorksheetErrorCode> {
+    match cell {
+        ArrayCellValue::Number(n) if *n >= 1.0 && *n <= (usize::MAX as f64) => Ok(*n as usize),
+        ArrayCellValue::Error(code) => Err(*code),
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+fn match_value_to_index(value: EvalValue) -> Result<usize, WorksheetErrorCode> {
+    match value {
         EvalValue::Number(n) if n >= 1.0 && n <= (usize::MAX as f64) => Ok(n as usize),
-        _ => Err(VhlookupEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Error(code) => Err(code),
+        _ => Err(WorksheetErrorCode::Value),
+    }
+}
+
+fn select_from_match_result(
+    match_result: EvalValue,
+    select_index: impl Fn(usize) -> ArrayCellValue,
+) -> Result<EvalValue, VhlookupEvalError> {
+    match match_result {
+        EvalValue::Array(array) => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| match match_result_to_index(cell) {
+                    Ok(index) => select_index(index),
+                    Err(code) => ArrayCellValue::Error(code),
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("match-result array shape remains valid"),
+            ))
+        }
+        scalar => match match_value_to_index(scalar) {
+            Ok(index) => Ok(cell_to_eval_value(&select_index(index))),
+            Err(code) => Err(VhlookupEvalError::Domain(code)),
+        },
     }
 }
 
@@ -199,10 +236,12 @@ pub fn eval_vlookup_surface(
         &match_type,
         resolver,
     )?;
-    if row_index == 0 || row_index > height {
-        return Err(VhlookupEvalError::Domain(WorksheetErrorCode::NA));
-    }
-    Ok(cell_to_eval_value(&table[row_index - 1][column_index - 1]))
+    select_from_match_result(row_index, |index| {
+        if index == 0 || index > height {
+            return ArrayCellValue::Error(WorksheetErrorCode::NA);
+        }
+        table[index - 1][column_index - 1].clone()
+    })
 }
 
 pub fn eval_hlookup_surface(
@@ -234,10 +273,12 @@ pub fn eval_hlookup_surface(
         &match_type,
         resolver,
     )?;
-    if column_index == 0 || column_index > width {
-        return Err(VhlookupEvalError::Domain(WorksheetErrorCode::NA));
-    }
-    Ok(cell_to_eval_value(&table[row_index - 1][column_index - 1]))
+    select_from_match_result(column_index, |index| {
+        if index == 0 || index > width {
+            return ArrayCellValue::Error(WorksheetErrorCode::NA);
+        }
+        table[row_index - 1][index - 1].clone()
+    })
 }
 
 pub fn map_vhlookup_error_to_ws(error: &VhlookupEvalError) -> WorksheetErrorCode {
@@ -564,6 +605,92 @@ mod tests {
                 &NoResolver,
             ),
             Ok(EvalValue::Number(1.0))
+        );
+    }
+
+    #[test]
+    fn vlookup_spills_array_lookup_value_results() {
+        let got = eval_vlookup_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(20.0)],
+                        vec![ArrayCellValue::Number(4.0), ArrayCellValue::Number(40.0)],
+                        vec![ArrayCellValue::Number(6.0), ArrayCellValue::Number(60.0)],
+                        vec![ArrayCellValue::Number(8.0), ArrayCellValue::Number(80.0)],
+                    ])
+                    .unwrap(),
+                )),
+                scalar_num(2.0),
+                scalar_bool(false),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn hlookup_spills_array_lookup_value_results() {
+        let got = eval_hlookup_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![
+                            ArrayCellValue::Number(2.0),
+                            ArrayCellValue::Number(4.0),
+                            ArrayCellValue::Number(6.0),
+                            ArrayCellValue::Number(8.0),
+                        ],
+                        vec![
+                            ArrayCellValue::Number(20.0),
+                            ArrayCellValue::Number(40.0),
+                            ArrayCellValue::Number(60.0),
+                            ArrayCellValue::Number(80.0),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                scalar_num(2.0),
+                scalar_bool(false),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
         );
     }
 

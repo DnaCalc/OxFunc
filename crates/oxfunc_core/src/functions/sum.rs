@@ -114,9 +114,11 @@ mod tests {
     };
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use std::collections::BTreeMap;
 
     struct MockResolver {
         resolved_value: Option<EvalValue>,
+        by_target: BTreeMap<String, EvalValue>,
     }
 
     impl ReferenceResolver for MockResolver {
@@ -128,6 +130,9 @@ mod tests {
             &self,
             reference: &ReferenceLike,
         ) -> Result<EvalValue, RefResolutionError> {
+            if let Some(value) = self.by_target.get(&reference.target) {
+                return Ok(value.clone());
+            }
             self.resolved_value
                 .clone()
                 .ok_or(RefResolutionError::UnresolvedReference {
@@ -147,6 +152,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(6.0)));
@@ -164,6 +170,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(3.0)));
@@ -181,6 +188,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert!(matches!(got, Err(SumEvalError::Coercion(_))));
@@ -197,6 +205,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(4.0)));
@@ -212,6 +221,66 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
+            },
+        );
+        assert_eq!(
+            got,
+            Err(SumEvalError::Coercion(CoercionError::WorksheetError(
+                WorksheetErrorCode::Div0
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_sum_materializes_multi_area_reference_through_resolver() {
+        let mut by_target = BTreeMap::new();
+        by_target.insert(
+            "Alpha!A1:A2".to_string(),
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(11.0)],
+                ])
+                .unwrap(),
+            ),
+        );
+        by_target.insert("Alpha!B2".to_string(), EvalValue::Number(13.0));
+        let got = eval_sum_surface(
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(Alpha!A1:A2,Alpha!B2)",
+            ))],
+            &MockResolver {
+                resolved_value: None,
+                by_target,
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(31.0)));
+    }
+
+    #[test]
+    fn eval_sum_preserves_multi_area_member_error_cells() {
+        let mut by_target = BTreeMap::new();
+        by_target.insert(
+            "A1:A2".to_string(),
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Error(WorksheetErrorCode::Div0)],
+                ])
+                .unwrap(),
+            ),
+        );
+        by_target.insert("C1".to_string(), EvalValue::Number(13.0));
+        let got = eval_sum_surface(
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,C1)",
+            ))],
+            &MockResolver {
+                resolved_value: None,
+                by_target,
             },
         );
         assert_eq!(
@@ -241,6 +310,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(5.0)));
@@ -270,6 +340,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(7.0)));
@@ -329,6 +400,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(5.0)));
@@ -347,6 +419,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(
@@ -374,6 +447,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
+                by_target: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(3.0)));

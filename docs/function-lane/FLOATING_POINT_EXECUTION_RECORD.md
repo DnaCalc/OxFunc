@@ -86,3 +86,56 @@ Output artifacts:
    - includes controlled lock rotation path (`-UpdateLock`) for audited hash drift updates.
 3. Foundation editorial handoff prompts are prepared:
    - now preserved behind `docs/HISTORY.md` and the `OxFunc_V1` tag.
+
+## 8. Focused Follow-On - Numeric Comparison Families
+Execution date:
+1. `2026-04-08`
+
+Environment:
+1. Excel version/build: `16.0 (build 19822)`
+2. Excel channel: `http://officecdn.microsoft.com/pr/492350f6-3a01-4f97-b9c0-c7c6ddf67d60`
+3. Workbook compatibility descriptor:
+   - `default|CalculationVersion=191029|CheckCompatibility=False|FileFormat=51`
+4. Locale profile: `en-US`
+
+Output artifacts:
+1. `.tmp/fp-results-excel-e.csv` (`FP-E`)
+2. `.tmp/w45-waveb-operator-compare-concat-results.csv` (refreshed `W45-B`)
+
+Observation summary:
+1. Excel `FP-E` rows captured: `15` (`observed=15`)
+2. Scope covered:
+   - `IF` / `IFS` empty-text condition coercion
+   - ordinary compare operators
+   - criteria/database numeric criteria matching
+   - `SWITCH`
+   - exact-match contrast for `MATCH`, `XMATCH`, `DELTA`
+   - arithmetic-generated 15-significant-digit boundary rows
+
+Key outcomes:
+1. `IF("",1,2)` and `IFS("",1,TRUE,2)` both surfaced `#VALUE!`.
+2. `W45-B` ordinary compare rows now include and pass the near-equality cases:
+   - `0.1+0.2=0.3 -> TRUE`
+   - `0.1+0.2<>0.3 -> FALSE`
+   - `0.1+0.2<0.3 -> FALSE`
+   - `0.1+0.2<=0.3 -> TRUE`
+   - `0.1+0.2>0.3 -> FALSE`
+   - `0.1+0.2>=0.3 -> TRUE`
+   - `((123456789012345*10)+5)/1E25=((123456789012345*10)+4)/1E25 -> TRUE`
+   - `((123456789012345*10)+5)/1E25<>((123456789012345*10)+4)/1E25 -> FALSE`
+   - ordered comparisons on the same pair collapse to `FALSE/FALSE/TRUE/TRUE`
+     for `>/<`/`>=`/`<=`.
+3. Criteria/database numeric criteria matching and `SWITCH` share the tolerant
+   near-equality lane on both the baseline `0.1+0.2` rows and the stronger
+   arithmetic-generated boundary rows.
+4. `MATCH`, `XMATCH`, and `DELTA` exact-match paths remained exact on both the
+   baseline `0.1+0.2` rows and the arithmetic-generated boundary rows.
+5. The earlier round-to-nearest helper model was disproved by the stronger
+   boundary pair; the current local helper now follows the empirically pinned
+   truncation-style 15-significant-digit comparison lane.
+
+Current use:
+1. this follow-on evidence reopens the previously promoted criteria/database and
+   `SWITCH` rows under `W077`,
+2. the family split is now bound into the corrected local runtime helper policy
+   and the downstream reply handoff `HO-FN-008`.

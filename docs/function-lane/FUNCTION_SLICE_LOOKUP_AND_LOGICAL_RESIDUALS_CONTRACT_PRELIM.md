@@ -32,6 +32,9 @@ Define the current-phase contract for the `W068` final ordinary residual wave: `
 6. Approximate-match lanes return `#N/A` when the lookup value falls below the first candidate key.
 7. Exact-match misses also return `#N/A`.
 8. Returned empty cells publish as numeric zero on the admitted current baseline through the existing cell-to-value projection rule.
+9. The current baseline also spills `HLOOKUP` and `VLOOKUP` when
+   `lookup_value` is itself an array, preserving the lookup-value shape and
+   applying the existing scalar selection semantics per element.
 
 ## 5. Runtime / Formal Anchors
 Runtime anchors:
@@ -54,3 +57,6 @@ Provenance anchors:
 ## 6. Current-Phase Note
 1. `IFS` enters `W068` with existing `W16` empirical/formal grounding and is repinned here through a packet-local replay bundle.
 2. `HLOOKUP` and `VLOOKUP` enter `W068` with existing runtime plus Lean metadata grounding and are repinned here through their first dedicated ordinary-backlog closure replay bundle.
+3. Live Excel replay on 2026-04-08 later reopens this family for
+   array-valued `lookup_value` spill behavior; local working-tree correction now
+   exists under `BUG-FUNC-006` / `W079` but is not yet a landed-ref closure.
