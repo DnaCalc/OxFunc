@@ -79,8 +79,12 @@ Supersession note:
 - Canonical owner: [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md), [BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-15 Function Array-Support Review
-- Current state: active local review seed. `LEFT`, `RIGHT`, and `MID` are now pinned as spilling over array-valued count/start inputs in live Excel, the working-tree correction also carries through the current-baseline `*B` delegates, and the remaining open lane is the broader systematic review of array-support semantics across the supported function surface.
-- Canonical owner: [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md), [BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+- Current state: active local review seed. `LEFT`, `RIGHT`, and `MID` are pinned as spilling over array-valued count/start inputs, and the first bounded follow-on `W066` batch now also pins spill lanes for `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE`. The working-tree correction covers those rows, while the next review batch and the broader systematic review remain open.
+- Canonical owner: [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md), [BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md), [BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
+
+### IP-16 RATE Default-Guess Convergence
+- Current state: active local follow-up from direct replay. Live Excel returns `0.004166644536345589` for `RATE(360,-1073.64,200000)` and the local `W081` correction now matches that lane on the working tree through a bounded bracket-and-bisection fallback around the existing secant path. The remaining open lanes are landed-ref promotion and a broader adjacent omitted-guess scan.
+- Canonical owner: [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md), [BUG-FUNC-009_rate_default_guess_solver_no_convergence.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-009_rate_default_guess_solver_no_convergence.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
@@ -93,4 +97,4 @@ Current reading:
 3. `IP-07` is `planned`,
 4. `IP-08` is `parked`,
 5. `IP-09` is `planned`,
-6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-14`, and `IP-15` are `active`.
+6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-14`, `IP-15`, and `IP-16` are `active`.

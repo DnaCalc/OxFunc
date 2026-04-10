@@ -7,7 +7,9 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 const TEXT_DELIM_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT_DELIM_BASE",
@@ -68,6 +70,29 @@ fn materialize_prepared_value(prepared: &PreparedArgValue) -> EvalValue {
         PreparedArgValue::Eval(value) => value.clone(),
         PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::NA),
         PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+    }
+}
+
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn text_delim_result_to_array_cell(
+    result: Result<EvalValue, TextDelimEvalError>,
+) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
+        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_text_delim_error_to_ws(&err)),
     }
 }
 
@@ -234,6 +259,45 @@ fn eval_text_delim_surface(
 ) -> Result<EvalValue, TextDelimEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextDelimEvalError::Coercion)?;
+    let array_args = prepared
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, arg)| match arg {
+            PreparedArgValue::Eval(EvalValue::Array(array)) if matches!(idx, 0 | 2) => {
+                Some((idx, array))
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    match array_args.as_slice() {
+        [] => eval_text_delim_prepared_value(&prepared, meta, direction),
+        [(arg_index, array)] => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let mut scalar_args = prepared.to_vec();
+                    scalar_args[*arg_index] = prepared_from_array_cell(cell);
+                    text_delim_result_to_array_cell(eval_text_delim_prepared_value(
+                        &scalar_args,
+                        meta,
+                        direction,
+                    ))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("text-delim lifted array shape remains valid"),
+            ))
+        }
+        _ => eval_text_delim_prepared_value(&prepared, meta, direction),
+    }
+}
+
+fn eval_text_delim_prepared_value(
+    prepared: &[PreparedArgValue],
+    meta: &FunctionMeta,
+    direction: TextDelimDirection,
+) -> Result<EvalValue, TextDelimEvalError> {
     if !meta.arity.accepts(prepared.len()) {
         return Err(TextDelimEvalError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -483,6 +547,116 @@ mod tests {
                 &NoResolver,
             ),
             Err(TextDelimEvalError::InvalidInstanceNum(0.0))
+        );
+    }
+
+    #[test]
+    fn textafter_and_textbefore_spill_array_instance_numbers() {
+        assert_eq!(
+            eval_textafter_surface(
+                &[
+                    text_arg("a-b-c"),
+                    text_arg("-"),
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(1.0)],
+                            vec![ArrayCellValue::Number(2.0)],
+                            vec![ArrayCellValue::Number(3.0)],
+                        ])
+                        .unwrap(),
+                    )),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "b-c"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "c"
+                    ))],
+                    vec![ArrayCellValue::Error(WorksheetErrorCode::NA)],
+                ])
+                .unwrap()
+            ))
+        );
+        assert_eq!(
+            eval_textbefore_surface(
+                &[
+                    text_arg("a-b-c"),
+                    text_arg("-"),
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(1.0)],
+                            vec![ArrayCellValue::Number(2.0)],
+                            vec![ArrayCellValue::Number(3.0)],
+                        ])
+                        .unwrap(),
+                    )),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "a"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "a-b"
+                    ))],
+                    vec![ArrayCellValue::Error(WorksheetErrorCode::NA)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn textafter_and_textbefore_spill_array_text_inputs() {
+        assert_eq!(
+            eval_textafter_surface(
+                &[
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a-b")),
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c-d")),
+                        ]])
+                        .unwrap(),
+                    )),
+                    text_arg("-"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(
+            eval_textbefore_surface(
+                &[
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a-b")),
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c-d")),
+                        ]])
+                        .unwrap(),
+                    )),
+                    text_arg("-"),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                ]])
+                .unwrap()
+            ))
         );
     }
 }

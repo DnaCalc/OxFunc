@@ -14,6 +14,8 @@ use std::fmt;
 const EPSILON: f64 = 1e-12;
 const RATE_TOLERANCE: f64 = 1e-7;
 const RATE_MAX_ITERATIONS: usize = 20;
+const RATE_BRACKET_MAX_ITERATIONS: usize = 64;
+const MIN_VALID_RATE: f64 = -0.999_999_999;
 
 const FINANCIAL_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.FINANCIAL_TIME_VALUE_BASE",
@@ -311,6 +313,160 @@ pub fn nper(
     }
 }
 
+fn values_bracket_root(lower_value: f64, upper_value: f64) -> bool {
+    (lower_value < 0.0 && upper_value > 0.0) || (lower_value > 0.0 && upper_value < 0.0)
+}
+
+fn bisect_rate_bracket(
+    mut lower: f64,
+    mut lower_value: f64,
+    mut upper: f64,
+    upper_value: f64,
+    periods: f64,
+    payment_value: f64,
+    present_value: f64,
+    future_value: f64,
+    timing: PaymentTiming,
+) -> Result<f64, FinancialError> {
+    if lower_value.abs() <= RATE_TOLERANCE {
+        return Ok(lower);
+    }
+    if upper_value.abs() <= RATE_TOLERANCE {
+        return Ok(upper);
+    }
+    if !values_bracket_root(lower_value, upper_value) {
+        return Err(FinancialError::NoConvergence);
+    }
+
+    for _ in 0..RATE_BRACKET_MAX_ITERATIONS {
+        let midpoint = (lower + upper) / 2.0;
+        let midpoint_value = balance_equation(
+            midpoint,
+            periods,
+            payment_value,
+            present_value,
+            future_value,
+            timing,
+        )?;
+        if midpoint_value.abs() <= RATE_TOLERANCE {
+            return Ok(midpoint);
+        }
+
+        if values_bracket_root(lower_value, midpoint_value) {
+            upper = midpoint;
+        } else {
+            lower = midpoint;
+            lower_value = midpoint_value;
+        }
+    }
+
+    let midpoint = (lower + upper) / 2.0;
+    let midpoint_value = balance_equation(
+        midpoint,
+        periods,
+        payment_value,
+        present_value,
+        future_value,
+        timing,
+    )?;
+    if midpoint_value.abs() <= RATE_TOLERANCE || (upper - lower).abs() <= EPSILON {
+        Ok(midpoint)
+    } else {
+        Err(FinancialError::NoConvergence)
+    }
+}
+
+fn search_rate_bracket_from_zero(
+    zero_value: f64,
+    initial_rate: f64,
+    periods: f64,
+    payment_value: f64,
+    present_value: f64,
+    future_value: f64,
+    timing: PaymentTiming,
+) -> Result<Option<f64>, FinancialError> {
+    let mut positive_rate = initial_rate.abs().max(0.1);
+    for _ in 0..RATE_BRACKET_MAX_ITERATIONS {
+        let positive_value = balance_equation(
+            positive_rate,
+            periods,
+            payment_value,
+            present_value,
+            future_value,
+            timing,
+        )?;
+        if positive_value.abs() <= RATE_TOLERANCE {
+            return Ok(Some(positive_rate));
+        }
+        if values_bracket_root(zero_value, positive_value) {
+            return bisect_rate_bracket(
+                0.0,
+                zero_value,
+                positive_rate,
+                positive_value,
+                periods,
+                payment_value,
+                present_value,
+                future_value,
+                timing,
+            )
+            .map(Some);
+        }
+
+        positive_rate *= 2.0;
+        if !positive_rate.is_finite() {
+            break;
+        }
+    }
+
+    let mut negative_rate = if initial_rate < 0.0 {
+        initial_rate
+    } else {
+        -0.1
+    };
+    if negative_rate <= MIN_VALID_RATE {
+        negative_rate = -0.1;
+    }
+    for _ in 0..RATE_BRACKET_MAX_ITERATIONS {
+        let negative_value = balance_equation(
+            negative_rate,
+            periods,
+            payment_value,
+            present_value,
+            future_value,
+            timing,
+        )?;
+        if negative_value.abs() <= RATE_TOLERANCE {
+            return Ok(Some(negative_rate));
+        }
+        if values_bracket_root(negative_value, zero_value) {
+            return bisect_rate_bracket(
+                negative_rate,
+                negative_value,
+                0.0,
+                zero_value,
+                periods,
+                payment_value,
+                present_value,
+                future_value,
+                timing,
+            )
+            .map(Some);
+        }
+
+        let margin = 1.0 + negative_rate;
+        if margin <= EPSILON {
+            break;
+        }
+        negative_rate = -1.0 + margin / 2.0;
+        if negative_rate <= MIN_VALID_RATE {
+            negative_rate = MIN_VALID_RATE + EPSILON;
+        }
+    }
+
+    Ok(None)
+}
+
 pub fn rate(
     periods: f64,
     payment_value: f64,
@@ -330,8 +486,8 @@ pub fn rate(
         timing,
     )?;
     let mut current_rate = guess.unwrap_or(0.1);
-    if current_rate <= -0.999_999_999 {
-        current_rate = -0.999_999_999;
+    if current_rate <= MIN_VALID_RATE {
+        current_rate = MIN_VALID_RATE;
     }
     let mut current_value = balance_equation(
         current_rate,
@@ -341,6 +497,23 @@ pub fn rate(
         future_value,
         timing,
     )?;
+
+    if current_value.abs() <= RATE_TOLERANCE {
+        return Ok(current_rate);
+    }
+    if values_bracket_root(prev_value, current_value) {
+        return bisect_rate_bracket(
+            prev_rate,
+            prev_value,
+            current_rate,
+            current_value,
+            periods,
+            payment_value,
+            present_value,
+            future_value,
+            timing,
+        );
+    }
 
     for _ in 0..RATE_MAX_ITERATIONS {
         if current_value.abs() <= RATE_TOLERANCE {
@@ -377,8 +550,8 @@ pub fn rate(
             current_rate - current_value / derivative
         };
 
-        if !next_rate.is_finite() || next_rate <= -0.999_999_999 {
-            return Err(FinancialError::NoConvergence);
+        if !next_rate.is_finite() || next_rate <= MIN_VALID_RATE {
+            break;
         }
 
         prev_rate = current_rate;
@@ -392,10 +565,41 @@ pub fn rate(
             future_value,
             timing,
         )?;
+
+        if values_bracket_root(prev_value, current_value) {
+            return bisect_rate_bracket(
+                prev_rate,
+                prev_value,
+                current_rate,
+                current_value,
+                periods,
+                payment_value,
+                present_value,
+                future_value,
+                timing,
+            );
+        }
     }
 
     if current_value.abs() <= RATE_TOLERANCE {
         Ok(current_rate)
+    } else if let Some(root) = search_rate_bracket_from_zero(
+        balance_equation(
+            0.0,
+            periods,
+            payment_value,
+            present_value,
+            future_value,
+            timing,
+        )?,
+        guess.unwrap_or(0.1),
+        periods,
+        payment_value,
+        present_value,
+        future_value,
+        timing,
+    )? {
+        Ok(root)
     } else {
         Err(FinancialError::NoConvergence)
     }
@@ -1163,6 +1367,32 @@ mod tests {
         )
         .expect("rate");
         assert_close(recovered, expected_rate, 1e-7);
+    }
+
+    #[test]
+    fn rate_default_guess_converges_on_mortgage_style_lane() {
+        let expected_rate = 0.004166644536345589;
+        let omitted_guess = rate(
+            360.0,
+            -1073.64,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+            None,
+        )
+        .expect("rate with omitted guess");
+        assert_close(omitted_guess, expected_rate, 1e-12);
+
+        let default_guess = rate(
+            360.0,
+            -1073.64,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+            Some(0.1),
+        )
+        .expect("rate with default 0.1 guess");
+        assert_close(default_guess, expected_rate, 1e-12);
     }
 
     #[test]

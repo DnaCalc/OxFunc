@@ -44,6 +44,12 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
 9. `LEFT`, `RIGHT`, and `MID` spill over a single array-valued count/start
    input on the current baseline, and the current-baseline `LEFTB`, `RIGHTB`,
    and `MIDB` delegates inherit the same working-tree correction.
+10. `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, and `REPT` spill over a single
+    array-valued admitted argument on the current baseline for the lanes pinned
+    under `W080`.
+11. `TEXTAFTER` and `TEXTBEFORE` spill over a single array-valued `text` or
+    `instance_num` argument on the current baseline for the lanes pinned under
+    `W080`; delimiter-array widening is not admitted from the current evidence.
 
 ## 4. Main Rules Carried Into W066
 1. `CODE` rejects empty text with `#VALUE!` and reads only the first UTF-16 code unit.
@@ -57,9 +63,17 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
 9. `FIND` is case-sensitive and treats wildcard characters literally.
 10. `SEARCH` is case-insensitive on the current ASCII-seeded baseline and honors `*`, `?`, and `~`.
 11. `FINDB`, `LEFTB`, `LENB`, `MIDB`, `REPLACEB`, `RIGHTB`, and `SEARCHB` match the current Unicode-baseline delegate posture documented in `W16_BATCH73`.
-12. The broader function-array-support question remains open beyond the seeded
-    text-slice lanes and is now explicitly owned under `BUG-FUNC-007` / `W080`
-    rather than assumed closed.
+12. `CHAR`, `CODE`, `LOWER`, `UPPER`, and `TRIM` now have current-baseline
+    evidence for spill over a single array-valued primary argument.
+13. `REPT` now has current-baseline evidence for spill over one array-valued
+    text or `number_times` argument.
+14. `TEXTAFTER` and `TEXTBEFORE` now have current-baseline evidence for spill
+    over one array-valued `text` or `instance_num` argument, but delimiter-array
+    widening remains outside the admitted slice.
+15. The broader function-array-support question remains open beyond the seeded
+    text-slice and first bounded text-scalar/text-delimiter lanes and is now
+    explicitly owned under `BUG-FUNC-007` / `BUG-FUNC-008` / `W080` rather than
+    assumed closed.
 
 ## 5. Runtime / Formal Anchors
 Runtime anchors:

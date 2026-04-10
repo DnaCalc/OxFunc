@@ -30,6 +30,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 15. [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md)
 16. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md)
 17. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md)
+18. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -49,6 +50,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 15. [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md) owns the shared `POWER` / `OP_POWER` zero-to-zero parity correction opened from live Excel replay and tracked in `BUG-FUNC-005`.
 16. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md) owns the reopened lookup-family lane where live Excel spills array-valued lookup needles for `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP`, while adjacent `XLOOKUP` risk remains an explicit follow-on under `BUG-FUNC-006`.
 17. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md) owns the immediate text-slice spill correction for `LEFT` / `RIGHT` / `MID` plus the bounded systematic review seed for broader function-array-support investigation under `BUG-FUNC-007`.
+18. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md) owns the reopened `RATE` mortgage-style omitted-guess lane where Excel returns a small positive periodic rate but the local default-guess solver path currently fails with `#NUM!` under `BUG-FUNC-009`.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

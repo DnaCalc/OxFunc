@@ -368,25 +368,52 @@ It does mean:
 1. purpose:
    own the bounded seed for systematic function array-support review, starting
    with the immediate `LEFT` / `RIGHT` / `MID` spill correction and carrying
-   that learning into an explicit next-batch review program for ordinary
-   function array-expansion semantics.
+   that learning into explicit next-batch review packets for ordinary function
+   array-expansion semantics, beginning with the first bounded `W066`
+   text-family batch.
 2. depends_on:
    `W070`, `W072`
 3. parent_doctrine_and_spec_surfaces:
    `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`,
    `docs/bugs/streams/BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md`,
+   `docs/bugs/streams/BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md`,
    `docs/function-lane/FUNCTION_SLICE_TEXT_CORE_AND_COMPATIBILITY_FAMILY_CONTRACT_PRELIM.md`,
    `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
 4. upstream_dependencies:
    none
 5. closure_condition:
    the immediate text-slice seed correction is validated locally, current-gap
-   truth is reconciled honestly, and the broader function-array-support review
-   has an explicit bounded owner plus next-batch sequencing without claiming
-   the full supported surface has already been reviewed.
+   truth is reconciled honestly, at least one bounded post-text-slice batch is
+   replayed and reconciled honestly, and the broader function-array-support
+   review has an explicit bounded owner plus next-batch sequencing without
+   claiming the full supported surface has already been reviewed.
 6. initial_epic_lanes:
    text-slice bug intake, immediate seed correction, focused validation,
    current-gap reconciliation, broader review framing
+7. rollout_mode:
+   `execution_target`
+
+### W081 RATE Default-Guess Convergence Repair
+1. purpose:
+   own the bounded local `RATE` repair where Excel returns a small positive
+   rate for a mortgage-style omitted-guess row but the current local default-
+   guess path fails with `#NUM!`.
+2. depends_on:
+   `W070`, `W072`, `W024`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md`,
+   `docs/bugs/streams/BUG-FUNC-009_rate_default_guess_solver_no_convergence.md`,
+   `docs/function-lane/FUNCTION_SLICE_FINANCIAL_TIME_VALUE_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/W24_BATCH11_FINANCIAL_TIME_VALUE_EXECUTION_RECORD.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   the reopened mortgage-style omitted-guess `RATE` lane matches Excel locally,
+   the earlier admitted seed inversion row remains aligned, focused validation
+   is recorded, and the current-gap surfaces no longer overclaim `RATE`.
+6. initial_epic_lanes:
+   bug intake, omitted-guess replay characterization, local solver/default-
+   guess repair, focused validation, current-gap reconciliation
 7. rollout_mode:
    `execution_target`
 
@@ -448,8 +475,8 @@ It does mean:
 
 ### W051 In-Scope Current-Version Not-Complete Surface
 1. purpose:
-   remain the canonical non-deferred current-version tracker, currently parked at
-   zero open rows.
+   remain the canonical non-deferred current-version tracker for any reopened or
+   still-open current-version rows.
 2. depends_on:
    none
 3. parent_doctrine_and_spec_surfaces:

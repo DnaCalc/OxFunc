@@ -4321,6 +4321,154 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_char_spills_array_numbers() {
+        let got = eval_surface_value_call(
+            FUNC_ID_CHAR,
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(65.0)],
+                    vec![ArrayCellValue::Number(66.0)],
+                    vec![ArrayCellValue::Number(67.0)],
+                ])
+                .unwrap(),
+            ))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "A"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "B"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "C"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_rept_spills_array_counts() {
+        let got = eval_surface_value_call(
+            FUNC_ID_REPT,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("x"))),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "x"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "xx"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "xxx"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_textafter_spills_array_instance_numbers() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXTAFTER,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a-b-c"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("-"))),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "b-c"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "c"
+                    ))],
+                    vec![ArrayCellValue::Error(WorksheetErrorCode::NA)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_textbefore_spills_array_text_inputs() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXTBEFORE,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a-b")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c-d")),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("-"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
     fn eval_surface_value_call_areas_counts_multi_area_reference() {
         let got = eval_surface_value_call(
             FUNC_ID_AREAS,

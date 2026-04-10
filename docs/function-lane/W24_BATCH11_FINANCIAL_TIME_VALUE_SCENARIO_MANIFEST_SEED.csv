@@ -4,6 +4,7 @@ fv_sample,FV,"FV(0.08/12,10,-1037.0320893591607,10000)",,0,1E-8,Future value clo
 pmt_sample,PMT,"PMT(0.08/12,10,10000)",,-1037.03208935915,1E-9,Payment sample
 nper_sample,NPER,"NPER(0.08/12,-1037.0320893591607,10000)",,10,1E-9,Recovered periods sample
 rate_sample,RATE,"RATE(48,PMT(0.01,48,8000),8000)",,0.00999999999999997,1E-9,Rate inversion sample
+rate_mortgage_default_guess_sample,RATE,"RATE(360,-1073.64,200000)",,0.004166644536345589,1E-12,Mortgage-style omitted-guess lane pinned against live Excel 2026-04-10
 npv_sample,NPV,"NPV(0.1,-10000,3000,4200,6800)",,1188.44341233522,1E-9,Microsoft sample
 ipmt_sample,IPMT,"IPMT(0.10/12,1,36,8000)",,-66.6666666666667,1E-9,First-period interest sample
 ppmt_sample,PPMT,"PPMT(0.10/12,1,36,8000)",,-191.470830884033,1E-9,First-period principal sample

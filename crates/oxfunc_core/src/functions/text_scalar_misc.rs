@@ -5,10 +5,11 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
-    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 pub const CHAR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CHAR",
@@ -135,50 +136,136 @@ fn rept_text(text: &ExcelText, count: f64) -> Result<ExcelText, TextScalarEvalEr
     Ok(ExcelText::from_utf16_code_units(out))
 }
 
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> crate::functions::adapters::PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(*n))
+        }
+        ArrayCellValue::Text(t) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Text(t.clone()))
+        }
+        ArrayCellValue::Logical(b) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Logical(*b))
+        }
+        ArrayCellValue::Error(code) => {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Error(*code))
+        }
+        ArrayCellValue::EmptyCell => crate::functions::adapters::PreparedArgValue::EmptyCell,
+    }
+}
+
+fn text_scalar_result_to_array_cell(
+    result: Result<EvalValue, TextScalarEvalError>,
+) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
+        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_text_scalar_error_to_ws(&err)),
+    }
+}
+
+fn eval_text_scalar_with_single_array_lift(
+    prepared: &[crate::functions::adapters::PreparedArgValue],
+    allowed_array_arg_indexes: &[usize],
+    eval_scalar: impl Fn(
+        &[crate::functions::adapters::PreparedArgValue],
+    ) -> Result<EvalValue, TextScalarEvalError>,
+) -> Result<EvalValue, TextScalarEvalError> {
+    let array_args = prepared
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, arg)| match arg {
+            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Array(array))
+                if allowed_array_arg_indexes.contains(&idx) =>
+            {
+                Some((idx, array))
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+
+    match array_args.as_slice() {
+        [] => eval_scalar(prepared),
+        [(arg_index, array)] => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let mut scalar_args = prepared.to_vec();
+                    scalar_args[*arg_index] = prepared_from_array_cell(cell);
+                    text_scalar_result_to_array_cell(eval_scalar(&scalar_args))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("text-scalar lifted array shape remains valid"),
+            ))
+        }
+        _ => eval_scalar(prepared),
+    }
+}
+
+fn eval_char_prepared_value(
+    prepared: &[crate::functions::adapters::PreparedArgValue],
+) -> Result<EvalValue, TextScalarEvalError> {
+    if !CHAR_META.arity.accepts(prepared.len()) {
+        return Err(TextScalarEvalError::ArityMismatch {
+            expected_min: CHAR_META.arity.min,
+            expected_max: CHAR_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    let n = coerce_prepared_to_number(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
+    Ok(EvalValue::Text(char_from_number(n)?))
+}
+
+fn eval_code_prepared_value(
+    prepared: &[crate::functions::adapters::PreparedArgValue],
+) -> Result<EvalValue, TextScalarEvalError> {
+    if !CODE_META.arity.accepts(prepared.len()) {
+        return Err(TextScalarEvalError::ArityMismatch {
+            expected_min: CODE_META.arity.min,
+            expected_max: CODE_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
+    Ok(EvalValue::Number(code_of_text(&text)?))
+}
+
+fn eval_rept_prepared_value(
+    prepared: &[crate::functions::adapters::PreparedArgValue],
+) -> Result<EvalValue, TextScalarEvalError> {
+    if !REPT_META.arity.accepts(prepared.len()) {
+        return Err(TextScalarEvalError::ArityMismatch {
+            expected_min: REPT_META.arity.min,
+            expected_max: REPT_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
+    let count = coerce_prepared_to_number(&prepared[1]).map_err(TextScalarEvalError::Coercion)?;
+    Ok(EvalValue::Text(rept_text(&text, count)?))
+}
+
 pub fn eval_char_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextScalarEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !CHAR_META.arity.accepts(prepared.len()) {
-                return Err(TextScalarEvalError::ArityMismatch {
-                    expected_min: CHAR_META.arity.min,
-                    expected_max: CHAR_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let n =
-                coerce_prepared_to_number(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-            Ok(EvalValue::Text(char_from_number(n)?))
-        },
-        TextScalarEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
+    eval_text_scalar_with_single_array_lift(&prepared, &[0], eval_char_prepared_value)
 }
 
 pub fn eval_code_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextScalarEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !CODE_META.arity.accepts(prepared.len()) {
-                return Err(TextScalarEvalError::ArityMismatch {
-                    expected_min: CODE_META.arity.min,
-                    expected_max: CODE_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let text =
-                coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-            Ok(EvalValue::Number(code_of_text(&text)?))
-        },
-        TextScalarEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
+    eval_text_scalar_with_single_array_lift(&prepared, &[0], eval_code_prepared_value)
 }
 
 fn eval_text_unary_surface(
@@ -187,23 +274,19 @@ fn eval_text_unary_surface(
     meta: &FunctionMeta,
     kernel: fn(&ExcelText) -> ExcelText,
 ) -> Result<EvalValue, TextScalarEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        |prepared| {
-            if !meta.arity.accepts(prepared.len()) {
-                return Err(TextScalarEvalError::ArityMismatch {
-                    expected_min: meta.arity.min,
-                    expected_max: meta.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let text =
-                coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-            Ok(EvalValue::Text(kernel(&text)))
-        },
-        TextScalarEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
+    eval_text_scalar_with_single_array_lift(&prepared, &[0], |prepared| {
+        if !meta.arity.accepts(prepared.len()) {
+            return Err(TextScalarEvalError::ArityMismatch {
+                expected_min: meta.arity.min,
+                expected_max: meta.arity.max,
+                actual: prepared.len(),
+            });
+        }
+        let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
+        Ok(EvalValue::Text(kernel(&text)))
+    })
 }
 
 pub fn eval_lower_surface(
@@ -233,16 +316,7 @@ pub fn eval_rept_surface(
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
-    if !REPT_META.arity.accepts(prepared.len()) {
-        return Err(TextScalarEvalError::ArityMismatch {
-            expected_min: REPT_META.arity.min,
-            expected_max: REPT_META.arity.max,
-            actual: prepared.len(),
-        });
-    }
-    let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-    let count = coerce_prepared_to_number(&prepared[1]).map_err(TextScalarEvalError::Coercion)?;
-    Ok(EvalValue::Text(rept_text(&text, count)?))
+    eval_text_scalar_with_single_array_lift(&prepared, &[0, 1], eval_rept_prepared_value)
 }
 
 pub fn map_text_scalar_error_to_ws(e: &TextScalarEvalError) -> WorksheetErrorCode {
@@ -370,6 +444,179 @@ mod tests {
                 &NoResolver,
             ),
             Err(TextScalarEvalError::Domain(WorksheetErrorCode::Value))
+        );
+    }
+
+    #[test]
+    fn char_spills_array_numbers() {
+        let got = eval_char_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(65.0)],
+                    vec![ArrayCellValue::Number(66.0)],
+                    vec![ArrayCellValue::Number(67.0)],
+                ])
+                .unwrap(),
+            ))],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "A"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "B"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "C"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn code_spills_array_texts() {
+        let got = eval_code_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+                ]])
+                .unwrap(),
+            ))],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(65.0),
+                    ArrayCellValue::Number(66.0),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn lower_upper_and_trim_spill_array_texts() {
+        assert_eq!(
+            eval_lower_surface(
+                &[CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+                    ]])
+                    .unwrap(),
+                ))],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(
+            eval_upper_surface(
+                &[CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ]])
+                    .unwrap(),
+                ))],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(
+            eval_trim_surface(
+                &[CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("  a  ")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment(" b ")),
+                    ]])
+                    .unwrap(),
+                ))],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn rept_spills_array_counts_and_texts() {
+        assert_eq!(
+            eval_rept_surface(
+                &[
+                    CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("x"))),
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(1.0)],
+                            vec![ArrayCellValue::Number(2.0)],
+                            vec![ArrayCellValue::Number(3.0)],
+                        ])
+                        .unwrap(),
+                    )),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "x"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "xx"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "xxx"
+                    ))],
+                ])
+                .unwrap()
+            ))
+        );
+        assert_eq!(
+            eval_rept_surface(
+                &[
+                    CallArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                        ]])
+                        .unwrap(),
+                    )),
+                    CallArgValue::Eval(EvalValue::Number(2.0)),
+                ],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("aa")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("bb")),
+                ]])
+                .unwrap()
+            ))
         );
     }
 }
