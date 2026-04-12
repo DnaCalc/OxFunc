@@ -59,11 +59,9 @@ Out of scope:
 4. `W051` and the bug/workset surfaces no longer overclaim `SORT` / `SORTBY`.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - landed-ref promotion for the local sort-family omission fix
-   - bounded adjacent review for other dynamic-array reshape functions with
-     optional defaulted controls
+   - none

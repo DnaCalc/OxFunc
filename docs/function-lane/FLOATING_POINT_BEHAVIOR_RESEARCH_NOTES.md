@@ -227,12 +227,14 @@ Key takeaways:
    separate from `W086`/`W087` until the comparison-policy packet is decided.
 
 Working consequence for current OxFunc packets:
-1. `W086` remains a legitimate local exact-value reconciliation packet; the
-   external literature supports treating this as a known Excel-accuracy class,
-   not a mere formatting issue.
-2. `W087` should stay in characterization mode until a bounded empirical model
-   of Excel's returned `XIRR` value exists; do not assume "closest root of
-   current `XNPV`" is the parity target.
+1. `W086` is a legitimate exact-value reconciliation packet; the external
+   literature supports treating this as a known Excel-accuracy class, not a
+   mere formatting issue, and the bounded current-scope repair is now landed on
+   committed ref `8234dce5f3e0c50a3c634466ead38c67fa93937e`.
+2. `W087` no longer needs open characterization for the bounded current scope:
+   the widened empirical model of Excel's returned `XIRR` value now exists and
+   the bounded OxFunc repair is landed on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`.
 3. `PPMT`, `CUMPRINC`, and `EFFECT` remain better framed as comparison-policy
    rows for now unless a larger empirical delta appears.
 
@@ -275,10 +277,10 @@ Key outcomes:
 Working consequence:
 1. `W087` remains an empirical publication-rule packet, not a generic
    solver-accuracy packet.
-2. Focused local re-verification now shows the current working-tree
-   implementation matches the bounded widened witness matrix pinned for `W087`;
-   the remaining work is landed-ref promotion and broader repo verification,
-   not further bounded `XIRR` semantic widening.
+2. Focused local re-verification now shows the landed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e` matches the bounded widened
+   witness matrix pinned for `W087`; broader repo verification is orthogonal,
+   not an open blocker on the bounded `XIRR` lane.
 3. The exact-value witness floor is now strong enough to prevent regression
    back to displayed-value approximations while the remaining publication rule
    is characterized.

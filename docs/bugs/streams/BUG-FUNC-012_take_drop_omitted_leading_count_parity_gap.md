@@ -3,22 +3,22 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-012`
 - **Opened**: `2026-04-10`
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W085`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Reproduced on ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `8234dce5f3e0c50a3c634466ead38c67fa93937e`
 - **Ref notes**: live Excel replay on 2026-04-10 pinned omitted-leading-count
   semantics for both `TAKE` and `DROP`: omitting the row count keeps all rows
   while the third argument slices columns. On the reported local ref, both
   `eval_take_prepared(...)` and `eval_drop_prepared(...)` still parsed `args[1]`
   as required and therefore surfaced `Preparation(MissingArg)` instead. The
-  local `W085` correction now normalizes those omitted-leading-count lanes on
-  the working tree and adds focused W39 witness rows, but the correction is not
-  yet landed on a committed ref.
+  landed `W085` correction on `8234dce5f3e0c50a3c634466ead38c67fa93937e` now
+  normalizes those omitted-leading-count lanes and adds focused W39 witness
+  rows.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -81,6 +81,10 @@
 6. 2026-04-11: added focused omission-shape assertions plus replayable W39
    witness rows for the bounded `TAKE` / `DROP` omitted-leading-count forms,
    and reran the focused local test lane plus `scripts/check-worksets.ps1`.
+7. 2026-04-12: landed the bounded W085 repair on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, reran the focused regression
+   floor on that ref, and removed the reopened `TAKE` / `DROP` rows from W39
+   overclaim and `W051`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -142,4 +146,5 @@
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded

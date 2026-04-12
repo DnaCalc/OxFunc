@@ -57,11 +57,9 @@ Out of scope:
 4. `W051` and bug/workset surfaces no longer overclaim `COUNTBLANK`.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - landed-ref promotion for the working-tree `COUNTBLANK` correction
-   - honest `W051`/bug-surface promotion on a committed ref
-   - bounded adjacent policy review to ensure the fix stays function-local
+   - none

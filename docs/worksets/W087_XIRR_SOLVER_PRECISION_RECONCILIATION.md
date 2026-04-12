@@ -58,19 +58,9 @@ Out of scope:
 4. `W051` and related truth surfaces no longer overclaim the reopened row.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
+1. execution_state: `complete`
+2. scope_completeness: `scope_complete`
 3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - the widened adjacent multi-cashflow positive-root guess matrix now pinned
-     in
-     `docs/function-lane/W24_BATCH12_CASHFLOW_RATE_SCENARIO_MANIFEST_SEED.csv`
-   - focused local verification now shows the current working-tree
-     implementation matches that widened matrix exactly through the bounded
-     `W087` witness set
-   - landed-ref promotion is still open, so the bounded local reconciliation is
-     not yet represented by a committed ref
-   - full-crate `cargo test` remains blocked by unrelated OxFml seam
-     integration tests that currently fail to compile against missing
-     `oxfml_core::substrate` imports
+   - none

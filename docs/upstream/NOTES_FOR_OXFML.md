@@ -215,3 +215,24 @@ Current OxFunc position to OxFml:
 8. the current OxFunc-owned consolidated freeze candidate for the seam-relevant non-deferred surface now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 9. the active OxFunc outbound shared-model reference for the next round now lives in `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
 10. OxFml's mirrored packet now reads `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.
+
+## 13. Locale/Format Seam Ownership Realignment (W082 / HO-FN-009)
+
+Current OxFunc reading:
+1. OxFunc should own function semantics and typed seam contracts, not a production fallback locale/format convenience bundle.
+2. `crates/oxfunc_core/src/locale_format.rs` still exports `en_us_context()` and `current_excel_host_context()` as mixed convenience shims.
+3. `tools/xll-addin/oxfunc_xll/src/lib.rs` still constructs `current_excel_host_context()` directly on the OxFunc side.
+4. OxFml still imports `en_us_context()` broadly in evaluator-facing tests, for example `../OxFml/crates/oxfml_core/tests/evaluator_tests.rs`.
+5. `W082` and `HO-FN-009` now own the migration onto caller-supplied capability bundles with no backward-compatible OxFunc fallback.
+
+Current OxFml implication:
+1. stop treating `en_us_context()` as the shared stable seam for evaluator or test setup.
+2. construct locale/format parsing and rendering capabilities on the caller side and pass them through the typed seam explicitly.
+3. update evaluator/test helpers so OxFml can stand up its own capability bundle without importing OxFunc convenience shims.
+4. acknowledge `HO-FN-009` once the replacement construction pattern is landed and both repos point at the same typed seam vocabulary.
+
+Minimum invariants:
+1. function semantics remain OxFunc-owned.
+2. locale/format authority lives at the caller/host seam rather than behind an OxFunc fallback helper.
+3. no production path should depend on `current_excel_host_context()` or `en_us_context()` once the migration is complete.
+4. the XLL add-in and OxFml evaluator/tests should converge on the same caller-supplied capability model.

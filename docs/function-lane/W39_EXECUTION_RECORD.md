@@ -56,6 +56,9 @@ Artifacts created or updated in this packet:
    insufficient to justify overclaiming omitted optional-argument defaulting in
    the sort family.
 3. successor owner: `BUG-FUNC-010` / `W083`.
+4. bounded omitted-argument repair landed on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, so the reopened sort-family lane
+   is now closed for declared OxFunc scope.
 
 ## 5B. Later Reopen Note (2026-04-10)
 1. `HANDOFF-OXFUNC-004` plus direct live Excel replay on 2026-04-10 pinned
@@ -69,6 +72,9 @@ Artifacts created or updated in this packet:
    insufficient to justify overclaiming omitted-leading-count coverage in the
    `TAKE` / `DROP` family.
 4. successor owner: `BUG-FUNC-012` / `W085`.
+5. bounded omitted-leading-count repair landed on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, so the reopened `TAKE` / `DROP`
+   lane is now closed for declared OxFunc scope.
 
 ## 6. Verification Runs
 1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml dynamic_array_reshape_family -- --nocapture`

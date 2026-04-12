@@ -3,14 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-013`
 - **Opened**: `2026-04-10`
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W086`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Reproduced on ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `8234dce5f3e0c50a3c634466ead38c67fa93937e`
 - **Ref notes**: direct local replay on 2026-04-10 confirmed current OxFunc
   exact-value drift on bounded `NORM.DIST` and `NORM.INV` witnesses, while
   live Excel `Value2` replay on the same date pinned the current baseline
@@ -72,6 +72,10 @@
    alignment for `NORM.S.DIST(0,TRUE)`, `NORM.S.INV(0.975)`, `GAUSS(1)`,
    `PHI(0)`, `ERF(1)`, `ERFC(1)`, and `Z.TEST({3,6,7,8,6},4,1.5)` without
    reopening broader W062 distribution rows.
+7. 2026-04-12: landed the bounded W086 repair on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, reran the focused exact-value
+   regression floor on that ref, and removed the reopened `NORM.DIST` /
+   `NORM.INV` rows from `W051`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -132,6 +136,7 @@
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
-- [ ] spec/matrix/contract updated if required
+- [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded

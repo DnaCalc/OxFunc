@@ -3,21 +3,21 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-011`
 - **Opened**: `2026-04-10`
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W084`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Reproduced on ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `8234dce5f3e0c50a3c634466ead38c67fa93937e`
 - **Ref notes**: live Excel replay on 2026-04-10 pinned that `COUNTBLANK`
   accepts a real range and counts both empty cells and `""`, but rejects an
   array-valued substitute with `#VALUE!`. On the reported local ref,
   `countblank_fn.rs` still used aggregate-style direct/range expansion via
-  `expand_aggregate_arg(...)`; the local `W084` correction now rejects direct
-  array-valued substitutes on the working tree while preserving true-range
-  blank counting, but the correction is not yet landed on a committed ref.
+  `expand_aggregate_arg(...)`; the landed `W084` correction on
+  `8234dce5f3e0c50a3c634466ead38c67fa93937e` now rejects direct array-valued
+  substitutes while preserving true-range blank counting.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -82,6 +82,9 @@
    true-range inputs retain blank-counting semantics.
 6. 2026-04-11: focused local validation passed for `countblank_fn`, including
    the direct-array rejection lane, and `scripts/check-worksets.ps1` passed.
+7. 2026-04-12: landed the bounded W084 repair on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, reran the focused regression
+   floor on that ref, and removed the reopened `COUNTBLANK` row from `W051`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -158,4 +161,5 @@
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded

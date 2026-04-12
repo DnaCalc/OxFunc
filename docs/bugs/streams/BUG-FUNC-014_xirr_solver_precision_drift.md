@@ -3,14 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-014`
 - **Opened**: `2026-04-10`
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W087`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Reproduced on ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `8234dce5f3e0c50a3c634466ead38c67fa93937e`
 - **Ref notes**: direct local replay on 2026-04-10 confirmed a bounded `XIRR`
   precision drift on the current OxFunc ref, while live Excel `Value2` replay
   on the same date pinned the current baseline target.
@@ -102,6 +102,10 @@
     The current working-tree implementation matches the full bounded matrix
     locally, so the earlier "still misses some adjacent rows" read no longer
     reproduces on the current tree.
+14. 2026-04-12: landed the bounded W087 repair on committed ref
+    `8234dce5f3e0c50a3c634466ead38c67fa93937e`, reran the focused widened
+    witness regression floor on that ref, and removed the reopened `XIRR` row
+    from `W051`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -151,7 +155,7 @@
 1. keep the bounded widened `XIRR` witness matrix pinned in repo artifacts
 2. keep focused regression coverage on the exact witness set
 3. reconcile `W051` and related truth surfaces honestly
-4. promote the working-tree correction onto a landed ref
+4. promote the landed correction honestly through the current-gap surfaces
 5. rerun the broader repo verification lanes once the unrelated OxFml seam test
    compile break is resolved
 
@@ -180,4 +184,5 @@
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded

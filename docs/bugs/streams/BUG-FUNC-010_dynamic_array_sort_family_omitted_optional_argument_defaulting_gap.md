@@ -3,21 +3,21 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-010`
 - **Opened**: `2026-04-10`
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W083`
 
 ## Source Refs
 - **Reported against ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Reproduced on ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `8234dce5f3e0c50a3c634466ead38c67fa93937e`
 - **Ref notes**: intake pinned the current committed local ref on 2026-04-10.
   On that ref, `SORT({2;3;7;5},,-1)` failed locally with
   `Err(Preparation(MissingArg))` on the OxFunc surface, while the explicit
   equivalent `SORT({2;3;7;5},1,-1)` returned `{7;5;3;2}`. The local `W083`
-  correction now treats omitted optional sort parameters as defaults on the
-  working tree and also aligns the adjacent `SORTBY(..., by_array,)` lane, but
-  the correction is not yet landed on a committed ref.
+  correction now treats omitted optional sort parameters as defaults on landed
+  ref `8234dce5f3e0c50a3c634466ead38c67fa93937e` and also aligns the adjacent
+  `SORTBY(..., by_array,)` lane.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -74,6 +74,10 @@
 5. 2026-04-10: corrected the local helper path so `MissingArg` and `EmptyCell`
    default the sort family optional controls the same way as absent arguments,
    and added focused unit coverage for both `SORT` and `SORTBY`.
+6. 2026-04-12: landed the bounded W083 repair on committed ref
+   `8234dce5f3e0c50a3c634466ead38c67fa93937e`, reran the focused regression
+   floor on that ref, and removed the reopened `SORT` / `SORTBY` rows from
+   `W051`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -139,4 +143,5 @@
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded
