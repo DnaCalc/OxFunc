@@ -5,8 +5,32 @@ irr_no_sign_change,IRR,"IRR({100,121})",#NUM!,,,Missing sign change returns nume
 xnpv_simple,XNPV,"XNPV(0.1,{-100,121},{45000,45365})",,10,1E-9,One-year discounted irregular NPV identity
 xnpv_length_mismatch,XNPV,"XNPV(0.1,{-100,121},{45000})",#NUM!,,,Length mismatch returns numeric error
 xnpv_pre_anchor_date,XNPV,"XNPV(0.1,{-100,121},{45000,44999})",#NUM!,,,Date before anchor returns numeric error
-xirr_simple,XIRR,"XIRR({-100,121},{45000,45365})",,0.21,1E-9,One-year irregular-rate identity
-xirr_guess,XIRR,"XIRR({-100,121},{45000,45365},0.5)",,0.21,1E-9,Optional guess still converges to same root
+xirr_simple,XIRR,"XIRR({-100,121},{45000,45365})",,0.209999996423721,1E-15,One-year irregular-rate exact Value2 witness for the default-guess lane.
+xirr_guess,XIRR,"XIRR({-100,121},{45000,45365},0.5)",,0.209999997168779,1E-15,One-year irregular-rate exact Value2 witness for the explicit-guess lane.
 xirr_no_sign_change,XIRR,"XIRR({100,121},{45000,45365})",#NUM!,,,Missing sign change returns numeric error
 xirr_length_mismatch,XIRR,"XIRR({-100,121},{45000})",#NUM!,,,Length mismatch returns numeric error
 xirr_pre_anchor_date,XIRR,"XIRR({-100,121},{45000,44999})",#NUM!,,,Date before anchor returns numeric error
+xirr_exact_multicashflow_guess_0_01,XIRR,"XIRR({-10000,2750,4250,3250,2750},{44927,45108,45292,45473,45658},0.01)",,0.244491829872131,1E-15,Exact Excel Value2 witness for the reopened multi-cashflow positive-root lane with small positive guess.
+xirr_exact_multicashflow_guess_0_1,XIRR,"XIRR({-10000,2750,4250,3250,2750},{44927,45108,45292,45473,45658})",,0.24449183344841,1E-15,Exact Excel Value2 witness for the reopened multi-cashflow positive-root default-guess lane.
+xirr_exact_multicashflow_guess_0_5,XIRR,"XIRR({-10000,2750,4250,3250,2750},{44927,45108,45292,45473,45658},0.5)",,0.244491834193468,1E-15,Exact Excel Value2 witness for the reopened multi-cashflow positive-root explicit-guess lane.
+xirr_exact_multicashflow_guess_1,XIRR,"XIRR({-10000,2750,4250,3250,2750},{44927,45108,45292,45473,45658},1)",,0.244491834193468,1E-15,Exact Excel Value2 witness for the reopened multi-cashflow positive-root large-guess lane.
+xirr_adjacent_a_guess_0_01,XIRR,"XIRR({-1000,300,400,500},{45000,45100,45200,45365},0.01)",,0.320753083229065,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_a_guess_0_1,XIRR,"XIRR({-1000,300,400,500},{45000,45100,45200,45365})",,0.320753079652786,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_a_guess_0_5,XIRR,"XIRR({-1000,300,400,500},{45000,45100,45200,45365},0.5)",,0.320753075182438,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_a_guess_1,XIRR,"XIRR({-1000,300,400,500},{45000,45100,45200,45365},1)",,0.320753075182438,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_b_guess_0_01,XIRR,"XIRR({-5000,1500,1500,1500,1500},{45000,45090,45180,45270,45360},0.01)",,0.35169596195221,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_b_guess_0_1,XIRR,"XIRR({-5000,1500,1500,1500,1500},{45000,45090,45180,45270,45360})",,0.351695960760117,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_b_guess_0_5,XIRR,"XIRR({-5000,1500,1500,1500,1500},{45000,45090,45180,45270,45360},0.5)",,0.351695962250233,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_b_guess_1,XIRR,"XIRR({-5000,1500,1500,1500,1500},{45000,45090,45180,45270,45360},1)",,0.351695962250233,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_c_guess_0_01,XIRR,"XIRR({-12000,1000,2000,3000,7000},{45000,45150,45300,45450,45600},0.01)",,0.0623764371871948,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_c_guess_0_1,XIRR,"XIRR({-12000,1000,2000,3000,7000},{45000,45150,45300,45450,45600})",,0.0623764425516129,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_c_guess_0_5,XIRR,"XIRR({-12000,1000,2000,3000,7000},{45000,45150,45300,45450,45600},0.5)",,0.0623764432966709,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_c_guess_1,XIRR,"XIRR({-12000,1000,2000,3000,7000},{45000,45150,45300,45450,45600},1)",,0.0623764432966709,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_d_guess_0_01,XIRR,"XIRR({-2000,2500,100},{45000,45180,45365},0.01)",,0.672046403884887,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_d_guess_0_1,XIRR,"XIRR({-2000,2500,100},{45000,45180,45365})",,0.672046405076981,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_d_guess_0_5,XIRR,"XIRR({-2000,2500,100},{45000,45180,45365},0.5)",,0.672046400606632,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_d_guess_1,XIRR,"XIRR({-2000,2500,100},{45000,45180,45365},1)",,0.672046400606632,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_e_guess_0_01,XIRR,"XIRR({-4000,500,800,1200,2200},{45000,45045,45120,45210,45400},0.01)",,0.253582987785339,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_e_guess_0_1,XIRR,"XIRR({-4000,500,800,1200,2200},{45000,45045,45120,45210,45400})",,0.25358299612999,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_e_guess_0_5,XIRR,"XIRR({-4000,500,800,1200,2200},{45000,45045,45120,45210,45400},0.5)",,0.253582991659641,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.
+xirr_adjacent_e_guess_1,XIRR,"XIRR({-4000,500,800,1200,2200},{45000,45045,45120,45210,45400},1)",,0.253582991659641,1E-15,Adjacent positive-root Excel Value2 witness for widened W087 guess-matrix replay.

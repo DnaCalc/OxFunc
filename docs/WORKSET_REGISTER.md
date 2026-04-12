@@ -417,6 +417,153 @@ It does mean:
 7. rollout_mode:
    `execution_target`
 
+### W082 Locale/Format Seam Ownership Realignment
+1. purpose:
+   move OxFunc to the exact intended locale/format decomposition where OxFunc
+   keeps function semantics plus the typed seam contract, while OxFml/FEC owns
+   and supplies the concrete parser/formatter implementation without any
+   backward-compatible OxFunc runtime fallback.
+2. depends_on:
+   `W070`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md`,
+   `docs/function-lane/LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md`,
+   `docs/function-lane/LOCALE_AND_FORMAT_INTERFACE_OPTIONS.md`,
+   `docs/handoffs/HO-FN-009_locale_format_seam_ownership_realignment.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   OxFunc no longer ships an OxFunc-owned production parser/formatter runtime
+   path for locale-sensitive function evaluation, the affected functions
+   consume caller-supplied `LocaleFormatContext` only, no backward-compatible
+   runtime fallback remains, and the downstream handoff is filed and
+   acknowledged.
+6. initial_epic_lanes:
+   seam inventory, OxFunc runtime ownership removal, caller alignment,
+   downstream handoff, truth-surface reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W083 Dynamic-Array Sort Omitted Optional-Argument Defaulting
+1. purpose:
+   own the bounded local repair where `SORT` and adjacent `SORTBY` fail to
+   default optional controls when the argument is syntactically omitted and
+   therefore arrives on the prepared surface as `MissingArg`.
+2. depends_on:
+   `W070`, `W072`, `W039`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md`,
+   `docs/bugs/streams/BUG-FUNC-010_dynamic_array_sort_family_omitted_optional_argument_defaulting_gap.md`,
+   `docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/W39_EXECUTION_RECORD.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   `SORT({2;3;7;5},,-1)` and adjacent `SORTBY(..., by_array,)` omission lanes
+   default correctly locally, focused validation is recorded, and the
+   current-gap surfaces no longer overclaim `SORT` / `SORTBY`.
+6. initial_epic_lanes:
+   bug intake, omission/default repair, focused validation, W39/W51 truth
+   reconciliation, adjacent optional-default review framing
+7. rollout_mode:
+   `execution_target`
+
+### W084 COUNTBLANK Range-Only Parity
+1. purpose:
+   own the bounded local repair where `COUNTBLANK` currently over-admits
+   array-valued substitutes even though live Excel accepts true ranges and
+   rejects array-valued substitutes with `#VALUE!`.
+2. depends_on:
+   `W070`, `W072`, `W016`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W084_COUNTBLANK_RANGE_ONLY_PARITY.md`,
+   `docs/bugs/streams/BUG-FUNC-011_countblank_range_only_parity_gap.md`,
+   `docs/function-lane/W16_EXECUTION_RECORD.md`,
+   `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   direct array-valued `COUNTBLANK` inputs reject locally with `#VALUE!`, true
+   ranges still count empty cells and `""`, focused validation is recorded, and
+   the current-gap surfaces no longer overclaim `COUNTBLANK`.
+6. initial_epic_lanes:
+   bug intake, countblank range-only repair, focused validation, W51 truth
+   reconciliation, bounded adjacent policy review
+7. rollout_mode:
+   `execution_target`
+
+### W085 TAKE/DROP Omitted Leading-Count Parity
+1. purpose:
+   own the bounded local repair where `TAKE` and `DROP` currently fail when the
+   leading row-count argument is syntactically omitted and the third argument
+   is used to slice columns.
+2. depends_on:
+   `W070`, `W072`, `W039`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md`,
+   `docs/bugs/streams/BUG-FUNC-012_take_drop_omitted_leading_count_parity_gap.md`,
+   `docs/function-lane/FUNCTION_SLICE_DYNAMIC_ARRAY_SHAPING_AND_RESHAPING_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/W39_EXECUTION_RECORD.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   omitted-leading-count `TAKE` / `DROP` lanes default correctly locally,
+   focused validation is recorded, and the current-gap surfaces no longer
+   overclaim `TAKE` / `DROP`.
+6. initial_epic_lanes:
+   handoff intake, omission/default repair, focused validation, W39/W51 truth
+   reconciliation, bounded adjacent reshape review
+7. rollout_mode:
+   `execution_target`
+
+### W086 Normal-Distribution Exact-Value Accuracy
+1. purpose:
+   own the bounded local reconciliation where current `NORM.DIST` and
+   `NORM.INV` approximations drift from live Excel `Value2` on bounded
+   current-baseline exact-value witnesses.
+2. depends_on:
+   `W070`, `W072`, `W062`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md`,
+   `docs/bugs/streams/BUG-FUNC-013_normal_distribution_exact_value_accuracy_gap.md`,
+   `docs/function-lane/FUNCTION_SLICE_STATISTICAL_DISTRIBUTIONS_AND_COMPAT_B_CONTRACT_PRELIM.md`,
+   `docs/function-lane/FUNCTION_LANE_EVIDENCE_ID_REGISTRY.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   the bounded `NORM.DIST` and `NORM.INV` exact-value witnesses match Excel
+   locally, focused validation is recorded, and the current-gap surfaces no
+   longer overclaim the reopened rows.
+6. initial_epic_lanes:
+   bug intake, exact-value replay characterization, local approximation
+   reconciliation, focused validation, W51 truth reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W087 XIRR Solver Precision Reconciliation
+1. purpose:
+   own the bounded local reconciliation where current `XIRR` solver output
+   drifts from live Excel `Value2` on a pinned current-baseline cashflow/date
+   witness.
+2. depends_on:
+   `W070`, `W072`, `W037`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md`,
+   `docs/bugs/streams/BUG-FUNC-014_xirr_solver_precision_drift.md`,
+   `docs/function-lane/FUNCTION_SLICE_CASHFLOW_RATE_FAMILY_CONTRACT_PRELIM.md`,
+   `docs/function-lane/W37_EXECUTION_RECORD.md`
+4. upstream_dependencies:
+   none
+5. closure_condition:
+   the bounded `XIRR` precision witness matches Excel locally, focused
+   validation is recorded, and the current-gap surfaces no longer overclaim the
+   reopened row.
+6. initial_epic_lanes:
+   bug intake, solver-precision replay characterization, local iterative-path
+   reconciliation, focused validation, W51 truth reconciliation
+7. rollout_mode:
+   `execution_target`
+
 ### W041 External Data Provider And Cube Functions
 1. purpose:
    remain the current deferred/open authority for provider-bound and cube-context

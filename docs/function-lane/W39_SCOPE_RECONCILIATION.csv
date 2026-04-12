@@ -1,12 +1,12 @@
 function_id,status,owner_packet,notes
 FUNC.CHOOSECOLS,done,W39,Admitted current-baseline slice closed.
 FUNC.CHOOSEROWS,done,W39,Admitted current-baseline slice closed.
-FUNC.DROP,done,W39,Admitted current-baseline slice closed.
+FUNC.DROP,done,W39,Explicit seeded rows remain valid but omitted leading row-count defaulting later reopened under BUG-FUNC-012 and W085 until the local correction lands on a committed ref.
 FUNC.EXPAND,done,W39,Admitted current-baseline slice closed.
 FUNC.FILTER,done,W39,Admitted current-baseline slice closed.
-FUNC.SORT,done,W39,Admitted current-baseline slice closed.
-FUNC.SORTBY,done,W39,Admitted current-baseline slice closed.
-FUNC.TAKE,done,W39,Admitted current-baseline slice closed.
+FUNC.SORT,done,W39,Explicit seeded rows remain valid but omitted optional-argument defaulting later reopened under BUG-FUNC-010 and W083 until the local correction lands on a committed ref.
+FUNC.SORTBY,done,W39,Explicit seeded rows remain valid but adjacent omitted sort-order defaulting later reopened under BUG-FUNC-010 and W083 until the local correction lands on a committed ref.
+FUNC.TAKE,done,W39,Explicit seeded rows remain valid but omitted leading row-count defaulting later reopened under BUG-FUNC-012 and W085 until the local correction lands on a committed ref.
 FUNC.TOCOL,done,W39,Admitted current-baseline slice closed.
 FUNC.TOROW,done,W39,Admitted current-baseline slice closed.
 FUNC.TRANSPOSE,done,W39,Admitted current-baseline slice closed.

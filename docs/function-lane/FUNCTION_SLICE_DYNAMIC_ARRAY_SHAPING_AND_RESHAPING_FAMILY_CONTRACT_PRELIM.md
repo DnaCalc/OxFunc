@@ -47,10 +47,12 @@ Workset: `W39`
 11. `FILTER` without a match surfaces `#CALC!` unless `if_empty` is provided.
 12. `SORT` admits row-wise or column-wise sorting on the seeded scalar sort key slice.
 13. `SORTBY` is admitted for one aligned sort-key array on the seeded slice.
-14. `TRANSPOSE` swaps axes without changing cell payload values.
-15. `UNIQUE` is admitted for row-wise distinctness and exactly-once filtering on the seeded slice.
-16. `VSTACK` pads narrower arrays with `#N/A`.
-17. `WRAPROWS` and `WRAPCOLS` flatten row-major and then repack with `#N/A` pad by default.
+14. optional `SORT` / `SORTBY` control arguments default the same way whether they
+    are absent from the call or present syntactically as an omitted argument.
+15. `TRANSPOSE` swaps axes without changing cell payload values.
+16. `UNIQUE` is admitted for row-wise distinctness and exactly-once filtering on the seeded slice.
+17. `VSTACK` pads narrower arrays with `#N/A`.
+18. `WRAPROWS` and `WRAPCOLS` flatten row-major and then repack with `#N/A` pad by default.
 
 ## 5. Out Of Scope
 1. helper/callable-driven array construction; that belongs with `W38`.

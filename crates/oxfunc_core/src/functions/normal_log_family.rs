@@ -544,6 +544,17 @@ mod tests {
     }
 
     #[test]
+    fn norm_family_matches_exact_excel_value_witnesses() {
+        assert_eq!(norm_dist_kernel(0.0, 0.0, 1.0, true).unwrap(), 0.5);
+        assert_eq!(norm_s_dist_kernel(0.0, true).unwrap(), 0.5);
+        assert_eq!(
+            norm_inv_kernel(0.975, 0.0, 1.0).unwrap(),
+            1.9599639845400538
+        );
+        assert_eq!(norm_s_inv_kernel(0.975).unwrap(), 1.9599639845400538);
+    }
+
+    #[test]
     fn lognorm_family_matches_excel_probe_lanes() {
         let mean = 4.0_f64.ln();
         assert!(

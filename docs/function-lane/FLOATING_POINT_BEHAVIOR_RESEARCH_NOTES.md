@@ -185,3 +185,100 @@ Working policy consequence:
 3. the tolerant-family helper must follow the truncation-style 15-significant-
    digit boundary currently pinned by replay, not round-to-nearest.
 4. exact-match contrast families remain separate until contrary evidence exists.
+
+## 13. Accuracy Literature Review Follow-On (2026-04-10)
+Observed scope:
+1. Public Microsoft documentation plus older public numerical-accuracy reviews
+   were reread specifically to frame the reopened `W086` (`NORM.*`) and `W087`
+   (`XIRR`) lanes.
+2. Sources reviewed:
+   - Microsoft Learn: "Floating-point arithmetic may give inaccurate result in
+     Excel"
+   - Microsoft KB archive `828888` overview on statistical-function
+     improvements
+   - Microsoft Support: "Excel Statistical Functions: NORMSINV"
+   - Microsoft Support: "XIRR function"
+   - Knusel (1998), McCullough/Wilson (1999, 2002, 2005), and
+     McCullough/Heiser (2008) as cited by Microsoft and the public literature
+   - GRID's public reverse-engineering note on Excel floating-point behavior
+
+Key takeaways:
+1. Microsoft explicitly documents that Excel uses IEEE-754 doubles but limits
+   worksheet-visible precision to 15 significant digits and does not implement
+   IEEE denormals, infinities, or NaN surfaces directly.
+2. Microsoft also explicitly acknowledges that multiple Excel statistical
+   functions had real algorithmic accuracy issues in older releases and that
+   several distribution functions, including `NORMSDIST`/`NORMSINV`, were
+   revised in Excel 2002/2003.
+3. The public statistical-accuracy literature is therefore directly relevant to
+   `W086`: small exact-value drifts in `NORM.*` are not automatically "display
+   only" differences; they sit in a historically explored class of genuine
+   numerical-approximation issues.
+4. Microsoft describes `XIRR` only in terms of an iterative search from a
+   `guess`, a `0.000001 percent` accuracy target, and a `100`-try cap. That is
+   not a full returned-root specification.
+5. Our current local replay, combined with Microsoft's sparse `XIRR`
+   documentation, supports a narrower framing for `W087`: matching Excel may
+   require reproducing Excel's returned-root/stopping behavior, not merely
+   finding a mathematically "better" root for the same `XNPV` equation.
+6. GRID's public reverse-engineering note is useful as secondary evidence that
+   Excel often mixes exact internal doubles with output-facing normalization and
+   comparison policies. That supports keeping tiny last-digit finance rows
+   separate from `W086`/`W087` until the comparison-policy packet is decided.
+
+Working consequence for current OxFunc packets:
+1. `W086` remains a legitimate local exact-value reconciliation packet; the
+   external literature supports treating this as a known Excel-accuracy class,
+   not a mere formatting issue.
+2. `W087` should stay in characterization mode until a bounded empirical model
+   of Excel's returned `XIRR` value exists; do not assume "closest root of
+   current `XNPV`" is the parity target.
+3. `PPMT`, `CUMPRINC`, and `EFFECT` remain better framed as comparison-policy
+   rows for now unless a larger empirical delta appears.
+
+## 14. XIRR Publication Follow-On (2026-04-11)
+Observed scope:
+1. Live Excel `Value2` replay was widened from the original `W087` seed witness
+   to adjacent multi-cashflow positive-root `XIRR` rows across guesses `0.01`,
+   omitted/`0.1`, `0.5`, and `1.0`.
+2. The widened exact targets are now pinned in
+   `docs/function-lane/W24_BATCH12_CASHFLOW_RATE_SCENARIO_MANIFEST_SEED.csv`.
+3. The current OxFunc working-tree publication rule was compared against those
+   exact `Value2` rows and against the midpoint ladder of the existing
+   bracket-and-bisection path.
+
+Key outcomes:
+1. The widened live Excel targets are exact bisection midpoints on the same
+   bracket path as the current OxFunc implementation. That rules out bracket
+   construction as the remaining source of drift.
+2. Earlier characterization narrowed the candidate mismatch to
+   midpoint-publication choice: on some adjacent rows Excel appeared to return
+   an earlier midpoint, while on others it appeared to return a later midpoint,
+   even though all targets sat on the same ladder.
+3. No single simple current-midpoint rule based on:
+   - relative width,
+   - absolute width,
+   - residual magnitude,
+   - residual sign,
+   - or the Microsoft-documented `r +/- 1e-8` bracket check
+   explains the widened exact `Value2` matrix.
+4. The Microsoft `0.000001 percent` documentation remains useful as a necessary
+   bound, but not a sufficient returned-root specification for exact Excel
+   parity on the widened `XIRR` family.
+5. Two additional simple reverse-engineering candidates were tested and ruled
+   out on the widened matrix:
+   - first midpoint where 15-significant-digit decimal truncation or rounding
+     stabilizes,
+   - first midpoint whose local Newton correction `|f/f'|` falls below a
+     single fixed threshold.
+
+Working consequence:
+1. `W087` remains an empirical publication-rule packet, not a generic
+   solver-accuracy packet.
+2. Focused local re-verification now shows the current working-tree
+   implementation matches the bounded widened witness matrix pinned for `W087`;
+   the remaining work is landed-ref promotion and broader repo verification,
+   not further bounded `XIRR` semantic widening.
+3. The exact-value witness floor is now strong enough to prevent regression
+   back to displayed-value approximations while the remaining publication rule
+   is characterized.

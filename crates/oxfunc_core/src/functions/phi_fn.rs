@@ -37,3 +37,17 @@ pub fn eval_phi_surface(
 pub fn map_phi_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
     map_unary_numeric_error_to_ws(e)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn phi_matches_exact_excel_value_witness() {
+        let got = phi_kernel(0.0).unwrap();
+        assert!(
+            (got - 0.398_942_280_401_432_7).abs() <= 1e-15,
+            "expected exact Excel witness, got {got}"
+        );
+    }
+}

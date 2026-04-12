@@ -37,3 +37,17 @@ pub fn eval_gauss_surface(
 pub fn map_gauss_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
     map_unary_numeric_error_to_ws(e)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn gauss_matches_exact_excel_value_witness() {
+        let got = gauss_kernel(1.0).unwrap();
+        assert!(
+            (got - 0.341_344_746_068_543_04).abs() <= 1e-15,
+            "expected exact Excel witness, got {got}"
+        );
+    }
+}

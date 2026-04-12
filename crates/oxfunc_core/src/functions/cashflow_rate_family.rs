@@ -12,6 +12,8 @@ const ROOT_MAX_ITERATIONS: usize = 100;
 const MIN_VALID_RATE: f64 = -0.999_999_999;
 const XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE: f64 = 2e-8;
 const XIRR_TWO_CASHFLOW_MAX_BRACKET_EXPANSIONS: usize = 128;
+const XIRR_GENERAL_POSITIVE_ROOT_BRENT_EPS: f64 = 1e-8;
+const XIRR_GENERAL_POSITIVE_ROOT_MAX_BRACKET_EXPANSIONS: usize = 128;
 
 const CASHFLOW_RATE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CASHFLOW_RATE_BASE",
@@ -433,8 +435,85 @@ fn xirr_two_cashflow_positive_root_excel_like(
 
     for _ in 0..ROOT_MAX_ITERATIONS {
         let midpoint = (lower + upper) / 2.0;
-        let relative_width = (upper - lower) / midpoint.abs().max(1.0);
+        let relative_width = (upper - lower) / midpoint.abs();
         if relative_width <= XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE {
+            return Ok(midpoint);
+        }
+
+        let midpoint_value = xnpv_kernel_raw(midpoint, values, dates)?;
+        if midpoint_value == 0.0 {
+            return Ok(midpoint);
+        }
+        if lower_value.signum() == midpoint_value.signum() {
+            lower = midpoint;
+            lower_value = midpoint_value;
+        } else {
+            upper = midpoint;
+        }
+    }
+
+    Err(WorksheetErrorCode::Num)
+}
+
+fn xirr_general_positive_root_excel_like(
+    values: &[f64],
+    dates: &[i64],
+    guess: f64,
+) -> Result<f64, WorksheetErrorCode> {
+    if !guess.is_finite() || guess <= 0.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+
+    let zero = 0.0;
+    let zero_value = xnpv_kernel_raw(zero, values, dates)?;
+    if zero_value == 0.0 {
+        return Ok(zero);
+    }
+
+    let mut lower = guess;
+    let mut lower_value = xnpv_kernel_raw(lower, values, dates)?;
+    if lower_value == 0.0 {
+        return Ok(lower);
+    }
+
+    let mut upper;
+
+    if zero_value.signum() != lower_value.signum() {
+        lower = zero;
+        lower_value = zero_value;
+        upper = guess;
+        let upper_value = xnpv_kernel_raw(upper, values, dates)?;
+        if upper_value == 0.0 {
+            return Ok(upper);
+        }
+    } else {
+        upper = guess * 2.0;
+        if !upper.is_finite() || upper <= MIN_VALID_RATE {
+            return Err(WorksheetErrorCode::Num);
+        }
+        let mut upper_value = xnpv_kernel_raw(upper, values, dates)?;
+
+        let mut expansions = 0usize;
+        while lower_value.signum() == upper_value.signum() {
+            lower = upper;
+            lower_value = upper_value;
+            upper *= 2.0;
+            if !upper.is_finite() || upper <= MIN_VALID_RATE {
+                return Err(WorksheetErrorCode::Num);
+            }
+            upper_value = xnpv_kernel_raw(upper, values, dates)?;
+            expansions += 1;
+            if expansions > XIRR_GENERAL_POSITIVE_ROOT_MAX_BRACKET_EXPANSIONS {
+                return Err(WorksheetErrorCode::Num);
+            }
+        }
+    }
+
+    for _ in 0..ROOT_MAX_ITERATIONS {
+        let midpoint = (lower + upper) / 2.0;
+        let bracket_width = upper - lower;
+        let brent_tol = XIRR_GENERAL_POSITIVE_ROOT_BRENT_EPS * (1.0 + 2.0 * midpoint.abs());
+        if bracket_width <= brent_tol {
             return Ok(midpoint);
         }
 
@@ -470,6 +549,13 @@ fn xirr_kernel(
         }
         return Ok(root);
     }
+
+    if guess > 0.0 {
+        if let Ok(root) = xirr_general_positive_root_excel_like(values, dates, guess) {
+            return Ok(root);
+        }
+    }
+
     bounded_rate_solve(
         guess,
         |rate| xnpv_kernel_raw(rate, values, dates),
@@ -632,6 +718,18 @@ mod tests {
     }
 
     #[test]
+    fn xirr_simple_positive_root_matches_exact_excel_publication_witnesses() {
+        assert_close(
+            xirr_kernel(&[-100.0, 121.0], &[45000, 45365], None).unwrap(),
+            0.209_999_996_423_721_44,
+        );
+        assert_close(
+            xirr_kernel(&[-100.0, 121.0], &[45000, 45365], Some(0.5)).unwrap(),
+            0.209_999_997_168_779,
+        );
+    }
+
+    #[test]
     fn xnpv_rejects_dates_before_anchor() {
         assert_eq!(
             xnpv_kernel(0.1, &[-100.0, 121.0], &[45000, 44999]),
@@ -687,6 +785,65 @@ mod tests {
         for (guess, expected) in cases {
             let got = xirr_kernel(&values, &dates, Some(guess)).unwrap();
             assert_close(got, expected);
+        }
+    }
+
+    #[test]
+    fn xirr_general_positive_root_matches_excel_guess_matrix() {
+        let values = [-10_000.0, 2_750.0, 4_250.0, 3_250.0, 2_750.0];
+        let dates = [44927, 45108, 45292, 45473, 45658];
+        let cases = [
+            (0.01, 0.244_491_829_872_131),
+            (0.1, 0.244_491_833_448_41),
+            (0.5, 0.244_491_834_193_468),
+            (1.0, 0.244_491_834_193_468),
+        ];
+
+        for (guess, expected) in cases {
+            assert_close(xirr_kernel(&values, &dates, Some(guess)).unwrap(), expected);
+        }
+    }
+
+    fn assert_exact(got: f64, expected: f64, label: &str) {
+        let diff = (got - expected).abs();
+        assert!(
+            diff < 1e-14,
+            "{label}: got={got:.17e}, expected={expected:.17e}, diff={diff:.3e}"
+        );
+    }
+
+    #[test]
+    fn xirr_general_positive_root_matches_widened_excel_value2_matrix() {
+        let cases: &[(&[f64], &[i64], f64, f64, &str)] = &[
+            (&[-10_000.0, 2_750.0, 4_250.0, 3_250.0, 2_750.0], &[44927, 45108, 45292, 45473, 45658], 0.01, 0.244_491_829_872_131, "w087_seed g=0.01"),
+            (&[-10_000.0, 2_750.0, 4_250.0, 3_250.0, 2_750.0], &[44927, 45108, 45292, 45473, 45658], 0.1, 0.244_491_833_448_41, "w087_seed g=0.1"),
+            (&[-10_000.0, 2_750.0, 4_250.0, 3_250.0, 2_750.0], &[44927, 45108, 45292, 45473, 45658], 0.5, 0.244_491_834_193_468, "w087_seed g=0.5"),
+            (&[-10_000.0, 2_750.0, 4_250.0, 3_250.0, 2_750.0], &[44927, 45108, 45292, 45473, 45658], 1.0, 0.244_491_834_193_468, "w087_seed g=1.0"),
+            (&[-1_000.0, 300.0, 400.0, 500.0], &[45000, 45100, 45200, 45365], 0.01, 0.320_753_083_229_065, "adjacent_a g=0.01"),
+            (&[-1_000.0, 300.0, 400.0, 500.0], &[45000, 45100, 45200, 45365], 0.1, 0.320_753_079_652_786, "adjacent_a g=0.1"),
+            (&[-1_000.0, 300.0, 400.0, 500.0], &[45000, 45100, 45200, 45365], 0.5, 0.320_753_075_182_438, "adjacent_a g=0.5"),
+            (&[-1_000.0, 300.0, 400.0, 500.0], &[45000, 45100, 45200, 45365], 1.0, 0.320_753_075_182_438, "adjacent_a g=1.0"),
+            (&[-5_000.0, 1_500.0, 1_500.0, 1_500.0, 1_500.0], &[45000, 45090, 45180, 45270, 45360], 0.01, 0.351_695_961_952_21, "adjacent_b g=0.01"),
+            (&[-5_000.0, 1_500.0, 1_500.0, 1_500.0, 1_500.0], &[45000, 45090, 45180, 45270, 45360], 0.1, 0.351_695_960_760_117, "adjacent_b g=0.1"),
+            (&[-5_000.0, 1_500.0, 1_500.0, 1_500.0, 1_500.0], &[45000, 45090, 45180, 45270, 45360], 0.5, 0.351_695_962_250_233, "adjacent_b g=0.5"),
+            (&[-5_000.0, 1_500.0, 1_500.0, 1_500.0, 1_500.0], &[45000, 45090, 45180, 45270, 45360], 1.0, 0.351_695_962_250_233, "adjacent_b g=1.0"),
+            (&[-12_000.0, 1_000.0, 2_000.0, 3_000.0, 7_000.0], &[45000, 45150, 45300, 45450, 45600], 0.01, 0.062_376_437_187_194_8, "adjacent_c g=0.01"),
+            (&[-12_000.0, 1_000.0, 2_000.0, 3_000.0, 7_000.0], &[45000, 45150, 45300, 45450, 45600], 0.1, 0.062_376_442_551_612_9, "adjacent_c g=0.1"),
+            (&[-12_000.0, 1_000.0, 2_000.0, 3_000.0, 7_000.0], &[45000, 45150, 45300, 45450, 45600], 0.5, 0.062_376_443_296_670_9, "adjacent_c g=0.5"),
+            (&[-12_000.0, 1_000.0, 2_000.0, 3_000.0, 7_000.0], &[45000, 45150, 45300, 45450, 45600], 1.0, 0.062_376_443_296_670_9, "adjacent_c g=1.0"),
+            (&[-2_000.0, 2_500.0, 100.0], &[45000, 45180, 45365], 0.01, 0.672_046_403_884_887, "adjacent_d g=0.01"),
+            (&[-2_000.0, 2_500.0, 100.0], &[45000, 45180, 45365], 0.1, 0.672_046_405_076_981, "adjacent_d g=0.1"),
+            (&[-2_000.0, 2_500.0, 100.0], &[45000, 45180, 45365], 0.5, 0.672_046_400_606_632, "adjacent_d g=0.5"),
+            (&[-2_000.0, 2_500.0, 100.0], &[45000, 45180, 45365], 1.0, 0.672_046_400_606_632, "adjacent_d g=1.0"),
+            (&[-4_000.0, 500.0, 800.0, 1_200.0, 2_200.0], &[45000, 45045, 45120, 45210, 45400], 0.01, 0.253_582_987_785_339, "adjacent_e g=0.01"),
+            (&[-4_000.0, 500.0, 800.0, 1_200.0, 2_200.0], &[45000, 45045, 45120, 45210, 45400], 0.1, 0.253_582_996_129_99, "adjacent_e g=0.1"),
+            (&[-4_000.0, 500.0, 800.0, 1_200.0, 2_200.0], &[45000, 45045, 45120, 45210, 45400], 0.5, 0.253_582_991_659_641, "adjacent_e g=0.5"),
+            (&[-4_000.0, 500.0, 800.0, 1_200.0, 2_200.0], &[45000, 45045, 45120, 45210, 45400], 1.0, 0.253_582_991_659_641, "adjacent_e g=1.0"),
+        ];
+
+        for &(values, dates, guess, expected, label) in cases {
+            let got = xirr_kernel(values, dates, Some(guess)).unwrap();
+            assert_exact(got, expected, label);
         }
     }
 

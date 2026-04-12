@@ -263,7 +263,7 @@ mod tests {
     fn z_test_matches_seed_lane_with_supplied_sigma() {
         let values = [3.0, 6.0, 7.0, 8.0, 6.0];
         let got = z_test_kernel(&values, 4.0, Some(1.5)).unwrap();
-        assert!((got - 0.0014345564360376262).abs() < 1e-12);
+        assert!((got - 0.0014345563960383074).abs() < 1e-12);
     }
 
     #[test]
@@ -280,7 +280,7 @@ mod tests {
             &NoResolver,
         )
         .unwrap();
-        assert!(matches!(got, EvalValue::Number(n) if (n - 0.0014345564360376262).abs() < 1e-12));
+        assert!(matches!(got, EvalValue::Number(n) if (n - 0.0014345563960383074).abs() < 1e-12));
     }
 
     #[test]

@@ -48,6 +48,28 @@ Artifacts created or updated in this packet:
 4. `TOCOL` and `TOROW` are flattening/orientation functions first, and ignore-mode functions second.
 5. `FILTER`, `SORT`, `SORTBY`, and `UNIQUE` can be admitted honestly on a seeded deterministic scalar/key slice without claiming the whole future matrix of collation and complex-key behavior.
 
+## 5A. Later Reopen Note (2026-04-10)
+1. direct local replay on 2026-04-10 showed `SORT({2;3;7;5},,-1)` failed with
+   `Preparation(MissingArg)` / `#VALUE!` on the then-current committed ref,
+   even though explicit `SORT({2;3;7;5},1,-1)` succeeded.
+2. the original explicit W39 seeded rows remain valid, but they were
+   insufficient to justify overclaiming omitted optional-argument defaulting in
+   the sort family.
+3. successor owner: `BUG-FUNC-010` / `W083`.
+
+## 5B. Later Reopen Note (2026-04-10)
+1. `HANDOFF-OXFUNC-004` plus direct live Excel replay on 2026-04-10 pinned
+   omitted-leading-count semantics for both `TAKE` and `DROP`:
+   - `TAKE(array,,n)` keeps all rows while slicing columns
+   - `DROP(array,,n)` keeps all rows while dropping columns
+2. direct local replay on the then-current committed ref showed both functions
+   still returned `Preparation(MissingArg)` when the leading row-count argument
+   was syntactically omitted.
+3. the original explicit W39 seeded rows remain valid, but they were
+   insufficient to justify overclaiming omitted-leading-count coverage in the
+   `TAKE` / `DROP` family.
+4. successor owner: `BUG-FUNC-012` / `W085`.
+
 ## 6. Verification Runs
 1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml dynamic_array_reshape_family -- --nocapture`
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml all_catalog_functions_have_at_least_one_export -- --nocapture`

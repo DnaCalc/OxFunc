@@ -42,11 +42,11 @@ Machine-readable working inputs:
 6. `docs/function-lane/W44_DOCUMENTED_COMPLETE_SNAPSHOT_STALE_INVENTORY.csv`
 
 Current working total:
-1. `39` function rows.
+1. `47` function rows.
 2. `13` operator rows.
-3. `52` total rows.
+3. `60` total rows.
 4. current working backlog split:
-   - `52` explicitly tracked residual rows with real runtime/formal/evidence floors or packet-specific open lanes,
+   - `58` explicitly tracked residual rows with real runtime/formal/evidence floors or packet-specific open lanes,
    - `0` normalized ordinary execution rows remaining after `W068`.
 5. current shared-interface-acknowledgement split:
    - the prior seam-heavy non-deferred surface is now acknowledged and promoted out of `W051`,
@@ -74,7 +74,12 @@ First-pass published-catalog reading:
    - the text-slice array-valued count/start spill lane for `LEFT`, `RIGHT`, `MID`, and current-baseline `*B` delegates under `BUG-FUNC-007` / `W080`.
    - the first bounded `W066` text-family batch for `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` under `BUG-FUNC-008` / `W080`.
    - the reopened `RATE` omitted-guess convergence lane for mortgage-style current-baseline rows under `BUG-FUNC-009` / `W081`.
-   Local runtime correction and focused validation now exist, but landed-ref promotion and downstream seam acknowledgment are still open.
+   - the reopened sort-family omitted optional-argument defaulting lane for `SORT` and `SORTBY` under `BUG-FUNC-010` / `W083`.
+   - the reopened `COUNTBLANK` range-only parity lane under `BUG-FUNC-011` / `W084`.
+   - the reopened `TAKE` / `DROP` omitted-leading-count lane under `BUG-FUNC-012` / `W085`.
+   - the reopened exact-value accuracy lane for `NORM.DIST` and `NORM.INV` under `BUG-FUNC-013` / `W086`.
+   - the reopened `XIRR` solver-precision lane under `BUG-FUNC-014` / `W087`.
+   The earlier reopened working-tree lanes through `W085` now have local runtime correction and focused validation recorded, but landed-ref promotion and downstream seam acknowledgment are still open where applicable. The reopened `W086` / `W087` lanes now also have local runtime correction plus focused validation on the working tree; landed-ref promotion remains open.
 6. the exact `114` documented-complete snapshot-stale rows from the first-pass reconciliation have now been refreshed out of false `catalog_only` state in the published snapshot export and are not included in the W51 backlog totals.
 
 First-pass documented-complete snapshot-stale groups now refreshed in the current export:
@@ -123,7 +128,7 @@ Important current reading:
 - the exact packet-local work split for reopened explicit residual rows is pinned through `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`; it now carries the original `ordinary_operator_binary_array_lift` follow-up, the broader `ordinary_operator_broadcast_reconciliation` follow-up, and the `multi_area_reference_seam_correction` follow-up owned by `W075`.
 - the hidden ordinary backlog remains empty, but `W051` is no longer empty because the reopened operator lane now sits in the explicit current-gap inventory.
 - the hidden ordinary backlog remains empty, but `W051` is no longer empty because the reopened operator lane now sits beside the reopened criteria/database/`SWITCH` numeric-comparison lane in the explicit current-gap inventory.
-- the hidden ordinary backlog remains empty, but `W051` is also no longer honest for the lookup-family, seeded text-family, and reopened `RATE` omitted-guess lane without the `MATCH`, `XMATCH`, `HLOOKUP`, `VLOOKUP`, `XLOOKUP`, `LEFT, LEFTB`, `MID, MIDB`, `RIGHT, RIGHTB`, `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, `TEXTBEFORE`, and `RATE` rows tracked under `BUG-FUNC-006` / `W079`, `BUG-FUNC-007` / `BUG-FUNC-008` / `W080`, and `BUG-FUNC-009` / `W081`.
+- the hidden ordinary backlog remains empty, but `W051` is also no longer honest for the lookup-family, seeded text-family, reopened `RATE` omitted-guess lane, reopened `COUNTBLANK` / `TAKE` / `DROP` parity lanes, and reopened exact-value `NORM.*` / `XIRR` lanes without the corresponding rows tracked under `BUG-FUNC-006` / `W079`, `BUG-FUNC-007` / `BUG-FUNC-008` / `W080`, `BUG-FUNC-009` / `W081`, `BUG-FUNC-011` / `W084`, `BUG-FUNC-012` / `W085`, `BUG-FUNC-013` / `W086`, and `BUG-FUNC-014` / `W087`.
 - the active current hidden backlog is now:
   - `docs/function-lane/W51_HIDDEN_NON_DEFERRED_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`,
   - `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`.
@@ -136,6 +141,11 @@ Important current reading:
     - `LEFT, LEFTB`, `MID, MIDB`, and `RIGHT, RIGHTB` under `BUG-FUNC-007` and `W080`,
     - `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` under `BUG-FUNC-008` and `W080`,
     - `RATE` under `BUG-FUNC-009` and `W081`,
+    - `SORT` and `SORTBY` under `BUG-FUNC-010` and `W083`,
+    - `COUNTBLANK` under `BUG-FUNC-011` and `W084`,
+    - `TAKE` and `DROP` under `BUG-FUNC-012` and `W085`,
+    - `NORM.DIST` and `NORM.INV` under `BUG-FUNC-013` and `W086`,
+    - `XIRR` under `BUG-FUNC-014` and `W087`,
     until landed-ref promotion and downstream seam follow-up close.
 - the original hidden `185`-row appendix remains provenance only:
   - these rows were still `catalog_only` in the published snapshot,
@@ -153,6 +163,12 @@ Important current reading:
   - `W076` for the same-sheet multi-area value-materialization seam narrowing,
   - `W079` for the reopened lookup-family array-valued lookup-needle family,
   - `W080` for the immediate text-slice spill correction plus the bounded systematic function-array-support review seed and first text-family follow-on batch.
+  - `W081` for the reopened `RATE` omitted-guess convergence lane.
+  - `W083` for the reopened sort-family omitted optional-argument defaulting lane.
+  - `W084` for the reopened `COUNTBLANK` range-only parity lane.
+  - `W085` for the reopened `TAKE` / `DROP` omitted-leading-count parity lane.
+  - `W086` for the reopened normal-distribution exact-value accuracy lane.
+  - `W087` for the reopened `XIRR` solver-precision lane.
 
 Explicit preview-cluster functions:
 1. `AREAS`
@@ -174,9 +190,17 @@ Explicit preview-cluster functions:
 17. `REPT`
 18. `TEXTAFTER`
 19. `TEXTBEFORE`
-20. criteria family:
+20. `SORT`
+21. `SORTBY`
+22. `COUNTBLANK`
+23. `TAKE`
+24. `DROP`
+25. `NORM.DIST`
+26. `NORM.INV`
+27. `XIRR`
+28. criteria family:
    - `COUNTIF`, `COUNTIFS`, `SUMIF`, `SUMIFS`, `AVERAGEIF`, `AVERAGEIFS`, `MAXIFS`, `MINIFS`
-21. database family:
+29. database family:
    - `DAVERAGE`, `DCOUNT`, `DCOUNTA`, `DGET`, `DMAX`, `DMIN`, `DPRODUCT`, `DSTDEV`, `DSTDEVP`, `DSUM`, `DVAR`, `DVARP`
 
 Explicit preview-cluster operators:
@@ -216,6 +240,10 @@ For the current version target:
 16. `LEFT, LEFTB`, `MID, MIDB`, and `RIGHT, RIGHTB` remain reopened here for the current version target because live Excel replay on 2026-04-08 pinned spill behavior over array-valued count/start inputs, while the local W080 seed correction is still only on the working tree and the broader function-array-support review remains open.
 17. `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` remain reopened here for the current version target because live Excel replay on 2026-04-09 pinned spill behavior over bounded array-valued input lanes, while the local W080 batch-A correction is still only on the working tree and the broader text-family review remains open.
 18. `RATE` remains reopened here for the current version target because live Excel replay on 2026-04-10 pinned `RATE(360,-1073.64,200000)` as `0.004166644536345589` per period. The local `W081` correction now matches that omitted-guess lane on the working tree through a bounded bracket-and-bisection fallback around the existing secant path, but no landed ref exists yet and the broader adjacent omitted-guess scan remains open under `BUG-FUNC-009` / `W081`.
+19. `COUNTBLANK` remains reopened here for the current version target because live Excel replay on 2026-04-10 pinned it as accepting true ranges while rejecting array-valued substitutes with `#VALUE!`. The working-tree `W084` correction now rejects direct array-valued substitutes while preserving true-range blank counting, but the row stays open until that correction lands on a committed ref and the bounded adjacent policy review is promoted honestly.
+20. `TAKE` and `DROP` remain reopened here for the current version target because live Excel replay on 2026-04-10 pinned omitted-leading-count semantics where `TAKE(...,,n)` / `DROP(...,,n)` keep all rows while slicing columns. The working-tree `W085` correction now normalizes those bounded omission/defaulting lanes locally and adds focused W39 witness rows, but the rows stay open until that correction lands on a committed ref and the adjacent reshape review is promoted honestly.
+21. `NORM.DIST` and `NORM.INV` remain reopened here for the current version target because the bounded exact-value lane had to be corrected beyond the older rounded witness floor. The working-tree `W086` correction now matches live Excel `Value2` on the pinned witnesses and has focused validation recorded, but the rows stay open here until that correction lands on a committed ref.
+22. `XIRR` remains reopened here for the current version target because the bounded multi-cashflow positive-root publication lane had to be corrected beyond the older witness floor. Exact live Excel `Value2` replay now pins a widened adjacent guess matrix, and focused local verification now shows the current working-tree correction matches that bounded matrix. The row nevertheless stays open here under `W087` until that correction lands on a committed ref and is promoted honestly through the current-gap surfaces.
 
 ## 5. Ownership Rule
 1. `W51` is the canonical current-version not-complete working backlog for all non-deferred outstanding rows.
@@ -246,6 +274,10 @@ Exit condition:
 - the reopened `BUG-FUNC-007` / `W080` text-slice array-valued count/start spill lane is either fully published or honestly reclassified with the broader array-support review surface still explicit.
 - the reopened `BUG-FUNC-008` / `W080` text scalar and delimiter array-support lane is either fully published or honestly reclassified with the broader array-support review surface still explicit.
 - the reopened `BUG-FUNC-009` / `W081` `RATE` omitted-guess convergence lane is either fully published or honestly reclassified.
+- the reopened `BUG-FUNC-011` / `W084` `COUNTBLANK` range-only parity lane is either fully published or honestly reclassified.
+- the reopened `BUG-FUNC-012` / `W085` `TAKE` / `DROP` omitted-leading-count parity lane is either fully published or honestly reclassified.
+- the reopened `BUG-FUNC-013` / `W086` normal-distribution exact-value accuracy lane is either fully published or honestly reclassified.
+- the reopened `BUG-FUNC-014` / `W087` `XIRR` solver-precision lane is either fully published or honestly reclassified.
 - downstream consumer docs can report one aligned set of counts without relying on stale side packets.
 
 ## 7. Status
@@ -262,3 +294,7 @@ Exit condition:
   - `LEFT, LEFTB`, `MID, MIDB`, and `RIGHT, RIGHTB` remain open under `BUG-FUNC-007` / `W080` until the local text-slice spill correction is landed on a committed ref and the broader function-array-support review seed is reconciled honestly
   - `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` remain open under `BUG-FUNC-008` / `W080` until the local batch-A text-family spill correction is landed on a committed ref and the next review batch is reconciled honestly
   - `RATE` remains open under `BUG-FUNC-009` / `W081` until the local omitted-guess/default-guess convergence repair is landed on a committed ref, the earlier admitted seed inversion lane remains aligned, and the bounded adjacent omitted-guess scan is reconciled honestly
+  - `COUNTBLANK` remains open under `BUG-FUNC-011` / `W084` until the local range-only parity repair, now validated on the working tree, is landed on a committed ref and the bounded adjacent policy scan is reconciled honestly
+  - `TAKE` and `DROP` remain open under `BUG-FUNC-012` / `W085` until the local omitted-leading-count defaulting repair, now validated on the working tree with focused W39 witness rows added, is landed on a committed ref and the bounded adjacent reshape review is reconciled honestly
+  - `NORM.DIST` and `NORM.INV` remain open under `BUG-FUNC-013` / `W086` until the working-tree exact-value correction is landed on a committed ref and promoted honestly through the current-gap surfaces
+  - `XIRR` remains open under `BUG-FUNC-014` / `W087` until the working-tree bounded publication correction, now locally aligned on the pinned widened witness matrix, is landed on a committed ref and promoted honestly through the current-gap surfaces

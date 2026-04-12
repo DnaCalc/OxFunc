@@ -4,6 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -57,6 +58,15 @@ pub fn eval_countblank_surface(
     let mut count = 0.0;
     for arg in args {
         for item in expand_aggregate_arg(arg, resolver).map_err(CountBlankEvalError::Preparation)? {
+            if matches!(
+                item.origin,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)
+                    | AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)
+            ) {
+                return Err(CountBlankEvalError::Preparation(
+                    CoercionError::UnsupportedValueKind("countblank_array_substitute"),
+                ));
+            }
             if prepared_counts_as_blank(&item.value).map_err(CountBlankEvalError::Preparation)? {
                 count += 1.0;
             }
@@ -142,6 +152,26 @@ mod tests {
             got,
             Err(CountBlankEvalError::Preparation(
                 CoercionError::WorksheetError(WorksheetErrorCode::NA,)
+            ))
+        );
+    }
+
+    #[test]
+    fn countblank_rejects_array_valued_substitutes() {
+        let got = eval_countblank_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new()))],
+                    vec![ArrayCellValue::Number(1.0)],
+                ])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Err(CountBlankEvalError::Preparation(
+                CoercionError::UnsupportedValueKind("countblank_array_substitute")
             ))
         );
     }

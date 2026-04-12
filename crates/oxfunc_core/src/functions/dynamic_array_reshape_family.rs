@@ -292,7 +292,15 @@ pub fn eval_take_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
-    let row_count = parse_integer(&args[1])?;
+    let row_count = match args.get(1) {
+        Some(PreparedArgValue::MissingArg) if args.get(2).is_some() => array.shape().rows as isize,
+        Some(arg) => parse_integer(arg)?,
+        None => return Err(DynamicArrayReshapeEvalError::ArityMismatch {
+            expected_min: TAKE_META.arity.min,
+            expected_max: TAKE_META.arity.max,
+            actual: args.len(),
+        }),
+    };
     let col_count = if let Some(arg) = args.get(2) {
         parse_integer(arg)?
     } else {
@@ -315,7 +323,15 @@ pub fn eval_drop_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
-    let row_count = parse_integer(&args[1])?;
+    let row_count = match args.get(1) {
+        Some(PreparedArgValue::MissingArg) if args.get(2).is_some() => 0,
+        Some(arg) => parse_integer(arg)?,
+        None => return Err(DynamicArrayReshapeEvalError::ArityMismatch {
+            expected_min: DROP_META.arity.min,
+            expected_max: DROP_META.arity.max,
+            actual: args.len(),
+        }),
+    };
     let col_count = if let Some(arg) = args.get(2) {
         parse_integer(arg)?
     } else {
@@ -381,6 +397,12 @@ fn parse_ignore_mode(
     let Some(arg) = arg else {
         return Ok(0);
     };
+    if matches!(
+        arg,
+        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell
+    ) {
+        return Ok(0);
+    }
     let mode = parse_integer(arg)?;
     if !(0..=3).contains(&mode) {
         return Err(DynamicArrayReshapeEvalError::InvalidIgnoreMode);
@@ -610,6 +632,12 @@ fn parse_sort_order(arg: Option<&PreparedArgValue>) -> Result<bool, DynamicArray
     let Some(arg) = arg else {
         return Ok(false);
     };
+    if matches!(
+        arg,
+        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell
+    ) {
+        return Ok(false);
+    }
     match parse_integer(arg)? {
         1 => Ok(false),
         -1 => Ok(true),
@@ -624,6 +652,12 @@ fn parse_sort_index(
     let Some(arg) = arg else {
         return Ok(0);
     };
+    if matches!(
+        arg,
+        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell
+    ) {
+        return Ok(0);
+    }
     let idx = parse_integer(arg)?;
     if idx < 1 || idx as usize > len {
         return Err(DynamicArrayReshapeEvalError::InvalidSortIndex);
@@ -1076,6 +1110,74 @@ mod tests {
             )
         );
 
+        let take_omitted_rows = eval_take_surface(
+            &[source.clone(), CallArgValue::MissingArg, num(1.0)],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            take_omitted_rows,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(4.0)],
+                    vec![ArrayCellValue::Number(7.0)],
+                ])
+                .unwrap()
+            )
+        );
+
+        let take_omitted_rows_negative = eval_take_surface(
+            &[source.clone(), CallArgValue::MissingArg, num(-1.0)],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            take_omitted_rows_negative,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(6.0)],
+                    vec![ArrayCellValue::Number(9.0)],
+                ])
+                .unwrap()
+            )
+        );
+
+        let drop_omitted_rows = eval_drop_surface(
+            &[source.clone(), CallArgValue::MissingArg, num(1.0)],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            drop_omitted_rows,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(5.0), ArrayCellValue::Number(6.0)],
+                    vec![ArrayCellValue::Number(8.0), ArrayCellValue::Number(9.0)],
+                ])
+                .unwrap()
+            )
+        );
+
+        let drop_omitted_rows_negative = eval_drop_surface(
+            &[source.clone(), CallArgValue::MissingArg, num(-1.0)],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            drop_omitted_rows_negative,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(4.0), ArrayCellValue::Number(5.0)],
+                    vec![ArrayCellValue::Number(7.0), ArrayCellValue::Number(8.0)],
+                ])
+                .unwrap()
+            )
+        );
+
         let expand = eval_expand_surface(
             &[
                 source,
@@ -1331,6 +1433,33 @@ mod tests {
             )
         );
 
+        let sort_missing_index = eval_sort_surface(
+            &[
+                array(vec![
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(5.0)],
+                ]),
+                CallArgValue::MissingArg,
+                num(-1.0),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            sort_missing_index,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(5.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                ])
+                .unwrap()
+            )
+        );
+
         let sortby = eval_sortby_surface(
             &[
                 array(vec![
@@ -1356,6 +1485,47 @@ mod tests {
         .unwrap();
         assert_eq!(
             sortby,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "gamma"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "alpha"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "beta"
+                    ))],
+                ])
+                .unwrap()
+            )
+        );
+
+        let sortby_missing_order = eval_sortby_surface(
+            &[
+                array(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "alpha",
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "beta",
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "gamma",
+                    ))],
+                ]),
+                array(vec![
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(1.0)],
+                ]),
+                CallArgValue::MissingArg,
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            sortby_missing_order,
             EvalValue::Array(
                 EvalArray::from_rows(vec![
                     vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(

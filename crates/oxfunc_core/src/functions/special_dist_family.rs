@@ -450,24 +450,28 @@ mod tests {
 
     #[test]
     fn erf_family_matches_seed_rows() {
-        assert_close(erf_kernel(1.0, None).unwrap(), 0.8427007929497149, 1e-6);
+        assert_close(erf_kernel(1.0, None).unwrap(), 0.8427007929497149, 1e-15);
         assert_close(
             erf_kernel(0.0, Some(1.0)).unwrap(),
             0.8427007929497149,
-            1e-6,
+            1e-15,
         );
-        assert_close(erf_precise_kernel(1.0).unwrap(), 0.8427007929497149, 1e-6);
-        assert_close(erfc_kernel(1.0).unwrap(), 0.15729920705028513, 1e-6);
-        assert_close(erfc_precise_kernel(-1.0).unwrap(), 1.8427007929497148, 1e-6);
+        assert_close(erf_precise_kernel(1.0).unwrap(), 0.8427007929497149, 1e-15);
+        assert_close(erfc_kernel(1.0).unwrap(), 0.15729920705028513, 1e-15);
+        assert_close(
+            erfc_precise_kernel(-1.0).unwrap(),
+            1.8427007929497148,
+            1e-15,
+        );
         assert_close(
             erf_kernel(1.0, Some(2.0)).unwrap(),
             0.15262147206923782,
-            1e-6,
+            1e-15,
         );
         assert_close(
             erf_kernel(2.0, Some(1.0)).unwrap(),
             -0.15262147206923782,
-            1e-6,
+            1e-15,
         );
     }
 

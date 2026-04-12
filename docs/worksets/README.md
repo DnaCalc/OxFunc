@@ -31,6 +31,12 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 16. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md)
 17. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md)
 18. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md)
+19. [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md)
+20. [W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md)
+21. [W084_COUNTBLANK_RANGE_ONLY_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W084_COUNTBLANK_RANGE_ONLY_PARITY.md)
+22. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md)
+23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md)
+24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -51,6 +57,12 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 16. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md) owns the reopened lookup-family lane where live Excel spills array-valued lookup needles for `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP`, while adjacent `XLOOKUP` risk remains an explicit follow-on under `BUG-FUNC-006`.
 17. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md) owns the immediate text-slice spill correction for `LEFT` / `RIGHT` / `MID` plus the bounded systematic review seed for broader function-array-support investigation under `BUG-FUNC-007`.
 18. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md) owns the reopened `RATE` mortgage-style omitted-guess lane where Excel returns a small positive periodic rate but the local default-guess solver path currently fails with `#NUM!` under `BUG-FUNC-009`.
+19. [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md) owns the exact-shape decomposition change where OxFunc stops shipping a production locale-format parser/formatter path and instead requires OxFml/FEC to supply the concrete capability bundle through the typed seam.
+20. [W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md) owns the reopened sort-family omission/defaulting lane where `SORT({2;3;7;5},,-1)` and adjacent `SORTBY(..., by_array,)` must treat syntactic omission the same as absent optional controls rather than surfacing `#VALUE!`.
+21. [W084_COUNTBLANK_RANGE_ONLY_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W084_COUNTBLANK_RANGE_ONLY_PARITY.md) owns the reopened `COUNTBLANK` parity lane where live Excel accepts true ranges but rejects array-valued substitutes with `#VALUE!`, while `COUNT` / `COUNTA` / `ROWS` / `COLUMNS` remain explicit contrast controls rather than part of the same narrowing.
+22. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md) owns the reopened reshape-family lane where omitted leading row-counts in `TAKE(...,,n)` and `DROP(...,,n)` must default to all rows rather than surfacing `MissingArg` / `#VALUE!`.
+23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md) owns the reopened exact-value accuracy lane where current local `NORM.DIST` and `NORM.INV` approximations drift from live Excel `Value2` on bounded current-baseline witnesses.
+24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md) owns the reopened `XIRR` precision lane where the current local iterative solve drifts from live Excel `Value2` on a bounded current-baseline cashflow/date witness.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.
