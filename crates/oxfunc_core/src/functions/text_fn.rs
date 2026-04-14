@@ -116,7 +116,7 @@ pub fn map_text_error_to_ws(e: &TextEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::locale_format::current_excel_host_context;
+    use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::ReferenceLike;
 
@@ -137,7 +137,7 @@ mod tests {
 
     #[test]
     fn text_current_host_seed_rows() {
-        let ctx = current_excel_host_context();
+        let ctx = test_current_excel_host_context();
         let got = eval_text_surface(
             &[
                 CallArgValue::Eval(EvalValue::Number(0.125)),

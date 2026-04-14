@@ -15,7 +15,7 @@ pub const COUNTBLANK_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
@@ -173,6 +173,14 @@ mod tests {
             Err(CountBlankEvalError::Preparation(
                 CoercionError::UnsupportedValueKind("countblank_array_substitute")
             ))
+        );
+    }
+
+    #[test]
+    fn countblank_meta_preserves_reference_visibility_for_true_ranges() {
+        assert_eq!(
+            COUNTBLANK_META.arg_preparation_profile,
+            ArgPreparationProfile::RefsVisibleInAdapter
         );
     }
 }

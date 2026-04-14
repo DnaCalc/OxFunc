@@ -10,6 +10,7 @@
     "expected_value_summary": "Number(5)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
+      "DirectScalar",
       "DirectScalar"
     ],
     "expected_prepared_argument_sources": null,
@@ -1343,7 +1344,7 @@
     "expected_prepared_argument_structures": [
       "DirectScalar",
       "DirectScalar",
-      "DirectScalar"
+      "Omitted"
     ],
     "expected_prepared_argument_sources": null,
     "now_serial": null,
@@ -1361,7 +1362,7 @@
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar",
-      "DirectScalar",
+      "Omitted",
       "DirectScalar"
     ],
     "expected_prepared_argument_sources": null,
@@ -1697,8 +1698,6 @@
     "expected_value_summary": "Number(772.1734929184813)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
-      "DirectScalar",
-      "DirectScalar",
       "DirectScalar"
     ],
     "expected_prepared_argument_sources": null,
@@ -1716,8 +1715,6 @@
     "expected_value_summary": "Number(1257.789253554883)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
-      "DirectScalar",
-      "DirectScalar",
       "DirectScalar"
     ],
     "expected_prepared_argument_sources": null,
@@ -1811,7 +1808,7 @@
     "expected_value_summary": "Number(1)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
-      "ArrayLike"
+      "ReferenceVisible"
     ],
     "expected_prepared_argument_sources": null,
     "now_serial": null,

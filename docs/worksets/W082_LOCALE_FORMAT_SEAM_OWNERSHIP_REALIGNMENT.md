@@ -77,12 +77,12 @@ Out of scope:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - OxFunc still exports `en_us_context()` / `current_excel_host_context()`
-     plus the local shim parser/formatter implementation as ordinary library
-     surface
+   - OxFunc has removed the old ordinary convenience constructors, but the
+     local parser/formatter implementation still survives as explicit test-only
+     support rather than final downstream production ownership
    - the XLL add-in still constructs `current_excel_host_context()` directly on
      the caller side
-   - OxFml tests still import `en_us_context()` broadly instead of supplying a
-     caller-owned capability bundle from the OxFml side
+   - OxFml tests still depend on OxFunc-provided convenience locale contexts
+     instead of supplying a caller-owned capability bundle from the OxFml side
    - downstream OxFml/FEC acknowledgment and migration ownership under
      `HO-FN-009`

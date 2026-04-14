@@ -931,7 +931,7 @@ pub fn map_number_regex_translate_error_to_ws(
 mod tests {
     use super::*;
     use crate::host_info::{HostInfoProvider, TranslateProviderResult, TranslateRequest};
-    use crate::locale_format::{current_excel_host_context, en_us_context};
+    use crate::locale_format::{test_current_excel_host_context, test_en_us_context};
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{EvalValue, ReferenceKind, ReferenceLike};
 
@@ -1045,8 +1045,8 @@ mod tests {
     #[test]
     fn numbervalue_omitted_defaults_use_locale_context() {
         let resolver = DummyResolver;
-        let current_host = current_excel_host_context();
-        let en_us = en_us_context();
+        let current_host = test_current_excel_host_context();
+        let en_us = test_en_us_context();
         let host_default = eval_numbervalue_surface(
             &[CallArgValue::Eval(EvalValue::Text(txt("1,234.5%")))],
             &resolver,

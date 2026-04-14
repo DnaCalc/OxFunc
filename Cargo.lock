@@ -81,11 +81,16 @@ version = "0.1.0"
 dependencies = [
  "libm",
  "oxfml_core",
+ "oxfunc_value_types",
  "serde",
  "serde_json",
  "sxd-document",
  "sxd-xpath",
 ]
+
+[[package]]
+name = "oxfunc_value_types"
+version = "0.1.0"
 
 [[package]]
 name = "peresil"

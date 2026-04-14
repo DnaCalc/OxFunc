@@ -66,6 +66,10 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
 1. full Excel format-code language and locale sweep remain open.
 2. `VALUE`, `TEXT`, `DOLLAR`, and `FIXED` are `function-phase-complete` for the current admitted reference-baseline slice; broader locale/version expansion remains orthogonal validation work.
 3. future ownership of the full formatting language remains with OxFml/FEC rather than per-function OxFunc kernels.
+4. `W082` has since removed the old ordinary `en_us_context()` /
+   `current_excel_host_context()` constructors from `oxfunc_core`; the local
+   parser/formatter survives only as explicit test support while downstream
+   caller migration remains open.
 
 
 

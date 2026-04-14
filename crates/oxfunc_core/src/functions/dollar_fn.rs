@@ -108,7 +108,7 @@ pub fn map_dollar_error_to_ws(e: &DollarEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::locale_format::current_excel_host_context;
+    use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
     use crate::value::{ExcelText, ReferenceLike};
 
@@ -136,7 +136,7 @@ mod tests {
 
     #[test]
     fn eval_dollar_current_host_seed_rows() {
-        let ctx = current_excel_host_context();
+        let ctx = test_current_excel_host_context();
         assert_eq!(
             eval_dollar_surface(
                 &[

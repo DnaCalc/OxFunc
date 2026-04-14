@@ -10,6 +10,7 @@ path = "src/lib.rs"
 
 [dependencies]
 libm = "0.2"
+oxfunc_value_types = { path = "../oxfunc_value_types" }
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
 

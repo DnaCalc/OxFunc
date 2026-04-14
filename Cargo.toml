@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/oxfunc_core"]
+members = ["crates/oxfunc_core", "crates/oxfunc_value_types"]
 resolver = "2"
 
 [workspace.package]
@@ -7,4 +7,3 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 authors = ["DNA Calc"]
-

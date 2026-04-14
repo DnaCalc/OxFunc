@@ -85,7 +85,7 @@ pub fn map_value_error_to_ws(e: &ValueEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::locale_format::current_excel_host_context;
+    use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{ExcelText, ReferenceLike};
 
@@ -107,7 +107,7 @@ mod tests {
 
     #[test]
     fn value_current_host_seed_rows() {
-        let ctx = current_excel_host_context();
+        let ctx = test_current_excel_host_context();
         let mk = |s: &str| {
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
                 s.encode_utf16().collect(),

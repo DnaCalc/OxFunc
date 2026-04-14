@@ -1,3 +1,4 @@
+#[cfg(test)]
 use crate::functions::round_fn::round_kernel;
 use crate::value::ExcelText;
 
@@ -78,11 +79,15 @@ pub struct LocaleFormatContext<'a> {
     pub formatter: &'a dyn FormatCodeEngine,
 }
 
-pub struct TestLocaleValueParser;
-pub struct TestFormatCodeEngine;
+#[cfg(test)]
+struct TestOnlyLocaleValueParser;
+#[cfg(test)]
+struct TestOnlyFormatCodeEngine;
 
-pub static TEST_LOCALE_VALUE_PARSER: TestLocaleValueParser = TestLocaleValueParser;
-pub static TEST_FORMAT_CODE_ENGINE: TestFormatCodeEngine = TestFormatCodeEngine;
+#[cfg(test)]
+static TEST_ONLY_LOCALE_VALUE_PARSER: TestOnlyLocaleValueParser = TestOnlyLocaleValueParser;
+#[cfg(test)]
+static TEST_ONLY_FORMAT_CODE_ENGINE: TestOnlyFormatCodeEngine = TestOnlyFormatCodeEngine;
 
 pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
     match id {
@@ -109,28 +114,32 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
     }
 }
 
-pub fn en_us_context() -> LocaleFormatContext<'static> {
+#[cfg(test)]
+pub(crate) fn test_locale_format_context(profile: LocaleProfileId) -> LocaleFormatContext<'static> {
     LocaleFormatContext {
-        profile: format_profile(LocaleProfileId::EnUs),
+        profile: format_profile(profile),
         date_system: WorkbookDateSystem::System1900,
-        parser: &TEST_LOCALE_VALUE_PARSER,
-        formatter: &TEST_FORMAT_CODE_ENGINE,
+        parser: &TEST_ONLY_LOCALE_VALUE_PARSER,
+        formatter: &TEST_ONLY_FORMAT_CODE_ENGINE,
     }
 }
 
-pub fn current_excel_host_context() -> LocaleFormatContext<'static> {
-    LocaleFormatContext {
-        profile: format_profile(LocaleProfileId::CurrentExcelHost),
-        date_system: WorkbookDateSystem::System1900,
-        parser: &TEST_LOCALE_VALUE_PARSER,
-        formatter: &TEST_FORMAT_CODE_ENGINE,
-    }
+#[cfg(test)]
+pub(crate) fn test_en_us_context() -> LocaleFormatContext<'static> {
+    test_locale_format_context(LocaleProfileId::EnUs)
 }
 
+#[cfg(test)]
+pub(crate) fn test_current_excel_host_context() -> LocaleFormatContext<'static> {
+    test_locale_format_context(LocaleProfileId::CurrentExcelHost)
+}
+
+#[cfg(test)]
 fn text_from_string(s: String) -> ExcelText {
     ExcelText::from_utf16_code_units(s.encode_utf16().collect())
 }
 
+#[cfg(test)]
 fn normalize_numeric_text(profile: &FormatProfile, raw: &str) -> Option<String> {
     let trimmed = raw.trim();
     if trimmed.is_empty() {
@@ -160,6 +169,7 @@ fn normalize_numeric_text(profile: &FormatProfile, raw: &str) -> Option<String> 
     Some(normalized)
 }
 
+#[cfg(test)]
 fn parse_number_with_profile(profile: &FormatProfile, raw: &str) -> Option<f64> {
     let normalized = normalize_numeric_text(profile, raw)?;
     let parsed = normalized.parse::<f64>().ok()?;
@@ -170,6 +180,7 @@ fn parse_number_with_profile(profile: &FormatProfile, raw: &str) -> Option<f64> 
     }
 }
 
+#[cfg(test)]
 fn parse_iso_ymd(text: &str) -> Option<(i64, i64, i64)> {
     let parts: Vec<&str> = text.split('-').collect();
     if parts.len() != 3 {
@@ -182,6 +193,7 @@ fn parse_iso_ymd(text: &str) -> Option<(i64, i64, i64)> {
     ))
 }
 
+#[cfg(test)]
 fn parse_en_us_slash_date(text: &str) -> Option<(i64, i64, i64)> {
     let parts: Vec<&str> = text.split('/').collect();
     if parts.len() != 3 {
@@ -269,7 +281,8 @@ pub fn ymd_from_excel_serial(
     }
 }
 
-impl LocaleValueParser for TestLocaleValueParser {
+#[cfg(test)]
+impl LocaleValueParser for TestOnlyLocaleValueParser {
     fn parse_value_text(
         &self,
         profile: &FormatProfile,
@@ -315,6 +328,7 @@ impl LocaleValueParser for TestLocaleValueParser {
     }
 }
 
+#[cfg(test)]
 fn grouped_integer_string(int_part: &str, sep: &str) -> String {
     if int_part.len() <= 3 || sep.is_empty() {
         return int_part.to_string();
@@ -337,6 +351,7 @@ fn grouped_integer_string(int_part: &str, sep: &str) -> String {
     out
 }
 
+#[cfg(test)]
 fn render_fixed_common(
     profile: &FormatProfile,
     value: f64,
@@ -374,7 +389,8 @@ fn render_fixed_common(
     rendered
 }
 
-impl FormatCodeEngine for TestFormatCodeEngine {
+#[cfg(test)]
+impl FormatCodeEngine for TestOnlyFormatCodeEngine {
     fn render_with_code(
         &self,
         profile: &FormatProfile,
@@ -434,7 +450,7 @@ mod tests {
 
     #[test]
     fn parser_handles_current_host_seed_rows() {
-        let ctx = current_excel_host_context();
+        let ctx = test_current_excel_host_context();
         assert_eq!(
             ctx.parser
                 .parse_value_text(&ctx.profile, ctx.date_system, "1 234.5"),
@@ -464,7 +480,7 @@ mod tests {
 
     #[test]
     fn parser_handles_en_us_slash_date() {
-        let ctx = en_us_context();
+        let ctx = test_en_us_context();
         assert_eq!(
             ctx.parser
                 .parse_value_text(&ctx.profile, ctx.date_system, "1/2/2024"),
@@ -474,7 +490,7 @@ mod tests {
 
     #[test]
     fn formatter_handles_current_host_seed_rows() {
-        let ctx = current_excel_host_context();
+        let ctx = test_current_excel_host_context();
         assert_eq!(
             ctx.formatter
                 .render_with_code(&ctx.profile, ctx.date_system, 0.125, "0%")

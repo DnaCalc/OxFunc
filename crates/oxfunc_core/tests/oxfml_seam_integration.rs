@@ -8,7 +8,9 @@ use oxfml_core::semantics::{
     LibraryAvailabilityState, LibraryContextSnapshot, LibraryContextSnapshotEntry,
     RegistrationSourceKind,
 };
-use oxfml_core::substrate::oxfunc_adapter::{OxFuncAdapterRequest, run_oxfunc_preparation_adapter};
+use oxfml_core::test_support::oxfunc_adapter::{
+    OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
+};
 use oxfunc_core::value::{EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
 
@@ -80,8 +82,11 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
         };
 
         // Check worksheet value
-        let actual_value_summary = eval_value_summary(&run.evaluation_artifact.worksheet_value);
-        if actual_value_summary != fixture.expected_value_summary {
+        let actual_value_summary = canonicalize_value_summary(&eval_value_summary(
+            &run.evaluation_artifact.worksheet_value,
+        ));
+        let expected_value_summary = canonicalize_value_summary(&fixture.expected_value_summary);
+        if actual_value_summary != expected_value_summary {
             failures.push(format!(
                 "{} [{}] worksheet-value mismatch: expected {}, got {}",
                 fixture.scenario_id,
@@ -275,7 +280,7 @@ fn eval_value_summary(value: &EvalValue) -> String {
         EvalValue::Number(n) => format!("Number({n})"),
         EvalValue::Text(t) => format!("Text({})", t.to_string_lossy()),
         EvalValue::Logical(b) => format!("Logical({b})"),
-        EvalValue::Error(code) => format!("Error({code:?})"),
+        EvalValue::Error(code) => format!("Error({})", worksheet_error_summary(*code)),
         EvalValue::Array(array) => {
             let shape = array.shape();
             format!("Array({}x{})", shape.rows, shape.cols)
@@ -283,6 +288,54 @@ fn eval_value_summary(value: &EvalValue) -> String {
         EvalValue::Reference(reference) => format!("Reference({})", reference.target),
         EvalValue::Lambda(lambda) => format!("Lambda({})", lambda.callable_token),
     }
+}
+
+fn worksheet_error_summary(code: WorksheetErrorCode) -> &'static str {
+    match code {
+        WorksheetErrorCode::Null => "#NULL!",
+        WorksheetErrorCode::Div0 => "#DIV/0!",
+        WorksheetErrorCode::Value => "#VALUE!",
+        WorksheetErrorCode::Ref => "#REF!",
+        WorksheetErrorCode::Name => "#NAME?",
+        WorksheetErrorCode::Num => "#NUM!",
+        WorksheetErrorCode::NA => "#N/A",
+        WorksheetErrorCode::Busy => "#BUSY!",
+        WorksheetErrorCode::GettingData => "#GETTING_DATA",
+        WorksheetErrorCode::Spill => "#SPILL!",
+        WorksheetErrorCode::Calc => "#CALC!",
+        WorksheetErrorCode::Field => "#FIELD!",
+        WorksheetErrorCode::Blocked => "#BLOCKED!",
+        WorksheetErrorCode::Connect => "#CONNECT!",
+    }
+}
+
+fn canonicalize_value_summary(summary: &str) -> String {
+    let Some(code) = summary
+        .strip_prefix("Error(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    else {
+        return summary.to_string();
+    };
+
+    let canonical = match code {
+        "#NULL!" | "Null" => "#NULL!",
+        "#DIV/0!" | "Div0" => "#DIV/0!",
+        "#VALUE!" | "Value" => "#VALUE!",
+        "#REF!" | "Ref" => "#REF!",
+        "#NAME?" | "Name" => "#NAME?",
+        "#NUM!" | "Num" => "#NUM!",
+        "#N/A" | "NA" => "#N/A",
+        "#CALC!" | "Calc" => "#CALC!",
+        "#SPILL!" | "Spill" => "#SPILL!",
+        "#BUSY!" | "Busy" => "#BUSY!",
+        "#GETTING_DATA" | "GettingData" => "#GETTING_DATA",
+        "#FIELD!" | "Field" => "#FIELD!",
+        "#BLOCKED!" | "Blocked" => "#BLOCKED!",
+        "#CONNECT!" | "Connect" => "#CONNECT!",
+        other => other,
+    };
+
+    format!("Error({canonical})")
 }
 
 fn locus(row: u32, col: u32) -> Locus {
