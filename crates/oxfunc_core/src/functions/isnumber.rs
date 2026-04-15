@@ -4,7 +4,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const ISNUMBER_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ISNUMBER",
@@ -26,6 +26,16 @@ pub enum IsnumberEvalError {
     Preparation(crate::coercion::CoercionError),
 }
 
+fn is_number_cell(cell: &ArrayCellValue) -> ArrayCellValue {
+    match cell {
+        ArrayCellValue::Number(_) => ArrayCellValue::Logical(true),
+        ArrayCellValue::Text(_)
+        | ArrayCellValue::Logical(_)
+        | ArrayCellValue::Error(_)
+        | ArrayCellValue::EmptyCell => ArrayCellValue::Logical(false),
+    }
+}
+
 pub fn eval_isnumber_adapter_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, IsnumberEvalError> {
@@ -36,8 +46,18 @@ pub fn eval_isnumber_adapter_prepared(
         });
     }
 
-    let is_number = matches!(args[0], PreparedArgValue::Eval(EvalValue::Number(_)));
-    Ok(EvalValue::Logical(is_number))
+    match &args[0] {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array.iter_row_major().map(is_number_cell).collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+            ))
+        }
+        _ => {
+            let is_number = matches!(args[0], PreparedArgValue::Eval(EvalValue::Number(_)));
+            Ok(EvalValue::Logical(is_number))
+        }
+    }
 }
 
 pub fn eval_isnumber_surface(
@@ -110,6 +130,32 @@ mod tests {
         let args = [CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))];
         let got = eval_isnumber_surface(&args, &MockResolver { value: None });
         assert_eq!(got, Ok(EvalValue::Logical(false)));
+    }
+
+    #[test]
+    fn eval_isnumber_array_lifts_elementwise() {
+        let args = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+                ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ArrayCellValue::EmptyCell,
+            ]])
+            .unwrap(),
+        ))];
+        let got = eval_isnumber_surface(&args, &MockResolver { value: None });
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(false),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]

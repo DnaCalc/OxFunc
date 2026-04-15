@@ -4633,6 +4633,124 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_xmatch_exact_witness_spills_array_lookup_value_results() {
+        let lookup_values = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(5.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(6.0),
+            ArrayCellValue::Number(8.0),
+        ]])
+        .expect("row vector");
+        let got = eval_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Array(lookup_values)),
+                CallArgValue::Eval(EvalValue::Array(lookup_array)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        let expected = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+        assert_eq!(got, Ok(EvalValue::Array(expected)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0940_corpus_formula_returns_six() {
+        let lookup_values = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(5.0),
+        ]])
+        .expect("row vector");
+        let lookup_array = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(6.0),
+            ArrayCellValue::Number(8.0),
+        ]])
+        .expect("row vector");
+        let source = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(3.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(5.0),
+        ]])
+        .expect("row vector");
+
+        let xmatch = eval_surface_value_call(
+            FUNC_ID_XMATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Array(lookup_values)),
+                CallArgValue::Eval(EvalValue::Array(lookup_array)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("xmatch result");
+
+        let isnumber = eval_surface_value_call(
+            FUNC_ID_ISNUMBER,
+            &[CallArgValue::Eval(xmatch)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("isnumber result");
+
+        let filtered = eval_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                CallArgValue::Eval(EvalValue::Array(source)),
+                CallArgValue::Eval(isnumber),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("filter result");
+
+        let got = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(filtered)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(6.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),
