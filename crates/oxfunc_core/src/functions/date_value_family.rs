@@ -470,6 +470,19 @@ fn map_family_err_to_eval(err: DateValueFamilyError) -> EvalValue {
     }
 }
 
+fn coerce_prepared_to_date_serial(prepared: &PreparedArgValue) -> Result<f64, DateValueFamilyError> {
+    match prepared {
+        PreparedArgValue::Eval(EvalValue::Text(text)) => {
+            let parsed = parse_date_time_text(&text.to_string_lossy())?;
+            let Some((year, month, day)) = parsed.date else {
+                return Err(DateValueFamilyError::Value);
+            };
+            excel_serial_from_ymd_1900(year, month, day)
+        }
+        _ => coerce_prepared_to_number(prepared).map_err(|_| DateValueFamilyError::Coercion),
+    }
+}
+
 pub fn eval_datevalue_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -572,10 +585,8 @@ pub fn eval_datedif_surface(
                     prepared.len(),
                 )));
             }
-            let start = coerce_prepared_to_number(&prepared[0])
-                .map_err(|_| DateValueFamilyError::Coercion)?;
-            let end = coerce_prepared_to_number(&prepared[1])
-                .map_err(|_| DateValueFamilyError::Coercion)?;
+            let start = coerce_prepared_to_date_serial(&prepared[0])?;
+            let end = coerce_prepared_to_date_serial(&prepared[1])?;
             let unit_text = coerce_prepared_to_text(&prepared[2])
                 .map_err(|_| DateValueFamilyError::Coercion)?;
             let unit = parse_datedif_unit(&unit_text.to_string_lossy())?;
@@ -599,6 +610,8 @@ pub fn map_date_value_family_error_to_ws(error: &DateValueFamilyError) -> Worksh
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+    use crate::value::ReferenceLike;
 
     fn assert_close(actual: f64, expected: f64) {
         let delta = (actual - expected).abs();
@@ -610,6 +623,23 @@ mod tests {
 
     fn serial(year: i64, month: i64, day: i64) -> f64 {
         excel_serial_from_ymd_1900(year, month, day).unwrap()
+    }
+
+    struct NoResolver;
+
+    impl ReferenceResolver for NoResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
     }
 
     #[test]
@@ -730,5 +760,58 @@ mod tests {
             Err(DateValueFamilyError::Num)
         );
         assert_eq!(parse_datedif_unit("Q"), Err(DateValueFamilyError::Num));
+    }
+
+    #[test]
+    fn eval_datedif_surface_accepts_iso_date_text_args() {
+        let got = eval_datedif_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "2020-01-15",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "2024-03-20",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "Y",
+                ))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(4.0)));
+    }
+
+    #[test]
+    fn eval_datedif_surface_keeps_direct_serial_control() {
+        let got = eval_datedif_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(serial(2020, 1, 15))),
+                CallArgValue::Eval(EvalValue::Number(serial(2024, 3, 20))),
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "Y",
+                ))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(4.0)));
+    }
+
+    #[test]
+    fn eval_datedif_surface_rejects_slash_date_text_args() {
+        let got = eval_datedif_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "1/15/2020",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "3/20/2024",
+                ))),
+                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
+                    "Y",
+                ))),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Err(DateValueFamilyError::Value));
     }
 }
