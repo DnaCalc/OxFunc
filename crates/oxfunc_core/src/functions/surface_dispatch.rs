@@ -5139,6 +5139,30 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0798_scalar_seed_index_lane_returns_zero() {
+        let cols = eval_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[CallArgValue::Eval(EvalValue::Number(0.0))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("columns result");
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[CallArgValue::Eval(EvalValue::Number(0.0)), CallArgValue::Eval(cols)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),

@@ -40,9 +40,18 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
 
     let arg = &args[0];
 
-    // Array argument: return column count directly.
-    if let CallArgValue::Eval(EvalValue::Array(arr)) = arg {
-        return Ok(EvalValue::Number(arr.shape().cols as f64));
+    // Array and scalar value arguments behave like in-memory arrays.
+    if let CallArgValue::Eval(value) = arg {
+        return Ok(EvalValue::Number(match value {
+            EvalValue::Array(arr) => arr.shape().cols as f64,
+            EvalValue::Number(_)
+            | EvalValue::Text(_)
+            | EvalValue::Logical(_)
+            | EvalValue::Error(_) => 1.0,
+            EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+                return Err(ColumnsEvalError::InvalidReferenceArg);
+            }
+        }));
     }
 
     // Reference argument: parse and compute column span.
@@ -222,9 +231,9 @@ mod tests {
     // --- Error tests ---
 
     #[test]
-    fn columns_non_reference_non_array_returns_error() {
+    fn columns_scalar_value_returns_one() {
         let got = eval_columns_surface(&[CallArgValue::Eval(EvalValue::Number(42.0))]);
-        assert_eq!(got, Err(ColumnsEvalError::InvalidReferenceArg));
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
     }
 
     #[test]

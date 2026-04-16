@@ -217,6 +217,17 @@ fn cell_to_eval_value(cell: &ArrayCellValue) -> EvalValue {
     }
 }
 
+fn scalar_array_from_eval_value(value: &EvalValue) -> Option<EvalArray> {
+    let cell = match value {
+        EvalValue::Number(n) => ArrayCellValue::Number(*n),
+        EvalValue::Text(t) => ArrayCellValue::Text(t.clone()),
+        EvalValue::Logical(b) => ArrayCellValue::Logical(*b),
+        EvalValue::Error(code) => ArrayCellValue::Error(*code),
+        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => return None,
+    };
+    Some(EvalArray::from_scalar(cell))
+}
+
 fn slice_array(array: &EvalArray, row: usize, col: usize) -> Result<EvalValue, IndexEvalError> {
     let shape = array.shape();
     if row > shape.rows || col > shape.cols {
@@ -336,7 +347,13 @@ pub fn eval_index_surface(
                 normalize_array_indices_for_vector_position(array, row, col, args.get(2));
             slice_array(array, row, col)
         }
-        CallArgValue::Eval(_) => Err(IndexEvalError::UnsupportedSource("non_array_non_reference")),
+        CallArgValue::Eval(value) => {
+            let Some(array) = scalar_array_from_eval_value(value) else {
+                return Err(IndexEvalError::UnsupportedSource("non_array_non_reference"));
+            };
+            let (row, col) = normalize_array_indices_for_vector_position(&array, row, col, args.get(2));
+            slice_array(&array, row, col)
+        }
         CallArgValue::MissingArg => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
         CallArgValue::EmptyCell => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
     }
@@ -446,6 +463,16 @@ mod tests {
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(20.0)));
+    }
+
+    #[test]
+    fn eval_index_scalar_source_treated_as_single_cell_array() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Number(42.0)),
+            CallArgValue::Eval(EvalValue::Number(1.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(42.0)));
     }
 
     #[test]
