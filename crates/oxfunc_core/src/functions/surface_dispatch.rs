@@ -5051,6 +5051,20 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1023_weekday_headers_index_returns_sun() {
         let ctx = test_current_excel_host_context();
+        let base_sun = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(7.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("base sun");
         let headers = eval_surface_value_call(
             FUNC_ID_TEXT,
             &[
@@ -5062,7 +5076,7 @@ mod tests {
                                 eval_surface_value_call(
                                     FUNC_ID_OP_ADD,
                                     &[
-                                        CallArgValue::Eval(EvalValue::Number(45298.0)),
+                                        CallArgValue::Eval(base_sun),
                                         CallArgValue::Eval(
                                             eval_surface_value_call(
                                                 FUNC_ID_SEQUENCE,
