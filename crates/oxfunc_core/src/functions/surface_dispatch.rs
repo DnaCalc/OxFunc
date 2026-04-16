@@ -3785,6 +3785,14 @@ mod tests {
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
             match callable.callable_token.as_str() {
+                "helper.mul10" => match args {
+                    [PreparedArgValue::Eval(EvalValue::Number(n))] => {
+                        Ok(PreparedArgValue::Eval(EvalValue::Number(*n * 10.0)))
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
                 "helper.add1" => match args {
                     [PreparedArgValue::Eval(EvalValue::Number(n))] => {
                         Ok(PreparedArgValue::Eval(EvalValue::Number(*n + 1.0)))
@@ -5160,6 +5168,209 @@ mod tests {
             None,
         );
         assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0450_population_stddev_let_composition() {
+        let data = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(5.0),
+            ArrayCellValue::Number(3.0),
+            ArrayCellValue::Number(8.0),
+            ArrayCellValue::Number(1.0),
+            ArrayCellValue::Number(9.0),
+            ArrayCellValue::Number(2.0),
+            ArrayCellValue::Number(7.0),
+            ArrayCellValue::Number(4.0),
+            ArrayCellValue::Number(6.0),
+        ]])
+        .unwrap();
+        let n = eval_surface_value_call(
+            FUNC_ID_COUNTA,
+            &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("counta result");
+        let mean = eval_surface_value_call(
+            FUNC_ID_AVERAGE,
+            &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("average result");
+        let centered = eval_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                CallArgValue::Eval(EvalValue::Array(data)),
+                CallArgValue::Eval(mean.clone()),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("subtract result");
+        let squares = eval_surface_value_call(
+            FUNC_ID_OP_POWER,
+            &[
+                CallArgValue::Eval(centered),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("power result");
+        let variance = eval_surface_value_call(
+            FUNC_ID_OP_DIVIDE,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_SUMPRODUCT,
+                        &[CallArgValue::Eval(squares)],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("sumproduct result"),
+                ),
+                CallArgValue::Eval(n),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("variance result");
+        let got = eval_surface_value_call(
+            FUNC_ID_SQRT,
+            &[CallArgValue::Eval(variance)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.581988897471611)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0470_map_chain_sum_returns_sixty_three() {
+        let data = EvalArray::from_rows(vec![
+            vec![ArrayCellValue::Number(1.0)],
+            vec![ArrayCellValue::Number(2.0)],
+            vec![ArrayCellValue::Number(3.0)],
+        ])
+        .unwrap();
+        let step1 = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(data)),
+                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+                    "helper.mul10",
+                    CallableArityShape::exact(1),
+                    CallableCaptureMode::LexicalCapture,
+                    "helper.invoke.v1",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+            None,
+            None,
+        )
+        .expect("first map result");
+        let step2 = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(step1),
+                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+                    "helper.add1",
+                    CallableArityShape::exact(1),
+                    CallableCaptureMode::LexicalCapture,
+                    "helper.invoke.v1",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+            None,
+            None,
+        )
+        .expect("second map result");
+        let got = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(step2)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(63.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0477_filter_if_empty_returns_none() {
+        let data = EvalArray::from_rows(vec![
+            vec![ArrayCellValue::Number(1.0)],
+            vec![ArrayCellValue::Number(2.0)],
+            vec![ArrayCellValue::Number(3.0)],
+            vec![ArrayCellValue::Number(4.0)],
+            vec![ArrayCellValue::Number(5.0)],
+        ])
+        .unwrap();
+        let include = eval_surface_value_call(
+            FUNC_ID_OP_GREATER_THAN,
+            &[
+                CallArgValue::Eval(EvalValue::Array(data.clone())),
+                CallArgValue::Eval(EvalValue::Number(10.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("comparison result");
+        let got = eval_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                CallArgValue::Eval(EvalValue::Array(data)),
+                CallArgValue::Eval(include),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("none"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("none")),
+            ]])
+            .unwrap()))
+        );
     }
 
     #[test]

@@ -9,7 +9,7 @@ use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
 const SUMPRODUCT_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMPRODUCT_BASE",
     arity: Arity {
-        min: 2,
+        min: 1,
         max: usize::MAX,
     },
     determinism: DeterminismClass::Deterministic,
@@ -533,6 +533,19 @@ mod tests {
             got,
             Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
         );
+    }
+
+    #[test]
+    fn sumproduct_single_array_argument_sums_elements() {
+        let got = eval_sumproduct_surface(
+            &[array(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(4.0),
+                ArrayCellValue::Number(9.0),
+            ]])],
+            &MockResolver::empty(),
+        );
+        assert_eq!(got, Ok(EvalValue::Number(14.0)));
     }
 
     #[test]
