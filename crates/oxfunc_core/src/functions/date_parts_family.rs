@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const DATE_PART_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE_PART_BASE",
@@ -220,10 +220,42 @@ fn eval_date_part_unary_surface(
                     actual: prepared.len(),
                 });
             }
-            let serial = coerce_serial_arg(&prepared[0])?;
-            kernel(serial)
-                .map(EvalValue::Number)
-                .map_err(DatePartsEvalError::Domain)
+            match &prepared[0] {
+                PreparedArgValue::Eval(EvalValue::Array(array)) => {
+                    let cells = array
+                        .iter_row_major()
+                        .map(|cell| {
+                            let serial = match cell {
+                                ArrayCellValue::Number(n) => *n,
+                                ArrayCellValue::Text(text) => coerce_prepared_to_number(
+                                    &PreparedArgValue::Eval(EvalValue::Text(text.clone())),
+                                )
+                                .map_err(DatePartsEvalError::Coercion)?,
+                                ArrayCellValue::Logical(value) => {
+                                    if *value { 1.0 } else { 0.0 }
+                                }
+                                ArrayCellValue::Error(code) => {
+                                    return Ok(ArrayCellValue::Error(*code));
+                                }
+                                ArrayCellValue::EmptyCell => 0.0,
+                            };
+                            kernel(serial)
+                                .map(ArrayCellValue::Number)
+                                .map_err(DatePartsEvalError::Domain)
+                        })
+                        .collect::<Result<Vec<_>, _>>()?;
+                    Ok(EvalValue::Array(
+                        EvalArray::new(array.shape(), cells)
+                            .expect("date-part array lift preserves input shape"),
+                    ))
+                }
+                _ => {
+                    let serial = coerce_serial_arg(&prepared[0])?;
+                    kernel(serial)
+                        .map(EvalValue::Number)
+                        .map_err(DatePartsEvalError::Domain)
+                }
+            }
         },
         DatePartsEvalError::Coercion,
     )
@@ -335,7 +367,7 @@ pub fn map_date_parts_error_to_ws(e: &DatePartsEvalError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceLike};
 
     struct NoResolver;
 
@@ -423,6 +455,32 @@ mod tests {
                 &NoResolver,
             ),
             Ok(EvalValue::Number(0.0))
+        );
+    }
+
+    #[test]
+    fn month_surface_lifts_array_inputs_elementwise() {
+        let got = eval_month_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(45291.0),
+                    ArrayCellValue::Number(45292.0),
+                    ArrayCellValue::Number(45322.0),
+                ]])
+                .unwrap(),
+            ))],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(12.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(1.0),
+                ]])
+                .unwrap()
+            ))
         );
     }
 

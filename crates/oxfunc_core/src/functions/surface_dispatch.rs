@@ -5163,6 +5163,216 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_1008_complex_magnitude_returns_five() {
+        let z = eval_surface_value_call(
+            FUNC_ID_HSTACK,
+            &[
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(4.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("hstack result");
+        let re = eval_surface_value_call(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(z.clone()),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("real part");
+        let im = eval_surface_value_call(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(z),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(-1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("imaginary part");
+        let sumsq = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_POWER,
+                        &[
+                            CallArgValue::Eval(re),
+                            CallArgValue::Eval(EvalValue::Number(2.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("re squared"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_POWER,
+                        &[
+                            CallArgValue::Eval(im),
+                            CallArgValue::Eval(EvalValue::Number(2.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("im squared"),
+                ),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sumsq result");
+        let magnitude = eval_surface_value_call(
+            FUNC_ID_SQRT,
+            &[CallArgValue::Eval(sumsq)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sqrt result");
+        let indexed = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(magnitude),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("index result");
+        let got = eval_surface_value_call(
+            FUNC_ID_ROUND,
+            &[
+                CallArgValue::Eval(indexed),
+                CallArgValue::Eval(EvalValue::Number(6.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1020_calendar_grid_counts_january_days() {
+        let dates = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(EvalValue::Number(45291.0)),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_SEQUENCE,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(42.0)),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Number(0.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("sequence result"),
+                ),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("dates result");
+        let in_month = eval_surface_value_call(
+            FUNC_ID_OP_EQUAL,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_MONTH,
+                        &[CallArgValue::Eval(dates)],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("month result"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("equal result");
+        let coerced = eval_surface_value_call(
+            FUNC_ID_OP_NEGATE,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_OP_NEGATE,
+                    &[CallArgValue::Eval(in_month)],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("first negate"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("double-negated result");
+        let got = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(coerced)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(31.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),
