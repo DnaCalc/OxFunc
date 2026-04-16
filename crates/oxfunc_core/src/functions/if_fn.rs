@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const IF_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IF",
@@ -32,6 +32,51 @@ pub enum IfEvalError {
     BranchPreparation(CoercionError),
 }
 
+fn prepared_to_eval_value(prepared: PreparedArgValue) -> EvalValue {
+    match prepared {
+        PreparedArgValue::Eval(v) => v,
+        PreparedArgValue::MissingArg => EvalValue::Logical(false),
+        PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+    }
+}
+
+fn eval_condition_cell(cell: &ArrayCellValue) -> Result<bool, CoercionError> {
+    match cell {
+        ArrayCellValue::Logical(b) => Ok(*b),
+        ArrayCellValue::Number(n) => Ok(*n != 0.0),
+        ArrayCellValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        ArrayCellValue::Text(text) => Err(CoercionError::NonNumericText(text.to_string_lossy())),
+        ArrayCellValue::EmptyCell => Ok(false),
+    }
+}
+
+fn scalar_cell_from_eval_value(value: &EvalValue) -> Result<ArrayCellValue, CoercionError> {
+    match value {
+        EvalValue::Number(n) => Ok(ArrayCellValue::Number(*n)),
+        EvalValue::Text(t) => Ok(ArrayCellValue::Text(t.clone())),
+        EvalValue::Logical(b) => Ok(ArrayCellValue::Logical(*b)),
+        EvalValue::Error(code) => Ok(ArrayCellValue::Error(*code)),
+        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+            Err(CoercionError::UnsupportedValueKind("if_branch_scalar"))
+        }
+    }
+}
+
+fn materialize_branch_for_shape(
+    value: &EvalValue,
+    shape: ArrayShape,
+) -> Result<EvalArray, CoercionError> {
+    match value {
+        EvalValue::Array(array) if array.shape() == shape => Ok(array.clone()),
+        EvalValue::Array(_) => Err(CoercionError::UnsupportedValueKind("if_branch_shape")),
+        other => {
+            let cell = scalar_cell_from_eval_value(other)?;
+            EvalArray::new(shape, vec![cell; shape.rows * shape.cols])
+                .ok_or(CoercionError::UnsupportedValueKind("if_branch_shape"))
+        }
+    }
+}
+
 fn eval_condition_bool(
     arg: &CallArgValue,
     resolver: &impl ReferenceResolver,
@@ -55,6 +100,47 @@ fn eval_condition_bool(
     }
 }
 
+fn eval_if_elementwise_surface(
+    condition: &EvalArray,
+    true_arg: &CallArgValue,
+    false_arg: Option<&CallArgValue>,
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, IfEvalError> {
+    let true_value = prepared_to_eval_value(
+        prepare_arg_values_only(true_arg, resolver).map_err(IfEvalError::BranchPreparation)?,
+    );
+    let false_value = match false_arg {
+        Some(arg) => prepared_to_eval_value(
+            prepare_arg_values_only(arg, resolver).map_err(IfEvalError::BranchPreparation)?,
+        ),
+        None => EvalValue::Logical(false),
+    };
+    let true_array = materialize_branch_for_shape(&true_value, condition.shape())
+        .map_err(IfEvalError::BranchPreparation)?;
+    let false_array = materialize_branch_for_shape(&false_value, condition.shape())
+        .map_err(IfEvalError::BranchPreparation)?;
+
+    let mut cells = Vec::with_capacity(condition.shape().rows * condition.shape().cols);
+    for row in 0..condition.shape().rows {
+        for col in 0..condition.shape().cols {
+            let keep = eval_condition_cell(
+                condition.get(row, col).expect("validated IF condition shape"),
+            )
+            .map_err(IfEvalError::ConditionCoercion)?;
+            let chosen = if keep {
+                true_array.get(row, col).expect("validated IF true shape")
+            } else {
+                false_array.get(row, col).expect("validated IF false shape")
+            };
+            cells.push(chosen.clone());
+        }
+    }
+
+    Ok(EvalValue::Array(
+        EvalArray::new(condition.shape(), cells).expect("validated IF result shape"),
+    ))
+}
+
 pub fn eval_if_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -66,6 +152,10 @@ pub fn eval_if_surface(
             expected_max: IF_META.arity.max,
             actual: argc,
         });
+    }
+
+    if let CallArgValue::Eval(EvalValue::Array(condition)) = &args[0] {
+        return eval_if_elementwise_surface(condition, &args[1], args.get(2), resolver);
     }
 
     let cond = eval_condition_bool(&args[0], resolver).map_err(IfEvalError::ConditionCoercion)?;
@@ -80,11 +170,7 @@ pub fn eval_if_surface(
 
     let prepared =
         prepare_arg_values_only(branch_arg, resolver).map_err(IfEvalError::BranchPreparation)?;
-    match prepared {
-        PreparedArgValue::Eval(v) => Ok(v),
-        PreparedArgValue::MissingArg => Ok(EvalValue::Logical(false)),
-        PreparedArgValue::EmptyCell => Ok(EvalValue::Number(0.0)),
-    }
+    Ok(prepared_to_eval_value(prepared))
 }
 
 pub fn map_if_error_to_ws(e: &IfEvalError) -> WorksheetErrorCode {
@@ -100,7 +186,7 @@ pub fn map_if_error_to_ws(e: &IfEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::value::{ReferenceLike, ArrayCellValue, EvalArray};
 
     struct NoResolver;
     impl ReferenceResolver for NoResolver {
@@ -163,6 +249,41 @@ mod tests {
             got,
             Err(IfEvalError::ConditionCoercion(
                 CoercionError::NonNumericText("".to_string())
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_if_lifts_array_condition_elementwise() {
+        let args = vec![
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(true),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::Eval(EvalValue::Number(0.0)),
+        ];
+        let got = eval_if_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(0.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap()
             ))
         );
     }

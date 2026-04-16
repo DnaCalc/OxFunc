@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::and_argument_truth;
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const AND_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.AND",
@@ -32,6 +32,109 @@ pub enum AndEvalError {
     Coercion(CoercionError),
 }
 
+enum DirectElementwiseArg {
+    Scalar(CallArgValue),
+    Array(EvalArray),
+}
+
+fn truth_from_direct_scalar(arg: &CallArgValue) -> Result<Option<bool>, CoercionError> {
+    match arg {
+        CallArgValue::MissingArg | CallArgValue::EmptyCell => Ok(None),
+        CallArgValue::Eval(EvalValue::Logical(b)) => Ok(Some(*b)),
+        CallArgValue::Eval(EvalValue::Number(n)) => Ok(Some(*n != 0.0)),
+        CallArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
+        CallArgValue::Eval(EvalValue::Text(_)) => {
+            Err(CoercionError::NonNumericText("direct_text".to_string()))
+        }
+        CallArgValue::Eval(EvalValue::Array(_))
+        | CallArgValue::Eval(EvalValue::Reference(_))
+        | CallArgValue::Eval(EvalValue::Lambda(_))
+        | CallArgValue::Reference(_) => Err(CoercionError::UnsupportedValueKind(
+            "direct_elementwise_scalar",
+        )),
+    }
+}
+
+fn truth_from_direct_array_cell(cell: &ArrayCellValue) -> Result<Option<bool>, CoercionError> {
+    match cell {
+        ArrayCellValue::Logical(b) => Ok(Some(*b)),
+        ArrayCellValue::Number(n) => Ok(Some(*n != 0.0)),
+        ArrayCellValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        ArrayCellValue::Text(_) => Err(CoercionError::NonNumericText("direct_text".to_string())),
+        ArrayCellValue::EmptyCell => Ok(None),
+    }
+}
+
+fn try_eval_and_direct_elementwise(args: &[CallArgValue]) -> Result<Option<EvalValue>, CoercionError> {
+    let mut saw_array = false;
+    let mut target_shape = None;
+    let mut prepared_args = Vec::with_capacity(args.len());
+
+    for arg in args {
+        match arg {
+            CallArgValue::Eval(EvalValue::Array(array)) => {
+                saw_array = true;
+                match target_shape {
+                    None => target_shape = Some(array.shape()),
+                    Some(shape) if shape != array.shape() => {
+                        return Err(CoercionError::UnsupportedValueKind("mismatched_array_shape"));
+                    }
+                    _ => {}
+                }
+                prepared_args.push(DirectElementwiseArg::Array(array.clone()));
+            }
+            CallArgValue::Eval(_)
+            | CallArgValue::MissingArg
+            | CallArgValue::EmptyCell => {
+                prepared_args.push(DirectElementwiseArg::Scalar(arg.clone()));
+            }
+            CallArgValue::Reference(_) => return Ok(None),
+        }
+    }
+
+    let Some(shape) = target_shape else {
+        return Ok(None);
+    };
+    if !saw_array {
+        return Ok(None);
+    }
+
+    let mut cells = Vec::with_capacity(shape.rows * shape.cols);
+    for row in 0..shape.rows {
+        for col in 0..shape.cols {
+            let mut saw_value = false;
+            let mut cell_result = ArrayCellValue::Logical(true);
+            for arg in &prepared_args {
+                let truth = match arg {
+                    DirectElementwiseArg::Scalar(arg) => truth_from_direct_scalar(arg)?,
+                    DirectElementwiseArg::Array(array) => {
+                        truth_from_direct_array_cell(
+                            array.get(row, col).expect("validated elementwise shape"),
+                        )?
+                    }
+                };
+                match truth {
+                    Some(false) => {
+                        cell_result = ArrayCellValue::Logical(false);
+                        saw_value = true;
+                        break;
+                    }
+                    Some(true) => saw_value = true,
+                    None => {}
+                }
+            }
+            if !saw_value {
+                cell_result = ArrayCellValue::Error(WorksheetErrorCode::Value);
+            }
+            cells.push(cell_result);
+        }
+    }
+
+    Ok(Some(EvalValue::Array(
+        EvalArray::new(shape, cells).expect("validated elementwise shape"),
+    )))
+}
+
 pub fn eval_and_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -43,6 +146,12 @@ pub fn eval_and_surface(
             expected_max: AND_META.arity.max,
             actual: argc,
         });
+    }
+
+    if let Some(elementwise) =
+        try_eval_and_direct_elementwise(args).map_err(AndEvalError::Coercion)?
+    {
+        return Ok(elementwise);
     }
 
     let mut saw_value = false;
@@ -167,5 +276,41 @@ mod tests {
             },
         );
         assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Value)));
+    }
+
+    #[test]
+    fn eval_and_direct_arrays_lift_elementwise() {
+        let got = eval_and_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(false),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(false),
+                        ArrayCellValue::Logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(false),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 }

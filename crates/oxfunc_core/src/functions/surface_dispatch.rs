@@ -3909,6 +3909,42 @@ mod tests {
                         WorksheetErrorCode::Value,
                     )),
                 },
+                "helper.jan2024_day_or_zero" => match args {
+                    [PreparedArgValue::Eval(EvalValue::Number(n))] => {
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            31,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[CallArgValue::Eval(EvalValue::Number(*n))],
+                                &NoReferenceResolver,
+                                Some(46000.0),
+                                Some(0.5),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(PreparedArgValue::Eval(day))
+                        } else {
+                            Ok(PreparedArgValue::Eval(EvalValue::Number(0.0)))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
                 _ => Err(CallableInvocationError::UnsupportedCallableToken(
                     callable.callable_token.clone(),
                 )),
@@ -5779,6 +5815,338 @@ mod tests {
                 "January|  |01|02|03|04|05|06",
             )))
         );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1031_first_week_sum_returns_twenty_one() {
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_SUBTRACT,
+                        &[
+                            CallArgValue::Eval(first_day),
+                            CallArgValue::Eval(weekday),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("subtract result"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let week1 = eval_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_ADD,
+                        &[
+                            CallArgValue::Eval(grid_start),
+                            CallArgValue::Eval(
+                                eval_surface_value_call(
+                                    FUNC_ID_SEQUENCE,
+                                    &[
+                                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                                        CallArgValue::Eval(EvalValue::Number(7.0)),
+                                        CallArgValue::MissingArg,
+                                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                                    ],
+                                    &NoReferenceResolver,
+                                    Some(46000.0),
+                                    Some(0.5),
+                                    None,
+                                    None,
+                                )
+                                .expect("sequence"),
+                            ),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("add result"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("week1");
+        let day_nums = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(week1),
+                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+                    "helper.jan2024_day_or_zero",
+                    CallableArityShape::exact(1),
+                    CallableCaptureMode::NoCapture,
+                    "lambda.map.jan2024.dayzero",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+            None,
+            None,
+        )
+        .expect("map result");
+        let got = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(day_nums)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(21.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1032_modern_calendar_month_returns_twenty_one() {
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("last day");
+        let days_in_month = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CallArgValue::Eval(last_day)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("days in month");
+        let offset = eval_surface_value_call(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_WEEKDAY,
+                        &[
+                            CallArgValue::Eval(first_day),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("weekday"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("offset");
+        let grid = eval_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[CallArgValue::Eval(EvalValue::Number(42.0))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("grid");
+        let day_vals = eval_surface_value_call(
+            FUNC_ID_IF,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_AND,
+                        &[
+                            CallArgValue::Eval(
+                                eval_surface_value_call(
+                                    FUNC_ID_OP_GREATER_THAN,
+                                    &[
+                                        CallArgValue::Eval(grid.clone()),
+                                        CallArgValue::Eval(offset.clone()),
+                                    ],
+                                    &NoReferenceResolver,
+                                    Some(46000.0),
+                                    Some(0.5),
+                                    None,
+                                    None,
+                                )
+                                .expect("gt result"),
+                            ),
+                            CallArgValue::Eval(
+                                eval_surface_value_call(
+                                    FUNC_ID_OP_LESS_EQUAL,
+                                    &[
+                                        CallArgValue::Eval(grid.clone()),
+                                        CallArgValue::Eval(
+                                            eval_surface_value_call(
+                                                FUNC_ID_OP_ADD,
+                                                &[
+                                                    CallArgValue::Eval(offset.clone()),
+                                                    CallArgValue::Eval(days_in_month),
+                                                ],
+                                                &NoReferenceResolver,
+                                                Some(46000.0),
+                                                Some(0.5),
+                                                None,
+                                                None,
+                                            )
+                                            .expect("offset+days"),
+                                        ),
+                                    ],
+                                    &NoReferenceResolver,
+                                    Some(46000.0),
+                                    Some(0.5),
+                                    None,
+                                    None,
+                                )
+                                .expect("le result"),
+                            ),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("and result"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_SUBTRACT,
+                        &[
+                            CallArgValue::Eval(grid),
+                            CallArgValue::Eval(offset),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("grid-offset"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("day vals");
+        let weekly = eval_surface_value_call(
+            FUNC_ID_WRAPROWS,
+            &[
+                CallArgValue::Eval(day_vals),
+                CallArgValue::Eval(EvalValue::Number(7.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("weekly");
+        let got = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[
+                        CallArgValue::Eval(weekly),
+                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                        CallArgValue::Eval(EvalValue::Number(0.0)),
+                    ],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("index first row"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(21.0)));
     }
 
     #[test]
