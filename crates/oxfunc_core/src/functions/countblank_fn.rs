@@ -3,8 +3,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
+use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -161,7 +161,9 @@ mod tests {
         let got = eval_countblank_surface(
             &[CallArgValue::Eval(EvalValue::Array(
                 EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new()))],
+                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        Vec::new(),
+                    ))],
                     vec![ArrayCellValue::Number(1.0)],
                 ])
                 .unwrap(),

@@ -295,11 +295,13 @@ pub fn eval_take_prepared(
     let row_count = match args.get(1) {
         Some(PreparedArgValue::MissingArg) if args.get(2).is_some() => array.shape().rows as isize,
         Some(arg) => parse_integer(arg)?,
-        None => return Err(DynamicArrayReshapeEvalError::ArityMismatch {
-            expected_min: TAKE_META.arity.min,
-            expected_max: TAKE_META.arity.max,
-            actual: args.len(),
-        }),
+        None => {
+            return Err(DynamicArrayReshapeEvalError::ArityMismatch {
+                expected_min: TAKE_META.arity.min,
+                expected_max: TAKE_META.arity.max,
+                actual: args.len(),
+            });
+        }
     };
     let col_count = if let Some(arg) = args.get(2) {
         parse_integer(arg)?
@@ -326,11 +328,13 @@ pub fn eval_drop_prepared(
     let row_count = match args.get(1) {
         Some(PreparedArgValue::MissingArg) if args.get(2).is_some() => 0,
         Some(arg) => parse_integer(arg)?,
-        None => return Err(DynamicArrayReshapeEvalError::ArityMismatch {
-            expected_min: DROP_META.arity.min,
-            expected_max: DROP_META.arity.max,
-            actual: args.len(),
-        }),
+        None => {
+            return Err(DynamicArrayReshapeEvalError::ArityMismatch {
+                expected_min: DROP_META.arity.min,
+                expected_max: DROP_META.arity.max,
+                actual: args.len(),
+            });
+        }
     };
     let col_count = if let Some(arg) = args.get(2) {
         parse_integer(arg)?
