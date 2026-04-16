@@ -5128,10 +5128,24 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1028_text_month_name_returns_july() {
         let ctx = test_current_excel_host_context();
+        let date = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(7.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("date result");
         let got = eval_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                CallArgValue::Eval(EvalValue::Number(45474.0)),
+                CallArgValue::Eval(date),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MMMM"))),
             ],
             &NoReferenceResolver,
