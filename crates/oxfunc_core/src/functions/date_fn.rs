@@ -46,18 +46,14 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     era * 146097 + doe - 719468
 }
 
-fn excel_serial_from_ymd(year: i64, month: i64, day: i64) -> Result<i64, DateEvalError> {
+fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 {
     if year == 1900 && month == 2 && day == 29 {
-        return Ok(60);
+        return 60;
     }
 
     let base = days_from_civil(1899, 12, 31);
     let days = days_from_civil(year, month, 1) - base + (day - 1);
-    if days < 0 {
-        return Err(DateEvalError::NumericDomain);
-    }
-
-    Ok(if days >= 60 { days + 1 } else { days })
+    if days >= 60 { days + 1 } else { days }
 }
 
 pub fn eval_date_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, DateEvalError> {
@@ -86,9 +82,12 @@ pub fn eval_date_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue
         return Err(DateEvalError::NumericDomain);
     }
 
-    Ok(EvalValue::Number(
-        excel_serial_from_ymd(normalized_year, normalized_month, day)? as f64,
-    ))
+    let serial = excel_serial_from_ymd_unbounded_1900(normalized_year, normalized_month, day);
+    if serial < 0 {
+        return Err(DateEvalError::NumericDomain);
+    }
+
+    Ok(EvalValue::Number(serial as f64))
 }
 
 pub fn eval_date_surface(
@@ -198,6 +197,19 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Err(DateEvalError::NumericDomain));
+    }
+
+    #[test]
+    fn eval_date_normalizes_march_zero_to_february_twenty_eight() {
+        let got = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1900.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(59.0)));
     }
 
     #[test]

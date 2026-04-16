@@ -4815,6 +4815,36 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0702_day_of_date_march_zero_returns_twenty_eight() {
+        let serial = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(1900.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("date result");
+
+        let got = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CallArgValue::Eval(serial)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(28.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),
