@@ -3801,6 +3801,114 @@ mod tests {
                         WorksheetErrorCode::Value,
                     )),
                 },
+                "helper.feb2024_day_or_two_spaces" => match args {
+                    [PreparedArgValue::Eval(EvalValue::Number(n))] => {
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            2,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            2,
+                            29,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[CallArgValue::Eval(EvalValue::Number(*n))],
+                                &NoReferenceResolver,
+                                Some(46000.0),
+                                Some(0.5),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            let ctx = test_current_excel_host_context();
+                            let text = eval_surface_value_call(
+                                FUNC_ID_TEXT,
+                                &[
+                                    CallArgValue::Eval(day),
+                                    CallArgValue::Eval(EvalValue::Text(
+                                        ExcelText::from_interop_assignment("00"),
+                                    )),
+                                ],
+                                &NoReferenceResolver,
+                                Some(46000.0),
+                                Some(0.5),
+                                Some(&ctx),
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(PreparedArgValue::Eval(text))
+                        } else {
+                            Ok(PreparedArgValue::Eval(EvalValue::Text(
+                                ExcelText::from_interop_assignment("  "),
+                            )))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
+                "helper.jan2024_day_or_two_spaces" => match args {
+                    [PreparedArgValue::Eval(EvalValue::Number(n))] => {
+                        let first_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            1,
+                        )
+                        .expect("first day serial");
+                        let last_day = crate::locale_format::excel_serial_from_ymd(
+                            crate::locale_format::WorkbookDateSystem::System1900,
+                            2024,
+                            1,
+                            31,
+                        )
+                        .expect("last day serial");
+                        if *n >= first_day && *n <= last_day {
+                            let day = eval_surface_value_call(
+                                FUNC_ID_DAY,
+                                &[CallArgValue::Eval(EvalValue::Number(*n))],
+                                &NoReferenceResolver,
+                                Some(46000.0),
+                                Some(0.5),
+                                None,
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            let ctx = test_current_excel_host_context();
+                            let text = eval_surface_value_call(
+                                FUNC_ID_TEXT,
+                                &[
+                                    CallArgValue::Eval(day),
+                                    CallArgValue::Eval(EvalValue::Text(
+                                        ExcelText::from_interop_assignment("00"),
+                                    )),
+                                ],
+                                &NoReferenceResolver,
+                                Some(46000.0),
+                                Some(0.5),
+                                Some(&ctx),
+                                None,
+                            )
+                            .map_err(CallableInvocationError::Worksheet)?;
+                            Ok(PreparedArgValue::Eval(text))
+                        } else {
+                            Ok(PreparedArgValue::Eval(EvalValue::Text(
+                                ExcelText::from_interop_assignment("  "),
+                            )))
+                        }
+                    }
+                    _ => Err(CallableInvocationError::Worksheet(
+                        WorksheetErrorCode::Value,
+                    )),
+                },
                 _ => Err(CallableInvocationError::UnsupportedCallableToken(
                     callable.callable_token.clone(),
                 )),
@@ -4988,13 +5096,77 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1021_conditional_text_date_format_returns_fifteen() {
         let ctx = test_current_excel_host_context();
+        let concat = |lhs: EvalValue, rhs: EvalValue| {
+            eval_surface_value_call(
+                FUNC_ID_OP_CONCAT,
+                &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
+                &NoReferenceResolver,
+                Some(46000.0),
+                Some(0.5),
+                None,
+                None,
+            )
+            .expect("concat result")
+        };
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("last day");
+        let test_date = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(15.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("test date");
+        let format_code = concat(
+            concat(
+                concat(
+                    concat(
+                        EvalValue::Text(ExcelText::from_interop_assignment("[<")),
+                        first_day,
+                    ),
+                    EvalValue::Text(ExcelText::from_interop_assignment("] ;[>")),
+                ),
+                last_day,
+            ),
+            EvalValue::Text(ExcelText::from_interop_assignment("] ;dd")),
+        );
         let got = eval_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                CallArgValue::Eval(EvalValue::Number(45366.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                    "[<45352] ;[>45382] ;dd",
-                ))),
+                CallArgValue::Eval(test_date),
+                CallArgValue::Eval(format_code),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -5011,13 +5183,77 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1022_conditional_text_out_of_range_trims_to_zero() {
         let ctx = test_current_excel_host_context();
+        let concat = |lhs: EvalValue, rhs: EvalValue| {
+            eval_surface_value_call(
+                FUNC_ID_OP_CONCAT,
+                &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
+                &NoReferenceResolver,
+                Some(46000.0),
+                Some(0.5),
+                None,
+                None,
+            )
+            .expect("concat result")
+        };
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let last_day = eval_surface_value_call(
+            FUNC_ID_EOMONTH,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("last day");
+        let test_date = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(EvalValue::Number(28.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("test date");
+        let format_code = concat(
+            concat(
+                concat(
+                    concat(
+                        EvalValue::Text(ExcelText::from_interop_assignment("[<")),
+                        first_day,
+                    ),
+                    EvalValue::Text(ExcelText::from_interop_assignment("] ;[>")),
+                ),
+                last_day,
+            ),
+            EvalValue::Text(ExcelText::from_interop_assignment("] ;dd")),
+        );
         let rendered = eval_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                CallArgValue::Eval(EvalValue::Number(45350.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                    "[<45352] ;[>45382] ;dd",
-                ))),
+                CallArgValue::Eval(test_date),
+                CallArgValue::Eval(format_code),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -5046,6 +5282,132 @@ mod tests {
             None,
         );
         assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1024_first_week_textjoin_returns_expected_row() {
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_SUBTRACT,
+                        &[
+                            CallArgValue::Eval(first_day.clone()),
+                            CallArgValue::Eval(weekday),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("subtract result"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let dates = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(grid_start),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_SEQUENCE,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(7.0)),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Number(0.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("sequence result"),
+                ),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("dates");
+        let day_texts = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(dates),
+                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+                    "helper.feb2024_day_or_two_spaces",
+                    CallableArityShape::exact(1),
+                    CallableCaptureMode::NoCapture,
+                    "lambda.map.feb2024.daystr",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+            None,
+            None,
+        )
+        .expect("map result");
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXTJOIN,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(","))),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+                CallArgValue::Eval(day_texts),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "  ,  ,  ,  ,01,02,03",
+            )))
+        );
     }
 
     #[test]
@@ -5171,6 +5533,251 @@ mod tests {
         assert_eq!(
             got,
             Ok(EvalValue::Text(ExcelText::from_interop_assignment("July")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1040_one_month_calendar_prefix_returns_expected_text() {
+        let ctx = test_current_excel_host_context();
+        let first_day = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("first day");
+        let weekday = eval_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[
+                CallArgValue::Eval(first_day.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("weekday");
+        let grid_start = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_SUBTRACT,
+                        &[
+                            CallArgValue::Eval(first_day.clone()),
+                            CallArgValue::Eval(weekday),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("subtract result"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("grid start");
+        let dates = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(grid_start),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_SEQUENCE,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(42.0)),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Number(0.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("sequence result"),
+                ),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("dates");
+        let day_strs = eval_surface_value_call_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(dates),
+                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+                    "helper.jan2024_day_or_two_spaces",
+                    CallableArityShape::exact(1),
+                    CallableCaptureMode::NoCapture,
+                    "lambda.map.jan2024.daystr",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(&TestCallableInvoker),
+            None,
+            None,
+        )
+        .expect("map result");
+        let month_name = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(first_day),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MMMM"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        )
+        .expect("month name");
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXTJOIN,
+            &[
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("|"))),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+                CallArgValue::Eval(month_name),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 1"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(2.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 2"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(3.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 3"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(4.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 4"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(5.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 5"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs.clone()),
+                            CallArgValue::Eval(EvalValue::Number(6.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 6"),
+                ),
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(day_strs),
+                            CallArgValue::Eval(EvalValue::Number(7.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("index 7"),
+                ),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "January|  |01|02|03|04|05|06",
+            )))
         );
     }
 
