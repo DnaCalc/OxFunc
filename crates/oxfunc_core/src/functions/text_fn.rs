@@ -8,7 +8,7 @@ use crate::functions::adapters::{
 };
 use crate::locale_format::{FormatFailure, LocaleFormatContext};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const TEXT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT",
@@ -39,24 +39,15 @@ fn logical_text(value: bool) -> ExcelText {
     )
 }
 
-pub fn eval_text_adapter_prepared(
-    args: &[PreparedArgValue],
+fn render_scalar_text_value(
+    value: &PreparedArgValue,
+    format_code_string: &str,
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, TextEvalError> {
-    if !TEXT_META.arity.accepts(args.len()) {
-        return Err(TextEvalError::ArityMismatch {
-            expected: TEXT_META.arity.min,
-            actual: args.len(),
-        });
-    }
-
-    let format_code = coerce_prepared_to_text(&args[1]).map_err(TextEvalError::Coercion)?;
-    let format_code_string = format_code.to_string_lossy();
-
-    let rendered = match &args[0] {
+    let rendered = match value {
         PreparedArgValue::Eval(EvalValue::Number(n)) => ctx
             .formatter
-            .render_with_code(&ctx.profile, ctx.date_system, *n, &format_code_string)
+            .render_with_code(&ctx.profile, ctx.date_system, *n, format_code_string)
             .map_err(TextEvalError::Format)?,
         PreparedArgValue::Eval(EvalValue::Text(text)) => {
             let raw = text.to_string_lossy();
@@ -66,7 +57,7 @@ pub fn eval_text_adapter_prepared(
             {
                 Ok(parsed) => ctx
                     .formatter
-                    .render_with_code(&ctx.profile, ctx.date_system, parsed, &format_code_string)
+                    .render_with_code(&ctx.profile, ctx.date_system, parsed, format_code_string)
                     .map_err(TextEvalError::Format)?,
                 Err(_) => text.clone(),
             }
@@ -75,7 +66,7 @@ pub fn eval_text_adapter_prepared(
         PreparedArgValue::Eval(EvalValue::Error(code)) => return Ok(EvalValue::Error(*code)),
         PreparedArgValue::EmptyCell => ctx
             .formatter
-            .render_with_code(&ctx.profile, ctx.date_system, 0.0, &format_code_string)
+            .render_with_code(&ctx.profile, ctx.date_system, 0.0, format_code_string)
             .map_err(TextEvalError::Format)?,
         PreparedArgValue::MissingArg => {
             return Err(TextEvalError::Coercion(CoercionError::MissingArg));
@@ -90,6 +81,59 @@ pub fn eval_text_adapter_prepared(
     };
 
     Ok(EvalValue::Text(rendered))
+}
+
+fn text_cell_from_scalar_result(result: EvalValue) -> ArrayCellValue {
+    match result {
+        EvalValue::Text(text) => ArrayCellValue::Text(text),
+        EvalValue::Error(code) => ArrayCellValue::Error(code),
+        other => unreachable!("TEXT scalar rendering returned unexpected value: {other:?}"),
+    }
+}
+
+pub fn eval_text_adapter_prepared(
+    args: &[PreparedArgValue],
+    ctx: &LocaleFormatContext,
+) -> Result<EvalValue, TextEvalError> {
+    if !TEXT_META.arity.accepts(args.len()) {
+        return Err(TextEvalError::ArityMismatch {
+            expected: TEXT_META.arity.min,
+            actual: args.len(),
+        });
+    }
+
+    let format_code = coerce_prepared_to_text(&args[1]).map_err(TextEvalError::Coercion)?;
+    let format_code_string = format_code.to_string_lossy();
+
+    match &args[0] {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let prepared = match cell {
+                        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+                        ArrayCellValue::Text(text) => {
+                            PreparedArgValue::Eval(EvalValue::Text(text.clone()))
+                        }
+                        ArrayCellValue::Logical(b) => {
+                            PreparedArgValue::Eval(EvalValue::Logical(*b))
+                        }
+                        ArrayCellValue::Error(code) => {
+                            PreparedArgValue::Eval(EvalValue::Error(*code))
+                        }
+                        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+                    };
+                    render_scalar_text_value(&prepared, &format_code_string, ctx)
+                        .map(text_cell_from_scalar_result)
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(EvalValue::Array(
+                crate::value::EvalArray::new(array.shape(), cells)
+                    .expect("TEXT array lift preserves the input shape"),
+            ))
+        }
+        other => render_scalar_text_value(other, &format_code_string, ctx),
+    }
 }
 
 pub fn eval_text_surface(
@@ -188,6 +232,118 @@ mod tests {
             got_logical,
             Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
                 "TRUE".encode_utf16().collect()
+            )))
+        );
+    }
+
+    #[test]
+    fn text_formats_supported_calendar_codes_and_lifts_arrays() {
+        let ctx = test_current_excel_host_context();
+
+        let got_month = eval_text_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(45474.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "MMMM".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+            &ctx,
+        );
+        assert_eq!(
+            got_month,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "July".encode_utf16().collect(),
+            )))
+        );
+
+        let got_dd = eval_text_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(15.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "00".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+            &ctx,
+        );
+        assert_eq!(
+            got_dd,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "15".encode_utf16().collect(),
+            )))
+        );
+
+        let got_headers = eval_text_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![vec![
+                        crate::value::ArrayCellValue::Number(45298.0),
+                        crate::value::ArrayCellValue::Number(45299.0),
+                        crate::value::ArrayCellValue::Number(45300.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "DDD".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+            &ctx,
+        );
+        assert_eq!(
+            got_headers,
+            Ok(EvalValue::Array(
+                crate::value::EvalArray::from_rows(vec![vec![
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Sun".encode_utf16().collect(),
+                    )),
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Mon".encode_utf16().collect(),
+                    )),
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Tue".encode_utf16().collect(),
+                    )),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn text_conditional_section_supports_in_range_and_out_of_range_dates() {
+        let ctx = test_current_excel_host_context();
+        let in_range = eval_text_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(45366.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "[<45352] ;[>45382] ;dd".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+            &ctx,
+        );
+        assert_eq!(
+            in_range,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                "15".encode_utf16().collect(),
+            )))
+        );
+
+        let out_of_range = eval_text_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(45350.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    "[<45352] ;[>45382] ;dd".encode_utf16().collect(),
+                ))),
+            ],
+            &NoResolver,
+            &ctx,
+        );
+        assert_eq!(
+            out_of_range,
+            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+                " ".encode_utf16().collect(),
             )))
         );
     }

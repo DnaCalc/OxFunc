@@ -3746,6 +3746,7 @@ pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, Worksheet
 mod tests {
     use super::*;
     use crate::functions::adapters::PreparedArgValue;
+    use crate::locale_format::test_current_excel_host_context;
     use crate::host_info::{
         HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
     };
@@ -4974,6 +4975,167 @@ mod tests {
         );
 
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1021_conditional_text_date_format_returns_fifteen() {
+        let ctx = test_current_excel_host_context();
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(EvalValue::Number(45366.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "[<45352] ;[>45382] ;dd",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("15")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1022_conditional_text_out_of_range_trims_to_zero() {
+        let ctx = test_current_excel_host_context();
+        let rendered = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(EvalValue::Number(45350.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "[<45352] ;[>45382] ;dd",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        )
+        .expect("text result");
+        let trimmed = eval_surface_value_call(
+            FUNC_ID_TRIM,
+            &[CallArgValue::Eval(rendered)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("trim result");
+        let got = eval_surface_value_call(
+            FUNC_ID_LEN,
+            &[CallArgValue::Eval(trimmed)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1023_weekday_headers_index_returns_sun() {
+        let ctx = test_current_excel_host_context();
+        let headers = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_SUBTRACT,
+                        &[
+                            CallArgValue::Eval(
+                                eval_surface_value_call(
+                                    FUNC_ID_OP_ADD,
+                                    &[
+                                        CallArgValue::Eval(EvalValue::Number(45298.0)),
+                                        CallArgValue::Eval(
+                                            eval_surface_value_call(
+                                                FUNC_ID_SEQUENCE,
+                                                &[
+                                                    CallArgValue::Eval(EvalValue::Number(1.0)),
+                                                    CallArgValue::Eval(EvalValue::Number(7.0)),
+                                                ],
+                                                &NoReferenceResolver,
+                                                Some(46000.0),
+                                                Some(0.5),
+                                                None,
+                                                None,
+                                            )
+                                            .expect("sequence result"),
+                                        ),
+                                    ],
+                                    &NoReferenceResolver,
+                                    Some(46000.0),
+                                    Some(0.5),
+                                    None,
+                                    None,
+                                )
+                                .expect("add result"),
+                            ),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("subtract result"),
+                ),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("DDD"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        )
+        .expect("text result");
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(headers),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("Sun")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1028_text_month_name_returns_july() {
+        let ctx = test_current_excel_host_context();
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(EvalValue::Number(45474.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MMMM"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("July")))
+        );
     }
 
     #[test]

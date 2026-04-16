@@ -140,6 +140,25 @@ fn text_from_string(s: String) -> ExcelText {
 }
 
 #[cfg(test)]
+const WEEKDAY_ABBREVIATIONS: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+#[cfg(test)]
+const MONTH_NAMES_FULL: [&str; 12] = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
+#[cfg(test)]
 fn normalize_numeric_text(profile: &FormatProfile, raw: &str) -> Option<String> {
     let trimmed = raw.trim();
     if trimmed.is_empty() {
@@ -390,6 +409,83 @@ fn render_fixed_common(
 }
 
 #[cfg(test)]
+fn render_two_digit_integer(value: f64) -> Result<String, FormatFailure> {
+    if !value.is_finite() {
+        return Err(FormatFailure::UnsupportedCode("00".to_string()));
+    }
+    let rounded = round_kernel(value, 0);
+    let magnitude = rounded.abs() as i64;
+    if rounded.is_sign_negative() && rounded != 0.0 {
+        Ok(format!("-{magnitude:02}"))
+    } else {
+        Ok(format!("{magnitude:02}"))
+    }
+}
+
+#[cfg(test)]
+fn render_date_component(
+    date_system: WorkbookDateSystem,
+    value: f64,
+    token: &str,
+) -> Result<String, FormatFailure> {
+    let Some((year, month, day)) = ymd_from_excel_serial(date_system, value) else {
+        return Err(FormatFailure::InvalidDateSerial);
+    };
+    let whole = value.trunc() as i64;
+    let weekday_serial = match date_system {
+        WorkbookDateSystem::System1900 if whole >= 60 => whole - 1,
+        _ => whole,
+    };
+
+    match token {
+        "dd" => Ok(format!("{day:02}")),
+        "DDD" => Ok(WEEKDAY_ABBREVIATIONS[weekday_serial.rem_euclid(7) as usize].to_string()),
+        "MMMM" => Ok(MONTH_NAMES_FULL[(month - 1) as usize].to_string()),
+        "yyyy-mm-dd" => Ok(format!("{year:04}-{month:02}-{day:02}")),
+        other => Err(FormatFailure::UnsupportedCode(other.to_string())),
+    }
+}
+
+#[cfg(test)]
+fn parse_conditional_section(
+    raw: &str,
+) -> Option<(char, f64, &str)> {
+    let trimmed = raw.trim_start();
+    let op = if trimmed.starts_with("[<") {
+        '<'
+    } else if trimmed.starts_with("[>") {
+        '>'
+    } else {
+        return None;
+    };
+    let closing = trimmed.find(']')?;
+    let threshold = trimmed[2..closing].parse::<f64>().ok()?;
+    Some((op, threshold, &trimmed[closing + 1..]))
+}
+
+#[cfg(test)]
+fn resolve_conditional_format_section(value: f64, code: &str) -> Option<String> {
+    let sections: Vec<&str> = code.split(';').collect();
+    if sections.len() < 3 {
+        return None;
+    }
+
+    for section in &sections[..2] {
+        let (op, threshold, body) = parse_conditional_section(section)?;
+        let matched = match op {
+            '<' => value < threshold,
+            '>' => value > threshold,
+            _ => false,
+        };
+        if matched {
+            return Some(body.to_string());
+        }
+    }
+
+    Some(sections[2].trim().to_string())
+}
+
+#[cfg(test)]
 impl FormatCodeEngine for TestOnlyFormatCodeEngine {
     fn render_with_code(
         &self,
@@ -398,18 +494,24 @@ impl FormatCodeEngine for TestOnlyFormatCodeEngine {
         value: f64,
         code: &str,
     ) -> Result<ExcelText, FormatFailure> {
-        let rendered = match code.trim() {
+        let trimmed_code = code.trim();
+        if let Some(section) = resolve_conditional_format_section(value, trimmed_code) {
+            if section.is_empty() || section.chars().all(|ch| ch == ' ') {
+                return Ok(text_from_string(section));
+            }
+            return self.render_with_code(profile, date_system, value, &section);
+        }
+
+        let rendered = match trimmed_code {
             "0" => render_fixed_common(profile, value, 0, false, ""),
+            "00" => render_two_digit_integer(value)?,
             "0.00" => render_fixed_common(profile, value, 2, false, ""),
             "0%" => {
                 let body = render_fixed_common(profile, value * 100.0, 0, false, "");
                 format!("{body}%")
             }
-            "yyyy-mm-dd" => {
-                let Some((year, month, day)) = ymd_from_excel_serial(date_system, value) else {
-                    return Err(FormatFailure::InvalidDateSerial);
-                };
-                format!("{year:04}-{month:02}-{day:02}")
+            "yyyy-mm-dd" | "dd" | "DDD" | "MMMM" => {
+                render_date_component(date_system, value, trimmed_code)?
             }
             other => return Err(FormatFailure::UnsupportedCode(other.to_string())),
         };
@@ -518,6 +620,41 @@ mod tests {
                 .unwrap()
                 .to_string_lossy(),
             "2024-02-03"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 45474.0, "MMMM")
+                .unwrap()
+                .to_string_lossy(),
+            "July"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 45298.0, "DDD")
+                .unwrap()
+                .to_string_lossy(),
+            "Sun"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 15.0, "00")
+                .unwrap()
+                .to_string_lossy(),
+            "15"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 45366.0, "[<45352] ;[>45382] ;dd")
+                .unwrap()
+                .to_string_lossy(),
+            "15"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 45350.0, "[<45352] ;[>45382] ;dd")
+                .unwrap()
+                .to_string_lossy(),
+            " "
         );
     }
 }
