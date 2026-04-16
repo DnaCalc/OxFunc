@@ -506,6 +506,7 @@ impl FormatCodeEngine for TestOnlyFormatCodeEngine {
             "0" => render_fixed_common(profile, value, 0, false, ""),
             "00" => render_two_digit_integer(value)?,
             "0.00" => render_fixed_common(profile, value, 2, false, ""),
+            "#,##0.00" => render_fixed_common(profile, value, 2, true, ""),
             "0%" => {
                 let body = render_fixed_common(profile, value * 100.0, 0, false, "");
                 format!("{body}%")
@@ -616,6 +617,13 @@ mod tests {
         );
         assert_eq!(
             ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 1234567.89, "#,##0.00")
+                .unwrap()
+                .to_string_lossy(),
+            "1 234 567.89"
+        );
+        assert_eq!(
+            ctx.formatter
                 .render_with_code(&ctx.profile, ctx.date_system, 45325.0, "yyyy-mm-dd")
                 .unwrap()
                 .to_string_lossy(),
@@ -655,6 +663,15 @@ mod tests {
                 .unwrap()
                 .to_string_lossy(),
             " "
+        );
+
+        let en_us = test_en_us_context();
+        assert_eq!(
+            en_us.formatter
+                .render_with_code(&en_us.profile, en_us.date_system, 1234567.89, "#,##0.00")
+                .unwrap()
+                .to_string_lossy(),
+            "1,234,567.89"
         );
     }
 }

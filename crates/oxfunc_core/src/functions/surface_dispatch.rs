@@ -5267,6 +5267,113 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0256_sumproduct_of_double_unary_compare_returns_two() {
+        let include = eval_surface_value_call(
+            FUNC_ID_OP_GREATER_THAN,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("comparison result");
+        let coerced = eval_surface_value_call(
+            FUNC_ID_OP_NEGATE,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_OP_NEGATE,
+                    &[CallArgValue::Eval(include)],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("first negate"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("double-negated result");
+        let got = eval_surface_value_call(
+            FUNC_ID_SUMPRODUCT,
+            &[CallArgValue::Eval(coerced)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0288_text_grouped_decimal_format_returns_en_us_text() {
+        let ctx = crate::locale_format::test_en_us_context();
+        let got = eval_surface_value_call(
+            FUNC_ID_TEXT,
+            &[
+                CallArgValue::Eval(EvalValue::Number(1234567.89)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "#,##0.00",
+                ))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "1,234,567.89",
+            )))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0505_columns_of_randarray_returns_three() {
+        let generated = eval_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("randarray result");
+        let got = eval_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[CallArgValue::Eval(generated)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_0470_map_chain_sum_returns_sixty_three() {
         let data = EvalArray::from_rows(vec![
             vec![ArrayCellValue::Number(1.0)],
