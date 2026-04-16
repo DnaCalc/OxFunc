@@ -270,6 +270,29 @@ fn slice_array(array: &EvalArray, row: usize, col: usize) -> Result<EvalValue, I
     }
 }
 
+fn normalize_array_indices_for_vector_position(
+    array: &EvalArray,
+    row: usize,
+    col: usize,
+    col_arg: Option<&CallArgValue>,
+) -> (usize, usize) {
+    let shape = array.shape();
+    let col_omitted = matches!(
+        col_arg,
+        None | Some(CallArgValue::MissingArg | CallArgValue::EmptyCell)
+    );
+
+    if !col_omitted || row == 0 {
+        return (row, col);
+    }
+
+    if shape.rows == 1 && shape.cols >= 1 {
+        return (1, row);
+    }
+
+    (row, col)
+}
+
 pub fn eval_index_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -308,7 +331,11 @@ pub fn eval_index_surface(
                 Ok(project_reference(r, row, col))
             }
         }
-        CallArgValue::Eval(EvalValue::Array(array)) => slice_array(array, row, col),
+        CallArgValue::Eval(EvalValue::Array(array)) => {
+            let (row, col) =
+                normalize_array_indices_for_vector_position(array, row, col, args.get(2));
+            slice_array(array, row, col)
+        }
         CallArgValue::Eval(_) => Err(IndexEvalError::UnsupportedSource("non_array_non_reference")),
         CallArgValue::MissingArg => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
         CallArgValue::EmptyCell => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
@@ -385,6 +412,40 @@ mod tests {
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
+    fn eval_index_row_vector_single_position_uses_vector_semantics() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(20.0)));
+    }
+
+    #[test]
+    fn eval_index_column_vector_single_position_uses_vector_semantics() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(10.0)],
+                    vec![ArrayCellValue::Number(20.0)],
+                    vec![ArrayCellValue::Number(30.0)],
+                ])
+                .unwrap(),
+            )),
+            CallArgValue::Eval(EvalValue::Number(2.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(20.0)));
     }
 
     #[test]
