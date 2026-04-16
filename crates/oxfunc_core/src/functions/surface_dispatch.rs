@@ -7118,10 +7118,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("none")),
-            ]])
-            .unwrap()))
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("none")))
         );
     }
 

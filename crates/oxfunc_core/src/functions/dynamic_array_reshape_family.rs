@@ -157,6 +157,15 @@ fn build_array(
         .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
+fn value_from_if_empty_arg(arg: &PreparedArgValue) -> EvalValue {
+    match arg {
+        PreparedArgValue::Eval(value) => value.clone(),
+        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => {
+            EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
+        }
+    }
+}
+
 fn row_signature(array: &EvalArray, row: usize) -> Vec<ArrayCellValue> {
     array.row_slice(row).expect("validated row").to_vec()
 }
@@ -595,7 +604,7 @@ pub fn eval_filter_prepared(
                     PreparedArgValue::Eval(EvalValue::Array(array)) => {
                         EvalValue::Array(array.clone())
                     }
-                    other => EvalValue::Array(materialize_array_arg(other)),
+                    other => value_from_if_empty_arg(other),
                 })
             } else {
                 Err(DynamicArrayReshapeEvalError::EmptyArrayResult)
@@ -617,7 +626,7 @@ pub fn eval_filter_prepared(
         return if let Some(if_empty) = args.get(2) {
             Ok(match if_empty {
                 PreparedArgValue::Eval(EvalValue::Array(array)) => EvalValue::Array(array.clone()),
-                other => EvalValue::Array(materialize_array_arg(other)),
+                other => value_from_if_empty_arg(other),
             })
         } else {
             Err(DynamicArrayReshapeEvalError::EmptyArrayResult)
@@ -1223,6 +1232,31 @@ mod tests {
                 ])
                 .unwrap()
             )
+        );
+    }
+
+    #[test]
+    fn filter_if_empty_scalar_text_returns_scalar_text() {
+        let source = array(vec![
+            vec![ArrayCellValue::Number(1.0)],
+            vec![ArrayCellValue::Number(2.0)],
+        ]);
+        let include = array(vec![
+            vec![ArrayCellValue::Logical(false)],
+            vec![ArrayCellValue::Logical(false)],
+        ]);
+        let got = eval_filter_surface(
+            &[
+                source,
+                include,
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("none"))),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            got,
+            EvalValue::Text(ExcelText::from_interop_assignment("none"))
         );
     }
 
