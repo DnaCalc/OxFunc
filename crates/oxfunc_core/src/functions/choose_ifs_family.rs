@@ -7,7 +7,9 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const CHOOSE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CHOOSE",
@@ -68,6 +70,115 @@ fn choose_index_from_number(
     Ok(truncated as usize - 1)
 }
 
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn scalar_cell(prepared: &PreparedArgValue) -> ArrayCellValue {
+    match prepared {
+        PreparedArgValue::Eval(EvalValue::Number(n)) => ArrayCellValue::Number(*n),
+        PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t.clone()),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(*b),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(*code),
+        PreparedArgValue::Eval(EvalValue::Reference(_))
+        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        }
+        PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
+        PreparedArgValue::MissingArg => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        PreparedArgValue::EmptyCell => ArrayCellValue::Number(0.0),
+    }
+}
+
+fn materialize_choice_array(prepared: PreparedArgValue) -> EvalArray {
+    match prepared {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => array,
+        other => EvalArray::from_scalar(scalar_cell(&other)),
+    }
+}
+
+fn choose_index_from_cell(
+    choice_count: usize,
+    cell: &ArrayCellValue,
+) -> Result<usize, WorksheetErrorCode> {
+    match coerce_prepared_to_number(&prepared_from_array_cell(cell)) {
+        Ok(index_num) => choose_index_from_number(choice_count, index_num),
+        Err(CoercionError::WorksheetError(code)) => Err(code),
+        Err(_) => Err(WorksheetErrorCode::Value),
+    }
+}
+
+fn choose_array_surface(
+    index_array: &EvalArray,
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<EvalValue, ChooseIfsEvalError> {
+    let mut choice_arrays = Vec::with_capacity(args.len().saturating_sub(1));
+    for arg in &args[1..] {
+        let prepared =
+            prepare_arg_values_only(arg, resolver).map_err(ChooseIfsEvalError::SelectedPreparation)?;
+        choice_arrays.push(materialize_choice_array(prepared));
+    }
+
+    let block_rows = choice_arrays
+        .iter()
+        .map(|array| array.shape().rows)
+        .max()
+        .unwrap_or(1);
+    let block_cols = choice_arrays
+        .iter()
+        .map(|array| array.shape().cols)
+        .max()
+        .unwrap_or(1);
+    let index_shape = index_array.shape();
+    let mut cells = Vec::with_capacity(index_shape.rows * block_rows * index_shape.cols * block_cols);
+
+    for index_row in 0..index_shape.rows {
+        for block_row in 0..block_rows {
+            for index_col in 0..index_shape.cols {
+                let index_cell = index_array
+                    .get(index_row, index_col)
+                    .expect("index array bounds validated");
+                match choose_index_from_cell(choice_arrays.len(), index_cell) {
+                    Ok(selected_index) => {
+                        let selected = &choice_arrays[selected_index];
+                        for block_col in 0..block_cols {
+                            cells.push(
+                                selected
+                                    .get(block_row, block_col)
+                                    .cloned()
+                                    .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA)),
+                            );
+                        }
+                    }
+                    Err(code) => {
+                        for _ in 0..block_cols {
+                            cells.push(ArrayCellValue::Error(code));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(EvalValue::Array(
+        EvalArray::new(
+            ArrayShape {
+                rows: index_shape.rows * block_rows,
+                cols: index_shape.cols * block_cols,
+            },
+            cells,
+        )
+        .expect("choose array output shape is computed"),
+    ))
+}
+
 fn prepared_condition_truthy(prepared: &PreparedArgValue) -> Result<bool, CoercionError> {
     match prepared {
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(false),
@@ -95,6 +206,9 @@ pub fn eval_choose_surface(
 
     let prepared_index =
         prepare_arg_values_only(&args[0], resolver).map_err(ChooseIfsEvalError::IndexCoercion)?;
+    if let PreparedArgValue::Eval(EvalValue::Array(index_array)) = &prepared_index {
+        return choose_array_surface(index_array, args, resolver);
+    }
     let index_num =
         coerce_prepared_to_number(&prepared_index).map_err(ChooseIfsEvalError::IndexCoercion)?;
     let selected_index = match choose_index_from_number(args.len() - 1, index_num) {
@@ -250,6 +364,112 @@ mod tests {
             &MockResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn choose_array_index_materializes_scalar_choices_as_row_vector() {
+        let got = eval_choose_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![vec![
+                        crate::value::ArrayCellValue::Number(1.0),
+                        crate::value::ArrayCellValue::Number(2.0),
+                        crate::value::ArrayCellValue::Number(3.0),
+                        crate::value::ArrayCellValue::Number(4.0),
+                    ]])
+                    .unwrap(),
+                )),
+                text_arg("Alpha"),
+                text_arg("Bravo"),
+                text_arg("Charlie"),
+                text_arg("Delta"),
+            ],
+            &MockResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                crate::value::EvalArray::from_rows(vec![vec![
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Alpha".encode_utf16().collect(),
+                    )),
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Bravo".encode_utf16().collect(),
+                    )),
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Charlie".encode_utf16().collect(),
+                    )),
+                    crate::value::ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "Delta".encode_utf16().collect(),
+                    )),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn choose_array_index_concatenates_column_arrays_by_selected_position() {
+        let got = eval_choose_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![vec![
+                        crate::value::ArrayCellValue::Number(1.0),
+                        crate::value::ArrayCellValue::Number(2.0),
+                        crate::value::ArrayCellValue::Number(3.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![
+                        vec![crate::value::ArrayCellValue::Number(1.0)],
+                        vec![crate::value::ArrayCellValue::Number(2.0)],
+                        vec![crate::value::ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![
+                        vec![crate::value::ArrayCellValue::Number(10.0)],
+                        vec![crate::value::ArrayCellValue::Number(20.0)],
+                        vec![crate::value::ArrayCellValue::Number(30.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    crate::value::EvalArray::from_rows(vec![
+                        vec![crate::value::ArrayCellValue::Number(100.0)],
+                        vec![crate::value::ArrayCellValue::Number(200.0)],
+                        vec![crate::value::ArrayCellValue::Number(300.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &MockResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                crate::value::EvalArray::from_rows(vec![
+                    vec![
+                        crate::value::ArrayCellValue::Number(1.0),
+                        crate::value::ArrayCellValue::Number(10.0),
+                        crate::value::ArrayCellValue::Number(100.0),
+                    ],
+                    vec![
+                        crate::value::ArrayCellValue::Number(2.0),
+                        crate::value::ArrayCellValue::Number(20.0),
+                        crate::value::ArrayCellValue::Number(200.0),
+                    ],
+                    vec![
+                        crate::value::ArrayCellValue::Number(3.0),
+                        crate::value::ArrayCellValue::Number(30.0),
+                        crate::value::ArrayCellValue::Number(300.0),
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]

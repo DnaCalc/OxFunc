@@ -4845,6 +4845,138 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
+        let cols = eval_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(4.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sequence result");
+        let result = eval_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                CallArgValue::Eval(cols),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Alpha"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Bravo"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Charlie"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Delta"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("choose result");
+
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(result),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("Charlie")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1030_choose_transpose_index_returns_two() {
+        let data = eval_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_SEQUENCE,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                            CallArgValue::Eval(EvalValue::Number(3.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("sequence result"),
+                ),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.0)],
+                        vec![ArrayCellValue::Number(2.0)],
+                        vec![ArrayCellValue::Number(3.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(10.0)],
+                        vec![ArrayCellValue::Number(20.0)],
+                        vec![ArrayCellValue::Number(30.0)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(100.0)],
+                        vec![ArrayCellValue::Number(200.0)],
+                        vec![ArrayCellValue::Number(300.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("choose result");
+        let result = eval_surface_value_call(
+            FUNC_ID_TRANSPOSE,
+            &[CallArgValue::Eval(data)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("transpose result");
+
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(result),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),
