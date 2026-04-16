@@ -4751,6 +4751,70 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0779_dictionary_keys_composition_returns_two() {
+        let keys = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Text(ExcelText::from_interop_assignment("name")),
+            ArrayCellValue::Text(ExcelText::from_interop_assignment("age")),
+            ArrayCellValue::Text(ExcelText::from_interop_assignment("city")),
+        ]])
+        .expect("row vector");
+        let mapped = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Text(ExcelText::from_interop_assignment("Alice")),
+            ArrayCellValue::Number(30.0),
+            ArrayCellValue::Error(WorksheetErrorCode::NA),
+        ]])
+        .expect("row vector");
+
+        let iserror = eval_surface_value_call(
+            FUNC_ID_ISERROR,
+            &[CallArgValue::Eval(EvalValue::Array(mapped))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("iserror result");
+
+        let keep = eval_surface_value_call(
+            FUNC_ID_NOT,
+            &[CallArgValue::Eval(iserror)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("not result");
+
+        let filtered = eval_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                CallArgValue::Eval(EvalValue::Array(keys)),
+                CallArgValue::Eval(keep),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("filter result");
+
+        let got = eval_surface_value_call(
+            FUNC_ID_COLUMNS,
+            &[CallArgValue::Eval(filtered)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
         let lookup_values = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(1.0),

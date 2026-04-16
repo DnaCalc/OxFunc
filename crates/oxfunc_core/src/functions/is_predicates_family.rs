@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const INFORMATION_PREDICATE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INFORMATION_PREDICATE_BASE",
@@ -90,6 +90,16 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> InformationPredicateEvalEr
     }
 }
 
+fn is_error_cell(cell: &ArrayCellValue) -> ArrayCellValue {
+    match cell {
+        ArrayCellValue::Error(_) => ArrayCellValue::Logical(true),
+        ArrayCellValue::Number(_)
+        | ArrayCellValue::Text(_)
+        | ArrayCellValue::Logical(_)
+        | ArrayCellValue::EmptyCell => ArrayCellValue::Logical(false),
+    }
+}
+
 fn eval_boolean_predicate_surface(
     meta: &FunctionMeta,
     args: &[CallArgValue],
@@ -148,9 +158,29 @@ pub fn eval_iserror_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, InformationPredicateEvalError> {
-    eval_boolean_predicate_surface(&ISERROR_META, args, resolver, |arg| {
-        matches!(arg, PreparedArgValue::Eval(EvalValue::Error(_)))
-    })
+    run_values_only_prepared(
+        args,
+        resolver,
+        |prepared| {
+            if !ISERROR_META.arity.accepts(prepared.len()) {
+                return Err(arity_error(&ISERROR_META, prepared.len()));
+            }
+            match &prepared[0] {
+                PreparedArgValue::Eval(EvalValue::Array(array)) => {
+                    let cells = array.iter_row_major().map(is_error_cell).collect();
+                    Ok(EvalValue::Array(
+                        EvalArray::new(array.shape(), cells)
+                            .expect("input array shape is valid"),
+                    ))
+                }
+                _ => Ok(EvalValue::Logical(matches!(
+                    prepared[0],
+                    PreparedArgValue::Eval(EvalValue::Error(_))
+                ))),
+            }
+        },
+        InformationPredicateEvalError::Preparation,
+    )
 }
 
 pub fn eval_islogical_surface(
@@ -321,6 +351,34 @@ mod tests {
                 &MockResolver { resolved: None },
             ),
             Ok(EvalValue::Logical(true))
+        );
+    }
+
+    #[test]
+    fn iserror_array_lifts_elementwise() {
+        let got = eval_iserror_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(txt("Alice")),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::EmptyCell,
+                ]])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                ]])
+                .unwrap()
+            ))
         );
     }
 
