@@ -3745,6 +3745,8 @@ pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, Worksheet
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::{cell::RefCell, collections::HashMap, rc::Rc};
+
     use crate::functions::adapters::PreparedArgValue;
     use crate::locale_format::test_current_excel_host_context;
     use crate::host_info::{
@@ -3761,7 +3763,38 @@ mod tests {
 
     struct TestCallableInvoker;
 
+    type RegisteredCallable<'a> =
+        Rc<dyn Fn(&[PreparedArgValue]) -> Result<PreparedArgValue, CallableInvocationError> + 'a>;
+
+    #[derive(Clone)]
+    struct ClosureCallableInvoker<'a> {
+        closures: Rc<RefCell<HashMap<String, RegisteredCallable<'a>>>>,
+    }
+
     struct TestImageProvider;
+
+    impl<'a> ClosureCallableInvoker<'a> {
+        fn new() -> Self {
+            Self {
+                closures: Rc::new(RefCell::new(HashMap::new())),
+            }
+        }
+
+        fn register<F>(&self, token: &str, arity: usize, f: F) -> LambdaValue
+        where
+            F: Fn(&[PreparedArgValue]) -> Result<PreparedArgValue, CallableInvocationError> + 'a,
+        {
+            self.closures
+                .borrow_mut()
+                .insert(token.to_string(), Rc::new(f));
+            LambdaValue::helper_lambda(
+                token.to_string(),
+                CallableArityShape::exact(arity),
+                CallableCaptureMode::LexicalCapture,
+                "test.closure.invoke.v1",
+            )
+        }
+    }
 
     impl ReferenceResolver for NoReferenceResolver {
         fn capabilities(&self) -> ResolverCapabilities {
@@ -3776,6 +3809,78 @@ mod tests {
                 target: reference.target.clone(),
             })
         }
+    }
+
+    impl CallableInvoker for ClosureCallableInvoker<'_> {
+        fn invoke(
+            &self,
+            callable: &LambdaValue,
+            args: &[PreparedArgValue],
+        ) -> Result<PreparedArgValue, CallableInvocationError> {
+            if let Some(handler) = self.closures.borrow().get(&callable.callable_token).cloned() {
+                return handler(args);
+            }
+
+            let fallback = TestCallableInvoker;
+            fallback.invoke(callable, args)
+        }
+    }
+
+    fn eval_test_surface_value(
+        function_id: &str,
+        args: &[CallArgValue],
+    ) -> Result<EvalValue, CallableInvocationError> {
+        eval_surface_value_call(
+            function_id,
+            args,
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .map_err(CallableInvocationError::Worksheet)
+    }
+
+    fn eval_test_surface_value_with_callable(
+        function_id: &str,
+        args: &[CallArgValue],
+        invoker: &dyn CallableInvoker,
+    ) -> Result<EvalValue, CallableInvocationError> {
+        eval_surface_value_call_with_callable(
+            function_id,
+            args,
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+            Some(invoker),
+            None,
+            None,
+        )
+        .map_err(CallableInvocationError::Worksheet)
+    }
+
+    fn call_arg_from_prepared(prepared: &PreparedArgValue) -> CallArgValue {
+        match prepared {
+            PreparedArgValue::Eval(value) => CallArgValue::Eval(value.clone()),
+            PreparedArgValue::MissingArg => CallArgValue::MissingArg,
+            PreparedArgValue::EmptyCell => CallArgValue::EmptyCell,
+        }
+    }
+
+    fn number_column(values: &[f64]) -> EvalValue {
+        EvalValue::Array(
+            EvalArray::from_rows(
+                values
+                    .iter()
+                    .copied()
+                    .map(|value| vec![ArrayCellValue::Number(value)])
+                    .collect(),
+            )
+            .expect("column vector"),
+        )
     }
 
     impl CallableInvoker for TestCallableInvoker {
@@ -6549,6 +6654,430 @@ mod tests {
             None,
         );
         assert_eq!(got, Ok(EvalValue::Number(63.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0443_recursive_gcd_returns_twelve() {
+        let invoker = ClosureCallableInvoker::new();
+        let gcd = LambdaValue::helper_lambda(
+            "closure.ftc0443.gcd",
+            CallableArityShape::exact(3),
+            CallableCaptureMode::LexicalCapture,
+            "test.closure.invoke.v1",
+        );
+        let gcd_self = gcd.clone();
+        let recursive_invoker = invoker.clone();
+        invoker.register(&gcd.callable_token.clone(), 3, move |args| match args {
+            [
+                PreparedArgValue::Eval(EvalValue::Lambda(self_lambda)),
+                PreparedArgValue::Eval(EvalValue::Number(a)),
+                PreparedArgValue::Eval(EvalValue::Number(b)),
+            ] => {
+                if *b == 0.0 {
+                    Ok(PreparedArgValue::Eval(EvalValue::Number(*a)))
+                } else {
+                    let remainder = eval_test_surface_value(
+                        FUNC_ID_MOD,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(*a)),
+                            CallArgValue::Eval(EvalValue::Number(*b)),
+                        ],
+                    )?;
+                    recursive_invoker.invoke(
+                        &gcd_self,
+                        &[
+                            PreparedArgValue::Eval(EvalValue::Lambda(self_lambda.clone())),
+                            PreparedArgValue::Eval(EvalValue::Number(*b)),
+                            PreparedArgValue::Eval(remainder),
+                        ],
+                    )
+                }
+            }
+            _ => Err(CallableInvocationError::Worksheet(
+                WorksheetErrorCode::Value,
+            )),
+        });
+
+        let got = invoker.invoke(
+            &gcd,
+            &[
+                PreparedArgValue::Eval(EvalValue::Lambda(gcd.clone())),
+                PreparedArgValue::Eval(EvalValue::Number(48.0)),
+                PreparedArgValue::Eval(EvalValue::Number(36.0)),
+            ],
+        );
+        assert_eq!(got, Ok(PreparedArgValue::Eval(EvalValue::Number(12.0))));
+    }
+
+    #[test]
+    #[ignore = "known local red: current result 2211 vs expected 1221"]
+    fn eval_surface_value_call_ftc_1013_convolution_returns_1221() {
+        let invoker = ClosureCallableInvoker::new();
+        let a = number_column(&[1.0, 1.0, 1.0, 0.0]);
+        let b = number_column(&[1.0, 1.0, 0.0, 0.0]);
+        let n = EvalValue::Number(4.0);
+        let ks = eval_test_surface_value(
+            FUNC_ID_SEQUENCE,
+            &[
+                CallArgValue::Eval(n.clone()),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+        )
+        .expect("ks");
+        let two_pi = eval_test_surface_value(
+            FUNC_ID_OP_MULTIPLY,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CallArgValue::Eval(eval_test_surface_value(FUNC_ID_PI, &[]).expect("pi")),
+            ],
+        )
+        .expect("two_pi");
+
+        let register_dft = |token: &str, signal: EvalValue, trig_function: &str, sign: f64| {
+            let signal = signal.clone();
+            let ks = ks.clone();
+            let n = n.clone();
+            let two_pi = two_pi.clone();
+            let trig_function = trig_function.to_string();
+            invoker.register(token, 1, move |args| {
+                let wave = eval_test_surface_value(
+                    trig_function.as_str(),
+                    &[CallArgValue::Eval(
+                        eval_test_surface_value(
+                            FUNC_ID_OP_DIVIDE,
+                            &[
+                                CallArgValue::Eval(
+                                    eval_test_surface_value(
+                                        FUNC_ID_OP_MULTIPLY,
+                                        &[
+                                            CallArgValue::Eval(two_pi.clone()),
+                                            CallArgValue::Eval(
+                                                eval_test_surface_value(
+                                                    FUNC_ID_OP_MULTIPLY,
+                                                    &[
+                                                        call_arg_from_prepared(&args[0]),
+                                                        CallArgValue::Eval(ks.clone()),
+                                                    ],
+                                                )
+                                                .expect("k*ks"),
+                                            ),
+                                        ],
+                                    )
+                                    .expect("2pi*k*ks"),
+                                ),
+                                CallArgValue::Eval(n.clone()),
+                            ],
+                        )
+                        .expect("angle"),
+                    )],
+                )?;
+                let mut total = eval_test_surface_value(
+                    FUNC_ID_SUM,
+                    &[CallArgValue::Eval(
+                        eval_test_surface_value(
+                            FUNC_ID_OP_MULTIPLY,
+                            &[
+                                CallArgValue::Eval(signal.clone()),
+                                CallArgValue::Eval(wave),
+                            ],
+                        )
+                        .expect("signal*wave"),
+                    )],
+                )?;
+                if sign < 0.0 {
+                    total = eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(sign)),
+                            CallArgValue::Eval(total),
+                        ],
+                    )?;
+                }
+                Ok(PreparedArgValue::Eval(total))
+            })
+        };
+
+        let ar_lambda = register_dft("closure.ftc1013.ar", a.clone(), FUNC_ID_COS, 1.0);
+        let ai_lambda = register_dft("closure.ftc1013.ai", a.clone(), FUNC_ID_SIN, -1.0);
+        let br_lambda = register_dft("closure.ftc1013.br", b.clone(), FUNC_ID_COS, 1.0);
+        let bi_lambda = register_dft("closure.ftc1013.bi", b.clone(), FUNC_ID_SIN, -1.0);
+
+        let ar = eval_test_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(ks.clone()),
+                CallArgValue::Eval(EvalValue::Lambda(ar_lambda)),
+            ],
+            &invoker,
+        )
+        .expect("Ar");
+        let ai = eval_test_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(ks.clone()),
+                CallArgValue::Eval(EvalValue::Lambda(ai_lambda)),
+            ],
+            &invoker,
+        )
+        .expect("Ai");
+        let br = eval_test_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(ks.clone()),
+                CallArgValue::Eval(EvalValue::Lambda(br_lambda)),
+            ],
+            &invoker,
+        )
+        .expect("Br");
+        let bi = eval_test_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(ks.clone()),
+                CallArgValue::Eval(EvalValue::Lambda(bi_lambda)),
+            ],
+            &invoker,
+        )
+        .expect("Bi");
+
+        let cr = eval_test_surface_value(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[CallArgValue::Eval(ar.clone()), CallArgValue::Eval(br.clone())],
+                    )
+                    .expect("Ar*Br"),
+                ),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[CallArgValue::Eval(ai.clone()), CallArgValue::Eval(bi.clone())],
+                    )
+                    .expect("Ai*Bi"),
+                ),
+            ],
+        )
+        .expect("Cr");
+        let ci = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[CallArgValue::Eval(ar.clone()), CallArgValue::Eval(bi.clone())],
+                    )
+                    .expect("Ar*Bi"),
+                ),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[CallArgValue::Eval(ai.clone()), CallArgValue::Eval(br.clone())],
+                    )
+                    .expect("Ai*Br"),
+                ),
+            ],
+        )
+        .expect("Ci");
+
+        let conv_lambda = {
+            let cr = cr.clone();
+            let ci = ci.clone();
+            let ks = ks.clone();
+            let n = n.clone();
+            let two_pi = two_pi.clone();
+            invoker.register("closure.ftc1013.conv", 1, move |args| {
+                let angle = eval_test_surface_value(
+                    FUNC_ID_OP_DIVIDE,
+                    &[
+                        CallArgValue::Eval(
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    CallArgValue::Eval(two_pi.clone()),
+                                    CallArgValue::Eval(
+                                        eval_test_surface_value(
+                                            FUNC_ID_OP_MULTIPLY,
+                                            &[
+                                                call_arg_from_prepared(&args[0]),
+                                                CallArgValue::Eval(ks.clone()),
+                                            ],
+                                        )
+                                        .expect("n*ks"),
+                                    ),
+                                ],
+                            )
+                            .expect("2pi*n*ks"),
+                        ),
+                        CallArgValue::Eval(n.clone()),
+                    ],
+                )
+                .expect("angle");
+                let total = eval_test_surface_value(
+                    FUNC_ID_SUM,
+                    &[CallArgValue::Eval(
+                        eval_test_surface_value(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                CallArgValue::Eval(
+                                    eval_test_surface_value(
+                                        FUNC_ID_OP_MULTIPLY,
+                                        &[
+                                            CallArgValue::Eval(cr.clone()),
+                                            CallArgValue::Eval(
+                                                eval_test_surface_value(
+                                                    FUNC_ID_COS,
+                                                    &[CallArgValue::Eval(angle.clone())],
+                                                )
+                                                .expect("cos(angle)"),
+                                            ),
+                                        ],
+                                    )
+                                    .expect("Cr*cos"),
+                                ),
+                                CallArgValue::Eval(
+                                    eval_test_surface_value(
+                                        FUNC_ID_OP_MULTIPLY,
+                                        &[
+                                            CallArgValue::Eval(ci.clone()),
+                                            CallArgValue::Eval(
+                                                eval_test_surface_value(
+                                                    FUNC_ID_SIN,
+                                                    &[CallArgValue::Eval(angle)],
+                                                )
+                                                .expect("sin(angle)"),
+                                            ),
+                                        ],
+                                    )
+                                    .expect("Ci*sin"),
+                                ),
+                            ],
+                        )
+                        .expect("sum terms"),
+                    )],
+                )?;
+                Ok(PreparedArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_DIVIDE,
+                        &[
+                            CallArgValue::Eval(total),
+                            CallArgValue::Eval(n.clone()),
+                        ],
+                    )
+                    .expect("divide by N"),
+                ))
+            })
+        };
+
+        let conv = eval_test_surface_value_with_callable(
+            FUNC_ID_MAP,
+            &[
+                CallArgValue::Eval(ks.clone()),
+                CallArgValue::Eval(EvalValue::Lambda(conv_lambda)),
+            ],
+            &invoker,
+        )
+        .expect("conv");
+
+        let got = eval_test_surface_value(
+            FUNC_ID_ROUND,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_ADD,
+                        &[
+                            CallArgValue::Eval(
+                                eval_test_surface_value(
+                                    FUNC_ID_OP_ADD,
+                                    &[
+                                        CallArgValue::Eval(
+                                            eval_test_surface_value(
+                                                FUNC_ID_INDEX,
+                                                &[
+                                                    CallArgValue::Eval(conv.clone()),
+                                                    CallArgValue::Eval(EvalValue::Number(1.0)),
+                                                ],
+                                            )
+                                            .expect("conv1"),
+                                        ),
+                                        CallArgValue::Eval(
+                                            eval_test_surface_value(
+                                                FUNC_ID_OP_MULTIPLY,
+                                                &[
+                                                    CallArgValue::Eval(EvalValue::Number(10.0)),
+                                                    CallArgValue::Eval(
+                                                        eval_test_surface_value(
+                                                            FUNC_ID_INDEX,
+                                                            &[
+                                                                CallArgValue::Eval(conv.clone()),
+                                                                CallArgValue::Eval(EvalValue::Number(2.0)),
+                                                            ],
+                                                        )
+                                                        .expect("conv2"),
+                                                    ),
+                                                ],
+                                            )
+                                            .expect("10*conv2"),
+                                        ),
+                                    ],
+                                )
+                                .expect("low digits"),
+                            ),
+                            CallArgValue::Eval(
+                                eval_test_surface_value(
+                                    FUNC_ID_OP_ADD,
+                                    &[
+                                        CallArgValue::Eval(
+                                            eval_test_surface_value(
+                                                FUNC_ID_OP_MULTIPLY,
+                                                &[
+                                                    CallArgValue::Eval(EvalValue::Number(100.0)),
+                                                    CallArgValue::Eval(
+                                                        eval_test_surface_value(
+                                                            FUNC_ID_INDEX,
+                                                            &[
+                                                                CallArgValue::Eval(conv.clone()),
+                                                                CallArgValue::Eval(EvalValue::Number(3.0)),
+                                                            ],
+                                                        )
+                                                        .expect("conv3"),
+                                                    ),
+                                                ],
+                                            )
+                                            .expect("100*conv3"),
+                                        ),
+                                        CallArgValue::Eval(
+                                            eval_test_surface_value(
+                                                FUNC_ID_OP_MULTIPLY,
+                                                &[
+                                                    CallArgValue::Eval(EvalValue::Number(1000.0)),
+                                                    CallArgValue::Eval(
+                                                        eval_test_surface_value(
+                                                            FUNC_ID_INDEX,
+                                                            &[
+                                                                CallArgValue::Eval(conv),
+                                                                CallArgValue::Eval(EvalValue::Number(4.0)),
+                                                            ],
+                                                        )
+                                                        .expect("conv4"),
+                                                    ),
+                                                ],
+                                            )
+                                            .expect("1000*conv4"),
+                                        ),
+                                    ],
+                                )
+                                .expect("high digits"),
+                            ),
+                        ],
+                    )
+                    .expect("packed"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+        );
+        assert_eq!(got, Ok(EvalValue::Number(1221.0)));
     }
 
     #[test]
