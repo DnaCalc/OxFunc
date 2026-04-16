@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
 use crate::locale_format::{LocaleFormatContext, ParseFailure};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const VALUE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.VALUE",
@@ -29,6 +29,25 @@ pub enum ValueEvalError {
     Parse(ParseFailure),
 }
 
+fn eval_value_array_cell(
+    cell: &ArrayCellValue,
+    ctx: &LocaleFormatContext,
+) -> Result<ArrayCellValue, ValueEvalError> {
+    match cell {
+        ArrayCellValue::Number(n) => Ok(ArrayCellValue::Number(*n)),
+        ArrayCellValue::Text(text) => match ctx
+            .parser
+            .parse_value_text(&ctx.profile, ctx.date_system, &text.to_string_lossy())
+        {
+            Ok(parsed) => Ok(ArrayCellValue::Number(parsed)),
+            Err(_) => Ok(ArrayCellValue::Error(WorksheetErrorCode::Value)),
+        },
+        ArrayCellValue::Error(code) => Ok(ArrayCellValue::Error(*code)),
+        ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
+            Ok(ArrayCellValue::Error(WorksheetErrorCode::Value))
+        }
+    }
+}
 pub fn eval_value_adapter_prepared(
     args: &[PreparedArgValue],
     ctx: &LocaleFormatContext,
@@ -49,9 +68,17 @@ pub fn eval_value_adapter_prepared(
                 .map_err(ValueEvalError::Parse)?;
             Ok(EvalValue::Number(parsed))
         }
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| eval_value_array_cell(cell, ctx))
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+            ))
+        }
         PreparedArgValue::Eval(EvalValue::Error(code)) => Ok(EvalValue::Error(*code)),
         PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::Eval(EvalValue::Array(_))
         | PreparedArgValue::Eval(EvalValue::Reference(_))
         | PreparedArgValue::Eval(EvalValue::Lambda(_))
         | PreparedArgValue::MissingArg
@@ -133,5 +160,32 @@ mod tests {
             eval_value_surface(&[mk("1/2/2024")], &NoResolver, &ctx),
             Err(ValueEvalError::Parse(_))
         ));
+    }
+
+    #[test]
+    fn value_lifts_array_elementwise_and_preserves_errors() {
+        let ctx = test_current_excel_host_context();
+        let args = [CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("12%")),
+                ArrayCellValue::Number(3.0),
+                ArrayCellValue::Error(WorksheetErrorCode::Div0),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+            ]])
+            .unwrap(),
+        ))];
+        let got = eval_value_surface(&args, &NoResolver, &ctx);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(0.12),
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 }

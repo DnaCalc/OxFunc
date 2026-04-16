@@ -5374,6 +5374,119 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0600_extract_digits_from_string_returns_123() {
+        let ctx = test_current_excel_host_context();
+        let text = EvalValue::Text(ExcelText::from_interop_assignment("Hello World 123"));
+        let length = eval_surface_value_call(
+            FUNC_ID_LEN,
+            &[CallArgValue::Eval(text.clone())],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("len result");
+        let positions = eval_surface_value_call(
+            FUNC_ID_SEQUENCE,
+            &[CallArgValue::Eval(length)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sequence result");
+        let chars = eval_surface_value_call(
+            FUNC_ID_MID,
+            &[
+                CallArgValue::Eval(text),
+                CallArgValue::Eval(positions),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("mid result");
+        let multiplied = eval_surface_value_call(
+            FUNC_ID_OP_MULTIPLY,
+            &[
+                CallArgValue::Eval(chars.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("chars times one");
+        let recovered = eval_surface_value_call(
+            FUNC_ID_IFERROR,
+            &[
+                CallArgValue::Eval(multiplied),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(""))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("iferror result");
+        let numeric_text = eval_surface_value_call(
+            FUNC_ID_VALUE,
+            &[CallArgValue::Eval(recovered)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            Some(&ctx),
+            None,
+        )
+        .expect("value result");
+        let is_digit = eval_surface_value_call(
+            FUNC_ID_ISNUMBER,
+            &[CallArgValue::Eval(numeric_text)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("isnumber result");
+        let digits = eval_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                CallArgValue::Eval(chars),
+                CallArgValue::Eval(is_digit),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(""))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("filter result");
+        let got = eval_surface_value_call(
+            FUNC_ID_CONCAT,
+            &[CallArgValue::Eval(digits)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("123")))
+        );
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_0470_map_chain_sum_returns_sixty_three() {
         let data = EvalArray::from_rows(vec![
             vec![ArrayCellValue::Number(1.0)],
