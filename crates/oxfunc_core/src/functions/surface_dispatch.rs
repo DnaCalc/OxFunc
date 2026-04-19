@@ -5103,6 +5103,296 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0703_0705_datedif_cluster_matches_expected_values() {
+        let start_y = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+            "2020-01-15",
+        )));
+        let end_y = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+            "2024-03-20",
+        )));
+        let unit_y = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Y")));
+        let got_y = eval_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[start_y, end_y, unit_y],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_y, Ok(EvalValue::Number(4.0)));
+
+        let start_m = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+            "2024-01-15",
+        )));
+        let end_m = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+            "2024-04-10",
+        )));
+        let got_m = eval_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[
+                start_m.clone(),
+                end_m.clone(),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("M"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_m, Ok(EvalValue::Number(2.0)));
+
+        let got_md = eval_surface_value_call(
+            FUNC_ID_DATEDIF,
+            &[
+                start_m,
+                end_m,
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MD"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_md, Ok(EvalValue::Number(26.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0706_0708_weekday_iso_cluster_matches_expected_values() {
+        let jan1 = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,1)");
+        let got_0706 = eval_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[CallArgValue::Eval(jan1.clone())],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0706, Ok(EvalValue::Number(2.0)));
+
+        let got_0707 = eval_surface_value_call(
+            FUNC_ID_WEEKDAY,
+            &[
+                CallArgValue::Eval(jan1),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0707, Ok(EvalValue::Number(1.0)));
+
+        let dec30 = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(12.0)),
+                CallArgValue::Eval(EvalValue::Number(30.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("DATE(2024,12,30)");
+        let got_0708 = eval_surface_value_call(
+            FUNC_ID_ISOWEEKNUM,
+            &[CallArgValue::Eval(dec30)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0708, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0709_0711_month_end_shift_cluster_matches_expected_values() {
+        let jan15 = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(15.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,15)");
+        let got_0709 = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_EOMONTH,
+                    &[
+                        CallArgValue::Eval(jan15),
+                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                    ],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("EOMONTH(...,1)"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0709, Ok(EvalValue::Number(29.0)));
+
+        let mar15 = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(15.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("DATE(2024,3,15)");
+        let got_0710 = eval_surface_value_call(
+            FUNC_ID_MONTH,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_EOMONTH,
+                    &[
+                        CallArgValue::Eval(mar15),
+                        CallArgValue::Eval(EvalValue::Number(-1.0)),
+                    ],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("EOMONTH(...,-1)"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0710, Ok(EvalValue::Number(2.0)));
+
+        let jan31 = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(2024.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(31.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("DATE(2024,1,31)");
+        let got_0711 = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CallArgValue::Eval(
+                eval_surface_value_call(
+                    FUNC_ID_EDATE,
+                    &[
+                        CallArgValue::Eval(jan31),
+                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                    ],
+                    &NoReferenceResolver,
+                    Some(46000.0),
+                    Some(0.5),
+                    None,
+                    None,
+                )
+                .expect("EDATE(...,1)"),
+            )],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0711, Ok(EvalValue::Number(29.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0712_time_second_roundtrip_returns_one() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ROUND,
+            &[
+                CallArgValue::Eval(
+                    eval_surface_value_call(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[
+                            CallArgValue::Eval(
+                                eval_surface_value_call(
+                                    FUNC_ID_TIME,
+                                    &[
+                                        CallArgValue::Eval(EvalValue::Number(0.0)),
+                                        CallArgValue::Eval(EvalValue::Number(0.0)),
+                                        CallArgValue::Eval(EvalValue::Number(1.0)),
+                                    ],
+                                    &NoReferenceResolver,
+                                    Some(46000.0),
+                                    Some(0.5),
+                                    None,
+                                    None,
+                                )
+                                .expect("TIME(0,0,1)"),
+                            ),
+                            CallArgValue::Eval(EvalValue::Number(86400.0)),
+                        ],
+                        &NoReferenceResolver,
+                        Some(46000.0),
+                        Some(0.5),
+                        None,
+                        None,
+                    )
+                    .expect("TIME*86400"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
         let cols = eval_surface_value_call(
             FUNC_ID_SEQUENCE,
