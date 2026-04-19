@@ -5393,6 +5393,388 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_0805_iferror_sum_filter_false_returns_empty() {
+        let filtered_err = eval_surface_value_call(
+            FUNC_ID_FILTER,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Logical(false)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect_err("FILTER({1,2,3},FALSE) should error locally");
+        let sum_err = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(EvalValue::Error(filtered_err))],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect_err("SUM should propagate the same local error lane");
+        let got = eval_surface_value_call(
+            FUNC_ID_IFERROR,
+            &[
+                CallArgValue::Eval(EvalValue::Error(sum_err)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("empty"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("empty")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0807_sort_row_vector_desc_index_first_returns_nine() {
+        let sorted = eval_surface_value_call(
+            FUNC_ID_SORT,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(5.0),
+                        ArrayCellValue::Number(9.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(6.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(-1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sort result");
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(sorted),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(9.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0808_sortby_row_vector_index_first_returns_d() {
+        let sorted = eval_surface_value_call(
+            FUNC_ID_SORTBY,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(1.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("sortby result");
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(sorted),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("d")))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0814_and_ftc_0820_drop_and_choosecols_sum_return_expected() {
+        let dropped = eval_surface_value_call(
+            FUNC_ID_DROP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(5.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Number(-2.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("drop result");
+        let got_0814 = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(dropped)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0814, Ok(EvalValue::Number(6.0)));
+
+        let chosen = eval_surface_value_call(
+            FUNC_ID_CHOOSECOLS,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(10.0),
+                        ArrayCellValue::Number(20.0),
+                        ArrayCellValue::Number(30.0),
+                        ArrayCellValue::Number(40.0),
+                        ArrayCellValue::Number(50.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("choosecols result");
+        let got_0820 = eval_surface_value_call(
+            FUNC_ID_SUM,
+            &[CallArgValue::Eval(chosen)],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0820, Ok(EvalValue::Number(90.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0846_to_ftc_0850_match_and_choose_cluster_matches_expected() {
+        let row_vector = EvalArray::from_rows(vec![vec![
+            ArrayCellValue::Number(100.0),
+            ArrayCellValue::Number(200.0),
+            ArrayCellValue::Number(300.0),
+            ArrayCellValue::Number(400.0),
+            ArrayCellValue::Number(500.0),
+        ]])
+        .expect("row vector");
+        let matched = eval_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Number(300.0)),
+                CallArgValue::Eval(EvalValue::Array(row_vector.clone())),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        )
+        .expect("match result");
+        let got_0846 = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CallArgValue::Eval(EvalValue::Array(row_vector)),
+                CallArgValue::Eval(matched),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0846, Ok(EvalValue::Number(300.0)));
+
+        let got_0848 = eval_surface_value_call(
+            FUNC_ID_MATCH,
+            &[
+                CallArgValue::Eval(EvalValue::Number(99.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(10.0),
+                        ArrayCellValue::Number(20.0),
+                        ArrayCellValue::Number(30.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0848, Err(WorksheetErrorCode::NA));
+
+        let got_0849 = eval_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("b"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("c"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("d"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0849,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("c")))
+        );
+
+        let got_0850 = eval_surface_value_call(
+            FUNC_ID_CHOOSE,
+            &[
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("b"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("c"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(got_0850, Ok(EvalValue::Error(WorksheetErrorCode::Value)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_0851_and_ftc_0858_lookup_cluster_matches_expected() {
+        let got_0851 = eval_surface_value_call(
+            FUNC_ID_XLOOKUP,
+            &[
+                CallArgValue::Eval(EvalValue::Number(99.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("missing"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0851,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("missing")))
+        );
+
+        let got_0858 = eval_surface_value_call(
+            FUNC_ID_LOOKUP,
+            &[
+                CallArgValue::Eval(EvalValue::Number(25.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(10.0),
+                        ArrayCellValue::Number(20.0),
+                        ArrayCellValue::Number(30.0),
+                        ArrayCellValue::Number(40.0),
+                        ArrayCellValue::Number(50.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("e")),
+                    ]])
+                    .expect("row vector"),
+                )),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got_0858,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("b")))
+        );
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
         let cols = eval_surface_value_call(
             FUNC_ID_SEQUENCE,
