@@ -213,6 +213,20 @@ fn oxfunc_function_corpus_passes_through_adapter() {
     );
 }
 
+#[test]
+fn randarray_columns_formula_preserves_generated_width_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "randarray-columns-width",
+        "formula:randarray-columns-width",
+        "=COLUMNS(RANDARRAY(5,3))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::new(None, None, None, None, Some(0.5)),
+    ))
+    .expect("randarray columns adapter run");
+
+    assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(3.0));
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
