@@ -3748,10 +3748,10 @@ mod tests {
     use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
     use crate::functions::adapters::PreparedArgValue;
-    use crate::locale_format::test_current_excel_host_context;
     use crate::host_info::{
         HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
     };
+    use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
     use crate::value::{
         ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
@@ -3817,7 +3817,12 @@ mod tests {
             callable: &LambdaValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            if let Some(handler) = self.closures.borrow().get(&callable.callable_token).cloned() {
+            if let Some(handler) = self
+                .closures
+                .borrow()
+                .get(&callable.callable_token)
+                .cloned()
+            {
                 return handler(args);
             }
 
@@ -5535,8 +5540,8 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_value_call_ftc_0814_and_ftc_0820_drop_and_choosecols_sum_return_expected() {
-        let dropped = eval_surface_value_call(
+    fn eval_surface_value_call_ftc_0814_sum_of_drop_row_vector_negative_count_returns_calc() {
+        let drop_err = eval_surface_value_call(
             FUNC_ID_DROP,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -5557,18 +5562,21 @@ mod tests {
             None,
             None,
         )
-        .expect("drop result");
-        let got_0814 = eval_surface_value_call(
+        .expect_err("DROP should stay on the row axis and empty out the array locally");
+        let got = eval_surface_value_call(
             FUNC_ID_SUM,
-            &[CallArgValue::Eval(dropped)],
+            &[CallArgValue::Eval(EvalValue::Error(drop_err))],
             &NoReferenceResolver,
             Some(46000.0),
             Some(0.5),
             None,
             None,
         );
-        assert_eq!(got_0814, Ok(EvalValue::Number(6.0)));
+        assert_eq!(got, Err(WorksheetErrorCode::Calc));
+    }
 
+    #[test]
+    fn eval_surface_value_call_ftc_0820_choosecols_sum_returns_ninety() {
         let chosen = eval_surface_value_call(
             FUNC_ID_CHOOSECOLS,
             &[
@@ -5593,7 +5601,7 @@ mod tests {
             None,
         )
         .expect("choosecols result");
-        let got_0820 = eval_surface_value_call(
+        let got = eval_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(chosen)],
             &NoReferenceResolver,
@@ -5602,7 +5610,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got_0820, Ok(EvalValue::Number(90.0)));
+        assert_eq!(got, Ok(EvalValue::Number(90.0)));
     }
 
     #[test]
@@ -5724,7 +5732,9 @@ mod tests {
                     ]])
                     .expect("row vector"),
                 )),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("missing"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "missing",
+                ))),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -5734,7 +5744,9 @@ mod tests {
         );
         assert_eq!(
             got_0851,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("missing")))
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "missing"
+            )))
         );
 
         let got_0858 = eval_surface_value_call(
@@ -5795,7 +5807,9 @@ mod tests {
                 CallArgValue::Eval(cols),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Alpha"))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Bravo"))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Charlie"))),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "Charlie",
+                ))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Delta"))),
             ],
             &NoReferenceResolver,
@@ -5822,7 +5836,9 @@ mod tests {
 
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("Charlie")))
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "Charlie"
+            )))
         );
     }
 
@@ -6629,10 +6645,7 @@ mod tests {
                 CallArgValue::Eval(
                     eval_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
-                        &[
-                            CallArgValue::Eval(first_day),
-                            CallArgValue::Eval(weekday),
-                        ],
+                        &[CallArgValue::Eval(first_day), CallArgValue::Eval(weekday)],
                         &NoReferenceResolver,
                         Some(46000.0),
                         Some(0.5),
@@ -6865,10 +6878,7 @@ mod tests {
                 CallArgValue::Eval(
                     eval_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
-                        &[
-                            CallArgValue::Eval(grid),
-                            CallArgValue::Eval(offset),
-                        ],
+                        &[CallArgValue::Eval(grid), CallArgValue::Eval(offset)],
                         &NoReferenceResolver,
                         Some(46000.0),
                         Some(0.5),
@@ -6940,7 +6950,10 @@ mod tests {
         .expect("columns result");
         let got = eval_surface_value_call(
             FUNC_ID_INDEX,
-            &[CallArgValue::Eval(EvalValue::Number(0.0)), CallArgValue::Eval(cols)],
+            &[
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+                CallArgValue::Eval(cols),
+            ],
             &NoReferenceResolver,
             Some(46000.0),
             Some(0.5),
@@ -7448,10 +7461,7 @@ mod tests {
                     &[CallArgValue::Eval(
                         eval_test_surface_value(
                             FUNC_ID_OP_MULTIPLY,
-                            &[
-                                CallArgValue::Eval(signal.clone()),
-                                CallArgValue::Eval(wave),
-                            ],
+                            &[CallArgValue::Eval(signal.clone()), CallArgValue::Eval(wave)],
                         )
                         .expect("signal*wave"),
                     )],
@@ -7517,14 +7527,20 @@ mod tests {
                 CallArgValue::Eval(
                     eval_test_surface_value(
                         FUNC_ID_OP_MULTIPLY,
-                        &[CallArgValue::Eval(ar.clone()), CallArgValue::Eval(br.clone())],
+                        &[
+                            CallArgValue::Eval(ar.clone()),
+                            CallArgValue::Eval(br.clone()),
+                        ],
                     )
                     .expect("Ar*Br"),
                 ),
                 CallArgValue::Eval(
                     eval_test_surface_value(
                         FUNC_ID_OP_MULTIPLY,
-                        &[CallArgValue::Eval(ai.clone()), CallArgValue::Eval(bi.clone())],
+                        &[
+                            CallArgValue::Eval(ai.clone()),
+                            CallArgValue::Eval(bi.clone()),
+                        ],
                     )
                     .expect("Ai*Bi"),
                 ),
@@ -7537,14 +7553,20 @@ mod tests {
                 CallArgValue::Eval(
                     eval_test_surface_value(
                         FUNC_ID_OP_MULTIPLY,
-                        &[CallArgValue::Eval(ar.clone()), CallArgValue::Eval(bi.clone())],
+                        &[
+                            CallArgValue::Eval(ar.clone()),
+                            CallArgValue::Eval(bi.clone()),
+                        ],
                     )
                     .expect("Ar*Bi"),
                 ),
                 CallArgValue::Eval(
                     eval_test_surface_value(
                         FUNC_ID_OP_MULTIPLY,
-                        &[CallArgValue::Eval(ai.clone()), CallArgValue::Eval(br.clone())],
+                        &[
+                            CallArgValue::Eval(ai.clone()),
+                            CallArgValue::Eval(br.clone()),
+                        ],
                     )
                     .expect("Ai*Br"),
                 ),
@@ -7631,10 +7653,7 @@ mod tests {
                 Ok(PreparedArgValue::Eval(
                     eval_test_surface_value(
                         FUNC_ID_OP_DIVIDE,
-                        &[
-                            CallArgValue::Eval(total),
-                            CallArgValue::Eval(n.clone()),
-                        ],
+                        &[CallArgValue::Eval(total), CallArgValue::Eval(n.clone())],
                     )
                     .expect("divide by N"),
                 ))
@@ -7687,7 +7706,9 @@ mod tests {
                                                             FUNC_ID_INDEX,
                                                             &[
                                                                 CallArgValue::Eval(conv.clone()),
-                                                                CallArgValue::Eval(EvalValue::Number(2.0)),
+                                                                CallArgValue::Eval(
+                                                                    EvalValue::Number(2.0),
+                                                                ),
                                                             ],
                                                         )
                                                         .expect("conv2"),
@@ -7714,7 +7735,9 @@ mod tests {
                                                             FUNC_ID_INDEX,
                                                             &[
                                                                 CallArgValue::Eval(conv.clone()),
-                                                                CallArgValue::Eval(EvalValue::Number(3.0)),
+                                                                CallArgValue::Eval(
+                                                                    EvalValue::Number(3.0),
+                                                                ),
                                                             ],
                                                         )
                                                         .expect("conv3"),
@@ -7733,7 +7756,9 @@ mod tests {
                                                             FUNC_ID_INDEX,
                                                             &[
                                                                 CallArgValue::Eval(conv),
-                                                                CallArgValue::Eval(EvalValue::Number(4.0)),
+                                                                CallArgValue::Eval(
+                                                                    EvalValue::Number(4.0),
+                                                                ),
                                                             ],
                                                         )
                                                         .expect("conv4"),
@@ -7873,7 +7898,10 @@ mod tests {
         .expect("Wrap(x1,2)");
         let result = eval_test_surface_value(
             FUNC_ID_VSTACK,
-            &[CallArgValue::Eval(y0.clone()), CallArgValue::Eval(y1.clone())],
+            &[
+                CallArgValue::Eval(y0.clone()),
+                CallArgValue::Eval(y1.clone()),
+            ],
         )
         .expect("VSTACK(y0,y1)");
         let flat = eval_test_surface_value(FUNC_ID_TOCOL, &[CallArgValue::Eval(result.clone())])

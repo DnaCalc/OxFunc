@@ -334,7 +334,7 @@ pub fn eval_drop_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
-    let mut row_count = match args.get(1) {
+    let row_count = match args.get(1) {
         Some(PreparedArgValue::MissingArg) if args.get(2).is_some() => 0,
         Some(arg) => parse_integer(arg)?,
         None => {
@@ -345,15 +345,11 @@ pub fn eval_drop_prepared(
             });
         }
     };
-    let mut col_count = if let Some(arg) = args.get(2) {
+    let col_count = if let Some(arg) = args.get(2) {
         parse_integer(arg)?
     } else {
         0
     };
-    if args.get(2).is_none() && array.shape().rows == 1 && array.shape().cols > 1 {
-        col_count = row_count;
-        row_count = 0;
-    }
     let (row_start, row_end) = drop_span(array.shape().rows, row_count)?;
     let (col_start, col_end) = drop_span(array.shape().cols, col_count)?;
     let rows = row_end - row_start;
@@ -735,19 +731,18 @@ pub fn eval_sortby_prepared(
     let descending = parse_sort_order(args.get(2))?;
 
     if array.shape().rows == 1 && array.shape().cols > 1 {
-        let col_keys: Vec<ArrayCellValue> = if by_array.shape().rows == 1
-            && by_array.shape().cols == array.shape().cols
-        {
-            (0..by_array.shape().cols)
-                .map(|col| by_array.get(0, col).expect("validated key").clone())
-                .collect()
-        } else if by_array.shape().cols == 1 && by_array.shape().rows == array.shape().cols {
-            (0..by_array.shape().rows)
-                .map(|row| by_array.get(row, 0).expect("validated key").clone())
-                .collect()
-        } else {
-            return Err(DynamicArrayReshapeEvalError::InvalidIncludeShape);
-        };
+        let col_keys: Vec<ArrayCellValue> =
+            if by_array.shape().rows == 1 && by_array.shape().cols == array.shape().cols {
+                (0..by_array.shape().cols)
+                    .map(|col| by_array.get(0, col).expect("validated key").clone())
+                    .collect()
+            } else if by_array.shape().cols == 1 && by_array.shape().rows == array.shape().cols {
+                (0..by_array.shape().rows)
+                    .map(|row| by_array.get(row, 0).expect("validated key").clone())
+                    .collect()
+            } else {
+                return Err(DynamicArrayReshapeEvalError::InvalidIncludeShape);
+            };
 
         let mut order: Vec<usize> = (0..array.shape().cols).collect();
         order.sort_by(|lhs, rhs| {
