@@ -7127,6 +7127,319 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_ftc_1006_orientation_chain_packs_to_201_locally() {
+        let data = number_column(&[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]);
+        let wrapped = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_TOCOL,
+                        &[
+                            CallArgValue::Eval(data.clone()),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Logical(true)),
+                        ],
+                    )
+                    .expect("TOCOL(data,,TRUE)"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+        )
+        .expect("Wrap(data,2)");
+        let x0 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(wrapped.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+        )
+        .expect("TAKE(w,1)");
+        let x1 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(wrapped.clone()),
+                CallArgValue::Eval(EvalValue::Number(-1.0)),
+            ],
+        )
+        .expect("TAKE(w,-1)");
+        let y0 = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_TOCOL,
+                        &[
+                            CallArgValue::Eval(x0.clone()),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Logical(true)),
+                        ],
+                    )
+                    .expect("TOCOL(x0,,TRUE)"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+        )
+        .expect("Wrap(x0,2)");
+        let y1 = eval_test_surface_value(
+            FUNC_ID_WRAPCOLS,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_TOCOL,
+                        &[
+                            CallArgValue::Eval(x1.clone()),
+                            CallArgValue::MissingArg,
+                            CallArgValue::Eval(EvalValue::Logical(true)),
+                        ],
+                    )
+                    .expect("TOCOL(x1,,TRUE)"),
+                ),
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+        )
+        .expect("Wrap(x1,2)");
+        let result = eval_test_surface_value(
+            FUNC_ID_VSTACK,
+            &[CallArgValue::Eval(y0.clone()), CallArgValue::Eval(y1.clone())],
+        )
+        .expect("VSTACK(y0,y1)");
+        let flat = eval_test_surface_value(FUNC_ID_TOCOL, &[CallArgValue::Eval(result.clone())])
+            .expect("TOCOL(result)");
+        let packed = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(flat.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                    )
+                    .expect("INDEX(flat,1)"),
+                ),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[
+                            CallArgValue::Eval(EvalValue::Number(100.0)),
+                            CallArgValue::Eval(
+                                eval_test_surface_value(
+                                    FUNC_ID_INDEX,
+                                    &[
+                                        CallArgValue::Eval(flat.clone()),
+                                        CallArgValue::Eval(EvalValue::Number(5.0)),
+                                    ],
+                                )
+                                .expect("INDEX(flat,5)"),
+                            ),
+                        ],
+                    )
+                    .expect("100*index5"),
+                ),
+            ],
+        )
+        .expect("packed");
+
+        assert_eq!(
+            wrapped,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(5.0),
+                        ArrayCellValue::Number(7.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(6.0),
+                        ArrayCellValue::Number(8.0),
+                    ],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            y0,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(5.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(7.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            y1,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(2.0), ArrayCellValue::Number(6.0)],
+                    vec![ArrayCellValue::Number(4.0), ArrayCellValue::Number(8.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(
+            flat,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(5.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(6.0)],
+                    vec![ArrayCellValue::Number(4.0)],
+                    vec![ArrayCellValue::Number(8.0)],
+                ])
+                .unwrap()
+            )
+        );
+        assert_eq!(packed, EvalValue::Number(201.0));
+    }
+
+    #[test]
+    fn eval_surface_value_call_ftc_1007_take_vector_split_packs_to_6_locally() {
+        let x = eval_test_surface_value(
+            FUNC_ID_HSTACK,
+            &[
+                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(0.0)),
+            ],
+        )
+        .expect("HSTACK");
+        let x0 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(x.clone()),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+        )
+        .expect("TAKE(x,1)");
+        let x1 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(x.clone()),
+                CallArgValue::Eval(EvalValue::Number(-1.0)),
+            ],
+        )
+        .expect("TAKE(x,-1)");
+        let re_x0 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(x0.clone()),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+        )
+        .expect("Re(x0)");
+        let re_x1 = eval_test_surface_value(
+            FUNC_ID_TAKE,
+            &[
+                CallArgValue::Eval(x1.clone()),
+                CallArgValue::MissingArg,
+                CallArgValue::Eval(EvalValue::Number(2.0)),
+            ],
+        )
+        .expect("Re(x1)");
+        let y0 = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(re_x0.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                    )
+                    .expect("INDEX(re_x0,1,1)"),
+                ),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(re_x1.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                    )
+                    .expect("INDEX(re_x1,1,1)"),
+                ),
+            ],
+        )
+        .expect("y0");
+        let y1 = eval_test_surface_value(
+            FUNC_ID_OP_SUBTRACT,
+            &[
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(re_x0.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                    )
+                    .expect("INDEX(re_x0,1,1)"),
+                ),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_INDEX,
+                        &[
+                            CallArgValue::Eval(re_x1.clone()),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                            CallArgValue::Eval(EvalValue::Number(1.0)),
+                        ],
+                    )
+                    .expect("INDEX(re_x1,1,1)"),
+                ),
+            ],
+        )
+        .expect("y1");
+        let packed = eval_test_surface_value(
+            FUNC_ID_OP_ADD,
+            &[
+                CallArgValue::Eval(y0.clone()),
+                CallArgValue::Eval(
+                    eval_test_surface_value(
+                        FUNC_ID_OP_MULTIPLY,
+                        &[
+                            CallArgValue::Eval(y1.clone()),
+                            CallArgValue::Eval(EvalValue::Number(100.0)),
+                        ],
+                    )
+                    .expect("y1*100"),
+                ),
+            ],
+        )
+        .expect("packed");
+
+        assert_eq!(x0, x);
+        assert_eq!(x1, x);
+        assert_eq!(
+            re_x0,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(0.0),
+                ]])
+                .unwrap()
+            )
+        );
+        assert_eq!(re_x1, re_x0);
+        assert_eq!(y0, EvalValue::Number(6.0));
+        assert_eq!(y1, EvalValue::Number(0.0));
+        assert_eq!(packed, EvalValue::Number(6.0));
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_1008_complex_magnitude_returns_five() {
         let z = eval_surface_value_call(
             FUNC_ID_HSTACK,
