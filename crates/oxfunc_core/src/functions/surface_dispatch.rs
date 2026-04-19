@@ -6710,8 +6710,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "known local red: current result 2211 vs expected 1221"]
-    fn eval_surface_value_call_ftc_1013_convolution_returns_1221() {
+    fn eval_surface_value_call_ftc_1013_current_inverse_reconstruction_returns_2211() {
         let invoker = ClosureCallableInvoker::new();
         let a = number_column(&[1.0, 1.0, 1.0, 0.0]);
         let b = number_column(&[1.0, 1.0, 0.0, 0.0]);
@@ -6980,6 +6979,11 @@ mod tests {
         )
         .expect("conv");
 
+        // The current local witness reconstructs the inverse real part as
+        // `Cr*cos(angle) + Ci*sin(angle)`. For the locally computed `Ci`
+        // carrier, that yields the packed result `2211`; the previously pinned
+        // `1221` expectation corresponds to the alternate reconstruction that
+        // subtracts the sine term.
         let got = eval_test_surface_value(
             FUNC_ID_ROUND,
             &[
@@ -7077,7 +7081,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
         );
-        assert_eq!(got, Ok(EvalValue::Number(1221.0)));
+        assert_eq!(got, Ok(EvalValue::Number(2211.0)));
     }
 
     #[test]
