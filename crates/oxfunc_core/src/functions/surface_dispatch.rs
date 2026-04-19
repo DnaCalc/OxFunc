@@ -5590,9 +5590,14 @@ mod tests {
                     ]])
                     .expect("row vector"),
                 )),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(5.0),
+                    ]])
+                    .expect("selector row vector"),
+                )),
             ],
             &NoReferenceResolver,
             Some(46000.0),

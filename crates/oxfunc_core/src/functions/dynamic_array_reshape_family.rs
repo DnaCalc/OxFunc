@@ -7,7 +7,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -888,18 +889,42 @@ fn eval_surface_common(
     )
 }
 
+fn eval_choose_axes_surface(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+    meta: &FunctionMeta,
+    eval: impl FnOnce(&[PreparedArgValue]) -> Result<EvalValue, DynamicArrayReshapeEvalError>,
+) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
+    if !meta.arity.accepts(args.len()) {
+        return Err(surface_arity_error(meta, args.len()));
+    }
+
+    let mut prepared = Vec::new();
+    prepared.push(
+        prepare_arg_values_only(&args[0], resolver)
+            .map_err(DynamicArrayReshapeEvalError::Preparation)?,
+    );
+    for arg in &args[1..] {
+        prepared.extend(
+            expand_arg_values_only(arg, resolver)
+                .map_err(DynamicArrayReshapeEvalError::Preparation)?,
+        );
+    }
+    eval(&prepared)
+}
+
 pub fn eval_choosecols_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
-    eval_surface_common(args, resolver, &CHOOSECOLS_META, eval_choosecols_prepared)
+    eval_choose_axes_surface(args, resolver, &CHOOSECOLS_META, eval_choosecols_prepared)
 }
 
 pub fn eval_chooserows_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
-    eval_surface_common(args, resolver, &CHOOSEROWS_META, eval_chooserows_prepared)
+    eval_choose_axes_surface(args, resolver, &CHOOSEROWS_META, eval_chooserows_prepared)
 }
 
 pub fn eval_drop_surface(
@@ -1102,6 +1127,65 @@ mod tests {
                 EvalArray::from_rows(vec![
                     vec![ArrayCellValue::Number(3.0)],
                     vec![ArrayCellValue::Number(1.0)],
+                ])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn choosecols_and_chooserows_flatten_selector_array_arguments() {
+        let cols = eval_choosecols_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                ]]),
+                array(vec![vec![
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(5.0),
+                ]]),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            cols,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(50.0),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let rows = eval_chooserows_surface(
+            &[
+                array(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("a"))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("b"))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("c"))],
+                ]),
+                array(vec![
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(1.0)],
+                ]),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            rows,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("c"))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("a"))],
                 ])
                 .unwrap()
             )
