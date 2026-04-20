@@ -292,6 +292,41 @@ fn ftc_0667_upper_sharp_s_matches_local_excel_like_probe_through_adapter() {
     );
 }
 
+#[test]
+fn worksheet_text_casing_family_matches_excel_observed_matrix_through_adapter() {
+    let cases = [
+        ("upper-strasse", "=UPPER(\"straße\")", "STRAßE"),
+        ("lower-strasse-cap-sharp-s", "=LOWER(\"STRAẞE\")", "straẞe"),
+        ("proper-strasse", "=PROPER(\"straße\")", "Straße"),
+        ("upper-weiss", "=UPPER(\"weiß\")", "WEIß"),
+        ("upper-istanbul-dotted", "=UPPER(\"İstanbul\")", "İSTANBUL"),
+        ("lower-istanbul-dotted", "=LOWER(\"İSTANBUL\")", "istanbul"),
+        ("upper-istanbul-ascii", "=UPPER(\"istanbul\")", "ISTANBUL"),
+        ("lower-i-ascii", "=LOWER(\"I\")", "i"),
+        ("lower-i-dotted", "=LOWER(\"İ\")", "i"),
+        ("upper-kosmos", "=UPPER(\"κόσμος\")", "ΚΟΣΜΟΣ"),
+        ("lower-greek-final-sigma", "=LOWER(\"ΟΣ\")", "ος"),
+        ("upper-cafe", "=UPPER(\"café\")", "CAFÉ"),
+    ];
+
+    for (name, formula, expected) in cases {
+        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+            format!("worksheet-text-casing-{name}"),
+            format!("formula:worksheet-text-casing-{name}"),
+            formula.to_string(),
+            locus(1, 1),
+            TypedContextQueryBundle::default(),
+        ))
+        .unwrap_or_else(|_| panic!("worksheet text casing adapter run should succeed: {name}"));
+
+        assert_eq!(
+            run.evaluation_artifact.worksheet_value,
+            EvalValue::Text(ExcelText::from_interop_assignment(expected)),
+            "{name}"
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------

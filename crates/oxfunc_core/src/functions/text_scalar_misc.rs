@@ -6,6 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
+use crate::functions::excel_casing::{lower_text, upper_text};
 use crate::resolver::ReferenceResolver;
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
@@ -67,10 +68,6 @@ pub enum TextScalarEvalError {
     Domain(WorksheetErrorCode),
 }
 
-fn text_from_string(s: String) -> ExcelText {
-    ExcelText::from_utf16_code_units(s.encode_utf16().collect())
-}
-
 fn truncate_toward_zero(n: f64) -> f64 {
     n.trunc()
 }
@@ -88,22 +85,6 @@ fn code_of_text(text: &ExcelText) -> Result<f64, TextScalarEvalError> {
         Some(unit) => Ok(unit as f64),
         None => Err(TextScalarEvalError::Domain(WorksheetErrorCode::Value)),
     }
-}
-
-fn lower_text(text: &ExcelText) -> ExcelText {
-    text_from_string(String::from_utf16_lossy(text.utf16_code_units()).to_lowercase())
-}
-
-fn upper_text(text: &ExcelText) -> ExcelText {
-    let mut out = String::new();
-    for ch in String::from_utf16_lossy(text.utf16_code_units()).chars() {
-        if ch == 'ß' {
-            out.push('ß');
-        } else {
-            out.extend(ch.to_uppercase());
-        }
-    }
-    text_from_string(out)
 }
 
 fn trim_ascii_spaces(text: &ExcelText) -> ExcelText {
@@ -425,14 +406,13 @@ mod tests {
     }
 
     // Current repo-local theory note:
-    // OxFunc does not yet implement a principled Excel casing family. The evidence so far
-    // indicates Excel is not using full Unicode special casing. It looks closer to simple
-    // per-codepoint casing with selected script-aware behavior (for example Greek final sigma),
-    // while avoiding locale-sensitive Turkish dotted-I behavior and preserving ß in UPPER.
-    // The current OxFunc implementation is still hybrid: LOWER/PROPER follow Rust Unicode-style
-    // casing, while UPPER has an additional sharp-s stopgap override.
+    // OxFunc now routes worksheet text casing through a shared Excel-style casing helper.
+    // The observed worksheet behavior is not full Unicode special casing; it is closer to
+    // simple single-codepoint mappings with selected script-aware behavior such as Greek final
+    // sigma on lowering, no Turkish locale-sensitive dotted-I expansion, and no ß expansion in
+    // UPPER. The matrix below pins the currently observed Excel-aligned lanes.
     #[test]
-    fn unicode_casing_matrix_matches_current_local_results() {
+    fn unicode_casing_matrix_matches_excel_observed_rows() {
         let cases = [
             (
                 "UPPER straße",
@@ -452,7 +432,7 @@ mod tests {
                     )))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("straße"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("straẞe"))),
             ),
             (
                 "UPPER weiß",
@@ -482,9 +462,7 @@ mod tests {
                     )))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_utf16_code_units(vec![
-                    105, 775, 115, 116, 97, 110, 98, 117, 108,
-                ]))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("istanbul"))),
             ),
             (
                 "UPPER istanbul",
@@ -514,7 +492,7 @@ mod tests {
                     )))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_utf16_code_units(vec![105, 775]))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
             ),
             (
                 "UPPER κόσμος",
@@ -524,17 +502,17 @@ mod tests {
                     )))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ΚΌΣΜΟΣ"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ΚΟΣΜΟΣ"))),
             ),
             (
-                "LOWER ΚΌΣΜΟΣ",
+                "LOWER ΟΣ",
                 eval_lower_surface(
                     &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "ΚΌΣΜΟΣ",
+                        "ΟΣ",
                     )))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("κόσμος"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ος"))),
             ),
             (
                 "UPPER café",

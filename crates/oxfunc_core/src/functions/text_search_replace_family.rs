@@ -6,6 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
 };
+use crate::functions::excel_casing::proper_text;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 use std::collections::HashMap;
@@ -68,6 +69,7 @@ fn value_error() -> TextSearchReplaceEvalError {
     TextSearchReplaceEvalError::Domain(WorksheetErrorCode::Value)
 }
 
+#[cfg(test)]
 fn text_from_string(s: String) -> ExcelText {
     ExcelText::from_utf16_code_units(s.encode_utf16().collect())
 }
@@ -155,22 +157,7 @@ fn search_units_equal(lhs: u16, rhs: u16) -> bool {
 }
 
 pub fn proper_kernel(text: &ExcelText) -> ExcelText {
-    let mut out = String::new();
-    let mut start_of_word = true;
-    for ch in text.to_string_lossy().chars() {
-        if ch.is_alphabetic() {
-            if start_of_word {
-                out.extend(ch.to_uppercase());
-            } else {
-                out.extend(ch.to_lowercase());
-            }
-            start_of_word = false;
-        } else {
-            out.push(ch);
-            start_of_word = true;
-        }
-    }
-    text_from_string(out)
+    proper_text(text)
 }
 
 pub fn substitute_kernel(
@@ -589,13 +576,10 @@ mod tests {
         );
     }
 
-    // Current repo-local theory note:
-    // PROPER currently inherits Rust Unicode casing behavior. That is sufficient for several
-    // Latin and Greek witnesses but is not yet a justified Excel-family model. Combined with the
-    // UPPER sharp-s override, the current implementation should be treated as a stopgap rather
-    // than a principled cross-function casing layer.
+    // PROPER is now routed through the shared Excel-style worksheet casing helper so that the
+    // family uses one policy surface rather than mixed raw Rust casing behavior.
     #[test]
-    fn proper_unicode_casing_matches_current_local_results() {
+    fn proper_unicode_casing_matches_excel_observed_rows() {
         let cases = [
             (
                 "PROPER straße",
