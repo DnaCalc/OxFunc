@@ -95,7 +95,15 @@ fn lower_text(text: &ExcelText) -> ExcelText {
 }
 
 fn upper_text(text: &ExcelText) -> ExcelText {
-    text_from_string(String::from_utf16_lossy(text.utf16_code_units()).to_uppercase())
+    let mut out = String::new();
+    for ch in String::from_utf16_lossy(text.utf16_code_units()).chars() {
+        if ch == 'ß' {
+            out.push('ß');
+        } else {
+            out.extend(ch.to_uppercase());
+        }
+    }
+    text_from_string(out)
 }
 
 fn trim_ascii_spaces(text: &ExcelText) -> ExcelText {
@@ -400,6 +408,19 @@ mod tests {
             Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
                 "TRUE".encode_utf16().collect(),
             )))
+        );
+    }
+
+    #[test]
+    fn upper_preserves_german_sharp_s() {
+        assert_eq!(
+            eval_upper_surface(
+                &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "straße"
+                )))],
+                &NoResolver,
+            ),
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("STRAßE")))
         );
     }
 

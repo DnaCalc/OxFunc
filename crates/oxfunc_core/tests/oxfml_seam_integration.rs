@@ -275,6 +275,23 @@ fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
     assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(-2.0));
 }
 
+#[test]
+fn ftc_0667_upper_sharp_s_matches_local_excel_like_probe_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0667-upper-sharp-s",
+        "formula:ftc-0667-upper-sharp-s",
+        "=UPPER(\"straße\")".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0667 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Text(ExcelText::from_interop_assignment("STRAßE"))
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
