@@ -34,6 +34,55 @@ fn exact_integer_exponent(power: f64) -> Option<i64> {
     }
 }
 
+fn gcd_i64(mut a: i64, mut b: i64) -> i64 {
+    a = a.abs();
+    b = b.abs();
+    while b != 0 {
+        let r = a % b;
+        a = b;
+        b = r;
+    }
+    a
+}
+
+fn approximate_odd_denominator_rational(power: f64) -> Option<(i64, i64)> {
+    if !power.is_finite() {
+        return None;
+    }
+
+    let tolerance = 32.0 * f64::EPSILON * power.abs().max(1.0);
+    let mut best = None;
+    let mut best_diff = f64::INFINITY;
+
+    for denominator in 2_i64..=255_i64 {
+        let numerator_f = (power * denominator as f64).round();
+        if !numerator_f.is_finite()
+            || numerator_f < i64::MIN as f64
+            || numerator_f > i64::MAX as f64
+        {
+            continue;
+        }
+        let numerator = numerator_f as i64;
+        let divisor = gcd_i64(numerator, denominator);
+        let reduced_numerator = numerator / divisor;
+        let reduced_denominator = denominator / divisor;
+        if reduced_denominator <= 1 || reduced_denominator % 2 == 0 {
+            continue;
+        }
+        let diff = (power - (reduced_numerator as f64 / reduced_denominator as f64)).abs();
+        if diff < best_diff {
+            best = Some((reduced_numerator, reduced_denominator));
+            best_diff = diff;
+        }
+    }
+
+    if best_diff <= tolerance {
+        best.filter(|(numerator, _)| *numerator != 0)
+    } else {
+        None
+    }
+}
+
 fn powi_excel_publication(number: f64, power: i64) -> f64 {
     if power == 0 {
         return 1.0;
@@ -68,6 +117,18 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
 
     let result = if let Some(integer_power) = exact_integer_exponent(power) {
         powi_excel_publication(number, integer_power)
+    } else if number < 0.0 {
+        if let Some((numerator, denominator)) = approximate_odd_denominator_rational(power) {
+            let magnitude = (-number).powf((numerator.abs() as f64) / denominator as f64);
+            let signed = if numerator % 2 == 0 {
+                magnitude
+            } else {
+                -magnitude
+            };
+            if numerator < 0 { 1.0 / signed } else { signed }
+        } else {
+            number.powf(power)
+        }
     } else {
         number.powf(power)
     };
@@ -116,5 +177,26 @@ mod tests {
             power_kernel(1.0 + 0.08 / 12.0, 10.0),
             Ok(1.0687026403740616)
         );
+    }
+
+    #[test]
+    fn power_kernel_accepts_negative_base_odd_denominator_rationals() {
+        let one_third = power_kernel(-8.0, 1.0 / 3.0).expect("-8^(1/3)");
+        assert!((one_third + 2.0).abs() < 1e-12);
+
+        let one_third_decimal = power_kernel(-8.0, 0.3333333333333333).expect("-8^0.3333...");
+        assert!((one_third_decimal + 2.0).abs() < 1e-12);
+
+        let one_third_decimal_rounded =
+            power_kernel(-8.0, 0.33333333333333331).expect("-8^0.3333...1");
+        assert!((one_third_decimal_rounded + 2.0).abs() < 1e-12);
+
+        let two_thirds = power_kernel(-8.0, 2.0 / 3.0).expect("-8^(2/3)");
+        assert!((two_thirds - 4.0).abs() < 1e-12);
+
+        let one_fifth = power_kernel(-32.0, 1.0 / 5.0).expect("-32^(1/5)");
+        assert!((one_fifth + 2.0).abs() < 1e-12);
+
+        assert_eq!(power_kernel(-8.0, 0.5), Err(WorksheetErrorCode::Num));
     }
 }

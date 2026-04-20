@@ -261,6 +261,20 @@ fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
     );
 }
 
+#[test]
+fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0635-exact",
+        "formula:ftc-0635-exact",
+        "=POWER(-8,1/3)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0635 adapter run");
+
+    assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(-2.0));
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
