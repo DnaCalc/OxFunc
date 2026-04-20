@@ -95,6 +95,95 @@ pub fn proper_text(text: &ExcelText) -> ExcelText {
 mod tests {
     use super::*;
 
+    // Provisional boundary matrix:
+    // these rows characterize the current shared OxFunc casing layer in lanes where we do not
+    // yet have enough Excel evidence to promote them from local-boundary witnesses to stronger
+    // Excel-alignment claims.
+    #[test]
+    fn excel_casing_provisional_boundary_matrix_matches_current_local_behavior() {
+        let cases = [
+            (
+                "UPPER ß",
+                upper_text(&ExcelText::from_interop_assignment("ß")),
+                ExcelText::from_interop_assignment("ß"),
+            ),
+            (
+                "LOWER ẞ",
+                lower_text(&ExcelText::from_interop_assignment("ẞ")),
+                ExcelText::from_interop_assignment("ẞ"),
+            ),
+            (
+                "PROPER ß",
+                proper_text(&ExcelText::from_interop_assignment("ß")),
+                ExcelText::from_interop_assignment("ß"),
+            ),
+            (
+                "UPPER ı",
+                upper_text(&ExcelText::from_interop_assignment("ı")),
+                ExcelText::from_interop_assignment("I"),
+            ),
+            (
+                "LOWER Iİıi",
+                lower_text(&ExcelText::from_interop_assignment("Iİıi")),
+                ExcelText::from_interop_assignment("iiıi"),
+            ),
+            (
+                "UPPER i+combining-dot",
+                upper_text(&ExcelText::from_utf16_code_units(vec![105, 775])),
+                ExcelText::from_utf16_code_units(vec![73, 775]),
+            ),
+            (
+                "LOWER I+combining-dot",
+                lower_text(&ExcelText::from_utf16_code_units(vec![73, 775])),
+                ExcelText::from_utf16_code_units(vec![105, 775]),
+            ),
+            (
+                "UPPER decomposed-ός",
+                upper_text(&ExcelText::from_utf16_code_units(vec![959, 769, 962])),
+                ExcelText::from_utf16_code_units(vec![927, 769, 931]),
+            ),
+            (
+                "LOWER Σ",
+                lower_text(&ExcelText::from_interop_assignment("Σ")),
+                ExcelText::from_interop_assignment("σ"),
+            ),
+            (
+                "LOWER ΟΣΟΣ",
+                lower_text(&ExcelText::from_interop_assignment("ΟΣΟΣ")),
+                ExcelText::from_interop_assignment("οσος"),
+            ),
+            (
+                "PROPER hello-newline-world",
+                proper_text(&ExcelText::from_interop_assignment("hello\nworld")),
+                ExcelText::from_interop_assignment("Hello\nWorld"),
+            ),
+            (
+                "PROPER abc_ß",
+                proper_text(&ExcelText::from_interop_assignment("abc_ß")),
+                ExcelText::from_interop_assignment("Abc_ß"),
+            ),
+            (
+                "UPPER ﬃ",
+                upper_text(&ExcelText::from_interop_assignment("ﬃ")),
+                ExcelText::from_interop_assignment("ﬃ"),
+            ),
+            (
+                "LOWER ﬃ",
+                lower_text(&ExcelText::from_interop_assignment("ﬃ")),
+                ExcelText::from_interop_assignment("ﬃ"),
+            ),
+            (
+                "PROPER ﬃ",
+                proper_text(&ExcelText::from_interop_assignment("ﬃ")),
+                ExcelText::from_interop_assignment("ﬃ"),
+            ),
+        ];
+
+        for (name, got, expected) in cases {
+            assert_eq!(got, expected, "{name}");
+        }
+    }
+
     #[test]
     fn excel_casing_observed_matrix_matches_local_helper_behavior() {
         let cases = [
