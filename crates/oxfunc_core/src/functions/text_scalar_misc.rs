@@ -425,6 +425,138 @@ mod tests {
     }
 
     #[test]
+    fn unicode_casing_matrix_matches_current_local_results() {
+        let cases = [
+            (
+                "UPPER straße",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "straße",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("STRAßE"))),
+            ),
+            (
+                "LOWER STRAẞE",
+                eval_lower_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "STRAẞE",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("straße"))),
+            ),
+            (
+                "UPPER weiß",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "weiß",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("WEIß"))),
+            ),
+            (
+                "UPPER İstanbul",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "İstanbul",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("İSTANBUL"))),
+            ),
+            (
+                "LOWER İSTANBUL",
+                eval_lower_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "İSTANBUL",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_utf16_code_units(vec![
+                    105, 775, 115, 116, 97, 110, 98, 117, 108,
+                ]))),
+            ),
+            (
+                "UPPER istanbul",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "istanbul",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ISTANBUL"))),
+            ),
+            (
+                "LOWER I",
+                eval_lower_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "I",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
+            ),
+            (
+                "LOWER İ",
+                eval_lower_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "İ",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_utf16_code_units(vec![105, 775]))),
+            ),
+            (
+                "UPPER κόσμος",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "κόσμος",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ΚΌΣΜΟΣ"))),
+            ),
+            (
+                "LOWER ΚΌΣΜΟΣ",
+                eval_lower_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "ΚΌΣΜΟΣ",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("κόσμος"))),
+            ),
+            (
+                "UPPER café",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "café",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("CAFÉ"))),
+            ),
+            (
+                "UPPER Ångström",
+                eval_upper_surface(
+                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                        "Ångström",
+                    )))],
+                    &NoResolver,
+                ),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ÅNGSTRÖM"))),
+            ),
+        ];
+
+        for (name, got, expected) in cases {
+            assert_eq!(got, expected, "{name}");
+        }
+    }
+
+    #[test]
     fn trim_collapses_ascii_spaces_but_not_nbsp() {
         assert_eq!(
             trim_ascii_spaces(&ExcelText::from_utf16_code_units(

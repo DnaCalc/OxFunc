@@ -590,6 +590,46 @@ mod tests {
     }
 
     #[test]
+    fn proper_unicode_casing_matches_current_local_results() {
+        let cases = [
+            (
+                "PROPER straße",
+                eval_proper_surface(&[text_arg("straße")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("Straße".to_string()))),
+            ),
+            (
+                "PROPER weiß",
+                eval_proper_surface(&[text_arg("weiß")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("Weiß".to_string()))),
+            ),
+            (
+                "PROPER İstanbul",
+                eval_proper_surface(&[text_arg("İstanbul")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("İstanbul".to_string()))),
+            ),
+            (
+                "PROPER κόσμος",
+                eval_proper_surface(&[text_arg("κόσμος")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("Κόσμος".to_string()))),
+            ),
+            (
+                "PROPER café",
+                eval_proper_surface(&[text_arg("café")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("Café".to_string()))),
+            ),
+            (
+                "PROPER Ångström",
+                eval_proper_surface(&[text_arg("Ångström")], &NoResolver),
+                Ok(EvalValue::Text(text_from_string("Ångström".to_string()))),
+            ),
+        ];
+
+        for (name, got, expected) in cases {
+            assert_eq!(got, expected, "{name}");
+        }
+    }
+
+    #[test]
     fn substitute_honors_all_and_instance_num() {
         assert_eq!(
             eval_substitute_surface(
