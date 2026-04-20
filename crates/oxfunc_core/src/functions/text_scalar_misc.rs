@@ -424,6 +424,13 @@ mod tests {
         );
     }
 
+    // Current repo-local theory note:
+    // OxFunc does not yet implement a principled Excel casing family. The evidence so far
+    // indicates Excel is not using full Unicode special casing. It looks closer to simple
+    // per-codepoint casing with selected script-aware behavior (for example Greek final sigma),
+    // while avoiding locale-sensitive Turkish dotted-I behavior and preserving ß in UPPER.
+    // The current OxFunc implementation is still hybrid: LOWER/PROPER follow Rust Unicode-style
+    // casing, while UPPER has an additional sharp-s stopgap override.
     #[test]
     fn unicode_casing_matrix_matches_current_local_results() {
         let cases = [

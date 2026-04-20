@@ -589,6 +589,11 @@ mod tests {
         );
     }
 
+    // Current repo-local theory note:
+    // PROPER currently inherits Rust Unicode casing behavior. That is sufficient for several
+    // Latin and Greek witnesses but is not yet a justified Excel-family model. Combined with the
+    // UPPER sharp-s override, the current implementation should be treated as a stopgap rather
+    // than a principled cross-function casing layer.
     #[test]
     fn proper_unicode_casing_matches_current_local_results() {
         let cases = [
