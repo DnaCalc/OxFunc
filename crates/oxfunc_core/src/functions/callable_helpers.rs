@@ -232,7 +232,13 @@ pub fn eval_map_prepared(
             .collect::<Vec<_>>();
         let result = invoke_callable_prepared(callable, &lambda_args, invoker)
             .map_err(LambdaHelperEvalError::Invocation)?;
-        cells.push(scalar_cell_from_prepared(&result).map_err(LambdaHelperEvalError::Invocation)?);
+        match scalar_cell_from_prepared(&result) {
+            Ok(cell) => cells.push(cell),
+            Err(CallableInvocationError::UnsupportedResultKind("array")) => {
+                return Err(LambdaHelperEvalError::NonScalarHelperResult);
+            }
+            Err(other) => return Err(LambdaHelperEvalError::Invocation(other)),
+        }
     }
 
     Ok(EvalValue::Array(
@@ -653,6 +659,18 @@ mod tests {
                         WorksheetErrorCode::Value,
                     )),
                 },
+                "helper.scalar_to_pair" => {
+                    let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
+                        CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
+                    })?;
+                    Ok(PreparedArgValue::Eval(EvalValue::Array(
+                        EvalArray::from_rows(vec![
+                            vec![ArrayCellValue::Number(n)],
+                            vec![ArrayCellValue::Number(n + 1.0)],
+                        ])
+                        .expect("pair array"),
+                    )))
+                }
                 "helper.makearray_coords" => {
                     let r = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
@@ -1028,6 +1046,45 @@ mod tests {
                 ]])
                 .unwrap()
             ))
+        );
+    }
+
+    #[test]
+    fn eval_map_prepared_rejects_non_scalar_lambda_result() {
+        let got = eval_map_prepared(
+            &[PreparedArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap(),
+            ))],
+            &helper("helper.scalar_to_pair", 1),
+            &MockCallableInvoker,
+        );
+        assert_eq!(got, Err(LambdaHelperEvalError::NonScalarHelperResult));
+    }
+
+    #[test]
+    fn eval_map_surface_maps_non_scalar_result_to_calc() {
+        let err = eval_map_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                    ]])
+                    .unwrap(),
+                )),
+                callable_arg(helper("helper.scalar_to_pair", 1)),
+            ],
+            &NoResolver,
+            &MockCallableInvoker,
+        )
+        .unwrap_err();
+        assert_eq!(
+            map_lambda_helper_error_to_ws(&err),
+            WorksheetErrorCode::Calc
         );
     }
 

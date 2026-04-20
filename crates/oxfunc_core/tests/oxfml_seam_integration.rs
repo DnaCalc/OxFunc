@@ -227,6 +227,40 @@ fn randarray_columns_formula_preserves_generated_width_through_adapter() {
     assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(3.0));
 }
 
+#[test]
+fn ftc_0601_exact_formula_is_calc_locally_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0601-exact",
+        "formula:ftc-0601-exact",
+        "=LET(n,10,seq,SEQUENCE(n),is_prime,MAP(seq,LAMBDA(x,IF(x<2,FALSE,AND(MOD(x,SEQUENCE(MAX(1,INT(SQRT(x)))-1,,2))<>0)))),SUM(--is_prime))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0601 exact adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Error(WorksheetErrorCode::Calc)
+    );
+}
+
+#[test]
+fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0601-map-nonscalar",
+        "formula:ftc-0601-map-nonscalar",
+        "=MAP(SEQUENCE(10),LAMBDA(x,IF(x<2,FALSE,AND(MOD(x,SEQUENCE(MAX(1,INT(SQRT(x)))-1,,2))<>0))))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0601 map probe adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Error(WorksheetErrorCode::Calc)
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
