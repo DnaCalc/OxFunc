@@ -293,6 +293,40 @@ fn ftc_0667_upper_sharp_s_matches_local_excel_like_probe_through_adapter() {
 }
 
 #[test]
+fn ftc_1006_exact_formula_returns_201_locally_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1006-exact",
+        "formula:ftc-1006-exact",
+        "=LET(Wrap,LAMBDA(z,p,WRAPCOLS(TOCOL(z,,TRUE),p)),IoS,LAMBDA(x,p,LET(w,Wrap(x,2),x0,TAKE(w,1),x1,TAKE(w,-1),y0,Wrap(x0,p),y1,Wrap(x1,p),VSTACK(y0,y1))),data,{1;2;3;4;5;6;7;8},result,IoS(data,2),INDEX(TOCOL(result),1)+INDEX(TOCOL(result),5)*100)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1006 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(201.0)
+    );
+}
+
+#[test]
+fn ftc_1007_exact_formula_returns_6_locally_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1007-exact",
+        "formula:ftc-1007-exact",
+        "=LET(x,HSTACK(3,0,1,0),Re,LAMBDA(z,TAKE(z,,COLUMNS(z)/2)),Im,LAMBDA(z,TAKE(z,,-COLUMNS(z)/2)),x0,TAKE(x,1),x1,TAKE(x,-1),y0Re,INDEX(Re(x0),1,1)+INDEX(Re(x1),1,1),y1Re,INDEX(Re(x0),1,1)-INDEX(Re(x1),1,1),y0Re+y1Re*100)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1007 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(6.0)
+    );
+}
+
+#[test]
 fn worksheet_text_casing_family_matches_excel_observed_matrix_through_adapter() {
     let cases = [
         ("upper-strasse", "=UPPER(\"straße\")", "STRAßE"),
