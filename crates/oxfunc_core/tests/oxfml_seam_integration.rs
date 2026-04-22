@@ -224,7 +224,10 @@ fn randarray_columns_formula_preserves_generated_width_through_adapter() {
     ))
     .expect("randarray columns adapter run");
 
-    assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(3.0));
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(3.0)
+    );
 }
 
 #[test]
@@ -262,6 +265,44 @@ fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
 }
 
 #[test]
+fn ftc_0374_skew_exactness_witness_pins_current_local_value_and_excel_gap() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0374-skew-exactness",
+        "formula:ftc-0374-skew-exactness",
+        "=SKEW({1,2,2,3,5})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0374 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let current_local = 1.1180799331493771_f64;
+    let excel_target = 1.1180799331493774_f64;
+
+    assert_eq!(actual.to_bits(), current_local.to_bits());
+    assert_ne!(actual.to_bits(), excel_target.to_bits());
+}
+
+#[test]
+fn ftc_0375_kurt_exactness_witness_pins_current_local_value_and_excel_gap() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0375-kurt-exactness",
+        "formula:ftc-0375-kurt-exactness",
+        "=KURT({1,2,3,4,5})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0375 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let current_local = -1.200000000000002_f64;
+    let excel_target = -1.1999999999999984_f64;
+
+    assert_eq!(actual.to_bits(), current_local.to_bits());
+    assert_ne!(actual.to_bits(), excel_target.to_bits());
+}
+
+#[test]
 fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0635-exact",
@@ -272,7 +313,10 @@ fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
     ))
     .expect("ftc-0635 adapter run");
 
-    assert_eq!(run.evaluation_artifact.worksheet_value, EvalValue::Number(-2.0));
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(-2.0)
+    );
 }
 
 #[test]
@@ -454,6 +498,13 @@ fn worksheet_error_summary(code: WorksheetErrorCode) -> &'static str {
         WorksheetErrorCode::Field => "#FIELD!",
         WorksheetErrorCode::Blocked => "#BLOCKED!",
         WorksheetErrorCode::Connect => "#CONNECT!",
+    }
+}
+
+fn expect_number(value: &EvalValue) -> f64 {
+    match value {
+        EvalValue::Number(n) => *n,
+        other => panic!("expected numeric worksheet value, got {other:?}"),
     }
 }
 
