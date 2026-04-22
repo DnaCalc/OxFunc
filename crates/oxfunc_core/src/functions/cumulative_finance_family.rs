@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -390,6 +390,14 @@ mod tests {
         );
     }
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn meta_ids_match_expected_function_ids() {
         assert_eq!(CUMIPMT_META.function_id, "FUNC.CUMIPMT");
@@ -471,5 +479,24 @@ mod tests {
         let seeded = cumipmt_kernel(0.09 / 12.0, 360.0, 125000.0, 13.0, 24.0, 0.0)
             .expect("seeded periods should succeed");
         assert_close(exact, seeded, 1.0e-8);
+    }
+
+    #[test]
+    fn cumipmt_and_cumprinc_exactness_witness_rows_pin_current_local_bits_and_excel_gaps() {
+        let cumipmt_actual =
+            cumipmt_kernel(0.05 / 12.0, 360.0, 200000.0, 1.0, 12.0, 0.0).expect("cumipmt witness");
+        let cumipmt_current_local = f64::from_bits(0xc0c3667e7f577147);
+        let cumipmt_excel_target = f64::from_bits(0xc0c3667e7f577145);
+
+        assert_bits(cumipmt_actual, cumipmt_current_local);
+        assert_ne!(cumipmt_actual.to_bits(), cumipmt_excel_target.to_bits());
+
+        let cumprinc_actual = cumprinc_kernel(0.05 / 12.0, 360.0, 200000.0, 1.0, 12.0, 0.0)
+            .expect("cumprinc witness");
+        let cumprinc_current_local = f64::from_bits(0xc0a70d761d26006e);
+        let cumprinc_excel_target = f64::from_bits(0xc0a70d761d260042);
+
+        assert_bits(cumprinc_actual, cumprinc_current_local);
+        assert_ne!(cumprinc_actual.to_bits(), cumprinc_excel_target.to_bits());
     }
 }

@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
+    coerce_prepared_to_number, prepare_arg_values_only, PreparedArgValue,
 };
 use crate::functions::power_fn::power_kernel;
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{resolve_eval_value, ReferenceResolver};
 use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
 use std::fmt;
 
@@ -1334,6 +1334,31 @@ mod tests {
 
         assert_bits(actual, current_local);
         assert_ne!(actual.to_bits(), excel_target.to_bits());
+    }
+
+    #[test]
+    fn ppmt_and_effect_exactness_witness_rows_pin_current_local_bits_and_excel_gaps() {
+        let ppmt_actual = ppmt(
+            0.05 / 12.0,
+            1.0,
+            360.0,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+        )
+        .expect("ppmt witness");
+        let ppmt_current_local = f64::from_bits(0xc06e09eace0506e4);
+        let ppmt_excel_target = f64::from_bits(0xc06e09eace050722);
+
+        assert_bits(ppmt_actual, ppmt_current_local);
+        assert_ne!(ppmt_actual.to_bits(), ppmt_excel_target.to_bits());
+
+        let effect_actual = effect(0.05, 12.0).expect("effect witness");
+        let effect_current_local = f64::from_bits(0x3faa31e46c681b80);
+        let effect_excel_target = f64::from_bits(0x3faa31e46c681bc0);
+
+        assert_bits(effect_actual, effect_current_local);
+        assert_ne!(effect_actual.to_bits(), effect_excel_target.to_bits());
     }
 
     #[test]
