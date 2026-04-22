@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
+    eval_binary_numeric_surface, map_binary_numeric_error_to_ws, BinaryNumericSurfaceError,
 };
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::resolver::ReferenceResolver;
@@ -44,6 +44,14 @@ pub fn map_permutationa_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetE
 mod tests {
     use super::*;
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn permutationa_meta_function_id_is_stable() {
         assert_eq!(PERMUTATIONA_META.function_id, "FUNC.PERMUTATIONA");
@@ -56,5 +64,17 @@ mod tests {
         assert_eq!(permutationa_kernel(0.0, 0.0), Ok(1.0));
         assert_eq!(permutationa_kernel(0.0, 1.0), Ok(0.0));
         assert_eq!(permutationa_kernel(-1.0, 1.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn permutationa_exact_publication_controls_remain_exact() {
+        assert_bits(
+            permutationa_kernel(3.0, 2.0).expect("permutationa(3,2)"),
+            9.0_f64,
+        );
+        assert_bits(
+            permutationa_kernel(4.0, 3.0).expect("permutationa(4,3)"),
+            64.0_f64,
+        );
     }
 }

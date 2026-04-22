@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
-    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
+    eval_binary_numeric_surface, map_binary_numeric_error_to_ws, BinaryNumericSurfaceError,
 };
 use crate::functions::combinatorics_common::combinations_of_int;
 use crate::functions::factorial_common::trunc_nonnegative;
@@ -43,6 +43,14 @@ pub fn map_combin_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCo
 mod tests {
     use super::*;
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn combin_meta_function_id_is_stable() {
         assert_eq!(COMBIN_META.function_id, "FUNC.COMBIN");
@@ -54,5 +62,11 @@ mod tests {
         assert_eq!(combin_kernel(5.9, 2.2), Ok(10.0));
         assert_eq!(combin_kernel(5.0, 6.0), Err(WorksheetErrorCode::Num));
         assert_eq!(combin_kernel(-1.0, 1.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn combin_exact_publication_controls_remain_exact() {
+        assert_bits(combin_kernel(10.0, 3.0).expect("combin(10,3)"), 120.0_f64);
+        assert_bits(combin_kernel(9.0, 2.0).expect("combin(9,2)"), 36.0_f64);
     }
 }

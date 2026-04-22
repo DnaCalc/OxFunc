@@ -4,7 +4,7 @@ use crate::function::{
 };
 use crate::functions::factorial_common::{double_factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    eval_unary_numeric_surface, map_unary_numeric_error_to_ws, UnaryNumericSurfaceError,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{EvalValue, WorksheetErrorCode};
@@ -43,6 +43,14 @@ pub fn map_factdouble_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErro
 mod tests {
     use super::*;
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn factdouble_meta_function_id_is_stable() {
         assert_eq!(FACTDOUBLE_META.function_id, "FUNC.FACTDOUBLE");
@@ -53,5 +61,11 @@ mod tests {
         assert_eq!(factdouble_kernel(6.9), Ok(48.0));
         assert_eq!(factdouble_kernel(-1.0), Ok(1.0));
         assert_eq!(factdouble_kernel(-1.1), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn factdouble_exact_publication_controls_remain_exact() {
+        assert_bits(factdouble_kernel(9.0).expect("factdouble(9)"), 945.0_f64);
+        assert_bits(factdouble_kernel(6.0).expect("factdouble(6)"), 48.0_f64);
     }
 }

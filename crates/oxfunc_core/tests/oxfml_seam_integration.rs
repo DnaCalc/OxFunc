@@ -9,7 +9,7 @@ use oxfml_core::semantics::{
     RegistrationSourceKind,
 };
 use oxfml_core::test_support::oxfunc_adapter::{
-    OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
+    run_oxfunc_preparation_adapter, OxFuncAdapterRequest,
 };
 use oxfunc_core::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
@@ -288,6 +288,88 @@ fn ftc_0353_countblank_let_array_matches_retained_excel_shaped_value_errors_thro
             .unwrap(),
         )
     );
+}
+
+#[test]
+fn multinomial_widened_empirical_machine_witnesses_match_excel_targets_through_adapter() {
+    for (id, formula, expected) in [
+        (
+            "ftc-0254-multinomial-exactness",
+            "=MULTINOMIAL(2,3,4)",
+            1259.9999999999991_f64,
+        ),
+        (
+            "multinomial-anchor-permutation",
+            "=MULTINOMIAL(4,2,3)",
+            1259.9999999999991_f64,
+        ),
+        (
+            "multinomial-anchor-zero-padded",
+            "=MULTINOMIAL(0,2,3,4)",
+            1259.9999999999991_f64,
+        ),
+        (
+            "multinomial-two-positive-with-zero",
+            "=MULTINOMIAL(0,2,3)",
+            9.999999999999998_f64,
+        ),
+        (
+            "multinomial-two-positive-spread",
+            "=MULTINOMIAL(2,7)",
+            35.99999999999998_f64,
+        ),
+        (
+            "multinomial-four-arg-consecutive",
+            "=MULTINOMIAL(1,2,3,4)",
+            12599.999999999995_f64,
+        ),
+        (
+            "multinomial-five-sum-consecutive",
+            "=MULTINOMIAL(2,3,4,5)",
+            2522520.0000000005_f64,
+        ),
+    ] {
+        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+            id,
+            &format!("formula:{id}"),
+            formula.to_string(),
+            locus(1, 1),
+            TypedContextQueryBundle::default(),
+        ))
+        .expect("multinomial widened empirical adapter run");
+
+        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
+    }
+}
+
+#[test]
+fn combinatorial_adjacent_exact_controls_remain_exact_through_adapter() {
+    for (id, formula, expected) in [
+        (
+            "multinomial-factor-expression-exact-control",
+            "=FACT(9)/(FACT(2)*FACT(3)*FACT(4))",
+            1260.0_f64,
+        ),
+        ("fact-exact-control", "=FACT(9)", 362880.0_f64),
+        ("factdouble-exact-control", "=FACTDOUBLE(9)", 945.0_f64),
+        ("combin-exact-control", "=COMBIN(10,3)", 120.0_f64),
+        ("combina-exact-control", "=COMBINA(4,3)", 20.0_f64),
+        ("permut-exact-control", "=PERMUT(10,3)", 720.0_f64),
+        ("permutationa-exact-control", "=PERMUTATIONA(3,2)", 9.0_f64),
+    ] {
+        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+            id,
+            &format!("formula:{id}"),
+            formula.to_string(),
+            locus(1, 1),
+            TypedContextQueryBundle::default(),
+        ))
+        .expect("combinatorial exact control adapter run");
+
+        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
+    }
 }
 
 #[test]

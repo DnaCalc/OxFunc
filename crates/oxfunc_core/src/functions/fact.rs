@@ -4,7 +4,7 @@ use crate::function::{
 };
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    eval_unary_numeric_surface, map_unary_numeric_error_to_ws, UnaryNumericSurfaceError,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{EvalValue, WorksheetErrorCode};
@@ -46,6 +46,14 @@ pub fn map_fact_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn fact_meta_function_id_is_stable() {
         assert_eq!(FACT_META.function_id, "FUNC.FACT");
@@ -55,5 +63,11 @@ mod tests {
     fn fact_kernel_truncates_and_rejects_negative() {
         assert_eq!(fact_kernel(5.9), Ok(120.0));
         assert_eq!(fact_kernel(-1.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn fact_exact_publication_controls_remain_exact() {
+        assert_bits(fact_kernel(9.0).expect("fact(9)"), 362880.0_f64);
+        assert_bits(fact_kernel(2.0).expect("fact(2)"), 2.0_f64);
     }
 }
