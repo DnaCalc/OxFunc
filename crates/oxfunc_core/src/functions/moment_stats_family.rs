@@ -85,26 +85,6 @@ fn mean(values: &[f64]) -> f64 {
     values.iter().sum::<f64>() / values.len() as f64
 }
 
-fn sample_standardized_moment_sum(
-    values: &[f64],
-    power: i32,
-) -> Result<(usize, f64), WorksheetErrorCode> {
-    let n = values.len();
-    let avg = mean(values);
-    let mut sumsq = 0.0;
-    let mut sump = 0.0;
-    for value in values {
-        let delta = *value - avg;
-        sumsq += delta * delta;
-        sump += delta.powi(power);
-    }
-    if sumsq == 0.0 {
-        return Err(WorksheetErrorCode::Div0);
-    }
-    let sample_std = (sumsq / (n as f64 - 1.0)).sqrt();
-    Ok((n, sump / sample_std.powi(power)))
-}
-
 fn population_standardized_moment_sum(
     values: &[f64],
     power: i32,
@@ -129,7 +109,29 @@ fn kurt_kernel(values: &[f64]) -> Result<f64, WorksheetErrorCode> {
     if values.len() < 4 {
         return Err(WorksheetErrorCode::Div0);
     }
-    let (n, standardized_sum) = sample_standardized_moment_sum(values, 4)?;
+
+    let n = values.len();
+    let avg = mean(values);
+    let mut sumsq = 0.0;
+    let mut deltas = Vec::with_capacity(n);
+    for value in values {
+        let delta = *value - avg;
+        sumsq += delta * delta;
+        deltas.push(delta);
+    }
+    if sumsq == 0.0 {
+        return Err(WorksheetErrorCode::Div0);
+    }
+
+    let sample_std = (sumsq / (n as f64 - 1.0)).sqrt();
+    let standardized_sum = deltas
+        .iter()
+        .map(|delta| {
+            let z = *delta / sample_std;
+            let z2 = z * z;
+            z2 * z2
+        })
+        .sum::<f64>();
     let n = n as f64;
     Ok(
         (n * (n + 1.0) * standardized_sum) / ((n - 1.0) * (n - 2.0) * (n - 3.0))
@@ -397,6 +399,15 @@ mod tests {
         }
     }
 
+    fn assert_number_bits(value: EvalValue, expected: f64) {
+        match value {
+            EvalValue::Number(n) => {
+                assert_eq!(n.to_bits(), expected.to_bits(), "{n} vs {expected}")
+            }
+            other => panic!("expected number, got {other:?}"),
+        }
+    }
+
     #[test]
     fn metadata_matches_expected_shapes() {
         assert_eq!(KURT_META.arity.min, 1);
@@ -428,6 +439,30 @@ mod tests {
         assert_close(
             eval_skew_p_surface(&[ref_arg("A1:A8")], &resolver).unwrap(),
             1.02720970603623,
+        );
+    }
+
+    #[test]
+    fn single_array_argument_exact_bits_match_current_skew_and_kurt_witnesses() {
+        let resolver = MockResolver {
+            cells: HashMap::new(),
+        };
+
+        assert_number_bits(
+            eval_skew_surface(
+                &[CallArgValue::Eval(number_row(&[1.0, 2.0, 2.0, 3.0, 5.0]))],
+                &resolver,
+            )
+            .unwrap(),
+            1.1180799331493774,
+        );
+        assert_number_bits(
+            eval_kurt_surface(
+                &[CallArgValue::Eval(number_row(&[1.0, 2.0, 3.0, 4.0, 5.0]))],
+                &resolver,
+            )
+            .unwrap(),
+            -1.1999999999999984,
         );
     }
 
