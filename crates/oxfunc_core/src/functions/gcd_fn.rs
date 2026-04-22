@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{expand_aggregate_arg, PreparedArgValue};
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
 use crate::resolver::ReferenceResolver;
@@ -56,11 +56,13 @@ pub fn eval_gcd_surface(
             actual: argc,
         });
     }
-    let prepared = prepare_args_values_only(args, resolver).map_err(GcdEvalError::Coercion)?;
-    let items = prepared
-        .iter()
-        .map(coerce_prepared_to_nonnegative_int)
-        .collect::<Result<Vec<_>, _>>()?;
+    let mut items = Vec::new();
+    for arg in args {
+        let expanded = expand_aggregate_arg(arg, resolver).map_err(GcdEvalError::Coercion)?;
+        for item in expanded {
+            items.push(coerce_prepared_to_nonnegative_int(&item.value)?);
+        }
+    }
     Ok(EvalValue::Number(gcd_kernel(&items)))
 }
 
@@ -76,6 +78,25 @@ pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+
+    struct NoResolver;
+
+    impl ReferenceResolver for NoResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+    }
 
     #[test]
     fn gcd_meta_function_id_is_stable() {
@@ -87,5 +108,33 @@ mod tests {
         assert_eq!(gcd_kernel(&[24, 36]), 12.0);
         assert_eq!(gcd_kernel(&[0, 5]), 5.0);
         assert_eq!(gcd_kernel(&[0, 0]), 0.0);
+    }
+
+    #[test]
+    fn ftc_0959_gcd_array_input_reduces_literal_vector_and_scalar_to_one() {
+        let got = eval_gcd_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(5.0),
+                        ArrayCellValue::Number(6.0),
+                        ArrayCellValue::Number(7.0),
+                        ArrayCellValue::Number(8.0),
+                        ArrayCellValue::Number(9.0),
+                        ArrayCellValue::Number(10.0),
+                        ArrayCellValue::Number(11.0),
+                        ArrayCellValue::Number(12.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(12.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
     }
 }
