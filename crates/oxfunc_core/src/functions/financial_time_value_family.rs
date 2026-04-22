@@ -1319,6 +1319,24 @@ mod tests {
     }
 
     #[test]
+    fn rate_exactness_witness_pins_current_local_value_and_excel_gap() {
+        let actual = rate(
+            360.0,
+            -1073.64,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+            None,
+        )
+        .expect("rate witness");
+        let current_local = 0.0041666445363460975_f64;
+        let excel_target = 0.004166644536345589_f64;
+
+        assert_bits(actual, current_local);
+        assert_ne!(actual.to_bits(), excel_target.to_bits());
+    }
+
+    #[test]
     fn core_annuity_functions_match_known_examples() {
         let monthly_rate = 0.08 / 12.0;
         let periods = 10.0;
