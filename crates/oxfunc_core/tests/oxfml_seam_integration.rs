@@ -360,6 +360,25 @@ fn ftc_0382_npv_exactness_witness_matches_excel_target_through_adapter() {
 }
 
 #[test]
+fn ftc_0383_irr_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0383-irr-exactness",
+        "formula:ftc-0383-irr-exactness",
+        "=IRR({-10000,3000,4200,6800})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0383 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = 0.1634056006889894_f64;
+    let excel_target = 0.16340560068898924_f64;
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
 fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0635-exact",

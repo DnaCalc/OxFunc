@@ -10,6 +10,7 @@ const ROOT_TOLERANCE: f64 = 1e-8;
 const ROOT_DERIVATIVE_EPS: f64 = 1e-12;
 const ROOT_MAX_ITERATIONS: usize = 100;
 const MIN_VALID_RATE: f64 = -0.999_999_999;
+const IRR_PUBLICATION_ULP_SCAN_RADIUS: usize = 16;
 const XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE: f64 = 2e-8;
 const XIRR_TWO_CASHFLOW_MAX_BRACKET_EXPANSIONS: usize = 128;
 const XIRR_GENERAL_POSITIVE_ROOT_BRENT_EPS: f64 = 1e-8;
@@ -296,6 +297,100 @@ fn xnpv_derivative(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, Work
     }
 }
 
+fn next_up(rate: f64) -> f64 {
+    if rate.is_nan() || rate == f64::INFINITY {
+        rate
+    } else if rate == -0.0 {
+        0.0
+    } else {
+        let bits = rate.to_bits();
+        if rate >= 0.0 {
+            f64::from_bits(bits + 1)
+        } else {
+            f64::from_bits(bits - 1)
+        }
+    }
+}
+
+fn next_down(rate: f64) -> f64 {
+    if rate.is_nan() || rate == f64::NEG_INFINITY {
+        rate
+    } else if rate == 0.0 {
+        -0.0
+    } else {
+        let bits = rate.to_bits();
+        if rate > 0.0 {
+            f64::from_bits(bits - 1)
+        } else {
+            f64::from_bits(bits + 1)
+        }
+    }
+}
+
+fn midpoint_of_local_min_abs_residual_plateau<F>(
+    root: f64,
+    mut f: F,
+) -> Result<f64, WorksheetErrorCode>
+where
+    F: FnMut(f64) -> Result<f64, WorksheetErrorCode>,
+{
+    let mut best_rate = root;
+    let mut best_abs_bits = f(root)?.abs().to_bits();
+
+    let mut lower_probe = root;
+    let mut upper_probe = root;
+    for _ in 0..IRR_PUBLICATION_ULP_SCAN_RADIUS {
+        lower_probe = next_down(lower_probe);
+        if lower_probe.is_finite() {
+            let abs_bits = f(lower_probe)?.abs().to_bits();
+            if abs_bits < best_abs_bits {
+                best_abs_bits = abs_bits;
+                best_rate = lower_probe;
+            }
+        }
+
+        upper_probe = next_up(upper_probe);
+        if upper_probe.is_finite() {
+            let abs_bits = f(upper_probe)?.abs().to_bits();
+            if abs_bits < best_abs_bits {
+                best_abs_bits = abs_bits;
+                best_rate = upper_probe;
+            }
+        }
+    }
+
+    let mut lower = best_rate;
+    loop {
+        let candidate = next_down(lower);
+        if !candidate.is_finite() || f(candidate)?.abs().to_bits() != best_abs_bits {
+            break;
+        }
+        lower = candidate;
+    }
+
+    let mut upper = best_rate;
+    loop {
+        let candidate = next_up(upper);
+        if !candidate.is_finite() || f(candidate)?.abs().to_bits() != best_abs_bits {
+            break;
+        }
+        upper = candidate;
+    }
+
+    let mut width = 0usize;
+    let mut cursor = lower;
+    while cursor.to_bits() != upper.to_bits() {
+        cursor = next_up(cursor);
+        width += 1;
+    }
+
+    let mut midpoint = lower;
+    for _ in 0..(width / 2) {
+        midpoint = next_up(midpoint);
+    }
+    Ok(midpoint)
+}
+
 fn bounded_rate_solve<F, D>(
     guess: f64,
     mut f: F,
@@ -361,11 +456,12 @@ where
 
 fn irr_kernel(cashflows: &[f64], guess: Option<f64>) -> Result<f64, WorksheetErrorCode> {
     validate_cashflows(cashflows)?;
-    bounded_rate_solve(
+    let root = bounded_rate_solve(
         guess.unwrap_or(0.1),
         |rate| periodic_npv_with_t0(rate, cashflows),
         |rate| periodic_npv_derivative(rate, cashflows),
-    )
+    )?;
+    midpoint_of_local_min_abs_residual_plateau(root, |rate| periodic_npv_with_t0(rate, cashflows))
 }
 
 pub fn xnpv_kernel(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
@@ -676,6 +772,14 @@ mod tests {
         assert!((left - right).abs() < 1e-8, "left={left}, right={right}");
     }
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn metadata_matches_batch_shape() {
         assert_eq!(IRR_META.function_id, "FUNC.IRR");
@@ -685,6 +789,16 @@ mod tests {
             XIRR_META.surface_fec_dependency_profile,
             FecDependencyProfile::RefOnly
         );
+    }
+
+    #[test]
+    fn irr_exactness_witness_matches_excel_target() {
+        let actual = irr_kernel(&[-10000.0, 3000.0, 4200.0, 6800.0], None).expect("irr witness");
+        let prior_local = 0.1634056006889894_f64;
+        let excel_target = 0.16340560068898924_f64;
+
+        assert_bits(actual, excel_target);
+        assert_ne!(actual.to_bits(), prior_local.to_bits());
     }
 
     #[test]
