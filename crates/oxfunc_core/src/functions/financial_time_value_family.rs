@@ -823,7 +823,13 @@ pub fn effect(nominal_rate: f64, periods_per_year: f64) -> Result<f64, Financial
     if nominal_rate <= 0.0 || periods < 1.0 {
         return Err(FinancialError::Num);
     }
-    let result = (1.0 + nominal_rate / periods).powf(periods) - 1.0;
+    let compounded = match power_kernel(1.0 + nominal_rate / periods, periods) {
+        Ok(value) => value,
+        Err(WorksheetErrorCode::Div0) => return Err(FinancialError::Div0),
+        Err(WorksheetErrorCode::Num) => return Err(FinancialError::Num),
+        Err(_) => return Err(FinancialError::Value),
+    };
+    let result = compounded - 1.0;
     if result.is_finite() {
         Ok(result)
     } else {
@@ -1337,7 +1343,7 @@ mod tests {
     }
 
     #[test]
-    fn ppmt_and_effect_exactness_witness_rows_pin_current_local_bits_and_excel_gaps() {
+    fn ppmt_exactness_witness_pins_current_local_bits_and_excel_gap() {
         let ppmt_actual = ppmt(
             0.05 / 12.0,
             1.0,
@@ -1348,17 +1354,32 @@ mod tests {
         )
         .expect("ppmt witness");
         let ppmt_current_local = f64::from_bits(0xc06e09eace0506e4);
-        let ppmt_excel_target = f64::from_bits(0xc06e09eace050722);
+        let ppmt_excel_target = f64::from_bits(0xc06e09eace050723);
 
         assert_bits(ppmt_actual, ppmt_current_local);
         assert_ne!(ppmt_actual.to_bits(), ppmt_excel_target.to_bits());
+    }
 
-        let effect_actual = effect(0.05, 12.0).expect("effect witness");
-        let effect_current_local = f64::from_bits(0x3faa31e46c681b80);
-        let effect_excel_target = f64::from_bits(0x3faa31e46c681bc0);
+    #[test]
+    fn effect_exactness_witness_matches_excel_target() {
+        let actual = effect(0.05, 12.0).expect("effect witness");
+        let prior_local = f64::from_bits(0x3faa31e46c681b80);
+        let excel_target = f64::from_bits(0x3faa31e46c681bc0);
 
-        assert_bits(effect_actual, effect_current_local);
-        assert_ne!(effect_actual.to_bits(), effect_excel_target.to_bits());
+        assert_bits(actual, excel_target);
+        assert_ne!(actual.to_bits(), prior_local.to_bits());
+    }
+
+    #[test]
+    fn nominal_of_effect_stays_just_below_nominal_input_for_widened_rows() {
+        for periods in [2.0_f64, 4.0, 12.0, 365.0] {
+            let effective = effect(0.05, periods).expect("effect widened row");
+            let nominal_roundtrip = nominal(effective, periods).expect("nominal widened row");
+            assert!(
+                nominal_roundtrip < 0.05,
+                "periods={periods} nominal_roundtrip={nominal_roundtrip}"
+            );
+        }
     }
 
     #[test]

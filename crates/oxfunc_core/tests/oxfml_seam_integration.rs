@@ -373,35 +373,41 @@ fn combinatorial_adjacent_exact_controls_remain_exact_through_adapter() {
 }
 
 #[test]
-fn ftc_0391_and_ftc_0395_exactness_witness_rows_pin_current_local_bits_and_excel_gaps_through_adapter(
-) {
-    for (id, formula, current_local, excel_target) in [
-        (
-            "ftc-0391-ppmt-exactness",
-            "=PPMT(0.05/12,1,360,200000)",
-            f64::from_bits(0xc06e09eace0506e4),
-            f64::from_bits(0xc06e09eace050722),
-        ),
-        (
-            "ftc-0395-effect-exactness",
-            "=EFFECT(0.05,12)",
-            f64::from_bits(0x3faa31e46c681b80),
-            f64::from_bits(0x3faa31e46c681bc0),
-        ),
-    ] {
-        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
-            id,
-            &format!("formula:{id}"),
-            formula.to_string(),
-            locus(1, 1),
-            TypedContextQueryBundle::default(),
-        ))
-        .expect("financial_time_value exactness adapter run");
+fn ftc_0391_ppmt_exactness_witness_pins_current_local_bits_and_excel_gap_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0391-ppmt-exactness",
+        "formula:ftc-0391-ppmt-exactness",
+        "=PPMT(0.05/12,1,360,200000)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ppmt adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
-        assert_eq!(actual.to_bits(), current_local.to_bits(), "{formula}");
-        assert_ne!(actual.to_bits(), excel_target.to_bits(), "{formula}");
-    }
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let current_local = f64::from_bits(0xc06e09eace0506e4);
+    let excel_target = f64::from_bits(0xc06e09eace050723);
+
+    assert_eq!(actual.to_bits(), current_local.to_bits());
+    assert_ne!(actual.to_bits(), excel_target.to_bits());
+}
+
+#[test]
+fn ftc_0395_effect_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0395-effect-exactness",
+        "formula:ftc-0395-effect-exactness",
+        "=EFFECT(0.05,12)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("effect adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = f64::from_bits(0x3faa31e46c681b80);
+    let excel_target = f64::from_bits(0x3faa31e46c681bc0);
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
 }
 
 #[test]
