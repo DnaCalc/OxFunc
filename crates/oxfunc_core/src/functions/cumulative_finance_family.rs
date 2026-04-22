@@ -176,8 +176,9 @@ fn pmt(
     if rate.abs() < EPSILON {
         return Ok(-(future_value + present_value) / periods);
     }
-    let factor = growth(rate, periods)?;
-    let term = annuity_term(rate, periods, timing)?;
+    let log_growth = periods * rate.ln_1p();
+    let factor = log_growth.exp();
+    let term = timing.factor(rate) * log_growth.exp_m1() / rate;
     if term.abs() < EPSILON {
         return Err(CumulativeFinanceEvalError::Domain(WorksheetErrorCode::Num));
     }
@@ -189,14 +190,15 @@ fn pmt(
     }
 }
 
-fn ipmt(
+fn ipmt_from_payment(
     rate: f64,
     period_index: i32,
     periods: i32,
     present_value: f64,
     timing: PaymentTiming,
+    payment: f64,
 ) -> Result<f64, CumulativeFinanceEvalError> {
-    validate_finite(&[rate, present_value])?;
+    validate_finite(&[rate, present_value, payment])?;
     if period_index < 1 || period_index > periods || periods < 1 {
         return Err(CumulativeFinanceEvalError::Domain(WorksheetErrorCode::Num));
     }
@@ -206,7 +208,6 @@ fn ipmt(
     if rate.abs() < EPSILON {
         return Ok(0.0);
     }
-    let payment = pmt(rate, periods as f64, present_value, 0.0, timing)?;
     let result = match timing {
         PaymentTiming::EndOfPeriod => {
             fv(
@@ -238,15 +239,15 @@ fn ipmt(
     }
 }
 
-fn ppmt(
+fn ppmt_from_payment(
     rate: f64,
     period_index: i32,
     periods: i32,
     present_value: f64,
     timing: PaymentTiming,
+    payment: f64,
 ) -> Result<f64, CumulativeFinanceEvalError> {
-    let payment = pmt(rate, periods as f64, present_value, 0.0, timing)?;
-    let interest = ipmt(rate, period_index, periods, present_value, timing)?;
+    let interest = ipmt_from_payment(rate, period_index, periods, present_value, timing, payment)?;
     Ok(payment - interest)
 }
 
@@ -283,10 +284,13 @@ pub fn cumipmt_kernel(
     let timing = payment_timing_arg(type_number)?;
     validate_cumulative_inputs(rate, periods, pv, start_period, end_period, timing)?;
 
-    let mut total = 0.0;
+    let payment = pmt(rate, periods as f64, pv, 0.0, timing)?;
+    let mut principal_total = 0.0;
     for period in start_period..=end_period {
-        total += ipmt(rate, period, periods, pv, timing)?;
+        principal_total += ppmt_from_payment(rate, period, periods, pv, timing, payment)?;
     }
+    let payment_count = (end_period - start_period + 1) as f64;
+    let total = payment * payment_count - principal_total;
     if total.is_finite() {
         Ok(total)
     } else {
@@ -308,9 +312,10 @@ pub fn cumprinc_kernel(
     let timing = payment_timing_arg(type_number)?;
     validate_cumulative_inputs(rate, periods, pv, start_period, end_period, timing)?;
 
+    let payment = pmt(rate, periods as f64, pv, 0.0, timing)?;
     let mut total = 0.0;
     for period in start_period..=end_period {
-        total += ppmt(rate, period, periods, pv, timing)?;
+        total += ppmt_from_payment(rate, period, periods, pv, timing, payment)?;
     }
     if total.is_finite() {
         Ok(total)
@@ -482,21 +487,26 @@ mod tests {
     }
 
     #[test]
-    fn cumipmt_and_cumprinc_exactness_witness_rows_pin_current_local_bits_and_excel_gaps() {
+    fn cumipmt_and_cumprinc_exactness_witness_rows_match_excel_targets() {
         let cumipmt_actual =
             cumipmt_kernel(0.05 / 12.0, 360.0, 200000.0, 1.0, 12.0, 0.0).expect("cumipmt witness");
-        let cumipmt_current_local = f64::from_bits(0xc0c3667e7f577147);
-        let cumipmt_excel_target = f64::from_bits(0xc0c3667e7f577145);
-
-        assert_bits(cumipmt_actual, cumipmt_current_local);
-        assert_ne!(cumipmt_actual.to_bits(), cumipmt_excel_target.to_bits());
+        let cumipmt_excel_target = f64::from_bits(0xc0c3667e7f577146);
+        assert_bits(cumipmt_actual, cumipmt_excel_target);
 
         let cumprinc_actual = cumprinc_kernel(0.05 / 12.0, 360.0, 200000.0, 1.0, 12.0, 0.0)
             .expect("cumprinc witness");
-        let cumprinc_current_local = f64::from_bits(0xc0a70d761d26006e);
         let cumprinc_excel_target = f64::from_bits(0xc0a70d761d260042);
+        assert_bits(cumprinc_actual, cumprinc_excel_target);
 
-        assert_bits(cumprinc_actual, cumprinc_current_local);
-        assert_ne!(cumprinc_actual.to_bits(), cumprinc_excel_target.to_bits());
+        let payment = pmt(
+            0.05 / 12.0,
+            360.0,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+        )
+        .expect("cumulative payment witness");
+        let payment_excel_target = f64::from_bits(0xc090c692af15f63a);
+        assert_bits(payment, payment_excel_target);
     }
 }

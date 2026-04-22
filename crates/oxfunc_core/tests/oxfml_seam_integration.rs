@@ -405,19 +405,16 @@ fn ftc_0391_and_ftc_0395_exactness_witness_rows_pin_current_local_bits_and_excel
 }
 
 #[test]
-fn ftc_0393_and_ftc_0394_exactness_witness_rows_pin_current_local_bits_and_excel_gaps_through_adapter(
-) {
-    for (id, formula, current_local, excel_target) in [
+fn ftc_0393_and_ftc_0394_exactness_witness_rows_match_excel_targets_through_adapter() {
+    for (id, formula, excel_target) in [
         (
             "ftc-0393-cumipmt-exactness",
             "=CUMIPMT(0.05/12,360,200000,1,12,0)",
-            f64::from_bits(0xc0c3667e7f577147),
-            f64::from_bits(0xc0c3667e7f577145),
+            f64::from_bits(0xc0c3667e7f577146),
         ),
         (
             "ftc-0394-cumprinc-exactness",
             "=CUMPRINC(0.05/12,360,200000,1,12,0)",
-            f64::from_bits(0xc0a70d761d26006e),
             f64::from_bits(0xc0a70d761d260042),
         ),
     ] {
@@ -431,8 +428,7 @@ fn ftc_0393_and_ftc_0394_exactness_witness_rows_pin_current_local_bits_and_excel
         .expect("cumulative_finance exactness adapter run");
 
         let actual = expect_number(&run.evaluation_artifact.worksheet_value);
-        assert_eq!(actual.to_bits(), current_local.to_bits(), "{formula}");
-        assert_ne!(actual.to_bits(), excel_target.to_bits(), "{formula}");
+        assert_eq!(actual.to_bits(), excel_target.to_bits(), "{formula}");
     }
 }
 
