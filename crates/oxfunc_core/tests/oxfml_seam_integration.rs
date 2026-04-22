@@ -373,6 +373,84 @@ fn combinatorial_adjacent_exact_controls_remain_exact_through_adapter() {
 }
 
 #[test]
+fn ftc_0833_index_row_vector_selector_array_direct_call_matches_witness_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0833-index-vector-selector-direct",
+        "formula:ftc-0833-index-vector-selector-direct",
+        "=INDEX({10,20,30,40,50},SEQUENCE(3))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0833 index adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(10.0)],
+                vec![ArrayCellValue::Number(20.0)],
+                vec![ArrayCellValue::Number(30.0)],
+            ])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_0836_sortby_row_vector_multi_key_direct_call_matches_witness_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0836-sortby-row-vector-direct",
+        "formula:ftc-0836-sortby-row-vector-direct",
+        "=SORTBY({\"a\",\"b\",\"c\",\"d\"},{2,1,2,1},{1,2,1,2})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0836 sortby adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+            ]])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_0917_sort_row_vector_default_axis_direct_call_matches_witness_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0917-sort-row-vector-direct",
+        "formula:ftc-0917-sort-row-vector-direct",
+        "=SORT({3,1,4,1,5,9,2,6})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0917 sort adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(3.0),
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(4.0),
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(5.0),
+                ArrayCellValue::Number(9.0),
+                ArrayCellValue::Number(2.0),
+                ArrayCellValue::Number(6.0),
+            ]])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
 fn ftc_0399_disc_exactness_witness_matches_excel_target_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0399-disc-exactness",

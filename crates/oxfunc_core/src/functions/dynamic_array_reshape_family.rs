@@ -7,8 +7,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
-    run_values_only_prepared,
+    coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -689,7 +689,7 @@ pub fn eval_sort_prepared(
         .transpose()?
         .unwrap_or(false);
     let descending = parse_sort_order(args.get(2))?;
-    let sort_across_columns = by_col || (array.shape().rows == 1 && array.shape().cols > 1);
+    let sort_across_columns = by_col;
 
     if sort_across_columns {
         let sort_index = parse_sort_index(args.get(1), array.shape().rows)?;
@@ -698,7 +698,11 @@ pub fn eval_sort_prepared(
             let lhs_cell = array.get(sort_index, *lhs).expect("validated column");
             let rhs_cell = array.get(sort_index, *rhs).expect("validated column");
             let ord = compare_cell_values(lhs_cell, rhs_cell);
-            if descending { ord.reverse() } else { ord }
+            if descending {
+                ord.reverse()
+            } else {
+                ord
+            }
         });
         let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
         for row in 0..array.shape().rows {
@@ -715,7 +719,11 @@ pub fn eval_sort_prepared(
         let lhs_cell = array.get(*lhs, sort_index).expect("validated row");
         let rhs_cell = array.get(*rhs, sort_index).expect("validated row");
         let ord = compare_cell_values(lhs_cell, rhs_cell);
-        if descending { ord.reverse() } else { ord }
+        if descending {
+            ord.reverse()
+        } else {
+            ord
+        }
     });
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
     for row in order {
@@ -724,31 +732,96 @@ pub fn eval_sort_prepared(
     build_array(array.shape().rows, array.shape().cols, cells)
 }
 
+#[derive(Debug, Clone)]
+struct SortbyKeySpec {
+    keys: EvalArray,
+    descending: bool,
+}
+
+fn parse_sortby_key_specs(
+    args: &[PreparedArgValue],
+) -> Result<Vec<SortbyKeySpec>, DynamicArrayReshapeEvalError> {
+    let mut specs = Vec::new();
+    let mut idx = 1usize;
+    while idx < args.len() {
+        let keys = materialize_array_arg(&args[idx]);
+        idx += 1;
+        let descending = match args.get(idx) {
+            None => false,
+            Some(PreparedArgValue::Eval(EvalValue::Array(_))) => false,
+            Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => {
+                idx += 1;
+                false
+            }
+            Some(arg) => {
+                let descending = parse_sort_order(Some(arg))?;
+                idx += 1;
+                descending
+            }
+        };
+        specs.push(SortbyKeySpec { keys, descending });
+    }
+    Ok(specs)
+}
+
+fn sortby_column_keys(
+    by_array: &EvalArray,
+    len: usize,
+) -> Result<Vec<ArrayCellValue>, DynamicArrayReshapeEvalError> {
+    if by_array.shape().rows == 1 && by_array.shape().cols == len {
+        return Ok((0..by_array.shape().cols)
+            .map(|col| by_array.get(0, col).expect("validated key").clone())
+            .collect());
+    }
+    if by_array.shape().cols == 1 && by_array.shape().rows == len {
+        return Ok((0..by_array.shape().rows)
+            .map(|row| by_array.get(row, 0).expect("validated key").clone())
+            .collect());
+    }
+    Err(DynamicArrayReshapeEvalError::InvalidIncludeShape)
+}
+
+fn sortby_row_keys(
+    by_array: &EvalArray,
+    len: usize,
+) -> Result<Vec<ArrayCellValue>, DynamicArrayReshapeEvalError> {
+    if by_array.shape().cols == 1 && by_array.shape().rows == len {
+        return Ok((0..by_array.shape().rows)
+            .map(|row| by_array.get(row, 0).expect("validated key").clone())
+            .collect());
+    }
+    if by_array.shape().rows == 1 && by_array.shape().cols == len {
+        return Ok((0..by_array.shape().cols)
+            .map(|col| by_array.get(0, col).expect("validated key").clone())
+            .collect());
+    }
+    Err(DynamicArrayReshapeEvalError::InvalidIncludeShape)
+}
+
 pub fn eval_sortby_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
-    let by_array = materialize_array_arg(&args[1]);
-    let descending = parse_sort_order(args.get(2))?;
+    let specs = parse_sortby_key_specs(args)?;
 
     if array.shape().rows == 1 && array.shape().cols > 1 {
-        let col_keys: Vec<ArrayCellValue> =
-            if by_array.shape().rows == 1 && by_array.shape().cols == array.shape().cols {
-                (0..by_array.shape().cols)
-                    .map(|col| by_array.get(0, col).expect("validated key").clone())
-                    .collect()
-            } else if by_array.shape().cols == 1 && by_array.shape().rows == array.shape().cols {
-                (0..by_array.shape().rows)
-                    .map(|row| by_array.get(row, 0).expect("validated key").clone())
-                    .collect()
-            } else {
-                return Err(DynamicArrayReshapeEvalError::InvalidIncludeShape);
-            };
+        let key_specs = specs
+            .iter()
+            .map(|spec| {
+                sortby_column_keys(&spec.keys, array.shape().cols)
+                    .map(|keys| (keys, spec.descending))
+            })
+            .collect::<Result<Vec<_>, _>>()?;
 
         let mut order: Vec<usize> = (0..array.shape().cols).collect();
         order.sort_by(|lhs, rhs| {
-            let ord = compare_cell_values(&col_keys[*lhs], &col_keys[*rhs]);
-            if descending { ord.reverse() } else { ord }
+            for (keys, descending) in &key_specs {
+                let ord = compare_cell_values(&keys[*lhs], &keys[*rhs]);
+                if ord != Ordering::Equal {
+                    return if *descending { ord.reverse() } else { ord };
+                }
+            }
+            Ordering::Equal
         });
 
         let mut cells = Vec::with_capacity(array.shape().cols);
@@ -758,23 +831,22 @@ pub fn eval_sortby_prepared(
         return build_array(array.shape().rows, array.shape().cols, cells);
     }
 
-    let row_keys: Vec<ArrayCellValue> =
-        if by_array.shape().cols == 1 && by_array.shape().rows == array.shape().rows {
-            (0..by_array.shape().rows)
-                .map(|row| by_array.get(row, 0).expect("validated key").clone())
-                .collect()
-        } else if by_array.shape().rows == 1 && by_array.shape().cols == array.shape().rows {
-            (0..by_array.shape().cols)
-                .map(|col| by_array.get(0, col).expect("validated key").clone())
-                .collect()
-        } else {
-            return Err(DynamicArrayReshapeEvalError::InvalidIncludeShape);
-        };
+    let key_specs = specs
+        .iter()
+        .map(|spec| {
+            sortby_row_keys(&spec.keys, array.shape().rows).map(|keys| (keys, spec.descending))
+        })
+        .collect::<Result<Vec<_>, _>>()?;
 
     let mut order: Vec<usize> = (0..array.shape().rows).collect();
     order.sort_by(|lhs, rhs| {
-        let ord = compare_cell_values(&row_keys[*lhs], &row_keys[*rhs]);
-        if descending { ord.reverse() } else { ord }
+        for (keys, descending) in &key_specs {
+            let ord = compare_cell_values(&keys[*lhs], &keys[*rhs]);
+            if ord != Ordering::Equal {
+                return if *descending { ord.reverse() } else { ord };
+            }
+        }
+        Ordering::Equal
     });
 
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
@@ -1168,9 +1240,15 @@ mod tests {
         let rows = eval_chooserows_surface(
             &[
                 array(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("a"))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("b"))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("c"))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "a",
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "b",
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "c",
+                    ))],
                 ]),
                 array(vec![
                     vec![ArrayCellValue::Number(3.0)],
@@ -1184,8 +1262,12 @@ mod tests {
             rows,
             EvalValue::Array(
                 EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("c"))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment("a"))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "c"
+                    ))],
+                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        "a"
+                    ))],
                 ])
                 .unwrap()
             )
@@ -1506,6 +1588,84 @@ mod tests {
                     ],
                     vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(6.0)],
                 ])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn ftc_0917_sort_row_vector_default_axis_direct_call_preserves_row_order() {
+        let sort_0917 = eval_sort_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(5.0),
+                    ArrayCellValue::Number(9.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(6.0),
+                ]]),
+                num(1.0),
+                num(1.0),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            sort_0917,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(5.0),
+                    ArrayCellValue::Number(9.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(6.0),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn ftc_0836_sortby_row_vector_multi_key_direct_call_matches_witness() {
+        let got = eval_sortby_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                ]]),
+                array(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(1.0),
+                ]]),
+                array(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                ]]),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                ]])
                 .unwrap()
             )
         );

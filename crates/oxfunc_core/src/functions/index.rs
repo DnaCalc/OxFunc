@@ -1,10 +1,10 @@
-use crate::coercion::{CoercionError, coerce_arg_to_number};
+use crate::coercion::{coerce_arg_to_number, CoercionError};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::{
-    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
+    format_relative_target, parse_a1_reference, A1Reference, A1ReferenceNotation,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -46,6 +46,12 @@ pub enum IndexEvalError {
     ArrayPayloadUnavailable,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+enum ArrayIndexSelector {
+    Scalar(usize),
+    SelectorArray(EvalArray),
+}
+
 fn coerce_index_number(
     arg: &CallArgValue,
     resolver: &impl ReferenceResolver,
@@ -84,6 +90,24 @@ fn coerce_area_number(
             }
             Ok(n as usize)
         }
+    }
+}
+
+fn coerce_array_index_selector(
+    arg: Option<&CallArgValue>,
+    resolver: &impl ReferenceResolver,
+    omitted_default: usize,
+    blank_default: usize,
+) -> Result<ArrayIndexSelector, IndexEvalError> {
+    match arg {
+        None => Ok(ArrayIndexSelector::Scalar(omitted_default)),
+        Some(CallArgValue::MissingArg | CallArgValue::EmptyCell) => {
+            Ok(ArrayIndexSelector::Scalar(blank_default))
+        }
+        Some(CallArgValue::Eval(EvalValue::Array(array))) => {
+            Ok(ArrayIndexSelector::SelectorArray(array.clone()))
+        }
+        Some(other) => coerce_index_number(other, resolver).map(ArrayIndexSelector::Scalar),
     }
 }
 
@@ -304,6 +328,97 @@ fn normalize_array_indices_for_vector_position(
     (row, col)
 }
 
+fn coerce_selector_cell_to_index(cell: &ArrayCellValue) -> Result<usize, IndexEvalError> {
+    match cell {
+        ArrayCellValue::Number(n) => {
+            if !n.is_finite() || *n < 1.0 || n.fract() != 0.0 {
+                return Err(IndexEvalError::InvalidIndexNumber(*n));
+            }
+            Ok(*n as usize)
+        }
+        ArrayCellValue::Error(code) => Err(IndexEvalError::Coercion(
+            CoercionError::WorksheetError(*code),
+        )),
+        _ => Err(IndexEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("array_index_selector"),
+        )),
+    }
+}
+
+fn vector_cell_at_position(
+    array: &EvalArray,
+    position: usize,
+) -> Result<ArrayCellValue, IndexEvalError> {
+    let shape = array.shape();
+    if shape.rows == 1 {
+        if position == 0 || position > shape.cols {
+            return Err(IndexEvalError::OutOfBounds {
+                rows: shape.rows,
+                cols: shape.cols,
+                row: 1,
+                col: position,
+            });
+        }
+        return Ok(array
+            .get(0, position - 1)
+            .expect("validated vector position")
+            .clone());
+    }
+    if position == 0 || position > shape.rows {
+        return Err(IndexEvalError::OutOfBounds {
+            rows: shape.rows,
+            cols: shape.cols,
+            row: position,
+            col: 1,
+        });
+    }
+    Ok(array
+        .get(position - 1, 0)
+        .expect("validated vector position")
+        .clone())
+}
+
+fn select_vector_positions(
+    array: &EvalArray,
+    selector: &EvalArray,
+) -> Result<EvalValue, IndexEvalError> {
+    let cells = selector
+        .iter_row_major()
+        .map(|cell| {
+            coerce_selector_cell_to_index(cell).and_then(|idx| vector_cell_at_position(array, idx))
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(EvalValue::Array(
+        EvalArray::new(selector.shape(), cells).expect("selector shape preserved"),
+    ))
+}
+
+fn try_slice_vector_with_selector_array(
+    array: &EvalArray,
+    row_selector: &ArrayIndexSelector,
+    _col_selector: &ArrayIndexSelector,
+    _row_arg: Option<&CallArgValue>,
+    col_arg: Option<&CallArgValue>,
+) -> Result<Option<EvalValue>, IndexEvalError> {
+    let shape = array.shape();
+    let col_omitted = matches!(
+        col_arg,
+        None | Some(CallArgValue::MissingArg | CallArgValue::EmptyCell)
+    );
+
+    if !col_omitted {
+        return Ok(None);
+    }
+
+    if (shape.rows == 1 && shape.cols >= 1) || (shape.cols == 1 && shape.rows >= 1) {
+        if let ArrayIndexSelector::SelectorArray(selector) = row_selector {
+            return select_vector_positions(array, selector).map(Some);
+        }
+    }
+
+    Ok(None)
+}
+
 pub fn eval_index_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -317,12 +432,11 @@ pub fn eval_index_surface(
         });
     }
 
-    let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
-    let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
-    let area = coerce_area_number(args.get(3), resolver)?;
-
     match &args[0] {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
+            let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
+            let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
+            let area = coerce_area_number(args.get(3), resolver)?;
             if let Some(areas) = parse_reference_areas(r)? {
                 let Some(selected_area) = areas.get(area - 1) else {
                     return Err(IndexEvalError::InvalidAreaNumber(area as f64));
@@ -343,15 +457,35 @@ pub fn eval_index_surface(
             }
         }
         CallArgValue::Eval(EvalValue::Array(array)) => {
+            let row_selector = coerce_array_index_selector(args.get(1), resolver, 0, 0)?;
+            let col_selector = coerce_array_index_selector(args.get(2), resolver, 1, 0)?;
+            if let Some(selected) = try_slice_vector_with_selector_array(
+                array,
+                &row_selector,
+                &col_selector,
+                args.get(1),
+                args.get(2),
+            )? {
+                return Ok(selected);
+            }
+            let ArrayIndexSelector::Scalar(row) = row_selector else {
+                return Err(IndexEvalError::UnsupportedSource("array_index_selector"));
+            };
+            let ArrayIndexSelector::Scalar(col) = col_selector else {
+                return Err(IndexEvalError::UnsupportedSource("array_index_selector"));
+            };
             let (row, col) =
                 normalize_array_indices_for_vector_position(array, row, col, args.get(2));
             slice_array(array, row, col)
         }
         CallArgValue::Eval(value) => {
+            let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
+            let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
             let Some(array) = scalar_array_from_eval_value(value) else {
                 return Err(IndexEvalError::UnsupportedSource("non_array_non_reference"));
             };
-            let (row, col) = normalize_array_indices_for_vector_position(&array, row, col, args.get(2));
+            let (row, col) =
+                normalize_array_indices_for_vector_position(&array, row, col, args.get(2));
             slice_array(&array, row, col)
         }
         CallArgValue::MissingArg => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
@@ -473,6 +607,42 @@ mod tests {
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(42.0)));
+    }
+
+    #[test]
+    fn ftc_0833_index_row_vector_selector_array_direct_call_returns_first_three_values() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                ])
+                .unwrap(),
+            )),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(10.0)],
+                    vec![ArrayCellValue::Number(20.0)],
+                    vec![ArrayCellValue::Number(30.0)],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     #[test]
