@@ -265,7 +265,7 @@ fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
 }
 
 #[test]
-fn ftc_0374_skew_exactness_witness_pins_current_local_value_and_excel_gap() {
+fn ftc_0374_skew_exactness_witness_matches_excel_target_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0374-skew-exactness",
         "formula:ftc-0374-skew-exactness",
@@ -276,11 +276,11 @@ fn ftc_0374_skew_exactness_witness_pins_current_local_value_and_excel_gap() {
     .expect("ftc-0374 adapter run");
 
     let actual = expect_number(&run.evaluation_artifact.worksheet_value);
-    let current_local = 1.1180799331493771_f64;
+    let prior_local = 1.1180799331493771_f64;
     let excel_target = 1.1180799331493774_f64;
 
-    assert_eq!(actual.to_bits(), current_local.to_bits());
-    assert_ne!(actual.to_bits(), excel_target.to_bits());
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
 }
 
 #[test]

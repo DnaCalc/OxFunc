@@ -141,7 +141,28 @@ fn skew_kernel(values: &[f64]) -> Result<f64, WorksheetErrorCode> {
     if values.len() < 3 {
         return Err(WorksheetErrorCode::Div0);
     }
-    let (n, standardized_sum) = sample_standardized_moment_sum(values, 3)?;
+
+    let n = values.len();
+    let avg = mean(values);
+    let mut sumsq = 0.0;
+    let mut deltas = Vec::with_capacity(n);
+    for value in values {
+        let delta = *value - avg;
+        sumsq += delta * delta;
+        deltas.push(delta);
+    }
+    if sumsq == 0.0 {
+        return Err(WorksheetErrorCode::Div0);
+    }
+
+    let sample_std = (sumsq / (n as f64 - 1.0)).sqrt();
+    let standardized_sum = deltas
+        .iter()
+        .map(|delta| {
+            let z = *delta / sample_std;
+            z * z * z
+        })
+        .sum::<f64>();
     let n = n as f64;
     Ok(n * standardized_sum / ((n - 1.0) * (n - 2.0)))
 }
