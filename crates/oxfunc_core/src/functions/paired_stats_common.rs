@@ -99,7 +99,11 @@ pub fn correlation_from_pairs(pairs: &[(f64, f64)]) -> Result<f64, WorksheetErro
     if sum_x2 == 0.0 || sum_y2 == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(sum_xy / (sum_x2 * sum_y2).sqrt())
+    let denom = (pairs.len() - 1) as f64;
+    let covariance = sum_xy / denom;
+    let variance_x = sum_x2 / denom;
+    let variance_y = sum_y2 / denom;
+    Ok(covariance / (variance_x.sqrt() * variance_y.sqrt()))
 }
 
 pub fn slope_from_pairs(pairs: &[(f64, f64)]) -> Result<f64, WorksheetErrorCode> {
@@ -135,6 +139,14 @@ mod tests {
     use super::*;
     use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
     use crate::value::ExcelText;
+
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
 
     #[test]
     fn pairwise_filter_keeps_only_numeric_pairs() {
@@ -184,5 +196,19 @@ mod tests {
         assert!((slope_from_pairs(&pairs).unwrap() - 2.0).abs() < 1e-12);
         assert!(intercept_from_pairs(&pairs).unwrap().abs() < 1e-12);
         assert!((rsq_from_pairs(&pairs).unwrap() - 1.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn correl_and_rsq_exactness_witness_rows_match_excel_targets() {
+        let positive_pairs = vec![(1.0, 2.0), (2.0, 4.0), (3.0, 6.0), (4.0, 8.0), (5.0, 10.0)];
+        let negative_pairs = vec![(1.0, 10.0), (2.0, 8.0), (3.0, 6.0), (4.0, 4.0), (5.0, 2.0)];
+
+        let correl_positive = correlation_from_pairs(&positive_pairs).expect("correl positive");
+        let correl_negative = correlation_from_pairs(&negative_pairs).expect("correl negative");
+        let rsq_positive = rsq_from_pairs(&positive_pairs).expect("rsq positive");
+
+        assert_bits(correl_positive, 0.9999999999999998_f64);
+        assert_bits(correl_negative, -0.9999999999999998_f64);
+        assert_bits(rsq_positive, 0.9999999999999996_f64);
     }
 }

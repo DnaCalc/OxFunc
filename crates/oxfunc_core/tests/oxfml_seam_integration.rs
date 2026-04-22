@@ -291,6 +291,63 @@ fn ftc_0353_countblank_let_array_matches_retained_excel_shaped_value_errors_thro
 }
 
 #[test]
+fn ftc_0365_correl_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0365-correl-exactness",
+        "formula:ftc-0365-correl-exactness",
+        "=CORREL({1,2,3,4,5},{2,4,6,8,10})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0365 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = 1.0_f64;
+    let excel_target = 0.9999999999999998_f64;
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
+fn ftc_0366_correl_negative_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0366-correl-negative-exactness",
+        "formula:ftc-0366-correl-negative-exactness",
+        "=CORREL({1,2,3,4,5},{10,8,6,4,2})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0366 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = -1.0_f64;
+    let excel_target = -0.9999999999999998_f64;
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
+fn ftc_0369_rsq_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0369-rsq-exactness",
+        "formula:ftc-0369-rsq-exactness",
+        "=RSQ({2,4,6,8,10},{1,2,3,4,5})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0369 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = 1.0_f64;
+    let excel_target = 0.9999999999999996_f64;
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
 fn ftc_0374_skew_exactness_witness_matches_excel_target_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0374-skew-exactness",
