@@ -451,6 +451,32 @@ fn ftc_0917_sort_row_vector_default_axis_direct_call_matches_witness_through_ada
 }
 
 #[test]
+fn ftc_0941_and_ftc_0995_isna_xmatch_direct_call_matches_logical_mask_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0941-0995-isna-xmatch-direct",
+        "formula:ftc-0941-0995-isna-xmatch-direct",
+        "=ISNA(XMATCH({1,2,3,4,5},{2,4,6,8}))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0941-0995 isna adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Logical(true),
+                ArrayCellValue::Logical(false),
+                ArrayCellValue::Logical(true),
+                ArrayCellValue::Logical(false),
+                ArrayCellValue::Logical(true),
+            ]])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
 fn ftc_0399_disc_exactness_witness_matches_excel_target_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0399-disc-exactness",

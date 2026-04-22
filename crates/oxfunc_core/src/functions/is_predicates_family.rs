@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
@@ -100,6 +100,17 @@ fn is_error_cell(cell: &ArrayCellValue) -> ArrayCellValue {
     }
 }
 
+fn is_na_cell(cell: &ArrayCellValue) -> ArrayCellValue {
+    match cell {
+        ArrayCellValue::Error(WorksheetErrorCode::NA) => ArrayCellValue::Logical(true),
+        ArrayCellValue::Error(_)
+        | ArrayCellValue::Number(_)
+        | ArrayCellValue::Text(_)
+        | ArrayCellValue::Logical(_)
+        | ArrayCellValue::EmptyCell => ArrayCellValue::Logical(false),
+    }
+}
+
 fn eval_boolean_predicate_surface(
     meta: &FunctionMeta,
     args: &[CallArgValue],
@@ -169,8 +180,7 @@ pub fn eval_iserror_surface(
                 PreparedArgValue::Eval(EvalValue::Array(array)) => {
                     let cells = array.iter_row_major().map(is_error_cell).collect();
                     Ok(EvalValue::Array(
-                        EvalArray::new(array.shape(), cells)
-                            .expect("input array shape is valid"),
+                        EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
                     ))
                 }
                 _ => Ok(EvalValue::Logical(matches!(
@@ -196,12 +206,28 @@ pub fn eval_isna_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, InformationPredicateEvalError> {
-    eval_boolean_predicate_surface(&ISNA_META, args, resolver, |arg| {
-        matches!(
-            arg,
-            PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))
-        )
-    })
+    run_values_only_prepared(
+        args,
+        resolver,
+        |prepared| {
+            if !ISNA_META.arity.accepts(prepared.len()) {
+                return Err(arity_error(&ISNA_META, prepared.len()));
+            }
+            match &prepared[0] {
+                PreparedArgValue::Eval(EvalValue::Array(array)) => {
+                    let cells = array.iter_row_major().map(is_na_cell).collect();
+                    Ok(EvalValue::Array(
+                        EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+                    ))
+                }
+                _ => Ok(EvalValue::Logical(matches!(
+                    prepared[0],
+                    PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))
+                ))),
+            }
+        },
+        InformationPredicateEvalError::Preparation,
+    )
 }
 
 pub fn eval_isnontext_surface(
@@ -376,6 +402,36 @@ mod tests {
                     ArrayCellValue::Logical(false),
                     ArrayCellValue::Logical(true),
                     ArrayCellValue::Logical(false),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn ftc_0941_and_ftc_0995_isna_array_lifts_xmatch_reduction_mask() {
+        let got = eval_isna_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap(),
+            ))],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(true),
                 ]])
                 .unwrap()
             ))
