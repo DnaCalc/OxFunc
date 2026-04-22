@@ -48,6 +48,57 @@ fn ftc_0959_gcd_sequence_direct_call_matches_scalar_one_through_adapter() {
 }
 
 #[test]
+fn ftc_1032_and_array_literal_direct_call_scalarizes_to_false_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-and-array-literal-direct",
+        "formula:ftc-1032-and-array-literal-direct",
+        "=AND({FALSE;TRUE;TRUE},{TRUE;TRUE;TRUE})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 and array literal adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Logical(false)
+    );
+}
+
+#[test]
+fn ftc_1032_and_sequence_bounds_direct_call_scalarizes_to_false_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-and-sequence-bounds-direct",
+        "formula:ftc-1032-and-sequence-bounds-direct",
+        "=LET(grid,SEQUENCE(7),AND(grid>1,grid<=3))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 and sequence bounds adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Logical(false)
+    );
+}
+
+#[test]
+fn ftc_1032_if_scalar_false_continuation_returns_scalar_zero_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-if-scalar-false-direct",
+        "formula:ftc-1032-if-scalar-false-direct",
+        "=IF(FALSE,SEQUENCE(7),0)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 if scalar false adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(0.0)
+    );
+}
+
+#[test]
 fn ftc_0966_log_array_direct_call_matches_elementwise_row_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0966-log-array-direct",

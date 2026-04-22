@@ -65,7 +65,13 @@ fn truth_from_direct_array_cell(cell: &ArrayCellValue) -> Result<Option<bool>, C
     }
 }
 
-fn try_eval_and_direct_elementwise(args: &[CallArgValue]) -> Result<Option<EvalValue>, CoercionError> {
+fn try_eval_and_direct_elementwise(
+    args: &[CallArgValue],
+) -> Result<Option<EvalValue>, CoercionError> {
+    if args.len() != 1 {
+        return Ok(None);
+    }
+
     let mut saw_array = false;
     let mut target_shape = None;
     let mut prepared_args = Vec::with_capacity(args.len());
@@ -77,15 +83,15 @@ fn try_eval_and_direct_elementwise(args: &[CallArgValue]) -> Result<Option<EvalV
                 match target_shape {
                     None => target_shape = Some(array.shape()),
                     Some(shape) if shape != array.shape() => {
-                        return Err(CoercionError::UnsupportedValueKind("mismatched_array_shape"));
+                        return Err(CoercionError::UnsupportedValueKind(
+                            "mismatched_array_shape",
+                        ));
                     }
                     _ => {}
                 }
                 prepared_args.push(DirectElementwiseArg::Array(array.clone()));
             }
-            CallArgValue::Eval(_)
-            | CallArgValue::MissingArg
-            | CallArgValue::EmptyCell => {
+            CallArgValue::Eval(_) | CallArgValue::MissingArg | CallArgValue::EmptyCell => {
                 prepared_args.push(DirectElementwiseArg::Scalar(arg.clone()));
             }
             CallArgValue::Reference(_) => return Ok(None),
@@ -107,11 +113,9 @@ fn try_eval_and_direct_elementwise(args: &[CallArgValue]) -> Result<Option<EvalV
             for arg in &prepared_args {
                 let truth = match arg {
                     DirectElementwiseArg::Scalar(arg) => truth_from_direct_scalar(arg)?,
-                    DirectElementwiseArg::Array(array) => {
-                        truth_from_direct_array_cell(
-                            array.get(row, col).expect("validated elementwise shape"),
-                        )?
-                    }
+                    DirectElementwiseArg::Array(array) => truth_from_direct_array_cell(
+                        array.get(row, col).expect("validated elementwise shape"),
+                    )?,
                 };
                 match truth {
                     Some(false) => {
@@ -279,26 +283,16 @@ mod tests {
     }
 
     #[test]
-    fn eval_and_direct_arrays_lift_elementwise() {
+    fn eval_and_single_direct_array_still_lifts_elementwise() {
         let got = eval_and_surface(
-            &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Logical(true),
-                        ArrayCellValue::Logical(true),
-                        ArrayCellValue::Logical(false),
-                    ]])
-                    .unwrap(),
-                )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Logical(true),
-                        ArrayCellValue::Logical(false),
-                        ArrayCellValue::Logical(true),
-                    ]])
-                    .unwrap(),
-                )),
-            ],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(false),
+                ]])
+                .unwrap(),
+            ))],
             &MockResolver { resolved: None },
         );
         assert_eq!(
@@ -306,11 +300,37 @@ mod tests {
             Ok(EvalValue::Array(
                 EvalArray::from_rows(vec![vec![
                     ArrayCellValue::Logical(true),
-                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(true),
                     ArrayCellValue::Logical(false),
                 ]])
                 .unwrap()
             ))
         );
+    }
+
+    #[test]
+    fn ftc_1032_multi_arg_direct_arrays_scalarize_to_false() {
+        let got = eval_and_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Logical(false),
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(true),
+                        ArrayCellValue::Logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &MockResolver { resolved: None },
+        );
+        assert_eq!(got, Ok(EvalValue::Logical(false)));
     }
 }

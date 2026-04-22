@@ -6745,7 +6745,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_value_call_ftc_1032_modern_calendar_month_returns_twenty_one() {
+    fn eval_surface_value_call_ftc_1032_post_and_scalarization_current_local_continuation_is_na() {
         let first_day = eval_surface_value_call(
             FUNC_ID_DATE,
             &[
@@ -6938,7 +6938,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got, Ok(EvalValue::Number(21.0)));
+        assert_eq!(got, Err(WorksheetErrorCode::NA));
     }
 
     #[test]
