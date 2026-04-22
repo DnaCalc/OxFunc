@@ -1371,6 +1371,19 @@ mod tests {
     }
 
     #[test]
+    fn effect_widened_publication_family_rows_pin_current_local_bits() {
+        for (periods, expected) in [
+            (2.0_f64, f64::from_bits(0x3fa9eb851eb851e0)),
+            (4.0_f64, f64::from_bits(0x3faa1581d7dbf480)),
+            (12.0_f64, f64::from_bits(0x3faa31e46c681bc0)),
+            (365.0_f64, f64::from_bits(0x3faa3fbbb959cb00)),
+        ] {
+            let actual = effect(0.05, periods).expect("effect widened family row");
+            assert_bits(actual, expected);
+        }
+    }
+
+    #[test]
     fn nominal_of_effect_stays_just_below_nominal_input_for_widened_rows() {
         for periods in [2.0_f64, 4.0, 12.0, 365.0] {
             let effective = effect(0.05, periods).expect("effect widened row");

@@ -411,6 +411,72 @@ fn ftc_0395_effect_exactness_witness_matches_excel_target_through_adapter() {
 }
 
 #[test]
+fn effect_widened_publication_family_rows_pin_current_local_bits_through_adapter() {
+    for (id, formula, expected) in [
+        (
+            "effect-widened-family-2",
+            "=EFFECT(0.05,2)",
+            f64::from_bits(0x3fa9eb851eb851e0),
+        ),
+        (
+            "effect-widened-family-4",
+            "=EFFECT(0.05,4)",
+            f64::from_bits(0x3faa1581d7dbf480),
+        ),
+        (
+            "effect-widened-family-12",
+            "=EFFECT(0.05,12)",
+            f64::from_bits(0x3faa31e46c681bc0),
+        ),
+        (
+            "effect-widened-family-365",
+            "=EFFECT(0.05,365)",
+            f64::from_bits(0x3faa3fbbb959cb00),
+        ),
+    ] {
+        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+            id,
+            &format!("formula:{id}"),
+            formula.to_string(),
+            locus(1, 1),
+            TypedContextQueryBundle::default(),
+        ))
+        .expect("effect widened family adapter run");
+
+        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
+    }
+}
+
+#[test]
+fn nominal_of_effect_stays_just_below_nominal_input_for_widened_rows_through_adapter() {
+    for (id, formula) in [
+        ("effect-nominal-roundtrip-2", "=NOMINAL(EFFECT(0.05,2),2)"),
+        ("effect-nominal-roundtrip-4", "=NOMINAL(EFFECT(0.05,4),4)"),
+        (
+            "effect-nominal-roundtrip-12",
+            "=NOMINAL(EFFECT(0.05,12),12)",
+        ),
+        (
+            "effect-nominal-roundtrip-365",
+            "=NOMINAL(EFFECT(0.05,365),365)",
+        ),
+    ] {
+        let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+            id,
+            &format!("formula:{id}"),
+            formula.to_string(),
+            locus(1, 1),
+            TypedContextQueryBundle::default(),
+        ))
+        .expect("effect nominal roundtrip adapter run");
+
+        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        assert!(actual < 0.05, "{formula}: {actual}");
+    }
+}
+
+#[test]
 fn ftc_0393_and_ftc_0394_exactness_witness_rows_match_excel_targets_through_adapter() {
     for (id, formula, excel_target) in [
         (
