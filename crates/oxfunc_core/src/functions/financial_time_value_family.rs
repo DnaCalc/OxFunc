@@ -616,9 +616,10 @@ pub fn npv(periodic_rate: f64, cashflows: &[f64]) -> Result<f64, FinancialError>
         return Err(FinancialError::Num);
     }
     let mut total = 0.0;
-    for (idx, cashflow) in cashflows.iter().enumerate() {
-        let period = (idx + 1) as f64;
-        total += *cashflow / base.powf(period);
+    let mut discount = 1.0;
+    for cashflow in cashflows {
+        discount *= base;
+        total += *cashflow / discount;
     }
     if total.is_finite() {
         Ok(total)
@@ -1287,6 +1288,33 @@ mod tests {
         assert!(
             delta <= tolerance,
             "expected {expected}, got {actual}, delta {delta}, tolerance {tolerance}"
+        );
+    }
+
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
+    #[test]
+    fn pmt_and_npv_exactness_witness_rows_are_pinned() {
+        assert_bits(
+            pmt(
+                0.05 / 12.0,
+                360.0,
+                200000.0,
+                0.0,
+                PaymentTiming::EndOfPeriod,
+            )
+            .expect("pmt witness"),
+            -1073.6432460242763,
+        );
+        assert_bits(
+            npv(0.1, &[-10000.0, 3000.0, 4200.0, 6800.0]).expect("npv witness"),
+            1188.4434123352207,
         );
     }
 

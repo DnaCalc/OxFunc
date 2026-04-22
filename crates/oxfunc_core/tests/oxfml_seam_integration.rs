@@ -303,6 +303,44 @@ fn ftc_0375_kurt_exactness_witness_matches_excel_target_through_adapter() {
 }
 
 #[test]
+fn ftc_0377_pmt_exactness_witness_pins_current_local_value_and_excel_gap() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0377-pmt-exactness",
+        "formula:ftc-0377-pmt-exactness",
+        "=PMT(0.05/12,360,200000)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0377 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let current_local = -1073.6432460242763_f64;
+    let excel_target = -1073.643246024278_f64;
+
+    assert_eq!(actual.to_bits(), current_local.to_bits());
+    assert_ne!(actual.to_bits(), excel_target.to_bits());
+}
+
+#[test]
+fn ftc_0382_npv_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0382-npv-exactness",
+        "formula:ftc-0382-npv-exactness",
+        "=NPV(0.1,{-10000,3000,4200,6800})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0382 adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = 1188.4434123352216_f64;
+    let excel_target = 1188.4434123352207_f64;
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
 fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0635-exact",
