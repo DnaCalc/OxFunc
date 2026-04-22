@@ -373,6 +373,25 @@ fn combinatorial_adjacent_exact_controls_remain_exact_through_adapter() {
 }
 
 #[test]
+fn ftc_0399_disc_exactness_witness_matches_excel_target_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0399-disc-exactness",
+        "formula:ftc-0399-disc-exactness",
+        "=DISC(44927,45292,97,100)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("disc adapter run");
+
+    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let prior_local = f64::from_bits(0x3f9eb851eb851eb8);
+    let excel_target = f64::from_bits(0x3f9eb851eb851ec0);
+
+    assert_eq!(actual.to_bits(), excel_target.to_bits());
+    assert_ne!(actual.to_bits(), prior_local.to_bits());
+}
+
+#[test]
 fn ftc_0391_ppmt_exactness_witness_pins_current_local_bits_and_excel_gap_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0391-ppmt-exactness",

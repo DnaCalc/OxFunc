@@ -4,9 +4,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
 };
-use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
+use crate::locale_format::{excel_serial_from_ymd, ymd_from_excel_serial, WorkbookDateSystem};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -331,7 +331,7 @@ pub fn disc_kernel(
         ));
     }
     let frac = security_fraction(settlement, maturity, basis)?;
-    Ok(((redemption - pr) / redemption) / frac)
+    Ok((1.0 - pr / redemption) / frac)
 }
 
 pub fn intrate_kernel(
@@ -661,6 +661,14 @@ mod tests {
         );
     }
 
+    fn assert_bits(actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{actual} vs {expected}"
+        );
+    }
+
     #[test]
     fn meta_ids_match_expected_function_ids() {
         assert_eq!(DISC_META.function_id, "FUNC.DISC");
@@ -770,6 +778,20 @@ mod tests {
         let price = pricedisc_kernel(settlement, maturity, 0.0525, 100.0, Some(2.0)).unwrap();
         let recovered = disc_kernel(settlement, maturity, price, 100.0, Some(2.0)).unwrap();
         assert_close(recovered, 0.0525, 1.0e-12);
+    }
+
+    #[test]
+    fn disc_exactness_witness_matches_excel_target_and_fraction_is_unity() {
+        let settlement = 44927.0_f64;
+        let maturity = 45292.0_f64;
+        let actual = disc_kernel(settlement, maturity, 97.0, 100.0, None).expect("disc witness");
+        let prior_local = f64::from_bits(0x3f9eb851eb851eb8);
+        let excel_target = f64::from_bits(0x3f9eb851eb851ec0);
+        let fraction = security_fraction(settlement, maturity, None).expect("disc witness frac");
+
+        assert_bits(fraction, 1.0_f64);
+        assert_bits(actual, excel_target);
+        assert_ne!(actual.to_bits(), prior_local.to_bits());
     }
 
     #[test]
