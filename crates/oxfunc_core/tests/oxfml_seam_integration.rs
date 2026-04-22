@@ -11,7 +11,7 @@ use oxfml_core::semantics::{
 use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
-use oxfunc_core::value::{EvalValue, ExcelText, WorksheetErrorCode};
+use oxfunc_core::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
 
 // ---------------------------------------------------------------------------
@@ -261,6 +261,32 @@ fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
         EvalValue::Error(WorksheetErrorCode::Calc)
+    );
+}
+
+#[test]
+fn ftc_0353_countblank_let_array_matches_retained_excel_shaped_value_errors_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0353-countblank-let-array-shape",
+        "formula:ftc-0353-countblank-let-array-shape",
+        "=LET(d,{\"a\",1,\"\",2,\"b\"},COUNTBLANK(d))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0353 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+            ]])
+            .unwrap(),
+        )
     );
 }
 

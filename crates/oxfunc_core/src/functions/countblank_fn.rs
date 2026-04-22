@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
 use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const COUNTBLANK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COUNTBLANK",
@@ -32,6 +32,18 @@ pub enum CountBlankEvalError {
     Preparation(CoercionError),
 }
 
+fn value_error_array_like(array: &EvalArray) -> EvalValue {
+    let shape = array.shape();
+    let rows: Vec<Vec<ArrayCellValue>> = (0..shape.rows)
+        .map(|_| {
+            (0..shape.cols)
+                .map(|_| ArrayCellValue::Error(WorksheetErrorCode::Value))
+                .collect()
+        })
+        .collect();
+    EvalValue::Array(EvalArray::from_rows(rows).expect("countblank error array shape"))
+}
+
 fn prepared_counts_as_blank(value: &PreparedArgValue) -> Result<bool, CoercionError> {
     match value {
         PreparedArgValue::EmptyCell => Ok(true),
@@ -53,6 +65,12 @@ pub fn eval_countblank_surface(
             expected_max: COUNTBLANK_META.arity.max,
             actual: argc,
         });
+    }
+
+    if argc == 1 {
+        if let CallArgValue::Eval(EvalValue::Array(array)) = &args[0] {
+            return Ok(value_error_array_like(array));
+        }
     }
 
     let mut count = 0.0;
@@ -157,25 +175,56 @@ mod tests {
     }
 
     #[test]
-    fn countblank_rejects_array_valued_substitutes() {
+    fn countblank_single_array_valued_substitute_returns_shaped_value_error_array() {
         let got = eval_countblank_surface(
             &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_utf16_code_units(
-                        Vec::new(),
-                    ))],
-                    vec![ArrayCellValue::Number(1.0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "a".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "b".encode_utf16().collect(),
+                    )),
+                ]])
                 .unwrap(),
             ))],
             &MockResolver { resolved: None },
         );
         assert_eq!(
             got,
-            Err(CountBlankEvalError::Preparation(
-                CoercionError::UnsupportedValueKind("countblank_array_substitute")
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ]])
+                .unwrap(),
             ))
         );
+    }
+
+    #[test]
+    fn countblank_multi_arg_array_valued_substitute_still_maps_to_scalar_value_error() {
+        let err = eval_countblank_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![ArrayCellValue::Text(
+                        ExcelText::from_utf16_code_units("a".encode_utf16().collect()),
+                    )]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+            ],
+            &MockResolver { resolved: None },
+        )
+        .unwrap_err();
+
+        assert_eq!(map_countblank_error_to_ws(&err), WorksheetErrorCode::Value);
     }
 
     #[test]
