@@ -82,6 +82,57 @@ fn ftc_1032_and_sequence_bounds_direct_call_scalarizes_to_false_through_adapter(
 }
 
 #[test]
+fn ftc_1032_wraprows_scalar_input_returns_scalar_zero_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-wraprows-scalar-direct",
+        "formula:ftc-1032-wraprows-scalar-direct",
+        "=WRAPROWS(0,7)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 wraprows scalar adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(0.0)
+    );
+}
+
+#[test]
+fn ftc_1032_index_of_wraprows_scalar_input_returns_scalar_zero_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-index-wraprows-scalar-direct",
+        "formula:ftc-1032-index-wraprows-scalar-direct",
+        "=INDEX(WRAPROWS(0,7),1,0)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 index wraprows scalar adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(0.0)
+    );
+}
+
+#[test]
+fn ftc_1032_sum_of_indexed_wraprows_scalar_input_returns_scalar_zero_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-sum-index-wraprows-scalar-direct",
+        "formula:ftc-1032-sum-index-wraprows-scalar-direct",
+        "=SUM(INDEX(WRAPROWS(0,7),1,0))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 sum index wraprows scalar adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(0.0)
+    );
+}
+
+#[test]
 fn ftc_1032_if_scalar_false_continuation_returns_scalar_zero_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-1032-if-scalar-false-direct",
@@ -95,6 +146,57 @@ fn ftc_1032_if_scalar_false_continuation_returns_scalar_zero_through_adapter() {
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
         EvalValue::Number(0.0)
+    );
+}
+
+#[test]
+fn ftc_0907_and_single_true_array_scalarizes_to_true_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0907-and-single-true-array-direct",
+        "formula:ftc-0907-and-single-true-array-direct",
+        "=AND({TRUE;TRUE;TRUE})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0907 and single true array adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Logical(true)
+    );
+}
+
+#[test]
+fn ftc_0907_and_single_mixed_array_scalarizes_to_false_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0907-and-single-mixed-array-direct",
+        "formula:ftc-0907-and-single-mixed-array-direct",
+        "=AND({TRUE;FALSE;TRUE})".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0907 and single mixed array adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Logical(false)
+    );
+}
+
+#[test]
+fn ftc_0907_and_map_true_array_scalarizes_to_true_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0907-and-map-true-array-direct",
+        "formula:ftc-0907-and-map-true-array-direct",
+        "=AND(MAP(SEQUENCE(3),LAMBDA(x,TRUE)))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0907 and map true array adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Logical(true)
     );
 }
 

@@ -481,6 +481,13 @@ pub fn eval_index_surface(
         CallArgValue::Eval(value) => {
             let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
             let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
+            if row == 1
+                && col == 0
+                && scalar_array_from_eval_value(value).is_some()
+                && matches!(args.get(2), Some(arg) if !matches!(arg, CallArgValue::MissingArg | CallArgValue::EmptyCell))
+            {
+                return Ok(value.clone());
+            }
             let Some(array) = scalar_array_from_eval_value(value) else {
                 return Err(IndexEvalError::UnsupportedSource("non_array_non_reference"));
             };
@@ -607,6 +614,17 @@ mod tests {
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(42.0)));
+    }
+
+    #[test]
+    fn ftc_1032_index_scalar_source_with_explicit_zero_column_returns_scalar() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Number(0.0)),
+            CallArgValue::Eval(EvalValue::Number(1.0)),
+            CallArgValue::Eval(EvalValue::Number(0.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
     }
 
     #[test]

@@ -248,7 +248,7 @@ fn ftc_0601_exact_formula_is_calc_locally_through_adapter() {
 }
 
 #[test]
-fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
+fn ftc_0601_map_non_scalar_helper_probe_matches_current_local_mask_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0601-map-nonscalar",
         "formula:ftc-0601-map-nonscalar",
@@ -260,7 +260,38 @@ fn ftc_0601_map_non_scalar_helper_probe_is_calc_locally_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Error(WorksheetErrorCode::Calc)
+        EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Logical(false)],
+                vec![ArrayCellValue::Error(WorksheetErrorCode::Calc)],
+                vec![ArrayCellValue::Error(WorksheetErrorCode::Calc)],
+                vec![ArrayCellValue::Logical(false)],
+                vec![ArrayCellValue::Logical(true)],
+                vec![ArrayCellValue::Logical(false)],
+                vec![ArrayCellValue::Logical(true)],
+                vec![ArrayCellValue::Logical(false)],
+                vec![ArrayCellValue::Logical(false)],
+                vec![ArrayCellValue::Logical(false)],
+            ])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_1032_exact_formula_matches_scalar_zero_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-1032-exact",
+        "formula:ftc-1032-exact",
+        "=LET(yr,2024,m,1,firstDay,DATE(yr,m,1),lastDay,EOMONTH(firstDay,0),daysInMonth,DAY(lastDay),offset,WEEKDAY(firstDay,1)-1,grid,SEQUENCE(42),dayVals,IF(AND(grid>offset,grid<=offset+daysInMonth),grid-offset,0),weekly,WRAPROWS(dayVals,7),SUM(INDEX(weekly,1,0)))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-1032 exact adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(0.0)
     );
 }
 

@@ -507,8 +507,18 @@ pub fn eval_vstack_prepared(
 pub fn eval_wraprows_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
-    let source = materialize_array_arg(&args[0]);
     let wrap_count = parse_positive_integer(&args[1])?;
+    if let PreparedArgValue::Eval(value) = &args[0] {
+        match value {
+            EvalValue::Number(_)
+            | EvalValue::Text(_)
+            | EvalValue::Logical(_)
+            | EvalValue::Error(_) => return Ok(value.clone()),
+            EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => {}
+        }
+    }
+
+    let source = materialize_array_arg(&args[0]);
     let pad_cell = args
         .get(2)
         .map(scalar_cell)
@@ -1542,6 +1552,9 @@ mod tests {
                 .unwrap()
             )
         );
+
+        let wraprows_scalar = eval_wraprows_surface(&[num(0.0), num(7.0)], &NoResolver).unwrap();
+        assert_eq!(wraprows_scalar, EvalValue::Number(0.0));
 
         let wrapcols = eval_wrapcols_surface(
             &[
