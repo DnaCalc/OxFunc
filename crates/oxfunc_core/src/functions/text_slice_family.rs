@@ -4,8 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
-    run_values_only_prepared,
+    coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -121,6 +121,10 @@ fn take_mid_units(text: &ExcelText, start_one_based: usize, count: usize) -> Exc
         .saturating_add(count)
         .min(text.len_utf16_code_units());
     ExcelText::from_utf16_code_units(text.utf16_code_units()[start_index..end_index].to_vec())
+}
+
+fn len_character_count(text: &ExcelText) -> usize {
+    std::char::decode_utf16(text.utf16_code_units().iter().copied()).count()
 }
 
 fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
@@ -244,7 +248,7 @@ pub fn eval_len_surface(
 
             let text =
                 coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-            Ok(EvalValue::Number(text.len_utf16_code_units() as f64))
+            Ok(EvalValue::Number(len_character_count(&text) as f64))
         },
         TextSliceEvalError::Coercion,
     )
@@ -327,14 +331,14 @@ mod tests {
     }
 
     #[test]
-    fn len_counts_utf16_code_units_for_unicode_baseline() {
+    fn ftc_0640_len_counts_unicode_scalars_for_surrogate_pairs() {
         let emoji = text_value(vec![0xD83D, 0xDE00]);
         let combining = text_value(vec![0x0065, 0x0301]);
         let dangling_tail = ExcelText::from_interop_assignment(&"\u{1F600}".repeat(40_000));
 
         assert_eq!(
             eval_len_surface(&[emoji], &NoResolver),
-            Ok(EvalValue::Number(2.0))
+            Ok(EvalValue::Number(1.0))
         );
         assert_eq!(
             eval_len_surface(&[combining], &NoResolver),
@@ -346,7 +350,7 @@ mod tests {
                 &[CallArgValue::Eval(EvalValue::Text(dangling_tail.clone()))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(32_767.0))
+            Ok(EvalValue::Number(16_384.0))
         );
     }
 

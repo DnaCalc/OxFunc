@@ -314,6 +314,23 @@ fn ftc_0702_day_of_date_1900_march_zero_matches_29_through_adapter() {
 }
 
 #[test]
+fn ftc_0640_len_emoji_matches_one_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0640-len-emoji",
+        "formula:ftc-0640-len-emoji",
+        "=LEN(\"😀\")".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0640 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(1.0)
+    );
+}
+
+#[test]
 fn ftc_0696_text_serial_zero_date_format_matches_excel_compat_string_through_adapter() {
     let locale = current_excel_host_context();
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(

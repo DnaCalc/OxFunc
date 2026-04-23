@@ -3,11 +3,12 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
 use crate::functions::text_search_replace_family::{
-    TextSearchReplaceEvalError, eval_find_surface, eval_replace_surface, eval_search_surface,
+    eval_find_surface, eval_replace_surface, eval_search_surface, TextSearchReplaceEvalError,
 };
 use crate::functions::text_slice_family::{
-    TextSliceEvalError, eval_left_surface, eval_len_surface, eval_mid_surface, eval_right_surface,
+    eval_left_surface, eval_mid_surface, eval_right_surface, TextSliceEvalError,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -85,7 +86,25 @@ pub fn eval_lenb_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextBCompatEvalError> {
-    eval_len_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
+    run_values_only_prepared(
+        args,
+        resolver,
+        |prepared| {
+            if !LENB_META.arity.accepts(prepared.len()) {
+                return Err(TextBCompatEvalError::Slice(
+                    TextSliceEvalError::ArityMismatch {
+                        expected_min: LENB_META.arity.min,
+                        expected_max: LENB_META.arity.max,
+                        actual: prepared.len(),
+                    },
+                ));
+            }
+            let text = coerce_prepared_to_text(&prepared[0])
+                .map_err(|e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)))?;
+            Ok(EvalValue::Number(text.len_utf16_code_units() as f64))
+        },
+        |e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)),
+    )
 }
 
 pub fn eval_midb_surface(
