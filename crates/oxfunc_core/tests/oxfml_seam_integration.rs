@@ -296,6 +296,24 @@ fn ftc_0910_exact_formula_matches_scalar_330_through_adapter() {
 }
 
 #[test]
+fn ftc_0930_exact_formula_matches_value_error_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0930-exact",
+        "formula:ftc-0930-exact",
+        "=LET(m,{3,7,1;8,2,9;4,6,5},flat,TOCOL(m),sorted,SORT(flat,-1),INDEX(sorted,3))"
+            .to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0930 exact adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Error(WorksheetErrorCode::Value)
+    );
+}
+
+#[test]
 fn ftc_1032_exact_formula_matches_scalar_zero_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-1032-exact",

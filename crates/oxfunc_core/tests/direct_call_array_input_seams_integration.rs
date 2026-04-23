@@ -254,6 +254,23 @@ fn ftc_0910_index_row_vector_omitted_row_selector_array_returns_last_five_values
 }
 
 #[test]
+fn ftc_0930_index_over_value_error_result_propagates_value_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0930-index-over-error-direct",
+        "formula:ftc-0930-index-over-error-direct",
+        "=INDEX(SORT(TOCOL({3,7,1;8,2,9;4,6,5}),-1),3)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0930 index over error adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Error(oxfunc_core::value::WorksheetErrorCode::Value)
+    );
+}
+
+#[test]
 fn ftc_0966_log_array_direct_call_matches_elementwise_row_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0966-log-array-direct",

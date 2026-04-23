@@ -488,6 +488,9 @@ pub fn eval_index_surface(
         CallArgValue::Eval(value) => {
             let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
             let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
+            if let EvalValue::Error(code) = value {
+                return Ok(EvalValue::Error(*code));
+            }
             if row == 1
                 && col == 0
                 && scalar_array_from_eval_value(value).is_some()
@@ -632,6 +635,16 @@ mod tests {
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn ftc_0930_index_error_source_propagates_value_error() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
+            CallArgValue::Eval(EvalValue::Number(3.0)),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Value)));
     }
 
     #[test]
