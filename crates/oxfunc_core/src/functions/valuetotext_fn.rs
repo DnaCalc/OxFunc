@@ -4,10 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 pub const VALUETOTEXT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.VALUETOTEXT",
@@ -70,6 +72,29 @@ fn parse_format_flag(prepared: Option<&PreparedArgValue>) -> Result<bool, ValueT
     }
 }
 
+fn cell_concise(cell: &ArrayCellValue) -> String {
+    match cell {
+        ArrayCellValue::Number(n) => format!("{n}"),
+        ArrayCellValue::Text(t) => t.to_string_lossy(),
+        ArrayCellValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
+        ArrayCellValue::EmptyCell => String::new(),
+    }
+}
+
+fn cell_strict(cell: &ArrayCellValue) -> String {
+    match cell {
+        ArrayCellValue::Number(n) => format!("{n}"),
+        ArrayCellValue::Text(t) => {
+            let escaped = t.to_string_lossy().replace('"', "\"\"");
+            format!("\"{escaped}\"")
+        }
+        ArrayCellValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
+        ArrayCellValue::EmptyCell => String::new(),
+    }
+}
+
 fn value_concise(value: &PreparedArgValue) -> String {
     match value {
         PreparedArgValue::Eval(EvalValue::Number(n)) => format!("{n}"),
@@ -107,6 +132,23 @@ fn value_strict(value: &PreparedArgValue) -> String {
     }
 }
 
+fn render_array_value(array: &EvalArray, strict: bool) -> EvalValue {
+    let cells = array
+        .iter_row_major()
+        .map(|cell| {
+            let rendered = if strict {
+                cell_strict(cell)
+            } else {
+                cell_concise(cell)
+            };
+            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                rendered.encode_utf16().collect(),
+            ))
+        })
+        .collect::<Vec<_>>();
+    EvalValue::Array(EvalArray::new(array.shape(), cells).expect("shape preserved"))
+}
+
 pub fn eval_valuetotext_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -124,6 +166,9 @@ pub fn eval_valuetotext_surface(
         resolver,
         |prepared| {
             let strict = parse_format_flag(prepared.get(1))?;
+            if let PreparedArgValue::Eval(EvalValue::Array(array)) = &prepared[0] {
+                return Ok(render_array_value(array, strict));
+            }
             let rendered = if strict {
                 value_strict(&prepared[0])
             } else {
@@ -313,6 +358,45 @@ mod tests {
             &MockResolver,
         );
         assert_eq!(got, Ok(text_val("#VALUE!")));
+    }
+
+    #[test]
+    fn valuetotext_array_strict_returns_quoted_text_array() {
+        let got = eval_valuetotext_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                        ],
+                        vec![
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                            ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                        ],
+                    ])
+                    .unwrap(),
+                )),
+                num(1.0),
+            ],
+            &MockResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"a\"")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"b\"")),
+                    ],
+                    vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"c\"")),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"d\"")),
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
     }
 
     // --- Format flag validation ---

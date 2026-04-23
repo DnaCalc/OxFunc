@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -46,14 +46,37 @@ fn days_from_civil(year: i64, month: i64, day: i64) -> i64 {
     era * 146097 + doe - 719468
 }
 
+fn excel_1900_ordinal(month: i64, day: i64) -> i64 {
+    let prefix = match month {
+        1 => 0,
+        2 => 31,
+        3 => 60,
+        4 => 91,
+        5 => 121,
+        6 => 152,
+        7 => 182,
+        8 => 213,
+        9 => 244,
+        10 => 274,
+        11 => 305,
+        12 => 335,
+        _ => unreachable!("month normalized to 1..=12"),
+    };
+    prefix + day
+}
+
 fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 {
-    if year == 1900 && month == 2 && day == 29 {
+    if year == 1900 && excel_1900_ordinal(month, day) == 60 {
         return 60;
     }
 
     let base = days_from_civil(1899, 12, 31);
     let days = days_from_civil(year, month, 1) - base + (day - 1);
-    if days >= 60 { days + 1 } else { days }
+    if days >= 60 {
+        days + 1
+    } else {
+        days
+    }
 }
 
 pub fn eval_date_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, DateEvalError> {
@@ -200,7 +223,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_date_normalizes_march_zero_to_february_twenty_eight() {
+    fn eval_date_normalizes_march_zero_to_excel_1900_leap_bug_day() {
         let got = eval_date_surface(
             &[
                 CallArgValue::Eval(EvalValue::Number(1900.0)),
@@ -209,7 +232,20 @@ mod tests {
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(59.0)));
+        assert_eq!(got, Ok(EvalValue::Number(60.0)));
+    }
+
+    #[test]
+    fn eval_date_normalizes_january_sixtieth_to_excel_1900_leap_bug_day() {
+        let got = eval_date_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(1900.0)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Number(60.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(EvalValue::Number(60.0)));
     }
 
     #[test]

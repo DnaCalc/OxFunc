@@ -271,6 +271,95 @@ fn ftc_0930_index_over_value_error_result_propagates_value_through_adapter() {
 }
 
 #[test]
+fn ftc_0670_valuetotext_strict_array_returns_quoted_text_grid_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0670-valuetotext-strict-array",
+        "formula:ftc-0670-valuetotext-strict-array",
+        "=VALUETOTEXT({\"a\",\"b\";\"c\",\"d\"},1)".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0670 valuetotext adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![
+                    ArrayCellValue::Text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"a\""
+                    )),
+                    ArrayCellValue::Text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"b\""
+                    )),
+                ],
+                vec![
+                    ArrayCellValue::Text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"c\""
+                    )),
+                    ArrayCellValue::Text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"d\""
+                    )),
+                ],
+            ])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_0692_maxifs_direct_array_ranges_return_shaped_value_error_row_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0692-maxifs-array-ranges-direct",
+        "formula:ftc-0692-maxifs-array-ranges-direct",
+        "=LET(v,{10,20,30,40,50},c,{\"a\",\"b\",\"a\",\"b\",\"a\"},MAXIFS(v,c,\"a\"))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0692 maxifs adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+            ]])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_0693_minifs_direct_array_ranges_return_shaped_value_error_row_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0693-minifs-array-ranges-direct",
+        "formula:ftc-0693-minifs-array-ranges-direct",
+        "=LET(v,{10,20,30,40,50},c,{\"a\",\"b\",\"a\",\"b\",\"a\"},MINIFS(v,c,\"b\"))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0693 minifs adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+                ArrayCellValue::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+            ]])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
 fn ftc_0966_log_array_direct_call_matches_elementwise_row_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0966-log-array-direct",

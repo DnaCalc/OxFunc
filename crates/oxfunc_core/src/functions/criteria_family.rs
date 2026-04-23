@@ -4,14 +4,14 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::{
-    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
+    format_relative_target, parse_a1_reference, A1Reference, A1ReferenceNotation,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{prepare_arg_values_only, PreparedArgValue};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{resolve_eval_value, ReferenceResolver};
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,
 };
 
@@ -215,6 +215,31 @@ fn flatten_arg(
             cells: vec![scalar_to_cell(scalar)?],
         }),
     }
+}
+
+fn shaped_value_error_from_direct_array(arg: &CallArgValue) -> Option<EvalValue> {
+    let CallArgValue::Eval(EvalValue::Array(array)) = arg else {
+        return None;
+    };
+    Some(EvalValue::Array(
+        EvalArray::new(
+            array.shape(),
+            vec![ArrayCellValue::Error(WorksheetErrorCode::Value); array.shape().cell_count()],
+        )
+        .expect("shape preserved"),
+    ))
+}
+
+fn extrema_ifs_direct_array_value_error(args: &[CallArgValue]) -> Option<EvalValue> {
+    for (index, arg) in args.iter().enumerate() {
+        let is_range_arg = index == 0 || index % 2 == 1;
+        if is_range_arg {
+            if let Some(err) = shaped_value_error_from_direct_array(arg) {
+                return Some(err);
+            }
+        }
+    }
+    None
 }
 
 fn reference_like_from_arg(arg: &CallArgValue) -> Option<&ReferenceLike> {
@@ -712,6 +737,9 @@ pub fn eval_maxifs_surface(
     if (args.len() - 1) % 2 != 0 {
         return Err(CriteriaEvalError::PairStructureMismatch { actual: args.len() });
     }
+    if let Some(err) = extrema_ifs_direct_array_value_error(args) {
+        return Ok(err);
+    }
     let max_range = flatten_arg(&args[0], resolver)?;
     let pairs = parse_criteria_pairs(&args[1..], resolver)?;
     let ranges = std::iter::once(&max_range)
@@ -734,6 +762,9 @@ pub fn eval_minifs_surface(
     }
     if (args.len() - 1) % 2 != 0 {
         return Err(CriteriaEvalError::PairStructureMismatch { actual: args.len() });
+    }
+    if let Some(err) = extrema_ifs_direct_array_value_error(args) {
+        return Ok(err);
     }
     let min_range = flatten_arg(&args[0], resolver)?;
     let pairs = parse_criteria_pairs(&args[1..], resolver)?;
@@ -1210,6 +1241,62 @@ mod tests {
             got,
             Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value))
         );
+    }
+
+    #[test]
+    fn ftc_0692_and_ftc_0693_direct_array_ranges_return_shaped_value_errors() {
+        let max = eval_maxifs_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                ]]),
+                array(vec![vec![
+                    text("a"),
+                    text("b"),
+                    text("a"),
+                    text("b"),
+                    text("a"),
+                ]]),
+                scalar_text("a"),
+            ],
+            &NoResolver,
+        );
+        let min = eval_minifs_surface(
+            &[
+                array(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                ]]),
+                array(vec![vec![
+                    text("a"),
+                    text("b"),
+                    text("a"),
+                    text("b"),
+                    text("a"),
+                ]]),
+                scalar_text("b"),
+            ],
+            &NoResolver,
+        );
+        let expected = Ok(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+            ]])
+            .unwrap(),
+        ));
+        assert_eq!(max, expected.clone());
+        assert_eq!(min, expected);
     }
 
     #[test]

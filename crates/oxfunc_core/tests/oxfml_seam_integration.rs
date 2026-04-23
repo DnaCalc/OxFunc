@@ -296,6 +296,23 @@ fn ftc_0910_exact_formula_matches_scalar_330_through_adapter() {
 }
 
 #[test]
+fn ftc_0702_day_of_date_1900_march_zero_matches_29_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0702-day-date-1900-march-zero",
+        "formula:ftc-0702-day-date-1900-march-zero",
+        "=DAY(DATE(1900,3,0))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0702 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(29.0)
+    );
+}
+
+#[test]
 fn ftc_0930_exact_formula_matches_value_error_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0930-exact",
