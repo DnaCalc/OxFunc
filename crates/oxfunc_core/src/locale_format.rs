@@ -286,6 +286,9 @@ pub fn ymd_from_excel_serial(
     let whole = serial.trunc() as i64;
     match date_system {
         WorkbookDateSystem::System1900 => {
+            if whole == 0 {
+                return Some((1900, 1, 0));
+            }
             if whole == 60 {
                 return Some((1900, 2, 29));
             }
@@ -621,6 +624,13 @@ mod tests {
                 .unwrap()
                 .to_string_lossy(),
             "1 234 567.89"
+        );
+        assert_eq!(
+            ctx.formatter
+                .render_with_code(&ctx.profile, ctx.date_system, 0.0, "yyyy-mm-dd")
+                .unwrap()
+                .to_string_lossy(),
+            "1900-01-00"
         );
         assert_eq!(
             ctx.formatter

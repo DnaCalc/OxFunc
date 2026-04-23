@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 
+use oxfml_core::format::current_excel_host_context;
 use oxfml_core::interface::TypedContextQueryBundle;
 use oxfml_core::seam::Locus;
 use oxfml_core::semantics::{
@@ -309,6 +310,24 @@ fn ftc_0702_day_of_date_1900_march_zero_matches_29_through_adapter() {
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
         EvalValue::Number(29.0)
+    );
+}
+
+#[test]
+fn ftc_0696_text_serial_zero_date_format_matches_excel_compat_string_through_adapter() {
+    let locale = current_excel_host_context();
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0696-text-serial-zero-date-format",
+        "formula:ftc-0696-text-serial-zero-date-format",
+        "=TEXT(0,\"yyyy-mm-dd\")".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::new(None, None, Some(&locale), None, None),
+    ))
+    .expect("ftc-0696 adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Text(ExcelText::from_interop_assignment("1900-01-00"))
     );
 }
 
