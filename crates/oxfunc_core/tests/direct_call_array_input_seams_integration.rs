@@ -201,6 +201,59 @@ fn ftc_0907_and_map_true_array_scalarizes_to_true_through_adapter() {
 }
 
 #[test]
+fn ftc_0910_index_row_vector_omitted_row_selector_array_returns_first_five_values_through_adapter()
+{
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0910-index-row-vector-first-five-direct",
+        "formula:ftc-0910-index-row-vector-first-five-direct",
+        "=INDEX({10,20,30,40,50,60,70,80,90,100},,SEQUENCE(5,,1))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0910 first five adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(10.0)],
+                vec![ArrayCellValue::Number(20.0)],
+                vec![ArrayCellValue::Number(30.0)],
+                vec![ArrayCellValue::Number(40.0)],
+                vec![ArrayCellValue::Number(50.0)],
+            ])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
+fn ftc_0910_index_row_vector_omitted_row_selector_array_returns_last_five_values_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0910-index-row-vector-last-five-direct",
+        "formula:ftc-0910-index-row-vector-last-five-direct",
+        "=INDEX({10,20,30,40,50,60,70,80,90,100},,SEQUENCE(5,,6))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0910 last five adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(60.0)],
+                vec![ArrayCellValue::Number(70.0)],
+                vec![ArrayCellValue::Number(80.0)],
+                vec![ArrayCellValue::Number(90.0)],
+                vec![ArrayCellValue::Number(100.0)],
+            ])
+            .unwrap(),
+        )
+    );
+}
+
+#[test]
 fn ftc_0966_log_array_direct_call_matches_elementwise_row_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0966-log-array-direct",

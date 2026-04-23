@@ -279,6 +279,23 @@ fn ftc_0601_map_non_scalar_helper_probe_matches_current_local_mask_through_adapt
 }
 
 #[test]
+fn ftc_0910_exact_formula_matches_scalar_330_through_adapter() {
+    let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
+        "ftc-0910-exact",
+        "formula:ftc-0910-exact",
+        "=LET(d,{10,20,30,40,50,60,70,80,90,100},w,5,n,COLUMNS(d),avgs,MAP(SEQUENCE(n-w+1,,w),LAMBDA(i,AVERAGE(INDEX(d,,SEQUENCE(w,,i-w+1))))),SUM(avgs))".to_string(),
+        locus(1, 1),
+        TypedContextQueryBundle::default(),
+    ))
+    .expect("ftc-0910 exact adapter run");
+
+    assert_eq!(
+        run.evaluation_artifact.worksheet_value,
+        EvalValue::Number(330.0)
+    );
+}
+
+#[test]
 fn ftc_1032_exact_formula_matches_scalar_zero_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-1032-exact",

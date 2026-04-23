@@ -396,22 +396,29 @@ fn select_vector_positions(
 fn try_slice_vector_with_selector_array(
     array: &EvalArray,
     row_selector: &ArrayIndexSelector,
-    _col_selector: &ArrayIndexSelector,
-    _row_arg: Option<&CallArgValue>,
+    col_selector: &ArrayIndexSelector,
+    row_arg: Option<&CallArgValue>,
     col_arg: Option<&CallArgValue>,
 ) -> Result<Option<EvalValue>, IndexEvalError> {
     let shape = array.shape();
+    let row_omitted = matches!(
+        row_arg,
+        None | Some(CallArgValue::MissingArg | CallArgValue::EmptyCell)
+    );
     let col_omitted = matches!(
         col_arg,
         None | Some(CallArgValue::MissingArg | CallArgValue::EmptyCell)
     );
 
-    if !col_omitted {
-        return Ok(None);
+    if ((shape.rows == 1 && shape.cols >= 1) || (shape.cols == 1 && shape.rows >= 1)) && col_omitted
+    {
+        if let ArrayIndexSelector::SelectorArray(selector) = row_selector {
+            return select_vector_positions(array, selector).map(Some);
+        }
     }
 
-    if (shape.rows == 1 && shape.cols >= 1) || (shape.cols == 1 && shape.rows >= 1) {
-        if let ArrayIndexSelector::SelectorArray(selector) = row_selector {
+    if shape.rows == 1 && shape.cols >= 1 && row_omitted {
+        if let ArrayIndexSelector::SelectorArray(selector) = col_selector {
             return select_vector_positions(array, selector).map(Some);
         }
     }
@@ -657,6 +664,98 @@ mod tests {
                     vec![ArrayCellValue::Number(10.0)],
                     vec![ArrayCellValue::Number(20.0)],
                     vec![ArrayCellValue::Number(30.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn ftc_0910_index_row_vector_omitted_row_vector_column_selector_returns_first_five_values() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                    ArrayCellValue::Number(60.0),
+                    ArrayCellValue::Number(70.0),
+                    ArrayCellValue::Number(80.0),
+                    ArrayCellValue::Number(90.0),
+                    ArrayCellValue::Number(100.0),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::MissingArg,
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(4.0)],
+                    vec![ArrayCellValue::Number(5.0)],
+                ])
+                .unwrap(),
+            )),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(10.0)],
+                    vec![ArrayCellValue::Number(20.0)],
+                    vec![ArrayCellValue::Number(30.0)],
+                    vec![ArrayCellValue::Number(40.0)],
+                    vec![ArrayCellValue::Number(50.0)],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn ftc_0910_index_row_vector_omitted_row_vector_column_selector_returns_last_five_values() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(10.0),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(30.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(50.0),
+                    ArrayCellValue::Number(60.0),
+                    ArrayCellValue::Number(70.0),
+                    ArrayCellValue::Number(80.0),
+                    ArrayCellValue::Number(90.0),
+                    ArrayCellValue::Number(100.0),
+                ]])
+                .unwrap(),
+            )),
+            CallArgValue::MissingArg,
+            CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(6.0)],
+                    vec![ArrayCellValue::Number(7.0)],
+                    vec![ArrayCellValue::Number(8.0)],
+                    vec![ArrayCellValue::Number(9.0)],
+                    vec![ArrayCellValue::Number(10.0)],
+                ])
+                .unwrap(),
+            )),
+        ];
+        let got = eval_index_surface(&args, &NoResolver);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(60.0)],
+                    vec![ArrayCellValue::Number(70.0)],
+                    vec![ArrayCellValue::Number(80.0)],
+                    vec![ArrayCellValue::Number(90.0)],
+                    vec![ArrayCellValue::Number(100.0)],
                 ])
                 .unwrap()
             ))
