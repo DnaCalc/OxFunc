@@ -151,11 +151,49 @@ pub fn erf_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     Ok(erf_approx(x))
 }
 
+// Excel-emulation for the positive-tail ERFC regime.
+//
+// Policy: DnaCalc emulates Excel's observed output bits; mathematical
+// correct-rounding is diagnostic only. See docs/function-lane/
+// ERFC_EXCEL_EMULATION.md for the regime-map evidence behind the rule
+// below.
+//
+// Rule (evidence-scored against the full widened witness set post 8e435fb):
+// - x < 3.0 or x non-positive: libm::erfc. Matches Excel at 0, 0.5, 1,
+//   1.25, 2.75, 2.8, and every tested negative point down to -10.
+// - x >= 3.0 on Windows-MSVC: UCRT erfc. Matches Excel bit-exactly at the
+//   tested large-x points (x=3, x=4, x=8). On other platforms the same
+//   range stays on libm; non-Windows hosts have an accepted residual
+//   divergence in the x>=3 tail.
+//
+// The positive subrange [1.5, 3.0) and several isolated large-x points
+// (3.5, 5, 6, 10) remain blocked under every owner-local rule family we
+// scored (libm, UCRT, min/max of both, bounded ULP adjustments on
+// subranges) — Excel uses a polynomial that neither libm nor UCRT
+// reproduces there. Those inputs are captured as #[ignore]d exact-bit
+// witnesses below so the bits are preserved for future kernel work.
+#[cfg(all(target_os = "windows", target_env = "msvc"))]
+#[link(name = "ucrt")]
+unsafe extern "C" {
+    #[link_name = "erfc"]
+    fn ucrt_erfc(x: f64) -> f64;
+}
+
+fn excel_erfc(x: f64) -> f64 {
+    #[cfg(all(target_os = "windows", target_env = "msvc"))]
+    {
+        if x >= 3.0 {
+            return unsafe { ucrt_erfc(x) };
+        }
+    }
+    libm::erfc(x)
+}
+
 pub fn erfc_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     if !x.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(libm::erfc(x))
+    Ok(excel_erfc(x))
 }
 
 pub fn erfc_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
@@ -465,12 +503,29 @@ mod tests {
 
     #[test]
     fn erfc_family_direct_call_witnesses() {
-        // Excel-anchored exact bits.
+        // Excel-anchored exact bits. These are all in the libm-matching
+        // regime (x <= 1.25, or all negatives).
         assert_bits_eq("erfc(0)", erfc_kernel(0.0).unwrap(), 1.0);
+        assert_bits_eq("erfc(0.5)", erfc_kernel(0.5).unwrap(), 0.4795001221869535);
         assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
+        assert_bits_eq("erfc(1.25)", erfc_kernel(1.25).unwrap(), 0.07709987174354177);
         assert_bits_eq("erfc(-1)", erfc_kernel(-1.0).unwrap(), 1.8427007929497148);
+        assert_bits_eq("erfc(-2)", erfc_kernel(-2.0).unwrap(), 1.9953222650189528);
 
-        // ERFC.PRECISE delegates to the same kernel; verify parity.
+        // Libm-matching pockets within the positive regime (small island).
+        assert_bits_eq(
+            "erfc(2.75)",
+            erfc_kernel(2.75).unwrap(),
+            0.00010062192211963684,
+        );
+        assert_bits_eq(
+            "erfc(2.8)",
+            erfc_kernel(2.8).unwrap(),
+            7.501319466545911e-5,
+        );
+
+        // ERFC.PRECISE delegates to the same kernel; spot-check parity at
+        // one representative in-range anchor and one blocked-regime pocket.
         assert_bits_eq(
             "erfc.precise(0)",
             erfc_precise_kernel(0.0).unwrap(),
@@ -487,28 +542,29 @@ mod tests {
             1.8427007929497148,
         );
 
-        // Stable family controls at 0.5, 2, -2 (no concrete Excel bit-witness on hand).
-        let e_half = erfc_kernel(0.5).unwrap();
-        let e_two = erfc_kernel(2.0).unwrap();
-        let e_neg_two = erfc_kernel(-2.0).unwrap();
-
-        // Range: erfc on positives lies in (0, 1); on negatives in (1, 2).
-        assert!(e_half > 0.0 && e_half < 1.0, "erfc(0.5) = {e_half}");
-        assert!(e_two > 0.0 && e_two < 1.0, "erfc(2) = {e_two}");
-        assert!(e_neg_two > 1.0 && e_neg_two < 2.0, "erfc(-2) = {e_neg_two}");
-
-        // Strict monotone-decreasing: erfc(-2) > erfc(-1) > erfc(0) > erfc(0.5) > erfc(1) > erfc(2).
-        let e_zero = erfc_kernel(0.0).unwrap();
-        let e_one = erfc_kernel(1.0).unwrap();
-        let e_neg_one = erfc_kernel(-1.0).unwrap();
-        assert!(e_neg_two > e_neg_one, "monotone: erfc(-2) > erfc(-1)");
-        assert!(e_neg_one > e_zero, "monotone: erfc(-1) > erfc(0)");
-        assert!(e_zero > e_half, "monotone: erfc(0) > erfc(0.5)");
-        assert!(e_half > e_one, "monotone: erfc(0.5) > erfc(1)");
-        assert!(e_one > e_two, "monotone: erfc(1) > erfc(2)");
+        // Stable family controls across the full widened positive range.
+        let xs: &[f64] = &[
+            0.0, 0.5, 1.0, 1.25, 1.5, 1.75, 1.9, 2.0, 2.1, 2.25, 2.5, 2.6, 2.7, 2.75, 2.8, 2.9,
+            3.0, 3.5, 4.0, 5.0, 6.0, 8.0, 10.0,
+        ];
+        let mut prev: Option<f64> = None;
+        for &x in xs {
+            let v = erfc_kernel(x).unwrap();
+            // Range: erfc(x) in (0, 1] for x >= 0 (equals 1 exactly at 0).
+            assert!(v > 0.0 && v <= 1.0, "erfc({x}) = {v} out of range");
+            // Strict monotone-decreasing on positives.
+            if let Some(p) = prev {
+                assert!(p > v, "monotone: erfc(prev) > erfc({x}), got {p} !> {v}");
+            }
+            prev = Some(v);
+        }
 
         // Reflection: erfc(-x) + erfc(x) ≈ 2 (tight ULP-scale bound; exact equality
         // is not guaranteed because both summands are rounded f64 values).
+        let e_one = erfc_kernel(1.0).unwrap();
+        let e_neg_one = erfc_kernel(-1.0).unwrap();
+        let e_two = erfc_kernel(2.0).unwrap();
+        let e_neg_two = erfc_kernel(-2.0).unwrap();
         assert!(
             (e_neg_one + e_one - 2.0).abs() < 1e-15,
             "reflection erfc(-1)+erfc(1) = {}",
@@ -519,6 +575,82 @@ mod tests {
             "reflection erfc(-2)+erfc(2) = {}",
             e_neg_two + e_two
         );
+    }
+
+    // Excel-matching exact-bit witnesses for the large-x regime closed by
+    // the UCRT branch on Windows-MSVC. On other platforms UCRT is not
+    // available and libm's residual divergence in this range is an
+    // accepted platform gap.
+    #[cfg(all(target_os = "windows", target_env = "msvc"))]
+    #[test]
+    fn erfc_large_positive_tail_matches_excel_on_windows() {
+        assert_bits_eq(
+            "erfc(3)",
+            erfc_kernel(3.0).unwrap(),
+            2.209049699858544e-5,
+        );
+        assert_bits_eq(
+            "erfc(4)",
+            erfc_kernel(4.0).unwrap(),
+            1.5417257900280017e-8,
+        );
+        assert_bits_eq(
+            "erfc(8)",
+            erfc_kernel(8.0).unwrap(),
+            1.1224297172982929e-29,
+        );
+        assert_bits_eq(
+            "erfc.precise(3)",
+            erfc_precise_kernel(3.0).unwrap(),
+            2.209049699858544e-5,
+        );
+        assert_bits_eq(
+            "erfc.precise(4)",
+            erfc_precise_kernel(4.0).unwrap(),
+            1.5417257900280017e-8,
+        );
+        assert_bits_eq(
+            "erfc.precise(8)",
+            erfc_precise_kernel(8.0).unwrap(),
+            1.1224297172982929e-29,
+        );
+    }
+
+    // Exact-bit Excel witnesses captured for the still-blocked positive
+    // regime. No rule family we scored (libm, UCRT, min/max, bounded ULP
+    // adjustments on subranges) reproduces these under owner-local code.
+    // Kept as #[ignore]d diagnostic so the bits are preserved against the
+    // artifact drifting; enable with `cargo test -- --ignored` when a
+    // kernel candidate is in flight.
+    #[test]
+    #[ignore = "Excel polynomial not yet reproduced in OxFunc; see docs/function-lane/ERFC_EXCEL_EMULATION.md"]
+    fn erfc_known_blocked_excel_witnesses() {
+        let cases: &[(f64, f64)] = &[
+            (1.5, 0.03389485352468927),
+            (1.75, 0.013328328780817557),
+            (1.9, 0.007209570764742528),
+            (2.0, 0.0046777349810472645),
+            (2.1, 0.002979466656332985),
+            (2.25, 0.0014627165866811515),
+            (2.5, 0.00040695201744495886),
+            (2.6, 0.000236034416529349),
+            (2.7, 0.0001343327399405242),
+            (2.9, 4.1097878099458844e-5),
+            (3.5, 7.430983723414129e-7),
+            (5.0, 1.537459794428034e-12),
+            (6.0, 2.151973671249892e-17),
+            (10.0, 2.0884875837625446e-45),
+        ];
+        for (x, excel) in cases.iter().copied() {
+            let got = erfc_kernel(x).unwrap();
+            assert_eq!(
+                got.to_bits(),
+                excel.to_bits(),
+                "erfc({x}): got {got:e} ({:#018x}), excel {excel:e} ({:#018x})",
+                got.to_bits(),
+                excel.to_bits()
+            );
+        }
     }
 
     #[test]
