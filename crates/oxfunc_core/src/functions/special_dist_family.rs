@@ -155,7 +155,7 @@ pub fn erfc_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
     if !x.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(1.0 - erf_approx(x))
+    Ok(libm::erfc(x))
 }
 
 pub fn erfc_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
@@ -445,6 +445,79 @@ mod tests {
         assert!(
             delta <= tol,
             "expected {expected}, got {actual}, delta {delta}"
+        );
+    }
+
+    fn assert_bits_eq(label: &str, actual: f64, expected: f64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected.to_bits(),
+            "{label}: actual {actual:e} ({:#018x}) vs expected {expected:e} ({:#018x})",
+            actual.to_bits(),
+            expected.to_bits()
+        );
+    }
+
+    #[test]
+    fn erfc_one_matches_excel_exact_bits() {
+        assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
+    }
+
+    #[test]
+    fn erfc_family_direct_call_witnesses() {
+        // Excel-anchored exact bits.
+        assert_bits_eq("erfc(0)", erfc_kernel(0.0).unwrap(), 1.0);
+        assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
+        assert_bits_eq("erfc(-1)", erfc_kernel(-1.0).unwrap(), 1.8427007929497148);
+
+        // ERFC.PRECISE delegates to the same kernel; verify parity.
+        assert_bits_eq(
+            "erfc.precise(0)",
+            erfc_precise_kernel(0.0).unwrap(),
+            1.0,
+        );
+        assert_bits_eq(
+            "erfc.precise(1)",
+            erfc_precise_kernel(1.0).unwrap(),
+            0.15729920705028513,
+        );
+        assert_bits_eq(
+            "erfc.precise(-1)",
+            erfc_precise_kernel(-1.0).unwrap(),
+            1.8427007929497148,
+        );
+
+        // Stable family controls at 0.5, 2, -2 (no concrete Excel bit-witness on hand).
+        let e_half = erfc_kernel(0.5).unwrap();
+        let e_two = erfc_kernel(2.0).unwrap();
+        let e_neg_two = erfc_kernel(-2.0).unwrap();
+
+        // Range: erfc on positives lies in (0, 1); on negatives in (1, 2).
+        assert!(e_half > 0.0 && e_half < 1.0, "erfc(0.5) = {e_half}");
+        assert!(e_two > 0.0 && e_two < 1.0, "erfc(2) = {e_two}");
+        assert!(e_neg_two > 1.0 && e_neg_two < 2.0, "erfc(-2) = {e_neg_two}");
+
+        // Strict monotone-decreasing: erfc(-2) > erfc(-1) > erfc(0) > erfc(0.5) > erfc(1) > erfc(2).
+        let e_zero = erfc_kernel(0.0).unwrap();
+        let e_one = erfc_kernel(1.0).unwrap();
+        let e_neg_one = erfc_kernel(-1.0).unwrap();
+        assert!(e_neg_two > e_neg_one, "monotone: erfc(-2) > erfc(-1)");
+        assert!(e_neg_one > e_zero, "monotone: erfc(-1) > erfc(0)");
+        assert!(e_zero > e_half, "monotone: erfc(0) > erfc(0.5)");
+        assert!(e_half > e_one, "monotone: erfc(0.5) > erfc(1)");
+        assert!(e_one > e_two, "monotone: erfc(1) > erfc(2)");
+
+        // Reflection: erfc(-x) + erfc(x) ≈ 2 (tight ULP-scale bound; exact equality
+        // is not guaranteed because both summands are rounded f64 values).
+        assert!(
+            (e_neg_one + e_one - 2.0).abs() < 1e-15,
+            "reflection erfc(-1)+erfc(1) = {}",
+            e_neg_one + e_one
+        );
+        assert!(
+            (e_neg_two + e_two - 2.0).abs() < 1e-15,
+            "reflection erfc(-2)+erfc(2) = {}",
+            e_neg_two + e_two
         );
     }
 
