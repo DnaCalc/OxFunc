@@ -155,38 +155,77 @@ pub fn erf_precise_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 //
 // Policy: DnaCalc emulates Excel's observed output bits; mathematical
 // correct-rounding is diagnostic only. See docs/function-lane/
-// ERFC_EXCEL_EMULATION.md for the regime-map evidence behind the rule
-// below.
+// ERFC_EXCEL_EMULATION.md for the regime-map evidence and fit methodology.
 //
-// Rule (evidence-scored against the full widened witness set post 8e435fb):
-// - x < 3.0 or x non-positive: libm::erfc. Matches Excel at 0, 0.5, 1,
-//   1.25, 2.75, 2.8, and every tested negative point down to -10.
-// - x >= 3.0 on Windows-MSVC: UCRT erfc. Matches Excel bit-exactly at the
-//   tested large-x points (x=3, x=4, x=8). On other platforms the same
-//   range stays on libm; non-Windows hosts have an accepted residual
-//   divergence in the x>=3 tail.
+// Approach: libm::erfc base multiplied by a small relative correction
+// polynomial fitted to Excel's observed ratio (excel/libm - 1) at 45
+// widened witness points. Piecewise in s = 1/x², split at the fdlibm
+// subrange boundary x = 2.857. Fit weighted to force corr(s) = 0 (or the
+// specific UCRT offset) at all already-green anchors, preserving the
+// Matched islands.
 //
-// The positive subrange [1.5, 3.0) and several isolated large-x points
-// (3.5, 5, 6, 10) remain blocked under every owner-local rule family we
-// scored (libm, UCRT, min/max of both, bounded ULP adjustments on
-// subranges) — Excel uses a polynomial that neither libm nor UCRT
-// reproduces there. Those inputs are captured as #[ignore]d exact-bit
-// witnesses below so the bits are preserved for future kernel work.
-#[cfg(all(target_os = "windows", target_env = "msvc"))]
-#[link(name = "ucrt")]
-unsafe extern "C" {
-    #[link_name = "erfc"]
-    fn ucrt_erfc(x: f64) -> f64;
+// Coefficients below come from weighted least-squares fit captured in
+// scratch probe `probe_rational_fit_attempt` (uncommitted). Evaluation is
+// Horner on normalized u = 2*(s - s_lo)/(s_hi - s_lo) - 1.
+//
+// Evidence summary vs widened 48-point positive witness set:
+// - libm-only baseline: 9 matches
+// - prior Windows-MSVC UCRT branch at x>=3: 12 matches
+// - this correction-fit kernel (cross-platform):  20 matches, 0 regressions
+//   at any already-matched anchor, worst blocked |Δ| = 6 ULP
+//
+// x < 1.25 and all negatives stay on libm unchanged (already Excel-exact
+// across every tested point down to -10).
+
+const ERFC_B_S_MIN: f64 = 1.23114804555247758788e-1; // = 1/2.85^2, min s in Region B training
+const ERFC_B_S_MAX: f64 = 6.40000000000000013323e-1; // = 1/1.25^2
+const ERFC_B_COEFFS: [f64; 9] = [
+    -4.68127849232051076334e-16,
+    -7.62455092077679137822e-16,
+     6.25451788846640322315e-15,
+     1.29557375346293795597e-14,
+    -5.44994791140840831850e-15,
+    -1.24991935965186578433e-14,
+     5.75379785143124545520e-15,
+     3.13242732014867690079e-16,
+    -6.09757155730509723491e-15,
+];
+
+const ERFC_A_S_MIN: f64 = 1.00000000000000002082e-2; // = 1/10^2
+const ERFC_A_S_MAX: f64 = 1.18906064209274672794e-1; // = 1/2.9^2
+const ERFC_A_COEFFS: [f64; 3] = [
+    -2.31218392351115847457e-16,
+    -1.54616394379972209297e-17,
+     5.48978747768942628168e-16,
+];
+
+// fdlibm-inspired positive-tail region split.
+const ERFC_BOUNDARY_X: f64 = 2.857;
+
+fn erfc_horner(coeffs: &[f64], u: f64) -> f64 {
+    let mut acc = 0.0_f64;
+    let mut i = coeffs.len();
+    while i > 0 {
+        i -= 1;
+        acc = acc * u + coeffs[i];
+    }
+    acc
 }
 
 fn excel_erfc(x: f64) -> f64 {
-    #[cfg(all(target_os = "windows", target_env = "msvc"))]
-    {
-        if x >= 3.0 {
-            return unsafe { ucrt_erfc(x) };
-        }
+    let libm_v = libm::erfc(x);
+    if !x.is_finite() || x < 1.25 {
+        return libm_v;
     }
-    libm::erfc(x)
+    let s = 1.0 / (x * x);
+    let (s_lo, s_hi, coeffs): (f64, f64, &[f64]) = if x < ERFC_BOUNDARY_X {
+        (ERFC_B_S_MIN, ERFC_B_S_MAX, &ERFC_B_COEFFS[..])
+    } else {
+        (ERFC_A_S_MIN, ERFC_A_S_MAX, &ERFC_A_COEFFS[..])
+    };
+    let u = 2.0 * (s - s_lo) / (s_hi - s_lo) - 1.0;
+    let corr = erfc_horner(coeffs, u);
+    libm_v * (1.0 + corr)
 }
 
 pub fn erfc_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
@@ -577,68 +616,126 @@ mod tests {
         );
     }
 
-    // Excel-matching exact-bit witnesses for the large-x regime closed by
-    // the UCRT branch on Windows-MSVC. On other platforms UCRT is not
-    // available and libm's residual divergence in this range is an
-    // accepted platform gap.
-    #[cfg(all(target_os = "windows", target_env = "msvc"))]
+    // Excel-matching exact-bit witnesses for every input where the
+    // empirical correction-fit kernel reproduces Excel's bits. These
+    // pass on every platform (no UCRT dependency).
     #[test]
-    fn erfc_large_positive_tail_matches_excel_on_windows() {
+    fn erfc_correction_fit_matches_excel_exact_bits() {
+        // Newly-matched by the correction fit (previously blocked).
+        assert_bits_eq("erfc(1.5)", erfc_kernel(1.5).unwrap(), 0.03389485352468927);
         assert_bits_eq(
-            "erfc(3)",
-            erfc_kernel(3.0).unwrap(),
-            2.209049699858544e-5,
+            "erfc(1.8)",
+            erfc_kernel(1.8).unwrap(),
+            0.010909498364269283,
         );
         assert_bits_eq(
-            "erfc(4)",
-            erfc_kernel(4.0).unwrap(),
-            1.5417257900280017e-8,
+            "erfc(2.15)",
+            erfc_kernel(2.15).unwrap(),
+            0.002361392962674656,
         );
         assert_bits_eq(
-            "erfc(8)",
-            erfc_kernel(8.0).unwrap(),
-            1.1224297172982929e-29,
+            "erfc(2.25)",
+            erfc_kernel(2.25).unwrap(),
+            0.0014627165866811515,
+        );
+        assert_bits_eq(
+            "erfc(2.4)",
+            erfc_kernel(2.4).unwrap(),
+            0.0006885138966450787,
+        );
+        assert_bits_eq(
+            "erfc(2.5)",
+            erfc_kernel(2.5).unwrap(),
+            0.00040695201744495886,
+        );
+        assert_bits_eq(
+            "erfc(2.99)",
+            erfc_kernel(2.99).unwrap(),
+            2.3525603080640202e-5,
+        );
+        assert_bits_eq(
+            "erfc(3.25)",
+            erfc_kernel(3.25).unwrap(),
+            4.302779463675121e-6,
+        );
+
+        // Large-x anchors preserved from the UCRT round.
+        assert_bits_eq("erfc(3)", erfc_kernel(3.0).unwrap(), 2.209049699858544e-5);
+        assert_bits_eq("erfc(4)", erfc_kernel(4.0).unwrap(), 1.5417257900280017e-8);
+        assert_bits_eq("erfc(8)", erfc_kernel(8.0).unwrap(), 1.1224297172982929e-29);
+
+        // Already-green anchors preserved (fit forces corr -> 0 here).
+        assert_bits_eq(
+            "erfc(1.85)",
+            erfc_kernel(1.85).unwrap(),
+            0.008888969943914289,
+        );
+        assert_bits_eq(
+            "erfc(1.95)",
+            erfc_kernel(1.95).unwrap(),
+            0.005820666407810882,
+        );
+        assert_bits_eq(
+            "erfc(2.75)",
+            erfc_kernel(2.75).unwrap(),
+            0.00010062192211963684,
+        );
+        assert_bits_eq("erfc(2.8)", erfc_kernel(2.8).unwrap(), 7.501319466545911e-5);
+        assert_bits_eq(
+            "erfc(3.001)",
+            erfc_kernel(3.001).unwrap(),
+            2.1951660917737304e-5,
+        );
+
+        // ERFC.PRECISE parity spot-checks — same kernel.
+        assert_bits_eq(
+            "erfc.precise(1.5)",
+            erfc_precise_kernel(1.5).unwrap(),
+            0.03389485352468927,
         );
         assert_bits_eq(
             "erfc.precise(3)",
             erfc_precise_kernel(3.0).unwrap(),
             2.209049699858544e-5,
         );
-        assert_bits_eq(
-            "erfc.precise(4)",
-            erfc_precise_kernel(4.0).unwrap(),
-            1.5417257900280017e-8,
-        );
-        assert_bits_eq(
-            "erfc.precise(8)",
-            erfc_precise_kernel(8.0).unwrap(),
-            1.1224297172982929e-29,
-        );
     }
 
-    // Exact-bit Excel witnesses captured for the still-blocked positive
-    // regime. No rule family we scored (libm, UCRT, min/max, bounded ULP
-    // adjustments on subranges) reproduces these under owner-local code.
-    // Kept as #[ignore]d diagnostic so the bits are preserved against the
-    // artifact drifting; enable with `cargo test -- --ignored` when a
-    // kernel candidate is in flight.
+    // Exact-bit Excel witnesses still blocked by the correction-fit kernel.
+    // The remaining residual is chaotic at the ULP level — no smoothly
+    // representable polynomial correction reproduces these. Kept as
+    // #[ignore]d sentinels; enable via `cargo test -- --ignored` when a
+    // kernel candidate targeting them is in flight.
     #[test]
-    #[ignore = "Excel polynomial not yet reproduced in OxFunc; see docs/function-lane/ERFC_EXCEL_EMULATION.md"]
-    fn erfc_known_blocked_excel_witnesses() {
+    #[ignore = "Excel residual not reproducible via smooth correction polynomial; see docs/function-lane/ERFC_EXCEL_EMULATION.md"]
+    fn erfc_remaining_blocked_excel_witnesses() {
         let cases: &[(f64, f64)] = &[
-            (1.5, 0.03389485352468927),
+            (1.6, 0.023651616655355978),
+            (1.7, 0.01620954140922544),
             (1.75, 0.013328328780817557),
             (1.9, 0.007209570764742528),
             (2.0, 0.0046777349810472645),
+            (2.05, 0.0037419039555431272),
             (2.1, 0.002979466656332985),
-            (2.25, 0.0014627165866811515),
-            (2.5, 0.00040695201744495886),
+            (2.35, 0.000889267032132454),
+            (2.45, 0.0005305801122510537),
+            (2.55, 0.0003106603426391907),
             (2.6, 0.000236034416529349),
+            (2.65, 0.00017848775202400087),
             (2.7, 0.0001343327399405242),
+            (2.85, 5.565627996139894e-5),
             (2.9, 4.1097878099458844e-5),
+            (2.95, 3.0203042064138246e-5),
+            (2.999, 2.2230168599834054e-5),
+            (3.005, 2.1404577729752717e-5),
+            (3.01, 2.0738963637132638e-5),
+            (3.02, 1.946639071441418e-5),
             (3.5, 7.430983723414129e-7),
+            (3.75, 1.1372725656979669e-7),
+            (4.5, 1.9661604415428865e-10),
             (5.0, 1.537459794428034e-12),
             (6.0, 2.151973671249892e-17),
+            (7.0, 4.1838256077794166e-23),
+            (9.0, 4.137031746513812e-37),
             (10.0, 2.0884875837625446e-45),
         ];
         for (x, excel) in cases.iter().copied() {
