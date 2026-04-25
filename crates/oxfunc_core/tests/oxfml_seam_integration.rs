@@ -918,7 +918,7 @@ fn ftc_0383_irr_exactness_witness_matches_excel_target_through_adapter() {
 }
 
 #[test]
-fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
+fn ftc_0635_exact_formula_matches_excel_bit_value_through_adapter() {
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0635-exact",
         "formula:ftc-0635-exact",
@@ -930,7 +930,7 @@ fn ftc_0635_exact_formula_returns_negative_two_locally_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(-2.0)
+        EvalValue::Number(-1.9999999999999998)
     );
 }
 

@@ -34,50 +34,25 @@ fn exact_integer_exponent(power: f64) -> Option<i64> {
     }
 }
 
-fn gcd_i64(mut a: i64, mut b: i64) -> i64 {
-    a = a.abs();
-    b = b.abs();
-    while b != 0 {
-        let r = a % b;
-        a = b;
-        b = r;
-    }
-    a
-}
-
-fn approximate_odd_denominator_rational(power: f64) -> Option<(i64, i64)> {
-    if !power.is_finite() {
+fn detect_reciprocal_odd_integer(power: f64) -> Option<i64> {
+    if !power.is_finite() || power <= 0.0 || power >= 1.0 {
         return None;
     }
-
     let tolerance = 32.0 * f64::EPSILON * power.abs().max(1.0);
-    let mut best = None;
+    let mut best_q: Option<i64> = None;
     let mut best_diff = f64::INFINITY;
-
-    for denominator in 2_i64..=255_i64 {
-        let numerator_f = (power * denominator as f64).round();
-        if !numerator_f.is_finite()
-            || numerator_f < i64::MIN as f64
-            || numerator_f > i64::MAX as f64
-        {
-            continue;
-        }
-        let numerator = numerator_f as i64;
-        let divisor = gcd_i64(numerator, denominator);
-        let reduced_numerator = numerator / divisor;
-        let reduced_denominator = denominator / divisor;
-        if reduced_denominator <= 1 || reduced_denominator % 2 == 0 {
-            continue;
-        }
-        let diff = (power - (reduced_numerator as f64 / reduced_denominator as f64)).abs();
+    let mut q = 3_i64;
+    while q <= 255 {
+        let recip = 1.0_f64 / q as f64;
+        let diff = (power - recip).abs();
         if diff < best_diff {
-            best = Some((reduced_numerator, reduced_denominator));
             best_diff = diff;
+            best_q = Some(q);
         }
+        q += 2;
     }
-
     if best_diff <= tolerance {
-        best.filter(|(numerator, _)| *numerator != 0)
+        best_q
     } else {
         None
     }
@@ -118,14 +93,8 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
     let result = if let Some(integer_power) = exact_integer_exponent(power) {
         powi_excel_publication(number, integer_power)
     } else if number < 0.0 {
-        if let Some((numerator, denominator)) = approximate_odd_denominator_rational(power) {
-            let magnitude = (-number).powf((numerator.abs() as f64) / denominator as f64);
-            let signed = if numerator % 2 == 0 {
-                magnitude
-            } else {
-                -magnitude
-            };
-            if numerator < 0 { 1.0 / signed } else { signed }
+        if detect_reciprocal_odd_integer(power).is_some() {
+            -((power * (-number).ln()).exp())
         } else {
             number.powf(power)
         }
@@ -180,23 +149,24 @@ mod tests {
     }
 
     #[test]
-    fn power_kernel_accepts_negative_base_odd_denominator_rationals() {
-        let one_third = power_kernel(-8.0, 1.0 / 3.0).expect("-8^(1/3)");
-        assert!((one_third + 2.0).abs() < 1e-12);
+    fn power_kernel_matches_excel_negative_base_reciprocal_odd_root_rows() {
+        // Reciprocal odd-integer roots of negative bases: bit-exact Excel publication
+        // via -exp(power * ln(-base)). 1/3 and its 16/17-digit decimal literals
+        // round to the same f64, so all three reach the exp/ln path identically.
+        assert_eq!(power_kernel(-8.0, 1.0 / 3.0), Ok(-1.9999999999999998));
+        assert_eq!(
+            power_kernel(-8.0, 0.3333333333333333),
+            Ok(-1.9999999999999998)
+        );
+        assert_eq!(
+            power_kernel(-8.0, 0.33333333333333331),
+            Ok(-1.9999999999999998)
+        );
+        assert_eq!(power_kernel(-27.0, 1.0 / 3.0), Ok(-2.9999999999999996));
+        assert_eq!(power_kernel(-32.0, 1.0 / 5.0), Ok(-2.0));
 
-        let one_third_decimal = power_kernel(-8.0, 0.3333333333333333).expect("-8^0.3333...");
-        assert!((one_third_decimal + 2.0).abs() < 1e-12);
-
-        let one_third_decimal_rounded =
-            power_kernel(-8.0, 0.33333333333333331).expect("-8^0.3333...1");
-        assert!((one_third_decimal_rounded + 2.0).abs() < 1e-12);
-
-        let two_thirds = power_kernel(-8.0, 2.0 / 3.0).expect("-8^(2/3)");
-        assert!((two_thirds - 4.0).abs() < 1e-12);
-
-        let one_fifth = power_kernel(-32.0, 1.0 / 5.0).expect("-32^(1/5)");
-        assert!((one_fifth + 2.0).abs() < 1e-12);
-
+        // Non-reciprocal-odd negative-base exponents fall through to #NUM!.
+        assert_eq!(power_kernel(-8.0, 2.0 / 3.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(-8.0, 0.5), Err(WorksheetErrorCode::Num));
     }
 }
