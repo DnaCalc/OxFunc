@@ -5,6 +5,7 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
+use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::resolver::ReferenceResolver;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
@@ -104,7 +105,7 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
     if result.is_nan() {
         Err(WorksheetErrorCode::Num)
     } else {
-        Ok(result)
+        Ok(excel_underflow_to_zero(result))
     }
 }
 
@@ -132,6 +133,8 @@ mod tests {
     fn power_kernel_matches_excel_domain_lanes() {
         assert_eq!(power_kernel(2.0, 3.0), Ok(8.0));
         assert_eq!(power_kernel(2.0, -3.0), Ok(0.125));
+        assert_eq!(power_kernel(2.0, -1023.0), Ok(0.0));
+        assert_eq!(power_kernel(2.0, -1022.0), Ok(f64::MIN_POSITIVE));
         assert_eq!(power_kernel(0.0, 0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(-0.0, 0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(0.0, -1.0), Err(WorksheetErrorCode::Div0));

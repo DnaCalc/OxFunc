@@ -6,6 +6,7 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_prepared, eval_binary_numeric_surface,
     map_binary_numeric_error_to_ws,
 };
+use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -26,7 +27,7 @@ pub const OP_ADD_META: FunctionMeta = FunctionMeta {
 pub type OpAddEvalError = BinaryNumericSurfaceError;
 
 pub fn op_add_kernel(lhs: f64, rhs: f64) -> f64 {
-    lhs + rhs
+    excel_underflow_to_zero(lhs + rhs)
 }
 
 pub fn eval_op_add_adapter_prepared(
@@ -75,6 +76,16 @@ mod tests {
         ];
         let got = eval_op_add_surface(&args, &NoResolver);
         assert_eq!(got, Ok(EvalValue::Number(5.0)));
+    }
+
+    #[test]
+    fn eval_op_add_flushes_excel_denormalized_results() {
+        let args = [
+            CallArgValue::Eval(EvalValue::Number(1.0e-308)),
+            CallArgValue::Eval(EvalValue::Number(1.0e-308)),
+        ];
+        let got = eval_op_add_surface(&args, &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
     }
 
     #[test]

@@ -81,6 +81,7 @@ pub mod error_type_fn;
 pub mod even_fn;
 pub mod exact_fn;
 pub mod excel_casing;
+pub mod excel_numeric;
 pub mod excel_numeric_compare;
 pub mod exp_fn;
 pub mod fact;

@@ -5,6 +5,7 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
+use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::functions::power_fn::power_kernel;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -76,30 +77,30 @@ pub const OP_POWER_META: FunctionMeta = FunctionMeta {
 };
 
 pub fn op_unary_plus_kernel(value: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(value)
+    Ok(excel_underflow_to_zero(value))
 }
 
 pub fn op_negate_kernel(value: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(-value)
+    Ok(excel_underflow_to_zero(-value))
 }
 
 pub fn op_percent_kernel(value: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(value / 100.0)
+    Ok(excel_underflow_to_zero(value / 100.0))
 }
 
 pub fn op_subtract_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(lhs - rhs)
+    Ok(excel_underflow_to_zero(lhs - rhs))
 }
 
 pub fn op_multiply_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(lhs * rhs)
+    Ok(excel_underflow_to_zero(lhs * rhs))
 }
 
 pub fn op_divide_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
     if rhs == 0.0 {
         Err(WorksheetErrorCode::Div0)
     } else {
-        Ok(lhs / rhs)
+        Ok(excel_underflow_to_zero(lhs / rhs))
     }
 }
 
@@ -280,6 +281,17 @@ mod tests {
             got,
             Err(BinaryNumericSurfaceError::Domain(WorksheetErrorCode::Div0))
         );
+    }
+
+    #[test]
+    fn arithmetic_kernels_flush_excel_denormalized_results_to_zero() {
+        assert_eq!(op_unary_plus_kernel(1.0e-309), Ok(0.0));
+        assert_eq!(op_negate_kernel(1.0e-309), Ok(0.0));
+        assert_eq!(op_percent_kernel(1.0e-307), Ok(0.0));
+        assert_eq!(op_subtract_kernel(2.0e-308, 1.0e-308), Ok(0.0));
+        assert_eq!(op_multiply_kernel(1.0e-307, 0.01), Ok(0.0));
+        assert_eq!(op_divide_kernel(2.3e-308, 2.0), Ok(0.0));
+        assert_eq!(op_divide_kernel(5.0e-308, 2.0), Ok(2.5e-308));
     }
 
     #[test]
