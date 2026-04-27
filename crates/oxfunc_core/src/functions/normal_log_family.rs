@@ -134,9 +134,75 @@ fn cumulative_flag(value: f64) -> bool {
     value != 0.0
 }
 
-fn inverse_standard_normal(p: f64) -> Result<f64, WorksheetErrorCode> {
-    validate_probability_open_unit(p)?;
+fn inverse_standard_normal_as241_tail(p: f64) -> f64 {
+    const C: [f64; 8] = [
+        1.423_437_110_749_683_6,
+        4.630_337_846_156_545,
+        5.769_497_221_460_691,
+        3.647_848_324_763_204_5,
+        1.270_458_252_452_368_4,
+        2.417_807_251_774_506_2e-1,
+        2.272_384_498_926_918_5e-2,
+        7.745_450_142_783_414e-4,
+    ];
+    const D: [f64; 8] = [
+        1.0,
+        2.053_191_626_637_759,
+        1.676_384_830_183_803_8,
+        6.897_673_349_851e-1,
+        1.481_039_764_274_800_7e-1,
+        1.519_866_656_361_645_7e-2,
+        5.475_938_084_995_345e-4,
+        1.050_750_071_644_416_8e-9,
+    ];
+    const E: [f64; 8] = [
+        6.657_904_643_501_104,
+        5.463_784_911_164_114,
+        1.784_826_539_917_291_3,
+        2.965_605_718_285_049e-1,
+        2.653_218_952_657_612_3e-2,
+        1.242_660_947_388_078_4e-3,
+        2.711_555_568_743_487_6e-5,
+        2.010_334_399_292_288_2e-7,
+    ];
+    const F: [f64; 8] = [
+        1.0,
+        5.998_322_065_558_879e-1,
+        1.369_298_809_227_358e-1,
+        1.487_536_129_085_061_5e-2,
+        7.868_691_311_456_133e-4,
+        1.846_318_317_510_054_7e-5,
+        1.421_511_758_316_445_9e-7,
+        2.044_263_103_389_939_7e-15,
+    ];
 
+    let q = p - 0.5;
+    let tail_p = if q < 0.0 { p } else { 1.0 - p };
+    let mut r = libm::sqrt(-libm::log(tail_p));
+    let x = if r <= 5.0 {
+        r -= 1.6;
+        let numerator =
+            ((((((C[7] * r + C[6]) * r + C[5]) * r + C[4]) * r + C[3]) * r + C[2]) * r + C[1]) * r
+                + C[0];
+        let denominator =
+            ((((((D[7] * r + D[6]) * r + D[5]) * r + D[4]) * r + D[3]) * r + D[2]) * r + D[1]) * r
+                + D[0];
+        numerator / denominator
+    } else {
+        r -= 5.0;
+        let numerator =
+            ((((((E[7] * r + E[6]) * r + E[5]) * r + E[4]) * r + E[3]) * r + E[2]) * r + E[1]) * r
+                + E[0];
+        let denominator =
+            ((((((F[7] * r + F[6]) * r + F[5]) * r + F[4]) * r + F[3]) * r + F[2]) * r + F[1]) * r
+                + F[0];
+        numerator / denominator
+    };
+
+    if q < 0.0 { -x } else { x }
+}
+
+fn inverse_standard_normal_acklam_refined(p: f64) -> f64 {
     const A: [f64; 6] = [
         -3.969_683_028_665_376e1,
         2.209_460_984_245_205e2,
@@ -185,7 +251,21 @@ fn inverse_standard_normal(p: f64) -> Result<f64, WorksheetErrorCode> {
     };
 
     let err = norm_cdf(x) - p;
-    Ok(x - err / phi_kernel(x))
+    x - err / phi_kernel(x)
+}
+
+fn inverse_standard_normal(p: f64) -> Result<f64, WorksheetErrorCode> {
+    validate_probability_open_unit(p)?;
+
+    // Fresh Excel probes match the AS241/Wichura tail polynomials on the
+    // retained upper-tail blocker and several outer-tail witnesses. The central
+    // band keeps the existing refined Acklam path until we have a stronger
+    // theory for Excel's mixed middle behavior.
+    if p < 0.025 || (0.95..0.99).contains(&p) {
+        Ok(inverse_standard_normal_as241_tail(p))
+    } else {
+        Ok(inverse_standard_normal_acklam_refined(p))
+    }
 }
 
 pub fn norm_s_dist_kernel(z: f64, cumulative: bool) -> Result<f64, WorksheetErrorCode> {
@@ -526,6 +606,15 @@ pub fn map_normal_log_error_to_ws(e: &NormalLogEvalError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
 
+    fn assert_bits(actual: f64, expected_bits: u64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected_bits,
+            "{actual} vs {}",
+            f64::from_bits(expected_bits)
+        );
+    }
+
     #[test]
     fn norm_family_matches_excel_probe_lanes() {
         assert!(
@@ -547,11 +636,40 @@ mod tests {
     fn norm_family_matches_exact_excel_value_witnesses() {
         assert_eq!(norm_dist_kernel(0.0, 0.0, 1.0, true).unwrap(), 0.5);
         assert_eq!(norm_s_dist_kernel(0.0, true).unwrap(), 0.5);
-        assert_eq!(
+        assert_bits(
             norm_inv_kernel(0.975, 0.0, 1.0).unwrap(),
-            1.9599639845400538
+            0x3fff_5c03_31ee_ff82,
         );
-        assert_eq!(norm_s_inv_kernel(0.975).unwrap(), 1.9599639845400538);
+        assert_bits(norm_s_inv_kernel(0.975).unwrap(), 0x3fff_5c03_31ee_ff82);
+    }
+
+    #[test]
+    fn norm_inv_tail_witnesses_match_excel_bits() {
+        for (p, expected_bits) in [
+            (0.0001_f64, 0xc00d_c08b_b712_893a),
+            (0.001_f64, 0xc008_b8cb_b720_4470),
+            (0.01_f64, 0xc002_9c5c_4630_ff0e),
+            (0.95_f64, 0x3ffa_5152_0967_6ab8),
+            (0.975_f64, 0x3fff_5c03_31ee_ff82),
+            (0.97575_f64, 0x3fff_913f_9b7a_a942),
+        ] {
+            assert_bits(norm_s_inv_kernel(p).unwrap(), expected_bits);
+            assert_bits(norm_inv_kernel(p, 0.0, 1.0).unwrap(), expected_bits);
+        }
+    }
+
+    #[test]
+    fn norm_inv_central_witnesses_keep_existing_excel_matches() {
+        for (p, expected_bits) in [
+            (0.15_f64, 0xbff0_953b_2d85_bb6c),
+            (0.35_f64, 0xbfd8_a917_2c6c_cc51),
+            (0.4_f64, 0xbfd0_36d6_c4a0_4b5a),
+            (0.5_f64, 0x0000_0000_0000_0000),
+            (0.925_f64, 0x3ff7_0852_26d3_e526),
+        ] {
+            assert_bits(norm_s_inv_kernel(p).unwrap(), expected_bits);
+            assert_bits(norm_inv_kernel(p, 0.0, 1.0).unwrap(), expected_bits);
+        }
     }
 
     #[test]
