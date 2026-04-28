@@ -37,6 +37,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 22. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md)
 23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md)
 24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md)
+25. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -63,6 +64,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 22. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md) owns the reopened reshape-family lane where omitted leading row-counts in `TAKE(...,,n)` and `DROP(...,,n)` must default to all rows rather than surfacing `MissingArg` / `#VALUE!`.
 23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md) owns the reopened exact-value accuracy lane where current local `NORM.DIST` and `NORM.INV` approximations drift from live Excel `Value2` on bounded current-baseline witnesses.
 24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md) owns the reopened `XIRR` precision lane where the current local iterative solve drifts from live Excel `Value2` on a bounded current-baseline cashflow/date witness.
+25. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md) owns the smart-fuzzer pilot lane for compact telemetry, Excel throughput measurement, static metadata/risk indexing, bounded candidate generation, local-vs-Excel typed comparison, and mismatch promotion through the ordinary bug stream.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

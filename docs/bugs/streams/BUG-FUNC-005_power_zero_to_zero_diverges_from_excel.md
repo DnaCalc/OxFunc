@@ -3,8 +3,15 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-005`
 - **Opened**: 2026-04-08
-- **Status**: `validated_local`
+- **Status**: `investigating`
 - **Owner workset**: `W078`
+
+## Fresh Confirmation Note
+This stream records a prior April 8, 2026 local Excel observation and a
+working-tree correction. It must not be treated as a current known bug without
+fresh Excel confirmation against the active baseline. If fresh replay does not
+confirm the divergence, this stream should be reconciled as stale rather than
+used as a prioritization seed for current smart-fuzzer work.
 
 ## Source Refs
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`

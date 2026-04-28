@@ -1,0 +1,6 @@
+runs/*
+!runs/README.md
+work/*
+!work/README.md
+cache/*
+!cache/README.md

@@ -71,7 +71,7 @@ Supersession note:
 - Canonical owner: [W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md), [BUG-FUNC-004_numeric_comparison_tolerance_family_split.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-004_numeric_comparison_tolerance_family_split.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-13 Power Zero-To-Zero Parity
-- Current state: active local follow-up from live Excel replay. `POWER(0,0)` and `0^0` are now pinned as `#NUM!` in Excel, reopening the shared power-kernel lane because the pre-fix local runtime/formal path published `1`. The local correction and focused validation are on the working tree; the remaining open lane is landed-ref promotion.
+- Current state: review-required local follow-up from prior live Excel replay. The repo still carries `W078` / `BUG-FUNC-005` for the earlier `POWER(0,0)` and `0^0` claim, but that claim must not be treated as a current known bug without fresh Excel confirmation against the active baseline. If fresh replay does not confirm the divergence, W078 should reconcile the stale truth surfaces rather than continue carrying the POWER bug as active.
 - Canonical owner: [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md), [BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-14 Lookup-Family Array Lookup-Value Lifting
@@ -90,6 +90,10 @@ Supersession note:
 - Current state: active cross-repo seam follow-up. OxFunc has now extracted the ordinary value model into a dedicated shared crate and removed the old ordinary locale-context convenience constructors from `oxfunc_core`, leaving the local parser/formatter only as explicit test support. The remaining open lane is downstream caller migration: the XLL add-in still constructs a local host context directly, and OxFml tests still depend on OxFunc-provided convenience contexts instead of supplying caller-owned capability bundles. `W082` and `HO-FN-009` own the remaining migration and acknowledgment work.
 - Canonical owner: [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md), [HO-FN-009_locale_format_seam_ownership_realignment.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-009_locale_format_seam_ownership_realignment.md), and [LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md).
 
+### IP-18 Smart-Fuzzer Differential Exploration
+- Current state: planned pilot lane. The sandbox design exists under `smart-fuzzer/`, and `W088` owns the first executable pass for compact telemetry, Excel throughput measurement, static metadata/risk indexing, bounded pilot generation, local-vs-Excel comparison, and mismatch promotion through the ordinary bug stream.
+- Canonical owner: [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md), [smart-fuzzer\README.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\README.md), and [SMART_FUZZER_DESIGN.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\SMART_FUZZER_DESIGN.md).
+
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
 - `active`: live lane with current owner surfaces.
@@ -102,3 +106,4 @@ Current reading:
 4. `IP-08` is `parked`,
 5. `IP-09` is `planned`,
 6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-14`, `IP-15`, `IP-16`, and `IP-17` are `active`.
+7. `IP-18` is `planned`.

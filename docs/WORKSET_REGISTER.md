@@ -315,9 +315,11 @@ It does mean:
 
 ### W078 Power Zero-To-Zero Num Error Parity
 1. purpose:
-   own the local parity correction for the shared power-kernel lane where Excel
-   surfaces `#NUM!` for both `0^0` and `POWER(0,0)` but the current local power
-   path still published `1`.
+   own the local review/correction lane for the prior shared power-kernel claim
+   where an April 8, 2026 local Excel replay reported `#NUM!` for both `0^0`
+   and `POWER(0,0)`, but the then-current local power path still published `1`.
+   This claim now requires fresh Excel confirmation before it is treated as a
+   current known bug.
 2. depends_on:
    `W070`, `W072`, `W045`
 3. parent_doctrine_and_spec_surfaces:
@@ -329,9 +331,10 @@ It does mean:
 4. upstream_dependencies:
    none
 5. closure_condition:
-   `POWER(0,0)` and `0^0` both surface `#NUM!` locally, the shared Rust and
-   Lean power lanes agree, focused validation is recorded, and the current-gap
-   surfaces no longer overclaim `POWER`.
+   fresh Excel replay either confirms the prior `POWER(0,0)` / `0^0` claim or
+   invalidates it as stale; the shared Rust and Lean power lanes agree with the
+   freshly confirmed rule; focused validation is recorded where the bug remains
+   real; and the current-gap surfaces no longer overclaim `POWER`.
 6. initial_epic_lanes:
    bug intake, shared power-kernel correction, Lean alignment, focused
    validation, truth-surface reconciliation
@@ -561,6 +564,36 @@ It does mean:
 6. initial_epic_lanes:
    bug intake, solver-precision replay characterization, local iterative-path
    reconciliation, focused validation, W51 truth reconciliation
+7. rollout_mode:
+   `execution_target`
+
+### W088 Smart-Fuzzer Differential Exploration Pilot
+1. purpose:
+   establish the first smart-fuzzer execution lane for high-throughput,
+   metadata-aware differential exploration against Excel while keeping ordinary
+   passing cases as compact telemetry rather than heavyweight prose artifacts.
+2. depends_on:
+   `W070`, `W072`, `W044`, `W049`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md`,
+   `smart-fuzzer/README.md`,
+   `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`,
+   `smart-fuzzer/planning/CASE_SCHEMA_V0.md`,
+   `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`,
+   `docs/bugs/README.md`
+4. upstream_dependencies:
+   `OxFml`
+5. closure_condition:
+   the pilot throughput benchmark, compact telemetry/failure-packet formats,
+   static metadata/risk index, and at least one bounded local-vs-Excel
+   comparison family are exercised with typed comparison output; any confirmed
+   mismatch is routed through the ordinary bug stream or classified as a
+   seam/harness blocker, and pass rows remain summarized as coverage telemetry
+   rather than completion evidence.
+6. initial_epic_lanes:
+   artifact economy and schema discipline, Excel throughput benchmark, static
+   metadata/risk index, bounded pilot generator, local evaluator and Excel
+   comparator, mismatch minimization and promotion path
 7. rollout_mode:
    `execution_target`
 
