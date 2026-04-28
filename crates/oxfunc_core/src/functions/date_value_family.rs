@@ -470,7 +470,9 @@ fn map_family_err_to_eval(err: DateValueFamilyError) -> EvalValue {
     }
 }
 
-fn coerce_prepared_to_date_serial(prepared: &PreparedArgValue) -> Result<f64, DateValueFamilyError> {
+fn coerce_prepared_to_date_serial(
+    prepared: &PreparedArgValue,
+) -> Result<f64, DateValueFamilyError> {
     match prepared {
         PreparedArgValue::Eval(EvalValue::Text(text)) => {
             let parsed = parse_date_time_text(&text.to_string_lossy())?;
@@ -766,15 +768,15 @@ mod tests {
     fn eval_datedif_surface_accepts_iso_date_text_args() {
         let got = eval_datedif_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "2020-01-15",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "2024-03-20",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "Y",
-                ))),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("2020-01-15"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("2024-03-20"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("Y"),
+                )),
             ],
             &NoResolver,
         );
@@ -787,9 +789,9 @@ mod tests {
             &[
                 CallArgValue::Eval(EvalValue::Number(serial(2020, 1, 15))),
                 CallArgValue::Eval(EvalValue::Number(serial(2024, 3, 20))),
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "Y",
-                ))),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("Y"),
+                )),
             ],
             &NoResolver,
         );
@@ -800,15 +802,15 @@ mod tests {
     fn eval_datedif_surface_rejects_slash_date_text_args() {
         let got = eval_datedif_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "1/15/2020",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "3/20/2024",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(crate::value::ExcelText::from_interop_assignment(
-                    "Y",
-                ))),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("1/15/2020"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("3/20/2024"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(
+                    crate::value::ExcelText::from_interop_assignment("Y"),
+                )),
             ],
             &NoResolver,
         );

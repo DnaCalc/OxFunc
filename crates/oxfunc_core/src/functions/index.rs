@@ -1,10 +1,10 @@
-use crate::coercion::{coerce_arg_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_arg_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::{
-    format_relative_target, parse_a1_reference, A1Reference, A1ReferenceNotation,
+    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{

@@ -52,11 +52,7 @@ fn detect_reciprocal_odd_integer(power: f64) -> Option<i64> {
         }
         q += 2;
     }
-    if best_diff <= tolerance {
-        best_q
-    } else {
-        None
-    }
+    if best_diff <= tolerance { best_q } else { None }
 }
 
 fn powi_excel_publication(number: f64, power: i64) -> f64 {

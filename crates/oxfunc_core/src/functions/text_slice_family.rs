@@ -4,8 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
-    run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{

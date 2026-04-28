@@ -7,8 +7,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
-    run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
@@ -708,11 +708,7 @@ pub fn eval_sort_prepared(
             let lhs_cell = array.get(sort_index, *lhs).expect("validated column");
             let rhs_cell = array.get(sort_index, *rhs).expect("validated column");
             let ord = compare_cell_values(lhs_cell, rhs_cell);
-            if descending {
-                ord.reverse()
-            } else {
-                ord
-            }
+            if descending { ord.reverse() } else { ord }
         });
         let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
         for row in 0..array.shape().rows {
@@ -729,11 +725,7 @@ pub fn eval_sort_prepared(
         let lhs_cell = array.get(*lhs, sort_index).expect("validated row");
         let rhs_cell = array.get(*rhs, sort_index).expect("validated row");
         let ord = compare_cell_values(lhs_cell, rhs_cell);
-        if descending {
-            ord.reverse()
-        } else {
-            ord
-        }
+        if descending { ord.reverse() } else { ord }
     });
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
     for row in order {

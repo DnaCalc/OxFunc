@@ -10,7 +10,7 @@ use oxfml_core::semantics::{
     RegistrationSourceKind,
 };
 use oxfml_core::test_support::oxfunc_adapter::{
-    run_oxfunc_preparation_adapter, OxFuncAdapterRequest,
+    OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
 use oxfunc_core::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;

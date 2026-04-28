@@ -396,12 +396,14 @@ mod tests {
     fn upper_preserves_german_sharp_s() {
         assert_eq!(
             eval_upper_surface(
-                &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                    "straße"
-                )))],
+                &[CallArgValue::Eval(EvalValue::Text(
+                    ExcelText::from_interop_assignment("straße")
+                ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("STRAßE")))
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                "STRAßE"
+            )))
         );
     }
 
@@ -417,29 +419,33 @@ mod tests {
             (
                 "UPPER straße",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "straße",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("straße"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("STRAßE"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "STRAßE",
+                ))),
             ),
             (
                 "LOWER STRAẞE",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "STRAẞE",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("STRAẞE"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("straẞe"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "straẞe",
+                ))),
             ),
             (
                 "UPPER weiß",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "weiß",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("weiß"),
+                    ))],
                     &NoResolver,
                 ),
                 Ok(EvalValue::Text(ExcelText::from_interop_assignment("WEIß"))),
@@ -447,39 +453,45 @@ mod tests {
             (
                 "UPPER İstanbul",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "İstanbul",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("İstanbul"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("İSTANBUL"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "İSTANBUL",
+                ))),
             ),
             (
                 "LOWER İSTANBUL",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "İSTANBUL",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("İSTANBUL"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("istanbul"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "istanbul",
+                ))),
             ),
             (
                 "UPPER istanbul",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "istanbul",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("istanbul"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ISTANBUL"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "ISTANBUL",
+                ))),
             ),
             (
                 "LOWER I",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "I",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("I"),
+                    ))],
                     &NoResolver,
                 ),
                 Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
@@ -487,9 +499,9 @@ mod tests {
             (
                 "LOWER İ",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "İ",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("İ"),
+                    ))],
                     &NoResolver,
                 ),
                 Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
@@ -497,19 +509,21 @@ mod tests {
             (
                 "UPPER κόσμος",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "κόσμος",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("κόσμος"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ΚΟΣΜΟΣ"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "ΚΟΣΜΟΣ",
+                ))),
             ),
             (
                 "LOWER ΟΣ",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "ΟΣ",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("ΟΣ"),
+                    ))],
                     &NoResolver,
                 ),
                 Ok(EvalValue::Text(ExcelText::from_interop_assignment("ος"))),
@@ -517,9 +531,9 @@ mod tests {
             (
                 "UPPER café",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "café",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("café"),
+                    ))],
                     &NoResolver,
                 ),
                 Ok(EvalValue::Text(ExcelText::from_interop_assignment("CAFÉ"))),
@@ -527,12 +541,14 @@ mod tests {
             (
                 "UPPER Ångström",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                        "Ångström",
-                    )))],
+                    &[CallArgValue::Eval(EvalValue::Text(
+                        ExcelText::from_interop_assignment("Ångström"),
+                    ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ÅNGSTRÖM"))),
+                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                    "ÅNGSTRÖM",
+                ))),
             ),
         ];
 

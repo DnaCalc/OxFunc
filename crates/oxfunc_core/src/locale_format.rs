@@ -450,9 +450,7 @@ fn render_date_component(
 }
 
 #[cfg(test)]
-fn parse_conditional_section(
-    raw: &str,
-) -> Option<(char, f64, &str)> {
+fn parse_conditional_section(raw: &str) -> Option<(char, f64, &str)> {
     let trimmed = raw.trim_start();
     let op = if trimmed.starts_with("[<") {
         '<'
@@ -662,14 +660,24 @@ mod tests {
         );
         assert_eq!(
             ctx.formatter
-                .render_with_code(&ctx.profile, ctx.date_system, 45366.0, "[<45352] ;[>45382] ;dd")
+                .render_with_code(
+                    &ctx.profile,
+                    ctx.date_system,
+                    45366.0,
+                    "[<45352] ;[>45382] ;dd"
+                )
                 .unwrap()
                 .to_string_lossy(),
             "15"
         );
         assert_eq!(
             ctx.formatter
-                .render_with_code(&ctx.profile, ctx.date_system, 45350.0, "[<45352] ;[>45382] ;dd")
+                .render_with_code(
+                    &ctx.profile,
+                    ctx.date_system,
+                    45350.0,
+                    "[<45352] ;[>45382] ;dd"
+                )
                 .unwrap()
                 .to_string_lossy(),
             " "
@@ -677,7 +685,8 @@ mod tests {
 
         let en_us = test_en_us_context();
         assert_eq!(
-            en_us.formatter
+            en_us
+                .formatter
                 .render_with_code(&en_us.profile, en_us.date_system, 1234567.89, "#,##0.00")
                 .unwrap()
                 .to_string_lossy(),

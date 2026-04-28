@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, prepare_arg_values_only, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::functions::power_fn::power_kernel;
-use crate::resolver::{resolve_eval_value, ReferenceResolver};
+use crate::resolver::{ReferenceResolver, resolve_eval_value};
 use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
 use std::fmt;
 

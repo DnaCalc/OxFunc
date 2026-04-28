@@ -34,9 +34,7 @@ fn push_excel_upper_char(out: &mut String, ch: char) {
 
 fn adjacent_letter(chars: &[char], index: usize, offset: isize) -> bool {
     let adjacent = index as isize + offset;
-    adjacent >= 0
-        && (adjacent as usize) < chars.len()
-        && chars[adjacent as usize].is_alphabetic()
+    adjacent >= 0 && (adjacent as usize) < chars.len() && chars[adjacent as usize].is_alphabetic()
 }
 
 fn push_excel_lower_char(out: &mut String, ch: char, is_final_sigma: bool) {
@@ -60,9 +58,8 @@ pub fn lower_text(text: &ExcelText) -> ExcelText {
     let chars = text.to_string_lossy().chars().collect::<Vec<_>>();
     let mut out = String::new();
     for (index, ch) in chars.iter().copied().enumerate() {
-        let is_final_sigma = ch == 'Σ'
-            && adjacent_letter(&chars, index, -1)
-            && !adjacent_letter(&chars, index, 1);
+        let is_final_sigma =
+            ch == 'Σ' && adjacent_letter(&chars, index, -1) && !adjacent_letter(&chars, index, 1);
         push_excel_lower_char(&mut out, ch, is_final_sigma);
     }
     text_from_string(out)

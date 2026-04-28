@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};

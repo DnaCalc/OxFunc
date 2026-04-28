@@ -35,10 +35,11 @@ fn eval_value_array_cell(
 ) -> Result<ArrayCellValue, ValueEvalError> {
     match cell {
         ArrayCellValue::Number(n) => Ok(ArrayCellValue::Number(*n)),
-        ArrayCellValue::Text(text) => match ctx
-            .parser
-            .parse_value_text(&ctx.profile, ctx.date_system, &text.to_string_lossy())
-        {
+        ArrayCellValue::Text(text) => match ctx.parser.parse_value_text(
+            &ctx.profile,
+            ctx.date_system,
+            &text.to_string_lossy(),
+        ) {
             Ok(parsed) => Ok(ArrayCellValue::Number(parsed)),
             Err(_) => Ok(ArrayCellValue::Error(WorksheetErrorCode::Value)),
         },

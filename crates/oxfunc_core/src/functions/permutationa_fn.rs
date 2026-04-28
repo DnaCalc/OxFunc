@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
-    eval_binary_numeric_surface, map_binary_numeric_error_to_ws, BinaryNumericSurfaceError,
+    BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::resolver::ReferenceResolver;

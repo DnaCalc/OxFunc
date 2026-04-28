@@ -232,7 +232,11 @@ fn eval_date_part_unary_surface(
                                 )
                                 .map_err(DatePartsEvalError::Coercion)?,
                                 ArrayCellValue::Logical(value) => {
-                                    if *value { 1.0 } else { 0.0 }
+                                    if *value {
+                                        1.0
+                                    } else {
+                                        0.0
+                                    }
                                 }
                                 ArrayCellValue::Error(code) => {
                                     return Ok(ArrayCellValue::Error(*code));

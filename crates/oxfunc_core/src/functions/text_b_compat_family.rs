@@ -5,10 +5,10 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
 use crate::functions::text_search_replace_family::{
-    eval_find_surface, eval_replace_surface, eval_search_surface, TextSearchReplaceEvalError,
+    TextSearchReplaceEvalError, eval_find_surface, eval_replace_surface, eval_search_surface,
 };
 use crate::functions::text_slice_family::{
-    eval_left_surface, eval_mid_surface, eval_right_surface, TextSliceEvalError,
+    TextSliceEvalError, eval_left_surface, eval_mid_surface, eval_right_surface,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};

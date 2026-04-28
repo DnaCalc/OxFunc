@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -72,11 +72,7 @@ fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 
 
     let base = days_from_civil(1899, 12, 31);
     let days = days_from_civil(year, month, 1) - base + (day - 1);
-    if days >= 60 {
-        days + 1
-    } else {
-        days
-    }
+    if days >= 60 { days + 1 } else { days }
 }
 
 pub fn eval_date_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, DateEvalError> {

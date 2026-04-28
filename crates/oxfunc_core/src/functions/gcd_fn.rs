@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{expand_aggregate_arg, PreparedArgValue};
+use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
 use crate::resolver::ReferenceResolver;

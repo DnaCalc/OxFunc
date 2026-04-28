@@ -121,8 +121,8 @@ fn choose_array_surface(
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     let mut choice_arrays = Vec::with_capacity(args.len().saturating_sub(1));
     for arg in &args[1..] {
-        let prepared =
-            prepare_arg_values_only(arg, resolver).map_err(ChooseIfsEvalError::SelectedPreparation)?;
+        let prepared = prepare_arg_values_only(arg, resolver)
+            .map_err(ChooseIfsEvalError::SelectedPreparation)?;
         choice_arrays.push(materialize_choice_array(prepared));
     }
 
@@ -137,7 +137,8 @@ fn choose_array_surface(
         .max()
         .unwrap_or(1);
     let index_shape = index_array.shape();
-    let mut cells = Vec::with_capacity(index_shape.rows * block_rows * index_shape.cols * block_cols);
+    let mut cells =
+        Vec::with_capacity(index_shape.rows * block_rows * index_shape.cols * block_cols);
 
     for index_row in 0..index_shape.rows {
         for block_row in 0..block_rows {

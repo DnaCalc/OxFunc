@@ -4,7 +4,7 @@ use crate::function::{
 };
 use crate::functions::factorial_common::{double_factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
-    eval_unary_numeric_surface, map_unary_numeric_error_to_ws, UnaryNumericSurfaceError,
+    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{EvalValue, WorksheetErrorCode};

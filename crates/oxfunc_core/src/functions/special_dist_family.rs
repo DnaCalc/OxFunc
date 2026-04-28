@@ -182,12 +182,12 @@ const ERFC_B_S_MAX: f64 = 6.40000000000000013323e-1; // = 1/1.25^2
 const ERFC_B_COEFFS: [f64; 9] = [
     -4.68127849232051076334e-16,
     -7.62455092077679137822e-16,
-     6.25451788846640322315e-15,
-     1.29557375346293795597e-14,
+    6.25451788846640322315e-15,
+    1.29557375346293795597e-14,
     -5.44994791140840831850e-15,
     -1.24991935965186578433e-14,
-     5.75379785143124545520e-15,
-     3.13242732014867690079e-16,
+    5.75379785143124545520e-15,
+    3.13242732014867690079e-16,
     -6.09757155730509723491e-15,
 ];
 
@@ -196,7 +196,7 @@ const ERFC_A_S_MAX: f64 = 1.18906064209274672794e-1; // = 1/2.9^2
 const ERFC_A_COEFFS: [f64; 3] = [
     -2.31218392351115847457e-16,
     -1.54616394379972209297e-17,
-     5.48978747768942628168e-16,
+    5.48978747768942628168e-16,
 ];
 
 // fdlibm-inspired positive-tail region split.
@@ -547,7 +547,11 @@ mod tests {
         assert_bits_eq("erfc(0)", erfc_kernel(0.0).unwrap(), 1.0);
         assert_bits_eq("erfc(0.5)", erfc_kernel(0.5).unwrap(), 0.4795001221869535);
         assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
-        assert_bits_eq("erfc(1.25)", erfc_kernel(1.25).unwrap(), 0.07709987174354177);
+        assert_bits_eq(
+            "erfc(1.25)",
+            erfc_kernel(1.25).unwrap(),
+            0.07709987174354177,
+        );
         assert_bits_eq("erfc(-1)", erfc_kernel(-1.0).unwrap(), 1.8427007929497148);
         assert_bits_eq("erfc(-2)", erfc_kernel(-2.0).unwrap(), 1.9953222650189528);
 
@@ -557,19 +561,11 @@ mod tests {
             erfc_kernel(2.75).unwrap(),
             0.00010062192211963684,
         );
-        assert_bits_eq(
-            "erfc(2.8)",
-            erfc_kernel(2.8).unwrap(),
-            7.501319466545911e-5,
-        );
+        assert_bits_eq("erfc(2.8)", erfc_kernel(2.8).unwrap(), 7.501319466545911e-5);
 
         // ERFC.PRECISE delegates to the same kernel; spot-check parity at
         // one representative in-range anchor and one blocked-regime pocket.
-        assert_bits_eq(
-            "erfc.precise(0)",
-            erfc_precise_kernel(0.0).unwrap(),
-            1.0,
-        );
+        assert_bits_eq("erfc.precise(0)", erfc_precise_kernel(0.0).unwrap(), 1.0);
         assert_bits_eq(
             "erfc.precise(1)",
             erfc_precise_kernel(1.0).unwrap(),
@@ -623,11 +619,7 @@ mod tests {
     fn erfc_correction_fit_matches_excel_exact_bits() {
         // Newly-matched by the correction fit (previously blocked).
         assert_bits_eq("erfc(1.5)", erfc_kernel(1.5).unwrap(), 0.03389485352468927);
-        assert_bits_eq(
-            "erfc(1.8)",
-            erfc_kernel(1.8).unwrap(),
-            0.010909498364269283,
-        );
+        assert_bits_eq("erfc(1.8)", erfc_kernel(1.8).unwrap(), 0.010909498364269283);
         assert_bits_eq(
             "erfc(2.15)",
             erfc_kernel(2.15).unwrap(),

@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{prepare_args_values_only, PreparedArgValue};
+use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};

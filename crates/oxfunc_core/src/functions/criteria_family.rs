@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::{
-    format_relative_target, parse_a1_reference, A1Reference, A1ReferenceNotation,
+    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
-use crate::functions::adapters::{prepare_arg_values_only, PreparedArgValue};
+use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
-use crate::resolver::{resolve_eval_value, ReferenceResolver};
+use crate::resolver::{ReferenceResolver, resolve_eval_value};
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,

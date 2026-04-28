@@ -5,7 +5,9 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::resolver::ReferenceResolver;
-use crate::value::{ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const IF_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IF",
@@ -124,7 +126,9 @@ fn eval_if_elementwise_surface(
     for row in 0..condition.shape().rows {
         for col in 0..condition.shape().cols {
             let keep = eval_condition_cell(
-                condition.get(row, col).expect("validated IF condition shape"),
+                condition
+                    .get(row, col)
+                    .expect("validated IF condition shape"),
             )
             .map_err(IfEvalError::ConditionCoercion)?;
             let chosen = if keep {
@@ -186,7 +190,7 @@ pub fn map_if_error_to_ws(e: &IfEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ReferenceLike, ArrayCellValue, EvalArray};
+    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
 
     struct NoResolver;
     impl ReferenceResolver for NoResolver {
