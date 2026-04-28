@@ -25,3 +25,41 @@ powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-StaticRiskInde
 
 The default index path is `smart-fuzzer/cache/static-risk-index.json`. The
 index is not semantic authority; it is a disposable exploration-ordering input.
+
+## Run-ExcelThroughputBenchmark.ps1
+
+Runs a COM-driven Excel batch benchmark and writes artifact-contract files under
+`smart-fuzzer/runs/<run_id>/`.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ExcelThroughputBenchmark.ps1
+```
+
+Custom batch sizes can be passed as a comma-separated string:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ExcelThroughputBenchmark.ps1 `
+  -RunId local-excel-throughput-smoke -BatchSizes "100,1000,5000"
+```
+
+The benchmark records cold start, formula write time, calculation time, result
+extraction time, Excel version/build, workbook compatibility where COM exposes
+it, git revision, runner version, and a manifest hash. If Excel automation is
+not available, it writes a blocked telemetry row instead of treating the result
+as a function mismatch.
+
+## Run-PmtPpmtPilot.ps1
+
+Runs the first OxFunc-vs-Excel pilot comparator over a bounded PMT/PPMT case
+set. The script writes compact case, outcome, comparison, telemetry, manifest,
+and rollup artifacts under `smart-fuzzer/runs/<run_id>/`; full per-case packets
+are written only for mismatches.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-PmtPpmtPilot.ps1 `
+  -RunId local-pmt-ppmt-pilot
+```
+
+The local side is evaluated through the standalone Rust helper in
+`smart-fuzzer/tools/pmt_ppmt_local_eval/`, which calls the public
+`oxfunc_core` value surface without adding files to the main workspace.

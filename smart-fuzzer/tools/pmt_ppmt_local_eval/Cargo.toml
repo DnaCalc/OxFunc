@@ -1,0 +1,12 @@
+[package]
+name = "pmt_ppmt_local_eval"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+oxfunc_core = { path = "../../../crates/oxfunc_core" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

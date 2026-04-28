@@ -1,6 +1,6 @@
 # W088 Smart-Fuzzer Differential Exploration Pilot
 
-Status: `planned`
+Status: `in_progress`
 
 ## 1. Purpose
 
@@ -136,3 +136,37 @@ All W088 reports must include:
 5. explicit `open_lanes` while any axis remains partial.
 
 Use `in_progress` when uncertain.
+
+## 11. Execution Notes
+
+### 2026-04-28 Pilot Infrastructure Pass
+1. Added the Excel throughput runner
+   `smart-fuzzer/tools/Run-ExcelThroughputBenchmark.ps1`.
+2. Produced ignored local run `smart-fuzzer/runs/w088-excel-throughput-baseline/`:
+   - generated cases: `6100`
+   - Excel evaluated: `6100`
+   - blocked: `0`
+   - measured formula write/calculate/extract throughput: about `60.9k`
+     cases/second for the 100/1000/5000 batch mix
+3. Added the PMT/PPMT pilot comparator
+   `smart-fuzzer/tools/Run-PmtPpmtPilot.ps1` and standalone local evaluator
+   `smart-fuzzer/tools/pmt_ppmt_local_eval/`.
+4. Produced ignored local run `smart-fuzzer/runs/w088-pmt-ppmt-pilot/`:
+   - generated cases: `28`
+   - local evaluated: `28`
+   - Excel evaluated: `28`
+   - exact matches: `7`
+   - numeric bit mismatches: `21`
+   - blocked: `0`
+5. Routed confirmed PMT/PPMT exactness drift into:
+   - `docs/bugs/reports/BUGREP-FUNC-019_smart_fuzzer_pmt_ppmt_exactness_drift.md`
+   - `docs/bugs/streams/BUG-FUNC-015_pmt_ppmt_annuity_exactness_drift.md`
+   - follow-up bead `oxf-fckb`
+
+Status axes after this pass:
+
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: broader catalog exploration, mismatch minimization, adjacent
+   financial-family scan, stale `POWER` review, and follow-up PMT/PPMT repair
