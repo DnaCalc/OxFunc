@@ -83,7 +83,7 @@ pub fn eval_mode_sngl_surface(
         }
         best = match best {
             None => Some((value, count)),
-            Some((best_value, best_count)) if count > best_count => Some((value, count)),
+            Some((_best_value, best_count)) if count > best_count => Some((value, count)),
             Some((best_value, best_count)) if count == best_count && value < best_value => {
                 Some((value, count))
             }
