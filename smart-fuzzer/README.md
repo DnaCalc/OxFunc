@@ -40,7 +40,8 @@ The "smart" part is not only random generation. It combines:
 ## Directory Layout
 
 1. `planning/`
-   - tracked design notes, schemas, rollout sketches, and decision inputs.
+   - tracked design notes, schemas, artifact contracts, rollout sketches, and
+     decision inputs.
 2. `prompts/`
    - tracked prompt packets for external model review.
 3. `corpus/`

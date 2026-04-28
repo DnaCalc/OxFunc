@@ -9,6 +9,9 @@ The schema is intentionally split between compact high-volume telemetry and
 full failure packets. Most passing cases should not carry prose or expanded
 per-case documentation.
 
+Run-level file layout, sampling, promotion, and retention rules are defined in
+`RUN_ARTIFACT_CONTRACT.md`.
+
 ## Case Record
 
 ```json
