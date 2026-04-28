@@ -63,3 +63,19 @@ powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-PmtPpmtPilot.ps1
 The local side is evaluated through the standalone Rust helper in
 `smart-fuzzer/tools/pmt_ppmt_local_eval/`, which calls the public
 `oxfunc_core` value surface without adding files to the main workspace.
+
+## Run-ExpandedFinanceExploration.ps1
+
+Runs the larger financial-neighborhood exploration lane. The Rust explorer
+generates and locally evaluates a high-volume PMT/PPMT/IPMT case set, then the
+PowerShell wrapper evaluates selected candidates in Excel and compares typed
+outcomes.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ExpandedFinanceExploration.ps1 `
+  -RunId local-expanded-finance-10m -CaseCount 10000000
+```
+
+The expected PMT/PPMT/IPMT non-zero-rate exactness drift is classified as
+`expected_known_financial_exactness_drift`. Unexpected mismatches are written as
+failure packets.

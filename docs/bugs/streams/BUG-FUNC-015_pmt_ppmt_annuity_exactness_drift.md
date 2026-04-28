@@ -66,6 +66,15 @@
    for typed error detection.
 3. 2026-04-28: corrected run confirmed 21 numeric bit-level mismatches and 7
    exact matches, with zero-rate and invalid-period lanes matching exactly.
+4. 2026-04-28: expanded smart-fuzzer run
+   `expanded-finance-10m-20260428` generated and locally evaluated
+   10,000,000 PMT/PPMT/IPMT-neighborhood cases, then sampled 640 cases against
+   Excel. The sample produced 536 exact matches, 102 expected known
+   financial-exactness or formula-literal encoding deviations, and 2 additional
+   high-rate/long-horizon `PPMT` samples where local returned `#NUM!` while
+   Excel returned a tiny numeric value or zero. These are recorded as adjacent
+   evidence for the same blocked financial-payment exactness lane pending
+   later investigation.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
