@@ -47,11 +47,14 @@ The "smart" part is not only random generation. It combines:
 3. `corpus/`
    - candidate minimized cases that are not yet promoted into canonical
      function-lane, bug, or test surfaces.
-4. `runs/`
+4. `tools/`
+   - tracked reproducible helpers for generating ignored run and cache
+     artifacts.
+5. `runs/`
    - local generated run outputs. Ignored by default.
-5. `work/`
+6. `work/`
    - local scratch and transient experiment state. Ignored by default.
-6. `cache/`
+7. `cache/`
    - local derived indexes and generated helper artifacts. Ignored by default.
 
 ## Authority Rules
