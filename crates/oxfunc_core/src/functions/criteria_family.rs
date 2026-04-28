@@ -837,6 +837,12 @@ mod tests {
     fn scalar_text(s: &str) -> CallArgValue {
         CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
     }
+    fn area_ref(target: &str) -> CallArgValue {
+        CallArgValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: target.to_string(),
+        })
+    }
 
     #[test]
     fn countif_matches_numeric_and_text_comparisons() {
@@ -915,15 +921,39 @@ mod tests {
     fn criteria_boundary_pair_uses_excel_truncation_style_matching_across_ifs_family() {
         let boundary_probe = ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25;
         let boundary_stored = ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25;
-        let criteria_range = array(vec![vec![
-            ArrayCellValue::Number(boundary_stored),
-            ArrayCellValue::Number(2.0),
-        ]]);
-        let target_range = array(vec![vec![
-            ArrayCellValue::Number(10.0),
-            ArrayCellValue::Number(20.0),
-        ]]);
-        let tag_range = array(vec![vec![text("Y"), text("Y")]]);
+        let resolver = MapResolver {
+            refs: HashMap::from([
+                (
+                    "A1:B1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Number(boundary_stored),
+                            ArrayCellValue::Number(2.0),
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+                (
+                    "C1:D1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Number(10.0),
+                            ArrayCellValue::Number(20.0),
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+                (
+                    "E1:F1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![text("Y"), text("Y")]]).unwrap(),
+                    ),
+                ),
+            ]),
+        };
+        let criteria_range = area_ref("A1:B1");
+        let target_range = area_ref("C1:D1");
+        let tag_range = area_ref("E1:F1");
 
         assert_eq!(
             eval_countifs_surface(
@@ -933,7 +963,7 @@ mod tests {
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
-                &NoResolver,
+                &resolver,
             ),
             Ok(EvalValue::Number(1.0))
         );
@@ -946,7 +976,7 @@ mod tests {
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
-                &NoResolver,
+                &resolver,
             ),
             Ok(EvalValue::Number(10.0))
         );
@@ -959,7 +989,7 @@ mod tests {
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
-                &NoResolver,
+                &resolver,
             ),
             Ok(EvalValue::Number(10.0))
         );
@@ -972,7 +1002,7 @@ mod tests {
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
-                &NoResolver,
+                &resolver,
             ),
             Ok(EvalValue::Number(10.0))
         );
@@ -985,7 +1015,7 @@ mod tests {
                     tag_range,
                     scalar_text("Y"),
                 ],
-                &NoResolver,
+                &resolver,
             ),
             Ok(EvalValue::Number(10.0))
         );
@@ -1301,58 +1331,85 @@ mod tests {
 
     #[test]
     fn maxifs_and_minifs_return_extrema_or_zero_when_no_numeric_match_survives() {
+        let resolver = MapResolver {
+            refs: HashMap::from([
+                (
+                    "A1:C1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Number(10.0),
+                            ArrayCellValue::Number(25.0),
+                            ArrayCellValue::Number(8.0),
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+                (
+                    "D1:F1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![text("A"), text("B"), text("A")]]).unwrap(),
+                    ),
+                ),
+                (
+                    "G1:H1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![text("x"), ArrayCellValue::EmptyCell]])
+                            .unwrap(),
+                    ),
+                ),
+                (
+                    "I1:J1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![text("A"), text("A")]]).unwrap(),
+                    ),
+                ),
+            ]),
+        };
         let max = eval_maxifs_surface(
-            &[
-                array(vec![vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(25.0),
-                    ArrayCellValue::Number(8.0),
-                ]]),
-                array(vec![vec![text("A"), text("B"), text("A")]]),
-                scalar_text("A"),
-            ],
-            &NoResolver,
+            &[area_ref("A1:C1"), area_ref("D1:F1"), scalar_text("A")],
+            &resolver,
         );
         assert_eq!(max, Ok(EvalValue::Number(10.0)));
 
         let min = eval_minifs_surface(
-            &[
-                array(vec![vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(25.0),
-                    ArrayCellValue::Number(8.0),
-                ]]),
-                array(vec![vec![text("A"), text("B"), text("A")]]),
-                scalar_text("A"),
-            ],
-            &NoResolver,
+            &[area_ref("A1:C1"), area_ref("D1:F1"), scalar_text("A")],
+            &resolver,
         );
         assert_eq!(min, Ok(EvalValue::Number(8.0)));
 
         let no_match = eval_maxifs_surface(
-            &[
-                array(vec![vec![text("x"), ArrayCellValue::EmptyCell]]),
-                array(vec![vec![text("A"), text("A")]]),
-                scalar_text("A"),
-            ],
-            &NoResolver,
+            &[area_ref("G1:H1"), area_ref("I1:J1"), scalar_text("A")],
+            &resolver,
         );
         assert_eq!(no_match, Ok(EvalValue::Number(0.0)));
     }
 
     #[test]
-    fn sumifs_and_extrema_family_require_exact_shape() {
+    fn sumifs_and_extrema_family_require_exact_reference_shape() {
+        let resolver = MapResolver {
+            refs: HashMap::from([
+                (
+                    "A1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![ArrayCellValue::Number(20.0)]]).unwrap(),
+                    ),
+                ),
+                (
+                    "B1:D1".to_string(),
+                    EvalValue::Array(
+                        EvalArray::from_rows(vec![vec![
+                            ArrayCellValue::Number(1.0),
+                            ArrayCellValue::Number(1.0),
+                            ArrayCellValue::Number(1.0),
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+            ]),
+        };
         let mismatch_sum = eval_sumifs_surface(
-            &[
-                array(vec![vec![ArrayCellValue::Number(20.0)]]),
-                array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                ]]),
-                scalar_text("1"),
-            ],
-            &NoResolver,
+            &[area_ref("A1"), area_ref("B1:D1"), scalar_text("1")],
+            &resolver,
         );
         assert_eq!(
             mismatch_sum,
@@ -1360,16 +1417,8 @@ mod tests {
         );
 
         let mismatch_max = eval_maxifs_surface(
-            &[
-                array(vec![vec![ArrayCellValue::Number(20.0)]]),
-                array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                ]]),
-                scalar_text("1"),
-            ],
-            &NoResolver,
+            &[area_ref("A1"), area_ref("B1:D1"), scalar_text("1")],
+            &resolver,
         );
         assert_eq!(
             mismatch_max,
@@ -1377,16 +1426,8 @@ mod tests {
         );
 
         let mismatch_min = eval_minifs_surface(
-            &[
-                array(vec![vec![ArrayCellValue::Number(20.0)]]),
-                array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                ]]),
-                scalar_text("1"),
-            ],
-            &NoResolver,
+            &[area_ref("A1"), area_ref("B1:D1"), scalar_text("1")],
+            &resolver,
         );
         assert_eq!(
             mismatch_min,

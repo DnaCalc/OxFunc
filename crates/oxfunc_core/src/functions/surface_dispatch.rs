@@ -5078,7 +5078,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_value_call_ftc_0702_day_of_date_march_zero_returns_twenty_eight() {
+    fn eval_surface_value_call_ftc_0702_day_of_date_1900_march_zero_returns_twenty_nine() {
         let serial = eval_surface_value_call(
             FUNC_ID_DATE,
             &[
@@ -5104,7 +5104,7 @@ mod tests {
             None,
         );
 
-        assert_eq!(got, Ok(EvalValue::Number(28.0)));
+        assert_eq!(got, Ok(EvalValue::Number(29.0)));
     }
 
     #[test]
@@ -5448,7 +5448,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_value_call_ftc_0807_sort_row_vector_desc_index_first_returns_nine() {
+    fn eval_surface_value_call_ftc_0807_sort_row_vector_default_axis_returns_first_cell() {
         let sorted = eval_surface_value_call(
             FUNC_ID_SORT,
             &[
@@ -5487,7 +5487,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got, Ok(EvalValue::Number(9.0)));
+        assert_eq!(got, Ok(EvalValue::Number(3.0)));
     }
 
     #[test]
