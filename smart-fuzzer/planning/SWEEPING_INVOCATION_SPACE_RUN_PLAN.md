@@ -191,15 +191,18 @@ Required compact artifacts for the later run:
    The W089 schema source is
    `smart-fuzzer/planning/DIMENSION_INVENTORY_AND_COVERAGE_TAXONOMY.md`, and
    the derived builder is `smart-fuzzer/tools/Build-DimensionInventory.ps1`.
-3. `coverage_rollup.json`: counters by function, family, argument type, arity
+3. `generator_matrix.json`: generated from
+   `smart-fuzzer/tools/Build-SweepPlanningArtifacts.ps1`, with mandatory basis
+   tags, typed mutators, and planning budgets.
+4. `coverage_rollup.json`: counters by function, family, argument type, arity
    class, value band, array shape, reference kind, context band, local outcome,
    and Excel comparison class.
-4. `roadmap_trace.json` and `roadmap_trace.md`: human-readable highlights of
+5. `roadmap_trace.json` and `roadmap_trace.md`: human-readable highlights of
    explored regions, sparse areas, blocked lanes, and next sampling decisions.
-5. `telemetry.jsonl`: compact sampled case telemetry, not narrative evidence.
-6. `excel_candidates.jsonl`: selected Excel-evaluation candidates and selection
+6. `telemetry.jsonl`: compact sampled case telemetry, not narrative evidence.
+7. `excel_candidates.jsonl`: selected Excel-evaluation candidates and selection
    reason codes.
-7. `failure_packets/`: only unexpected mismatches, unstable outcomes, or
+8. `failure_packets/`: only unexpected mismatches, unstable outcomes, or
    blocked harness rows that need durable review.
 
 ## 6. Classification

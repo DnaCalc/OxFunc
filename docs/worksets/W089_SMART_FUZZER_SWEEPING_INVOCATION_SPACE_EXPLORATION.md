@@ -1,6 +1,6 @@
 # W089 Smart-Fuzzer Sweeping Invocation-Space Exploration
 
-Status: `planning_only`
+Status: `planning_artifacts_ready_execution_gated`
 
 ## 1. Purpose
 
@@ -172,13 +172,11 @@ All W089 reports must include:
 
 Current planning status:
 
-1. `execution_state`: `inventory_schema_ready`
+1. `execution_state`: `planning_artifacts_ready_execution_gated`
 2. `scope_completeness`: `scope_partial`
 3. `target_completeness`: `target_partial`
 4. `integration_completeness`: `partial`
-5. `open_lanes`: generator expansion, local dry-run plan, Excel candidate
-   plan, blocked seam classification, execution approval, mismatch triage
-   protocol
+5. `open_lanes`: first sweeping run execution and post-run triage
 
 ## 12. Execution Notes
 
@@ -206,3 +204,33 @@ Status axes after this bead:
 4. `integration_completeness`: `partial`
 5. `open_lanes`: generator matrix, local dry-run plan, Excel candidate budget,
    blocked seam classification, execution approval, mismatch triage protocol
+
+### 2026-04-29 Planning Artifact Closure Pass
+
+Beads: `oxf-1avj.2` through `oxf-1avj.8`
+
+Added the remaining W089 planning surfaces:
+
+1. `smart-fuzzer/planning/GENERATOR_MATRIX_AND_TYPED_MUTATOR_PLAN.md`
+2. `smart-fuzzer/planning/LOCAL_EVALUATOR_DRY_RUN_BUDGET.md`
+3. `smart-fuzzer/planning/EXCEL_CANDIDATE_SELECTION_AND_BATCHING_BUDGET.md`
+4. `smart-fuzzer/planning/BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP.md`
+5. `smart-fuzzer/planning/ROADMAP_TRACE_AND_COMPACT_REPORTING_ARTIFACTS.md`
+6. `smart-fuzzer/planning/UNEXPECTED_MISMATCH_TRIAGE_AND_MINIMIZATION_PROTOCOL.md`
+7. `smart-fuzzer/planning/FIRST_SWEEP_EXECUTION_GATE.md`
+8. `smart-fuzzer/tools/Build-SweepPlanningArtifacts.ps1`
+
+The planning builder derives generator, local-budget, Excel-budget,
+blocked-seam, and roadmap-trace template cache artifacts from the dimension
+inventory. These outputs are planning inputs, not run evidence.
+
+This pass did not run a sweep, did not run Excel comparison, and did not run
+regression tests.
+
+Status axes after this pass:
+
+1. `execution_state`: `planning_artifacts_ready_execution_gated`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: first sweeping run execution and post-run triage

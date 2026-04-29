@@ -28,6 +28,29 @@ smart-fuzzer/cache/dimension-inventory-v0.json
 The inventory is not semantic authority and does not run the fuzzer. It is the
 input map for later generator and budget beads.
 
+## Build-SweepPlanningArtifacts.ps1
+
+Builds the remaining W089 planning artifacts from the dimension inventory. If
+the inventory cache is absent, this script rebuilds it first. It does not
+generate fuzzer cases, run local evaluation, run Excel, or compare outcomes.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-SweepPlanningArtifacts.ps1
+```
+
+Default outputs:
+
+```text
+smart-fuzzer/cache/generator-matrix-v0.json
+smart-fuzzer/cache/local-dry-run-budget-v0.json
+smart-fuzzer/cache/excel-candidate-budget-v0.json
+smart-fuzzer/cache/blocked-seam-map-v0.json
+smart-fuzzer/cache/roadmap-trace-template-v0.json
+```
+
+These outputs are derived planning cache files for W089. They are not
+comparison evidence.
+
 ## Build-StaticRiskIndex.ps1
 
 Builds a derived function risk index for exploration ordering. It consumes:
