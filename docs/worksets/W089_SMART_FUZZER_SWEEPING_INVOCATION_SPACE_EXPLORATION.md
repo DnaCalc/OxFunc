@@ -107,8 +107,9 @@ The run plan must account for these primary tweakable dimensions:
 10. execution seam including direct Rust value calls, prepared OxFml calls,
     formula text through Excel, and future XLL or host seams;
 11. comparison policy including exact typed equality, numeric bit equality,
-    family-specific tolerance lanes only when explicitly declared, error-code
-    equality, array cellwise comparison, and value-vs-display separation;
+    error-code equality, array cellwise comparison, and value-vs-display
+    separation; current OxFunc parity expectations are bit-exact, so tolerance
+    buckets are not accepted as pass classes;
 12. exploration feedback including local outcome diversity, branch/error
     discovery, metamorphic relation checks, source-risk ranking, and
     Excel-candidate budget allocation.

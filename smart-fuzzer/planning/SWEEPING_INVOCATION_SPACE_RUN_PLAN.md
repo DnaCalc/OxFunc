@@ -204,18 +204,23 @@ Required compact artifacts for the later run:
 Every Excel comparison row should land in one of these classes:
 
 1. exact typed match,
-2. declared tolerance match,
-3. known expected deviation,
-4. unexpected mismatch,
-5. Excel harness blocked,
-6. OxFml seam blocked,
-7. context/provider blocked,
-8. invalid generator case,
-9. unstable or non-reproducible.
+2. known expected deviation,
+3. unexpected mismatch,
+4. Excel harness blocked,
+5. OxFml seam blocked,
+6. context/provider blocked,
+7. invalid generator case,
+8. unstable or non-reproducible.
 
 Only unexpected mismatches and unstable outcomes should enter minimization by
 default. Known PMT/PPMT/IPMT rows should be summarized separately so they do
 not dominate reports.
+
+Current OxFunc comparison policy expects bit-exact matches for all functions.
+The sweep should not classify approximate numeric agreement as a pass. Any
+future comparator experiment that studies tolerance-like behavior must be
+separate from parity classification and must not weaken the default mismatch
+rule.
 
 ## 7. Agent And Code Feedback Loop
 
