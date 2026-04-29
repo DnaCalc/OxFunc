@@ -18,3 +18,7 @@ path = "src/main.rs"
 [[bin]]
 name = "expanded_finance_explorer"
 path = "src/bin/expanded_finance_explorer.rs"
+
+[[bin]]
+name = "array_tranche_local_eval"
+path = "src/bin/array_tranche_local_eval.rs"

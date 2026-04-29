@@ -3,9 +3,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -28,6 +27,20 @@ pub enum Atan2EvalError {
     ArityMismatch { expected: usize, actual: usize },
     Coercion(CoercionError),
     ZeroVector,
+    Domain(WorksheetErrorCode),
+}
+
+impl From<BinaryNumericSurfaceError> for Atan2EvalError {
+    fn from(value: BinaryNumericSurfaceError) -> Self {
+        match value {
+            BinaryNumericSurfaceError::ArityMismatch { expected, actual } => {
+                Self::ArityMismatch { expected, actual }
+            }
+            BinaryNumericSurfaceError::Coercion(error) => Self::Coercion(error),
+            BinaryNumericSurfaceError::Domain(WorksheetErrorCode::Div0) => Self::ZeroVector,
+            BinaryNumericSurfaceError::Domain(code) => Self::Domain(code),
+        }
+    }
 }
 
 pub fn atan2_kernel(x_num: f64, y_num: f64) -> Result<f64, WorksheetErrorCode> {
@@ -55,12 +68,7 @@ pub fn eval_atan2_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, Atan2EvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_atan2_adapter_prepared,
-        Atan2EvalError::Coercion,
-    )
+    eval_binary_numeric_surface(args, resolver, atan2_kernel).map_err(Atan2EvalError::from)
 }
 
 pub fn map_atan2_error_to_ws(e: &Atan2EvalError) -> WorksheetErrorCode {
@@ -69,6 +77,7 @@ pub fn map_atan2_error_to_ws(e: &Atan2EvalError) -> WorksheetErrorCode {
         Atan2EvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         Atan2EvalError::Coercion(_) => WorksheetErrorCode::Value,
         Atan2EvalError::ZeroVector => WorksheetErrorCode::Div0,
+        Atan2EvalError::Domain(code) => *code,
     }
 }
 
@@ -76,7 +85,7 @@ pub fn map_atan2_error_to_ws(e: &Atan2EvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceLike};
 
     struct NoResolver;
 
@@ -118,5 +127,38 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_atan2_spills_array_and_per_cell_errors() {
+        let got = eval_atan2_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(0.0),
+                        ArrayCellValue::Number(1.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(0.0),
+                        ArrayCellValue::Number(1.0),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
+                    ArrayCellValue::Number(std::f64::consts::FRAC_PI_4),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 }

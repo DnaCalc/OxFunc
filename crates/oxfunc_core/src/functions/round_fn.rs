@@ -3,9 +3,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -27,6 +26,19 @@ pub const ROUND_META: FunctionMeta = FunctionMeta {
 pub enum RoundEvalError {
     ArityMismatch { expected: usize, actual: usize },
     Coercion(CoercionError),
+    Domain(WorksheetErrorCode),
+}
+
+impl From<BinaryNumericSurfaceError> for RoundEvalError {
+    fn from(value: BinaryNumericSurfaceError) -> Self {
+        match value {
+            BinaryNumericSurfaceError::ArityMismatch { expected, actual } => {
+                Self::ArityMismatch { expected, actual }
+            }
+            BinaryNumericSurfaceError::Coercion(error) => Self::Coercion(error),
+            BinaryNumericSurfaceError::Domain(code) => Self::Domain(code),
+        }
+    }
 }
 
 fn parse_digits(arg: &PreparedArgValue) -> Result<i32, RoundEvalError> {
@@ -68,12 +80,10 @@ pub fn eval_round_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, RoundEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_round_adapter_prepared,
-        RoundEvalError::Coercion,
-    )
+    eval_binary_numeric_surface(args, resolver, |value, digits| {
+        Ok(round_kernel(value, digits.trunc() as i32))
+    })
+    .map_err(RoundEvalError::from)
 }
 
 pub fn map_round_error_to_ws(e: &RoundEvalError) -> WorksheetErrorCode {
@@ -81,6 +91,7 @@ pub fn map_round_error_to_ws(e: &RoundEvalError) -> WorksheetErrorCode {
         RoundEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         RoundEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         RoundEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        RoundEvalError::Domain(code) => *code,
     }
 }
 
@@ -88,7 +99,7 @@ pub fn map_round_error_to_ws(e: &RoundEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
 
     struct NoResolver;
 
@@ -135,5 +146,38 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_round_spills_array_arguments() {
+        let got = eval_round_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(1.234)],
+                        vec![ArrayCellValue::Number(2.345)],
+                    ])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![
+                        vec![ArrayCellValue::Number(0.0)],
+                        vec![ArrayCellValue::Number(1.0)],
+                    ])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.3)],
+                ])
+                .unwrap()
+            ))
+        );
     }
 }

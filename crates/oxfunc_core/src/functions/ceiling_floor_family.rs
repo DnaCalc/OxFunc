@@ -4,10 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    expand_prepared_broadcast_grid, run_values_only_prepared,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const OPTIONAL_ARITY_2: Arity = Arity { min: 1, max: 2 };
 const OPTIONAL_ARITY_3: Arity = Arity { min: 1, max: 3 };
@@ -165,6 +166,20 @@ fn eval_prepared_exact2(
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
+    if let Some((shape, cells)) = expand_prepared_broadcast_grid(args) {
+        let mapped = cells
+            .into_iter()
+            .map(|cell| match cell {
+                BroadcastPreparedGroup::Values(values) => map_exact2_item(&values, kernel),
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, mapped).expect("shape preserved"),
+        ));
+    }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
     let significance =
         coerce_prepared_to_number(&args[1]).map_err(CeilingFloorEvalError::Coercion)?;
@@ -181,6 +196,20 @@ fn eval_prepared_optional2(
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
+    }
+    if let Some((shape, cells)) = expand_prepared_broadcast_grid(args) {
+        let mapped = cells
+            .into_iter()
+            .map(|cell| match cell {
+                BroadcastPreparedGroup::Values(values) => map_optional2_item(&values, kernel),
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, mapped).expect("shape preserved"),
+        ));
     }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
     let significance = if args.len() >= 2 {
@@ -202,6 +231,20 @@ fn eval_prepared_optional3(
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
+    if let Some((shape, cells)) = expand_prepared_broadcast_grid(args) {
+        let mapped = cells
+            .into_iter()
+            .map(|cell| match cell {
+                BroadcastPreparedGroup::Values(values) => map_optional3_item(&values, kernel),
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, mapped).expect("shape preserved"),
+        ));
+    }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
     let significance = if args.len() >= 2 {
         coerce_prepared_to_number(&args[1]).map_err(CeilingFloorEvalError::Coercion)?
@@ -217,6 +260,81 @@ fn eval_prepared_optional3(
         Ok(value) => Ok(EvalValue::Number(value)),
         Err(code) => Ok(EvalValue::Error(code)),
     }
+}
+
+fn coerce_number_cell(arg: &PreparedArgValue) -> Result<f64, ArrayCellValue> {
+    coerce_prepared_to_number(arg).map_err(|error| match error {
+        CoercionError::WorksheetError(code) => ArrayCellValue::Error(code),
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    })
+}
+
+fn kernel_result_cell(result: Result<f64, WorksheetErrorCode>) -> ArrayCellValue {
+    match result {
+        Ok(value) => ArrayCellValue::Number(value),
+        Err(code) => ArrayCellValue::Error(code),
+    }
+}
+
+fn map_exact2_item(
+    args: &[PreparedArgValue],
+    kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
+) -> ArrayCellValue {
+    let number = match coerce_number_cell(&args[0]) {
+        Ok(value) => value,
+        Err(cell) => return cell,
+    };
+    let significance = match coerce_number_cell(&args[1]) {
+        Ok(value) => value,
+        Err(cell) => return cell,
+    };
+    kernel_result_cell(kernel(number, significance))
+}
+
+fn map_optional2_item(
+    args: &[PreparedArgValue],
+    kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
+) -> ArrayCellValue {
+    let number = match coerce_number_cell(&args[0]) {
+        Ok(value) => value,
+        Err(cell) => return cell,
+    };
+    let significance = if args.len() >= 2 {
+        match coerce_number_cell(&args[1]) {
+            Ok(value) => value,
+            Err(cell) => return cell,
+        }
+    } else {
+        1.0
+    };
+    kernel_result_cell(kernel(number, significance))
+}
+
+fn map_optional3_item(
+    args: &[PreparedArgValue],
+    kernel: fn(f64, f64, f64) -> Result<f64, WorksheetErrorCode>,
+) -> ArrayCellValue {
+    let number = match coerce_number_cell(&args[0]) {
+        Ok(value) => value,
+        Err(cell) => return cell,
+    };
+    let significance = if args.len() >= 2 {
+        match coerce_number_cell(&args[1]) {
+            Ok(value) => value,
+            Err(cell) => return cell,
+        }
+    } else {
+        1.0
+    };
+    let mode = if args.len() >= 3 {
+        match coerce_number_cell(&args[2]) {
+            Ok(value) => value,
+            Err(cell) => return cell,
+        }
+    } else {
+        0.0
+    };
+    kernel_result_cell(kernel(number, significance, mode))
 }
 
 pub fn eval_ceiling_surface(
@@ -314,6 +432,25 @@ pub fn map_ceiling_floor_error_to_ws(e: &CeilingFloorEvalError) -> WorksheetErro
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::value::ReferenceLike;
+
+    struct NoResolver;
+
+    impl ReferenceResolver for NoResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+    }
 
     #[test]
     fn ceiling_legacy_seed_lanes_match_excel_probe() {
@@ -346,5 +483,33 @@ mod tests {
         assert_eq!(ceiling_precise_kernel(-4.3, 2.0), Ok(-4.0));
         assert_eq!(floor_precise_kernel(-4.3, 2.0), Ok(-6.0));
         assert_eq!(iso_ceiling_kernel(-4.3, 2.0), Ok(-4.0));
+    }
+
+    #[test]
+    fn eval_ceiling_math_spills_optional_array_argument() {
+        let got = eval_ceiling_math_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Number(-1.2)),
+                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(0.0),
+                        ArrayCellValue::Number(1.0),
+                    ]])
+                    .unwrap(),
+                )),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(-1.0),
+                    ArrayCellValue::Number(-2.0),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 }

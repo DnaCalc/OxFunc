@@ -3,9 +3,14 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, prepare_args_values_only};
+use crate::functions::adapters::{
+    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    expand_prepared_broadcast_grid, prepare_args_values_only,
+};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 
 pub const BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BASE",
@@ -78,6 +83,20 @@ pub fn eval_base_surface(
             actual: prepared.len(),
         });
     }
+    if let Some((shape, cells)) = expand_prepared_broadcast_grid(&prepared) {
+        let mapped = cells
+            .into_iter()
+            .map(|cell| match cell {
+                BroadcastPreparedGroup::Values(values) => map_base_item(&values),
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, mapped).expect("shape preserved"),
+        ));
+    }
     let number = coerce_prepared_to_number(&prepared[0]).map_err(BaseEvalError::Coercion)?;
     let radix = coerce_prepared_to_number(&prepared[1]).map_err(BaseEvalError::Coercion)?;
     let min_length = if prepared.len() > 2 {
@@ -88,6 +107,33 @@ pub fn eval_base_surface(
     base_kernel(number, radix, min_length)
         .map(EvalValue::Text)
         .map_err(BaseEvalError::Domain)
+}
+
+fn map_base_item(args: &[PreparedArgValue]) -> ArrayCellValue {
+    let number = match coerce_prepared_to_number(&args[0]) {
+        Ok(value) => value,
+        Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
+        Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+    };
+    let radix = match coerce_prepared_to_number(&args[1]) {
+        Ok(value) => value,
+        Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
+        Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+    };
+    let min_length = if args.len() > 2 {
+        match coerce_prepared_to_number(&args[2]) {
+            Ok(value) => Some(value),
+            Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
+            Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+        }
+    } else {
+        None
+    };
+
+    match base_kernel(number, radix, min_length) {
+        Ok(text) => ArrayCellValue::Text(text),
+        Err(code) => ArrayCellValue::Error(code),
+    }
 }
 
 pub fn map_base_error_to_ws(e: &BaseEvalError) -> WorksheetErrorCode {
@@ -102,6 +148,25 @@ pub fn map_base_error_to_ws(e: &BaseEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+
+    struct NoResolver;
+
+    impl ReferenceResolver for NoResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+    }
 
     #[test]
     fn base_kernel_matches_excel_seed_rows() {
@@ -111,5 +176,32 @@ mod tests {
         assert_eq!(String::from_utf16_lossy(padded.utf16_code_units()), "001F");
         assert_eq!(base_kernel(-1.0, 16.0, None), Err(WorksheetErrorCode::Num));
         assert_eq!(base_kernel(31.0, 1.0, None), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn eval_base_spills_array_arguments() {
+        let got = eval_base_surface(
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(15.0),
+                        ArrayCellValue::Number(16.0),
+                    ]])
+                    .unwrap(),
+                )),
+                CallArgValue::Eval(EvalValue::Number(16.0)),
+            ],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("F")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("10")),
+                ]])
+                .unwrap()
+            ))
+        );
     }
 }

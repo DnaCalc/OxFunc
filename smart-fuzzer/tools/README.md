@@ -77,6 +77,34 @@ inputs only; pass rows from later execution remain aggregate telemetry, and
 unexpected mismatches must be promoted through `BUG-FUNC-*` or narrower repair
 beads.
 
+## Run-ArraySupportTranche.ps1
+
+Runs the W090 first executable array-support tranche against OxFunc and Excel.
+The runner reads `array-support-first-tranche-v0.json`, materializes the formula
+seeds into typed local arguments, captures full Excel spill ranges, compares
+typed array/scalar digests with no tolerance, and writes compact telemetry plus
+failure packets only for non-pass classifications.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1
+```
+
+Default outputs:
+
+```text
+smart-fuzzer/runs/<run_id>/cases/cases.jsonl
+smart-fuzzer/runs/<run_id>/outcomes/local.jsonl
+smart-fuzzer/runs/<run_id>/outcomes/excel.jsonl
+smart-fuzzer/runs/<run_id>/comparisons/comparisons.jsonl
+smart-fuzzer/runs/<run_id>/failure_packets/*.json
+smart-fuzzer/runs/<run_id>/rollup.json
+smart-fuzzer/runs/<run_id>/roadmap_trace.md
+```
+
+The comparison policy is exact typed equality with bit-exact numeric digests.
+Pass-heavy rows stay compact; full packets are intentionally reserved for
+failures and harness blockers.
+
 ## Build-StaticRiskIndex.ps1
 
 Builds a derived function risk index for exploration ordering. It consumes:

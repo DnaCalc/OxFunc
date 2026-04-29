@@ -3,9 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -27,12 +25,19 @@ pub const ROUNDDOWN_META: FunctionMeta = FunctionMeta {
 pub enum RoundDownEvalError {
     ArityMismatch { expected: usize, actual: usize },
     Coercion(CoercionError),
+    Domain(WorksheetErrorCode),
 }
 
-fn parse_digits(arg: &PreparedArgValue) -> Result<i32, RoundDownEvalError> {
-    Ok(coerce_prepared_to_number(arg)
-        .map_err(RoundDownEvalError::Coercion)?
-        .trunc() as i32)
+impl From<BinaryNumericSurfaceError> for RoundDownEvalError {
+    fn from(value: BinaryNumericSurfaceError) -> Self {
+        match value {
+            BinaryNumericSurfaceError::ArityMismatch { expected, actual } => {
+                Self::ArityMismatch { expected, actual }
+            }
+            BinaryNumericSurfaceError::Coercion(error) => Self::Coercion(error),
+            BinaryNumericSurfaceError::Domain(code) => Self::Domain(code),
+        }
+    }
 }
 
 pub fn rounddown_kernel(n: f64, digits: i32) -> f64 {
@@ -52,28 +57,14 @@ pub fn rounddown_kernel(n: f64, digits: i32) -> f64 {
     }
 }
 
-fn eval_rounddown_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, RoundDownEvalError> {
-    if args.len() != 2 {
-        return Err(RoundDownEvalError::ArityMismatch {
-            expected: 2,
-            actual: args.len(),
-        });
-    }
-    let value = coerce_prepared_to_number(&args[0]).map_err(RoundDownEvalError::Coercion)?;
-    let digits = parse_digits(&args[1])?;
-    Ok(EvalValue::Number(rounddown_kernel(value, digits)))
-}
-
 pub fn eval_rounddown_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, RoundDownEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_rounddown_prepared,
-        RoundDownEvalError::Coercion,
-    )
+    eval_binary_numeric_surface(args, resolver, |value, digits| {
+        Ok(rounddown_kernel(value, digits.trunc() as i32))
+    })
+    .map_err(RoundDownEvalError::from)
 }
 
 pub fn map_rounddown_error_to_ws(e: &RoundDownEvalError) -> WorksheetErrorCode {
@@ -81,6 +72,7 @@ pub fn map_rounddown_error_to_ws(e: &RoundDownEvalError) -> WorksheetErrorCode {
         RoundDownEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         RoundDownEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         RoundDownEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        RoundDownEvalError::Domain(code) => *code,
     }
 }
 

@@ -255,6 +255,12 @@ pub enum BroadcastPreparedPair {
     MissingCoordinate,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum BroadcastPreparedGroup {
+    Values(Vec<PreparedArgValue>),
+    MissingCoordinate,
+}
+
 fn prepared_shape(value: &PreparedArgValue) -> ArrayShape {
     match value {
         PreparedArgValue::Eval(EvalValue::Array(array)) => array.shape(),
@@ -319,6 +325,48 @@ pub fn expand_binary_broadcast_grid(
                     cells.push(BroadcastPreparedPair::Pair(lhs_value, rhs_value))
                 }
                 _ => cells.push(BroadcastPreparedPair::MissingCoordinate),
+            }
+        }
+    }
+
+    Some((shape, cells))
+}
+
+pub fn expand_prepared_broadcast_grid(
+    args: &[PreparedArgValue],
+) -> Option<(ArrayShape, Vec<BroadcastPreparedGroup>)> {
+    let mut shape = ArrayShape { rows: 1, cols: 1 };
+    let mut has_array = false;
+    for arg in args {
+        let arg_shape = prepared_shape(arg);
+        if arg_shape != (ArrayShape { rows: 1, cols: 1 }) {
+            has_array = true;
+        }
+        shape.rows = shape.rows.max(arg_shape.rows);
+        shape.cols = shape.cols.max(arg_shape.cols);
+    }
+    if !has_array {
+        return None;
+    }
+
+    let mut cells = Vec::with_capacity(shape.cell_count());
+    for row in 0..shape.rows {
+        for col in 0..shape.cols {
+            let mut values = Vec::with_capacity(args.len());
+            let mut missing = false;
+            for arg in args {
+                match prepared_broadcast_value_at(arg, row, col) {
+                    Some(value) => values.push(value),
+                    None => {
+                        missing = true;
+                        break;
+                    }
+                }
+            }
+            if missing {
+                cells.push(BroadcastPreparedGroup::MissingCoordinate);
+            } else {
+                cells.push(BroadcastPreparedGroup::Values(values));
             }
         }
     }

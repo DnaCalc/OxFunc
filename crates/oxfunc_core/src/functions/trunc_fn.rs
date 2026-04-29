@@ -4,10 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    expand_prepared_broadcast_grid, prepare_args_values_only,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const TRUNC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRUNC",
@@ -51,6 +52,22 @@ pub fn eval_trunc_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
             actual: args.len(),
         });
     }
+
+    if let Some((shape, cells)) = expand_prepared_broadcast_grid(args) {
+        let mapped = cells
+            .into_iter()
+            .map(|cell| match cell {
+                BroadcastPreparedGroup::Values(values) => map_trunc_item(&values),
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, mapped).expect("shape preserved"),
+        ));
+    }
+
     let number = coerce_prepared_to_number(&args[0]).map_err(TruncEvalError::Coercion)?;
     let digits = if args.len() == 1 {
         0
@@ -62,16 +79,30 @@ pub fn eval_trunc_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
     Ok(EvalValue::Number(trunc_kernel(number, digits)))
 }
 
+fn map_trunc_item(args: &[PreparedArgValue]) -> ArrayCellValue {
+    let number = match coerce_prepared_to_number(&args[0]) {
+        Ok(value) => value,
+        Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
+        Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+    };
+    let digits = if args.len() == 1 {
+        0
+    } else {
+        match coerce_prepared_to_number(&args[1]) {
+            Ok(value) => value.trunc() as i32,
+            Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
+            Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+        }
+    };
+    ArrayCellValue::Number(trunc_kernel(number, digits))
+}
+
 pub fn eval_trunc_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TruncEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_trunc_adapter_prepared,
-        TruncEvalError::Coercion,
-    )
+    let prepared = prepare_args_values_only(args, resolver).map_err(TruncEvalError::Coercion)?;
+    eval_trunc_adapter_prepared(&prepared)
 }
 
 pub fn map_trunc_error_to_ws(e: &TruncEvalError) -> WorksheetErrorCode {
@@ -79,5 +110,53 @@ pub fn map_trunc_error_to_ws(e: &TruncEvalError) -> WorksheetErrorCode {
         TruncEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         TruncEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         TruncEvalError::Coercion(_) => WorksheetErrorCode::Value,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+
+    struct NoResolver;
+
+    impl ReferenceResolver for NoResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+    }
+
+    #[test]
+    fn eval_trunc_spills_array_with_omitted_digits() {
+        let got = eval_trunc_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.234)],
+                    vec![ArrayCellValue::Number(2.345)],
+                ])
+                .unwrap(),
+            ))],
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                ])
+                .unwrap()
+            ))
+        );
     }
 }
