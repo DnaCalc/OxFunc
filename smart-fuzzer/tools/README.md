@@ -2,9 +2,31 @@
 
 Status: `tooling_sandbox`
 
-Tracked tools in this directory are reproducible helpers for W088 exploration.
+Tracked tools in this directory are reproducible helpers for W088 and W089
+exploration.
 Generated outputs should normally go to `smart-fuzzer/cache/` or
 `smart-fuzzer/runs/`, both ignored by default.
+
+## Build-DimensionInventory.ps1
+
+Builds the W089 function-by-function dimension inventory for sweep planning. It
+derives arity, value-kind, numeric/text, array, reference, context, execution
+seam, bit-exact comparison-policy, known-deviation, blocked/deferred, and
+coverage-counter axes from the current library-context snapshot plus related
+registers.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-DimensionInventory.ps1
+```
+
+Default output:
+
+```text
+smart-fuzzer/cache/dimension-inventory-v0.json
+```
+
+The inventory is not semantic authority and does not run the fuzzer. It is the
+input map for later generator and budget beads.
 
 ## Build-StaticRiskIndex.ps1
 

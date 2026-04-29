@@ -188,6 +188,9 @@ Required compact artifacts for the later run:
 1. `manifest.json`: git revision, tree state, runner versions, Excel metadata,
    workbook compatibility, seeds, budgets, and artifact schema version.
 2. `dimension_inventory.json`: function-by-function tweakable-dimension map.
+   The W089 schema source is
+   `smart-fuzzer/planning/DIMENSION_INVENTORY_AND_COVERAGE_TAXONOMY.md`, and
+   the derived builder is `smart-fuzzer/tools/Build-DimensionInventory.ps1`.
 3. `coverage_rollup.json`: counters by function, family, argument type, arity
    class, value band, array shape, reference kind, context band, local outcome,
    and Excel comparison class.

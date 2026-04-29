@@ -133,8 +133,9 @@ Core observed fields:
 4. `display_payload`: Excel `.Text` or display-oriented observation when
    relevant.
 5. `shape`: scalar or array shape.
-6. `numeric_equivalence`: exact bits, exact decimal string, ULP distance,
-   family tolerance, or not numeric.
+6. `numeric_equivalence`: exact bits, exact decimal string, diagnostic ULP
+   distance, or not numeric; diagnostic distance is not a pass class under the
+   current bit-exact parity policy.
 7. `source_surface`: direct Rust, OxFml adapter, Excel worksheet, XLL bridge.
 
 Important rule: seam-level failures and function-semantic mismatches must stay
@@ -240,18 +241,18 @@ costs separately.
 
 ### 6.6 Comparator
 
-The comparator should use family-specific policies:
+The comparator should use bit-exact typed parity policies:
 
 1. exact error-code match for worksheet errors,
 2. exact boolean/text match unless a function contract states a normalized
    display form,
 3. exact shape match for arrays and spills,
-4. numeric exactness class by function family:
-   - exact bit or exact `Value2` string where expected,
-   - ULP threshold for numeric approximations only when explicitly allowed,
-   - family-specific tolerances for known iterative/statistical lanes,
-   - no generic epsilon that hides real Excel quirks.
+4. exact numeric bits or exact `Value2` string for numeric payloads,
 5. separate display mismatch from semantic value mismatch.
+
+Approximate numeric agreement may be recorded as diagnostic data for triage,
+but it must not classify an OxFunc-vs-Excel row as a pass. Known PMT/PPMT/IPMT
+financial exactness drift remains a known deviation class, not a tolerance lane.
 
 All mismatches should be assigned a typed mismatch kind.
 

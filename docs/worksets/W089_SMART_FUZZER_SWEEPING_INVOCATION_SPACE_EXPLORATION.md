@@ -36,9 +36,10 @@ local Rust evaluation cheaply and Excel comparison selectively.
 6. `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`
 7. `smart-fuzzer/planning/RUN_ARTIFACT_CONTRACT.md`
 8. `smart-fuzzer/planning/SWEEPING_INVOCATION_SPACE_RUN_PLAN.md`
-9. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
-10. `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`
-11. `docs/bugs/README.md`
+9. `smart-fuzzer/planning/DIMENSION_INVENTORY_AND_COVERAGE_TAXONOMY.md`
+10. `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`
+11. `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`
+12. `docs/bugs/README.md`
 
 ## 4. Upstream Dependencies
 
@@ -171,10 +172,37 @@ All W089 reports must include:
 
 Current planning status:
 
-1. `execution_state`: `planning_only`
+1. `execution_state`: `inventory_schema_ready`
 2. `scope_completeness`: `scope_partial`
 3. `target_completeness`: `target_partial`
 4. `integration_completeness`: `partial`
-5. `open_lanes`: dimension inventory, generator expansion, local dry-run plan,
-   Excel candidate plan, blocked seam classification, execution approval,
-   mismatch triage protocol
+5. `open_lanes`: generator expansion, local dry-run plan, Excel candidate
+   plan, blocked seam classification, execution approval, mismatch triage
+   protocol
+
+## 12. Execution Notes
+
+### 2026-04-29 Dimension Inventory Bead
+
+Bead: `oxf-1avj.1`
+
+Added the W089 dimension-inventory and coverage taxonomy surface:
+
+1. `smart-fuzzer/planning/DIMENSION_INVENTORY_AND_COVERAGE_TAXONOMY.md`
+2. `smart-fuzzer/tools/Build-DimensionInventory.ps1`
+
+The builder derives a compact `dimension-inventory-v0.json` from the current
+library-context snapshot and related registers. It records arity, value-type,
+numeric/text, array, reference, context, execution-seam, bit-exact comparison,
+known-deviation, blocked/deferred, and coverage-counter axes for each surface.
+
+This bead did not run a sweep and did not compare against Excel.
+
+Status axes after this bead:
+
+1. `execution_state`: `inventory_schema_ready`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: generator matrix, local dry-run plan, Excel candidate budget,
+   blocked seam classification, execution approval, mismatch triage protocol
