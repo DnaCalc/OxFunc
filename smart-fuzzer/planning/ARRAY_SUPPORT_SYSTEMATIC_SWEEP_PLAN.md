@@ -1,6 +1,6 @@
 # W090 Array Support Systematic Sweep Plan
 
-Status: `inventory_and_first_tranche_plan_ready`
+Status: `first_cycle_closed_successor_sweep_ready`
 
 ## 1. Purpose
 
@@ -140,7 +140,7 @@ Detailed packets are reserved for:
 
 ## 7. Next Execution Step
 
-The natural next execution step is a small Excel/local replay of
+The first execution step was a small Excel/local replay of
 `w090-tranche-a-math-scalar-numeric-array-lift`, followed by immediate
 classification:
 
@@ -152,3 +152,28 @@ classification:
 
 No tolerance is allowed for numeric pass classification; all passes must be
 exact typed bit matches.
+
+## 8. First-Cycle Result
+
+Run `w090-array-tranche-a-local-010` found `32` unexpected mismatches and `2`
+exact matches. The mismatches were promoted as `BUG-FUNC-017` and repaired on
+landed ref `0b966d0ee7c8ce4a327b0b3090f9a108248c37fd`.
+
+Rerun `w090-array-tranche-a-local-011` produced `34/34` exact typed bit matches
+against Excel `16.0` build `19929`, workbook Compatibility Version `2`.
+
+## 9. Successor Plan
+
+The remaining unswept array-support surface stays target-partial by design.
+Future work should continue from the generated candidate inventory rather than
+from prose test lists. The next owner should:
+
+1. regenerate `array-support-candidate-inventory-v0.json`,
+2. exclude W079/W080 and BUG-FUNC-017 landed lanes unless a regression is
+   suspected,
+3. pick the next highest-risk non-text tranche by source scalar-coercion signal
+   and category spread,
+4. include reference-vs-inline-array and blank/error contrast rows for the
+   chosen tranche,
+5. preserve the pass-light rule: aggregate pass telemetry only, full packets
+   only for mismatches or harness blockers.

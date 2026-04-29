@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-04-29
+Last updated: 2026-04-30
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -79,7 +79,7 @@ Supersession note:
 - Canonical owner: [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md), [BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-006_lookup_selection_array_lookup_value_lifting_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-15 Function Array-Support Review
-- Current state: active successor sweep. The `W080` seed packet is closed for its declared scope: `LEFT` / `LEFTB`, `RIGHT` / `RIGHTB`, and `MID` / `MIDB` are landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`; the first bounded follow-on `W066` batch for `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` is landed on `2e818f03a71ba393690275a7fb437ddd9a6bf760`; and the second bounded follow-on batch for `FIND` / `FINDB`, `SEARCH` / `SEARCHB`, `REPLACE` / `REPLACEB`, `PROPER`, and `SUBSTITUTE` is landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`. `W090` now owns the broader systematic array-support sweep across supported functions.
+- Current state: first W090 cycle closed with target still partial. The `W080` seed packet is closed for its declared scope: `LEFT` / `LEFTB`, `RIGHT` / `RIGHTB`, and `MID` / `MIDB` are landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`; the first bounded follow-on `W066` batch for `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and `TEXTBEFORE` is landed on `2e818f03a71ba393690275a7fb437ddd9a6bf760`; and the second bounded follow-on batch for `FIND` / `FINDB`, `SEARCH` / `SEARCHB`, `REPLACE` / `REPLACEB`, `PROPER`, and `SUBSTITUTE` is landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`. W090 tranche A then found and repaired the math scalar-numeric array-lift gap as `BUG-FUNC-017`; ref `0b966d0ee7c8ce4a327b0b3090f9a108248c37fd` reran `34/34` exact typed bit matches against Excel `16.0` build `19929`. The remaining supported array-support space is not claimed reviewed and should continue through successor tranches from the W090 candidate inventory.
 - Canonical owner: [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md), [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md), [BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md), [BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md), [BUG-FUNC-016_text_search_replace_array_support_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-016_text_search_replace_array_support_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-16 RATE Default-Guess Convergence
@@ -105,6 +105,7 @@ Current reading:
 3. `IP-07` is `planned`,
 4. `IP-08` is `parked`,
 5. `IP-09` is `planned`,
-6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-15`, and `IP-16` are `active`.
+6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, and `IP-16` are `active`.
 7. `IP-14` and `IP-17` are `parked`.
-8. `IP-18` is `planned`.
+8. `IP-15` is `planned` for successor tranches after the closed first W090 cycle.
+9. `IP-18` is `planned`.
