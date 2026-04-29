@@ -360,9 +360,9 @@ Start with five bounded pilots:
 
 This pilot surface should distinguish live known bugs from stale bug-stream
 signals. Existing bug records are useful prioritization inputs, but the fuzzer
-should not believe an old claim without fresh Excel confirmation. In particular,
-any remaining `POWER` bug signal is a review target, not an assumed current
-failure.
+should not believe an old claim without fresh Excel confirmation. The former
+`POWER` stale signal was freshly confirmed and closed under W078 on 2026-04-29;
+future POWER mismatches should be opened as new signals.
 
 ## 9. Promotion Path
 

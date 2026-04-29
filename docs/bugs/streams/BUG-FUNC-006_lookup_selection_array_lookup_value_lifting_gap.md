@@ -10,12 +10,15 @@
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Reproduced on ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `pending_landed_ref`
 - **Ref notes**: intake pinned the current working ref with `git rev-parse HEAD`.
   Live Excel COM replay on 2026-04-08 reproduced the spill behavior directly
-  against the installed baseline. Local correction now exists for `XMATCH`,
-  `MATCH`, `VLOOKUP`, and `HLOOKUP` in the working tree, but no landed commit
-  ref exists yet and adjacent `XLOOKUP` follow-on remains open.
+  against the installed baseline. Local correction for `XMATCH`, `MATCH`,
+  `VLOOKUP`, and `HLOOKUP` is landed on
+  `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`. Fresh Excel COM replay on
+  2026-04-29 pinned the adjacent `XLOOKUP` multi-needle return shape, and the
+  local `XLOOKUP` correction is validated in the working tree with landed-ref
+  promotion pending.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -89,6 +92,20 @@
    lookup-value array lifting, added focused unit and surface-dispatch tests,
    and reopened current-gap truth for `MATCH`, `XMATCH`, `VLOOKUP`,
    `HLOOKUP`, and `XLOOKUP`.
+10. 2026-04-29: promoted the `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP`
+    correction to landed-ref status on
+    `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`; focused tests were replayed
+    and current-gap truth narrowed to the adjacent `XLOOKUP` follow-on.
+11. 2026-04-29: fresh Excel COM replay on Excel 16.0 build 19929 confirmed
+    `XLOOKUP` spills array-valued lookup needles with the lookup-value input
+    shape, uses the top-left `if_not_found` fallback value for each missing
+    needle, and for matrix return arrays returns the first cell of the selected
+    row or column for multi-needle lookup.
+12. 2026-04-29: corrected local `XLOOKUP` to preserve array-valued
+    `lookup_value` shape and select one scalar return cell per lookup needle;
+    focused `xlookup`, `surface_dispatch`, `xmatch_surface`, `match_fn`, and
+    `vhlookup_family` tests pass in the working tree. Landed-ref promotion
+    remains pending.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -106,12 +123,12 @@
 ### Results
 1. `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` are the same local failure
    family and are corrected together in `W079`.
-2. `XLOOKUP` is confirmed as an adjacent semantic family in live Excel and
-   local code review shows the same scalar-only lookup-value preparation shape.
-3. `XLOOKUP` remains open after this pass because array-valued lookup needles
-   can interact with row/column return-array selection and may require a
-   richer shape-preserving policy than the now-corrected scalar-selection and
-   single-cell-selection lookup families.
+2. `XLOOKUP` is confirmed as an adjacent semantic family in live Excel. Fresh
+   replay showed its multi-needle return rule is shape-preserving over
+   `lookup_value` and scalarizes matrix return selections to the first cell of
+   the selected row or column.
+3. `XLOOKUP` is locally corrected and validated in the working tree; the
+   remaining open lane is landed-ref promotion.
 
 ### Follow-on Openings
 1. `W079`
@@ -124,17 +141,29 @@
    per element,
 3. add focused unit and dispatch tests for the spilled lookup-family lanes,
 4. reopen the stale lookup-family closure records and current-gap surfaces,
-5. keep `XLOOKUP` as an explicit adjacent open lane until its array-valued
-   lookup-needle semantics are implemented and validated honestly.
+5. promote the local `XLOOKUP` correction to a landed ref and then close the
+   canonical bug stream.
 
 ## Validation
 1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib xmatch_surface -- --nocapture`
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib match_fn -- --nocapture`
 3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib vhlookup_family -- --nocapture`
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
-5. live Excel COM replay on 2026-04-08 for `XMATCH`, `MATCH`, `VLOOKUP`,
+5. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib xlookup -- --nocapture`
+6. live Excel COM replay on 2026-04-08 for `XMATCH`, `MATCH`, `VLOOKUP`,
    `HLOOKUP`, `XLOOKUP`, and
    the composed `FILTER + ISNUMBER + XMATCH` set-intersection formula
+7. 2026-04-29 replayed the four focused local validation commands above:
+   - `xmatch_surface`: 11 passed
+   - `match_fn`: 11 passed
+   - `vhlookup_family`: 11 passed
+   - `surface_dispatch`: 75 passed
+8. 2026-04-29 fresh `XLOOKUP` validation:
+   - `xlookup`: 16 passed
+   - `surface_dispatch`: 76 passed
+   - `xmatch_surface`: 11 passed
+   - `match_fn`: 11 passed
+   - `vhlookup_family`: 11 passed
 
 ## Linked Reports
 1. `BUGREP-FUNC-008`
@@ -153,7 +182,7 @@
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
+- [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required

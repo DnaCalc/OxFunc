@@ -3,19 +3,20 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-008`
 - **Opened**: 2026-04-09
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W080`
 
 ## Source Refs
 - **Reported against ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
 - **Reproduced on ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `2e818f03a71ba393690275a7fb437ddd9a6bf760`
 - **Ref notes**: intake pinned the current committed local ref on 2026-04-09.
   Live Excel COM replay on 2026-04-09 widened the `W080` review beyond the
   earlier text-slice seed and showed that several ordinary text-core and
   delimiter rows spill on the current baseline where the local values-only seam
-  was still scalar-only.
+  was still scalar-only. The bounded batch-A correction is landed on the fixed
+  ref above; broader W066 review remains open separately under `W080`.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -68,9 +69,8 @@
 - **Spec state at intake**: `vague`
 - **Notes**: the existing text-core contract already admitted scalar semantics
   for these rows but did not explicitly state whether the current baseline
-  spills over a single array-valued argument. This bug reopens that packet under
-  `W080` until the first-batch correction lands on a committed ref and the
-  broader review stays explicit.
+  spills over a single array-valued argument. This bug is closed on the landed
+  batch-A correction ref while the broader review stays explicit under `W080`.
 
 ## Investigation Log
 1. 2026-04-09: selected the first bounded `W080` batch from adjacent ordinary
@@ -87,6 +87,9 @@
    - `TEXTAFTER` / `TEXTBEFORE` over text or `instance_num`.
 5. 2026-04-09: added focused unit and surface-dispatch coverage for the new
    spill lanes and refreshed `W080` / `W051` truth surfaces.
+6. 2026-04-29: promoted the batch-A correction to landed-ref status on
+   `2e818f03a71ba393690275a7fb437ddd9a6bf760`; focused tests were replayed and
+   current-gap truth no longer carries these fixed rows.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -105,7 +108,8 @@
 
 ### Results
 1. `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and
-   `TEXTBEFORE` are corrected together on the working tree.
+   `TEXTBEFORE` are corrected together on landed ref
+   `2e818f03a71ba393690275a7fb437ddd9a6bf760`.
 2. `TEXTAFTER` / `TEXTBEFORE` delimiter-array behavior is not widened from this
    packet because the simple probe did not establish a spill lane there.
 3. `FIND`, `SEARCH`, `REPLACE`, `PROPER`, and `SUBSTITUTE` remain open for a
@@ -129,6 +133,10 @@
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib text_scalar_misc -- --nocapture`
 3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib text_delim_family -- --nocapture`
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
+5. 2026-04-29 replayed focused local validation:
+   - `text_scalar_misc`: 11 passed
+   - `text_delim_family`: 9 passed
+   - `surface_dispatch`: 75 passed
 
 ## Linked Reports
 1. `BUGREP-FUNC-012`
@@ -141,10 +149,10 @@
 5. `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required

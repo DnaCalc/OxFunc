@@ -4,11 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::functions::excel_casing::proper_text;
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+};
 use std::collections::HashMap;
 
 const TEXT_SEARCH_REPLACE_BASE_META: FunctionMeta = FunctionMeta {
@@ -141,6 +143,67 @@ fn parse_optional_instance_arg(
                 coerce_prepared_to_number(arg).map_err(TextSearchReplaceEvalError::Coercion)?;
             Ok(Some(positive_instance_from_number(instance)?))
         }
+    }
+}
+
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn text_search_replace_result_to_array_cell(
+    result: Result<EvalValue, TextSearchReplaceEvalError>,
+) -> ArrayCellValue {
+    match result {
+        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
+        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
+        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
+        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(err) => ArrayCellValue::Error(map_text_search_replace_error_to_ws(&err)),
+    }
+}
+
+fn eval_text_search_replace_with_single_array_lift(
+    prepared: &[PreparedArgValue],
+    allowed_array_arg_indexes: &[usize],
+    eval_scalar: impl Fn(&[PreparedArgValue]) -> Result<EvalValue, TextSearchReplaceEvalError>,
+) -> Result<EvalValue, TextSearchReplaceEvalError> {
+    let array_args = prepared
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, arg)| match arg {
+            PreparedArgValue::Eval(EvalValue::Array(array))
+                if allowed_array_arg_indexes.contains(&idx) =>
+            {
+                Some((idx, array))
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+
+    match array_args.as_slice() {
+        [] => eval_scalar(prepared),
+        [(arg_index, array)] => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let mut scalar_args = prepared.to_vec();
+                    scalar_args[*arg_index] = prepared_from_array_cell(cell);
+                    text_search_replace_result_to_array_cell(eval_scalar(&scalar_args))
+                })
+                .collect();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("text search/replace lifted array shape remains valid"),
+            ))
+        }
+        _ => eval_scalar(prepared),
     }
 }
 
@@ -450,23 +513,21 @@ pub fn eval_proper_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
-        eval_proper_adapter_prepared,
-        TextSearchReplaceEvalError::Coercion,
-    )
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
+    eval_text_search_replace_with_single_array_lift(&prepared, &[0], eval_proper_adapter_prepared)
 }
 
 pub fn eval_substitute_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
+    eval_text_search_replace_with_single_array_lift(
+        &prepared,
+        &[0, 1, 2, 3],
         eval_substitute_adapter_prepared,
-        TextSearchReplaceEvalError::Coercion,
     )
 }
 
@@ -474,11 +535,12 @@ pub fn eval_replace_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
+    eval_text_search_replace_with_single_array_lift(
+        &prepared,
+        &[0, 1, 2, 3],
         eval_replace_adapter_prepared,
-        TextSearchReplaceEvalError::Coercion,
     )
 }
 
@@ -486,11 +548,12 @@ pub fn eval_find_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
+    eval_text_search_replace_with_single_array_lift(
+        &prepared,
+        &[0, 1, 2],
         eval_find_adapter_prepared,
-        TextSearchReplaceEvalError::Coercion,
     )
 }
 
@@ -498,11 +561,12 @@ pub fn eval_search_surface(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
-    run_values_only_prepared(
-        args,
-        resolver,
+    let prepared =
+        prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
+    eval_text_search_replace_with_single_array_lift(
+        &prepared,
+        &[0, 1, 2],
         eval_search_adapter_prepared,
-        TextSearchReplaceEvalError::Coercion,
     )
 }
 
@@ -558,6 +622,36 @@ mod tests {
 
     fn number_prepared(n: f64) -> PreparedArgValue {
         PreparedArgValue::Eval(EvalValue::Number(n))
+    }
+
+    fn text_cell(s: &str) -> ArrayCellValue {
+        ArrayCellValue::Text(ExcelText::from_interop_assignment(s))
+    }
+
+    fn text_array_arg(rows: Vec<Vec<&str>>) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(
+                rows.into_iter()
+                    .map(|row| row.into_iter().map(text_cell).collect())
+                    .collect(),
+            )
+            .unwrap(),
+        ))
+    }
+
+    fn number_array_arg(rows: Vec<Vec<f64>>) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(
+                rows.into_iter()
+                    .map(|row| row.into_iter().map(ArrayCellValue::Number).collect())
+                    .collect(),
+            )
+            .unwrap(),
+        ))
+    }
+
+    fn expected_array(rows: Vec<Vec<ArrayCellValue>>) -> EvalValue {
+        EvalValue::Array(EvalArray::from_rows(rows).unwrap())
     }
 
     #[test]
@@ -849,6 +943,203 @@ mod tests {
             Err(TextSearchReplaceEvalError::Domain(
                 WorksheetErrorCode::Value
             ))
+        );
+    }
+
+    #[test]
+    fn find_and_search_spill_array_arguments() {
+        assert_eq!(
+            eval_find_surface(
+                &[text_array_arg(vec![vec!["a", "b"]]), text_arg("abc")],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(2.0),
+            ]]))
+        );
+        assert_eq!(
+            eval_find_surface(
+                &[text_arg("a"), text_array_arg(vec![vec!["abc", "bca"]])],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(3.0),
+            ]]))
+        );
+        assert_eq!(
+            eval_find_surface(
+                &[
+                    text_arg("a"),
+                    text_arg("abc"),
+                    number_array_arg(vec![vec![1.0], vec![2.0], vec![3.0]]),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![
+                vec![ArrayCellValue::Number(1.0)],
+                vec![ArrayCellValue::Error(WorksheetErrorCode::Value)],
+                vec![ArrayCellValue::Error(WorksheetErrorCode::Value)],
+            ]))
+        );
+        assert_eq!(
+            eval_search_surface(
+                &[text_array_arg(vec![vec!["a", "b"]]), text_arg("abc")],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(2.0),
+            ]]))
+        );
+        assert_eq!(
+            eval_search_surface(
+                &[text_arg("A"), text_array_arg(vec![vec!["abc", "bca"]])],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(3.0),
+            ]]))
+        );
+    }
+
+    #[test]
+    fn replace_spills_single_array_arguments() {
+        assert_eq!(
+            eval_replace_surface(
+                &[
+                    text_array_arg(vec![vec!["abc", "def"]]),
+                    number_arg(2.0),
+                    number_arg(1.0),
+                    text_arg("Z"),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("aZc"),
+                text_cell("dZf")
+            ]]))
+        );
+        assert_eq!(
+            eval_replace_surface(
+                &[
+                    text_arg("abc"),
+                    number_array_arg(vec![vec![1.0], vec![2.0], vec![3.0]]),
+                    number_arg(1.0),
+                    text_arg("Z"),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![
+                vec![text_cell("Zbc")],
+                vec![text_cell("aZc")],
+                vec![text_cell("abZ")],
+            ]))
+        );
+        assert_eq!(
+            eval_replace_surface(
+                &[
+                    text_arg("abc"),
+                    number_arg(2.0),
+                    number_array_arg(vec![vec![1.0], vec![2.0], vec![3.0]]),
+                    text_arg("Z"),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![
+                vec![text_cell("aZc")],
+                vec![text_cell("aZ")],
+                vec![text_cell("aZ")],
+            ]))
+        );
+        assert_eq!(
+            eval_replace_surface(
+                &[
+                    text_arg("abc"),
+                    number_arg(2.0),
+                    number_arg(1.0),
+                    text_array_arg(vec![vec!["X", "Y"]]),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("aXc"),
+                text_cell("aYc")
+            ]]))
+        );
+    }
+
+    #[test]
+    fn proper_and_substitute_spill_array_arguments() {
+        assert_eq!(
+            eval_proper_surface(
+                &[text_array_arg(vec![vec!["hello world", "o'brien"]])],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("Hello World"),
+                text_cell("O'Brien"),
+            ]]))
+        );
+        assert_eq!(
+            eval_substitute_surface(
+                &[
+                    text_array_arg(vec![vec!["foo bar", "bar foo"]]),
+                    text_arg("foo"),
+                    text_arg("x"),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("x bar"),
+                text_cell("bar x")
+            ]]))
+        );
+        assert_eq!(
+            eval_substitute_surface(
+                &[
+                    text_arg("foo bar foo"),
+                    text_array_arg(vec![vec!["foo", "bar"]]),
+                    text_arg("x"),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("x bar x"),
+                text_cell("foo x foo"),
+            ]]))
+        );
+        assert_eq!(
+            eval_substitute_surface(
+                &[
+                    text_arg("foo bar foo"),
+                    text_arg("foo"),
+                    text_array_arg(vec![vec!["x", "y"]]),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![vec![
+                text_cell("x bar x"),
+                text_cell("y bar y"),
+            ]]))
+        );
+        assert_eq!(
+            eval_substitute_surface(
+                &[
+                    text_arg("foo foo"),
+                    text_arg("foo"),
+                    text_arg("x"),
+                    number_array_arg(vec![vec![1.0], vec![2.0], vec![3.0]]),
+                ],
+                &NoResolver,
+            ),
+            Ok(expected_array(vec![
+                vec![text_cell("x foo")],
+                vec![text_cell("foo x")],
+                vec![text_cell("foo foo")],
+            ]))
         );
     }
 

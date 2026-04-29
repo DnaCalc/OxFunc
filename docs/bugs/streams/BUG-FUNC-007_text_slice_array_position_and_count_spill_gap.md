@@ -3,20 +3,19 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-007`
 - **Opened**: 2026-04-08
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W080`
 
 ## Source Refs
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Reproduced on ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
 - **Ref notes**: intake pinned the current working ref with `git rev-parse HEAD`.
   Live Excel COM replay on 2026-04-08 reproduced the spill behavior directly
-  against the installed baseline. Local correction now exists on the working
-  tree for `LEFT` / `LEFTB`, `MID` / `MIDB`, and `RIGHT` / `RIGHTB`, but no
-  landed commit ref exists yet and the broader function-array-support review
-  remains open under `W080`.
+  against the installed baseline. The local correction for `LEFT` / `LEFTB`,
+  `MID` / `MIDB`, and `RIGHT` / `RIGHTB` is landed on the fixed ref above; the
+  broader function-array-support review remains open under `W080` separately.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -75,6 +74,9 @@
    per element.
 5. 2026-04-08: opened bounded owner `W080` to carry the immediate text-slice
    fix and the broader systematic array-support review seed.
+6. 2026-04-29: promoted the text-slice correction to landed-ref status on
+   `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`; focused tests were replayed and
+   current-gap truth no longer carries these fixed rows.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -93,7 +95,7 @@
 
 ### Results
 1. `LEFT` / `LEFTB`, `MID` / `MIDB`, and `RIGHT` / `RIGHTB` are corrected
-   together on the working tree.
+   together on landed ref `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
 2. adjacent scalar-parameter text/search functions remain unprobed in this pass
    and therefore stay open for systematic review rather than assumed.
 3. the broader array-support question clearly exceeds a one-family bug fix and
@@ -117,6 +119,9 @@
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib surface_dispatch -- --nocapture`
 3. live Excel COM replay on 2026-04-08 for `MID("MISSISSIPPI",SEQUENCE(11),1)`,
    `LEFT("MISSISSIPPI",SEQUENCE(3))`, and `RIGHT("MISSISSIPPI",SEQUENCE(3))`
+4. 2026-04-29 replayed focused local validation:
+   - `text_slice_family`: 10 passed
+   - `surface_dispatch`: 75 passed
 
 ## Linked Reports
 1. `BUGREP-FUNC-011`
@@ -129,10 +134,10 @@
 5. `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
 - [x] linked reports updated
-- [ ] handoff filed if required
+- [x] handoff filed if required

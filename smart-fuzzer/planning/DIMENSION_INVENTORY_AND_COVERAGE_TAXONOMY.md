@@ -248,8 +248,9 @@ Expected PMT/PPMT/IPMT financial-payment exactness drift is a known deviation
 class and a useful reference mismatch lane. It is not a repair target under
 W089.
 
-Any POWER/OP_POWER mismatch must be freshly confirmed before it is treated as a
-current known bug.
+The former POWER/OP_POWER stale-claim check was freshly confirmed and closed
+under W078 on 2026-04-29. Future POWER mismatches should be triaged as new
+signals rather than assumed continuations of BUG-FUNC-005.
 
 ## 11. Coverage Counter Dimensions
 

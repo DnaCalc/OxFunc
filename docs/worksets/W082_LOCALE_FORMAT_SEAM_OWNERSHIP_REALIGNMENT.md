@@ -77,12 +77,20 @@ Out of scope:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - OxFunc has removed the old ordinary convenience constructors, but the
-     local parser/formatter implementation still survives as explicit test-only
-     support rather than final downstream production ownership
-   - the XLL add-in still constructs `current_excel_host_context()` directly on
-     the caller side
-   - OxFml tests still depend on OxFunc-provided convenience locale contexts
-     instead of supplying a caller-owned capability bundle from the OxFml side
+   - OxFunc has removed the old ordinary convenience constructors; the local
+     parser/formatter implementation is now `#[cfg(test)]` explicit test-only
+     support rather than an ordinary runtime fallback
+   - the XLL add-in no longer imports an OxFunc-core convenience constructor;
+     it now supplies a caller-owned locale-format capability bundle on the host
+     side and delegates parse/render work to Excel through `xlfEvaluate`
+   - the OxFunc-local OxFml seam integration test now uses the OxFml-owned
+     `current_excel_host_context()` capability; any remaining OxFml evaluator
+     or test helper migration is external to this repo and remains under
+     `HO-FN-009`
    - downstream OxFml/FEC acknowledgment and migration ownership under
      `HO-FN-009`
+6. latest local evidence:
+   - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib locale_format -- --nocapture`
+     passed on 2026-04-29
+   - `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml`
+     passed on 2026-04-29 after XLL caller-side capability alignment

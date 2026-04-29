@@ -30,8 +30,9 @@ PMT/PPMT/IPMT financial exactness drift is currently expected and blocked from
 repair work. W089 may use it as a reference mismatch lane, but it should not
 create repair work unless the existing blocked bug lane is explicitly reopened.
 
-POWER/OP_POWER must be freshly confirmed before any stale bug claim is treated
-as current.
+The former POWER/OP_POWER stale-claim check was freshly confirmed and closed
+under W078 on 2026-04-29. Future POWER mismatches should be triaged as new
+signals rather than assumed continuations of BUG-FUNC-005.
 
 ## 3. Minimization Order
 

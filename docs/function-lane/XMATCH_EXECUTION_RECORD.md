@@ -18,8 +18,8 @@ Track execution status and reproducible evidence for W6 `XMATCH` current-phase c
 4. integration_completeness: `partial`
 5. open_lanes:
    - array-valued `lookup_value` lifting reopened on 2026-04-08 under
-     `BUG-FUNC-006` / `W079`; local correction and focused validation now exist
-     on the working tree but no landed ref exists yet.
+     `BUG-FUNC-006` / `W079`; local correction and focused validation are
+     landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
    - locale and alternate Excel-version sweeps remain orthogonal validation-phase work.
    - richer collation expansion remains evidence-hardening work unless it reveals a concrete semantic mismatch in the tracked baseline.
 
@@ -161,11 +161,12 @@ Template:
 4. Keep unresolved parity lanes explicit and bounded in slice docs and runtime notes.
 
 ## 9. Promotion Status
-1. W6 no longer satisfies current-phase function closure for `XMATCH` because
-   array-valued `lookup_value` lifting is now a known current-baseline semantic
-   gap.
-2. `BUG-FUNC-006` / `W079` owns the reopened correction and truth-surface
-   reconciliation.
+1. W6 regains the `XMATCH` current-phase closure lane for the replayed
+   array-valued `lookup_value` scope after the W079 correction landed on
+   `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
+2. `BUG-FUNC-006` / `W079` remains active only for landed-ref promotion of the
+   adjacent `XLOOKUP` correction, which is validated in the working tree after
+   fresh Excel replay on 2026-04-29.
 
 ## 10. Post-Closure Policy Notes
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.

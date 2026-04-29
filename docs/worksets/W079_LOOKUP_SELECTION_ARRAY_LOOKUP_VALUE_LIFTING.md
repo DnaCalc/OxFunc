@@ -3,8 +3,8 @@
 ## 1. Purpose
 Own the bounded OxFunc-side correction for the lookup-family lane where live
 Excel spills array-valued `lookup_value` inputs for `XMATCH`, `MATCH`,
-`VLOOKUP`, and `HLOOKUP`, while the current local surface rejects or mishandles
-those lanes.
+`VLOOKUP`, `HLOOKUP`, and adjacent `XLOOKUP`, while the current local surface
+rejects or mishandles those lanes.
 
 ## 2. Why This Packet Exists
 The earlier lookup-family packets closed on scalar lookup-value evidence and did
@@ -19,6 +19,10 @@ not pin dynamic-array needle behavior:
    and local `VLOOKUP` / `HLOOKUP` still assumed the shared match result was
    scalar-only, so the family surfaced `#VALUE!` or equivalent scalar-only
    failure instead of elementwise `#N/A` / index results.
+5. fresh Excel replay on 2026-04-29 confirmed adjacent `XLOOKUP` preserves the
+   array-valued `lookup_value` shape, applies top-left fallback values per
+   missing needle, and scalarizes matrix return selections to the first cell of
+   the selected row or column for multi-needle lookup.
 
 ## 3. Provenance
 1. user-reported downstream corpus issue on 2026-04-08
@@ -40,28 +44,29 @@ In scope:
 4. add focused Rust and surface-dispatch tests for the spilled lookup-family
    lanes,
 5. reopen stale current-gap and execution-record truth for `XMATCH`, `MATCH`,
-   `VLOOKUP`, `HLOOKUP`, and adjacent `XLOOKUP` risk.
+   `VLOOKUP`, `HLOOKUP`, and adjacent `XLOOKUP` risk,
+6. correct the adjacent `XLOOKUP` return-shape follow-on after fresh replay
+   confirms the exact multi-needle selection rule.
 
 Out of scope:
-1. full `XLOOKUP` array-valued lookup-needle implementation in the same pass,
-2. new XLL export-policy widening beyond the existing seam limits,
-3. broader locale/channel sweeps beyond the current installed Excel baseline,
-4. OxFml parse/bind changes unless a new seam blocker is found.
+1. new XLL export-policy widening beyond the existing seam limits,
+2. broader locale/channel sweeps beyond the current installed Excel baseline,
+3. OxFml parse/bind changes unless a new seam blocker is found.
 
 ## 5. Initial Epic Lanes
 1. bug intake and family ownership registration
 2. live Excel replay and adjacent-family scan
-3. local `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP` surface correction
+3. local `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP` / `XLOOKUP` surface correction
 4. focused validation
 5. current-gap and execution-record truth reconciliation
 
 ## 6. Closure Condition
 `W079` is complete for declared scope only when:
-1. `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` all spill array-valued
-   `lookup_value` lanes locally,
+1. `XMATCH`, `MATCH`, `VLOOKUP`, `HLOOKUP`, and adjacent `XLOOKUP` all spill
+   array-valued `lookup_value` lanes locally,
 2. focused validation is recorded,
 3. current-gap and execution records no longer overclaim the lookup family,
-4. any unresolved adjacent `XLOOKUP` follow-on is recorded explicitly rather
+4. adjacent `XLOOKUP` landed-ref promotion state is recorded explicitly rather
    than hidden behind stale closure language.
 
 ## 7. Current Reading
@@ -70,5 +75,19 @@ Out of scope:
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - landed-ref promotion for the local `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP` correction
-   - adjacent `XLOOKUP` array-valued lookup-needle follow-on
+   - landed-ref promotion for the local `XLOOKUP` array-valued lookup-needle
+     correction
+6. landed lanes:
+   - `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` array-valued
+     `lookup_value` corrections are landed on
+     `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
+   - focused validation replayed on 2026-04-29:
+     `xmatch_surface`, `match_fn`, `vhlookup_family`, and `surface_dispatch`
+7. locally validated lanes pending landed ref:
+   - fresh Excel COM replay on 2026-04-29 confirmed `XLOOKUP` preserves
+     array-valued `lookup_value` shape, uses top-left `if_not_found` fallback
+     values per missing needle, and scalarizes matrix return selections to the
+     first cell of the selected row or column for multi-needle lookup
+   - local `XLOOKUP` correction is validated in the working tree:
+     `xlookup`, `surface_dispatch`, `xmatch_surface`, `match_fn`, and
+     `vhlookup_family` focused tests pass

@@ -32,8 +32,11 @@ Excel candidate priority should be:
 2. known-bug-adjacent or source-risk rows,
 3. boundary values and shape edges,
 4. low-risk catalog controls sampled sparsely,
-5. stale-claim checks requiring fresh confirmation, especially POWER/OP_POWER,
+5. stale-claim checks requiring fresh confirmation,
 6. PMT/PPMT/IPMT known financial drift as bounded reference mismatch controls.
+
+The former POWER/OP_POWER stale-claim check was closed under W078 on
+2026-04-29 and should not receive special quota unless a new signal appears.
 
 Provider/cube/RTD/context rows should receive no Excel quota unless a fixture
 exists.

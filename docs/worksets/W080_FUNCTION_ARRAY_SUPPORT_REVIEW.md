@@ -84,13 +84,46 @@ Out of scope:
 3. first-batch bug owner:
    - `BUG-FUNC-008`
 
-## 8. Current Reading
+## 8. Second Bounded Batch (2026-04-29)
+1. confirmed live Excel spill lanes:
+   - `FIND({"a","b"},"abc")`
+   - `FIND("a",{"abc","bca"})`
+   - `FIND("a","abc",SEQUENCE(3))`
+   - `SEARCH({"a","b"},"abc")`
+   - `SEARCH("A",{"abc","bca"})`
+   - `REPLACE({"abc","def"},2,1,"Z")`
+   - `REPLACE("abc",SEQUENCE(3),1,"Z")`
+   - `REPLACE("abc",2,SEQUENCE(3),"Z")`
+   - `REPLACE("abc",2,1,{"X","Y"})`
+   - `PROPER({"hello world","o'brien"})`
+   - `SUBSTITUTE({"foo bar","bar foo"},"foo","x")`
+   - `SUBSTITUTE("foo bar foo",{"foo","bar"},"x")`
+   - `SUBSTITUTE("foo bar foo","foo",{"x","y"})`
+   - `SUBSTITUTE("foo foo","foo","x",SEQUENCE(3))`
+2. second-batch bug owner:
+   - `BUG-FUNC-016`
+3. local correction:
+   - implemented bounded single-array lift for the confirmed scalar positions
+     in `text_search_replace_family`
+   - `FINDB`, `SEARCHB`, and `REPLACEB` inherit the correction through their
+     current-baseline delegates
+
+## 9. Current Reading
 1. execution_state: `in_progress`
 2. scope_completeness: `scope_partial`
 3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - landed-ref promotion for the local `LEFT` / `RIGHT` / `MID` spill correction
-   - landed-ref promotion for the local text-scalar and text-delimiter batch-A correction
-   - next `W066` review batch for `FIND`, `SEARCH`, `REPLACE`, `PROPER`, and `SUBSTITUTE`
    - broader systematic family-by-family review beyond the initial seeded batches
+6. landed lanes:
+   - `LEFT` / `LEFTB`, `MID` / `MIDB`, and `RIGHT` / `RIGHTB` text-slice
+     correction landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
+   - `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and
+     `TEXTBEFORE` batch-A correction landed on
+     `2e818f03a71ba393690275a7fb437ddd9a6bf760`
+   - focused validation replayed on 2026-04-29:
+     `text_slice_family`, `text_scalar_misc`, `text_delim_family`, and
+     `surface_dispatch`
+7. locally corrected lanes pending landed-ref promotion:
+   - `FIND` / `FINDB`, `SEARCH` / `SEARCHB`, `REPLACE` / `REPLACEB`,
+     `PROPER`, and `SUBSTITUTE` under `BUG-FUNC-016`

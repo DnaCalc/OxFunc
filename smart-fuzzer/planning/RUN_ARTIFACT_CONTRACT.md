@@ -214,8 +214,9 @@ Promotion out of `smart-fuzzer/runs/` requires:
    - handoff packet when OxFml-facing behavior is implicated.
 
 For W088 pilot work, PMT and PPMT mismatches are expected first-class triage
-targets. POWER-related claims must be treated as stale unless fresh Excel
-comparison reproduces the divergence.
+targets. The former POWER stale-claim check was freshly confirmed and closed
+under W078 on 2026-04-29; future POWER mismatches should be recorded as new
+signals.
 
 ## Retention Policy
 

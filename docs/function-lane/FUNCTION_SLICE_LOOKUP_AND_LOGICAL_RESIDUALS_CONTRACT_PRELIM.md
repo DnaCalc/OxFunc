@@ -57,6 +57,9 @@ Provenance anchors:
 ## 6. Current-Phase Note
 1. `IFS` enters `W068` with existing `W16` empirical/formal grounding and is repinned here through a packet-local replay bundle.
 2. `HLOOKUP` and `VLOOKUP` enter `W068` with existing runtime plus Lean metadata grounding and are repinned here through their first dedicated ordinary-backlog closure replay bundle.
-3. Live Excel replay on 2026-04-08 later reopens this family for
-   array-valued `lookup_value` spill behavior; local working-tree correction now
-   exists under `BUG-FUNC-006` / `W079` but is not yet a landed-ref closure.
+3. Live Excel replay on 2026-04-08 later reopened this family for
+   array-valued `lookup_value` spill behavior; the local correction is landed on
+   `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`. Fresh Excel replay on
+   2026-04-29 pinned the adjacent `XLOOKUP` multi-needle return shape, and the
+   local `XLOOKUP` correction is validated in the working tree pending
+   landed-ref promotion under `BUG-FUNC-006` / `W079`.

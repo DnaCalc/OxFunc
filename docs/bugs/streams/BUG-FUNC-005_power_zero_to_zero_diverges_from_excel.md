@@ -3,25 +3,26 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-005`
 - **Opened**: 2026-04-08
-- **Status**: `investigating`
+- **Status**: `closed`
 - **Owner workset**: `W078`
 
 ## Fresh Confirmation Note
-This stream records a prior April 8, 2026 local Excel observation and a
-working-tree correction. It must not be treated as a current known bug without
-fresh Excel confirmation against the active baseline. If fresh replay does not
-confirm the divergence, this stream should be reconciled as stale rather than
-used as a prioritization seed for current smart-fuzzer work.
+Fresh Excel COM replay on 2026-04-29 confirmed that the active installed
+baseline still returns `#NUM!` for both `=0^0` and `=POWER(0,0)`. The local
+Rust and Lean correction is landed on committed ref
+`5d54d7f4ab2cdde6458272292d15ae1b317a0fef`, so this stream is closed as a
+fixed historical OxFunc bug rather than a current known deviation.
 
 ## Source Refs
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Reproduced on ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
-- **Ref notes**: Intake pinned the current working ref with `git rev-parse HEAD`.
-  Live Excel COM replay on 2026-04-08 reproduced the domain lane directly
-  against the installed baseline. The local runtime/formal correction now exists
-  in the working tree, but no landed commit ref exists yet.
+- **Fixed in ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
+- **Ref notes**: Intake pinned the original current working ref with
+  `git rev-parse HEAD`. Live Excel COM replay on 2026-04-08 reproduced the
+  domain lane directly against the installed baseline. Fresh Excel COM replay on
+  2026-04-29 confirmed the same `#NUM!` rule on Excel 16.0 build 19929, and the
+  local runtime/formal correction is landed on the fixed ref above.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -80,6 +81,9 @@ used as a prioritization seed for current smart-fuzzer work.
 6. 2026-04-08: corrected the shared Rust and Lean zero-to-zero lane, widened
    operator/function tests, added an OxFml-adapter fixture for `POWER(0,0)`,
    and added a W45 Wave A empirical row for `0^0`.
+7. 2026-04-29: fresh Excel COM replay confirmed `=0^0 -> #NUM!` and
+   `=POWER(0,0) -> #NUM!` on Excel 16.0 build 19929; focused local
+   `power_fn` tests pass on the landed correction.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -121,6 +125,16 @@ used as a prioritization seed for current smart-fuzzer work.
 4. attempted `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --test oxfml_seam_integration -- --nocapture`, but it is still blocked by the pre-existing `oxfml_core::substrate` path mismatch in the current local seam-test harness
 5. `powershell -ExecutionPolicy Bypass -File tools/w45-probe/run-w45-wavea-operator-arithmetic-baseline.ps1`
 6. `lake build OxFunc.Functions.PowerFn` (run from `formal/lean`)
+7. 2026-04-29 fresh Excel COM replay:
+   - Excel version/build: `16.0` / `19929`
+   - `=0^0 -> #NUM!`
+   - `=POWER(0,0) -> #NUM!`
+   - `=0^-1 -> #DIV/0!`
+   - `=0^1 -> 0`
+   - `=1^0 -> 1`
+8. 2026-04-29 replayed
+   `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib power_fn -- --nocapture`
+   with 4 passed tests.
 
 ## Linked Reports
 1. `BUGREP-FUNC-007`
@@ -134,7 +148,7 @@ used as a prioritization seed for current smart-fuzzer work.
 6. `formal/lean/OxFunc/Functions/PowerFn.lean`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded

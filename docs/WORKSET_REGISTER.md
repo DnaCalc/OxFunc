@@ -318,8 +318,9 @@ It does mean:
    own the local review/correction lane for the prior shared power-kernel claim
    where an April 8, 2026 local Excel replay reported `#NUM!` for both `0^0`
    and `POWER(0,0)`, but the then-current local power path still published `1`.
-   This claim now requires fresh Excel confirmation before it is treated as a
-   current known bug.
+   Fresh Excel replay on 2026-04-29 confirmed the Excel rule, and the local
+   Rust/Lean correction is landed, so this workset now records closed
+   historical bug work rather than a current open gap.
 2. depends_on:
    `W070`, `W072`, `W045`
 3. parent_doctrine_and_spec_surfaces:
@@ -335,17 +336,21 @@ It does mean:
    invalidates it as stale; the shared Rust and Lean power lanes agree with the
    freshly confirmed rule; focused validation is recorded where the bug remains
    real; and the current-gap surfaces no longer overclaim `POWER`.
-6. initial_epic_lanes:
+6. current_status:
+   closed on 2026-04-29 after fresh Excel COM replay confirmed `#NUM!` for both
+   `=0^0` and `=POWER(0,0)` on Excel 16.0 build 19929, with the local Rust and
+   Lean correction landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
+7. initial_epic_lanes:
    bug intake, shared power-kernel correction, Lean alignment, focused
    validation, truth-surface reconciliation
-7. rollout_mode:
+8. rollout_mode:
    `execution_target`
 
 ### W079 Lookup-Family Array Lookup-Value Lifting
 1. purpose:
    own the local lookup-family correction where Excel spills array-valued
-   `lookup_value` inputs for `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` but
-   the current local surface rejects or mishandles them.
+   `lookup_value` inputs for `XMATCH`, `MATCH`, `VLOOKUP`, `HLOOKUP`, and
+   adjacent `XLOOKUP` but the current local surface rejects or mishandles them.
 2. depends_on:
    `W070`, `W072`
 3. parent_doctrine_and_spec_surfaces:
@@ -356,13 +361,13 @@ It does mean:
 4. upstream_dependencies:
    none
 5. closure_condition:
-   `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` all spill array-valued
-   `lookup_value` lanes locally, focused validation is recorded, current-gap
-   truth is reconciled honestly, and any unresolved adjacent `XLOOKUP`
-   follow-on remains explicit rather than hidden behind stale closure language.
+   `XMATCH`, `MATCH`, `VLOOKUP`, `HLOOKUP`, and adjacent `XLOOKUP` all spill
+   array-valued `lookup_value` lanes locally, focused validation is recorded,
+   current-gap truth is reconciled honestly, and landed-ref promotion state is
+   recorded explicitly.
 6. initial_epic_lanes:
    bug intake, live Excel replay, `XMATCH` / `MATCH` / `VLOOKUP` / `HLOOKUP`
-   surface correction,
+   / `XLOOKUP` surface correction,
    focused validation, truth-surface reconciliation
 7. rollout_mode:
    `execution_target`

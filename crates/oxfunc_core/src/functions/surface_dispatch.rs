@@ -5792,6 +5792,58 @@ mod tests {
     }
 
     #[test]
+    fn eval_surface_value_call_xlookup_spills_array_lookup_value_results() {
+        let got = eval_surface_value_call(
+            FUNC_ID_XLOOKUP,
+            &[
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(3.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Number(4.0),
+                        ArrayCellValue::Number(6.0),
+                        ArrayCellValue::Number(8.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(20.0),
+                        ArrayCellValue::Number(40.0),
+                        ArrayCellValue::Number(60.0),
+                        ArrayCellValue::Number(80.0),
+                    ]])
+                    .expect("row vector"),
+                )),
+                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("NF"))),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(0.5),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("NF")),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("NF")),
+                ]])
+                .expect("row vector")
+            ))
+        );
+    }
+
+    #[test]
     fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
         let cols = eval_surface_value_call(
             FUNC_ID_SEQUENCE,

@@ -14,7 +14,10 @@ use oxfunc_core::functions::surface_dispatch::{
     eval_surface_value_call,
 };
 use oxfunc_core::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider, InfoQuery};
-use oxfunc_core::locale_format::current_excel_host_context;
+use oxfunc_core::locale_format::{
+    FormatCodeEngine, FormatFailure, FormatProfile, LocaleFormatContext, LocaleProfileId,
+    LocaleValueParser, ParseFailure, WorkbookDateSystem, format_profile,
+};
 use oxfunc_core::resolver::{
     CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
 };
@@ -486,6 +489,100 @@ fn eval_formula_via_excel(formula_text: &str) -> Result<EvalValue, HostInfoError
     let value = resolved_eval_from_call_arg(call_arg_from_xloper(&out, false));
     free_excel_result_if_needed(&mut out);
     Ok(value)
+}
+
+struct XllLocaleValueParser;
+struct XllFormatCodeEngine;
+
+static XLL_LOCALE_VALUE_PARSER: XllLocaleValueParser = XllLocaleValueParser;
+static XLL_FORMAT_CODE_ENGINE: XllFormatCodeEngine = XllFormatCodeEngine;
+
+fn current_excel_host_context() -> LocaleFormatContext<'static> {
+    LocaleFormatContext {
+        profile: format_profile(LocaleProfileId::CurrentExcelHost),
+        date_system: WorkbookDateSystem::System1900,
+        parser: &XLL_LOCALE_VALUE_PARSER,
+        formatter: &XLL_FORMAT_CODE_ENGINE,
+    }
+}
+
+fn excel_string_literal(raw: &str) -> String {
+    format!("\"{}\"", raw.replace('"', "\"\""))
+}
+
+fn excel_number_literal(value: f64) -> Result<String, FormatFailure> {
+    if !value.is_finite() {
+        return Err(FormatFailure::UnsupportedCode(
+            "non-finite number".to_string(),
+        ));
+    }
+    Ok(format!("{value:.17e}"))
+}
+
+fn expect_excel_text(value: EvalValue, code: &str) -> Result<ExcelText, FormatFailure> {
+    match value {
+        EvalValue::Text(text) => Ok(text),
+        _ => Err(FormatFailure::UnsupportedCode(code.to_string())),
+    }
+}
+
+impl LocaleValueParser for XllLocaleValueParser {
+    fn parse_value_text(
+        &self,
+        _profile: &FormatProfile,
+        _date_system: WorkbookDateSystem,
+        text: &str,
+    ) -> Result<f64, ParseFailure> {
+        let formula = format!("VALUE({})", excel_string_literal(text));
+        match eval_formula_via_excel(&formula) {
+            Ok(EvalValue::Number(value)) => Ok(value),
+            _ => Err(ParseFailure::UnsupportedText(text.to_string())),
+        }
+    }
+}
+
+impl FormatCodeEngine for XllFormatCodeEngine {
+    fn render_with_code(
+        &self,
+        _profile: &FormatProfile,
+        _date_system: WorkbookDateSystem,
+        value: f64,
+        code: &str,
+    ) -> Result<ExcelText, FormatFailure> {
+        let value = excel_number_literal(value)?;
+        let formula = format!("TEXT({value},{})", excel_string_literal(code));
+        let rendered = eval_formula_via_excel(&formula)
+            .map_err(|_| FormatFailure::UnsupportedCode(code.to_string()))?;
+        expect_excel_text(rendered, code)
+    }
+
+    fn render_currency(
+        &self,
+        _profile: &FormatProfile,
+        value: f64,
+        decimals: i32,
+    ) -> Result<ExcelText, FormatFailure> {
+        let value = excel_number_literal(value)?;
+        let formula = format!("DOLLAR({value},{decimals})");
+        let rendered = eval_formula_via_excel(&formula)
+            .map_err(|_| FormatFailure::UnsupportedCode("DOLLAR".to_string()))?;
+        expect_excel_text(rendered, "DOLLAR")
+    }
+
+    fn render_fixed(
+        &self,
+        _profile: &FormatProfile,
+        value: f64,
+        decimals: i32,
+        no_commas: bool,
+    ) -> Result<ExcelText, FormatFailure> {
+        let value = excel_number_literal(value)?;
+        let no_commas = if no_commas { "TRUE" } else { "FALSE" };
+        let formula = format!("FIXED({value},{decimals},{no_commas})");
+        let rendered = eval_formula_via_excel(&formula)
+            .map_err(|_| FormatFailure::UnsupportedCode("FIXED".to_string()))?;
+        expect_excel_text(rendered, "FIXED")
+    }
 }
 
 impl HostInfoProvider for ExcelHostInfoProvider {

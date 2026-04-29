@@ -7,11 +7,12 @@ kernel claim where an April 8, 2026 local Excel replay reported `#NUM!` for
 published `1`.
 
 Fresh-review note:
-1. this packet records a prior local finding and working-tree correction claim,
-2. it must not be treated as a current known bug without fresh Excel
-   confirmation against the active baseline,
-3. if fresh replay shows no current divergence, the W078/BUG-FUNC-005 surfaces
-   should be reconciled as stale rather than carried as active bug truth.
+1. this packet records a prior local finding and the correction landed on
+   `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`,
+2. fresh Excel COM replay on 2026-04-29 confirmed that the active installed
+   baseline still returns `#NUM!` for both `=0^0` and `=POWER(0,0)`,
+3. `W078` / `BUG-FUNC-005` are now closed as fixed historical OxFunc work, not
+   current open gap truth for smart-fuzzer prioritization.
 
 ## 2. Why This Packet Exists
 The earlier `POWER` repair packet fixed integer-publication drift but did not
@@ -28,6 +29,7 @@ pin the zero-to-zero domain row:
 3. `docs/function-lane/W45_EXECUTION_RECORD.md`
 4. `docs/bugs/streams/BUG-FUNC-005_power_zero_to_zero_diverges_from_excel.md`
 5. `formal/lean/OxFunc/Functions/PowerFn.lean`
+6. fresh Excel COM replay on 2026-04-29 against Excel 16.0 build 19929
 
 ## 4. Scope
 In scope:
@@ -62,10 +64,15 @@ Out of scope:
 4. `W051` and the bug/current-workset surfaces no longer overclaim `POWER`.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+1. execution_state: `closed`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
-5. open_lanes:
-   - fresh Excel confirmation review for the prior `POWER` bug claim
-   - landed-ref promotion for the local `0^0 -> #NUM!` correction
+5. open_lanes: none
+6. closure evidence:
+   - fresh Excel COM replay on 2026-04-29 confirmed `=0^0 -> #NUM!` and
+     `=POWER(0,0) -> #NUM!` on Excel 16.0 build 19929
+   - landed correction ref:
+     `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
+   - focused validation:
+     `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib power_fn -- --nocapture`

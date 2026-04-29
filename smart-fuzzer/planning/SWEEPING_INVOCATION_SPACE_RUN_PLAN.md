@@ -174,7 +174,8 @@ Candidate priority:
 3. source-risk hotspots,
 4. boundary values and shape edges,
 5. randomly sampled low-risk controls for confidence and drift detection,
-6. stale-claim checks, including POWER, only as fresh confirmation probes.
+6. stale-claim checks only as fresh confirmation probes; the former POWER
+   stale-claim check was closed under W078 on 2026-04-29.
 
 Known PMT/PPMT/IPMT exactness deviations are expected and should be reported as
 known financial drift unless reduction shows a separate root cause.

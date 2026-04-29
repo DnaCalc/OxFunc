@@ -228,6 +228,45 @@ fn materialize_cell_value(cell: &ArrayCellValue) -> EvalValue {
     }
 }
 
+fn prepared_from_lookup_value_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn top_left_array_cell(array: &EvalArray) -> ArrayCellValue {
+    array
+        .get(0, 0)
+        .cloned()
+        .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::Value))
+}
+
+fn materialized_eval_value_to_array_cell(value: EvalValue) -> ArrayCellValue {
+    match value {
+        EvalValue::Number(n) => ArrayCellValue::Number(n),
+        EvalValue::Text(t) => ArrayCellValue::Text(t),
+        EvalValue::Logical(b) => ArrayCellValue::Logical(b),
+        EvalValue::Error(code) => ArrayCellValue::Error(code),
+        EvalValue::Array(array) => top_left_array_cell(&array),
+        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        }
+    }
+}
+
+fn eval_value_to_array_cell(value: EvalValue, resolver: &impl ReferenceResolver) -> ArrayCellValue {
+    match value {
+        EvalValue::Reference(reference) => resolve_eval_value(resolver, &reference)
+            .map(materialized_eval_value_to_array_cell)
+            .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::Value)),
+        other => materialized_eval_value_to_array_cell(other),
+    }
+}
+
 fn infer_selection_orientation(shape: ArrayShape) -> Option<VectorOrientation> {
     if shape.rows == 1 && shape.cols == 1 {
         Some(VectorOrientation::Scalar)
@@ -453,6 +492,54 @@ fn select_return_value(
     }
 }
 
+fn select_reference_scalar_cell(
+    reference: &A1Reference,
+    lookup_orientation: VectorOrientation,
+    index: usize,
+) -> ReferenceLike {
+    let (row, col) = match lookup_orientation {
+        VectorOrientation::Vertical => (index, 0),
+        VectorOrientation::Horizontal => (0, index),
+        VectorOrientation::Scalar => (0, 0),
+    };
+    reference_from_cell(reference, row, col)
+}
+
+fn select_return_array_cell(
+    selection: &ReturnSelection,
+    lookup_orientation: Option<VectorOrientation>,
+    index: usize,
+    resolver: &impl ReferenceResolver,
+) -> ArrayCellValue {
+    match selection {
+        ReturnSelection::Scalar(item) => {
+            eval_value_to_array_cell(materialize_return_item(item), resolver)
+        }
+        ReturnSelection::Vector { items, .. } => items
+            .get(index)
+            .map(materialize_return_item)
+            .map(|value| eval_value_to_array_cell(value, resolver))
+            .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA)),
+        ReturnSelection::ArrayValue(array) => {
+            let selected = match lookup_orientation.unwrap_or(VectorOrientation::Scalar) {
+                VectorOrientation::Vertical => array.get(index, 0),
+                VectorOrientation::Horizontal => array.get(0, index),
+                VectorOrientation::Scalar => array.get(0, 0),
+            };
+            selected
+                .cloned()
+                .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::Value))
+        }
+        ReturnSelection::ReferenceArea(reference) => {
+            let Some(lookup_orientation) = lookup_orientation else {
+                return ArrayCellValue::Error(WorksheetErrorCode::Value);
+            };
+            let selected = select_reference_scalar_cell(reference, lookup_orientation, index);
+            eval_value_to_array_cell(EvalValue::Reference(selected), resolver)
+        }
+    }
+}
+
 fn prepare_lookup_vector(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -483,6 +570,59 @@ fn prepare_lookup_vector(
             .extend(expand_lookup_vector_arg(arg, resolver).map_err(XlookupEvalError::Coercion)?);
     }
     Ok((prepared, orientation))
+}
+
+fn xlookup_lookup_value_array_result_to_cell(
+    result: Result<f64, XmatchEvalError>,
+    return_selection: &ReturnSelection,
+    lookup_orientation: Option<VectorOrientation>,
+    if_not_found: Option<&CallArgValue>,
+    resolver: &impl ReferenceResolver,
+) -> ArrayCellValue {
+    match result {
+        Ok(index) => {
+            let index = index as usize - 1;
+            select_return_array_cell(return_selection, lookup_orientation, index, resolver)
+        }
+        Err(XmatchEvalError::NotAvailable) => {
+            if let Some(if_not_found) = if_not_found {
+                return eval_value_to_array_cell(materialize_fallback(if_not_found), resolver);
+            }
+            ArrayCellValue::Error(WorksheetErrorCode::NA)
+        }
+        Err(err) => ArrayCellValue::Error(map_xlookup_error_to_ws(&map_xmatch_error(err))),
+    }
+}
+
+fn eval_xlookup_lookup_value_array(
+    lookup_value_array: &EvalArray,
+    lookup_array: &[PreparedArgValue],
+    return_selection: &ReturnSelection,
+    lookup_orientation: Option<VectorOrientation>,
+    if_not_found: Option<&CallArgValue>,
+    match_mode: Option<&PreparedArgValue>,
+    search_mode: Option<&PreparedArgValue>,
+    resolver: &impl ReferenceResolver,
+) -> EvalValue {
+    let cells = lookup_value_array
+        .iter_row_major()
+        .map(prepared_from_lookup_value_cell)
+        .map(|lookup_value| {
+            let result =
+                eval_xmatch_adapter_prepared(&lookup_value, lookup_array, match_mode, search_mode);
+            xlookup_lookup_value_array_result_to_cell(
+                result,
+                return_selection,
+                lookup_orientation,
+                if_not_found,
+                resolver,
+            )
+        })
+        .collect();
+    EvalValue::Array(
+        EvalArray::new(lookup_value_array.shape(), cells)
+            .expect("lookup-value array result preserves input shape"),
+    )
 }
 
 pub fn eval_xlookup_surface(
@@ -528,6 +668,19 @@ pub fn eval_xlookup_surface(
         .map(|arg| prepare_arg_values_only(arg, resolver))
         .transpose()
         .map_err(XlookupEvalError::Coercion)?;
+
+    if let PreparedArgValue::Eval(EvalValue::Array(lookup_value_array)) = &prepared_lookup_value {
+        return Ok(eval_xlookup_lookup_value_array(
+            lookup_value_array,
+            &prepared_lookup_array,
+            &return_selection,
+            lookup_orientation,
+            if_not_found,
+            prepared_match_mode.as_ref(),
+            prepared_search_mode.as_ref(),
+            resolver,
+        ));
+    }
 
     let index = match eval_xmatch_adapter_prepared(
         &prepared_lookup_value,
@@ -914,6 +1067,200 @@ mod tests {
                 kind: ReferenceKind::Area,
                 target: "C2:C4".to_string(),
             }))
+        );
+    }
+
+    #[test]
+    fn eval_xlookup_spills_array_lookup_value_results() {
+        let got = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                    ArrayCellValue::Number(8.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(60.0),
+                    ArrayCellValue::Number(80.0),
+                ]])
+                .unwrap(),
+            ))],
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_xlookup_array_lookup_value_preserves_shape_and_uses_fallback_top_left() {
+        let got = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                    ArrayCellValue::Number(8.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(40.0),
+                    ArrayCellValue::Number(60.0),
+                    ArrayCellValue::Number(80.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("NF")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("ignored")),
+                ]])
+                .unwrap(),
+            ))),
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("NF")),
+                        ArrayCellValue::Number(20.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("NF")),
+                        ArrayCellValue::Number(40.0),
+                    ],
+                ])
+                .unwrap()
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_xlookup_array_lookup_value_from_matrix_return_selects_first_cell() {
+        let vertical_lookup = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                ]])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(4.0)],
+                    vec![ArrayCellValue::Number(6.0)],
+                ])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(20.0), ArrayCellValue::Number(21.0)],
+                    vec![ArrayCellValue::Number(40.0), ArrayCellValue::Number(41.0)],
+                    vec![ArrayCellValue::Number(60.0), ArrayCellValue::Number(61.0)],
+                ])
+                .unwrap(),
+            ))],
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(
+            vertical_lookup,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(40.0),
+                ]])
+                .unwrap()
+            ))
+        );
+
+        let horizontal_lookup = eval_xlookup_surface(
+            &CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                ]])
+                .unwrap(),
+            )),
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                ]])
+                .unwrap(),
+            ))],
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(20.0),
+                        ArrayCellValue::Number(40.0),
+                        ArrayCellValue::Number(60.0),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(21.0),
+                        ArrayCellValue::Number(41.0),
+                        ArrayCellValue::Number(61.0),
+                    ],
+                ])
+                .unwrap(),
+            ))],
+            None,
+            None,
+            None,
+            &NoResolver,
+        );
+        assert_eq!(
+            horizontal_lookup,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(20.0),
+                    ArrayCellValue::Number(40.0),
+                ]])
+                .unwrap()
+            ))
         );
     }
 

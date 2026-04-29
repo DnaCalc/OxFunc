@@ -220,8 +220,8 @@ Current OxFunc position to OxFml:
 
 Current OxFunc reading:
 1. OxFunc should own function semantics and typed seam contracts, not a production fallback locale/format convenience bundle.
-2. `crates/oxfunc_core/src/locale_format.rs` still exports `en_us_context()` and `current_excel_host_context()` as mixed convenience shims.
-3. `tools/xll-addin/oxfunc_xll/src/lib.rs` still constructs `current_excel_host_context()` directly on the OxFunc side.
+2. `crates/oxfunc_core/src/locale_format.rs` no longer exports ordinary production `en_us_context()` or `current_excel_host_context()` convenience shims; the remaining local parser/formatter is explicit `#[cfg(test)]` support.
+3. `tools/xll-addin/oxfunc_xll/src/lib.rs` now supplies its own caller-owned host context and delegates parse/render behavior to Excel through `xlfEvaluate`.
 4. OxFml still imports `en_us_context()` broadly in evaluator-facing tests, for example `../OxFml/crates/oxfml_core/tests/evaluator_tests.rs`.
 5. `W082` and `HO-FN-009` now own the migration onto caller-supplied capability bundles with no backward-compatible OxFunc fallback.
 

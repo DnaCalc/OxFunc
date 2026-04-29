@@ -70,6 +70,10 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
    `current_excel_host_context()` constructors from `oxfunc_core`; the local
    parser/formatter survives only as explicit test support while downstream
    caller migration remains open.
+5. The OxFunc XLL host bridge no longer imports a removed OxFunc-core
+   convenience context; it supplies an explicit caller-owned
+   `LocaleFormatContext` and delegates parser/formatter behavior to Excel via
+   `xlfEvaluate`.
 
 
 
