@@ -222,14 +222,14 @@ Current OxFunc reading:
 1. OxFunc should own function semantics and typed seam contracts, not a production fallback locale/format convenience bundle.
 2. `crates/oxfunc_core/src/locale_format.rs` no longer exports ordinary production `en_us_context()` or `current_excel_host_context()` convenience shims; the remaining local parser/formatter is explicit `#[cfg(test)]` support.
 3. `tools/xll-addin/oxfunc_xll/src/lib.rs` now supplies its own caller-owned host context and delegates parse/render behavior to Excel through `xlfEvaluate`.
-4. OxFml still imports `en_us_context()` broadly in evaluator-facing tests, for example `../OxFml/crates/oxfml_core/tests/evaluator_tests.rs`.
-5. `W082` and `HO-FN-009` now own the migration onto caller-supplied capability bundles with no backward-compatible OxFunc fallback.
+4. OxFml acknowledged `HO-FN-009` on 2026-04-29 in `../OxFml/docs/handoffs/HO-FN-009_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT_ACK.md` and `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`.
+5. The ack records OxFml/FEC ownership of the concrete parser/formatter capability bundle, names the OxFml implementation owner, identifies the affected call paths, assigns downstream caller migration ownership, and requests no OxFunc-side seam change.
 
 Current OxFml implication:
-1. stop treating `en_us_context()` as the shared stable seam for evaluator or test setup.
+1. keep treating caller-supplied `LocaleFormatContext` as the shared stable seam for evaluator or test setup.
 2. construct locale/format parsing and rendering capabilities on the caller side and pass them through the typed seam explicitly.
-3. update evaluator/test helpers so OxFml can stand up its own capability bundle without importing OxFunc convenience shims.
-4. acknowledge `HO-FN-009` once the replacement construction pattern is landed and both repos point at the same typed seam vocabulary.
+3. keep missing locale context as an explicit missing-capability condition rather than adding a hidden fallback locale for verification truth.
+4. route future changes to the locale/format capability bundle through the typed seam rather than by restoring OxFunc production convenience shims.
 
 Minimum invariants:
 1. function semantics remain OxFunc-owned.

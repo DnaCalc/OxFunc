@@ -87,7 +87,7 @@ Supersession note:
 - Canonical owner: [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md), [BUG-FUNC-009_rate_default_guess_solver_no_convergence.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-009_rate_default_guess_solver_no_convergence.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-17 Locale/Format Seam Ownership Realignment
-- Current state: active cross-repo seam follow-up. OxFunc removed the old ordinary locale-context convenience constructors from `oxfunc_core`, leaving the local parser/formatter only as explicit `#[cfg(test)]` support; the XLL add-in now supplies a caller-owned host context and delegates parse/render behavior to Excel through `xlfEvaluate`. The remaining open lane is external downstream OxFml/FEC caller migration and acknowledgment under `HO-FN-009`.
+- Current state: closed historical follow-up. OxFunc removed the old ordinary locale-context convenience constructors from `oxfunc_core`, leaving the local parser/formatter only as explicit `#[cfg(test)]` support; the XLL add-in now supplies a caller-owned host context and delegates parse/render behavior to Excel through `xlfEvaluate`; and OxFml acknowledged `HO-FN-009` on 2026-04-29 with no OxFunc-side seam change requested.
 - Canonical owner: [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md), [HO-FN-009_locale_format_seam_ownership_realignment.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-009_locale_format_seam_ownership_realignment.md), and [LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md).
 
 ### IP-18 Smart-Fuzzer Differential Exploration
@@ -105,6 +105,6 @@ Current reading:
 3. `IP-07` is `planned`,
 4. `IP-08` is `parked`,
 5. `IP-09` is `planned`,
-6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-15`, `IP-16`, and `IP-17` are `active`.
-7. `IP-14` is `parked`.
+6. `IP-10`, `IP-11`, `IP-12`, `IP-13`, `IP-15`, and `IP-16` are `active`.
+7. `IP-14` and `IP-17` are `parked`.
 8. `IP-18` is `planned`.

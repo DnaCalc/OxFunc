@@ -30,6 +30,8 @@ runtime decomposition is not yet in the intended state:
 6. `docs/function-lane/LOCALE_AND_FORMAT_INTERFACE_OPTIONS.md`
 7. `tools/xll-addin/oxfunc_xll/src/lib.rs`
 8. `../OxFml/crates/oxfml_core/tests/evaluator_tests.rs`
+9. `../OxFml/docs/handoffs/HO-FN-009_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT_ACK.md`
+10. `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
 
 ## 4. Scope
 In scope:
@@ -72,11 +74,13 @@ Out of scope:
    is stated unambiguously.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
+1. execution_state: `closed`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
 5. open_lanes:
+   - none for the declared `W082` seam-ownership scope
+6. closed lanes:
    - OxFunc has removed the old ordinary convenience constructors; the local
      parser/formatter implementation is now `#[cfg(test)]` explicit test-only
      support rather than an ordinary runtime fallback
@@ -85,12 +89,18 @@ Out of scope:
      side and delegates parse/render work to Excel through `xlfEvaluate`
    - the OxFunc-local OxFml seam integration test now uses the OxFml-owned
      `current_excel_host_context()` capability; any remaining OxFml evaluator
-     or test helper migration is external to this repo and remains under
-     `HO-FN-009`
-   - downstream OxFml/FEC acknowledgment and migration ownership under
-     `HO-FN-009`
-6. latest local evidence:
+     or test helper migration is external to this repo
+   - downstream OxFml/FEC acknowledgment is recorded in
+     `../OxFml/docs/handoffs/HO-FN-009_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT_ACK.md`
+     and `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
+   - OxFml names its concrete implementation owner and call paths requiring
+     `LocaleFormatContext`, assigns downstream caller migration ownership, and
+     requests no OxFunc-side seam change
+7. latest local evidence:
    - `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib locale_format -- --nocapture`
      passed on 2026-04-29
    - `cargo check --manifest-path tools/xll-addin/oxfunc_xll/Cargo.toml`
      passed on 2026-04-29 after XLL caller-side capability alignment
+8. orthogonal lanes:
+   - broader locale/version sweeps and full Excel format-code-language
+     expansion remain separate validation work, not open `W082` lanes

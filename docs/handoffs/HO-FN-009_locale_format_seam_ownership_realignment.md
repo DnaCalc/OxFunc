@@ -3,7 +3,9 @@
 ## 1. Direction
 - **From**: `OxFunc`
 - **To**: `OxFml`
+- **Status**: `acknowledged`
 - **Filed date**: `2026-04-10`
+- **Acknowledged date**: `2026-04-29`
 - **Source workset**: `W082`
 - **Related inbound handoff**: none
 
@@ -134,3 +136,29 @@ Please acknowledge this packet once:
 3. the OxFml-side call paths that need `LocaleFormatContext` support are known,
 4. any user-facing or caller-facing migration note needed on the OxFml side has
    an owner.
+
+## 11. Acknowledgement Result
+OxFml acknowledged this packet on 2026-04-29.
+
+Ack references:
+1. `../OxFml/docs/handoffs/HO-FN-009_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT_ACK.md`
+2. `../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md`
+
+Ack summary:
+1. OxFml agrees that OxFunc owns locale-sensitive function semantics and the
+   typed seam vocabulary.
+2. OxFml/FEC owns the concrete parser/formatter implementation supplied into
+   that seam.
+3. The current OxFml implementation owner is
+   `crates/oxfml_core/src/format/engine.rs`, including
+   `OxFmlLocaleValueParser`, `OxFmlFormatCodeEngine`, OxFml-owned
+   `FormatProfile` constructors, and `oxfml_locale_context(...)`.
+4. OxFml identified the evaluator, typed context bundle, single-formula host,
+   runtime/session facade, replay and retained-witness runners, test adapter,
+   and publication formatting paths as requiring explicit
+   `LocaleFormatContext` support where locale-sensitive OxFunc calls need it.
+5. Downstream callers, including DNA OneCalc, own supplying workbook/host
+   locale profile and workbook date-system data through `TypedContextQueryBundle`.
+6. Missing locale context remains an explicit missing-capability condition;
+   OxFml must not add a hidden fallback locale to create verification truth.
+7. No OxFunc-side seam change is requested by the acknowledgement.

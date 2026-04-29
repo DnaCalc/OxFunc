@@ -7,7 +7,7 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HO-FN-006","OxFunc->OxFml","Multi-area reference seam correction","filed","W075","OxFml same-sheet multi-area seam follow-up","2026-04-07",""
 "HO-FN-007","OxFunc->OxFml","Multi-area value materialization Style A","filed","W076","OxFml same-sheet multi-area value-materialization follow-up","2026-04-07",""
 "HO-FN-008","OxFunc->OxFml","Corpus IF correction and numeric comparison tolerance","filed","W077","OxFml corpus follow-up","2026-04-08",""
-"HO-FN-009","OxFunc->OxFml","Locale/format seam ownership realignment","filed","W082","OxFml locale-format/FEC seam follow-up","2026-04-10",""
+"HO-FN-009","OxFunc->OxFml","Locale/format seam ownership realignment","acknowledged","W082","OxFml locale-format/FEC seam follow-up","2026-04-10","2026-04-29"
 "HANDOFF-OXFUNC-001","OxFml->OxFunc","Operator value surface and array-lift expansion","acknowledged","OxFml W059","W073","2026-04-07","2026-04-07"
 "HANDOFF-OXFUNC-002","OxFml->OxFunc","Multi-area value materialization Style A","acknowledged","OxFml W059","W076","2026-04-07","2026-04-07"
 "HANDOFF-OXFUNC-003","OxFml->OxFunc","Corpus IF empty-text condition and floating comparison follow-on","acknowledged","OxFml corpus follow-up","W077","2026-04-08","2026-04-08"

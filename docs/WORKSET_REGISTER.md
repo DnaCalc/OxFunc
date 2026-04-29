@@ -438,7 +438,8 @@ It does mean:
    `docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md`,
    `docs/function-lane/LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md`,
    `docs/function-lane/LOCALE_AND_FORMAT_INTERFACE_OPTIONS.md`,
-   `docs/handoffs/HO-FN-009_locale_format_seam_ownership_realignment.md`
+   `docs/handoffs/HO-FN-009_locale_format_seam_ownership_realignment.md`,
+   `../OxFml/docs/handoffs/HO-FN-009_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT_ACK.md`
 4. upstream_dependencies:
    `OxFml`
 5. closure_condition:

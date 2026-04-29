@@ -68,12 +68,13 @@ Track closure of the local Rust/Lean locale-format seam used to ground `VALUE`, 
 3. future ownership of the full formatting language remains with OxFml/FEC rather than per-function OxFunc kernels.
 4. `W082` has since removed the old ordinary `en_us_context()` /
    `current_excel_host_context()` constructors from `oxfunc_core`; the local
-   parser/formatter survives only as explicit test support while downstream
-   caller migration remains open.
+   parser/formatter survives only as explicit test support.
 5. The OxFunc XLL host bridge no longer imports a removed OxFunc-core
    convenience context; it supplies an explicit caller-owned
    `LocaleFormatContext` and delegates parser/formatter behavior to Excel via
    `xlfEvaluate`.
+6. `HO-FN-009` was acknowledged by OxFml on 2026-04-29; no OxFunc-side seam
+   change was requested by that acknowledgement.
 
 
 
