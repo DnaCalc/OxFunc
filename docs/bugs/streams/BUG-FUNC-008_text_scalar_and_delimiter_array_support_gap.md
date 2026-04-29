@@ -16,7 +16,7 @@
   earlier text-slice seed and showed that several ordinary text-core and
   delimiter rows spill on the current baseline where the local values-only seam
   was still scalar-only. The bounded batch-A correction is landed on the fixed
-  ref above; broader W066 review remains open separately under `W080`.
+  ref above; broader supported-surface array review continues under `W090`.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -70,7 +70,8 @@
 - **Notes**: the existing text-core contract already admitted scalar semantics
   for these rows but did not explicitly state whether the current baseline
   spills over a single array-valued argument. This bug is closed on the landed
-  batch-A correction ref while the broader review stays explicit under `W080`.
+  batch-A correction ref while the broader supported-surface review continues
+  under `W090`.
 
 ## Investigation Log
 1. 2026-04-09: selected the first bounded `W080` batch from adjacent ordinary
@@ -112,11 +113,11 @@
    `2e818f03a71ba393690275a7fb437ddd9a6bf760`.
 2. `TEXTAFTER` / `TEXTBEFORE` delimiter-array behavior is not widened from this
    packet because the simple probe did not establish a spill lane there.
-3. `FIND`, `SEARCH`, `REPLACE`, `PROPER`, and `SUBSTITUTE` remain open for a
-   later bounded `W080` review batch rather than being guessed from analogy.
+3. `FIND`, `SEARCH`, `REPLACE`, `PROPER`, and `SUBSTITUTE` were handled by the
+   second bounded `W080` review batch under `BUG-FUNC-016`.
 
 ### Follow-on Openings
-1. `W080`
+1. `W090`
 
 ## Fix Plan
 1. add bounded single-array lift to the ordinary unary text rows in
@@ -125,7 +126,7 @@
 3. widen `TEXTAFTER` / `TEXTBEFORE` over one array-valued text or
    `instance_num` argument only,
 4. add focused unit and surface-dispatch tests for the confirmed lanes,
-5. keep the broader text-family review explicit under `W080` rather than
+5. keep the broader supported-surface review explicit under `W090` rather than
    claiming the full packet is now characterized.
 
 ## Validation

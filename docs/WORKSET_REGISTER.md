@@ -374,17 +374,18 @@ It does mean:
 
 ### W080 Function Array Support Review
 1. purpose:
-   own the bounded seed for systematic function array-support review, starting
-   with the immediate `LEFT` / `RIGHT` / `MID` spill correction and carrying
-   that learning into explicit next-batch review packets for ordinary function
-   array-expansion semantics, beginning with the first bounded `W066`
-   text-family batch.
+   own the bounded seed for systematic function array-support review: the
+   immediate `LEFT` / `RIGHT` / `MID` spill correction plus two adjacent
+   text-family follow-on batches, with successor `W090` owning the broader
+   supported-surface sweep.
 2. depends_on:
    `W070`, `W072`
 3. parent_doctrine_and_spec_surfaces:
    `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`,
    `docs/bugs/streams/BUG-FUNC-007_text_slice_array_position_and_count_spill_gap.md`,
    `docs/bugs/streams/BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md`,
+   `docs/bugs/streams/BUG-FUNC-016_text_search_replace_array_support_gap.md`,
+   `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md`,
    `docs/function-lane/FUNCTION_SLICE_TEXT_CORE_AND_COMPATIBILITY_FAMILY_CONTRACT_PRELIM.md`,
    `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
 4. upstream_dependencies:
@@ -397,7 +398,7 @@ It does mean:
    claiming the full supported surface has already been reviewed.
 6. initial_epic_lanes:
    text-slice bug intake, immediate seed correction, focused validation,
-   current-gap reconciliation, broader review framing
+   current-gap reconciliation, successor sweep framing
 7. rollout_mode:
    `execution_target`
 
@@ -634,6 +635,39 @@ It does mean:
    minimization protocol, explicit execution gate
 7. rollout_mode:
    `planning_target`
+
+### W090 Function Array Support Systematic Sweep
+1. purpose:
+   own the broader family-by-family sweep for array-valued scalar-parameter
+   behavior across supported OxFunc functions, using compact inventory,
+   coverage telemetry, bounded Excel comparison batches, and ordinary bug
+   promotion for confirmed divergences.
+2. depends_on:
+   `W080`, `W088`, `W089`, `W070`, `W072`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md`,
+   `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`,
+   `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md`,
+   `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`,
+   `docs/function-lane/W66_SCENARIO_MANIFEST_SEED.csv`,
+   `docs/function-lane/W51_INTERESTING_POST_FREEZE_LOCAL_WORK.csv`,
+   `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`
+4. upstream_dependencies:
+   live Excel comparison harness availability
+5. closure_condition:
+   the supported-function and argument-role inventory is stable, at least one
+   non-text successor tranche is executed or explicitly replaced with rationale,
+   confirmed divergences are minimized and promoted through the ordinary bug
+   stream, passing cases remain compact coverage telemetry, truth surfaces are
+   reconciled for examined regions, and remaining unswept regions have an
+   explicit next-owner or next-tranche plan without claiming the full supported
+   surface has already been reviewed.
+6. initial_epic_lanes:
+   function/argument inventory, static risk classification, replay matrix and
+   batch sizing, first post-`W080` tranche selection, local-vs-Excel comparison,
+   mismatch minimization, bug promotion, coverage-roadmap trace
+7. rollout_mode:
+   `execution_target`
 
 ### W041 External Data Provider And Cube Functions
 1. purpose:

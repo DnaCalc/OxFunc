@@ -1,11 +1,10 @@
 # WORKSET - Function Array Support Review (W080)
 
 ## 1. Purpose
-Own the bounded OxFunc-side seed for systematic function array-support review,
-starting with the immediate text-slice correction for `LEFT`, `RIGHT`, and
-`MID`, then carrying that learning into an explicit review program for other
-ordinary functions whose scalar parameters may spill under the current Excel
-baseline.
+Own the bounded OxFunc-side seed for systematic function array-support review:
+the immediate text-slice correction for `LEFT`, `RIGHT`, and `MID`, plus two
+bounded adjacent text-family follow-on batches. The broader supported-surface
+array sweep is owned by successor workset `W090`.
 
 ## 2. Why This Packet Exists
 Recent local bug work reopened multiple functions because array-valued scalar
@@ -15,9 +14,9 @@ inputs were never probed explicitly:
 2. live Excel on 2026-04-08 also confirmed
    `MID("MISSISSIPPI",SEQUENCE(11),1)`, `LEFT("MISSISSIPPI",SEQUENCE(3))`, and
    `RIGHT("MISSISSIPPI",SEQUENCE(3))` spill rather than reject,
-3. OxFunc currently has no bounded owner for a systematic array-support review
-   across the broader supported surface, so each discovery would otherwise land
-   as an isolated surprise bug,
+3. the initial seed needed a bounded successor owner for systematic
+   array-support review across the broader supported surface, so each discovery
+   would not land as an isolated surprise bug,
 4. live Excel COM replay on 2026-04-09 widened the first bounded follow-on
    batch to `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and
    `TEXTBEFORE`.
@@ -29,17 +28,20 @@ inputs were never probed explicitly:
 4. `docs/function-lane/FUNCTION_SLICE_TEXT_CORE_AND_COMPATIBILITY_FAMILY_CONTRACT_PRELIM.md`
 5. `docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md`
 6. `docs/bugs/streams/BUG-FUNC-008_text_scalar_and_delimiter_array_support_gap.md`
+7. `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md`
 
 ## 4. Scope
 In scope:
 1. record the text-slice family spill finding as a canonical bug stream,
 2. correct the immediate seed rows `LEFT` / `LEFTB`, `MID` / `MIDB`, and
    `RIGHT` / `RIGHTB`,
-3. execute the first bounded follow-on batch for adjacent `W066` text rows,
+3. execute the first and second bounded follow-on batches for adjacent text
+   rows,
 4. reopen current-gap and contract truth so those rows are not overclaimed,
-5. define the bounded review owner for broader function array-support review,
-6. capture the next-family scan shape explicitly rather than leaving it as chat
-   intent.
+5. define successor `W090` as the bounded owner for broader function
+   array-support review,
+6. capture the next-family scan shape explicitly through that successor rather
+   than leaving it as chat intent.
 
 Out of scope:
 1. a full 517-function array-support implementation sweep in one pass,
@@ -54,6 +56,7 @@ Out of scope:
 4. current-gap and contract reconciliation
 5. broader array-support review framing and next-batch sequencing
 6. first bounded text-scalar and text-delimiter review batch
+7. second bounded text search/replace review batch
 
 ## 6. Closure Condition
 `W080` is complete for declared scope only when:
@@ -65,7 +68,13 @@ Out of scope:
    a concrete next-batch review shape,
 5. no claim is made that the full supported surface has already been reviewed.
 
-## 7. First Bounded Batch (2026-04-09)
+## 7. Successor Sweep Owner
+`W090` owns the broader systematic family-by-family array-support sweep after
+this seed packet. `W080` records the seed corrections and bounded follow-on
+batches only; it does not claim that the full supported surface has been
+reviewed.
+
+## 8. First Bounded Batch (2026-04-09)
 1. confirmed live Excel spill lanes:
    - `CHAR(SEQUENCE(3)+64)`
    - `CODE({"A","B"})`
@@ -84,7 +93,7 @@ Out of scope:
 3. first-batch bug owner:
    - `BUG-FUNC-008`
 
-## 8. Second Bounded Batch (2026-04-29)
+## 9. Second Bounded Batch (2026-04-29)
 1. confirmed live Excel spill lanes:
    - `FIND({"a","b"},"abc")`
    - `FIND("a",{"abc","bca"})`
@@ -108,14 +117,17 @@ Out of scope:
    - `FINDB`, `SEARCHB`, and `REPLACEB` inherit the correction through their
      current-baseline delegates
 
-## 9. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
+## 10. Current Reading
+1. execution_state: `closed`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - broader systematic family-by-family review beyond the initial seeded batches
-6. landed lanes:
+   - none for the declared `W080` seed scope
+6. successor lanes:
+   - `W090` owns broader systematic family-by-family review beyond the initial
+     seeded batches
+7. landed lanes:
    - `LEFT` / `LEFTB`, `MID` / `MIDB`, and `RIGHT` / `RIGHTB` text-slice
      correction landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
    - `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and
