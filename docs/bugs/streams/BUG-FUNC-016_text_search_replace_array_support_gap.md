@@ -3,19 +3,18 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-016`
 - **Opened**: 2026-04-29
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W080`
 
 ## Source Refs
 - **Reported against ref**: `3700e434de7983dfccc9cefa7f136de45e35ea2c`
 - **Reproduced on ref**: `3700e434de7983dfccc9cefa7f136de45e35ea2c`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `pending_landed_ref`
+- **Fixed in ref**: `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`
 - **Ref notes**: W080 next-batch review found this on the current local read.
   Fresh Excel COM replay on 2026-04-29 against Excel 16.0 build 19929 showed
   the tested single-array scalar-parameter lanes spill. The local correction is
-  implemented and validated in the working tree; landed-ref promotion remains
-  pending.
+  landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -79,7 +78,7 @@ from the single-array evidence.
 4. `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded

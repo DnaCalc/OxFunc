@@ -70,24 +70,22 @@ Out of scope:
    than hidden behind stale closure language.
 
 ## 7. Current Reading
-1. execution_state: `in_progress`
-2. scope_completeness: `scope_partial`
-3. target_completeness: `target_partial`
-4. integration_completeness: `partial`
-5. open_lanes:
-   - landed-ref promotion for the local `XLOOKUP` array-valued lookup-needle
-     correction
+1. execution_state: `closed`
+2. scope_completeness: `scope_complete`
+3. target_completeness: `target_complete`
+4. integration_completeness: `integrated`
+5. open_lanes: none
 6. landed lanes:
    - `XMATCH`, `MATCH`, `VLOOKUP`, and `HLOOKUP` array-valued
      `lookup_value` corrections are landed on
      `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
+   - `XLOOKUP` array-valued `lookup_value` correction is landed on
+     `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`
    - focused validation replayed on 2026-04-29:
-     `xmatch_surface`, `match_fn`, `vhlookup_family`, and `surface_dispatch`
-7. locally validated lanes pending landed ref:
+     `xmatch_surface`, `match_fn`, `vhlookup_family`, `xlookup`, and
+     `surface_dispatch`
+7. XLOOKUP shape note:
    - fresh Excel COM replay on 2026-04-29 confirmed `XLOOKUP` preserves
      array-valued `lookup_value` shape, uses top-left `if_not_found` fallback
      values per missing needle, and scalarizes matrix return selections to the
      first cell of the selected row or column for multi-needle lookup
-   - local `XLOOKUP` correction is validated in the working tree:
-     `xlookup`, `surface_dispatch`, `xmatch_surface`, `match_fn`, and
-     `vhlookup_family` focused tests pass

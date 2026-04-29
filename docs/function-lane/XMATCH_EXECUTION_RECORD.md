@@ -164,9 +164,9 @@ Template:
 1. W6 regains the `XMATCH` current-phase closure lane for the replayed
    array-valued `lookup_value` scope after the W079 correction landed on
    `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
-2. `BUG-FUNC-006` / `W079` remains active only for landed-ref promotion of the
-   adjacent `XLOOKUP` correction, which is validated in the working tree after
-   fresh Excel replay on 2026-04-29.
+2. `BUG-FUNC-006` / `W079` is closed for the adjacent `XLOOKUP` correction,
+   which is landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972` after fresh
+   Excel replay on 2026-04-29.
 
 ## 10. Post-Closure Policy Notes
 1. Keep XMATCH coercion/error policy function-local for now; do not lift into a generalized cross-function abstraction yet.

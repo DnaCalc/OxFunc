@@ -30,8 +30,9 @@ Track W10 execution status across runtime, formalization, empirical replay, and 
      2026-04-08 for `MATCH`; the `MATCH` correction is landed on
      `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`. Fresh 2026-04-29 replay
      pinned the adjacent `XLOOKUP` multi-needle return shape, and the local
-     `XLOOKUP` correction is validated in the working tree pending landed-ref
-     promotion under `BUG-FUNC-006` / `W079`.
+     `XLOOKUP` correction is landed on
+     `b1faa5e8f08cd534601dc57bf79a9fed3ff26972` under `BUG-FUNC-006` /
+     `W079`.
    - external XLL verification-seam limits remain and must not be mistaken for function-semantic gaps.
 6. function-phase-complete slices within W10:
    - `SUM`
@@ -147,5 +148,5 @@ Landed artifacts:
      lookup-value lifting was a missing current-baseline lane for `MATCH`; the
      local correction is now landed. Fresh replay on 2026-04-29 pinned the
      adjacent `XLOOKUP` multi-needle return shape, and the local `XLOOKUP`
-     correction is validated pending landed-ref promotion.
+     correction is landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
 7. `NOW` remains evidenced across provider/recalc, registration, and format-hint lanes, with format-hint application assigned to the engine boundary rather than the pure kernel.

@@ -61,5 +61,5 @@ Provenance anchors:
    array-valued `lookup_value` spill behavior; the local correction is landed on
    `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`. Fresh Excel replay on
    2026-04-29 pinned the adjacent `XLOOKUP` multi-needle return shape, and the
-   local `XLOOKUP` correction is validated in the working tree pending
-   landed-ref promotion under `BUG-FUNC-006` / `W079`.
+   local `XLOOKUP` correction is landed on
+   `b1faa5e8f08cd534601dc57bf79a9fed3ff26972` under `BUG-FUNC-006` / `W079`.

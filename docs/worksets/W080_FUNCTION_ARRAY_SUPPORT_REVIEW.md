@@ -121,9 +121,9 @@ Out of scope:
    - `CHAR`, `CODE`, `LOWER`, `UPPER`, `TRIM`, `REPT`, `TEXTAFTER`, and
      `TEXTBEFORE` batch-A correction landed on
      `2e818f03a71ba393690275a7fb437ddd9a6bf760`
+   - `FIND` / `FINDB`, `SEARCH` / `SEARCHB`, `REPLACE` / `REPLACEB`,
+     `PROPER`, and `SUBSTITUTE` batch-B correction landed on
+     `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`
    - focused validation replayed on 2026-04-29:
      `text_slice_family`, `text_scalar_misc`, `text_delim_family`, and
      `surface_dispatch`
-7. locally corrected lanes pending landed-ref promotion:
-   - `FIND` / `FINDB`, `SEARCH` / `SEARCHB`, `REPLACE` / `REPLACEB`,
-     `PROPER`, and `SUBSTITUTE` under `BUG-FUNC-016`

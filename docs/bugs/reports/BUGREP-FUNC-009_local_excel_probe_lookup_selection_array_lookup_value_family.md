@@ -43,3 +43,7 @@ This local probe widens the original XMATCH report into a lookup-selection
 family stream. `XMATCH` and `MATCH` are suitable for the first local fix pass;
 `XLOOKUP` remains a follow-on lane because array-valued lookup needles can
 interact with array-valued return payload selection.
+
+Follow-up on 2026-04-29: fresh Excel replay pinned the `XLOOKUP` return-shape
+rule, and the local `XLOOKUP` correction landed on
+`b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.

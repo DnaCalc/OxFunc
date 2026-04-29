@@ -3,22 +3,22 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-006`
 - **Opened**: 2026-04-08
-- **Status**: `validated_local`
+- **Status**: `closed`
 - **Owner workset**: `W079`
 
 ## Source Refs
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Reproduced on ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `pending_landed_ref`
+- **Fixed in ref**: `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`
 - **Ref notes**: intake pinned the current working ref with `git rev-parse HEAD`.
   Live Excel COM replay on 2026-04-08 reproduced the spill behavior directly
   against the installed baseline. Local correction for `XMATCH`, `MATCH`,
   `VLOOKUP`, and `HLOOKUP` is landed on
   `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`. Fresh Excel COM replay on
   2026-04-29 pinned the adjacent `XLOOKUP` multi-needle return shape, and the
-  local `XLOOKUP` correction is validated in the working tree with landed-ref
-  promotion pending.
+  local `XLOOKUP` correction is landed on
+  `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -104,8 +104,8 @@
 12. 2026-04-29: corrected local `XLOOKUP` to preserve array-valued
     `lookup_value` shape and select one scalar return cell per lookup needle;
     focused `xlookup`, `surface_dispatch`, `xmatch_surface`, `match_fn`, and
-    `vhlookup_family` tests pass in the working tree. Landed-ref promotion
-    remains pending.
+    `vhlookup_family` tests pass. Landed-ref promotion completed on
+    `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -127,8 +127,8 @@
    replay showed its multi-needle return rule is shape-preserving over
    `lookup_value` and scalarizes matrix return selections to the first cell of
    the selected row or column.
-3. `XLOOKUP` is locally corrected and validated in the working tree; the
-   remaining open lane is landed-ref promotion.
+3. `XLOOKUP` is locally corrected and landed on
+   `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
 
 ### Follow-on Openings
 1. `W079`
@@ -141,8 +141,7 @@
    per element,
 3. add focused unit and dispatch tests for the spilled lookup-family lanes,
 4. reopen the stale lookup-family closure records and current-gap surfaces,
-5. promote the local `XLOOKUP` correction to a landed ref and then close the
-   canonical bug stream.
+5. close the canonical bug stream after landed-ref promotion.
 
 ## Validation
 1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib xmatch_surface -- --nocapture`
@@ -181,7 +180,7 @@
 8. `docs/function-lane/FUNCTION_SLICE_LOOKUP_AND_LOGICAL_RESIDUALS_CONTRACT_PRELIM.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
