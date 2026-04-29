@@ -597,6 +597,39 @@ It does mean:
 7. rollout_mode:
    `execution_target`
 
+### W089 Smart-Fuzzer Sweeping Invocation-Space Exploration
+1. purpose:
+   plan the next broad smart-fuzzer sweep over the OxFunc invocation space by
+   inventorying tweakable dimensions, coverage telemetry, sampling levers,
+   known-deviation handling, and execution gates before running any tests.
+2. depends_on:
+   `W088`, `W070`, `W072`, `W044`, `W049`, `W051`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`,
+   `smart-fuzzer/planning/SWEEPING_INVOCATION_SPACE_RUN_PLAN.md`,
+   `smart-fuzzer/README.md`,
+   `smart-fuzzer/planning/RUN_ARTIFACT_CONTRACT.md`,
+   `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`,
+   `docs/function-lane/OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md`,
+   `docs/bugs/README.md`
+4. upstream_dependencies:
+   `OxFml`, live Excel comparison harness availability
+5. closure_condition:
+   the sweep has a generated dimension inventory, compact coverage taxonomy,
+   metadata-driven generator matrix, local-evaluation budget, Excel candidate
+   budget, blocked/deferred seam classification, and explicit user-approved
+   execution gate; any later unexpected mismatch is minimized or routed through
+   the ordinary bug stream, while passing rows remain coverage telemetry rather
+   than completion evidence.
+6. initial_epic_lanes:
+   dimension inventory and coverage taxonomy, generator matrix and typed
+   mutator plan, local evaluator expansion and dry-run budget, Excel candidate
+   selection and batching budget, blocked/deferred seam classification, roadmap
+   trace and compact reporting artifacts, unexpected mismatch triage and
+   minimization protocol, explicit execution gate
+7. rollout_mode:
+   `planning_target`
+
 ### W041 External Data Provider And Cube Functions
 1. purpose:
    remain the current deferred/open authority for provider-bound and cube-context

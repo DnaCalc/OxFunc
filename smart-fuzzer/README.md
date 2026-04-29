@@ -5,7 +5,12 @@ Status: `planning_sandbox`
 This directory is a non-production planning and experiment area for a future
 OxFunc smart-fuzzer.
 
-Owning workset: `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md`.
+Owning worksets:
+
+1. `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md` for the pilot
+   execution substrate.
+2. `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`
+   for the next broad invocation-space sweep plan.
 
 The smart-fuzzer is an evidence-generation and regression-discovery system. It
 does not define OxFunc semantics, does not replace function contracts, and does

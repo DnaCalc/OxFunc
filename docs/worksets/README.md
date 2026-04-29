@@ -38,6 +38,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md)
 24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md)
 25. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md)
+26. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -65,6 +66,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md) owns the reopened exact-value accuracy lane where current local `NORM.DIST` and `NORM.INV` approximations drift from live Excel `Value2` on bounded current-baseline witnesses.
 24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md) owns the reopened `XIRR` precision lane where the current local iterative solve drifts from live Excel `Value2` on a bounded current-baseline cashflow/date witness.
 25. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md) owns the smart-fuzzer pilot lane for compact telemetry, Excel throughput measurement, static metadata/risk indexing, bounded candidate generation, local-vs-Excel typed comparison, and mismatch promotion through the ordinary bug stream.
+26. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md) owns the planning lane for the next broad smart-fuzzer sweep across function identity, arity, value type, numeric/text bands, arrays, references, context, execution seam, comparison policy, coverage telemetry, and explicit execution gates.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.
