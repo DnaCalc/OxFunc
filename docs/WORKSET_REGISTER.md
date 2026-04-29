@@ -647,6 +647,8 @@ It does mean:
    `W080`, `W088`, `W089`, `W070`, `W072`
 3. parent_doctrine_and_spec_surfaces:
    `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md`,
+   `smart-fuzzer/planning/ARRAY_SUPPORT_SYSTEMATIC_SWEEP_PLAN.md`,
+   `smart-fuzzer/tools/Build-ArraySupportSweepPlan.ps1`,
    `docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md`,
    `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md`,
    `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`,

@@ -11,6 +11,9 @@ Owning worksets:
    execution substrate.
 2. `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`
    for the next broad invocation-space sweep plan.
+3. `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md` for the
+   array-valued scalar-parameter sweep that follows the W079/W080 seed
+   findings.
 
 The smart-fuzzer is an evidence-generation and regression-discovery system. It
 does not define OxFunc semantics, does not replace function contracts, and does

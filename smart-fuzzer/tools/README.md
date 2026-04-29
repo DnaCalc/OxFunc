@@ -3,7 +3,7 @@
 Status: `tooling_sandbox`
 
 Tracked tools in this directory are reproducible helpers for W088 and W089
-exploration.
+exploration, plus W090 array-support sweep planning.
 Generated outputs should normally go to `smart-fuzzer/cache/` or
 `smart-fuzzer/runs/`, both ignored by default.
 
@@ -50,6 +50,32 @@ smart-fuzzer/cache/roadmap-trace-template-v0.json
 
 These outputs are derived planning cache files for W089. They are not
 comparison evidence.
+
+## Build-ArraySupportSweepPlan.ps1
+
+Builds the W090 array-support candidate inventory, first-tranche plan, compact
+replay matrix, and generated highlights from the W089 dimension inventory plus
+source-code risk signals. It does not run local evaluation, run Excel, or
+compare outcomes.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-ArraySupportSweepPlan.ps1 -RefreshInventory
+```
+
+Default outputs:
+
+```text
+smart-fuzzer/cache/array-support-candidate-inventory-v0.json
+smart-fuzzer/cache/array-support-first-tranche-v0.json
+smart-fuzzer/cache/array-support-replay-matrix-v0.json
+smart-fuzzer/cache/array-support-highlights-v0.md
+```
+
+The first generated tranche is
+`w090-tranche-a-math-scalar-numeric-array-lift`. Cache rows are exploration
+inputs only; pass rows from later execution remain aggregate telemetry, and
+unexpected mismatches must be promoted through `BUG-FUNC-*` or narrower repair
+beads.
 
 ## Build-StaticRiskIndex.ps1
 

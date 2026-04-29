@@ -23,6 +23,8 @@ coverage telemetry for the broader array-support sweep.
 6. `docs/function-lane/W66_SCENARIO_MANIFEST_SEED.csv`
 7. `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md`
 8. `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`
+9. `smart-fuzzer/planning/ARRAY_SUPPORT_SYSTEMATIC_SWEEP_PLAN.md`
+10. `smart-fuzzer/tools/Build-ArraySupportSweepPlan.ps1`
 
 ## 4. Scope
 In scope:
@@ -79,13 +81,62 @@ Out of scope:
    reviewed unless the telemetry proves that exact scope.
 
 ## 7. Current Reading
-1. execution_state: `planned`
+1. execution_state: `inventory_and_first_tranche_plan_ready`
 2. scope_completeness: `scope_partial`
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - supported-function and argument-role inventory
-   - first post-`W080` sweep-tranche selection
-   - compact replay matrix and telemetry design
    - local-vs-Excel comparison execution for selected tranches
    - mismatch promotion and truth-surface reconciliation
+   - future tranches beyond the first math scalar-numeric array-lift tranche
+6. ready artifacts:
+   - `smart-fuzzer/planning/ARRAY_SUPPORT_SYSTEMATIC_SWEEP_PLAN.md`
+   - `smart-fuzzer/tools/Build-ArraySupportSweepPlan.ps1`
+   - generated local cache, reproducible but ignored by default:
+     `array-support-candidate-inventory-v0.json`,
+     `array-support-first-tranche-v0.json`,
+     `array-support-replay-matrix-v0.json`, and
+     `array-support-highlights-v0.md`
+
+## 8. Execution Notes
+
+### 2026-04-29 Array Inventory And First-Tranche Plan
+
+Bead: `oxf-19lo`
+
+Added the W090 array-support planning surface and builder:
+
+1. `smart-fuzzer/planning/ARRAY_SUPPORT_SYSTEMATIC_SWEEP_PLAN.md`
+2. `smart-fuzzer/tools/Build-ArraySupportSweepPlan.ps1`
+
+The builder derives the array-support candidate inventory from the W089
+dimension inventory, source-code scalar-coercion/lift signals, W079/W080 seeded
+array fixes, blocked/deferred lanes, and known-deviation tags. It generated
+local ignored cache artifacts with these counts on 2026-04-29:
+
+1. surfaces inventoried: 534,
+2. medium-or-higher candidates: 379,
+3. seeded/prior reconciled surfaces: 15,
+4. first-tranche surfaces: 14.
+
+First selected tranche:
+`w090-tranche-a-math-scalar-numeric-array-lift`
+
+Selected surfaces:
+`ROUND`, `ROUNDDOWN`, `ROUNDUP`, `TRUNC`, `CEILING`, `CEILING.MATH`,
+`CEILING.PRECISE`, `FLOOR`, `FLOOR.MATH`, `FLOOR.PRECISE`, `ISO.CEILING`,
+`ATAN2`, `BASE`, and `MROUND`.
+
+This bead did not run local-vs-Excel comparison and did not claim any function
+array-support lane is complete. Passing rows from later execution remain
+coverage telemetry only; unexpected mismatches must be promoted through
+ordinary bug streams or narrower repair beads.
+
+Status axes after this bead:
+
+1. `execution_state`: `inventory_and_first_tranche_plan_ready`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: first-tranche local-vs-Excel execution, mismatch promotion,
+   and later-tranche selection
