@@ -85,26 +85,6 @@ fn mean(values: &[f64]) -> f64 {
     values.iter().sum::<f64>() / values.len() as f64
 }
 
-fn population_standardized_moment_sum(
-    values: &[f64],
-    power: i32,
-) -> Result<(usize, f64), WorksheetErrorCode> {
-    let n = values.len();
-    let avg = mean(values);
-    let mut sumsq = 0.0;
-    let mut sump = 0.0;
-    for value in values {
-        let delta = *value - avg;
-        sumsq += delta * delta;
-        sump += delta.powi(power);
-    }
-    if sumsq == 0.0 {
-        return Err(WorksheetErrorCode::Div0);
-    }
-    let pop_std = (sumsq / n as f64).sqrt();
-    Ok((n, sump / pop_std.powi(power)))
-}
-
 fn kurt_kernel(values: &[f64]) -> Result<f64, WorksheetErrorCode> {
     if values.len() < 4 {
         return Err(WorksheetErrorCode::Div0);
@@ -173,7 +153,27 @@ fn skew_p_kernel(values: &[f64]) -> Result<f64, WorksheetErrorCode> {
     if values.is_empty() {
         return Err(WorksheetErrorCode::Div0);
     }
-    let (n, standardized_sum) = population_standardized_moment_sum(values, 3)?;
+    let n = values.len();
+    let avg = mean(values);
+    let mut sumsq = 0.0;
+    let mut deltas = Vec::with_capacity(n);
+    for value in values {
+        let delta = *value - avg;
+        sumsq += delta * delta;
+        deltas.push(delta);
+    }
+    if sumsq == 0.0 {
+        return Err(WorksheetErrorCode::Div0);
+    }
+
+    let pop_std = (sumsq / n as f64).sqrt();
+    let standardized_sum = deltas
+        .iter()
+        .map(|delta| {
+            let z = *delta / pop_std;
+            z * z * z
+        })
+        .sum::<f64>();
     Ok(standardized_sum / n as f64)
 }
 
@@ -439,6 +439,10 @@ mod tests {
         assert_close(
             eval_skew_p_surface(&[ref_arg("A1:A8")], &resolver).unwrap(),
             1.02720970603623,
+        );
+        assert_number_bits(
+            eval_skew_p_surface(&[ref_arg("A1:A8")], &resolver).unwrap(),
+            f64::from_bits(0x3ff0_6f73_71d8_f34a),
         );
     }
 

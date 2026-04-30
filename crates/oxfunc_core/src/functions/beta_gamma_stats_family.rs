@@ -93,6 +93,55 @@ fn beta_log_norm(alpha: f64, beta: f64) -> f64 {
     ln_gamma(alpha) + ln_gamma(beta) - ln_gamma(alpha + beta)
 }
 
+fn positive_integer(value: f64) -> Option<u32> {
+    if value.is_finite() && value >= 1.0 && value <= 200.0 && value.fract() == 0.0 {
+        Some(value as u32)
+    } else {
+        None
+    }
+}
+
+fn binomial_coefficient(n: u32, k: u32) -> f64 {
+    let k = k.min(n - k);
+    let mut acc = 1.0;
+    for i in 1..=k {
+        acc *= (n - k + i) as f64;
+        acc /= i as f64;
+    }
+    acc
+}
+
+fn regularized_beta_integer_shape(z: f64, alpha: f64, beta: f64) -> Option<f64> {
+    let a = positive_integer(alpha)?;
+    let b = positive_integer(beta)?;
+    if z == 0.0 {
+        return Some(0.0);
+    }
+    if z == 1.0 {
+        return Some(1.0);
+    }
+    let n = a + b - 1;
+    let mut sum = 0.0;
+    for j in a..=n {
+        sum += binomial_coefficient(n, j) * z.powi(j as i32) * (1.0 - z).powi((n - j) as i32);
+    }
+    Some(sum)
+}
+
+fn regularized_gamma_p_integer_shape(alpha: f64, x: f64) -> Option<f64> {
+    let a = positive_integer(alpha)?;
+    if x == 0.0 {
+        return Some(0.0);
+    }
+    let mut term = 1.0;
+    let mut sum = 1.0;
+    for k in 1..a {
+        term *= x / k as f64;
+        sum += term;
+    }
+    Some(1.0 - (-x).exp() * sum)
+}
+
 fn validate_beta_shape(
     alpha: f64,
     beta: f64,
@@ -125,7 +174,8 @@ fn beta_dist_kernel(
     }
     let z = (x - lower) / (upper - lower);
     if cumulative {
-        return Ok(regularized_beta(z, alpha, beta));
+        return Ok(regularized_beta_integer_shape(z, alpha, beta)
+            .unwrap_or_else(|| regularized_beta(z, alpha, beta)));
     }
     let log_pdf = (alpha - 1.0) * z.ln() + (beta - 1.0) * (1.0 - z).ln()
         - beta_log_norm(alpha, beta)
@@ -180,7 +230,9 @@ fn gamma_dist_kernel(
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num));
     }
     if cumulative {
-        return Ok(regularized_gamma_p(alpha, x / beta));
+        let scaled = x / beta;
+        return Ok(regularized_gamma_p_integer_shape(alpha, scaled)
+            .unwrap_or_else(|| regularized_gamma_p(alpha, scaled)));
     }
     let log_pdf = (alpha - 1.0) * x.ln() - x / beta - ln_gamma(alpha) - alpha * beta.ln();
     let pdf = log_pdf.exp();
@@ -412,12 +464,25 @@ mod tests {
         }
     }
 
+    fn assert_number_bits(value: &EvalValue, expected_bits: u64) {
+        match value {
+            EvalValue::Number(n) => assert_eq!(
+                n.to_bits(),
+                expected_bits,
+                "{n} vs {}",
+                f64::from_bits(expected_bits)
+            ),
+            other => panic!("expected number, got {other:?}"),
+        }
+    }
+
     #[test]
     fn beta_and_legacy_aliases_match() {
         let modern =
             eval_beta_dist_surface(&[num(0.5), num(2.0), num(3.0), num(1.0)], &NoResolver).unwrap();
         let legacy = eval_betadist_surface(&[num(0.5), num(2.0), num(3.0)], &NoResolver).unwrap();
         assert_close(modern.clone(), 0.6875);
+        assert_number_bits(&modern, 0x3fe6_0000_0000_0000);
         assert_eq!(modern, legacy);
     }
 

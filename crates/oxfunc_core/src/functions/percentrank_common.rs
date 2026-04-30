@@ -40,7 +40,7 @@ pub fn percentrank(
                 lower_rank + (x - lower_x) * (upper_rank - lower_rank) / (upper_x - lower_x)
             }
         };
-    Ok(round_to_significant_digits(base, significance as usize))
+    Ok(truncate_to_significant_digits(base, significance as usize))
 }
 
 fn exact_rank(index: usize, len: usize, mode: PercentRankMode) -> f64 {
@@ -50,12 +50,12 @@ fn exact_rank(index: usize, len: usize, mode: PercentRankMode) -> f64 {
     }
 }
 
-fn round_to_significant_digits(value: f64, digits: usize) -> f64 {
+fn truncate_to_significant_digits(value: f64, digits: usize) -> f64 {
     if value == 0.0 {
         return 0.0;
     }
     let scale = 10f64.powf(digits as f64 - 1.0 - value.abs().log10().floor());
-    (value * scale).round() / scale
+    (value * scale).trunc() / scale
 }
 
 #[cfg(test)]
@@ -77,6 +77,15 @@ mod tests {
         assert_eq!(
             percentrank(&mut values, 3.5, 6, PercentRankMode::Exclusive),
             Ok(0.583333)
+        );
+    }
+
+    #[test]
+    fn percentrank_truncates_default_significance_like_excel() {
+        let mut values = vec![1.0, 2.0, 2.0, 4.0, 5.0];
+        assert_eq!(
+            percentrank(&mut values, 3.5, 3, PercentRankMode::Inclusive),
+            Ok(0.687)
         );
     }
 }

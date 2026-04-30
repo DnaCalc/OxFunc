@@ -153,6 +153,30 @@ fn ln_choose(n: u64, k: u64) -> Result<f64, WorksheetErrorCode> {
     Ok(acc)
 }
 
+fn choose_direct(n: u64, k: u64) -> f64 {
+    let k = k.min(n - k);
+    let mut acc = 1.0;
+    for i in 1..=k {
+        acc *= (n - k + i) as f64;
+        acc /= i as f64;
+    }
+    acc
+}
+
+fn pow_u64(base: f64, exponent: u64) -> f64 {
+    base.powi(exponent as i32)
+}
+
+fn direct_combinatoric_lane(max_n: u64) -> bool {
+    max_n <= 200
+}
+
+fn binom_pmf_direct(number_s: u64, trials: u64, probability_s: f64) -> f64 {
+    choose_direct(trials, number_s)
+        * pow_u64(probability_s, number_s)
+        * pow_u64(1.0 - probability_s, trials - number_s)
+}
+
 pub fn binom_dist_kernel(
     number_s: f64,
     trials: f64,
@@ -198,9 +222,16 @@ pub fn binom_dist_range_kernel(
     if trials < 0 || number_s < 0 || number_s2 < 0 || number_s > number_s2 || number_s2 > trials {
         return Err(WorksheetErrorCode::Num);
     }
+    let trials_u = trials as u64;
     let mut sum = 0.0;
-    for k in number_s..=number_s2 {
-        sum += binom_dist_kernel(k as f64, trials as f64, probability_s, false)?;
+    if probability_s != 0.0 && probability_s != 1.0 && direct_combinatoric_lane(trials_u) {
+        for k in number_s..=number_s2 {
+            sum += binom_pmf_direct(k as u64, trials_u, probability_s);
+        }
+    } else {
+        for k in number_s..=number_s2 {
+            sum += binom_dist_kernel(k as f64, trials as f64, probability_s, false)?;
+        }
     }
     Ok(sum)
 }
@@ -288,6 +319,10 @@ pub fn hypergeom_dist_kernel(
             )?;
         }
         Ok(sum)
+    } else if direct_combinatoric_lane(number_pop) {
+        Ok(choose_direct(population_s, sample_s)
+            * choose_direct(number_pop - population_s, number_sample - sample_s)
+            / choose_direct(number_pop, number_sample))
     } else {
         let log_pmf = ln_choose(population_s, sample_s)?
             + ln_choose(number_pop - population_s, number_sample - sample_s)?
@@ -320,6 +355,10 @@ pub fn negbinom_dist_kernel(
         Ok(0.0)
     } else if probability_s == 1.0 {
         Ok(if number_f == 0 { 1.0 } else { 0.0 })
+    } else if direct_combinatoric_lane(number_f + number_s - 1) {
+        Ok(choose_direct(number_f + number_s - 1, number_f)
+            * pow_u64(probability_s, number_s)
+            * pow_u64(1.0 - probability_s, number_f))
     } else {
         let log_pmf = ln_choose(number_f + number_s - 1, number_f)?
             + (number_s as f64) * probability_s.ln()
@@ -702,6 +741,15 @@ mod tests {
         }
     }
 
+    fn assert_bits(actual: f64, expected_bits: u64) {
+        assert_eq!(
+            actual.to_bits(),
+            expected_bits,
+            "{actual} vs {}",
+            f64::from_bits(expected_bits)
+        );
+    }
+
     #[test]
     fn binom_family_matches_seed_lanes() {
         assert!((binom_dist_kernel(2.0, 4.0, 0.25, false).unwrap() - 0.2109375).abs() < 1e-12);
@@ -711,6 +759,18 @@ mod tests {
         );
         assert_eq!(binom_inv_kernel(6.0, 0.5, 0.7).unwrap(), 4.0);
         assert_eq!(binom_inv_kernel(6.0, 0.5, 0.0).unwrap(), 0.0);
+    }
+
+    #[test]
+    fn finite_combinatoric_witnesses_match_excel_bits() {
+        assert_bits(
+            binom_dist_range_kernel(4.0, 0.25, 2.0, Some(3.0)).unwrap(),
+            0x3fd0_8000_0000_0000,
+        );
+        assert_bits(
+            negbinom_dist_kernel(5.0, 3.0, 0.4, true).unwrap(),
+            0x3fe5_e849_aaee_d68d,
+        );
     }
 
     #[test]

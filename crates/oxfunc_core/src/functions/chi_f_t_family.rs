@@ -203,7 +203,11 @@ pub fn f_dist_kernel(
 }
 
 pub fn f_dist_rt_kernel(x: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
-    Ok(1.0 - f_dist_kernel(x, deg1, deg2, true)?)
+    let x = validate_nonnegative_x(x)?;
+    let d1 = truncate_positive_integer(deg1)?;
+    let d2 = truncate_positive_integer(deg2)?;
+    let z = d2 / (d2 + d1 * x);
+    Ok(regularized_beta(z, d2 / 2.0, d1 / 2.0))
 }
 
 pub fn f_inv_kernel(probability: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorCode> {
@@ -255,12 +259,16 @@ pub fn t_dist_kernel(
 
 pub fn t_dist_rt_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let x = validate_nonnegative_x(x)?;
-    Ok(1.0 - t_cdf(x, deg_freedom)?)
+    let v = truncate_positive_integer(deg_freedom)?;
+    let xx = v / (v + x * x);
+    Ok(0.5 * regularized_beta(xx, v / 2.0, 0.5))
 }
 
 pub fn t_dist_2t_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {
     let x = validate_nonnegative_x(x)?;
-    Ok(2.0 * (1.0 - t_cdf(x, deg_freedom)?))
+    let v = truncate_positive_integer(deg_freedom)?;
+    let xx = v / (v + x * x);
+    Ok(regularized_beta(xx, v / 2.0, 0.5))
 }
 
 pub fn t_inv_kernel(probability: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorCode> {

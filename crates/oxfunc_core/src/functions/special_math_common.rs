@@ -172,7 +172,7 @@ where
         } else {
             lo = mid;
         }
-        if (hi - lo).abs() <= 1e-12 * (1.0 + mid.abs()) {
+        if (hi - lo).abs() <= 4.0 * f64::EPSILON * (1.0 + mid.abs()) {
             return hi;
         }
     }
