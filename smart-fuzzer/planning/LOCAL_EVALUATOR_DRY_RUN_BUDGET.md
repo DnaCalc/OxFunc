@@ -48,7 +48,10 @@ Budgets come from the generator matrix:
 4. known PMT/PPMT/IPMT drift rows get extra local sampling as reference
    mismatch lanes,
 5. blocked/provider/special-interface rows get sentinel budgets only unless a
-   concrete fixture exists.
+   concrete fixture exists,
+6. formula-binding lanes such as `LET`, `LAMBDA`, and callable helper runtime
+   rows get sentinel budgets unless the run has a formula-binding harness or
+   concrete callable fixture.
 
 ## 4. Planned Artifacts
 

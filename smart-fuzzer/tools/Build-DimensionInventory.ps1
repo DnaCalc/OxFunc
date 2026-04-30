@@ -404,11 +404,12 @@ function Get-ContextAxes {
         "workbook_compatibility_version"
     )
 
+    $name = [string] $Row.canonical_surface_name
     $profileText = "$($Row.category) $($Row.determinism_class) $($Row.volatility_class) $($Row.host_interaction_class) $($Row.fec_dependency_profile) $($Row.surface_fec_dependency_profile) $($Row.runtime_boundary_kind) $($Row.special_interface_kind)"
-    if ($profileText -match "(?i)date|time") { Add-Tag $bands "date_system" }
+    if ($name -match "^(NOW|TODAY)$" -or $profileText -match "(?i)date|time") { Add-Tag $bands "date_system" }
     if ($profileText -match "(?i)locale|width|profile|text") { Add-Tag $bands "locale_profile" }
     if ($profileText -match "(?i)caller|workbook|sheet|cell|reference") { Add-Tag $bands "caller_location" }
-    if ($profileText -match "(?i)volatile|random|time|external") { Add-Tag $bands "calculation_mode"; Add-Tag $bands "volatile_recalc" }
+    if ($name -match "^(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)$" -or $profileText -match "(?i)volatile|random|time|external") { Add-Tag $bands "calculation_mode"; Add-Tag $bands "volatile_recalc" }
     if ($profileText -match "(?i)provider|cube|rtd|external|host") { Add-Tag $bands "host_provider_capability" }
     if ($profileText -match "(?i)reference|lookup|database|aggregate|spill|array") { Add-Tag $bands "worksheet_neighborhood" }
 
@@ -455,6 +456,8 @@ function Get-BlockedOrDeferredLanes {
     )
 
     $lanes = New-StringSet
+    $name = [string] $Row.canonical_surface_name
+    $profileText = "$($Row.special_interface_kind) $($Row.runtime_boundary_kind) $($Row.determinism_class) $($Row.volatility_class) $($Row.host_interaction_class) $($Row.fec_dependency_profile) $($Row.surface_fec_dependency_profile) $($Row.category) $($Row.arity_shape_note)"
     if ($DeferredRefs.Count -gt 0) { Add-Tag $lanes "current_version_deferred_inventory" }
     if ($Row.metadata_status -eq "catalog_only") { Add-Tag $lanes "catalog_only_metadata_gap" }
     if ([string]::IsNullOrWhiteSpace($Row.arity_min) -or [string]::IsNullOrWhiteSpace($Row.arity_max)) {
@@ -475,8 +478,14 @@ function Get-BlockedOrDeferredLanes {
     if ($Row.category -match "(?i)cubes") {
         Add-Tag $lanes "cube_provider_context_required"
     }
-    if ($Row.volatility_class -and $Row.volatility_class -ne "NonVolatile") {
+    if (($Row.volatility_class -and $Row.volatility_class -ne "NonVolatile") -or $name -match "^(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)$") {
         Add-Tag $lanes "volatile_context_control_required"
+    }
+    if ($name -eq "RTD" -or $profileText -match "(?i)host_subscription|ExternalEventDependent") {
+        Add-Tag $lanes "async_realtime_provider_deferred"
+    }
+    if ($profileText -match "(?i)callable_helper|lambda|higher_order|helper_formation") {
+        Add-Tag $lanes "formula_binding_scope_deferred"
     }
 
     return Get-Tags $lanes
@@ -687,6 +696,11 @@ foreach ($row in ($libraryRows | Sort-Object canonical_surface_name)) {
                 "invalid_generator_case",
                 "unstable_or_non_reproducible"
             )
+            stochastic_profile_classes = @(
+                "statistical_profile_consistent",
+                "statistical_profile_mismatch",
+                "statistical_profile_inconclusive"
+            )
             tolerance_pass_allowed = $false
         }
         coverage_counter_dimensions = @(
@@ -707,6 +721,7 @@ foreach ($row in ($libraryRows | Sort-Object canonical_surface_name)) {
             "execution_seam",
             "local_outcome_class",
             "excel_comparison_class",
+            "statistical_profile_class",
             "known_deviation_tag",
             "blocked_or_deferred_lane",
             "selection_reason"

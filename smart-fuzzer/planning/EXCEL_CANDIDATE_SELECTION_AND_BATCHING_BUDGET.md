@@ -39,7 +39,9 @@ The former POWER/OP_POWER stale-claim check was closed under W078 on
 2026-04-29 and should not receive special quota unless a new signal appears.
 
 Provider/cube/RTD/context rows should receive no Excel quota unless a fixture
-exists.
+exists. `LET`, `LAMBDA`, and callable helper formula-binding lanes likewise
+receive no Excel quota in the default pure-function run unless a
+formula-binding harness or concrete callable fixture exists.
 
 ## 3. Batching Policy
 
@@ -68,6 +70,16 @@ Excel comparison classes remain:
 8. `unstable_or_non_reproducible`.
 
 There is no tolerance pass class.
+
+Pseudo-random functions use aggregate statistical comparison artifacts rather
+than per-draw bit-exact pass rows. A statistical profile mismatch is still a
+fuzzer finding.
+
+Statistical profile classes are:
+
+1. `statistical_profile_consistent`,
+2. `statistical_profile_mismatch`,
+3. `statistical_profile_inconclusive`.
 
 ## 5. Planned Artifacts
 

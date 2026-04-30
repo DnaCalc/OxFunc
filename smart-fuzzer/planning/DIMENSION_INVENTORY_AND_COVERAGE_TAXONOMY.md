@@ -228,10 +228,23 @@ Execution seam bands:
 Blocked or deferred lanes must stay visible in coverage rollups. They should
 not be counted as function mismatches.
 
+Current explicit lane names include metadata gaps, current-version deferred
+inventory rows, special-interface context requirements, host interaction
+requirements, external provider requirements, locale profile requirements,
+cube provider requirements, volatile context controls, async real-time provider
+deferrals, and formula-binding scope deferrals. `RTD` is an async real-time
+provider lane. `LET`, `LAMBDA`, and callable helper formation/runtime rows are
+formula-binding scope lanes until a run supplies a formula-binding harness or
+concrete callable fixture.
+
 ## 10. Comparison Taxonomy
 
 Current OxFunc parity policy is bit-exact typed equality. The smart-fuzzer must
 not classify approximate numeric agreement as a pass.
+
+Pseudo-random functions use a separate aggregate statistical profile outcome.
+That is not a tolerance pass and should not be merged into
+`exact_typed_bit_match` telemetry.
 
 Comparison classes:
 
@@ -243,6 +256,12 @@ Comparison classes:
 6. `context_provider_blocked`
 7. `invalid_generator_case`
 8. `unstable_or_non_reproducible`
+
+Statistical profile classes for pseudo-random aggregate runs:
+
+1. `statistical_profile_consistent`
+2. `statistical_profile_mismatch`
+3. `statistical_profile_inconclusive`
 
 Expected PMT/PPMT/IPMT financial-payment exactness drift is a known deviation
 class and a useful reference mismatch lane. It is not a repair target under
@@ -273,9 +292,10 @@ Every later run rollup should be able to aggregate by:
 15. `execution_seam`
 16. `local_outcome_class`
 17. `excel_comparison_class`
-18. `known_deviation_tag`
-19. `blocked_or_deferred_lane`
-20. `selection_reason`
+18. `statistical_profile_class`
+19. `known_deviation_tag`
+20. `blocked_or_deferred_lane`
+21. `selection_reason`
 
 This is the durable pass telemetry surface. Per-case prose should remain
 reserved for failures, unstable rows, blocked harness cases, and reduced

@@ -36,7 +36,8 @@ Track:
 3. support phase, deferred status, and current-version scope status,
 4. volatility and context sensitivity,
 5. array support and spill behavior markers,
-6. provider, cube, RTD, external-reference, or host-context requirements,
+6. provider, cube, RTD, async, external-reference, formula-binding, or
+   host-context requirements,
 7. known bug stream adjacency,
 8. source-risk band from static analysis and previous fuzzer evidence.
 
@@ -142,7 +143,51 @@ Track:
 8. provider/cube/RTD capability flags,
 9. OxFml parser/preparation mode and direct Rust-value mode.
 
-## 3. Sampling Strategy
+## 3. Current Target Universe Boundary
+
+The default W089 target universe is the broad pure-function differential
+surface: OxFunc value calls and prepared OxFml calls whose inputs, providers,
+reference fixtures, and comparison semantics are explicit in the run manifest.
+
+In the current default target universe:
+
+1. ordinary deterministic value functions are in scope;
+2. array and reference-sensitive functions are in scope when the run provides
+   explicit array/reference fixtures and reference materialization policy;
+3. `RAND`, `RANDBETWEEN`, and `RANDARRAY` stay in scope as stochastic lanes,
+   but they require aggregate distribution and invariant checks rather than
+   per-draw bit-exact comparison against Excel;
+4. `NOW` and `TODAY` stay in scope only when the run declares the date system,
+   clock provider, and recalc timing policy;
+5. dynamic-array value behavior is in scope, while spill collision, occupied
+   worksheet neighborhood, and full-grid limit behavior require workbook
+   fixtures.
+
+Explicitly deferred from the current pure target universe:
+
+1. `RTD` and other async real-time subscription behavior, because comparison
+   needs a host subscription provider, scheduler, topic lifecycle, and
+   eventual-value policy;
+2. `LET`, `LAMBDA`, and formula-scope callable formation or invocation, because
+   their Excel comparison depends deeply on OxFml parsing, binding, scope, name
+   resolution, and formula evaluation rather than a pure value call;
+3. helper-family inline-lambda lanes such as `BYROW`, `BYCOL`, `MAP`, `REDUCE`,
+   `SCAN`, `MAKEARRAY`, and `ISOMITTED` unless the run provides a concrete
+   callable fixture; built-in-aggregator lanes for `GROUPBY` and `PIVOTBY` may
+   be tested separately from inline `LAMBDA` lanes;
+4. live provider, cube, web, stock-history, external-link, and other
+   external-data lanes unless the run declares a reproducible provider fixture;
+5. host/workbook/caller metadata lanes such as `CELL`, `INFO`, `FORMULATEXT`,
+   `SHEET`, `SHEETS`, `INDIRECT`, and `OFFSET` unless the run declares a
+   workbook/reference/caller fixture;
+6. locale and alternate Excel-version sweeps unless the run declares those
+   profiles as primary axes.
+
+Deferred rows should remain visible in coverage rollups as explored blocked
+lanes. They should not be silently removed from the catalog and should not be
+reported as function mismatches.
+
+## 4. Sampling Strategy
 
 The sweep should combine deterministic coverage and feedback-guided exploration.
 
@@ -163,7 +208,7 @@ The sweep should combine deterministic coverage and feedback-guided exploration.
    example inverse pairs, monotonicity probes, shape invariants, alias/operator
    equivalence, or reference-vs-array contrast controls.
 
-## 4. Excel Spend Policy
+## 5. Excel Spend Policy
 
 Local evaluation can be high volume. Excel evaluation must be selective.
 
@@ -180,7 +225,11 @@ Candidate priority:
 Known PMT/PPMT/IPMT exactness deviations are expected and should be reported as
 known financial drift unless reduction shows a separate root cause.
 
-## 5. Coverage And Roadmap Trace
+Stochastic rows should spend Excel quota in repeated batches that support a
+declared statistical comparator. A single random draw is not exact parity
+evidence.
+
+## 6. Coverage And Roadmap Trace
 
 The durable run output should describe explored areas, not every pass case.
 
@@ -206,7 +255,7 @@ Required compact artifacts for the later run:
 8. `failure_packets/`: only unexpected mismatches, unstable outcomes, or
    blocked harness rows that need durable review.
 
-## 6. Classification
+## 7. Classification
 
 Every Excel comparison row should land in one of these classes:
 
@@ -229,7 +278,13 @@ future comparator experiment that studies tolerance-like behavior must be
 separate from parity classification and must not weaken the default mismatch
 rule.
 
-## 7. Agent And Code Feedback Loop
+For pseudo-random functions, bit-exact per-draw equality is not the comparison
+unit. Those lanes require a separate run-level statistical profile outcome,
+for example distribution bounds, range invariants, shape invariants, integer
+inclusion rules, and recalculation-change checks. A statistical profile
+mismatch is still promoted as a fuzzer finding.
+
+## 8. Agent And Code Feedback Loop
 
 The practical feedback loop should be:
 
@@ -247,7 +302,7 @@ The agent should not manually bless large pass sets. Its useful role is to
 review coverage blind spots, mismatch clusters, generator validity, and
 promotion decisions.
 
-## 8. Gate Plan
+## 9. Gate Plan
 
 1. Planning gate: this document and W089 beads only.
 2. Inventory gate: generated dimension inventory and coverage taxonomy.
@@ -259,7 +314,7 @@ promotion decisions.
 The first sweep should not start until the user explicitly authorizes the
 execution gate.
 
-## 9. Current Status Axes
+## 10. Current Status Axes
 
 1. `execution_state`: `planning_only`
 2. `scope_completeness`: `scope_partial`

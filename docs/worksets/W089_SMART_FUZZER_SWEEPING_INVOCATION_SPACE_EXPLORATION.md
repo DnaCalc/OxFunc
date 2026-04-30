@@ -76,7 +76,13 @@ Out of scope for this planning gate:
 3. repairing known PMT/PPMT/IPMT financial exactness drift,
 4. treating any stale `POWER` row as live without fresh confirmation,
 5. broad locale or alternate Excel-version sweeps beyond captured dimensions,
-6. provider/cube/RTD parity claims where the live provider context is absent.
+6. provider/cube/live-web/external-data parity claims where the live provider
+   context is absent,
+7. `RTD` async subscription lifecycle parity claims without a host
+   subscription fixture,
+8. `LET`, `LAMBDA`, and formula-scope callable formation/invocation parity
+   claims without an OxFml formula-binding harness or concrete callable
+   fixture.
 
 ## 6. Sweep Dimensions
 
@@ -125,6 +131,17 @@ The run plan must account for these primary tweakable dimensions:
 3. Provider, cube, RTD, external-link, and other host-dependent lanes should be
    classified as blocked or context-deferred unless the run has the necessary
    host fixture.
+4. `LET`, `LAMBDA`, and callable helper lanes are deferred from the current
+   pure-function target universe unless a formula-binding harness or concrete
+   callable fixture is present. This includes inline-lambda lanes for `BYROW`,
+   `BYCOL`, `MAP`, `REDUCE`, `SCAN`, `MAKEARRAY`, and `ISOMITTED`; built-in
+   aggregator lanes for `GROUPBY` and `PIVOTBY` may be tested separately from
+   inline `LAMBDA` lanes.
+5. `RAND`, `RANDBETWEEN`, and `RANDARRAY` remain in scope as stochastic
+   functions, but their comparison evidence is aggregate statistical and
+   invariant-based. Per-draw bit-exact equality against Excel is not expected.
+6. `NOW` and `TODAY` require declared clock, date-system, and recalc fixtures
+   before exact value comparison rows are meaningful.
 
 ## 8. Artifact Economy
 

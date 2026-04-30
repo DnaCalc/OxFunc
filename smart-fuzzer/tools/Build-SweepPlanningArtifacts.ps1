@@ -222,7 +222,9 @@ function Get-ExcelQuota {
     $blocked = @(Get-Array $Surface.blocked_or_deferred_lanes)
     if ($blocked -contains "external_provider_context_required" -or
         $blocked -contains "cube_provider_context_required" -or
-        $blocked -contains "special_interface_context_required") {
+        $blocked -contains "special_interface_context_required" -or
+        $blocked -contains "async_realtime_provider_deferred" -or
+        $blocked -contains "formula_binding_scope_deferred") {
         return 0
     }
 
@@ -300,12 +302,30 @@ foreach ($surface in $surfaces) {
     $blocked = @(Get-Array $surface.blocked_or_deferred_lanes)
     foreach ($lane in $blocked) { Add-Count $blockedLaneCounts ([string] $lane) }
     if ($blocked.Count -gt 0) {
+        $fixtureRequirement = if ($blocked -contains "async_realtime_provider_deferred") {
+            "async_subscription_provider_fixture_required"
+        } elseif ($blocked -contains "formula_binding_scope_deferred") {
+            "formula_binding_or_callable_fixture_required"
+        } elseif ($blocked -contains "external_provider_context_required" -or $blocked -contains "cube_provider_context_required") {
+            "provider_fixture_required"
+        } elseif ($blocked -contains "locale_profile_context_required") {
+            "locale_profile_required"
+        } elseif (($blocked -contains "volatile_context_control_required") -and ([string] $surface.canonical_surface_name) -match "^(RAND|RANDBETWEEN|RANDARRAY|NOW|TODAY)$") {
+            "recalc_control_required"
+        } elseif ($blocked -contains "host_interaction_context_required") {
+            "workbook_or_host_context_fixture_required"
+        } elseif ($blocked -contains "volatile_context_control_required") {
+            "recalc_control_required"
+        } else {
+            "metadata_or_seam_review_required"
+        }
+
         $blockedRows += [ordered]@{
             surface_id = $surface.surface_id
             canonical_surface_name = $surface.canonical_surface_name
             category = $surface.category
             lanes = $blocked
-            fixture_requirement = if ($blocked -contains "external_provider_context_required" -or $blocked -contains "cube_provider_context_required") { "provider_fixture_required" } elseif ($blocked -contains "locale_profile_context_required") { "locale_profile_required" } elseif ($blocked -contains "volatile_context_control_required") { "recalc_control_required" } else { "metadata_or_seam_review_required" }
+            fixture_requirement = $fixtureRequirement
         }
     }
 
@@ -375,6 +395,11 @@ $excelBudget = New-ArtifactEnvelope "oxfunc.smart_fuzzer.excel_candidate_budget.
         "context_provider_blocked",
         "invalid_generator_case",
         "unstable_or_non_reproducible"
+    )
+    statistical_profile_classes = @(
+        "statistical_profile_consistent",
+        "statistical_profile_mismatch",
+        "statistical_profile_inconclusive"
     )
     tolerance_pass_allowed = $false
 })
