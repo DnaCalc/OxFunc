@@ -35,6 +35,8 @@ Out of slice:
 - `docs/WORKSET_REGISTER.md` - current ordered workset truth for post-park OxFunc.
 - `docs/BEADS.md` - local `workset -> epic -> bead` execution method.
 - `.beads/` - live execution-state surface for open OxFunc work.
+- `docs/KNOWN_EXACTNESS_DEVIATIONS.md` - project-wide register of current
+  OxFunc-vs-Excel exactness residuals that are known but not waived.
 - `docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md` - current migration plan for bead-based execution and active-tree reduction.
 - `docs/worksets/` - workset packets and historical provenance; not the live execution-state surface.
 - `docs/function-lane/` - mutable function/value working artifacts.
@@ -56,5 +58,8 @@ Out of slice:
 - Completeness reporting is scope-qualified by doctrine; see `CHARTER.md` section `7.4` and `OPERATIONS.md` section `11`.
 - OxFunc now uses `docs/WORKSET_REGISTER.md` for ordered workset truth and `.beads/` for live execution-state truth; `docs/BEADS.md` defines the local bead method.
 - OxFunc does not accept bounded-fit function implementations. A function is only considered implemented when the runtime and the formalization work required by the executable-semantic-model strategy cover the full documented and empirically observed Excel semantics for the declared version scope; the only tolerated limitation is in the XLL verification seam.
+- Known exactness residuals are tracked centrally in
+  `docs/KNOWN_EXACTNESS_DEVIATIONS.md`; entries there are not passes, waivers,
+  or tolerance allowances.
 - For the current implementation phase, function closure is reported as `function-phase-complete` when the reference-baseline semantics and evaluation seam are understood, no known function-semantic gap remains, and the Lean/formal work required by the function's primary semantic substrate and admitted slice has been attended to and aligned; locale/version sweeps are tracked as later orthogonal validation phases unless explicitly in scope.
 - XLL verification-seam limitations must be documented centrally in the seam records and repeated in function verification records wherever those limitations affect the meaning of a parity or closure claim.

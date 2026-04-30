@@ -3,6 +3,10 @@
 This directory holds the canonical local bug-intake and regression-family tracking
 scaffolding for OxFunc.
 
+Project-wide exactness residuals are summarized in
+[`../KNOWN_EXACTNESS_DEVIATIONS.md`](../KNOWN_EXACTNESS_DEVIATIONS.md). The bug
+streams in this directory remain the detailed ownership and evidence records.
+
 It separates:
 1. bug reports
    - every incoming report or observed defect record
