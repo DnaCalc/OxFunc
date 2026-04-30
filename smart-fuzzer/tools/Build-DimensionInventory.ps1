@@ -198,7 +198,7 @@ function Get-ArityProbeTags {
 
     $minValue = [int] $Min
     $maxValue = [int] $Max
-    Add-ManyTags $tags @("argc_below_min", "argc_at_min", "argc_at_max", "argc_above_max")
+    Add-ManyTags $tags @("argc_at_min", "argc_at_max")
 
     if ($maxValue -gt $minValue) {
         Add-ManyTags $tags @(

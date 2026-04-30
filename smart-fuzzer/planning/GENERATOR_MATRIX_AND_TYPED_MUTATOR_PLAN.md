@@ -61,6 +61,10 @@ product:
 Unknown-arity rows get `metadata_gap_arity_probe` and remain eligible for
 metadata-repair or catalog-review sampling before high-volume generation.
 
+Out-of-range arity rows are not part of this mandatory basis. They should be
+generated only by a separate OxFml admission-negative lane that verifies the
+published metadata is enforced before OxFunc execution.
+
 ## 4. Mutator Families
 
 The matrix assigns typed mutators by row features:

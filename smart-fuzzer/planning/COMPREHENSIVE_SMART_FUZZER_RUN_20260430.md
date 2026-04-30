@@ -60,7 +60,10 @@ classification.
    featured seed functions, and information.
 3. Argument arity and omission: exact-arity seeds, optional-argument seeds, and
    zero-argument functions. A generator repair fixed false `missing_arg`
-   injection for true zero-argument calls.
+   injection for true zero-argument calls. Later W089 housekeeping clarified
+   that below-minimum and above-maximum arity calls are outside the default
+   pure OxFunc comparison universe and belong to OxFml admission-negative
+   testing instead.
 4. Value kinds: numbers, strings, logicals, error literals, missing arguments,
    empty cells where admitted by existing case sets, and inline arrays.
 5. Array shape: scalar, row vector, column vector, rectangular matrix, dynamic
@@ -127,7 +130,10 @@ Final run `w089-comprehensive-seed-20260430-004`:
    Version `2`.
 
 The three harness blockers are invalid formula-assignment seeds for `ABS()`,
-`SIN()`, and `XMATCH()` rather than confirmed function divergences.
+`SIN()`, and `XMATCH()` rather than confirmed function divergences. Under the
+post-run W089 boundary clarification, these rows are invalid-generator /
+OxFml-admission-negative cases and should be excluded from future default
+comparison case sets.
 
 ### W090 Successor Control
 
@@ -188,6 +194,12 @@ evidence.
    - the sentinel remains as risk/selection telemetry,
    - rebuilt inventory now reports only `PMT`, `PPMT`, and `IPMT` as known
      deviations.
+5. Invalid-arity universe-boundary repair:
+   - default scenario-seed generation now checks candidate argument count
+     against published `arity_min` / `arity_max`,
+   - invalid arity rows are skipped before Excel COM comparison,
+   - such rows remain available only as OxFml admission-negative evidence when
+     a dedicated seam test asks for them.
 
 ## Residual Open Lanes
 

@@ -24,6 +24,12 @@ Every non-match must be classified as one of:
 
 Approximate numeric agreement is not a pass.
 
+Calls outside published `arity_min` / `arity_max` are not valid OxFunc
+smart-fuzzer comparison cases. If such a row reaches triage, classify it as
+`invalid_generator_case` and, when useful, preserve it only as OxFml
+admission-negative evidence. Do not promote formula-entry rejection for invalid
+arity as an `excel_harness_blocked` function-semantic lane.
+
 ## 2. Known Deviations
 
 PMT/PPMT/IPMT financial exactness drift is currently expected and blocked from

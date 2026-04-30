@@ -77,6 +77,12 @@ powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTran
   -CaseSetPath smart-fuzzer\cache\scenario-seed-executable-cases-v0.json
 ```
 
+The builder enforces the published `arity_min` / `arity_max` metadata from the
+dimension inventory. Manifest calls outside those bounds are not part of the
+default pure OxFunc comparison universe; keep them for a dedicated OxFml
+admission-negative lane rather than sending them to the Excel comparison
+runner.
+
 ## Build-ArraySupportSweepPlan.ps1
 
 Builds the W090 array-support candidate inventory, first-tranche plan, compact

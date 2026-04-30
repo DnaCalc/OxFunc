@@ -142,6 +142,10 @@ The run plan must account for these primary tweakable dimensions:
    invariant-based. Per-draw bit-exact equality against Excel is not expected.
 6. `NOW` and `TODAY` require declared clock, date-system, and recalc fixtures
    before exact value comparison rows are meaningful.
+7. Calls outside published `arity_min` / `arity_max` are outside the default
+   pure OxFunc comparison universe. They should be handled as OxFml
+   admission-negative cases, not as Excel harness blockers or OxFunc semantic
+   mismatches.
 
 ## 8. Artifact Economy
 

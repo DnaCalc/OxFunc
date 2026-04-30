@@ -86,20 +86,23 @@ Arity shape values:
 
 Arity probe tags:
 
-1. `argc_below_min`
-2. `argc_at_min`
-3. `argc_at_max`
-4. `argc_above_max`
-5. `omitted_optional_suffix`
-6. `explicit_missing_optional`
-7. `empty_argument_optional`
-8. `variadic_budget_low`
-9. `variadic_budget_mid`
-10. `variadic_budget_high`
-11. `metadata_gap_arity_probe`
+1. `argc_at_min`
+2. `argc_at_max`
+3. `omitted_optional_suffix`
+4. `explicit_missing_optional`
+5. `empty_argument_optional`
+6. `variadic_budget_low`
+7. `variadic_budget_mid`
+8. `variadic_budget_high`
+9. `metadata_gap_arity_probe`
 
 The first generator bead should use these tags to create concrete call shapes
 without expanding to a full Cartesian product.
+
+Below-minimum and above-maximum arity calls are intentionally absent from the
+default smart-fuzzer invocation universe. They are OxFml/FEC/F3E admission
+negative tests derived from the same arity metadata, not OxFunc semantic
+comparison cases.
 
 ## 5. Value-Type Taxonomy
 

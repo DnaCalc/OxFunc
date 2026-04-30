@@ -87,6 +87,35 @@ function Get-ValueField {
     Write-Output -NoEnumerate $Value.PSObject.Properties[$Name].Value
 }
 
+function ConvertTo-OptionalInt {
+    param($Value)
+    if ($null -eq $Value) {
+        return $null
+    }
+    $text = [string]$Value
+    if ([string]::IsNullOrWhiteSpace($text)) {
+        return $null
+    }
+    return [int]::Parse($text, $Invariant)
+}
+
+function Test-ArityAccepted {
+    param(
+        [Parameter(Mandatory = $true)]$Surface,
+        [Parameter(Mandatory = $true)][int]$ArgCount
+    )
+
+    $min = ConvertTo-OptionalInt $Surface.arity.min
+    $max = ConvertTo-OptionalInt $Surface.arity.max
+    if ($null -ne $min -and $ArgCount -lt $min) {
+        return $false
+    }
+    if ($null -ne $max -and $ArgCount -gt $max) {
+        return $false
+    }
+    return $true
+}
+
 function Test-NameBoundary {
     param([string]$Text, [int]$Index, [int]$Length)
     if ($Index -gt 0) {
@@ -362,6 +391,10 @@ foreach ($surface in ($surfaces | Sort-Object canonical_surface_name)) {
             @()
         } else {
             @(Split-TopLevel $argText ',')
+        }
+        $argTexts = @($argTexts)
+        if (-not (Test-ArityAccepted $surface $argTexts.Count)) {
+            continue
         }
         $typedArgs = New-Object 'System.Collections.Generic.List[object]'
         $parseFailed = $false

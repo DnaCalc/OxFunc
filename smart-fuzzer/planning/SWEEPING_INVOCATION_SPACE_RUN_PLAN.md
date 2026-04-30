@@ -163,6 +163,13 @@ In the current default target universe:
    worksheet neighborhood, and full-grid limit behavior require workbook
    fixtures.
 
+All default-universe invocations must satisfy the published OxFunc arity
+metadata. Calls below `arity_min` or above `arity_max` are outside the pure
+OxFunc smart-fuzzer comparison universe because the function call has not
+passed OxFml/FEC/F3E admission. They may be kept as admission-negative evidence
+for OxFml, but they must not be sent to the Excel COM comparison lane as
+semantic parity cases.
+
 Explicitly deferred from the current pure target universe:
 
 1. `RTD` and other async real-time subscription behavior, because comparison
