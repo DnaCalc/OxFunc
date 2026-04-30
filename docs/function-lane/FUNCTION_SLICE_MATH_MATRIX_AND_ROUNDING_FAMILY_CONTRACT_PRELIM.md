@@ -36,8 +36,9 @@ Define the current-phase contract for the `W067` rounding, matrix, and sumproduc
 1. `MDETERM`, `MINVERSE`, `MMULT`, and `MUNIT` use the refs-visible adapter seam on the admitted current baseline.
 2. matrix operands preserve array/reference shape and admit only numeric cells; text, logical, and blank matrix cells produce `#VALUE!`.
 3. `MDETERM`, `MINVERSE`, and `MMULT` treat scalar numeric inputs as `1x1` matrices on the admitted slice.
-4. `MUNIT` follows separate scalar numeric coercion, admitting numeric text and truncating fractional sizes toward zero before validation.
-5. non-square matrix lanes publish `#VALUE!`, singular inverse lanes publish `#NUM!`, and multiplication shape mismatch publishes `#VALUE!`.
+4. Matrix functions that compute a `1x1` output publish a scalar value at the Excel surface, including `MINVERSE(5)` and `MMULT(5,2)`.
+5. `MUNIT` follows separate scalar numeric coercion, admitting numeric text and truncating fractional sizes toward zero before validation.
+6. non-square matrix lanes publish `#VALUE!`, singular inverse lanes publish `#NUM!`, and multiplication shape mismatch publishes `#VALUE!`.
 
 ## 5. Sumproduct / Series Contract
 1. `SUMPRODUCT`, `SUMX2MY2`, `SUMX2PY2`, `SUMXMY2`, and `SERIESSUM` use the refs-visible adapter seam on the admitted current baseline.

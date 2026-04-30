@@ -193,9 +193,9 @@ Current execution status:
 2. `scope_completeness`: `scope_partial`
 3. `target_completeness`: `target_partial`
 4. `integration_completeness`: `partial`
-5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-023`, remaining unswept invocation
-   dimensions, and harness/reference/context-rich seeds not admitted to the
-   pure value comparator
+5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-024`, `BUG-FUNC-025`, remaining
+   unswept invocation dimensions, and harness/reference/context-rich seeds not
+   admitted to the pure value comparator
 
 ## 12. Execution Notes
 
@@ -303,3 +303,45 @@ Status axes after this comprehensive seed pass:
 4. `integration_completeness`: `partial`
 5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-023`, PMT/PPMT/IPMT blocked
    reference mismatch lane, and unexecuted/deferred invocation-space dimensions
+
+### 2026-04-30 BUG-FUNC-023 Repair And Split
+
+Run artifact: `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
+
+The mixed non-statistical residual stream was minimized after direct Excel COM
+confirmation of scalar `1x1` matrix publication. The repair pass:
+
+1. changed matrix result publication so computed `1x1` matrix outputs publish
+   scalars at the Excel surface,
+2. changed `VDB` declining-balance interval calculation to use `book *
+   (factor / life)`, matching the Excel witness,
+3. reran the W089 scenario seed against Excel.
+
+Post-repair rollup:
+
+1. `339` total cases,
+2. `297` exact typed bit matches,
+3. `39` unexpected mismatches,
+4. `3` Excel harness blockers.
+
+Rows repaired under `BUG-FUNC-023`:
+
+1. `=VDB(2400,300,120,6,18)`,
+2. `=MINVERSE(5)`,
+3. `=MMULT(5,2)`.
+
+Rows split to successor residual lanes:
+
+1. `BUG-FUNC-024` / `oxf-xp6p`: `BESSELY(2.5,1)` exactness drift.
+2. `BUG-FUNC-025` / `oxf-dzfk`: `MINVERSE({1,2;3,4})` low-bit matrix
+   exactness drift.
+
+Status axes after this repair-and-split pass:
+
+1. `execution_state`: `comprehensive_seed_repair_replayed`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-024`, `BUG-FUNC-025`,
+   PMT/PPMT/IPMT blocked reference mismatch lane, and unexecuted/deferred
+   invocation-space dimensions

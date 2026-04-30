@@ -221,3 +221,20 @@ evidence.
 5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-023`, blocked PMT/PPMT/IPMT
    reference mismatch lane, and the deferred/unexecuted invocation-space
    dimensions listed above
+
+## Follow-Up: BUG-FUNC-023 Repair And Split
+
+Follow-up run `oxf-i45e-w089-repair-20260430-001` repaired three rows from
+the mixed non-statistical stream and replayed the same `339` scenario-seed
+cases against Excel:
+
+1. exact typed bit matches improved to `297`,
+2. unexpected mismatches dropped to `39`,
+3. Excel harness blockers remained `3`,
+4. `VDB(2400,300,120,6,18)`, `MINVERSE(5)`, and `MMULT(5,2)` now match Excel,
+5. `BESSELY(2.5,1)` moved to `BUG-FUNC-024` / `oxf-xp6p`,
+6. `MINVERSE({1,2;3,4})` moved to `BUG-FUNC-025` / `oxf-dzfk`.
+
+Updated open lanes after that repair are `BUG-FUNC-021`, `BUG-FUNC-024`,
+`BUG-FUNC-025`, the blocked PMT/PPMT/IPMT reference lane, and deferred or
+unexecuted invocation-space dimensions.

@@ -108,9 +108,13 @@ fn matrix_from_value(value: &EvalValue) -> Result<Vec<Vec<f64>>, WorksheetErrorC
     }
 }
 
-fn array_from_matrix(matrix: &[Vec<f64>]) -> Result<EvalValue, WorksheetErrorCode> {
+fn value_from_matrix(matrix: &[Vec<f64>]) -> Result<EvalValue, WorksheetErrorCode> {
     let rows = matrix.len();
     let cols = matrix.first().map_or(0, Vec::len);
+    if rows == 1 && cols == 1 {
+        return Ok(EvalValue::Number(matrix[0][0]));
+    }
+
     let cells = matrix
         .iter()
         .flat_map(|row| row.iter().copied().map(ArrayCellValue::Number))
@@ -320,7 +324,7 @@ pub fn eval_minverse_surface(
     let matrix = matrix_from_value(&resolve_arg_eval(&args[0], resolver)?)
         .map_err(MatrixEvalError::Domain)?;
     inverse_kernel(&matrix)
-        .and_then(|inverse| array_from_matrix(&inverse))
+        .and_then(|inverse| value_from_matrix(&inverse))
         .map_err(MatrixEvalError::Domain)
 }
 
@@ -340,7 +344,7 @@ pub fn eval_mmult_surface(
     let right = matrix_from_value(&resolve_arg_eval(&args[1], resolver)?)
         .map_err(MatrixEvalError::Domain)?;
     mmult_kernel(&left, &right)
-        .and_then(|product| array_from_matrix(&product))
+        .and_then(|product| value_from_matrix(&product))
         .map_err(MatrixEvalError::Domain)
 }
 
@@ -358,7 +362,7 @@ pub fn eval_munit_surface(
     let prepared =
         prepare_arg_values_only(&args[0], resolver).map_err(MatrixEvalError::Coercion)?;
     let size = munit_size_from_prepared(&prepared)?;
-    array_from_matrix(&identity_matrix(size)).map_err(MatrixEvalError::Domain)
+    value_from_matrix(&identity_matrix(size)).map_err(MatrixEvalError::Domain)
 }
 
 pub fn map_matrix_error_to_ws(error: &MatrixEvalError) -> WorksheetErrorCode {
@@ -500,6 +504,12 @@ mod tests {
     }
 
     #[test]
+    fn munit_one_publishes_scalar_like_excel() {
+        let got = eval_munit_surface(&[CallArgValue::Eval(EvalValue::Number(1.0))], &NoResolver);
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
     fn munit_truncates_and_coerces_text_numeric() {
         let got = eval_munit_surface(
             &[CallArgValue::Eval(EvalValue::Text(
@@ -580,10 +590,14 @@ mod tests {
     }
 
     #[test]
-    fn scalar_numeric_inputs_form_one_by_one_matrices() {
+    fn scalar_numeric_inputs_publish_one_by_one_results_as_scalars() {
         assert_eq!(
             eval_mdeterm_surface(&[CallArgValue::Eval(EvalValue::Number(5.0))], &NoResolver),
             Ok(EvalValue::Number(5.0))
+        );
+        assert_eq!(
+            eval_minverse_surface(&[CallArgValue::Eval(EvalValue::Number(5.0))], &NoResolver),
+            Ok(EvalValue::Number(0.2))
         );
         assert_eq!(
             eval_mmult_surface(
@@ -593,9 +607,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(10.0)]]).unwrap()
-            ))
+            Ok(EvalValue::Number(10.0))
         );
     }
 

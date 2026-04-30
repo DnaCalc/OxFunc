@@ -115,26 +115,41 @@ Each active entry should record:
   beta/gamma inverses, chi/f/t tails and inverses, discrete distributions,
   normal standard aliases, and `CONFIDENCE.T` / `Z.TEST`.
 
-### KED-MISC-001: Non-Statistical Exactness And Matrix Publication Residuals
+### KED-BESSEL-001: BESSELY Current-Baseline Exactness Residual
 - **Status**: `open`
-- **Owner**: `BUG-FUNC-023`, bead `oxf-i45e`
-- **Functions**: `BESSELY`, `VDB`, `MINVERSE`, `MMULT`
-- **Mismatch class**: mixed numeric bit drift and scalar-vs-1x1-array
-  publication shape drift
-- **Current handling**: known residual family from W089; minimize before repair
-  because it likely splits into separate implementation substrates
+- **Owner**: `BUG-FUNC-024`, bead `oxf-xp6p`
+- **Functions**: `BESSELY`
+- **Mismatch class**: Bessel `Y` scalar numeric algorithm/publication
+  exactness
+- **Current handling**: known residual split from W089; repair by Bessel
+  substrate only, not by formula-specific lookup
 - **Evidence**:
-  1. `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
-  2. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
-  3. `smart-fuzzer/runs/oxf-simj-w089-seed-repair-20260430-003/`
+  1. `docs/bugs/streams/BUG-FUNC-024_bessely_current_baseline_exactness_drift.md`
+  2. `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
+  3. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
+  4. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
 - **Representative witnesses**:
   1. `=BESSELY(2.5,1)`
-  2. `=VDB(2400,300,120,6,18)`
-  3. `=MINVERSE({1,2;3,4})`
-  4. `=MINVERSE(5)`
-  5. `=MMULT(5,2)`
-- **Next action**: split matrix scalar publication shape from matrix numeric
-  drift, then triage Bessel and depreciation exactness separately.
+- **Next action**: build a compact Excel probe grid for Bessel `Y` over
+  order/x branch and recurrence lanes, then replace or adjust the substrate
+  algorithm against that grid.
+
+### KED-MATRIX-001: MINVERSE Matrix Numeric Exactness Residual
+- **Status**: `open`
+- **Owner**: `BUG-FUNC-025`, bead `oxf-dzfk`
+- **Functions**: `MINVERSE`
+- **Mismatch class**: matrix inversion low-bit numeric exactness
+- **Current handling**: known residual split from W089; scalar `1x1`
+  publication is repaired, but multi-cell inversion rounding remains open
+- **Evidence**:
+  1. `docs/bugs/streams/BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md`
+  2. `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
+  3. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
+  4. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
+- **Representative witnesses**:
+  1. `=MINVERSE({1,2;3,4})`
+- **Next action**: build a compact Excel probe grid for small matrices and
+  compare candidate inversion algorithms before changing the kernel.
 
 ## Smart-Fuzzer Classification Guidance
 Smart-fuzzer comparison output should keep three separate classes:
@@ -150,5 +165,7 @@ region, error-vs-number difference, or affected function, promote that as new
 evidence under the owning bug stream or open a new bug stream.
 
 ## Resolved History
-No resolved entries have been moved here yet. Closed exactness bugs remain in
-their canonical bug streams until we need a compact historical index.
+1. `KED-MISC-001` records the mixed W089 non-statistical residual triage:
+   `VDB`, `MINVERSE(5)`, and `MMULT(5,2)` were repaired under
+   `BUG-FUNC-023`; `BESSELY(2.5,1)` and `MINVERSE({1,2;3,4})` remain active
+   under dedicated entries above.

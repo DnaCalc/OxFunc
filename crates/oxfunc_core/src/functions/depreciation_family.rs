@@ -216,6 +216,7 @@ fn declining_interval_depreciation(
     let mut elapsed = 0.0;
     let mut book = cost;
     let mut total = 0.0;
+    let declining_rate = factor / life;
     while elapsed < end_period - EPSILON && elapsed < life - EPSILON {
         let full_start = elapsed;
         let full_end = (elapsed + 1.0).min(life);
@@ -225,7 +226,7 @@ fn declining_interval_depreciation(
             break;
         }
 
-        let declining = (book * factor / life).min(remaining_basis);
+        let declining = (book * declining_rate).min(remaining_basis);
         let straight = remaining_basis / (life - elapsed);
         let full_period_dep = if no_switch || declining >= straight {
             declining
@@ -516,9 +517,10 @@ mod tests {
                 < 1.0e-12
         );
         assert!(
-            (vdb_kernel(2400.0, 300.0, 120.0, 6.0, 18.0, 2.0, false).unwrap() - 396.3060532647509)
-                .abs()
-                < 1.0e-9
+            vdb_kernel(2400.0, 300.0, 120.0, 6.0, 18.0, 2.0, false)
+                .unwrap()
+                .to_bits()
+                == 0x4078_c4e5_981b_af06
         );
         assert!(
             (vdb_kernel(2400.0, 300.0, 120.0, 6.0, 18.0, 1.5, false).unwrap() - 311.8089366582341)
