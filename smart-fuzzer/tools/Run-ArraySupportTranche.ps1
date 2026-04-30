@@ -1,6 +1,8 @@
 param(
     [string]$RunId = "",
-    [string]$TranchePath = "smart-fuzzer/cache/array-support-first-tranche-v0.json"
+    [string]$TranchePath = "smart-fuzzer/cache/array-support-first-tranche-v0.json",
+    [string]$CaseSetPath = "",
+    [string]$CaseSetTrancheId = ""
 )
 
 Set-StrictMode -Version Latest
@@ -209,6 +211,67 @@ function New-ArraySweepCases {
     return $cases
 }
 
+function Read-ArraySweepCaseSet {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [string]$SelectedTrancheId = ""
+    )
+
+    $resolved = Resolve-Path (Join-Path $RepoRoot $Path)
+    $raw = Get-Content $resolved -Raw
+    $parsed = $raw | ConvertFrom-Json
+
+    $selectedTranche = $null
+    $selectedCaseIds = $null
+    if (-not [string]::IsNullOrWhiteSpace($SelectedTrancheId)) {
+        foreach ($tranche in @($parsed.tranches)) {
+            if ([string]$tranche.tranche_id -eq $SelectedTrancheId) {
+                $selectedTranche = $tranche
+                break
+            }
+        }
+        if ($null -eq $selectedTranche) {
+            throw "case set does not contain tranche_id: $SelectedTrancheId"
+        }
+        $selectedCaseIds = @{}
+        foreach ($caseId in @($selectedTranche.case_ids)) {
+            $selectedCaseIds[[string]$caseId] = $true
+        }
+    }
+
+    $cases = New-Object 'System.Collections.Generic.List[object]'
+    foreach ($case in @($parsed.cases)) {
+        if ($null -ne $selectedCaseIds -and -not $selectedCaseIds.ContainsKey([string]$case.case_id)) {
+            continue
+        }
+        [void]$cases.Add($case)
+    }
+    if ($cases.Count -eq 0) {
+        throw "case set tranche produced zero cases: $SelectedTrancheId"
+    }
+    $surfaces = @($cases | ForEach-Object {
+        if ($_.PSObject.Properties.Name -contains "canonical_surface_name") {
+            [string]$_.canonical_surface_name
+        } else {
+            [string]$_.function_id
+        }
+    } | Sort-Object -Unique)
+    $effectiveTrancheId = if ($null -ne $selectedTranche) {
+        [string]$selectedTranche.tranche_id
+    } elseif ([string]::IsNullOrWhiteSpace([string]$parsed.tranche_id)) {
+        "external-case-set"
+    } else {
+        [string]$parsed.tranche_id
+    }
+    return [ordered]@{
+        tranche_id = $effectiveTrancheId
+        surfaces = $surfaces
+        cases = $cases
+        selected_tranche = $selectedTranche
+        metadata = $parsed
+    }
+}
+
 function Get-DoubleBitsHex {
     param([double]$Value)
     $bytes = [BitConverter]::GetBytes($Value)
@@ -367,7 +430,10 @@ function Invoke-ExcelArrayEvaluation {
                 $anchor.Formula2 = [string]$case.formula_text
                 $anchor.Calculate() | Out-Null
                 try {
-                    $spill = $anchor.SpillingToRange
+                    $spillCandidate = $anchor.SpillingToRange
+                    $null = $spillCandidate.Rows.Count
+                    $null = $spillCandidate.Columns.Count
+                    $spill = $spillCandidate
                 } catch {
                     $spill = $anchor
                 }
@@ -558,22 +624,44 @@ function Write-RoadmapTrace {
         [Parameter(Mandatory = $true)][string]$Path
     )
 
-    $lines = New-Object 'System.Collections.Generic.List[string]'
-    [void]$lines.Add("# W090 Array Support Tranche A Roadmap Trace")
+    $lines = New-Object 'System.Collections.Generic.List[object]'
+    [void]$lines.Add("# Array Support Roadmap Trace")
     [void]$lines.Add("")
     [void]$lines.Add("- Run ID: $RunId")
     [void]$lines.Add("- Tranche: $($Tranche.tranche_id)")
     [void]$lines.Add("- Comparison policy: exact typed equality with bit-exact numeric digests; no tolerance.")
-    [void]$lines.Add("- Surfaces executed: $(@($Tranche.surfaces).Count)")
-    [void]$lines.Add("- Formula cases executed: $(@($Cases).Count)")
+    $surfaceCount = 0
+    foreach ($surface in $Tranche.surfaces) {
+        $surfaceCount += 1
+    }
+    $caseCount = 0
+    foreach ($case in $Cases) {
+        $caseCount += 1
+    }
+    [void]$lines.Add("- Surfaces executed: $surfaceCount")
+    [void]$lines.Add("- Formula cases executed: $caseCount")
     [void]$lines.Add("")
     [void]$lines.Add("## Axes touched")
     [void]$lines.Add("")
-    [void]$lines.Add("- Function family: first non-text successor tranche after W080, focused on scalar numeric math surfaces with array-lift risk.")
-    [void]$lines.Add("- Array position: first argument, later numeric parameter, optional parameter, and same-shape two-array argument cases.")
-    [void]$lines.Add("- Shape: horizontal 1x2 vectors and vertical 2x1 vectors.")
-    [void]$lines.Add("- Result kind: numeric arrays, text arrays from BASE, and per-cell error propagation from ATAN2 zero-vector cells.")
-    [void]$lines.Add("- Optionality: omitted numeric optionals for TRUNC, CEILING.MATH/PRECISE, FLOOR.MATH/PRECISE, and ISO.CEILING.")
+    $categories = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "category" } | Select-Object -ExpandProperty category -Unique | Sort-Object)
+    if ($categories.Count -gt 0) {
+        [void]$lines.Add("- Function family/category: $(($categories | ForEach-Object { [string]$_ }) -join ', ').")
+    } else {
+        [void]$lines.Add("- Function family/category: tranche-defined surface set.")
+    }
+    $riskBands = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "risk_band" } | Select-Object -ExpandProperty risk_band -Unique | Sort-Object)
+    if ($riskBands.Count -gt 0) {
+        [void]$lines.Add("- Risk bands: $(($riskBands | ForEach-Object { [string]$_ }) -join ', ').")
+    }
+    $axes = @($Cases | Select-Object -ExpandProperty axis -Unique | Sort-Object)
+    if ($axes.Count -gt 0) {
+        [void]$lines.Add("- Array argument axes: $(($axes | ForEach-Object { [string]$_ }) -join ', ').")
+    }
+    [void]$lines.Add("- Shape/value pattern: inline array literals supplied by the case set, with exact Excel Formula2 spill capture.")
+    $sources = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "source_manifest" } | Select-Object -ExpandProperty source_manifest -Unique | Sort-Object)
+    if ($sources.Count -gt 0) {
+        [void]$lines.Add("- Scenario seed sources: $(($sources | ForEach-Object { [string]$_ }) -join ', ').")
+    }
     [void]$lines.Add("")
     [void]$lines.Add("## Rollup")
     [void]$lines.Add("")
@@ -597,10 +685,27 @@ function Write-RoadmapTrace {
     $lines | Set-Content -Path $Path -Encoding UTF8
 }
 
-$ResolvedTranchePath = Resolve-Path (Join-Path $RepoRoot $TranchePath)
-$Tranche = Get-Content $ResolvedTranchePath -Raw | ConvertFrom-Json
-$Cases = New-ArraySweepCases $Tranche
+if ([string]::IsNullOrWhiteSpace($CaseSetPath)) {
+    $ResolvedTranchePath = Resolve-Path (Join-Path $RepoRoot $TranchePath)
+    $Tranche = Get-Content $ResolvedTranchePath -Raw | ConvertFrom-Json
+    $Cases = New-ArraySweepCases $Tranche
+} else {
+    $caseSet = Read-ArraySweepCaseSet $CaseSetPath $CaseSetTrancheId
+    $Tranche = [pscustomobject]@{
+        tranche_id = $caseSet.tranche_id
+        surfaces = $caseSet.surfaces
+    }
+    $Cases = $caseSet.cases
+}
 foreach ($case in $Cases) {
+    if ($case.PSObject.Properties.Name -contains "run_id") {
+        $case.run_id = $RunId
+    } else {
+        $case | Add-Member -NotePropertyName run_id -NotePropertyValue $RunId -Force
+    }
+    if (-not ($case.PSObject.Properties.Name -contains "tranche_id") -or [string]::IsNullOrWhiteSpace([string]$case.tranche_id)) {
+        $case | Add-Member -NotePropertyName tranche_id -NotePropertyValue ([string]$Tranche.tranche_id) -Force
+    }
     Add-JsonLine $CasesPath $case
 }
 
@@ -613,7 +718,7 @@ if ($LASTEXITCODE -ne 0) {
 $ExcelEnvironment = Invoke-ExcelArrayEvaluation $Cases $ExcelOutcomesPath
 $ComparisonRollup = Compare-ArrayOutcomes $Cases $LocalOutcomesPath $ExcelOutcomesPath $ComparisonsPath $FailureDir
 
-$Rollup = [ordered]@{
+$Rollup = [pscustomobject]@{
     schema_version = "oxfunc.smart_fuzzer.array_rollup.v0"
     run_id = $RunId
     tranche_id = [string]$Tranche.tranche_id
@@ -636,7 +741,8 @@ $Manifest = [ordered]@{
     generated_utc = (Get-Date).ToUniversalTime().ToString("o")
     git_revision = Get-GitRevision
     git_status_short = Get-GitStatusShort
-    tranche_path = $TranchePath
+    tranche_path = if ([string]::IsNullOrWhiteSpace($CaseSetPath)) { $TranchePath } else { $CaseSetPath }
+    case_set_tranche_id = $CaseSetTrancheId
     tranche_id = [string]$Tranche.tranche_id
     artifacts = [ordered]@{
         cases = "smart-fuzzer/runs/$RunId/cases/cases.jsonl"
@@ -649,9 +755,9 @@ $Manifest = [ordered]@{
     }
 }
 $Manifest | ConvertTo-Json -Depth 100 | Set-Content -Path $ManifestPath -Encoding UTF8
-Write-RoadmapTrace $Tranche $Cases $Rollup $RoadmapPath
+Write-RoadmapTrace -Tranche $Tranche -Cases $Cases -Rollup $Rollup -Path $RoadmapPath
 
-Write-Host "array tranche run complete"
+Write-Host "array tranche run finished"
 Write-Host "run_id=$RunId"
 Write-Host "rollup=$RollupPath"
 Write-Host "comparisons=$ComparisonsPath"

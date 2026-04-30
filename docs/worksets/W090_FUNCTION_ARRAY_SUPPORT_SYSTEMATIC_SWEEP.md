@@ -81,17 +81,22 @@ Out of scope:
    reviewed unless the telemetry proves that exact scope.
 
 ## 7. Current Reading
-1. execution_state: `first_cycle_closed_successor_sweep_ready`
+1. execution_state: `successor_sweep_executed_bugs_open`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_partial`
-4. integration_completeness: `integrated`
+4. integration_completeness: `partial`
 5. open_lanes:
-   - successor array-support tranches beyond the first math scalar-numeric
-     array-lift tranche
+   - `BUG-FUNC-018` broad successor scalar-parameter array-lift gap
+   - `BUG-FUNC-019` complex aggregate array-literal handling gap
+   - `BUG-FUNC-020` `EXPAND` array-valued `pad_with` panic
+   - skipped successor candidates needing richer harness/reference/context
+     handling
    - locale and alternate Excel-version sweeps, out of W090 scope
 6. ready artifacts:
    - `smart-fuzzer/planning/ARRAY_SUPPORT_SYSTEMATIC_SWEEP_PLAN.md`
+   - `smart-fuzzer/planning/ARRAY_SUPPORT_SUCCESSOR_SWEEP_20260430.md`
    - `smart-fuzzer/tools/Build-ArraySupportSweepPlan.ps1`
+   - `smart-fuzzer/tools/Build-ArraySupportExecutableTranches.ps1`
    - `smart-fuzzer/tools/Run-ArraySupportTranche.ps1`
    - generated local cache, reproducible but ignored by default:
      `array-support-candidate-inventory-v0.json`,
@@ -241,3 +246,61 @@ Status axes after this gate:
 3. `integration_completeness`: `integrated`
 4. `open_lanes`: successor unswept array-support tranches outside the closed
    W090 first-cycle scope
+
+### 2026-04-30 Successor Executable Tranche Sweep
+
+Beads: `oxf-b39r`, `oxf-bp23`, `oxf-9pcl`
+
+Added the generated successor case-set builder:
+
+1. `smart-fuzzer/tools/Build-ArraySupportExecutableTranches.ps1`
+2. `smart-fuzzer/planning/ARRAY_SUPPORT_SUCCESSOR_SWEEP_20260430.md`
+
+The builder derives executable case sets from
+`array-support-candidate-inventory-v0.json` and existing scenario manifests,
+then mutates one scalar argument at a time into a duplicate inline array. Rows
+without parseable manifest seeds, or with blocked/known-deviation tags, remain
+skipped telemetry rather than reviewed evidence.
+
+Generated successor case set:
+
+1. executable cases: `139`,
+2. tranches: `8`,
+3. skipped rows: `243`,
+4. skipped blocked/known-deviation rows: `112`,
+5. skipped no-parseable-manifest rows: `131`.
+
+Final run aggregate:
+
+1. exact typed bit matches: `7`,
+2. unexpected mismatches: `131`,
+3. local harness blockers: `1`,
+4. Excel harness blockers after scalar non-spill fallback repair: `0`.
+
+Confirmed issue promotions:
+
+1. `BUG-FUNC-018`, bead `oxf-b39r`: `127` local `#VALUE!` vs Excel array
+   spill mismatches across `69` surfaces and argument axes `arg1`, `arg2`,
+   and `arg3`.
+2. `BUG-FUNC-019`, bead `oxf-bp23`: `IMPRODUCT` and `IMSUM` should consume
+   array literals as aggregate inputs and return scalar complex text results.
+3. `BUG-FUNC-020`, bead `oxf-9pcl`: `EXPAND` with array-valued `pad_with`
+   panics locally where Excel returns `#VALUE!`.
+
+Infrastructure notes:
+
+1. `Run-ArraySupportTranche.ps1` can now execute generated case sets and a
+   selected `-CaseSetTrancheId`.
+2. Excel capture falls back to the anchor cell when `SpillingToRange` is not a
+   usable Range, avoiding false Excel harness blockers for scalar non-spill
+   outcomes.
+3. `array_tranche_local_eval` records local panics per case as
+   `local_eval_panic` so a single implementation panic cannot abort a tranche.
+
+Status axes after this successor pass:
+
+1. `scope_completeness`: `scope_complete` for this successor sweep pass
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: `BUG-FUNC-018`, `BUG-FUNC-019`, `BUG-FUNC-020`, and skipped
+   successor candidates needing richer harness/reference/context handling

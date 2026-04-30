@@ -105,6 +105,44 @@ The comparison policy is exact typed equality with bit-exact numeric digests.
 Pass-heavy rows stay compact; full packets are intentionally reserved for
 failures and harness blockers.
 
+`Run-ArraySupportTranche.ps1` can also run generated successor case sets:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -CaseSetPath smart-fuzzer\cache\array-support-successor-executable-tranches-v0.json
+```
+
+To execute one generated tranche from the case set:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -CaseSetPath smart-fuzzer\cache\array-support-successor-executable-tranches-v0.json `
+  -CaseSetTrancheId w090-successor-statistical-functions
+```
+
+## Build-ArraySupportExecutableTranches.ps1
+
+Builds executable W090 successor case sets from the array-support candidate
+inventory plus existing scenario manifests. It extracts parseable scalar
+function-call seeds, turns one scalar argument at a time into a duplicate inline
+array, and emits local typed arguments for the generic array tranche evaluator.
+Rows without a parseable manifest seed are recorded as skipped telemetry rather
+than silently treated as reviewed.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-ArraySupportExecutableTranches.ps1
+```
+
+Default output:
+
+```text
+smart-fuzzer/cache/array-support-successor-executable-tranches-v0.json
+```
+
+The output is an execution input only. It does not assert that skipped rows were
+reviewed, and it does not replace family-specific replay design where a later
+tranche needs references, host context, or richer array values.
+
 ## Build-StaticRiskIndex.ps1
 
 Builds a derived function risk index for exploration ordering. It consumes:

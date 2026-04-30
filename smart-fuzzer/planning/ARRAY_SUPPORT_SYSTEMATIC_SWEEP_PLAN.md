@@ -1,6 +1,6 @@
 # W090 Array Support Systematic Sweep Plan
 
-Status: `first_cycle_closed_successor_sweep_ready`
+Status: `successor_sweep_executed_bugs_open`
 
 ## 1. Purpose
 
@@ -177,3 +177,31 @@ from prose test lists. The next owner should:
    chosen tranche,
 5. preserve the pass-light rule: aggregate pass telemetry only, full packets
    only for mismatches or harness blockers.
+
+## 10. Successor Sweep Result
+
+The first generated successor case-set sweep ran on 2026-04-30. Detailed
+pass-light telemetry is recorded in:
+
+```text
+smart-fuzzer/planning/ARRAY_SUPPORT_SUCCESSOR_SWEEP_20260430.md
+```
+
+Final aggregate:
+
+1. generated executable cases: `139`,
+2. executed category tranches: `8`,
+3. exact typed bit matches: `7`,
+4. unexpected mismatches: `131`,
+5. local harness blockers: `1`,
+6. Excel harness blockers after runner fallback repair: `0`.
+
+Confirmed follow-up bug streams:
+
+1. `BUG-FUNC-018`: broad successor scalar-parameter array-lift gap.
+2. `BUG-FUNC-019`: complex aggregate array-literal handling gap.
+3. `BUG-FUNC-020`: `EXPAND` array-valued `pad_with` panic.
+
+The successor pass does not claim the full supported array-support surface has
+been reviewed. Skipped rows remain explicit telemetry and need richer
+harness/reference/context handling before they can become evidence.

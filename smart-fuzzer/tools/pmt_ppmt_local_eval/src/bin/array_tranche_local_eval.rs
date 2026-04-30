@@ -9,6 +9,7 @@ use serde_json::Value as JsonValue;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::PathBuf;
 
 #[derive(Debug)]
@@ -324,6 +325,16 @@ fn harness_error_outcome(message: impl Into<String>) -> Outcome {
     }
 }
 
+fn panic_payload_to_string(payload: &(dyn std::any::Any + Send)) -> String {
+    if let Some(message) = payload.downcast_ref::<String>() {
+        message.clone()
+    } else if let Some(message) = payload.downcast_ref::<&'static str>() {
+        (*message).to_string()
+    } else {
+        "unknown panic payload".to_string()
+    }
+}
+
 fn outcome_digest(outcome: &Outcome) -> &str {
     match outcome {
         Outcome::Number { digest_payload, .. }
@@ -412,10 +423,20 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     };
 
     let resolver = NoResolver;
-    let outcome =
+    let eval_result = catch_unwind(AssertUnwindSafe(|| {
         eval_surface_value_call(&case.function_id, &args, &resolver, None, None, None, None)
-            .map(value_to_outcome)
-            .unwrap_or_else(error_outcome);
+    }));
+
+    let (execution_status, outcome) = match eval_result {
+        Ok(result) => (
+            "ok",
+            result.map(value_to_outcome).unwrap_or_else(error_outcome),
+        ),
+        Err(payload) => (
+            "local_eval_panic",
+            harness_error_outcome(panic_payload_to_string(payload.as_ref())),
+        ),
+    };
 
     OutcomeRecord {
         schema_version: "oxfunc.smart_fuzzer.array_outcome.v0",
@@ -423,7 +444,7 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
         function_id: case.function_id,
         formula_text: case.formula_text,
         evaluator_id: "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
-        execution_status: "ok",
+        execution_status,
         outcome,
     }
 }
