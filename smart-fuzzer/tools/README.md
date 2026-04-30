@@ -51,6 +51,32 @@ smart-fuzzer/cache/roadmap-trace-template-v0.json
 These outputs are derived planning cache files for W089. They are not
 comparison evidence.
 
+## Build-ScenarioSeedExecutableCases.ps1
+
+Builds a W089 executable case set from existing function-lane scenario manifests
+by extracting literal-argument calls for non-blocked, non-known-deviation
+surfaces. It is intentionally conservative: rows that need references, nested
+formula evaluation, providers, formula binding, or other unavailable fixtures
+are recorded as skipped rather than forced through the pure value evaluator.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-ScenarioSeedExecutableCases.ps1
+```
+
+Default output:
+
+```text
+smart-fuzzer/cache/scenario-seed-executable-cases-v0.json
+```
+
+The output can be executed by the generic case-set path in
+`Run-ArraySupportTranche.ps1`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -CaseSetPath smart-fuzzer\cache\scenario-seed-executable-cases-v0.json
+```
+
 ## Build-ArraySupportSweepPlan.ps1
 
 Builds the W090 array-support candidate inventory, first-tranche plan, compact

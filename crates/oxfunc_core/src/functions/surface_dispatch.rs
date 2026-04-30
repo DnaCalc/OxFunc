@@ -2296,6 +2296,7 @@ pub fn eval_surface_extended_call(
 
 fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
     match function_id {
+        FUNC_ID_ABS => Some(&[0]),
         FUNC_ID_ADDRESS => Some(&[0, 1]),
         FUNC_ID_BETADIST | FUNC_ID_BETAINV | FUNC_ID_BINOMDIST | FUNC_ID_CONFIDENCE
         | FUNC_ID_CONFIDENCE_T | FUNC_ID_CRITBINOM | FUNC_ID_EXPONDIST | FUNC_ID_FDIST
@@ -4103,6 +4104,31 @@ mod tests {
                 EvalArray::from_rows(vec![vec![
                     ArrayCellValue::Number(5.5),
                     ArrayCellValue::Number(5.5),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn observed_scalar_array_lift_handles_abs_arrays() {
+        let got = eval_test_surface_value(
+            FUNC_ID_ABS,
+            &[array_arg(vec![vec![
+                ArrayCellValue::Number(-1.0),
+                ArrayCellValue::Text(ExcelText::from_interop_assignment("bad")),
+                ArrayCellValue::Number(2.0),
+            ]])],
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Number(2.0),
                 ]])
                 .unwrap()
             )

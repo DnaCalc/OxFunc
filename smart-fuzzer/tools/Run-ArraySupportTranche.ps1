@@ -341,6 +341,13 @@ function Convert-ExcelErrorTypeToCode {
         [int]$ErrorType,
         [string]$Text
     )
+    switch ($Text) {
+        "#SPILL!" { return "Spill" }
+        "#CALC!" { return "Calc" }
+        "#FIELD!" { return "Field" }
+        "#BLOCKED!" { return "Blocked" }
+        "#CONNECT!" { return "Connect" }
+    }
     switch ($ErrorType) {
         1 { return "Null" }
         2 { return "Div0" }
@@ -350,21 +357,12 @@ function Convert-ExcelErrorTypeToCode {
         6 { return "Num" }
         7 { return "NA" }
         8 { return "GettingData" }
-        14 { return "Spill" }
-        15 { return "Calc" }
+        9 { return "Spill" }
+        14 { return "Calc" }
         16 { return "Field" }
         17 { return "Blocked" }
         18 { return "Connect" }
-        default {
-            switch ($Text) {
-                "#SPILL!" { return "Spill" }
-                "#CALC!" { return "Calc" }
-                "#FIELD!" { return "Field" }
-                "#BLOCKED!" { return "Blocked" }
-                "#CONNECT!" { return "Connect" }
-                default { return "ExcelErrorType:$ErrorType" }
-            }
-        }
+        default { return "ExcelErrorType:$ErrorType" }
     }
 }
 
