@@ -187,13 +187,15 @@ All W089 reports must include:
 4. `integration_completeness`,
 5. explicit `open_lanes` while any axis remains partial.
 
-Current planning status:
+Current execution status:
 
-1. `execution_state`: `planning_artifacts_ready_execution_gated`
+1. `execution_state`: `comprehensive_seed_run_recorded`
 2. `scope_completeness`: `scope_partial`
 3. `target_completeness`: `target_partial`
 4. `integration_completeness`: `partial`
-5. `open_lanes`: first sweeping run execution and post-run triage
+5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-023`, remaining unswept invocation
+   dimensions, and harness/reference/context-rich seeds not admitted to the
+   pure value comparator
 
 ## 12. Execution Notes
 
@@ -251,3 +253,53 @@ Status axes after this pass:
 3. `target_completeness`: `target_partial`
 4. `integration_completeness`: `partial`
 5. `open_lanes`: first sweeping run execution and post-run triage
+
+### 2026-04-30 Comprehensive Seed Exploration
+
+Run note: `smart-fuzzer/planning/COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md`
+
+The first broad W089 execution used the dimension inventory, existing
+function-lane scenario manifests, the generic local value evaluator, and the
+Excel COM comparison harness to exercise parseable literal argument seeds
+across the current pure-function target boundary.
+
+Key run artifacts:
+
+1. `w089-comprehensive-seed-20260430-004`: `339` cases, `288` exact typed bit
+   matches, `48` unexpected mismatches, `3` Excel harness blockers.
+2. `w090-successor-all-20260430-smart-wide-001`: `139` successor
+   array-support cases, `98` exact typed bit matches, `41` unexpected
+   mismatches, `0` harness blockers.
+3. `w089-finance-reference-20260430-001`: `1,000,000` generated/local finance
+   cases, `256` Excel samples, `197` exact matches, `59` expected PMT/PPMT
+   deviations, `0` unexpected mismatches.
+4. `w089-excel-throughput-20260430-001`: measured Excel throughput
+   `44,430.04` cases/sec for the simple benchmark mix on this host.
+
+Repairs landed or recorded:
+
+1. `BUG-FUNC-022`: `ABS` unary array-lift gap fixed on
+   `add56eeb6a0fdc49055fcab4222bb680a30c05ff`.
+2. Smart-fuzzer tooling repaired zero-argument seed emission, dynamic Excel
+   `#SPILL!` / `#CALC!` error classification, and stale POWER known-deviation
+   classification.
+
+Residual open lanes:
+
+1. `BUG-FUNC-021` / `oxf-simj`: statistical numeric exactness drift.
+2. `BUG-FUNC-023` / `oxf-i45e`: W089 non-statistical exactness and matrix
+   shape drift.
+3. `oxf-fckb`: blocked known PMT/PPMT/IPMT exactness drift, used as reference
+   mismatch evidence only.
+4. deferred RTD, LET/LAMBDA/formula-binding, provider/cube/web/external,
+   locale/version, stochastic statistical-comparator, and rich reference/context
+   dimensions.
+
+Status axes after this comprehensive seed pass:
+
+1. `execution_state`: `comprehensive_seed_run_recorded`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: `BUG-FUNC-021`, `BUG-FUNC-023`, PMT/PPMT/IPMT blocked
+   reference mismatch lane, and unexecuted/deferred invocation-space dimensions

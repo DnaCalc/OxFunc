@@ -443,8 +443,6 @@ function Get-KnownDeviationTags {
         "PMT" { Add-Tag $tags "expected_known_financial_exactness_drift" }
         "PPMT" { Add-Tag $tags "expected_known_financial_exactness_drift" }
         "IPMT" { Add-Tag $tags "expected_known_financial_exactness_drift" }
-        "POWER" { Add-Tag $tags "fresh_confirmation_required_before_known_bug" }
-        "OP_POWER" { Add-Tag $tags "fresh_confirmation_required_before_known_bug" }
     }
     return Get-Tags $tags
 }
@@ -510,6 +508,7 @@ function Get-RiskAndSelectionTags {
     if ([string]::IsNullOrWhiteSpace($Row.arity_min) -or [string]::IsNullOrWhiteSpace($Row.arity_max)) { Add-Tag $tags "metadata_missing_arity" }
     if ($Row.interesting -eq "true") { Add-Tag $tags "catalog_interesting" }
     if ($Row.category -match "(?i)financial|statistical|lookup|reference|text|database|operator") { Add-Tag $tags "family_priority_candidate" }
+    if ($Row.canonical_surface_name -match "^(POWER|OP_POWER)$") { Add-Tag $tags "fresh_confirmation_sentinel_not_known_deviation" }
 
     return Get-Tags $tags
 }

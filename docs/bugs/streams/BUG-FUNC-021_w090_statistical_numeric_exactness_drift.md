@@ -51,6 +51,21 @@ Affected representative functions:
 `GAMMAINV`, `HYPGEOMDIST`, `NEGBINOMDIST`, `NORMSDIST`, `NORMSINV`, `TDIST`,
 `TINV`, `PERCENTRANK`, `CONFIDENCE.T`, and `Z.TEST`.
 
+The W089 comprehensive seed replay adds broader manifest-seed coverage for the
+same no-tolerance statistical exactness lane:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -RunId w089-comprehensive-seed-20260430-004 `
+  -CaseSetPath smart-fuzzer\cache\scenario-seed-executable-cases-v0.json
+```
+
+Run `w089-comprehensive-seed-20260430-004` executed `339` cases and left `48`
+unexpected mismatches. The statistical subset overlaps this stream, including
+beta/gamma/chi/f/t distribution and inverse routines, normal standard
+compatibility aliases, `KURT`, `SKEW`, `SKEW.P`, `PERCENTRANK`,
+`CONFIDENCE.T`, and `Z.TEST`.
+
 ## Repair Direction
 Do not hide this under array-support. Minimize each function to its scalar
 formula, compare the scalar result against Excel Value2 with exact numeric
@@ -69,7 +84,9 @@ that into a versioned evidence record rather than relaxing equality.
 ## Evidence
 1. `smart-fuzzer/runs/w090-repair-final-compatibility-001/`
 2. `smart-fuzzer/runs/w090-repair-final-statistical-functions-001/`
-3. Bead: `oxf-simj`
+3. `smart-fuzzer/runs/w090-successor-all-20260430-smart-wide-001/`
+4. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
+5. Bead: `oxf-simj`
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded
