@@ -3,7 +3,7 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-019`
 - **Opened**: `2026-04-30`
-- **Status**: `open`
+- **Status**: `closed`
 - **Owner workset**: `W090`
 - **Bead**: `oxf-bp23`
 
@@ -11,7 +11,7 @@
 - **Reported against ref**: `8b140b50bf7f07153f87ac197cf99c470cad9ae8`
 - **Reproduced on ref**: current W090 successor sweep working tree
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `unfixed`
+- **Fixed in ref**: `pending repair commit`
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -51,15 +51,35 @@ Treat this as aggregate array-literal admission, not shape-preserving scalar
 lift. Confirm whether adjacent complex aggregate functions share the same
 flattening policy before changing a shared adapter.
 
+## Repair Outcome
+The repair keeps scalar complex binary functions (`IMDIV`, `IMPOWER`, `IMSUB`)
+on scalar preparation so dispatch-level array lift can preserve result shape,
+while `IMSUM` and `IMPRODUCT` now flatten array literals through the aggregate
+value expansion path.
+
+The same pass also changed complex text number rendering to Excel-style
+15-significant-digit output for these engineering functions and changed
+`IMTAN`/`IMCOT` to the stable closed-form identities that match the live Excel
+baseline for the W090 probe.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`
+   - `1254` passed, `0` failed, `1` ignored.
+2. `smart-fuzzer/runs/w090-repair-final-engineering-functions-001`
+   - `32/32` exact typed bit matches.
+
 ## Evidence
 1. `smart-fuzzer/runs/w090-successor-engineering-functions-final-002/`
 2. `smart-fuzzer/planning/ARRAY_SUPPORT_SUCCESSOR_SWEEP_20260430.md`
 3. Bead: `oxf-bp23`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
-- [ ] similar-risk scan recorded
-- [ ] spec/matrix/contract updated if required
-- [ ] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded
+- [x] validation recorded
+- [x] root cause recorded
+- [x] similar-risk scan recorded
+- [x] spec/matrix/contract updated if required
+- [x] handoff filed if required
+
+No handoff was required for this local OxFunc repair.

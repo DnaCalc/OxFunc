@@ -3,7 +3,7 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-020`
 - **Opened**: `2026-04-30`
-- **Status**: `open`
+- **Status**: `closed`
 - **Owner workset**: `W090`
 - **Bead**: `oxf-9pcl`
 
@@ -11,7 +11,7 @@
 - **Reported against ref**: `8b140b50bf7f07153f87ac197cf99c470cad9ae8`
 - **Reproduced on ref**: current W090 successor sweep working tree
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `unfixed`
+- **Fixed in ref**: `pending repair commit`
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -19,6 +19,21 @@
 - **Root cause summary**: `EXPAND` reaches an `unreachable!()` path in
   `dynamic_array_reshape_family.rs` when `pad_with` is array-valued. Current
   Excel returns `#VALUE!` for the same probe.
+
+## Repair Outcome
+`EXPAND` now rejects non-singleton array-valued `pad_with` as an ordinary
+`#VALUE!` worksheet error instead of materializing a per-cell error or reaching
+an unreachable path. The adjacent `SORT` scalar `sort_index` array lane was
+also moved out of the generic dispatcher fallback and into the dynamic-array
+family parser so it uses the top-left sort index while preserving the full
+sorted source array.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`
+   - `1254` passed, `0` failed, `1` ignored.
+2. `smart-fuzzer/runs/w090-repair-final-lookup-and-reference-functions-001`
+   - `20/20` exact typed bit matches.
 
 ## Reproduction
 Run:
@@ -53,9 +68,11 @@ worksheet error instead of panicking.
 4. Bead: `oxf-9pcl`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
-- [ ] similar-risk scan recorded
-- [ ] spec/matrix/contract updated if required
-- [ ] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded
+- [x] validation recorded
+- [x] root cause recorded
+- [x] similar-risk scan recorded
+- [x] spec/matrix/contract updated if required
+- [x] handoff filed if required
+
+No handoff was required for this local OxFunc repair.

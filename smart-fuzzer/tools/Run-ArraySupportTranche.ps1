@@ -218,7 +218,7 @@ function Read-ArraySweepCaseSet {
     )
 
     $resolved = Resolve-Path (Join-Path $RepoRoot $Path)
-    $raw = Get-Content $resolved -Raw
+    $raw = Get-Content $resolved -Raw -Encoding UTF8
     $parsed = $raw | ConvertFrom-Json
 
     $selectedTranche = $null
@@ -514,7 +514,7 @@ function Invoke-ExcelArrayEvaluation {
 function Read-JsonLinesByCase {
     param([string]$Path)
     $map = @{}
-    foreach ($line in Get-Content $Path) {
+    foreach ($line in Get-Content $Path -Encoding UTF8) {
         if ([string]::IsNullOrWhiteSpace($line)) {
             continue
         }
@@ -687,7 +687,7 @@ function Write-RoadmapTrace {
 
 if ([string]::IsNullOrWhiteSpace($CaseSetPath)) {
     $ResolvedTranchePath = Resolve-Path (Join-Path $RepoRoot $TranchePath)
-    $Tranche = Get-Content $ResolvedTranchePath -Raw | ConvertFrom-Json
+    $Tranche = Get-Content $ResolvedTranchePath -Raw -Encoding UTF8 | ConvertFrom-Json
     $Cases = New-ArraySweepCases $Tranche
 } else {
     $caseSet = Read-ArraySweepCaseSet $CaseSetPath $CaseSetTrancheId

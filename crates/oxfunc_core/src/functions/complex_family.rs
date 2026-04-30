@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, prepare_arg_values_only, prepare_args_values_only,
+    PreparedArgValue, expand_arg_values_only, prepare_arg_values_only, prepare_args_values_only,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
@@ -226,7 +226,15 @@ impl ParsedComplex {
         )
     }
     fn tan(self) -> Result<Self, ComplexFamilyEvalError> {
-        self.sin().div(self.cos())
+        let denom = (2.0 * self.re).cos() + (2.0 * self.im).cosh();
+        if denom == 0.0 {
+            return Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Num));
+        }
+        Ok(Self::new(
+            (2.0 * self.re).sin() / denom,
+            (2.0 * self.im).sinh() / denom,
+            None,
+        ))
     }
     fn sinh(self) -> Self {
         Self::new(
@@ -243,7 +251,15 @@ impl ParsedComplex {
         )
     }
     fn cot(self) -> Result<Self, ComplexFamilyEvalError> {
-        self.cos().div(self.sin())
+        let denom = (2.0 * self.im).cosh() - (2.0 * self.re).cos();
+        if denom == 0.0 {
+            return Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Num));
+        }
+        Ok(Self::new(
+            (2.0 * self.re).sin() / denom,
+            -(2.0 * self.im).sinh() / denom,
+            None,
+        ))
     }
     fn sec(self) -> Result<Self, ComplexFamilyEvalError> {
         ParsedComplex::new(1.0, 0.0, None).div(self.cos())
@@ -288,7 +304,48 @@ fn normalize_display_number(n: f64) -> f64 {
     }
 }
 fn number_to_excel_text(n: f64) -> String {
-    format!("{}", normalize_display_number(n)).replace('e', "E")
+    let n = normalize_display_number(n);
+    if n == 0.0 {
+        return "0".to_string();
+    }
+    if !n.is_finite() {
+        return format!("{}", n).replace('e', "E");
+    }
+
+    let sign = if n < 0.0 { "-" } else { "" };
+    let scientific = format!("{:.14e}", n.abs());
+    let Some((mantissa, exponent_text)) = scientific.split_once('e') else {
+        return format!("{}", n).replace('e', "E");
+    };
+    let Ok(exponent) = exponent_text.parse::<isize>() else {
+        return format!("{}", n).replace('e', "E");
+    };
+
+    let digits: String = mantissa.chars().filter(|ch| *ch != '.').collect();
+    let decimal_pos = exponent + 1;
+    let mut out = if decimal_pos <= 0 {
+        format!("0.{}{}", "0".repeat((-decimal_pos) as usize), digits)
+    } else if decimal_pos as usize >= digits.len() {
+        format!(
+            "{}{}",
+            digits,
+            "0".repeat(decimal_pos as usize - digits.len())
+        )
+    } else {
+        let split = decimal_pos as usize;
+        format!("{}.{}", &digits[..split], &digits[split..])
+    };
+
+    if let Some(dot) = out.find('.') {
+        while out.ends_with('0') {
+            out.pop();
+        }
+        if out.len() == dot + 1 {
+            out.pop();
+        }
+    }
+
+    format!("{sign}{out}").replace('e', "E")
 }
 fn format_complex_text(value: ParsedComplex, suffix: char) -> String {
     let re = normalize_zero(value.re);
@@ -439,6 +496,20 @@ fn suffix_from_operands(values: &[ParsedComplex]) -> Result<char, ComplexFamilyE
     }
     Ok(suffix.unwrap_or('i'))
 }
+
+fn expand_complex_aggregate_args(
+    args: &[CallArgValue],
+    resolver: &impl ReferenceResolver,
+) -> Result<Vec<PreparedArgValue>, ComplexFamilyEvalError> {
+    let mut values = Vec::new();
+    for arg in args {
+        values.extend(
+            expand_arg_values_only(arg, resolver).map_err(ComplexFamilyEvalError::Coercion)?,
+        );
+    }
+    Ok(values)
+}
+
 fn unary_text(
     args: &[CallArgValue],
     resolver: &impl ReferenceResolver,
@@ -708,8 +779,7 @@ pub fn eval_imsum_surface(
             actual: args.len(),
         });
     }
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(ComplexFamilyEvalError::Coercion)?;
+    let prepared = expand_complex_aggregate_args(args, resolver)?;
     let values = prepared
         .iter()
         .map(prepared_scalar_to_complex)
@@ -736,8 +806,7 @@ pub fn eval_improduct_surface(
             actual: args.len(),
         });
     }
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(ComplexFamilyEvalError::Coercion)?;
+    let prepared = expand_complex_aggregate_args(args, resolver)?;
     let values = prepared
         .iter()
         .map(prepared_scalar_to_complex)
@@ -784,6 +853,21 @@ mod tests {
 
     fn txt(s: &str) -> CallArgValue {
         CallArgValue::Eval(text_from_string(s.to_string()))
+    }
+    fn text_array_row(values: &[&str]) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Array(
+            crate::value::EvalArray::from_rows(vec![
+                values
+                    .iter()
+                    .map(|value| {
+                        crate::value::ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                            value,
+                        ))
+                    })
+                    .collect(),
+            ])
+            .unwrap(),
+        ))
     }
     fn num(n: f64) -> CallArgValue {
         CallArgValue::Eval(EvalValue::Number(n))
@@ -879,6 +963,62 @@ mod tests {
         assert_eq!(
             eval_imaginary_surface(&[txt("3+4i")], &NoResolver),
             Ok(EvalValue::Number(4.0))
+        );
+    }
+
+    #[test]
+    fn aggregate_complex_functions_flatten_array_literals() {
+        assert_eq!(
+            text_result(
+                eval_improduct_surface(
+                    &[text_array_row(&["3+4i", "3+4i"]), txt("1-2i")],
+                    &NoResolver,
+                )
+                .unwrap()
+            ),
+            "41+38i"
+        );
+        assert_eq!(
+            text_result(
+                eval_improduct_surface(
+                    &[txt("3+4i"), text_array_row(&["1-2i", "1-2i"])],
+                    &NoResolver,
+                )
+                .unwrap()
+            ),
+            "7-24i"
+        );
+        assert_eq!(
+            text_result(
+                eval_imsum_surface(
+                    &[text_array_row(&["3+4i", "3+4i"]), txt("1-2i")],
+                    &NoResolver,
+                )
+                .unwrap()
+            ),
+            "7+6i"
+        );
+        assert_eq!(
+            text_result(
+                eval_imsum_surface(
+                    &[txt("3+4i"), text_array_row(&["1-2i", "1-2i"])],
+                    &NoResolver,
+                )
+                .unwrap()
+            ),
+            "5"
+        );
+    }
+
+    #[test]
+    fn tan_and_cot_use_excel_stable_identities() {
+        assert_eq!(
+            text_result(eval_imtan_surface(&[txt("3+4i")], &NoResolver).unwrap()),
+            "-0.000187346204629478+0.999355987381473i"
+        );
+        assert_eq!(
+            text_result(eval_imcot_surface(&[txt("3+4i")], &NoResolver).unwrap()),
+            "-0.000187587737983659-1.00064439247156i"
         );
     }
 

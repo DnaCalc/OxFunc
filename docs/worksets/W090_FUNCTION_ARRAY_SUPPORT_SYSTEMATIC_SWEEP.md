@@ -81,14 +81,12 @@ Out of scope:
    reviewed unless the telemetry proves that exact scope.
 
 ## 7. Current Reading
-1. execution_state: `successor_sweep_executed_bugs_open`
+1. execution_state: `successor_repair_executed_numeric_drift_open`
 2. scope_completeness: `scope_complete`
 3. target_completeness: `target_partial`
 4. integration_completeness: `partial`
 5. open_lanes:
-   - `BUG-FUNC-018` broad successor scalar-parameter array-lift gap
-   - `BUG-FUNC-019` complex aggregate array-literal handling gap
-   - `BUG-FUNC-020` `EXPAND` array-valued `pad_with` panic
+   - `BUG-FUNC-021` W090 statistical numeric exactness drift
    - skipped successor candidates needing richer harness/reference/context
      handling
    - locale and alternate Excel-version sweeps, out of W090 scope
@@ -297,10 +295,27 @@ Infrastructure notes:
 3. `array_tranche_local_eval` records local panics per case as
    `local_eval_panic` so a single implementation panic cannot abort a tranche.
 
-Status axes after this successor pass:
+Repair replay:
+
+1. `BUG-FUNC-018`, `BUG-FUNC-019`, and `BUG-FUNC-020` are closed by the W090
+   repair pass.
+2. Final repair run aggregate across `w090-repair-final-*`: `139` executed,
+   `98` exact typed bit matches, `41` unexpected mismatches, `0` local harness
+   blockers, `0` Excel harness blockers.
+3. `w090-repair-final-engineering-functions-001`: `32/32` exact typed bit
+   matches.
+4. `w090-repair-final-lookup-and-reference-functions-001`: `20/20` exact
+   typed bit matches.
+5. `w090-repair-final-text-functions-001`: `1/1` exact typed bit matches,
+   confirming the UTF-8 JSONL reader fix for non-BMP text comparison.
+6. The remaining `41` unexpected mismatches are numeric bit-level drift in
+   compatibility-statistical and modern statistical scalar kernels after array
+   admission has succeeded. They are tracked as `BUG-FUNC-021` / `oxf-simj`.
+
+Status axes after this successor repair pass:
 
 1. `scope_completeness`: `scope_complete` for this successor sweep pass
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: `BUG-FUNC-018`, `BUG-FUNC-019`, `BUG-FUNC-020`, and skipped
+4. `open_lanes`: `BUG-FUNC-021` and skipped
    successor candidates needing richer harness/reference/context handling

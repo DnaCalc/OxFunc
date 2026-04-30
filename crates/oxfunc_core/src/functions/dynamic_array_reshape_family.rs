@@ -80,7 +80,9 @@ fn scalar_cell(arg: &PreparedArgValue) -> ArrayCellValue {
         | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
             ArrayCellValue::Error(WorksheetErrorCode::Value)
         }
-        PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
+        PreparedArgValue::Eval(EvalValue::Array(_)) => {
+            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        }
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => ArrayCellValue::EmptyCell,
     }
 }
@@ -89,6 +91,16 @@ fn materialize_array_arg(arg: &PreparedArgValue) -> EvalArray {
     match arg {
         PreparedArgValue::Eval(EvalValue::Array(array)) => array.clone(),
         other => EvalArray::from_scalar(scalar_cell(other)),
+    }
+}
+
+fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
     }
 }
 
@@ -378,10 +390,16 @@ pub fn eval_expand_prepared(
         return Err(DynamicArrayReshapeEvalError::DimensionTooSmall);
     }
 
-    let pad_cell = args
-        .get(3)
-        .map(scalar_cell)
-        .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA));
+    let pad_cell = if let Some(arg) = args.get(3) {
+        if matches!(arg, PreparedArgValue::Eval(EvalValue::Array(_))) {
+            return Err(DynamicArrayReshapeEvalError::Preparation(
+                CoercionError::UnsupportedValueKind("scalar_pad"),
+            ));
+        }
+        scalar_cell(arg)
+    } else {
+        ArrayCellValue::Error(WorksheetErrorCode::NA)
+    };
     let mut cells = Vec::with_capacity(target_rows * target_cols);
     for row in 0..target_rows {
         for col in 0..target_cols {
@@ -675,6 +693,17 @@ fn parse_sort_index(
 ) -> Result<usize, DynamicArrayReshapeEvalError> {
     let Some(arg) = arg else {
         return Ok(0);
+    };
+    let scalarized;
+    let arg = match arg {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            scalarized = array
+                .get(0, 0)
+                .map(prepared_from_array_cell)
+                .ok_or(DynamicArrayReshapeEvalError::InvalidSortIndex)?;
+            &scalarized
+        }
+        other => other,
     };
     if matches!(
         arg,
@@ -1138,6 +1167,81 @@ mod tests {
 
     fn num(n: f64) -> CallArgValue {
         CallArgValue::Eval(EvalValue::Number(n))
+    }
+
+    #[test]
+    fn expand_rejects_array_valued_pad_with_as_value_error() {
+        let err = eval_expand_surface(
+            &[
+                array(vec![
+                    vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                    vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                ]),
+                num(3.0),
+                num(4.0),
+                array(vec![vec![
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+                ]]),
+            ],
+            &NoResolver,
+        )
+        .unwrap_err();
+
+        assert_eq!(
+            map_dynamic_array_reshape_error_to_ws(&err),
+            WorksheetErrorCode::Value
+        );
+    }
+
+    #[test]
+    fn sort_uses_top_left_cell_for_array_valued_sort_index() {
+        let got = eval_sort_surface(
+            &[
+                array(vec![
+                    vec![
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ],
+                ]),
+                array(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(1.0),
+                ]]),
+                num(1.0),
+            ],
+            &NoResolver,
+        )
+        .unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![
+                        ArrayCellValue::Number(1.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    ],
+                    vec![
+                        ArrayCellValue::Number(3.0),
+                        ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+                    ],
+                ])
+                .unwrap()
+            )
+        );
     }
 
     #[test]

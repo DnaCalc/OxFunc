@@ -72,6 +72,40 @@ Aggregate:
 4. local harness blockers: `1`
 5. Excel harness blockers after fallback repair: `0`
 
+## Repair Replay
+
+The W090 bug repair pass closed the three successor bug streams promoted from
+the initial run:
+
+1. `BUG-FUNC-018`: scalar-parameter array admission.
+2. `BUG-FUNC-019`: `IMPRODUCT` / `IMSUM` aggregate array-literal handling.
+3. `BUG-FUNC-020`: `EXPAND` array-valued `pad_with` panic.
+
+Final repair runs:
+
+| Run id | Cases | Rollup |
+|---|---:|---|
+| `w090-repair-final-compatibility-001` | 68 | `exact_typed_bit_match=32`, `unexpected_mismatch=36` |
+| `w090-repair-final-engineering-functions-001` | 32 | `exact_typed_bit_match=32` |
+| `w090-repair-final-financial-functions-001` | 2 | `exact_typed_bit_match=2` |
+| `w090-repair-final-logical-functions-001` | 6 | `exact_typed_bit_match=6` |
+| `w090-repair-final-lookup-and-reference-functions-001` | 20 | `exact_typed_bit_match=20` |
+| `w090-repair-final-math-and-trigonometry-functions-001` | 4 | `exact_typed_bit_match=4` |
+| `w090-repair-final-statistical-functions-001` | 6 | `exact_typed_bit_match=1`, `unexpected_mismatch=5` |
+| `w090-repair-final-text-functions-001` | 1 | `exact_typed_bit_match=1` |
+
+Final repair aggregate:
+
+1. total executed cases: `139`
+2. exact typed bit matches: `98`
+3. unexpected mismatches: `41`
+4. local harness blockers: `0`
+5. Excel harness blockers: `0`
+
+The remaining `41` mismatches are numeric bit-level exactness drift in
+statistical and compatibility-statistical scalar kernels after array admission
+has succeeded. They are split to `BUG-FUNC-021` / bead `oxf-simj`.
+
 ## Deviation Classes
 
 ### BUG-FUNC-018
@@ -114,8 +148,6 @@ This pass added or hardened:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`:
-   - `BUG-FUNC-018`
-   - `BUG-FUNC-019`
-   - `BUG-FUNC-020`
+   - `BUG-FUNC-021`
    - unexecuted skipped candidate rows needing richer harness/reference/context
      handling
