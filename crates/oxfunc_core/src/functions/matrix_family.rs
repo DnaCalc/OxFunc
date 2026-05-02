@@ -111,9 +111,6 @@ fn matrix_from_value(value: &EvalValue) -> Result<Vec<Vec<f64>>, WorksheetErrorC
 fn value_from_matrix(matrix: &[Vec<f64>]) -> Result<EvalValue, WorksheetErrorCode> {
     let rows = matrix.len();
     let cols = matrix.first().map_or(0, Vec::len);
-    if rows == 1 && cols == 1 {
-        return Ok(EvalValue::Number(matrix[0][0]));
-    }
 
     let cells = matrix
         .iter()
@@ -504,9 +501,14 @@ mod tests {
     }
 
     #[test]
-    fn munit_one_publishes_scalar_like_excel() {
+    fn munit_one_preserves_array_value() {
         let got = eval_munit_surface(&[CallArgValue::Eval(EvalValue::Number(1.0))], &NoResolver);
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(1.0)]],).unwrap()
+            ))
+        );
     }
 
     #[test]
@@ -590,14 +592,16 @@ mod tests {
     }
 
     #[test]
-    fn scalar_numeric_inputs_publish_one_by_one_results_as_scalars() {
+    fn scalar_numeric_inputs_preserve_one_by_one_matrix_results_as_arrays() {
         assert_eq!(
             eval_mdeterm_surface(&[CallArgValue::Eval(EvalValue::Number(5.0))], &NoResolver),
             Ok(EvalValue::Number(5.0))
         );
         assert_eq!(
             eval_minverse_surface(&[CallArgValue::Eval(EvalValue::Number(5.0))], &NoResolver),
-            Ok(EvalValue::Number(0.2))
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(0.2)]],).unwrap()
+            ))
         );
         assert_eq!(
             eval_mmult_surface(
@@ -607,7 +611,9 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(10.0))
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(10.0)]],).unwrap()
+            ))
         );
     }
 

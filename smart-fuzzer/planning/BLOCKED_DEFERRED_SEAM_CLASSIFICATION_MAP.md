@@ -11,6 +11,12 @@ This note defines how W089 separates function mismatches from missing context,
 blocked host seams, deferred provider lanes, async real-time lanes, and
 formula-binding lanes that belong to the OxFml formula-processing seam.
 
+The current default smart-fuzzer work is scoped to OxFunc-accessible
+invocations: direct value-surface calls plus simple typed fixtures that can be
+mirrored by a single Excel `Formula2` evaluation. The lane classes below mark
+axes that are still part of the broader DNA Calc invocation space but need
+extra harnessing before comparison evidence is meaningful.
+
 ## 1. Builder
 
 Default command:
@@ -41,7 +47,9 @@ Blocked/deferred lane classes:
 10. `async_realtime_provider_deferred`
 11. `formula_binding_scope_deferred`
 
-These lane classes are coverage facts. They are not function-semantic failures.
+These lane classes are coverage facts. They are not function-semantic failures
+and should not create OxFunc repair work unless a later harnessed run produces
+a minimized unexpected mismatch.
 
 ## 3. Classification Rules
 
@@ -83,6 +91,11 @@ Every run rollup must include:
 3. count by category,
 4. skipped Excel quota due to blocked lane,
 5. fixture requirement for each untested blocked lane.
+
+Reports should label these lanes as broader DNA Calc fixture/seam work rather
+than as missing OxFunc-accessible coverage. The default OxFunc-accessible
+coverage denominator should include only axes admitted by the run manifest and
+current comparator.
 
 ## 5. Current Status Axes
 

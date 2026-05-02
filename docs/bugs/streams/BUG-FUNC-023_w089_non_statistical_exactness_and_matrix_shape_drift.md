@@ -19,7 +19,7 @@
 - **Root cause summary**: the W089 comprehensive seed replay had combined four
   distinct lanes under one mixed bug stream:
   1. matrix 1x1 result publication was returning local arrays where Excel
-     publishes scalar values,
+     worksheet cells publish scalar values,
   2. `VDB` accumulated the declining-balance interval with `(book * factor) /
      life` where the Excel witness matches `book * (factor / life)`,
   3. `BESSELY` still has scalar numerical exactness drift,
@@ -50,6 +50,13 @@ Original confirmed representative rows:
 All representative rows have local and Excel execution status `ok`.
 
 ## Repair Outcome
+Superseded note, `2026-05-02`: follow-up nested `TYPE` probes showed that
+Excel's worksheet-cell publication scalar is not the same as the function's
+nested return value for array-returning functions. The earlier scalar collapse
+for computed `1x1` matrix outputs has therefore been undone in OxFunc. The
+direct-comparator scalar-vs-array observation remains a publication/comparator
+seam issue, not a matrix function result-shape repair.
+
 The `2026-04-30` repair pass landed the clear OxFunc-owned rows and split the
 remaining exactness rows into focused successor streams.
 
@@ -69,13 +76,13 @@ Post-repair rollup:
 5. Excel environment: Excel `16.0`, build `19929`, workbook Compatibility
    Version `2`.
 
-Rows repaired under this stream:
+Rows repaired or reclassified under this stream:
 1. `=VDB(2400,300,120,6,18)` now matches Excel exactly at
    `number:0x4078c4e5981baf06`.
-2. `=MINVERSE(5)` now publishes scalar
-   `number:0x3fc999999999999a`.
-3. `=MMULT(5,2)` now publishes scalar
-   `number:0x4024000000000000`.
+2. `=MINVERSE(5)` final worksheet publication remains scalar in Excel, but
+   OxFunc now preserves the internal `1x1` array result.
+3. `=MMULT(5,2)` final worksheet publication remains scalar in Excel, but
+   OxFunc now preserves the internal `1x1` array result.
 
 Rows intentionally split to successor exactness streams:
 1. `=BESSELY(2.5,1)` remains local `number:0x3fc2ad722ba3570c` versus Excel

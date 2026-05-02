@@ -1536,6 +1536,23 @@ mod tests {
     }
 
     #[test]
+    fn take_one_by_one_slice_preserves_array_value() {
+        let source = array(vec![
+            vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+            vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+        ]);
+
+        let got = eval_take_surface(&[source, num(1.0), num(1.0)], &NoResolver).unwrap();
+
+        assert_eq!(
+            got,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::Number(1.0)]],).unwrap()
+            )
+        );
+    }
+
+    #[test]
     fn filter_if_empty_scalar_text_returns_scalar_text() {
         let source = array(vec![
             vec![ArrayCellValue::Number(1.0)],

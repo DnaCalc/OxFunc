@@ -221,18 +221,6 @@ pub(crate) fn trimrange_kernel(
         }
     }
 
-    if out_rows == 1 && out_cols == 1 {
-        return Ok(match &cells[0] {
-            ArrayCellValue::Number(n) => EvalValue::Number(*n),
-            ArrayCellValue::Text(t) => EvalValue::Text(t.clone()),
-            ArrayCellValue::Logical(b) => EvalValue::Logical(*b),
-            ArrayCellValue::Error(code) => EvalValue::Error(*code),
-            ArrayCellValue::EmptyCell => {
-                EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
-            }
-        });
-    }
-
     Ok(EvalValue::Array(
         EvalArray::new(
             ArrayShape {
@@ -449,10 +437,10 @@ mod tests {
     // --- Single cell result ---
 
     #[test]
-    fn trimrange_single_cell_result_returns_scalar() {
+    fn trimrange_single_cell_result_preserves_array_value() {
         let arr = make_array(2, 2, vec![n(42.0), e(), e(), e()]);
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
-        assert_eq!(got, EvalValue::Number(42.0));
+        assert_eq!(got, EvalValue::Array(make_array(1, 1, vec![n(42.0)])));
     }
 
     // --- Invalid trim type ---

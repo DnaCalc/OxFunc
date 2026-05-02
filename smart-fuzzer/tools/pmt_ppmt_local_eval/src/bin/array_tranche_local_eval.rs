@@ -1,11 +1,14 @@
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+use oxfunc_core::resolver::{
+    CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
+};
 use oxfunc_core::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceLike,
+    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,
 };
 use serde::Serialize;
 use serde_json::Value as JsonValue;
+use std::collections::BTreeMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
@@ -18,6 +21,16 @@ struct CaseRecord {
     function_id: String,
     formula_text: String,
     args: Vec<JsonValue>,
+    cell_fixture: Vec<FixtureRecord>,
+    formula_cell: Option<String>,
+    now_serial: Option<f64>,
+    random_value: Option<f64>,
+}
+
+#[derive(Debug)]
+struct FixtureRecord {
+    target: String,
+    value: JsonValue,
 }
 
 #[derive(Debug, Serialize)]
@@ -66,9 +79,12 @@ enum Outcome {
     },
 }
 
-struct NoResolver;
+struct CaseResolver {
+    by_target: BTreeMap<String, EvalValue>,
+    caller: Option<CallerContext>,
+}
 
-impl ReferenceResolver for NoResolver {
+impl ReferenceResolver for CaseResolver {
     fn capabilities(&self) -> ResolverCapabilities {
         ResolverCapabilities::permissive_local()
     }
@@ -77,9 +93,16 @@ impl ReferenceResolver for NoResolver {
         &self,
         reference: &ReferenceLike,
     ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
-        })
+        self.by_target
+            .get(&reference.target)
+            .cloned()
+            .ok_or_else(|| RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+    }
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        self.caller.clone()
     }
 }
 
@@ -151,11 +174,35 @@ fn input_field<'a>(input: &'a JsonValue, field: &str) -> Result<&'a JsonValue, S
         .ok_or_else(|| format!("input value is missing field: {field}"))
 }
 
+fn optional_input_field<'a>(input: &'a JsonValue, field: &str) -> Option<&'a JsonValue> {
+    input.as_object().and_then(|object| object.get(field))
+}
+
 fn required_string_field(input: &JsonValue, field: &str) -> Result<String, String> {
     input_field(input, field)?
         .as_str()
         .map(ToOwned::to_owned)
         .ok_or_else(|| format!("case field is not a string: {field}"))
+}
+
+fn optional_string_field(input: &JsonValue, field: &str) -> Result<Option<String>, String> {
+    match optional_input_field(input, field) {
+        None | Some(JsonValue::Null) => Ok(None),
+        Some(value) => value
+            .as_str()
+            .map(|text| Some(text.to_owned()))
+            .ok_or_else(|| format!("case field is not a string: {field}")),
+    }
+}
+
+fn optional_f64_field(input: &JsonValue, field: &str) -> Result<Option<f64>, String> {
+    match optional_input_field(input, field) {
+        None | Some(JsonValue::Null) => Ok(None),
+        Some(value) => value
+            .as_f64()
+            .map(Some)
+            .ok_or_else(|| format!("case field is not a number: {field}")),
+    }
 }
 
 fn case_from_json(input: JsonValue) -> Result<CaseRecord, String> {
@@ -169,12 +216,57 @@ fn case_from_json(input: JsonValue) -> Result<CaseRecord, String> {
             ));
         }
     };
+    let cell_fixture = match optional_input_field(&input, "cell_fixture") {
+        None | Some(JsonValue::Null) => Vec::new(),
+        Some(JsonValue::Array(items)) => items
+            .iter()
+            .map(|item| {
+                Ok(FixtureRecord {
+                    target: required_string_field(item, "target")?,
+                    value: input_field(item, "value")?.clone(),
+                })
+            })
+            .collect::<Result<Vec<_>, String>>()?,
+        Some(JsonValue::Object(object)) if object.is_empty() => Vec::new(),
+        Some(JsonValue::Object(_)) => vec![FixtureRecord {
+            target: required_string_field(input_field(&input, "cell_fixture")?, "target")?,
+            value: input_field(input_field(&input, "cell_fixture")?, "value")?.clone(),
+        }],
+        Some(other) => return Err(format!("cell_fixture is not an array: {other}")),
+    };
+
     Ok(CaseRecord {
         case_id: required_string_field(&input, "case_id")?,
         function_id: required_string_field(&input, "function_id")?,
         formula_text: required_string_field(&input, "formula_text")?,
         args,
+        cell_fixture,
+        formula_cell: optional_string_field(&input, "formula_cell")?,
+        now_serial: optional_f64_field(&input, "now_serial")?,
+        random_value: optional_f64_field(&input, "random_value")?,
     })
+}
+
+fn parse_reference_kind(kind: &str) -> Result<ReferenceKind, String> {
+    match kind {
+        "A1" | "a1" | "single_cell" => Ok(ReferenceKind::A1),
+        "Area" | "area" | "rectangular_area" => Ok(ReferenceKind::Area),
+        "MultiArea" | "multi_area" | "same_sheet_multi_area" => Ok(ReferenceKind::MultiArea),
+        "ThreeD" | "three_d" | "cross_sheet_reference" => Ok(ReferenceKind::ThreeD),
+        "Structured" | "structured" | "structured_reference" => Ok(ReferenceKind::Structured),
+        "SpillAnchor" | "spill_anchor" => Ok(ReferenceKind::SpillAnchor),
+        other => Err(format!("unsupported reference kind: {other}")),
+    }
+}
+
+fn input_to_reference(input: &JsonValue) -> Result<ReferenceLike, String> {
+    let kind = input_field(input, "reference_kind")?
+        .as_str()
+        .ok_or_else(|| "reference input has non-string reference_kind".to_string())?;
+    let target = input_field(input, "target")?
+        .as_str()
+        .ok_or_else(|| "reference input has non-string target".to_string())?;
+    Ok(ReferenceLike::new(parse_reference_kind(kind)?, target))
 }
 
 fn input_to_call_arg(input: &JsonValue) -> Result<CallArgValue, String> {
@@ -210,7 +302,43 @@ fn input_to_call_arg(input: &JsonValue) -> Result<CallArgValue, String> {
         "array" => Ok(CallArgValue::Eval(EvalValue::Array(input_to_array(
             input_field(input, "rows")?,
         )?))),
+        "reference" => Ok(CallArgValue::Reference(input_to_reference(input)?)),
         other => Err(format!("unsupported input kind: {other}")),
+    }
+}
+
+fn input_to_eval_value(input: &JsonValue) -> Result<EvalValue, String> {
+    match input_kind(input)? {
+        "number" => Ok(EvalValue::Number(
+            input_field(input, "value")?
+                .as_f64()
+                .ok_or_else(|| "number input has non-numeric value".to_string())?,
+        )),
+        "text" => {
+            let value = input_field(input, "value")?
+                .as_str()
+                .ok_or_else(|| "text input has non-string value".to_string())?;
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment(value)))
+        }
+        "logical" => Ok(EvalValue::Logical(
+            input_field(input, "value")?
+                .as_bool()
+                .ok_or_else(|| "logical input has non-boolean value".to_string())?,
+        )),
+        "error" => {
+            let code = input_field(input, "code")?
+                .as_str()
+                .ok_or_else(|| "error input has non-string code".to_string())?;
+            Ok(EvalValue::Error(parse_worksheet_error_code(code)?))
+        }
+        "array" => Ok(EvalValue::Array(input_to_array(input_field(input, "rows")?)?)),
+        "empty_cell" => Ok(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]])
+                .ok_or_else(|| "invalid empty-cell fixture shape".to_string())?,
+        )),
+        "reference" => Ok(EvalValue::Reference(input_to_reference(input)?)),
+        "missing_arg" => Err("missing_arg is not a fixture value".to_string()),
+        other => Err(format!("unsupported fixture value kind: {other}")),
     }
 }
 
@@ -401,6 +529,29 @@ fn value_to_outcome(value: EvalValue) -> Outcome {
     }
 }
 
+fn parse_caller_context(cell: Option<&str>) -> Option<CallerContext> {
+    let cell = cell?;
+    let mut col = 0usize;
+    let mut row_text = String::new();
+    for ch in cell.chars() {
+        if ch.is_ascii_alphabetic() {
+            let upper = ch.to_ascii_uppercase() as u8;
+            col = col * 26 + usize::from(upper - b'A' + 1);
+        } else if ch.is_ascii_digit() {
+            row_text.push(ch);
+        }
+    }
+    let row = row_text.parse::<usize>().ok()?;
+    if row == 0 || col == 0 {
+        return None;
+    }
+    Some(CallerContext {
+        prefix: None,
+        row,
+        col,
+    })
+}
+
 fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     let args = match case
         .args
@@ -422,9 +573,38 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
         }
     };
 
-    let resolver = NoResolver;
+    let fixture_result = case
+        .cell_fixture
+        .iter()
+        .map(|fixture| Ok((fixture.target.clone(), input_to_eval_value(&fixture.value)?)))
+        .collect::<Result<BTreeMap<_, _>, String>>();
+    let resolver = match fixture_result {
+        Ok(by_target) => CaseResolver {
+            by_target,
+            caller: parse_caller_context(case.formula_cell.as_deref()),
+        },
+        Err(message) => {
+            return OutcomeRecord {
+                schema_version: "oxfunc.smart_fuzzer.array_outcome.v0",
+                case_id: case.case_id,
+                function_id: case.function_id,
+                formula_text: case.formula_text,
+                evaluator_id: "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+                execution_status: "local_fixture_materialization_error",
+                outcome: harness_error_outcome(message),
+            };
+        }
+    };
     let eval_result = catch_unwind(AssertUnwindSafe(|| {
-        eval_surface_value_call(&case.function_id, &args, &resolver, None, None, None, None)
+        eval_surface_value_call(
+            &case.function_id,
+            &args,
+            &resolver,
+            case.now_serial,
+            case.random_value,
+            None,
+            None,
+        )
     }));
 
     let (execution_status, outcome) = match eval_result {

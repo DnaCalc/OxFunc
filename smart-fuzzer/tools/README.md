@@ -83,6 +83,43 @@ default pure OxFunc comparison universe; keep them for a dedicated OxFml
 admission-negative lane rather than sending them to the Excel comparison
 runner.
 
+## Build-AxisWitnessCaseSet.ps1
+
+Builds a W089 axis-witness case set. Each runnable axis is represented by a
+control/variant pair where Excel should observe a different result after one
+invocation-space dimension changes; each individual call is then compared
+between direct OxFunc value evaluation and Excel `Formula2`.
+
+Here `runnable` means runnable in the current OxFunc-accessible comparison
+region: direct OxFunc value calls, simple typed fixtures, and a matching Excel
+`Formula2` evaluation. The generated case set intentionally does not force
+broader DNA Calc axes through this runner when they need OxFml, XLL, provider,
+locale, workbook, spill-neighborhood, structured-reference, or rich-value
+harnesses.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-AxisWitnessCaseSet.ps1
+```
+
+Default output:
+
+```text
+smart-fuzzer/cache/axis-witness-case-set-v0.json
+```
+
+Execute it through the generic case-set path:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -CaseSetPath smart-fuzzer\cache\axis-witness-case-set-v0.json
+```
+
+The case-set metadata also records broader DNA Calc axis witnesses that need
+separate fixtures or harnesses, such as workbook compatibility, locale,
+volatile/statistical comparators, OxFml prepared calls, XLL/provider seams,
+cross-sheet and structured references, callable values, and rich-value returns.
+Those rows are coverage facts, not OxFunc mismatches.
+
 ## Build-ArraySupportSweepPlan.ps1
 
 Builds the W090 array-support candidate inventory, first-tranche plan, compact

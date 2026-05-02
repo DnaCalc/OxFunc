@@ -145,9 +145,17 @@ Track:
 
 ## 3. Current Target Universe Boundary
 
-The default W089 target universe is the broad pure-function differential
-surface: OxFunc value calls and prepared OxFml calls whose inputs, providers,
-reference fixtures, and comparison semantics are explicit in the run manifest.
+The default W089 target universe is the OxFunc-accessible differential surface:
+OxFunc value calls, simple typed fixtures, and Excel `Formula2` comparisons
+whose inputs, reference fixtures, and comparison semantics are explicit in the
+run manifest.
+
+This is narrower than the full DNA Calc invocation space. The full space also
+contains OxFml parse/bind/preparation behavior, XLL bridge publication, host
+providers, workbook state, locale and version sweeps, spill-neighborhood
+behavior, structured references, cross-sheet topology, callable formation, and
+rich values. Those axes remain tracked, but they need larger DNA Calc fixtures
+or seam-specific harnesses before they can produce fair comparison evidence.
 
 In the current default target universe:
 
@@ -170,7 +178,7 @@ passed OxFml/FEC/F3E admission. They may be kept as admission-negative evidence
 for OxFml, but they must not be sent to the Excel COM comparison lane as
 semantic parity cases.
 
-Explicitly deferred from the current pure target universe:
+Explicitly deferred from the current OxFunc-accessible target universe:
 
 1. `RTD` and other async real-time subscription behavior, because comparison
    needs a host subscription provider, scheduler, topic lifecycle, and

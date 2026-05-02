@@ -11,3 +11,4 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HANDOFF-OXFUNC-001","OxFml->OxFunc","Operator value surface and array-lift expansion","acknowledged","OxFml W059","W073","2026-04-07","2026-04-07"
 "HANDOFF-OXFUNC-002","OxFml->OxFunc","Multi-area value materialization Style A","acknowledged","OxFml W059","W076","2026-04-07","2026-04-07"
 "HANDOFF-OXFUNC-003","OxFml->OxFunc","Corpus IF empty-text condition and floating comparison follow-on","acknowledged","OxFml corpus follow-up","W077","2026-04-08","2026-04-08"
+"HO-FN-010","OxFunc->OxFml","1x1 array result publication seam","filed","W089","OxFml/DNA Calc result-completion and smart-fuzzer comparator seam","2026-05-02",""

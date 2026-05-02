@@ -310,6 +310,131 @@ function New-HarnessErrorOutcome {
     return [ordered]@{ kind = "harness_error"; message = $Message; digest_payload = "harness_error:$Message" }
 }
 
+function Get-CaseProperty {
+    param(
+        [Parameter(Mandatory = $true)]$Case,
+        [Parameter(Mandatory = $true)][string]$Name
+    )
+    if ($Case.PSObject.Properties.Name -contains $Name) {
+        return $Case.$Name
+    }
+    return $null
+}
+
+function Get-CaseStringProperty {
+    param(
+        [Parameter(Mandatory = $true)]$Case,
+        [Parameter(Mandatory = $true)][string]$Name,
+        [string]$Default = ""
+    )
+    $value = Get-CaseProperty $Case $Name
+    if ($null -eq $value) {
+        return $Default
+    }
+    return [string]$value
+}
+
+function Get-CaseArrayProperty {
+    param(
+        [Parameter(Mandatory = $true)]$Case,
+        [Parameter(Mandatory = $true)][string]$Name
+    )
+    $value = Get-CaseProperty $Case $Name
+    if ($null -eq $value) {
+        return @()
+    }
+    if ($value -is [pscustomobject] -and @($value.PSObject.Properties).Count -eq 0) {
+        return @()
+    }
+    if ($value -is [System.Array]) {
+        return @($value)
+    }
+    return @($value)
+}
+
+function Get-ValueKind {
+    param([Parameter(Mandatory = $true)]$Value)
+    if ($Value.PSObject.Properties.Name -contains "kind") {
+        return [string]$Value.kind
+    }
+    throw "fixture/input value is missing kind"
+}
+
+function Get-ExcelErrorFormula {
+    param([string]$Code)
+    switch ($Code) {
+        "Null" { return "=#NULL!" }
+        "Div0" { return "=1/0" }
+        "Value" { return "=VALUE(""x"")" }
+        "Ref" { return "=INDEX(A1,2,2)" }
+        "Name" { return "=not_a_real_name" }
+        "Num" { return "=SQRT(-1)" }
+        "NA" { return "=NA()" }
+        "Spill" { return "=SEQUENCE(0)" }
+        "Calc" { return "=FILTER({1},{FALSE})" }
+        default { throw "unsupported Excel fixture error code: $Code" }
+    }
+}
+
+function Set-ExcelCellFromTypedValue {
+    param(
+        [Parameter(Mandatory = $true)]$Cell,
+        [Parameter(Mandatory = $true)]$Value
+    )
+    switch (Get-ValueKind $Value) {
+        "number" { $Cell.Value2 = [double]$Value.value }
+        "text" { $Cell.Value2 = [string]$Value.value }
+        "logical" { $Cell.Value2 = [bool]$Value.value }
+        "empty_cell" { $Cell.ClearContents() | Out-Null }
+        "error" { $Cell.Formula2 = Get-ExcelErrorFormula ([string]$Value.code) }
+        default { throw "unsupported scalar fixture value kind: $($Value.kind)" }
+    }
+}
+
+function Set-ExcelRangeFromTypedArray {
+    param(
+        [Parameter(Mandatory = $true)]$Range,
+        [Parameter(Mandatory = $true)]$Rows
+    )
+    $rowValues = @($Rows)
+    if ($rowValues.Count -eq 0) {
+        throw "array fixture has no rows"
+    }
+    $firstRow = @($rowValues[0])
+    $rowCount = $rowValues.Count
+    $colCount = $firstRow.Count
+    if ($colCount -eq 0) {
+        throw "array fixture has no columns"
+    }
+    if ([int]$Range.Rows.Count -ne $rowCount -or [int]$Range.Columns.Count -ne $colCount) {
+        throw "array fixture shape ${rowCount}x${colCount} does not match target $($Range.Address($false, $false))"
+    }
+    for ($r = 1; $r -le $rowCount; $r += 1) {
+        $cells = @($rowValues[$r - 1])
+        if ($cells.Count -ne $colCount) {
+            throw "array fixture row has inconsistent column count"
+        }
+        for ($c = 1; $c -le $colCount; $c += 1) {
+            Set-ExcelCellFromTypedValue $Range.Cells.Item($r, $c) $cells[$c - 1]
+        }
+    }
+}
+
+function Set-ExcelFixture {
+    param(
+        [Parameter(Mandatory = $true)]$Worksheet,
+        [Parameter(Mandatory = $true)]$Fixture
+    )
+    $target = [string]$Fixture.target
+    $range = $Worksheet.Range($target)
+    $value = $Fixture.value
+    if ((Get-ValueKind $value) -eq "array") {
+        Set-ExcelRangeFromTypedArray $range @($value.rows)
+    } else {
+        Set-ExcelCellFromTypedValue $range.Cells.Item(1, 1) $value
+    }
+}
+
 function Get-OutcomeDigest {
     param($Outcome)
     return [string]$Outcome.digest_payload
@@ -424,7 +549,16 @@ function Invoke-ExcelArrayEvaluation {
         foreach ($case in $Cases) {
             try {
                 $worksheet.Cells.Clear() | Out-Null
-                $anchor = $worksheet.Range("A1")
+                $formulaCell = $null
+                $fixtures = @(Get-CaseArrayProperty $case "cell_fixture")
+                foreach ($fixture in $fixtures) {
+                    Set-ExcelFixture $worksheet $fixture
+                }
+                $formulaCell = Get-CaseStringProperty $case "formula_cell"
+                if ([string]::IsNullOrWhiteSpace($formulaCell)) {
+                    $formulaCell = if ($fixtures.Count -gt 0) { "J10" } else { "A1" }
+                }
+                $anchor = $worksheet.Range($formulaCell)
                 $anchor.Formula2 = [string]$case.formula_text
                 $anchor.Calculate() | Out-Null
                 try {
@@ -462,6 +596,7 @@ function Invoke-ExcelArrayEvaluation {
                     formula_text = [string]$case.formula_text
                     evaluator_id = "excel.com.dynamic_array_spill_capture/0.1.0"
                     execution_status = "ok"
+                    formula_cell = $formulaCell
                     spill_address = [string]$spill.Address($false, $false)
                     outcome = $outcome
                 })
@@ -474,6 +609,7 @@ function Invoke-ExcelArrayEvaluation {
                     formula_text = [string]$case.formula_text
                     evaluator_id = "excel.com.dynamic_array_spill_capture/0.1.0"
                     execution_status = "excel_case_harness_error"
+                    formula_cell = if ($null -eq $formulaCell) { $null } else { $formulaCell }
                     spill_address = $null
                     outcome = (New-HarnessErrorOutcome $_.Exception.Message)
                 })
@@ -490,6 +626,7 @@ function Invoke-ExcelArrayEvaluation {
                 formula_text = [string]$case.formula_text
                 evaluator_id = "excel.com.dynamic_array_spill_capture/0.1.0"
                 execution_status = "excel_harness_blocked"
+                formula_cell = $null
                 spill_address = $null
                 outcome = (New-HarnessErrorOutcome $_.Exception.Message)
             })
@@ -546,6 +683,14 @@ function Compare-ArrayOutcomes {
         by_classification = [ordered]@{}
         by_function = [ordered]@{}
         mismatch_case_ids = New-Object 'System.Collections.Generic.List[string]'
+        axis_witness_pairs = [ordered]@{
+            total_pairs = 0
+            differentiated_pairs = 0
+            not_differentiated_pairs = 0
+            blocked_or_incomplete_pairs = 0
+            by_axis_tag = [ordered]@{}
+            pairs = New-Object 'System.Collections.Generic.List[object]'
+        }
     }
 
     foreach ($case in $Cases) {
@@ -565,6 +710,8 @@ function Compare-ArrayOutcomes {
             $classification = "excel_harness_blocked"
         } elseif ($localDigest -eq $excelDigest) {
             $classification = "exact_typed_bit_match"
+        } elseif ((Get-CaseArrayProperty $case "known_deviation_tags") -contains "expected_known_financial_exactness_drift") {
+            $classification = "known_expected_deviation"
         }
 
         $comparison = [ordered]@{
@@ -575,6 +722,10 @@ function Compare-ArrayOutcomes {
             canonical_surface_name = [string]$case.canonical_surface_name
             case_tag = [string]$case.case_tag
             axis = [string]$case.axis
+            axis_pair_id = Get-CaseStringProperty $case "axis_pair_id"
+            axis_role = Get-CaseStringProperty $case "axis_role"
+            axis_group = Get-CaseStringProperty $case "axis_group"
+            axis_tag = Get-CaseStringProperty $case "axis_tag"
             formula_text = [string]$case.formula_text
             classification = $classification
             local_execution_status = if ($null -eq $local) { "missing" } else { [string]$local.execution_status }
@@ -610,6 +761,72 @@ function Compare-ArrayOutcomes {
                 excel = $excel
             } | ConvertTo-Json -Depth 100 | Set-Content -Path $packetPath -Encoding UTF8
         }
+    }
+
+    $pairGroups = @($Cases | Where-Object {
+        -not [string]::IsNullOrWhiteSpace((Get-CaseStringProperty $_ "axis_pair_id"))
+    } | Group-Object { Get-CaseStringProperty $_ "axis_pair_id" })
+    foreach ($pairGroup in $pairGroups) {
+        $pairCases = @($pairGroup.Group)
+        $control = @($pairCases | Where-Object { (Get-CaseStringProperty $_ "axis_role") -eq "control" } | Select-Object -First 1)
+        $variant = @($pairCases | Where-Object { (Get-CaseStringProperty $_ "axis_role") -eq "variant" } | Select-Object -First 1)
+        $axisGroup = if ($pairCases.Count -gt 0) { Get-CaseStringProperty $pairCases[0] "axis_group" } else { "" }
+        $axisTag = if ($pairCases.Count -gt 0) { Get-CaseStringProperty $pairCases[0] "axis_tag" } else { "" }
+        if ([string]::IsNullOrWhiteSpace($axisTag)) { $axisTag = "(unknown)" }
+        if (-not $rollup.axis_witness_pairs.by_axis_tag.Contains($axisTag)) {
+            $rollup.axis_witness_pairs.by_axis_tag[$axisTag] = [ordered]@{
+                total = 0
+                differentiated = 0
+                not_differentiated = 0
+                blocked_or_incomplete = 0
+            }
+        }
+
+        $pairClass = "blocked_or_incomplete"
+        $controlDigest = ""
+        $variantDigest = ""
+        if ($control.Count -eq 1 -and $variant.Count -eq 1) {
+            $controlRecord = $excelByCase[[string]$control[0].case_id]
+            $variantRecord = $excelByCase[[string]$variant[0].case_id]
+            if ($null -ne $controlRecord -and $null -ne $variantRecord -and
+                [string]$controlRecord.execution_status -eq "ok" -and
+                [string]$variantRecord.execution_status -eq "ok") {
+                $controlDigest = Get-RecordDigest $controlRecord
+                $variantDigest = Get-RecordDigest $variantRecord
+                $pairClass = if ($controlDigest -ne $variantDigest) {
+                    "differentiated"
+                } else {
+                    "not_differentiated"
+                }
+            }
+        }
+
+        $rollup.axis_witness_pairs.total_pairs += 1
+        $rollup.axis_witness_pairs.by_axis_tag[$axisTag].total += 1
+        switch ($pairClass) {
+            "differentiated" {
+                $rollup.axis_witness_pairs.differentiated_pairs += 1
+                $rollup.axis_witness_pairs.by_axis_tag[$axisTag].differentiated += 1
+            }
+            "not_differentiated" {
+                $rollup.axis_witness_pairs.not_differentiated_pairs += 1
+                $rollup.axis_witness_pairs.by_axis_tag[$axisTag].not_differentiated += 1
+            }
+            default {
+                $rollup.axis_witness_pairs.blocked_or_incomplete_pairs += 1
+                $rollup.axis_witness_pairs.by_axis_tag[$axisTag].blocked_or_incomplete += 1
+            }
+        }
+        [void]$rollup.axis_witness_pairs.pairs.Add([ordered]@{
+            axis_pair_id = $pairGroup.Name
+            axis_group = $axisGroup
+            axis_tag = $axisTag
+            classification = $pairClass
+            control_case_id = if ($control.Count -eq 1) { [string]$control[0].case_id } else { $null }
+            variant_case_id = if ($variant.Count -eq 1) { [string]$variant[0].case_id } else { $null }
+            control_excel_digest = $controlDigest
+            variant_excel_digest = $variantDigest
+        })
     }
     return $rollup
 }
@@ -655,6 +872,10 @@ function Write-RoadmapTrace {
     if ($axes.Count -gt 0) {
         [void]$lines.Add("- Array argument axes: $(($axes | ForEach-Object { [string]$_ }) -join ', ').")
     }
+    $axisTags = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "axis_tag" } | Select-Object -ExpandProperty axis_tag -Unique | Sort-Object)
+    if ($axisTags.Count -gt 0) {
+        [void]$lines.Add("- Invocation-space axis tags: $(($axisTags | ForEach-Object { [string]$_ }) -join ', ').")
+    }
     [void]$lines.Add("- Shape/value pattern: inline array literals supplied by the case set, with exact Excel Formula2 spill capture.")
     $sources = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "source_manifest" } | Select-Object -ExpandProperty source_manifest -Unique | Sort-Object)
     if ($sources.Count -gt 0) {
@@ -665,6 +886,9 @@ function Write-RoadmapTrace {
     [void]$lines.Add("")
     foreach ($key in $Rollup.by_classification.Keys) {
         [void]$lines.Add("- ${key}: $($Rollup.by_classification[$key])")
+    }
+    if ($Rollup.PSObject.Properties.Name -contains "axis_witness_pairs") {
+        [void]$lines.Add("- axis witness pairs: total=$($Rollup.axis_witness_pairs.total_pairs), differentiated=$($Rollup.axis_witness_pairs.differentiated_pairs), not_differentiated=$($Rollup.axis_witness_pairs.not_differentiated_pairs), blocked_or_incomplete=$($Rollup.axis_witness_pairs.blocked_or_incomplete_pairs)")
     }
     [void]$lines.Add("")
     [void]$lines.Add("## Function highlights")
@@ -725,6 +949,7 @@ $Rollup = [pscustomobject]@{
     by_classification = $ComparisonRollup.by_classification
     by_function = $ComparisonRollup.by_function
     mismatch_case_ids = $ComparisonRollup.mismatch_case_ids
+    axis_witness_pairs = $ComparisonRollup.axis_witness_pairs
     excel_environment = $ExcelEnvironment
     comparison_policy = "exact_typed_bit_match_no_tolerance"
     failure_packet_dir = "smart-fuzzer/runs/$RunId/failure_packets"

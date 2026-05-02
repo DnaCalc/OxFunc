@@ -27,6 +27,35 @@ Keep them compact, aggregatable, and cheap to discard or regenerate. Preserve
 detailed narrative and promotion effort for failures, minimized mismatches, and
 small representative pass samples that explain coverage.
 
+## Current Scope Boundary
+
+The current OxFunc smart-fuzzer focus is the OxFunc-accessible region of the
+invocation space. A case is OxFunc-accessible when both sides can be described
+by:
+
+1. direct OxFunc value-surface inputs,
+2. simple typed cell/reference fixtures supported by the local resolver,
+3. a single Excel `Formula2` evaluation with matching workbook setup,
+4. an exact typed comparison policy that does not depend on host services,
+   parser/binder state, or external providers.
+
+Those cases are eligible for the default local Rust plus Excel comparison
+runner. Mismatches from this region can become ordinary OxFunc bug streams
+after minimization.
+
+Some invocation-space axes are real Excel/DNA Calc axes but are outside this
+default OxFunc-accessible region. Examples include workbook compatibility
+sweeps, alternate date systems, locale profiles, OxFml prepared-call behavior,
+XLL bridge behavior, provider/cube/web host state, cross-sheet or structured
+references, spill-neighborhood behavior, inline callable formation, and rich
+values. These axes need bigger DNA Calc fixtures or seam-specific harnesses
+before their results can be compared honestly.
+
+Blocked/deferred rows for those axes are coverage facts, not OxFunc function
+failures. They should remain visible in rollups so the unexplored space is not
+forgotten, but they must not be counted as mismatches or repair targets for the
+current OxFunc-accessible fuzzer work.
+
 ## Definition
 
 In OxFunc, a smart-fuzzer is a typed, metadata-aware, feedback-guided explorer

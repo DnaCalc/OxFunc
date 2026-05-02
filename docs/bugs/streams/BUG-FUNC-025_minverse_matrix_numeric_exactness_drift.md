@@ -17,9 +17,11 @@
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
 - **Root cause class**: `matrix_numeric_algorithm_exactness_gap`
-- **Root cause summary**: scalar `1x1` publication has been repaired, but the
-  matrix inversion kernel still takes a Gauss-Jordan rounding path that differs
-  from Excel by low bits on the seed `2x2` inverse.
+- **Root cause summary**: the matrix inversion kernel still takes a
+  Gauss-Jordan rounding path that differs from Excel by low bits on the seed
+  `2x2` inverse. The earlier scalar `1x1` publication note has been
+  reclassified as an OxFml/DNA Calc publication-seam concern rather than an
+  OxFunc matrix result-shape repair.
 
 ## Reproduction
 Run:
