@@ -6,6 +6,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::registry_context_seed::registry_metadata_for_id;
+use crate::registry_help_seed::{RegistryHelpSeed, registry_help_seed_for_id};
 use crate::registry_signature_seed::{SignatureSeed, signature_seed_for_id};
 use crate::xll_export_specs;
 
@@ -338,18 +339,27 @@ fn scoped_entry<'a>(
 fn built_in_entry_from_meta(meta: FunctionMeta) -> FunctionEntry {
     let seed = signature_seed_for_id(meta.function_id)
         .unwrap_or_else(|| panic!("missing signature seed for {}", meta.function_id));
+    let help_seed = registry_help_seed_for_id(meta.function_id);
     FunctionEntry {
         meta: RegistryFunctionMeta::from(meta),
         surface_name: canonical_surface_name(meta.function_id).to_string(),
-        display_signature: signature_from_seed(seed, meta),
+        display_signature: signature_from_seed(seed, meta, help_seed),
         registry_metadata: registry_metadata_for_id(meta.function_id),
-        short_description: None,
-        long_description: None,
+        short_description: help_seed
+            .and_then(|seed| seed.short_description)
+            .map(str::to_string),
+        long_description: help_seed
+            .and_then(|seed| seed.long_description)
+            .map(str::to_string),
         source: FunctionSource::BuiltIn,
     }
 }
 
-fn signature_from_seed(seed: &SignatureSeed, meta: FunctionMeta) -> SignatureForm {
+fn signature_from_seed(
+    seed: &SignatureSeed,
+    meta: FunctionMeta,
+    help_seed: Option<&RegistryHelpSeed>,
+) -> SignatureForm {
     let implied_trailing_repeats = meta.arity.max > seed.parameters.len();
     let last_parameter_index = seed.parameters.len().saturating_sub(1);
     SignatureForm {
@@ -363,11 +373,26 @@ fn signature_from_seed(seed: &SignatureSeed, meta: FunctionMeta) -> SignatureFor
                 optional: index >= meta.arity.min,
                 repeats: parameter.repeats
                     || (implied_trailing_repeats && index == last_parameter_index),
-                short_description: None,
+                short_description: parameter_help_description(help_seed, index, parameter.name)
+                    .map(str::to_string),
             })
             .collect(),
         trailing_repeats: seed.trailing_repeats || implied_trailing_repeats,
     }
+}
+
+fn parameter_help_description<'a>(
+    help_seed: Option<&'a RegistryHelpSeed>,
+    index: usize,
+    parameter_name: &str,
+) -> Option<&'a str> {
+    help_seed?
+        .parameters
+        .iter()
+        .find(|parameter| {
+            parameter.index == index && parameter.name.eq_ignore_ascii_case(parameter_name)
+        })
+        .and_then(|parameter| parameter.short_description)
 }
 
 fn canonical_surface_name(function_id: &str) -> &str {

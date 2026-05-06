@@ -19,3 +19,5 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HO-FN-013","OxFunc->OxFml","Owned runtime registry metadata shape","filed","W091","OxFml W068 follow-up","2026-05-04",""
 "HO-FN-014","OxFunc->OxFml","UDF registry mutation and name-resolution invalidation","filed","W093","OxFml formula binding/name-resolution/editor-help/cache invalidation","2026-05-04",""
 "HANDOFF-OXFUNC-006","OxFml->OxFunc","W070 locale profile expansion request","acknowledged","OxFml W070","W094","2026-05-04","2026-05-04"
+"HANDOFF-OXFUNC-007","DnaOneCalc->OxFunc","REDUCE / lambda-helper hot-loop allocator pressure","acknowledged","DnaOneCalc performance investigation","W095","2026-05-05","2026-05-06"
+"HO-FN-015","OxFunc->OxFml","Callable batching invocation seam","filed","W095","OxFml lambda invocation performance follow-up","2026-05-06",""

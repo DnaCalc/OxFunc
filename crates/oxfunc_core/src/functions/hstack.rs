@@ -48,10 +48,32 @@ fn scalar_cell(arg: &PreparedArgValue) -> ArrayCellValue {
     }
 }
 
-fn materialize_hstack_arg(arg: &PreparedArgValue) -> EvalArray {
-    match arg {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array.clone(),
-        other => EvalArray::from_scalar(scalar_cell(other)),
+enum HstackArgSource<'a> {
+    Array(&'a EvalArray),
+    Scalar(ArrayCellValue),
+}
+
+impl<'a> HstackArgSource<'a> {
+    fn new(arg: &'a PreparedArgValue) -> Self {
+        match arg {
+            PreparedArgValue::Eval(EvalValue::Array(array)) => Self::Array(array),
+            other => Self::Scalar(scalar_cell(other)),
+        }
+    }
+
+    fn shape(&self) -> ArrayShape {
+        match self {
+            Self::Array(array) => array.shape(),
+            Self::Scalar(_) => ArrayShape { rows: 1, cols: 1 },
+        }
+    }
+
+    fn get(&self, row: usize, col: usize) -> Option<&ArrayCellValue> {
+        match self {
+            Self::Array(array) => array.get(row, col),
+            Self::Scalar(cell) if row == 0 && col == 0 => Some(cell),
+            Self::Scalar(_) => None,
+        }
     }
 }
 
@@ -67,29 +89,29 @@ pub fn eval_hstack_adapter_prepared(
         });
     }
 
-    let arrays: Vec<EvalArray> = args.iter().map(materialize_hstack_arg).collect();
-    let rows = arrays
+    let sources: Vec<HstackArgSource<'_>> = args.iter().map(HstackArgSource::new).collect();
+    let rows = sources
         .iter()
-        .map(|array| array.shape().rows)
+        .map(|source| source.shape().rows)
         .max()
         .unwrap_or(1);
-    let cols = arrays.iter().map(|array| array.shape().cols).sum();
-
-    let mut cells = Vec::with_capacity(rows * cols);
-    for row in 0..rows {
-        for array in &arrays {
-            for col in 0..array.shape().cols {
-                let cell = array
-                    .get(row, col)
-                    .cloned()
-                    .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA));
-                cells.push(cell);
-            }
-        }
-    }
+    let cols = sources.iter().map(|source| source.shape().cols).sum();
 
     Ok(EvalValue::Array(
-        EvalArray::new(ArrayShape { rows, cols }, cells).expect("hstack dimensions are computed"),
+        EvalArray::from_cells_iter(
+            ArrayShape { rows, cols },
+            (0..rows).flat_map(|row| {
+                sources.iter().flat_map(move |source| {
+                    (0..source.shape().cols).map(move |col| {
+                        source
+                            .get(row, col)
+                            .cloned()
+                            .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA))
+                    })
+                })
+            }),
+        )
+        .expect("hstack dimensions are computed"),
     ))
 }
 

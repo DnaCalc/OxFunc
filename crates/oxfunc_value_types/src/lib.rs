@@ -267,10 +267,29 @@ impl ArrayCellValue {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+pub const INLINE_EVAL_ARRAY_CELL_CAPACITY: usize = 8;
+
+#[derive(Debug, Clone)]
 pub struct EvalArray {
     shape: ArrayShape,
-    cells: Vec<ArrayCellValue>,
+    storage: EvalArrayStorage,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+enum EvalArrayStorage {
+    Inline {
+        len: usize,
+        cells: [ArrayCellValue; INLINE_EVAL_ARRAY_CELL_CAPACITY],
+    },
+    Heap {
+        cells: Vec<ArrayCellValue>,
+    },
+}
+
+impl PartialEq for EvalArray {
+    fn eq(&self, other: &Self) -> bool {
+        self.shape == other.shape && self.cells() == other.cells()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -343,13 +362,62 @@ impl EvalArray {
         if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
             return None;
         }
-        Some(Self { shape, cells })
+        Some(Self {
+            shape,
+            storage: Self::storage_from_vec(cells),
+        })
     }
 
     pub fn from_scalar(value: ArrayCellValue) -> Self {
+        let mut cells = Self::empty_inline_cells();
+        cells[0] = value;
         Self {
             shape: ArrayShape { rows: 1, cols: 1 },
-            cells: vec![value],
+            storage: EvalArrayStorage::Inline { len: 1, cells },
+        }
+    }
+
+    pub fn from_cells_iter(
+        shape: ArrayShape,
+        cells: impl IntoIterator<Item = ArrayCellValue>,
+    ) -> Option<Self> {
+        if shape.rows == 0 || shape.cols == 0 {
+            return None;
+        }
+
+        let expected = shape.cell_count();
+        let mut inline = Self::empty_inline_cells();
+        let mut inline_len = 0;
+        let mut heap: Option<Vec<ArrayCellValue>> = None;
+
+        for cell in cells {
+            if let Some(heap_cells) = heap.as_mut() {
+                heap_cells.push(cell);
+            } else if inline_len < INLINE_EVAL_ARRAY_CELL_CAPACITY {
+                inline[inline_len] = cell;
+                inline_len += 1;
+            } else {
+                let mut heap_cells =
+                    Vec::with_capacity(expected.max(INLINE_EVAL_ARRAY_CELL_CAPACITY + 1));
+                heap_cells.extend(inline[..inline_len].iter().cloned());
+                heap_cells.push(cell);
+                heap = Some(heap_cells);
+            }
+        }
+
+        match heap {
+            Some(cells) if cells.len() == expected => Some(Self {
+                shape,
+                storage: EvalArrayStorage::Heap { cells },
+            }),
+            None if inline_len == expected => Some(Self {
+                shape,
+                storage: EvalArrayStorage::Inline {
+                    len: inline_len,
+                    cells: inline,
+                },
+            }),
+            _ => None,
         }
     }
 
@@ -383,11 +451,11 @@ impl EvalArray {
             return None;
         }
         let index = row.checked_mul(self.shape.cols)?.checked_add(col)?;
-        self.cells.get(index)
+        self.cells().get(index)
     }
 
     pub fn iter_row_major(&self) -> impl Iterator<Item = &ArrayCellValue> {
-        self.cells.iter()
+        self.cells().iter()
     }
 
     pub fn row_slice(&self, row: usize) -> Option<&[ArrayCellValue]> {
@@ -396,7 +464,31 @@ impl EvalArray {
         }
         let start = row.checked_mul(self.shape.cols)?;
         let end = start.checked_add(self.shape.cols)?;
-        self.cells.get(start..end)
+        self.cells().get(start..end)
+    }
+
+    fn cells(&self) -> &[ArrayCellValue] {
+        match &self.storage {
+            EvalArrayStorage::Inline { len, cells } => &cells[..*len],
+            EvalArrayStorage::Heap { cells } => cells,
+        }
+    }
+
+    fn storage_from_vec(cells: Vec<ArrayCellValue>) -> EvalArrayStorage {
+        if cells.len() <= INLINE_EVAL_ARRAY_CELL_CAPACITY {
+            let len = cells.len();
+            let mut inline = Self::empty_inline_cells();
+            for (index, cell) in cells.into_iter().enumerate() {
+                inline[index] = cell;
+            }
+            EvalArrayStorage::Inline { len, cells: inline }
+        } else {
+            EvalArrayStorage::Heap { cells }
+        }
+    }
+
+    fn empty_inline_cells() -> [ArrayCellValue; INLINE_EVAL_ARRAY_CELL_CAPACITY] {
+        std::array::from_fn(|_| ArrayCellValue::EmptyCell)
     }
 }
 

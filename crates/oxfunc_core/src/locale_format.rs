@@ -117,6 +117,42 @@ impl LocaleProfileId {
             _ => None,
         }
     }
+
+    pub const fn from_excel_lcid(lcid: u16) -> Option<Self> {
+        match lcid {
+            0x0409 => Some(LocaleProfileId::EnUs),
+            0x0809 => Some(LocaleProfileId::EnGb),
+            0x1809 => Some(LocaleProfileId::EnIe),
+            0x0C09 => Some(LocaleProfileId::EnAu),
+            0x1409 => Some(LocaleProfileId::EnNz),
+            0x1C09 => Some(LocaleProfileId::EnZa),
+            0x4009 => Some(LocaleProfileId::EnIn),
+            0x1009 => Some(LocaleProfileId::EnCa),
+            0x3409 => Some(LocaleProfileId::EnPh),
+            0x0407 | 0x0807 | 0x0C07 => Some(LocaleProfileId::DeDe),
+            0x0419 => Some(LocaleProfileId::RuRu),
+            0x040B => Some(LocaleProfileId::FiFi),
+            0x0425 => Some(LocaleProfileId::EtEe),
+            0x0426 => Some(LocaleProfileId::LvLv),
+            0x0427 => Some(LocaleProfileId::LtLt),
+            0x041B => Some(LocaleProfileId::SkSk),
+            0x0405 => Some(LocaleProfileId::CsCz),
+            0x0414 => Some(LocaleProfileId::NbNo),
+            0x0814 => Some(LocaleProfileId::NnNo),
+            0x040C | 0x080C | 0x0C0C | 0x100C => Some(LocaleProfileId::FrFr),
+            0x040A | 0x080A | 0x0C0A => Some(LocaleProfileId::EsEs),
+            0x0816 => Some(LocaleProfileId::PtPt),
+            0x0410 => Some(LocaleProfileId::ItIt),
+            0x0413 | 0x0813 => Some(LocaleProfileId::NlNl),
+            0x0415 => Some(LocaleProfileId::PlPl),
+            0x0416 => Some(LocaleProfileId::PtBr),
+            0x0411 => Some(LocaleProfileId::JaJp),
+            0x0412 => Some(LocaleProfileId::KoKr),
+            0x0804 | 0x1004 | 0x0404 | 0x0C04 => Some(LocaleProfileId::ZhCn),
+            0x040E => Some(LocaleProfileId::HuHu),
+            _ => None,
+        }
+    }
 }
 
 pub const CANONICAL_LOCALE_PROFILE_IDS: [LocaleProfileId; 30] = [
@@ -193,6 +229,40 @@ pub enum WorkbookDateSystem {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DateComponentOrder {
+    Mdy,
+    Dmy,
+    Ymd,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CurrencyPlacement {
+    Before,
+    After,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CurrencySpacing {
+    None,
+    Space,
+    NarrowNoBreakSpace,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CurrencyNegativePattern {
+    LeadingMinus,
+    TrailingMinus,
+    Parentheses,
+    MinusBeforeSymbol,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FormatCodeTokenPolicy {
+    InvariantExcel,
+    LocalizedExcel,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct FormatProfile {
     pub id: LocaleProfileId,
     pub decimal_separator: &'static str,
@@ -202,6 +272,15 @@ pub struct FormatProfile {
     pub date_separator: &'static str,
     pub time_separator: &'static str,
     pub currency_decimals: i32,
+    pub short_date_order: DateComponentOrder,
+    pub short_date_pattern: &'static str,
+    pub two_digit_year_pivot: Option<u16>,
+    pub currency_placement: CurrencyPlacement,
+    pub currency_spacing: CurrencySpacing,
+    pub currency_negative_pattern: CurrencyNegativePattern,
+    pub format_code_decimal_token: &'static str,
+    pub format_code_group_token: &'static str,
+    pub format_code_token_policy: FormatCodeTokenPolicy,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -267,6 +346,117 @@ static TEST_ONLY_LOCALE_VALUE_PARSER: TestOnlyLocaleValueParser = TestOnlyLocale
 #[cfg(test)]
 static TEST_ONLY_FORMAT_CODE_ENGINE: TestOnlyFormatCodeEngine = TestOnlyFormatCodeEngine;
 
+const fn short_date_order(id: LocaleProfileId) -> DateComponentOrder {
+    match id {
+        LocaleProfileId::EnUs | LocaleProfileId::EnPh => DateComponentOrder::Mdy,
+        LocaleProfileId::EnZa
+        | LocaleProfileId::EnCa
+        | LocaleProfileId::LtLt
+        | LocaleProfileId::JaJp
+        | LocaleProfileId::KoKr
+        | LocaleProfileId::ZhCn
+        | LocaleProfileId::HuHu
+        | LocaleProfileId::CurrentExcelHost => DateComponentOrder::Ymd,
+        _ => DateComponentOrder::Dmy,
+    }
+}
+
+const fn short_date_pattern(id: LocaleProfileId) -> &'static str {
+    match id {
+        LocaleProfileId::EnUs | LocaleProfileId::EnPh => "M/d/yyyy",
+        LocaleProfileId::EnGb | LocaleProfileId::EnIe | LocaleProfileId::EnIn => "dd/MM/yyyy",
+        LocaleProfileId::EnAu | LocaleProfileId::EsEs => "d/M/yyyy",
+        LocaleProfileId::EnNz => "d/MM/yyyy",
+        LocaleProfileId::EnZa => "yyyy/MM/dd",
+        LocaleProfileId::EnCa | LocaleProfileId::LtLt => "yyyy-MM-dd",
+        LocaleProfileId::DeDe
+        | LocaleProfileId::RuRu
+        | LocaleProfileId::EtEe
+        | LocaleProfileId::LvLv
+        | LocaleProfileId::CsCz
+        | LocaleProfileId::NbNo
+        | LocaleProfileId::NnNo => "dd.MM.yyyy",
+        LocaleProfileId::FiFi => "d.M.yyyy",
+        LocaleProfileId::PlPl => "d.MM.yyyy",
+        LocaleProfileId::SkSk => "d. M. yyyy",
+        LocaleProfileId::FrFr
+        | LocaleProfileId::PtPt
+        | LocaleProfileId::ItIt
+        | LocaleProfileId::PtBr => "dd/MM/yyyy",
+        LocaleProfileId::NlNl => "dd-MM-yyyy",
+        LocaleProfileId::JaJp => "yyyy/MM/dd",
+        LocaleProfileId::KoKr => "yyyy. M. d.",
+        LocaleProfileId::ZhCn => "yyyy/M/d",
+        LocaleProfileId::HuHu => "yyyy. MM. dd.",
+        LocaleProfileId::CurrentExcelHost => "yyyy/MM/dd",
+    }
+}
+
+const fn currency_placement(id: LocaleProfileId) -> CurrencyPlacement {
+    match id {
+        LocaleProfileId::DeDe
+        | LocaleProfileId::RuRu
+        | LocaleProfileId::FiFi
+        | LocaleProfileId::EtEe
+        | LocaleProfileId::LvLv
+        | LocaleProfileId::LtLt
+        | LocaleProfileId::SkSk
+        | LocaleProfileId::CsCz
+        | LocaleProfileId::NnNo
+        | LocaleProfileId::FrFr
+        | LocaleProfileId::EsEs
+        | LocaleProfileId::PtPt
+        | LocaleProfileId::ItIt
+        | LocaleProfileId::PlPl
+        | LocaleProfileId::HuHu => CurrencyPlacement::After,
+        _ => CurrencyPlacement::Before,
+    }
+}
+
+const fn currency_spacing(id: LocaleProfileId) -> CurrencySpacing {
+    match id {
+        LocaleProfileId::FrFr => CurrencySpacing::NarrowNoBreakSpace,
+        LocaleProfileId::DeDe
+        | LocaleProfileId::RuRu
+        | LocaleProfileId::FiFi
+        | LocaleProfileId::EtEe
+        | LocaleProfileId::LvLv
+        | LocaleProfileId::LtLt
+        | LocaleProfileId::SkSk
+        | LocaleProfileId::CsCz
+        | LocaleProfileId::NbNo
+        | LocaleProfileId::NnNo
+        | LocaleProfileId::EsEs
+        | LocaleProfileId::PtPt
+        | LocaleProfileId::ItIt
+        | LocaleProfileId::NlNl
+        | LocaleProfileId::PlPl
+        | LocaleProfileId::PtBr
+        | LocaleProfileId::HuHu => CurrencySpacing::Space,
+        _ => CurrencySpacing::None,
+    }
+}
+
+const fn currency_negative_pattern(id: LocaleProfileId) -> CurrencyNegativePattern {
+    match id {
+        LocaleProfileId::EnUs
+        | LocaleProfileId::EnGb
+        | LocaleProfileId::EnIe
+        | LocaleProfileId::EnAu
+        | LocaleProfileId::EnNz
+        | LocaleProfileId::EnZa
+        | LocaleProfileId::EnIn
+        | LocaleProfileId::EnCa
+        | LocaleProfileId::EnPh
+        | LocaleProfileId::JaJp
+        | LocaleProfileId::KoKr
+        | LocaleProfileId::ZhCn
+        | LocaleProfileId::CurrentExcelHost => CurrencyNegativePattern::MinusBeforeSymbol,
+        LocaleProfileId::PtBr => CurrencyNegativePattern::MinusBeforeSymbol,
+        _ => CurrencyNegativePattern::LeadingMinus,
+    }
+}
+
 pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
     match id {
         LocaleProfileId::EnUs => FormatProfile {
@@ -278,6 +468,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnGb => FormatProfile {
             id,
@@ -288,6 +487,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnIe => FormatProfile {
             id,
@@ -298,6 +506,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnAu => FormatProfile {
             id,
@@ -308,6 +525,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnNz => FormatProfile {
             id,
@@ -318,6 +544,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnZa => FormatProfile {
             id,
@@ -328,6 +563,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnIn => FormatProfile {
             id,
@@ -338,6 +582,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnCa => FormatProfile {
             id,
@@ -348,6 +601,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "-",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EnPh => FormatProfile {
             id,
@@ -358,6 +620,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::DeDe => FormatProfile {
             id,
@@ -368,6 +639,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::RuRu => FormatProfile {
             id,
@@ -378,6 +658,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::FiFi => FormatProfile {
             id,
@@ -388,6 +677,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ".",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EtEe => FormatProfile {
             id,
@@ -398,6 +696,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::LvLv => FormatProfile {
             id,
@@ -408,6 +715,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::LtLt => FormatProfile {
             id,
@@ -418,6 +734,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "-",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::SkSk => FormatProfile {
             id,
@@ -428,6 +753,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::CsCz => FormatProfile {
             id,
@@ -438,6 +772,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::NbNo | LocaleProfileId::NnNo => FormatProfile {
             id,
@@ -448,6 +791,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::FrFr => FormatProfile {
             id,
@@ -458,6 +810,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::EsEs => FormatProfile {
             id,
@@ -468,6 +829,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::PtPt => FormatProfile {
             id,
@@ -478,6 +848,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::ItIt => FormatProfile {
             id,
@@ -488,6 +867,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::NlNl => FormatProfile {
             id,
@@ -498,6 +886,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "-",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::PlPl => FormatProfile {
             id,
@@ -508,6 +905,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::PtBr => FormatProfile {
             id,
@@ -518,6 +924,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::JaJp => FormatProfile {
             id,
@@ -528,6 +943,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 0,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::KoKr => FormatProfile {
             id,
@@ -538,6 +962,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 0,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::ZhCn => FormatProfile {
             id,
@@ -548,6 +981,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::HuHu => FormatProfile {
             id,
@@ -558,6 +1000,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
         LocaleProfileId::CurrentExcelHost => FormatProfile {
             id,
@@ -568,6 +1019,15 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             date_separator: "/",
             time_separator: ":",
             currency_decimals: 2,
+            short_date_order: short_date_order(id),
+            short_date_pattern: short_date_pattern(id),
+            two_digit_year_pivot: None,
+            currency_placement: currency_placement(id),
+            currency_spacing: currency_spacing(id),
+            currency_negative_pattern: currency_negative_pattern(id),
+            format_code_decimal_token: ".",
+            format_code_group_token: ",",
+            format_code_token_policy: FormatCodeTokenPolicy::InvariantExcel,
         },
     }
 }
@@ -1204,6 +1664,59 @@ mod tests {
     }
 
     #[test]
+    fn excel_lcid_mapping_covers_supported_locale_profile_aliases() {
+        let cases = [
+            (0x0409, LocaleProfileId::EnUs),
+            (0x0809, LocaleProfileId::EnGb),
+            (0x1809, LocaleProfileId::EnIe),
+            (0x0C09, LocaleProfileId::EnAu),
+            (0x1409, LocaleProfileId::EnNz),
+            (0x1C09, LocaleProfileId::EnZa),
+            (0x4009, LocaleProfileId::EnIn),
+            (0x1009, LocaleProfileId::EnCa),
+            (0x3409, LocaleProfileId::EnPh),
+            (0x0407, LocaleProfileId::DeDe),
+            (0x0807, LocaleProfileId::DeDe),
+            (0x0C07, LocaleProfileId::DeDe),
+            (0x0419, LocaleProfileId::RuRu),
+            (0x040B, LocaleProfileId::FiFi),
+            (0x0425, LocaleProfileId::EtEe),
+            (0x0426, LocaleProfileId::LvLv),
+            (0x0427, LocaleProfileId::LtLt),
+            (0x041B, LocaleProfileId::SkSk),
+            (0x0405, LocaleProfileId::CsCz),
+            (0x0414, LocaleProfileId::NbNo),
+            (0x0814, LocaleProfileId::NnNo),
+            (0x040C, LocaleProfileId::FrFr),
+            (0x080C, LocaleProfileId::FrFr),
+            (0x0C0C, LocaleProfileId::FrFr),
+            (0x100C, LocaleProfileId::FrFr),
+            (0x040A, LocaleProfileId::EsEs),
+            (0x080A, LocaleProfileId::EsEs),
+            (0x0C0A, LocaleProfileId::EsEs),
+            (0x0816, LocaleProfileId::PtPt),
+            (0x0410, LocaleProfileId::ItIt),
+            (0x0413, LocaleProfileId::NlNl),
+            (0x0813, LocaleProfileId::NlNl),
+            (0x0415, LocaleProfileId::PlPl),
+            (0x0416, LocaleProfileId::PtBr),
+            (0x0411, LocaleProfileId::JaJp),
+            (0x0412, LocaleProfileId::KoKr),
+            (0x0804, LocaleProfileId::ZhCn),
+            (0x1004, LocaleProfileId::ZhCn),
+            (0x0404, LocaleProfileId::ZhCn),
+            (0x0C04, LocaleProfileId::ZhCn),
+            (0x040E, LocaleProfileId::HuHu),
+        ];
+
+        for (lcid, expected) in cases {
+            assert_eq!(LocaleProfileId::from_excel_lcid(lcid), Some(expected));
+        }
+
+        assert_eq!(LocaleProfileId::from_excel_lcid(0x041D), None);
+    }
+
+    #[test]
     fn expanded_profile_constants_carry_locale_separators_and_currency_defaults() {
         assert_eq!(CANONICAL_LOCALE_PROFILE_IDS.len(), 30);
         assert_eq!(LOCALE_PROFILE_IDS.len(), 31);
@@ -1215,14 +1728,31 @@ mod tests {
         assert_eq!(de.list_separator, ";");
         assert_eq!(de.currency_symbol, "\u{20AC}");
         assert_eq!(de.date_separator, ".");
+        assert_eq!(de.short_date_order, DateComponentOrder::Dmy);
+        assert_eq!(de.short_date_pattern, "dd.MM.yyyy");
+        assert_eq!(de.currency_placement, CurrencyPlacement::After);
+        assert_eq!(de.currency_spacing, CurrencySpacing::Space);
+        assert_eq!(
+            de.currency_negative_pattern,
+            CurrencyNegativePattern::LeadingMinus
+        );
+        assert_eq!(
+            de.format_code_token_policy,
+            FormatCodeTokenPolicy::InvariantExcel
+        );
+        assert_eq!(de.format_code_decimal_token, ".");
+        assert_eq!(de.format_code_group_token, ",");
 
         let fr = format_profile(LocaleProfileId::FrFr);
         assert_eq!(fr.thousands_separator, "\u{202F}");
+        assert_eq!(fr.currency_spacing, CurrencySpacing::NarrowNoBreakSpace);
 
         let en_za = format_profile(LocaleProfileId::EnZa);
         assert_eq!(en_za.decimal_separator, ",");
         assert_eq!(en_za.thousands_separator, "\u{00A0}");
         assert_eq!(en_za.currency_symbol, "R");
+        assert_eq!(en_za.short_date_order, DateComponentOrder::Ymd);
+        assert_eq!(en_za.short_date_pattern, "yyyy/MM/dd");
 
         let fi = format_profile(LocaleProfileId::FiFi);
         assert_eq!(fi.time_separator, ".");
@@ -1230,9 +1760,20 @@ mod tests {
         let ja = format_profile(LocaleProfileId::JaJp);
         assert_eq!(ja.currency_symbol, "\u{00A5}");
         assert_eq!(ja.currency_decimals, 0);
+        assert_eq!(ja.short_date_order, DateComponentOrder::Ymd);
 
         let ko = format_profile(LocaleProfileId::KoKr);
         assert_eq!(ko.currency_symbol, "\u{20A9}");
         assert_eq!(ko.currency_decimals, 0);
+
+        let en_us = format_profile(LocaleProfileId::EnUs);
+        assert_eq!(en_us.short_date_order, DateComponentOrder::Mdy);
+        assert_eq!(en_us.currency_placement, CurrencyPlacement::Before);
+        assert_eq!(en_us.currency_spacing, CurrencySpacing::None);
+        assert_eq!(
+            en_us.currency_negative_pattern,
+            CurrencyNegativePattern::MinusBeforeSymbol
+        );
     }
 }
+

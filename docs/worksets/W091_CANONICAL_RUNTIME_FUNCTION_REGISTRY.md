@@ -264,3 +264,58 @@ open_lanes:
 1. OxFml W068 follow-up for owned `RegistryFunctionMeta` if its landed code type-assumed `FunctionMeta`.
 2. DNA OneCalc registry consumption remains downstream.
 3. Function and parameter description corpus remains future work.
+
+## 2026-05-06 current-reference metadata fill
+
+execution_state: `current_reference_metadata_seeded`
+
+scope_completeness: `scope_partial`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+Current-reference sources used:
+1. `docs/function-lane/FUNCTION_CATALOG_CURRENT_BASELINE_LOCAL.csv`
+2. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_HVLOOKUP.json`
+3. `docs/function-lane/OXFUNC_SEMANTIC_WITNESS_SNAPSHOT_V2_SEED_MIXED_TRANCHE_A.json`
+
+Registry metadata now seeded from those local sources:
+1. `FunctionEntry.short_description` is populated from the current English
+   baseline catalog where that catalog carries a description.
+2. `FunctionEntry.long_description` is populated only from the bounded rich
+   `V2` witness seed rows whose detail text is consumer-facing rather than
+   generic tranche scaffold prose.
+3. `ParameterDescriptor.short_description` is populated from bounded rich
+   `V2` `arg_specs.arg_behavior_note` rows when the witness argument name
+   matches the registry parameter name at the same position.
+4. Generic tranche seed prose from W69/W71 artifacts is intentionally not
+   imported as user-facing help text.
+5. The W28 localized-name library remains a name/category/description
+   localization corpus, not an English parameter-description corpus.
+
+Generated artifact:
+1. `crates/oxfunc_core/src/registry_help_seed.rs`
+2. generator: `tools/generate-registry-help-seed.ps1`
+3. generation result for this pass: `510` registry-help seeds, `10`
+   long-description seeds, and `33` parameter-help seeds across `10`
+   functions.
+
+Outstanding items to research or author in a later run:
+1. authoritative English per-parameter descriptions for all linked built-ins
+   with arguments,
+2. remaining English parameter-name/signature placeholder rows in
+   `registry_signature_seed.rs`,
+3. long-form English function help, remarks, examples, and edge-case notes
+   beyond the single catalog summary column,
+4. parameter type hints, units, and accepted value sets where Excel documents
+   or empirical replay can support them,
+5. localized parameter names and localized parameter/help descriptions,
+6. locale-specific function-help differences beyond localized function names,
+7. Excel channel/version and workbook-compatibility variation for signatures,
+   names, and help wording,
+8. clean-room provenance labels for any later imported documentation corpus,
+9. generated guard coverage that distinguishes real metadata from placeholder
+   signatures and generic tranche scaffold text.
+
+No validation command was run for this metadata-fill pass.

@@ -94,6 +94,35 @@ fn materialize_array_arg(arg: &PreparedArgValue) -> EvalArray {
     }
 }
 
+enum StackArgSource<'a> {
+    Array(&'a EvalArray),
+    Scalar(ArrayCellValue),
+}
+
+impl<'a> StackArgSource<'a> {
+    fn new(arg: &'a PreparedArgValue) -> Self {
+        match arg {
+            PreparedArgValue::Eval(EvalValue::Array(array)) => Self::Array(array),
+            other => Self::Scalar(scalar_cell(other)),
+        }
+    }
+
+    fn shape(&self) -> ArrayShape {
+        match self {
+            Self::Array(array) => array.shape(),
+            Self::Scalar(_) => ArrayShape { rows: 1, cols: 1 },
+        }
+    }
+
+    fn get(&self, row: usize, col: usize) -> Option<&ArrayCellValue> {
+        match self {
+            Self::Array(array) => array.get(row, col),
+            Self::Scalar(cell) if row == 0 && col == 0 => Some(cell),
+            Self::Scalar(_) => None,
+        }
+    }
+}
+
 fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
     match cell {
         ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
@@ -498,28 +527,27 @@ pub fn eval_transpose_prepared(
 pub fn eval_vstack_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
-    let arrays: Vec<EvalArray> = args.iter().map(materialize_array_arg).collect();
-    let rows: usize = arrays.iter().map(|array| array.shape().rows).sum();
-    let cols = arrays
+    let sources: Vec<StackArgSource<'_>> = args.iter().map(StackArgSource::new).collect();
+    let rows: usize = sources.iter().map(|source| source.shape().rows).sum();
+    let cols = sources
         .iter()
-        .map(|array| array.shape().cols)
+        .map(|source| source.shape().cols)
         .max()
         .unwrap_or(1);
 
-    let mut cells = Vec::with_capacity(rows * cols);
-    for array in &arrays {
-        for row in 0..array.shape().rows {
-            for col in 0..cols {
-                cells.push(
-                    array
-                        .get(row, col)
-                        .cloned()
-                        .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA)),
-                );
-            }
-        }
-    }
-    build_array(rows, cols, cells)
+    let cells = sources.iter().flat_map(|source| {
+        (0..source.shape().rows).flat_map(move |row| {
+            (0..cols).map(move |col| {
+                source
+                    .get(row, col)
+                    .cloned()
+                    .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA))
+            })
+        })
+    });
+    EvalArray::from_cells_iter(ArrayShape { rows, cols }, cells)
+        .map(EvalValue::Array)
+        .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
 pub fn eval_wraprows_prepared(

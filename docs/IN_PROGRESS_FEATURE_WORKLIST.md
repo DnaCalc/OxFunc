@@ -205,7 +205,7 @@ W093 design corrections after review:
 6. OxFml migration must cover formula-call binding/evaluation, not only editor help/completion.
 
 ### IP-21 Locale Profile Expansion
-- Current state: active intake from OxFml `HANDOFF-OXFUNC-006`. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, and `LocaleProfileId::from_bcp47_language_tag(...)`.
+- Current state: active intake from OxFml `HANDOFF-OXFUNC-006`. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, `LocaleProfileId::from_bcp47_language_tag(...)`, `LocaleProfileId::from_excel_lcid(...)`, short-date order/pattern facts, currency layout facts, and invariant format-code token-policy facts.
 - Canonical owner: [W094_LOCALE_PROFILE_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W094_LOCALE_PROFILE_EXPANSION.md), [HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md), and [locale_format.rs](C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\locale_format.rs).
 
 Validation evidence:
@@ -216,4 +216,21 @@ Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_complete` for the OxFunc-local W094 profile identity/constants slice
 3. `integration_completeness`: `partial`
-4. `open_lanes`: downstream OxFml month/weekday/parser/general consumption, optional locale-prefix grammar, full Excel currency-pattern semantics beyond the current `FormatProfile` shape, and landed-ref promotion.
+4. `open_lanes`: downstream OxFml final-profile-field consumption, Excel file-storage and locale-prefix research, full locale semantic parity sweeps beyond the current profile seed rows, and landed-ref promotion.
+
+### IP-22 REDUCE Lambda-Helper Hot-Loop Performance
+- Current state: stopped at the OxFunc-local gate. W095 has local helper iteration changes so `MAP`, `REDUCE`, and `SCAN` consume iterable items lazily instead of materializing a full `Vec<PreparedArgValue>` upfront; `BYROW`/`BYCOL` avoid cloning an already-array source; `REDUCE` has a numeric-array fast path; `HSTACK`/`VSTACK` use borrowed/inline argument sources; `EvalArray` stores arrays with up to `8` cells inline; and `CallableInvoker::invoke_many(...)` exposes the OxFml-facing batching seam.
+- Canonical owner: [W095_REDUCE_LAMBDA_HELPER_HOTLOOP_PERF.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W095_REDUCE_LAMBDA_HELPER_HOTLOOP_PERF.md), [HANDOFF-OXFUNC-007_reduce_hotloop_perf.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-007_reduce_hotloop_perf.md), [HO-FN-015_callable_batching_invocation_seam.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-015_callable_batching_invocation_seam.md), and [callable_helpers.rs](C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\functions\callable_helpers.rs).
+
+Validation evidence:
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib callable_helpers`: passed, `29` passed, `0` failed, `1246` filtered out.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib hstack`: passed, `3` passed, `0` failed, `1269` filtered out.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib vstack`: passed, `1` passed, `0` failed, `1271` filtered out.
+5. `cargo test --release -p dnaonecalc-host --test mandelbrot_perf_probe -- --ignored --nocapture`: passed, `2` passed, `0` failed; after inline `EvalArray` storage the host-visible full-size print was `5.7998668s`.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: OxFml `invoke_many(...)` specialization through `HO-FN-015`, post-OxFml-specialization DnaOneCalc perf replay, and landed-ref promotion.

@@ -90,12 +90,61 @@ pub enum LambdaHelperEvalError {
     InvalidGeneratedDimensions,
 }
 
+/// Describes whether a batch is a set of independent lambda calls or a
+/// sequential stateful loop where each result affects later arguments.
+///
+/// `SequentialStateful` is the REDUCE/SCAN shape: implementers must preserve
+/// call order and feed each accepted result back before preparing the next
+/// argument slice. It is a setup-hoisting seam, not permission to parallelize or
+/// reorder calls.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallableBatchMode {
+    Independent,
+    SequentialStateful,
+}
+
+/// Stateful callable batch producer/consumer used by higher-order helpers.
+///
+/// The default `CallableInvoker::invoke_many` fallback preserves existing
+/// behavior by preparing one argument slice, checking callable arity, invoking
+/// `invoke`, and accepting the result before moving to the next slice.
+pub trait CallableInvocationBatch {
+    fn mode(&self) -> CallableBatchMode;
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool;
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError>;
+}
+
 pub trait CallableInvoker {
     fn invoke(
         &self,
         callable: &LambdaValue,
         args: &[PreparedArgValue],
     ) -> Result<PreparedArgValue, CallableInvocationError>;
+
+    fn invoke_many(
+        &self,
+        callable: &LambdaValue,
+        batch: &mut dyn CallableInvocationBatch,
+    ) -> Result<(), CallableInvocationError> {
+        let _mode = batch.mode();
+        let mut args = Vec::new();
+        while {
+            args.clear();
+            batch.prepare_next_args(&mut args)
+        } {
+            let argc = args.len();
+            if !callable.arity_shape.accepts(argc) {
+                return Err(CallableInvocationError::ArityMismatch {
+                    expected_min: callable.arity_shape.min,
+                    expected_max: callable.arity_shape.max,
+                    actual: argc,
+                });
+            }
+            let result = self.invoke(callable, &args)?;
+            batch.accept_result(result)?;
+        }
+        Ok(())
+    }
 }
 
 pub fn invoke_callable_prepared(
@@ -124,13 +173,380 @@ fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
     }
 }
 
-fn materialize_iterable(prepared: &PreparedArgValue) -> Vec<PreparedArgValue> {
-    match prepared {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array
-            .iter_row_major()
-            .map(prepared_from_array_cell)
-            .collect(),
-        other => vec![other.clone()],
+struct PreparedIterableSource<'a> {
+    source: PreparedIterableSourceKind<'a>,
+}
+
+enum PreparedIterableSourceKind<'a> {
+    Array { array: &'a EvalArray, index: usize },
+    Single { value: Option<&'a PreparedArgValue> },
+}
+
+impl<'a> PreparedIterableSource<'a> {
+    fn new(prepared: &'a PreparedArgValue) -> Self {
+        let source = match prepared {
+            PreparedArgValue::Eval(EvalValue::Array(array)) => {
+                PreparedIterableSourceKind::Array { array, index: 0 }
+            }
+            other => PreparedIterableSourceKind::Single { value: Some(other) },
+        };
+        Self { source }
+    }
+
+    fn shape_hint(&self) -> Option<ArrayShape> {
+        match &self.source {
+            PreparedIterableSourceKind::Array { array, .. } => Some(array.shape()),
+            PreparedIterableSourceKind::Single { .. } => None,
+        }
+    }
+
+    fn len_hint(&self) -> usize {
+        match &self.source {
+            PreparedIterableSourceKind::Array { array, .. } => array.shape().cell_count(),
+            PreparedIterableSourceKind::Single { value } => usize::from(value.is_some()),
+        }
+    }
+
+    fn next_prepared(&mut self) -> Option<PreparedArgValue> {
+        match &mut self.source {
+            PreparedIterableSourceKind::Array { array, index } => {
+                let shape = array.shape();
+                if *index >= shape.cell_count() {
+                    return None;
+                }
+                let row = *index / shape.cols;
+                let col = *index % shape.cols;
+                *index += 1;
+                array.get(row, col).map(prepared_from_array_cell)
+            }
+            PreparedIterableSourceKind::Single { value } => value.take().cloned(),
+        }
+    }
+}
+
+struct ReduceInvocationBatch<'a> {
+    accumulator: PreparedArgValue,
+    source: PreparedIterableSource<'a>,
+}
+
+impl<'a> ReduceInvocationBatch<'a> {
+    fn new(accumulator: PreparedArgValue, source: PreparedIterableSource<'a>) -> Self {
+        Self {
+            accumulator,
+            source,
+        }
+    }
+
+    fn into_accumulator(self) -> PreparedArgValue {
+        self.accumulator
+    }
+}
+
+impl CallableInvocationBatch for ReduceInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::SequentialStateful
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        let Some(item) = self.source.next_prepared() else {
+            return false;
+        };
+        args.push(std::mem::replace(
+            &mut self.accumulator,
+            PreparedArgValue::MissingArg,
+        ));
+        args.push(item);
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.accumulator = result;
+        Ok(())
+    }
+}
+
+struct NumericArrayReduceInvocationBatch<'a> {
+    accumulator: PreparedArgValue,
+    array: &'a EvalArray,
+    index: usize,
+}
+
+impl<'a> NumericArrayReduceInvocationBatch<'a> {
+    fn new(accumulator: PreparedArgValue, array: &'a EvalArray) -> Self {
+        Self {
+            accumulator,
+            array,
+            index: 0,
+        }
+    }
+
+    fn into_accumulator(self) -> PreparedArgValue {
+        self.accumulator
+    }
+}
+
+impl CallableInvocationBatch for NumericArrayReduceInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::SequentialStateful
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        let shape = self.array.shape();
+        if self.index >= shape.cell_count() {
+            return false;
+        }
+        let row = self.index / shape.cols;
+        let col = self.index % shape.cols;
+        self.index += 1;
+        let Some(ArrayCellValue::Number(n)) = self.array.get(row, col) else {
+            return false;
+        };
+        args.push(std::mem::replace(
+            &mut self.accumulator,
+            PreparedArgValue::MissingArg,
+        ));
+        args.push(PreparedArgValue::Eval(EvalValue::Number(*n)));
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.accumulator = result;
+        Ok(())
+    }
+}
+
+struct ScanInvocationBatch<'a> {
+    accumulator: PreparedArgValue,
+    source: PreparedIterableSource<'a>,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl<'a> ScanInvocationBatch<'a> {
+    fn new(
+        accumulator: PreparedArgValue,
+        source: PreparedIterableSource<'a>,
+        cell_capacity: usize,
+    ) -> Self {
+        Self {
+            accumulator,
+            source,
+            cells: Vec::with_capacity(cell_capacity),
+        }
+    }
+
+    fn into_cells(self) -> Vec<ArrayCellValue> {
+        self.cells
+    }
+}
+
+impl CallableInvocationBatch for ScanInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::SequentialStateful
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        let Some(item) = self.source.next_prepared() else {
+            return false;
+        };
+        args.push(std::mem::replace(
+            &mut self.accumulator,
+            PreparedArgValue::MissingArg,
+        ));
+        args.push(item);
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.accumulator = result;
+        self.cells
+            .push(scalar_cell_from_prepared(&self.accumulator)?);
+        Ok(())
+    }
+}
+
+struct MapInvocationBatch<'a> {
+    sources: Vec<PreparedIterableSource<'a>>,
+    cell_count: usize,
+    index: usize,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl<'a> MapInvocationBatch<'a> {
+    fn new(sources: Vec<PreparedIterableSource<'a>>, cell_count: usize) -> Self {
+        Self {
+            sources,
+            cell_count,
+            index: 0,
+            cells: Vec::with_capacity(cell_count),
+        }
+    }
+
+    fn into_cells(self) -> Vec<ArrayCellValue> {
+        self.cells
+    }
+}
+
+impl CallableInvocationBatch for MapInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::Independent
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        if self.index >= self.cell_count {
+            return false;
+        }
+        self.index += 1;
+        args.extend(self.sources.iter_mut().map(|source| {
+            source
+                .next_prepared()
+                .unwrap_or_else(|| PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)))
+        }));
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.cells.push(scalar_cell_from_prepared(&result)?);
+        Ok(())
+    }
+}
+
+struct RowInvocationBatch<'a> {
+    source_array: &'a EvalArray,
+    row: usize,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl<'a> RowInvocationBatch<'a> {
+    fn new(source_array: &'a EvalArray) -> Self {
+        Self {
+            source_array,
+            row: 0,
+            cells: Vec::with_capacity(source_array.shape().rows),
+        }
+    }
+
+    fn into_cells(self) -> Vec<ArrayCellValue> {
+        self.cells
+    }
+}
+
+impl CallableInvocationBatch for RowInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::Independent
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        if self.row >= self.source_array.shape().rows {
+            return false;
+        }
+        let row_arg = row_vector_from_slice(
+            self.source_array
+                .row_slice(self.row)
+                .expect("validated row access for byrow"),
+        );
+        self.row += 1;
+        args.push(row_arg);
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.cells.push(scalar_cell_from_prepared(&result)?);
+        Ok(())
+    }
+}
+
+struct ColumnInvocationBatch<'a> {
+    source_array: &'a EvalArray,
+    col: usize,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl<'a> ColumnInvocationBatch<'a> {
+    fn new(source_array: &'a EvalArray) -> Self {
+        Self {
+            source_array,
+            col: 0,
+            cells: Vec::with_capacity(source_array.shape().cols),
+        }
+    }
+
+    fn into_cells(self) -> Vec<ArrayCellValue> {
+        self.cells
+    }
+}
+
+impl CallableInvocationBatch for ColumnInvocationBatch<'_> {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::Independent
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        if self.col >= self.source_array.shape().cols {
+            return false;
+        }
+        let col_arg = column_vector_from_array(self.source_array, self.col);
+        self.col += 1;
+        args.push(col_arg);
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.cells.push(scalar_cell_from_prepared(&result)?);
+        Ok(())
+    }
+}
+
+struct MakeArrayInvocationBatch {
+    rows: usize,
+    cols: usize,
+    index: usize,
+    cells: Vec<ArrayCellValue>,
+}
+
+impl MakeArrayInvocationBatch {
+    fn new(rows: usize, cols: usize) -> Self {
+        Self {
+            rows,
+            cols,
+            index: 0,
+            cells: Vec::with_capacity(rows * cols),
+        }
+    }
+
+    fn into_cells(self) -> Vec<ArrayCellValue> {
+        self.cells
+    }
+}
+
+impl CallableInvocationBatch for MakeArrayInvocationBatch {
+    fn mode(&self) -> CallableBatchMode {
+        CallableBatchMode::Independent
+    }
+
+    fn prepare_next_args(&mut self, args: &mut Vec<PreparedArgValue>) -> bool {
+        if self.index >= self.rows * self.cols {
+            return false;
+        }
+        let row = self.index / self.cols;
+        let col = self.index % self.cols;
+        self.index += 1;
+        args.push(PreparedArgValue::Eval(EvalValue::Number((row + 1) as f64)));
+        args.push(PreparedArgValue::Eval(EvalValue::Number((col + 1) as f64)));
+        true
+    }
+
+    fn accept_result(&mut self, result: PreparedArgValue) -> Result<(), CallableInvocationError> {
+        self.cells.push(scalar_cell_from_prepared(&result)?);
+        Ok(())
+    }
+}
+
+fn map_batch_scalar_error(error: CallableInvocationError) -> LambdaHelperEvalError {
+    match error {
+        CallableInvocationError::UnsupportedResultKind("array") => {
+            LambdaHelperEvalError::NonScalarHelperResult
+        }
+        other => LambdaHelperEvalError::Invocation(other),
     }
 }
 
@@ -157,23 +573,32 @@ fn scalar_cell_from_prepared(
 
 fn row_vector_from_slice(row: &[ArrayCellValue]) -> PreparedArgValue {
     PreparedArgValue::Eval(EvalValue::Array(
-        EvalArray::from_rows(vec![row.to_vec()]).expect("row slice is non-empty"),
+        EvalArray::from_cells_iter(
+            ArrayShape {
+                rows: 1,
+                cols: row.len(),
+            },
+            row.iter().cloned(),
+        )
+        .expect("row slice is non-empty"),
     ))
 }
 
 fn column_vector_from_array(array: &EvalArray, col: usize) -> PreparedArgValue {
-    let cells = (0..array.shape().rows)
-        .map(|row| {
-            vec![
+    PreparedArgValue::Eval(EvalValue::Array(
+        EvalArray::from_cells_iter(
+            ArrayShape {
+                rows: array.shape().rows,
+                cols: 1,
+            },
+            (0..array.shape().rows).map(|row| {
                 array
                     .get(row, col)
                     .cloned()
-                    .expect("validated column access"),
-            ]
-        })
-        .collect::<Vec<_>>();
-    PreparedArgValue::Eval(EvalValue::Array(
-        EvalArray::from_rows(cells).expect("column slice dimensions are valid"),
+                    .expect("validated column access")
+            }),
+        )
+        .expect("column slice dimensions are valid"),
     ))
 }
 
@@ -214,32 +639,23 @@ pub fn eval_map_prepared(
         return Err(LambdaHelperEvalError::MissingCallable);
     }
 
-    let materialized: Vec<Vec<PreparedArgValue>> =
-        inputs.iter().map(materialize_iterable).collect();
-    let cell_count = materialized.iter().map(Vec::len).max().unwrap_or(1);
+    let cell_count = inputs
+        .iter()
+        .map(|input| PreparedIterableSource::new(input).len_hint())
+        .max()
+        .unwrap_or(1);
     let output_shape =
         inferred_map_output_shape(inputs, cell_count).map_err(LambdaHelperEvalError::Invocation)?;
+    let sources = inputs
+        .iter()
+        .map(PreparedIterableSource::new)
+        .collect::<Vec<_>>();
 
-    let mut cells = Vec::with_capacity(cell_count);
-    for index in 0..cell_count {
-        let lambda_args = materialized
-            .iter()
-            .map(|values| {
-                values.get(index).cloned().unwrap_or_else(|| {
-                    PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))
-                })
-            })
-            .collect::<Vec<_>>();
-        let result = invoke_callable_prepared(callable, &lambda_args, invoker)
-            .map_err(LambdaHelperEvalError::Invocation)?;
-        match scalar_cell_from_prepared(&result) {
-            Ok(cell) => cells.push(cell),
-            Err(CallableInvocationError::UnsupportedResultKind("array")) => {
-                return Err(LambdaHelperEvalError::NonScalarHelperResult);
-            }
-            Err(other) => return Err(LambdaHelperEvalError::Invocation(other)),
-        }
-    }
+    let mut batch = MapInvocationBatch::new(sources, cell_count);
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(map_batch_scalar_error)?;
+    let cells = batch.into_cells();
 
     Ok(EvalValue::Array(
         EvalArray::new(output_shape, cells).expect("map output shape is validated"),
@@ -252,12 +668,25 @@ pub fn eval_reduce_prepared(
     callable: &LambdaValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
-    let mut accumulator = initial.clone();
-    for item in materialize_iterable(iterable) {
-        accumulator = invoke_callable_prepared(callable, &[accumulator, item], invoker)
-            .map_err(LambdaHelperEvalError::Invocation)?;
+    if let PreparedArgValue::Eval(EvalValue::Array(array)) = iterable {
+        if array
+            .iter_row_major()
+            .all(|cell| matches!(cell, ArrayCellValue::Number(_)))
+        {
+            let mut batch = NumericArrayReduceInvocationBatch::new(initial.clone(), array);
+            invoker
+                .invoke_many(callable, &mut batch)
+                .map_err(LambdaHelperEvalError::Invocation)?;
+            return Ok(batch.into_accumulator());
+        }
     }
-    Ok(accumulator)
+
+    let mut batch =
+        ReduceInvocationBatch::new(initial.clone(), PreparedIterableSource::new(iterable));
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(LambdaHelperEvalError::Invocation)?;
+    Ok(batch.into_accumulator())
 }
 
 pub fn eval_scan_prepared(
@@ -266,24 +695,18 @@ pub fn eval_scan_prepared(
     callable: &LambdaValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
-    let values = materialize_iterable(iterable);
-    let shape = match iterable {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array.shape(),
-        _ => ArrayShape {
-            rows: 1,
-            cols: values.len().max(1),
-        },
-    };
+    let source = PreparedIterableSource::new(iterable);
+    let len_hint = source.len_hint();
+    let shape = source.shape_hint().unwrap_or(ArrayShape {
+        rows: 1,
+        cols: len_hint.max(1),
+    });
 
-    let mut accumulator = initial.clone();
-    let mut cells = Vec::with_capacity(values.len());
-    for item in values {
-        accumulator = invoke_callable_prepared(callable, &[accumulator, item], invoker)
-            .map_err(LambdaHelperEvalError::Invocation)?;
-        cells.push(
-            scalar_cell_from_prepared(&accumulator).map_err(LambdaHelperEvalError::Invocation)?,
-        );
-    }
+    let mut batch = ScanInvocationBatch::new(initial.clone(), source, len_hint);
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(LambdaHelperEvalError::Invocation)?;
+    let cells = batch.into_cells();
 
     Ok(EvalValue::Array(
         EvalArray::new(shape, cells).expect("scan output shape is validated"),
@@ -295,30 +718,22 @@ pub fn eval_byrow_prepared(
     callable: &LambdaValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
+    let scalar_source_array;
     let source_array = match source {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array.clone(),
-        other => EvalArray::from_scalar(
-            scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
-        ),
+        PreparedArgValue::Eval(EvalValue::Array(array)) => array,
+        other => {
+            scalar_source_array = EvalArray::from_scalar(
+                scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
+            );
+            &scalar_source_array
+        }
     };
 
-    let mut cells = Vec::with_capacity(source_array.shape().rows);
-    for row in 0..source_array.shape().rows {
-        let row_arg = row_vector_from_slice(
-            source_array
-                .row_slice(row)
-                .expect("validated row access for byrow"),
-        );
-        let result = invoke_callable_prepared(callable, &[row_arg], invoker)
-            .map_err(LambdaHelperEvalError::Invocation)?;
-        match scalar_cell_from_prepared(&result) {
-            Ok(cell) => cells.push(cell),
-            Err(CallableInvocationError::UnsupportedResultKind("array")) => {
-                return Err(LambdaHelperEvalError::NonScalarHelperResult);
-            }
-            Err(other) => return Err(LambdaHelperEvalError::Invocation(other)),
-        }
-    }
+    let mut batch = RowInvocationBatch::new(source_array);
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(map_batch_scalar_error)?;
+    let cells = batch.into_cells();
 
     Ok(EvalValue::Array(
         EvalArray::new(
@@ -337,26 +752,22 @@ pub fn eval_bycol_prepared(
     callable: &LambdaValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
+    let scalar_source_array;
     let source_array = match source {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array.clone(),
-        other => EvalArray::from_scalar(
-            scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
-        ),
+        PreparedArgValue::Eval(EvalValue::Array(array)) => array,
+        other => {
+            scalar_source_array = EvalArray::from_scalar(
+                scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
+            );
+            &scalar_source_array
+        }
     };
 
-    let mut cells = Vec::with_capacity(source_array.shape().cols);
-    for col in 0..source_array.shape().cols {
-        let col_arg = column_vector_from_array(&source_array, col);
-        let result = invoke_callable_prepared(callable, &[col_arg], invoker)
-            .map_err(LambdaHelperEvalError::Invocation)?;
-        match scalar_cell_from_prepared(&result) {
-            Ok(cell) => cells.push(cell),
-            Err(CallableInvocationError::UnsupportedResultKind("array")) => {
-                return Err(LambdaHelperEvalError::NonScalarHelperResult);
-            }
-            Err(other) => return Err(LambdaHelperEvalError::Invocation(other)),
-        }
-    }
+    let mut batch = ColumnInvocationBatch::new(source_array);
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(map_batch_scalar_error)?;
+    let cells = batch.into_cells();
 
     Ok(EvalValue::Array(
         EvalArray::new(
@@ -380,23 +791,11 @@ pub fn eval_makearray_prepared(
         return Err(LambdaHelperEvalError::InvalidGeneratedDimensions);
     }
 
-    let mut cells = Vec::with_capacity(rows * cols);
-    for row in 0..rows {
-        for col in 0..cols {
-            let result = invoke_callable_prepared(
-                callable,
-                &[
-                    PreparedArgValue::Eval(EvalValue::Number((row + 1) as f64)),
-                    PreparedArgValue::Eval(EvalValue::Number((col + 1) as f64)),
-                ],
-                invoker,
-            )
-            .map_err(LambdaHelperEvalError::Invocation)?;
-            cells.push(
-                scalar_cell_from_prepared(&result).map_err(LambdaHelperEvalError::Invocation)?,
-            );
-        }
-    }
+    let mut batch = MakeArrayInvocationBatch::new(rows, cols);
+    invoker
+        .invoke_many(callable, &mut batch)
+        .map_err(LambdaHelperEvalError::Invocation)?;
+    let cells = batch.into_cells();
 
     Ok(EvalValue::Array(
         EvalArray::new(ArrayShape { rows, cols }, cells).expect("makearray output shape is valid"),
@@ -574,6 +973,7 @@ mod tests {
     use crate::value::{
         CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, ReferenceLike,
     };
+    use std::cell::Cell;
 
     struct MockCallableInvoker;
 
@@ -684,6 +1084,59 @@ mod tests {
                     other.to_string(),
                 )),
             }
+        }
+    }
+
+    struct BatchCountingInvoker {
+        batch_calls: Cell<usize>,
+        invoke_calls: Cell<usize>,
+        last_mode: Cell<Option<CallableBatchMode>>,
+    }
+
+    impl BatchCountingInvoker {
+        fn new() -> Self {
+            Self {
+                batch_calls: Cell::new(0),
+                invoke_calls: Cell::new(0),
+                last_mode: Cell::new(None),
+            }
+        }
+    }
+
+    impl CallableInvoker for BatchCountingInvoker {
+        fn invoke(
+            &self,
+            callable: &LambdaValue,
+            args: &[PreparedArgValue],
+        ) -> Result<PreparedArgValue, CallableInvocationError> {
+            self.invoke_calls.set(self.invoke_calls.get() + 1);
+            MockCallableInvoker.invoke(callable, args)
+        }
+
+        fn invoke_many(
+            &self,
+            callable: &LambdaValue,
+            batch: &mut dyn CallableInvocationBatch,
+        ) -> Result<(), CallableInvocationError> {
+            self.batch_calls.set(self.batch_calls.get() + 1);
+            self.last_mode.set(Some(batch.mode()));
+            let mut args = Vec::new();
+            while {
+                args.clear();
+                batch.prepare_next_args(&mut args)
+            } {
+                let argc = args.len();
+                if !callable.arity_shape.accepts(argc) {
+                    return Err(CallableInvocationError::ArityMismatch {
+                        expected_min: callable.arity_shape.min,
+                        expected_max: callable.arity_shape.max,
+                        actual: argc,
+                    });
+                }
+                let result = self.invoke(callable, &args)?;
+                batch.accept_result(result)?;
+            }
+            Ok(())
         }
     }
 
@@ -837,6 +1290,27 @@ mod tests {
     }
 
     #[test]
+    fn eval_reduce_prepared_uses_sequential_batch_invoker() {
+        let iterable = PreparedArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(2.0),
+                ArrayCellValue::Number(3.0),
+            ]])
+            .unwrap(),
+        ));
+        let invoker = BatchCountingInvoker::new();
+        let got = eval_reduce_prepared(&num(0.0), &iterable, &helper("helper.sum2", 2), &invoker);
+        assert_eq!(got, Ok(num(6.0)));
+        assert_eq!(invoker.batch_calls.get(), 1);
+        assert_eq!(invoker.invoke_calls.get(), 3);
+        assert_eq!(
+            invoker.last_mode.get(),
+            Some(CallableBatchMode::SequentialStateful)
+        );
+    }
+
+    #[test]
     fn eval_scan_prepared_spills_intermediate_accumulations() {
         let iterable = PreparedArgValue::Eval(EvalValue::Array(
             EvalArray::from_rows(vec![vec![
@@ -862,6 +1336,131 @@ mod tests {
                 ]])
                 .unwrap()
             ))
+        );
+    }
+
+    #[test]
+    fn eval_scan_prepared_uses_sequential_batch_invoker() {
+        let iterable = PreparedArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(2.0),
+                ArrayCellValue::Number(3.0),
+            ]])
+            .unwrap(),
+        ));
+        let invoker = BatchCountingInvoker::new();
+        let got = eval_scan_prepared(&num(0.0), &iterable, &helper("helper.sum2", 2), &invoker);
+        assert_eq!(
+            got,
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(3.0),
+                    ArrayCellValue::Number(6.0),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(invoker.batch_calls.get(), 1);
+        assert_eq!(invoker.invoke_calls.get(), 3);
+        assert_eq!(
+            invoker.last_mode.get(),
+            Some(CallableBatchMode::SequentialStateful)
+        );
+    }
+
+    #[test]
+    fn map_byrow_bycol_and_makearray_use_independent_batch_invoker() {
+        let map_input = PreparedArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Number(2.0),
+            ]])
+            .unwrap(),
+        ));
+        let map_invoker = BatchCountingInvoker::new();
+        assert_eq!(
+            eval_map_prepared(&[map_input], &helper("helper.add1", 1), &map_invoker),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(map_invoker.batch_calls.get(), 1);
+        assert_eq!(map_invoker.invoke_calls.get(), 2);
+        assert_eq!(
+            map_invoker.last_mode.get(),
+            Some(CallableBatchMode::Independent)
+        );
+
+        let source = PreparedArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+                vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+            ])
+            .unwrap(),
+        ));
+        let byrow_invoker = BatchCountingInvoker::new();
+        assert_eq!(
+            eval_byrow_prepared(&source, &helper("helper.sum_array", 1), &byrow_invoker),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(3.0)],
+                    vec![ArrayCellValue::Number(7.0)],
+                ])
+                .unwrap()
+            ))
+        );
+        assert_eq!(byrow_invoker.batch_calls.get(), 1);
+        assert_eq!(byrow_invoker.invoke_calls.get(), 2);
+        assert_eq!(
+            byrow_invoker.last_mode.get(),
+            Some(CallableBatchMode::Independent)
+        );
+
+        let bycol_invoker = BatchCountingInvoker::new();
+        assert_eq!(
+            eval_bycol_prepared(&source, &helper("helper.sum_array", 1), &bycol_invoker),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(6.0),
+                ]])
+                .unwrap()
+            ))
+        );
+        assert_eq!(bycol_invoker.batch_calls.get(), 1);
+        assert_eq!(bycol_invoker.invoke_calls.get(), 2);
+        assert_eq!(
+            bycol_invoker.last_mode.get(),
+            Some(CallableBatchMode::Independent)
+        );
+
+        let makearray_invoker = BatchCountingInvoker::new();
+        assert_eq!(
+            eval_makearray_prepared(
+                2,
+                2,
+                &helper("helper.makearray_coords", 2),
+                &makearray_invoker
+            ),
+            Ok(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(11.0), ArrayCellValue::Number(12.0)],
+                    vec![ArrayCellValue::Number(21.0), ArrayCellValue::Number(22.0)],
+                ])
+                .unwrap()
+            ))
+        );
+        assert_eq!(makearray_invoker.batch_calls.get(), 1);
+        assert_eq!(makearray_invoker.invoke_calls.get(), 4);
+        assert_eq!(
+            makearray_invoker.last_mode.get(),
+            Some(CallableBatchMode::Independent)
         );
     }
 

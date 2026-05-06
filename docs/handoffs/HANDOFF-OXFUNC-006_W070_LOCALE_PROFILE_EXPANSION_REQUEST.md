@@ -64,7 +64,7 @@ W094 also adds `LocaleProfileId::from_bcp47_language_tag(...)` so downstream con
 1. Locale profile id and workbook date system are orthogonal axes.
 2. `LocaleFormatContext` remains the binding surface that combines a `FormatProfile`, a `WorkbookDateSystem`, a parser, and a formatter.
 3. `CurrentExcelHost` remains useful for live host regional settings, but deterministic publication and replay surfaces should prefer explicit profile ids.
-4. Currency placement, positive/negative currency patterns, locale-keyed names, and locale-prefix format-code overrides are not represented by the current OxFunc `FormatProfile` shape.
+4. Currency placement, currency spacing, negative currency pattern class, short-date order/pattern, invariant format-code token policy, and Excel LCID-to-profile mapping are now represented by the OxFunc `FormatProfile` / `LocaleProfileId` surface.
 
 ## Validation evidence
 
@@ -75,10 +75,10 @@ W094 also adds `LocaleProfileId::from_bcp47_language_tag(...)` so downstream con
 
 ## Open lanes
 
-1. OxFml still needs to consume the new OxFunc profile ids and add locale-keyed month and weekday tables.
-2. OxFml still needs parser and General-render paths that consult the profile rather than `en-US` checks.
-3. Optional Excel locale-prefix custom-format grammar remains a separate downstream slice unless W094 explicitly expands scope.
-4. Locale constants are culture-profile seed rows, not full Excel locale semantic closure for currency placement or positive/negative currency patterns.
+1. OxFml still needs to consume the final OxFunc `FormatProfile` semantic fields.
+2. OxFml still owns month/weekday render tables, parser branches, General rendering, and custom-format rendering behavior.
+3. Excel file-storage behavior for localized function names and locale prefixes remains a later cross-repo research lane.
+4. Locale constants are culture-profile seed rows, not full Excel locale semantic closure across every application channel/workbook compatibility version.
 5. Landed-ref promotion remains open.
 
 ## Status report
@@ -92,7 +92,48 @@ target_completeness: `target_complete` for the OxFunc-local W094 profile identit
 integration_completeness: `partial`
 
 open_lanes:
-1. downstream OxFml render/parser/general consumption,
-2. optional locale-prefix grammar,
-3. full Excel currency-pattern semantics beyond the current `FormatProfile` shape,
+1. downstream OxFml consumption of the final profile fields,
+2. Excel file-storage and locale-prefix research,
+3. full locale semantic parity sweeps beyond the current profile seed rows,
 4. landed-ref promotion.
+
+## 2026-05-06 final-state locale detail handoff processing
+
+OxFunc processed the OxFml final-state request for the W094 `FormatProfile`
+surface.
+
+Added OxFunc-owned facts:
+1. `DateComponentOrder`
+2. `FormatProfile.short_date_order`
+3. `FormatProfile.short_date_pattern`
+4. `FormatProfile.two_digit_year_pivot`
+5. `CurrencyPlacement`
+6. `CurrencySpacing`
+7. `CurrencyNegativePattern`
+8. `FormatProfile.currency_placement`
+9. `FormatProfile.currency_spacing`
+10. `FormatProfile.currency_negative_pattern`
+11. `FormatCodeTokenPolicy`
+12. `FormatProfile.format_code_decimal_token`
+13. `FormatProfile.format_code_group_token`
+14. `FormatProfile.format_code_token_policy`
+15. `LocaleProfileId::from_excel_lcid(...)`
+
+Surface interpretation:
+1. `format_profile(id)` remains the single canonical constructor.
+2. Format-code token fields are invariant Excel tokens for the current surface:
+   decimal token `.` and group token `,`.
+3. Display separators remain the localized `decimal_separator` and
+   `thousands_separator` fields.
+4. LCID mapping covers the current supported profile set plus same-language
+   aliases that fold into the existing canonical profile ids.
+5. OxFunc still does not implement OxFml custom-format parsing/rendering.
+
+Deterministic tests added in `crates/oxfunc_core/src/locale_format.rs`:
+1. profile matrix assertions for date order/pattern, currency placement,
+   spacing, negative pattern, and invariant format-code token policy,
+2. Excel LCID mapping coverage for the supported profile set and aliases,
+3. representative non-US date order and currency placement cases.
+
+Validation note:
+1. no new validation command was run for this processing pass.

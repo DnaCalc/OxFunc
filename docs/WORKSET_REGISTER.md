@@ -818,7 +818,7 @@ Notes:
 
 ## W093 UDF Registration And Name-Resolution Seam
 
-Status: `in_progress`
+Status: `stopped_at_oxfunc_local_gate`
 
 Execution target:
 design the source-neutral UDF registration seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths converge on OxFunc runtime registry truth while OxFml owns formula name resolution and invalidation.
@@ -845,7 +845,7 @@ Notes:
 Status: `in_progress`
 
 Execution target:
-expand OxFunc-owned canonical locale profile identities and `FormatProfile` constants for the concrete locale set requested by OxFml `HANDOFF-OXFUNC-006`, while keeping OxFml formatter/parser behavior and DNA OneCalc UI cleanup in their owning repos.
+expand OxFunc-owned canonical locale profile identities and `FormatProfile` constants/facts for the concrete locale set requested by OxFml `HANDOFF-OXFUNC-006`, while keeping OxFml formatter/parser behavior and DNA OneCalc UI cleanup in their owning repos.
 
 Canonical surfaces:
 1. `docs/worksets/W094_LOCALE_PROFILE_EXPANSION.md`
@@ -858,4 +858,28 @@ Notes:
 2. `CurrentExcelHost` remains a host-regional-settings placeholder, not a reproducible locale identity.
 3. OxFml remains owner of locale-keyed names, parsing branches, General rendering, and optional locale-prefix format-code grammar.
 4. The OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through explicit profile ids or language-family mapping.
-5. W094 remains scope-partial because downstream OxFml locale table/parser/general consumption, optional locale-prefix grammar, currency-pattern semantics beyond the current `FormatProfile` shape, and landed-ref promotion remain open.
+5. W094 remains scope-partial because downstream OxFml final-profile-field consumption, Excel file-storage and locale-prefix research, full locale semantic parity sweeps beyond the current profile seed rows, and landed-ref promotion remain open.
+
+## W095 REDUCE Lambda-Helper Hot-Loop Performance
+
+Status: `in_progress`
+
+Execution target:
+process DnaOneCalc's REDUCE / lambda-helper performance handoff by reducing avoidable OxFunc-side allocation pressure in hot helper loops while preserving Excel-visible helper semantics.
+
+Canonical surfaces:
+1. `docs/worksets/W095_REDUCE_LAMBDA_HELPER_HOTLOOP_PERF.md`
+2. `docs/handoffs/HANDOFF-OXFUNC-007_reduce_hotloop_perf.md`
+3. `docs/handoffs/HO-FN-015_callable_batching_invocation_seam.md`
+4. `crates/oxfunc_core/src/functions/callable_helpers.rs`
+5. `.beads/` W095 bead `oxf-goj3`
+
+Notes:
+1. Initial W095 code targets lazy helper iteration for `MAP`, `REDUCE`, and `SCAN`.
+2. Follow-on W095 code targets REDUCE numeric-array specialization plus borrowed/inline argument sources for `HSTACK` and `VSTACK`.
+3. OxFml callable invocation caching remains a sibling-repo dependency.
+4. Any `REDUCE.STOP`-style helper would be non-parity behavior and is explicitly not part of this pass.
+5. Broader small-row `EvalArray` storage now uses inline storage for arrays with up to `8` cells and iterator construction for W095 hot paths.
+6. The callable batching seam now exposes `CallableInvoker::invoke_many(...)`, with REDUCE/SCAN using sequential-stateful batches and MAP/BYROW/BYCOL/MAKEARRAY using independent batches.
+7. The DnaOneCalc release Mandelbrot probe improved after inline `EvalArray` storage but W095 stays target-partial until OxFml specializes the new seam and downstream replay confirms the combined effect.
+8. W095 is stopped at the OxFunc-local gate on `2026-05-06`; remaining work is tracked through `HO-FN-015` and downstream replay.

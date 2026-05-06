@@ -5,6 +5,7 @@ pub mod host_info;
 pub mod locale_format;
 pub mod registry;
 mod registry_context_seed;
+mod registry_help_seed;
 mod registry_signature_seed;
 pub mod resolver;
 pub mod value;
