@@ -144,7 +144,7 @@ The intended split is:
 
 ## 2026-05-07 OxFunc-local execution update
 
-execution_state: `local_target_satisfied_downstream_ack_pending`
+execution_state: `local_target_satisfied_downstream_acknowledged`
 
 Evidence:
 
@@ -155,12 +155,20 @@ Evidence:
    `HSTACK`/`VSTACK`, volatile time/random, host-sensitive, helper/callable,
    locale-sensitive, RTD provider, registered-external provider, scratch reuse,
    planning metadata, and full built-in registry dispatch-key resolution.
-4. `HO-FN-016` is filed and registered for OxFml compiled-plan consumption.
+4. `HO-FN-016` is filed, registered, and acknowledged by OxFml.
+5. OxFml reports initial consumption of `SurfaceCallSite`,
+   `SurfaceCallRuntime`, and `SurfaceCallScratch` in its first compiled/hot-path
+   slice, with `cargo test -p oxfml_core` passing.
 
-Remaining downstream lane:
+Remaining downstream lanes:
 
-1. OxFml acknowledgement and adoption of `SurfaceCallSite`,
-   `SurfaceCallRuntime`, and `SurfaceCallScratch` in compiled/hot paths.
+1. OxFml W075 owns the longer optimizer path: lexical slot frames, generic
+   expression lowering, trace templates, hoisting policy, and performance
+   evidence.
+2. OxFml still has a few narrow existing function-id branches for
+   carrier/publication compatibility; these are not OxFunc semantic
+   reimplementation, but W075 should continue moving avoidable branches toward
+   metadata-driven behavior.
 
 ## 13. Reporting Contract
 
@@ -174,7 +182,8 @@ All W096 reports must include:
 
 Current status axes:
 
-1. `scope_completeness`: `scope_partial`
+1. `scope_completeness`: `scope_complete`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: open execution bead, mechanical resolver-signature refactor, full-catalog handler table, metadata enrichment, parity tests, OxFml handoff.
+4. `open_lanes`: downstream OxFml W075 optimizer lanes and DnaOneCalc
+   large-model performance replay.

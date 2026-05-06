@@ -98,8 +98,8 @@ Supersession note:
 - Current state: active intake from DNA OneCalc. OxFunc has acknowledged that the comprehensive function list, arity, signature, parameter descriptor, runtime UDF registration, and capability-overlay truth must be owned by OxFunc rather than by host-local lists or string-filled snapshot fields. The implementation lane is open under `W091`.
 - Canonical owner: [W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md), [OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md), [HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md), and [HO-FN-011_canonical_function_registry_consumption.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-011_canonical_function_registry_consumption.md).
 
-### IP-20 Full-Model Compiled Semantic Kernel Dispatch
-- Current state: active cross-repo optimization seam. W096 added the OxFunc-local resolved call-site/runtime/scratch surfaces, resolver-erased ABI, generated catalog-index dispatch backend, compatibility string wrapper, planning metadata, focused parity evidence, and OxFml handoff. The remaining lane is downstream OxFml compiled-plan adoption and acknowledgement under `HO-FN-016`.
+### IP-21 Full-Model Compiled Semantic Kernel Dispatch
+- Current state: active cross-repo optimization seam with OxFunc local target satisfied and OxFml acknowledgement received. W096 added the OxFunc-local resolved call-site/runtime/scratch surfaces, resolver-erased ABI, generated catalog-index dispatch backend, compatibility string wrapper, planning metadata, focused parity evidence, and OxFml handoff. OxFml accepts `HO-FN-016`, owns the longer optimizer path under W075, and reports initial consumption of `SurfaceCallSite`, `SurfaceCallRuntime`, and `SurfaceCallScratch`; remaining optimizer lanes are downstream W075 work rather than an OxFunc semantic gap.
 - Canonical owner: [W096_FULL_MODEL_COMPILED_SEMANTIC_KERNEL_DISPATCH.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W096_FULL_MODEL_COMPILED_SEMANTIC_KERNEL_DISPATCH.md), [HO-FN-016_compiled_surface_call_site_and_index_dispatch.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-016_compiled_surface_call_site_and_index_dispatch.md), and `.beads/`.
 
 ## Status Vocabulary
@@ -119,6 +119,7 @@ Current reading:
 9. `IP-18` is `active`.
 10. `IP-19` is `active`.
 11. `IP-20` is `active`.
+12. `IP-21` is `active`.
 
 ## 2026-05-03 W091 OxFunc-local execution update
 

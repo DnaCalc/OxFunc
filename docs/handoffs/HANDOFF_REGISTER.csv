@@ -21,4 +21,4 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HANDOFF-OXFUNC-006","OxFml->OxFunc","W070 locale profile expansion request","acknowledged","OxFml W070","W094","2026-05-04","2026-05-04"
 "HANDOFF-OXFUNC-007","DnaOneCalc->OxFunc","REDUCE / lambda-helper hot-loop allocator pressure","acknowledged","DnaOneCalc performance investigation","W095","2026-05-05","2026-05-06"
 "HO-FN-015","OxFunc->OxFml","Callable batching invocation seam","filed","W095","OxFml lambda invocation performance follow-up","2026-05-06",""
-"HO-FN-016","OxFunc->OxFml","Compiled surface call-site and full-catalog index dispatch","filed","W096","OxFml compiled lambda/model evaluation follow-up","2026-05-07",""
+"HO-FN-016","OxFunc->OxFml","Compiled surface call-site and full-catalog index dispatch","acknowledged","W096","OxFml W075 compiled lambda/model evaluation follow-up","2026-05-07","2026-05-07"

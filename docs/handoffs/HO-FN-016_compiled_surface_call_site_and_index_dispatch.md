@@ -4,7 +4,7 @@ Direction: `OxFunc -> OxFml`
 Source repo/workset: `OxFunc/W096`
 Target repo/workset: `OxFml compiled lambda/model evaluation follow-up`
 Filed: `2026-05-07`
-Status: `filed`
+Status: `acknowledged`
 
 ## Purpose
 
@@ -115,6 +115,31 @@ OxFunc W096 library validation:
 
 ## Open Lanes
 
-1. OxFml acknowledgement and compiled-plan consumption design,
-2. downstream OxFml adoption of `SurfaceCallSite`, `SurfaceCallRuntime`, and
-   `SurfaceCallScratch` in compiled/hot paths.
+1. downstream OxFml W075 optimizer lanes: lexical slot frames, generic
+   expression lowering, trace templates, hoisting policy, and performance
+   evidence,
+2. continued pressure in W075 to replace avoidable function-specific OxFml
+   branches with metadata-driven behavior where those branches are not required
+   for carrier/publication compatibility.
+
+## 2026-05-07 OxFml acknowledgement
+
+OxFml acknowledges `HO-FN-016` with this scope:
+
+1. The W096 seam is compatible with OxFml's ownership boundary.
+2. OxFml accepts `W075` as the owner workset for the longer optimizer path.
+3. Initial consumption exists: the first compiled/hot-path slice already
+   consumes `SurfaceCallSite`, `SurfaceCallRuntime`, and `SurfaceCallScratch`.
+4. OxFml reported `cargo test -p oxfml_core` passing for that initial
+   consumption.
+5. Remaining optimizer work stays under OxFml `W075`; this acknowledgement does
+   not claim that W075 is finished.
+
+Internal caveat:
+
+1. OxFml still has a few narrow existing function-id branches for
+   carrier/publication compatibility.
+2. Those branches are not OxFunc semantic reimplementation and do not block this
+   acknowledgement.
+3. W075 should keep pressure toward replacing avoidable function-specific OxFml
+   logic with metadata-driven behavior.
