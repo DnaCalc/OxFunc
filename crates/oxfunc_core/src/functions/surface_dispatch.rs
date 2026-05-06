@@ -2297,17 +2297,19 @@ pub fn eval_surface_extended_call(
 fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
     match function_id {
         FUNC_ID_ABS => Some(&[0]),
-        FUNC_ID_ADDRESS => Some(&[0, 1]),
-        FUNC_ID_BETADIST | FUNC_ID_BETAINV | FUNC_ID_BINOMDIST | FUNC_ID_CONFIDENCE
-        | FUNC_ID_CONFIDENCE_T | FUNC_ID_CRITBINOM | FUNC_ID_EXPONDIST | FUNC_ID_FDIST
-        | FUNC_ID_FINV | FUNC_ID_GAMMADIST | FUNC_ID_GAMMAINV | FUNC_ID_HYPGEOMDIST
-        | FUNC_ID_LOGINV | FUNC_ID_LOGNORMDIST | FUNC_ID_NEGBINOMDIST | FUNC_ID_NORMDIST
-        | FUNC_ID_NORMINV | FUNC_ID_POISSON | FUNC_ID_SERIESSUM | FUNC_ID_TDIST => Some(&[0, 1, 2]),
-        FUNC_ID_CHIDIST | FUNC_ID_CHIINV | FUNC_ID_COMPLEX | FUNC_ID_DOLLARFR | FUNC_ID_IMDIV
-        | FUNC_ID_IMPOWER | FUNC_ID_IMSUB | FUNC_ID_TINV => Some(&[0, 1]),
+        FUNC_ID_ADDRESS => Some(&[0, 1, 2, 3, 4]),
+        FUNC_ID_BINOMDIST | FUNC_ID_NORMDIST => Some(&[0, 1, 2, 3]),
+        FUNC_ID_BETADIST | FUNC_ID_BETAINV | FUNC_ID_CONFIDENCE | FUNC_ID_CONFIDENCE_T
+        | FUNC_ID_CRITBINOM | FUNC_ID_EXPONDIST | FUNC_ID_FDIST | FUNC_ID_FINV
+        | FUNC_ID_GAMMADIST | FUNC_ID_GAMMAINV | FUNC_ID_HYPGEOMDIST | FUNC_ID_LOGINV
+        | FUNC_ID_LOGNORMDIST | FUNC_ID_NEGBINOMDIST | FUNC_ID_NORMINV | FUNC_ID_POISSON
+        | FUNC_ID_SERIESSUM | FUNC_ID_TDIST => Some(&[0, 1, 2]),
+        FUNC_ID_COMPLEX => Some(&[0, 1, 2]),
+        FUNC_ID_CHIDIST | FUNC_ID_CHIINV | FUNC_ID_DOLLARFR | FUNC_ID_IMDIV | FUNC_ID_IMPOWER
+        | FUNC_ID_IMSUB | FUNC_ID_TINV => Some(&[0, 1]),
         FUNC_ID_CONCATENATE => Some(&[0, 1, 2]),
         FUNC_ID_DROP | FUNC_ID_EXPAND | FUNC_ID_TAKE | FUNC_ID_TOROW => Some(&[1, 2]),
-        FUNC_ID_IFS => Some(&[0, 2]),
+        FUNC_ID_IFS => Some(&[0, 1, 2]),
         FUNC_ID_IMABS | FUNC_ID_IMAGINARY | FUNC_ID_IMARGUMENT | FUNC_ID_IMCONJUGATE
         | FUNC_ID_IMCOS | FUNC_ID_IMCOSH | FUNC_ID_IMCOT | FUNC_ID_IMCSC | FUNC_ID_IMCSCH
         | FUNC_ID_IMEXP | FUNC_ID_IMLN | FUNC_ID_IMLOG10 | FUNC_ID_IMLOG2 | FUNC_ID_IMREAL
@@ -2316,10 +2318,14 @@ fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [u
         | FUNC_ID_UNICHAR => Some(&[0]),
         FUNC_ID_PERCENTILE | FUNC_ID_PERCENTRANK | FUNC_ID_QUARTILE | FUNC_ID_TOCOL
         | FUNC_ID_TRIMMEAN | FUNC_ID_WRAPCOLS | FUNC_ID_WRAPROWS => Some(&[1]),
-        FUNC_ID_SWITCH => Some(&[0, 1]),
+        FUNC_ID_SWITCH => Some(&[0, 1, 3]),
         FUNC_ID_Z_TEST => Some(&[1, 2]),
         _ => None,
     }
+}
+
+fn observed_error_result_array_lift(function_id: &str) -> bool {
+    matches!(function_id, FUNC_ID_DOLLARFR)
 }
 
 fn prepared_array_shape(value: &crate::functions::adapters::PreparedArgValue) -> ArrayShape {
@@ -3850,7 +3856,7 @@ pub fn eval_surface_value_call_with_callable(
         };
 
     match result {
-        Err(WorksheetErrorCode::Value) => try_observed_scalar_array_lift(
+        Err(code) => try_observed_scalar_array_lift(
             function_id,
             args,
             resolver,
@@ -3862,20 +3868,25 @@ pub fn eval_surface_value_call_with_callable(
             rtd_provider,
             registered_external_provider,
         )
-        .unwrap_or(Err(WorksheetErrorCode::Value)),
-        Ok(EvalValue::Error(WorksheetErrorCode::Value)) => try_observed_scalar_array_lift(
-            function_id,
-            args,
-            resolver,
-            now_serial,
-            random_value,
-            locale_ctx,
-            host_info,
-            callable_invoker,
-            rtd_provider,
-            registered_external_provider,
-        )
-        .unwrap_or(Ok(EvalValue::Error(WorksheetErrorCode::Value))),
+        .unwrap_or(Err(code)),
+        Ok(EvalValue::Error(code))
+            if code == WorksheetErrorCode::Value
+                || observed_error_result_array_lift(function_id) =>
+        {
+            try_observed_scalar_array_lift(
+                function_id,
+                args,
+                resolver,
+                now_serial,
+                random_value,
+                locale_ctx,
+                host_info,
+                callable_invoker,
+                rtd_provider,
+                registered_external_provider,
+            )
+            .unwrap_or(Ok(EvalValue::Error(code)))
+        }
         other => other,
     }
 }
@@ -4073,6 +4084,22 @@ mod tests {
         CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
     }
 
+    fn number_arg(value: f64) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Number(value))
+    }
+
+    fn logical_arg(value: bool) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Logical(value))
+    }
+
+    fn text_arg(value: &str) -> CallArgValue {
+        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(value)))
+    }
+
+    fn text_cell(value: &str) -> ArrayCellValue {
+        ArrayCellValue::Text(ExcelText::from_interop_assignment(value))
+    }
+
     #[test]
     fn observed_scalar_array_lift_handles_value_error_result_surfaces() {
         let got = eval_test_surface_value(
@@ -4129,6 +4156,226 @@ mod tests {
                     ArrayCellValue::Number(1.0),
                     ArrayCellValue::Error(WorksheetErrorCode::Value),
                     ArrayCellValue::Number(2.0),
+                ]])
+                .unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn observed_scalar_array_lift_covers_w092_reopened_successor_positions() {
+        let binomdist = eval_test_surface_value(
+            FUNC_ID_BINOMDIST,
+            &[
+                number_arg(2.0),
+                number_arg(4.0),
+                number_arg(0.25),
+                array_arg(vec![vec![
+                    ArrayCellValue::Logical(false),
+                    ArrayCellValue::Logical(false),
+                ]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            binomdist,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(f64::from_bits(0x3fcb000000000001)),
+                    ArrayCellValue::Number(f64::from_bits(0x3fcb000000000001)),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let normdist = eval_test_surface_value(
+            FUNC_ID_NORMDIST,
+            &[
+                number_arg(42.0),
+                number_arg(40.0),
+                number_arg(1.5),
+                array_arg(vec![vec![
+                    ArrayCellValue::Logical(true),
+                    ArrayCellValue::Logical(true),
+                ]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            normdist,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(f64::from_bits(0x3fed14cc3547f8da)),
+                    ArrayCellValue::Number(f64::from_bits(0x3fed14cc3547f8da)),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let complex = eval_test_surface_value(
+            FUNC_ID_COMPLEX,
+            &[
+                number_arg(3.0),
+                number_arg(4.0),
+                array_arg(vec![vec![text_cell("j"), text_cell("j")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            complex,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![text_cell("3+4j"), text_cell("3+4j")]]).unwrap()
+            )
+        );
+
+        let dollarfr = eval_test_surface_value(
+            FUNC_ID_DOLLARFR,
+            &[
+                CallArgValue::MissingArg,
+                array_arg(vec![vec![
+                    ArrayCellValue::Number(16.0),
+                    ArrayCellValue::Number(16.0),
+                ]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            dollarfr,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let switch = eval_test_surface_value(
+            FUNC_ID_SWITCH,
+            &[
+                number_arg(2.0),
+                number_arg(1.0),
+                text_arg("a"),
+                array_arg(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(2.0),
+                ]]),
+                text_arg("b"),
+                text_arg("other"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            switch,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![text_cell("b"), text_cell("b")]]).unwrap()
+            )
+        );
+
+        let switch_no_default = eval_test_surface_value(
+            FUNC_ID_SWITCH,
+            &[
+                number_arg(3.0),
+                number_arg(1.0),
+                text_arg("a"),
+                array_arg(vec![vec![
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(2.0),
+                ]]),
+                text_arg("b"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            switch_no_default,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let ifs = eval_test_surface_value(
+            FUNC_ID_IFS,
+            &[
+                text_arg("2"),
+                array_arg(vec![vec![text_cell("hit"), text_cell("hit")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            ifs,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let ifs_unselected_array_result = eval_test_surface_value(
+            FUNC_ID_IFS,
+            &[
+                logical_arg(false),
+                array_arg(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(1.0),
+                ]]),
+                number_arg(0.0),
+                number_arg(2.0),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            ifs_unselected_array_result,
+            EvalValue::Error(WorksheetErrorCode::NA)
+        );
+
+        let address_abs_num = eval_test_surface_value(
+            FUNC_ID_ADDRESS,
+            &[
+                number_arg(3.0),
+                number_arg(2.0),
+                array_arg(vec![vec![
+                    ArrayCellValue::Number(4.0),
+                    ArrayCellValue::Number(4.0),
+                ]]),
+                logical_arg(false),
+                text_arg("Alpha"),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            address_abs_num,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    text_cell("Alpha!R[3]C[2]"),
+                    text_cell("Alpha!R[3]C[2]"),
+                ]])
+                .unwrap()
+            )
+        );
+
+        let address_sheet_text = eval_test_surface_value(
+            FUNC_ID_ADDRESS,
+            &[
+                number_arg(3.0),
+                number_arg(2.0),
+                number_arg(1.0),
+                logical_arg(true),
+                array_arg(vec![vec![text_cell("Quarter 1"), text_cell("Quarter 1")]]),
+            ],
+        )
+        .unwrap();
+        assert_eq!(
+            address_sheet_text,
+            EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    text_cell("'Quarter 1'!$B$3"),
+                    text_cell("'Quarter 1'!$B$3"),
                 ]])
                 .unwrap()
             )

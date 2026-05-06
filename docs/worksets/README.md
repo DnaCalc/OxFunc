@@ -20,26 +20,27 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md)
 6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md)
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md)
-8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md)
-9. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md)
-10. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md)
-11. [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md)
-12. [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md)
-13. [W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md)
-14. [W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md)
-15. [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md)
-16. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md)
-17. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md)
-18. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md)
-19. [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md)
-20. [W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md)
-21. [W084_COUNTBLANK_RANGE_ONLY_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W084_COUNTBLANK_RANGE_ONLY_PARITY.md)
-22. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md)
-23. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md)
-24. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md)
-25. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md)
-26. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md)
-27. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md)
+8. [W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md)
+9. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md)
+10. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md)
+11. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md)
+12. [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md)
+13. [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md)
+14. [W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md)
+15. [W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W077_CORPUS_IF_CONDITION_AND_NUMERIC_COMPARISON_TOLERANCE.md)
+16. [W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W078_POWER_ZERO_TO_ZERO_NUM_ERROR_PARITY.md)
+17. [W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W079_LOOKUP_SELECTION_ARRAY_LOOKUP_VALUE_LIFTING.md)
+18. [W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W080_FUNCTION_ARRAY_SUPPORT_REVIEW.md)
+19. [W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W081_RATE_DEFAULT_GUESS_CONVERGENCE_REPAIR.md)
+20. [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md)
+21. [W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W083_DYNAMIC_ARRAY_SORT_OMITTED_OPTIONAL_ARGUMENT_DEFAULTING.md)
+22. [W084_COUNTBLANK_RANGE_ONLY_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W084_COUNTBLANK_RANGE_ONLY_PARITY.md)
+23. [W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W085_TAKE_DROP_OMITTED_LEADING_COUNT_PARITY.md)
+24. [W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md)
+25. [W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md)
+26. [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md)
+27. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md)
+28. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -49,9 +50,10 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 5. [W050_DEFERRED_CURRENT_VERSION_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W050_DEFERRED_CURRENT_VERSION_SURFACE.md) remains the canonical deferred tracker.
 6. [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md) remains the parked non-deferred tracker and currently records reopened ordinary-operator, power, numeric-comparison, and multi-area reference rows.
 7. [W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W054_LEAN_FORMALIZATION_GAP_RECONCILIATION.md) remains the parked Lean reconciliation authority.
-8. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md) is the next substantive execution target.
-9. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md) is the local process authority for bug intake, duplicate linkage, canonical bug streams, and regression-family tracking.
-10. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md) owns the current operator value-surface and array-lift seam follow-up opened from `HANDOFF-OXFUNC-001` and `BUG-FUNC-001`.
+8. [W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md) owns the canonical runtime-mutable function registry correction opened from `HANDOFF-OXFUNC-004`, including the rule that OxFunc is the only comprehensive function-list and signature source for downstream consumers.
+9. [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md) remains the substantive witness-population target, now dependent on the `W091` registry direction for any future full-surface function-list projection.
+10. [W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W072_BUG_INTAKE_ROOT_CAUSE_AND_REGRESSION_STREAM_PROTOCOL.md) is the local process authority for bug intake, duplicate linkage, canonical bug streams, and regression-family tracking.
+11. [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md) owns the current operator value-surface and array-lift seam follow-up opened from `HANDOFF-OXFUNC-001` and `BUG-FUNC-001`.
 11. [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md) owns the broadened ordinary-operator broadcast reconciliation opened from local Excel comparison and `BUG-FUNC-002`.
 12. [W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W075_MULTI_AREA_REFERENCE_SEAM_CORRECTION.md) owns the first-class same-sheet multi-area reference seam correction opened from the current OxFml upstream note and `BUG-FUNC-003`.
 13. [W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W076_MULTIAREA_VALUE_MATERIALIZATION_STYLE_A.md) owns the OxFunc-side Style A follow-up from `HANDOFF-OXFUNC-002`, moving same-sheet multi-area value materialization out of OxFml-local helper logic and into OxFunc resolver-driven semantics.
@@ -78,3 +80,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 5. Use [HISTORY.md](/C:/Work/DnaCalc/OxFunc/docs/HISTORY.md) and tag `OxFunc_V1` for removed workset packets and retired migration aids.
 6. Use [W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W069_SEMANTIC_WITNESS_SNAPSHOT_V2_PLAN.md) only as closed framework provenance, not as active execution authority.
 7. Use [W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W070_OXFUNC_BEADS_MIGRATION_AND_ACTIVE_TREE_REDUCTION.md) only as closed migration provenance, not as active workset authority.
+
+27. [W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md) owns the Spark-guided long-run smart-fuzzer lane and names [SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md](/C:/Work/DnaCalc/OxFunc/smart-fuzzer/planning/SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md) as the controlling guide for repeated feedback-guided cycles and ambitious stop gates.
+
+28. [W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md) owns the UDF registration and name-resolution design lane, with [OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md](/C:/Work/DnaCalc/OxFunc/docs/function-lane/OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md) as the OxFunc contract seed and [HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md](/C:/Work/DnaCalc/OxFunc/docs/handoffs/HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md) as the OxFml seam handoff.

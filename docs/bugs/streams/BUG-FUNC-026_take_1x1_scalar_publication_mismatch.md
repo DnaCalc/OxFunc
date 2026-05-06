@@ -78,6 +78,13 @@ Validation after undoing the mislocalized scalarization:
    repair)
 3. Handoff: `docs/handoffs/HO-FN-010_1x1_array_result_publication_seam.md`
 4. Bead: `oxf-vkg8.1`
+5. W092 freshness replay:
+   - `smart-fuzzer/runs/w092-axis-witness-cycle-001/` reproduced the direct
+     OxFunc `array:1x1:[number:0x3ff0000000000000]` vs Excel final-cell
+     `number:0x3ff0000000000000` row.
+   - `smart-fuzzer/runs/w092-axis-witness-cycle-002/` records the same row as
+     `adapter_or_seam_mismatch` after the smart-fuzzer comparator was narrowed
+     for the known `1x1` publication seam.
 
 ## Closure Checklist
 - [x] fix landed or non-OxFunc ownership recorded: non-OxFunc seam follow-up

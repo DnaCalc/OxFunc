@@ -53,6 +53,14 @@ Local OxFunc validation after the undo:
 3. Update smart-fuzzer comparison mode so direct OxFunc calls are not marked as
    function mismatches when the only difference is Excel final-cell publication.
 
+W092 interim comparator note: OxFunc's local smart-fuzzer runner now classifies
+matching direct `1x1` array vs Excel final-cell scalar rows as
+`adapter_or_seam_mismatch`, preserving the handoff while preventing duplicate
+function-bug pressure in long-run fuzzing. OxFml/DNA Calc still owns the actual
+publication/result-completion behavior. W092 replay
+`smart-fuzzer/runs/w092-scenario-math-cycle-001/` records the adjacent
+`=MINVERSE(5)` and `=MMULT(5,2)` rows under that seam classification.
+
 ## 7. Affected OxFunc Truth Surfaces
 1. `docs/bugs/streams/BUG-FUNC-026_take_1x1_scalar_publication_mismatch.md`
 2. `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`

@@ -115,6 +115,9 @@
 1. `smart-fuzzer/tools/Run-PmtPpmtPilot.ps1`
 2. `smart-fuzzer/tools/pmt_ppmt_local_eval/`
 3. ignored local run artifacts under `smart-fuzzer/runs/w088-pmt-ppmt-pilot/`
+4. W092 reference replay:
+   `smart-fuzzer/runs/w092-axis-known-reference-cycle-001/` records the PMT
+   reference pair as `known_expected_deviation` under the axis-witness harness.
 
 ## Closure Checklist
 - [ ] local fix implemented

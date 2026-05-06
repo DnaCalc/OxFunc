@@ -316,6 +316,7 @@ use crate::functions::{
     xmatch::XMATCH_META,
     xor_fn::XOR_META,
 };
+use crate::registry_signature_seed::signature_seed_for_id;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum XllEntryKind {
@@ -913,20 +914,56 @@ fn csv_escape(field: &str) -> String {
     format!("\"{escaped}\"")
 }
 
-fn arg_names_for_count(count: usize) -> String {
+fn arg_names_for_meta(meta: &FunctionMeta, count: usize) -> String {
     if count == 0 {
         return String::new();
     }
-    (1..=count)
-        .map(|i| format!("arg{i}"))
-        .collect::<Vec<_>>()
-        .join(",")
+
+    let Some(seed) = signature_seed_for_id(meta.function_id) else {
+        return String::new();
+    };
+
+    let repeat_seed = seed
+        .parameters
+        .iter()
+        .rev()
+        .find(|parameter| parameter.repeats)
+        .or_else(|| seed.parameters.last());
+
+    let mut names = Vec::with_capacity(count);
+    for index in 0..count {
+        if let Some(parameter) = seed.parameters.get(index) {
+            names.push(parameter.name.to_string());
+        } else if seed.trailing_repeats {
+            let Some(parameter) = repeat_seed else {
+                return String::new();
+            };
+            names.push(repeated_parameter_name(parameter.name, index + 1));
+        } else {
+            return String::new();
+        }
+    }
+    names.join(",")
+}
+
+fn repeated_parameter_name(base: &str, ordinal: usize) -> String {
+    let digit_start = base
+        .char_indices()
+        .rev()
+        .find(|(_, ch)| !ch.is_ascii_digit())
+        .map(|(index, ch)| index + ch.len_utf8())
+        .unwrap_or(0);
+    if digit_start < base.len() {
+        format!("{}{}", &base[..digit_start], ordinal)
+    } else {
+        format!("{base}{ordinal}")
+    }
 }
 
 const MAX_XLL_ARG_NAMES_LEN: usize = 255;
 
-fn capped_arg_names_for_count(count: usize) -> String {
-    let arg_names = arg_names_for_count(count);
+fn capped_arg_names_for_meta(meta: &FunctionMeta, count: usize) -> String {
+    let arg_names = arg_names_for_meta(meta, count);
     if arg_names.len() > MAX_XLL_ARG_NAMES_LEN {
         String::new()
     } else {
@@ -1013,7 +1050,7 @@ pub fn xll_export_specs() -> Vec<XllExportSpec> {
                 export_name: export_base.clone(),
                 worksheet_name: worksheet_base.clone(),
                 type_text: apply_registration_suffixes(meta, type_text_for_u_arity(u_arity)),
-                arg_names: capped_arg_names_for_count(u_arity),
+                arg_names: capped_arg_names_for_meta(meta, u_arity),
                 function_id: meta.function_id,
                 min_arity: meta.arity.min,
                 entry_kind: XllEntryKind::UArity(u_arity),
@@ -1193,7 +1230,7 @@ mod tests {
         let spec = roman_specs[0];
         assert_eq!(spec.entry_kind, XllEntryKind::UArity(2));
         assert_eq!(spec.type_text, "QUU");
-        assert_eq!(spec.arg_names, "arg1,arg2");
+        assert_eq!(spec.arg_names, "number,form");
     }
 
     #[test]

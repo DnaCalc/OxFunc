@@ -54,6 +54,12 @@ Representative row:
 2. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
 3. Parent stream: `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
 4. Bead: `oxf-dzfk`
+5. W092 freshness replay:
+   - `smart-fuzzer/runs/w092-scenario-math-cycle-001/` reproduced
+     `=MINVERSE({1,2;3,4})` as `known_residual`.
+   - The same run also classified `=MINVERSE(5)` and `=MMULT(5,2)` as
+     `adapter_or_seam_mismatch` under `HO-FN-010`, not as matrix-kernel repair
+     targets.
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded

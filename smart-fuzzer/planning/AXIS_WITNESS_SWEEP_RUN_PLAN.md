@@ -94,6 +94,14 @@ function-level repair was later reclassified as mislocalized. Nested Excel
 probes show `TYPE(TAKE({1,2;3,4},1,1))=64`; the remaining direct-comparator
 shape difference belongs in the publication/comparator seam above OxFunc.
 
+W092 freshness replay `w092-axis-witness-cycle-001` reconfirmed that same
+direct-OxFunc vs final worksheet-cell publication seam and originally labeled
+it `unexpected_mismatch`. The runner comparator was then narrowed so identical
+`1x1` array-vs-scalar publication rows are classified as
+`adapter_or_seam_mismatch`, not as function-semantic mismatches. Replay
+`w092-axis-witness-cycle-002` produced `37` exact typed matches and `1`
+`adapter_or_seam_mismatch`, with no fresh unexpected mismatch.
+
 ## Runnable Axis Witnesses
 
 The default case set covers these runnable axes:
@@ -153,7 +161,10 @@ comparison policy for that axis.
 
 The pass class remains `exact_typed_bit_match`. Numeric tolerance buckets are
 not passes. Error outcomes compare by typed Excel/OxFunc error code. Array
-outcomes compare by shape plus row-major cell digests.
+outcomes compare by shape plus row-major cell digests. Direct OxFunc
+`1x1` array results compared against matching Excel final-cell scalar
+publication are classified as `adapter_or_seam_mismatch` and remain governed by
+`HO-FN-010`.
 
 ## Status Axes
 

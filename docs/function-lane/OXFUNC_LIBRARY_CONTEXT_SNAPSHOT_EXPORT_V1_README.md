@@ -4,6 +4,7 @@ Supersession note:
 1. For current admission counts and outstanding-row truth, this readme is superseded by `docs/worksets/W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md`.
 2. This file remains the field-level description of the `V1` snapshot artifact, but it does not override the current `W051` reconciliation of supported, preview, deferred, hidden-backlog, and snapshot-stale rows.
 3. For the current OxFunc-owned shared-interface freeze candidate over the seam-relevant non-deferred surface, use `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`.
+4. For the canonical runtime-mutable function registry direction, use `docs/function-lane/OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md` and `docs/worksets/W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md`; this `V1` export is a projection artifact, not a second comprehensive function list.
 
 ## 1. Purpose
 This is the first explicit OxFunc-local export artifact intended to serve as the external library-context snapshot for OxFml parse, bind, semantic planning, and replay correlation.
@@ -347,8 +348,10 @@ This export is the right pinned interchange artifact for bounded integration rou
 Current OxFunc reading:
 1. this CSV export is the right pinned interchange artifact for bounded integration rounds, test pinning, and mismatch reporting,
 2. it should also be treated as the retained `V1` seed for `W069` witness generation rather than as the final downstream destination surface,
-3. but the preferred long-term implementation seam should be a runtime-ingested:
+3. the comprehensive function list and signature source should be the OxFunc-owned runtime registry defined by `W091`,
+4. the preferred long-term implementation seam should be a runtime-ingested:
    - `LibraryContextProvider`
    - immutable `LibraryContextSnapshot`
-4. function registration or removal should produce explicit new snapshot generations rather than mutating downstream state invisibly,
-5. OxFml should therefore treat CSV ingestion as a current integration mechanism and witness-generation seed, not as the desired permanent runtime coupling.
+5. function registration or removal should produce explicit new snapshot generations rather than mutating downstream state invisibly,
+6. capability overlays should project availability over registry entries rather than deleting or rewriting base function truth,
+7. OxFml should therefore treat CSV ingestion as a current integration mechanism and witness-generation seed, not as the desired permanent runtime coupling.

@@ -94,6 +94,10 @@ Supersession note:
 - Current state: active smart-fuzzer lane. `W088` supplied the pilot substrate; `W089` has now run the first comprehensive manifest-seed exploration against live Excel COM. The 2026-04-30 pass recorded `339` broad seed cases, `139` successor array-support replay cases, a `1,000,000`-case local finance reference run, and an Excel throughput benchmark. It fixed the `ABS` array-lift gap as `BUG-FUNC-022`, corrected stale POWER known-deviation classification in the smart-fuzzer inventory, and promoted residual statistical exactness drift to `BUG-FUNC-021` plus non-statistical/matrix drift to `BUG-FUNC-023`. The `BUG-FUNC-023` follow-up repaired `VDB`, `MINVERSE(5)`, and `MMULT(5,2)`, then split the active residual lanes to `BUG-FUNC-024` (`BESSELY`) and `BUG-FUNC-025` (`MINVERSE` matrix numeric exactness).
 - Canonical owner: [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md), [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md), [COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md), [BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md), [BUG-FUNC-022_abs_unary_array_lift_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-022_abs_unary_array_lift_gap.md), [BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md), [BUG-FUNC-024_bessely_current_baseline_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-024_bessely_current_baseline_exactness_drift.md), [BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md), [smart-fuzzer\README.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\README.md), and [SMART_FUZZER_DESIGN.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\SMART_FUZZER_DESIGN.md).
 
+### IP-19 Canonical Runtime Function Registry
+- Current state: active intake from DNA OneCalc. OxFunc has acknowledged that the comprehensive function list, arity, signature, parameter descriptor, runtime UDF registration, and capability-overlay truth must be owned by OxFunc rather than by host-local lists or string-filled snapshot fields. The implementation lane is open under `W091`.
+- Canonical owner: [W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md), [OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md), [HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md), and [HO-FN-011_canonical_function_registry_consumption.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-011_canonical_function_registry_consumption.md).
+
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
 - `active`: live lane with current owner surfaces.
@@ -109,3 +113,107 @@ Current reading:
 7. `IP-14` and `IP-17` are `parked`.
 8. `IP-15` is `planned` for successor tranches after the closed first W090 cycle.
 9. `IP-18` is `active`.
+10. `IP-19` is `active`.
+
+## 2026-05-03 W091 OxFunc-local execution update
+
+execution_state: `local_target_satisfied_downstream_ack_pending`
+
+scope_completeness: `scope_partial`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. OxFml downstream acknowledgement and consumer migration remain outside OxFunc-local write authority.
+2. DNA OneCalc downstream acknowledgement and UI migration remain outside OxFunc-local write authority.
+3. Full workspace integration test remains affected by the pre-existing OxFml dev-test import mismatch for `oxfml_core::format::current_excel_host_context`.
+
+OxFunc-local evidence:
+1. `oxfunc_core::registry` exposes canonical built-in iteration, lookup, UDF registration, UDF unregistration, and capability overlays.
+2. Built-in signature descriptors are generated from OxFunc seed/catalog truth and normalized against `FunctionMeta.arity`.
+3. `tools/xll-addin/oxfunc_xll/export_specs.csv` was regenerated from OxFunc core.
+4. `docs/handoffs/HO-FN-011_canonical_function_registry_consumption.md` and `docs/handoffs/HO-FN-012_dnaonecalc_registry_consumption.md` provide sibling migration instructions.
+5. `.beads/` W091 execution beads were closed with command evidence.
+
+Validation evidence:
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1266 passed, 1 ignored.
+2. `cargo check --manifest-path crates/oxfunc_core/Cargo.toml --target wasm32-unknown-unknown --lib`: passed.
+3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml`: attempted and blocked by the pre-existing OxFml integration-test import mismatch noted above.
+
+## 2026-05-04 W091 future-shape hardening update
+
+execution_state: `local_target_satisfied_downstream_ack_pending`
+
+scope_completeness: `scope_partial`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. OxFml downstream removal of registry-like function-list surfaces remains outside OxFunc-local write authority.
+2. DNA OneCalc downstream consumption of OxFunc registry metadata remains outside OxFunc-local write authority.
+3. Parameter and function help descriptions remain a separate future corpus.
+
+Additional OxFunc-local hardening:
+1. registry entries now use owned `RegistryFunctionMeta` for runtime/UDF-safe function identifiers,
+2. unchecked registry construction was replaced by `try_from_entries`,
+3. context metadata seed generation is reproducible and expands combined historical rows to per-function IDs,
+4. stale `legacy_arity_shape_note` references were removed from future-facing docs,
+5. W44 V1 snapshot generation is guarded as legacy-only.
+
+## 2026-05-04 OxFml W068 landing acknowledgement
+
+OxFunc acknowledged `HANDOFF-OXFUNC-005` from OxFml W068 and marked HO-FN-011 acknowledged. Follow-up `HO-FN-013` was filed to document the owned `RegistryFunctionMeta` shape introduced after OxFml landed canonical registry consumption.
+
+### 2026-05-04 W092 Spark-Guided Smart-Fuzzer Long-Run Update
+
+W092 adds the Spark-guided long-run execution guide at [SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md). The guide is the controlling run document for repeated feedback-guided cycles and ambitious stop gates: catalog-axis saturation, sustained no-new-signal plateau, excessive untriaged finding pressure, all-path blockers, resource-safety stop, or user stop. The `2026-05-04` run reached the current no-new-signal plateau for available nonblocked generators; guide Section 2.3 records the stop-gate and promotion audit.
+
+W092 follow-up repair update: `BUG-FUNC-018` reopened scalar-parameter
+array-lift rows are validated in the current working tree by
+`w092-bug-func-018-repair-max20x60-all-001`, which replayed `253` successor
+cases as `211` exact typed bit matches plus `42` known residual rows in
+existing exactness lanes, with `0` unexpected mismatches.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_complete` for the W092 long-run objective through the current stop gate
+3. `integration_completeness`: `integrated`
+4. `open_lanes`: broader catalog-axis saturation, richer generator design, provider/context/locale/version fixtures, `BUG-FUNC-018` landed-ref promotion, `BUG-FUNC-021`, `BUG-FUNC-024`, `BUG-FUNC-025`, `BUG-FUNC-015`, and `HO-FN-010`.
+
+### IP-20 UDF Registration And Name-Resolution Seam
+- Current state: active design lane. W093 starts the source-neutral UDF registration contract and OxFml invalidation seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths can converge on OxFunc registry truth without moving workbook defined names into OxFunc.
+- Canonical owner: [W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md), [OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md), and [HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md).
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: OxFunc API implementation, OxFml acknowledgement, source-adapter detail, registry snapshot integration, and deterministic seam evidence.
+
+### 2026-05-04 W093 Design Review Sweep
+
+W093 design corrections after review:
+1. `REGISTER.ID` / `CALL` descriptor-only state is adjacent registered-external seam state, not ordinary UDF function registration by default.
+2. Bind-visible UDF registration uses immutable registry-backed snapshot identity/change sets rather than an unrelated second registry epoch.
+3. Callable worksheet surface metadata remains separate from source-specific invocation target descriptors.
+4. Rejected mutations return typed rejection outcomes without semantic snapshot advancement.
+5. Collision/precedence and JavaScript custom-function metadata evidence are blockers before implementation promotion.
+6. OxFml migration must cover formula-call binding/evaluation, not only editor help/completion.
+
+### IP-21 Locale Profile Expansion
+- Current state: active intake from OxFml `HANDOFF-OXFUNC-006`. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, and `LocaleProfileId::from_bcp47_language_tag(...)`.
+- Canonical owner: [W094_LOCALE_PROFILE_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W094_LOCALE_PROFILE_EXPANSION.md), [HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md), and [locale_format.rs](C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\locale_format.rs).
+
+Validation evidence:
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib profile`: passed, `8` passed, `0` failed, `1264` filtered out.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_complete` for the OxFunc-local W094 profile identity/constants slice
+3. `integration_completeness`: `partial`
+4. `open_lanes`: downstream OxFml month/weekday/parser/general consumption, optional locale-prefix grammar, full Excel currency-pattern semantics beyond the current `FormatProfile` shape, and landed-ref promotion.

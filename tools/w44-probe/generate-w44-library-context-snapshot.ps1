@@ -1,8 +1,13 @@
 param(
-    [string]$OutCsv = "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv"
+    [string]$OutCsv = "docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv",
+    [switch]$AllowLegacySnapshotGeneration
 )
 
 $ErrorActionPreference = "Stop"
+
+if (-not $AllowLegacySnapshotGeneration) {
+    throw "W44 V1 library-context snapshot generation is legacy-only. The future-facing runtime source is oxfunc_core::registry. Re-run with -AllowLegacySnapshotGeneration only for explicit historical refresh work."
+}
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\")
 Set-Location $repoRoot

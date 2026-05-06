@@ -50,6 +50,12 @@ Representative row:
 2. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
 3. Parent stream: `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
 4. Bead: `oxf-xp6p`
+5. W092 freshness replay:
+   - `smart-fuzzer/runs/w092-scenario-engineering-cycle-001/` reproduced
+     `=BESSELY(2.5,1)` with the same local and Excel numeric digests.
+   - `smart-fuzzer/runs/w092-scenario-engineering-cycle-002/` records the same
+     row as `known_residual` after the smart-fuzzer comparator was narrowed for
+     this already-promoted exactness lane.
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded

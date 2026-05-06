@@ -119,6 +119,37 @@ It does mean:
 7. rollout_mode:
    `execution_target`
 
+### W091 Canonical Runtime Function Registry
+1. purpose:
+   make OxFunc the only comprehensive function registry owner for built-ins,
+   operators admitted as callable surfaces, and runtime-registered UDF entries;
+   expose registry iteration, lookup, real parameter descriptors, UDF mutation,
+   and capability-overlay views so downstream consumers stop maintaining
+   duplicate function lists or string-only arity/signature channels.
+2. depends_on:
+   `W070`, `W044`, `W049`
+3. parent_doctrine_and_spec_surfaces:
+   `docs/worksets/W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md`,
+   `docs/function-lane/OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md`,
+   `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`,
+   `docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md`,
+   `docs/handoffs/HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md`,
+   `docs/handoffs/HO-FN-011_canonical_function_registry_consumption.md`
+4. upstream_dependencies:
+   `DnaOneCalc`, `OxFml`
+5. closure_condition:
+   the crate-public registry API exists, every linked built-in has real
+   parameter descriptors consistent with arity, UDF registration and
+   capability-overlay views are exercised, OxFml and host migration handoffs
+   are acknowledged, and no OxFunc projection surface is described as a second
+   comprehensive function list.
+6. initial_epic_lanes:
+   registry API and data model, built-in catalog wiring, parameter descriptor
+   population, UDF registration, capability overlays, downstream migration,
+   wasm and host validation, truth-surface reconciliation
+7. rollout_mode:
+   `execution_target`
+
 ### W069 Semantic Witness Snapshot V2 Plan
 1. purpose:
    turn the parked library-context export into a semantic witness surface with
@@ -143,7 +174,7 @@ It does mean:
    populate the remaining supported non-deferred surface with actual semantic
    witness rows keyed by the frozen `W069` tranche and gap ledgers.
 2. depends_on:
-   `W069`, `W044`, `W049`
+   `W069`, `W044`, `W049`, `W091`
 3. parent_doctrine_and_spec_surfaces:
    `docs/worksets/W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md`,
    `docs/function-lane/OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`
@@ -764,3 +795,67 @@ It does mean:
    none unless reopened
 7. rollout_mode:
    `tracking_anchor`
+
+## W092 Spark-Guided Long-Run Smart-Fuzzer Exploration
+
+Status: `stopped_at_no_new_signal_plateau`
+
+Execution target:
+continue the smart-fuzzer lane beyond W089 with a Spark-suitable, feedback-guided loop that can run for many cycles across catalog functions and invocation axes while preserving compact artifact discipline and bug-promotion hygiene.
+
+Canonical surfaces:
+1. `docs/worksets/W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md`
+2. `smart-fuzzer/planning/SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md`
+3. `.beads/` W092 epic and child beads
+
+Notes:
+1. `smart-fuzzer/planning/SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md` is the controlling run guide for W092 beads.
+2. Stopping conditions are intentionally ambitious; the runner should continue while new coverage, mismatches, blockers, or minimization improvements are being produced.
+3. Sampled pass telemetry is coverage feedback, not function semantic closure evidence.
+4. The current W092 run stopped at the `no-new-signal-plateau` gate for
+   available nonblocked generators on `2026-05-04`; see guide Section 2.3 for
+   the prompt-to-artifact audit and promotion mapping.
+
+## W093 UDF Registration And Name-Resolution Seam
+
+Status: `in_progress`
+
+Execution target:
+design the source-neutral UDF registration seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths converge on OxFunc runtime registry truth while OxFml owns formula name resolution and invalidation.
+
+Canonical surfaces:
+1. `docs/worksets/W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md`
+2. `docs/function-lane/OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md`
+3. `docs/handoffs/HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md`
+4. `.beads/` W093 epic and child beads
+
+Notes:
+1. OxFunc owns UDF function entries and registry mutations.
+2. OxFml owns formula parse/bind/name resolution and registry snapshot/change-set invalidation.
+3. Workbook/sheet defined names remain formula/document environment state, not OxFunc function-registry state.
+
+2026-05-04 review correction:
+1. W093 now treats `REGISTER.ID` / `CALL` descriptor-only mutation as adjacent registered-external seam state rather than ordinary UDF function registration.
+2. Registry mutation invalidation is expressed through immutable registry-backed snapshot identity/change sets.
+3. Source-specific invocation target descriptors are separate from callable worksheet surface metadata.
+4. Collision/precedence and JavaScript metadata evidence must land before implementation promotion.
+
+## W094 Locale Profile Expansion
+
+Status: `in_progress`
+
+Execution target:
+expand OxFunc-owned canonical locale profile identities and `FormatProfile` constants for the concrete locale set requested by OxFml `HANDOFF-OXFUNC-006`, while keeping OxFml formatter/parser behavior and DNA OneCalc UI cleanup in their owning repos.
+
+Canonical surfaces:
+1. `docs/worksets/W094_LOCALE_PROFILE_EXPANSION.md`
+2. `docs/handoffs/HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md`
+3. `crates/oxfunc_core/src/locale_format.rs`
+4. `.beads/` W094 bead `oxf-84x3`
+
+Notes:
+1. Locale profile id and workbook date system remain orthogonal axes.
+2. `CurrentExcelHost` remains a host-regional-settings placeholder, not a reproducible locale identity.
+3. OxFml remains owner of locale-keyed names, parsing branches, General rendering, and optional locale-prefix format-code grammar.
+4. The OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through explicit profile ids or language-family mapping.
+5. W094 remains scope-partial because downstream OxFml locale table/parser/general consumption, optional locale-prefix grammar, currency-pattern semantics beyond the current `FormatProfile` shape, and landed-ref promotion remain open.

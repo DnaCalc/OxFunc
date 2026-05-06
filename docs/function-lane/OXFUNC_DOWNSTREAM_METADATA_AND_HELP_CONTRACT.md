@@ -16,11 +16,14 @@ This is an OxFunc-owned contract note. It does not override Foundation doctrine 
 
 ## 2. Authoritative Source Chain
 Downstream consumers should read in this order:
-1. this document for field stability and help-payload shape,
-2. `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` for surface-labeling and admission-category rules,
-3. `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` for field definitions and current export mechanics,
-4. `W050` and `W051` for deferred/not-complete overlay truth,
-5. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` for the preferred long-term runtime shape.
+1. `OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md` for the canonical
+   registry ownership rule and runtime-mutable direction,
+2. this document for field stability and help-payload shape,
+3. `OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md` for surface-labeling and admission-category rules,
+4. `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1_README.md` for field definitions and current export mechanics,
+5. `W050` and `W051` for deferred/not-complete overlay truth,
+6. `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md` for the runtime snapshot carrier,
+7. `docs/worksets/W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md` for the registry execution lane.
 
 ## 3. Snapshot Export Field Stability Classification
 
@@ -82,6 +85,16 @@ The following fields are informational pointers into OxFunc internals. Downstrea
 
 ### 4.1 Current State
 No OxFunc-backed help or signature payload retrieval is frozen yet. This is an acknowledged active seam gap.
+
+Current direction after `HANDOFF-OXFUNC-004`:
+1. help and signature payloads should be sourced from an OxFunc-owned registry
+   entry or an OxFunc-generated registry snapshot,
+2. function-name lists and arity/signature metadata must not be maintained as
+   comprehensive host-local lists,
+3. `arity_shape_note` remains a `V1` compatibility/projection field and must
+   not be treated as the final source of ordinary signature truth,
+4. every linked built-in must eventually carry real parameter descriptors
+   before the `W091` registry lane can close.
 
 Current available truth for downstream help surfaces:
 1. `canonical_surface_name` and `surface_stable_id` from the snapshot export,
@@ -158,10 +171,12 @@ Until OxFunc publishes structured help payloads:
 
 ### 4.5 Alignment With Runtime Provider Direction
 The preferred long-term direction is:
-1. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate (see `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`),
-2. help and signature payloads should eventually be fields on `LibraryContextEntry` in the runtime model rather than separate retrieval surfaces,
-3. the current CSV export remains the pinned interchange artifact for bounded integration, test pinning, and debugging,
-4. downstream consumers should design against an immutable snapshot-shaped help/catalog source even if the first implementation is CSV-backed.
+1. `FunctionRegistry` as the OxFunc-owned comprehensive source,
+2. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate for publishing registry-derived snapshots (see `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`),
+3. help and signature payloads should eventually be fields on registry-backed `LibraryContextEntry` values in the runtime model rather than separate retrieval surfaces,
+4. the current CSV export remains the pinned interchange artifact for bounded integration, test pinning, and debugging,
+5. downstream consumers should design against an immutable snapshot-shaped help/catalog source even if the first implementation is CSV-backed,
+6. the snapshot must be a projection of the OxFunc registry, not a second comprehensive function list.
 
 Transition rule:
 1. OneCalc should consume the snapshot export through a local adapter that projects stable and usable fields into the payload shapes above,

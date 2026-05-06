@@ -5,8 +5,186 @@ use crate::value::ExcelText;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LocaleProfileId {
     EnUs,
+    EnGb,
+    EnIe,
+    EnAu,
+    EnNz,
+    EnZa,
+    EnIn,
+    EnCa,
+    EnPh,
+    DeDe,
+    RuRu,
+    FiFi,
+    EtEe,
+    LvLv,
+    LtLt,
+    SkSk,
+    CsCz,
+    NbNo,
+    NnNo,
+    FrFr,
+    EsEs,
+    PtPt,
+    ItIt,
+    NlNl,
+    PlPl,
+    PtBr,
+    JaJp,
+    KoKr,
+    ZhCn,
+    HuHu,
+    /// Host-regional-settings placeholder. This is not a stable locale identity;
+    /// callers that need reproducible locale-keyed behavior should use an
+    /// explicit locale profile id.
     CurrentExcelHost,
 }
+
+impl LocaleProfileId {
+    pub const fn stable_name(self) -> &'static str {
+        match self {
+            LocaleProfileId::EnUs => "en-US",
+            LocaleProfileId::EnGb => "en-GB",
+            LocaleProfileId::EnIe => "en-IE",
+            LocaleProfileId::EnAu => "en-AU",
+            LocaleProfileId::EnNz => "en-NZ",
+            LocaleProfileId::EnZa => "en-ZA",
+            LocaleProfileId::EnIn => "en-IN",
+            LocaleProfileId::EnCa => "en-CA",
+            LocaleProfileId::EnPh => "en-PH",
+            LocaleProfileId::DeDe => "de-DE",
+            LocaleProfileId::RuRu => "ru-RU",
+            LocaleProfileId::FiFi => "fi-FI",
+            LocaleProfileId::EtEe => "et-EE",
+            LocaleProfileId::LvLv => "lv-LV",
+            LocaleProfileId::LtLt => "lt-LT",
+            LocaleProfileId::SkSk => "sk-SK",
+            LocaleProfileId::CsCz => "cs-CZ",
+            LocaleProfileId::NbNo => "nb-NO",
+            LocaleProfileId::NnNo => "nn-NO",
+            LocaleProfileId::FrFr => "fr-FR",
+            LocaleProfileId::EsEs => "es-ES",
+            LocaleProfileId::PtPt => "pt-PT",
+            LocaleProfileId::ItIt => "it-IT",
+            LocaleProfileId::NlNl => "nl-NL",
+            LocaleProfileId::PlPl => "pl-PL",
+            LocaleProfileId::PtBr => "pt-BR",
+            LocaleProfileId::JaJp => "ja-JP",
+            LocaleProfileId::KoKr => "ko-KR",
+            LocaleProfileId::ZhCn => "zh-CN",
+            LocaleProfileId::HuHu => "hu-HU",
+            LocaleProfileId::CurrentExcelHost => "current-excel-host",
+        }
+    }
+
+    pub fn from_bcp47_language_tag(tag: &str) -> Option<Self> {
+        let normalized = tag.trim().replace('_', "-").to_ascii_lowercase();
+        let mut parts = normalized.split('-').filter(|part| !part.is_empty());
+        let language = parts.next()?;
+        let region = parts.next().unwrap_or("");
+
+        match (language, region) {
+            ("en", "") | ("en", "us") => Some(LocaleProfileId::EnUs),
+            ("en", "gb") => Some(LocaleProfileId::EnGb),
+            ("en", "ie") => Some(LocaleProfileId::EnIe),
+            ("en", "au") => Some(LocaleProfileId::EnAu),
+            ("en", "nz") => Some(LocaleProfileId::EnNz),
+            ("en", "za") => Some(LocaleProfileId::EnZa),
+            ("en", "in") => Some(LocaleProfileId::EnIn),
+            ("en", "ca") => Some(LocaleProfileId::EnCa),
+            ("en", "ph") => Some(LocaleProfileId::EnPh),
+            ("de", _) => Some(LocaleProfileId::DeDe),
+            ("ru", _) => Some(LocaleProfileId::RuRu),
+            ("fi", _) => Some(LocaleProfileId::FiFi),
+            ("et", _) => Some(LocaleProfileId::EtEe),
+            ("lv", _) => Some(LocaleProfileId::LvLv),
+            ("lt", _) => Some(LocaleProfileId::LtLt),
+            ("sk", _) => Some(LocaleProfileId::SkSk),
+            ("cs", _) => Some(LocaleProfileId::CsCz),
+            ("nb", _) => Some(LocaleProfileId::NbNo),
+            ("nn", _) => Some(LocaleProfileId::NnNo),
+            ("fr", _) => Some(LocaleProfileId::FrFr),
+            ("es", _) => Some(LocaleProfileId::EsEs),
+            ("pt", "") | ("pt", "pt") => Some(LocaleProfileId::PtPt),
+            ("pt", "br") => Some(LocaleProfileId::PtBr),
+            ("it", _) => Some(LocaleProfileId::ItIt),
+            ("nl", _) => Some(LocaleProfileId::NlNl),
+            ("pl", _) => Some(LocaleProfileId::PlPl),
+            ("zh", _) => Some(LocaleProfileId::ZhCn),
+            ("ja", _) => Some(LocaleProfileId::JaJp),
+            ("ko", _) => Some(LocaleProfileId::KoKr),
+            ("hu", _) => Some(LocaleProfileId::HuHu),
+            _ => None,
+        }
+    }
+}
+
+pub const CANONICAL_LOCALE_PROFILE_IDS: [LocaleProfileId; 30] = [
+    LocaleProfileId::EnUs,
+    LocaleProfileId::EnGb,
+    LocaleProfileId::EnIe,
+    LocaleProfileId::EnAu,
+    LocaleProfileId::EnNz,
+    LocaleProfileId::EnZa,
+    LocaleProfileId::EnIn,
+    LocaleProfileId::EnCa,
+    LocaleProfileId::EnPh,
+    LocaleProfileId::DeDe,
+    LocaleProfileId::RuRu,
+    LocaleProfileId::FiFi,
+    LocaleProfileId::EtEe,
+    LocaleProfileId::LvLv,
+    LocaleProfileId::LtLt,
+    LocaleProfileId::SkSk,
+    LocaleProfileId::CsCz,
+    LocaleProfileId::NbNo,
+    LocaleProfileId::NnNo,
+    LocaleProfileId::FrFr,
+    LocaleProfileId::EsEs,
+    LocaleProfileId::PtPt,
+    LocaleProfileId::ItIt,
+    LocaleProfileId::NlNl,
+    LocaleProfileId::PlPl,
+    LocaleProfileId::PtBr,
+    LocaleProfileId::JaJp,
+    LocaleProfileId::KoKr,
+    LocaleProfileId::ZhCn,
+    LocaleProfileId::HuHu,
+];
+
+pub const LOCALE_PROFILE_IDS: [LocaleProfileId; 31] = [
+    LocaleProfileId::EnUs,
+    LocaleProfileId::EnGb,
+    LocaleProfileId::EnIe,
+    LocaleProfileId::EnAu,
+    LocaleProfileId::EnNz,
+    LocaleProfileId::EnZa,
+    LocaleProfileId::EnIn,
+    LocaleProfileId::EnCa,
+    LocaleProfileId::EnPh,
+    LocaleProfileId::DeDe,
+    LocaleProfileId::RuRu,
+    LocaleProfileId::FiFi,
+    LocaleProfileId::EtEe,
+    LocaleProfileId::LvLv,
+    LocaleProfileId::LtLt,
+    LocaleProfileId::SkSk,
+    LocaleProfileId::CsCz,
+    LocaleProfileId::NbNo,
+    LocaleProfileId::NnNo,
+    LocaleProfileId::FrFr,
+    LocaleProfileId::EsEs,
+    LocaleProfileId::PtPt,
+    LocaleProfileId::ItIt,
+    LocaleProfileId::NlNl,
+    LocaleProfileId::PlPl,
+    LocaleProfileId::PtBr,
+    LocaleProfileId::JaJp,
+    LocaleProfileId::KoKr,
+    LocaleProfileId::ZhCn,
+    LocaleProfileId::HuHu,
+    LocaleProfileId::CurrentExcelHost,
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WorkbookDateSystem {
@@ -98,6 +276,286 @@ pub const fn format_profile(id: LocaleProfileId) -> FormatProfile {
             list_separator: ",",
             currency_symbol: "$",
             date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnGb => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{00A3}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnIe => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{20AC}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnAu => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "$",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnNz => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "$",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnZa => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ",",
+            currency_symbol: "R",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnIn => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{20B9}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnCa => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "$",
+            date_separator: "-",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EnPh => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{20B1}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::DeDe => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: ".",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::RuRu => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20BD}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::FiFi => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: ".",
+            time_separator: ".",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EtEe => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::LvLv => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::LtLt => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "-",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::SkSk => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::CsCz => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "K\u{010D}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::NbNo | LocaleProfileId::NnNo => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "kr",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::FrFr => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{202F}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::EsEs => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: ".",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::PtPt => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::ItIt => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: ".",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::NlNl => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: ".",
+            list_separator: ";",
+            currency_symbol: "\u{20AC}",
+            date_separator: "-",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::PlPl => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "z\u{0142}",
+            date_separator: ".",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::PtBr => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: ".",
+            list_separator: ";",
+            currency_symbol: "R$",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::JaJp => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{00A5}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 0,
+        },
+        LocaleProfileId::KoKr => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{20A9}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 0,
+        },
+        LocaleProfileId::ZhCn => FormatProfile {
+            id,
+            decimal_separator: ".",
+            thousands_separator: ",",
+            list_separator: ",",
+            currency_symbol: "\u{00A5}",
+            date_separator: "/",
+            time_separator: ":",
+            currency_decimals: 2,
+        },
+        LocaleProfileId::HuHu => FormatProfile {
+            id,
+            decimal_separator: ",",
+            thousands_separator: "\u{00A0}",
+            list_separator: ";",
+            currency_symbol: "Ft",
+            date_separator: ".",
             time_separator: ":",
             currency_decimals: 2,
         },
@@ -692,5 +1150,89 @@ mod tests {
                 .to_string_lossy(),
             "1,234,567.89"
         );
+    }
+
+    #[test]
+    fn profile_ids_cover_dna_onecalc_ambient_language_tags() {
+        let cases = [
+            ("en", LocaleProfileId::EnUs),
+            ("en-US", LocaleProfileId::EnUs),
+            ("en-GB", LocaleProfileId::EnGb),
+            ("en-IE", LocaleProfileId::EnIe),
+            ("en-AU", LocaleProfileId::EnAu),
+            ("en-NZ", LocaleProfileId::EnNz),
+            ("en-ZA", LocaleProfileId::EnZa),
+            ("en-IN", LocaleProfileId::EnIn),
+            ("en-CA", LocaleProfileId::EnCa),
+            ("en-PH", LocaleProfileId::EnPh),
+            ("de-DE", LocaleProfileId::DeDe),
+            ("de-AT", LocaleProfileId::DeDe),
+            ("ru-RU", LocaleProfileId::RuRu),
+            ("fi-FI", LocaleProfileId::FiFi),
+            ("et-EE", LocaleProfileId::EtEe),
+            ("lv-LV", LocaleProfileId::LvLv),
+            ("lt-LT", LocaleProfileId::LtLt),
+            ("sk-SK", LocaleProfileId::SkSk),
+            ("cs-CZ", LocaleProfileId::CsCz),
+            ("nb-NO", LocaleProfileId::NbNo),
+            ("nn-NO", LocaleProfileId::NnNo),
+            ("fr-FR", LocaleProfileId::FrFr),
+            ("fr-CA", LocaleProfileId::FrFr),
+            ("es-ES", LocaleProfileId::EsEs),
+            ("pt-PT", LocaleProfileId::PtPt),
+            ("pt-BR", LocaleProfileId::PtBr),
+            ("it-IT", LocaleProfileId::ItIt),
+            ("nl-NL", LocaleProfileId::NlNl),
+            ("pl-PL", LocaleProfileId::PlPl),
+            ("zh-CN", LocaleProfileId::ZhCn),
+            ("zh-Hant-TW", LocaleProfileId::ZhCn),
+            ("ja-JP", LocaleProfileId::JaJp),
+            ("ko-KR", LocaleProfileId::KoKr),
+            ("hu-HU", LocaleProfileId::HuHu),
+            ("de_DE", LocaleProfileId::DeDe),
+        ];
+
+        for (tag, expected) in cases {
+            assert_eq!(
+                LocaleProfileId::from_bcp47_language_tag(tag),
+                Some(expected)
+            );
+        }
+
+        assert_eq!(LocaleProfileId::from_bcp47_language_tag("sv-SE"), None);
+        assert_eq!(LocaleProfileId::from_bcp47_language_tag(""), None);
+    }
+
+    #[test]
+    fn expanded_profile_constants_carry_locale_separators_and_currency_defaults() {
+        assert_eq!(CANONICAL_LOCALE_PROFILE_IDS.len(), 30);
+        assert_eq!(LOCALE_PROFILE_IDS.len(), 31);
+
+        let de = format_profile(LocaleProfileId::DeDe);
+        assert_eq!(de.id.stable_name(), LocaleProfileId::DeDe.stable_name());
+        assert_eq!(de.decimal_separator, ",");
+        assert_eq!(de.thousands_separator, ".");
+        assert_eq!(de.list_separator, ";");
+        assert_eq!(de.currency_symbol, "\u{20AC}");
+        assert_eq!(de.date_separator, ".");
+
+        let fr = format_profile(LocaleProfileId::FrFr);
+        assert_eq!(fr.thousands_separator, "\u{202F}");
+
+        let en_za = format_profile(LocaleProfileId::EnZa);
+        assert_eq!(en_za.decimal_separator, ",");
+        assert_eq!(en_za.thousands_separator, "\u{00A0}");
+        assert_eq!(en_za.currency_symbol, "R");
+
+        let fi = format_profile(LocaleProfileId::FiFi);
+        assert_eq!(fi.time_separator, ".");
+
+        let ja = format_profile(LocaleProfileId::JaJp);
+        assert_eq!(ja.currency_symbol, "\u{00A5}");
+        assert_eq!(ja.currency_decimals, 0);
+
+        let ko = format_profile(LocaleProfileId::KoKr);
+        assert_eq!(ko.currency_symbol, "\u{20A9}");
+        assert_eq!(ko.currency_decimals, 0);
     }
 }

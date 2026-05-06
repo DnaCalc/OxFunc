@@ -128,6 +128,14 @@ that into a versioned evidence record rather than relaxing equality.
 5. `smart-fuzzer/runs/oxf-simj-w090-repair-20260430-003/`
 6. `smart-fuzzer/runs/oxf-simj-w089-seed-repair-20260430-003/`
 7. Bead: `oxf-simj`
+8. W092 freshness replays with known-residual classification:
+   - `smart-fuzzer/runs/w092-scenario-statistical-cycle-001/`: `34` exact
+     typed matches and `24` `known_residual` rows.
+   - `smart-fuzzer/runs/w092-scenario-compatibility-cycle-001/`: `20` exact
+     typed matches and `13` `known_residual` rows.
+   - `smart-fuzzer/runs/w092-w090-successor-all-cycle-001/`: `102` exact
+     typed matches and `37` `known_residual` rows over the W090 successor
+     aggregate.
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded
