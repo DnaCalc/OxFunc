@@ -69,7 +69,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> CashflowRateEvalError {
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CashflowRateEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -86,7 +86,7 @@ fn resolve_arg_eval(
 
 fn optional_arg_value(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<EvalValue>, CashflowRateEvalError> {
     match arg {
         None | Some(CallArgValue::MissingArg) => Ok(None),
@@ -180,7 +180,7 @@ fn collect_serial_vector_from_eval(value: &EvalValue) -> Result<Vec<i64>, Cashfl
 
 fn collect_numeric_vector_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<f64>, CashflowRateEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
     collect_numeric_vector_from_eval(&eval)
@@ -188,7 +188,7 @@ fn collect_numeric_vector_arg(
 
 fn collect_serial_vector_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<i64>, CashflowRateEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
     collect_serial_vector_from_eval(&eval)
@@ -661,7 +661,7 @@ fn xirr_kernel(
 
 pub fn eval_irr_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CashflowRateEvalError> {
     if !IRR_META.arity.accepts(args.len()) {
         return Err(arity_error(&IRR_META, args.len()));
@@ -677,7 +677,7 @@ pub fn eval_irr_surface(
 
 pub fn eval_xnpv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CashflowRateEvalError> {
     if !XNPV_META.arity.accepts(args.len()) {
         return Err(arity_error(&XNPV_META, args.len()));
@@ -692,7 +692,7 @@ pub fn eval_xnpv_surface(
 
 pub fn eval_xirr_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CashflowRateEvalError> {
     if !XIRR_META.arity.accepts(args.len()) {
         return Err(arity_error(&XIRR_META, args.len()));

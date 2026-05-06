@@ -156,7 +156,7 @@ fn guard_arity(meta: &FunctionMeta, argc: usize) -> Result<(), NumberRegexTransl
 fn prepare_and_guard(
     meta: &FunctionMeta,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, NumberRegexTranslateEvalError> {
     guard_arity(meta, args.len())?;
     prepare_args_values_only(args, resolver).map_err(NumberRegexTranslateEvalError::Coercion)
@@ -786,7 +786,7 @@ pub fn translate_kernel(
 
 pub fn eval_numbervalue_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     locale_ctx: Option<&LocaleFormatContext>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&NUMBERVALUE_META, args, resolver)?;
@@ -817,7 +817,7 @@ pub fn eval_numbervalue_surface(
 
 pub fn eval_regexextract_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXEXTRACT_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -832,7 +832,7 @@ pub fn eval_regexextract_surface(
 
 pub fn eval_regexreplace_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXREPLACE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -848,7 +848,7 @@ pub fn eval_regexreplace_surface(
 
 pub fn eval_regextest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXTEST_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -862,7 +862,7 @@ pub fn eval_regextest_surface(
 
 pub fn eval_translate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&TRANSLATE_META, args, resolver)?;

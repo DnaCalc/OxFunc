@@ -81,7 +81,7 @@ fn materialize_branch_for_shape(
 
 fn eval_condition_bool(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<bool, CoercionError> {
     match arg {
         CallArgValue::MissingArg | CallArgValue::EmptyCell => Ok(false),
@@ -106,7 +106,7 @@ fn eval_if_elementwise_surface(
     condition: &EvalArray,
     true_arg: &CallArgValue,
     false_arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IfEvalError> {
     let true_value = prepared_to_eval_value(
         prepare_arg_values_only(true_arg, resolver).map_err(IfEvalError::BranchPreparation)?,
@@ -147,7 +147,7 @@ fn eval_if_elementwise_surface(
 
 pub fn eval_if_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IfEvalError> {
     let argc = args.len();
     if !IF_META.arity.accepts(argc) {

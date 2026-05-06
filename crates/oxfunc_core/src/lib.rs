@@ -8,5 +8,6 @@ mod registry_context_seed;
 mod registry_help_seed;
 mod registry_signature_seed;
 pub mod resolver;
+pub mod surface_call;
 pub mod value;
 pub mod xll_export_specs;

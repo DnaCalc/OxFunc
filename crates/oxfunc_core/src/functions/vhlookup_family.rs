@@ -47,7 +47,7 @@ pub enum VhlookupEvalError {
 
 fn resolve_table_value(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VhlookupEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -79,7 +79,7 @@ fn scalar_to_cell(value: &EvalValue) -> Result<ArrayCellValue, WorksheetErrorCod
 
 fn table_from_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<Vec<ArrayCellValue>>, VhlookupEvalError> {
     let value = resolve_table_value(arg, resolver)?;
     match value {
@@ -122,7 +122,7 @@ fn cell_to_eval_value(cell: &ArrayCellValue) -> EvalValue {
 
 fn parse_lookup_index(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<usize, VhlookupEvalError> {
     let prepared = prepare_arg_values_only(arg, resolver).map_err(VhlookupEvalError::Coercion)?;
     let n = coerce_prepared_to_number(&prepared).map_err(VhlookupEvalError::Coercion)?;
@@ -141,7 +141,7 @@ fn parse_lookup_index(
 
 fn parse_range_lookup_match_type(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<CallArgValue, VhlookupEvalError> {
     let approximate = match arg {
         None => true,
@@ -163,7 +163,7 @@ fn match_index(
     lookup_value: &CallArgValue,
     lookup_vector: CallArgValue,
     match_type: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VhlookupEvalError> {
     eval_match_surface(lookup_value, &[lookup_vector], Some(match_type), resolver)
         .map_err(|e| VhlookupEvalError::Domain(map_match_error_to_ws(&e)))
@@ -212,7 +212,7 @@ fn select_from_match_result(
 
 pub fn eval_vlookup_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VhlookupEvalError> {
     if !VLOOKUP_META.arity.accepts(args.len()) {
         return Err(VhlookupEvalError::ArityMismatch {
@@ -246,7 +246,7 @@ pub fn eval_vlookup_surface(
 
 pub fn eval_hlookup_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VhlookupEvalError> {
     if !HLOOKUP_META.arity.accepts(args.len()) {
         return Err(VhlookupEvalError::ArityMismatch {

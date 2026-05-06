@@ -218,7 +218,7 @@ pub fn roman_kernel(number: f64, form: i32) -> Result<ExcelText, WorksheetErrorC
 
 pub fn eval_roman_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RomanEvalError> {
     run_values_only_prepared(
         args,

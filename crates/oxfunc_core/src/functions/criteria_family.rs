@@ -177,7 +177,7 @@ fn scalar_to_cell(value: EvalValue) -> Result<ArrayCellValue, CriteriaEvalError>
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -197,7 +197,7 @@ fn resolve_arg_eval(
 
 fn flatten_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<FlatCells, CriteriaEvalError> {
     match resolve_arg_eval(arg, resolver)? {
         EvalValue::Array(array) => {
@@ -253,7 +253,7 @@ fn reference_like_from_arg(arg: &CallArgValue) -> Option<&ReferenceLike> {
 fn try_anchor_reference_to_shape(
     arg: &CallArgValue,
     desired_shape: FlatShape,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<FlatCells>, CriteriaEvalError> {
     let Some(reference) = reference_like_from_arg(arg) else {
         return Ok(None);
@@ -463,7 +463,7 @@ fn ensure_same_shape(ranges: &[&FlatCells]) -> Result<(), CriteriaEvalError> {
 
 fn parse_criteria_pairs(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<(FlatCells, CriteriaSpec)>, CriteriaEvalError> {
     if args.len() % 2 != 0 {
         return Err(CriteriaEvalError::PairStructureMismatch { actual: args.len() });
@@ -564,7 +564,7 @@ fn eval_extreme_filtered(
 
 pub fn eval_countif_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !COUNTIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -588,7 +588,7 @@ pub fn eval_countif_surface(
 
 pub fn eval_countifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !COUNTIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -603,7 +603,7 @@ pub fn eval_countifs_surface(
 
 pub fn eval_sumifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !SUMIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -626,7 +626,7 @@ pub fn eval_sumifs_surface(
 
 pub fn eval_sumif_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !SUMIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -664,7 +664,7 @@ pub fn eval_sumif_surface(
 
 pub fn eval_averageif_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !AVERAGEIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -702,7 +702,7 @@ pub fn eval_averageif_surface(
 
 pub fn eval_averageifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !AVERAGEIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -725,7 +725,7 @@ pub fn eval_averageifs_surface(
 
 pub fn eval_maxifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !MAXIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -751,7 +751,7 @@ pub fn eval_maxifs_surface(
 
 pub fn eval_minifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !MINIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {

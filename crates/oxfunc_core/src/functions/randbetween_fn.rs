@@ -66,7 +66,7 @@ pub fn randbetween_kernel(
 
 pub fn eval_randbetween_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     provider: &impl RandomProvider,
 ) -> Result<EvalValue, RandbetweenEvalError> {
     if !RANDBETWEEN_META.arity.accepts(args.len()) {

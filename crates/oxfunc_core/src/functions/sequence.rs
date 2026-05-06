@@ -111,7 +111,7 @@ pub fn eval_sequence_adapter_prepared(
 
 pub fn eval_sequence_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SequenceEvalError> {
     run_values_only_prepared(
         args,

@@ -380,7 +380,7 @@ fn eval_weibull_prepared(
 
 pub fn eval_erf_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -392,7 +392,7 @@ pub fn eval_erf_surface(
 
 pub fn eval_erf_precise_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -404,7 +404,7 @@ pub fn eval_erf_precise_surface(
 
 pub fn eval_erfc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -416,7 +416,7 @@ pub fn eval_erfc_surface(
 
 pub fn eval_erfc_precise_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -428,7 +428,7 @@ pub fn eval_erfc_precise_surface(
 
 pub fn eval_gamma_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -440,7 +440,7 @@ pub fn eval_gamma_surface(
 
 pub fn eval_gammaln_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -452,7 +452,7 @@ pub fn eval_gammaln_surface(
 
 pub fn eval_gammaln_precise_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -464,7 +464,7 @@ pub fn eval_gammaln_precise_surface(
 
 pub fn eval_weibull_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -476,7 +476,7 @@ pub fn eval_weibull_surface(
 
 pub fn eval_weibull_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,

@@ -60,7 +60,7 @@ pub enum MatrixEvalError {
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     match arg {
         CallArgValue::Eval(EvalValue::Reference(reference))
@@ -291,7 +291,7 @@ fn identity_matrix(size: usize) -> Vec<Vec<f64>> {
 
 pub fn eval_mdeterm_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MDETERM_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -309,7 +309,7 @@ pub fn eval_mdeterm_surface(
 
 pub fn eval_minverse_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MINVERSE_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -327,7 +327,7 @@ pub fn eval_minverse_surface(
 
 pub fn eval_mmult_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MMULT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -347,7 +347,7 @@ pub fn eval_mmult_surface(
 
 pub fn eval_munit_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MUNIT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {

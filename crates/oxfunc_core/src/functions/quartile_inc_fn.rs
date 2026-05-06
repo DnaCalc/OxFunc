@@ -32,7 +32,7 @@ pub enum QuartileIncEvalError {
 
 pub fn eval_quartile_inc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, QuartileIncEvalError> {
     if !QUARTILE_INC_META.arity.accepts(args.len()) {
         return Err(QuartileIncEvalError::ArityMismatch {

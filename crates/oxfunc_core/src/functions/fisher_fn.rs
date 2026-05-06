@@ -31,7 +31,7 @@ pub fn fisher_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_fisher_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, fisher_kernel)
 }

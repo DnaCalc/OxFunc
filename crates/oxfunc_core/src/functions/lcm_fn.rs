@@ -46,7 +46,7 @@ pub fn lcm_kernel(items: &[i64]) -> f64 {
 
 pub fn eval_lcm_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LcmEvalError> {
     let argc = args.len();
     if !LCM_META.arity.accepts(argc) {

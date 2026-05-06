@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-04-30
+Last updated: 2026-05-07
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -98,6 +98,10 @@ Supersession note:
 - Current state: active intake from DNA OneCalc. OxFunc has acknowledged that the comprehensive function list, arity, signature, parameter descriptor, runtime UDF registration, and capability-overlay truth must be owned by OxFunc rather than by host-local lists or string-filled snapshot fields. The implementation lane is open under `W091`.
 - Canonical owner: [W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W091_CANONICAL_RUNTIME_FUNCTION_REGISTRY.md), [OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_CANONICAL_RUNTIME_FUNCTION_REGISTRY_CONTRACT.md), [HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-004_canonical_runtime_function_registry.md), and [HO-FN-011_canonical_function_registry_consumption.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-011_canonical_function_registry_consumption.md).
 
+### IP-20 Full-Model Compiled Semantic Kernel Dispatch
+- Current state: active cross-repo optimization seam. W096 added the OxFunc-local resolved call-site/runtime/scratch surfaces, resolver-erased ABI, generated catalog-index dispatch backend, compatibility string wrapper, planning metadata, focused parity evidence, and OxFml handoff. The remaining lane is downstream OxFml compiled-plan adoption and acknowledgement under `HO-FN-016`.
+- Canonical owner: [W096_FULL_MODEL_COMPILED_SEMANTIC_KERNEL_DISPATCH.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W096_FULL_MODEL_COMPILED_SEMANTIC_KERNEL_DISPATCH.md), [HO-FN-016_compiled_surface_call_site_and_index_dispatch.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-016_compiled_surface_call_site_and_index_dispatch.md), and `.beads/`.
+
 ## Status Vocabulary
 - `planned`: accepted lane, no active execution claim implied here.
 - `active`: live lane with current owner surfaces.
@@ -114,6 +118,7 @@ Current reading:
 8. `IP-15` is `planned` for successor tranches after the closed first W090 cycle.
 9. `IP-18` is `active`.
 10. `IP-19` is `active`.
+11. `IP-20` is `active`.
 
 ## 2026-05-03 W091 OxFunc-local execution update
 

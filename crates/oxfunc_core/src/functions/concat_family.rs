@@ -61,7 +61,7 @@ fn finalize_concat_text(out: Vec<u16>) -> EvalValue {
 
 pub fn eval_concat_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ConcatEvalError> {
     if !CONCAT_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {
@@ -83,7 +83,7 @@ pub fn eval_concat_surface(
 
 pub fn eval_concatenate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ConcatEvalError> {
     if !CONCATENATE_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {

@@ -62,7 +62,7 @@ pub fn eval_isnumber_adapter_prepared(
 
 pub fn eval_isnumber_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IsnumberEvalError> {
     run_values_only_prepared(
         args,

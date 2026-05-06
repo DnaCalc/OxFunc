@@ -311,7 +311,7 @@ pub fn eval_match_surface(
     lookup_value: &CallArgValue,
     lookup_array: &[CallArgValue],
     match_type: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MatchEvalError> {
     let argc = 2 + usize::from(match_type.is_some());
     if !MATCH_META.arity.accepts(argc) {

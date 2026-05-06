@@ -42,7 +42,7 @@ pub enum HyperlinkEvalError {
 
 pub fn parse_hyperlink_request(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(args.len()) {
         return Err(HyperlinkEvalError::ArityMismatch {
@@ -68,7 +68,7 @@ pub fn parse_hyperlink_request(
 
 pub fn eval_hyperlink_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, HyperlinkEvalError> {
     let request = parse_hyperlink_request(args, resolver)?;
     Ok(EvalValue::Text(request.display_text))
@@ -76,7 +76,7 @@ pub fn eval_hyperlink_surface(
 
 pub fn eval_hyperlink_surface_extended(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<ExtendedValue, HyperlinkEvalError> {
     let value = eval_hyperlink_surface(args, resolver)?;
     Ok(ExtendedValue::ValueWithPresentation {

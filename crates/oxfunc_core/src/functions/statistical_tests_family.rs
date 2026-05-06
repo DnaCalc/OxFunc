@@ -79,7 +79,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> StatisticalTestsEvalError 
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     match arg {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
@@ -121,7 +121,7 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, StatisticalTestsEva
 
 fn truncated_flag_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<i32, StatisticalTestsEvalError> {
     let number = scalar_number_from_eval(&resolve_arg_eval(arg, resolver)?)?;
     if !number.is_finite() {
@@ -155,7 +155,7 @@ fn eval_to_numeric_matrix(value: &EvalValue) -> Result<EvalArray, StatisticalTes
 fn numeric_matrices_from_args(
     actual: &CallArgValue,
     expected: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<(EvalArray, EvalArray), StatisticalTestsEvalError> {
     let actual = eval_to_numeric_matrix(&resolve_arg_eval(actual, resolver)?)?;
     let expected = eval_to_numeric_matrix(&resolve_arg_eval(expected, resolver)?)?;
@@ -229,7 +229,7 @@ fn aggregate_item_number(
 }
 fn collect_numeric_sample_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<f64>, StatisticalTestsEvalError> {
     let expanded =
         expand_aggregate_arg(arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
@@ -245,7 +245,7 @@ fn collect_numeric_sample_arg(
 fn collect_paired_numeric_samples(
     x_arg: &CallArgValue,
     y_arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<(f64, f64)>, StatisticalTestsEvalError> {
     let xs = expand_aggregate_arg(x_arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
     let ys = expand_aggregate_arg(y_arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
@@ -419,7 +419,7 @@ fn t_test_unequal_variance_kernel(
 
 fn eval_chisq_test_prepared(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !CHISQ_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_TEST_META, args.len()));
@@ -433,7 +433,7 @@ fn eval_chisq_test_prepared(
 
 fn eval_f_test_prepared(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !F_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_TEST_META, args.len()));
@@ -448,7 +448,7 @@ fn eval_f_test_prepared(
 
 fn eval_t_test_prepared(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !T_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_TEST_META, args.len()));
@@ -479,14 +479,14 @@ fn eval_t_test_prepared(
 }
 pub fn eval_chisq_test_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_chisq_test_prepared(args, resolver))
 }
 
 pub fn eval_chitest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !CHITEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHITEST_META, args.len()));
@@ -496,14 +496,14 @@ pub fn eval_chitest_surface(
 
 pub fn eval_f_test_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_f_test_prepared(args, resolver))
 }
 
 pub fn eval_ftest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !FTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&FTEST_META, args.len()));
@@ -513,14 +513,14 @@ pub fn eval_ftest_surface(
 
 pub fn eval_t_test_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_t_test_prepared(args, resolver))
 }
 
 pub fn eval_ttest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !TTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&TTEST_META, args.len()));

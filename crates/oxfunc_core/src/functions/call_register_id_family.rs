@@ -151,7 +151,7 @@ fn coerce_prepared_to_procedure_spec(
 
 pub fn parse_register_id_request(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<RegisterIdRequest, CallRegisterIdEvalError> {
     if !REGISTER_ID_META.arity.accepts(args.len()) {
         return Err(CallRegisterIdEvalError::ArityMismatch {
@@ -181,7 +181,7 @@ pub fn parse_register_id_request(
 
 pub fn parse_call_request(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<RegisteredExternalCallRequest, CallRegisterIdEvalError> {
     if !CALL_META.arity.accepts(args.len()) {
         return Err(CallRegisterIdEvalError::ArityMismatch {
@@ -236,7 +236,7 @@ pub fn parse_call_request(
 
 pub fn eval_register_id_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, CallRegisterIdEvalError> {
     let request = parse_register_id_request(args, resolver)?;
@@ -249,7 +249,7 @@ pub fn eval_register_id_surface(
 
 pub fn eval_call_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, CallRegisterIdEvalError> {
     let request = parse_call_request(args, resolver)?;

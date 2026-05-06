@@ -66,7 +66,7 @@ pub fn eval_atan2_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
 pub fn eval_atan2_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, Atan2EvalError> {
     eval_binary_numeric_surface(args, resolver, atan2_kernel).map_err(Atan2EvalError::from)
 }

@@ -34,7 +34,7 @@ pub enum SlopeEvalError {
 
 pub fn eval_slope_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SlopeEvalError> {
     let argc = args.len();
     if !SLOPE_META.arity.accepts(argc) {

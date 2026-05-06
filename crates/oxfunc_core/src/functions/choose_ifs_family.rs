@@ -117,7 +117,7 @@ fn choose_index_from_cell(
 fn choose_array_surface(
     index_array: &EvalArray,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     let mut choice_arrays = Vec::with_capacity(args.len().saturating_sub(1));
     for arg in &args[1..] {
@@ -195,7 +195,7 @@ fn prepared_condition_truthy(prepared: &PreparedArgValue) -> Result<bool, Coerci
 
 pub fn eval_choose_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     if !CHOOSE_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {
@@ -224,7 +224,7 @@ pub fn eval_choose_surface(
 
 pub fn eval_ifs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     if !IFS_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {

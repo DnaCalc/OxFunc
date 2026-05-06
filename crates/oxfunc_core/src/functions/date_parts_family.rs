@@ -205,7 +205,7 @@ pub fn time_kernel(hour: f64, minute: f64, second: f64) -> Result<f64, Worksheet
 
 fn eval_date_part_unary_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
 ) -> Result<EvalValue, DatePartsEvalError> {
@@ -267,28 +267,28 @@ fn eval_date_part_unary_surface(
 
 pub fn eval_day_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &DAY_META, day_kernel)
 }
 
 pub fn eval_month_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MONTH_META, month_kernel)
 }
 
 pub fn eval_year_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &YEAR_META, year_kernel)
 }
 
 pub fn eval_days_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     run_values_only_prepared(
         args,
@@ -313,28 +313,28 @@ pub fn eval_days_surface(
 
 pub fn eval_hour_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &HOUR_META, hour_kernel)
 }
 
 pub fn eval_minute_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MINUTE_META, minute_kernel)
 }
 
 pub fn eval_second_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &SECOND_META, second_kernel)
 }
 
 pub fn eval_time_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     run_values_only_prepared(
         args,

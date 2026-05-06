@@ -54,7 +54,7 @@ fn eval_standardize_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Sta
 
 pub fn eval_standardize_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StandardizeEvalError> {
     run_values_only_prepared(
         args,

@@ -49,7 +49,7 @@ pub fn iseven_kernel(n: f64) -> bool {
 
 pub fn eval_iseven_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IsEvenEvalError> {
     run_values_only_prepared(
         args,

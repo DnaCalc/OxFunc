@@ -237,7 +237,7 @@ fn find_intersection_rows(row_group: &AxisGroup, col_group: &AxisGroup) -> Vec<u
 
 pub fn eval_pivotby_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !PIVOTBY_META.arity.accepts(args.len()) {
@@ -422,7 +422,7 @@ pub fn eval_pivotby_surface(
 
 pub fn eval_pivotby_surface_ws(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, WorksheetErrorCode> {
     eval_pivotby_surface(args, resolver, invoker).map_err(|err| map_lambda_helper_error_to_ws(&err))

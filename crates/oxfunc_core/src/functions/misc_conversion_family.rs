@@ -599,7 +599,7 @@ fn coerce_boolish_arg(arg: &PreparedArgValue) -> Result<bool, MiscConversionErro
 
 fn sum_surface_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, MiscConversionError> {
     let prepared = expand_aggregate_arg(arg, resolver).map_err(MiscConversionError::Coercion)?;
     let mut total = 0.0;
@@ -614,7 +614,7 @@ fn sum_surface_arg(
 
 pub fn eval_bahttext_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -635,7 +635,7 @@ pub fn eval_bahttext_surface(
 
 pub fn eval_convert_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -661,7 +661,7 @@ pub fn eval_convert_surface(
 
 pub fn eval_euroconvert_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -698,7 +698,7 @@ pub fn eval_euroconvert_surface(
 
 pub fn eval_percentof_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     if !PERCENTOF_META.arity.accepts(args.len()) {
         return Err(arity_error(&PERCENTOF_META, args.len()));
@@ -712,7 +712,7 @@ pub fn eval_percentof_surface(
 
 pub fn eval_randarray_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     provider: &impl RandomArrayProvider,
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(

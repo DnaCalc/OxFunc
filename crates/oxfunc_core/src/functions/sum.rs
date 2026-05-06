@@ -80,7 +80,7 @@ pub fn eval_sum_prepared_aggregate(
 
 pub fn eval_sum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumEvalError> {
     let argc = args.len();
     if !SUM_META.arity.accepts(argc) {

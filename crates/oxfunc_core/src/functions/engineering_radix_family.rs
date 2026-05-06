@@ -336,7 +336,7 @@ fn eval_source_to_target_prepared(
 
 pub fn eval_dec2bin_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -348,7 +348,7 @@ pub fn eval_dec2bin_surface(
 
 pub fn eval_dec2hex_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -360,7 +360,7 @@ pub fn eval_dec2hex_surface(
 
 pub fn eval_dec2oct_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -372,7 +372,7 @@ pub fn eval_dec2oct_surface(
 
 pub fn eval_bin2dec_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -384,7 +384,7 @@ pub fn eval_bin2dec_surface(
 
 pub fn eval_bin2hex_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -396,7 +396,7 @@ pub fn eval_bin2hex_surface(
 
 pub fn eval_bin2oct_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -408,7 +408,7 @@ pub fn eval_bin2oct_surface(
 
 pub fn eval_hex2bin_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -420,7 +420,7 @@ pub fn eval_hex2bin_surface(
 
 pub fn eval_hex2dec_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -432,7 +432,7 @@ pub fn eval_hex2dec_surface(
 
 pub fn eval_hex2oct_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -444,7 +444,7 @@ pub fn eval_hex2oct_surface(
 
 pub fn eval_oct2bin_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -456,7 +456,7 @@ pub fn eval_oct2bin_surface(
 
 pub fn eval_oct2dec_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,
@@ -468,7 +468,7 @@ pub fn eval_oct2dec_surface(
 
 pub fn eval_oct2hex_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared(
         args,

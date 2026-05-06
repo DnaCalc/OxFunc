@@ -93,7 +93,7 @@ fn missing_target(function_id: &'static str) -> Result<EvalValue, TestAliasEvalE
 
 pub fn eval_chisq_test_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&CHISQ_TEST_META, args)?;
     missing_target(CHISQ_TEST_META.function_id)
@@ -101,7 +101,7 @@ pub fn eval_chisq_test_surface(
 
 pub fn eval_chitest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&CHITEST_META, args)?;
     eval_chisq_test_surface(args, resolver)
@@ -109,7 +109,7 @@ pub fn eval_chitest_surface(
 
 pub fn eval_f_test_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&F_TEST_META, args)?;
     missing_target(F_TEST_META.function_id)
@@ -117,7 +117,7 @@ pub fn eval_f_test_surface(
 
 pub fn eval_ftest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&FTEST_META, args)?;
     eval_f_test_surface(args, resolver)
@@ -125,7 +125,7 @@ pub fn eval_ftest_surface(
 
 pub fn eval_t_test_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&T_TEST_META, args)?;
     missing_target(T_TEST_META.function_id)
@@ -133,7 +133,7 @@ pub fn eval_t_test_surface(
 
 pub fn eval_ttest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&TTEST_META, args)?;
     eval_t_test_surface(args, resolver)
@@ -141,7 +141,7 @@ pub fn eval_ttest_surface(
 
 pub fn eval_ztest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&ZTEST_META, args)?;
     eval_z_test_surface(args, resolver)

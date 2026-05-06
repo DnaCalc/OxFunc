@@ -113,7 +113,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> RegressionForecastEvalErro
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -134,7 +134,7 @@ fn resolve_arg_eval(
 
 fn optional_arg_value(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<EvalValue>, RegressionForecastEvalError> {
     match arg {
         None | Some(CallArgValue::MissingArg) => Ok(None),
@@ -225,7 +225,7 @@ fn collect_numeric_vector_from_eval(
 
 fn collect_numeric_vector_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<NumericVector, RegressionForecastEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
     collect_numeric_vector_from_eval(&eval)
@@ -289,7 +289,7 @@ fn collect_numeric_matrix_from_eval(
 
 fn collect_numeric_matrix_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<NumericMatrix, RegressionForecastEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
     collect_numeric_matrix_from_eval(&eval)
@@ -777,7 +777,7 @@ fn forecast_pair_kernel(
 
 pub fn eval_trend_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !TREND_META.arity.accepts(args.len()) {
         return Err(arity_error(&TREND_META, args.len()));
@@ -802,7 +802,7 @@ pub fn eval_trend_surface(
 
 pub fn eval_growth_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !GROWTH_META.arity.accepts(args.len()) {
         return Err(arity_error(&GROWTH_META, args.len()));
@@ -828,7 +828,7 @@ pub fn eval_growth_surface(
 
 pub fn eval_forecast_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !FORECAST_META.arity.accepts(args.len()) {
         return Err(arity_error(&FORECAST_META, args.len()));
@@ -841,7 +841,7 @@ pub fn eval_forecast_surface(
 
 pub fn eval_forecast_linear_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !FORECAST_LINEAR_META.arity.accepts(args.len()) {
         return Err(arity_error(&FORECAST_LINEAR_META, args.len()));
@@ -854,7 +854,7 @@ pub fn eval_forecast_linear_surface(
 
 pub fn eval_linest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !LINEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&LINEST_META, args.len()));
@@ -874,7 +874,7 @@ pub fn eval_linest_surface(
 
 pub fn eval_logest_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RegressionForecastEvalError> {
     if !LOGEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&LOGEST_META, args.len()));

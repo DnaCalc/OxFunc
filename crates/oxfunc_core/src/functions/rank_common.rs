@@ -24,7 +24,7 @@ pub fn collect_rank_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, 
 
 pub fn prepare_rank_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<f64>, CoercionError> {
     let prepared = prepare_arg_values_only(arg, resolver)?;
     match prepared {
@@ -50,7 +50,7 @@ pub fn prepare_rank_number(
 
 pub fn prepare_rank_order(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<RankOrder, CoercionError> {
     let Some(arg) = arg else {
         return Ok(RankOrder::Descending);

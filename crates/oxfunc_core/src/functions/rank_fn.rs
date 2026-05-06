@@ -33,7 +33,7 @@ pub enum RankEvalError {
 
 pub fn eval_rank_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RankEvalError> {
     eval_rank_eq_surface(args, resolver).map_err(|err| match err {
         RankEqEvalError::ArityMismatch {

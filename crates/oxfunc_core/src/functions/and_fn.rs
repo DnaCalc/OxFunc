@@ -34,7 +34,7 @@ pub enum AndEvalError {
 
 pub fn eval_and_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AndEvalError> {
     let argc = args.len();
     if !AND_META.arity.accepts(argc) {

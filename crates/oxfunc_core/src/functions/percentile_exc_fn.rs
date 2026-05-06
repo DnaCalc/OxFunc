@@ -32,7 +32,7 @@ pub enum PercentileExcEvalError {
 
 pub fn eval_percentile_exc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, PercentileExcEvalError> {
     if !PERCENTILE_EXC_META.arity.accepts(args.len()) {
         return Err(PercentileExcEvalError::ArityMismatch {

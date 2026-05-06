@@ -34,7 +34,7 @@ pub enum XorEvalError {
 
 pub fn eval_xor_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, XorEvalError> {
     let argc = args.len();
     if !XOR_META.arity.accepts(argc) {

@@ -29,7 +29,7 @@ pub fn fisherinv_kernel(y: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_fisherinv_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, fisherinv_kernel)
 }

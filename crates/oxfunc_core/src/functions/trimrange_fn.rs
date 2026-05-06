@@ -235,7 +235,7 @@ pub(crate) fn trimrange_kernel(
 
 pub fn eval_trimrange_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TrimRangeEvalError> {
     if !TRIMRANGE_META.arity.accepts(args.len()) {
         return Err(TrimRangeEvalError::ArityMismatch {

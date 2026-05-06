@@ -339,7 +339,7 @@ fn map_optional3_item(
 
 pub fn eval_ceiling_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -351,7 +351,7 @@ pub fn eval_ceiling_surface(
 
 pub fn eval_floor_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -363,7 +363,7 @@ pub fn eval_floor_surface(
 
 pub fn eval_ceiling_math_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -375,7 +375,7 @@ pub fn eval_ceiling_math_surface(
 
 pub fn eval_floor_math_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -387,7 +387,7 @@ pub fn eval_floor_math_surface(
 
 pub fn eval_ceiling_precise_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -399,7 +399,7 @@ pub fn eval_ceiling_precise_surface(
 
 pub fn eval_floor_precise_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -411,7 +411,7 @@ pub fn eval_floor_precise_surface(
 
 pub fn eval_iso_ceiling_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,

@@ -37,7 +37,7 @@ pub enum PercentRankExcEvalError {
 
 pub fn eval_percentrank_exc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, PercentRankExcEvalError> {
     if !PERCENTRANK_EXC_META.arity.accepts(args.len()) {
         return Err(PercentRankExcEvalError::ArityMismatch {

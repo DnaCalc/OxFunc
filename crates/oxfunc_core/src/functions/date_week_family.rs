@@ -243,7 +243,7 @@ pub fn isoweeknum_kernel(serial: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_edate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared(
         args,
@@ -270,7 +270,7 @@ pub fn eval_edate_surface(
 
 pub fn eval_eomonth_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared(
         args,
@@ -297,7 +297,7 @@ pub fn eval_eomonth_surface(
 
 pub fn eval_weekday_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared(
         args,
@@ -327,7 +327,7 @@ pub fn eval_weekday_surface(
 
 pub fn eval_weeknum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared(
         args,
@@ -357,7 +357,7 @@ pub fn eval_weeknum_surface(
 
 pub fn eval_isoweeknum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared(
         args,

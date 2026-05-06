@@ -28,7 +28,7 @@ pub fn atan_kernel(n: f64) -> f64 {
 
 pub fn eval_atan_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, |n| Ok(atan_kernel(n)))
 }

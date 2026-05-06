@@ -28,7 +28,7 @@ pub fn tanh_kernel(n: f64) -> f64 {
 
 pub fn eval_tanh_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, |n| Ok(tanh_kernel(n)))
 }

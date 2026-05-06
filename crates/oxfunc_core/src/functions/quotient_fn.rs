@@ -31,7 +31,7 @@ pub fn quotient_kernel(numerator: f64, denominator: f64) -> Result<f64, Workshee
 
 pub fn eval_quotient_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, quotient_kernel)
 }

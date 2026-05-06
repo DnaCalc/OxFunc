@@ -81,7 +81,7 @@ fn eval_decimal_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Decimal
 
 pub fn eval_decimal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DecimalEvalError> {
     run_values_only_prepared(
         args,

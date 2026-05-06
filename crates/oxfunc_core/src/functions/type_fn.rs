@@ -42,7 +42,7 @@ fn type_code(prepared: PreparedArgValue) -> f64 {
 
 pub fn eval_type_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TypeEvalError> {
     if !TYPE_META.arity.accepts(args.len()) {
         return Err(TypeEvalError::ArityMismatch {

@@ -38,7 +38,7 @@ fn prepared_to_eval(arg: PreparedArgValue) -> EvalValue {
 
 pub fn eval_ifna_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IfNaEvalError> {
     if !IFNA_META.arity.accepts(args.len()) {
         return Err(IfNaEvalError::ArityMismatch {

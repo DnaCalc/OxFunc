@@ -48,7 +48,7 @@ pub fn eval_exact_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
 pub fn eval_exact_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ExactEvalError> {
     run_values_only_prepared(
         args,

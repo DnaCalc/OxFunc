@@ -73,7 +73,7 @@ pub fn eval_abs_adapter_array_lift_prepared(args: &[PreparedArgValue]) -> Vec<Ab
 
 pub fn eval_abs_scalar(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, AbsEvalError> {
     run_values_only_prepared(
         args,
@@ -85,7 +85,7 @@ pub fn eval_abs_scalar(
 
 pub fn eval_abs_scalar_value(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AbsEvalError> {
     run_values_only_prepared(
         args,
@@ -97,7 +97,7 @@ pub fn eval_abs_scalar_value(
 
 pub fn eval_abs_array_lift(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Vec<AbsLiftOutcome> {
     map_values_only_prepared(
         args,

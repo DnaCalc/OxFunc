@@ -130,7 +130,7 @@ fn eval_family_prepared(
 
 pub fn eval_dollarde_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DollarFractionEvalError> {
     run_values_only_prepared(
         args,
@@ -142,7 +142,7 @@ pub fn eval_dollarde_surface(
 
 pub fn eval_dollarfr_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DollarFractionEvalError> {
     run_values_only_prepared(
         args,

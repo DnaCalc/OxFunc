@@ -105,7 +105,7 @@ fn parse_reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, ReferenceMet
 
 fn coerce_required_positive_index(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<usize, ReferenceMetadataEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(ReferenceMetadataEvalError::Coercion)?;
@@ -120,7 +120,7 @@ fn coerce_required_positive_index(
 
 fn coerce_optional_abs_num(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<usize, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(1) };
     if matches!(arg, CallArgValue::MissingArg | CallArgValue::EmptyCell) {
@@ -139,7 +139,7 @@ fn coerce_optional_abs_num(
 
 fn coerce_optional_a1_flag(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<bool, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(true) };
     match arg {
@@ -173,7 +173,7 @@ fn coerce_optional_a1_flag(
 
 fn coerce_optional_sheet_text(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<String>, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(None) };
     if matches!(arg, CallArgValue::MissingArg) {
@@ -266,7 +266,7 @@ fn count_reference_areas(reference: &ReferenceLike) -> Result<usize, ReferenceMe
 
 pub fn eval_address_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ReferenceMetadataEvalError> {
     if !ADDRESS_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
@@ -324,7 +324,7 @@ pub fn eval_formulatext_surface(
 
 pub fn eval_sheet_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, ReferenceMetadataEvalError> {
     if !SHEET_META.arity.accepts(args.len()) {

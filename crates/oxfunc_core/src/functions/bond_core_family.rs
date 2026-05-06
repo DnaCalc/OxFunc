@@ -664,7 +664,7 @@ pub fn accrint_kernel(
 }
 fn evaln(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
     m: &FunctionMeta,
     k: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BondCoreEvalError>,
 ) -> Result<EvalValue, BondCoreEvalError> {
@@ -682,7 +682,7 @@ fn evaln(
 }
 pub fn eval_accrint_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINT_META, |p| {
         accrint_kernel(
@@ -699,7 +699,7 @@ pub fn eval_accrint_surface(
 }
 pub fn eval_accrintm_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINTM_META, |p| {
         accrintm_kernel(
@@ -713,7 +713,7 @@ pub fn eval_accrintm_surface(
 }
 pub fn eval_duration_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &DURATION_META, |p| {
         duration_kernel(
@@ -728,7 +728,7 @@ pub fn eval_duration_surface(
 }
 pub fn eval_mduration_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &MDURATION_META, |p| {
         mduration_kernel(
@@ -743,7 +743,7 @@ pub fn eval_mduration_surface(
 }
 pub fn eval_price_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &PRICE_META, |p| {
         price_kernel(
@@ -759,7 +759,7 @@ pub fn eval_price_surface(
 }
 pub fn eval_pricemat_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &PRICEMAT_META, |p| {
         pricemat_kernel(
@@ -774,7 +774,7 @@ pub fn eval_pricemat_surface(
 }
 pub fn eval_yield_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELD_META, |p| {
         yield_kernel(
@@ -790,7 +790,7 @@ pub fn eval_yield_surface(
 }
 pub fn eval_yielddisc_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELDDISC_META, |p| {
         yielddisc_kernel(
@@ -804,7 +804,7 @@ pub fn eval_yielddisc_surface(
 }
 pub fn eval_yieldmat_surface(
     args: &[CallArgValue],
-    r: &impl ReferenceResolver,
+    r: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELDMAT_META, |p| {
         yieldmat_kernel(

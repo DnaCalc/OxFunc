@@ -106,49 +106,49 @@ pub fn op_divide_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_op_unary_plus_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_unary_plus_kernel)
 }
 
 pub fn eval_op_negate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_negate_kernel)
 }
 
 pub fn eval_op_percent_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_percent_kernel)
 }
 
 pub fn eval_op_subtract_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_subtract_kernel)
 }
 
 pub fn eval_op_multiply_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_multiply_kernel)
 }
 
 pub fn eval_op_divide_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_divide_kernel)
 }
 
 pub fn eval_op_power_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, power_kernel)
 }

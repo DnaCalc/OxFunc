@@ -313,7 +313,7 @@ fn render_text_for_mode(text: &ExcelText, mode: WidthConversionMode) -> EvalValu
 
 fn eval_width_conversion_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
     function: WidthConversionFunction,
     meta: &FunctionMeta,
@@ -345,7 +345,7 @@ fn eval_width_conversion_surface(
 
 pub fn eval_asc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(
@@ -359,7 +359,7 @@ pub fn eval_asc_surface(
 
 pub fn eval_dbcs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(
@@ -373,7 +373,7 @@ pub fn eval_dbcs_surface(
 
 pub fn eval_jis_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(

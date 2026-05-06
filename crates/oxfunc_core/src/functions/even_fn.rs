@@ -41,7 +41,7 @@ pub fn even_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_even_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, even_kernel)
 }

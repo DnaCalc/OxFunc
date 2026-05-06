@@ -34,7 +34,7 @@ pub enum PearsonEvalError {
 
 pub fn eval_pearson_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, PearsonEvalError> {
     let argc = args.len();
     if !PEARSON_META.arity.accepts(argc) {

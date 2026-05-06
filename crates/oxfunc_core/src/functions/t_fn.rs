@@ -63,7 +63,7 @@ fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
 
 pub fn eval_t_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TEvalError> {
     if !T_META.arity.accepts(args.len()) {
         return Err(TEvalError::ArityMismatch {

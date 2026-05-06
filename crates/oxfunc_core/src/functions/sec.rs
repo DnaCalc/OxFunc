@@ -28,7 +28,7 @@ pub fn sec_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_sec_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, sec_kernel)
 }

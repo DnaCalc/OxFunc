@@ -47,7 +47,7 @@ fn error_type_number(code: WorksheetErrorCode) -> Option<f64> {
 
 pub fn eval_error_type_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ErrorTypeEvalError> {
     run_values_only_prepared(
         args,

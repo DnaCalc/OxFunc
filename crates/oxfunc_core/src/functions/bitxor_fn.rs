@@ -29,7 +29,7 @@ pub fn bitxor_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_bitxor_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, bitxor_kernel)
 }

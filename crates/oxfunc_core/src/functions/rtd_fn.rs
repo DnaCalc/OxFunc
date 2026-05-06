@@ -54,7 +54,7 @@ pub enum RtdEvalError {
 
 pub fn parse_rtd_request(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<RtdRequest, RtdEvalError> {
     if !RTD_META.arity.accepts(args.len()) {
         return Err(RtdEvalError::ArityMismatch {
@@ -82,7 +82,7 @@ pub fn parse_rtd_request(
 
 pub fn eval_rtd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     provider: Option<&dyn RtdProvider>,
 ) -> Result<EvalValue, RtdEvalError> {
     let request = parse_rtd_request(args, resolver)?;

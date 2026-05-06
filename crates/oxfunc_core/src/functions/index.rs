@@ -54,7 +54,7 @@ enum ArrayIndexSelector {
 
 fn coerce_index_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     let n = coerce_arg_to_number(arg, resolver).map_err(IndexEvalError::Coercion)?;
     if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
@@ -65,7 +65,7 @@ fn coerce_index_number(
 
 fn coerce_optional_index_number(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<usize, IndexEvalError> {
@@ -78,7 +78,7 @@ fn coerce_optional_index_number(
 
 fn coerce_area_number(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     match arg {
         None => Ok(1),
@@ -95,7 +95,7 @@ fn coerce_area_number(
 
 fn coerce_array_index_selector(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<ArrayIndexSelector, IndexEvalError> {
@@ -428,7 +428,7 @@ fn try_slice_vector_with_selector_array(
 
 pub fn eval_index_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IndexEvalError> {
     let argc = args.len();
     if !INDEX_META.arity.accepts(argc) {

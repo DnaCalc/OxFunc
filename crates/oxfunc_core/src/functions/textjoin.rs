@@ -46,7 +46,7 @@ fn parse_ignore_empty(arg: &PreparedArgValue) -> Result<bool, TextJoinEvalError>
 
 pub fn eval_textjoin_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextJoinEvalError> {
     let argc = args.len();
     if !TEXTJOIN_META.arity.accepts(argc) {

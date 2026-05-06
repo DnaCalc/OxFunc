@@ -117,7 +117,7 @@ pub fn eval_hstack_adapter_prepared(
 
 pub fn eval_hstack_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, HstackEvalError> {
     run_values_only_prepared(
         args,

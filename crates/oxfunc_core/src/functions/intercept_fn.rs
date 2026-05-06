@@ -34,7 +34,7 @@ pub enum InterceptEvalError {
 
 pub fn eval_intercept_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InterceptEvalError> {
     let argc = args.len();
     if !INTERCEPT_META.arity.accepts(argc) {

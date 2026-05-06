@@ -253,7 +253,7 @@ fn eval_text_delim_kernel(
 
 fn eval_text_delim_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     direction: TextDelimDirection,
 ) -> Result<EvalValue, TextDelimEvalError> {
@@ -342,14 +342,14 @@ fn eval_text_delim_prepared_value(
 
 pub fn eval_textafter_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextDelimEvalError> {
     eval_text_delim_surface(args, resolver, &TEXTAFTER_META, TextDelimDirection::After)
 }
 
 pub fn eval_textbefore_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextDelimEvalError> {
     eval_text_delim_surface(args, resolver, &TEXTBEFORE_META, TextDelimDirection::Before)
 }

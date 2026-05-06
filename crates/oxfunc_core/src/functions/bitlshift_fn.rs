@@ -41,7 +41,7 @@ pub fn bitlshift_kernel(number: f64, shift: f64) -> Result<f64, WorksheetErrorCo
 
 pub fn eval_bitlshift_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, bitlshift_kernel)
 }

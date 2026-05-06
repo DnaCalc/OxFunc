@@ -62,7 +62,7 @@ pub fn arabic_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_arabic_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ArabicEvalError> {
     run_values_only_prepared(
         args,

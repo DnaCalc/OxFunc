@@ -29,7 +29,7 @@ pub fn phi_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_phi_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, phi_kernel)
 }

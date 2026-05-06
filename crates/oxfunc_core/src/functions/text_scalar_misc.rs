@@ -241,7 +241,7 @@ fn eval_rept_prepared_value(
 
 pub fn eval_char_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
@@ -250,7 +250,7 @@ pub fn eval_char_surface(
 
 pub fn eval_code_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
@@ -259,7 +259,7 @@ pub fn eval_code_surface(
 
 fn eval_text_unary_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(&ExcelText) -> ExcelText,
 ) -> Result<EvalValue, TextScalarEvalError> {
@@ -280,28 +280,28 @@ fn eval_text_unary_surface(
 
 pub fn eval_lower_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &LOWER_META, lower_text)
 }
 
 pub fn eval_upper_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &UPPER_META, upper_text)
 }
 
 pub fn eval_trim_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &TRIM_META, trim_ascii_spaces)
 }
 
 pub fn eval_rept_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;

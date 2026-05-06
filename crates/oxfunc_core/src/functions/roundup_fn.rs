@@ -64,7 +64,7 @@ pub fn roundup_kernel(n: f64, digits: i32) -> f64 {
 
 pub fn eval_roundup_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RoundUpEvalError> {
     eval_binary_numeric_surface(args, resolver, |value, digits| {
         Ok(roundup_kernel(value, digits.trunc() as i32))

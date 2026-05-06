@@ -53,7 +53,7 @@ pub enum CellEvalError {
 
 fn parse_info_type(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<CellInfoType, CellEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(CellEvalError::InfoTypeCoercion)?;
@@ -115,7 +115,7 @@ fn host_query_for_info_type(info_type: CellInfoType) -> Option<CellInfoQuery> {
 
 pub fn eval_cell_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, CellEvalError> {
     if !CELL_META.arity.accepts(args.len()) {

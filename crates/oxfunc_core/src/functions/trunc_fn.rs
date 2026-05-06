@@ -99,7 +99,7 @@ fn map_trunc_item(args: &[PreparedArgValue]) -> ArrayCellValue {
 
 pub fn eval_trunc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TruncEvalError> {
     let prepared = prepare_args_values_only(args, resolver).map_err(TruncEvalError::Coercion)?;
     eval_trunc_adapter_prepared(&prepared)

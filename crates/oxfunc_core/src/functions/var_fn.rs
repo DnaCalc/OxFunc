@@ -33,7 +33,7 @@ pub enum VarEvalError {
 
 pub fn eval_var_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VarEvalError> {
     eval_var_s_surface(args, resolver).map_err(|err| match err {
         VarSEvalError::ArityMismatch {

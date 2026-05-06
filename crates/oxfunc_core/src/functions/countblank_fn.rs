@@ -56,7 +56,7 @@ fn prepared_counts_as_blank(value: &PreparedArgValue) -> Result<bool, CoercionEr
 
 pub fn eval_countblank_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CountBlankEvalError> {
     let argc = args.len();
     if !COUNTBLANK_META.arity.accepts(argc) {

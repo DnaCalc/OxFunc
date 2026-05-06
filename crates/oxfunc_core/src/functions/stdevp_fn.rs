@@ -33,7 +33,7 @@ pub enum StdevPExtEvalError {
 
 pub fn eval_stdevp_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StdevPExtEvalError> {
     eval_stdev_p_surface(args, resolver).map_err(|err| match err {
         StdevPEvalError::ArityMismatch {

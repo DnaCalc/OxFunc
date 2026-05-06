@@ -34,7 +34,7 @@ pub fn mround_kernel(number: f64, multiple: f64) -> Result<f64, WorksheetErrorCo
 
 pub fn eval_mround_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, mround_kernel)
 }

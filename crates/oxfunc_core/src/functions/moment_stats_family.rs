@@ -240,7 +240,7 @@ fn guard_arity(meta: &FunctionMeta, args: &[CallArgValue]) -> Result<(), MomentS
 
 pub fn eval_kurt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&KURT_META, args)?;
     let mut prepared = Vec::new();
@@ -257,7 +257,7 @@ pub fn eval_kurt_surface(
 
 pub fn eval_skew_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&SKEW_META, args)?;
     let mut prepared = Vec::new();
@@ -274,7 +274,7 @@ pub fn eval_skew_surface(
 
 pub fn eval_skew_p_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&SKEW_P_META, args)?;
     let mut prepared = Vec::new();
@@ -291,7 +291,7 @@ pub fn eval_skew_p_surface(
 
 pub fn eval_steyx_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&STEYX_META, args)?;
     let ys = expand_aggregate_arg(&args[0], resolver).map_err(MomentStatsEvalError::Coercion)?;
@@ -305,7 +305,7 @@ pub fn eval_steyx_surface(
 
 pub fn eval_trimmean_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&TRIMMEAN_META, args)?;
     let prepared =

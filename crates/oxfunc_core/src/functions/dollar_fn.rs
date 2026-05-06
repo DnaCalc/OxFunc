@@ -86,7 +86,7 @@ pub fn eval_dollar_adapter_prepared(
 
 pub fn eval_dollar_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, DollarEvalError> {
     run_values_only_prepared(

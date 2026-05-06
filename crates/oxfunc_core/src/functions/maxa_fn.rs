@@ -47,7 +47,7 @@ fn eval_maxa_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, Max
 
 pub fn eval_maxa_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MaxAEvalError> {
     let argc = args.len();
     if !MAXA_META.arity.accepts(argc) {

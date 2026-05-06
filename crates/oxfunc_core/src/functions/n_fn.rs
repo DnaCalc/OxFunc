@@ -59,7 +59,7 @@ fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
 
 pub fn eval_n_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NEvalError> {
     if !N_META.arity.accepts(args.len()) {
         return Err(NEvalError::ArityMismatch {

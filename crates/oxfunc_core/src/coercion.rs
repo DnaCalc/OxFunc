@@ -32,7 +32,7 @@ fn parse_excel_number(text: &str) -> Option<f64> {
 
 pub fn coerce_eval_to_number(
     value: &EvalValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, CoercionError> {
     match value {
         EvalValue::Number(n) => Ok(*n),
@@ -54,7 +54,7 @@ pub fn coerce_eval_to_number(
 
 pub fn coerce_arg_to_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, CoercionError> {
     match arg {
         CallArgValue::Eval(eval) => coerce_eval_to_number(eval, resolver),
@@ -70,7 +70,7 @@ pub fn coerce_arg_to_number(
 
 pub fn coerce_direct_args_to_numbers(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<f64>, CoercionError> {
     args.iter()
         .map(|arg| coerce_arg_to_number(arg, resolver))
@@ -79,7 +79,7 @@ pub fn coerce_direct_args_to_numbers(
 
 pub fn aggregate_scan_sum(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     policy: AggregateScanPolicy,
 ) -> Result<f64, CoercionError> {
     let mut acc = 0.0;

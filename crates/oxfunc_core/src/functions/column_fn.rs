@@ -66,7 +66,7 @@ fn column_result(start_col: usize, end_col: usize) -> EvalValue {
 
 pub fn eval_column_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ColumnEvalError> {
     if !COLUMN_META.arity.accepts(args.len()) {
         return Err(ColumnEvalError::ArityMismatch {

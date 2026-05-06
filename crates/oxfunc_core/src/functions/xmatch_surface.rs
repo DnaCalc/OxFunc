@@ -10,7 +10,7 @@ use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, Worksheet
 
 fn prepare_lookup_vector(
     lookup_array: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, XmatchEvalError> {
     let mut prepared = Vec::new();
     for arg in lookup_array {
@@ -92,7 +92,7 @@ pub fn eval_xmatch_surface(
     lookup_array: &[CallArgValue],
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
@@ -122,7 +122,7 @@ pub fn eval_xmatch_surface_value(
     lookup_array: &[CallArgValue],
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;

@@ -103,7 +103,7 @@ fn expand_lookup_eval_value(value: &EvalValue) -> Result<Vec<PreparedArgValue>, 
 
 fn resolve_eval_references(
     value: &EvalValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CoercionError> {
     match value {
         EvalValue::Reference(r) => {
@@ -116,7 +116,7 @@ fn resolve_eval_references(
 
 pub fn prepare_arg_values_only(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<PreparedArgValue, CoercionError> {
     match arg {
         CallArgValue::Eval(v) => Ok(normalize_prepared_eval(resolve_eval_references(
@@ -135,7 +135,7 @@ pub fn prepare_arg_values_only(
 
 pub fn prepare_args_values_only(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     args.iter()
         .map(|arg| prepare_arg_values_only(arg, resolver))
@@ -144,7 +144,7 @@ pub fn prepare_args_values_only(
 
 pub fn expand_arg_values_only(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
         CallArgValue::Eval(v) => Ok(expand_resolved_eval_value(&resolve_eval_references(
@@ -163,7 +163,7 @@ pub fn expand_arg_values_only(
 
 pub fn expand_lookup_vector_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
         CallArgValue::Eval(v) => expand_lookup_eval_value(&resolve_eval_references(v, resolver)?),
@@ -178,7 +178,7 @@ pub fn expand_lookup_vector_arg(
 
 pub fn expand_aggregate_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
     match arg {
         CallArgValue::Reference(r) => {
@@ -227,7 +227,7 @@ pub fn expand_aggregate_arg(
 
 pub fn run_values_only_prepared<Out, E>(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     on_prepared: impl FnOnce(&[PreparedArgValue]) -> Result<Out, E>,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
 ) -> Result<Out, E> {
@@ -237,7 +237,7 @@ pub fn run_values_only_prepared<Out, E>(
 
 pub fn map_values_only_prepared<Out>(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     on_prepared_arg: impl Fn(&PreparedArgValue) -> Out,
     on_preparation_error: impl Fn(CoercionError) -> Out,
 ) -> Vec<Out> {

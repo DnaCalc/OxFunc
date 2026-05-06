@@ -36,7 +36,7 @@ pub enum OffsetEvalError {
 
 fn parse_offset_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<i64, OffsetEvalError> {
     let number = match arg {
         CallArgValue::Eval(v) => coerce_eval_to_number(v, resolver),
@@ -53,7 +53,7 @@ fn parse_offset_number(
 
 fn parse_optional_positive_dimension(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<usize>, OffsetEvalError> {
     let Some(arg) = arg else {
         return Ok(None);
@@ -78,7 +78,7 @@ fn parse_reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, OffsetEvalEr
 
 pub fn eval_offset_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OffsetEvalError> {
     let argc = args.len();
     if !OFFSET_META.arity.accepts(argc) {

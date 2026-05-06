@@ -67,7 +67,7 @@ fn not_cell(cell: &ArrayCellValue) -> ArrayCellValue {
 
 pub fn eval_not_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NotEvalError> {
     run_values_only_prepared(args, resolver, eval_not_prepared, NotEvalError::Coercion)
 }

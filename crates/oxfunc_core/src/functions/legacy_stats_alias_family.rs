@@ -87,7 +87,7 @@ fn guard_arity(
 
 pub fn eval_covar_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&COVAR_META, args)?;
     eval_covariance_p_surface(args, resolver)
@@ -96,7 +96,7 @@ pub fn eval_covar_surface(
 
 pub fn eval_mode_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&MODE_META, args)?;
     eval_mode_sngl_surface(args, resolver)
@@ -105,7 +105,7 @@ pub fn eval_mode_surface(
 
 pub fn eval_percentile_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTILE_META, args)?;
     eval_percentile_inc_surface(args, resolver)
@@ -114,7 +114,7 @@ pub fn eval_percentile_surface(
 
 pub fn eval_percentrank_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTRANK_META, args)?;
     eval_percentrank_inc_surface(args, resolver)
@@ -123,7 +123,7 @@ pub fn eval_percentrank_surface(
 
 pub fn eval_quartile_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&QUARTILE_META, args)?;
     eval_quartile_inc_surface(args, resolver)
@@ -132,7 +132,7 @@ pub fn eval_quartile_surface(
 
 pub fn eval_loginv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&LOGINV_META, args)?;
     eval_lognorm_inv_surface(args, resolver)

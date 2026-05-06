@@ -151,7 +151,7 @@ fn render_array_value(array: &EvalArray, strict: bool) -> EvalValue {
 
 pub fn eval_valuetotext_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ValueToTextEvalError> {
     if !VALUETOTEXT_META.arity.accepts(args.len()) {
         return Err(ValueToTextEvalError::ArityMismatch {

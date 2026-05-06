@@ -91,7 +91,7 @@ pub fn eval_value_adapter_prepared(
 
 pub fn eval_value_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, ValueEvalError> {
     run_values_only_prepared(

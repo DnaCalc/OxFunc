@@ -499,7 +499,7 @@ fn suffix_from_operands(values: &[ParsedComplex]) -> Result<char, ComplexFamilyE
 
 fn expand_complex_aggregate_args(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, ComplexFamilyEvalError> {
     let mut values = Vec::new();
     for arg in args {
@@ -512,7 +512,7 @@ fn expand_complex_aggregate_args(
 
 fn unary_text(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(ParsedComplex) -> Result<ParsedComplex, ComplexFamilyEvalError>,
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
@@ -534,7 +534,7 @@ fn unary_text(
 }
 fn unary_number(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(ParsedComplex) -> Result<f64, ComplexFamilyEvalError>,
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
@@ -554,7 +554,7 @@ fn unary_number(
 
 pub fn eval_complex_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !COMPLEX_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
@@ -576,79 +576,79 @@ pub fn eval_complex_surface(
 }
 pub fn eval_imabs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMABS_META, |z| Ok(z.abs()))
 }
 pub fn eval_imaginary_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMAGINARY_META, |z| Ok(z.im))
 }
 pub fn eval_imargument_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMARGUMENT_META, |z| z.argument())
 }
 pub fn eval_imreal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMREAL_META, |z| Ok(z.re))
 }
 pub fn eval_imconjugate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCONJUGATE_META, |z| Ok(z.conj()))
 }
 pub fn eval_imcos_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOS_META, |z| Ok(z.cos()))
 }
 pub fn eval_imcosh_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOSH_META, |z| Ok(z.cosh()))
 }
 pub fn eval_imcot_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOT_META, |z| z.cot())
 }
 pub fn eval_imcsc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCSC_META, |z| z.csc())
 }
 pub fn eval_imcsch_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCSCH_META, |z| z.csch())
 }
 pub fn eval_imexp_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMEXP_META, |z| Ok(z.exp()))
 }
 pub fn eval_imln_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLN_META, |z| z.ln())
 }
 pub fn eval_imlog10_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLOG10_META, |z| {
         let ln = z.ln()?;
@@ -661,7 +661,7 @@ pub fn eval_imlog10_surface(
 }
 pub fn eval_imlog2_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLOG2_META, |z| {
         let ln = z.ln()?;
@@ -674,44 +674,44 @@ pub fn eval_imlog2_surface(
 }
 pub fn eval_imsec_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSEC_META, |z| z.sec())
 }
 pub fn eval_imsech_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSECH_META, |z| z.sech())
 }
 pub fn eval_imsin_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSIN_META, |z| Ok(z.sin()))
 }
 pub fn eval_imsinh_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSINH_META, |z| Ok(z.sinh()))
 }
 pub fn eval_imsqrt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSQRT_META, |z| Ok(z.sqrt()))
 }
 pub fn eval_imtan_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMTAN_META, |z| z.tan())
 }
 
 pub fn eval_imdiv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !IMDIV_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
@@ -731,7 +731,7 @@ pub fn eval_imdiv_surface(
 }
 pub fn eval_impower_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !IMPOWER_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
@@ -750,7 +750,7 @@ pub fn eval_impower_surface(
 }
 pub fn eval_imsub_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !IMSUB_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
@@ -770,7 +770,7 @@ pub fn eval_imsub_surface(
 }
 pub fn eval_imsum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !IMSUM_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
@@ -797,7 +797,7 @@ pub fn eval_imsum_surface(
 }
 pub fn eval_improduct_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ComplexFamilyEvalError> {
     if !IMPRODUCT_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {

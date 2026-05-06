@@ -30,7 +30,7 @@ pub fn factdouble_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_factdouble_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, factdouble_kernel)
 }

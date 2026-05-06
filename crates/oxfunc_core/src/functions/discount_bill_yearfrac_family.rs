@@ -487,7 +487,7 @@ pub fn tbilleq_kernel(
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, DiscountBillYearfracEvalError>,
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
@@ -504,7 +504,7 @@ fn eval_numeric(
 
 pub fn eval_disc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &DISC_META, |prepared| {
         disc_kernel(
@@ -522,7 +522,7 @@ pub fn eval_disc_surface(
 
 pub fn eval_intrate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &INTRATE_META, |prepared| {
         intrate_kernel(
@@ -540,7 +540,7 @@ pub fn eval_intrate_surface(
 
 pub fn eval_received_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &RECEIVED_META, |prepared| {
         received_kernel(
@@ -558,7 +558,7 @@ pub fn eval_received_surface(
 
 pub fn eval_pricedisc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &PRICEDISC_META, |prepared| {
         pricedisc_kernel(
@@ -576,7 +576,7 @@ pub fn eval_pricedisc_surface(
 
 pub fn eval_tbilleq_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLEQ_META, |prepared| {
         tbilleq_kernel(
@@ -589,7 +589,7 @@ pub fn eval_tbilleq_surface(
 
 pub fn eval_tbillprice_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLPRICE_META, |prepared| {
         tbillprice_kernel(
@@ -602,7 +602,7 @@ pub fn eval_tbillprice_surface(
 
 pub fn eval_tbillyield_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLYIELD_META, |prepared| {
         tbillyield_kernel(
@@ -615,7 +615,7 @@ pub fn eval_tbillyield_surface(
 
 pub fn eval_yearfrac_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &YEARFRAC_META, |prepared| {
         yearfrac_kernel(

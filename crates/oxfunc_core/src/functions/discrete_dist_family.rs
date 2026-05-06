@@ -511,7 +511,7 @@ fn eval_expon_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Disc
 
 pub fn eval_binom_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -523,7 +523,7 @@ pub fn eval_binom_dist_surface(
 
 pub fn eval_binom_dist_range_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -535,7 +535,7 @@ pub fn eval_binom_dist_range_surface(
 
 pub fn eval_binom_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -547,21 +547,21 @@ pub fn eval_binom_inv_surface(
 
 pub fn eval_binomdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     eval_binom_dist_surface(args, resolver)
 }
 
 pub fn eval_critbinom_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     eval_binom_inv_surface(args, resolver)
 }
 
 pub fn eval_poisson_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -573,14 +573,14 @@ pub fn eval_poisson_surface(
 
 pub fn eval_poisson_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     eval_poisson_surface(args, resolver)
 }
 
 pub fn eval_hypgeom_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -592,7 +592,7 @@ pub fn eval_hypgeom_dist_surface(
 
 pub fn eval_hypgeomdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -624,7 +624,7 @@ pub fn eval_hypgeomdist_surface(
 
 pub fn eval_negbinom_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -636,7 +636,7 @@ pub fn eval_negbinom_dist_surface(
 
 pub fn eval_negbinomdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -661,7 +661,7 @@ pub fn eval_negbinomdist_surface(
 
 pub fn eval_expon_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
@@ -673,7 +673,7 @@ pub fn eval_expon_dist_surface(
 
 pub fn eval_expondist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DiscreteDistEvalError> {
     eval_expon_dist_surface(args, resolver)
 }

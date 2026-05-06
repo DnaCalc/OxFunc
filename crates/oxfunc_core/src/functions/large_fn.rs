@@ -59,7 +59,7 @@ fn coerce_k(prepared: &PreparedArgValue) -> Result<usize, LargeEvalError> {
 
 pub fn eval_large_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LargeEvalError> {
     let argc = args.len();
     if !LARGE_META.arity.accepts(argc) {

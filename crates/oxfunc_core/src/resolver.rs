@@ -148,7 +148,7 @@ fn append_materialized_value_cells(cells: &mut Vec<ArrayCellValue>, value: EvalV
 }
 
 fn materialize_multi_area_eval_value(
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     reference: &ReferenceLike,
 ) -> Result<EvalValue, RefResolutionError> {
     let Some(members) = collect_multi_area_member_references(reference)? else {
@@ -169,7 +169,7 @@ fn materialize_multi_area_eval_value(
 }
 
 pub fn resolve_eval_value(
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     reference: &ReferenceLike,
 ) -> Result<EvalValue, RefResolutionError> {
     let normalized = normalize_reference(reference);

@@ -101,7 +101,7 @@ pub fn eval_fixed_adapter_prepared(
 
 pub fn eval_fixed_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, FixedEvalError> {
     run_values_only_prepared(

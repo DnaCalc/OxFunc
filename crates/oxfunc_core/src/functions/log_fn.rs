@@ -103,7 +103,7 @@ fn eval_log_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, LogEvalErro
 
 pub fn eval_log_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LogEvalError> {
     run_values_only_prepared(args, resolver, eval_log_prepared, LogEvalError::Coercion)
 }

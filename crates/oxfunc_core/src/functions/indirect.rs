@@ -225,7 +225,7 @@ pub fn eval_indirect_adapter_prepared(
 
 pub fn eval_indirect_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IndirectEvalError> {
     let caller_context = resolver.caller_context();
     run_values_only_prepared(

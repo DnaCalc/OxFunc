@@ -511,7 +511,7 @@ pub fn eval_search_adapter_prepared(
 
 pub fn eval_proper_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -520,7 +520,7 @@ pub fn eval_proper_surface(
 
 pub fn eval_substitute_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -533,7 +533,7 @@ pub fn eval_substitute_surface(
 
 pub fn eval_replace_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -546,7 +546,7 @@ pub fn eval_replace_surface(
 
 pub fn eval_find_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -559,7 +559,7 @@ pub fn eval_find_surface(
 
 pub fn eval_search_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;

@@ -217,7 +217,7 @@ pub fn multinomial_kernel(items: &[i64]) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_multinomial_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MultinomialEvalError> {
     let argc = args.len();
     if !MULTINOMIAL_META.arity.accepts(argc) {

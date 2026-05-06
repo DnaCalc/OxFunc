@@ -447,7 +447,7 @@ fn eval_tdist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, ChiFTEval
 
 pub fn eval_chisq_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -459,7 +459,7 @@ pub fn eval_chisq_dist_surface(
 
 pub fn eval_chisq_dist_rt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -471,7 +471,7 @@ pub fn eval_chisq_dist_rt_surface(
 
 pub fn eval_chisq_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -483,7 +483,7 @@ pub fn eval_chisq_inv_surface(
 
 pub fn eval_chisq_inv_rt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -495,7 +495,7 @@ pub fn eval_chisq_inv_rt_surface(
 
 pub fn eval_chidist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -507,7 +507,7 @@ pub fn eval_chidist_surface(
 
 pub fn eval_chiinv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -519,7 +519,7 @@ pub fn eval_chiinv_surface(
 
 pub fn eval_f_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -531,7 +531,7 @@ pub fn eval_f_dist_surface(
 
 pub fn eval_f_dist_rt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -543,7 +543,7 @@ pub fn eval_f_dist_rt_surface(
 
 pub fn eval_f_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -555,7 +555,7 @@ pub fn eval_f_inv_surface(
 
 pub fn eval_f_inv_rt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -567,7 +567,7 @@ pub fn eval_f_inv_rt_surface(
 
 pub fn eval_fdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -579,7 +579,7 @@ pub fn eval_fdist_surface(
 
 pub fn eval_finv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -591,7 +591,7 @@ pub fn eval_finv_surface(
 
 pub fn eval_t_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -603,7 +603,7 @@ pub fn eval_t_dist_surface(
 
 pub fn eval_t_dist_2t_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -615,7 +615,7 @@ pub fn eval_t_dist_2t_surface(
 
 pub fn eval_t_dist_rt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -627,7 +627,7 @@ pub fn eval_t_dist_rt_surface(
 
 pub fn eval_t_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -639,7 +639,7 @@ pub fn eval_t_inv_surface(
 
 pub fn eval_t_inv_2t_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -651,7 +651,7 @@ pub fn eval_t_inv_2t_surface(
 
 pub fn eval_tdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
@@ -663,7 +663,7 @@ pub fn eval_tdist_surface(
 
 pub fn eval_tinv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,

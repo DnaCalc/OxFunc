@@ -110,7 +110,7 @@ fn select_reference_cell(
 
 fn scalarize_eval_value(
     value: EvalValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     caller: Option<&CallerContext>,
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     match value {
@@ -126,7 +126,7 @@ fn scalarize_eval_value(
 
 fn scalarize_reference(
     reference: ReferenceLike,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     caller: Option<&CallerContext>,
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     match reference.kind {
@@ -158,7 +158,7 @@ fn scalarize_reference(
 
 pub fn eval_op_implicit_intersection_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     if args.len() != 1 {
         return Err(ImplicitIntersectionError::ArityMismatch {

@@ -240,7 +240,7 @@ fn map_concat_item(lhs: &PreparedArgValue, rhs: &PreparedArgValue) -> ArrayCellV
 
 fn eval_operator_compare_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     op: CompareOp,
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     run_values_only_prepared(
@@ -276,7 +276,7 @@ fn eval_operator_compare_surface(
 
 pub fn eval_op_concat_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     run_values_only_prepared(
         args,
@@ -311,42 +311,42 @@ pub fn eval_op_concat_surface(
 
 pub fn eval_op_equal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Eq)
 }
 
 pub fn eval_op_not_equal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ne)
 }
 
 pub fn eval_op_less_than_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Lt)
 }
 
 pub fn eval_op_less_equal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Le)
 }
 
 pub fn eval_op_greater_than_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Gt)
 }
 
 pub fn eval_op_greater_equal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ge)
 }

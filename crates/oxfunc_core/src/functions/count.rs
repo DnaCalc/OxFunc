@@ -34,7 +34,7 @@ pub enum CountEvalError {
 
 pub fn eval_count_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CountEvalError> {
     let argc = args.len();
     if !COUNT_META.arity.accepts(argc) {

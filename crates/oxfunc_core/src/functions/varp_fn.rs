@@ -33,7 +33,7 @@ pub enum VarpEvalError {
 
 pub fn eval_varp_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VarpEvalError> {
     eval_var_p_surface(args, resolver).map_err(|err| match err {
         VarPEvalError::ArityMismatch {

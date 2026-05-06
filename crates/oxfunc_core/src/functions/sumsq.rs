@@ -44,7 +44,7 @@ fn eval_sumsq_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, Su
 
 pub fn eval_sumsq_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumsqEvalError> {
     let argc = args.len();
     if !SUMSQ_META.arity.accepts(argc) {

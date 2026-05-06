@@ -805,7 +805,7 @@ pub fn eval_makearray_prepared(
 pub fn prepare_and_invoke_callable(
     args: &[CallArgValue],
     callable: &LambdaValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
     let prepared =
@@ -849,7 +849,7 @@ fn parse_positive_dimension(prepared: &PreparedArgValue) -> Result<usize, Lambda
 
 pub fn eval_map_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !MAP_META.arity.accepts(args.len()) {
@@ -864,7 +864,7 @@ pub fn eval_map_surface(
 
 pub fn eval_reduce_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
     if !REDUCE_META.arity.accepts(args.len()) {
@@ -878,7 +878,7 @@ pub fn eval_reduce_surface(
 
 pub fn eval_scan_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !SCAN_META.arity.accepts(args.len()) {
@@ -892,7 +892,7 @@ pub fn eval_scan_surface(
 
 pub fn eval_byrow_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !BYROW_META.arity.accepts(args.len()) {
@@ -906,7 +906,7 @@ pub fn eval_byrow_surface(
 
 pub fn eval_bycol_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !BYCOL_META.arity.accepts(args.len()) {
@@ -920,7 +920,7 @@ pub fn eval_bycol_surface(
 
 pub fn eval_makearray_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !MAKEARRAY_META.arity.accepts(args.len()) {
@@ -952,7 +952,7 @@ pub fn map_lambda_helper_error_to_ws(error: &LambdaHelperEvalError) -> Worksheet
 
 pub fn eval_isomitted_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !ISOMITTED_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&ISOMITTED_META, args.len()));

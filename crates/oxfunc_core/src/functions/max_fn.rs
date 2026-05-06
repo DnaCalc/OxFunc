@@ -47,7 +47,7 @@ fn eval_max_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, MaxE
 
 pub fn eval_max_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MaxEvalError> {
     let argc = args.len();
     if !MAX_META.arity.accepts(argc) {

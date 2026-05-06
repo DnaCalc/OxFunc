@@ -613,7 +613,7 @@ pub fn bessely_kernel(x: f64, order: f64) -> Result<f64, BesselConvertEvalError>
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BesselConvertEvalError>,
 ) -> Result<EvalValue, BesselConvertEvalError> {
@@ -630,7 +630,7 @@ fn eval_numeric(
 
 pub fn eval_besseli_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELI_META, |prepared| {
         besseli_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
@@ -639,7 +639,7 @@ pub fn eval_besseli_surface(
 
 pub fn eval_besselj_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELJ_META, |prepared| {
         besselj_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
@@ -648,7 +648,7 @@ pub fn eval_besselj_surface(
 
 pub fn eval_besselk_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELK_META, |prepared| {
         besselk_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
@@ -657,7 +657,7 @@ pub fn eval_besselk_surface(
 
 pub fn eval_bessely_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELY_META, |prepared| {
         bessely_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)

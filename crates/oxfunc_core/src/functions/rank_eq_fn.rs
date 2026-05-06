@@ -36,7 +36,7 @@ pub enum RankEqEvalError {
 
 pub fn eval_rank_eq_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RankEqEvalError> {
     let argc = args.len();
     if !RANK_EQ_META.arity.accepts(argc) {

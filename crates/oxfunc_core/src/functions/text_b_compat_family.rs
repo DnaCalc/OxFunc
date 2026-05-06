@@ -70,21 +70,21 @@ pub enum TextBCompatEvalError {
 
 pub fn eval_findb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_find_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }
 
 pub fn eval_leftb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_left_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_lenb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     run_values_only_prepared(
         args,
@@ -109,28 +109,28 @@ pub fn eval_lenb_surface(
 
 pub fn eval_midb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_mid_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_replaceb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_replace_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }
 
 pub fn eval_rightb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_right_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_searchb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextBCompatEvalError> {
     eval_search_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }

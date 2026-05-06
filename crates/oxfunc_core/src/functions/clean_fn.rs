@@ -57,7 +57,7 @@ pub fn eval_clean_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
 pub fn eval_clean_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CleanEvalError> {
     run_values_only_prepared(
         args,

@@ -36,7 +36,7 @@ pub enum RankAvgEvalError {
 
 pub fn eval_rank_avg_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RankAvgEvalError> {
     let argc = args.len();
     if !RANK_AVG_META.arity.accepts(argc) {

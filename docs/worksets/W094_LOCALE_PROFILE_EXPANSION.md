@@ -105,6 +105,8 @@ The surface also adds:
 5. `locale_format::tests::excel_lcid_mapping_covers_supported_locale_profile_aliases` pins the LCID mapping surface.
 6. `locale_format::tests::expanded_profile_constants_carry_locale_separators_and_currency_defaults` now also pins representative date-order, currency-layout, negative-pattern, and invariant token-policy facts.
 7. No new validation command was run for the 2026-05-06 final-state locale detail processing pass.
+8. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-locale-excel-sweep.ps1`: passed for the focused live-Excel W094 locale comparison sweep; result summary: current-host international fields `11/11` matched, format-code token-policy observations `5/5` matched, LCID-prefix storage samples `9/9` matched after Excel's leading-zero normalization, and LCID-prefix render non-empty checks `9/9` matched.
+9. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib locale_format -- --nocapture`: passed, `6` passed, `0` failed, `1270` filtered out.
 
 ## 8. Reporting Contract
 
@@ -154,3 +156,97 @@ Execution-state update:
 5. `open_lanes`: downstream OxFml consumption, Excel file-storage and
    locale-prefix research, full locale semantic parity sweeps beyond seed
    rows, and landed-ref promotion.
+
+## 2026-05-06 Focused Live-Excel Locale Comparison Sweep
+
+Sweep command:
+1. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-locale-excel-sweep.ps1`
+
+Result artifacts:
+1. `.tmp/w094-locale-excel-sweep-results.csv`
+2. `.tmp/w094-locale-excel-sweep-summary.csv`
+
+Observed Excel baseline:
+1. Excel version: `16.0`
+2. Windows current culture: `en-ZA`
+
+Result summary:
+1. current-host international fields matched OxFunc `CurrentExcelHost` seed:
+   `11/11`,
+2. invariant format-code token-policy observations matched: `5/5`,
+3. LCID-prefix storage samples matched after accounting for Excel's leading-zero
+   normalization of prefixes such as `[$-0409]` to `[$-409]`: `9/9`,
+4. LCID-prefix render non-empty checks matched: `9/9`.
+
+Interpretation:
+1. the live Excel current-host profile matches the OxFunc
+   `CurrentExcelHost` seed for separators, currency symbol/decimals, date
+   order, currency placement, currency spacing, and negative-pattern class,
+2. Excel `NumberFormat` stores invariant format-code decimal/group tokens,
+3. Excel accepts the sampled LCID prefixes and renders localized month names
+   for those prefixes,
+4. this remains a focused current-host/sampled-LCID comparison, not a full
+   locale semantic parity sweep for every supported profile.
+
+Focused Rust validation command:
+1. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib locale_format -- --nocapture`
+
+Focused Rust validation result:
+1. `6` passed,
+2. `0` failed,
+3. `1270` filtered out.
+
+## 2026-05-06 All-Locale Sweep Extension
+
+Sweep command:
+1. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-all-locale-sweep.ps1`
+
+Result artifacts:
+1. `.tmp/w094-all-locale-excel-sweep-results.csv`
+2. `.tmp/w094-all-locale-excel-sweep-summary.csv`
+
+Coverage:
+1. `30` canonical W094 locale profiles,
+2. `11` same-language LCID aliases,
+3. culture-profile matrix comparison for separators, short-date pattern/order,
+   currency symbol/decimals/layout/spacing/negative-pattern class,
+4. live Excel LCID-prefix storage and rendering for `mmmm` and `dddd`,
+5. invariant format-code token-policy checks for every canonical profile.
+
+Summary:
+1. culture-profile matrix: `347` matched, `13` mismatched,
+2. invariant format-code token-policy checks: `90` matched, `0` mismatched,
+3. live Excel LCID-prefix storage checks: `82` matched, `0` mismatched,
+4. live Excel LCID-prefix render non-empty checks: `82` matched, `0`
+   mismatched,
+5. live Excel LCID-prefix render text vs local culture reference: `82`
+   matched, `0` mismatched.
+
+Culture-profile matrix mismatches to triage:
+1. `en-US`: currency negative-pattern class differs between current OxFunc seed
+   and Windows PowerShell/.NET Framework culture data.
+2. `en-AU`: short-date pattern differs: culture `d/MM/yyyy`, OxFunc seed
+   `d/M/yyyy`.
+3. `en-IN`: date separator, short-date pattern, currency spacing, and
+   negative-pattern class differ.
+4. `sk-SK`: culture date separator includes a trailing space.
+5. `fr-FR`: currency symbol spacing is a regular symbol-space in the formatted
+   culture sample; OxFunc currently classifies it as narrow no-break space.
+6. `es-ES`: short-date pattern differs: culture `dd/MM/yyyy`, OxFunc seed
+   `d/M/yyyy`.
+7. `nl-NL`: short-date pattern differs: culture `d-M-yyyy`, OxFunc seed
+   `dd-MM-yyyy`.
+8. `ko-KR`: date separator and short-date pattern differ.
+9. `hu-HU`: culture date separator includes a trailing space.
+
+Interpretation:
+1. the live Excel LCID-prefix surface accepted and rendered every sampled
+   canonical and alias LCID in this sweep,
+2. invariant format-code token-policy remains supported by the Excel
+   `NumberFormat` observations,
+3. the culture-profile mismatches are not live Excel LCID-prefix failures, but
+   they are concrete W094 seed rows requiring triage before any stronger
+   locale semantic-parity claim,
+4. all-locale default date/currency behavior still needs a richer Excel-side
+   capture method because COM `Application.International(...)` reports only
+   the active host profile, not arbitrary LCID defaults.

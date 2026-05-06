@@ -73,7 +73,7 @@ pub fn unicode_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_unichar_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
     run_values_only_prepared(
         args,
@@ -98,7 +98,7 @@ pub fn eval_unichar_surface(
 
 pub fn eval_unicode_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
     run_values_only_prepared(
         args,

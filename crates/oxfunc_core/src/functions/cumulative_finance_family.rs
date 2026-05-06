@@ -326,7 +326,7 @@ pub fn cumprinc_kernel(
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, CumulativeFinanceEvalError>,
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
@@ -343,7 +343,7 @@ fn eval_numeric(
 
 pub fn eval_cumipmt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMIPMT_META, |prepared| {
         cumipmt_kernel(
@@ -359,7 +359,7 @@ pub fn eval_cumipmt_surface(
 
 pub fn eval_cumprinc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMPRINC_META, |prepared| {
         cumprinc_kernel(

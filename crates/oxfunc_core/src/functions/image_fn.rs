@@ -136,7 +136,7 @@ fn validate_image_request(request: &ImageRequest) -> Result<(), ImageEvalError> 
 
 pub fn parse_image_request(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<ImageRequest, ImageEvalError> {
     if !IMAGE_META.arity.accepts(args.len()) {
         return Err(ImageEvalError::ArityMismatch {
@@ -230,7 +230,7 @@ fn image_provider_error_value(result: &ImageProviderResult) -> EvalValue {
 
 pub fn eval_image_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
@@ -246,7 +246,7 @@ pub fn eval_image_surface(
 
 pub fn eval_image_surface_extended(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ExtendedValue, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;

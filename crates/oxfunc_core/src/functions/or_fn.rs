@@ -34,7 +34,7 @@ pub enum OrEvalError {
 
 pub fn eval_or_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OrEvalError> {
     let argc = args.len();
     if !OR_META.arity.accepts(argc) {

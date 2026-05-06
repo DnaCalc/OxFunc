@@ -47,7 +47,7 @@ fn eval_min_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, MinE
 
 pub fn eval_min_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MinEvalError> {
     let argc = args.len();
     if !MIN_META.arity.accepts(argc) {

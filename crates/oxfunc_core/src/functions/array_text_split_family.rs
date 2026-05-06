@@ -209,7 +209,7 @@ fn arraytotext_strict(array: &EvalArray) -> ExcelText {
 
 pub fn eval_arraytotext_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ArrayTextSplitEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(ArrayTextSplitEvalError::Coercion)?;
@@ -361,7 +361,7 @@ fn parse_pad_with(
 
 pub fn eval_textsplit_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ArrayTextSplitEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(ArrayTextSplitEvalError::Coercion)?;

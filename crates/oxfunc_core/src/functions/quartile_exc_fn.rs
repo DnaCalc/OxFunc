@@ -32,7 +32,7 @@ pub enum QuartileExcEvalError {
 
 pub fn eval_quartile_exc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, QuartileExcEvalError> {
     if !QUARTILE_EXC_META.arity.accepts(args.len()) {
         return Err(QuartileExcEvalError::ArityMismatch {

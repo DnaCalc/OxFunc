@@ -232,7 +232,7 @@ fn eval_mid_prepared_value(prepared: &[PreparedArgValue]) -> Result<EvalValue, T
 
 pub fn eval_len_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSliceEvalError> {
     run_values_only_prepared(
         args,
@@ -265,7 +265,7 @@ fn resolve_optional_count(prepared: &[PreparedArgValue]) -> Result<usize, TextSl
 
 pub fn eval_left_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
@@ -274,7 +274,7 @@ pub fn eval_left_surface(
 
 pub fn eval_right_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
@@ -283,7 +283,7 @@ pub fn eval_right_surface(
 
 pub fn eval_mid_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;

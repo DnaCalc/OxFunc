@@ -77,7 +77,7 @@ fn map_xmatch_coercion(err: XmatchEvalError) -> MiscSwitchInfoEvalError {
 
 fn eval_switch_expression(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<PreparedArgValue, MiscSwitchInfoEvalError> {
     prepare_arg_values_only(arg, resolver).map_err(MiscSwitchInfoEvalError::Coercion)
 }
@@ -107,7 +107,7 @@ fn switch_values_equal(
 
 pub fn eval_switch_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MiscSwitchInfoEvalError> {
     if !SWITCH_META.arity.accepts(args.len()) {
         return Err(MiscSwitchInfoEvalError::ArityMismatch {

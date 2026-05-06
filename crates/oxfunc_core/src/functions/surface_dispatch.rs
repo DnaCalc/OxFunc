@@ -1085,6 +1085,94 @@ impl CallableInvoker for RejectingCallableInvoker {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SurfaceDispatchKey {
+    catalog_index: usize,
+    function_id: &'static str,
+    meta: crate::function::FunctionMeta,
+}
+
+impl SurfaceDispatchKey {
+    pub const fn catalog_index(self) -> usize {
+        self.catalog_index
+    }
+
+    pub const fn function_id(self) -> &'static str {
+        self.function_id
+    }
+
+    pub const fn meta(self) -> crate::function::FunctionMeta {
+        self.meta
+    }
+}
+
+pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatchKey> {
+    crate::xll_export_specs::function_catalog()
+        .iter()
+        .copied()
+        .enumerate()
+        .find(|(_, meta)| meta.function_id.eq_ignore_ascii_case(function_id))
+        .map(|(catalog_index, meta)| SurfaceDispatchKey {
+            catalog_index,
+            function_id: meta.function_id,
+            meta,
+        })
+        .or_else(|| {
+            if FUNC_ID_OP_IMPLICIT_INTERSECTION.eq_ignore_ascii_case(function_id) {
+                Some(SurfaceDispatchKey {
+                    catalog_index: crate::xll_export_specs::function_catalog().len(),
+                    function_id: FUNC_ID_OP_IMPLICIT_INTERSECTION,
+                    meta: OP_IMPLICIT_INTERSECTION_META,
+                })
+            } else {
+                None
+            }
+        })
+}
+
+pub fn eval_surface_value_call_with_dispatch_key(
+    dispatch_key: SurfaceDispatchKey,
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+    now_serial: Option<f64>,
+    random_value: Option<f64>,
+    locale_ctx: Option<&LocaleFormatContext>,
+    host_info: Option<&dyn HostInfoProvider>,
+    callable_invoker: Option<&dyn CallableInvoker>,
+    rtd_provider: Option<&dyn RtdProvider>,
+    registered_external_provider: Option<&dyn RegisteredExternalProvider>,
+) -> Result<EvalValue, WorksheetErrorCode> {
+    let rejecting_invoker = RejectingCallableInvoker;
+    let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
+    let result = include!("surface_dispatch_by_index_generated.rs");
+
+    let lifted_result = || {
+        try_observed_scalar_array_lift(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            now_serial,
+            random_value,
+            locale_ctx,
+            host_info,
+            callable_invoker,
+            rtd_provider,
+            registered_external_provider,
+        )
+    };
+
+    match result {
+        Err(code) => lifted_result().unwrap_or(Err(code)),
+        Ok(EvalValue::Error(code))
+            if code == WorksheetErrorCode::Value
+                || observed_error_result_array_lift(dispatch_key.function_id) =>
+        {
+            lifted_result().unwrap_or(Ok(EvalValue::Error(code)))
+        }
+        other => other,
+    }
+}
+
 fn singleton_arg_slice(arg: &CallArgValue) -> Vec<CallArgValue> {
     // Core value model does not yet carry full array payloads in prepared call-args.
     // Keep singleton passthrough until array payload/value expansion is implemented.
@@ -2235,7 +2323,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
 pub fn eval_surface_value_call(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
     random_value: Option<f64>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2258,7 +2346,7 @@ pub fn eval_surface_value_call(
 pub fn eval_surface_extended_call(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
     random_value: Option<f64>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2410,7 +2498,7 @@ fn scalar_output_cell(value: EvalValue) -> ArrayCellValue {
 fn try_observed_scalar_array_lift(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
     random_value: Option<f64>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2441,9 +2529,10 @@ fn try_observed_scalar_array_lift(
     }
 
     let mut cells = Vec::with_capacity(shape.cell_count());
+    let mut cell_args = Vec::with_capacity(prepared.len());
     for row in 0..shape.rows {
         for col in 0..shape.cols {
-            let mut cell_args = Vec::with_capacity(prepared.len());
+            cell_args.clear();
             let mut missing_coordinate = false;
             for (index, value) in prepared.iter().enumerate() {
                 let cell_prepared = if lift_positions.contains(&index) {
@@ -2494,7 +2583,7 @@ fn try_observed_scalar_array_lift(
 pub fn eval_surface_value_call_with_callable(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
     random_value: Option<f64>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2503,1392 +2592,20 @@ pub fn eval_surface_value_call_with_callable(
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
-    let rejecting_invoker = RejectingCallableInvoker;
-    let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
-    let result =
-        match function_id {
-            FUNC_ID_ACOS => eval_acos_surface(args, resolver).map_err(|e| map_acos_error_to_ws(&e)),
-            FUNC_ID_ACOT => eval_acot_surface(args, resolver).map_err(|e| map_acot_error_to_ws(&e)),
-            FUNC_ID_ACOSH => {
-                eval_acosh_surface(args, resolver).map_err(|e| map_acosh_error_to_ws(&e))
-            }
-            FUNC_ID_ACOTH => {
-                eval_acoth_surface(args, resolver).map_err(|e| map_acoth_error_to_ws(&e))
-            }
-            FUNC_ID_ABS => {
-                eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e))
-            }
-            FUNC_ID_ACCRINT => {
-                eval_accrint_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_ACCRINTM => {
-                eval_accrintm_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_AGGREGATE => {
-                crate::functions::subtotal_aggregate_family::eval_aggregate_surface(
-                    args, resolver, host_info,
-                )
-                .map_err(|e| {
-                    crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(
-                        &e,
-                    )
-                })
-            }
-            FUNC_ID_ATAN => eval_atan_surface(args, resolver).map_err(|e| map_atan_error_to_ws(&e)),
-            FUNC_ID_ASIN => eval_asin_surface(args, resolver).map_err(|e| map_asin_error_to_ws(&e)),
-            FUNC_ID_ASINH => {
-                eval_asinh_surface(args, resolver).map_err(|e| map_asinh_error_to_ws(&e))
-            }
-            FUNC_ID_ATAN2 => {
-                eval_atan2_surface(args, resolver).map_err(|e| map_atan2_error_to_ws(&e))
-            }
-            FUNC_ID_ATANH => {
-                eval_atanh_surface(args, resolver).map_err(|e| map_atanh_error_to_ws(&e))
-            }
-            FUNC_ID_AND => eval_and_surface(args, resolver).map_err(|e| map_and_error_to_ws(&e)),
-            FUNC_ID_AMORDEGRC => eval_amordegrc_surface(args, resolver)
-                .map_err(|e| map_amor_depreciation_error_to_ws(&e)),
-            FUNC_ID_AMORLINC => eval_amorlinc_surface(args, resolver)
-                .map_err(|e| map_amor_depreciation_error_to_ws(&e)),
-            FUNC_ID_ARABIC => {
-                eval_arabic_surface(args, resolver).map_err(|e| map_arabic_error_to_ws(&e))
-            }
-            FUNC_ID_CALL => eval_call_surface(args, resolver, registered_external_provider)
-                .map_err(|e| map_call_register_id_error_to_ws(&e)),
-            FUNC_ID_ADDRESS => eval_address_surface(args, resolver)
-                .map_err(|e| map_reference_metadata_error_to_ws(&e)),
-            FUNC_ID_ARRAYTOTEXT => eval_arraytotext_surface(args, resolver)
-                .map_err(|e| map_array_text_split_error_to_ws(&e)),
-            FUNC_ID_ASC => eval_asc_surface(args, resolver, host_info)
-                .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
-            FUNC_ID_AREAS => {
-                eval_areas_surface(args).map_err(|e| map_reference_metadata_error_to_ws(&e))
-            }
-            FUNC_ID_AVEDEV => {
-                eval_avedev_surface(args, resolver).map_err(|e| map_avedev_error_to_ws(&e))
-            }
-            FUNC_ID_AVERAGE => {
-                eval_average_surface(args, resolver).map_err(|e| map_average_error_to_ws(&e))
-            }
-            FUNC_ID_AVERAGEIF => {
-                eval_averageif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_AVERAGEIFS => {
-                eval_averageifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_AVERAGEA => {
-                eval_averagea_surface(args, resolver).map_err(|e| map_averagea_error_to_ws(&e))
-            }
-            FUNC_ID_BAHTTEXT => eval_bahttext_surface(args, resolver)
-                .map_err(|e| map_misc_conversion_error_to_ws(&e)),
-            FUNC_ID_BASE => eval_base_surface(args, resolver).map_err(|e| map_base_error_to_ws(&e)),
-            FUNC_ID_BETA_DIST => eval_beta_dist_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_BETA_INV => eval_beta_inv_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_BETADIST => eval_betadist_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_BETAINV => eval_betainv_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_BESSELI => {
-                eval_besseli_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
-            }
-            FUNC_ID_BESSELJ => {
-                eval_besselj_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
-            }
-            FUNC_ID_BESSELK => {
-                eval_besselk_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
-            }
-            FUNC_ID_BESSELY => {
-                eval_bessely_surface(args, resolver).map_err(|e| map_bessel_convert_error_to_ws(&e))
-            }
-            FUNC_ID_BINOM_DIST => eval_binom_dist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_BINOM_DIST_RANGE => eval_binom_dist_range_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_BINOM_INV => eval_binom_inv_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_BINOMDIST => eval_binomdist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_BIN2DEC => eval_bin2dec_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_BIN2HEX => eval_bin2hex_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_BIN2OCT => eval_bin2oct_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_BITAND => {
-                eval_bitand_surface(args, resolver).map_err(|e| map_bitand_error_to_ws(&e))
-            }
-            FUNC_ID_BITLSHIFT => {
-                eval_bitlshift_surface(args, resolver).map_err(|e| map_bitlshift_error_to_ws(&e))
-            }
-            FUNC_ID_BITOR => {
-                eval_bitor_surface(args, resolver).map_err(|e| map_bitor_error_to_ws(&e))
-            }
-            FUNC_ID_BITRSHIFT => {
-                eval_bitrshift_surface(args, resolver).map_err(|e| map_bitrshift_error_to_ws(&e))
-            }
-            FUNC_ID_BITXOR => {
-                eval_bitxor_surface(args, resolver).map_err(|e| map_bitxor_error_to_ws(&e))
-            }
-            FUNC_ID_BYCOL => eval_bycol_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_BYROW => eval_byrow_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_CELL => {
-                eval_cell_surface(args, resolver, host_info).map_err(|e| map_cell_error_to_ws(&e))
-            }
-            FUNC_ID_CEILING => {
-                eval_ceiling_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
-            }
-            FUNC_ID_CEILING_MATH => eval_ceiling_math_surface(args, resolver)
-                .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
-            FUNC_ID_CEILING_PRECISE => eval_ceiling_precise_surface(args, resolver)
-                .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
-            FUNC_ID_CHIDIST => {
-                eval_chidist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHIINV => {
-                eval_chiinv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHOOSE => {
-                eval_choose_surface(args, resolver).map_err(|e| map_choose_ifs_error_to_ws(&e))
-            }
-            FUNC_ID_CHOOSECOLS => eval_choosecols_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_CHOOSEROWS => eval_chooserows_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_CHISQ_DIST => {
-                eval_chisq_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHISQ_DIST_RT => {
-                eval_chisq_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHISQ_INV => {
-                eval_chisq_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHISQ_INV_RT => {
-                eval_chisq_inv_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_CHISQ_TEST => eval_chisq_test_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_CHITEST => eval_chitest_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_CHAR => {
-                eval_char_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_CODE => {
-                eval_code_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_COMBIN => {
-                eval_combin_surface(args, resolver).map_err(|e| map_combin_error_to_ws(&e))
-            }
-            FUNC_ID_COMBINA => {
-                eval_combina_surface(args, resolver).map_err(|e| map_combina_error_to_ws(&e))
-            }
-            FUNC_ID_COMPLEX => {
-                eval_complex_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_CLEAN => {
-                eval_clean_surface(args, resolver).map_err(|e| map_clean_error_to_ws(&e))
-            }
-            FUNC_ID_CONCAT => {
-                eval_concat_surface(args, resolver).map_err(|e| map_concat_error_to_ws(&e))
-            }
-            FUNC_ID_CONCATENATE => {
-                eval_concatenate_surface(args, resolver).map_err(|e| map_concat_error_to_ws(&e))
-            }
-            FUNC_ID_COLUMN => {
-                eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e))
-            }
-            FUNC_ID_COLUMNS => eval_columns_surface(args).map_err(|e| map_columns_error_to_ws(&e)),
-            FUNC_ID_COS => eval_cos_surface(args, resolver).map_err(|e| map_cos_error_to_ws(&e)),
-            FUNC_ID_COSH => eval_cosh_surface(args, resolver).map_err(|e| map_cosh_error_to_ws(&e)),
-            FUNC_ID_CORREL => {
-                eval_correl_surface(args, resolver).map_err(|e| map_correl_error_to_ws(&e))
-            }
-            FUNC_ID_COVARIANCE_P => eval_covariance_p_surface(args, resolver)
-                .map_err(|e| map_covariance_p_error_to_ws(&e)),
-            FUNC_ID_COVARIANCE_S => eval_covariance_s_surface(args, resolver)
-                .map_err(|e| map_covariance_s_error_to_ws(&e)),
-            FUNC_ID_COT => eval_cot_surface(args, resolver).map_err(|e| map_cot_error_to_ws(&e)),
-            FUNC_ID_COTH => eval_coth_surface(args, resolver).map_err(|e| map_coth_error_to_ws(&e)),
-            FUNC_ID_COUNT => {
-                eval_count_surface(args, resolver).map_err(|e| map_count_error_to_ws(&e))
-            }
-            FUNC_ID_COUNTBLANK => {
-                eval_countblank_surface(args, resolver).map_err(|e| map_countblank_error_to_ws(&e))
-            }
-            FUNC_ID_COUPDAYBS => {
-                eval_coupdaybs_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUPDAYS => {
-                eval_coupdays_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUPDAYSNC => {
-                eval_coupdaysnc_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUPNCD => {
-                eval_coupncd_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUPNUM => {
-                eval_coupnum_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUPPCD => {
-                eval_couppcd_surface(args, resolver).map_err(|e| map_coupon_error_to_ws(&e))
-            }
-            FUNC_ID_COUNTIF => {
-                eval_countif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_COUNTIFS => {
-                eval_countifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_COUNTA => {
-                eval_counta_surface(args, resolver).map_err(|e| map_counta_error_to_ws(&e))
-            }
-            FUNC_ID_COVAR => eval_covar_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_CRITBINOM => eval_critbinom_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_CSC => eval_csc_surface(args, resolver).map_err(|e| map_csc_error_to_ws(&e)),
-            FUNC_ID_CSCH => eval_csch_surface(args, resolver).map_err(|e| map_csch_error_to_ws(&e)),
-            FUNC_ID_CUMIPMT => eval_cumipmt_surface(args, resolver)
-                .map_err(|e| map_cumulative_finance_error_to_ws(&e)),
-            FUNC_ID_CUMPRINC => eval_cumprinc_surface(args, resolver)
-                .map_err(|e| map_cumulative_finance_error_to_ws(&e)),
-            FUNC_ID_CONVERT => eval_convert_surface(args, resolver)
-                .map_err(|e| map_misc_conversion_error_to_ws(&e)),
-            FUNC_ID_DAVERAGE => {
-                eval_daverage_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DATE => eval_date_surface(args, resolver).map_err(|e| map_date_error_to_ws(&e)),
-            FUNC_ID_DATEDIF => eval_datedif_surface(args, resolver)
-                .map_err(|e| map_date_value_family_error_to_ws(&e)),
-            FUNC_ID_DAY => {
-                eval_day_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_DAYS => {
-                eval_days_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_DAYS360 => eval_days360_surface(args, resolver)
-                .map_err(|e| map_date_value_family_error_to_ws(&e)),
-            FUNC_ID_DATEVALUE => eval_datevalue_surface(args, resolver)
-                .map_err(|e| map_date_value_family_error_to_ws(&e)),
-            FUNC_ID_DBCS => eval_dbcs_surface(args, resolver, host_info)
-                .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
-            FUNC_ID_DB => {
-                eval_db_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
-            }
-            FUNC_ID_DEC2BIN => eval_dec2bin_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_DEC2HEX => eval_dec2hex_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_DEC2OCT => eval_dec2oct_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_EDATE => {
-                eval_edate_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
-            }
-            FUNC_ID_EOMONTH => {
-                eval_eomonth_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
-            }
-            FUNC_ID_EFFECT => eval_effect_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_EUROCONVERT => eval_euroconvert_surface(args, resolver)
-                .map_err(|e| map_misc_conversion_error_to_ws(&e)),
-            FUNC_ID_EXPAND => eval_expand_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_DECIMAL => {
-                eval_decimal_surface(args, resolver).map_err(|e| map_decimal_error_to_ws(&e))
-            }
-            FUNC_ID_ENCODEURL => {
-                eval_encodeurl_surface(args, resolver).map_err(|e| map_web_text_xml_error_to_ws(&e))
-            }
-            FUNC_ID_DDB => {
-                eval_ddb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
-            }
-            FUNC_ID_DCOUNT => {
-                eval_dcount_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DCOUNTA => {
-                eval_dcounta_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DISC => eval_disc_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_DGET => {
-                eval_dget_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DMAX => {
-                eval_dmax_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DMIN => {
-                eval_dmin_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DPRODUCT => {
-                eval_dproduct_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DSTDEV => {
-                eval_dstdev_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DSTDEVP => {
-                eval_dstdevp_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DSUM => {
-                eval_dsum_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DVAR => {
-                eval_dvar_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DVARP => {
-                eval_dvarp_surface(args, resolver).map_err(|e| map_database_error_to_ws(&e))
-            }
-            FUNC_ID_DROP => eval_drop_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_DEVSQ => {
-                eval_devsq_surface(args, resolver).map_err(|e| map_devsq_error_to_ws(&e))
-            }
-            FUNC_ID_DEGREES => {
-                eval_degrees_surface(args, resolver).map_err(|e| map_degrees_error_to_ws(&e))
-            }
-            FUNC_ID_DELTA => {
-                eval_delta_surface(args, resolver).map_err(|e| map_delta_error_to_ws(&e))
-            }
-            FUNC_ID_DURATION => {
-                eval_duration_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_DOLLAR => {
-                let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
-                eval_dollar_surface(args, resolver, ctx).map_err(|e| map_dollar_error_to_ws(&e))
-            }
-            FUNC_ID_DOLLARDE => eval_dollarde_surface(args, resolver)
-                .map_err(|e| map_dollar_fraction_error_to_ws(&e)),
-            FUNC_ID_DOLLARFR => eval_dollarfr_surface(args, resolver)
-                .map_err(|e| map_dollar_fraction_error_to_ws(&e)),
-            FUNC_ID_EVEN => eval_even_surface(args, resolver).map_err(|e| map_even_error_to_ws(&e)),
-            FUNC_ID_ERROR_TYPE => {
-                eval_error_type_surface(args, resolver).map_err(|e| map_error_type_error_to_ws(&e))
-            }
-            FUNC_ID_ERF => {
-                eval_erf_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
-            }
-            FUNC_ID_ERF_PRECISE => eval_erf_precise_surface(args, resolver)
-                .map_err(|e| map_special_dist_error_to_ws(&e)),
-            FUNC_ID_ERFC => {
-                eval_erfc_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
-            }
-            FUNC_ID_ERFC_PRECISE => eval_erfc_precise_surface(args, resolver)
-                .map_err(|e| map_special_dist_error_to_ws(&e)),
-            FUNC_ID_EXACT => {
-                eval_exact_surface(args, resolver).map_err(|e| map_exact_error_to_ws(&e))
-            }
-            FUNC_ID_EXPON_DIST => eval_expon_dist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_EXPONDIST => eval_expondist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_EXP => eval_exp_surface(args, resolver).map_err(|e| map_exp_error_to_ws(&e)),
-            FUNC_ID_FACT => eval_fact_surface(args, resolver).map_err(|e| map_fact_error_to_ws(&e)),
-            FUNC_ID_FACTDOUBLE => {
-                eval_factdouble_surface(args, resolver).map_err(|e| map_factdouble_error_to_ws(&e))
-            }
-            FUNC_ID_F_DIST => {
-                eval_f_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_F_DIST_RT => {
-                eval_f_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_F_INV => {
-                eval_f_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_F_INV_RT => {
-                eval_f_inv_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_F_TEST => eval_f_test_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_FDIST => {
-                eval_fdist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_FINV => {
-                eval_finv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_FALSE => eval_false_surface(args),
-            FUNC_ID_FTEST => eval_ftest_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_FREQUENCY => eval_frequency_surface(args, resolver)
-                .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
-            FUNC_ID_FV => eval_fv_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_FVSCHEDULE => eval_fvschedule_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_FISHER => {
-                eval_fisher_surface(args, resolver).map_err(|e| map_fisher_error_to_ws(&e))
-            }
-            FUNC_ID_FISHERINV => {
-                eval_fisherinv_surface(args, resolver).map_err(|e| map_fisherinv_error_to_ws(&e))
-            }
-            FUNC_ID_FIND => eval_find_surface(args, resolver)
-                .map_err(|e| map_text_search_replace_error_to_ws(&e)),
-            FUNC_ID_FINDB => {
-                eval_findb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_FILTER => eval_filter_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_FILTERXML => {
-                eval_filterxml_surface(args, resolver).map_err(|e| map_web_text_xml_error_to_ws(&e))
-            }
-            FUNC_ID_FIXED => {
-                let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
-                eval_fixed_surface(args, resolver, ctx).map_err(|e| map_fixed_error_to_ws(&e))
-            }
-            FUNC_ID_FLOOR => {
-                eval_floor_surface(args, resolver).map_err(|e| map_ceiling_floor_error_to_ws(&e))
-            }
-            FUNC_ID_FLOOR_MATH => eval_floor_math_surface(args, resolver)
-                .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
-            FUNC_ID_FLOOR_PRECISE => eval_floor_precise_surface(args, resolver)
-                .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
-            FUNC_ID_FORMULATEXT => eval_formulatext_surface(args, host_info)
-                .map_err(|e| map_reference_metadata_error_to_ws(&e)),
-            FUNC_ID_GAUSS => {
-                eval_gauss_surface(args, resolver).map_err(|e| map_gauss_error_to_ws(&e))
-            }
-            FUNC_ID_GAMMA => {
-                eval_gamma_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
-            }
-            FUNC_ID_GAMMA_DIST => eval_gamma_dist_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_GAMMA_INV => eval_gamma_inv_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_GAMMADIST => eval_gammadist_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_GAMMAINV => eval_gammainv_surface(args, resolver)
-                .map_err(|e| map_beta_gamma_stats_error_to_ws(&e)),
-            FUNC_ID_GAMMALN => {
-                eval_gammaln_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
-            }
-            FUNC_ID_GAMMALN_PRECISE => eval_gammaln_precise_surface(args, resolver)
-                .map_err(|e| map_special_dist_error_to_ws(&e)),
-            FUNC_ID_GCD => eval_gcd_surface(args, resolver).map_err(|e| map_gcd_error_to_ws(&e)),
-            FUNC_ID_GEOMEAN => {
-                eval_geomean_surface(args, resolver).map_err(|e| map_geomean_error_to_ws(&e))
-            }
-            FUNC_ID_GESTEP => {
-                eval_gestep_surface(args, resolver).map_err(|e| map_gestep_error_to_ws(&e))
-            }
-            FUNC_ID_GROUPBY => eval_groupby_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_GROWTH => eval_growth_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_FORECAST => eval_forecast_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_FORECAST_LINEAR => eval_forecast_linear_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_HARMEAN => {
-                eval_harmean_surface(args, resolver).map_err(|e| map_harmean_error_to_ws(&e))
-            }
-            FUNC_ID_HYPERLINK => {
-                eval_hyperlink_surface(args, resolver).map_err(|e| map_hyperlink_error_to_ws(&e))
-            }
-            FUNC_ID_IMAGE => {
-                eval_image_surface(args, resolver, host_info).map_err(|e| map_image_error_to_ws(&e))
-            }
-            FUNC_ID_HYPGEOM_DIST => eval_hypgeom_dist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_HYPGEOMDIST => eval_hypgeomdist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_HOUR => {
-                eval_hour_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_HSTACK => {
-                eval_hstack_surface(args, resolver).map_err(|e| map_hstack_error_to_ws(&e))
-            }
-            FUNC_ID_SORT => eval_sort_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_SORTBY => eval_sortby_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_VSTACK => eval_vstack_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_INFO => {
-                eval_info_surface(args, resolver, host_info).map_err(|e| map_info_error_to_ws(&e))
-            }
-            FUNC_ID_ISOMITTED => eval_isomitted_surface(args, resolver)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_IRR => {
-                eval_irr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
-            }
-            FUNC_ID_IMABS => {
-                eval_imabs_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMAGINARY => eval_imaginary_surface(args, resolver)
-                .map_err(|e| map_complex_family_error_to_ws(&e)),
-            FUNC_ID_IMARGUMENT => eval_imargument_surface(args, resolver)
-                .map_err(|e| map_complex_family_error_to_ws(&e)),
-            FUNC_ID_IMCONJUGATE => eval_imconjugate_surface(args, resolver)
-                .map_err(|e| map_complex_family_error_to_ws(&e)),
-            FUNC_ID_IMCOS => {
-                eval_imcos_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMCOSH => {
-                eval_imcosh_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMCOT => {
-                eval_imcot_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMCSC => {
-                eval_imcsc_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMCSCH => {
-                eval_imcsch_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMDIV => {
-                eval_imdiv_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMEXP => {
-                eval_imexp_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMLN => {
-                eval_imln_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMLOG10 => {
-                eval_imlog10_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMLOG2 => {
-                eval_imlog2_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMPOWER => {
-                eval_impower_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMPRODUCT => eval_improduct_surface(args, resolver)
-                .map_err(|e| map_complex_family_error_to_ws(&e)),
-            FUNC_ID_IMREAL => {
-                eval_imreal_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSEC => {
-                eval_imsec_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSECH => {
-                eval_imsech_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSIN => {
-                eval_imsin_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSINH => {
-                eval_imsinh_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSQRT => {
-                eval_imsqrt_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSUB => {
-                eval_imsub_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMSUM => {
-                eval_imsum_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_IMTAN => {
-                eval_imtan_surface(args, resolver).map_err(|e| map_complex_family_error_to_ws(&e))
-            }
-            FUNC_ID_ISFORMULA => eval_isformula_surface(args, host_info)
-                .map_err(|e| map_misc_switch_info_error_to_ws(&e)),
-            FUNC_ID_PRODUCT => {
-                eval_product_surface(args, resolver).map_err(|e| map_product_error_to_ws(&e))
-            }
-            FUNC_ID_SUBTOTAL => crate::functions::subtotal_aggregate_family::eval_subtotal_surface(
-                args, resolver, host_info,
-            )
-            .map_err(|e| {
-                crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(&e)
-            }),
-            FUNC_ID_SUM => eval_sum_surface(args, resolver).map_err(|e| map_sum_error_to_ws(&e)),
-            FUNC_ID_SUMIF => {
-                eval_sumif_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_SUMIFS => {
-                eval_sumifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_SUMPRODUCT => {
-                eval_sumproduct_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
-            }
-            FUNC_ID_SUMX2MY2 => {
-                eval_sumx2my2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
-            }
-            FUNC_ID_SUMX2PY2 => {
-                eval_sumx2py2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
-            }
-            FUNC_ID_SUMXMY2 => {
-                eval_sumxmy2_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
-            }
-            FUNC_ID_SUMSQ => {
-                eval_sumsq_surface(args, resolver).map_err(|e| map_sumsq_error_to_ws(&e))
-            }
-            FUNC_ID_SWITCH => eval_switch_surface(args, resolver)
-                .map_err(|e| map_misc_switch_info_error_to_ws(&e)),
-            FUNC_ID_T_DIST => {
-                eval_t_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_T_DIST_2T => {
-                eval_t_dist_2t_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_T_DIST_RT => {
-                eval_t_dist_rt_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_T_INV => {
-                eval_t_inv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_T_INV_2T => {
-                eval_t_inv_2t_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_T_TEST => eval_t_test_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_TDIST => {
-                eval_tdist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_TINV => {
-                eval_tinv_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
-            }
-            FUNC_ID_SYD => {
-                eval_syd_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
-            }
-            FUNC_ID_IF => eval_if_surface(args, resolver).map_err(|e| map_if_error_to_ws(&e)),
-            FUNC_ID_IFERROR => {
-                eval_iferror_surface(args, resolver).map_err(|e| map_iferror_error_to_ws(&e))
-            }
-            FUNC_ID_IFNA => eval_ifna_surface(args, resolver).map_err(|e| map_ifna_error_to_ws(&e)),
-            FUNC_ID_IFS => {
-                eval_ifs_surface(args, resolver).map_err(|e| map_choose_ifs_error_to_ws(&e))
-            }
-            FUNC_ID_INDEX => {
-                eval_index_surface(args, resolver).map_err(|e| map_index_error_to_ws(&e))
-            }
-            FUNC_ID_IPMT => eval_ipmt_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_ISPMT => eval_ispmt_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_HEX2BIN => eval_hex2bin_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_HEX2DEC => eval_hex2dec_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_HEX2OCT => eval_hex2oct_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_ISO_CEILING => eval_iso_ceiling_surface(args, resolver)
-                .map_err(|e| map_ceiling_floor_error_to_ws(&e)),
-            FUNC_ID_JIS => eval_jis_surface(args, resolver, host_info)
-                .map_err(|e| map_text_compat_locale_error_to_ws(&e)),
-            FUNC_ID_LN => eval_ln_surface(args, resolver).map_err(|e| map_ln_error_to_ws(&e)),
-            FUNC_ID_LOOKUP => eval_lookup_surface(args, resolver)
-                .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
-            FUNC_ID_LOG10 => {
-                eval_log10_surface(args, resolver).map_err(|e| map_log10_error_to_ws(&e))
-            }
-            FUNC_ID_LOWER => {
-                eval_lower_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_LEFT => {
-                eval_left_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
-            }
-            FUNC_ID_LEFTB => {
-                eval_leftb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_LEN => {
-                eval_len_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
-            }
-            FUNC_ID_LENB => {
-                eval_lenb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_MID => {
-                eval_mid_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
-            }
-            FUNC_ID_MIDB => {
-                eval_midb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_RIGHT => {
-                eval_right_surface(args, resolver).map_err(|e| map_text_slice_error_to_ws(&e))
-            }
-            FUNC_ID_RIGHTB => {
-                eval_rightb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_MAX => eval_max_surface(args, resolver).map_err(|e| map_max_error_to_ws(&e)),
-            FUNC_ID_MAXA => eval_maxa_surface(args, resolver).map_err(|e| map_maxa_error_to_ws(&e)),
-            FUNC_ID_MAXIFS => {
-                eval_maxifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_MEDIAN => {
-                eval_median_surface(args, resolver).map_err(|e| map_median_error_to_ws(&e))
-            }
-            FUNC_ID_MATCH => {
-                if args.len() < 2 {
-                    return Err(WorksheetErrorCode::Value);
-                }
-                let lookup_array = singleton_arg_slice(&args[1]);
-                let match_type = args.get(2);
-                eval_match_surface(&args[0], &lookup_array, match_type, resolver)
-                    .map_err(|e| map_match_error_to_ws(&e))
-            }
-            FUNC_ID_MAKEARRAY => eval_makearray_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_MAP => eval_map_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_MDETERM => {
-                eval_mdeterm_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
-            }
-            FUNC_ID_MDURATION => {
-                eval_mduration_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_MINVERSE => {
-                eval_minverse_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
-            }
-            FUNC_ID_MMULT => {
-                eval_mmult_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
-            }
-            FUNC_ID_MUNIT => {
-                eval_munit_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
-            }
-            FUNC_ID_MOD => eval_mod_surface(args, resolver).map_err(|e| map_mod_error_to_ws(&e)),
-            FUNC_ID_MIN => eval_min_surface(args, resolver).map_err(|e| map_min_error_to_ws(&e)),
-            FUNC_ID_MINA => eval_mina_surface(args, resolver).map_err(|e| map_mina_error_to_ws(&e)),
-            FUNC_ID_MINIFS => {
-                eval_minifs_surface(args, resolver).map_err(|e| map_criteria_error_to_ws(&e))
-            }
-            FUNC_ID_MIRR => eval_mirr_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_MINUTE => {
-                eval_minute_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_MODE => eval_mode_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_MODE_MULT => eval_mode_mult_surface(args, resolver)
-                .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
-            FUNC_ID_MODE_SNGL => {
-                eval_mode_sngl_surface(args, resolver).map_err(|e| map_mode_sngl_error_to_ws(&e))
-            }
-            FUNC_ID_MONTH => {
-                eval_month_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_MROUND => {
-                eval_mround_surface(args, resolver).map_err(|e| map_mround_error_to_ws(&e))
-            }
-            FUNC_ID_MULTINOMIAL => eval_multinomial_surface(args, resolver)
-                .map_err(|e| map_multinomial_error_to_ws(&e)),
-            FUNC_ID_ISNUMBER => {
-                eval_isnumber_surface(args, resolver).map_err(|e| map_isnumber_error_to_ws(&e))
-            }
-            FUNC_ID_ISBLANK => eval_isblank_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISERR => eval_iserr_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISERROR => eval_iserror_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISLOGICAL => eval_islogical_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISNA => eval_isna_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISNONTEXT => eval_isnontext_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISODD => eval_isodd_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISREF => eval_isref_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISTEXT => eval_istext_surface(args, resolver)
-                .map_err(|e| map_information_predicate_error_to_ws(&e)),
-            FUNC_ID_ISOWEEKNUM => {
-                eval_isoweeknum_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
-            }
-            FUNC_ID_N => eval_n_surface(args, resolver).map_err(|e| map_n_error_to_ws(&e)),
-            FUNC_ID_NA => eval_na_surface(args),
-            FUNC_ID_NOMINAL => eval_nominal_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_NPER => eval_nper_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_NPV => eval_npv_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_NUMBERVALUE => eval_numbervalue_surface(args, resolver, locale_ctx)
-                .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
-            FUNC_ID_NEGBINOM_DIST => eval_negbinom_dist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_NEGBINOMDIST => eval_negbinomdist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_CONFIDENCE => {
-                eval_confidence_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_CONFIDENCE_T => eval_confidence_t_surface(args, resolver)
-                .map_err(|e| map_confidence_test_error_to_ws(&e)),
-            FUNC_ID_CONFIDENCE_NORM => eval_confidence_norm_surface(args, resolver)
-                .map_err(|e| map_normal_log_error_to_ws(&e)),
-            FUNC_ID_LOGNORM_DIST => eval_lognorm_dist_surface(args, resolver)
-                .map_err(|e| map_normal_log_error_to_ws(&e)),
-            FUNC_ID_LOGNORM_INV => {
-                eval_lognorm_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_LOGNORMDIST => {
-                eval_lognormdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORM_DIST => {
-                eval_norm_dist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORM_INV => {
-                eval_norm_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORM_S_DIST => {
-                eval_norm_s_dist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORM_S_INV => {
-                eval_norm_s_inv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORMDIST => {
-                eval_normdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORMINV => {
-                eval_norminv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORMSDIST => {
-                eval_normsdist_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NORMSINV => {
-                eval_normsinv_surface(args, resolver).map_err(|e| map_normal_log_error_to_ws(&e))
-            }
-            FUNC_ID_NETWORKDAYS => eval_networkdays_surface(args, resolver)
-                .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
-            FUNC_ID_NETWORKDAYS_INTL => eval_networkdays_intl_surface(args, resolver)
-                .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
-            FUNC_ID_NOT => eval_not_surface(args, resolver).map_err(|e| map_not_error_to_ws(&e)),
-            FUNC_ID_NOW => {
-                let serial = now_serial.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedNowProvider { serial };
-                eval_now_surface(args, &provider).map_err(|e| map_now_error_to_ws(&e))
-            }
-            FUNC_ID_OCT2BIN => eval_oct2bin_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_OCT2DEC => eval_oct2dec_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_OCT2HEX => eval_oct2hex_surface(args, resolver)
-                .map_err(|e| map_engineering_radix_error_to_ws(&e)),
-            FUNC_ID_POISSON => {
-                eval_poisson_surface(args, resolver).map_err(|e| map_discrete_dist_error_to_ws(&e))
-            }
-            FUNC_ID_POISSON_DIST => eval_poisson_dist_surface(args, resolver)
-                .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-            FUNC_ID_ODDFPRICE => {
-                eval_oddfprice_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
-            }
-            FUNC_ID_ODDFYIELD => {
-                eval_oddfyield_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
-            }
-            FUNC_ID_ODDLPRICE => {
-                eval_oddlprice_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
-            }
-            FUNC_ID_ODDLYIELD => {
-                eval_oddlyield_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
-            }
-            FUNC_ID_OR => eval_or_surface(args, resolver).map_err(|e| map_or_error_to_ws(&e)),
-            FUNC_ID_OFFSET => {
-                eval_offset_surface(args, resolver).map_err(|e| map_offset_error_to_ws(&e))
-            }
-            FUNC_ID_PEARSON => {
-                eval_pearson_surface(args, resolver).map_err(|e| map_pearson_error_to_ws(&e))
-            }
-            FUNC_ID_PDURATION => eval_pduration_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_PERMUT => {
-                eval_permut_surface(args, resolver).map_err(|e| map_permut_error_to_ws(&e))
-            }
-            FUNC_ID_PERMUTATIONA => eval_permutationa_surface(args, resolver)
-                .map_err(|e| map_permutationa_error_to_ws(&e)),
-            FUNC_ID_PERCENTILE_EXC => eval_percentile_exc_surface(args, resolver)
-                .map_err(|e| map_percentile_exc_error_to_ws(&e)),
-            FUNC_ID_PERCENTILE_INC => eval_percentile_inc_surface(args, resolver)
-                .map_err(|e| map_percentile_inc_error_to_ws(&e)),
-            FUNC_ID_PERCENTILE => eval_percentile_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_PERCENTRANK_EXC => eval_percentrank_exc_surface(args, resolver)
-                .map_err(|e| map_percentrank_exc_error_to_ws(&e)),
-            FUNC_ID_PERCENTRANK_INC => eval_percentrank_inc_surface(args, resolver)
-                .map_err(|e| map_percentrank_inc_error_to_ws(&e)),
-            FUNC_ID_PERCENTRANK => eval_percentrank_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_PERCENTOF => eval_percentof_surface(args, resolver)
-                .map_err(|e| map_misc_conversion_error_to_ws(&e)),
-            FUNC_ID_PHI => eval_phi_surface(args, resolver).map_err(|e| map_phi_error_to_ws(&e)),
-            FUNC_ID_PMT => eval_pmt_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_PPMT => eval_ppmt_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_PRICE => {
-                eval_price_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_PRICEDISC => eval_pricedisc_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_PRICEMAT => {
-                eval_pricemat_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_PROB => eval_prob_surface(args, resolver)
-                .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
-            FUNC_ID_PV => eval_pv_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_PROPER => eval_proper_surface(args, resolver)
-                .map_err(|e| map_text_search_replace_error_to_ws(&e)),
-            FUNC_ID_XLOOKUP => {
-                if args.len() < 3 {
-                    return Err(WorksheetErrorCode::Value);
-                }
-                let lookup_array = singleton_arg_slice(&args[1]);
-                let return_array = singleton_arg_slice(&args[2]);
-                eval_xlookup_surface(
-                    &args[0],
-                    &lookup_array,
-                    &return_array,
-                    args.get(3),
-                    args.get(4),
-                    args.get(5),
-                    resolver,
-                )
-                .map_err(|e| map_xlookup_error_to_ws(&e))
-            }
-            FUNC_ID_INDIRECT => {
-                eval_indirect_surface(args, resolver).map_err(|e| map_indirect_error_to_ws(&e))
-            }
-            FUNC_ID_INTERCEPT => {
-                eval_intercept_surface(args, resolver).map_err(|e| map_intercept_error_to_ws(&e))
-            }
-            FUNC_ID_INT => eval_int_surface(args, resolver).map_err(|e| map_int_error_to_ws(&e)),
-            FUNC_ID_INTRATE => eval_intrate_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_ISEVEN => {
-                eval_iseven_surface(args, resolver).map_err(|e| map_iseven_error_to_ws(&e))
-            }
-            FUNC_ID_KURT => {
-                eval_kurt_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
-            }
-            FUNC_ID_LARGE => {
-                eval_large_surface(args, resolver).map_err(|e| map_large_error_to_ws(&e))
-            }
-            FUNC_ID_LCM => eval_lcm_surface(args, resolver).map_err(|e| map_lcm_error_to_ws(&e)),
-            FUNC_ID_LINEST => eval_linest_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_LOGINV => eval_loginv_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_LOGEST => eval_logest_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_RANDARRAY => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_randarray_surface(args, resolver, &provider)
-                    .map_err(|e| map_misc_conversion_error_to_ws(&e))
-            }
-            FUNC_ID_REDUCE => eval_reduce_surface(args, resolver, callable_invoker)
-                .map(|value| match value {
-                    crate::functions::adapters::PreparedArgValue::Eval(v) => v,
-                    crate::functions::adapters::PreparedArgValue::MissingArg => {
-                        EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
-                    }
-                    crate::functions::adapters::PreparedArgValue::EmptyCell => {
-                        EvalValue::Array(crate::value::EvalArray::from_scalar(
-                            crate::value::ArrayCellValue::EmptyCell,
-                        ))
-                    }
-                })
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_RAND => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_rand_surface(args, &provider).map_err(|e| map_rand_error_to_ws(&e))
-            }
-            FUNC_ID_RANDBETWEEN => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_randbetween_surface(args, resolver, &provider)
-                    .map_err(|e| map_randbetween_error_to_ws(&e))
-            }
-            FUNC_ID_RATE => eval_rate_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_RADIANS => {
-                eval_radians_surface(args, resolver).map_err(|e| map_radians_error_to_ws(&e))
-            }
-            FUNC_ID_LOG => eval_log_surface(args, resolver).map_err(|e| map_log_error_to_ws(&e)),
-            FUNC_ID_RANK => eval_rank_surface(args, resolver).map_err(|e| map_rank_error_to_ws(&e)),
-            FUNC_ID_RANK_AVG => {
-                eval_rank_avg_surface(args, resolver).map_err(|e| map_rank_avg_error_to_ws(&e))
-            }
-            FUNC_ID_RANK_EQ => {
-                eval_rank_eq_surface(args, resolver).map_err(|e| map_rank_eq_error_to_ws(&e))
-            }
-            FUNC_ID_QUARTILE_EXC => eval_quartile_exc_surface(args, resolver)
-                .map_err(|e| map_quartile_exc_error_to_ws(&e)),
-            FUNC_ID_QUARTILE_INC => eval_quartile_inc_surface(args, resolver)
-                .map_err(|e| map_quartile_inc_error_to_ws(&e)),
-            FUNC_ID_QUARTILE => eval_quartile_surface(args, resolver)
-                .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-            FUNC_ID_ROW => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
-            FUNC_ID_ROWS => eval_rows_surface(args).map_err(|e| map_rows_error_to_ws(&e)),
-            FUNC_ID_RRI => eval_rri_surface(args, resolver)
-                .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-            FUNC_ID_RTD => {
-                eval_rtd_surface(args, resolver, rtd_provider).map_err(|e| map_rtd_error_to_ws(&e))
-            }
-            FUNC_ID_ROUND => {
-                eval_round_surface(args, resolver).map_err(|e| map_round_error_to_ws(&e))
-            }
-            FUNC_ID_ROUNDDOWN => {
-                eval_rounddown_surface(args, resolver).map_err(|e| map_rounddown_error_to_ws(&e))
-            }
-            FUNC_ID_REPLACE => eval_replace_surface(args, resolver)
-                .map_err(|e| map_text_search_replace_error_to_ws(&e)),
-            FUNC_ID_REPLACEB => {
-                eval_replaceb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_RECEIVED => eval_received_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_REGEXEXTRACT => eval_regexextract_surface(args, resolver)
-                .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
-            FUNC_ID_REGEXREPLACE => eval_regexreplace_surface(args, resolver)
-                .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
-            FUNC_ID_REGEXTEST => eval_regextest_surface(args, resolver)
-                .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
-            FUNC_ID_REGISTER_ID => {
-                eval_register_id_surface(args, resolver, registered_external_provider)
-                    .map_err(|e| map_call_register_id_error_to_ws(&e))
-            }
-            FUNC_ID_ROUNDUP => {
-                eval_roundup_surface(args, resolver).map_err(|e| map_roundup_error_to_ws(&e))
-            }
-            FUNC_ID_ROMAN => {
-                eval_roman_surface(args, resolver).map_err(|e| map_roman_error_to_ws(&e))
-            }
-            FUNC_ID_RSQ => eval_rsq_surface(args, resolver).map_err(|e| map_rsq_error_to_ws(&e)),
-            FUNC_ID_SECOND => {
-                eval_second_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_SEC => eval_sec_surface(args, resolver).map_err(|e| map_sec_error_to_ws(&e)),
-            FUNC_ID_SECH => eval_sech_surface(args, resolver).map_err(|e| map_sech_error_to_ws(&e)),
-            FUNC_ID_SHEET => eval_sheet_surface(args, resolver, host_info)
-                .map_err(|e| map_reference_metadata_error_to_ws(&e)),
-            FUNC_ID_SHEETS => eval_sheets_surface(args, host_info)
-                .map_err(|e| map_reference_metadata_error_to_ws(&e)),
-            FUNC_ID_SERIESSUM => {
-                eval_seriessum_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
-            }
-            FUNC_ID_ODD => eval_odd_surface(args, resolver).map_err(|e| map_odd_error_to_ws(&e)),
-            FUNC_ID_SEQUENCE => {
-                eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
-            }
-            FUNC_ID_SCAN => eval_scan_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_SIGN => eval_sign_surface(args, resolver).map_err(|e| map_sign_error_to_ws(&e)),
-            FUNC_ID_SIN => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
-            FUNC_ID_SINH => eval_sinh_surface(args, resolver).map_err(|e| map_sinh_error_to_ws(&e)),
-            FUNC_ID_SKEW => {
-                eval_skew_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
-            }
-            FUNC_ID_SKEW_P => {
-                eval_skew_p_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
-            }
-            FUNC_ID_SLN => {
-                eval_sln_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
-            }
-            FUNC_ID_SMALL => {
-                eval_small_surface(args, resolver).map_err(|e| map_small_error_to_ws(&e))
-            }
-            FUNC_ID_SQRT => eval_sqrt_surface(args, resolver).map_err(|e| map_sqrt_error_to_ws(&e)),
-            FUNC_ID_SQRTPI => {
-                eval_sqrtpi_surface(args, resolver).map_err(|e| map_sqrtpi_error_to_ws(&e))
-            }
-            FUNC_ID_SLOPE => {
-                eval_slope_surface(args, resolver).map_err(|e| map_slope_error_to_ws(&e))
-            }
-            FUNC_ID_STDEV => {
-                eval_stdev_surface(args, resolver).map_err(|e| map_stdev_error_to_ws(&e))
-            }
-            FUNC_ID_STDEV_P => {
-                eval_stdev_p_surface(args, resolver).map_err(|e| map_stdev_p_error_to_ws(&e))
-            }
-            FUNC_ID_STDEV_S => {
-                eval_stdev_s_surface(args, resolver).map_err(|e| map_stdev_s_error_to_ws(&e))
-            }
-            FUNC_ID_STDEVP => {
-                eval_stdevp_surface(args, resolver).map_err(|e| map_stdevp_error_to_ws(&e))
-            }
-            FUNC_ID_STDEVA => {
-                eval_stdeva_surface(args, resolver).map_err(|e| map_stdeva_error_to_ws(&e))
-            }
-            FUNC_ID_STDEVPA => {
-                eval_stdevpa_surface(args, resolver).map_err(|e| map_stdevpa_error_to_ws(&e))
-            }
-            FUNC_ID_STEYX => {
-                eval_steyx_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
-            }
-            FUNC_ID_STANDARDIZE => eval_standardize_surface(args, resolver)
-                .map_err(|e| map_standardize_error_to_ws(&e)),
-            FUNC_ID_OP_ADD => {
-                eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e))
-            }
-            FUNC_ID_OP_CONCAT => eval_op_concat_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_DIVIDE => eval_op_divide_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
-            FUNC_ID_OP_EQUAL => eval_op_equal_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_GREATER_EQUAL => eval_op_greater_equal_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_GREATER_THAN => eval_op_greater_than_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_IMPLICIT_INTERSECTION => {
-                eval_op_implicit_intersection_surface(args, resolver)
-                    .map_err(|e| map_op_implicit_intersection_error_to_ws(&e))
-            }
-            FUNC_ID_OP_INTERSECTION_REF => eval_op_intersection_ref_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_OP_LESS_EQUAL => eval_op_less_equal_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_LESS_THAN => eval_op_less_than_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_MULTIPLY => eval_op_multiply_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
-            FUNC_ID_OP_NEGATE => eval_op_negate_surface(args, resolver)
-                .map_err(|e| map_operator_unary_error_to_ws(&e)),
-            FUNC_ID_OP_NOT_EQUAL => eval_op_not_equal_surface(args, resolver)
-                .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-            FUNC_ID_OP_PERCENT => eval_op_percent_surface(args, resolver)
-                .map_err(|e| map_operator_unary_error_to_ws(&e)),
-            FUNC_ID_OP_POWER => eval_op_power_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
-            FUNC_ID_OP_RANGE_REF => eval_op_range_ref_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_OP_SPILL_REF => eval_op_spill_ref_surface(args, resolver)
-                .map_err(|e| map_op_spill_ref_error_to_ws(&e)),
-            FUNC_ID_OP_SUBTRACT => eval_op_subtract_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
-            FUNC_ID_OP_TRIM_REF_BOTH => eval_op_trim_ref_both_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_OP_TRIM_REF_LEADING => eval_op_trim_ref_leading_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_OP_TRIM_REF_TRAILING => eval_op_trim_ref_trailing_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_OP_UNARY_PLUS => eval_op_unary_plus_surface(args, resolver)
-                .map_err(|e| map_operator_unary_error_to_ws(&e)),
-            FUNC_ID_OP_UNION_REF => eval_op_union_ref_surface(args, resolver)
-                .map_err(|e| map_operator_reference_error_to_ws(&e)),
-            FUNC_ID_T => eval_t_surface(args, resolver).map_err(|e| map_t_error_to_ws(&e)),
-            FUNC_ID_TAN => eval_tan_surface(args, resolver).map_err(|e| map_tan_error_to_ws(&e)),
-            FUNC_ID_TANH => eval_tanh_surface(args, resolver).map_err(|e| map_tanh_error_to_ws(&e)),
-            FUNC_ID_TBILLEQ => eval_tbilleq_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_TBILLPRICE => eval_tbillprice_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_TBILLYIELD => eval_tbillyield_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_TAKE => eval_take_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_TOCOL => eval_tocol_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_TOROW => eval_torow_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_SEARCH => eval_search_surface(args, resolver)
-                .map_err(|e| map_text_search_replace_error_to_ws(&e)),
-            FUNC_ID_SEARCHB => {
-                eval_searchb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))
-            }
-            FUNC_ID_TEXT => {
-                let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
-                eval_text_surface(args, resolver, ctx).map_err(|e| map_text_error_to_ws(&e))
-            }
-            FUNC_ID_TEXTAFTER => {
-                eval_textafter_surface(args, resolver).map_err(|e| map_text_delim_error_to_ws(&e))
-            }
-            FUNC_ID_TEXTBEFORE => {
-                eval_textbefore_surface(args, resolver).map_err(|e| map_text_delim_error_to_ws(&e))
-            }
-            FUNC_ID_TEXTSPLIT => eval_textsplit_surface(args, resolver)
-                .map_err(|e| map_array_text_split_error_to_ws(&e)),
-            FUNC_ID_REPT => {
-                eval_rept_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_SUBSTITUTE => eval_substitute_surface(args, resolver)
-                .map_err(|e| map_text_search_replace_error_to_ws(&e)),
-            FUNC_ID_TEXTJOIN => {
-                eval_textjoin_surface(args, resolver).map_err(|e| map_textjoin_error_to_ws(&e))
-            }
-            FUNC_ID_TODAY => {
-                let serial = now_serial.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedNowProvider { serial };
-                eval_today_surface(args, &provider).map_err(|e| map_today_error_to_ws(&e))
-            }
-            FUNC_ID_TIME => {
-                eval_time_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_TIMEVALUE => eval_timevalue_surface(args, resolver)
-                .map_err(|e| map_date_value_family_error_to_ws(&e)),
-            FUNC_ID_TRANSLATE => eval_translate_surface(args, resolver, host_info)
-                .map_err(|e| map_number_regex_translate_error_to_ws(&e)),
-            FUNC_ID_TRIMMEAN => {
-                eval_trimmean_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
-            }
-            FUNC_ID_TRANSPOSE => eval_transpose_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_TRUE => eval_true_surface(args),
-            FUNC_ID_TREND => eval_trend_surface(args, resolver)
-                .map_err(|e| map_regression_forecast_error_to_ws(&e)),
-            FUNC_ID_TRUNC => {
-                eval_trunc_surface(args, resolver).map_err(|e| map_trunc_error_to_ws(&e))
-            }
-            FUNC_ID_TRIMRANGE => {
-                eval_trimrange_surface(args, resolver).map_err(|e| map_trimrange_error_to_ws(&e))
-            }
-            FUNC_ID_TRIM => {
-                eval_trim_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_TTEST => eval_ttest_surface(args, resolver)
-                .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-            FUNC_ID_TYPE => eval_type_surface(args, resolver).map_err(|e| map_type_error_to_ws(&e)),
-            FUNC_ID_UNIQUE => eval_unique_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_UNICHAR => {
-                eval_unichar_surface(args, resolver).map_err(|e| map_text_unicode_error_to_ws(&e))
-            }
-            FUNC_ID_UNICODE => {
-                eval_unicode_surface(args, resolver).map_err(|e| map_text_unicode_error_to_ws(&e))
-            }
-            FUNC_ID_UPPER => {
-                eval_upper_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
-            }
-            FUNC_ID_VALUE => {
-                let ctx = locale_ctx.ok_or(WorksheetErrorCode::Value)?;
-                eval_value_surface(args, resolver, ctx).map_err(|e| map_value_error_to_ws(&e))
-            }
-            FUNC_ID_VALUETOTEXT => eval_valuetotext_surface(args, resolver)
-                .map_err(|e| map_valuetotext_error_to_ws(&e)),
-            FUNC_ID_VAR => eval_var_surface(args, resolver).map_err(|e| map_var_error_to_ws(&e)),
-            FUNC_ID_VAR_P => {
-                eval_var_p_surface(args, resolver).map_err(|e| map_var_p_error_to_ws(&e))
-            }
-            FUNC_ID_VAR_S => {
-                eval_var_s_surface(args, resolver).map_err(|e| map_var_s_error_to_ws(&e))
-            }
-            FUNC_ID_VARA => eval_vara_surface(args, resolver).map_err(|e| map_vara_error_to_ws(&e)),
-            FUNC_ID_VARP => eval_varp_surface(args, resolver).map_err(|e| map_varp_error_to_ws(&e)),
-            FUNC_ID_VARPA => {
-                eval_varpa_surface(args, resolver).map_err(|e| map_varpa_error_to_ws(&e))
-            }
-            FUNC_ID_VDB => {
-                eval_vdb_surface(args, resolver).map_err(|e| map_depreciation_error_to_ws(&e))
-            }
-            FUNC_ID_WRAPCOLS => eval_wrapcols_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_WRAPROWS => eval_wraprows_surface(args, resolver)
-                .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-            FUNC_ID_HLOOKUP => {
-                eval_hlookup_surface(args, resolver).map_err(|e| map_vhlookup_error_to_ws(&e))
-            }
-            FUNC_ID_VLOOKUP => {
-                eval_vlookup_surface(args, resolver).map_err(|e| map_vhlookup_error_to_ws(&e))
-            }
-            FUNC_ID_WEIBULL => {
-                eval_weibull_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
-            }
-            FUNC_ID_WEIBULL_DIST => eval_weibull_dist_surface(args, resolver)
-                .map_err(|e| map_special_dist_error_to_ws(&e)),
-            FUNC_ID_XIRR => {
-                eval_xirr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
-            }
-            FUNC_ID_XNPV => {
-                eval_xnpv_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
-            }
-            FUNC_ID_XOR => eval_xor_surface(args, resolver).map_err(|e| map_xor_error_to_ws(&e)),
-            FUNC_ID_WEEKDAY => {
-                eval_weekday_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
-            }
-            FUNC_ID_WEEKNUM => {
-                eval_weeknum_surface(args, resolver).map_err(|e| map_date_week_error_to_ws(&e))
-            }
-            FUNC_ID_WORKDAY => eval_workday_surface(args, resolver)
-                .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
-            FUNC_ID_WORKDAY_INTL => eval_workday_intl_surface(args, resolver)
-                .map_err(|e| map_workday_networkdays_error_to_ws(&e)),
-            FUNC_ID_YIELD => {
-                eval_yield_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_YIELDDISC => {
-                eval_yielddisc_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_YIELDMAT => {
-                eval_yieldmat_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
-            }
-            FUNC_ID_XMATCH => {
-                if args.len() < 2 {
-                    return Err(WorksheetErrorCode::Value);
-                }
-                let lookup_array = singleton_arg_slice(&args[1]);
-                eval_xmatch_surface_value(
-                    &args[0],
-                    &lookup_array,
-                    args.get(2),
-                    args.get(3),
-                    resolver,
-                )
-                .map_err(|e| map_xmatch_error_to_ws(&e))
-            }
-            FUNC_ID_Z_TEST => {
-                eval_z_test_surface(args, resolver).map_err(|e| map_confidence_test_error_to_ws(&e))
-            }
-            FUNC_ID_ZTEST => {
-                eval_ztest_surface(args, resolver).map_err(|e| map_test_alias_error_to_ws(&e))
-            }
-            FUNC_ID_YEAR => {
-                eval_year_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
-            }
-            FUNC_ID_YEARFRAC => eval_yearfrac_surface(args, resolver)
-                .map_err(|e| map_discount_bill_yearfrac_error_to_ws(&e)),
-            FUNC_ID_PI => {
-                if !args.is_empty() {
-                    return Err(WorksheetErrorCode::Value);
-                }
-                let pi_args: Vec<Value> = Vec::new();
-                match eval_pi(&pi_args) {
-                    Ok(Value::Number(n)) => Ok(EvalValue::Number(n)),
-                    Ok(Value::Error(_)) => Err(WorksheetErrorCode::Value),
-                    Err(e) => Err(map_eval_error_to_ws(&e)),
-                }
-            }
-            FUNC_ID_PIVOTBY => eval_pivotby_surface(args, resolver, callable_invoker)
-                .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-            FUNC_ID_POWER => {
-                eval_power_surface(args, resolver).map_err(|e| map_power_error_to_ws(&e))
-            }
-            FUNC_ID_QUOTIENT => {
-                eval_quotient_surface(args, resolver).map_err(|e| map_quotient_error_to_ws(&e))
-            }
-            _ => Err(WorksheetErrorCode::Value),
-        };
-
-    match result {
-        Err(code) => try_observed_scalar_array_lift(
-            function_id,
-            args,
-            resolver,
-            now_serial,
-            random_value,
-            locale_ctx,
-            host_info,
-            callable_invoker,
-            rtd_provider,
-            registered_external_provider,
-        )
-        .unwrap_or(Err(code)),
-        Ok(EvalValue::Error(code))
-            if code == WorksheetErrorCode::Value
-                || observed_error_result_array_lift(function_id) =>
-        {
-            try_observed_scalar_array_lift(
-                function_id,
-                args,
-                resolver,
-                now_serial,
-                random_value,
-                locale_ctx,
-                host_info,
-                callable_invoker,
-                rtd_provider,
-                registered_external_provider,
-            )
-            .unwrap_or(Ok(EvalValue::Error(code)))
-        }
-        other => other,
-    }
+    let dispatch_key =
+        resolve_surface_dispatch_key(function_id).ok_or(WorksheetErrorCode::Value)?;
+    eval_surface_value_call_with_dispatch_key(
+        dispatch_key,
+        args,
+        resolver,
+        now_serial,
+        random_value,
+        locale_ctx,
+        host_info,
+        callable_invoker,
+        rtd_provider,
+        registered_external_provider,
+    )
 }
 
 pub fn eval_surface_q_unary_number(

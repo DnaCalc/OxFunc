@@ -52,7 +52,7 @@ fn eval_harmean_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, 
 
 pub fn eval_harmean_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, HarMeanEvalError> {
     let argc = args.len();
     if !HARMEAN_META.arity.accepts(argc) {

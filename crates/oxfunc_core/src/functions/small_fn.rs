@@ -59,7 +59,7 @@ fn coerce_k(prepared: &PreparedArgValue) -> Result<usize, SmallEvalError> {
 
 pub fn eval_small_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SmallEvalError> {
     let argc = args.len();
     if !SMALL_META.arity.accepts(argc) {

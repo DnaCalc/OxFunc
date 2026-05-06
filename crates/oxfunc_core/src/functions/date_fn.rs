@@ -111,7 +111,7 @@ pub fn eval_date_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue
 
 pub fn eval_date_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateEvalError> {
     run_values_only_prepared(
         args,

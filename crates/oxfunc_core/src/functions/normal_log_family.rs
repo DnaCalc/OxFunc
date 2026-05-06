@@ -439,7 +439,7 @@ fn eval_lognorm_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Nor
 
 pub fn eval_confidence_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -451,14 +451,14 @@ pub fn eval_confidence_surface(
 
 pub fn eval_confidence_norm_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     eval_confidence_surface(args, resolver)
 }
 
 pub fn eval_norm_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -470,7 +470,7 @@ pub fn eval_norm_dist_surface(
 
 pub fn eval_norm_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -482,7 +482,7 @@ pub fn eval_norm_inv_surface(
 
 pub fn eval_norm_s_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -494,7 +494,7 @@ pub fn eval_norm_s_dist_surface(
 
 pub fn eval_norm_s_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -506,21 +506,21 @@ pub fn eval_norm_s_inv_surface(
 
 pub fn eval_normdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     eval_norm_dist_surface(args, resolver)
 }
 
 pub fn eval_norminv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     eval_norm_inv_surface(args, resolver)
 }
 
 pub fn eval_normsdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -539,14 +539,14 @@ pub fn eval_normsdist_surface(
 
 pub fn eval_normsinv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     eval_norm_s_inv_surface(args, resolver)
 }
 
 pub fn eval_lognorm_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -558,7 +558,7 @@ pub fn eval_lognorm_dist_surface(
 
 pub fn eval_lognorm_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
@@ -570,7 +570,7 @@ pub fn eval_lognorm_inv_surface(
 
 pub fn eval_lognormdist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,

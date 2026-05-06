@@ -136,4 +136,15 @@ Deterministic tests added in `crates/oxfunc_core/src/locale_format.rs`:
 3. representative non-US date order and currency placement cases.
 
 Validation note:
-1. no new validation command was run for this processing pass.
+1. no validation command was run during the initial final-state locale detail processing pass.
+2. a follow-up focused live-Excel W094 locale comparison sweep was run on
+   2026-05-06.
+3. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-locale-excel-sweep.ps1`: passed for current-host profile fields, invariant token-policy observations, and sampled LCID-prefix storage/render checks.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib locale_format -- --nocapture`: passed, `6` passed, `0` failed, `1270` filtered out.
+5. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-all-locale-sweep.ps1`: completed the all-locale extension across `30` canonical profiles and `11` LCID aliases.
+6. All live Excel LCID-prefix storage/render checks matched: storage `82/82`,
+   render non-empty `82/82`, render text vs local culture reference `82/82`.
+7. Invariant format-code token-policy checks matched `90/90`.
+8. The secondary culture-profile matrix reported `13` seed-vs-culture
+   mismatches requiring triage before any stronger locale semantic-parity
+   claim.

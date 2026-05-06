@@ -36,7 +36,7 @@ pub enum VarPAEvalError {
 
 pub fn eval_varpa_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VarPAEvalError> {
     let argc = args.len();
     if !VARPA_META.arity.accepts(argc) {

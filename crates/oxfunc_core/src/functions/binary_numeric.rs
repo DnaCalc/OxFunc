@@ -15,7 +15,7 @@ pub enum BinaryNumericSurfaceError {
 
 pub fn eval_binary_numeric_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     kernel: impl Fn(f64, f64) -> Result<f64, WorksheetErrorCode> + Copy,
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     let prepared =

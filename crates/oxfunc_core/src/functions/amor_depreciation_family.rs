@@ -412,7 +412,7 @@ fn eval_amordegrc_prepared(
 
 pub fn eval_amorlinc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -424,7 +424,7 @@ pub fn eval_amorlinc_surface(
 
 pub fn eval_amordegrc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,

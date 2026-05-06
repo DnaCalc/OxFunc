@@ -850,7 +850,7 @@ pub enum FinancialSurfaceEvalError {
 
 fn scalar_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, FinancialSurfaceEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(FinancialSurfaceEvalError::Coercion)?;
@@ -862,7 +862,7 @@ fn scalar_number(
 
 fn payment_timing_arg(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<PaymentTiming, FinancialSurfaceEvalError> {
     let value = match arg {
         None => 0.0,
@@ -877,7 +877,7 @@ fn payment_timing_arg(
 
 fn resolve_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -946,7 +946,7 @@ fn eval_to_numeric_sequence(
 
 fn numeric_sequence_from_args(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<f64>, FinancialSurfaceEvalError> {
     let mut out = Vec::new();
     for arg in args {
@@ -966,7 +966,7 @@ fn numeric_result(
 
 pub fn eval_pv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !PV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -989,7 +989,7 @@ pub fn eval_pv_surface(
 
 pub fn eval_fv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !FV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1012,7 +1012,7 @@ pub fn eval_fv_surface(
 
 pub fn eval_pmt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !PMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1035,7 +1035,7 @@ pub fn eval_pmt_surface(
 
 pub fn eval_nper_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !NPER_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1058,7 +1058,7 @@ pub fn eval_nper_surface(
 
 pub fn eval_rate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !RATE_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1084,7 +1084,7 @@ pub fn eval_rate_surface(
 
 pub fn eval_npv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !NPV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1100,7 +1100,7 @@ pub fn eval_npv_surface(
 
 pub fn eval_ipmt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !IPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1124,7 +1124,7 @@ pub fn eval_ipmt_surface(
 
 pub fn eval_ppmt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !PPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1148,7 +1148,7 @@ pub fn eval_ppmt_surface(
 
 pub fn eval_ispmt_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !ISPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1167,7 +1167,7 @@ pub fn eval_ispmt_surface(
 
 pub fn eval_mirr_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !MIRR_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1186,7 +1186,7 @@ pub fn eval_mirr_surface(
 
 pub fn eval_fvschedule_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !FVSCHEDULE_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1201,7 +1201,7 @@ pub fn eval_fvschedule_surface(
 
 pub fn eval_pduration_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !PDURATION_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1219,7 +1219,7 @@ pub fn eval_pduration_surface(
 
 pub fn eval_rri_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !RRI_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1237,7 +1237,7 @@ pub fn eval_rri_surface(
 
 pub fn eval_nominal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !NOMINAL_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
@@ -1254,7 +1254,7 @@ pub fn eval_nominal_surface(
 
 pub fn eval_effect_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, FinancialSurfaceEvalError> {
     if !EFFECT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {

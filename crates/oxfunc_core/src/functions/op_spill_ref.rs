@@ -55,7 +55,7 @@ fn normalize_anchor_target(reference: &ReferenceLike) -> Result<String, SpillRef
 
 pub fn eval_op_spill_ref_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SpillRefEvalError> {
     if args.len() != 1 {
         return Err(SpillRefEvalError::ArityMismatch {

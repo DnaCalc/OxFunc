@@ -16,6 +16,22 @@ Out of slice:
 1. formula language grammar/parse/bind (OxFml lane),
 2. FEC host protocol/scheduling/state-machine design (FEC/F3E model lane).
 
+## Optimization Direction
+
+OxFunc is also the semantic kernel surface for future high-throughput DNA Calc recalculation.
+
+The intended stack shape is:
+1. OxFml compiles formula structure: slots, scopes, LET/LAMBDA binding, references, child evaluation order, lazy control forms, and trace policy.
+2. OxFunc owns every function/operator semantic: coercion, array lifting, reference-visible behavior, helper/callback semantics, errors, host/provider projection, volatility, locale, and dependency declarations.
+3. DNA Calc and host layers may optimize workbook graphs, scheduling, caching, concurrency, and future compiled backends by consuming OxFunc's resolved call-site handles and metadata.
+
+Current direction from W096:
+1. resolve function/operator identity once through `SurfaceCallSite`,
+2. invoke through uniform catalog-keyed dispatch rather than broad string matching,
+3. expose optimizer metadata and hoistability gates as contract data,
+4. use reusable runtime-context and scratch-buffer seams for hot paths,
+5. avoid moving function-specific shortcuts into OxFml or DNA Calc.
+
 ## Ownership Split
 1. OxFunc-owned mutable docs:
    - `docs/function-lane/EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC.md`

@@ -36,7 +36,7 @@ pub enum VarSEvalError {
 
 pub fn eval_var_s_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, VarSEvalError> {
     let argc = args.len();
     if !VAR_S_META.arity.accepts(argc) {

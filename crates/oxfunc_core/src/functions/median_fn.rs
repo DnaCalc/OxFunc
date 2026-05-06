@@ -55,7 +55,7 @@ fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, M
 
 pub fn eval_median_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MedianEvalError> {
     let argc = args.len();
     if !MEDIAN_META.arity.accepts(argc) {

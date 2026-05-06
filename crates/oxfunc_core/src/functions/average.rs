@@ -51,7 +51,7 @@ fn eval_average_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, 
 
 pub fn eval_average_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AverageEvalError> {
     let argc = args.len();
     if !AVERAGE_META.arity.accepts(argc) {

@@ -52,7 +52,7 @@ fn eval_geomean_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, 
 
 pub fn eval_geomean_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, GeoMeanEvalError> {
     let argc = args.len();
     if !GEOMEAN_META.arity.accepts(argc) {

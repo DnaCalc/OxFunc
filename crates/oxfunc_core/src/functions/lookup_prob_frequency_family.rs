@@ -80,7 +80,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> LookupProbFrequencyEvalErr
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LookupProbFrequencyEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -101,7 +101,7 @@ fn resolve_arg_eval(
 
 fn optional_arg_value(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<EvalValue>, LookupProbFrequencyEvalError> {
     match arg {
         None | Some(CallArgValue::MissingArg) => Ok(None),
@@ -204,7 +204,7 @@ fn collect_numeric_vector(
 
 fn collect_numeric_vector_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     ignore_non_numeric: bool,
 ) -> Result<Vec<f64>, LookupProbFrequencyEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
@@ -447,7 +447,7 @@ fn mode_mult_kernel(values: &[f64]) -> Result<EvalValue, WorksheetErrorCode> {
 
 pub fn eval_lookup_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LookupProbFrequencyEvalError> {
     if !LOOKUP_META.arity.accepts(args.len()) {
         return Err(arity_error(&LOOKUP_META, args.len()));
@@ -468,7 +468,7 @@ pub fn eval_lookup_surface(
 
 pub fn eval_frequency_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LookupProbFrequencyEvalError> {
     if !FREQUENCY_META.arity.accepts(args.len()) {
         return Err(arity_error(&FREQUENCY_META, args.len()));
@@ -480,7 +480,7 @@ pub fn eval_frequency_surface(
 
 pub fn eval_prob_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LookupProbFrequencyEvalError> {
     if !PROB_META.arity.accepts(args.len()) {
         return Err(arity_error(&PROB_META, args.len()));
@@ -498,7 +498,7 @@ pub fn eval_prob_surface(
 
 pub fn eval_mode_mult_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, LookupProbFrequencyEvalError> {
     if !MODE_MULT_META.arity.accepts(args.len()) {
         return Err(arity_error(&MODE_MULT_META, args.len()));

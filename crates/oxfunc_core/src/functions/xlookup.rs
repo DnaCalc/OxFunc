@@ -258,7 +258,10 @@ fn materialized_eval_value_to_array_cell(value: EvalValue) -> ArrayCellValue {
     }
 }
 
-fn eval_value_to_array_cell(value: EvalValue, resolver: &impl ReferenceResolver) -> ArrayCellValue {
+fn eval_value_to_array_cell(
+    value: EvalValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> ArrayCellValue {
     match value {
         EvalValue::Reference(reference) => resolve_eval_value(resolver, &reference)
             .map(materialized_eval_value_to_array_cell)
@@ -509,7 +512,7 @@ fn select_return_array_cell(
     selection: &ReturnSelection,
     lookup_orientation: Option<VectorOrientation>,
     index: usize,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> ArrayCellValue {
     match selection {
         ReturnSelection::Scalar(item) => {
@@ -542,7 +545,7 @@ fn select_return_array_cell(
 
 fn prepare_lookup_vector(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<(Vec<PreparedArgValue>, Option<VectorOrientation>), XlookupEvalError> {
     let mut prepared = Vec::new();
     let mut orientation = None;
@@ -577,7 +580,7 @@ fn xlookup_lookup_value_array_result_to_cell(
     return_selection: &ReturnSelection,
     lookup_orientation: Option<VectorOrientation>,
     if_not_found: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> ArrayCellValue {
     match result {
         Ok(index) => {
@@ -602,7 +605,7 @@ fn eval_xlookup_lookup_value_array(
     if_not_found: Option<&CallArgValue>,
     match_mode: Option<&PreparedArgValue>,
     search_mode: Option<&PreparedArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> EvalValue {
     let cells = lookup_value_array
         .iter_row_major()
@@ -632,7 +635,7 @@ pub fn eval_xlookup_surface(
     if_not_found: Option<&CallArgValue>,
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, XlookupEvalError> {
     let argc = 3
         + usize::from(if_not_found.is_some())

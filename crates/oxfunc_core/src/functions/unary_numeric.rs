@@ -15,7 +15,7 @@ pub enum UnaryNumericSurfaceError {
 
 pub fn eval_unary_numeric_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     if args.len() != 1 {

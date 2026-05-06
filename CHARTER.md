@@ -75,6 +75,11 @@ In scope:
 9. Dual-axis version behavior tracking:
    - Excel app version/channel,
    - workbook Compatibility Version.
+10. Optimizer-facing function semantics surfaces:
+   - resolved function/operator call-site handles,
+   - uniform catalog-keyed dispatch,
+   - reusable runtime-context and scratch-buffer contracts,
+   - metadata needed for graph-level scheduling, hoisting, concurrency, and future compiled backends.
 
 Out of scope:
 1. Formula grammar/parse/bind ownership (OxFml lane).
@@ -90,6 +95,9 @@ Normative OxFunc boundary commitments:
 3. OxFunc defines function-facing declarations (`deterministic`, `volatile`, `host-interaction`, `fec_dependency_profile`, capability tags).
 4. FEC consumes those declarations for invalidation/scheduling/publication policy.
 5. Any seam ambiguity is logged as an explicit boundary decision, never silently absorbed.
+6. OxFunc owns every worksheet function/operator semantic reached through the public function surface, including coercion, array lifting, reference-visible behavior, error propagation, host/provider projection, and helper/callback invocation semantics.
+7. OxFml owns formula structure: parse/bind, lexical slots, LET/LAMBDA binding, references, child evaluation order, lazy control forms, compiled formula plans, and trace publication policy.
+8. DNA Calc and other hosts may optimize workbook-level recalculation, graph scheduling, caching, and compiled backends, but must consume OxFunc-owned semantic handles and metadata rather than duplicating or special-casing function semantics outside OxFunc.
 
 Implementation-seam rule:
 1. OxFunc contracts must remain compatible with the active Foundation FEC/F3E interaction model.
@@ -97,6 +105,26 @@ Implementation-seam rule:
    - `CompileFormula -> DeclareDependencies -> Evaluate -> Publish/Render`, or
    - `prepare -> open_session/capability_view -> execute -> commit`.
 3. In all supported shapes, function-library invocation occurs only after FEC admission and capability decision.
+
+## 5.1 Full-Model Optimization Direction
+
+OxFunc must be shaped for very fast recalculation of large Excel-compatible models, not only isolated function-call correctness.
+
+Long-term optimization doctrine:
+1. preserve semantic ownership in OxFunc while allowing OxFml, FEC, and host layers to compile formula bodies and whole calculation graphs,
+2. resolve function/operator identity once and invoke through stable call-site handles rather than repeatedly matching surface strings,
+3. prefer uniform full-catalog dispatch and metadata tables over hand-picked fast paths for currently hot functions,
+4. expose optimizer metadata as first-class contract data: arity, argument preparation, volatility, determinism, host interaction, FEC dependency profiles, callable argument ordinals, reference visibility, shape behavior, array lifting, and hoistability under explicit runtime-context policy,
+5. keep typed inner kernels available for future lower-level compilation while preserving one public semantic surface,
+6. make reusable runtime context and scratch-buffer seams explicit for hot loops without turning them into semantic caches,
+7. treat value-only versus trace-rich execution as an evaluator/runtime mode decision, not a reason to move semantics out of OxFunc,
+8. allow future concurrent evaluation and graph compilation only when OxFunc metadata proves the required purity, dependency, and host-interaction conditions.
+
+Anti-patterns:
+1. OxFml or DNA Calc duplicating function-specific semantics for speed,
+2. adding isolated fast paths for `INDEX`, `HSTACK`, arithmetic, helpers, or other hot functions as a substitute for a full-catalog design,
+3. optimizing by weakening Excel-visible coercion, lifting, reference, error, volatile, locale, or provider behavior,
+4. treating metadata as advisory comments instead of executable scheduling and compilation contracts.
 
 ## 6. Required Artifact Stack
 Every promoted function slice must carry synchronized artifacts:

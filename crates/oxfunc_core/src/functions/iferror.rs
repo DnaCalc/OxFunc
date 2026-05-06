@@ -38,7 +38,7 @@ fn prepared_to_eval(arg: PreparedArgValue) -> EvalValue {
 
 pub fn eval_iferror_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, IfErrorEvalError> {
     if !IFERROR_META.arity.accepts(args.len()) {
         return Err(IfErrorEvalError::ArityMismatch {

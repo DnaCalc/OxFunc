@@ -32,7 +32,7 @@ pub enum PercentileIncEvalError {
 
 pub fn eval_percentile_inc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, PercentileIncEvalError> {
     if !PERCENTILE_INC_META.arity.accepts(args.len()) {
         return Err(PercentileIncEvalError::ArityMismatch {

@@ -487,7 +487,7 @@ fn coerce_prepared_to_date_serial(
 
 pub fn eval_datevalue_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared(
         args,
@@ -514,7 +514,7 @@ pub fn eval_datevalue_surface(
 
 pub fn eval_timevalue_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared(
         args,
@@ -541,7 +541,7 @@ pub fn eval_timevalue_surface(
 
 pub fn eval_days360_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared(
         args,
@@ -575,7 +575,7 @@ pub fn eval_days360_surface(
 
 pub fn eval_datedif_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared(
         args,

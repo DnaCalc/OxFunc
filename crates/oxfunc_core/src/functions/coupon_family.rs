@@ -400,7 +400,7 @@ pub fn couppcd_kernel(
 
 fn eval_coupon_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(f64, f64, f64, Option<f64>) -> Result<f64, WorksheetErrorCode>,
 ) -> Result<EvalValue, CouponEvalError> {
@@ -436,42 +436,42 @@ fn eval_coupon_surface(
 
 pub fn eval_coupdaybs_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYBS_META, coupdaybs_kernel)
 }
 
 pub fn eval_coupdays_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYS_META, coupdays_kernel)
 }
 
 pub fn eval_coupdaysnc_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYSNC_META, coupdaysnc_kernel)
 }
 
 pub fn eval_coupncd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNCD_META, coupncd_kernel)
 }
 
 pub fn eval_coupnum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNUM_META, coupnum_kernel)
 }
 
 pub fn eval_couppcd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPPCD_META, couppcd_kernel)
 }

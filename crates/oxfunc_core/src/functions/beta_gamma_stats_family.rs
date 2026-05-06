@@ -260,7 +260,7 @@ fn gamma_inv_kernel(probability: f64, alpha: f64, beta: f64) -> Result<f64, Beta
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BetaGammaStatsError>,
 ) -> Result<EvalValue, BetaGammaStatsError> {
@@ -278,7 +278,7 @@ fn eval_numeric(
 
 pub fn eval_beta_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETA_DIST_META, |prepared| {
         beta_dist_kernel(
@@ -302,7 +302,7 @@ pub fn eval_beta_dist_surface(
 
 pub fn eval_beta_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETA_INV_META, |prepared| {
         beta_inv_kernel(
@@ -325,7 +325,7 @@ pub fn eval_beta_inv_surface(
 
 pub fn eval_betadist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETADIST_META, |prepared| {
         beta_dist_kernel(
@@ -349,7 +349,7 @@ pub fn eval_betadist_surface(
 
 pub fn eval_betainv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETAINV_META, |prepared| {
         beta_inv_kernel(
@@ -372,7 +372,7 @@ pub fn eval_betainv_surface(
 
 pub fn eval_gamma_dist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMA_DIST_META, |prepared| {
         gamma_dist_kernel(
@@ -386,7 +386,7 @@ pub fn eval_gamma_dist_surface(
 
 pub fn eval_gamma_inv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMA_INV_META, |prepared| {
         gamma_inv_kernel(
@@ -399,7 +399,7 @@ pub fn eval_gamma_inv_surface(
 
 pub fn eval_gammadist_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMADIST_META, |prepared| {
         gamma_dist_kernel(
@@ -413,7 +413,7 @@ pub fn eval_gammadist_surface(
 
 pub fn eval_gammainv_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BetaGammaStatsError> {
     eval_gamma_inv_surface(args, resolver)
 }

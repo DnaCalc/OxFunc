@@ -40,7 +40,7 @@ pub fn asin_kernel(n: f64) -> Result<f64, AsinEvalError> {
 
 pub fn eval_asin_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AsinEvalError> {
     if !ASIN_META.arity.accepts(args.len()) {
         return Err(AsinEvalError::ArityMismatch {

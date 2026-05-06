@@ -38,7 +38,7 @@ pub fn eval_op_add_adapter_prepared(
 
 pub fn eval_op_add_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OpAddEvalError> {
     eval_binary_numeric_surface(args, resolver, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
 }

@@ -305,7 +305,7 @@ fn build_output_rows(
 
 pub fn eval_groupby_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !GROUPBY_META.arity.accepts(args.len()) {
@@ -376,7 +376,7 @@ pub fn eval_groupby_surface(
 
 pub fn eval_groupby_surface_ws(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, WorksheetErrorCode> {
     eval_groupby_surface(args, resolver, invoker).map_err(|err| map_lambda_helper_error_to_ws(&err))

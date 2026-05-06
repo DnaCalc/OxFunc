@@ -132,7 +132,7 @@ impl ReferenceResolver for PreparedOnlyResolver {
 
 fn coerce_scalar_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<f64, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
@@ -150,7 +150,7 @@ fn coerce_scalar_number(
 
 fn coerce_whole_number(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<i32, SubtotalAggregateEvalError> {
     let value = coerce_scalar_number(arg, resolver)?;
     let truncated = value.trunc();
@@ -162,7 +162,7 @@ fn coerce_whole_number(
 
 fn coerce_k_arg(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<CallArgValue, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
@@ -349,7 +349,7 @@ fn filter_reference_cells(
 fn materialize_ref_filtered_arg(
     reference: &ReferenceLike,
     rules: AggregateFilterRules,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: &dyn HostInfoProvider,
 ) -> Result<CallArgValue, SubtotalAggregateEvalError> {
     let resolved = resolve_eval_value(resolver, reference)
@@ -393,7 +393,7 @@ fn materialize_ref_filtered_arg(
 fn prepare_reference_form_args(
     args: &[CallArgValue],
     rules: AggregateFilterRules,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: &dyn HostInfoProvider,
 ) -> Result<Vec<CallArgValue>, SubtotalAggregateEvalError> {
     let mut prepared = Vec::new();
@@ -557,7 +557,7 @@ fn dispatch_array_form(
 
 pub fn eval_subtotal_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, SubtotalAggregateEvalError> {
     if !SUBTOTAL_META.arity.accepts(args.len()) {
@@ -578,7 +578,7 @@ pub fn eval_subtotal_surface(
 
 pub fn eval_aggregate_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, SubtotalAggregateEvalError> {
     if !AGGREGATE_META.arity.accepts(args.len()) {

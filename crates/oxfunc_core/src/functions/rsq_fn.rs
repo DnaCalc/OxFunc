@@ -34,7 +34,7 @@ pub enum RsqEvalError {
 
 pub fn eval_rsq_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RsqEvalError> {
     let argc = args.len();
     if !RSQ_META.arity.accepts(argc) {

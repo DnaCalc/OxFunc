@@ -33,7 +33,7 @@ pub enum InfoEvalError {
 
 fn parse_info_query(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<InfoQuery, InfoEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(InfoEvalError::TypeTextCoercion)?;
@@ -60,7 +60,7 @@ fn parse_info_query(
 
 pub fn eval_info_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, InfoEvalError> {
     if !INFO_META.arity.accepts(args.len()) {

@@ -46,7 +46,7 @@ pub fn gcd_kernel(items: &[i64]) -> f64 {
 
 pub fn eval_gcd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, GcdEvalError> {
     let argc = args.len();
     if !GCD_META.arity.accepts(argc) {

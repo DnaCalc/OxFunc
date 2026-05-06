@@ -149,7 +149,7 @@ fn guard_arity(
 fn optional_prepared_arg(
     args: &[CallArgValue],
     index: usize,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Option<PreparedArgValue>, WorkdayNetworkdaysEvalError> {
     args.get(index)
         .map(|arg| {
@@ -237,7 +237,7 @@ fn parse_weekend_arg(
 
 fn collect_holiday_serials(
     arg: Option<&CallArgValue>,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<BTreeSet<i64>, WorkdayNetworkdaysEvalError> {
     let Some(arg) = arg else {
         return Ok(BTreeSet::new());
@@ -338,7 +338,7 @@ pub fn networkdays_kernel(
 
 pub fn eval_workday_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_META, args)?;
     let start_prepared = optional_prepared_arg(args, 0, resolver)?;
@@ -353,7 +353,7 @@ pub fn eval_workday_surface(
 
 pub fn eval_workday_intl_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_INTL_META, args)?;
     let start_prepared = optional_prepared_arg(args, 0, resolver)?;
@@ -370,7 +370,7 @@ pub fn eval_workday_intl_surface(
 
 pub fn eval_networkdays_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_META, args)?;
     let start_prepared = optional_prepared_arg(args, 0, resolver)?;
@@ -385,7 +385,7 @@ pub fn eval_networkdays_surface(
 
 pub fn eval_networkdays_intl_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_INTL_META, args)?;
     let start_prepared = optional_prepared_arg(args, 0, resolver)?;

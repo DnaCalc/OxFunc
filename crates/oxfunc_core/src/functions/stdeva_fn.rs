@@ -36,7 +36,7 @@ pub enum StdevAEvalError {
 
 pub fn eval_stdeva_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, StdevAEvalError> {
     let argc = args.len();
     if !STDEVA_META.arity.accepts(argc) {

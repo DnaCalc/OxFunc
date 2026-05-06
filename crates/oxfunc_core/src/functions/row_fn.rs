@@ -73,7 +73,7 @@ fn row_result(start_row: usize, end_row: usize) -> EvalValue {
 
 pub fn eval_row_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RowEvalError> {
     if !ROW_META.arity.accepts(args.len()) {
         return Err(RowEvalError::ArityMismatch {

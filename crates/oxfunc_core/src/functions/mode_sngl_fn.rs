@@ -54,7 +54,7 @@ fn mode_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64>, Coe
 
 pub fn eval_mode_sngl_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ModeSnglEvalError> {
     let argc = args.len();
     if !MODE_SNGL_META.arity.accepts(argc) {

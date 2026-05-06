@@ -36,7 +36,7 @@ pub enum CovariancePEvalError {
 
 pub fn eval_covariance_p_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CovariancePEvalError> {
     let argc = args.len();
     if !COVARIANCE_P_META.arity.accepts(argc) {

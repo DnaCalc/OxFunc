@@ -114,7 +114,7 @@ fn is_na_cell(cell: &ArrayCellValue) -> ArrayCellValue {
 fn eval_boolean_predicate_surface(
     meta: &FunctionMeta,
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     predicate: impl Fn(&PreparedArgValue) -> bool,
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
@@ -146,7 +146,7 @@ pub fn isodd_kernel(n: f64) -> bool {
 
 pub fn eval_isblank_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISBLANK_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::EmptyCell)
@@ -155,7 +155,7 @@ pub fn eval_isblank_surface(
 
 pub fn eval_iserr_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISERR_META, args, resolver, |arg| {
         matches!(
@@ -167,7 +167,7 @@ pub fn eval_iserr_surface(
 
 pub fn eval_iserror_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
@@ -195,7 +195,7 @@ pub fn eval_iserror_surface(
 
 pub fn eval_islogical_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISLOGICAL_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::Eval(EvalValue::Logical(_)))
@@ -204,7 +204,7 @@ pub fn eval_islogical_surface(
 
 pub fn eval_isna_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
@@ -232,7 +232,7 @@ pub fn eval_isna_surface(
 
 pub fn eval_isnontext_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISNONTEXT_META, args, resolver, |arg| {
         !matches!(arg, PreparedArgValue::Eval(EvalValue::Text(_)))
@@ -241,7 +241,7 @@ pub fn eval_isnontext_surface(
 
 pub fn eval_istext_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISTEXT_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::Eval(EvalValue::Text(_)))
@@ -250,7 +250,7 @@ pub fn eval_istext_surface(
 
 pub fn eval_isodd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
@@ -270,7 +270,7 @@ pub fn eval_isodd_surface(
 
 pub fn eval_isref_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     if !ISREF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ISREF_META, args.len()));

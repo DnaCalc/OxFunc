@@ -598,7 +598,7 @@ pub fn oddlyield_kernel(
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, OddBondEvalError>,
 ) -> Result<EvalValue, OddBondEvalError> {
@@ -615,7 +615,7 @@ fn eval_numeric(
 
 pub fn eval_oddfprice_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDFPRICE_META, |prepared| {
         oddfprice_kernel(
@@ -637,7 +637,7 @@ pub fn eval_oddfprice_surface(
 
 pub fn eval_oddfyield_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDFYIELD_META, |prepared| {
         oddfyield_kernel(
@@ -659,7 +659,7 @@ pub fn eval_oddfyield_surface(
 
 pub fn eval_oddlprice_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDLPRICE_META, |prepared| {
         oddlprice_kernel(
@@ -680,7 +680,7 @@ pub fn eval_oddlprice_surface(
 
 pub fn eval_oddlyield_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDLYIELD_META, |prepared| {
         oddlyield_kernel(

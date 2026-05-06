@@ -36,7 +36,7 @@ pub fn sin_kernel(n: f64) -> f64 {
 
 pub fn eval_sin_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SinEvalError> {
     if !SIN_META.arity.accepts(args.len()) {
         return Err(SinEvalError::ArityMismatch {

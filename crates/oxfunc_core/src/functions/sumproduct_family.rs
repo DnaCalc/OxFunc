@@ -100,7 +100,7 @@ fn scalar_text_number(value: &EvalValue) -> Result<f64, SumproductEvalError> {
 
 fn resolve_eval(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     match arg {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
@@ -117,7 +117,7 @@ fn resolve_eval(
 
 fn to_sumproduct_rect(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<NumericRect, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
     match eval {
@@ -158,7 +158,7 @@ fn to_sumproduct_rect(
 
 fn to_optional_numeric_rect(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<OptionalNumericRect, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
     match eval {
@@ -207,7 +207,7 @@ fn shapes_match<T>(rects: &[T], shape_of: impl Fn(&T) -> RectShape) -> bool {
 
 fn eval_sumproduct(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     if !SUMPRODUCT_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
@@ -237,7 +237,7 @@ fn eval_sumproduct(
 
 fn eval_sumx_pairwise(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     kernel: impl Fn(f64, f64) -> f64,
 ) -> Result<EvalValue, SumproductEvalError> {
     let left = to_optional_numeric_rect(&args[0], resolver)?;
@@ -261,7 +261,7 @@ fn eval_sumx_pairwise(
 
 fn strict_coefficients(
     arg: &CallArgValue,
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<f64>, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
     match eval {
@@ -291,14 +291,14 @@ fn strict_coefficients(
 
 pub fn eval_sumproduct_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     eval_sumproduct(args, resolver)
 }
 
 pub fn eval_sumx2my2_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     if !SUMX2MY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
@@ -312,7 +312,7 @@ pub fn eval_sumx2my2_surface(
 
 pub fn eval_sumx2py2_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     if !SUMX2PY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
@@ -326,7 +326,7 @@ pub fn eval_sumx2py2_surface(
 
 pub fn eval_sumxmy2_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     if !SUMXMY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
@@ -340,7 +340,7 @@ pub fn eval_sumxmy2_surface(
 
 pub fn eval_seriessum_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SumproductEvalError> {
     if !SERIESSUM_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {

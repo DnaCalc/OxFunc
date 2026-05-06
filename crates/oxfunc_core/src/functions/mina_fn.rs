@@ -47,7 +47,7 @@ fn eval_mina_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, Min
 
 pub fn eval_mina_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, MinAEvalError> {
     let argc = args.len();
     if !MINA_META.arity.accepts(argc) {

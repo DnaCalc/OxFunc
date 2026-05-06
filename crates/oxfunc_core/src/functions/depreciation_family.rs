@@ -366,7 +366,7 @@ fn eval_vdb_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Depreciatio
 
 pub fn eval_sln_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -378,7 +378,7 @@ pub fn eval_sln_surface(
 
 pub fn eval_syd_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -390,7 +390,7 @@ pub fn eval_syd_surface(
 
 pub fn eval_db_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -402,7 +402,7 @@ pub fn eval_db_surface(
 
 pub fn eval_ddb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -414,7 +414,7 @@ pub fn eval_ddb_surface(
 
 pub fn eval_vdb_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,

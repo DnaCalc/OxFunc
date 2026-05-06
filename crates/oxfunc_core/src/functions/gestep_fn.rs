@@ -28,7 +28,7 @@ pub fn gestep_kernel(number: f64, step: f64) -> Result<f64, WorksheetErrorCode> 
 
 pub fn eval_gestep_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     let actual = args.len();
     if actual == 1 {

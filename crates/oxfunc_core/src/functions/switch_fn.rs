@@ -40,7 +40,7 @@ pub enum SwitchEvalError {
 fn prepared_equal(
     left: &PreparedArgValue,
     right: &PreparedArgValue,
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<bool, CoercionError> {
     match (left, right) {
         (
@@ -82,7 +82,7 @@ fn prepared_equal(
 
 pub fn eval_switch_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, SwitchEvalError> {
     if !SWITCH_META.arity.accepts(args.len()) {
         return Err(SwitchEvalError::ArityMismatch {

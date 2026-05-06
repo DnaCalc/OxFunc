@@ -164,7 +164,7 @@ fn union_targets(reference: &ReferenceLike) -> Result<Vec<String>, OperatorRefer
 
 pub fn eval_op_range_ref_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -191,7 +191,7 @@ pub fn eval_op_range_ref_surface(
 
 pub fn eval_op_intersection_ref_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -221,7 +221,7 @@ pub fn eval_op_intersection_ref_surface(
 
 pub fn eval_op_union_ref_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -241,7 +241,7 @@ pub fn eval_op_union_ref_surface(
 
 pub fn eval_op_trim_ref_leading_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -254,7 +254,7 @@ pub fn eval_op_trim_ref_leading_surface(
 
 pub fn eval_op_trim_ref_trailing_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -267,7 +267,7 @@ pub fn eval_op_trim_ref_trailing_surface(
 
 pub fn eval_op_trim_ref_both_surface(
     args: &[CallArgValue],
-    _resolver: &impl ReferenceResolver,
+    _resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {

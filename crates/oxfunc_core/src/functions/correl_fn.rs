@@ -34,7 +34,7 @@ pub enum CorrelEvalError {
 
 pub fn eval_correl_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, CorrelEvalError> {
     let argc = args.len();
     if !CORREL_META.arity.accepts(argc) {

@@ -1005,7 +1005,7 @@ fn surface_arity_error(meta: &FunctionMeta, actual: usize) -> DynamicArrayReshap
 
 fn eval_surface_common(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     eval: impl FnOnce(&[PreparedArgValue]) -> Result<EvalValue, DynamicArrayReshapeEvalError>,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -1022,7 +1022,7 @@ fn eval_surface_common(
 
 fn eval_choose_axes_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
     eval: impl FnOnce(&[PreparedArgValue]) -> Result<EvalValue, DynamicArrayReshapeEvalError>,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -1046,105 +1046,105 @@ fn eval_choose_axes_surface(
 
 pub fn eval_choosecols_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSECOLS_META, eval_choosecols_prepared)
 }
 
 pub fn eval_chooserows_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSEROWS_META, eval_chooserows_prepared)
 }
 
 pub fn eval_drop_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &DROP_META, eval_drop_prepared)
 }
 
 pub fn eval_expand_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &EXPAND_META, eval_expand_prepared)
 }
 
 pub fn eval_filter_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &FILTER_META, eval_filter_prepared)
 }
 
 pub fn eval_sort_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORT_META, eval_sort_prepared)
 }
 
 pub fn eval_sortby_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORTBY_META, eval_sortby_prepared)
 }
 
 pub fn eval_take_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TAKE_META, eval_take_prepared)
 }
 
 pub fn eval_tocol_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOCOL_META, eval_tocol_prepared)
 }
 
 pub fn eval_torow_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOROW_META, eval_torow_prepared)
 }
 
 pub fn eval_transpose_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TRANSPOSE_META, eval_transpose_prepared)
 }
 
 pub fn eval_unique_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &UNIQUE_META, eval_unique_prepared)
 }
 
 pub fn eval_vstack_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &VSTACK_META, eval_vstack_prepared)
 }
 
 pub fn eval_wrapcols_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPCOLS_META, eval_wrapcols_prepared)
 }
 
 pub fn eval_wraprows_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPROWS_META, eval_wraprows_prepared)
 }

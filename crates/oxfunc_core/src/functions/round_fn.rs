@@ -78,7 +78,7 @@ pub fn eval_round_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
 pub fn eval_round_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RoundEvalError> {
     eval_binary_numeric_surface(args, resolver, |value, digits| {
         Ok(round_kernel(value, digits.trunc() as i32))

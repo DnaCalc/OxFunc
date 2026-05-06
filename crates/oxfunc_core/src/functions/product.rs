@@ -46,7 +46,7 @@ fn eval_product_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, 
 
 pub fn eval_product_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ProductEvalError> {
     let argc = args.len();
     if !PRODUCT_META.arity.accepts(argc) {

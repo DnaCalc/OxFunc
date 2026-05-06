@@ -73,7 +73,7 @@ pub fn base_kernel(
 
 pub fn eval_base_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, BaseEvalError> {
     let prepared = prepare_args_values_only(args, resolver).map_err(BaseEvalError::Coercion)?;
     if !BASE_META.arity.accepts(prepared.len()) {

@@ -138,7 +138,7 @@ pub fn eval_text_adapter_prepared(
 
 pub fn eval_text_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, TextEvalError> {
     run_values_only_prepared(

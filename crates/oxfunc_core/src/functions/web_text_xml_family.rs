@@ -113,7 +113,7 @@ pub fn encodeurl_kernel(text: &str) -> String {
 
 pub fn eval_encodeurl_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WebTextXmlEvalError> {
     if !ENCODEURL_META.arity.accepts(args.len()) {
         return Err(arity_error(&ENCODEURL_META, args.len()));
@@ -128,7 +128,7 @@ pub fn eval_encodeurl_surface(
 
 pub fn eval_filterxml_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, WebTextXmlEvalError> {
     if !FILTERXML_META.arity.accepts(args.len()) {
         return Err(arity_error(&FILTERXML_META, args.len()));

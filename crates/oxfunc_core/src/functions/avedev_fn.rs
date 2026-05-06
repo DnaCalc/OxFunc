@@ -51,7 +51,7 @@ fn eval_avedev_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, A
 
 pub fn eval_avedev_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, AveDevEvalError> {
     let argc = args.len();
     if !AVEDEV_META.arity.accepts(argc) {

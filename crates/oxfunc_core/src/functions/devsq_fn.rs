@@ -57,7 +57,7 @@ fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, De
 
 pub fn eval_devsq_surface(
     args: &[CallArgValue],
-    resolver: &impl ReferenceResolver,
+    resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DevSqEvalError> {
     let argc = args.len();
     if !DEVSQ_META.arity.accepts(argc) {
