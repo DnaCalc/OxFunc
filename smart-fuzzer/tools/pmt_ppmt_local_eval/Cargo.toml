@@ -22,3 +22,7 @@ path = "src/bin/expanded_finance_explorer.rs"
 [[bin]]
 name = "array_tranche_local_eval"
 path = "src/bin/array_tranche_local_eval.rs"
+
+[[bin]]
+name = "broad_scalar_explorer"
+path = "src/bin/broad_scalar_explorer.rs"

@@ -7,6 +7,17 @@ exploration, plus W090 array-support sweep planning.
 Generated outputs should normally go to `smart-fuzzer/cache/` or
 `smart-fuzzer/runs/`, both ignored by default.
 
+## Excel comparator plumbing rule
+
+A comparator runner that drives Excel via COM and claims **bit-exact typed
+equality** must pass numeric inputs to Excel through cell `Range.Value2`,
+not through formula literal text. Excel's formula parser is not always
+correctly-rounded for long decimal literals, so the literal-text path can
+introduce a `~1e-12 * scale` "encoding drift" that gets misclassified as
+a kernel mismatch. See
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` for the binding
+rule, the empirical witness, and the inventory of existing runners.
+
 ## Build-DimensionInventory.ps1
 
 Builds the W089 function-by-function dimension inventory for sweep planning. It
@@ -269,6 +280,29 @@ powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-PmtPpmtPilot.ps1
 The local side is evaluated through the standalone Rust helper in
 `smart-fuzzer/tools/pmt_ppmt_local_eval/`, which calls the public
 `oxfunc_core` value surface without adding files to the main workspace.
+
+## Run-BroadScalarExploration.ps1
+
+Runs the broad single-arg/two-arg numeric scalar smart-fuzzer cycle. The
+local Rust explorer
+`smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
+walks `~50` math, transcendental, gamma/erf, hyperbolic, power, mod, round,
+log, and combinatoric scalar functions across per-family numeric bands.
+Subnormal magnitudes and non-finite values are excluded because the Excel
+formula literal parser rejects them.
+
+```powershell
+& "smart-fuzzer\tools\Run-BroadScalarExploration.ps1" `
+  -RunId broad-scalar-cycle-NNN -CaseCount 1500000 -Seed 17 -CandidateLimit 600
+```
+
+The PowerShell wrapper batches the selected candidates into a single Excel
+COM `Range.Formula2` write, reads `Range.Value2` plus `ERROR.TYPE(...)`,
+and classifies the comparison as `exact_typed_bit_match`,
+`expected_formula_literal_encoding_drift`, `known_residual_numeric_drift`,
+`unexpected_mismatch`, `unexpected_kind_drift`, or
+`unexpected_error_code_drift`. Failure packets are written for unexpected
+classes only.
 
 ## Run-ExpandedFinanceExploration.ps1
 

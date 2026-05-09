@@ -48,6 +48,28 @@ The run directory is ignored by git by default. Promotion candidates must be
 copied or converted into tracked `smart-fuzzer/corpus/`, `docs/bugs/`, or
 function-lane evidence surfaces as appropriate.
 
+## Excel Comparator Plumbing Field
+
+Every comparator run that compares Excel `Value2` outcomes against OxFunc
+under a bit-exact policy must record how numeric inputs were passed to
+Excel. The shape lives in `manifest.json` under
+`environment.excel_input_plumbing`:
+
+```json
+"excel_input_plumbing": "cell_value2"   // exact f64 round-trip via Range.Value2
+```
+
+or:
+
+```json
+"excel_input_plumbing": "formula_literal_text"  // legacy path; encoding-drift class applies
+```
+
+Rows produced by the legacy path must NOT be used to close any
+bit-exact `BUG-FUNC-*` exactness stream. See
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` for the rule and
+the runner inventory.
+
 ## Manifest
 
 `manifest.json` is one JSON document per run.
@@ -80,7 +102,8 @@ Required fields:
     "excel_build": null,
     "excel_channel": null,
     "workbook_compatibility": "default",
-    "locale_profile": "en-US"
+    "locale_profile": "en-US",
+    "excel_input_plumbing": "cell_value2"
   },
   "inputs": {
     "metadata_snapshot_refs": [],

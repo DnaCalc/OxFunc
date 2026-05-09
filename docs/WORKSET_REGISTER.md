@@ -884,6 +884,39 @@ Notes:
 7. The DnaOneCalc release Mandelbrot probe improved after inline `EvalArray` storage but W095 stays target-partial until OxFml specializes the new seam and downstream replay confirms the combined effect.
 8. W095 is stopped at the OxFunc-local gate on `2026-05-06`; remaining work is tracked through `HO-FN-015` and downstream replay.
 
+## W097 Bit-Exact Re-Sweep Of Known Mismatches
+
+Status: `proposed`
+
+Execution target:
+re-replay every existing OxFunc-vs-Excel exactness mismatch surface
+under the new cell-ref Excel comparator plumbing so that the recorded
+ULP magnitude of each open and closed `BUG-FUNC-*` exactness stream
+reflects bit-exact input plumbing instead of the legacy
+formula-literal-text harness.
+
+Canonical surfaces:
+1. `docs/worksets/W097_BIT_EXACT_RESWEEP_OF_KNOWN_MISMATCHES.md`
+2. `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`
+3. `smart-fuzzer/planning/KNOWN_MISMATCH_RESWEEP_PLAN.md`
+4. `smart-fuzzer/tools/Run-BroadScalarExploration.ps1` (cell-ref reference implementation)
+5. `smart-fuzzer/runs/broad-scalar-cycle-010-cellref/` (first paired re-replay)
+
+Depends on: `W092` smart-fuzzer infrastructure.
+
+Notes:
+1. Re-measurement initiative; no kernel repair lands in W097.
+2. Lifts the cell-ref helper into a shared module before refactoring
+   other comparators.
+3. Tranche order, dependencies, and per-tranche acceptance live in the
+   plan document.
+4. Successor `BUG-FUNC-*` streams may be opened when a re-replay
+   surfaces a new subclass; existing closed streams are not reopened
+   automatically.
+5. The "OxFunc more accurate than Excel" rows surface a new
+   `known_excel_imprecision_witness` classification under the
+   no-tolerance comparison policy.
+
 ## W096 Full-Model Compiled Semantic Kernel Dispatch
 
 Status: `planned`

@@ -142,6 +142,27 @@ Important rule: seam-level failures and function-semantic mismatches must stay
 separate. A blocked host-query, missing provider, XLL marshalling limit, or
 bind/admission reject is not automatically an OxFunc semantic failure.
 
+### 5.1 Excel Comparator Plumbing
+
+A comparator that claims **bit-exact typed equality** between OxFunc and live
+Excel must not pass numeric inputs through formula literal text. Excel's
+formula parser is not always correctly-rounded for the long literals a
+fuzzer-generated `{value:.17}` or `{value:.17E}` print produces, especially
+when the integer part has already consumed much of the f64 significand
+budget. The result is that `=FUNC(text_for_v)` may compute `FUNC(v')` for
+some `v' ≠ v`, and the comparator then reports drift caused by the harness
+rather than by either side's algorithm.
+
+Numeric inputs must therefore be passed through cell `Range.Value2`, which
+is bit-exact for every IEEE-754 double Excel accepts (subnormals and
+non-finites excluded by Excel itself). Formulas reference those cells. The
+empirical confirmation, the rule in full, the runner inventory, and the
+adoption order live in
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`.
+
+This plumbing rule is binding for new comparator runners and binding before
+any new BUG-FUNC-* exactness stream is closed.
+
 ## 6. Architecture
 
 ### 6.1 Static Indexer

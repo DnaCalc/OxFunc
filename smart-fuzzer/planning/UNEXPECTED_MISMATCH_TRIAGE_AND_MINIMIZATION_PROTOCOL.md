@@ -40,6 +40,19 @@ The former POWER/OP_POWER stale-claim check was freshly confirmed and closed
 under W078 on 2026-04-29. Future POWER mismatches should be triaged as new
 signals rather than assumed continuations of BUG-FUNC-005.
 
+## 2.1 Encoding-Drift Pre-Check
+
+Before any numeric mismatch is classified as a kernel/algorithm drift, the
+runner that produced it must confirm that numeric inputs were passed to
+Excel via cell `Range.Value2` and not via formula literal text. Excel's
+formula parser is not always correctly-rounded for long decimal literals,
+so a `~1e-12 * scale` magnitude difference may be entirely caused by the
+parser landing on a neighbouring `f64`. See
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`.
+
+A row produced under literal-text plumbing must be re-run under cell-ref
+plumbing before its kernel-drift classification is taken as durable.
+
 ## 3. Minimization Order
 
 Unexpected mismatches should be reduced in this order:

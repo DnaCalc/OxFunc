@@ -211,6 +211,47 @@ typed matches, `204` `known_residual` rows, `8` `adapter_or_seam_mismatch`
 rows, `2` `known_expected_deviation` rows, and `46` fresh
 `unexpected_mismatch` rows routed to reopened `BUG-FUNC-018` after triage.
 
+## 2.2.1 Broad Scalar Explorer Cycles (`2026-05-09`)
+
+The plateau in Section 2.2 is bounded by the manifest-seed and
+array-successor universes; the catalog-axis space outside those generators
+is still under-probed. A new local Rust explorer
+`smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
+plus driver `smart-fuzzer/tools/Run-BroadScalarExploration.ps1` walks `~50`
+single-arg/two-arg numeric scalar functions across per-family numeric
+bands (subnormals and non-finites are excluded because the Excel formula
+literal parser rejects them).
+
+Cycle ledger (Excel `16.0` build `19929`, workbook compatibility `2`):
+
+1. `broad-scalar-cycle-003`: `1,000,000` cases, `600` Excel candidates,
+   `338` matches, `214` literal-encoding drift, `48` unexpected.
+2. `broad-scalar-cycle-004`: `1,500,000` cases, `600` candidates,
+   `340` matches, `208` drift, `52` unexpected.
+3. `broad-scalar-cycle-005`: `1,500,000` cases, `600` candidates,
+   `328` matches, `223` drift, `49` unexpected.
+4. `broad-scalar-cycle-006`: `2,000,000` cases, `600` candidates,
+   `336` matches, `214` drift, `50` unexpected.
+5. `broad-scalar-cycle-007`: `2,000,000` cases, `600` candidates,
+   `319` matches, `233` drift, `48` unexpected.
+6. `broad-scalar-cycle-008`: `2,000,000` cases, `600` candidates,
+   `334` matches, `213` drift, `53` unexpected.
+7. `broad-scalar-cycle-009`: `1,500,000` cases, `600` candidates,
+   `337` matches, `216` drift, `47` unexpected.
+
+Aggregate: `11,500,000` local evaluations, `4,200` Excel comparisons,
+`2,332` exact bit matches, `1,521` literal-encoding-drift rows,
+`347` unexpected mismatches, `0` Excel harness blockers.
+
+The seven cycles agree on which mismatch classes recur. Findings are
+classified, witnessed, and routed through new bug stream
+`BUG-FUNC-027` and the run summary
+`smart-fuzzer/planning/BROAD_SCALAR_EXPLORATION_2026-05-09.md`.
+
+These cycles are W092 generation work, not a re-claim against the
+Section 2.3 plateau gates: the broad-scalar explorer is a different
+generator universe from the manifest-seed and array-successor cycles.
+
 ## 2.3 Stop-Gate And Promotion Audit
 
 Audit snapshot: `2026-05-04`.

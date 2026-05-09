@@ -94,6 +94,17 @@ The "smart" part is not only random generation. It combines:
 7. `cache/`
    - local derived indexes and generated helper artifacts. Ignored by default.
 
+## Excel Comparator Plumbing Rule
+
+Comparator runs that compare against Excel under a bit-exact policy must
+pass numeric inputs to Excel through cell `Range.Value2`, not through
+formula literal text. Excel's formula parser is not guaranteed to map a
+17-digit decimal back to the original `f64`. The full rule, an empirical
+witness, and the runner inventory are in
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`. New runners should
+default to cell-ref plumbing; existing runners that still use literal-text
+input cannot be the basis for closing a `BUG-FUNC-*` exactness stream.
+
 ## Authority Rules
 
 1. Source-of-truth semantics remain in `docs/function-lane/*`, Rust code,
