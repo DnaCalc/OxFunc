@@ -901,6 +901,7 @@ Canonical surfaces:
 3. `smart-fuzzer/planning/KNOWN_MISMATCH_RESWEEP_PLAN.md`
 4. `smart-fuzzer/tools/Run-BroadScalarExploration.ps1` (cell-ref reference implementation)
 5. `smart-fuzzer/runs/broad-scalar-cycle-010-cellref/` (first paired re-replay)
+6. `.beads/` W097 epic `oxf-ic1h` and child beads `oxf-ic1h.1`..`oxf-ic1h.7`
 
 Depends on: `W092` smart-fuzzer infrastructure.
 

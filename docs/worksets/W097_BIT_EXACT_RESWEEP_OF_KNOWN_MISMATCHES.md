@@ -91,16 +91,16 @@ live in `smart-fuzzer/planning/KNOWN_MISMATCH_RESWEEP_PLAN.md`.
 
 ## 5. Bead Layout
 
-Proposed epic and child beads to allocate via `br`:
+Allocated epic and child beads in `.beads/`:
 
-1. epic: W097 cell-ref re-sweep of known mismatches
-2. child: cell-ref helper module landing (Tranche R-B)
-3. child: BUG-FUNC-027 CLASS-C* re-replay (Tranche R-A; partially done)
-4. child: PMT/PPMT/IPMT re-replay (Tranche R-C; covers BUG-FUNC-015)
-5. child: statistical distribution re-replay (Tranche R-D; covers BUG-FUNC-021)
-6. child: BESSELY re-replay (Tranche R-E; covers BUG-FUNC-024)
-7. child: MINVERSE matrix re-replay (Tranche R-F; covers BUG-FUNC-025)
-8. child: closed-stream re-replays (Tranche R-G/R-H; covers BUG-FUNC-013, BUG-FUNC-014, BUG-FUNC-005)
+1. epic `oxf-ic1h`: W097 cell-ref re-sweep of known mismatches
+2. child `oxf-ic1h.1` (R-A): BUG-FUNC-027 CLASS-C* re-replay (partially done; independent of R-B)
+3. child `oxf-ic1h.2` (R-B): cell-ref helper module landing (`smart-fuzzer/tools/CellRefBatch.psm1`); priority 1 bottleneck for R-C/R-D/R-E/R-F/R-G/R-H
+4. child `oxf-ic1h.3` (R-C): PMT/PPMT/IPMT re-replay (covers BUG-FUNC-015); blocks-on R-B
+5. child `oxf-ic1h.4` (R-D): statistical distribution re-replay (covers BUG-FUNC-021); blocks-on R-B
+6. child `oxf-ic1h.5` (R-E): BESSELY re-replay (covers BUG-FUNC-024); blocks-on R-B
+7. child `oxf-ic1h.6` (R-F): MINVERSE matrix re-replay (covers BUG-FUNC-025); blocks-on R-B
+8. child `oxf-ic1h.7` (R-G/R-H): closed-stream re-replays (covers BUG-FUNC-013, BUG-FUNC-014, BUG-FUNC-005); blocks-on R-B
 
 ## 6. Status Axes
 
