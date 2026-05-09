@@ -530,8 +530,8 @@ mod tests {
     use crate::functions::rtd_fn::{RtdProvider, RtdProviderResult, RtdRequest};
     use crate::functions::surface_dispatch::{
         FUNC_ID_BYROW, FUNC_ID_CELL, FUNC_ID_GROUPBY, FUNC_ID_HSTACK, FUNC_ID_INDEX, FUNC_ID_MAP,
-        FUNC_ID_NOW, FUNC_ID_OP_ADD, FUNC_ID_PI, FUNC_ID_PIVOTBY, FUNC_ID_RAND,
-        FUNC_ID_REDUCE, FUNC_ID_REGISTER_ID, FUNC_ID_RTD, FUNC_ID_VALUE, FUNC_ID_VSTACK,
+        FUNC_ID_NOW, FUNC_ID_OP_ADD, FUNC_ID_PI, FUNC_ID_PIVOTBY, FUNC_ID_RAND, FUNC_ID_REDUCE,
+        FUNC_ID_REGISTER_ID, FUNC_ID_RTD, FUNC_ID_VALUE, FUNC_ID_VSTACK,
         eval_surface_value_call_with_callable,
     };
     use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
@@ -902,7 +902,11 @@ mod tests {
         let registered_external_provider = TestRegisteredExternalProvider;
         assert_call_site_parity_with_providers(
             FUNC_ID_REGISTER_ID,
-            &[text_arg("Kernel32"), text_arg("GetTickCount"), text_arg("J!")],
+            &[
+                text_arg("Kernel32"),
+                text_arg("GetTickCount"),
+                text_arg("J!"),
+            ],
             None,
             None,
             Some(&registered_external_provider),

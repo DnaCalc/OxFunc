@@ -842,7 +842,7 @@ Notes:
 
 ## W094 Locale Profile Expansion
 
-Status: `in_progress`
+Status: `local_target_satisfied_followups_split`
 
 Execution target:
 expand OxFunc-owned canonical locale profile identities and `FormatProfile` constants/facts for the concrete locale set requested by OxFml `HANDOFF-OXFUNC-006`, while keeping OxFml formatter/parser behavior and DNA OneCalc UI cleanup in their owning repos.
@@ -858,7 +858,7 @@ Notes:
 2. `CurrentExcelHost` remains a host-regional-settings placeholder, not a reproducible locale identity.
 3. OxFml remains owner of locale-keyed names, parsing branches, General rendering, and optional locale-prefix format-code grammar.
 4. The OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through explicit profile ids or language-family mapping.
-5. W094 remains scope-partial because downstream OxFml final-profile-field consumption, Excel file-storage and locale-prefix research, full locale semantic parity sweeps beyond the current profile seed rows, and landed-ref promotion remain open.
+5. W094 is satisfied for the OxFunc-local profile identity and `FormatProfile` fact slice; downstream OxFml consumption, Excel file-storage/localized-function research, culture-profile seed mismatch triage, and full locale semantic parity sweeps are split to successor follow-up lanes.
 
 ## W095 REDUCE Lambda-Helper Hot-Loop Performance
 

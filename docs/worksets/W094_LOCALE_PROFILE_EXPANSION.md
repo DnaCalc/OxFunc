@@ -1,6 +1,6 @@
 # W094 Locale Profile Expansion
 
-Status: `in_progress`
+Status: `local_target_satisfied_followups_split`
 
 ## 1. Purpose
 
@@ -104,7 +104,7 @@ The surface also adds:
 4. `locale_format::tests::expanded_profile_constants_carry_locale_separators_and_currency_defaults` pins representative separator and currency defaults.
 5. `locale_format::tests::excel_lcid_mapping_covers_supported_locale_profile_aliases` pins the LCID mapping surface.
 6. `locale_format::tests::expanded_profile_constants_carry_locale_separators_and_currency_defaults` now also pins representative date-order, currency-layout, negative-pattern, and invariant token-policy facts.
-7. No new validation command was run for the 2026-05-06 final-state locale detail processing pass.
+7. No validation command was run during the initial 2026-05-06 final-state locale detail processing pass; follow-up W094 validation evidence is listed below.
 8. `powershell -NoProfile -ExecutionPolicy Bypass -File .tmp\run-w094-locale-excel-sweep.ps1`: passed for the focused live-Excel W094 locale comparison sweep; result summary: current-host international fields `11/11` matched, format-code token-policy observations `5/5` matched, LCID-prefix storage samples `9/9` matched after Excel's leading-zero normalization, and LCID-prefix render non-empty checks `9/9` matched.
 9. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib locale_format -- --nocapture`: passed, `6` passed, `0` failed, `1270` filtered out.
 
@@ -118,12 +118,12 @@ All W094 reports must include:
 4. `integration_completeness`,
 5. explicit `open_lanes` while any axis remains partial.
 
-Initial status axes:
+Current cleanup status axes:
 
-1. `scope_completeness`: `scope_partial`
-2. `target_completeness`: `target_complete` for the OxFunc-local W094 profile identity/constants slice
+1. `scope_completeness`: `scope_complete` for the OxFunc-local W094 profile identity and `FormatProfile` field slice requested by OxFml
+2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: downstream OxFml final-profile-field consumption, Excel file-storage and locale-prefix research, full locale semantic parity sweeps beyond the current profile seed rows, and landed-ref promotion.
+4. `open_lanes`: `oxf-swy6` downstream OxFml final-profile-field consumption tracking, `oxf-mxwo` Excel locale-prefix/localized-function storage research, `oxf-2nc0` culture-profile seed mismatch triage, and full locale semantic parity sweeps beyond the current profile seed rows.
 
 ## 2026-05-06 Final-State Locale Detail Processing
 
@@ -250,3 +250,26 @@ Interpretation:
 4. all-locale default date/currency behavior still needs a richer Excel-side
    capture method because COM `Application.International(...)` reports only
    the active host profile, not arbitrary LCID defaults.
+
+## 2026-05-07 W094 Cleanup
+
+Cleanup result:
+1. The OxFunc-local W094 surface requested by `HANDOFF-OXFUNC-006` is satisfied
+   for the declared profile identity and `FormatProfile` fact slice.
+2. The remaining lanes have been split out of the active W094 bead rather than
+   keeping the delivered OxFunc-local request indefinitely `in_progress`.
+3. W094 is not a full locale semantic-parity claim.
+
+Successor follow-up beads:
+1. `oxf-swy6`: track downstream OxFml final-profile-field consumption.
+2. `oxf-mxwo`: research Excel locale-prefix storage and localized function-name
+   file behavior.
+3. `oxf-2nc0`: triage the 13 culture-profile seed mismatches from the
+   all-locale sweep.
+
+Final W094 local status axes:
+1. `scope_completeness`: `scope_complete`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: successor follow-up beads `oxf-swy6`, `oxf-mxwo`,
+   `oxf-2nc0`, plus broader future locale semantic-parity sweeps.

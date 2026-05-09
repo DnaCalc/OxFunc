@@ -75,27 +75,27 @@ W094 also adds `LocaleProfileId::from_bcp47_language_tag(...)` so downstream con
 
 ## Open lanes
 
-1. OxFml still needs to consume the final OxFunc `FormatProfile` semantic fields.
+1. OxFml final-profile-field consumption is split to `oxf-swy6`.
 2. OxFml still owns month/weekday render tables, parser branches, General rendering, and custom-format rendering behavior.
-3. Excel file-storage behavior for localized function names and locale prefixes remains a later cross-repo research lane.
-4. Locale constants are culture-profile seed rows, not full Excel locale semantic closure across every application channel/workbook compatibility version.
-5. Landed-ref promotion remains open.
+3. Excel file-storage behavior for localized function names and locale prefixes is split to `oxf-mxwo`.
+4. Culture-profile seed mismatch triage is split to `oxf-2nc0`.
+5. Locale constants are culture-profile seed rows, not full Excel locale semantic closure across every application channel/workbook compatibility version.
 
 ## Status report
 
-execution_state: `validated_local_downstream_consumption_pending`
+execution_state: `local_target_satisfied_followups_split`
 
-scope_completeness: `scope_partial`
+scope_completeness: `scope_complete`
 
-target_completeness: `target_complete` for the OxFunc-local W094 profile identity/constants slice
+target_completeness: `target_partial`
 
 integration_completeness: `partial`
 
 open_lanes:
-1. downstream OxFml consumption of the final profile fields,
-2. Excel file-storage and locale-prefix research,
-3. full locale semantic parity sweeps beyond the current profile seed rows,
-4. landed-ref promotion.
+1. `oxf-swy6`: downstream OxFml consumption of the final profile fields,
+2. `oxf-mxwo`: Excel file-storage and locale-prefix/localized-function-name research,
+3. `oxf-2nc0`: culture-profile seed mismatch triage,
+4. full locale semantic parity sweeps beyond the current profile seed rows.
 
 ## 2026-05-06 final-state locale detail handoff processing
 
@@ -148,3 +148,15 @@ Validation note:
 8. The secondary culture-profile matrix reported `13` seed-vs-culture
    mismatches requiring triage before any stronger locale semantic-parity
    claim.
+
+## 2026-05-07 W094 cleanup
+
+OxFunc cleaned up W094 execution state:
+
+1. The declared OxFunc-local `FormatProfile` and locale-profile identity surface
+   requested by `HANDOFF-OXFUNC-006` is delivered.
+2. The W094 active bead is no longer held open for downstream or future research
+   lanes.
+3. Follow-up work is split to `oxf-swy6`, `oxf-mxwo`, and `oxf-2nc0`.
+4. This does not claim full locale semantic parity and does not move OxFml-owned
+   parser/rendering responsibilities into OxFunc.
