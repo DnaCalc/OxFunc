@@ -2,9 +2,9 @@
 param(
     [string] $RepoRoot,
     [string] $RunId,
-    [int] $CaseCount = 10000000,
-    [int] $Seed = 8804,
-    [int] $CandidateLimit = 640
+    [int] $CaseCount = 1000000,
+    [int] $Seed = 17,
+    [int] $CandidateLimit = 800
 )
 
 Set-StrictMode -Version Latest
@@ -16,12 +16,13 @@ if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
 }
 $RepoRoot = [System.IO.Path]::GetFullPath($RepoRoot)
 if ([string]::IsNullOrWhiteSpace($RunId)) {
-    $RunId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-expanded-finance"
+    $RunId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-stat-distribution"
 }
 
-# Cell-ref Excel comparator plumbing lives in the shared CellRefBatch
-# module (W097 R-B). Numeric inputs are written via Range.Value2 so the
-# formula parser does not introduce input-side encoding drift.
+# W097 R-D: cell-ref Excel comparator for the BUG-FUNC-021 statistical
+# distribution surface. Local evaluation comes from the
+# stat_distribution_explorer Rust binary; Excel comparison goes through
+# the shared CellRefBatch.psm1 module so numeric inputs are bit-exact.
 $cellRefModulePath = Join-Path $RepoRoot "smart-fuzzer\tools\CellRefBatch.psm1"
 Import-Module $cellRefModulePath -Force
 
@@ -31,106 +32,140 @@ $failureDir = Join-Path $runDir "failure_packets"
 $logDir = Join-Path $runDir "logs"
 New-Item -ItemType Directory -Force -Path $runDir, $comparisonDir, $failureDir, $logDir | Out-Null
 
-function Get-Sha256Text {
-    param([string] $Text)
-    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
-    $sha = [System.Security.Cryptography.SHA256]::Create()
-    try {
-        $hash = $sha.ComputeHash($bytes)
-        return "sha256:" + ([System.BitConverter]::ToString($hash).Replace("-", "").ToLowerInvariant())
-    }
-    finally {
-        $sha.Dispose()
-    }
-}
-
 function Write-JsonFile {
     param([string] $Path, [object] $Value, [int] $Depth = 16)
     $Value | ConvertTo-Json -Depth $Depth | Set-Content -LiteralPath $Path -Encoding UTF8
 }
-
 function Add-JsonLine {
     param([string] $Path, [object] $Value, [int] $Depth = 16)
     ($Value | ConvertTo-Json -Compress -Depth $Depth) | Add-Content -LiteralPath $Path -Encoding UTF8
 }
 
-$manifestPath = Join-Path $RepoRoot "smart-fuzzer\tools\pmt_ppmt_local_eval\Cargo.toml"
+$repoRootForRust = $RepoRoot
+$exeRel = "smart-fuzzer\tools\pmt_ppmt_local_eval\target\release\stat_distribution_explorer.exe"
+$exePath = Join-Path $repoRootForRust $exeRel
+if (-not (Test-Path -LiteralPath $exePath)) {
+    throw "stat_distribution_explorer.exe not built: $exePath. Run: cargo build --release --manifest-path smart-fuzzer\tools\pmt_ppmt_local_eval\Cargo.toml --bin stat_distribution_explorer"
+}
+
 $localWatch = [System.Diagnostics.Stopwatch]::StartNew()
-& cargo run --release --quiet --manifest-path $manifestPath --bin expanded_finance_explorer -- --run-dir $runDir --cases $CaseCount --seed $Seed --candidate-limit $CandidateLimit
+& $exePath --run-dir $runDir --cases $CaseCount --seed $Seed --candidate-limit $CandidateLimit
 if ($LASTEXITCODE -ne 0) {
-    throw "expanded_finance_explorer failed with exit code $LASTEXITCODE"
+    throw "stat_distribution_explorer failed with exit code $LASTEXITCODE"
 }
 $localWatch.Stop()
 
 $candidatePath = Join-Path $runDir "candidates\excel_candidates.jsonl"
 $candidates = @(Get-Content -LiteralPath $candidatePath | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | ForEach-Object { $_ | ConvertFrom-Json })
 
-# Build cell-ref candidates from the local-evaluator candidate list.
+# Convert each Rust-emitted candidate to a CellRefBatch input.
+# args_typed: list of {kind, value/values, rows, cols}.
+function ConvertTo-CellRefArgs {
+    param([object] $Candidate)
+    $list = @()
+    foreach ($a in @($Candidate.args_typed)) {
+        switch ($a.kind) {
+            "number"  { $list += [double]$a.value; break }
+            "logical" { $list += [bool]$a.value; break }
+            "matrix"  {
+                $list += @{ kind = "matrix"; rows = [int]$a.rows; cols = [int]$a.cols; values = @($a.values | ForEach-Object { [double]$_ }) }
+                break
+            }
+            default   { throw "unknown args_typed kind: $($a.kind)" }
+        }
+    }
+    return ,$list
+}
+
 $cellRefCandidates = @()
 foreach ($c in $candidates) {
-    $cellRefCandidates += @{ function_name = [string] $c.function_name; args = @($c.args) }
+    $cellRefCandidates += @{
+        function_name = [string] $c.function_name
+        args = (ConvertTo-CellRefArgs $c)
+    }
 }
+
 $excelWatch = [System.Diagnostics.Stopwatch]::StartNew()
 $excel = Invoke-ExcelCellRefBatch -Candidates $cellRefCandidates
 $excelWatch.Stop()
 
 $comparisonsPath = Join-Path $comparisonDir "excel_sample_comparisons.jsonl"
 if (Test-Path -LiteralPath $comparisonsPath) { Remove-Item -LiteralPath $comparisonsPath }
+
 $matches = 0
-$expectedKnown = 0
+$knownStat = 0
 $unexpected = 0
 $blocked = 0
+
+# Functions covered by BUG-FUNC-021 for the "known residual" classification.
+$bugFunc021Set = New-Object 'System.Collections.Generic.HashSet[string]'
+@(
+    "FUNC.BETADIST","FUNC.BETAINV","FUNC.CHIDIST","FUNC.CHIINV",
+    "FUNC.FDIST","FUNC.FINV","FUNC.GAMMADIST","FUNC.GAMMAINV",
+    "FUNC.HYPGEOMDIST","FUNC.NEGBINOMDIST","FUNC.NORMSDIST","FUNC.NORMSINV",
+    "FUNC.TDIST","FUNC.TINV","FUNC.PERCENTRANK","FUNC.CONFIDENCE.T","FUNC.Z.TEST",
+    "FUNC.KURT","FUNC.SKEW","FUNC.SKEW.P"
+) | ForEach-Object { [void]$bugFunc021Set.Add($_) }
 
 for ($i = 0; $i -lt $candidates.Count; $i++) {
     $candidate = $candidates[$i]
     $local = $candidate.local_outcome
     $excelOutcome = if ($excel.outcomes.Count -gt $i) { $excel.outcomes[$i] } else { $null }
     $result = "blocked"
-    $delta = $null
+    $absDelta = $null
     $ulp = $null
     if ($null -eq $excelOutcome) {
         $blocked += 1
     }
     elseif ([string]$local.kind -eq "number" -and [string]$excelOutcome.kind -eq "number") {
-        $delta = [Math]::Abs(([double]$local.value) - ([double]$excelOutcome.value))
+        $lv = [double]$local.value
+        $ev = [double]$excelOutcome.value
+        $absDelta = [Math]::Abs($lv - $ev)
         if ([string]$local.bits_hex -eq [string]$excelOutcome.bits_hex) {
             $matches += 1
-            $result = "match"
+            $result = "exact_typed_bit_match"
         }
-        elseif (([double]$local.value) -eq 0.0 -and ([double]$excelOutcome.value) -eq 0.0) {
+        elseif ($lv -eq 0.0 -and $ev -eq 0.0) {
             $matches += 1
-            $result = "match_signed_zero_difference"
-        }
-        elseif (([string]$candidate.function_id -in @("FUNC.PMT","FUNC.PPMT","FUNC.IPMT")) -and ($candidate.coverage_buckets -notcontains "rate:zero")) {
-            # Inputs are now bit-exact via cell-ref plumbing, so any
-            # remaining non-zero-rate divergence is genuine kernel drift
-            # in the existing BUG-FUNC-015 surface.
-            $ulp = Get-UlpDistance ([double]$local.value) ([double]$excelOutcome.value)
-            $expectedKnown += 1
-            $result = "known_residual_pmt_family_kernel_drift"
+            $result = "match_signed_zero"
         }
         else {
-            $ulp = Get-UlpDistance ([double]$local.value) ([double]$excelOutcome.value)
-            $unexpected += 1
-            $result = "unexpected_mismatch"
+            $ulp = Get-UlpDistance $lv $ev
+            if ($bugFunc021Set.Contains([string]$candidate.function_id)) {
+                $knownStat += 1
+                $result = "known_residual_stat_drift"
+            } else {
+                $unexpected += 1
+                $result = "unexpected_mismatch"
+            }
         }
     }
     elseif ([string]$local.kind -eq [string]$excelOutcome.kind -and [string]$local.digest_payload -eq [string]$excelOutcome.digest_payload) {
         $matches += 1
-        $result = "match"
+        $result = "exact_typed_bit_match"
+    }
+    elseif ([string]$local.kind -eq "error" -and [string]$excelOutcome.kind -eq "error") {
+        if ([string]$local.code -eq [string]$excelOutcome.code) {
+            $matches += 1
+            $result = "exact_typed_bit_match"
+        } else {
+            $unexpected += 1
+            $result = "unexpected_error_code_drift"
+        }
     }
     else {
         $unexpected += 1
-        $result = "unexpected_mismatch"
+        $result = "unexpected_kind_drift"
     }
 
     $comparison = [ordered]@{
-        schema_version = "oxfunc.smart_fuzzer.expanded_excel_comparison.v0"
+        schema_version = "oxfunc.smart_fuzzer.stat_distribution_excel_comparison.v0"
         case_id = [string] $candidate.case_id
         function_id = [string] $candidate.function_id
+        function_name = [string] $candidate.function_name
         formula_text = [string] $candidate.formula_text
         comparison_result = $result
-        abs_delta = $delta
+        abs_delta = $absDelta
         ulp_distance = $ulp
         coverage_buckets = $candidate.coverage_buckets
         selection_reason = [string] $candidate.selection_reason
@@ -138,14 +173,14 @@ for ($i = 0; $i -lt $candidates.Count; $i++) {
         excel_outcome = $excelOutcome
     }
     Add-JsonLine $comparisonsPath $comparison
-    if ($result -eq "unexpected_mismatch") {
+    if ($result -eq "unexpected_mismatch" -or $result -eq "unexpected_error_code_drift" -or $result -eq "unexpected_kind_drift") {
         Write-JsonFile (Join-Path $failureDir ([string]$candidate.case_id + ".json")) $comparison
     }
 }
 
 $localRollup = Get-Content -LiteralPath (Join-Path $runDir "local_rollup.json") -Raw | ConvertFrom-Json
 $rollup = [ordered]@{
-    schema_version = "oxfunc.smart_fuzzer.expanded_run_rollup.v0"
+    schema_version = "oxfunc.smart_fuzzer.stat_distribution_run_rollup.v0"
     run_id = $RunId
     generated = $CaseCount
     local_evaluated = $CaseCount
@@ -153,7 +188,7 @@ $rollup = [ordered]@{
     excel_blocked = [bool] $excel.blocked
     excel_input_plumbing = "cell_value2"
     matches = $matches
-    expected_known_deviations = $expectedKnown
+    known_stat_drift = $knownStat
     unexpected_mismatches = $unexpected
     blocked = $blocked
     local_cases_per_second = $localRollup.local_cases_per_second
@@ -161,51 +196,13 @@ $rollup = [ordered]@{
     wrapper_local_wall_seconds = $localWatch.Elapsed.TotalSeconds
     excel_wall_seconds = $excelWatch.Elapsed.TotalSeconds
     excel_environment = $excel.environment
-    roadmap_trace = "roadmap_trace.md"
     comparison_ref = "comparisons/excel_sample_comparisons.jsonl"
 }
 if ($excel.blocked) { $rollup["excel_blocker"] = $excel.blocker }
 Write-JsonFile (Join-Path $runDir "rollup.json") $rollup
 
-$highlightPath = Join-Path $runDir "highlights_trace.md"
-$highlight = @(
-    "# Expanded Smart-Fuzzer Highlights",
-    "",
-    "Run id: ``$RunId``",
-    "",
-    "## Counts",
-    "",
-    "1. Local generated/evaluated cases: ``$CaseCount``",
-    "2. Excel candidate samples: ``$($candidates.Count)``",
-    "3. Exact sample matches: ``$matches``",
-    "4. Known residual PMT/PPMT/IPMT kernel-drift rows: ``$expectedKnown``",
-    "5. Unexpected mismatches: ``$unexpected``",
-    "6. Blocked sample rows: ``$blocked``",
-    "",
-    "## Plumbing",
-    "",
-    "Inputs are written through ``Range.Value2`` (bit-exact f64 round-trip) and the",
-    "formula references those cells; see",
-    "``smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md``. The legacy",
-    "``expected_formula_literal_encoding_drift`` class no longer exists; rows that",
-    "would have landed there now resolve to ``match`` or to genuine kernel drift.",
-    "",
-    "## Explored Areas",
-    "",
-    "See ``roadmap_trace.md`` and ``roadmap_trace.json`` in this run directory. The run",
-    "covered PMT, PPMT, and IPMT across arity, rate, horizon, present/future value,",
-    "payment timing, and period-position bands.",
-    "",
-    "## Interpretation",
-    "",
-    "Known PMT/PPMT/IPMT non-zero-rate exactness drift is treated as expected pending",
-    "further investigation under BUG-FUNC-015. Unexpected mismatches, if any, are",
-    "written as failure packets under ``failure_packets/``."
-) -join [Environment]::NewLine
-$highlight | Set-Content -LiteralPath $highlightPath -Encoding UTF8
-
 Write-Host "Run: $RunId"
 Write-Host "Run directory: $runDir"
 Write-Host "Generated/local evaluated: $CaseCount"
 Write-Host "Excel sampled: $($candidates.Count)"
-Write-Host "Matches: $matches; known residual PMT-family drift: $expectedKnown; unexpected: $unexpected; blocked: $blocked"
+Write-Host "Matches: $matches; known stat drift: $knownStat; unexpected: $unexpected; blocked: $blocked"

@@ -41,82 +41,314 @@ struct FunctionEntry {
 
 const FUNCTIONS: &[FunctionEntry] = &[
     // unary on full real domain (excluding possible singularities)
-    FunctionEntry { func_id: "FUNC.ABS", name: "ABS", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.SIGN", name: "SIGN", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.INT", name: "INT", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.TRUNC", name: "TRUNC", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.EVEN", name: "EVEN", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ODD", name: "ODD", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ATAN", name: "ATAN", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ASINH", name: "ASINH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.SINH", name: "SINH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.COSH", name: "COSH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.TANH", name: "TANH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.DEGREES", name: "DEGREES", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.RADIANS", name: "RADIANS", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.GAUSS", name: "GAUSS", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.PHI", name: "PHI", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ERF", name: "ERF", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ERFC", name: "ERFC", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ERF.PRECISE", name: "ERF.PRECISE", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ERFC.PRECISE", name: "ERFC.PRECISE", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.ACOT", name: "ACOT", family: Family::Unary },
-
+    FunctionEntry {
+        func_id: "FUNC.ABS",
+        name: "ABS",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.SIGN",
+        name: "SIGN",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.INT",
+        name: "INT",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.TRUNC",
+        name: "TRUNC",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.EVEN",
+        name: "EVEN",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ODD",
+        name: "ODD",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ATAN",
+        name: "ATAN",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ASINH",
+        name: "ASINH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.SINH",
+        name: "SINH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COSH",
+        name: "COSH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.TANH",
+        name: "TANH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.DEGREES",
+        name: "DEGREES",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.RADIANS",
+        name: "RADIANS",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.GAUSS",
+        name: "GAUSS",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.PHI",
+        name: "PHI",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ERF",
+        name: "ERF",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ERFC",
+        name: "ERFC",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ERF.PRECISE",
+        name: "ERF.PRECISE",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ERFC.PRECISE",
+        name: "ERFC.PRECISE",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ACOT",
+        name: "ACOT",
+        family: Family::Unary,
+    },
     // unary positive / non-negative
-    FunctionEntry { func_id: "FUNC.SQRT", name: "SQRT", family: Family::UnaryPositive },
-    FunctionEntry { func_id: "FUNC.SQRTPI", name: "SQRTPI", family: Family::UnaryPositive },
-    FunctionEntry { func_id: "FUNC.LN", name: "LN", family: Family::UnaryPositive },
-    FunctionEntry { func_id: "FUNC.LOG10", name: "LOG10", family: Family::UnaryPositive },
-    FunctionEntry { func_id: "FUNC.GAMMA", name: "GAMMA", family: Family::Unary }, // negative non-int allowed
-    FunctionEntry { func_id: "FUNC.GAMMALN", name: "GAMMALN", family: Family::UnaryPositive },
-    FunctionEntry { func_id: "FUNC.GAMMALN.PRECISE", name: "GAMMALN.PRECISE", family: Family::UnaryPositive },
-
+    FunctionEntry {
+        func_id: "FUNC.SQRT",
+        name: "SQRT",
+        family: Family::UnaryPositive,
+    },
+    FunctionEntry {
+        func_id: "FUNC.SQRTPI",
+        name: "SQRTPI",
+        family: Family::UnaryPositive,
+    },
+    FunctionEntry {
+        func_id: "FUNC.LN",
+        name: "LN",
+        family: Family::UnaryPositive,
+    },
+    FunctionEntry {
+        func_id: "FUNC.LOG10",
+        name: "LOG10",
+        family: Family::UnaryPositive,
+    },
+    FunctionEntry {
+        func_id: "FUNC.GAMMA",
+        name: "GAMMA",
+        family: Family::Unary,
+    }, // negative non-int allowed
+    FunctionEntry {
+        func_id: "FUNC.GAMMALN",
+        name: "GAMMALN",
+        family: Family::UnaryPositive,
+    },
+    FunctionEntry {
+        func_id: "FUNC.GAMMALN.PRECISE",
+        name: "GAMMALN.PRECISE",
+        family: Family::UnaryPositive,
+    },
     // unary unit-open (-1, +1)
-    FunctionEntry { func_id: "FUNC.ATANH", name: "ATANH", family: Family::UnaryUnitOpen },
-    FunctionEntry { func_id: "FUNC.FISHER", name: "FISHER", family: Family::UnaryUnitOpen },
-    FunctionEntry { func_id: "FUNC.FISHERINV", name: "FISHERINV", family: Family::Unary },
-
+    FunctionEntry {
+        func_id: "FUNC.ATANH",
+        name: "ATANH",
+        family: Family::UnaryUnitOpen,
+    },
+    FunctionEntry {
+        func_id: "FUNC.FISHER",
+        name: "FISHER",
+        family: Family::UnaryUnitOpen,
+    },
+    FunctionEntry {
+        func_id: "FUNC.FISHERINV",
+        name: "FISHERINV",
+        family: Family::Unary,
+    },
     // unary unit-closed [-1, +1]
-    FunctionEntry { func_id: "FUNC.ASIN", name: "ASIN", family: Family::UnaryUnitClosed },
-    FunctionEntry { func_id: "FUNC.ACOS", name: "ACOS", family: Family::UnaryUnitClosed },
-
+    FunctionEntry {
+        func_id: "FUNC.ASIN",
+        name: "ASIN",
+        family: Family::UnaryUnitClosed,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ACOS",
+        name: "ACOS",
+        family: Family::UnaryUnitClosed,
+    },
     // unary at-least-one
-    FunctionEntry { func_id: "FUNC.ACOSH", name: "ACOSH", family: Family::UnaryAtLeastOne },
-    FunctionEntry { func_id: "FUNC.ACOTH", name: "ACOTH", family: Family::UnaryAtLeastOne }, // |x|>1
-
+    FunctionEntry {
+        func_id: "FUNC.ACOSH",
+        name: "ACOSH",
+        family: Family::UnaryAtLeastOne,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ACOTH",
+        name: "ACOTH",
+        family: Family::UnaryAtLeastOne,
+    }, // |x|>1
     // small non-negative integers
-    FunctionEntry { func_id: "FUNC.FACT", name: "FACT", family: Family::UnarySmallNonNeg },
-    FunctionEntry { func_id: "FUNC.FACTDOUBLE", name: "FACTDOUBLE", family: Family::UnarySmallNonNeg },
-
+    FunctionEntry {
+        func_id: "FUNC.FACT",
+        name: "FACT",
+        family: Family::UnarySmallNonNeg,
+    },
+    FunctionEntry {
+        func_id: "FUNC.FACTDOUBLE",
+        name: "FACTDOUBLE",
+        family: Family::UnarySmallNonNeg,
+    },
     // trig functions wide-arg
-    FunctionEntry { func_id: "FUNC.SIN", name: "SIN", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.COS", name: "COS", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.TAN", name: "TAN", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.COT", name: "COT", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.SEC", name: "SEC", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.CSC", name: "CSC", family: Family::Trig },
-    FunctionEntry { func_id: "FUNC.SECH", name: "SECH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.CSCH", name: "CSCH", family: Family::Unary },
-    FunctionEntry { func_id: "FUNC.COTH", name: "COTH", family: Family::Unary },
-
+    FunctionEntry {
+        func_id: "FUNC.SIN",
+        name: "SIN",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COS",
+        name: "COS",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.TAN",
+        name: "TAN",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COT",
+        name: "COT",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.SEC",
+        name: "SEC",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.CSC",
+        name: "CSC",
+        family: Family::Trig,
+    },
+    FunctionEntry {
+        func_id: "FUNC.SECH",
+        name: "SECH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.CSCH",
+        name: "CSCH",
+        family: Family::Unary,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COTH",
+        name: "COTH",
+        family: Family::Unary,
+    },
     // exp wide range
-    FunctionEntry { func_id: "FUNC.EXP", name: "EXP", family: Family::Exp },
-
+    FunctionEntry {
+        func_id: "FUNC.EXP",
+        name: "EXP",
+        family: Family::Exp,
+    },
     // 2-arg
-    FunctionEntry { func_id: "FUNC.ATAN2", name: "ATAN2", family: Family::Atan2 },
-    FunctionEntry { func_id: "FUNC.POWER", name: "POWER", family: Family::Power },
-    FunctionEntry { func_id: "FUNC.MOD", name: "MOD", family: Family::Mod },
-    FunctionEntry { func_id: "FUNC.LOG", name: "LOG", family: Family::LogBase },
-    FunctionEntry { func_id: "FUNC.ROUND", name: "ROUND", family: Family::RoundFamily },
-    FunctionEntry { func_id: "FUNC.ROUNDUP", name: "ROUNDUP", family: Family::RoundFamily },
-    FunctionEntry { func_id: "FUNC.ROUNDDOWN", name: "ROUNDDOWN", family: Family::RoundFamily },
-    FunctionEntry { func_id: "FUNC.MROUND", name: "MROUND", family: Family::Mround },
-    FunctionEntry { func_id: "FUNC.QUOTIENT", name: "QUOTIENT", family: Family::Mod },
-    FunctionEntry { func_id: "FUNC.COMBIN", name: "COMBIN", family: Family::Combin2 },
-    FunctionEntry { func_id: "FUNC.COMBINA", name: "COMBINA", family: Family::Combin2 },
-    FunctionEntry { func_id: "FUNC.PERMUT", name: "PERMUT", family: Family::Permut2 },
-    FunctionEntry { func_id: "FUNC.PERMUTATIONA", name: "PERMUTATIONA", family: Family::Permut2 },
-    FunctionEntry { func_id: "FUNC.NonUsed", name: "X", family: Family::UnaryNonZeroInt }, // tombstone
+    FunctionEntry {
+        func_id: "FUNC.ATAN2",
+        name: "ATAN2",
+        family: Family::Atan2,
+    },
+    FunctionEntry {
+        func_id: "FUNC.POWER",
+        name: "POWER",
+        family: Family::Power,
+    },
+    FunctionEntry {
+        func_id: "FUNC.MOD",
+        name: "MOD",
+        family: Family::Mod,
+    },
+    FunctionEntry {
+        func_id: "FUNC.LOG",
+        name: "LOG",
+        family: Family::LogBase,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ROUND",
+        name: "ROUND",
+        family: Family::RoundFamily,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ROUNDUP",
+        name: "ROUNDUP",
+        family: Family::RoundFamily,
+    },
+    FunctionEntry {
+        func_id: "FUNC.ROUNDDOWN",
+        name: "ROUNDDOWN",
+        family: Family::RoundFamily,
+    },
+    FunctionEntry {
+        func_id: "FUNC.MROUND",
+        name: "MROUND",
+        family: Family::Mround,
+    },
+    FunctionEntry {
+        func_id: "FUNC.QUOTIENT",
+        name: "QUOTIENT",
+        family: Family::Mod,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COMBIN",
+        name: "COMBIN",
+        family: Family::Combin2,
+    },
+    FunctionEntry {
+        func_id: "FUNC.COMBINA",
+        name: "COMBINA",
+        family: Family::Combin2,
+    },
+    FunctionEntry {
+        func_id: "FUNC.PERMUT",
+        name: "PERMUT",
+        family: Family::Permut2,
+    },
+    FunctionEntry {
+        func_id: "FUNC.PERMUTATIONA",
+        name: "PERMUTATIONA",
+        family: Family::Permut2,
+    },
+    FunctionEntry {
+        func_id: "FUNC.NonUsed",
+        name: "X",
+        family: Family::UnaryNonZeroInt,
+    }, // tombstone
 ];
 
 // Filter out tombstone at runtime.
@@ -316,7 +548,10 @@ fn band_trig(rng: &mut Lcg) -> (f64, &'static str) {
         3 => (rng.signed() * PI / 4.0, "t:quarter_pi"),
         4 => (rng.signed() * (PI - 1e-12), "t:near_pi"),
         5 => (rng.signed() * 1e-12, "t:tiny"),
-        6 => (rng.signed() * 100.0 * PI * rng.next_f64(), "t:moderate_pi_multiples"),
+        6 => (
+            rng.signed() * 100.0 * PI * rng.next_f64(),
+            "t:moderate_pi_multiples",
+        ),
         7 => (rng.signed() * 1e6 * rng.next_f64(), "t:up_to_1e6"),
         8 => (rng.signed() * 1e10 * rng.next_f64(), "t:up_to_1e10"),
         9 => (rng.signed() * 1e15 * rng.next_f64(), "t:up_to_1e15"),
@@ -409,7 +644,10 @@ fn band_mod(rng: &mut Lcg) -> (Vec<f64>, String) {
         3 => 1e-12 * (1.0 + rng.next_f64()),
         _ => -(0.1 + rng.next_f64() * 9.9),
     };
-    (vec![n, d], format!("md:n={}|d={}", n_choices[n_pick], d_choices[d_pick]))
+    (
+        vec![n, d],
+        format!("md:n={}|d={}", n_choices[n_pick], d_choices[d_pick]),
+    )
 }
 
 fn band_log_base(rng: &mut Lcg) -> (Vec<f64>, String) {
@@ -431,7 +669,10 @@ fn band_log_base(rng: &mut Lcg) -> (Vec<f64>, String) {
         5 => 100.0,
         _ => 0.5 + rng.next_f64() * 0.4,
     };
-    (vec![n, b], format!("lb:n={}|b={}", fmt_short(n), fmt_short(b)))
+    (
+        vec![n, b],
+        format!("lb:n={}|b={}", fmt_short(n), fmt_short(b)),
+    )
 }
 
 fn band_round(rng: &mut Lcg) -> (Vec<f64>, String) {
@@ -455,7 +696,10 @@ fn band_round(rng: &mut Lcg) -> (Vec<f64>, String) {
         5 => (rng.next_u64() % 8) as f64,
         _ => -((rng.next_u64() % 8) as f64),
     };
-    (vec![n, d], format!("rd:n={}|d={}", fmt_short(n), fmt_short(d)))
+    (
+        vec![n, d],
+        format!("rd:n={}|d={}", fmt_short(n), fmt_short(d)),
+    )
 }
 
 fn band_mround(rng: &mut Lcg) -> (Vec<f64>, String) {
@@ -475,7 +719,10 @@ fn band_mround(rng: &mut Lcg) -> (Vec<f64>, String) {
         4 => rng.next_f64() * 9.999 + 0.001,
         _ => -(rng.next_f64() * 9.999 + 0.001),
     };
-    (vec![n, m], format!("mr:n={}|m={}", fmt_short(n), fmt_short(m)))
+    (
+        vec![n, m],
+        format!("mr:n={}|m={}", fmt_short(n), fmt_short(m)),
+    )
 }
 
 fn band_combin2(rng: &mut Lcg) -> (Vec<f64>, String) {
@@ -492,13 +739,19 @@ fn band_permut2(rng: &mut Lcg) -> (Vec<f64>, String) {
 
 // short-format helper: keep coverage keys compact
 fn fmt_short(v: f64) -> String {
-    if v == 0.0 { "0".into() }
-    else if v.is_nan() { "nan".into() }
-    else if v.is_infinite() { if v > 0.0 { "inf".into() } else { "-inf".into() } }
-    else {
+    if v == 0.0 {
+        "0".into()
+    } else if v.is_nan() {
+        "nan".into()
+    } else if v.is_infinite() {
+        if v > 0.0 { "inf".into() } else { "-inf".into() }
+    } else {
         let log10 = v.abs().log10();
-        if log10.is_finite() && (-3.0..=6.0).contains(&log10) { format!("{v:.4}") }
-        else { format!("{v:e}") }
+        if log10.is_finite() && (-3.0..=6.0).contains(&log10) {
+            format!("{v:.4}")
+        } else {
+            format!("{v:e}")
+        }
     }
 }
 
@@ -506,15 +759,24 @@ fn fmt_short(v: f64) -> String {
 // rejects subnormal magnitudes (~5e-324) and non-finite values, so the
 // generator constrains values to formula-representable normals.
 fn fmt_num(v: f64) -> String {
-    if v == 0.0 { return "0".into(); }
+    if v == 0.0 {
+        return "0".into();
+    }
     if !v.is_finite() {
         // Should not occur after band constraints; fall back to a clamped value.
-        return if v > 0.0 { "1E+307".into() } else { "-1E+307".into() };
+        return if v > 0.0 {
+            "1E+307".into()
+        } else {
+            "-1E+307".into()
+        };
     }
     if v.is_subnormal() {
         // Should not occur after band constraints; clamp to smallest normal.
-        return if v > 0.0 { "2.2250738585072014E-308".into() }
-               else { "-2.2250738585072014E-308".into() };
+        return if v > 0.0 {
+            "2.2250738585072014E-308".into()
+        } else {
+            "-2.2250738585072014E-308".into()
+        };
     }
     let mag = v.abs();
     if mag < 1e-4 || mag >= 1e16 {
@@ -525,7 +787,11 @@ fn fmt_num(v: f64) -> String {
 }
 
 fn build_formula(name: &str, args: &[f64]) -> String {
-    let parts = args.iter().map(|v| fmt_num(*v)).collect::<Vec<_>>().join(",");
+    let parts = args
+        .iter()
+        .map(|v| fmt_num(*v))
+        .collect::<Vec<_>>()
+        .join(",");
     format!("={name}({parts})")
 }
 
@@ -666,26 +932,44 @@ fn parse_args() -> Result<(PathBuf, usize, u64, usize), String> {
     let mut i = 1;
     while i < args.len() {
         match args[i].as_str() {
-            "--run-dir" => { i += 1; run_dir = args.get(i).map(PathBuf::from); }
+            "--run-dir" => {
+                i += 1;
+                run_dir = args.get(i).map(PathBuf::from);
+            }
             "--cases" => {
                 i += 1;
-                cases = args.get(i).ok_or("missing --cases")?.parse().map_err(|_| "bad --cases")?;
+                cases = args
+                    .get(i)
+                    .ok_or("missing --cases")?
+                    .parse()
+                    .map_err(|_| "bad --cases")?;
             }
             "--seed" => {
                 i += 1;
-                seed = args.get(i).ok_or("missing --seed")?.parse().map_err(|_| "bad --seed")?;
+                seed = args
+                    .get(i)
+                    .ok_or("missing --seed")?
+                    .parse()
+                    .map_err(|_| "bad --seed")?;
             }
             "--candidate-limit" => {
                 i += 1;
                 candidate_limit = args
-                    .get(i).ok_or("missing --candidate-limit")?
-                    .parse().map_err(|_| "bad --candidate-limit")?;
+                    .get(i)
+                    .ok_or("missing --candidate-limit")?
+                    .parse()
+                    .map_err(|_| "bad --candidate-limit")?;
             }
             _ => return Err(format!("unknown arg: {}", args[i])),
         }
         i += 1;
     }
-    Ok((run_dir.ok_or("missing --run-dir")?, cases, seed, candidate_limit))
+    Ok((
+        run_dir.ok_or("missing --run-dir")?,
+        cases,
+        seed,
+        candidate_limit,
+    ))
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -721,7 +1005,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         *by_area.entry(key.clone()).or_default() += 1;
 
         let must_select = ob.starts_with("out:err") || ob.starts_with("out:other");
-        if candidates.len() < candidate_limit && (must_select || selected_keys.insert(key.clone())) {
+        if candidates.len() < candidate_limit && (must_select || selected_keys.insert(key.clone()))
+        {
             selected_keys.insert(key.clone());
             let formula = build_formula(f.name, &args);
             candidates.push(CandidateRecord {
@@ -772,14 +1057,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "area_key_count": by_area.len(),
         "top_area_keys": top_areas,
     });
-    fs::write(run_dir.join("local_rollup.json"), serde_json::to_string_pretty(&local_rollup)?)?;
+    fs::write(
+        run_dir.join("local_rollup.json"),
+        serde_json::to_string_pretty(&local_rollup)?,
+    )?;
 
     let mut md = String::new();
     md.push_str("# Broad Scalar Explorer Trace\n\n");
     md.push_str(&format!("- Generated/evaluated locally: `{case_count}`\n"));
-    md.push_str(&format!("- Excel candidate samples selected: `{}`\n", candidates.len()));
+    md.push_str(&format!(
+        "- Excel candidate samples selected: `{}`\n",
+        candidates.len()
+    ));
     md.push_str(&format!("- Distinct coverage areas: `{}`\n", by_area.len()));
-    md.push_str(&format!("- Local throughput: `{:.2}` cases/sec\n", (case_count as f64) / elapsed.max(f64::MIN_POSITIVE)));
+    md.push_str(&format!(
+        "- Local throughput: `{:.2}` cases/sec\n",
+        (case_count as f64) / elapsed.max(f64::MIN_POSITIVE)
+    ));
     fs::write(run_dir.join("roadmap_trace.md"), md)?;
 
     println!(

@@ -26,3 +26,11 @@ path = "src/bin/array_tranche_local_eval.rs"
 [[bin]]
 name = "broad_scalar_explorer"
 path = "src/bin/broad_scalar_explorer.rs"
+
+[[bin]]
+name = "stat_distribution_explorer"
+path = "src/bin/stat_distribution_explorer.rs"
+
+[[bin]]
+name = "matrix_local_eval"
+path = "src/bin/matrix_local_eval.rs"

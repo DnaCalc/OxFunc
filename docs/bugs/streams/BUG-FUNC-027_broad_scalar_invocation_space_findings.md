@@ -230,6 +230,48 @@ closed. The CLASS-A* and CLASS-B* subclasses are unaffected because they
 turn on kind-drift or large-magnitude divergence rather than fine ULP
 counts.
 
+## 2026-05-10 W097 R-A Cell-Ref Re-Sweep Of CLASS-C*
+
+W097 R-A (`smart-fuzzer/planning/W097-R-A-broad-scalar-cell-ref-resweep.md`)
+re-replayed CLASS-C* across five additional fresh-seed cell-ref cycles
+(`broad-scalar-cycle-011-cellref` through `broad-scalar-cycle-015-cellref`)
+in addition to the reference run `broad-scalar-cycle-010-cellref`. The
+revised per-subclass measurement is:
+
+| Subclass | Direction        | Original ULP             | Re-measured (six cell-ref cycles) | Notes |
+| -------- | ---------------- | ------------------------ | ---------------------------------- | ----- |
+| `C1` GAMMA neg-non-int | **shrinks ~100x** | `237,441` (`-1.00012`); `110,592` (`-1.00061`) | `1,290` (`-1.00012`); `1,540` (`-1.00035`); max in band `2,050` | Kernel drift is real but two orders smaller; repair direction unchanged, urgency lowered |
+| `C2` MOD               | **persists**      | `9.84E9` (`-9.26E9, 1.86`)                      | max `9.51E10` (`9.65E9, -0.374`); median `2.95E5`               | Kernel drift confirmed; intermediate truncation in MOD substrate |
+| `C3` trig moderate-large | **grows**       | `1.31E7` (`TAN(797601.58)`)                    | max `3.34E12` (`COT/TAN/SEC/CSC` in `~10^5..10^6` band)         | Cody-Waite-vs-extended-π drift up to a full radian-band; repair scope widens |
+| `C3.h` (new) hyperbolic overflow | **new**     | n/a                                              | `COTH(x)` returns NaN locally / `±1` in Excel for `|x|>>700`    | Kind-class subclass; saturation guard analogous to CLASS-A3 |
+| `C4` ATANH near `±1`   | **stable**        | `1.48E13` (`ATANH(-0.999...9)`)                | `1.48E13` reproduced; max `1.48E13`; median `1`                 | log1p reformulation remains correct repair |
+| `C5` ACOTH/ACOSH near 1 | **broadens**     | `11,244` (`ACOTH(1.001)`)                      | `11,244` reproduced; new band `ACOTH(|x|>>1)` up to `1.20E14`   | Add `ACOTH(x) = ATANH(1/x)` series for large argument |
+
+Per-cycle rollups:
+
+| Cycle                            | Seed | Excel sampled | Matches | Unexpected |
+| -------------------------------- | ---: | ------------: | ------: | ---------: |
+| `broad-scalar-cycle-010-cellref` | `17` |         `600` |   `468` |      `132` |
+| `broad-scalar-cycle-011-cellref` | `23` |         `800` |   `593` |      `207` |
+| `broad-scalar-cycle-012-cellref` | `31` |         `800` |   `614` |      `186` |
+| `broad-scalar-cycle-013-cellref` | `41` |         `800` |   `602` |      `198` |
+| `broad-scalar-cycle-014-cellref` | `53` |         `800` |   `603` |      `197` |
+| `broad-scalar-cycle-015-cellref` | `61` |         `800` |   `601` |      `199` |
+
+Cell-ref `match-rate` is stable around `~75%` and unexpected-mismatch
+fraction is stable around `~25%` across all five fresh seeds, i.e.
+seed variance does not blur the underlying class structure.
+
+A new "OxFunc-more-accurate-than-Excel" pattern is now visible in the
+`unexpected_mismatch` channel: `26` rows across the six cycles are
+combinatorial functions where OxFunc returns the exact integer and
+Excel returns the integer `±1` ULP (e.g. `=COMBIN(23,10) → 1,144,066`
+local, `1,144,066.0000000002` in Excel; `=COMBIN(9,6) → 84` local,
+`83.99999999999999` in Excel; `=COMBINA(41,16) → 41,648,951,840,265`
+local, `41,648,951,840,265.01` in Excel; and similar for `COMBINA(9,6)`).
+These are not OxFunc bugs and are tracked as a follow-up classification
+helper rather than per-row triage in this stream.
+
 ## Evidence
 1. `smart-fuzzer/runs/broad-scalar-cycle-003/` (literal-text, plumbing-flagged)
 2. `smart-fuzzer/runs/broad-scalar-cycle-004/` (literal-text)
@@ -239,10 +281,16 @@ counts.
 6. `smart-fuzzer/runs/broad-scalar-cycle-008/` (literal-text)
 7. `smart-fuzzer/runs/broad-scalar-cycle-009/` (literal-text)
 8. `smart-fuzzer/runs/broad-scalar-cycle-010-cellref/` (cell-ref plumbing reference run)
-9. Run summary: `smart-fuzzer/planning/BROAD_SCALAR_EXPLORATION_2026-05-09.md`
-10. Plumbing rule: `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`
-11. Local explorer source: `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
-12. Driver: `smart-fuzzer/tools/Run-BroadScalarExploration.ps1`
+9. `smart-fuzzer/runs/broad-scalar-cycle-011-cellref/` (cell-ref, seed 23)
+10. `smart-fuzzer/runs/broad-scalar-cycle-012-cellref/` (cell-ref, seed 31)
+11. `smart-fuzzer/runs/broad-scalar-cycle-013-cellref/` (cell-ref, seed 41)
+12. `smart-fuzzer/runs/broad-scalar-cycle-014-cellref/` (cell-ref, seed 53)
+13. `smart-fuzzer/runs/broad-scalar-cycle-015-cellref/` (cell-ref, seed 61)
+14. W097 R-A tranche record: `smart-fuzzer/planning/W097-R-A-broad-scalar-cell-ref-resweep.md`
+15. Run summary: `smart-fuzzer/planning/BROAD_SCALAR_EXPLORATION_2026-05-09.md`
+16. Plumbing rule: `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`
+17. Local explorer source: `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
+18. Driver: `smart-fuzzer/tools/Run-BroadScalarExploration.ps1`
 
 ## Closure Checklist
 - [ ] CLASS-A1..A7 minimized into focused tests and repair landed

@@ -19,7 +19,13 @@ if ([string]::IsNullOrWhiteSpace($RunId)) {
     $RunId = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ") + "-pmt-ppmt-pilot"
 }
 
-$runnerVersion = "smart-fuzzer-pmt-ppmt-pilot/0.1.0"
+# Cell-ref Excel comparator plumbing lives in the shared CellRefBatch
+# module (W097 R-B). Numeric inputs are written via Range.Value2 so the
+# formula parser does not introduce any input-side encoding drift.
+$cellRefModulePath = Join-Path $RepoRoot "smart-fuzzer\tools\CellRefBatch.psm1"
+Import-Module $cellRefModulePath -Force
+
+$runnerVersion = "smart-fuzzer-pmt-ppmt-pilot/0.2.0-cellref"
 $runDir = Join-Path $RepoRoot ("smart-fuzzer\runs\" + $RunId)
 $caseDir = Join-Path $runDir "cases"
 $outcomeDir = Join-Path $runDir "outcomes"
@@ -27,6 +33,10 @@ $comparisonDir = Join-Path $runDir "comparisons"
 $failureDir = Join-Path $runDir "failure_packets"
 $logDir = Join-Path $runDir "logs"
 New-Item -ItemType Directory -Force -Path $runDir, $caseDir, $outcomeDir, $comparisonDir, $failureDir, $logDir | Out-Null
+
+if ($KeepWorkbook) {
+    Write-Warning "-KeepWorkbook is ignored by the cell-ref batch runner; no workbook artifact is emitted."
+}
 
 function Get-GitValue {
     param([string[]] $GitArgs)
@@ -89,13 +99,6 @@ function Add-JsonLine {
     }
 }
 
-function Get-F64BitsHex {
-    param([double] $Value)
-
-    $bits = [System.BitConverter]::ToUInt64([System.BitConverter]::GetBytes($Value), 0)
-    return ("0x{0:x16}" -f $bits)
-}
-
 function Convert-ExpressionToDouble {
     param([string] $Expression)
 
@@ -108,160 +111,6 @@ function Convert-ExpressionToDouble {
         throw "Unsupported numeric expression: $Expression"
     }
     return [double]::Parse($Expression.Trim(), $culture)
-}
-
-function Release-ComObject {
-    param([object] $Object)
-
-    if ($null -ne $Object -and [System.Runtime.InteropServices.Marshal]::IsComObject($Object)) {
-        [void] [System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($Object)
-    }
-}
-
-function Set-ExcelPropertyBestEffort {
-    param(
-        [object] $ExcelApplication,
-        [string] $PropertyName,
-        [object] $Value,
-        [System.Collections.IList] $Warnings
-    )
-
-    try {
-        $ExcelApplication.$PropertyName = $Value
-    }
-    catch {
-        $Warnings.Add(([ordered]@{
-            property = $PropertyName
-            message = $_.Exception.Message
-        })) | Out-Null
-    }
-}
-
-function New-FormulaArray {
-    param([object[]] $Cases)
-
-    $array = New-Object "object[,]" $Cases.Count, 1
-    for ($row = 0; $row -lt $Cases.Count; $row++) {
-        $array[$row, 0] = [string] $Cases[$row].formula_text
-    }
-    return ,$array
-}
-
-function New-ErrorTypeFormulaArray {
-    param([object[]] $Cases)
-
-    $array = New-Object "object[,]" $Cases.Count, 1
-    for ($row = 0; $row -lt $Cases.Count; $row++) {
-        $excelRow = $row + 1
-        $array[$row, 0] = "=IF(ISERROR(A$excelRow),ERROR.TYPE(A$excelRow),"""")"
-    }
-    return ,$array
-}
-
-function Get-ArrayCellValue {
-    param(
-        [object] $Values,
-        [int] $RowIndex
-    )
-
-    if ($Values -is [System.Array]) {
-        $lower0 = $Values.GetLowerBound(0)
-        $lower1 = $Values.GetLowerBound(1)
-        return $Values.GetValue($lower0 + $RowIndex, $lower1)
-    }
-    return $Values
-}
-
-function Convert-ExcelErrorTextToCode {
-    param([string] $Text)
-
-    switch ($Text) {
-        "#NULL!" { return "Null" }
-        "#DIV/0!" { return "Div0" }
-        "#VALUE!" { return "Value" }
-        "#REF!" { return "Ref" }
-        "#NAME?" { return "Name" }
-        "#NUM!" { return "Num" }
-        "#N/A" { return "NA" }
-        "#SPILL!" { return "Spill" }
-        "#CALC!" { return "Calc" }
-        default { return $null }
-    }
-}
-
-function Convert-ExcelErrorTypeToCode {
-    param([int] $ErrorType)
-
-    switch ($ErrorType) {
-        1 { return "Null" }
-        2 { return "Div0" }
-        3 { return "Value" }
-        4 { return "Ref" }
-        5 { return "Name" }
-        6 { return "Num" }
-        7 { return "NA" }
-        8 { return "GettingData" }
-        default { return "ExcelErrorType$ErrorType" }
-    }
-}
-
-function New-NumberOutcome {
-    param([double] $Value)
-
-    $bitsHex = Get-F64BitsHex $Value
-    return [ordered]@{
-        kind = "number"
-        value = $Value
-        bits_hex = $bitsHex
-        digest_payload = "number:$bitsHex"
-    }
-}
-
-function New-ErrorOutcome {
-    param([string] $Code)
-
-    return [ordered]@{
-        kind = "error"
-        code = $Code
-        digest_payload = "error:$Code"
-    }
-}
-
-function Convert-ExcelCellOutcome {
-    param(
-        [object] $Value,
-        [object] $ErrorType
-    )
-
-    if ($null -ne $ErrorType -and -not [string]::IsNullOrWhiteSpace([string] $ErrorType)) {
-        return New-ErrorOutcome (Convert-ExcelErrorTypeToCode ([int] [double] $ErrorType))
-    }
-
-    if ($null -eq $Value) {
-        return [ordered]@{
-            kind = "blank"
-            digest_payload = "blank:"
-        }
-    }
-
-    if ($Value -is [bool]) {
-        return [ordered]@{
-            kind = "logical"
-            value = [bool] $Value
-            digest_payload = "logical:$([bool] $Value)"
-        }
-    }
-
-    if ($Value -is [byte] -or $Value -is [int16] -or $Value -is [int32] -or $Value -is [int64] -or $Value -is [single] -or $Value -is [double] -or $Value -is [decimal]) {
-        return New-NumberOutcome ([double] $Value)
-    }
-
-    $textValue = [string] $Value
-    return [ordered]@{
-        kind = "text"
-        value = $textValue
-        digest_payload = "text:$textValue"
-    }
 }
 
 function Get-OutcomeDigest {
@@ -343,131 +192,45 @@ function New-PilotCases {
 
 function Invoke-ExcelEvaluation {
     param(
-        [object[]] $Cases,
-        [string] $WorkbookPath
+        [object[]] $Cases
     )
 
-    $excel = $null
-    $workbook = $null
-    $worksheet = $null
-    $range = $null
-    $errorRange = $null
-    $excelProcessId = $null
-    $warnings = New-Object System.Collections.ArrayList
-    $environment = [ordered]@{
-        excel_available = $false
-        excel_version = $null
-        excel_build = $null
-        workbook_compatibility = "unknown"
-        excel_setting_warnings = @()
+    $excelCandidates = @()
+    foreach ($case in $Cases) {
+        $excelCandidates += @{ function_name = [string] $case.function_name; args = @($case.args) }
     }
+    $batch = Invoke-ExcelCellRefBatch -Candidates $excelCandidates
 
-    try {
-        $excelProcessIdsBefore = @(Get-Process EXCEL -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })
-        $excel = New-Object -ComObject Excel.Application
-        $excelProcessIdsAfter = @(Get-Process EXCEL -ErrorAction SilentlyContinue | ForEach-Object { $_.Id })
-        $newExcelProcessIds = @($excelProcessIdsAfter | Where-Object { $excelProcessIdsBefore -notcontains $_ })
-        if ($newExcelProcessIds.Count -eq 1) {
-            $excelProcessId = [int] $newExcelProcessIds[0]
-        }
-
-        Set-ExcelPropertyBestEffort -ExcelApplication $excel -PropertyName "Visible" -Value $false -Warnings $warnings
-        Set-ExcelPropertyBestEffort -ExcelApplication $excel -PropertyName "DisplayAlerts" -Value $false -Warnings $warnings
-        Set-ExcelPropertyBestEffort -ExcelApplication $excel -PropertyName "ScreenUpdating" -Value $false -Warnings $warnings
-        Set-ExcelPropertyBestEffort -ExcelApplication $excel -PropertyName "EnableEvents" -Value $false -Warnings $warnings
-        Set-ExcelPropertyBestEffort -ExcelApplication $excel -PropertyName "Calculation" -Value -4135 -Warnings $warnings
-
-        $environment.excel_available = $true
-        $environment.excel_version = [string] $excel.Version
-        try { $environment.excel_build = [string] $excel.Build } catch { $environment.excel_build = $null }
-        if ($warnings.Count -gt 0) {
-            $environment.excel_setting_warnings = @($warnings)
-        }
-
-        $workbook = $excel.Workbooks.Add()
-        $worksheet = $workbook.Worksheets.Item(1)
-        try { $environment.workbook_compatibility = [string] $workbook.CompatibilityVersion } catch { $environment.workbook_compatibility = "unknown" }
-        try { $worksheet.Columns.Item(1).ColumnWidth = 32 } catch {}
-
-        $formulas = New-FormulaArray $Cases
-        $errorFormulas = New-ErrorTypeFormulaArray $Cases
-        $anchor = $worksheet.Range("A1")
-        $range = $anchor.Resize($Cases.Count, 1)
-        Release-ComObject $anchor
-        $errorAnchor = $worksheet.Range("B1")
-        $errorRange = $errorAnchor.Resize($Cases.Count, 1)
-        Release-ComObject $errorAnchor
-        $range.Formula2 = $formulas
-        $errorRange.Formula2 = $errorFormulas
-        $calcAnchor = $worksheet.Range("A1")
-        $calcRange = $calcAnchor.Resize($Cases.Count, 2)
-        Release-ComObject $calcAnchor
-        [void] $calcRange.Calculate()
-        Release-ComObject $calcRange
-        $values = $range.Value2
-        $errorValues = $errorRange.Value2
-
-        $outcomes = New-Object System.Collections.ArrayList
-        for ($row = 0; $row -lt $Cases.Count; $row++) {
-            $value = Get-ArrayCellValue -Values $values -RowIndex $row
-            $errorType = Get-ArrayCellValue -Values $errorValues -RowIndex $row
-            $outcome = Convert-ExcelCellOutcome -Value $value -ErrorType $errorType
-            $outcomes.Add(([ordered]@{
-                schema_version = "oxfunc.smart_fuzzer.excel_outcome.v0"
-                case_id = [string] $Cases[$row].case_id
-                function_id = [string] $Cases[$row].function_id
-                evaluator_id = "excel.com.range_formula2_value2/0.1.0"
-                execution_status = "ok"
-                formula_text = [string] $Cases[$row].formula_text
-                excel_error_type = $errorType
-                outcome = $outcome
-            })) | Out-Null
-        }
-
-        if ($KeepWorkbook) {
-            [void] $workbook.SaveAs($WorkbookPath)
-        }
-
-        return [ordered]@{
-            blocked = $false
-            blocker = $null
-            environment = $environment
-            outcomes = @($outcomes)
-        }
-    }
-    catch {
-        $environment["blocker"] = $_.Exception.Message
+    $outcomes = New-Object System.Collections.ArrayList
+    if ($batch.blocked) {
         return [ordered]@{
             blocked = $true
-            blocker = $_.Exception.Message
-            environment = $environment
+            blocker = [string] $batch.blocker
+            environment = $batch.environment
             outcomes = @()
         }
     }
-    finally {
-        Release-ComObject $range
-        Release-ComObject $errorRange
-        if ($null -ne $workbook -and -not $KeepWorkbook) {
-            try { $workbook.Close($false) } catch {}
-        }
-        if ($null -ne $excel) {
-            try { $excel.Quit() } catch {}
-        }
-        Release-ComObject $worksheet
-        Release-ComObject $workbook
-        Release-ComObject $excel
-        [System.GC]::Collect()
-        [System.GC]::WaitForPendingFinalizers()
-        if ($null -ne $excelProcessId) {
-            $createdExcelProcess = Get-Process -Id $excelProcessId -ErrorAction SilentlyContinue
-            if ($null -ne $createdExcelProcess) {
-                try { $createdExcelProcess.WaitForExit(2000) | Out-Null } catch {}
-                $createdExcelProcess = Get-Process -Id $excelProcessId -ErrorAction SilentlyContinue
-                if ($null -ne $createdExcelProcess) {
-                    Stop-Process -Id $excelProcessId -Force -ErrorAction SilentlyContinue
-                }
-            }
-        }
+    for ($i = 0; $i -lt $Cases.Count; $i++) {
+        $case = $Cases[$i]
+        $outcome = $batch.outcomes[$i]
+        $excelErrorTypeMirror = $null
+        if ($outcome.kind -eq "error") { $excelErrorTypeMirror = $outcome.code }
+        $outcomes.Add(([ordered]@{
+            schema_version = "oxfunc.smart_fuzzer.excel_outcome.v0"
+            case_id = [string] $case.case_id
+            function_id = [string] $case.function_id
+            evaluator_id = "excel.com.cellref_batch/0.2.0"
+            execution_status = "ok"
+            formula_text = [string] $case.formula_text
+            excel_error_type = $excelErrorTypeMirror
+            outcome = $outcome
+        })) | Out-Null
+    }
+    return [ordered]@{
+        blocked = $false
+        blocker = $null
+        environment = $batch.environment
+        outcomes = @($outcomes)
     }
 }
 
@@ -492,15 +255,14 @@ foreach ($case in $cases) {
 
 $localWatch = [System.Diagnostics.Stopwatch]::StartNew()
 $localEvaluatorManifest = Join-Path $RepoRoot "smart-fuzzer\tools\pmt_ppmt_local_eval\Cargo.toml"
-& cargo run --quiet --manifest-path $localEvaluatorManifest -- --cases $casesPath --out $localOutcomesPath
+& cargo run --quiet --manifest-path $localEvaluatorManifest --bin pmt_ppmt_local_eval -- --cases $casesPath --out $localOutcomesPath
 if ($LASTEXITCODE -ne 0) {
     throw "Local PMT/PPMT evaluator failed with exit code $LASTEXITCODE"
 }
 $localWatch.Stop()
 
-$workbookPath = Join-Path $logDir "pmt-ppmt-pilot-workbook.xlsx"
 $excelWatch = [System.Diagnostics.Stopwatch]::StartNew()
-$excelResult = Invoke-ExcelEvaluation -Cases $cases -WorkbookPath $workbookPath
+$excelResult = Invoke-ExcelEvaluation -Cases $cases
 $excelWatch.Stop()
 
 $localById = @{}
@@ -663,6 +425,7 @@ $manifest = [ordered]@{
         host_os = [System.Environment]::OSVersion.VersionString
         rust_profile = "cargo run default dev profile for helper"
         excel = $excelResult.environment
+        excel_input_plumbing = "cell_value2"
         locale_profile = "en-US"
     }
     inputs = [ordered]@{
@@ -703,7 +466,7 @@ $rollup = [ordered]@{
         comparison_wall_seconds = $comparisonWatch.Elapsed.TotalSeconds
     }
     promotion_candidates = @($failurePackets)
-    workbook_path = if ($KeepWorkbook) { $workbookPath.Replace($RepoRoot + "\", "") } else { $null }
+    workbook_path = $null
 }
 if ($excelResult.blocked) {
     $rollup["blocker"] = $excelResult.blocker

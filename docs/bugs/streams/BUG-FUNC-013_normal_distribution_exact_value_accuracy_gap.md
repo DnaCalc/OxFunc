@@ -126,10 +126,52 @@
 ## Linked Reports
 1. `BUGREP-FUNC-017`
 
+## 2026-05-10 W097 R-G Cell-Ref Re-Sweep
+
+W097 R-G confirms BUG-FUNC-013 closure on the direct witnesses under
+cell-ref Excel input plumbing:
+
+| Witness                          | local                     | Excel                     |
+| -------------------------------- | ------------------------- | ------------------------- |
+| `=NORM.DIST(0, 0, 1, TRUE)`      | `0.5` (`0x3fe0000000000000`) | `0.5`                     |
+| `=NORM.INV(0.975, 0, 1)`         | `0x3fff5c0331eeff82`      | `0x3fff5c0331eeff82`      |
+| `=NORMSDIST(0)`                  | `0x3fe0000000000000`      | `0x3fe0000000000000`      |
+| `=NORMSINV(0.975)`               | `0x3fff5c0331eeff82`      | `0x3fff5c0331eeff82`      |
+| `=NORM.S.DIST(0, TRUE)`          | `0x3fe0000000000000`      | `0x3fe0000000000000`      |
+| `=NORM.S.INV(0.975)`             | `0x3fff5c0331eeff82`      | `0x3fff5c0331eeff82`      |
+| `=ERF(1)`                        | `0x3feaf767a741088b`      | `0x3feaf767a741088b`      |
+| `=ERFC(1)`                       | `0x3fc4226162fbddd5`      | `0x3fc4226162fbddd5`      |
+
+The four direct closure witnesses (`NORM.DIST`, `NORM.INV`,
+`NORMSDIST`, `NORMSINV`) plus the two `NORM.S.*` aliases plus
+`ERF(1)` / `ERFC(1)` all match Excel bit-for-bit. Closure remains
+tight on the direct surface.
+
+The bounded helper-adjacent rows pinned in Investigation Log item 6
+were re-checked. Two of them drift `1-2` ULP under cell-ref:
+
+| Witness         | local                | Excel                | ULP |
+| --------------- | -------------------- | -------------------- | --: |
+| `=GAUSS(1)`     | `0x3fd5d897a241a6fa` | `0x3fd5d897a241a6fc` | `2` |
+| `=PHI(0)`       | `0x3fd9884533d43650` | `0x3fd9884533d43651` | `1` |
+
+These are not the direct closure witnesses, so this stream is **not
+reopened in place**. The two helper-adjacent rows are recorded as a
+follow-up candidate for a successor `BUG-FUNC-NNN` if a downstream
+consumer needs bit-exact `GAUSS / PHI` parity. Absolute drift is
+`~2E-16` on values of order `0.34..`, which is unobservable in
+typical rendered output.
+
+Run record: `smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`.
+Tranche record:
+`smart-fuzzer/planning/W097-R-GH-closed-streams-cell-ref-resweep.md`.
+
 ## Evidence
 1. `crates/oxfunc_core/src/functions/normal_log_family.rs`
 2. `docs/function-lane/FUNCTION_SLICE_STATISTICAL_DISTRIBUTIONS_AND_COMPAT_B_CONTRACT_PRELIM.md`
 3. `docs/worksets/W086_NORMAL_DISTRIBUTION_EXACT_VALUE_ACCURACY.md`
+4. W097 R-G cell-ref confirmation:
+   `smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`
 
 ## Closure Checklist
 - [x] local fix implemented

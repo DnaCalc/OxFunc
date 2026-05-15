@@ -8,6 +8,9 @@ use crate::functions::adapters::{
     expand_aggregate_arg,
 };
 use crate::resolver::ReferenceResolver;
+use crate::semantic_kernel::{
+    NumericalReductionPolicy, SemanticKernelRuntimeError, reduce_numeric_sum,
+};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const SUM_META: FunctionMeta = FunctionMeta {
@@ -32,6 +35,7 @@ pub enum SumEvalError {
         actual: usize,
     },
     Coercion(CoercionError),
+    SemanticKernel(SemanticKernelRuntimeError),
 }
 
 fn accumulate_direct_scalar(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
@@ -64,9 +68,9 @@ fn accumulate_range_like(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
 pub fn eval_sum_prepared_aggregate(
     args: &[AggregatePreparedValue],
 ) -> Result<EvalValue, SumEvalError> {
-    let mut acc = 0.0;
+    let mut values = Vec::with_capacity(args.len());
     for item in args {
-        acc += match item.origin {
+        let value = match item.origin {
             AggregateArgOrigin::DirectScalar => {
                 accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?
             }
@@ -74,8 +78,11 @@ pub fn eval_sum_prepared_aggregate(
                 accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?
             }
         };
+        values.push(value);
     }
-    Ok(EvalValue::Number(acc))
+    reduce_numeric_sum(NumericalReductionPolicy::SequentialLeftFold, values)
+        .map(EvalValue::Number)
+        .map_err(SumEvalError::SemanticKernel)
 }
 
 pub fn eval_sum_surface(
@@ -103,6 +110,7 @@ pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
         SumEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         SumEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         SumEvalError::Coercion(_) => WorksheetErrorCode::Value,
+        SumEvalError::SemanticKernel(_) => WorksheetErrorCode::Value,
     }
 }
 
@@ -359,6 +367,27 @@ mod tests {
             &array,
             AggregateArrayProvenance::DirectArrayLiteral,
         );
+
+        let got = eval_sum_prepared_aggregate(&prepared);
+        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+    }
+
+    #[test]
+    fn eval_sum_exercises_sequential_left_fold_reduction_policy() {
+        let prepared = vec![
+            AggregatePreparedValue {
+                origin: AggregateArgOrigin::DirectScalar,
+                value: PreparedArgValue::Eval(EvalValue::Number(1.0e16)),
+            },
+            AggregatePreparedValue {
+                origin: AggregateArgOrigin::DirectScalar,
+                value: PreparedArgValue::Eval(EvalValue::Number(1.0)),
+            },
+            AggregatePreparedValue {
+                origin: AggregateArgOrigin::DirectScalar,
+                value: PreparedArgValue::Eval(EvalValue::Number(-1.0e16)),
+            },
+        ];
 
         let got = eval_sum_prepared_aggregate(&prepared);
         assert_eq!(got, Ok(EvalValue::Number(0.0)));

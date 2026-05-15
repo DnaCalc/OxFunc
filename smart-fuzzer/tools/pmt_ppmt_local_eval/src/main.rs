@@ -1,5 +1,5 @@
 use oxfunc_core::functions::surface_dispatch::{
-    eval_surface_value_call, FUNC_ID_PMT, FUNC_ID_PPMT,
+    FUNC_ID_PMT, FUNC_ID_PPMT, eval_surface_value_call,
 };
 use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
 use oxfunc_core::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
@@ -170,9 +170,8 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (cases_path, out_path) = parse_args().map_err(|message| {
-        std::io::Error::new(std::io::ErrorKind::InvalidInput, message)
-    })?;
+    let (cases_path, out_path) = parse_args()
+        .map_err(|message| std::io::Error::new(std::io::ErrorKind::InvalidInput, message))?;
 
     let input = BufReader::new(File::open(cases_path)?);
     let mut output = BufWriter::new(File::create(out_path)?);

@@ -49,6 +49,44 @@ Representative row:
    witness cells.
 4. Keep the comparison policy as `exact_typed_bit_match_no_tolerance`.
 
+## 2026-05-10 W097 R-F Cell-Ref Re-Sweep
+
+W097 R-F replayed the witness and a `45`-matrix band of 2x2 / 3x3 /
+4x4 random and structured matrices under cell-ref Excel input
+plumbing. Each result cell is read scalar-by-scalar via
+`INDEX(MINVERSE(<range>), r, c)`. Tranche record:
+`smart-fuzzer/planning/W097-R-F-minverse-cell-ref-resweep.md`.
+
+Witness `=MINVERSE({1,2;3,4})` reproduces bit-for-bit — three of the
+four result cells drift by exactly one ULP, the `(1,0)` cell is
+exact, matching the historical `BUG-FUNC-025` witness pair:
+
+| (r, c) | local bits             | Excel bits             | ULP   |
+| ------ | ---------------------- | ---------------------- | ----- |
+| (0, 0) | `0xbffffffffffffffe`   | `0xbfffffffffffffff`   | `1`   |
+| (0, 1) | `0x3feffffffffffffe`   | `0x3fefffffffffffff`   | `1`   |
+| (1, 0) | `0x3ff7ffffffffffff`   | `0x3ff7ffffffffffff`   | `0`   |
+| (1, 1) | `0xbfdfffffffffffff`   | `0xbfdffffffffffffe`   | `1`   |
+
+Per-kind summary across `45` matrices / `440` cells: matches `217`,
+drifts `223`, kind drift `0`, blocked `0`.
+
+Highlights:
+
+- **Identity and diagonal matrices** (any size): bit-exact across
+  every cell. Algorithm-choice impact zero.
+- **Random matrices** (well-conditioned): typically `0..7` ULP per
+  cell. One `4x4` random outlier reached `2050` ULP.
+- **Hilbert matrices**: drift grows with `n` — `22` ULP for `3x3`,
+  `352` ULP for `4x4`. This reflects condition-number amplification
+  of the Gauss-Jordan rounding-path delta, not a kernel bug.
+- **Diagonally-dominant matrices**: ~`1..2` ULP per cell.
+
+The R-F case set is the appropriate regression-validation gate when
+a future repair lands a different matrix-inversion substrate
+(LU-solve / Crout / Cholesky). Anything worse than the per-kind
+floor recorded above is a regression.
+
 ## Evidence
 1. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
 2. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
@@ -60,6 +98,15 @@ Representative row:
    - The same run also classified `=MINVERSE(5)` and `=MMULT(5,2)` as
      `adapter_or_seam_mismatch` under `HO-FN-010`, not as matrix-kernel repair
      targets.
+6. W097 R-F cell-ref re-replay:
+   - `smart-fuzzer/runs/W097-R-F-minverse-cellref/` (`45` matrices,
+     `440` per-cell comparisons; witness reproduced bit-for-bit;
+     per-kind drift floor recorded).
+   - Tranche record:
+     `smart-fuzzer/planning/W097-R-F-minverse-cell-ref-resweep.md`.
+   - Driver: `smart-fuzzer/tools/Run-MinverseResweep.ps1`.
+   - Local matrix evaluator:
+     `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/matrix_local_eval.rs`.
 
 ## Closure Checklist
 - [ ] fix landed or non-OxFunc ownership recorded

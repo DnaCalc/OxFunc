@@ -1,5 +1,5 @@
 use oxfunc_core::functions::surface_dispatch::{
-    eval_surface_value_call, FUNC_ID_IPMT, FUNC_ID_PMT, FUNC_ID_PPMT,
+    FUNC_ID_IPMT, FUNC_ID_PMT, FUNC_ID_PPMT, eval_surface_value_call,
 };
 use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
 use oxfunc_core::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
@@ -180,9 +180,15 @@ fn bucketed_nper(rng: &mut Lcg) -> (f64, &'static str) {
     match rng.choose_usize(6) {
         0 => ((1 + rng.choose_usize(12)) as f64, "nper:short_1_12"),
         1 => ((13 + rng.choose_usize(108)) as f64, "nper:medium_13_120"),
-        2 | 3 => ((121 + rng.choose_usize(360)) as f64, "nper:mortgage_121_480"),
+        2 | 3 => (
+            (121 + rng.choose_usize(360)) as f64,
+            "nper:mortgage_121_480",
+        ),
         4 => ((481 + rng.choose_usize(1520)) as f64, "nper:long_481_2000"),
-        _ => ((2001 + rng.choose_usize(7999)) as f64, "nper:very_long_2001_9999"),
+        _ => (
+            (2001 + rng.choose_usize(7999)) as f64,
+            "nper:very_long_2001_9999",
+        ),
     }
 }
 
@@ -216,7 +222,10 @@ fn bucketed_period(rng: &mut Lcg, nper: f64) -> (f64, &'static str) {
     let n = nper.max(1.0) as usize;
     match rng.choose_usize(8) {
         0 => (0.0, "period:zero_invalid"),
-        1 => ((n + 1 + rng.choose_usize(10)) as f64, "period:past_nper_invalid"),
+        1 => (
+            (n + 1 + rng.choose_usize(10)) as f64,
+            "period:past_nper_invalid",
+        ),
         2 | 3 => (1.0, "period:first"),
         4 => (((n + 1) / 2).max(1) as f64, "period:middle"),
         5 => (n as f64, "period:last"),
@@ -233,7 +242,11 @@ fn fmt_num(value: f64) -> String {
 }
 
 fn build_formula(function_name: &str, args: &[f64]) -> String {
-    let arg_text = args.iter().map(|v| fmt_num(*v)).collect::<Vec<_>>().join(",");
+    let arg_text = args
+        .iter()
+        .map(|v| fmt_num(*v))
+        .collect::<Vec<_>>()
+        .join(",");
     format!("={function_name}({arg_text})")
 }
 
@@ -255,7 +268,11 @@ fn generate_case(index: usize, rng: &mut Lcg) -> GeneratedCase {
     let (pv, pv_bucket) = bucketed_pv(rng);
     let (fv, fv_bucket) = bucketed_fv(rng);
     let payment_type = if rng.bool(192) { 1.0 } else { 0.0 };
-    let type_bucket = if payment_type == 1.0 { "type:beginning" } else { "type:end" };
+    let type_bucket = if payment_type == 1.0 {
+        "type:beginning"
+    } else {
+        "type:end"
+    };
 
     let mut coverage = vec![
         format!("function:{function_name}"),
@@ -417,8 +434,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let key = candidate_key(&case, &outcome);
         increment(&mut by_area, &key);
-        let must_select = index < 3 || key.contains("outcome:error") || key.contains("rate:known_witness_neighborhood");
-        if candidates.len() < candidate_limit && (must_select || selected_keys.insert(key.clone())) {
+        let must_select = index < 3
+            || key.contains("outcome:error")
+            || key.contains("rate:known_witness_neighborhood");
+        if candidates.len() < candidate_limit && (must_select || selected_keys.insert(key.clone()))
+        {
             selected_keys.insert(key.clone());
             candidates.push(CandidateRecord {
                 schema_version: "oxfunc.smart_fuzzer.expanded_candidate.v0",
@@ -503,12 +523,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     md.push_str("2. Arities: PMT `3`/`5`, PPMT/IPMT `4`/`6`.\n");
     md.push_str("3. Rates: zero, tiny positive, ordinary monthly/quarterly, negative small, large positive, known witness neighborhood.\n");
     md.push_str("4. Horizons: short, medium, mortgage-like, long, very long.\n");
-    md.push_str("5. Amounts: zero/small/ordinary/large/huge PV with both signs, zero and nonzero FV.\n");
+    md.push_str(
+        "5. Amounts: zero/small/ordinary/large/huge PV with both signs, zero and nonzero FV.\n",
+    );
     md.push_str("6. Timing and period lanes: end/beginning timing, invalid periods, first/middle/last/interior periods.\n\n");
     md.push_str("## Local Summary\n\n");
     md.push_str(&format!("- Generated/evaluated locally: `{case_count}`\n"));
-    md.push_str(&format!("- Excel candidate samples selected: `{}`\n", candidates.len()));
-    md.push_str(&format!("- Local throughput: `{:.2}` cases/sec\n", (case_count as f64) / elapsed.max(f64::MIN_POSITIVE)));
+    md.push_str(&format!(
+        "- Excel candidate samples selected: `{}`\n",
+        candidates.len()
+    ));
+    md.push_str(&format!(
+        "- Local throughput: `{:.2}` cases/sec\n",
+        (case_count as f64) / elapsed.max(f64::MIN_POSITIVE)
+    ));
     md.push_str("- Known PMT/PPMT/IPMT non-zero-rate exactness drift is treated as expected reference behavior for this run.\n");
     fs::write(run_dir.join("roadmap_trace.md"), md)?;
 

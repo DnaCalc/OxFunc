@@ -331,7 +331,9 @@ fn input_to_eval_value(input: &JsonValue) -> Result<EvalValue, String> {
                 .ok_or_else(|| "error input has non-string code".to_string())?;
             Ok(EvalValue::Error(parse_worksheet_error_code(code)?))
         }
-        "array" => Ok(EvalValue::Array(input_to_array(input_field(input, "rows")?)?)),
+        "array" => Ok(EvalValue::Array(input_to_array(input_field(
+            input, "rows",
+        )?)?)),
         "empty_cell" => Ok(EvalValue::Array(
             EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]])
                 .ok_or_else(|| "invalid empty-cell fixture shape".to_string())?,

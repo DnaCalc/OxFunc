@@ -1,6 +1,10 @@
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
+use crate::capability::{
+    CapabilitySetMismatch, ensure_capability_superset, sorted_stable_key_join,
+    webimage_producer_capability_set_keys,
+};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -61,10 +65,18 @@ pub struct RegistryFunctionMeta {
     pub kernel_signature_class: KernelSignatureClass,
     pub fec_dependency_profile: FecDependencyProfile,
     pub surface_fec_dependency_profile: FecDependencyProfile,
+    pub semantic_kernel_metadata: SemanticKernelMetadata,
+    pub semantic_kernel_metadata_version: String,
+    pub arg_admission_metadata: ArgAdmissionMetadata,
+    pub arg_admission_metadata_version: String,
+    pub producer_capability_set_keys: Vec<String>,
 }
 
 impl From<FunctionMeta> for RegistryFunctionMeta {
     fn from(meta: FunctionMeta) -> Self {
+        let semantic_kernel_metadata = semantic_kernel_metadata_for_id(meta.function_id);
+        let arg_admission_metadata =
+            ArgAdmissionMetadata::from_arg_preparation_profile(meta.arg_preparation_profile);
         Self {
             function_id: meta.function_id.to_string(),
             arity: meta.arity,
@@ -77,7 +89,99 @@ impl From<FunctionMeta> for RegistryFunctionMeta {
             kernel_signature_class: meta.kernel_signature_class,
             fec_dependency_profile: meta.fec_dependency_profile,
             surface_fec_dependency_profile: meta.surface_fec_dependency_profile,
+            semantic_kernel_metadata_version: semantic_kernel_metadata.version_key(),
+            semantic_kernel_metadata,
+            arg_admission_metadata_version: arg_admission_metadata.version_key(),
+            arg_admission_metadata,
+            producer_capability_set_keys: producer_capability_set_keys_for_id(meta.function_id),
         }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SemanticKernelMetadata {
+    pub reduction_sensitive: bool,
+    pub error_collapse_sensitive: bool,
+    pub numerical_reduction_policy: Option<String>,
+    pub error_algebra: Option<String>,
+}
+
+impl SemanticKernelMetadata {
+    pub fn version_key(&self) -> String {
+        format!(
+            "semantic_kernel_metadata.v1;reduction_sensitive={};error_collapse_sensitive={};numerical_reduction_policy={};error_algebra={}",
+            self.reduction_sensitive,
+            self.error_collapse_sensitive,
+            self.numerical_reduction_policy.as_deref().unwrap_or("none"),
+            self.error_algebra.as_deref().unwrap_or("none")
+        )
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ArgAdmissionMetadata {
+    ExistingArgPreparation {
+        profile: ArgPreparationProfile,
+    },
+    RichArgAccepted {
+        required_capability_set_keys: Vec<String>,
+    },
+    SparseRangeAccepted {
+        extent_class: String,
+        cardinality_class: String,
+    },
+}
+
+impl ArgAdmissionMetadata {
+    pub fn from_arg_preparation_profile(profile: ArgPreparationProfile) -> Self {
+        Self::ExistingArgPreparation { profile }
+    }
+
+    pub fn version_key(&self) -> String {
+        match self {
+            Self::ExistingArgPreparation { profile } => {
+                format!(
+                    "arg_admission_metadata.v1;existing_arg_preparation={}",
+                    arg_preparation_profile_key(*profile)
+                )
+            }
+            Self::RichArgAccepted {
+                required_capability_set_keys,
+            } => {
+                format!(
+                    "arg_admission_metadata.v1;rich_arg_accepted={}",
+                    sorted_stable_key_join(required_capability_set_keys)
+                )
+            }
+            Self::SparseRangeAccepted {
+                extent_class,
+                cardinality_class,
+            } => format!(
+                "arg_admission_metadata.v1;sparse_range_accepted;extent_class={extent_class};cardinality_class={cardinality_class}"
+            ),
+        }
+    }
+
+    pub fn validate_producer_capabilities(
+        &self,
+        producer_capability_set_keys: &[String],
+    ) -> Result<(), CapabilitySetMismatch> {
+        match self {
+            Self::RichArgAccepted {
+                required_capability_set_keys,
+            } => ensure_capability_superset(
+                required_capability_set_keys,
+                producer_capability_set_keys,
+            ),
+            Self::ExistingArgPreparation { .. } | Self::SparseRangeAccepted { .. } => Ok(()),
+        }
+    }
+}
+
+fn arg_preparation_profile_key(profile: ArgPreparationProfile) -> &'static str {
+    match profile {
+        ArgPreparationProfile::ValuesOnlyPreAdapter => "values_only_pre_adapter",
+        ArgPreparationProfile::RefsVisibleInAdapter => "refs_visible_in_adapter",
     }
 }
 
@@ -326,6 +430,93 @@ pub fn builtin_registry() -> &'static FunctionRegistry {
     REGISTRY.get_or_init(FunctionRegistry::built_ins)
 }
 
+pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
+    let mut out = String::from(
+        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,producer_capability_set_keys\n",
+    );
+
+    for entry in registry.iter() {
+        let (
+            arg_admission_profile,
+            rich_required_capability_set_keys,
+            sparse_extent_class,
+            sparse_cardinality_class,
+        ) = arg_admission_export_fields(&entry.meta.arg_admission_metadata);
+        out.push_str(&format!(
+            "{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            csv_escape(&entry.meta.function_id),
+            csv_escape(&entry.surface_name),
+            csv_escape(&entry.meta.semantic_kernel_metadata_version),
+            entry.meta.semantic_kernel_metadata.reduction_sensitive,
+            entry.meta.semantic_kernel_metadata.error_collapse_sensitive,
+            csv_escape(
+                entry
+                    .meta
+                    .semantic_kernel_metadata
+                    .numerical_reduction_policy
+                    .as_deref()
+                    .unwrap_or("")
+            ),
+            csv_escape(
+                entry
+                    .meta
+                    .semantic_kernel_metadata
+                    .error_algebra
+                    .as_deref()
+                    .unwrap_or("")
+            ),
+            csv_escape(&entry.meta.arg_admission_metadata_version),
+            csv_escape(&arg_admission_profile),
+            csv_escape(&rich_required_capability_set_keys),
+            csv_escape(&sparse_extent_class),
+            csv_escape(&sparse_cardinality_class),
+            csv_escape(&entry.meta.producer_capability_set_keys.join("|")),
+        ));
+    }
+
+    out
+}
+
+fn arg_admission_export_fields(
+    metadata: &ArgAdmissionMetadata,
+) -> (String, String, String, String) {
+    match metadata {
+        ArgAdmissionMetadata::ExistingArgPreparation { profile } => (
+            arg_preparation_profile_key(*profile).to_string(),
+            String::new(),
+            String::new(),
+            String::new(),
+        ),
+        ArgAdmissionMetadata::RichArgAccepted {
+            required_capability_set_keys,
+        } => (
+            "rich_arg_accepted".to_string(),
+            sorted_stable_key_join(required_capability_set_keys),
+            String::new(),
+            String::new(),
+        ),
+        ArgAdmissionMetadata::SparseRangeAccepted {
+            extent_class,
+            cardinality_class,
+        } => (
+            "sparse_range_accepted".to_string(),
+            String::new(),
+            extent_class.clone(),
+            cardinality_class.clone(),
+        ),
+    }
+}
+
+fn csv_escape(field: &str) -> String {
+    let needs_quotes = field.contains(',') || field.contains('"') || field.contains('\n');
+    if !needs_quotes {
+        return field.to_string();
+    }
+
+    let escaped = field.replace('"', "\"\"");
+    format!("\"{escaped}\"")
+}
+
 fn scoped_entry<'a>(
     entry: &'a FunctionEntry,
     overlay: &CapabilityOverlay,
@@ -399,6 +590,84 @@ fn canonical_surface_name(function_id: &str) -> &str {
     function_id.strip_prefix("FUNC.").unwrap_or(function_id)
 }
 
+fn semantic_kernel_metadata_for_id(function_id: &str) -> SemanticKernelMetadata {
+    let reduction_sensitive = is_reduction_sensitive_function(function_id);
+    let error_collapse_sensitive =
+        reduction_sensitive || is_error_collapse_sensitive_function(function_id);
+    SemanticKernelMetadata {
+        reduction_sensitive,
+        error_collapse_sensitive,
+        numerical_reduction_policy: reduction_sensitive.then(|| "SequentialLeftFold".to_string()),
+        error_algebra: error_collapse_sensitive.then(|| "CanonicalExcelLegacy".to_string()),
+    }
+}
+
+fn is_reduction_sensitive_function(function_id: &str) -> bool {
+    matches!(
+        function_id,
+        "FUNC.AGGREGATE"
+            | "FUNC.AVERAGE"
+            | "FUNC.AVERAGEA"
+            | "FUNC.AVERAGEIF"
+            | "FUNC.AVERAGEIFS"
+            | "FUNC.BYCOL"
+            | "FUNC.BYROW"
+            | "FUNC.COUNT"
+            | "FUNC.COUNTA"
+            | "FUNC.COUNTIF"
+            | "FUNC.COUNTIFS"
+            | "FUNC.DAVERAGE"
+            | "FUNC.DCOUNT"
+            | "FUNC.DCOUNTA"
+            | "FUNC.DMAX"
+            | "FUNC.DMIN"
+            | "FUNC.DPRODUCT"
+            | "FUNC.DSTDEV"
+            | "FUNC.DSTDEVP"
+            | "FUNC.DSUM"
+            | "FUNC.DVAR"
+            | "FUNC.DVARP"
+            | "FUNC.GROUPBY"
+            | "FUNC.MAP"
+            | "FUNC.MAX"
+            | "FUNC.MAXA"
+            | "FUNC.MAXIFS"
+            | "FUNC.MDETERM"
+            | "FUNC.MIN"
+            | "FUNC.MINA"
+            | "FUNC.MINIFS"
+            | "FUNC.MINVERSE"
+            | "FUNC.MMULT"
+            | "FUNC.PIVOTBY"
+            | "FUNC.PRODUCT"
+            | "FUNC.REDUCE"
+            | "FUNC.SCAN"
+            | "FUNC.SUBTOTAL"
+            | "FUNC.SUM"
+            | "FUNC.SUMIF"
+            | "FUNC.SUMIFS"
+            | "FUNC.SUMPRODUCT"
+            | "FUNC.SUMSQ"
+            | "FUNC.SUMX2MY2"
+            | "FUNC.SUMX2PY2"
+            | "FUNC.SUMXMY2"
+    )
+}
+
+fn is_error_collapse_sensitive_function(function_id: &str) -> bool {
+    matches!(
+        function_id,
+        "FUNC.CHOOSE" | "FUNC.IF" | "FUNC.IFS" | "FUNC.IFERROR" | "FUNC.IFNA" | "FUNC.SWITCH"
+    )
+}
+
+pub fn producer_capability_set_keys_for_id(function_id: &str) -> Vec<String> {
+    match function_id {
+        "FUNC.IMAGE" => webimage_producer_capability_set_keys(),
+        _ => Vec::new(),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -462,6 +731,180 @@ mod tests {
         assert_eq!(
             sum.registry_metadata.admission_interface_kind.as_deref(),
             Some("ordinary_call")
+        );
+    }
+
+    #[test]
+    fn reducer_registry_metadata_publishes_semantic_kernel_version() {
+        let sum = builtin_registry()
+            .lookup_by_surface_name("SUM")
+            .expect("SUM must exist in builtin registry");
+
+        assert!(sum.meta.semantic_kernel_metadata.reduction_sensitive);
+        assert!(sum.meta.semantic_kernel_metadata.error_collapse_sensitive);
+        assert_eq!(
+            sum.meta
+                .semantic_kernel_metadata
+                .numerical_reduction_policy
+                .as_deref(),
+            Some("SequentialLeftFold")
+        );
+        assert_eq!(
+            sum.meta.semantic_kernel_metadata.error_algebra.as_deref(),
+            Some("CanonicalExcelLegacy")
+        );
+        assert!(
+            sum.meta
+                .semantic_kernel_metadata_version
+                .contains("numerical_reduction_policy=SequentialLeftFold")
+        );
+    }
+
+    #[test]
+    fn selector_registry_metadata_publishes_error_algebra_without_reduction_policy() {
+        let if_entry = builtin_registry()
+            .lookup_by_surface_name("IF")
+            .expect("IF must exist in builtin registry");
+
+        assert!(!if_entry.meta.semantic_kernel_metadata.reduction_sensitive);
+        assert!(
+            if_entry
+                .meta
+                .semantic_kernel_metadata
+                .error_collapse_sensitive
+        );
+        assert_eq!(
+            if_entry
+                .meta
+                .semantic_kernel_metadata
+                .numerical_reduction_policy,
+            None
+        );
+        assert_eq!(
+            if_entry
+                .meta
+                .semantic_kernel_metadata
+                .error_algebra
+                .as_deref(),
+            Some("CanonicalExcelLegacy")
+        );
+    }
+
+    #[test]
+    fn semantic_kernel_version_changes_when_selector_metadata_changes() {
+        let baseline = semantic_kernel_metadata_for_id("FUNC.SUM");
+        let mut changed = baseline.clone();
+        changed.numerical_reduction_policy = Some("PairwiseTree".to_string());
+
+        assert_ne!(baseline.version_key(), changed.version_key());
+
+        let mut changed = baseline.clone();
+        changed.error_algebra = Some("CustomTestAlgebra".to_string());
+        assert_ne!(baseline.version_key(), changed.version_key());
+    }
+
+    #[test]
+    fn arg_admission_version_changes_when_admission_metadata_changes() {
+        let values_only = ArgAdmissionMetadata::from_arg_preparation_profile(
+            ArgPreparationProfile::ValuesOnlyPreAdapter,
+        );
+        let refs_visible = ArgAdmissionMetadata::from_arg_preparation_profile(
+            ArgPreparationProfile::RefsVisibleInAdapter,
+        );
+        let rich = ArgAdmissionMetadata::RichArgAccepted {
+            required_capability_set_keys: vec![
+                "Materialisable(target_class=published_fallback_text)".to_string(),
+                "Indexable(rank=1,index_type=rich_value_key,element_value_class=rich_value_data)"
+                    .to_string(),
+            ],
+        };
+
+        assert_ne!(values_only.version_key(), refs_visible.version_key());
+        assert_ne!(values_only.version_key(), rich.version_key());
+    }
+
+    #[test]
+    fn rich_arg_admission_metadata_validates_required_capability_keys() {
+        let rich = ArgAdmissionMetadata::RichArgAccepted {
+            required_capability_set_keys: vec![
+                "Materialisable(target_class=published_fallback_text)".to_string(),
+                "Indexable(rank=1,index_type=rich_value_key,element_value_class=rich_value_data)"
+                    .to_string(),
+            ],
+        };
+        let producer = producer_capability_set_keys_for_id("FUNC.IMAGE");
+
+        assert_eq!(rich.validate_producer_capabilities(&producer), Ok(()));
+
+        let missing = rich
+            .validate_producer_capabilities(&[
+                "Shaped(extent_class=webimage_kvp_record)".to_string()
+            ])
+            .expect_err("missing required capability key");
+        assert_eq!(
+            missing.missing_capability_set_keys,
+            vec![
+                "Indexable(rank=1,index_type=rich_value_key,element_value_class=rich_value_data)"
+                    .to_string(),
+                "Materialisable(target_class=published_fallback_text)".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn image_registry_entry_publishes_webimage_producer_capabilities() {
+        let image = builtin_registry()
+            .lookup_by_surface_name("IMAGE")
+            .expect("IMAGE must exist in builtin registry");
+
+        assert_eq!(
+            image.meta.arg_admission_metadata,
+            ArgAdmissionMetadata::ExistingArgPreparation {
+                profile: ArgPreparationProfile::ValuesOnlyPreAdapter
+            }
+        );
+        assert!(
+            image
+                .meta
+                .producer_capability_set_keys
+                .iter()
+                .any(|key| key.starts_with("Materialisable("))
+        );
+        assert!(
+            image
+                .meta
+                .producer_capability_set_keys
+                .iter()
+                .any(|key| key.starts_with("Indexable("))
+        );
+        assert!(
+            image
+                .meta
+                .producer_capability_set_keys
+                .iter()
+                .any(|key| key.starts_with("Shaped("))
+        );
+    }
+
+    #[test]
+    fn registry_metadata_csv_exports_version_and_capability_columns() {
+        let csv = render_registry_metadata_csv(builtin_registry());
+        let header = csv.lines().next().expect("csv header");
+        assert_eq!(
+            header,
+            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,producer_capability_set_keys"
+        );
+        assert!(
+            csv.contains("FUNC.SUM,SUM,semantic_kernel_metadata.v1;reduction_sensitive=true;error_collapse_sensitive=true;numerical_reduction_policy=SequentialLeftFold;error_algebra=CanonicalExcelLegacy,true,true,SequentialLeftFold,CanonicalExcelLegacy,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
+            "SUM row must publish semantic kernel metadata and versions"
+        );
+        assert!(
+            csv.contains("FUNC.IMAGE,IMAGE,semantic_kernel_metadata.v1;reduction_sensitive=false;error_collapse_sensitive=false;numerical_reduction_policy=none;error_algebra=none,false,false,,,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
+            "IMAGE row must remain ordinary arg admission"
+        );
+        assert!(
+            csv.contains("Materialisable(target_class=published_fallback_text)"),
+            "IMAGE row must publish webimage producer capabilities"
         );
     }
 
@@ -603,6 +1046,27 @@ mod tests {
                 kernel_signature_class: KernelSignatureClass::Custom,
                 fec_dependency_profile: FecDependencyProfile::None,
                 surface_fec_dependency_profile: FecDependencyProfile::None,
+                semantic_kernel_metadata: SemanticKernelMetadata {
+                    reduction_sensitive: false,
+                    error_collapse_sensitive: false,
+                    numerical_reduction_policy: None,
+                    error_algebra: None,
+                },
+                semantic_kernel_metadata_version: SemanticKernelMetadata {
+                    reduction_sensitive: false,
+                    error_collapse_sensitive: false,
+                    numerical_reduction_policy: None,
+                    error_algebra: None,
+                }
+                .version_key(),
+                arg_admission_metadata: ArgAdmissionMetadata::from_arg_preparation_profile(
+                    ArgPreparationProfile::ValuesOnlyPreAdapter,
+                ),
+                arg_admission_metadata_version: ArgAdmissionMetadata::from_arg_preparation_profile(
+                    ArgPreparationProfile::ValuesOnlyPreAdapter,
+                )
+                .version_key(),
+                producer_capability_set_keys: Vec::new(),
             },
             surface_name: surface_name.to_string(),
             display_signature: SignatureForm {

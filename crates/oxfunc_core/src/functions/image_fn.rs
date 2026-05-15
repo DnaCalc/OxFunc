@@ -1,3 +1,4 @@
+use crate::capability::webimage_producer_capability_set_keys;
 use crate::coercion::CoercionError;
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
@@ -36,6 +37,13 @@ const ALT_TEXT_KEY: &str = "AltText";
 const SIZING_KEY: &str = "Sizing";
 const HEIGHT_KEY: &str = "Height";
 const WIDTH_KEY: &str = "Width";
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExtendedImageResult {
+    pub value: ExtendedValue,
+    pub producer_capability_set_keys: Vec<String>,
+    pub exercised_capability_keys: Vec<String>,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ImageEvalError {
@@ -249,16 +257,32 @@ pub fn eval_image_surface_extended(
     resolver: &(impl ReferenceResolver + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ExtendedValue, ImageEvalError> {
+    eval_image_surface_extended_with_capabilities(args, resolver, host_info)
+        .map(|result| result.value)
+}
+
+pub fn eval_image_surface_extended_with_capabilities(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<ExtendedImageResult, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
     let provider = host_info.ok_or(ImageEvalError::HostInfoProviderMissing("image_provider"))?;
     let result = provider
         .query_image(&request)
         .map_err(ImageEvalError::HostInfo)?;
+    let producer_capability_set_keys = webimage_producer_capability_set_keys();
     Ok(match result {
-        ImageProviderResult::Image(image) => {
-            ExtendedValue::RichValue(Box::new(build_web_image_rich_value(&request, &image)))
-        }
-        other => ExtendedValue::Core(image_provider_error_value(&other)),
+        ImageProviderResult::Image(image) => ExtendedImageResult {
+            value: ExtendedValue::RichValue(Box::new(build_web_image_rich_value(&request, &image))),
+            exercised_capability_keys: producer_capability_set_keys.clone(),
+            producer_capability_set_keys,
+        },
+        other => ExtendedImageResult {
+            value: ExtendedValue::Core(image_provider_error_value(&other)),
+            producer_capability_set_keys: Vec::new(),
+            exercised_capability_keys: Vec::new(),
+        },
     })
 }
 
@@ -494,6 +518,38 @@ mod tests {
     }
 
     #[test]
+    fn image_extended_capability_result_reports_successful_producer_exercise() {
+        let provider = MockImageProvider {
+            result: ImageProviderResult::Image(ResolvedWebImage {
+                web_image_identifier: "img-1".to_string(),
+                published_fallback: ExcelText::from_interop_assignment("-2146826273"),
+            }),
+        };
+        let got = eval_image_surface_extended_with_capabilities(
+            &[text_arg("https://example.com/image.png")],
+            &MockResolver,
+            Some(&provider),
+        )
+        .expect("extended image with capability facts");
+
+        assert!(matches!(got.value, ExtendedValue::RichValue(_)));
+        assert!(
+            got.producer_capability_set_keys
+                .iter()
+                .any(|key| key.starts_with("Indexable("))
+        );
+        assert!(
+            got.exercised_capability_keys
+                .iter()
+                .any(|key| key.starts_with("Materialisable("))
+        );
+        assert_eq!(
+            got.producer_capability_set_keys,
+            got.exercised_capability_keys
+        );
+    }
+
+    #[test]
     fn image_extended_surface_maps_connect_failures() {
         let provider = MockImageProvider {
             result: ImageProviderResult::ConnectionFailed,
@@ -509,6 +565,26 @@ mod tests {
                 WorksheetErrorCode::Connect
             )))
         );
+    }
+
+    #[test]
+    fn image_extended_capability_result_does_not_claim_denied_provider_exercise() {
+        let provider = MockImageProvider {
+            result: ImageProviderResult::CapabilityDenied,
+        };
+        let got = eval_image_surface_extended_with_capabilities(
+            &[text_arg("https://example.com/image.png")],
+            &MockResolver,
+            Some(&provider),
+        )
+        .expect("denied image result");
+
+        assert_eq!(
+            got.value,
+            ExtendedValue::Core(EvalValue::Error(WorksheetErrorCode::Blocked))
+        );
+        assert!(got.producer_capability_set_keys.is_empty());
+        assert!(got.exercised_capability_keys.is_empty());
     }
 
     #[test]

@@ -75,6 +75,10 @@
    Excel returned a tiny numeric value or zero. These are recorded as adjacent
    evidence for the same blocked financial-payment exactness lane pending
    later investigation.
+5. 2026-05-10: W097 R-C cell-ref re-replay. Both runners refactored to
+   import `smart-fuzzer/tools/CellRefBatch.psm1` and pass numeric inputs
+   via `Range.Value2`. See "Cell-Ref Re-Replay" section below for the
+   per-function ULP histograms and the unexpected-mismatch escalation.
 
 ## Similar-Risk Scan
 ### Adjacent families to check
@@ -111,13 +115,79 @@
 ## Linked Reports
 1. `BUGREP-FUNC-019`
 
+## Cell-Ref Re-Replay (W097 R-C, 2026-05-10)
+
+Both runners (`Run-PmtPpmtPilot.ps1`, `Run-ExpandedFinanceExploration.ps1`)
+were refactored to consume the shared `CellRefBatch.psm1` so numeric
+inputs reach Excel via `Range.Value2` rather than formula-literal text.
+See `smart-fuzzer/planning/W097-R-C-pmt-ppmt-ipmt-cell-ref-resweep.md` for
+the full tranche record.
+
+### Pilot 28-case (cell-ref `Run-PmtPpmtPilot.ps1`)
+
+Run: `smart-fuzzer/runs/W097-R-C-pmt-ppmt-pilot-cellref/`. Match/
+mismatch counts identical to the literal-text `w088-pmt-ppmt-pilot`
+(`7` matches, `21` mismatches), and Excel-side `bits_hex` differences
+between literal-text and cell-ref are zero across all 28 rows. The
+pilot's short numeric literals round-trip correctly through Excel's
+parser, so the recorded BUG-FUNC-015 magnitudes for this surface are
+confirmed without revision.
+
+### Finance broad seed 1M-case (cell-ref `Run-ExpandedFinanceExploration.ps1`)
+
+Run: `smart-fuzzer/runs/W097-R-C-expanded-finance-1m-cellref/`.
+
+| Metric                    | `expanded-finance-10m-20260428` (literal-text) | R-C (cell-ref) |
+| ------------------------- | ---------------------------------------------: | -------------: |
+| Excel sampled             |                                          `640` |          `800` |
+| Match rate                |                                          `84%` |          `88%` |
+| Known PMT-family drift    |                                          `102` |           `92` |
+| Unexpected mismatches     |                                            `2` |            `2` |
+
+Per-function ULP histogram of the cell-ref `known_residual_pmt_family_kernel_drift`:
+
+| Function | rows | min ULP | median ULP | max ULP                |
+| -------- | ---: | ------: | ---------: | ---------------------: |
+| `PMT`    | `19` |     `0` |        `4` | `5.1E10`               |
+| `IPMT`   | `22` |     `0` |      `832` | `4.2E16`               |
+| `PPMT`   | `51` |     `0` |      `282` | `1.4E19` (saturating)  |
+
+The PMT median of `4` ULP confirms a small-magnitude drift floor that
+the literal-text run absorbed under `1e-12 * scale` tolerance. The
+IPMT and PPMT distributions are bimodal: a tight cluster near
+`0..1000` ULP and a long tail to `~10^16+` ULP for high-rate /
+long-horizon / huge-PV combinations.
+
+The two unexpected mismatches escalated from "expected drift" to a
+true kind-drift class because OxFunc returns `#NUM!` while Excel
+returns a finite tiny denormal:
+
+- `=PPMT(0.94202241811931720, 1147, 1600, 677560705614.16699...)` →
+  local `error:Num`, excel `-8.66E-120` (`0xa7365da0faa805b4`)
+- `=PPMT(0.65754274790347489, 475, 1992, 629739.80507821717765182)` →
+  local `error:Num`, excel `0` (`0x0000000000000000`)
+
+These are the same shape as the two adjacent witnesses already noted
+in Investigation Log item 4. They join the BUG-FUNC-015 repair scope
+as a kind-drift sub-class (PPMT high-rate / long-horizon / huge-PV
+should not raise `#NUM!` when Excel returns a finite value).
+
 ## Evidence
 1. `smart-fuzzer/tools/Run-PmtPpmtPilot.ps1`
-2. `smart-fuzzer/tools/pmt_ppmt_local_eval/`
-3. ignored local run artifacts under `smart-fuzzer/runs/w088-pmt-ppmt-pilot/`
-4. W092 reference replay:
+2. `smart-fuzzer/tools/Run-ExpandedFinanceExploration.ps1`
+3. `smart-fuzzer/tools/CellRefBatch.psm1`
+4. `smart-fuzzer/tools/pmt_ppmt_local_eval/`
+5. ignored local run artifacts under `smart-fuzzer/runs/w088-pmt-ppmt-pilot/`
+6. ignored local run artifacts under `smart-fuzzer/runs/expanded-finance-10m-20260428/`
+7. W092 reference replay:
    `smart-fuzzer/runs/w092-axis-known-reference-cycle-001/` records the PMT
    reference pair as `known_expected_deviation` under the axis-witness harness.
+8. W097 R-C cell-ref re-replay tranche record:
+   `smart-fuzzer/planning/W097-R-C-pmt-ppmt-ipmt-cell-ref-resweep.md`
+9. W097 R-C cell-ref pilot run:
+   `smart-fuzzer/runs/W097-R-C-pmt-ppmt-pilot-cellref/`
+10. W097 R-C cell-ref finance broad seed run:
+    `smart-fuzzer/runs/W097-R-C-expanded-finance-1m-cellref/`
 
 ## Closure Checklist
 - [ ] local fix implemented

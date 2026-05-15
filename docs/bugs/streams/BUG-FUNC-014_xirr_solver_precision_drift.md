@@ -172,10 +172,31 @@
 ## Linked Reports
 1. `BUGREP-FUNC-018`
 
+## 2026-05-10 W097 R-G Cell-Ref Re-Sweep
+
+W097 R-G confirms BUG-FUNC-014 closure under cell-ref Excel input
+plumbing. The pinned witness:
+
+```
+=XIRR({-10000, 2750, 4250, 3250, 2750}, {44927, 45108, 45292, 45473, 45658})
+```
+
+returns `0x3fcf4b8226666664` (≈ `0.24449183344840997`) bit-for-bit
+on both sides. Cashflow vector and date vector are both passed via
+`Range.Value2` ranges referenced from the formula
+(`=INDEX(XIRR(<vals>, <dates>), 1, 1)` for scalar extraction).
+Closure remains tight.
+
+Run record: `smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`.
+Tranche record:
+`smart-fuzzer/planning/W097-R-GH-closed-streams-cell-ref-resweep.md`.
+
 ## Evidence
 1. `crates/oxfunc_core/src/functions/cashflow_rate_family.rs`
 2. `docs/function-lane/W37_EXECUTION_RECORD.md`
 3. `docs/worksets/W087_XIRR_SOLVER_PRECISION_RECONCILIATION.md`
+4. W097 R-G cell-ref confirmation:
+   `smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`
 
 ## Closure Checklist
 - [x] local fix implemented

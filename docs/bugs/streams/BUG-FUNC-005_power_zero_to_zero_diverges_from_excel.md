@@ -139,6 +139,22 @@ fixed historical OxFunc bug rather than a current known deviation.
 ## Linked Reports
 1. `BUGREP-FUNC-007`
 
+## 2026-05-10 W097 R-H Cell-Ref Re-Sweep
+
+W097 R-H confirms BUG-FUNC-005 closure under cell-ref Excel input
+plumbing. All four canonical witnesses match Excel bit-for-bit:
+
+| Witness          | local       | Excel       |
+| ---------------- | ----------- | ----------- |
+| `=POWER(0, 0)`   | `error:Num` | `error:Num` |
+| `=POWER(0, -1)`  | `error:Div0`| `error:Div0`|
+| `=POWER(0, 1)`   | `0`         | `0`         |
+| `=POWER(1, 0)`   | `1`         | `1`         |
+
+Closure remains tight. Run record:
+`smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`. Tranche record:
+`smart-fuzzer/planning/W097-R-GH-closed-streams-cell-ref-resweep.md`.
+
 ## Evidence
 1. `crates/oxfunc_core/src/functions/power_fn.rs`
 2. `crates/oxfunc_core/src/functions/operator_arithmetic_family.rs`
@@ -146,6 +162,8 @@ fixed historical OxFunc bug rather than a current known deviation.
 4. `crates/oxfunc_core/tests/fixtures/oxfunc_adapter_function_corpus.json`
 5. `docs/function-lane/W45_WAVEA_OPERATOR_ARITHMETIC_SCENARIO_MANIFEST_SEED.csv`
 6. `formal/lean/OxFunc/Functions/PowerFn.lean`
+7. W097 R-H cell-ref confirmation:
+   `smart-fuzzer/runs/W097-R-GH-closed-streams-cellref/`
 
 ## Closure Checklist
 - [x] fix landed or non-OxFunc ownership recorded

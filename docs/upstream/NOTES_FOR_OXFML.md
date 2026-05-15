@@ -20,6 +20,94 @@ Current outbound promotion packet:
 Current reply-processing read:
 1. OxFml's mirrored packet now treats `HO-FN-004` as acceptable current shared freeze wording for the narrowed seam families.
 
+## 1.1 OxCalc W050 Receiving Decisions
+
+OxFunc has reviewed OxCalc `HANDOFF-CALC-003` and `HANDOFF-CALC-004` with
+OxFml's receiving receipts.
+
+Current OxFunc decisions:
+1. `CALC-003`: accept OxFunc ownership of reduction-sensitive and
+   error-collapse-sensitive kernel metadata, exact `NumericalReductionPolicy`
+   semantics, and exact `ErrorAlgebra` / worksheet-error precedence semantics.
+2. `CALC-004`: accept an OxFunc metadata/profile shape equivalent to
+   `RichArgAccepted(required_capability_set)`, accept sparse-reader admission
+   metadata as a successor lane, and defer rich/sparse execution activation.
+
+Reserved OxFunc metadata-version signals:
+1. `semantic_kernel_metadata_version`
+2. `arg_admission_metadata_version`
+
+Canonical OxFunc references:
+1. `docs/function-lane/OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md`
+2. `docs/handoffs/HANDOFF-CALC-003_OXFUNC_RECEIPT.md`
+3. `docs/handoffs/HANDOFF-CALC-004_OXFUNC_RECEIPT.md`
+
+Current OxFml-facing fields and shapes:
+1. Registry metadata CSV from `render_registry_metadata_csv(...)` / the
+   `emit_registry_metadata` bin exports:
+   `semantic_kernel_metadata_version`, `reduction_sensitive`,
+   `error_collapse_sensitive`, `numerical_reduction_policy`,
+   `error_algebra`, `arg_admission_metadata_version`,
+   `arg_admission_profile`, `rich_required_capability_set_keys`,
+   `sparse_extent_class`, `sparse_cardinality_class`, and
+   `producer_capability_set_keys`.
+2. `semantic_kernel_metadata_version` changes when reduction-sensitive
+   classification, error-collapse-sensitive classification,
+   `NumericalReductionPolicy`, or `ErrorAlgebra` metadata changes.
+3. `arg_admission_metadata_version` changes when ordinary argument
+   preparation metadata changes or when
+   `RichArgAccepted(required_capability_set_keys)` / sparse metadata changes.
+4. Rich-admission keys are stable strings sorted and deduplicated for identity;
+   the current Rust shape is
+   `ArgAdmissionMetadata::RichArgAccepted { required_capability_set_keys }`.
+5. `IMAGE` / `_webimage` producer keys are:
+   `Indexable(rank=1,index_type=rich_value_key,element_value_class=rich_value_data)`,
+   `Shaped(extent_class=webimage_kvp_record)`, and
+   `Materialisable(target_class=published_fallback_text)`.
+6. Adjacent runtime capability facts for `IMAGE` are exposed by
+   `eval_image_surface_extended_with_capabilities(...)` as
+   `producer_capability_set_keys` and `exercised_capability_keys`.
+
+Current implementation status:
+1. `SUM` prepared aggregate evaluation now exercises
+   `NumericalReductionPolicy::SequentialLeftFold`.
+2. `PairwiseTree` and `KahanCompensated` are explicit deferred runtime policy
+   results, not implied support.
+3. `ErrorAlgebra::CanonicalExcelLegacy` has a tested helper boundary; broad
+   selector/error-collapse wiring into every affected family remains in
+   progress pending function-specific evidence.
+4. Rich-argument mismatch timing is deterministic at admission/preparation
+   validation when a caller checks required keys against producer keys. No
+   current built-in consumes a rich argument.
+5. `IMAGE` successful rich results expose producer and exercised capability
+   facts through the adjacent runtime wrapper; provider failure and
+   capability-denied lanes do not claim exercised keys.
+6. Sparse-reader admission remains deferred; OxFml should not add sparse range
+   replay fields until OxFunc exposes a stable sparse reader API and runtime
+   boundary.
+
+Migration consequence for OxFml:
+1. Carry `semantic_kernel_metadata_version` and
+   `arg_admission_metadata_version` in prepared-package identity, runtime
+   artifacts, and replay artifacts.
+2. Treat either version changing as a prepared-package invalidation signal.
+3. Continue carrying registry-level `producer_capability_set_keys` for
+   `IMAGE`; when integrating the new OxFunc runtime wrapper, populate
+   `exercised_capability_keys` only from successful returned facts.
+4. Do not infer selector enforcement, rich-argument consumption, or sparse
+   support from metadata reservations alone.
+
+Current non-claims:
+1. no current OxFunc Rust kernel enforces `PairwiseTree` or
+   `KahanCompensated`,
+2. no broad per-family `ErrorAlgebra` conversion is claimed beyond the helper
+   boundary and exercised SUM reduction lane,
+3. no current `ArgPreparationProfile::RichArgAccepted` variant exists; the
+   Rust shape is `ArgAdmissionMetadata::RichArgAccepted`,
+4. no current sparse-reader profile or rich/sparse kernel execution is claimed,
+5. no generic rich producer protocol is claimed beyond `IMAGE` / `_webimage`
+   registry and adjacent runtime facts.
+
 ## 2. Current Summary
 
 Current OxFunc reading:

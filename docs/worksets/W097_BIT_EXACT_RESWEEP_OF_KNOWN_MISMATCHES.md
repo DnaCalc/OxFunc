@@ -1,6 +1,76 @@
 # W097 Bit-Exact Re-Sweep Of Known Mismatches
 
-Status: `proposed`
+Status: `complete`
+
+## Completion Note (2026-05-10)
+
+All seven tranche children of epic `oxf-ic1h` are tranche-complete.
+Per-tranche run records and per-stream evidence appendices:
+
+| Tranche | Bead       | Streams covered            | Run record |
+| ------- | ---------- | -------------------------- | ---------- |
+| `R-A`   | `oxf-ic1h.1` | `BUG-FUNC-027` CLASS-C*    | `smart-fuzzer/planning/W097-R-A-broad-scalar-cell-ref-resweep.md` |
+| `R-B`   | `oxf-ic1h.2` | (helper module landing)    | `smart-fuzzer/planning/W097-R-B-cellref-module-paired.md` |
+| `R-C`   | `oxf-ic1h.3` | `BUG-FUNC-015`             | `smart-fuzzer/planning/W097-R-C-pmt-ppmt-ipmt-cell-ref-resweep.md` |
+| `R-D`   | `oxf-ic1h.4` | `BUG-FUNC-021`             | `smart-fuzzer/planning/W097-R-D-stat-distribution-cell-ref-resweep.md` |
+| `R-E`   | `oxf-ic1h.5` | `BUG-FUNC-024`             | `smart-fuzzer/planning/W097-R-E-bessely-cell-ref-resweep.md` |
+| `R-F`   | `oxf-ic1h.6` | `BUG-FUNC-025`             | `smart-fuzzer/planning/W097-R-F-minverse-cell-ref-resweep.md` |
+| `R-G/H` | `oxf-ic1h.7` | `BUG-FUNC-005`, `-013`, `-014` | `smart-fuzzer/planning/W097-R-GH-closed-streams-cell-ref-resweep.md` |
+
+Helper module landed: `smart-fuzzer/tools/CellRefBatch.psm1`. Comparator
+runners refactored to consume it: `Run-BroadScalarExploration.ps1`,
+`Run-PmtPpmtPilot.ps1`, `Run-ExpandedFinanceExploration.ps1`. New
+runners that consume it directly: `Run-StatDistributionExploration.ps1`,
+`Run-BesselyResweep.ps1`, `Run-MinverseResweep.ps1`,
+`Run-ClosedStreamResweep.ps1`. New local Rust binaries:
+`stat_distribution_explorer`, `matrix_local_eval`.
+
+Refactor of `Run-ArraySupportTranche.ps1` (the formula-literal portion
+for non-integer cells) is not landed in this workset — that runner
+already mixes cell-`Value2` for fixtures with formula-text for inline
+arguments, and the comparator surfaces it drives are now better served
+by the per-stream re-sweep runners landed here. A separate workset
+should pick up the residual formula-literal cleanup if any of those
+surfaces is reopened.
+
+Findings summary across the seven tranches:
+
+1. `BUG-FUNC-005`, `BUG-FUNC-014` closures: confirmed bit-exact
+   under cell-ref. No follow-up.
+2. `BUG-FUNC-013` closure: direct witnesses confirmed bit-exact.
+   Two helper-adjacent rows (`GAUSS(1)`, `PHI(0)`) drift `1-2` ULP
+   under the sharper plumbing — recorded as a follow-up candidate
+   without reopening this stream in place.
+3. `BUG-FUNC-015` (PMT/PPMT/IPMT): pilot bit-for-bit identical to
+   literal-text reference. 1M-case finance broad-seed re-replay
+   produced per-function ULP histograms that tighten the recorded
+   magnitudes; two PPMT high-rate / huge-PV rows escalated from
+   "expected drift" to a kind-drift sub-class (PPMT returns `#NUM!`
+   where Excel returns a finite denormal).
+4. `BUG-FUNC-021` (statistical distributions): per-distribution ULP
+   histograms across `20` distributions, `800` Excel-sampled
+   candidates. `SKEW.P` and `PERCENTRANK` have no measurable drift
+   and can be dropped from scope. New `HYPGEOMDIST` domain sub-class
+   (`#NUM!` locally where Excel returns a finite probability) added
+   as a follow-up sub-bullet of the existing fix plan.
+5. `BUG-FUNC-024` (BESSELY): witness bit-for-bit reproduced; per-`n`
+   ULP histogram across an `(x, n)` band confirms the diagnosis
+   that the BESSELY drift surface is broad and large
+   (`10^6..10^12` ULP across most of the surface), supporting the
+   "substrate/algorithm only; do not patch this witness" repair
+   direction.
+6. `BUG-FUNC-025` (MINVERSE): witness bit-for-bit reproduced; per-cell
+   ULP measurements across `45` matrices (2x2 / 3x3 / 4x4) establish
+   a per-kind drift floor for future repair regression-validation.
+7. `BUG-FUNC-027` (broad scalar CLASS-C*): five fresh-seed cycles
+   (`011..015`) plus the reference `010` re-classified the
+   subclasses. CLASS-C1 (GAMMA) shrinks ~100x; CLASS-C2 (MOD)
+   persists; CLASS-C3 (trig) grows; CLASS-C4 (ATANH) stable;
+   CLASS-C5 (ACOTH/ACOSH) broadens. New CLASS-C3.h hyperbolic-
+   overflow saturation sub-class surfaced (COTH NaN-vs-saturated).
+   New "OxFunc-more-accurate-than-Excel" pattern surfaced for
+   integer combinatorics (COMBIN/COMBINA exact integer locally vs
+   `±1` ULP in Excel).
 
 ## 1. Purpose
 
@@ -104,12 +174,18 @@ Allocated epic and child beads in `.beads/`:
 
 ## 6. Status Axes
 
-- `scope_completeness`: `scope_partial` until every tranche has a
-  recorded re-replay run and an updated stream evidence section.
-- `target_completeness`: `target_partial`.
-- `integration_completeness`: `partial`.
-- `open_lanes`: helper module landing; per-tranche re-replays;
-  successor BUG-FUNC streams opened per finding.
+- `scope_completeness`: `scope_complete` for the W097 re-measurement scope.
+  Every tranche has a recorded re-replay run and updated stream evidence
+  section. `Run-ArraySupportTranche.ps1` partial refactor is deferred outside
+  W097 because that runner is no longer the active evidence path for these
+  stream surfaces.
+- `target_completeness`: `target_complete` for the declared W097
+  re-measurement target. Each affected `BUG-FUNC-*` stream has a
+  "Cell-Ref Re-Replay" evidence section appended.
+- `integration_completeness`: `integrated` for the W097 tooling and evidence
+  surface. Kernel repair was explicitly outside W097 scope.
+- `open_lanes`: none for the declared W097 re-measurement target. Follow-up
+  candidates are filed per the Completion Note finding bullets.
 
 ## 7. Doctrine Notes
 

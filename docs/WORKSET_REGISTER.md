@@ -760,6 +760,20 @@ It does mean:
    none unless reopened
 7. rollout_mode:
    `tracking_anchor`
+8. current receiving-side note:
+   OxFunc reviewed OxCalc W050 `HANDOFF-CALC-003` and `HANDOFF-CALC-004` on
+   2026-05-14 and updated the OxCalc-facing landing classification on
+   2026-05-15. Current code-backed evidence exists for registry metadata
+   versions, affected-kernel metadata, current-scope
+   `NumericalReductionPolicy::SequentialLeftFold` enforcement through `SUM`,
+   `IMAGE` / `_webimage` producer capability publication, and adjacent
+   `exercised_capability_keys` runtime facts. `ErrorAlgebra` broad
+   family-level enforcement, rich-argument consumers, generic rich producers,
+   pairwise/Kahan replay fields, and sparse range reader admission/replay
+   remain successor lanes. Canonical local surface:
+   `docs/function-lane/OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md`.
+   OxCalc-facing landing note:
+   `docs/upstream/NOTES_FOR_OXCALC.md`.
 
 ### W051 In-Scope Current-Version Not-Complete Surface
 1. purpose:
