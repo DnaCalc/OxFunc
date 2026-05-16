@@ -1,3 +1,4 @@
+use oxfunc_core::functions::rand_fn::RandomProvider;
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
 use oxfunc_core::resolver::{
     CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
@@ -24,7 +25,29 @@ struct CaseRecord {
     cell_fixture: Vec<FixtureRecord>,
     formula_cell: Option<String>,
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<String>,
+}
+
+struct FixedRandomProvider {
+    value: f64,
+}
+
+impl RandomProvider for FixedRandomProvider {
+    fn random_unit(&self) -> f64 {
+        self.value
+    }
+}
+
+static FIXED_RANDOM_PROVIDER_05: FixedRandomProvider = FixedRandomProvider { value: 0.5 };
+
+fn random_provider_for_case(
+    provider: Option<&str>,
+) -> Result<Option<&'static dyn RandomProvider>, String> {
+    match provider {
+        Some("fixed_0_5") => Ok(Some(&FIXED_RANDOM_PROVIDER_05)),
+        None => Ok(None),
+        Some(other) => Err(format!("unsupported random_provider '{other}'")),
+    }
 }
 
 #[derive(Debug)]
@@ -243,7 +266,7 @@ fn case_from_json(input: JsonValue) -> Result<CaseRecord, String> {
         cell_fixture,
         formula_cell: optional_string_field(&input, "formula_cell")?,
         now_serial: optional_f64_field(&input, "now_serial")?,
-        random_value: optional_f64_field(&input, "random_value")?,
+        random_provider: optional_string_field(&input, "random_provider")?,
     })
 }
 
@@ -597,13 +620,27 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
             };
         }
     };
+    let random_provider = match random_provider_for_case(case.random_provider.as_deref()) {
+        Ok(provider) => provider,
+        Err(message) => {
+            return OutcomeRecord {
+                schema_version: "oxfunc.smart_fuzzer.local_eval_outcome.v0",
+                case_id: case.case_id,
+                function_id: case.function_id,
+                formula_text: case.formula_text,
+                evaluator_id: "oxfunc_core.surface_dispatch.array_tranche_local_eval/0.1.0",
+                execution_status: "local_fixture_materialization_error",
+                outcome: harness_error_outcome(message),
+            };
+        }
+    };
     let eval_result = catch_unwind(AssertUnwindSafe(|| {
         eval_surface_value_call(
             &case.function_id,
             &args,
             &resolver,
             case.now_serial,
-            case.random_value,
+            random_provider,
             None,
             None,
         )

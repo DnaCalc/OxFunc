@@ -30,7 +30,7 @@ pub enum RandEvalError {
 
 pub fn eval_rand_surface(
     args: &[CallArgValue],
-    provider: &impl RandomProvider,
+    provider: &(impl RandomProvider + ?Sized),
 ) -> Result<EvalValue, RandEvalError> {
     if !RAND_META.arity.accepts(args.len()) {
         return Err(RandEvalError::ArityMismatch {

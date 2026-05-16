@@ -311,7 +311,7 @@ impl SurfaceCallSite {
             args,
             runtime.resolver,
             runtime.effective_now_serial(),
-            runtime.effective_random_value(),
+            runtime.random_provider,
             runtime.locale_ctx,
             runtime.host_info,
             runtime.callable_invoker,
@@ -348,7 +348,6 @@ pub struct SurfaceCallRuntime<'a, R: ReferenceResolver> {
     pub resolver: &'a R,
     pub now_serial: Option<f64>,
     pub now_provider: Option<&'a dyn NowProvider>,
-    pub random_value: Option<f64>,
     pub random_provider: Option<&'a dyn RandomProvider>,
     pub locale_ctx: Option<&'a LocaleFormatContext<'a>>,
     pub host_info: Option<&'a dyn HostInfoProvider>,
@@ -363,7 +362,6 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
             resolver,
             now_serial: None,
             now_provider: None,
-            random_value: None,
             random_provider: None,
             locale_ctx: None,
             host_info: None,
@@ -385,14 +383,7 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
         self
     }
 
-    pub fn with_random_value(mut self, random_value: f64) -> Self {
-        self.random_value = Some(random_value);
-        self.random_provider = None;
-        self
-    }
-
     pub fn with_random_provider(mut self, random_provider: &'a dyn RandomProvider) -> Self {
-        self.random_value = None;
         self.random_provider = Some(random_provider);
         self
     }
@@ -428,11 +419,6 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
     pub fn effective_now_serial(&self) -> Option<f64> {
         self.now_serial
             .or_else(|| self.now_provider.map(|provider| provider.now_serial()))
-    }
-
-    pub fn effective_random_value(&self) -> Option<f64> {
-        self.random_value
-            .or_else(|| self.random_provider.map(|provider| provider.random_unit()))
     }
 }
 
@@ -547,6 +533,13 @@ mod tests {
     struct TestHostInfoProvider;
     struct TestRtdProvider;
     struct TestRegisteredExternalProvider;
+    struct TestRandomProvider;
+
+    impl RandomProvider for TestRandomProvider {
+        fn random_unit(&self) -> f64 {
+            0.5
+        }
+    }
 
     impl ReferenceResolver for NoReferenceResolver {
         fn capabilities(&self) -> ResolverCapabilities {
@@ -673,10 +666,11 @@ mod tests {
         host_info: Option<&dyn HostInfoProvider>,
     ) {
         let resolver = NoReferenceResolver;
+        let random_provider = TestRandomProvider;
         let call_site = SurfaceCallSite::from_function_id(function_id).unwrap();
         let mut runtime = SurfaceCallRuntime::new(&resolver)
             .with_now_serial(46000.0)
-            .with_random_value(0.5);
+            .with_random_provider(&random_provider);
         runtime.callable_invoker = callable_invoker;
         runtime.host_info = host_info;
 
@@ -686,7 +680,7 @@ mod tests {
             args,
             &resolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&random_provider),
             None,
             host_info,
             callable_invoker,
@@ -704,10 +698,11 @@ mod tests {
         registered_external_provider: Option<&dyn RegisteredExternalProvider>,
     ) {
         let resolver = NoReferenceResolver;
+        let random_provider = TestRandomProvider;
         let call_site = SurfaceCallSite::from_function_id(function_id).unwrap();
         let mut runtime = SurfaceCallRuntime::new(&resolver)
             .with_now_serial(46000.0)
-            .with_random_value(0.5);
+            .with_random_provider(&random_provider);
         runtime.locale_ctx = locale_ctx;
         runtime.rtd_provider = rtd_provider;
         runtime.registered_external_provider = registered_external_provider;
@@ -718,7 +713,7 @@ mod tests {
             args,
             &resolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&random_provider),
             locale_ctx,
             None,
             None,

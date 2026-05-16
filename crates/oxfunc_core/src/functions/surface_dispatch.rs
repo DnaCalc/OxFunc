@@ -247,8 +247,8 @@ use crate::functions::median_fn::{eval_median_surface, map_median_error_to_ws};
 use crate::functions::min_fn::{eval_min_surface, map_min_error_to_ws};
 use crate::functions::mina_fn::{eval_mina_surface, map_mina_error_to_ws};
 use crate::functions::misc_conversion_family::{
-    RandomArrayProvider, eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface,
-    eval_percentof_surface, eval_randarray_surface, map_misc_conversion_error_to_ws,
+    eval_bahttext_surface, eval_convert_surface, eval_euroconvert_surface, eval_percentof_surface,
+    eval_randarray_surface, map_misc_conversion_error_to_ws,
 };
 use crate::functions::misc_switch_info_family::{
     eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
@@ -1055,22 +1055,6 @@ impl TodayProvider for FixedNowProvider {
     }
 }
 
-struct FixedRandomProvider {
-    value: f64,
-}
-
-impl RandomProvider for FixedRandomProvider {
-    fn random_unit(&self) -> f64 {
-        self.value
-    }
-}
-
-impl RandomArrayProvider for FixedRandomProvider {
-    fn random_unit(&self) -> f64 {
-        self.value
-    }
-}
-
 struct RejectingCallableInvoker;
 
 impl CallableInvoker for RejectingCallableInvoker {
@@ -1135,7 +1119,7 @@ pub fn eval_surface_value_call_with_dispatch_key(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
     callable_invoker: Option<&dyn CallableInvoker>,
@@ -1152,7 +1136,7 @@ pub fn eval_surface_value_call_with_dispatch_key(
             args,
             resolver,
             now_serial,
-            random_value,
+            random_provider,
             locale_ctx,
             host_info,
             callable_invoker,
@@ -2325,7 +2309,7 @@ pub fn eval_surface_value_call(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, WorksheetErrorCode> {
@@ -2334,7 +2318,7 @@ pub fn eval_surface_value_call(
         args,
         resolver,
         now_serial,
-        random_value,
+        random_provider,
         locale_ctx,
         host_info,
         None,
@@ -2348,7 +2332,7 @@ pub fn eval_surface_extended_call(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ExtendedValue, WorksheetErrorCode> {
@@ -2374,7 +2358,7 @@ pub fn eval_surface_extended_call(
             args,
             resolver,
             now_serial,
-            random_value,
+            random_provider,
             locale_ctx,
             host_info,
         )
@@ -2500,7 +2484,7 @@ fn try_observed_scalar_array_lift(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
     callable_invoker: &dyn CallableInvoker,
@@ -2559,7 +2543,7 @@ fn try_observed_scalar_array_lift(
                 &cell_args,
                 resolver,
                 now_serial,
-                random_value,
+                random_provider,
                 locale_ctx,
                 host_info,
                 Some(callable_invoker),
@@ -2585,7 +2569,7 @@ pub fn eval_surface_value_call_with_callable(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
     callable_invoker: Option<&dyn CallableInvoker>,
@@ -2599,7 +2583,7 @@ pub fn eval_surface_value_call_with_callable(
         args,
         resolver,
         now_serial,
-        random_value,
+        random_provider,
         locale_ctx,
         host_info,
         callable_invoker,
@@ -2695,7 +2679,11 @@ pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, Worksheet
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::{cell::RefCell, collections::HashMap, rc::Rc};
+    use std::{
+        cell::{Cell, RefCell},
+        collections::HashMap,
+        rc::Rc,
+    };
 
     use crate::functions::adapters::PreparedArgValue;
     use crate::host_info::{
@@ -2712,6 +2700,25 @@ mod tests {
     struct NoReferenceResolver;
 
     struct TestCallableInvoker;
+    struct TestRandomProvider;
+    struct SequenceRandomProvider {
+        next: Cell<u32>,
+    }
+    static TEST_RANDOM_PROVIDER: TestRandomProvider = TestRandomProvider;
+
+    impl RandomProvider for TestRandomProvider {
+        fn random_unit(&self) -> f64 {
+            0.5
+        }
+    }
+
+    impl RandomProvider for SequenceRandomProvider {
+        fn random_unit(&self) -> f64 {
+            let next = self.next.get();
+            self.next.set(next + 1);
+            next as f64 / 100.0
+        }
+    }
 
     type RegisteredCallable<'a> =
         Rc<dyn Fn(&[PreparedArgValue]) -> Result<PreparedArgValue, CallableInvocationError> + 'a>;
@@ -2790,7 +2797,7 @@ mod tests {
             args,
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -3109,7 +3116,7 @@ mod tests {
             args,
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(invoker),
@@ -3185,7 +3192,7 @@ mod tests {
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
                                 Some(46000.0),
-                                Some(0.5),
+                                Some(&TEST_RANDOM_PROVIDER),
                                 None,
                                 None,
                             )
@@ -3201,7 +3208,7 @@ mod tests {
                                 ],
                                 &NoReferenceResolver,
                                 Some(46000.0),
-                                Some(0.5),
+                                Some(&TEST_RANDOM_PROVIDER),
                                 Some(&ctx),
                                 None,
                             )
@@ -3239,7 +3246,7 @@ mod tests {
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
                                 Some(46000.0),
-                                Some(0.5),
+                                Some(&TEST_RANDOM_PROVIDER),
                                 None,
                                 None,
                             )
@@ -3255,7 +3262,7 @@ mod tests {
                                 ],
                                 &NoReferenceResolver,
                                 Some(46000.0),
-                                Some(0.5),
+                                Some(&TEST_RANDOM_PROVIDER),
                                 Some(&ctx),
                                 None,
                             )
@@ -3293,7 +3300,7 @@ mod tests {
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
                                 Some(46000.0),
-                                Some(0.5),
+                                Some(&TEST_RANDOM_PROVIDER),
                                 None,
                                 None,
                             )
@@ -3336,7 +3343,7 @@ mod tests {
             &[arg],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3354,7 +3361,7 @@ mod tests {
                 ],
                 &NoReferenceResolver,
                 Some(46000.0),
-                Some(0.5),
+                Some(&TEST_RANDOM_PROVIDER),
                 None,
                 None,
             );
@@ -3384,7 +3391,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3422,7 +3429,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3460,7 +3467,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3505,7 +3512,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3538,7 +3545,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3567,7 +3574,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3607,7 +3614,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3659,7 +3666,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3695,7 +3702,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3737,7 +3744,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3788,7 +3795,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3849,7 +3856,7 @@ mod tests {
             ))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3889,7 +3896,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3930,7 +3937,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3967,7 +3974,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -3992,7 +3999,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4009,7 +4016,7 @@ mod tests {
             })],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4031,7 +4038,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4046,7 +4053,7 @@ mod tests {
             &[arg],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4063,7 +4070,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4096,7 +4103,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -4134,7 +4141,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4172,7 +4179,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4221,7 +4228,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4232,7 +4239,7 @@ mod tests {
             &[CallArgValue::Eval(xmatch)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4246,7 +4253,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4257,7 +4264,7 @@ mod tests {
             &[CallArgValue::Eval(filtered)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4285,7 +4292,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Array(mapped))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4296,7 +4303,7 @@ mod tests {
             &[CallArgValue::Eval(iserror)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4310,7 +4317,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4321,7 +4328,7 @@ mod tests {
             &[CallArgValue::Eval(filtered)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4340,7 +4347,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4351,7 +4358,7 @@ mod tests {
             &[CallArgValue::Eval(serial)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4373,7 +4380,7 @@ mod tests {
             &[start_y, end_y, unit_y],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4394,7 +4401,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4409,7 +4416,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4427,7 +4434,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4437,7 +4444,7 @@ mod tests {
             &[CallArgValue::Eval(jan1.clone())],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4451,7 +4458,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4466,7 +4473,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4476,7 +4483,7 @@ mod tests {
             &[CallArgValue::Eval(dec30)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4494,7 +4501,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4510,7 +4517,7 @@ mod tests {
                     ],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -4518,7 +4525,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4533,7 +4540,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4549,7 +4556,7 @@ mod tests {
                     ],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -4557,7 +4564,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4572,7 +4579,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4588,7 +4595,7 @@ mod tests {
                     ],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -4596,7 +4603,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4622,7 +4629,7 @@ mod tests {
                                     ],
                                     &NoReferenceResolver,
                                     Some(46000.0),
-                                    Some(0.5),
+                                    Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
@@ -4632,7 +4639,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -4642,7 +4649,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4666,7 +4673,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4676,7 +4683,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Error(filtered_err))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4689,7 +4696,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4722,7 +4729,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4735,7 +4742,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4768,7 +4775,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4781,7 +4788,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4810,7 +4817,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4820,7 +4827,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Error(drop_err))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4853,7 +4860,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4863,7 +4870,7 @@ mod tests {
             &[CallArgValue::Eval(chosen)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4889,7 +4896,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -4902,7 +4909,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4924,7 +4931,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4941,7 +4948,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4960,7 +4967,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -4995,7 +5002,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5033,7 +5040,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5078,7 +5085,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5105,7 +5112,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5123,7 +5130,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5138,7 +5145,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5165,7 +5172,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5198,7 +5205,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5208,7 +5215,7 @@ mod tests {
             &[CallArgValue::Eval(data)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5223,7 +5230,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5240,7 +5247,7 @@ mod tests {
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
                 &NoReferenceResolver,
                 Some(46000.0),
-                Some(0.5),
+                Some(&TEST_RANDOM_PROVIDER),
                 None,
                 None,
             )
@@ -5255,7 +5262,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5268,7 +5275,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5282,7 +5289,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5308,7 +5315,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         );
@@ -5327,7 +5334,7 @@ mod tests {
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
                 &NoReferenceResolver,
                 Some(46000.0),
-                Some(0.5),
+                Some(&TEST_RANDOM_PROVIDER),
                 None,
                 None,
             )
@@ -5342,7 +5349,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5355,7 +5362,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5369,7 +5376,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5395,7 +5402,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         )
@@ -5405,7 +5412,7 @@ mod tests {
             &[CallArgValue::Eval(rendered)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5415,7 +5422,7 @@ mod tests {
             &[CallArgValue::Eval(trimmed)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5433,7 +5440,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5446,7 +5453,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5463,7 +5470,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5473,7 +5480,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5492,7 +5499,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5501,7 +5508,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5519,7 +5526,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -5536,7 +5543,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5560,7 +5567,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5586,7 +5593,7 @@ mod tests {
                                                 ],
                                                 &NoReferenceResolver,
                                                 Some(46000.0),
-                                                Some(0.5),
+                                                Some(&TEST_RANDOM_PROVIDER),
                                                 None,
                                                 None,
                                             )
@@ -5595,7 +5602,7 @@ mod tests {
                                     ],
                                     &NoReferenceResolver,
                                     Some(46000.0),
-                                    Some(0.5),
+                                    Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
@@ -5605,7 +5612,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5615,7 +5622,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         )
@@ -5629,7 +5636,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5651,7 +5658,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5664,7 +5671,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         );
@@ -5686,7 +5693,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5699,7 +5706,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5716,7 +5723,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5726,7 +5733,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5745,7 +5752,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5754,7 +5761,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5772,7 +5779,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -5788,7 +5795,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         )
@@ -5808,7 +5815,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5823,7 +5830,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5838,7 +5845,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5853,7 +5860,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5868,7 +5875,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5883,7 +5890,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5898,7 +5905,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5907,7 +5914,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -5930,7 +5937,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5943,7 +5950,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5957,7 +5964,7 @@ mod tests {
                         &[CallArgValue::Eval(first_day), CallArgValue::Eval(weekday)],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -5967,7 +5974,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -5991,7 +5998,7 @@ mod tests {
                                     ],
                                     &NoReferenceResolver,
                                     Some(46000.0),
-                                    Some(0.5),
+                                    Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
@@ -6000,7 +6007,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -6010,7 +6017,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6028,7 +6035,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -6041,7 +6048,7 @@ mod tests {
             &[CallArgValue::Eval(day_nums)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6059,7 +6066,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6072,7 +6079,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6082,7 +6089,7 @@ mod tests {
             &[CallArgValue::Eval(last_day)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6099,7 +6106,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -6109,7 +6116,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6119,7 +6126,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Number(42.0))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6140,7 +6147,7 @@ mod tests {
                                     ],
                                     &NoReferenceResolver,
                                     Some(46000.0),
-                                    Some(0.5),
+                                    Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
@@ -6160,7 +6167,7 @@ mod tests {
                                                 ],
                                                 &NoReferenceResolver,
                                                 Some(46000.0),
-                                                Some(0.5),
+                                                Some(&TEST_RANDOM_PROVIDER),
                                                 None,
                                                 None,
                                             )
@@ -6169,7 +6176,7 @@ mod tests {
                                     ],
                                     &NoReferenceResolver,
                                     Some(46000.0),
-                                    Some(0.5),
+                                    Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
@@ -6178,7 +6185,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -6190,7 +6197,7 @@ mod tests {
                         &[CallArgValue::Eval(grid), CallArgValue::Eval(offset)],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -6200,7 +6207,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6213,7 +6220,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6230,7 +6237,7 @@ mod tests {
                     ],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -6238,7 +6245,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6252,7 +6259,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Number(0.0))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6265,7 +6272,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6291,7 +6298,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6301,7 +6308,7 @@ mod tests {
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6314,7 +6321,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6327,7 +6334,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6341,7 +6348,7 @@ mod tests {
                         &[CallArgValue::Eval(squares)],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -6351,7 +6358,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6361,7 +6368,7 @@ mod tests {
             &[CallArgValue::Eval(variance)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6385,7 +6392,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6398,7 +6405,7 @@ mod tests {
                     &[CallArgValue::Eval(include)],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -6406,7 +6413,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6416,7 +6423,7 @@ mod tests {
             &[CallArgValue::Eval(coerced)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6436,7 +6443,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         );
@@ -6458,7 +6465,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6468,11 +6475,56 @@ mod tests {
             &[CallArgValue::Eval(generated)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
         assert_eq!(got, Ok(EvalValue::Number(3.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_randarray_consumes_one_random_draw_per_cell() {
+        let provider = SequenceRandomProvider { next: Cell::new(1) };
+        let got = eval_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            Some(&provider),
+            None,
+            None,
+        )
+        .expect("RANDARRAY result");
+
+        let EvalValue::Array(array) = got else {
+            panic!("expected array result");
+        };
+        assert_eq!(array.shape(), ArrayShape { rows: 5, cols: 5 });
+        let values = array.iter_row_major().cloned().collect::<Vec<_>>();
+        assert_eq!(values.first(), Some(&ArrayCellValue::Number(0.01)));
+        assert_eq!(values.get(12), Some(&ArrayCellValue::Number(0.13)));
+        assert_eq!(values.last(), Some(&ArrayCellValue::Number(0.25)));
+        assert_eq!(provider.next.get(), 26);
+    }
+
+    #[test]
+    fn eval_surface_value_call_randarray_requires_random_provider() {
+        let got = eval_surface_value_call(
+            FUNC_ID_RANDARRAY,
+            &[
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+                CallArgValue::Eval(EvalValue::Number(5.0)),
+            ],
+            &NoReferenceResolver,
+            Some(46000.0),
+            None,
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 
     #[test]
@@ -6484,7 +6536,7 @@ mod tests {
             &[CallArgValue::Eval(text.clone())],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6494,7 +6546,7 @@ mod tests {
             &[CallArgValue::Eval(length)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6508,7 +6560,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6521,7 +6573,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6534,7 +6586,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6544,7 +6596,7 @@ mod tests {
             &[CallArgValue::Eval(recovered)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
             None,
         )
@@ -6554,7 +6606,7 @@ mod tests {
             &[CallArgValue::Eval(numeric_text)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6568,7 +6620,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -6578,7 +6630,7 @@ mod tests {
             &[CallArgValue::Eval(digits)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -6609,7 +6661,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -6630,7 +6682,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
             Some(&TestCallableInvoker),
@@ -6643,7 +6695,7 @@ mod tests {
             &[CallArgValue::Eval(step2)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7108,7 +7160,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7122,7 +7174,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7458,7 +7510,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7472,7 +7524,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7486,7 +7538,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7503,7 +7555,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -7518,7 +7570,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -7527,7 +7579,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7537,7 +7589,7 @@ mod tests {
             &[CallArgValue::Eval(sumsq)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7551,7 +7603,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7564,7 +7616,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7587,7 +7639,7 @@ mod tests {
                         ],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -7596,7 +7648,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7610,7 +7662,7 @@ mod tests {
                         &[CallArgValue::Eval(dates)],
                         &NoReferenceResolver,
                         Some(46000.0),
-                        Some(0.5),
+                        Some(&TEST_RANDOM_PROVIDER),
                         None,
                         None,
                     )
@@ -7620,7 +7672,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7633,7 +7685,7 @@ mod tests {
                     &[CallArgValue::Eval(in_month)],
                     &NoReferenceResolver,
                     Some(46000.0),
-                    Some(0.5),
+                    Some(&TEST_RANDOM_PROVIDER),
                     None,
                     None,
                 )
@@ -7641,7 +7693,7 @@ mod tests {
             )],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         )
@@ -7651,7 +7703,7 @@ mod tests {
             &[CallArgValue::Eval(coerced)],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7682,7 +7734,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7702,7 +7754,7 @@ mod tests {
             &[],
             &NoReferenceResolver,
             Some(46000.25),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7722,7 +7774,7 @@ mod tests {
             &[],
             &NoReferenceResolver,
             Some(46000.75),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7747,7 +7799,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
@@ -7774,7 +7826,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             Some(&TestImageProvider),
         );
@@ -7801,7 +7853,7 @@ mod tests {
             ],
             &NoReferenceResolver,
             Some(46000.0),
-            Some(0.5),
+            Some(&TEST_RANDOM_PROVIDER),
             None,
             Some(&TestImageProvider),
         );

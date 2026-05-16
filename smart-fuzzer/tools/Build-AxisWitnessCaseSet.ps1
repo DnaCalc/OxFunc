@@ -126,7 +126,7 @@ function Add-AxisCase {
         [object]$CellFixture = @(),
         [string]$FormulaCell = "",
         [Nullable[double]]$NowSerial = $null,
-        [Nullable[double]]$RandomValue = $null,
+        [string]$RandomProvider = $null,
         [string[]]$KnownDeviationTags = @()
     )
 
@@ -151,7 +151,7 @@ function Add-AxisCase {
         cell_fixture = (New-JsonArray $CellFixture)
         formula_cell = if ([string]::IsNullOrWhiteSpace($FormulaCell)) { $null } else { $FormulaCell }
         now_serial = if ($null -eq $NowSerial) { $null } else { [double]$NowSerial }
-        random_value = if ($null -eq $RandomValue) { $null } else { [double]$RandomValue }
+        random_provider = if ([string]::IsNullOrWhiteSpace($RandomProvider)) { $null } else { $RandomProvider }
         coverage_tags = (New-JsonArray $CoverageTags)
         known_deviation_tags = (New-JsonArray $KnownDeviationTags)
         blocked_or_deferred_lanes = (New-JsonArray @())
@@ -179,7 +179,7 @@ function Add-AxisPair {
         -CellFixture $(if ($Control.ContainsKey("CellFixture")) { $Control.CellFixture } else { @() }) `
         -FormulaCell $(if ($Control.ContainsKey("FormulaCell")) { $Control.FormulaCell } else { "" }) `
         -NowSerial $(if ($Control.ContainsKey("NowSerial")) { $Control.NowSerial } else { $null }) `
-        -RandomValue $(if ($Control.ContainsKey("RandomValue")) { $Control.RandomValue } else { $null }) `
+        -RandomProvider $(if ($Control.ContainsKey("RandomProvider")) { $Control.RandomProvider } else { $null }) `
         -KnownDeviationTags $(if ($Control.ContainsKey("KnownDeviationTags")) { $Control.KnownDeviationTags } else { @() })
     Add-AxisCase -PairId $PairId -Role "variant" -AxisGroup $AxisGroup -AxisTag $AxisTag `
         -FunctionId $Variant.FunctionId -Name $Variant.Name -Formula $Variant.Formula `
@@ -187,7 +187,7 @@ function Add-AxisPair {
         -CellFixture $(if ($Variant.ContainsKey("CellFixture")) { $Variant.CellFixture } else { @() }) `
         -FormulaCell $(if ($Variant.ContainsKey("FormulaCell")) { $Variant.FormulaCell } else { "" }) `
         -NowSerial $(if ($Variant.ContainsKey("NowSerial")) { $Variant.NowSerial } else { $null }) `
-        -RandomValue $(if ($Variant.ContainsKey("RandomValue")) { $Variant.RandomValue } else { $null }) `
+        -RandomProvider $(if ($Variant.ContainsKey("RandomProvider")) { $Variant.RandomProvider } else { $null }) `
         -KnownDeviationTags $(if ($Variant.ContainsKey("KnownDeviationTags")) { $Variant.KnownDeviationTags } else { @() })
 }
 

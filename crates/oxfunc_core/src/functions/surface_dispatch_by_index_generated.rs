@@ -1162,23 +1162,20 @@ match dispatch_key.catalog_index {
                 .map_err(|e| map_quartile_exc_error_to_ws(&e)),
     // FUNC.RAND
     392 => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_rand_surface(args, &provider).map_err(|e| map_rand_error_to_ws(&e))
+                let provider = random_provider.ok_or(WorksheetErrorCode::Value)?;
+                eval_rand_surface(args, provider).map_err(|e| map_rand_error_to_ws(&e))
             }
             393 => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_randbetween_surface(args, resolver, &provider)
+                let provider = random_provider.ok_or(WorksheetErrorCode::Value)?;
+                eval_randbetween_surface(args, resolver, provider)
                     .map_err(|e| map_randbetween_error_to_ws(&e))
             }
             395 => eval_rate_surface(args, resolver)
                 .map_err(|e| map_financial_time_value_error_to_ws(&e)),
     // FUNC.RANDARRAY
     394 => {
-                let value = random_value.ok_or(WorksheetErrorCode::Value)?;
-                let provider = FixedRandomProvider { value };
-                eval_randarray_surface(args, resolver, &provider)
+                let provider = random_provider.ok_or(WorksheetErrorCode::Value)?;
+                eval_randarray_surface(args, resolver, provider)
                     .map_err(|e| map_misc_conversion_error_to_ws(&e))
             }
             396 => eval_reduce_surface(args, resolver, callable_invoker)

@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 
-use oxfml_core::format::current_excel_host_context;
+use oxfml_core::format::oxfml_current_excel_host_locale_context;
 use oxfml_core::interface::TypedContextQueryBundle;
 use oxfml_core::seam::Locus;
 use oxfml_core::semantics::{
@@ -12,6 +12,7 @@ use oxfml_core::semantics::{
 use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
+use oxfunc_core::functions::rand_fn::RandomProvider;
 use oxfunc_core::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
 
@@ -35,7 +36,27 @@ struct FixtureCase {
     expected_prepared_argument_structures: Option<Vec<String>>,
     expected_prepared_argument_sources: Option<Vec<String>>,
     now_serial: Option<f64>,
-    random_value: Option<f64>,
+    random_provider: Option<String>,
+}
+
+struct FixedRandomProvider {
+    value: f64,
+}
+
+impl RandomProvider for FixedRandomProvider {
+    fn random_unit(&self) -> f64 {
+        self.value
+    }
+}
+
+static FIXED_RANDOM_PROVIDER_05: FixedRandomProvider = FixedRandomProvider { value: 0.5 };
+
+fn random_provider_for_fixture(provider: Option<&str>) -> Option<&'static dyn RandomProvider> {
+    match provider {
+        Some("fixed_0_5") => Some(&FIXED_RANDOM_PROVIDER_05),
+        None => None,
+        Some(other) => panic!("unsupported fixture random provider {other}"),
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -60,7 +81,7 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
                 None,
                 None,
                 fixture.now_serial,
-                fixture.random_value,
+                random_provider_for_fixture(fixture.random_provider.as_deref()),
             ),
         );
         request.library_context_provider = Some(&provider);
@@ -221,7 +242,7 @@ fn randarray_columns_formula_preserves_generated_width_through_adapter() {
         "formula:randarray-columns-width",
         "=COLUMNS(RANDARRAY(5,3))".to_string(),
         locus(1, 1),
-        TypedContextQueryBundle::new(None, None, None, None, Some(0.5)),
+        TypedContextQueryBundle::new(None, None, None, None, Some(&FIXED_RANDOM_PROVIDER_05)),
     ))
     .expect("randarray columns adapter run");
 
@@ -332,7 +353,7 @@ fn ftc_0640_len_emoji_matches_one_through_adapter() {
 
 #[test]
 fn ftc_0696_text_serial_zero_date_format_matches_excel_compat_string_through_adapter() {
-    let locale = current_excel_host_context();
+    let locale = oxfml_current_excel_host_locale_context();
     let run = run_oxfunc_preparation_adapter(OxFuncAdapterRequest::new(
         "ftc-0696-text-serial-zero-date-format",
         "formula:ftc-0696-text-serial-zero-date-format",
@@ -1176,7 +1197,6 @@ fn test_snapshot(surface_name: &str) -> LibraryContextSnapshot {
             admission_interface_kind: Some("ordinary".to_string()),
             preparation_owner: Some("oxfunc".to_string()),
             runtime_boundary_kind: Some("ordinary_eval".to_string()),
-            arity_shape_note: None,
             interface_contract_ref: Some("iface:v1".to_string()),
             registration_source_kind: RegistrationSourceKind::BuiltIn,
             parse_bind_state: LibraryAvailabilityState::CatalogKnown,

@@ -47,7 +47,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
                 TypedContextQueryFamily::ReferenceResolver,
                 TypedContextQueryFamily::RegisteredExternal,
                 TypedContextQueryFamily::NowSerial,
-                TypedContextQueryFamily::RandomValue,
+                TypedContextQueryFamily::RandomProvider,
             ],
         }
     );

@@ -35,7 +35,7 @@ pub enum RandbetweenEvalError {
 }
 
 pub fn randbetween_kernel(
-    provider: &impl RandomProvider,
+    provider: &(impl RandomProvider + ?Sized),
     bottom: f64,
     top: f64,
 ) -> Result<EvalValue, RandbetweenEvalError> {
@@ -67,7 +67,7 @@ pub fn randbetween_kernel(
 pub fn eval_randbetween_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
-    provider: &impl RandomProvider,
+    provider: &(impl RandomProvider + ?Sized),
 ) -> Result<EvalValue, RandbetweenEvalError> {
     if !RANDBETWEEN_META.arity.accepts(args.len()) {
         return Err(RandbetweenEvalError::ArityMismatch {

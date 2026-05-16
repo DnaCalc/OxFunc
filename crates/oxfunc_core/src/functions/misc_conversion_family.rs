@@ -8,6 +8,7 @@ use crate::functions::adapters::{
     run_values_only_prepared,
 };
 use crate::functions::aggregate_common::sum_argument_value;
+use crate::functions::rand_fn::RandomProvider;
 use crate::resolver::ReferenceResolver;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
@@ -70,10 +71,6 @@ pub enum MiscConversionError {
     Coercion(CoercionError),
     Domain(WorksheetErrorCode),
     RandomProviderOutOfRange(f64),
-}
-
-pub trait RandomArrayProvider {
-    fn random_unit(&self) -> f64;
 }
 
 const THAI_DIGITS: [&str; 10] = [
@@ -540,7 +537,7 @@ fn validate_random_unit(value: f64) -> Result<f64, MiscConversionError> {
 }
 
 pub fn randarray_kernel(
-    provider: &impl RandomArrayProvider,
+    provider: &(impl RandomProvider + ?Sized),
     rows: usize,
     cols: usize,
     min: f64,
@@ -713,7 +710,7 @@ pub fn eval_percentof_surface(
 pub fn eval_randarray_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
-    provider: &impl RandomArrayProvider,
+    provider: &(impl RandomProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -785,7 +782,7 @@ mod tests {
         values: RefCell<VecDeque<f64>>,
     }
 
-    impl RandomArrayProvider for QueueRandomProvider {
+    impl RandomProvider for QueueRandomProvider {
         fn random_unit(&self) -> f64 {
             self.values
                 .borrow_mut()
