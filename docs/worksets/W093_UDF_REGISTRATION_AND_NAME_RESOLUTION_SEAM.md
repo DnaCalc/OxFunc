@@ -158,3 +158,61 @@ Initial status axes:
    mappings, registered-external reconciliation, registry snapshot integration,
    invocation-target descriptors, collision evidence, deterministic seam tests,
    and host-runtime follow-ons.
+
+## 2026-05-22 OxFunc Repo-Local Contract/API Tranche
+
+Reviewed inbound observations:
+`../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` now acknowledges `HO-FN-014` as
+the active W074 design lane for registry snapshot identity, name-resolution
+invalidation, UDF-vs-defined-name precedence, and migration from static
+built-in lookup to registry-backed formula-call binding.
+
+OxFunc repo-local changes:
+
+1. `crates/oxfunc_core/src/registry.rs` now exposes source-neutral W093
+   mutation packets for UDF registration and unregistration.
+2. Successful bind-visible mutations emit immutable
+   `FunctionRegistrySnapshotIdentity` and `RegistryChangeSet` values.
+3. Rejected mutations return typed `UdfRegistrationResult::Rejected` or
+   `UdfUnregistrationResult::Rejected` without advancing semantic snapshot
+   identity.
+4. Descriptor-only `REGISTER.ID` / `CALL` catalog changes are represented as a
+   change set with unchanged snapshot identity and
+   `descriptor_only_mutation = true`.
+5. `FunctionEntry` remains the callable worksheet surface descriptor, while
+   `UdfInvocationTargetDescriptor` stores XLL, VBA, JavaScript, Automation,
+   registered-external, or host-opaque invocation routing separately.
+6. `UdfOpaqueRuntimeValue` preserves `ReferenceLike` and host references as
+   opaque values. No TreeCalc-specific function branch or precedence rule was
+   introduced.
+7. Existing W091 `register_udf(FunctionEntry)` and `unregister_udf(function_id)`
+   APIs remain for current downstream callers.
+
+Guardrail response to OxFml coordinator report:
+
+1. The compile-blocking W093 helper symbols are present in
+   `registry.rs`: `stable_registry_fingerprint`, `typed_rejection`, and
+   `udf_entry_from_request`.
+2. The OxFunc-focused and registered-external integration checks compile and
+   pass after the local registry/test adjustments listed below.
+
+Validation evidence:
+
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib registry`:
+   passed, `24` passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed,
+   `1307` passed, `1` ignored.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_registered_external_interface_integration`:
+   passed, `3` passed.
+5. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+
+Status axes after this tranche:
+
+1. `execution_state`: `in_progress`
+2. `scope_completeness`: `scope_partial`
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: OxFml W074 formula-call registry lookup and invalidation,
+   Excel oracle precedence matrix, source-adapter implementations, broad UDF
+   execution semantics.

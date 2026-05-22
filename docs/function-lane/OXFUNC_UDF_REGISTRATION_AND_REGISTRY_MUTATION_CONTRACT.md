@@ -194,3 +194,71 @@ Status axes:
 4. `open_lanes`: Rust API implementation, OxFml consumer integration,
    registered-external reconciliation, source-adapter detail, invocation target
    descriptors, collision evidence, and deterministic replay evidence.
+
+## 2026-05-22 Repo-Local API Tranche
+
+OxFunc now exposes the first repo-local W093 registry mutation API tranche in
+`oxfunc_core::registry`.
+
+Added Rust API surface:
+
+1. `UdfRegistrationRequest`
+2. `UdfRegistrationResult`
+3. `UdfUnregistrationResult`
+4. `UdfSourceKind`
+5. `UdfExecutionProfile`
+6. `UdfInvocationTargetDescriptor`
+7. `UdfOpaqueRuntimeValue`
+8. `UdfReplacementPolicy`
+9. `RegistryChangeSet`
+10. `FunctionRegistrySnapshotIdentity`
+11. `UdfRegistrationRejection` and `UdfRegistrationRejectionCode`
+
+Runtime behavior exercised locally:
+
+1. successful bind-visible UDF registration advances the immutable registry
+   snapshot identity and emits a `RegistryChangeSet`;
+2. typed registration rejection preserves the current snapshot identity;
+3. same-source registration update replaces callable surface metadata and
+   reports changed surface names;
+4. UDF unregister by source registration id removes the entry, removes the
+   invocation target, advances snapshot identity, and emits removed function ids;
+5. descriptor-only registered-external mutation can emit a change set whose
+   previous and new snapshot identities are identical and whose
+   `descriptor_only_mutation` flag is true;
+6. capability overlays remain projections and do not delete registry entries;
+7. invocation targets are stored separately from `FunctionEntry` callable
+   surface metadata;
+8. `ReferenceLike` and host references can be carried as opaque invocation
+   target values without materialization or TreeCalc-specific branching.
+
+Compatibility note:
+
+1. Existing W091-era `FunctionRegistry::register_udf(FunctionEntry)` and
+   `FunctionRegistry::unregister_udf(function_id)` remain available for current
+   OxFml and DNA OneCalc consumers.
+2. The new W093 request/result methods are the future-facing mutation contract
+   for callers that need snapshot identity, change sets, and typed rejection
+   outcomes.
+
+Local evidence:
+
+1. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed,
+   `1307` passed, `1` ignored.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib registry`:
+   passed, `24` passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_registered_external_interface_integration`:
+   passed, `3` passed.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+
+Open lanes:
+
+1. OxFml W074 formula-call binding, cache invalidation, and registry snapshot
+   identity consumption remain downstream-owned.
+2. Excel oracle evidence for built-in/UDF/defined-name/defined-name-LAMBDA
+   precedence remains open.
+3. Source adapters for XLL, VBA, JavaScript custom functions, Automation, and
+   registered-external-backed UDFs still need source-specific implementation
+   and evidence beyond the source-neutral OxFunc API.
+4. Broad UDF execution semantics and host runtime implementation remain out of
+   scope for this tranche.

@@ -213,6 +213,27 @@ W093 design corrections after review:
 5. Collision/precedence and JavaScript custom-function metadata evidence are blockers before implementation promotion.
 6. OxFml migration must cover formula-call binding/evaluation, not only editor help/completion.
 
+### 2026-05-22 W093 OxFunc Repo-Local API Tranche
+
+OxFunc added source-neutral UDF registry mutation packets and tests in
+`oxfunc_core::registry`: `UdfRegistrationRequest`, typed registration and
+unregistration results, `FunctionRegistrySnapshotIdentity`, `RegistryChangeSet`,
+capability-aware execution profile fields, invocation-target descriptors kept
+separate from callable surface metadata, and opaque `ReferenceLike`/host
+reference carriers.
+
+Validation evidence:
+1. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib registry`: passed, `24` passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, `1307` passed, `1` ignored.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_registered_external_interface_integration`: passed, `3` passed.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: OxFml W074 formula-call registry lookup and invalidation, Excel oracle precedence matrix, source-adapter implementations, and broad UDF execution semantics.
+
 ### IP-21 Locale Profile Expansion
 - Current state: OxFunc-local target satisfied with follow-up lanes split. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, `LocaleProfileId::from_bcp47_language_tag(...)`, `LocaleProfileId::from_excel_lcid(...)`, short-date order/pattern facts, currency layout facts, and invariant format-code token-policy facts. Remaining work is tracked separately for downstream OxFml consumption, Excel storage/localized-function research, culture-profile seed mismatch triage, and broader locale semantic parity.
 - Canonical owner: [W094_LOCALE_PROFILE_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W094_LOCALE_PROFILE_EXPANSION.md), [HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md), and [locale_format.rs](C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\locale_format.rs).

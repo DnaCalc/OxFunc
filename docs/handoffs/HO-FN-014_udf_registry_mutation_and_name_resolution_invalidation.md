@@ -79,3 +79,50 @@ Status axes:
 4. `open_lanes`: OxFml acknowledgement, shared invalidation design,
    registered-external reconciliation, formula-call registry lookup migration,
    and first seam tests.
+
+## 2026-05-22 OxFunc API Update
+
+OxFunc has added the repo-local W093 mutation packet surface in
+`oxfunc_core::registry`:
+
+1. `FunctionRegistrySnapshotIdentity`
+2. `RegistryChangeSet`
+3. `UdfRegistrationRequest`
+4. `UdfRegistrationResult`
+5. `UdfUnregistrationResult`
+6. `UdfInvocationTargetDescriptor`
+7. typed rejection outcomes
+
+Clarifications for OxFml W074:
+
+1. Successful bind-visible UDF registration, same-source update, and unregister
+   advance the semantic registry snapshot identity and return a
+   `RegistryChangeSet`.
+2. Rejected mutations return typed rejection detail and do not advance semantic
+   snapshot identity.
+3. Descriptor-only `REGISTER.ID` / `CALL` mutation returns a change set with
+   unchanged snapshot identity and `descriptor_only_mutation = true`; this
+   supports targeted reevaluation instead of broad rebinding by default.
+4. Callable worksheet surface metadata remains in `FunctionEntry`; source
+   invocation routing remains in `UdfInvocationTargetDescriptor`.
+5. `ReferenceLike` and host reference carriers remain opaque inside invocation
+   target descriptors.
+6. No TreeCalc-specific name/call precedence branch has been added in OxFunc.
+
+Local checks:
+
+1. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib registry`:
+   passed, `24` passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_registered_external_interface_integration`:
+   passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+
+Remaining OxFml asks:
+
+1. consume the snapshot identity/change-set surface in W074 bind/editor/runtime
+   cache invalidation;
+2. keep formula-call binding migration registry-backed for UDF-aware contexts;
+3. record any OxFml-only metadata needed beyond the current
+   `RegistryChangeSet`;
+4. keep TreeCalc-specific namespace behavior out of the shared rule until Excel
+   precedence evidence or a separate host extension packet justifies it.

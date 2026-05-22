@@ -9,8 +9,7 @@ use oxfml_core::interface::{
 use oxfml_core::test_support::host::SingleFormulaHost;
 use oxfunc_core::functions::call_register_id_family::{
     RegisterIdRequest, RegisteredExternalDescriptor, RegisteredExternalOriginKind,
-    RegisteredExternalProvider, RegisteredExternalProviderError, RegisteredExternalTarget,
-    RegisteredProcedureSpec,
+    RegisteredExternalProvider, RegisteredExternalProviderError, RegisteredProcedureSpec,
 };
 use oxfunc_core::value::{CallArgValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike};
 
@@ -31,9 +30,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
         EvalValue::Number(4242.0)
     );
     assert_eq!(
-        register_output.evaluation.trace.prepared_calls[0]
-            .register_id_request
-            .as_ref(),
+        provider.last_resolve.borrow().as_ref(),
         Some(&sample_register_id_request(
             "Kernel32",
             "GetTickCount",
@@ -47,7 +44,6 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
                 TypedContextQueryFamily::ReferenceResolver,
                 TypedContextQueryFamily::RegisteredExternal,
                 TypedContextQueryFamily::NowSerial,
-                TypedContextQueryFamily::RandomProvider,
             ],
         }
     );
@@ -64,39 +60,32 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
         call_output.published_worksheet_value,
         EvalValue::Number(14.0)
     );
-    match call_output.evaluation.trace.prepared_calls[0]
-        .registered_external_call_request
-        .as_ref()
-        .expect("normalized call request")
-    {
-        oxfml_core::RegisteredExternalCallRequest {
-            target:
-                RegisteredExternalTarget::Direct(RegisterIdRequest {
-                    library_name,
-                    procedure: RegisteredProcedureSpec::Name(procedure),
-                    declared_type_text,
-                }),
-            invocation_args,
-        } => {
-            assert_eq!(library_name.to_string_lossy(), "Kernel32");
-            assert_eq!(procedure.to_string_lossy(), "MulDiv");
-            assert_eq!(
-                declared_type_text
-                    .as_ref()
-                    .map(|value| value.to_string_lossy()),
-                Some("JJJJ".to_string())
-            );
-            assert_eq!(
-                invocation_args.as_slice(),
-                [
-                    CallArgValue::Eval(EvalValue::Number(6.0)),
-                    CallArgValue::Eval(EvalValue::Number(7.0)),
-                    CallArgValue::Eval(EvalValue::Number(3.0)),
-                ]
-            );
-        }
-        other => panic!("unexpected normalized call request: {other:?}"),
-    }
+    let request = provider
+        .last_resolve
+        .borrow()
+        .clone()
+        .expect("call request");
+    assert_eq!(request.library_name.to_string_lossy(), "Kernel32");
+    assert_eq!(
+        request.procedure,
+        RegisteredProcedureSpec::Name(ExcelText::from_interop_assignment("MulDiv"))
+    );
+    assert_eq!(
+        request
+            .declared_type_text
+            .as_ref()
+            .map(|value| value.to_string_lossy()),
+        Some("JJJJ".to_string())
+    );
+    let (_, invocation_args) = provider.last_invoke.borrow().clone().expect("call invoke");
+    assert_eq!(
+        invocation_args.as_slice(),
+        [
+            CallArgValue::Eval(EvalValue::Number(6.0)),
+            CallArgValue::Eval(EvalValue::Number(7.0)),
+            CallArgValue::Eval(EvalValue::Number(3.0)),
+        ]
+    );
 }
 
 #[test]
