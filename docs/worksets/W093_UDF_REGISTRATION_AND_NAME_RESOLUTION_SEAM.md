@@ -216,3 +216,51 @@ Status axes after this tranche:
 5. `open_lanes`: OxFml W074 formula-call registry lookup and invalidation,
    Excel oracle precedence matrix, source-adapter implementations, broad UDF
    execution semantics.
+
+## 2026-05-22 Collision And Precedence Evidence Intake
+
+Clean-room evidence currently comes from OxFml `W074-CALC005` Excel COM 16.0
+oracle rows plus OxFunc local registry mutation tests.
+
+Evidence now available for W093:
+
+1. UDF versus defined-name call collision:
+   - `W074-CALC005-003` observes `=UDF(1)` with a VBA UDF and workbook
+     defined name `UDF=77` returning `#VALUE!`, while the control UDF call
+     without the defined-name collision returns `11`.
+   - W093 interpretation: the collision is an OxFml formula-name precedence
+     rule, not an OxFunc registry collision rule.
+2. UDF versus defined-name non-call collision:
+   - `W074-CALC005-004` observes bare `=UDF` resolving to the workbook defined
+     name value `77`.
+   - W093 interpretation: workbook/sheet defined names remain document/formula
+     environment state and must not be moved into the OxFunc function registry.
+3. Built-in versus defined-name contrast:
+   - `W074-CALC005-001` and `W074-CALC005-002` observe built-in `SUM(...)`
+     winning call-callee position while bare `=SUM` resolves to the workbook
+     defined name.
+   - W093 interpretation: built-in protection in OxFunc registry mutation is
+     still valid, but bare-name meaning belongs to OxFml name resolution.
+4. Late UDF registration and unregister:
+   - `W074-CALC005-012` observes late VBA UDF registration changing
+     `=LateUdf(2)` from `#NAME?` to `22`.
+   - `W074-CALC005-013` observes UDF removal returning to `#NAME?`.
+   - W093 interpretation: bind-visible registration/unregister must advance
+     registry snapshot identity and trigger OxFml bind/cache invalidation.
+5. UDF replacement/update by same source registration id:
+   - OxFunc registry tests exercise same-source update replacement,
+     same-source update rejection when it would collide with another UDF
+     surface, typed rejection without snapshot advancement, and unregister
+     change sets.
+   - W093 interpretation: this is an OxFunc registry mutation rule independent
+     of Excel name-world precedence.
+
+Still open after this intake:
+
+1. JavaScript namespaced custom-function collision behavior remains source
+   evidence work under `oxf-ypq2.9`.
+2. Broader workbook/sheet/UDF/defined-name combinations remain W074 oracle
+   work and are not frozen by this W093 intake.
+3. OxFml formula-call registry lookup and cache invalidation implementation
+   evidence remains `oxf-ypq2.12` / W074 work.
+4. Source-adapter implementations remain successor W093 work.

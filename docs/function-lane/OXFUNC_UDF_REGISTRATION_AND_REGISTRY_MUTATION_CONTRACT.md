@@ -262,3 +262,35 @@ Open lanes:
    and evidence beyond the source-neutral OxFunc API.
 4. Broad UDF execution semantics and host runtime implementation remain out of
    scope for this tranche.
+
+## 2026-05-22 Collision And Name-Precedence Evidence Intake
+
+W093 now has a bounded clean-room evidence intake for the first collision and
+name-precedence lanes.
+
+Observed or exercised:
+
+1. OxFml `W074-CALC005-003` / `004` observe that a workbook defined name can
+   win over a VBA UDF in both call-callee and non-call bare-name contexts.
+2. OxFml `W074-CALC005-001` / `002` observe the contrast that built-in
+   `SUM(...)` wins call-callee position while bare `=SUM` resolves to a
+   workbook defined name.
+3. OxFml `W074-CALC005-012` / `013` observe late UDF registration and removal
+   changing formula outcomes through registry/name-world invalidation.
+4. OxFunc registry tests exercise same-source UDF update, UDF surface
+   collision rejection, unregister change sets, typed rejection without
+   snapshot advancement, and descriptor-only mutation without snapshot
+   advancement.
+
+Contract consequences:
+
+1. OxFunc registry mutation must not encode formula name/call precedence.
+2. Built-in protection, same-source update, UDF-to-UDF collision rejection, and
+   typed rejection remain OxFunc registry rules.
+3. UDF-vs-defined-name and bare-name/call-callee precedence remain OxFml W074
+   rules over the registry snapshot plus host/document name world.
+4. Successful bind-visible UDF registration/unregistration remains a registry
+   snapshot/change-set event consumed by OxFml invalidation.
+5. JavaScript custom-function namespace/collision evidence is still open and
+   owned by the JavaScript metadata mapping bead before source-adapter
+   promotion.
