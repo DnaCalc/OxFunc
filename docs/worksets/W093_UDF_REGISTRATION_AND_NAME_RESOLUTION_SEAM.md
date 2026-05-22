@@ -104,6 +104,42 @@ Source adapters should map into that shape:
 4. Worksheet `REGISTER.ID` / `CALL` remains a registered-external descriptor
    and invocation seam unless friendly worksheet function metadata is supplied.
 
+## 5A. Public Source Mapping Evidence
+
+Current source evidence maps into the existing W093 request shape without adding
+new source kinds.
+
+| Source lane | Bind-visible UDF entry condition | `UdfSourceKind` | Source registration id | Invocation target |
+| --- | --- | --- | --- | --- |
+| XLL `xlfRegister` | Registration supplies worksheet-visible function text plus stable exported procedure details. | `XllRegisteredFunction` | Host-stable add-in/module/procedure/type-text registration key. | `UdfInvocationTargetDescriptor::Xll` with module path when known, export name, type text, optional register id, and opaque runtime values. |
+| VBA public module function | Host discovers a public standard-module function admitted by macro/security policy. | `VbaPublicModuleFunction` | Host-stable workbook/project/module/procedure key, versioned by project/module edit identity. | `UdfInvocationTargetDescriptor::Vba` with project ref, module name, procedure name, and opaque runtime values. |
+| JavaScript custom function | Add-in metadata declares a worksheet-visible custom function id/name pair. | `JavaScriptCustomFunction` | Add-in identity plus namespace/custom-function id and metadata version. | `UdfInvocationTargetDescriptor::JavaScript` with add-in id, optional namespace, custom-function id, runtime ref, and opaque runtime values. |
+| Automation registration | Host admits a COM/Automation member as a worksheet-visible function. | `AutomationRegisteredFunction` | ProgID or CLSID plus member/signature identity under the host adapter. | `UdfInvocationTargetDescriptor::Automation` with ProgID or CLSID, member, and opaque runtime values. |
+| Registered-external-backed UDF | Host supplies friendly worksheet-visible metadata for a registered-external descriptor. | `RegisteredExternalBridge` or `HostRegisteredExternal` according to adapter ownership. | Stable registered-external descriptor id plus friendly surface metadata identity. | `UdfInvocationTargetDescriptor::RegisteredExternal` or `HostOpaque`. |
+| Plain worksheet `REGISTER.ID` / `CALL` | None by default; descriptor-only state is not a function-registry entry. | None for ordinary registry mutation. | Registered-external descriptor id only. | Registered-external packet state outside ordinary `FunctionRegistry`. |
+
+Mapping decisions:
+
+1. `surface_name`, `arity`, `parameters`, `display_signature`,
+   `short_description`, `long_description`, and `category` are the callable
+   worksheet surface. If the source cannot supply that surface, it does not
+   create a bind-visible UDF entry.
+2. `stable_source_registration_id` is source-local but must be stable across
+   refreshes of the same underlying registration so unregister and same-source
+   update can be deterministic.
+3. `source_provenance` may carry compact source-local provenance for audit and
+   replay, but formula binding must use the stable function id and registry
+   snapshot identity rather than parsing provenance text.
+4. `UdfExecutionProfile` carries capability and execution availability facts;
+   disabling macros, add-ins, Automation, or external libraries projects
+   availability and does not delete the registry entry.
+5. JavaScript custom-function namespace, autocomplete visibility, streaming,
+   cancellation, and calling-object details remain the dedicated
+   `oxf-ypq2.9` metadata bead before source-adapter promotion.
+6. `REGISTER.ID` / `CALL` descriptor-only mutation remains the W046/W052
+   registered-external lane and may produce targeted reevaluation evidence, not
+   broad function-registry rebinding.
+
 ## 6. Name-Resolution And Invalidation Direction
 
 OxFml should bind against a function registry view or registry-derived immutable

@@ -69,6 +69,21 @@ Interpretation:
    not create an editor completion, signature-help entry, or bind-visible
    ordinary function.
 
+Source mapping:
+
+| Source | Required callable-surface facts | Required invocation facts | Notes |
+| --- | --- | --- | --- |
+| XLL `xlfRegister` | Surface name, argument count/type-derived arity, argument names when available, category/help metadata when supplied, volatility/thread-safety flags when evidenced. | Export/procedure name, optional module path, type text, optional register id. | Transport and marshalling stay in the XLL adapter; OxFunc receives normalized registry facts. |
+| VBA public standard-module function | Procedure name as surface name, arity/parameter names discovered by the host, project/module provenance, macro-security availability. | Project ref, module name, procedure name. | Module edits may update or unregister by the same source registration id. |
+| JavaScript custom function | Add-in id, namespace/id, function name, description, parameters, result shape, autocomplete visibility, and execution flags where metadata supplies them. | Add-in id, namespace, custom-function id, runtime ref. | Detailed JavaScript metadata mapping remains `oxf-ypq2.9`; this row confirms the existing source kind is sufficient. |
+| Automation registered function | Friendly worksheet surface name and signature supplied by the host adapter. | ProgID or CLSID plus member dispatch identity. | Capability denial blocks availability without deleting the registry entry. |
+| Registered-external-backed UDF | Friendly surface name, arity/signature, callable metadata, and source registration identity supplied by a host. | Stable registered-external descriptor id or host opaque target id. | Descriptor-only `REGISTER.ID` / `CALL` state is not enough to create a registry entry. |
+
+No additional `UdfSourceKind` is required for the current public source mapping
+pass. If a future adapter needs finer source taxonomy, it should add fields to
+source provenance or invocation-target descriptors first and add a new source
+kind only when registry-level mutation policy differs.
+
 ## 4. Registry Snapshot Identity And Change Set
 
 Every successful bind-visible registry mutation should produce a new immutable
