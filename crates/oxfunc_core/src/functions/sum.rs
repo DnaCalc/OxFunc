@@ -325,6 +325,31 @@ mod tests {
     }
 
     #[test]
+    fn eval_sum_admits_opaque_reference_value_through_generic_resolver() {
+        let args = vec![CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "NameBackedRange".to_string(),
+        }))];
+        let got = eval_sum_surface(
+            &args,
+            &MockResolver {
+                resolved_value: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(5.0),
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "8".encode_utf16().collect(),
+                        )),
+                        ArrayCellValue::Logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+                by_target: BTreeMap::new(),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+    }
+
+    #[test]
     fn eval_sum_combines_direct_scalar_and_reference_derived_policies() {
         let args = vec![
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(

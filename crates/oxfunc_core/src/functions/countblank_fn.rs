@@ -153,6 +153,29 @@ mod tests {
     }
 
     #[test]
+    fn countblank_admits_opaque_reference_value_through_generic_resolver() {
+        let got = eval_countblank_surface(
+            &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "NameBackedRange".to_string(),
+            }))],
+            &MockResolver {
+                resolved: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::EmptyCell,
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "x".encode_utf16().collect(),
+                        )),
+                    ]])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
     fn countblank_propagates_errors() {
         let got = eval_countblank_surface(
             &[CallArgValue::Reference(ReferenceLike {

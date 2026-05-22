@@ -129,6 +129,28 @@ mod tests {
     }
 
     #[test]
+    fn eval_counta_admits_opaque_reference_value_through_generic_resolver() {
+        let args = vec![CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "NameBackedRange".to_string(),
+        }))];
+        let got = eval_counta_surface(
+            &args,
+            &MockResolver {
+                resolved: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                        ArrayCellValue::EmptyCell,
+                    ]])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
     fn eval_counta_direct_array_counts_empty_string_and_error() {
         let got = eval_counta_surface(
             &[CallArgValue::Eval(EvalValue::Array(

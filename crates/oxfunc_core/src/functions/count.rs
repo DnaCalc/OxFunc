@@ -133,6 +133,29 @@ mod tests {
     }
 
     #[test]
+    fn eval_count_admits_opaque_reference_value_through_generic_resolver() {
+        let got = eval_count_surface(
+            &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Area,
+                target: "NameBackedRange".to_string(),
+            }))],
+            &MockResolver {
+                resolved: Some(EvalValue::Array(
+                    EvalArray::from_rows(vec![vec![
+                        ArrayCellValue::Number(2.0),
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "3".encode_utf16().collect(),
+                        )),
+                        ArrayCellValue::Logical(true),
+                    ]])
+                    .unwrap(),
+                )),
+            },
+        );
+        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+    }
+
+    #[test]
     fn eval_count_propagates_worksheet_errors() {
         let got = eval_count_surface(
             &[CallArgValue::Eval(EvalValue::Error(

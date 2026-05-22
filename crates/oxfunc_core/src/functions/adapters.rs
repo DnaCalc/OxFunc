@@ -775,6 +775,29 @@ mod tests {
     }
 
     #[test]
+    fn expand_aggregate_arg_admits_opaque_reference_values_as_reference_derived() {
+        let arg = CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
+            kind: ReferenceKind::Area,
+            target: "NameBackedRange".to_string(),
+        }));
+        let got = expand_aggregate_arg(
+            &arg,
+            &resolver_with(EvalValue::Array(
+                EvalArray::from_rows(vec![
+                    vec![ArrayCellValue::Number(1.0)],
+                    vec![ArrayCellValue::Number(2.0)],
+                ])
+                .unwrap(),
+            )),
+        )
+        .unwrap();
+
+        assert_eq!(got.len(), 2);
+        assert!(got.iter().all(|item| item.origin
+            == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
+    }
+
+    #[test]
     fn expand_aggregate_arg_marks_eval_arrays_as_opaque_array_values() {
         let got = expand_aggregate_arg(
             &CallArgValue::Eval(EvalValue::Array(
