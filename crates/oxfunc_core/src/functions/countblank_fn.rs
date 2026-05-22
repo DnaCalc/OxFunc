@@ -4,7 +4,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
-use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
+use crate::functions::adapters::{
+    PreparedArgValue, expand_aggregate_arg, sparse_reference_values_for_aggregate_arg,
+};
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
@@ -54,6 +56,38 @@ fn prepared_counts_as_blank(value: &PreparedArgValue) -> Result<bool, CoercionEr
     }
 }
 
+fn prepared_from_sparse_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+    match cell {
+        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
+        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
+        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
+        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
+        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn count_sparse_reference_blanks(
+    arg: &CallArgValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<Option<f64>, CountBlankEvalError> {
+    let Some(values) = sparse_reference_values_for_aggregate_arg(arg, resolver)
+        .map_err(CountBlankEvalError::Preparation)?
+    else {
+        return Ok(None);
+    };
+
+    let mut count = values
+        .declared_cell_count()
+        .saturating_sub(values.defined_cells.len()) as f64;
+    for cell in &values.defined_cells {
+        let prepared = prepared_from_sparse_cell(&cell.value);
+        if prepared_counts_as_blank(&prepared).map_err(CountBlankEvalError::Preparation)? {
+            count += 1.0;
+        }
+    }
+    Ok(Some(count))
+}
+
 pub fn eval_countblank_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
@@ -75,6 +109,10 @@ pub fn eval_countblank_surface(
 
     let mut count = 0.0;
     for arg in args {
+        if let Some(sparse_count) = count_sparse_reference_blanks(arg, resolver)? {
+            count += sparse_count;
+            continue;
+        }
         for item in expand_aggregate_arg(arg, resolver).map_err(CountBlankEvalError::Preparation)? {
             if matches!(
                 item.origin,
@@ -105,8 +143,12 @@ pub fn map_countblank_error_to_ws(e: &CountBlankEvalError) -> WorksheetErrorCode
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::{
+        RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
+        ResolvedReferenceValues, ResolverCapabilities,
+    };
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use std::cell::Cell;
 
     struct MockResolver {
         resolved: Option<EvalValue>,
@@ -126,6 +168,34 @@ mod tests {
                 .ok_or(RefResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 })
+        }
+    }
+
+    struct SparseResolver {
+        values: ResolvedReferenceValues,
+        dense_calls: Cell<usize>,
+    }
+
+    impl ReferenceResolver for SparseResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            self.dense_calls.set(self.dense_calls.get() + 1);
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+
+        fn resolve_reference_values(
+            &self,
+            _reference: &ReferenceLike,
+        ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+            Ok(Some(self.values.clone()))
         }
     }
 
@@ -256,5 +326,42 @@ mod tests {
             COUNTBLANK_META.arg_preparation_profile,
             ArgPreparationProfile::RefsVisibleInAdapter
         );
+    }
+
+    #[test]
+    fn countblank_uses_sparse_extent_without_dense_resolution() {
+        let resolver = SparseResolver {
+            values: ResolvedReferenceValues::new(
+                ResolvedReferenceExtent::new(1000, 1),
+                vec![
+                    ResolvedReferenceCell::new(1, 1, ArrayCellValue::Number(2.0)),
+                    ResolvedReferenceCell::new(
+                        2,
+                        1,
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    ),
+                    ResolvedReferenceCell::new(
+                        3,
+                        1,
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                            "x".encode_utf16().collect(),
+                        )),
+                    ),
+                ],
+                Some("reader:countblank-sparse".to_string()),
+            ),
+            dense_calls: Cell::new(0),
+        };
+
+        let got = eval_countblank_surface(
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A1000",
+            ))],
+            &resolver,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(998.0)));
+        assert_eq!(resolver.dense_calls.get(), 0);
     }
 }

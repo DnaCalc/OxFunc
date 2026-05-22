@@ -1,6 +1,7 @@
 use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
-    RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
+    RefResolutionError, ReferenceResolver, ResolvedReferenceValues, ResolverCapabilities,
+    resolve_eval_value, resolve_reference_values,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
@@ -82,6 +83,33 @@ fn expand_resolved_eval_value(value: &EvalValue) -> Vec<PreparedArgValue> {
             .map(prepared_from_array_cell)
             .collect(),
         _ => vec![PreparedArgValue::Eval(value.clone())],
+    }
+}
+
+pub fn expand_sparse_reference_values_with_provenance(
+    values: ResolvedReferenceValues,
+    provenance: AggregateArrayProvenance,
+) -> Vec<AggregatePreparedValue> {
+    values
+        .defined_cells
+        .into_iter()
+        .map(|cell| prepared_from_array_cell(&cell.value))
+        .map(|value| AggregatePreparedValue {
+            origin: AggregateArgOrigin::ArrayLike(provenance),
+            value,
+        })
+        .collect()
+}
+
+pub fn sparse_reference_values_for_aggregate_arg(
+    arg: &CallArgValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<Option<ResolvedReferenceValues>, CoercionError> {
+    match arg {
+        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
+            resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)
+        }
+        _ => Ok(None),
     }
 }
 

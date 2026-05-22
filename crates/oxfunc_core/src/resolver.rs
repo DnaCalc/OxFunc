@@ -46,10 +46,79 @@ pub enum RefResolutionError {
     },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ResolvedReferenceExtent {
+    pub rows: usize,
+    pub cols: usize,
+}
+
+impl ResolvedReferenceExtent {
+    #[must_use]
+    pub const fn new(rows: usize, cols: usize) -> Self {
+        Self { rows, cols }
+    }
+
+    #[must_use]
+    pub fn declared_cell_count(self) -> usize {
+        self.rows.saturating_mul(self.cols)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ResolvedReferenceCell {
+    pub row: usize,
+    pub col: usize,
+    pub value: ArrayCellValue,
+}
+
+impl ResolvedReferenceCell {
+    #[must_use]
+    pub fn new(row: usize, col: usize, value: ArrayCellValue) -> Self {
+        Self { row, col, value }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ResolvedReferenceValues {
+    pub declared_extent: ResolvedReferenceExtent,
+    pub defined_cardinality: usize,
+    pub defined_cells: Vec<ResolvedReferenceCell>,
+    pub reader_identity: Option<String>,
+}
+
+impl ResolvedReferenceValues {
+    #[must_use]
+    pub fn new(
+        declared_extent: ResolvedReferenceExtent,
+        defined_cells: Vec<ResolvedReferenceCell>,
+        reader_identity: Option<String>,
+    ) -> Self {
+        let defined_cardinality = defined_cells.len();
+        Self {
+            declared_extent,
+            defined_cardinality,
+            defined_cells,
+            reader_identity,
+        }
+    }
+
+    #[must_use]
+    pub fn declared_cell_count(&self) -> usize {
+        self.declared_extent.declared_cell_count()
+    }
+}
+
 pub trait ReferenceResolver {
     fn capabilities(&self) -> ResolverCapabilities;
     fn resolve_reference(&self, reference: &ReferenceLike)
     -> Result<EvalValue, RefResolutionError>;
+
+    fn resolve_reference_values(
+        &self,
+        _reference: &ReferenceLike,
+    ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+        Ok(None)
+    }
 
     fn caller_context(&self) -> Option<CallerContext> {
         None
@@ -173,8 +242,33 @@ pub fn resolve_eval_value(
     reference: &ReferenceLike,
 ) -> Result<EvalValue, RefResolutionError> {
     let normalized = normalize_reference(reference);
-    let caps = resolver.capabilities();
+    ensure_reference_resolution_allowed(&normalized, resolver.capabilities())?;
 
+    if matches!(normalized.kind, ReferenceKind::MultiArea) {
+        return materialize_multi_area_eval_value(resolver, &normalized);
+    }
+
+    resolver.resolve_reference(&normalized)
+}
+
+pub fn resolve_reference_values(
+    resolver: &(impl ReferenceResolver + ?Sized),
+    reference: &ReferenceLike,
+) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+    let normalized = normalize_reference(reference);
+    ensure_reference_resolution_allowed(&normalized, resolver.capabilities())?;
+
+    if matches!(normalized.kind, ReferenceKind::MultiArea) {
+        return Ok(None);
+    }
+
+    resolver.resolve_reference_values(&normalized)
+}
+
+fn ensure_reference_resolution_allowed(
+    normalized: &ReferenceLike,
+    caps: ResolverCapabilities,
+) -> Result<(), RefResolutionError> {
     if !caps.allow_eval_time_deref {
         return Err(RefResolutionError::EvalTimeDerefNotAllowed);
     }
@@ -203,17 +297,13 @@ pub fn resolve_eval_value(
     }
 
     if !caps.allow_external_refs && normalized.target.contains('[') {
-        return Err(RefResolutionError::CapabilityDenied {
+        Err(RefResolutionError::CapabilityDenied {
             kind: normalized.kind,
             capability: "allow_external_refs",
-        });
+        })
+    } else {
+        Ok(())
     }
-
-    if matches!(normalized.kind, ReferenceKind::MultiArea) {
-        return materialize_multi_area_eval_value(resolver, &normalized);
-    }
-
-    resolver.resolve_reference(&normalized)
 }
 
 #[cfg(test)]

@@ -5,7 +5,8 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     AggregateArgOrigin, AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number,
-    expand_aggregate_arg,
+    expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
+    sparse_reference_values_for_aggregate_arg,
 };
 use crate::resolver::ReferenceResolver;
 use crate::semantic_kernel::{
@@ -100,6 +101,15 @@ pub fn eval_sum_surface(
 
     let mut prepared = Vec::new();
     for arg in args {
+        if let Some(values) = sparse_reference_values_for_aggregate_arg(arg, resolver)
+            .map_err(SumEvalError::Coercion)?
+        {
+            prepared.extend(expand_sparse_reference_values_with_provenance(
+                values,
+                crate::functions::adapters::AggregateArrayProvenance::ReferenceDerived,
+            ));
+            continue;
+        }
         prepared.extend(expand_aggregate_arg(arg, resolver).map_err(SumEvalError::Coercion)?);
     }
     eval_sum_prepared_aggregate(&prepared)
@@ -120,8 +130,12 @@ mod tests {
     use crate::functions::adapters::{
         AggregateArrayProvenance, expand_aggregate_array_with_provenance,
     };
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::{
+        RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
+        ResolvedReferenceValues, ResolverCapabilities,
+    };
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use std::cell::Cell;
     use std::collections::BTreeMap;
 
     struct MockResolver {
@@ -146,6 +160,34 @@ mod tests {
                 .ok_or(RefResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 })
+        }
+    }
+
+    struct SparseResolver {
+        values: ResolvedReferenceValues,
+        dense_calls: Cell<usize>,
+    }
+
+    impl ReferenceResolver for SparseResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            self.dense_calls.set(self.dense_calls.get() + 1);
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+
+        fn resolve_reference_values(
+            &self,
+            _reference: &ReferenceLike,
+        ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+            Ok(Some(self.values.clone()))
         }
     }
 
@@ -505,5 +547,31 @@ mod tests {
             },
         );
         assert_eq!(got, Ok(EvalValue::Number(3.0)));
+    }
+
+    #[test]
+    fn eval_sum_consumes_sparse_reference_values_without_dense_resolution() {
+        let resolver = SparseResolver {
+            values: ResolvedReferenceValues::new(
+                ResolvedReferenceExtent::new(1_048_576, 1),
+                vec![
+                    ResolvedReferenceCell::new(1, 1, ArrayCellValue::Number(2.0)),
+                    ResolvedReferenceCell::new(1_048_576, 1, ArrayCellValue::Number(3.0)),
+                ],
+                Some("reader:whole-column".to_string()),
+            ),
+            dense_calls: Cell::new(0),
+        };
+
+        let got = eval_sum_surface(
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A:A",
+            ))],
+            &resolver,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+        assert_eq!(resolver.dense_calls.get(), 0);
     }
 }

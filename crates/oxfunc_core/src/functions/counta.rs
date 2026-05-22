@@ -3,7 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::expand_aggregate_arg;
+use crate::functions::adapters::{
+    AggregateArrayProvenance, expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
+    sparse_reference_values_for_aggregate_arg,
+};
 use crate::functions::aggregate_common::counta_argument_included;
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -47,7 +50,18 @@ pub fn eval_counta_surface(
 
     let mut count = 0.0;
     for arg in args {
-        for item in expand_aggregate_arg(arg, resolver).map_err(CountaEvalError::Preparation)? {
+        let prepared = if let Some(values) =
+            sparse_reference_values_for_aggregate_arg(arg, resolver)
+                .map_err(CountaEvalError::Preparation)?
+        {
+            expand_sparse_reference_values_with_provenance(
+                values,
+                AggregateArrayProvenance::ReferenceDerived,
+            )
+        } else {
+            expand_aggregate_arg(arg, resolver).map_err(CountaEvalError::Preparation)?
+        };
+        for item in prepared {
             if counta_argument_included(&item).map_err(CountaEvalError::Preparation)? {
                 count += 1.0;
             }
@@ -68,8 +82,12 @@ pub fn map_counta_error_to_ws(e: &CountaEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::{
+        RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
+        ResolvedReferenceValues, ResolverCapabilities,
+    };
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use std::cell::Cell;
 
     struct MockResolver {
         resolved: Option<EvalValue>,
@@ -89,6 +107,34 @@ mod tests {
                 .ok_or(RefResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 })
+        }
+    }
+
+    struct SparseResolver {
+        values: ResolvedReferenceValues,
+        dense_calls: Cell<usize>,
+    }
+
+    impl ReferenceResolver for SparseResolver {
+        fn capabilities(&self) -> ResolverCapabilities {
+            ResolverCapabilities::permissive_local()
+        }
+
+        fn resolve_reference(
+            &self,
+            reference: &ReferenceLike,
+        ) -> Result<EvalValue, RefResolutionError> {
+            self.dense_calls.set(self.dense_calls.get() + 1);
+            Err(RefResolutionError::UnresolvedReference {
+                target: reference.target.clone(),
+            })
+        }
+
+        fn resolve_reference_values(
+            &self,
+            _reference: &ReferenceLike,
+        ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+            Ok(Some(self.values.clone()))
         }
     }
 
@@ -164,5 +210,35 @@ mod tests {
             &MockResolver { resolved: None },
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
+    }
+
+    #[test]
+    fn eval_counta_consumes_sparse_reference_values_without_dense_resolution() {
+        let resolver = SparseResolver {
+            values: ResolvedReferenceValues::new(
+                ResolvedReferenceExtent::new(1000, 1),
+                vec![
+                    ResolvedReferenceCell::new(
+                        1,
+                        1,
+                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    ),
+                    ResolvedReferenceCell::new(2, 1, ArrayCellValue::Error(WorksheetErrorCode::NA)),
+                ],
+                Some("reader:counta-sparse".to_string()),
+            ),
+            dense_calls: Cell::new(0),
+        };
+
+        let got = eval_counta_surface(
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A1000",
+            ))],
+            &resolver,
+        );
+
+        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(resolver.dense_calls.get(), 0);
     }
 }
