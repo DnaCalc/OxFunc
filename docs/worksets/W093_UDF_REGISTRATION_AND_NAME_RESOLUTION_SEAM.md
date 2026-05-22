@@ -264,3 +264,43 @@ Still open after this intake:
 3. OxFml formula-call registry lookup and cache invalidation implementation
    evidence remains `oxf-ypq2.12` / W074 work.
 4. Source-adapter implementations remain successor W093 work.
+
+## 2026-05-22 Registered-External Seam Reconciliation
+
+W093 is reconciled with the earlier W046/W052 registered-external seam.
+
+Current settled split:
+
+1. `REGISTER.ID` / `CALL` descriptor-only mutation remains adjacent
+   registered-external state, not ordinary UDF function registration.
+2. Plain worksheet `REGISTER.ID` returning a register id does not create an
+   editor-completion entry, signature-help row, or bind-visible ordinary
+   function entry.
+3. `CALL` by register id or direct `{ library_name, procedure,
+   declared_type_text }` target remains a registered-external invocation lane.
+4. A registered-external-backed ordinary UDF entry is created only when the
+   host also supplies friendly worksheet-visible function metadata: stable
+   surface name, arity/signature, callable metadata, and source registration
+   identity.
+5. Descriptor-only catalog mutation may produce a `RegistryChangeSet` with
+   unchanged `FunctionRegistrySnapshotIdentity` and
+   `descriptor_only_mutation = true`, supporting targeted reevaluation instead
+   of broad formula rebinding by default.
+
+Current packet alignment:
+
+1. `RegisterIdRequest`, `RegisteredExternalDescriptor`, and
+   `RegisteredExternalCallRequest` remain the typed registered-external packet
+   family.
+2. `RegisteredExternalDescriptor` keeps the current seven-field shape:
+   stable registration id, register id, origin kind, display name, library
+   name, procedure, and declared type text.
+3. `RegisteredExternalCatalogMutation*` / controller packets remain
+   OxFml-owned funnel packets for the current phase unless a downstream
+   consumer later needs them as shared OxFunc-owned runtime packet families.
+4. Bind-visible function registration/unregister still advances registry
+   snapshot identity; descriptor-only `CALL` / `REGISTER.ID` mutation does not
+   by itself advance the ordinary function registry identity.
+
+No further W093 contract narrowing is needed for the current registered-external
+split.

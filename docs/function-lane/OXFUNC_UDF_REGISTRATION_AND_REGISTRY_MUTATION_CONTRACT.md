@@ -294,3 +294,29 @@ Contract consequences:
 5. JavaScript custom-function namespace/collision evidence is still open and
    owned by the JavaScript metadata mapping bead before source-adapter
    promotion.
+
+## 2026-05-22 Registered-External Reconciliation
+
+This contract remains aligned with the existing W046/W052 registered-external
+seam.
+
+Rules preserved:
+
+1. `REGISTER.ID` / `CALL` descriptor-only mutation is not ordinary UDF
+   registration.
+2. Plain `REGISTER.ID` register-id creation does not create a function-help,
+   completion, or bind-visible callable function entry.
+3. `CALL` invocation by register id or direct target remains a
+   registered-external invocation path.
+4. A registered-external source may create an ordinary `FunctionRegistry` UDF
+   entry only when the host supplies friendly worksheet-visible metadata:
+   surface name, arity/signature, callable metadata, source registration id,
+   and invocation target descriptor.
+5. Descriptor-only mutation uses a targeted-reevaluation change set with
+   unchanged semantic registry snapshot identity by default.
+6. Bind-visible function registration/unregister remains the case that advances
+   `FunctionRegistrySnapshotIdentity` for OxFml bind/editor invalidation.
+
+The current seven-field `RegisteredExternalDescriptor` is sufficient for the
+W093 registry-mutation contract; no additional OxFunc descriptor fields are
+needed before source-adapter work.
