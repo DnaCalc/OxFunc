@@ -340,3 +340,65 @@ Current packet alignment:
 
 No further W093 contract narrowing is needed for the current registered-external
 split.
+
+## 2026-05-22 JavaScript Custom-Function Metadata Mapping
+
+Public source anchors:
+
+1. Microsoft Office Add-ins custom-functions JSON metadata:
+   <https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json>
+2. Microsoft Office Add-ins JSDoc metadata autogeneration:
+   <https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json-autogeneration>
+3. Microsoft Office Add-ins streaming/cancelable custom-functions behavior:
+   <https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-web-reqs>
+4. Microsoft Office Add-ins invocation address options:
+   <https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-parameter-options>
+
+Mapping into W093:
+
+| JavaScript metadata fact | W093 field |
+| --- | --- |
+| Add-in identity and manifest/JSON metadata version | `stable_source_registration_id` component and `source_provenance` |
+| Function `id` | `function_id` component and `UdfInvocationTargetDescriptor::JavaScript.custom_function_id` |
+| Function `name` | `surface_name` |
+| Function `description` / `helpUrl` | `short_description` / `long_description` or provenance until richer help publication exists |
+| Parameter `name`, `description`, `type`, `dimensionality` | `ParameterDescriptor`, `Arity`, and source provenance for JS-specific type/dimensionality detail |
+| Result `type`, result `dimensionality`, custom enum metadata | Source provenance and future adapter metadata; not a new `EvalValue` variant by itself |
+| Namespace from manifest resources | `UdfInvocationTargetDescriptor::JavaScript.namespace` and source registration id component |
+| Runtime URL/ref from manifest/runtime binding | `UdfInvocationTargetDescriptor::JavaScript.runtime_ref` |
+| `stream` / `@streaming` | `UdfExecutionProfile.streaming = true`; invocation target remains JavaScript |
+| `cancelable` / `@cancelable` | `UdfExecutionProfile.cancellable = true`; mutually exclusive with streaming for admitted metadata |
+| `volatile` / `@volatile` | `VolatilityClass` mapping once the adapter has a stable OxFunc volatility profile |
+| `excludeFromAutoComplete` / `@excludeFromAutoComplete` | Editor-surface projection metadata; it does not remove the callable registry entry |
+| `requiresAddress`, `requiresParameterAddresses`, stream address variants | Caller-context dependency in source provenance and future adapter metadata |
+| `capturesCallingObject` | Caller-object dependency in source provenance and future adapter metadata |
+
+Decisions:
+
+1. Existing `UdfSourceKind::JavaScriptCustomFunction`,
+   `UdfExecutionProfile`, and
+   `UdfInvocationTargetDescriptor::JavaScript` are sufficient for current W093.
+2. Namespace and custom-function `id` are source identity and invocation-target
+   facts, not separate Excel built-in or TreeCalc host-name lanes.
+3. JavaScript autocomplete visibility is an editor projection over the registry;
+   it must not delete or hide the callable entry from binding if the formula
+   explicitly names it.
+4. Streaming and cancelable functions are availability/execution-profile facts.
+   The source adapter must reject or type-diagnose metadata that tries to admit
+   both for the same function.
+5. Invocation address, parameter-address, and calling-object requirements are
+   caller-context dependencies. OxFunc records them as metadata; OxFml/host
+   runtime owns supplying the actual invocation context.
+6. Custom data types, linked entities, custom enums, and JS-specific result
+   dimensionality do not create TreeCalc-specific function branches in OxFunc.
+   They remain source-provenance or future typed adapter metadata until a
+   concrete rich-value lane is admitted.
+
+Still open:
+
+1. JavaScript runtime execution and marshalling are source-adapter work, not
+   closed by this metadata mapping.
+2. Namespaced custom-function collision behavior against workbook/sheet defined
+   names remains W074/OxFml evidence before name/call freeze.
+3. Registry-backed formula-call lookup and invalidation remains `oxf-ypq2.12`
+   / OxFml W074 work.

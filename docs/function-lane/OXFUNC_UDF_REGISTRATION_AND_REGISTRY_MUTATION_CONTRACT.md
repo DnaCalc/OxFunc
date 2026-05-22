@@ -335,3 +335,35 @@ Rules preserved:
 The current seven-field `RegisteredExternalDescriptor` is sufficient for the
 W093 registry-mutation contract; no additional OxFunc descriptor fields are
 needed before source-adapter work.
+
+## 2026-05-22 JavaScript Metadata Contract
+
+JavaScript custom-function metadata maps to the current W093 contract without a
+new source kind.
+
+Contract additions:
+
+1. `UdfSourceKind::JavaScriptCustomFunction` covers add-in custom functions
+   declared by JSON metadata or generated from supported JSDoc tags.
+2. `stable_source_registration_id` should combine add-in identity, namespace
+   when present, custom-function id, and metadata version/fingerprint.
+3. `surface_name` comes from the worksheet-visible function name, while
+   `function_id` remains the stable OxFunc registry id for the callable entry.
+4. `UdfInvocationTargetDescriptor::JavaScript` carries add-in id, namespace,
+   custom-function id, runtime ref, and opaque runtime values.
+5. `UdfExecutionProfile.streaming` and `UdfExecutionProfile.cancellable` carry
+   the corresponding JavaScript custom-function execution flags; a JS adapter
+   must not admit both as simultaneously true for one function.
+6. Address, parameter-address, and calling-object requirements are
+   caller-context dependencies. They belong in source provenance or future typed
+   adapter metadata, while the actual invocation context is supplied by
+   OxFml/host runtime.
+7. `excludeFromAutoComplete` is editor projection metadata. It does not delete
+   the function from the registry or make explicit formula binding invalid.
+8. JS custom enums, linked entities, custom data types, and result
+   dimensionality are preserved as source metadata until a later typed
+   rich-value/result-shape contract admits them.
+
+This closes the W093 metadata-shape question for JavaScript custom functions
+only. It does not implement the JavaScript runtime adapter, freeze collision
+precedence, or close OxFml registry-backed formula binding/cache invalidation.
