@@ -1,6 +1,6 @@
 # HO-FN-014 - UDF registry mutation and name-resolution invalidation
 
-Status: filed
+Status: acknowledged
 Direction: OxFunc -> OxFml
 Source workset: W093
 Target: OxFml formula binding, name-resolution, editor-help, and host cache surfaces
@@ -126,3 +126,38 @@ Remaining OxFml asks:
    `RegistryChangeSet`;
 4. keep TreeCalc-specific namespace behavior out of the shared rule until Excel
    precedence evidence or a separate host extension packet justifies it.
+
+## 2026-05-22 OxFml Acknowledgement
+
+OxFml has acknowledged `HO-FN-014` as the open W074 design lane for registry
+snapshot identity, name-resolution invalidation, UDF-vs-defined-name
+precedence, and migration of formula-call binding from static built-in lookup
+to registry-backed lookup.
+
+Current reconciled state:
+
+1. OxFunc owns UDF registry mutation, immutable snapshot identity,
+   `RegistryChangeSet`, typed rejection outcomes, capability overlays, and
+   source invocation-target descriptors.
+2. OxFml owns formula parse/bind/name resolution, editor/runtime cache
+   invalidation, and the W074 precedence oracle.
+3. Bind-visible UDF registration or unregister must produce a new registry
+   snapshot identity and bind invalidation where the visible function/name world
+   changes.
+4. `CALL` / `REGISTER.ID` descriptor-only mutation remains a targeted
+   reevaluation lane by default unless it also creates or removes a
+   worksheet-visible UDF surface.
+5. Workbook/sheet defined names remain host/formula environment state, not
+   OxFunc registry state.
+6. OxFunc does not need to add any TreeCalc-specific branch; TreeCalc host names
+   and lambda-valued nodes remain an OxFml W074/OxCalc host-namespace topic.
+
+Still open outside this handoff acknowledgement:
+
+1. OxFml W074 formula-call registry lookup and prepared/cache invalidation
+   implementation evidence.
+2. Excel oracle coverage for built-in/UDF/defined-name/defined-name-`LAMBDA`
+   precedence.
+3. Source-adapter evidence for XLL, VBA, JavaScript custom functions,
+   Automation, and registered-external-backed UDFs.
+4. Broad UDF execution semantics and host runtime implementation.

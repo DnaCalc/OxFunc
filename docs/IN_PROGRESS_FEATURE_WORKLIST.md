@@ -194,14 +194,14 @@ Status axes:
 4. `open_lanes`: broader catalog-axis saturation, richer generator design, provider/context/locale/version fixtures, `BUG-FUNC-018` landed-ref promotion, `BUG-FUNC-021`, `BUG-FUNC-024`, `BUG-FUNC-025`, `BUG-FUNC-015`, and `HO-FN-010`.
 
 ### IP-20 UDF Registration And Name-Resolution Seam
-- Current state: active design lane. W093 starts the source-neutral UDF registration contract and OxFml invalidation seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths can converge on OxFunc registry truth without moving workbook defined names into OxFunc.
+- Current state: active design lane with the first OxFunc-local API tranche landed and `HO-FN-014` acknowledged by OxFml. W093 defines the source-neutral UDF registration contract and OxFml invalidation seam so XLL, VBA, JavaScript custom functions, Automation, and worksheet registered-external paths can converge on OxFunc registry truth without moving workbook defined names into OxFunc.
 - Canonical owner: [W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W093_UDF_REGISTRATION_AND_NAME_RESOLUTION_SEAM.md), [OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_UDF_REGISTRATION_AND_REGISTRY_MUTATION_CONTRACT.md), and [HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-014_udf_registry_mutation_and_name_resolution_invalidation.md).
 
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: OxFunc API implementation, OxFml acknowledgement, source-adapter detail, registry snapshot integration, and deterministic seam evidence.
+4. `open_lanes`: OxFml W074 formula-call registry lookup/cache invalidation evidence, Excel precedence oracle coverage, source-adapter detail, and broad UDF execution semantics.
 
 ### 2026-05-04 W093 Design Review Sweep
 
