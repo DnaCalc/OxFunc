@@ -296,7 +296,10 @@ fn ensure_reference_resolution_allowed(
         _ => {}
     }
 
-    if !caps.allow_external_refs && normalized.target.contains('[') {
+    if !caps.allow_external_refs
+        && !matches!(normalized.kind, ReferenceKind::Structured)
+        && normalized.target.contains('[')
+    {
         Err(RefResolutionError::CapabilityDenied {
             kind: normalized.kind,
             capability: "allow_external_refs",

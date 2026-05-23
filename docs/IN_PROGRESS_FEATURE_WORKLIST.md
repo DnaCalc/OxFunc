@@ -234,6 +234,29 @@ Status axes:
 3. `integration_completeness`: `partial`
 4. `open_lanes`: OxFml W074 formula-call registry lookup and invalidation, Excel oracle precedence matrix, source-adapter implementations, and broad UDF execution semantics.
 
+### 2026-05-23 W093 / W056 Structured-Table ReferenceLike Guardrail
+
+OxFunc narrowed the W056 table-carrier seam without taking TreeCalc selector
+ownership. `ReferenceKind::Structured` targets may contain bracketed table
+selector text without being rejected as external workbook references, and the
+first aggregate group now has a focused guardrail test proving structured table
+data/header/totals/current-row carriers are consumed through opaque
+`ReferenceResolver::resolve_reference_values(...)` sparse readers.
+
+Validation evidence:
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`: passed, `3` passed.
+
+Status axes:
+1. `scope_completeness`: `scope_complete` for the first aggregate guardrail
+   slice only.
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: `oxf-ypq2.15` sparse-reader widening beyond
+   `SUM` / `COUNT` / `COUNTA` / `COUNTBLANK`; `oxf-ypq2.16`
+   reference-visible/context-sensitive structured-table classification;
+   downstream W056 retained table evidence outside OxFunc write authority.
+
 ### IP-21 Locale Profile Expansion
 - Current state: OxFunc-local target satisfied with follow-up lanes split. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, `LocaleProfileId::from_bcp47_language_tag(...)`, `LocaleProfileId::from_excel_lcid(...)`, short-date order/pattern facts, currency layout facts, and invariant format-code token-policy facts. Remaining work is tracked separately for downstream OxFml consumption, Excel storage/localized-function research, culture-profile seed mismatch triage, and broader locale semantic parity.
 - Canonical owner: [W094_LOCALE_PROFILE_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W094_LOCALE_PROFILE_EXPANSION.md), [HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md), and [locale_format.rs](C:\Work\DnaCalc\OxFunc\crates\oxfunc_core\src\locale_format.rs).

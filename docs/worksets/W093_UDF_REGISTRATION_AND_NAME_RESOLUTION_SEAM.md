@@ -402,3 +402,73 @@ Still open:
    names remains W074/OxFml evidence before name/call freeze.
 3. Registry-backed formula-call lookup and invalidation remains `oxf-ypq2.12`
    / OxFml W074 work.
+
+## 2026-05-23 W056 Structured-Table ReferenceLike Guardrail
+
+Reviewed inbound observations:
+`../OxFml/docs/upstream/NOTES_FOR_OXFUNC.md` and OxCalc W056 both keep the
+same ownership split for table references: OxFml owns generic
+structured-reference binding, OxCalc owns TreeCalc table selectors/readers and
+dependency lowering, and OxFunc consumes only opaque `ReferenceLike` plus
+resolver/reader APIs.
+
+OxFunc repo-local changes:
+
+1. `ReferenceKind::Structured` targets are now exempt from the generic
+   bracket-means-external-workbook guard in `resolver.rs`; bracketed structured
+   targets remain opaque carrier strings rather than parsed selectors.
+2. The existing generic `allow_structured_refs` capability still rejects
+   structured carriers before provider calls when the caller denies structured
+   reference resolution.
+3. `SUM`, `COUNT`, `COUNTA`, and `COUNTBLANK` are exercised over bracketed
+   structured-table carriers through `ReferenceResolver::resolve_reference_values`
+   without dense `resolve_reference` calls.
+4. The exercised carriers cover table data column, whole data section, header
+   section, totals section, and current-row forms. Sparse blank handling is
+   exercised through `COUNTBLANK` using declared extent minus defined cells
+   plus defined empty-string cells.
+5. Direct scalar and direct array behavior for the first aggregate group is
+   unchanged by the structured carrier guardrail.
+
+Validation evidence:
+
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`:
+   passed, `3` passed.
+
+Status axes for this W056 table-carrier slice:
+
+1. `execution_state`: `in_progress`
+2. `scope_completeness`: `scope_complete` for the first aggregate guardrail
+   slice only
+3. `target_completeness`: `target_partial`
+4. `integration_completeness`: `partial`
+5. `open_lanes`: sparse-reader widening beyond `SUM` / `COUNT` / `COUNTA` /
+   `COUNTBLANK`, context-sensitive reference-returning/table-shape functions,
+   and downstream W056 retained table evidence outside OxFunc write authority.
+
+Range-taking function inventory:
+
+1. First exercised sparse-reader group: `SUM`, `COUNT`, `COUNTA`, and
+   `COUNTBLANK` are supported for opaque structured-table carriers through
+   generic resolver/reader APIs.
+2. Existing dense generic reference path: ordinary value-taking scalar,
+   aggregate, text, statistical, lookup-vector, and array-producing functions
+   can consume structured carriers only when the resolver materializes them as
+   ordinary `EvalValue`/`EvalArray`; this is not sparse table-reader coverage.
+3. Reference-visible/context-sensitive functions such as `AREAS`,
+   `FORMULATEXT`, `CELL`, `ROW`, `COLUMN`, `ROWS`, `COLUMNS`, `INDEX`,
+   `OFFSET`, `MATCH`, `XLOOKUP`, `SUBTOTAL`, `AGGREGATE`, `CALL`,
+   `OP_IMPLICIT_INTERSECTION`, `OP_SPILL_REF`, and reference operators require
+   function-specific classification or typed exclusion before W056 can claim
+   product-wide table reference behavior through OxFunc.
+4. Structured-table name/defined-name/call precedence, table context identity,
+   header/totals/current-row availability, and TreeCalc selector meaning remain
+   OxFml/OxCalc-owned inputs, not OxFunc function branches.
+
+Successor beads:
+
+1. `oxf-ypq2.15` tracks sparse-reader widening for aggregate/statistical/text
+   functions beyond the first group.
+2. `oxf-ypq2.16` tracks reference-visible and context-sensitive structured-table
+   behavior classification or typed exclusions.
