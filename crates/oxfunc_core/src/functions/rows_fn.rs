@@ -3,6 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::parse_a1_reference;
+use crate::resolver::{RefResolutionError, ReferenceResolver, resolve_reference_values};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const ROWS_META: FunctionMeta = FunctionMeta {
@@ -27,9 +28,36 @@ pub enum RowsEvalError {
         actual: usize,
     },
     InvalidReferenceArg,
+    RefResolution(RefResolutionError),
 }
 
 pub fn eval_rows_surface(args: &[CallArgValue]) -> Result<EvalValue, RowsEvalError> {
+    if !ROWS_META.arity.accepts(args.len()) {
+        return Err(RowsEvalError::ArityMismatch {
+            expected_min: ROWS_META.arity.min,
+            expected_max: ROWS_META.arity.max,
+            actual: args.len(),
+        });
+    }
+
+    let arg = &args[0];
+    if let CallArgValue::Eval(EvalValue::Array(arr)) = arg {
+        return Ok(EvalValue::Number(arr.shape().rows as f64));
+    }
+
+    let reference = match arg {
+        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        _ => return Err(RowsEvalError::InvalidReferenceArg),
+    };
+    let parsed = parse_a1_reference(&reference.target).ok_or(RowsEvalError::InvalidReferenceArg)?;
+    let count = parsed.end_row - parsed.start_row + 1;
+    Ok(EvalValue::Number(count as f64))
+}
+
+pub fn eval_rows_surface_with_resolver(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<EvalValue, RowsEvalError> {
     if !ROWS_META.arity.accepts(args.len()) {
         return Err(RowsEvalError::ArityMismatch {
             expected_min: ROWS_META.arity.min,
@@ -50,8 +78,14 @@ pub fn eval_rows_surface(args: &[CallArgValue]) -> Result<EvalValue, RowsEvalErr
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
         _ => return Err(RowsEvalError::InvalidReferenceArg),
     };
-    let parsed = parse_a1_reference(&reference.target).ok_or(RowsEvalError::InvalidReferenceArg)?;
-    let count = parsed.end_row - parsed.start_row + 1;
+    let count = if let Some(parsed) = parse_a1_reference(&reference.target) {
+        parsed.end_row - parsed.start_row + 1
+    } else {
+        resolve_reference_values(resolver, reference)
+            .map_err(RowsEvalError::RefResolution)?
+            .map(|values| values.declared_extent.rows)
+            .ok_or(RowsEvalError::InvalidReferenceArg)?
+    };
     Ok(EvalValue::Number(count as f64))
 }
 
@@ -59,6 +93,7 @@ pub fn map_rows_error_to_ws(e: &RowsEvalError) -> WorksheetErrorCode {
     match e {
         RowsEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         RowsEvalError::InvalidReferenceArg => WorksheetErrorCode::Value,
+        RowsEvalError::RefResolution(_) => WorksheetErrorCode::Ref,
     }
 }
 

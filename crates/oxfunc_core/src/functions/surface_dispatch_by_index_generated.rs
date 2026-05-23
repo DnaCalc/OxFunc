@@ -228,7 +228,8 @@ match dispatch_key.catalog_index {
             67 => {
                 eval_column_surface(args, resolver).map_err(|e| map_column_error_to_ws(&e))
             }
-            68 => eval_columns_surface(args).map_err(|e| map_columns_error_to_ws(&e)),
+            68 => eval_columns_surface_with_resolver(args, resolver)
+                .map_err(|e| map_columns_error_to_ws(&e)),
     // FUNC.CORREL
     76 => {
                 eval_correl_surface(args, resolver).map_err(|e| map_correl_error_to_ws(&e))
@@ -1206,7 +1207,7 @@ match dispatch_key.catalog_index {
     // FUNC.ROW
     399 => eval_row_surface(args, resolver).map_err(|e| map_row_error_to_ws(&e)),
     // FUNC.ROWS
-    400 => eval_rows_surface(args).map_err(|e| map_rows_error_to_ws(&e)),
+    400 => eval_rows_surface_with_resolver(args, resolver).map_err(|e| map_rows_error_to_ws(&e)),
     // FUNC.REPLACEB
     406 => {
                 eval_replaceb_surface(args, resolver).map_err(|e| map_text_b_compat_error_to_ws(&e))

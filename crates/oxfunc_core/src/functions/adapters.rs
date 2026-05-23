@@ -1,7 +1,7 @@
 use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
     RefResolutionError, ReferenceResolver, ResolvedReferenceValues, ResolverCapabilities,
-    resolve_eval_value, resolve_reference_values,
+    materialize_resolved_reference_values, resolve_eval_value, resolve_reference_values,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
@@ -84,6 +84,17 @@ fn expand_resolved_eval_value(value: &EvalValue) -> Vec<PreparedArgValue> {
             .collect(),
         _ => vec![PreparedArgValue::Eval(value.clone())],
     }
+}
+
+fn expand_resolved_reference_values(
+    values: ResolvedReferenceValues,
+) -> Result<Vec<PreparedArgValue>, CoercionError> {
+    let array =
+        materialize_resolved_reference_values(&values).map_err(CoercionError::RefResolution)?;
+    Ok(array
+        .iter_row_major()
+        .map(prepared_from_array_cell)
+        .collect())
 }
 
 pub fn expand_sparse_reference_values_with_provenance(
@@ -175,12 +186,28 @@ pub fn expand_arg_values_only(
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
+        CallArgValue::Eval(EvalValue::Reference(r)) => {
+            if let Some(values) =
+                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+            {
+                return expand_resolved_reference_values(values);
+            }
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            Ok(expand_resolved_eval_value(&resolve_eval_references(
+                &resolved, resolver,
+            )?))
+        }
         CallArgValue::Eval(v) => Ok(expand_resolved_eval_value(&resolve_eval_references(
             v, resolver,
         )?)),
         CallArgValue::MissingArg => Ok(vec![PreparedArgValue::MissingArg]),
         CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
         CallArgValue::Reference(r) => {
+            if let Some(values) =
+                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+            {
+                return expand_resolved_reference_values(values);
+            }
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             Ok(expand_resolved_eval_value(&resolve_eval_references(
                 &resolved, resolver,
@@ -194,10 +221,28 @@ pub fn expand_lookup_vector_arg(
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
+        CallArgValue::Eval(EvalValue::Reference(r)) => {
+            if let Some(values) =
+                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+            {
+                let array = materialize_resolved_reference_values(&values)
+                    .map_err(CoercionError::RefResolution)?;
+                return expand_lookup_eval_value(&EvalValue::Array(array));
+            }
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
+        }
         CallArgValue::Eval(v) => expand_lookup_eval_value(&resolve_eval_references(v, resolver)?),
         CallArgValue::MissingArg => Ok(vec![PreparedArgValue::MissingArg]),
         CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
         CallArgValue::Reference(r) => {
+            if let Some(values) =
+                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+            {
+                let array = materialize_resolved_reference_values(&values)
+                    .map_err(CoercionError::RefResolution)?;
+                return expand_lookup_eval_value(&EvalValue::Array(array));
+            }
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
         }
@@ -209,22 +254,13 @@ pub fn expand_aggregate_arg(
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
     match arg {
-        CallArgValue::Reference(r) => {
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            match resolve_eval_references(&resolved, resolver)? {
-                EvalValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
-                    &array,
+        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
+            if let Some(values) = sparse_reference_values_for_aggregate_arg(arg, resolver)? {
+                return Ok(expand_sparse_reference_values_with_provenance(
+                    values,
                     AggregateArrayProvenance::ReferenceDerived,
-                )),
-                value => Ok(vec![AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ArrayLike(
-                        AggregateArrayProvenance::ReferenceDerived,
-                    ),
-                    value: PreparedArgValue::Eval(value),
-                }]),
+                ));
             }
-        }
-        CallArgValue::Eval(EvalValue::Reference(r)) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             match resolve_eval_references(&resolved, resolver)? {
                 EvalValue::Array(array) => Ok(expand_aggregate_array_with_provenance(

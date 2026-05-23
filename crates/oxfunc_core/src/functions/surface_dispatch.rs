@@ -76,7 +76,7 @@ use crate::functions::choose_ifs_family::{
 };
 use crate::functions::clean_fn::{eval_clean_surface, map_clean_error_to_ws};
 use crate::functions::column_fn::{eval_column_surface, map_column_error_to_ws};
-use crate::functions::columns_fn::{eval_columns_surface, map_columns_error_to_ws};
+use crate::functions::columns_fn::{eval_columns_surface_with_resolver, map_columns_error_to_ws};
 use crate::functions::combin::{combin_kernel, eval_combin_surface, map_combin_error_to_ws};
 use crate::functions::combina::{combina_kernel, eval_combina_surface, map_combina_error_to_ws};
 use crate::functions::complex_family::{
@@ -357,7 +357,7 @@ use crate::functions::round_fn::{eval_round_surface, map_round_error_to_ws, roun
 use crate::functions::rounddown_fn::{eval_rounddown_surface, map_rounddown_error_to_ws};
 use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws};
 use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
-use crate::functions::rows_fn::{eval_rows_surface, map_rows_error_to_ws};
+use crate::functions::rows_fn::{eval_rows_surface_with_resolver, map_rows_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
 use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
 use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};

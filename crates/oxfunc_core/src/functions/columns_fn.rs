@@ -3,6 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::parse_a1_reference;
+use crate::resolver::{RefResolutionError, ReferenceResolver, resolve_reference_values};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const COLUMNS_META: FunctionMeta = FunctionMeta {
@@ -27,9 +28,46 @@ pub enum ColumnsEvalError {
         actual: usize,
     },
     InvalidReferenceArg,
+    RefResolution(RefResolutionError),
 }
 
 pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsEvalError> {
+    if !COLUMNS_META.arity.accepts(args.len()) {
+        return Err(ColumnsEvalError::ArityMismatch {
+            expected_min: COLUMNS_META.arity.min,
+            expected_max: COLUMNS_META.arity.max,
+            actual: args.len(),
+        });
+    }
+
+    let arg = &args[0];
+    if let CallArgValue::Eval(value) = arg {
+        return Ok(EvalValue::Number(match value {
+            EvalValue::Array(arr) => arr.shape().cols as f64,
+            EvalValue::Number(_)
+            | EvalValue::Text(_)
+            | EvalValue::Logical(_)
+            | EvalValue::Error(_) => 1.0,
+            EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+                return Err(ColumnsEvalError::InvalidReferenceArg);
+            }
+        }));
+    }
+
+    let reference = match arg {
+        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        _ => return Err(ColumnsEvalError::InvalidReferenceArg),
+    };
+    let parsed =
+        parse_a1_reference(&reference.target).ok_or(ColumnsEvalError::InvalidReferenceArg)?;
+    let count = parsed.end_col - parsed.start_col + 1;
+    Ok(EvalValue::Number(count as f64))
+}
+
+pub fn eval_columns_surface_with_resolver(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<EvalValue, ColumnsEvalError> {
     if !COLUMNS_META.arity.accepts(args.len()) {
         return Err(ColumnsEvalError::ArityMismatch {
             expected_min: COLUMNS_META.arity.min,
@@ -59,9 +97,14 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
         _ => return Err(ColumnsEvalError::InvalidReferenceArg),
     };
-    let parsed =
-        parse_a1_reference(&reference.target).ok_or(ColumnsEvalError::InvalidReferenceArg)?;
-    let count = parsed.end_col - parsed.start_col + 1;
+    let count = if let Some(parsed) = parse_a1_reference(&reference.target) {
+        parsed.end_col - parsed.start_col + 1
+    } else {
+        resolve_reference_values(resolver, reference)
+            .map_err(ColumnsEvalError::RefResolution)?
+            .map(|values| values.declared_extent.cols)
+            .ok_or(ColumnsEvalError::InvalidReferenceArg)?
+    };
     Ok(EvalValue::Number(count as f64))
 }
 
@@ -69,6 +112,7 @@ pub fn map_columns_error_to_ws(e: &ColumnsEvalError) -> WorksheetErrorCode {
     match e {
         ColumnsEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         ColumnsEvalError::InvalidReferenceArg => WorksheetErrorCode::Value,
+        ColumnsEvalError::RefResolution(_) => WorksheetErrorCode::Ref,
     }
 }
 

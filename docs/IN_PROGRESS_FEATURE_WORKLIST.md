@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-05-07
+Last updated: 2026-05-23
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -239,23 +239,33 @@ Status axes:
 OxFunc narrowed the W056 table-carrier seam without taking TreeCalc selector
 ownership. `ReferenceKind::Structured` targets may contain bracketed table
 selector text without being rejected as external workbook references, and the
-first aggregate group now has a focused guardrail test proving structured table
-data/header/totals/current-row carriers are consumed through opaque
-`ReferenceResolver::resolve_reference_values(...)` sparse readers.
+structured sparse-reader support now covers the first aggregate group plus
+representative shared aggregate/statistical/logical/text, lookup/match,
+criteria aggregate, extent/projection, and host-context lanes. The guardrail
+test proves structured table data/header/totals/current-row carriers are
+consumed through opaque `ReferenceResolver::resolve_reference_values(...)`
+sparse readers and `HostInfoProvider` context APIs, without TreeCalc selector
+parsing in OxFunc.
 
 Validation evidence:
 1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
-2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`: passed, `3` passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`: passed, `8` passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed,
+   `1316` passed, `1` ignored.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
 
 Status axes:
-1. `scope_completeness`: `scope_complete` for the first aggregate guardrail
-   slice only.
+1. `scope_completeness`: `scope_complete` for beads `oxf-ypq2.15` and
+   `oxf-ypq2.16` as scoped to representative/shared-adapter sparse support and
+   typed classification.
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: `oxf-ypq2.15` sparse-reader widening beyond
-   `SUM` / `COUNT` / `COUNTA` / `COUNTBLANK`; `oxf-ypq2.16`
-   reference-visible/context-sensitive structured-table classification;
-   downstream W056 retained table evidence outside OxFunc write authority.
+4. `open_lanes`: full sparse-reader metadata/replay promotion, whole-surface
+   function-specific sparse parity evidence, dynamic-array/table-context
+   semantics, caller-context lanes such as `ROW` / `COLUMN`, A1-only metadata
+   lanes such as `CELL("address"|"row"|"col")`, reference operator
+   range/intersection semantics, and downstream W056 retained table evidence
+   outside OxFunc write authority.
 
 ### IP-21 Locale Profile Expansion
 - Current state: OxFunc-local target satisfied with follow-up lanes split. OxFunc has acknowledged `BLK-FML-005` and the OxFunc-local W094 profile identity/constants slice now covers the DNA OneCalc ambient language-tag table through canonical profile ids, stable names, `LocaleProfileId::from_bcp47_language_tag(...)`, `LocaleProfileId::from_excel_lcid(...)`, short-date order/pattern facts, currency layout facts, and invariant format-code token-policy facts. Remaining work is tracked separately for downstream OxFml consumption, Excel storage/localized-function research, culture-profile seed mismatch triage, and broader locale semantic parity.

@@ -183,8 +183,9 @@ Rules:
 ### 4.2 Sparse Reader Admission
 
 OxFunc accepts sparse-reader admission as a successor metadata lane. The first
-runtime reader API exists as `ReferenceResolver::resolve_reference_values(...)`
-and is exercised only for the first aggregate group listed below; broader
+runtime reader API exists as `ReferenceResolver::resolve_reference_values(...)`.
+It is now exercised for the first aggregate group plus selected shared
+range-taking adapters and reference-visible lanes listed below; broader
 metadata admission names and replay fields remain successor work.
 
 Reserved conceptual profile:
@@ -197,8 +198,8 @@ Current decision:
 1. accept the sparse-reader identity/admission lane,
 2. adapt the exact name later to match Rust metadata design,
 3. use `ResolvedReferenceValues` as the current concrete sparse reader carrier
-   for the first aggregate group,
-4. defer full metadata/replay promotion and family-wide kernel activation.
+   for admitted current Rust lanes,
+4. defer full metadata/replay promotion and whole-surface family activation.
 
 Minimum sparse-reader semantics for the later API:
 1. `Defined` includes assigned cell values, including empty-string text.
@@ -207,47 +208,69 @@ Minimum sparse-reader semantics for the later API:
 3. Structural state that survives clear operations is not owned by the sparse
    value reader.
 
-Current first activation:
+Current activation:
 1. `SUM`, `COUNT`, `COUNTA`, and `COUNTBLANK` call
    `resolve_reference_values(...)` before dense reference materialization for
    `CallArgValue::Reference` and `EvalValue::Reference` inputs.
-2. `ReferenceKind::Structured` table carriers are admitted as opaque targets
+2. Shared aggregate/range adapters now also try sparse readers for ordinary
+   aggregate/statistical/logical representatives using `expand_aggregate_arg`,
+   text range-scan representatives using `expand_arg_values_only`, and
+   lookup/match representatives using `expand_lookup_vector_arg`.
+3. Criteria aggregate representatives use the same generic sparse materialized
+   value lane where the resolver provides aligned extents.
+4. `ROWS` and `COLUMNS` can read sparse declared extents; `INDEX` can validate
+   bounds from the sparse extent and return an opaque projected
+   `ReferenceLike`.
+5. `SUBTOTAL` and `AGGREGATE` can combine sparse values with host-provided
+   `AggregateReferenceContext`.
+6. `ReferenceKind::Structured` table carriers are admitted as opaque targets
    when `allow_structured_refs` is enabled; OxFunc does not parse table names,
    sections, column ids, current-row selectors, or TreeCalc table ids.
-3. Bracketed structured-reference targets are not treated as external workbook
+7. Bracketed structured-reference targets are not treated as external workbook
    references by OxFunc's generic external-reference guard; table/external
    availability is resolver/provider-owned for structured carriers.
-4. The exercised W056 guardrail covers table data column, whole data section,
+8. The exercised W056 guardrail covers table data column, whole data section,
    header section, totals section, and current-row carrier forms through
    opaque sparse readers.
-5. `COUNTBLANK` uses the sparse declared extent plus defined cells to count
+9. `COUNTBLANK` uses the sparse declared extent plus defined cells to count
    blanks without requiring dense materialization; missing cells in the sparse
    reader are blank at the value layer, and defined empty-string text is also
    counted as blank for `COUNTBLANK`.
-6. If structured references are denied, rejection is the generic
+10. If structured references are denied, rejection is the generic
    `CapabilityDenied { kind: Structured, capability: "allow_structured_refs" }`
    path before provider calls.
 
 Current W056 range-taking inventory:
-1. `supported_sparse_first_group`: `SUM`, `COUNT`, `COUNTA`, and
-   `COUNTBLANK`.
-2. `generic_dense_resolver_supported`: functions whose current implementation
+1. `supported_sparse_defined-cell_aggregate_group`: `SUM`, `COUNT`, `COUNTA`,
+   `COUNTBLANK`, and shared `expand_aggregate_arg` users such as `AVERAGE`,
+   `MAX`, ordinary statistical reducers, `AND`, and `OR`. The guardrail
+   exercises representative functions; functions on the shared adapter inherit
+   the same reader mechanics but still need function-specific semantic evidence
+   before broader Excel parity claims.
+2. `supported_sparse_materialized_value_group`: `TEXTJOIN` as a text
+   range-scan representative, `MATCH` / `XLOOKUP` lookup-vector and return
+   representatives, and criteria aggregate representatives including
+   `COUNTIF` / `SUMIFS` where resolver-provided extents are aligned.
+3. `supported_sparse_extent_or_projection`: `ROWS`, `COLUMNS`, and `INDEX`.
+   `INDEX` preserves an opaque projected `ReferenceLike` target and does not
+   parse structured selectors.
+4. `host_context_supported`: `SUBTOTAL` / `AGGREGATE` require
+   `AggregateReferenceContext`; `AREAS` counts opaque reference areas;
+   `FORMULATEXT` and host-owned `CELL` info types pass the original
+   `ReferenceLike` to `HostInfoProvider`.
+5. `generic_dense_resolver_supported`: functions whose current implementation
    first dereferences references into `EvalValue`/`EvalArray` through
    `resolve_eval_value(...)`. These can consume structured-table carriers only
    when the resolver materializes them; this is not sparse-reader support and
    does not prove table-specific context semantics.
-3. `needs_sparse_widening`: aggregate/statistical/text/range-scan families
-   beyond the first group, including `AVERAGE`, `AVERAGEA`, `AVEDEV`,
-   `DEVSQ`, `GEOMEAN`, `HARMEAN`, `MAX`, `MAXA`, `MEDIAN`, `MIN`, `MINA`,
-   `PRODUCT`, `STDEV*`, `SUMSQ`, `VAR*`, and adjacent range reducers. Tracked
-   by bead `oxf-ypq2.15`.
-4. `needs_function_specific_classification_or_typed_exclusion`:
-   reference-visible and context-sensitive functions including `AREAS`,
-   `FORMULATEXT`, `CELL`, `ROW`, `COLUMN`, `ROWS`, `COLUMNS`, `INDEX`,
-   `OFFSET`, `MATCH`, `XLOOKUP`, `SUBTOTAL`, `AGGREGATE`, `CALL`,
-   `OP_IMPLICIT_INTERSECTION`, `OP_SPILL_REF`, and reference operators.
-   Tracked by bead `oxf-ypq2.16`.
-5. `downstream_context_owned`: structured-table name precedence, table context
+6. `typed_exclusion_or_downstream_context_owned`: `ROW` / `COLUMN` caller
+   context lanes, `CELL("address"|"row"|"col")`, `OFFSET`, dynamic-array
+   selector/reshape functions, volatile reference construction, `CALL`,
+   `OP_IMPLICIT_INTERSECTION`, `OP_SPILL_REF`, and reference range/intersection
+   operators do not gain TreeCalc/table selector semantics in OxFunc. They are
+   either host-context lanes, A1/operator lanes, or opaque carrier lanes until a
+   generic resolver/context API supplies the needed facts.
+7. `downstream_context_owned`: structured-table name precedence, table context
    identity, selected section/region availability, header/totals/current-row
    existence, TreeCalc table selectors, and table dependency/invalidation facts
    are OxFml/OxCalc inputs, not OxFunc branches.
@@ -304,21 +327,24 @@ Rules:
 First concrete lanes:
 1. `IMAGE` / rich-value producer capability publication for `_webimage`.
 2. W056 structured-table sparse `ReferenceLike` consumption for `SUM`,
-   `COUNT`, `COUNTA`, and `COUNTBLANK` through opaque
-   `ReferenceResolver::resolve_reference_values(...)`.
+   `COUNT`, `COUNTA`, `COUNTBLANK`, selected shared aggregate/statistical/
+   logical/text/lookup/criteria representatives, `ROWS`, `COLUMNS`, `INDEX`,
+   and host-context `SUBTOTAL` / `AGGREGATE` through opaque
+   `ReferenceResolver::resolve_reference_values(...)` plus host context APIs.
 3. Current code keeps registry-level keys and adjacent runtime facts separate:
    registry metadata describes what the producer can publish; the runtime
    wrapper describes what a successful run actually exercised.
 
 Deferred alternative:
-1. sparse range readers for aggregate reducers beyond the first exercised
-   group, because each family still needs function-specific evidence and
+1. sparse range-reader metadata/replay promotion for the whole function
+   surface, because each family still needs function-specific evidence and
    replay-visible sparse iteration semantics before promotion.
 
 No current claim:
 1. no current OxFunc kernel admits `RichArgAccepted`,
-2. sparse-reader behavior is currently exercised only for `SUM`, `COUNT`,
-   `COUNTA`, and `COUNTBLANK`; broader families remain open,
+2. sparse-reader behavior is currently exercised only for the scoped
+   representatives and shared adapter paths listed above; full table-context
+   semantics and whole-surface sparse admission remain open,
 3. only the `IMAGE` registry/runtime path currently publishes `_webimage`
    producer capability facts; no generic rich producer protocol or rich-kernel
    admission is claimed.
@@ -336,7 +362,7 @@ No current claim:
     runtime capability facts
   - replay field names for pairwise tree shape and Kahan compensation state
   - per-family `ErrorAlgebra` wiring after function-specific evidence
-  - sparse range reader metadata/replay promotion beyond the first W056
-    aggregate group
-  - reference-visible structured-table function classification under
-    `oxf-ypq2.16`
+  - sparse range reader metadata/replay promotion beyond the current W056
+    representative and shared-adapter evidence
+  - downstream table-context semantics and host-context facts that OxFunc does
+    not own

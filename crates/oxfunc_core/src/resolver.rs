@@ -265,6 +265,51 @@ pub fn resolve_reference_values(
     resolver.resolve_reference_values(&normalized)
 }
 
+pub fn materialize_resolved_reference_values(
+    values: &ResolvedReferenceValues,
+) -> Result<EvalArray, RefResolutionError> {
+    let shape = crate::value::ArrayShape {
+        rows: values.declared_extent.rows,
+        cols: values.declared_extent.cols,
+    };
+    if shape.rows == 0 || shape.cols == 0 {
+        return Err(RefResolutionError::ProviderFailure {
+            detail: "sparse_reference_shape_invalid".to_string(),
+        });
+    }
+    let cell_count =
+        shape
+            .rows
+            .checked_mul(shape.cols)
+            .ok_or_else(|| RefResolutionError::ProviderFailure {
+                detail: "sparse_reference_shape_invalid".to_string(),
+            })?;
+
+    let mut cells = vec![ArrayCellValue::EmptyCell; cell_count];
+    for cell in &values.defined_cells {
+        if cell.row == 0
+            || cell.col == 0
+            || cell.row > values.declared_extent.rows
+            || cell.col > values.declared_extent.cols
+        {
+            return Err(RefResolutionError::ProviderFailure {
+                detail: "sparse_reference_cell_out_of_bounds".to_string(),
+            });
+        }
+        let index = (cell.row - 1)
+            .checked_mul(shape.cols)
+            .and_then(|base| base.checked_add(cell.col - 1))
+            .ok_or_else(|| RefResolutionError::ProviderFailure {
+                detail: "sparse_reference_shape_invalid".to_string(),
+            })?;
+        cells[index] = cell.value.clone();
+    }
+
+    EvalArray::new(shape, cells).ok_or_else(|| RefResolutionError::ProviderFailure {
+        detail: "sparse_reference_shape_invalid".to_string(),
+    })
+}
+
 fn ensure_reference_resolution_allowed(
     normalized: &ReferenceLike,
     caps: ResolverCapabilities,

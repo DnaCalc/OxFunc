@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::{ReferenceResolver, resolve_reference_values};
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind,
     ReferenceLike, WorksheetErrorCode,
@@ -229,6 +229,28 @@ fn reference_from_a1(reference: A1Reference) -> Result<EvalValue, IndexEvalError
         },
         target,
     }))
+}
+
+fn project_reference_with_extent(
+    reference: &ReferenceLike,
+    rows: usize,
+    cols: usize,
+    row: usize,
+    col: usize,
+) -> Result<EvalValue, IndexEvalError> {
+    if row > rows || col > cols {
+        return Err(IndexEvalError::OutOfBounds {
+            rows,
+            cols,
+            row,
+            col,
+        });
+    }
+    if row == 0 && col == 0 {
+        Ok(EvalValue::Reference(reference.clone()))
+    } else {
+        Ok(project_reference(reference, row, col))
+    }
 }
 
 fn cell_to_eval_value(cell: &ArrayCellValue) -> EvalValue {
@@ -457,6 +479,17 @@ pub fn eval_index_surface(
                 Err(IndexEvalError::InvalidAreaNumber(area as f64))
             } else if let Some(parsed) = parse_a1_reference(&r.target) {
                 reference_from_a1(select_a1_reference(&parsed, row, col)?)
+            } else if let Some(values) = resolve_reference_values(resolver, r)
+                .map_err(CoercionError::RefResolution)
+                .map_err(IndexEvalError::Coercion)?
+            {
+                project_reference_with_extent(
+                    r,
+                    values.declared_extent.rows,
+                    values.declared_extent.cols,
+                    row,
+                    col,
+                )
             } else if row == 0 && col == 0 {
                 Ok(EvalValue::Reference(r.clone()))
             } else {

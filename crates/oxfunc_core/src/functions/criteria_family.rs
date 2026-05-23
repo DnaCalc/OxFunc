@@ -9,7 +9,10 @@ use crate::functions::a1_refs::{
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{
+    ReferenceResolver, materialize_resolved_reference_values, resolve_eval_value,
+    resolve_reference_values,
+};
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,
@@ -182,6 +185,15 @@ fn resolve_arg_eval(
     match arg {
         CallArgValue::Reference(reference)
         | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+            if let Some(values) = resolve_reference_values(resolver, reference)
+                .map_err(CoercionError::RefResolution)
+                .map_err(CriteriaEvalError::Coercion)?
+            {
+                let array = materialize_resolved_reference_values(&values)
+                    .map_err(CoercionError::RefResolution)
+                    .map_err(CriteriaEvalError::Coercion)?;
+                return Ok(EvalValue::Array(array));
+            }
             let resolved = resolve_eval_value(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CriteriaEvalError::Coercion)?;

@@ -10,7 +10,10 @@ use crate::functions::adapters::{
     PreparedArgValue, expand_lookup_vector_arg, prepare_arg_values_only,
 };
 use crate::functions::xmatch::{XmatchEvalError, eval_xmatch_adapter_prepared};
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{
+    ReferenceResolver, materialize_resolved_reference_values, resolve_eval_value,
+    resolve_reference_values,
+};
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,
@@ -282,7 +285,28 @@ fn infer_selection_orientation(shape: ArrayShape) -> Option<VectorOrientation> {
     }
 }
 
-fn prepare_return_selection(args: &[CallArgValue]) -> Result<ReturnSelection, XlookupEvalError> {
+fn return_selection_from_array(array: &EvalArray) -> ReturnSelection {
+    let shape = array.shape();
+    if infer_selection_orientation(shape).is_none() {
+        ReturnSelection::ArrayValue(array.clone())
+    } else {
+        let items: Vec<ReturnItem> = array.iter_row_major().map(cell_to_return_item).collect();
+        if items.len() == 1 {
+            ReturnSelection::Scalar(items.into_iter().next().expect("len checked"))
+        } else {
+            ReturnSelection::Vector {
+                items,
+                orientation: infer_selection_orientation(shape)
+                    .expect("non-matrix array has vector orientation"),
+            }
+        }
+    }
+}
+
+fn prepare_return_selection(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<ReturnSelection, XlookupEvalError> {
     if args.len() != 1 {
         let mut items = Vec::new();
         for arg in args {
@@ -302,6 +326,15 @@ fn prepare_return_selection(args: &[CallArgValue]) -> Result<ReturnSelection, Xl
     match &args[0] {
         CallArgValue::Reference(reference)
         | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+            if let Some(values) = resolve_reference_values(resolver, reference)
+                .map_err(CoercionError::RefResolution)
+                .map_err(XlookupEvalError::Coercion)?
+            {
+                let array = materialize_resolved_reference_values(&values)
+                    .map_err(CoercionError::RefResolution)
+                    .map_err(XlookupEvalError::Coercion)?;
+                return Ok(return_selection_from_array(&array));
+            }
             if let Some(parsed) = parse_a1_reference(&reference.target) {
                 if parsed.height() > 1 && parsed.width() > 1 {
                     Ok(ReturnSelection::ReferenceArea(parsed))
@@ -326,24 +359,7 @@ fn prepare_return_selection(args: &[CallArgValue]) -> Result<ReturnSelection, Xl
                 )))
             }
         }
-        CallArgValue::Eval(EvalValue::Array(array)) => {
-            let shape = array.shape();
-            if infer_selection_orientation(shape).is_none() {
-                Ok(ReturnSelection::ArrayValue(array.clone()))
-            } else {
-                let items: Vec<ReturnItem> =
-                    array.iter_row_major().map(cell_to_return_item).collect();
-                Ok(if items.len() == 1 {
-                    ReturnSelection::Scalar(items.into_iter().next().expect("len checked"))
-                } else {
-                    ReturnSelection::Vector {
-                        items,
-                        orientation: infer_selection_orientation(shape)
-                            .expect("non-matrix array has vector orientation"),
-                    }
-                })
-            }
-        }
+        CallArgValue::Eval(EvalValue::Array(array)) => Ok(return_selection_from_array(array)),
         CallArgValue::Eval(value) => Ok(ReturnSelection::Scalar(ReturnItem::Eval(value.clone()))),
         CallArgValue::MissingArg => Ok(ReturnSelection::Scalar(ReturnItem::MissingArg)),
         CallArgValue::EmptyCell => Ok(ReturnSelection::Scalar(ReturnItem::EmptyCell)),
@@ -556,12 +572,23 @@ fn prepare_lookup_vector(
                 orientation = Some(orientation_from_shape(shape.rows, shape.cols)?);
             }
             CallArgValue::Reference(reference) => {
-                let resolved = resolve_eval_value(resolver, reference)
+                if let Some(values) = resolve_reference_values(resolver, reference)
                     .map_err(CoercionError::RefResolution)
-                    .map_err(XlookupEvalError::Coercion)?;
-                if let EvalValue::Array(array) = resolved {
+                    .map_err(XlookupEvalError::Coercion)?
+                {
+                    let array = materialize_resolved_reference_values(&values)
+                        .map_err(CoercionError::RefResolution)
+                        .map_err(XlookupEvalError::Coercion)?;
                     let shape = array.shape();
                     orientation = Some(orientation_from_shape(shape.rows, shape.cols)?);
+                } else {
+                    let resolved = resolve_eval_value(resolver, reference)
+                        .map_err(CoercionError::RefResolution)
+                        .map_err(XlookupEvalError::Coercion)?;
+                    if let EvalValue::Array(array) = resolved {
+                        let shape = array.shape();
+                        orientation = Some(orientation_from_shape(shape.rows, shape.cols)?);
+                    }
                 }
             }
             _ => {}
@@ -653,7 +680,7 @@ pub fn eval_xlookup_surface(
         prepare_arg_values_only(lookup_value, resolver).map_err(XlookupEvalError::Coercion)?;
     let (prepared_lookup_array, lookup_orientation) =
         prepare_lookup_vector(lookup_array, resolver)?;
-    let return_selection = prepare_return_selection(return_array)?;
+    let return_selection = prepare_return_selection(return_array, resolver)?;
     let return_len = selection_len(&return_selection, lookup_orientation)?;
 
     if prepared_lookup_array.len() != return_len {

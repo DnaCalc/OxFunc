@@ -29,7 +29,8 @@ use crate::functions::var_p_fn::{eval_var_p_surface, map_var_p_error_to_ws};
 use crate::functions::var_s_fn::{eval_var_s_surface, map_var_s_error_to_ws};
 use crate::host_info::{AggregateReferenceContext, HostInfoError, HostInfoProvider};
 use crate::resolver::{
-    RefResolutionError, ReferenceResolver, ResolverCapabilities, resolve_eval_value,
+    RefResolutionError, ReferenceResolver, ResolverCapabilities,
+    materialize_resolved_reference_values, resolve_eval_value, resolve_reference_values,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceLike,
@@ -352,9 +353,20 @@ fn materialize_ref_filtered_arg(
     resolver: &(impl ReferenceResolver + ?Sized),
     host_info: &dyn HostInfoProvider,
 ) -> Result<CallArgValue, SubtotalAggregateEvalError> {
-    let resolved = resolve_eval_value(resolver, reference)
+    let resolved = if let Some(values) = resolve_reference_values(resolver, reference)
         .map_err(CoercionError::RefResolution)
-        .map_err(SubtotalAggregateEvalError::Coercion)?;
+        .map_err(SubtotalAggregateEvalError::Coercion)?
+    {
+        EvalValue::Array(
+            materialize_resolved_reference_values(&values)
+                .map_err(CoercionError::RefResolution)
+                .map_err(SubtotalAggregateEvalError::Coercion)?,
+        )
+    } else {
+        resolve_eval_value(resolver, reference)
+            .map_err(CoercionError::RefResolution)
+            .map_err(SubtotalAggregateEvalError::Coercion)?
+    };
     let context = host_info
         .query_aggregate_reference_context(reference)
         .map_err(SubtotalAggregateEvalError::HostInfo)?;

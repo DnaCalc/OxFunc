@@ -1,7 +1,25 @@
 use oxfunc_core::coercion::CoercionError;
 use oxfunc_core::functions::{
-    count::eval_count_surface, counta::eval_counta_surface, countblank_fn::eval_countblank_surface,
+    and_fn::eval_and_surface,
+    average::eval_average_surface,
+    cell::eval_cell_surface,
+    columns_fn::eval_columns_surface_with_resolver,
+    count::eval_count_surface,
+    counta::eval_counta_surface,
+    countblank_fn::eval_countblank_surface,
+    criteria_family::{eval_countif_surface, eval_sumifs_surface},
+    index::{IndexEvalError, eval_index_surface},
+    match_fn::eval_match_surface,
+    max_fn::eval_max_surface,
+    reference_metadata_family::{eval_areas_surface, eval_formulatext_surface},
+    rows_fn::eval_rows_surface_with_resolver,
+    subtotal_aggregate_family::{eval_aggregate_surface, eval_subtotal_surface},
     sum::eval_sum_surface,
+    textjoin::eval_textjoin_surface,
+    xlookup::eval_xlookup_surface,
+};
+use oxfunc_core::host_info::{
+    AggregateCellContext, AggregateReferenceContext, CellInfoQuery, HostInfoError, HostInfoProvider,
 };
 use oxfunc_core::resolver::{
     RefResolutionError, ReferenceResolver, ResolvedReferenceCell, ResolvedReferenceExtent,
@@ -20,6 +38,33 @@ fn text(value: &str) -> ExcelText {
 
 fn structured_arg(target: &str) -> CallArgValue {
     CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Structured, target))
+}
+
+fn scalar_number(n: f64) -> CallArgValue {
+    CallArgValue::Eval(EvalValue::Number(n))
+}
+
+fn scalar_text(value: &str) -> CallArgValue {
+    CallArgValue::Eval(EvalValue::Text(text(value)))
+}
+
+fn scalar_logical(value: bool) -> CallArgValue {
+    CallArgValue::Eval(EvalValue::Logical(value))
+}
+
+fn sparse_values(
+    rows: usize,
+    cols: usize,
+    cells: Vec<(usize, usize, ArrayCellValue)>,
+) -> ResolvedReferenceValues {
+    ResolvedReferenceValues::new(
+        ResolvedReferenceExtent::new(rows, cols),
+        cells
+            .into_iter()
+            .map(|(row, col, value)| ResolvedReferenceCell::new(row, col, value))
+            .collect(),
+        Some(format!("reader:test:{rows}x{cols}")),
+    )
 }
 
 struct StructuredSparseResolver {
@@ -70,6 +115,44 @@ impl ReferenceResolver for StructuredSparseResolver {
     ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
         self.sparse_calls.borrow_mut().push(reference.clone());
         Ok(self.sparse_values_by_target.get(&reference.target).cloned())
+    }
+}
+
+#[derive(Default)]
+struct StructuredHostInfo {
+    aggregate_contexts: BTreeMap<String, AggregateReferenceContext>,
+    formula_text_calls: RefCell<Vec<ReferenceLike>>,
+    cell_info_calls: RefCell<Vec<ReferenceLike>>,
+}
+
+impl HostInfoProvider for StructuredHostInfo {
+    fn query_formula_text(&self, reference: &ReferenceLike) -> Result<EvalValue, HostInfoError> {
+        self.formula_text_calls.borrow_mut().push(reference.clone());
+        Ok(EvalValue::Text(text("=SUM(Table[Amount])")))
+    }
+
+    fn query_cell_info(
+        &self,
+        query: CellInfoQuery,
+        reference: Option<&ReferenceLike>,
+    ) -> Result<EvalValue, HostInfoError> {
+        if let Some(reference) = reference {
+            self.cell_info_calls.borrow_mut().push(reference.clone());
+        }
+        match query {
+            CellInfoQuery::Filename => Ok(EvalValue::Text(text("Book.xlsx"))),
+            other => Err(HostInfoError::UnsupportedCellInfoQuery(other)),
+        }
+    }
+
+    fn query_aggregate_reference_context(
+        &self,
+        reference: &ReferenceLike,
+    ) -> Result<AggregateReferenceContext, HostInfoError> {
+        self.aggregate_contexts
+            .get(&reference.target)
+            .cloned()
+            .ok_or(HostInfoError::UnsupportedAggregateReferenceContextQuery)
     }
 }
 
@@ -265,6 +348,318 @@ fn direct_scalar_and_array_paths_are_unchanged_by_structured_reference_guardrail
             ]])
             .unwrap()
         ))
+    );
+    assert!(resolver.dense_calls.borrow().is_empty());
+    assert!(resolver.sparse_calls.borrow().is_empty());
+}
+
+#[test]
+fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_refs() {
+    let amounts = "treecalc-table://Revenue[#Data][Amount]";
+    let flags = "treecalc-table://Revenue[#Data][Active]";
+    let labels = "treecalc-table://Revenue[#Data][Region]";
+
+    let mut sparse_values_by_target = BTreeMap::new();
+    sparse_values_by_target.insert(
+        amounts.to_string(),
+        sparse_values(
+            3,
+            1,
+            vec![
+                (1, 1, ArrayCellValue::Number(2.0)),
+                (2, 1, ArrayCellValue::Text(text("ignored"))),
+                (3, 1, ArrayCellValue::Number(4.0)),
+            ],
+        ),
+    );
+    sparse_values_by_target.insert(
+        flags.to_string(),
+        sparse_values(
+            2,
+            1,
+            vec![
+                (1, 1, ArrayCellValue::Logical(true)),
+                (2, 1, ArrayCellValue::Logical(true)),
+            ],
+        ),
+    );
+    sparse_values_by_target.insert(
+        labels.to_string(),
+        sparse_values(
+            1,
+            3,
+            vec![
+                (1, 1, ArrayCellValue::Text(text("North"))),
+                (1, 3, ArrayCellValue::Text(text("West"))),
+            ],
+        ),
+    );
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+
+    assert_eq!(
+        eval_average_surface(&[structured_arg(amounts)], &resolver),
+        Ok(EvalValue::Number(3.0))
+    );
+    assert_eq!(
+        eval_max_surface(&[structured_arg(amounts)], &resolver),
+        Ok(EvalValue::Number(4.0))
+    );
+    assert_eq!(
+        eval_and_surface(&[structured_arg(flags)], &resolver),
+        Ok(EvalValue::Logical(true))
+    );
+    assert_eq!(
+        eval_textjoin_surface(
+            &[
+                scalar_text("|"),
+                scalar_logical(true),
+                structured_arg(labels)
+            ],
+            &resolver,
+        ),
+        Ok(EvalValue::Text(text("North|West")))
+    );
+
+    assert!(resolver.dense_calls.borrow().is_empty());
+}
+
+#[test]
+fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
+    let regions = "treecalc-table://Revenue[#Data][Region]";
+    let amounts = "treecalc-table://Revenue[#Data][Amount]";
+    let returns = "treecalc-table://Revenue[#Data][Return]";
+
+    let mut sparse_values_by_target = BTreeMap::new();
+    sparse_values_by_target.insert(
+        regions.to_string(),
+        sparse_values(
+            1,
+            3,
+            vec![
+                (1, 1, ArrayCellValue::Text(text("North"))),
+                (1, 2, ArrayCellValue::Text(text("South"))),
+                (1, 3, ArrayCellValue::Text(text("North"))),
+            ],
+        ),
+    );
+    sparse_values_by_target.insert(
+        amounts.to_string(),
+        sparse_values(
+            1,
+            3,
+            vec![
+                (1, 1, ArrayCellValue::Number(10.0)),
+                (1, 2, ArrayCellValue::Number(20.0)),
+                (1, 3, ArrayCellValue::Number(30.0)),
+            ],
+        ),
+    );
+    sparse_values_by_target.insert(
+        returns.to_string(),
+        sparse_values(
+            1,
+            3,
+            vec![
+                (1, 1, ArrayCellValue::Number(100.0)),
+                (1, 2, ArrayCellValue::Number(200.0)),
+                (1, 3, ArrayCellValue::Number(300.0)),
+            ],
+        ),
+    );
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+
+    assert_eq!(
+        eval_match_surface(
+            &scalar_text("South"),
+            &[structured_arg(regions)],
+            Some(&scalar_number(0.0)),
+            &resolver
+        ),
+        Ok(EvalValue::Number(2.0))
+    );
+    assert_eq!(
+        eval_xlookup_surface(
+            &scalar_text("South"),
+            &[structured_arg(regions)],
+            &[structured_arg(returns)],
+            None,
+            None,
+            None,
+            &resolver,
+        ),
+        Ok(EvalValue::Number(200.0))
+    );
+    assert_eq!(
+        eval_countif_surface(&[structured_arg(regions), scalar_text("North")], &resolver),
+        Ok(EvalValue::Number(2.0))
+    );
+    assert_eq!(
+        eval_sumifs_surface(
+            &[
+                structured_arg(amounts),
+                structured_arg(regions),
+                scalar_text("North"),
+            ],
+            &resolver,
+        ),
+        Ok(EvalValue::Number(40.0))
+    );
+
+    assert!(resolver.dense_calls.borrow().is_empty());
+}
+
+#[test]
+fn rows_columns_and_index_use_sparse_extent_without_selector_parsing() {
+    let table = "treecalc-table://Revenue[#Data]";
+    let mut sparse_values_by_target = BTreeMap::new();
+    sparse_values_by_target.insert(table.to_string(), sparse_values(7, 3, Vec::new()));
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+
+    assert_eq!(
+        eval_rows_surface_with_resolver(&[structured_arg(table)], &resolver),
+        Ok(EvalValue::Number(7.0))
+    );
+    assert_eq!(
+        eval_columns_surface_with_resolver(&[structured_arg(table)], &resolver),
+        Ok(EvalValue::Number(3.0))
+    );
+    assert_eq!(
+        eval_index_surface(
+            &[
+                structured_arg(table),
+                scalar_number(2.0),
+                scalar_number(3.0)
+            ],
+            &resolver,
+        ),
+        Ok(EvalValue::Reference(ReferenceLike::new(
+            ReferenceKind::Structured,
+            format!("{table}#INDEX(2,3)"),
+        )))
+    );
+    assert!(matches!(
+        eval_index_surface(
+            &[
+                structured_arg(table),
+                scalar_number(8.0),
+                scalar_number(1.0)
+            ],
+            &resolver,
+        ),
+        Err(IndexEvalError::OutOfBounds {
+            rows: 7,
+            cols: 3,
+            row: 8,
+            col: 1,
+        })
+    ));
+
+    assert!(resolver.dense_calls.borrow().is_empty());
+}
+
+#[test]
+fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
+    let amounts = "treecalc-table://Revenue[#Data][Amount]";
+    let mut sparse_values_by_target = BTreeMap::new();
+    sparse_values_by_target.insert(
+        amounts.to_string(),
+        sparse_values(
+            4,
+            1,
+            vec![
+                (1, 1, ArrayCellValue::Number(10.0)),
+                (2, 1, ArrayCellValue::Number(20.0)),
+                (3, 1, ArrayCellValue::Number(30.0)),
+                (4, 1, ArrayCellValue::Number(40.0)),
+            ],
+        ),
+    );
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let mut host = StructuredHostInfo::default();
+    host.aggregate_contexts.insert(
+        amounts.to_string(),
+        AggregateReferenceContext::new(
+            oxfunc_core::value::ArrayShape { rows: 4, cols: 1 },
+            vec![
+                AggregateCellContext {
+                    row_hidden_manual: false,
+                    row_filtered_out: false,
+                    nested_subtotal_or_aggregate: false,
+                },
+                AggregateCellContext {
+                    row_hidden_manual: true,
+                    row_filtered_out: false,
+                    nested_subtotal_or_aggregate: false,
+                },
+                AggregateCellContext {
+                    row_hidden_manual: false,
+                    row_filtered_out: true,
+                    nested_subtotal_or_aggregate: false,
+                },
+                AggregateCellContext {
+                    row_hidden_manual: false,
+                    row_filtered_out: false,
+                    nested_subtotal_or_aggregate: true,
+                },
+            ],
+        )
+        .expect("context shape is valid"),
+    );
+
+    assert_eq!(
+        eval_subtotal_surface(
+            &[scalar_number(109.0), structured_arg(amounts)],
+            &resolver,
+            Some(&host)
+        ),
+        Ok(EvalValue::Number(10.0))
+    );
+    assert_eq!(
+        eval_aggregate_surface(
+            &[
+                scalar_number(9.0),
+                scalar_number(3.0),
+                structured_arg(amounts)
+            ],
+            &resolver,
+            Some(&host),
+        ),
+        Ok(EvalValue::Number(10.0))
+    );
+
+    assert!(resolver.dense_calls.borrow().is_empty());
+}
+
+#[test]
+fn metadata_lanes_pass_structured_references_to_host_or_count_opaque_areas() {
+    let formula_cell = "treecalc-table://Revenue[#Totals][Amount]";
+    let resolver = StructuredSparseResolver::with_values(BTreeMap::new());
+    let host = StructuredHostInfo::default();
+
+    assert_eq!(
+        eval_areas_surface(&[structured_arg(formula_cell)]),
+        Ok(EvalValue::Number(1.0))
+    );
+    assert_eq!(
+        eval_formulatext_surface(&[structured_arg(formula_cell)], Some(&host)),
+        Ok(EvalValue::Text(text("=SUM(Table[Amount])")))
+    );
+    assert_eq!(
+        eval_cell_surface(
+            &[scalar_text("filename"), structured_arg(formula_cell)],
+            &resolver,
+            Some(&host),
+        ),
+        Ok(EvalValue::Text(text("Book.xlsx")))
+    );
+
+    assert_eq!(
+        host.formula_text_calls.borrow().as_slice(),
+        &[ReferenceLike::new(ReferenceKind::Structured, formula_cell)]
+    );
+    assert_eq!(
+        host.cell_info_calls.borrow().as_slice(),
+        &[ReferenceLike::new(ReferenceKind::Structured, formula_cell)]
     );
     assert!(resolver.dense_calls.borrow().is_empty());
     assert!(resolver.sparse_calls.borrow().is_empty());
