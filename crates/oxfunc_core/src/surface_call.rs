@@ -13,7 +13,7 @@ use crate::functions::surface_dispatch::{
 use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
 use crate::registry::{FunctionEntry, FunctionRegistry, builtin_registry};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::{CallerContext, ReferenceResolver, ReferenceTextResolver};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -310,6 +310,7 @@ impl SurfaceCallSite {
             self.dispatch_key,
             args,
             runtime.resolver,
+            runtime.reference_text_resolver,
             runtime.effective_now_serial(),
             runtime.random_provider,
             runtime.locale_ctx,
@@ -346,6 +347,7 @@ impl SurfaceCallSite {
 
 pub struct SurfaceCallRuntime<'a, R: ReferenceResolver> {
     pub resolver: &'a R,
+    pub reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
     pub now_serial: Option<f64>,
     pub now_provider: Option<&'a dyn NowProvider>,
     pub random_provider: Option<&'a dyn RandomProvider>,
@@ -360,6 +362,7 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
     pub fn new(resolver: &'a R) -> Self {
         Self {
             resolver,
+            reference_text_resolver: None,
             now_serial: None,
             now_provider: None,
             random_provider: None,
@@ -380,6 +383,14 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
     pub fn with_now_provider(mut self, now_provider: &'a dyn NowProvider) -> Self {
         self.now_serial = None;
         self.now_provider = Some(now_provider);
+        self
+    }
+
+    pub fn with_reference_text_resolver(
+        mut self,
+        reference_text_resolver: &'a dyn ReferenceTextResolver,
+    ) -> Self {
+        self.reference_text_resolver = Some(reference_text_resolver);
         self
     }
 
@@ -419,6 +430,60 @@ impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
     pub fn effective_now_serial(&self) -> Option<f64> {
         self.now_serial
             .or_else(|| self.now_provider.map(|provider| provider.now_serial()))
+    }
+}
+
+pub trait FunctionExecutionContext {
+    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_);
+
+    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
+        None
+    }
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        self.reference_resolver().caller_context()
+    }
+}
+
+pub struct FunctionExecutionContextView<'a, R: ReferenceResolver> {
+    reference_resolver: &'a R,
+    reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
+}
+
+impl<'a, R: ReferenceResolver> FunctionExecutionContextView<'a, R> {
+    pub fn new(reference_resolver: &'a R) -> Self {
+        Self {
+            reference_resolver,
+            reference_text_resolver: None,
+        }
+    }
+
+    pub fn with_reference_text_resolver(
+        mut self,
+        reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
+    ) -> Self {
+        self.reference_text_resolver = reference_text_resolver;
+        self
+    }
+}
+
+impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextView<'_, R> {
+    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
+        self.reference_resolver
+    }
+
+    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
+        self.reference_text_resolver
+    }
+}
+
+impl<R: ReferenceResolver> FunctionExecutionContext for SurfaceCallRuntime<'_, R> {
+    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
+        self.resolver
+    }
+
+    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
+        self.reference_text_resolver
     }
 }
 
@@ -679,6 +744,7 @@ mod tests {
             function_id,
             args,
             &resolver,
+            None,
             Some(46000.0),
             Some(&random_provider),
             None,
@@ -712,6 +778,7 @@ mod tests {
             function_id,
             args,
             &resolver,
+            None,
             Some(46000.0),
             Some(&random_provider),
             locale_ctx,

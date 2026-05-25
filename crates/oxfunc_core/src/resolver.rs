@@ -47,6 +47,33 @@ pub enum RefResolutionError {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ReferenceTextResolutionMode {
+    Indirect,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceTextResolutionRequest {
+    pub text: String,
+    pub mode: ReferenceTextResolutionMode,
+    pub a1_style: Option<bool>,
+    pub caller_context: Option<CallerContext>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ReferenceTextResolutionError {
+    Unsupported,
+    InvalidReferenceText { text: String },
+    ProviderFailure { detail: String },
+}
+
+pub trait ReferenceTextResolver {
+    fn resolve_reference_text(
+        &self,
+        request: &ReferenceTextResolutionRequest,
+    ) -> Result<ReferenceLike, ReferenceTextResolutionError>;
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ResolvedReferenceExtent {
     pub rows: usize,
     pub cols: usize,
@@ -122,6 +149,30 @@ pub trait ReferenceResolver {
 
     fn caller_context(&self) -> Option<CallerContext> {
         None
+    }
+}
+
+impl<T: ReferenceResolver + ?Sized> ReferenceResolver for &T {
+    fn capabilities(&self) -> ResolverCapabilities {
+        (**self).capabilities()
+    }
+
+    fn resolve_reference(
+        &self,
+        reference: &ReferenceLike,
+    ) -> Result<EvalValue, RefResolutionError> {
+        (**self).resolve_reference(reference)
+    }
+
+    fn resolve_reference_values(
+        &self,
+        reference: &ReferenceLike,
+    ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+        (**self).resolve_reference_values(reference)
+    }
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        (**self).caller_context()
     }
 }
 

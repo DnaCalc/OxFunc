@@ -9,7 +9,11 @@ use crate::functions::a1_refs::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
-use crate::resolver::{CallerContext, ReferenceResolver};
+use crate::resolver::{
+    CallerContext, ReferenceTextResolutionError, ReferenceTextResolutionMode,
+    ReferenceTextResolutionRequest, ReferenceTextResolver,
+};
+use crate::surface_call::FunctionExecutionContext;
 use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
 pub const INDIRECT_META: FunctionMeta = FunctionMeta {
@@ -35,6 +39,7 @@ pub enum IndirectEvalError {
     },
     Coercion(CoercionError),
     InvalidReferenceText(String),
+    ReferenceTextResolution(ReferenceTextResolutionError),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -225,15 +230,52 @@ pub fn eval_indirect_adapter_prepared(
 
 pub fn eval_indirect_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    fec: &dyn FunctionExecutionContext,
 ) -> Result<EvalValue, IndirectEvalError> {
-    let caller_context = resolver.caller_context();
+    let caller_context = fec.caller_context();
     run_values_only_prepared(
         args,
-        resolver,
-        |prepared| eval_indirect_adapter_prepared(prepared, caller_context.as_ref()),
+        fec.reference_resolver(),
+        |prepared| {
+            if let Some(reference_text_resolver) = fec.reference_text_resolver() {
+                eval_indirect_with_reference_text_resolver(
+                    prepared,
+                    caller_context.clone(),
+                    reference_text_resolver,
+                )
+            } else {
+                eval_indirect_adapter_prepared(prepared, caller_context.as_ref())
+            }
+        },
         IndirectEvalError::Coercion,
     )
+}
+
+fn eval_indirect_with_reference_text_resolver(
+    args: &[PreparedArgValue],
+    caller_context: Option<CallerContext>,
+    reference_text_resolver: &dyn ReferenceTextResolver,
+) -> Result<EvalValue, IndirectEvalError> {
+    let argc = args.len();
+    if !INDIRECT_META.arity.accepts(argc) {
+        return Err(IndirectEvalError::ArityMismatch {
+            expected_min: INDIRECT_META.arity.min,
+            expected_max: INDIRECT_META.arity.max,
+            actual: argc,
+        });
+    }
+
+    let text = parse_ref_text(&args[0])?;
+    let a1_style = parse_a1_flag(args.get(1))?;
+    let reference = reference_text_resolver
+        .resolve_reference_text(&ReferenceTextResolutionRequest {
+            text,
+            mode: ReferenceTextResolutionMode::Indirect,
+            a1_style: Some(a1_style),
+            caller_context,
+        })
+        .map_err(IndirectEvalError::ReferenceTextResolution)?;
+    Ok(EvalValue::Reference(reference))
 }
 
 pub fn map_indirect_error_to_ws(e: &IndirectEvalError) -> WorksheetErrorCode {
@@ -241,6 +283,7 @@ pub fn map_indirect_error_to_ws(e: &IndirectEvalError) -> WorksheetErrorCode {
         IndirectEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         IndirectEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         IndirectEvalError::InvalidReferenceText(_) => WorksheetErrorCode::Ref,
+        IndirectEvalError::ReferenceTextResolution(_) => WorksheetErrorCode::Ref,
         IndirectEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }
 }
@@ -248,12 +291,14 @@ pub fn map_indirect_error_to_ws(e: &IndirectEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
     use crate::value::ExcelText;
 
     struct MockResolver {
         caller: Option<CallerContext>,
     }
+
+    struct MockReferenceTextResolver;
 
     impl ReferenceResolver for MockResolver {
         fn capabilities(&self) -> ResolverCapabilities {
@@ -280,9 +325,20 @@ mod tests {
         )))
     }
 
+    fn eval_with_mock(
+        args: &[CallArgValue],
+        caller: Option<CallerContext>,
+        reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+    ) -> Result<EvalValue, IndirectEvalError> {
+        let resolver = MockResolver { caller };
+        let fec = crate::surface_call::FunctionExecutionContextView::new(&resolver)
+            .with_reference_text_resolver(reference_text_resolver);
+        eval_indirect_surface(args, &fec)
+    }
+
     #[test]
     fn eval_indirect_a1_text_returns_reference_like() {
-        let got = eval_indirect_surface(&[text_arg("Sheet1!A1")], &MockResolver { caller: None });
+        let got = eval_with_mock(&[text_arg("Sheet1!A1")], None, None);
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
@@ -294,15 +350,14 @@ mod tests {
 
     #[test]
     fn eval_indirect_absolute_r1c1_is_supported() {
-        let got = eval_indirect_surface(
+        let got = eval_with_mock(
             &[text_arg("R1C2"), CallArgValue::Eval(EvalValue::Number(0.0))],
-            &MockResolver {
-                caller: Some(CallerContext {
-                    prefix: Some("Sheet1".to_string()),
-                    row: 10,
-                    col: 10,
-                }),
-            },
+            Some(CallerContext {
+                prefix: Some("Sheet1".to_string()),
+                row: 10,
+                col: 10,
+            }),
+            None,
         );
         assert_eq!(
             got,
@@ -315,18 +370,17 @@ mod tests {
 
     #[test]
     fn eval_indirect_relative_r1c1_uses_caller_context() {
-        let got = eval_indirect_surface(
+        let got = eval_with_mock(
             &[
                 text_arg("R[1]C[-1]"),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &MockResolver {
-                caller: Some(CallerContext {
-                    prefix: Some("Sheet1".to_string()),
-                    row: 3,
-                    col: 3,
-                }),
-            },
+            Some(CallerContext {
+                prefix: Some("Sheet1".to_string()),
+                row: 3,
+                col: 3,
+            }),
+            None,
         );
         assert_eq!(
             got,
@@ -339,12 +393,13 @@ mod tests {
 
     #[test]
     fn eval_indirect_r1c1_requires_context_for_relative_refs() {
-        let got = eval_indirect_surface(
+        let got = eval_with_mock(
             &[
                 text_arg("R[1]C[1]"),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &MockResolver { caller: None },
+            None,
+            None,
         );
         assert_eq!(
             got,
@@ -356,10 +411,7 @@ mod tests {
 
     #[test]
     fn eval_indirect_rejects_non_text_reference_expression() {
-        let got = eval_indirect_surface(
-            &[CallArgValue::Eval(EvalValue::Number(1.0))],
-            &MockResolver { caller: None },
-        );
+        let got = eval_with_mock(&[CallArgValue::Eval(EvalValue::Number(1.0))], None, None);
         assert_eq!(
             got,
             Err(IndirectEvalError::InvalidReferenceText(
@@ -370,15 +422,14 @@ mod tests {
 
     #[test]
     fn eval_indirect_missing_a1_flag_behaves_like_false() {
-        let got = eval_indirect_surface(
+        let got = eval_with_mock(
             &[text_arg("R1C2"), CallArgValue::MissingArg],
-            &MockResolver {
-                caller: Some(CallerContext {
-                    prefix: Some("Sheet1".to_string()),
-                    row: 3,
-                    col: 3,
-                }),
-            },
+            Some(CallerContext {
+                prefix: Some("Sheet1".to_string()),
+                row: 3,
+                col: 3,
+            }),
+            None,
         );
         assert_eq!(
             got,
@@ -391,8 +442,7 @@ mod tests {
 
     #[test]
     fn eval_indirect_whole_column_a1_text_returns_area_reference() {
-        let got =
-            eval_indirect_surface(&[text_arg("Sheet1!$K:$K")], &MockResolver { caller: None });
+        let got = eval_with_mock(&[text_arg("Sheet1!$K:$K")], None, None);
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
@@ -404,12 +454,55 @@ mod tests {
 
     #[test]
     fn eval_indirect_whole_row_a1_text_returns_area_reference() {
-        let got = eval_indirect_surface(&[text_arg("$1:$1")], &MockResolver { caller: None });
+        let got = eval_with_mock(&[text_arg("$1:$1")], None, None);
         assert_eq!(
             got,
             Ok(EvalValue::Reference(ReferenceLike {
                 kind: ReferenceKind::Area,
                 target: "1:1".to_string(),
+            }))
+        );
+    }
+
+    impl ReferenceTextResolver for MockReferenceTextResolver {
+        fn resolve_reference_text(
+            &self,
+            request: &ReferenceTextResolutionRequest,
+        ) -> Result<ReferenceLike, ReferenceTextResolutionError> {
+            assert_eq!(request.text, "Tree.Node");
+            assert_eq!(request.mode, ReferenceTextResolutionMode::Indirect);
+            assert_eq!(request.a1_style, Some(true));
+            assert_eq!(
+                request.caller_context,
+                Some(CallerContext {
+                    prefix: Some("Tree".to_string()),
+                    row: 7,
+                    col: 8,
+                })
+            );
+            Ok(ReferenceLike {
+                kind: ReferenceKind::Structured,
+                target: "hostref:Tree.Node".to_string(),
+            })
+        }
+    }
+
+    #[test]
+    fn eval_indirect_uses_reference_text_resolver_when_supplied() {
+        let got = eval_with_mock(
+            &[text_arg("Tree.Node")],
+            Some(CallerContext {
+                prefix: Some("Tree".to_string()),
+                row: 7,
+                col: 8,
+            }),
+            Some(&MockReferenceTextResolver),
+        );
+        assert_eq!(
+            got,
+            Ok(EvalValue::Reference(ReferenceLike {
+                kind: ReferenceKind::Structured,
+                target: "hostref:Tree.Node".to_string(),
             }))
         );
     }
