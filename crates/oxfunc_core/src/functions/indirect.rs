@@ -3,6 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::function_call::FunctionExecutionContext;
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
@@ -10,7 +11,6 @@ use crate::resolver::{
     CallerContext, ReferenceTextResolutionError, ReferenceTextResolutionMode,
     ReferenceTextResolutionRequest, ReferenceTextResolver,
 };
-use crate::surface_call::FunctionExecutionContext;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const INDIRECT_META: FunctionMeta = FunctionMeta {
@@ -182,7 +182,7 @@ mod tests {
         reference_text_resolver: Option<&dyn ReferenceTextResolver>,
     ) -> Result<EvalValue, IndirectEvalError> {
         let resolver = MockResolver { caller };
-        let fec = crate::surface_call::FunctionExecutionContextView::new(&resolver)
+        let fec = crate::function_call::FunctionExecutionContextRef::new(&resolver)
             .with_reference_text_resolver(reference_text_resolver);
         eval_indirect_surface(args, &fec)
     }

@@ -29,7 +29,7 @@ Direction to encode:
    plans, and trace publication policy.
 4. FEC/host/DNA Calc layers own workbook-level scheduling, invalidation,
    publication, caching, concurrency, and graph/backend execution strategy.
-5. Optimized evaluators should consume OxFunc resolved call-site handles and
+5. Optimized evaluators should consume OxFunc resolved function-call-target handles and
    metadata rather than repeatedly passing strings through broad dispatch.
 6. Optimized evaluators must not duplicate or special-case function semantics
    for hot functions such as INDEX, HSTACK/VSTACK, arithmetic operators,
@@ -38,7 +38,7 @@ Direction to encode:
    documentation: arity, argument preparation, volatility, determinism, host
    interaction, FEC dependency profiles, callable argument ordinals, reference
    visibility, shape behavior, array lifting, and hoistability under explicit
-   runtime-context policy.
+   execution-context policy.
 8. Value-only versus trace-rich execution is an evaluator/runtime mode decision.
    Trace requirements should not force OxFunc to allocate per-call trace
    structures in hot value paths, and value-only execution must preserve the same
@@ -49,10 +49,10 @@ Direction to encode:
 
 Concrete OxFunc surfaces from W096 that Foundation should reference where useful:
 
-1. `SurfaceCallSite`
-2. `SurfaceCallRuntime`
-3. `SurfaceCallScratch`
-4. `SurfaceCallHoistPolicy`
+1. `FunctionCallTarget`
+2. `FunctionExecutionContextBundle`
+3. `FunctionCallScratch`
+4. `ExpressionHoistPolicy`
 5. `SurfaceDispatchKey`
 6. generated/catalog-index surface dispatch
 7. compatibility string APIs as wrappers over resolved dispatch

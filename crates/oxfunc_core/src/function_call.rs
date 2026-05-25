@@ -17,7 +17,7 @@ use crate::resolver::{CallerContext, ReferenceResolver, ReferenceTextResolver};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum SurfaceCallSiteResolveError {
+pub enum FunctionCallTargetResolveError {
     UnknownFunctionId(String),
     UnknownSurfaceName(String),
 }
@@ -29,10 +29,10 @@ pub enum CallableArgumentSpec {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SurfaceCallHoistPolicy {
+pub struct ExpressionHoistPolicy {
     /// Permit hoisting functions whose only FEC dependency is reference
     /// resolution, but only when the formula planner has separately proven the
-    /// planned subtree contains no runtime-varying references.
+    /// planned subtree contains no execution-context-varying references.
     pub allow_ref_only_dependency: bool,
     pub allow_fixed_caller_context: bool,
     pub allow_fixed_locale: bool,
@@ -42,7 +42,7 @@ pub struct SurfaceCallHoistPolicy {
     pub allow_fixed_host_state: bool,
 }
 
-impl SurfaceCallHoistPolicy {
+impl ExpressionHoistPolicy {
     pub const STRICT_CONTEXT_FREE: Self = Self {
         allow_ref_only_dependency: false,
         allow_fixed_caller_context: false,
@@ -53,7 +53,7 @@ impl SurfaceCallHoistPolicy {
         allow_fixed_host_state: false,
     };
 
-    pub const FIXED_RUNTIME_CONTEXT: Self = Self {
+    pub const FIXED_EXECUTION_CONTEXT: Self = Self {
         allow_ref_only_dependency: true,
         allow_fixed_caller_context: true,
         allow_fixed_locale: true,
@@ -64,18 +64,18 @@ impl SurfaceCallHoistPolicy {
     };
 }
 
-impl Default for SurfaceCallHoistPolicy {
+impl Default for ExpressionHoistPolicy {
     fn default() -> Self {
         Self::STRICT_CONTEXT_FREE
     }
 }
 
 #[derive(Debug, Clone, Default, PartialEq)]
-pub struct SurfaceCallScratch {
+pub struct FunctionCallScratch {
     call_args: Vec<CallArgValue>,
 }
 
-impl SurfaceCallScratch {
+impl FunctionCallScratch {
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             call_args: Vec::with_capacity(capacity),
@@ -114,7 +114,7 @@ const CALLABLE_FIXED_3: [CallableArgumentSpec; 1] = [CallableArgumentSpec::Fixed
 const CALLABLE_LAST: [CallableArgumentSpec; 1] = [CallableArgumentSpec::Last];
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SurfaceCallSite {
+pub struct FunctionCallTarget {
     dispatch_key: SurfaceDispatchKey,
     meta: FunctionMeta,
     surface_name: String,
@@ -122,18 +122,20 @@ pub struct SurfaceCallSite {
     callable_argument_specs: &'static [CallableArgumentSpec],
 }
 
-impl SurfaceCallSite {
-    pub fn from_function_id(function_id: &str) -> Result<Self, SurfaceCallSiteResolveError> {
+impl FunctionCallTarget {
+    pub fn from_function_id(function_id: &str) -> Result<Self, FunctionCallTargetResolveError> {
         let dispatch_key = resolve_surface_dispatch_key(function_id).ok_or_else(|| {
-            SurfaceCallSiteResolveError::UnknownFunctionId(function_id.to_string())
+            FunctionCallTargetResolveError::UnknownFunctionId(function_id.to_string())
         })?;
         Ok(Self::from_dispatch_key(dispatch_key))
     }
 
-    pub fn from_registry_entry(entry: &FunctionEntry) -> Result<Self, SurfaceCallSiteResolveError> {
+    pub fn from_registry_entry(
+        entry: &FunctionEntry,
+    ) -> Result<Self, FunctionCallTargetResolveError> {
         let dispatch_key =
             resolve_surface_dispatch_key(&entry.meta.function_id).ok_or_else(|| {
-                SurfaceCallSiteResolveError::UnknownFunctionId(entry.meta.function_id.clone())
+                FunctionCallTargetResolveError::UnknownFunctionId(entry.meta.function_id.clone())
             })?;
         Ok(Self::from_dispatch_key(dispatch_key))
     }
@@ -141,9 +143,9 @@ impl SurfaceCallSite {
     pub fn from_registry_function_id(
         registry: &FunctionRegistry,
         function_id: &str,
-    ) -> Result<Self, SurfaceCallSiteResolveError> {
+    ) -> Result<Self, FunctionCallTargetResolveError> {
         let entry = registry.lookup_by_id(function_id).ok_or_else(|| {
-            SurfaceCallSiteResolveError::UnknownFunctionId(function_id.to_string())
+            FunctionCallTargetResolveError::UnknownFunctionId(function_id.to_string())
         })?;
         Self::from_registry_entry(entry)
     }
@@ -151,24 +153,24 @@ impl SurfaceCallSite {
     pub fn from_registry_surface_name(
         registry: &FunctionRegistry,
         surface_name: &str,
-    ) -> Result<Self, SurfaceCallSiteResolveError> {
+    ) -> Result<Self, FunctionCallTargetResolveError> {
         let entry = registry
             .lookup_by_surface_name(surface_name)
             .ok_or_else(|| {
-                SurfaceCallSiteResolveError::UnknownSurfaceName(surface_name.to_string())
+                FunctionCallTargetResolveError::UnknownSurfaceName(surface_name.to_string())
             })?;
         Self::from_registry_entry(entry)
     }
 
-    pub fn from_surface_name(surface_name: &str) -> Result<Self, SurfaceCallSiteResolveError> {
+    pub fn from_surface_name(surface_name: &str) -> Result<Self, FunctionCallTargetResolveError> {
         let entry = builtin_registry()
             .lookup_by_surface_name(surface_name)
             .ok_or_else(|| {
-                SurfaceCallSiteResolveError::UnknownSurfaceName(surface_name.to_string())
+                FunctionCallTargetResolveError::UnknownSurfaceName(surface_name.to_string())
             })?;
         let dispatch_key =
             resolve_surface_dispatch_key(&entry.meta.function_id).ok_or_else(|| {
-                SurfaceCallSiteResolveError::UnknownFunctionId(entry.meta.function_id.clone())
+                FunctionCallTargetResolveError::UnknownFunctionId(entry.meta.function_id.clone())
             })?;
         Ok(Self::from_dispatch_key(dispatch_key))
     }
@@ -276,20 +278,20 @@ impl SurfaceCallSite {
         ordinals
     }
 
-    pub fn new_scratch(&self) -> SurfaceCallScratch {
+    pub fn new_scratch(&self) -> FunctionCallScratch {
         let capacity = if self.meta.arity.max == usize::MAX {
             self.meta.arity.min
         } else {
             self.meta.arity.max.min(8).max(self.meta.arity.min)
         };
-        SurfaceCallScratch::with_capacity(capacity)
+        FunctionCallScratch::with_capacity(capacity)
     }
 
     pub fn is_context_free_pure(&self) -> bool {
-        self.is_hoistable_under(SurfaceCallHoistPolicy::STRICT_CONTEXT_FREE)
+        self.is_hoistable_under(ExpressionHoistPolicy::STRICT_CONTEXT_FREE)
     }
 
-    pub fn is_hoistable_under(&self, policy: SurfaceCallHoistPolicy) -> bool {
+    pub fn is_hoistable_under(&self, policy: ExpressionHoistPolicy) -> bool {
         determinism_allows_hoist(self.meta.determinism, policy)
             && volatility_allows_hoist(self.meta.volatility, policy)
             && host_interaction_allows_hoist(self.meta.host_interaction, policy)
@@ -304,35 +306,35 @@ impl SurfaceCallSite {
     pub fn invoke<R: ReferenceResolver>(
         &self,
         args: &[CallArgValue],
-        runtime: &mut SurfaceCallRuntime<'_, R>,
+        fec: &mut FunctionExecutionContextBundle<'_, R>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
         eval_surface_value_call_with_dispatch_key(
             self.dispatch_key,
             args,
-            runtime.resolver,
-            runtime.reference_text_resolver,
-            runtime.effective_now_serial(),
-            runtime.random_provider,
-            runtime.locale_ctx,
-            runtime.host_info,
-            runtime.callable_invoker,
-            runtime.rtd_provider,
-            runtime.registered_external_provider,
+            fec.resolver,
+            fec.reference_text_resolver,
+            fec.effective_now_serial(),
+            fec.random_provider,
+            fec.locale_ctx,
+            fec.host_info,
+            fec.callable_invoker,
+            fec.rtd_provider,
+            fec.registered_external_provider,
         )
     }
 
     pub fn invoke_scratch<R: ReferenceResolver>(
         &self,
-        scratch: &SurfaceCallScratch,
-        runtime: &mut SurfaceCallRuntime<'_, R>,
+        scratch: &FunctionCallScratch,
+        fec: &mut FunctionExecutionContextBundle<'_, R>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
-        self.invoke(scratch.call_args(), runtime)
+        self.invoke(scratch.call_args(), fec)
     }
 
     pub fn invoke_with_scratch_builder<R, F>(
         &self,
-        scratch: &mut SurfaceCallScratch,
-        runtime: &mut SurfaceCallRuntime<'_, R>,
+        scratch: &mut FunctionCallScratch,
+        fec: &mut FunctionExecutionContextBundle<'_, R>,
         build_args: F,
     ) -> Result<EvalValue, WorksheetErrorCode>
     where
@@ -341,11 +343,11 @@ impl SurfaceCallSite {
     {
         scratch.clear();
         build_args(scratch.call_args_mut());
-        self.invoke_scratch(scratch, runtime)
+        self.invoke_scratch(scratch, fec)
     }
 }
 
-pub struct SurfaceCallRuntime<'a, R: ReferenceResolver> {
+pub struct FunctionExecutionContextBundle<'a, R: ReferenceResolver> {
     pub resolver: &'a R,
     pub reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
     pub now_serial: Option<f64>,
@@ -358,7 +360,7 @@ pub struct SurfaceCallRuntime<'a, R: ReferenceResolver> {
     pub registered_external_provider: Option<&'a dyn RegisteredExternalProvider>,
 }
 
-impl<'a, R: ReferenceResolver> SurfaceCallRuntime<'a, R> {
+impl<'a, R: ReferenceResolver> FunctionExecutionContextBundle<'a, R> {
     pub fn new(resolver: &'a R) -> Self {
         Self {
             resolver,
@@ -445,12 +447,12 @@ pub trait FunctionExecutionContext {
     }
 }
 
-pub struct FunctionExecutionContextView<'a, R: ReferenceResolver> {
+pub struct FunctionExecutionContextRef<'a, R: ReferenceResolver> {
     reference_resolver: &'a R,
     reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
 }
 
-impl<'a, R: ReferenceResolver> FunctionExecutionContextView<'a, R> {
+impl<'a, R: ReferenceResolver> FunctionExecutionContextRef<'a, R> {
     pub fn new(reference_resolver: &'a R) -> Self {
         Self {
             reference_resolver,
@@ -467,7 +469,7 @@ impl<'a, R: ReferenceResolver> FunctionExecutionContextView<'a, R> {
     }
 }
 
-impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextView<'_, R> {
+impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextRef<'_, R> {
     fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
         self.reference_resolver
     }
@@ -477,7 +479,7 @@ impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContext
     }
 }
 
-impl<R: ReferenceResolver> FunctionExecutionContext for SurfaceCallRuntime<'_, R> {
+impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextBundle<'_, R> {
     fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
         self.resolver
     }
@@ -501,7 +503,7 @@ fn callable_argument_specs_for_id(function_id: &str) -> &'static [CallableArgume
     }
 }
 
-fn determinism_allows_hoist(determinism: DeterminismClass, policy: SurfaceCallHoistPolicy) -> bool {
+fn determinism_allows_hoist(determinism: DeterminismClass, policy: ExpressionHoistPolicy) -> bool {
     match determinism {
         DeterminismClass::Deterministic => true,
         DeterminismClass::PseudoRandom => policy.allow_fixed_random,
@@ -510,7 +512,7 @@ fn determinism_allows_hoist(determinism: DeterminismClass, policy: SurfaceCallHo
     }
 }
 
-fn volatility_allows_hoist(volatility: VolatilityClass, policy: SurfaceCallHoistPolicy) -> bool {
+fn volatility_allows_hoist(volatility: VolatilityClass, policy: ExpressionHoistPolicy) -> bool {
     match volatility {
         VolatilityClass::NonVolatile => true,
         VolatilityClass::VolatileContextual => {
@@ -527,7 +529,7 @@ fn volatility_allows_hoist(volatility: VolatilityClass, policy: SurfaceCallHoist
 
 fn host_interaction_allows_hoist(
     host_interaction: HostInteractionClass,
-    policy: SurfaceCallHoistPolicy,
+    policy: ExpressionHoistPolicy,
 ) -> bool {
     match host_interaction {
         HostInteractionClass::None => true,
@@ -540,7 +542,7 @@ fn host_interaction_allows_hoist(
 
 fn adapter_fec_dependency_allows_hoist(
     dependency: FecDependencyProfile,
-    policy: SurfaceCallHoistPolicy,
+    policy: ExpressionHoistPolicy,
 ) -> bool {
     match dependency {
         FecDependencyProfile::None => true,
@@ -557,7 +559,7 @@ fn adapter_fec_dependency_allows_hoist(
 fn surface_fec_dependency_allows_hoist(
     adapter_dependency: FecDependencyProfile,
     surface_dependency: FecDependencyProfile,
-    policy: SurfaceCallHoistPolicy,
+    policy: ExpressionHoistPolicy,
 ) -> bool {
     match surface_dependency {
         FecDependencyProfile::Composite => {
@@ -669,7 +671,7 @@ mod tests {
     impl TestRegisteredExternalProvider {
         fn descriptor() -> RegisteredExternalDescriptor {
             RegisteredExternalDescriptor {
-                stable_registration_id: "surface-call-test".to_string(),
+                stable_registration_id: "function-call-test".to_string(),
                 register_id: 77.0,
                 origin_kind: RegisteredExternalOriginKind::WorksheetRegisterId,
                 display_name: Some(text("GetTickCount")),
@@ -724,7 +726,7 @@ mod tests {
         CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
     }
 
-    fn assert_call_site_parity(
+    fn assert_call_target_parity(
         function_id: &str,
         args: &[CallArgValue],
         callable_invoker: Option<&dyn CallableInvoker>,
@@ -732,14 +734,14 @@ mod tests {
     ) {
         let resolver = NoReferenceResolver;
         let random_provider = TestRandomProvider;
-        let call_site = SurfaceCallSite::from_function_id(function_id).unwrap();
-        let mut runtime = SurfaceCallRuntime::new(&resolver)
+        let call_target = FunctionCallTarget::from_function_id(function_id).unwrap();
+        let mut fec = FunctionExecutionContextBundle::new(&resolver)
             .with_now_serial(46000.0)
             .with_random_provider(&random_provider);
-        runtime.callable_invoker = callable_invoker;
-        runtime.host_info = host_info;
+        fec.callable_invoker = callable_invoker;
+        fec.host_info = host_info;
 
-        let got = call_site.invoke(args, &mut runtime);
+        let got = call_target.invoke(args, &mut fec);
         let expected = eval_surface_value_call_with_callable(
             function_id,
             args,
@@ -756,7 +758,7 @@ mod tests {
         assert_eq!(got, expected);
     }
 
-    fn assert_call_site_parity_with_providers(
+    fn assert_call_target_parity_with_providers(
         function_id: &str,
         args: &[CallArgValue],
         locale_ctx: Option<&LocaleFormatContext<'_>>,
@@ -765,15 +767,15 @@ mod tests {
     ) {
         let resolver = NoReferenceResolver;
         let random_provider = TestRandomProvider;
-        let call_site = SurfaceCallSite::from_function_id(function_id).unwrap();
-        let mut runtime = SurfaceCallRuntime::new(&resolver)
+        let call_target = FunctionCallTarget::from_function_id(function_id).unwrap();
+        let mut fec = FunctionExecutionContextBundle::new(&resolver)
             .with_now_serial(46000.0)
             .with_random_provider(&random_provider);
-        runtime.locale_ctx = locale_ctx;
-        runtime.rtd_provider = rtd_provider;
-        runtime.registered_external_provider = registered_external_provider;
+        fec.locale_ctx = locale_ctx;
+        fec.rtd_provider = rtd_provider;
+        fec.registered_external_provider = registered_external_provider;
 
-        let got = call_site.invoke(args, &mut runtime);
+        let got = call_target.invoke(args, &mut fec);
         let expected = eval_surface_value_call_with_callable(
             function_id,
             args,
@@ -791,8 +793,8 @@ mod tests {
     }
 
     #[test]
-    fn surface_call_site_resolves_from_id_and_surface_name() {
-        let by_id = SurfaceCallSite::from_function_id(FUNC_ID_HSTACK).unwrap();
+    fn function_call_target_resolves_from_id_and_surface_name() {
+        let by_id = FunctionCallTarget::from_function_id(FUNC_ID_HSTACK).unwrap();
         assert_eq!(by_id.function_id(), FUNC_ID_HSTACK);
         assert!(by_id.is_invokable_by_value_path());
         assert_eq!(by_id.surface_name(), "HSTACK");
@@ -802,69 +804,70 @@ mod tests {
             ArgPreparationProfile::ValuesOnlyPreAdapter
         );
 
-        let by_name = SurfaceCallSite::from_surface_name("hstack").unwrap();
+        let by_name = FunctionCallTarget::from_surface_name("hstack").unwrap();
         assert_eq!(by_name.function_id(), FUNC_ID_HSTACK);
         assert_eq!(by_name.function_meta(), by_id.function_meta());
 
         let from_registry_id =
-            SurfaceCallSite::from_registry_function_id(builtin_registry(), FUNC_ID_HSTACK).unwrap();
+            FunctionCallTarget::from_registry_function_id(builtin_registry(), FUNC_ID_HSTACK)
+                .unwrap();
         assert_eq!(from_registry_id.function_id(), FUNC_ID_HSTACK);
 
         let from_registry_name =
-            SurfaceCallSite::from_registry_surface_name(builtin_registry(), "hstack").unwrap();
+            FunctionCallTarget::from_registry_surface_name(builtin_registry(), "hstack").unwrap();
         assert_eq!(from_registry_name.function_id(), FUNC_ID_HSTACK);
     }
 
     #[test]
     fn every_builtin_registry_entry_resolves_to_uniform_dispatch_key() {
         for entry in builtin_registry().iter() {
-            let call_site = SurfaceCallSite::from_registry_entry(entry)
+            let call_target = FunctionCallTarget::from_registry_entry(entry)
                 .expect("built-in registry entry must resolve to a surface dispatch key");
-            assert_eq!(call_site.function_id(), entry.meta.function_id.as_str());
+            assert_eq!(call_target.function_id(), entry.meta.function_id.as_str());
             assert_eq!(
-                call_site.function_meta().function_id,
+                call_target.function_meta().function_id,
                 entry.meta.function_id.as_str()
             );
-            assert_eq!(call_site.surface_name(), entry.surface_name.as_str());
+            assert_eq!(call_target.surface_name(), entry.surface_name.as_str());
         }
     }
 
     #[test]
-    fn surface_call_site_exposes_stable_planning_metadata() {
-        let now = SurfaceCallSite::from_function_id(FUNC_ID_NOW).unwrap();
+    fn function_call_target_exposes_stable_planning_metadata() {
+        let now = FunctionCallTarget::from_function_id(FUNC_ID_NOW).unwrap();
         assert_eq!(now.volatility(), VolatilityClass::VolatileFull);
 
-        let cell = SurfaceCallSite::from_function_id(FUNC_ID_CELL).unwrap();
+        let cell = FunctionCallTarget::from_function_id(FUNC_ID_CELL).unwrap();
         assert_eq!(cell.host_interaction(), HostInteractionClass::WorkbookState);
         assert_eq!(
             cell.arg_preparation_profile(),
             ArgPreparationProfile::RefsVisibleInAdapter
         );
 
-        let reduce = SurfaceCallSite::from_function_id(FUNC_ID_REDUCE).unwrap();
+        let reduce = FunctionCallTarget::from_function_id(FUNC_ID_REDUCE).unwrap();
         assert_eq!(
             reduce.callable_argument_specs(),
             &[CallableArgumentSpec::Fixed(2)]
         );
         assert_eq!(reduce.callable_argument_ordinals_for_arity(3), vec![2]);
 
-        let byrow = SurfaceCallSite::from_function_id(FUNC_ID_BYROW).unwrap();
+        let byrow = FunctionCallTarget::from_function_id(FUNC_ID_BYROW).unwrap();
         assert_eq!(byrow.callable_argument_ordinals_for_arity(2), vec![1]);
 
-        let map = SurfaceCallSite::from_function_id(FUNC_ID_MAP).unwrap();
+        let map = FunctionCallTarget::from_function_id(FUNC_ID_MAP).unwrap();
         assert_eq!(map.callable_argument_specs(), &[CallableArgumentSpec::Last]);
         assert_eq!(map.callable_argument_ordinals_for_arity(4), vec![3]);
 
-        let groupby = SurfaceCallSite::from_function_id(FUNC_ID_GROUPBY).unwrap();
+        let groupby = FunctionCallTarget::from_function_id(FUNC_ID_GROUPBY).unwrap();
         assert_eq!(groupby.callable_argument_ordinals_for_arity(8), vec![2]);
 
-        let pivotby = SurfaceCallSite::from_function_id(FUNC_ID_PIVOTBY).unwrap();
+        let pivotby = FunctionCallTarget::from_function_id(FUNC_ID_PIVOTBY).unwrap();
         assert_eq!(pivotby.callable_argument_ordinals_for_arity(9), vec![3]);
     }
 
     #[test]
-    fn surface_call_site_invocation_matches_dispatcher_for_representative_functions() {
-        assert_call_site_parity(
+    fn function_call_target_invocation_matches_dispatcher_for_representative_functions() {
+        assert_call_target_parity(
             FUNC_ID_OP_ADD,
             &[
                 array_arg(vec![vec![
@@ -877,7 +880,7 @@ mod tests {
             None,
         );
 
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_INDEX,
             &[
                 array_arg(vec![vec![
@@ -891,24 +894,24 @@ mod tests {
             None,
         );
 
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_HSTACK,
             &[num_arg(1.0), num_arg(2.0), num_arg(3.0)],
             None,
             None,
         );
 
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_VSTACK,
             &[num_arg(1.0), num_arg(2.0), num_arg(3.0)],
             None,
             None,
         );
 
-        assert_call_site_parity(FUNC_ID_NOW, &[], None, None);
-        assert_call_site_parity(FUNC_ID_RAND, &[], None, None);
+        assert_call_target_parity(FUNC_ID_NOW, &[], None, None);
+        assert_call_target_parity(FUNC_ID_RAND, &[], None, None);
 
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_CELL,
             &[text_arg("address"), reference_arg("B2")],
             None,
@@ -917,9 +920,9 @@ mod tests {
     }
 
     #[test]
-    fn surface_call_site_invocation_matches_dispatcher_for_host_and_helper_calls() {
+    fn function_call_target_invocation_matches_dispatcher_for_host_and_helper_calls() {
         let host_info = TestHostInfoProvider;
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_CELL,
             &[text_arg("filename")],
             None,
@@ -927,7 +930,7 @@ mod tests {
         );
 
         let callable_invoker = TestCallableInvoker;
-        assert_call_site_parity(
+        assert_call_target_parity(
             FUNC_ID_MAP,
             &[
                 array_arg(vec![vec![
@@ -942,9 +945,9 @@ mod tests {
     }
 
     #[test]
-    fn surface_call_site_invocation_matches_dispatcher_for_provider_and_locale_cases() {
+    fn function_call_target_invocation_matches_dispatcher_for_provider_and_locale_cases() {
         let locale = test_en_us_context();
-        assert_call_site_parity_with_providers(
+        assert_call_target_parity_with_providers(
             FUNC_ID_VALUE,
             &[text_arg("123.5")],
             Some(&locale),
@@ -953,7 +956,7 @@ mod tests {
         );
 
         let rtd_provider = TestRtdProvider;
-        assert_call_site_parity_with_providers(
+        assert_call_target_parity_with_providers(
             FUNC_ID_RTD,
             &[text_arg("prog.id"), text_arg("server"), text_arg("topic")],
             None,
@@ -962,7 +965,7 @@ mod tests {
         );
 
         let registered_external_provider = TestRegisteredExternalProvider;
-        assert_call_site_parity_with_providers(
+        assert_call_target_parity_with_providers(
             FUNC_ID_REGISTER_ID,
             &[
                 text_arg("Kernel32"),
@@ -976,15 +979,15 @@ mod tests {
     }
 
     #[test]
-    fn surface_call_scratch_reuses_argument_storage_for_repeated_invocation() {
+    fn function_call_scratch_reuses_argument_storage_for_repeated_invocation() {
         let resolver = NoReferenceResolver;
-        let call_site = SurfaceCallSite::from_function_id(FUNC_ID_HSTACK).unwrap();
-        let mut runtime = SurfaceCallRuntime::new(&resolver);
-        let mut scratch = call_site.new_scratch();
+        let call_target = FunctionCallTarget::from_function_id(FUNC_ID_HSTACK).unwrap();
+        let mut fec = FunctionExecutionContextBundle::new(&resolver);
+        let mut scratch = call_target.new_scratch();
         let initial_capacity = scratch.capacity();
 
-        let got = call_site
-            .invoke_with_scratch_builder(&mut scratch, &mut runtime, |args| {
+        let got = call_target
+            .invoke_with_scratch_builder(&mut scratch, &mut fec, |args| {
                 args.push(num_arg(1.0));
                 args.push(num_arg(2.0));
                 args.push(num_arg(3.0));
@@ -993,8 +996,8 @@ mod tests {
         assert!(matches!(got, EvalValue::Array(_)));
         assert_eq!(scratch.capacity(), initial_capacity);
 
-        let got = call_site
-            .invoke_with_scratch_builder(&mut scratch, &mut runtime, |args| {
+        let got = call_target
+            .invoke_with_scratch_builder(&mut scratch, &mut fec, |args| {
                 args.push(num_arg(4.0));
                 args.push(num_arg(5.0));
                 args.push(num_arg(6.0));
@@ -1005,24 +1008,24 @@ mod tests {
     }
 
     #[test]
-    fn surface_call_site_exposes_generic_hoistability_gate() {
-        let pi = SurfaceCallSite::from_function_id(FUNC_ID_PI).unwrap();
+    fn function_call_target_exposes_generic_hoistability_gate() {
+        let pi = FunctionCallTarget::from_function_id(FUNC_ID_PI).unwrap();
         assert!(pi.is_context_free_pure());
 
-        let now = SurfaceCallSite::from_function_id(FUNC_ID_NOW).unwrap();
+        let now = FunctionCallTarget::from_function_id(FUNC_ID_NOW).unwrap();
         assert!(!now.is_context_free_pure());
-        assert!(now.is_hoistable_under(SurfaceCallHoistPolicy::FIXED_RUNTIME_CONTEXT));
+        assert!(now.is_hoistable_under(ExpressionHoistPolicy::FIXED_EXECUTION_CONTEXT));
 
-        let value = SurfaceCallSite::from_function_id(FUNC_ID_VALUE).unwrap();
+        let value = FunctionCallTarget::from_function_id(FUNC_ID_VALUE).unwrap();
         assert!(!value.is_context_free_pure());
-        assert!(!value.is_hoistable_under(SurfaceCallHoistPolicy {
+        assert!(!value.is_hoistable_under(ExpressionHoistPolicy {
             allow_fixed_locale: true,
-            ..SurfaceCallHoistPolicy::STRICT_CONTEXT_FREE
+            ..ExpressionHoistPolicy::STRICT_CONTEXT_FREE
         }));
-        assert!(value.is_hoistable_under(SurfaceCallHoistPolicy {
+        assert!(value.is_hoistable_under(ExpressionHoistPolicy {
             allow_ref_only_dependency: true,
             allow_fixed_locale: true,
-            ..SurfaceCallHoistPolicy::STRICT_CONTEXT_FREE
+            ..ExpressionHoistPolicy::STRICT_CONTEXT_FREE
         }));
     }
 }

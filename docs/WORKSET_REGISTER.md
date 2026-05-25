@@ -937,11 +937,11 @@ Notes:
 Status: `planned`
 
 Execution target:
-reshape the OxFunc surface-dispatch and runtime-context architecture for long-term full-model recalculation optimization, where downstream evaluators resolve function handles once, keep function semantics in OxFunc, and can later schedule, cache, parallelize, or compile calculation graphs without passing strings through the broad dispatcher on every call.
+reshape the OxFunc surface-dispatch and FEC provider architecture for long-term full-model recalculation optimization, where downstream evaluators resolve function handles once, keep function semantics in OxFunc, and can later schedule, cache, parallelize, or compile calculation graphs without passing strings through the broad dispatcher on every call.
 
 Canonical surfaces:
 1. `docs/worksets/W096_FULL_MODEL_COMPILED_SEMANTIC_KERNEL_DISPATCH.md`
-2. `crates/oxfunc_core/src/surface_call.rs`
+2. `crates/oxfunc_core/src/function_call.rs`
 3. `crates/oxfunc_core/src/functions/surface_dispatch.rs`
 4. `crates/oxfunc_core/src/registry.rs`
 5. `crates/oxfunc_core/src/xll_export_specs.rs`
@@ -950,6 +950,6 @@ Notes:
 1. W096 is a full-catalog architecture lane, not a hand-specialized `INDEX` / `HSTACK` / arithmetic fast path.
 2. OxFml remains owner of formula structure, scopes, slots, LET/LAMBDA binding, references, control-flow planning, and calculation-graph scheduling.
 3. OxFunc remains owner of function/operator semantics, argument preparation, coercion, lifting, reference handling, errors, and runtime dependency declarations.
-4. The intended backend is a uniform resolved call-site ABI plus generated or table-driven full-catalog dispatch.
+4. The intended backend is a uniform resolved function-call-target ABI plus generated or table-driven full-catalog dispatch.
 5. Typed inner kernels should remain separable so later backends can inline, specialize, vectorize, or lower them into other execution representations.
-6. The initial open lanes are resolver-signature mechanical refactor, erased runtime context, full-catalog handler table, metadata enrichment, parity tests, and OxFml compiled-plan handoff.
+6. The initial open lanes are resolver-signature mechanical refactor, erased FEC provider ABI, full-catalog handler table, metadata enrichment, parity tests, and OxFml compiled-plan handoff.

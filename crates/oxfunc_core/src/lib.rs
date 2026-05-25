@@ -1,6 +1,7 @@
 pub mod capability;
 pub mod coercion;
 pub mod function;
+pub mod function_call;
 pub mod functions;
 pub mod host_info;
 pub mod locale_format;
@@ -10,6 +11,5 @@ mod registry_help_seed;
 mod registry_signature_seed;
 pub mod resolver;
 pub mod semantic_kernel;
-pub mod surface_call;
 pub mod value;
 pub mod xll_export_specs;
