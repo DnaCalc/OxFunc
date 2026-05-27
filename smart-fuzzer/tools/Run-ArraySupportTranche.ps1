@@ -13,6 +13,10 @@ $RepoRoot = Resolve-Path (Join-Path $ScriptPath "..\..")
 $RepoRoot = $RepoRoot.Path
 Set-Location $RepoRoot
 
+# Shared severity-vocabulary helpers (CHARTER §4.1, SMART_FUZZER_DESIGN §1.1).
+# Imports Test-FormulaTextIsBitExactSafe and Get-StandardSeverityClass.
+Import-Module (Join-Path $ScriptPath "CellRefBatch.psm1") -Force
+
 if ([string]::IsNullOrWhiteSpace($RunId)) {
     $RunId = "w090-array-tranche-a-" + (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ")
 }
@@ -558,6 +562,28 @@ function Invoke-ExcelArrayEvaluation {
                 if ([string]::IsNullOrWhiteSpace($formulaCell)) {
                     $formulaCell = if ($fixtures.Count -gt 0) { "J10" } else { "A1" }
                 }
+
+                # Bit-exact plumbing guard: if the formula text contains a numeric
+                # literal Excel's parser may not round-trip exactly, refuse to run
+                # the case under the bit-exact comparison policy. The case-set
+                # builder should route the value through cell_fixture instead.
+                $safetyCheck = Test-FormulaTextIsBitExactSafe -FormulaText ([string]$case.formula_text)
+                if (-not $safetyCheck.safe) {
+                    Add-JsonLine $OutputPath ([ordered]@{
+                        schema_version = "oxfunc.smart_fuzzer.array_outcome.v0"
+                        run_id = $RunId
+                        case_id = [string]$case.case_id
+                        function_id = [string]$case.function_id
+                        formula_text = [string]$case.formula_text
+                        evaluator_id = "excel.com.dynamic_array_spill_capture/0.1.0"
+                        execution_status = "generator_invalid_unsafe_literal"
+                        formula_cell = $formulaCell
+                        spill_address = $null
+                        outcome = (New-HarnessErrorOutcome "formula_text contains a $($safetyCheck.significant_digits)-significant-digit literal '$($safetyCheck.offending_literal)' that Excel's parser may not round-trip bit-exactly. Route the value through cell_fixture instead of inline literal.")
+                    })
+                    continue
+                }
+
                 $anchor = $worksheet.Range($formulaCell)
                 $anchor.Formula2 = [string]$case.formula_text
                 $anchor.Calculate() | Out-Null
@@ -762,6 +788,8 @@ function Compare-ArrayOutcomes {
     $rollup = [ordered]@{
         total_cases = 0
         by_classification = [ordered]@{}
+        by_severity_class = [ordered]@{}
+        by_severity_sub_tag = [ordered]@{}
         by_function = [ordered]@{}
         mismatch_case_ids = New-Object 'System.Collections.Generic.List[string]'
         axis_witness_pairs = [ordered]@{
@@ -787,6 +815,8 @@ function Compare-ArrayOutcomes {
             $classification = "excel_harness_missing"
         } elseif ([string]$local.execution_status -ne "ok") {
             $classification = "local_harness_blocked"
+        } elseif ([string]$excel.execution_status -eq "generator_invalid_unsafe_literal") {
+            $classification = "generator_invalid"
         } elseif ([string]$excel.execution_status -ne "ok") {
             $classification = "excel_harness_blocked"
         } elseif ($localDigest -eq $excelDigest) {
@@ -799,8 +829,22 @@ function Compare-ArrayOutcomes {
             $classification = "known_expected_deviation"
         }
 
+        # Severity class (CHARTER §4.1) computed from outcome shape only.
+        # Independent of known-residual overlays so the underlying bug
+        # severity is always visible.
+        $severityInput = $null; $excelSeverityInput = $null
+        if ($null -ne $local -and [string]$local.execution_status -eq "ok") {
+            $severityInput = (Get-CaseProperty $local "outcome")
+            if ($null -eq $severityInput) { $severityInput = $local }
+        }
+        if ($null -ne $excel -and [string]$excel.execution_status -eq "ok") {
+            $excelSeverityInput = (Get-CaseProperty $excel "outcome")
+            if ($null -eq $excelSeverityInput) { $excelSeverityInput = $excel }
+        }
+        $severityRecord = Get-StandardSeverityClass -LocalOutcome $severityInput -ExcelOutcome $excelSeverityInput
+
         $comparison = [ordered]@{
-            schema_version = "oxfunc.smart_fuzzer.array_comparison.v0"
+            schema_version = "oxfunc.smart_fuzzer.array_comparison.v1"
             run_id = $RunId
             case_id = $caseId
             function_id = [string]$case.function_id
@@ -813,6 +857,8 @@ function Compare-ArrayOutcomes {
             axis_tag = Get-CaseStringProperty $case "axis_tag"
             formula_text = [string]$case.formula_text
             classification = $classification
+            severity_class = $severityRecord.severity_class
+            severity_sub_tags = @($severityRecord.sub_tags)
             local_execution_status = if ($null -eq $local) { "missing" } else { [string]$local.execution_status }
             excel_execution_status = if ($null -eq $excel) { "missing" } else { [string]$excel.execution_status }
             local_digest = $localDigest
@@ -825,6 +871,18 @@ function Compare-ArrayOutcomes {
             $rollup.by_classification[$classification] = 0
         }
         $rollup.by_classification[$classification] += 1
+        $sevKey = [string]$severityRecord.severity_class
+        if (-not $rollup.by_severity_class.Contains($sevKey)) {
+            $rollup.by_severity_class[$sevKey] = 0
+        }
+        $rollup.by_severity_class[$sevKey] += 1
+        foreach ($tag in @($severityRecord.sub_tags)) {
+            if ([string]::IsNullOrEmpty([string]$tag)) { continue }
+            if (-not $rollup.by_severity_sub_tag.Contains([string]$tag)) {
+                $rollup.by_severity_sub_tag[[string]$tag] = 0
+            }
+            $rollup.by_severity_sub_tag[[string]$tag] += 1
+        }
         $fn = [string]$case.function_id
         if (-not $rollup.by_function.Contains($fn)) {
             $rollup.by_function[$fn] = [ordered]@{}
@@ -1026,12 +1084,14 @@ $ExcelEnvironment = Invoke-ExcelArrayEvaluation $Cases $ExcelOutcomesPath
 $ComparisonRollup = Compare-ArrayOutcomes $Cases $LocalOutcomesPath $ExcelOutcomesPath $ComparisonsPath $FailureDir
 
 $Rollup = [pscustomobject]@{
-    schema_version = "oxfunc.smart_fuzzer.array_rollup.v0"
+    schema_version = "oxfunc.smart_fuzzer.array_rollup.v1"
     run_id = $RunId
     tranche_id = [string]$Tranche.tranche_id
     generated_utc = (Get-Date).ToUniversalTime().ToString("o")
     total_cases = $ComparisonRollup.total_cases
     by_classification = $ComparisonRollup.by_classification
+    by_severity_class = $ComparisonRollup.by_severity_class
+    by_severity_sub_tag = $ComparisonRollup.by_severity_sub_tag
     by_function = $ComparisonRollup.by_function
     mismatch_case_ids = $ComparisonRollup.mismatch_case_ids
     axis_witness_pairs = $ComparisonRollup.axis_witness_pairs

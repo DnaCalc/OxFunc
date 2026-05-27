@@ -108,10 +108,15 @@ Order picks shortest expected fixture work first, then escalates.
    match, the row is no longer a kernel issue.
 3. **Possible inverse findings**: rows where Excel is the one drifting
    from the analytic answer (the COMBIN witness from cycle-010 is the
-   first example). These need their own classification; under the
-   no-tolerance comparison policy, "OxFunc is correct, Excel is 1 ULP
-   off" is recorded as a `known_excel_imprecision_witness` rather than
-   an OxFunc bug.
+   first example). Per `CHARTER.md` §4.1 and
+   `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md` §1.1, the default
+   repair direction is to match Excel even when Excel is imprecise;
+   these rows are tagged `excel_imprecision_witness` to make the
+   direction explicit but **remain OxFunc bugs in the numeric-drift
+   class** and remain in the bug count. (Earlier W097 prose called this
+   tag `known_excel_imprecision_witness` and described it as "not an
+   OxFunc bug"; that earlier framing is superseded by the CHARTER
+   doctrine update of `2026-05-28`.)
 4. **Better priors for new exploration** — the encoding-drift bucket
    was suppressing real signal. Under cell-ref plumbing, future cycles
    should have a tighter signal-to-noise ratio in the unexpected

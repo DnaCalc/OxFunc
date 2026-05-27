@@ -75,6 +75,8 @@ $ulpResidualKnown = 0
 $ulpResidualUnknown = 0
 $unexpected = 0
 $blocked = 0
+$bySeverity = [ordered]@{}
+$bySeveritySubTag = [ordered]@{}
 
 for ($i = 0; $i -lt $candidates.Count; $i++) {
     $candidate = $candidates[$i]
@@ -131,13 +133,16 @@ for ($i = 0; $i -lt $candidates.Count; $i++) {
         $result = "unexpected_kind_drift"
     }
 
+    $severityRecord = Get-StandardSeverityClass -LocalOutcome $local -ExcelOutcome $excelOutcome
     $comparison = [ordered]@{
-        schema_version = "oxfunc.smart_fuzzer.broad_scalar_excel_comparison.v0"
+        schema_version = "oxfunc.smart_fuzzer.broad_scalar_excel_comparison.v1"
         case_id = [string] $candidate.case_id
         function_id = [string] $candidate.function_id
         function_name = [string] $candidate.function_name
         formula_text = [string] $candidate.formula_text
         comparison_result = $result
+        severity_class = $severityRecord.severity_class
+        severity_sub_tags = @($severityRecord.sub_tags)
         abs_delta = $absDelta
         ulp_distance = $ulp
         coverage_buckets = $candidate.coverage_buckets
@@ -149,11 +154,19 @@ for ($i = 0; $i -lt $candidates.Count; $i++) {
     if ($result -eq "unexpected_mismatch" -or $result -eq "unexpected_error_code_drift" -or $result -eq "unexpected_kind_drift") {
         Write-JsonFile (Join-Path $failureDir ([string]$candidate.case_id + ".json")) $comparison
     }
+    $sevKey = [string]$severityRecord.severity_class
+    if (-not $bySeverity.Contains($sevKey)) { $bySeverity[$sevKey] = 0 }
+    $bySeverity[$sevKey] += 1
+    foreach ($t in @($severityRecord.sub_tags)) {
+        if ([string]::IsNullOrEmpty([string]$t)) { continue }
+        if (-not $bySeveritySubTag.Contains([string]$t)) { $bySeveritySubTag[[string]$t] = 0 }
+        $bySeveritySubTag[[string]$t] += 1
+    }
 }
 
 $localRollup = Get-Content -LiteralPath (Join-Path $runDir "local_rollup.json") -Raw | ConvertFrom-Json
 $rollup = [ordered]@{
-    schema_version = "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v0"
+    schema_version = "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v1"
     run_id = $RunId
     generated = $CaseCount
     local_evaluated = $CaseCount
@@ -164,6 +177,8 @@ $rollup = [ordered]@{
     expected_known_deviations = $ulpResidualKnown
     unexpected_mismatches = $unexpected
     blocked = $blocked
+    by_severity_class = $bySeverity
+    by_severity_sub_tag = $bySeveritySubTag
     local_cases_per_second = $localRollup.local_cases_per_second
     local_wall_seconds = $localRollup.local_wall_seconds
     wrapper_local_wall_seconds = $localWatch.Elapsed.TotalSeconds

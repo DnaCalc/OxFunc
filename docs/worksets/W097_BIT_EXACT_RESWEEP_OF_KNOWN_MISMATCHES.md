@@ -120,9 +120,12 @@ In scope:
 4. revised ULP magnitudes recorded in each stream's evidence section,
 5. opening of successor streams when the re-replay surfaces new
    subclasses or shows the original repair under-spec'd or over-spec'd,
-6. recording any "OxFunc more accurate than Excel" rows as a new
-   `known_excel_imprecision_witness` classification under the
-   no-tolerance comparison policy.
+6. recording any "OxFunc more accurate than Excel" rows as
+   `excel_imprecision_witness` so the repair direction is visible.
+   Per the `2026-05-28` CHARTER doctrine update (`CHARTER.md` §4.1 and
+   `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md` §1.1), these rows
+   are still OxFunc bugs in the numeric-drift class; the original
+   W097 wording that called them "not OxFunc bugs" is superseded.
 
 Out of scope:
 

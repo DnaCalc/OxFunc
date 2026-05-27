@@ -2,21 +2,41 @@
 
 Status: `tooling_sandbox`
 
-Tracked tools in this directory are reproducible helpers for W088 and W089
-exploration, plus W090 array-support sweep planning.
-Generated outputs should normally go to `smart-fuzzer/cache/` or
-`smart-fuzzer/runs/`, both ignored by default.
+Tracked tools in this directory are reproducible helpers for the OxFunc smart-fuzzer (W088, W089, W090, W092, W097). Generated outputs go to `smart-fuzzer/cache/` or `smart-fuzzer/runs/`, both ignored by default.
 
-## Excel comparator plumbing rule
+## Shared module: `CellRefBatch.psm1`
 
-A comparator runner that drives Excel via COM and claims **bit-exact typed
-equality** must pass numeric inputs to Excel through cell `Range.Value2`,
-not through formula literal text. Excel's formula parser is not always
-correctly-rounded for long decimal literals, so the literal-text path can
-introduce a `~1e-12 * scale` "encoding drift" that gets misclassified as
-a kernel mismatch. See
-`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` for the binding
-rule, the empirical witness, and the inventory of existing runners.
+All comparator runners import `CellRefBatch.psm1`. It exposes:
+
+1. `Invoke-ExcelCellRefBatch` — drive Excel through cell `Value2` plumbing (the bit-exact path).
+2. `Test-FormulaTextIsBitExactSafe` — refuse to run a case whose `formula_text` embeds a numeric literal with more than `15` significant digits (Excel's parser is not correctly-rounded past that point; the value must instead come from a cell fixture).
+3. `Get-StandardSeverityClass` — the canonical CHARTER §4.1 severity vocabulary, used by every runner. Emits one of `match | structural_mismatch | numeric_drift_1ulp | numeric_drift_gt1ulp | harness_blocked_local | harness_blocked_excel | generator_invalid`, plus optional sub-tags including `excel_imprecision_witness` (local exact integer, Excel `±1` ULP off — still an OxFunc bug, the tag only records the repair direction).
+4. `Get-F64BitsHex`, `ConvertTo-ExcelOutcome`, `Get-UlpDistance` — typed-outcome helpers.
+
+The vocabulary, severity grading, and `excel_imprecision_witness` sub-tag policy are anchored in:
+
+- `CHARTER.md` §4.1 Parity Target And Bug-Severity Grading.
+- `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md` §1 Goal / §1.1 Bug-Severity Grading.
+- `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` (binding plumbing rule and the literal-text-vs-cell-ref witness).
+
+### Quality-bar tests
+
+Two self-tests verify the module without touching Excel:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Test-CellRefBatchHelpers.ps1
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Test-UnsafeLiteralGuard.ps1
+```
+
+The first exercises `Test-FormulaTextIsBitExactSafe` (13 cases — short literals pass, long literals are rejected) and `Get-StandardSeverityClass` (18 cases — exact match, signed-zero collapse, kind drift, error-code drift, logical drift, `1` ULP vs `>1` ULP numeric drift, `excel_imprecision_witness` sub-tag, missing-outcome harness blocks, array same-digest / shape-drift / element-drift). The second verifies the guard fires end-to-end and that `Run-ArraySupportTranche.ps1` actually invokes the safety helpers.
+
+## Excel comparator plumbing rule (binding)
+
+A comparator runner that drives Excel via COM and claims **bit-exact typed equality** must pass numeric inputs to Excel through cell `Range.Value2`, not through formula literal text. Excel's formula parser is not correctly-rounded for long decimal literals, so the literal-text path silently rounds inputs to a neighbouring `f64` and the comparator then sees a kernel "drift" that is entirely the harness's fault.
+
+The shared module's `Test-FormulaTextIsBitExactSafe` enforces this on every case: any literal with more than `15` significant digits causes the case to be flagged `generator_invalid` (structural-mismatch class) before Excel is touched. Long-decimal inputs must instead come from a `cell_fixture` entry whose value is written via `Range.Value2`.
+
+`smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` carries the empirical witness and the full historical context.
 
 ## Build-DimensionInventory.ps1
 
@@ -159,14 +179,12 @@ beads.
 
 ## Run-ArraySupportTranche.ps1
 
-Runs the W090 first executable array-support tranche against OxFunc and Excel.
-The runner reads `array-support-first-tranche-v0.json`, materializes the formula
-seeds into typed local arguments, captures full Excel spill ranges, compares
-typed array/scalar digests with no tolerance, and writes compact telemetry plus
-failure packets only for non-pass classifications.
+The generic case-set runner for W090 and W092 tranches. Reads a case set, runs the Rust local evaluator (`array_tranche_local_eval`), drives Excel via COM with bit-exact plumbing, compares typed array/scalar digests with no tolerance, and writes compact telemetry plus failure packets only for non-pass classifications.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -RunId my-run -CaseSetPath smart-fuzzer\cache\axis-witness-case-set-v0.json `
+  -CaseSetTrancheId w089-axis-witness-sweep-v0
 ```
 
 Default outputs:
@@ -181,9 +199,24 @@ smart-fuzzer/runs/<run_id>/rollup.json
 smart-fuzzer/runs/<run_id>/roadmap_trace.md
 ```
 
-The comparison policy is exact typed equality with bit-exact numeric digests.
-Pass-heavy rows stay compact; full packets are intentionally reserved for
-failures and harness blockers.
+Each comparison row carries both fields:
+
+1. `classification` — the operational label (`exact_typed_bit_match`, `known_residual`, `adapter_or_seam_mismatch`, `unexpected_mismatch`, …). This is the legacy run-level overlay.
+2. `severity_class` — the CHARTER §4.1 underlying bug severity (`match | structural_mismatch | numeric_drift_1ulp | numeric_drift_gt1ulp | harness_blocked_local | harness_blocked_excel | generator_invalid`). Independent of run-level overlays — a `known_residual` row still surfaces as a numeric drift bug in `severity_class`.
+
+The rollup aggregates both:
+
+```json
+{
+  "by_classification": { "exact_typed_bit_match": 34, "known_residual": 24 },
+  "by_severity_class":  { "match": 34, "numeric_drift_gt1ulp": 21, "numeric_drift_1ulp": 3 },
+  "by_severity_sub_tag": { }
+}
+```
+
+The comparison policy is exact typed equality with bit-exact numeric digests. Pass-heavy rows stay compact; full packets are intentionally reserved for failures and harness blockers.
+
+Plumbing safety: the runner refuses to evaluate a case whose `formula_text` contains a numeric literal with more than `15` significant digits — those cases are marked `generator_invalid` (structural class) before Excel is touched. Long-decimal inputs must come from `cell_fixture` entries which write via `Range.Value2`.
 
 `Run-ArraySupportTranche.ps1` can also run generated successor case sets:
 

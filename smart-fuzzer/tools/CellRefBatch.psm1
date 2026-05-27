@@ -1,15 +1,18 @@
 # CellRefBatch.psm1
 #
-# Shared cell-ref Excel comparator plumbing for OxFunc smart-fuzzer
-# runners. Numeric inputs are written to worksheet cells via
-# Range.Value2 (bit-exact f64 round-trip) and the formula in column A
-# references those cells. This eliminates the
-# expected_formula_literal_encoding_drift class.
+# Shared comparator plumbing and classification for OxFunc smart-fuzzer
+# runners.
 #
-# See smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md for the full
-# rule and the empirical witness chain.
+# Purpose:
+#   1. Drive Excel via COM with bit-exact f64 input plumbing
+#      (Range.Value2, not formula literal text) — see
+#      smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md.
+#   2. Provide a single canonical severity vocabulary so all runners
+#      report structural vs numeric-drift discrepancies the same way —
+#      see CHARTER.md §4.1 and
+#      smart-fuzzer/planning/SMART_FUZZER_DESIGN.md §1.1.
 #
-# Owning workset: W097.
+# Owning workset: W097 (plumbing), W092 (classification).
 #
 # Public API:
 #   Invoke-ExcelCellRefBatch -Candidates <object[]>
@@ -28,6 +31,30 @@
 #
 #   Get-UlpDistance -A <double> -B <double>
 #     Approximate ULP distance for two finite f64s.
+#
+#   Test-FormulaTextIsBitExactSafe -FormulaText <string>
+#     Scans a formula text for numeric literals that Excel's formula
+#     parser may not round-trip bit-exactly to the intended f64.
+#     Returns [ordered] @{ safe; reason?; offending_literal? }.
+#     A formula that contains a decimal literal with > 15 significant
+#     digits is unsafe; the case-set builder must instead route that
+#     value through cell Value2 plumbing (cell_fixture) and reference
+#     the cell from the formula.
+#
+#   Get-StandardSeverityClass -LocalOutcome <object> -ExcelOutcome <object>
+#     Returns [ordered] @{ severity_class; sub_tags } using the
+#     CHARTER §4.1 vocabulary:
+#       match
+#       structural_mismatch
+#       numeric_drift_1ulp           (still a bug; severity_subclass = "minor")
+#       numeric_drift_gt1ulp         (still a bug; severity_subclass = "major")
+#       harness_blocked_local
+#       harness_blocked_excel
+#       generator_invalid
+#     sub_tags is an array; one possible tag is
+#     "excel_imprecision_witness" (local returned an exact integer,
+#     Excel is 1 ULP off — still an OxFunc bug, the tag only records
+#     the repair direction).
 #
 # Private helpers are not exported.
 
@@ -479,8 +506,181 @@ function _Invoke-ExcelCellRefMatrixBatch {
     }
 }
 
+function Test-FormulaTextIsBitExactSafe {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [string] $FormulaText)
+    # Numeric literals embedded directly in formula text are NOT
+    # guaranteed bit-exact through Excel's parser if they have more
+    # significant digits than the parser is correctly-rounded for. The
+    # empirical breaking point is around 16-17 significant digits;
+    # any case-set that emits such literals must instead route the
+    # value through cell Value2 plumbing and reference the cell.
+    #
+    # This guard is conservative: anything with >15 significant digits
+    # is rejected. Short literals (integers, common short decimals,
+    # short exponent forms) pass.
+    $maxSigDigits = 15
+    $pattern = '(?<![A-Za-z_$])([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)'
+    $regex = [regex] $pattern
+    foreach ($m in $regex.Matches($FormulaText)) {
+        $lit = $m.Groups[1].Value
+        # Strip leading sign and exponent (post-e) for digit counting.
+        $core = $lit.TrimStart('+','-')
+        $eIdx = $core.IndexOfAny([char[]]('e','E'))
+        if ($eIdx -ge 0) { $core = $core.Substring(0, $eIdx) }
+        # Remove decimal point.
+        $core = $core.Replace('.', '')
+        # Strip leading zeros (not significant).
+        $core = $core.TrimStart('0')
+        # Strip trailing zeros after a decimal? Trailing zeros after a
+        # decimal point ARE significant in literal form because they
+        # influence parser representation choice. Keep them.
+        $sigCount = $core.Length
+        if ($sigCount -gt $maxSigDigits) {
+            return [ordered]@{
+                safe = $false
+                reason = "decimal_literal_exceeds_${maxSigDigits}_significant_digits"
+                offending_literal = $lit
+                significant_digits = $sigCount
+            }
+        }
+    }
+    return [ordered]@{ safe = $true }
+}
+
+function _Test-IsIntegerValuedDouble {
+    param([double] $Value)
+    if ([double]::IsNaN($Value) -or [double]::IsInfinity($Value)) { return $false }
+    return ([Math]::Floor($Value) -eq $Value)
+}
+
+function _Get-OutcomeProperty {
+    param([object] $Outcome, [string] $Name)
+    if ($null -eq $Outcome) { return $null }
+    if ($Outcome -is [System.Collections.IDictionary]) {
+        if ($Outcome.Contains($Name)) { return $Outcome[$Name] }
+        return $null
+    }
+    if ($Outcome.PSObject.Properties.Name -contains $Name) {
+        return $Outcome.$Name
+    }
+    return $null
+}
+
+function Get-StandardSeverityClass {
+    [CmdletBinding()]
+    param([Parameter()][AllowNull()] [object] $LocalOutcome,
+          [Parameter()][AllowNull()] [object] $ExcelOutcome)
+    # The vocabulary is defined in CHARTER.md §4.1 and SMART_FUZZER_DESIGN.md §1.1.
+    # All branches return [ordered] @{ severity_class; sub_tags }.
+    $subTags = New-Object 'System.Collections.Generic.List[string]'
+
+    if ($null -eq $LocalOutcome) {
+        return [ordered]@{ severity_class = "harness_blocked_local"; sub_tags = @() }
+    }
+    if ($null -eq $ExcelOutcome) {
+        return [ordered]@{ severity_class = "harness_blocked_excel"; sub_tags = @() }
+    }
+
+    # Digest fast-path: if both outcomes ship a digest_payload and they match,
+    # treat as match. This handles compound kinds (arrays, etc.) uniformly.
+    $localDigest = [string] (_Get-OutcomeProperty $LocalOutcome "digest_payload")
+    $excelDigest = [string] (_Get-OutcomeProperty $ExcelOutcome "digest_payload")
+    if (-not [string]::IsNullOrEmpty($localDigest) -and -not [string]::IsNullOrEmpty($excelDigest) -and $localDigest -eq $excelDigest) {
+        return [ordered]@{ severity_class = "match"; sub_tags = @() }
+    }
+
+    $localKind = [string] $LocalOutcome.kind
+    $excelKind = [string] $ExcelOutcome.kind
+
+    if ([string]::IsNullOrEmpty($localKind) -or [string]::IsNullOrEmpty($excelKind)) {
+        return [ordered]@{ severity_class = "generator_invalid"; sub_tags = @("missing_outcome_kind") }
+    }
+
+    if ($localKind -ne $excelKind) {
+        $subTags.Add("kind_drift")
+        return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+    }
+
+    # Compound array kind: differing digests already implies a real difference
+    # (the fast-path above would have caught a match). Classify shape-vs-element
+    # drift if rows/cols are available, else fall through to a generic
+    # structural mismatch with array_drift.
+    if ($localKind -eq "array") {
+        $lr = [int] (_Get-OutcomeProperty $LocalOutcome "rows")
+        $lc = [int] (_Get-OutcomeProperty $LocalOutcome "cols")
+        $er = [int] (_Get-OutcomeProperty $ExcelOutcome "rows")
+        $ec = [int] (_Get-OutcomeProperty $ExcelOutcome "cols")
+        if ($lr -ne $er -or $lc -ne $ec) {
+            $subTags.Add("array_shape_drift")
+            return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+        }
+        # Same shape, different cell content. Without recursing into cell-by-cell
+        # comparison here, flag as structural to keep array drift visible. A
+        # future iteration can compute the worst-case per-cell severity.
+        $subTags.Add("array_element_drift")
+        return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+    }
+
+    if ($localKind -eq "empty_cell") {
+        return [ordered]@{ severity_class = "match"; sub_tags = @() }
+    }
+
+    # Same kind from here on.
+    if ($localKind -eq "error") {
+        if ([string]$LocalOutcome.code -eq [string]$ExcelOutcome.code) {
+            return [ordered]@{ severity_class = "match"; sub_tags = @() }
+        }
+        $subTags.Add("error_code_drift")
+        return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+    }
+
+    if ($localKind -eq "number") {
+        $localBits = [string] $LocalOutcome.bits_hex
+        $excelBits = [string] $ExcelOutcome.bits_hex
+        if (-not [string]::IsNullOrEmpty($localBits) -and $localBits -eq $excelBits) {
+            return [ordered]@{ severity_class = "match"; sub_tags = @() }
+        }
+        $lv = [double] $LocalOutcome.value
+        $ev = [double] $ExcelOutcome.value
+        if ($lv -eq 0.0 -and $ev -eq 0.0) {
+            # Signed-zero match: distinct bits but same numeric value. Treated as match
+            # because Excel's value model collapses ±0.
+            return [ordered]@{ severity_class = "match"; sub_tags = @("signed_zero_collapsed") }
+        }
+        if ([double]::IsNaN($lv) -or [double]::IsNaN($ev) -or [double]::IsInfinity($lv) -or [double]::IsInfinity($ev)) {
+            $subTags.Add("non_finite_drift")
+            return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+        }
+        $ulp = Get-UlpDistance -A $lv -B $ev
+        if ($ulp -eq 1.0) {
+            # Sub-tag the case where OxFunc looks analytically exact (integer-valued)
+            # and Excel is the one off by 1 ULP. Still a bug — repair direction is to
+            # match Excel, not to stay analytically correct (CHARTER §4.1).
+            if ((_Test-IsIntegerValuedDouble $lv) -and -not (_Test-IsIntegerValuedDouble $ev)) {
+                $subTags.Add("excel_imprecision_witness")
+            }
+            return [ordered]@{ severity_class = "numeric_drift_1ulp"; sub_tags = @($subTags); ulp_distance = $ulp }
+        }
+        return [ordered]@{ severity_class = "numeric_drift_gt1ulp"; sub_tags = @($subTags); ulp_distance = $ulp }
+    }
+
+    if ($localKind -eq "logical" -or $localKind -eq "text") {
+        if ([string]$LocalOutcome.value -eq [string]$ExcelOutcome.value) {
+            return [ordered]@{ severity_class = "match"; sub_tags = @() }
+        }
+        $subTags.Add("$localKind`_value_drift")
+        return [ordered]@{ severity_class = "structural_mismatch"; sub_tags = @($subTags) }
+    }
+
+    # Unknown kind — treat as generator_invalid so the case surfaces for triage.
+    return [ordered]@{ severity_class = "generator_invalid"; sub_tags = @("unknown_outcome_kind:$localKind") }
+}
+
 Export-ModuleMember -Function `
     Invoke-ExcelCellRefBatch, `
     Get-F64BitsHex, `
     ConvertTo-ExcelOutcome, `
-    Get-UlpDistance
+    Get-UlpDistance, `
+    Test-FormulaTextIsBitExactSafe, `
+    Get-StandardSeverityClass

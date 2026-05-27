@@ -1,15 +1,29 @@
 # Smart Fuzzer Design
 
-Status: `planning_sandbox`
+Status: `active_design`
 
 ## 1. Goal
 
-The smart-fuzzer should find invocations where OxFunc/OxFml behavior diverges
-from Excel, and it should quantify the explored surface well enough to improve
-regression confidence without pretending that sampled agreement is semantic
-closure.
+The OxFunc parity target is **bit-exact emulation of Excel** for every in-scope function and operator (`517` rows = `494` functions plus `23` operators, after `17` deferred rows in `W050`). All in-scope rows are equally active.
 
-The system explores a huge invocation space:
+The smart-fuzzer exists to **find OxFunc-vs-Excel discrepancies, biased toward the structural and elusive class** rather than toward piling up additional LSB witnesses in numeric kernels already known to drift.
+
+### 1.1 Bug-Severity Grading
+
+Any OxFunc-vs-Excel discrepancy on an in-scope row is a bug. Bit-exact Excel parity is the goal **including matching Excel where Excel itself is imprecise**. We have not decided that analytical correctness wins over Excel matching; the default repair direction is to match Excel, and the imprecision is recorded.
+
+Severity is graded by magnitude and nature, but the two classes below are both bugs:
+
+1. **Structural mismatch — top priority, fix on discovery.** Wrong value kind, wrong error code, wrong shape/spill behavior, wrong array lift, wrong handling of error/blank/missing/reference inputs, unexpected crash or rejection, generator-induced harness mismatch. Root cause may be the kernel, the function metadata, or the harness; all three are bugs and must be diagnosed before more generation is spent.
+2. **Numeric drift — continuous-triage class.** Float drift in numeric kernels. `> 1` ULP drift is more serious than `1` ULP drift, but both are bugs. Each row gets a witness and a `BUG-FUNC-*` stream; repair priority is set by magnitude, scope, and cost.
+
+Sub-tag for numeric drift: a row where OxFunc returns the analytic exact value and Excel is `±1` ULP off is tagged `excel_imprecision_witness` so the *repair direction* is visible — the OxFunc kernel needs to match Excel's imprecise result, not stay analytically correct. The row is still an OxFunc bug under the bit-exact policy and stays in the numeric-drift bug count.
+
+Smart-fuzzer prioritization, comparator classification, and reporting must keep structural and numeric-drift classes visually distinct. A run summary that hides structural mismatches inside a numeric-drift bucket — or hides the `excel_imprecision_witness` sub-tag outside the bug count — is a regression of the fuzzer itself, not just a missing fix.
+
+### 1.2 Scope Boundary
+
+The exploration space is large:
 
 1. function and operator identity,
 2. arity and syntactic omission,

@@ -54,7 +54,24 @@ Not allowed:
 3. decompilation/disassembly of Office binaries.
 
 ## 4. Scope
-In scope:
+
+### 4.1 Parity Target And Bug-Severity Grading
+The OxFunc parity goal is **bit-exact emulation of Excel** for every in-scope function and operator, across every input, input type, and input combination.
+
+In-scope surface count (against the current `OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv` reading):
+1. `534` published rows total: `511` functions + `23` operators.
+2. `17` rows are deferred under `W050` (cube family, external/provider service stragglers, `GETPIVOTDATA`, `TRANSLATE`, etc.).
+3. **`517` rows are in scope: `494` functions + `23` operators.** All in-scope rows are equally active; there are no internal priority tiers in scope language.
+
+Any OxFunc-vs-Excel discrepancy on an in-scope row is a bug. Bit-exact Excel parity is the goal, **including matching Excel where Excel itself is imprecise** — the default repair direction is to match Excel, not to be analytically correct, and the imprecision is recorded. Bug severity is graded, not flat:
+1. **Structural mismatch — top priority, fix on discovery.** Wrong value kind, wrong error code, wrong shape/spill behavior, wrong array lift, wrong handling of error/blank/missing/reference inputs, unexpected crash or rejection. Root cause may be the kernel, the function metadata, or the test harness; in all three cases the immediate action is to identify and fix.
+2. **Numeric drift — continuous-triage class.** Float drift in numeric kernels. `> 1` ULP drift is more serious than `1` ULP drift, but both are bugs. Each gets a witness and a `BUG-FUNC-*` stream; repair priority is set by magnitude, scope, and cost. A row where OxFunc returns the analytic exact value and Excel is `±1` ULP off is tagged `excel_imprecision_witness` to make the repair direction explicit, but it is still in the numeric-drift bug count.
+
+Smart-fuzzer mission consequence: the explorer must be biased toward surfacing the **structural class** and rare/elusive edges, not toward piling up additional LSB witnesses in already-known-drifting kernels. Pass-heavy mass agreement is exploration telemetry, not closure evidence. The full design is in `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`.
+
+Comparator plumbing rule (binding): comparator runners that claim bit-exact typed parity must pass numeric inputs to Excel through cell `Range.Value2`, not through formula literal text. Rule and witness in `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md`.
+
+### 4.2 In Scope
 1. OxFunc as the F3E value/function slice:
    - worksheet value type semantics,
    - function/operator semantics,
@@ -81,7 +98,7 @@ In scope:
    - reusable runtime-context and scratch-buffer contracts,
    - metadata needed for graph-level scheduling, hoisting, concurrency, and future compiled backends.
 
-Out of scope:
+### 4.3 Out Of Scope
 1. Formula grammar/parse/bind ownership (OxFml lane).
 2. Full FEC scheduler/protocol/lifecycle ownership (Foundation model lane).
 3. Workbook-level scheduling semantics and engine concurrency internals.

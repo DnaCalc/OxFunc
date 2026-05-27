@@ -928,9 +928,13 @@ Notes:
 4. Successor `BUG-FUNC-*` streams may be opened when a re-replay
    surfaces a new subclass; existing closed streams are not reopened
    automatically.
-5. The "OxFunc more accurate than Excel" rows surface a new
-   `known_excel_imprecision_witness` classification under the
-   no-tolerance comparison policy.
+5. The "OxFunc more accurate than Excel" rows are tagged
+   `excel_imprecision_witness`. Per the `2026-05-28` doctrine update
+   (`CHARTER.md` §4.1, `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`
+   §1.1) these remain OxFunc bugs in the numeric-drift class; the tag
+   only records the repair direction (match Excel even when Excel is
+   imprecise). The earlier `known_excel_imprecision_witness`
+   "not-a-bug" framing in W097 historical evidence is superseded.
 
 ## W096 Full-Model Compiled Semantic Kernel Dispatch
 

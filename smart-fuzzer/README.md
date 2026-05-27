@@ -2,30 +2,32 @@
 
 Status: `planning_sandbox`
 
-This directory is a non-production planning and experiment area for a future
-OxFunc smart-fuzzer.
+This directory is the planning and experiment area for the OxFunc smart-fuzzer.
 
-Owning worksets:
+## Mission
 
-1. `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md` for the pilot
-   execution substrate.
-2. `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md`
-   for the next broad invocation-space sweep plan.
-3. `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md` for the
-   array-valued scalar-parameter sweep that follows the W079/W080 seed
-   findings.
+The OxFunc parity target is **bit-exact emulation of Excel** for every in-scope function and operator (`517` rows: `494` functions plus `23` operators, after the `17` deferred service/cube/pivot rows in `docs/function-lane/W50_DEFERRED_CURRENT_VERSION_INVENTORY.csv`). All in-scope rows are equally active.
 
-The smart-fuzzer is an evidence-generation and regression-discovery system. It
-does not define OxFunc semantics, does not replace function contracts, and does
-not by itself promote any function status. Any durable mismatch found here must
-be promoted through the ordinary OxFunc bug intake, evidence, workset, and bead
-surfaces.
+Any OxFunc-vs-Excel discrepancy is a bug. Bit-exact Excel parity is the goal, **including matching Excel where Excel itself is imprecise** — the default repair direction is to match Excel, not to be analytically correct. Severity is graded, not flat:
 
-The fuzzer is expected to produce many more passes than failures. Passing case
-records are exploration telemetry, not individually sacred evidence artifacts.
-Keep them compact, aggregatable, and cheap to discard or regenerate. Preserve
-detailed narrative and promotion effort for failures, minimized mismatches, and
-small representative pass samples that explain coverage.
+1. **Structural mismatch — top priority, fix on discovery.** Wrong kind, wrong error code, wrong shape, wrong array/spill behavior, wrong handling of error/blank/missing/reference inputs, unexpected crash or rejection. Root cause may be in the kernel, the function metadata, or the harness itself; all three are bugs.
+2. **Numeric drift — continuous-triage class.** Float drift in numeric kernels. `> 1` ULP drift is more serious than `1` ULP drift, but both are bugs. Each gets a witness and a `BUG-FUNC-*` stream. A row where OxFunc returns the analytic exact value and Excel is `±1` ULP off is tagged `excel_imprecision_witness` to make the repair direction explicit, but it is still in the numeric-drift bug count.
+
+The smart-fuzzer is built to find the **structural and elusive** class ahead of piling up more LSB witnesses in known-drifting numeric kernels. Pass-heavy mass agreement is exploration telemetry, not closure evidence.
+
+Full design and severity-aware classification scheme: `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`. The companion CHARTER section is `CHARTER.md` §4.1. The canonical severity vocabulary is implemented in `smart-fuzzer/tools/CellRefBatch.psm1` and consumed by every comparator runner — see `smart-fuzzer/tools/README.md`.
+
+## Owning Worksets
+
+1. `docs/worksets/W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md` — pilot execution substrate.
+2. `docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md` — invocation-space sweep plan.
+3. `docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md` — array-valued scalar-parameter sweep.
+4. `docs/worksets/W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md` — feedback-guided long-run loop.
+5. `docs/worksets/W097_BIT_EXACT_RESWEEP_OF_KNOWN_MISMATCHES.md` — cell-ref-plumbing re-measurement.
+
+The smart-fuzzer is an evidence-generation and regression-discovery system. It does not define OxFunc semantics, does not replace function contracts, and does not by itself promote any function status. Any durable mismatch found here must be promoted through the ordinary OxFunc bug intake, evidence, workset, and bead surfaces.
+
+The fuzzer is expected to produce many more passes than failures. Passing case records are exploration telemetry, not individually sacred evidence artifacts. Keep them compact, aggregatable, and cheap to discard or regenerate. Reserve detailed narrative and promotion effort for failures, minimized mismatches, and small representative pass samples that explain coverage.
 
 ## Current Scope Boundary
 
