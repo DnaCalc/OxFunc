@@ -38,6 +38,32 @@ The shared module's `Test-FormulaTextIsBitExactSafe` enforces this on every case
 
 `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` carries the empirical witness and the full historical context.
 
+## Build-FunctionStatusMap.ps1
+
+Reproducible per-surface OxFunc-vs-Excel status map over the 517 in-scope rows (CHARTER.md §4.1). Joins the library-context snapshot, the W050 deferred list, open `BUG-FUNC-*` streams (with a curated stream→surface coverage map in the script), and the most recent `array_rollup` observation per surface.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-FunctionStatusMap.ps1
+```
+
+Default outputs:
+
+```text
+smart-fuzzer/cache/function-status-map-v0.csv      (gitignored, regenerable)
+smart-fuzzer/planning/FUNCTION_STATUS_MAP.md       (tracked, summary view)
+```
+
+Per-surface status is one of:
+
+- `deferred` — in W050; not part of the 517 in-scope rows.
+- `structural_bug_open` — covered by an open BUG-FUNC stream tagged structural (kind/error/shape/array-lift/publication).
+- `numeric_drift_open` — covered by an open BUG-FUNC stream tagged numeric (any ULP magnitude is still a bug).
+- `mixed_or_open` — covered by runs whose most recent observation produced non-match rows without a linked stream — needs triage.
+- `bit_exact_observed` — covered by ≥1 `array_rollup` run and the most recent observation was all bit-exact.
+- `unswept` — never observed in any `array_rollup` run and no open stream targets it.
+
+`bit_exact_observed` is not a closure claim — it only records what the sampled axes saw. `unswept` surfaces are exploration targets; many are reachable via `Run-BroadScalarExploration` cycles, which feed back through `BUG-FUNC-*` streams rather than appearing in this map directly.
+
 ## Build-DimensionInventory.ps1
 
 Builds the W089 function-by-function dimension inventory for sweep planning. It
