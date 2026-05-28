@@ -167,22 +167,25 @@ $ValueComparisonExcluded = [ordered]@{
     "ISOMITTED"   = "only meaningful inside a LAMBDA"
 }
 $HarnessPending = [ordered]@{
-    # reference-identity / host-context (need a richer local harness — task #8)
-    "XLOOKUP"                  = "reference-identity local harness"
-    "OFFSET"                   = "reference-return local harness"
-    "SHEET"                    = "sheet-identity host context"
-    "SHEETS"                   = "workbook/sheet host context"
-    "FORMULATEXT"              = "cell formula metadata"
-    "ISFORMULA"                = "cell formula metadata"
-    "AGGREGATE"                = "AggregateReferenceContext host info"
-    "SUBTOTAL"                 = "AggregateReferenceContext host info"
-    "OP_RANGE_REF"             = "reference-materialisation"
-    "OP_INTERSECTION_REF"      = "reference-materialisation"
-    "OP_SPILL_REF"             = "spill-anchor host context"
-    "OP_IMPLICIT_INTERSECTION" = "formula-position host context"
-    "OP_TRIM_REF_LEADING"      = "newest range-trim syntax + spill context"
-    "OP_TRIM_REF_TRAILING"     = "newest range-trim syntax + spill context"
-    "OP_TRIM_REF_BOTH"         = "newest range-trim syntax + spill context"
+    # reference-identity / host-context: runtime_context_dependent — conformance
+    # owned by the OxCalc integration lane (OxCalc->OxFml->OxFunc, real grid +
+    # host context, vs the Excel oracle), NOT the bare-kernel fuzzer. Decision
+    # 2026-05-28; see UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md §10.
+    "XLOOKUP"                  = "reference-return: OxCalc integration conformance lane"
+    "OFFSET"                   = "reference-return: OxCalc integration conformance lane"
+    "SHEET"                    = "sheet-identity host context: OxCalc integration lane"
+    "SHEETS"                   = "workbook/sheet host context: OxCalc integration lane"
+    "FORMULATEXT"              = "cell formula metadata: OxCalc integration lane"
+    "ISFORMULA"                = "cell formula metadata: OxCalc integration lane"
+    "AGGREGATE"                = "AggregateReferenceContext host info: OxCalc integration lane"
+    "SUBTOTAL"                 = "AggregateReferenceContext host info: OxCalc integration lane"
+    "OP_RANGE_REF"             = "reference-materialisation: OxCalc integration lane"
+    "OP_INTERSECTION_REF"      = "reference-materialisation: OxCalc integration lane"
+    "OP_SPILL_REF"             = "spill-anchor host context: OxCalc integration lane"
+    "OP_IMPLICIT_INTERSECTION" = "formula-position host context: OxCalc integration lane"
+    "OP_TRIM_REF_LEADING"      = "newest range-trim syntax + spill context: OxCalc integration lane"
+    "OP_TRIM_REF_TRAILING"     = "newest range-trim syntax + spill context: OxCalc integration lane"
+    "OP_TRIM_REF_BOTH"         = "newest range-trim syntax + spill context: OxCalc integration lane"
     # stochastic uniform-draw family — statistical-profile harness BUILT
     # (Run-RandStatisticalProfile.ps1, rand-statistical-profile-001: all
     # profile-consistent). Not bit-exact by nature; stays harness_pending.

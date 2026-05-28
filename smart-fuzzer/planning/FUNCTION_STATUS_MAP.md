@@ -1,6 +1,6 @@
 # OxFunc Function Status Map
 
-Generated: 2026-05-28T20:01:29.6251528Z
+Generated: 2026-05-28T20:22:06.2954090Z
 
 This map is the reproducible derived view of where each of the published OxFunc surfaces stands against the bit-exact Excel parity goal (CHARTER.md §4.1). Rebuild with `smart-fuzzer/tools/Build-FunctionStatusMap.ps1`.
 
@@ -249,24 +249,24 @@ _(none)_
 
 | Surface | Reason |
 | --- | --- |
-| `AGGREGATE` | AggregateReferenceContext host info |
-| `OP_TRIM_REF_BOTH` | newest range-trim syntax + spill context |
-| `OP_SPILL_REF` | spill-anchor host context |
-| `OP_RANGE_REF` | reference-materialisation |
-| `OP_INTERSECTION_REF` | reference-materialisation |
-| `OP_IMPLICIT_INTERSECTION` | formula-position host context |
-| `XLOOKUP` | reference-identity local harness |
-| `SUBTOTAL` | AggregateReferenceContext host info |
-| `SHEETS` | workbook/sheet host context |
-| `SHEET` | sheet-identity host context |
+| `AGGREGATE` | AggregateReferenceContext host info: OxCalc integration lane |
+| `OP_TRIM_REF_BOTH` | newest range-trim syntax + spill context: OxCalc integration lane |
+| `OP_SPILL_REF` | spill-anchor host context: OxCalc integration lane |
+| `OP_RANGE_REF` | reference-materialisation: OxCalc integration lane |
+| `OP_INTERSECTION_REF` | reference-materialisation: OxCalc integration lane |
+| `OP_IMPLICIT_INTERSECTION` | formula-position host context: OxCalc integration lane |
+| `XLOOKUP` | reference-return: OxCalc integration conformance lane |
+| `SUBTOTAL` | AggregateReferenceContext host info: OxCalc integration lane |
+| `SHEETS` | workbook/sheet host context: OxCalc integration lane |
+| `SHEET` | sheet-identity host context: OxCalc integration lane |
 | `RANDBETWEEN` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
 | `RANDARRAY` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
 | `RAND` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
-| `OFFSET` | reference-return local harness |
-| `ISFORMULA` | cell formula metadata |
-| `FORMULATEXT` | cell formula metadata |
-| `OP_TRIM_REF_LEADING` | newest range-trim syntax + spill context |
-| `OP_TRIM_REF_TRAILING` | newest range-trim syntax + spill context |
+| `OFFSET` | reference-return: OxCalc integration conformance lane |
+| `ISFORMULA` | cell formula metadata: OxCalc integration lane |
+| `FORMULATEXT` | cell formula metadata: OxCalc integration lane |
+| `OP_TRIM_REF_LEADING` | newest range-trim syntax + spill context: OxCalc integration lane |
+| `OP_TRIM_REF_TRAILING` | newest range-trim syntax + spill context: OxCalc integration lane |
 
 ## excluded (20)
 

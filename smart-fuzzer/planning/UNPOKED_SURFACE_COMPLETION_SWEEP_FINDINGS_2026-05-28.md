@@ -400,3 +400,64 @@ provider — needs a parameterised provider in `array_tranche_local_eval`) is
 the recorded v1 follow-up. The three surfaces remain `harness_pending` in
 the status map (statistical, not bit-exact, by nature), now with the
 harness built.
+
+## 10. Reference-sensitive functions — testing-ownership decision (2026-05-28)
+
+The 8 reference-identity / host-context functions (`XLOOKUP`, `OFFSET`,
+`SHEET`, `SHEETS`, `FORMULATEXT`, `ISFORMULA`, `AGGREGATE`, `SUBTOTAL`) and
+the 7 reference operators (`OP_RANGE_REF`, `OP_INTERSECTION_REF`,
+`OP_SPILL_REF`, `OP_IMPLICIT_INTERSECTION`, `OP_TRIM_REF_*`) were tracked as
+the §3.3 / §6 harness boundary. The follow-up was originally framed as
+"build a reference-identity local harness in the smart-fuzzer." After
+reading the sibling repos (`OxFml`, `OxCalc`, read-only), that framing is
+**rejected** in favour of testing these from the outside in the OxCalc lane.
+
+### 10.1 Why not scaffold in OxFunc
+
+- **These functions are `runtime_context_dependent` by OxFunc's own
+  doctrine** (`EXCEL_FUNCTION_DEFINITION_PRELIM_SPEC` §runtime_context_dependent;
+  the SUBTOTAL/AGGREGATE contract calls for tests "with host context"; CELL's
+  omitted-reference routes through "active-selection host context"). A
+  context-free kernel harness cannot judge them — by design.
+- **Dependency constitution is one-way**: OxCalc may depend on OxFml + OxFunc;
+  OxFunc must not depend on OxCalc. So a *real* grid/host context cannot live
+  in an OxFunc harness — only a faked one could, which would re-implement (in
+  low fidelity) what OxCalc already provides for real, and could *mask* a real
+  reference-path bug rather than reveal it.
+- **OxCalc already evaluates these end-to-end through the same kernels.**
+  `OxCalc/src/oxcalc-core` path-depends on `oxfunc_core` and `oxfml_core`, and
+  its tests drive `RuntimeFormulaRequest { … EvaluationBackend::OxFuncBacked }`
+  over real `scalar_cell_values`, asserting `result.evaluation.oxfunc_value`.
+  The OxFml/OxCalc lane already carries an **Excel oracle matrix** for built-in
+  functions and workbook/sheet context.
+
+### 10.2 Decision
+
+Reference-sensitive function conformance is **owned by the OxCalc integration
+lane** (OxCalc → OxFml → OxFunc, real grid + host context, vs the Excel
+oracle), not by the OxFunc bare-kernel smart-fuzzer. In the OxFunc status map
+these surfaces stay `harness_pending` with `status_reason` pointing at the
+OxCalc lane.
+
+### 10.3 Ready-made inputs for the OxCalc fixture (when authorised)
+
+The Excel-observed expected values were captured this session and can seed an
+OxCalc conformance fixture directly (no new Excel runs needed):
+
+| Surface | Fixture | Excel value |
+| --- | --- | --- |
+| `VLOOKUP(3,A1:B4,2,FALSE)` | A1:B4 = {1,"a";2,"b";3,"c";4,"d"} | `"c"` (not-found → `#N/A`) |
+| `HLOOKUP` / `LOOKUP` / `XLOOKUP` | same data, row/vector forms | `"c"` |
+| `OFFSET(A1,1,1)` | A1:B4 grid | `"b"` |
+| `AGGREGATE(9,0,A1:A4)` / `SUBTOTAL(9,A1:A4)` | A1:A4 = {1;2;3;4} | `10` |
+| `SHEET(A1)` / `SHEETS(A1:B2)` | any | `1` |
+| `FORMULATEXT(A1)` / `ISFORMULA(A1)` | A1 = value | `#N/A` / `FALSE` |
+| `OP_RANGE_REF =A1:A4` | A1:A4 = {1;2;3;4} | spills `{1;2;3;4}` |
+| `OP_INTERSECTION_REF =A1:A4 A3:A4` | same | spills `{3;4}` |
+
+The OxCalc-side fixture/test work is **deferred** (user decision,
+2026-05-28); this section records the decision and the ready inputs so the
+work can start in OxCalc without re-deriving them. The
+reference-materialisation evidence (local `non_materialized_reference`) and
+the AGGREGATE/SUBTOTAL host-context confirmation (`host_info: None`) are in
+§3.3 / §6.
