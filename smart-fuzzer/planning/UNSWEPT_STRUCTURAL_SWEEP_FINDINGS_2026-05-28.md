@@ -176,3 +176,41 @@ New real findings (extend the BUG-FUNC-028 family unless noted):
    regression-accuracy review, not BUG-FUNC-028.
 5. **RANDARRAY** leaked through (blank determinism); excluded going
    forward. Not a bug — stochastic.
+
+## 9. Operator sweep (`operator-structural-sweep-001`)
+
+`Build-OperatorStructuralProbes.ps1` covers the `15` scalar/value
+operators via infix Excel syntax and `FUNC.OP_*` local dispatch.
+`99` cases → `97` match, `2` structural mismatches, both `OP_UNARY_PLUS`:
+`=+"2"` → local `number:2` vs Excel `text:2`; `=+TRUE` → local `number:1`
+vs Excel `logical:TRUE`. Excel's unary plus is type-preserving identity;
+OxFunc coerces to number. Opened **BUG-FUNC-029**. The other `14`
+operators are bit-exact across all probes.
+
+## 10. Coverage frontier (after sweeps 001/002 + operators)
+
+Status map progression: `unswept` `264 → 122 → 47 → 32`. The remaining
+`32` unswept are the floor for the value-comparison approach:
+
+1. **Reference functions (15)** — need a reference-fixture generator:
+   `AGGREGATE`, `CALL`, `CELL`, `CHOOSE`, `COLUMN`, `FORMULATEXT`,
+   `HLOOKUP`, `IFNA`, `ISFORMULA`, `OFFSET`, `SHEET`, `SHEETS`,
+   `SUBTOTAL`, `VLOOKUP`, `XLOOKUP`.
+2. **Reference operators (7)** — need the same fixture support:
+   `OP_RANGE_REF`, `OP_INTERSECTION_REF`, `OP_SPILL_REF`,
+   `OP_TRIM_REF_LEADING/TRAILING/BOTH`, `OP_IMPLICIT_INTERSECTION`.
+   (`OP_UNION_REF` is already tracked under BUG-FUNC-003.)
+3. **Stochastic / host / volatile (8) + INDIRECT, INFO** — not
+   bit-comparable per draw or need host/provider/clock fixtures:
+   `BAHTTEXT`, `IMAGE`, `NOW`, `RAND`, `RANDBETWEEN`, `REGISTER.ID`,
+   `RTD`, `TODAY`, `INDIRECT`, `INFO`. These are legitimate
+   value-comparison exclusions (statistical/host harnesses are separate).
+
+Plus `76` `harness_blocked` surfaces (mostly multi-arg financial/bond
+functions) that need a **typed-argument generator** (valid date serials,
+basis codes, unit strings) before they can be tested.
+
+The next extension is therefore a reference-fixture + typed-argument
+generator: write range/typed values via `cell_fixture` (Range.Value2) and
+build formulas that reference them. That closes the reference-function,
+reference-operator, and harness-blocked frontiers in one build.
