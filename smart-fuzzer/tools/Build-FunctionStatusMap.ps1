@@ -104,7 +104,11 @@ $StreamCoverage = @(
         # tracked as separate clusters (see UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md §2.2/§2.3).
         "ERF","ERF.PRECISE","ERFC","ERFC.PRECISE","GAMMALN.PRECISE"
     ) },
-    @{ stream = "BUG-FUNC-029"; severity = "structural"; ownership = "oxfunc"; surfaces = @("OP_UNARY_PLUS") }
+    @{ stream = "BUG-FUNC-029"; severity = "structural"; ownership = "oxfunc"; surfaces = @("OP_UNARY_PLUS") },
+    # un-poked completion sweep (typed-arg tranche) high-impact findings:
+    @{ stream = "BUG-FUNC-030"; severity = "numeric";    ownership = "oxfunc"; surfaces = @("ACCRINT") },
+    @{ stream = "BUG-FUNC-031"; severity = "structural"; ownership = "oxfunc"; surfaces = @("YIELD") },
+    @{ stream = "BUG-FUNC-032"; severity = "structural"; ownership = "oxfunc"; surfaces = @("ODDFPRICE","ODDFYIELD") }
 )
 
 # --------------------------------------------------------------------------
