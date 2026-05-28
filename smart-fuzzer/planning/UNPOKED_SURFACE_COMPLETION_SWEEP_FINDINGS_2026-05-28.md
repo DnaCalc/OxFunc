@@ -365,3 +365,38 @@ YIELDMAT, CONVERT) plus pre-existing untriaged surfaces (regression family
 `JIS`). Promotion of the sweep's candidate findings into `BUG-FUNC-*`
 streams is the recorded next step (kept in this doc for now per the
 2026-05-28 decision).
+
+## 9. Tranche E — RAND statistical-profile harness (RAND / RANDBETWEEN / RANDARRAY)
+
+The stochastic uniform-draw family cannot be bit-compared per draw, so it
+gets its own harness with a different comparison policy:
+`Run-RandStatisticalProfile.ps1` (new). OxFunc's RAND family delegates the
+draw to a host `RandomProvider`; OxFunc owns the *contract* (bounds, shape,
+integer mapping, arg handling), not the randomness. Excel's RNG cannot be
+pinned via COM. So the harness:
+
+- samples Excel (`N=500`) and reduces each function to a profile (bounds,
+  mean, integer fraction, distinct set, spill shape, coarse 6-bucket
+  uniformity χ²);
+- drives OxFunc locally with the deterministic `fixed_0_5` provider to
+  check the contract (in-bounds, correct shape, integer mapping);
+- verdict `statistical_profile_consistent` when both satisfy the same
+  contract and the Excel sample is plausibly uniform.
+
+Run `rand-statistical-profile-001` (`schema oxfunc.smart_fuzzer.rand_statistical_profile.v0`):
+
+| Surface | Verdict | Evidence |
+| --- | --- | --- |
+| `RAND` | consistent | Excel n=500 in [0.0006, 0.9976], mean 0.4907, χ²₆=0.52 (uniform); local fixed_0_5 → 0.5 ∈ [0,1) |
+| `RANDBETWEEN` | consistent | Excel integers covering {1..6}; local fixed_0_5 → 4 ∈ [1,6] |
+| `RANDARRAY` | consistent | Excel 2×3 in [0,1); local 2×3 |
+| `RANDARRAY.whole` | consistent | Excel 2×2 integers in [1,6]; local 2×2 |
+
+All four `statistical_profile_consistent`. This is **not** a bit-exact
+closure claim — it confirms the RAND-family contract (bounds / shape /
+integer mapping) matches Excel and Excel's draw is plausibly uniform. A
+finer distribution test (KS / χ² against OxFunc driven by a *varying*
+provider — needs a parameterised provider in `array_tranche_local_eval`) is
+the recorded v1 follow-up. The three surfaces remain `harness_pending` in
+the status map (statistical, not bit-exact, by nature), now with the
+harness built.

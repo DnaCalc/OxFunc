@@ -1,6 +1,6 @@
 # OxFunc Function Status Map
 
-Generated: 2026-05-28T19:56:23.9170716Z
+Generated: 2026-05-28T20:01:29.6251528Z
 
 This map is the reproducible derived view of where each of the published OxFunc surfaces stands against the bit-exact Excel parity goal (CHARTER.md §4.1). Rebuild with `smart-fuzzer/tools/Build-FunctionStatusMap.ps1`.
 
@@ -259,9 +259,9 @@ _(none)_
 | `SUBTOTAL` | AggregateReferenceContext host info |
 | `SHEETS` | workbook/sheet host context |
 | `SHEET` | sheet-identity host context |
-| `RANDBETWEEN` | statistical-profile harness (sibling of RAND family) |
-| `RANDARRAY` | statistical-profile harness |
-| `RAND` | statistical-profile harness (distribution, not bit-exact) |
+| `RANDBETWEEN` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
+| `RANDARRAY` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
+| `RAND` | statistical-profile harness built (v0 consistent); not bit-exact by nature |
 | `OFFSET` | reference-return local harness |
 | `ISFORMULA` | cell formula metadata |
 | `FORMULATEXT` | cell formula metadata |

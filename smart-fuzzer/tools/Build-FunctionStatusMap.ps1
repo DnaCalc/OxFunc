@@ -183,10 +183,12 @@ $HarnessPending = [ordered]@{
     "OP_TRIM_REF_LEADING"      = "newest range-trim syntax + spill context"
     "OP_TRIM_REF_TRAILING"     = "newest range-trim syntax + spill context"
     "OP_TRIM_REF_BOTH"         = "newest range-trim syntax + spill context"
-    # stochastic uniform-draw family (need the statistical-profile harness — Tranche E)
-    "RAND"                     = "statistical-profile harness (distribution, not bit-exact)"
-    "RANDARRAY"                = "statistical-profile harness"
-    "RANDBETWEEN"              = "statistical-profile harness (sibling of RAND family)"
+    # stochastic uniform-draw family — statistical-profile harness BUILT
+    # (Run-RandStatisticalProfile.ps1, rand-statistical-profile-001: all
+    # profile-consistent). Not bit-exact by nature; stays harness_pending.
+    "RAND"                     = "statistical-profile harness built (v0 consistent); not bit-exact by nature"
+    "RANDARRAY"                = "statistical-profile harness built (v0 consistent); not bit-exact by nature"
+    "RANDBETWEEN"              = "statistical-profile harness built (v0 consistent); not bit-exact by nature"
 }
 
 # --------------------------------------------------------------------------
