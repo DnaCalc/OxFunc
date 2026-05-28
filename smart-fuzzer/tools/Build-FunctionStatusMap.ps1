@@ -89,7 +89,14 @@ $StreamCoverage = @(
     @{ stream = "BUG-FUNC-024"; severity = "numeric";    ownership = "oxfunc"; surfaces = @("BESSELY") },
     @{ stream = "BUG-FUNC-025"; severity = "numeric";    ownership = "oxfunc"; surfaces = @("MINVERSE") },
     @{ stream = "BUG-FUNC-026"; severity = "structural"; ownership = "seam";    surfaces = @("TAKE") },
-    @{ stream = "BUG-FUNC-027"; severity = "numeric";    ownership = "oxfunc"; surfaces = @("GAMMA","GAMMALN","SINH","COSH","POWER","PERMUTATIONA","FISHERINV","MROUND","MOD","TAN","SIN","COS","COT","SEC","CSC","TANH","COTH","SECH","CSCH","ATANH","ACOTH","ACOSH","ATAN2","COMBIN","COMBINA") }
+    @{ stream = "BUG-FUNC-027"; severity = "numeric";    ownership = "oxfunc"; surfaces = @("GAMMA","GAMMALN","SINH","COSH","POWER","PERMUTATIONA","FISHERINV","MROUND","MOD","TAN","SIN","COS","COT","SEC","CSC","TANH","COTH","SECH","CSCH","ATANH","ACOTH","ACOSH","ATAN2","COMBIN","COMBINA") },
+    @{ stream = "BUG-FUNC-028"; severity = "structural"; ownership = "oxfunc"; surfaces = @(
+        "ARABIC","ASC","BIN2OCT","CLEAN","DBCS","DECIMAL","DELTA","DOLLAR","DOLLARDE","EOMONTH",
+        "FACTDOUBLE","FIXED","GCD","GESTEP","ISEVEN","ISOWEEKNUM","LCM","LOG","MULTINOMIAL",
+        "NETWORKDAYS","NETWORKDAYS.INTL","NOT","NUMBERVALUE","OCT2DEC","QUOTIENT","ROMAN","SQRTPI",
+        "STANDARDIZE","TBILLEQ","TBILLPRICE","TBILLYIELD","TEXT","UNICODE","VALUE","WEEKDAY","WEEKNUM",
+        "WORKDAY","WORKDAY.INTL","YEARFRAC"
+    ) }
 )
 
 # --------------------------------------------------------------------------
@@ -195,7 +202,47 @@ foreach ($r in $rollups) {
     }
 }
 Write-Host "array_rollup runs scanned: $arrayRollupCount"
-Write-Host "Surfaces with at least one observation: $(([int]$coverage.Keys.Count))"
+Write-Host "Surfaces with at least one array_rollup observation: $(([int]$coverage.Keys.Count))"
+
+# --------------------------------------------------------------------------
+# Scan broad-scalar runner coverage so functions swept ONLY by the
+# numeric scalar runner do not show as `unswept`. The broad-scalar
+# runner exercises a different (scalar numeric value) axis than the
+# array-tranche runner (structural / array / error / coercion), so its
+# coverage is recorded as a distinct `scalar_swept_only` signal rather
+# than folded into the structural bit_exact_observed bucket.
+# --------------------------------------------------------------------------
+$broadCoverage = @{}
+$broadRunCount = 0
+foreach ($r in $rollups) {
+    $d = Get-Content $r.FullName -Raw | ConvertFrom-Json
+    if ([string]$d.schema_version -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v0" -and
+        [string]$d.schema_version -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v1") {
+        continue
+    }
+    $compPath = Join-Path $r.Directory.FullName "comparisons\excel_sample_comparisons.jsonl"
+    if (-not (Test-Path -LiteralPath $compPath)) { continue }
+    $broadRunCount += 1
+    $runDate = $r.LastWriteTimeUtc.ToString("o")
+    $runId = [string]$d.run_id
+    foreach ($line in (Get-Content -LiteralPath $compPath)) {
+        if ([string]::IsNullOrWhiteSpace($line)) { continue }
+        $row = $line | ConvertFrom-Json
+        $fn = ([string]$row.function_id) -replace '^FUNC\.', ''
+        if ([string]::IsNullOrWhiteSpace($fn)) { $fn = [string]$row.function_name }
+        if ([string]::IsNullOrWhiteSpace($fn)) { continue }
+        $res = [string]$row.comparison_result
+        if ($res -eq "blocked") { continue }
+        if (-not $broadCoverage.ContainsKey($fn)) {
+            $broadCoverage[$fn] = [ordered]@{ runs_seen = 0; last_seen_run = $runId; last_seen_date = $runDate; ever_non_match = $false }
+        }
+        $rec = $broadCoverage[$fn]
+        $rec.runs_seen += 1
+        if ($runDate -gt $rec.last_seen_date) { $rec.last_seen_date = $runDate; $rec.last_seen_run = $runId }
+        if ($res -ne "exact_typed_bit_match" -and $res -ne "match_signed_zero") { $rec.ever_non_match = $true }
+    }
+}
+Write-Host "broad_scalar runs scanned: $broadRunCount; surfaces seen: $(([int]$broadCoverage.Keys.Count))"
 
 # --------------------------------------------------------------------------
 # Compose the per-surface status row.
@@ -232,15 +279,36 @@ foreach ($s in $snapshot) {
         $statusReason = "open streams: " + ($streamNames -join ",")
     } elseif ($null -ne $cov) {
         if ($cov.last_seen_non_match) {
-            $status = "mixed_or_open"
-            $statusReason = "most recent run had non-match rows without linked stream"
+            # Distinguish harness/generator-invalid non-match from genuine mismatch.
+            $harnessOnly = $true
+            foreach ($ck in $cov.last_seen_classifications.Keys) {
+                if ($ck -eq "exact_typed_bit_match") { continue }
+                if ($ck -notin @("excel_harness_blocked","local_harness_blocked","excel_harness_missing","local_harness_missing","generator_invalid")) {
+                    $harnessOnly = $false
+                }
+            }
+            if ($harnessOnly) {
+                $status = "harness_blocked"
+                $statusReason = "most recent run only harness-blocked / generator-invalid rows — needs a better probe (not a function bug)"
+            } else {
+                $status = "mixed_or_open"
+                $statusReason = "most recent run had genuine non-match rows without linked stream"
+            }
         } else {
             $status = "bit_exact_observed"
             $statusReason = "most recent run was all bit-exact (across $($cov.runs_seen) array_rollup runs)"
         }
+    } elseif ($broadCoverage.ContainsKey($name)) {
+        $b = $broadCoverage[$name]
+        $status = "scalar_swept_only"
+        if ($b.ever_non_match) {
+            $statusReason = "broad-scalar numeric runner only; non-match seen (no linked stream) — structural axes unswept"
+        } else {
+            $statusReason = "broad-scalar numeric runner only ($($b.runs_seen) obs) — structural axes unswept"
+        }
     } else {
         $status = "unswept"
-        $statusReason = "no array_rollup run observation"
+        $statusReason = "no array_rollup or broad-scalar run observation"
     }
 
     $aggregatedStr = ""
@@ -308,20 +376,22 @@ $mdLines = New-Object 'System.Collections.Generic.List[string]'
 [void]$mdLines.Add("1. ``docs/function-lane/OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv``")
 [void]$mdLines.Add("2. ``docs/function-lane/W50_DEFERRED_CURRENT_VERSION_INVENTORY.csv``")
 [void]$mdLines.Add("3. ``docs/bugs/BUG_STREAM_REGISTER.csv`` plus the curated stream→surface map in this script")
-[void]$mdLines.Add("4. ``smart-fuzzer/runs/*/rollup.json`` (array_rollup schema)")
+[void]$mdLines.Add("4. ``smart-fuzzer/runs/*/rollup.json`` (array_rollup schema) plus broad_scalar comparisons for ``scalar_swept_only`` coverage")
 [void]$mdLines.Add("")
 [void]$mdLines.Add("## Tally")
 [void]$mdLines.Add("")
 [void]$mdLines.Add("| Status | Count | Meaning |")
 [void]$mdLines.Add("| --- | ---: | --- |")
-$statusOrder = @("deferred","structural_bug_open","numeric_drift_open","mixed_or_open","bit_exact_observed","unswept")
+$statusOrder = @("deferred","structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","bit_exact_observed","scalar_swept_only","unswept")
 $statusMeaning = @{
     "deferred"            = "in W050; not part of the 517 in-scope rows"
     "structural_bug_open" = "open BUG-FUNC stream with structural severity (kind/error/shape/array-lift)"
     "numeric_drift_open"  = "open BUG-FUNC stream with numeric drift severity (1 or >1 ULP)"
-    "mixed_or_open"       = "covered by runs and produced non-match rows but no linked stream"
+    "mixed_or_open"       = "genuine non-match rows in the latest run, no linked stream — needs triage"
+    "harness_blocked"     = "latest run only harness-blocked / generator-invalid — needs a better probe, not a function bug"
     "bit_exact_observed"  = "covered by ≥1 array_rollup run and never produced a non-match row"
-    "unswept"             = "never observed in an array_rollup run and no open stream targets it"
+    "scalar_swept_only"   = "swept only by the broad-scalar numeric runner; structural axes still unswept"
+    "unswept"             = "never observed in any run and no open stream targets it"
 }
 foreach ($k in $statusOrder) {
     $count = if ($tally.ContainsKey($k)) { $tally[$k] } else { 0 }
@@ -334,12 +404,12 @@ foreach ($k in $statusOrder) {
 [void]$mdLines.Add("")
 [void]$mdLines.Add("1. ``bit_exact_observed`` is **not** a closure claim. It only means that across the sampled invocation rows in array_rollup runs, no non-match was seen. Unswept axes (locale, alternate version, broader array, edge values not in the manifest seeds) remain unexplored on those surfaces.")
 [void]$mdLines.Add("2. The stream→surface mapping is curated from the open BUG-FUNC stream titles and W097 records. Broad streams like BUG-FUNC-021 (statistical) and BUG-FUNC-027 (broad scalar) list explicit witness families; non-listed surfaces that share a kernel family may still be affected.")
-[void]$mdLines.Add("3. Run-BroadScalarExploration cycles (broad_scalar_run_rollup schema) are not summarized here — per-function detail lives in their comparisons.jsonl and failure_packets/. Their findings flow into the bug-stream column instead.")
+[void]$mdLines.Add("3. ``scalar_swept_only`` means the broad-scalar numeric runner exercised the surface but the structural axes (array / error / blank / coercion via the array-tranche runner) have not. It is coverage, not closure. Broad-scalar non-match findings flow into the bug-stream column (BUG-FUNC-027) rather than the per-surface status.")
 [void]$mdLines.Add("4. The status uses the CHARTER §4.1 severity vocabulary. A ``numeric_drift_open`` surface is still a bug — ``excel_imprecision_witness`` rows remain in the numeric-drift bug count, not outside it.")
 [void]$mdLines.Add("")
 
 # Per-status detail (compact).
-foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","unswept","bit_exact_observed","deferred")) {
+foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","unswept","scalar_swept_only","bit_exact_observed","deferred")) {
     $list = @($rows | Where-Object { $_.status -eq $k } | Sort-Object canonical_surface_name)
     [void]$mdLines.Add("## $k ($($list.Count))")
     [void]$mdLines.Add("")
@@ -348,7 +418,7 @@ foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","uns
         [void]$mdLines.Add("")
         continue
     }
-    if ($k -eq "bit_exact_observed" -or $k -eq "unswept" -or $k -eq "deferred") {
+    if ($k -eq "bit_exact_observed" -or $k -eq "unswept" -or $k -eq "scalar_swept_only" -or $k -eq "harness_blocked" -or $k -eq "deferred") {
         # Compact comma-separated list.
         $names = ($list | ForEach-Object { $_.canonical_surface_name })
         [void]$mdLines.Add(($names -join ", "))
