@@ -3,7 +3,7 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-029`
 - **Opened**: `2026-05-28`
-- **Status**: `open`
+- **Status**: `fixed` (2026-05-28)
 - **Owner workset**: `W074` (operator broadcast/semantics family)
 
 ## Source Refs
@@ -46,14 +46,22 @@ The other `14` scalar/value operators (`OP_ADD`, `OP_SUBTRACT`,
 broadcast, error, text-coercion, and logical probes.
 
 ## Fix
-Not yet fixed. Repair direction: make `OP_UNARY_PLUS` return the operand
-unchanged (identity) for text and logical operands (and arrays thereof),
-matching Excel; keep numeric operands unchanged. Confirm number, error,
-blank, and array operands are unaffected.
+Fixed. `eval_op_unary_plus_surface` no longer routes through the coercing
+`eval_unary_numeric_surface`; it is now a dedicated type-preserving identity:
+text→text, logical→logical, number→underflow-normalized number, error
+propagated, blank/empty→0, arrays mapped elementwise with the same rules.
+`crates/oxfunc_core/src/functions/operator_arithmetic_family.rs`. Operand
+semantics across number/text/logical/error/array/blank were first measured
+empirically against Excel (`unary-plus-operand-001`) before coding.
 
 ## Validation
-Pending repair. Re-run `operator-structural-sweep-001` and show
-`OP_UNARY_PLUS` rows moving to `exact_typed_bit_match`.
+- Rust unit tests `unary_plus_is_type_preserving_identity` and
+  `unary_plus_maps_arrays_elementwise_preserving_type` (and the retained
+  `negate_follows_numeric_coercion`); full `oxfunc_core` lib suite green
+  (`1314 passed`).
+- Excel differential: re-ran `operator-structural-sweep-002` — **99/99
+  `exact_typed_bit_match`**; the two prior `OP_UNARY_PLUS` mismatches now
+  match (`=+"2"`→`text:2`, `=+TRUE`→`logical:TRUE`).
 
 ## Similar-Risk Scan
 - `OP_NEGATE` and `OP_PERCENT` were checked in the same run and match —
@@ -69,9 +77,9 @@ Pending repair. Re-run `operator-structural-sweep-001` and show
 3. ignored run artifacts under `smart-fuzzer/runs/operator-structural-sweep-001/`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
-- [ ] similar-risk scan recorded
+- [x] fix landed or non-OxFunc ownership recorded
+- [x] validation recorded
+- [x] root cause recorded
+- [x] similar-risk scan recorded
 - [ ] spec/matrix/contract updated if required
 - [ ] handoff filed if required

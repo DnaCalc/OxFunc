@@ -1,6 +1,6 @@
 # OxFunc Function Status Map
 
-Generated: 2026-05-28T20:22:06.2954090Z
+Generated: 2026-05-28T21:01:31.0551801Z
 
 This map is the reproducible derived view of where each of the published OxFunc surfaces stands against the bit-exact Excel parity goal (CHARTER.md §4.1). Rebuild with `smart-fuzzer/tools/Build-FunctionStatusMap.ps1`.
 
@@ -16,13 +16,13 @@ Inputs joined:
 | Status | Count | Meaning |
 | --- | ---: | --- |
 | `deferred` | 17 | in W050; not part of the 517 in-scope rows |
-| `structural_bug_open` | 87 | open BUG-FUNC stream with structural severity (kind/error/shape/array-lift) |
+| `structural_bug_open` | 86 | open BUG-FUNC stream with structural severity (kind/error/shape/array-lift) |
 | `numeric_drift_open` | 77 | open BUG-FUNC stream with numeric drift severity (1 or >1 ULP) |
 | `mixed_or_open` | 28 | genuine non-match rows in the latest run, no linked stream — needs triage |
 | `harness_blocked` | 0 | latest run only harness-blocked / generator-invalid — needs a better probe, not a function bug |
 | `harness_pending` | 18 | poked, but needs a richer/different harness to judge honestly (reference-identity/host context, or statistical RAND harness) — not a bug |
 | `excluded` | 20 | deliberately not value-comparable and not planned for a harness (volatile clock / host / locale / callable) |
-| `bit_exact_observed` | 287 | covered by ≥1 array_rollup run and never produced a non-match row |
+| `bit_exact_observed` | 288 | covered by ≥1 array_rollup run and never produced a non-match row |
 | `scalar_swept_only` | 0 | swept only by the broad-scalar numeric runner; structural axes still unswept |
 | `unswept` | 0 | never observed in any run and no open stream targets it |
 | **total** | 534 | published snapshot rows |
@@ -34,12 +34,11 @@ Inputs joined:
 3. `scalar_swept_only` means the broad-scalar numeric runner exercised the surface but the structural axes (array / error / blank / coercion via the array-tranche runner) have not. It is coverage, not closure. Broad-scalar non-match findings flow into the bug-stream column (BUG-FUNC-027) rather than the per-surface status.
 4. The status uses the CHARTER §4.1 severity vocabulary. A `numeric_drift_open` surface is still a bug — `excel_imprecision_witness` rows remain in the numeric-drift bug count, not outside it.
 
-## structural_bug_open (87)
+## structural_bug_open (86)
 
 | Surface | Streams | Runs seen | Last seen |
 | --- | --- | ---: | --- |
 | `ADDRESS` | BUG-FUNC-018(structural/validated_local/oxfunc) | 27 | 05/04/2026 |
-| `ODDFPRICE` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `OCT2DEC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `NUMBERVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `NOT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
@@ -47,8 +46,8 @@ Inputs joined:
 | `NETWORKDAYS.INTL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `NETWORKDAYS` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `MULTINOMIAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ODDFYIELD` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `MINIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
+| `MAXIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `LOG` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `LCM` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `ISTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
@@ -57,11 +56,10 @@ Inputs joined:
 | `ISNONTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `ISLOGICAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `ISEVEN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `MAXIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `ISERR` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `ODDFPRICE` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
+| `ODDFYIELD` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `QUOTIENT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `SQRTPI` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `YIELD` | BUG-FUNC-031(structural/open/oxfunc) | 3 | 05/28/2026 |
+| `ROMAN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `YEARFRAC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `WORKDAY.INTL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `WORKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
@@ -69,9 +67,9 @@ Inputs joined:
 | `WEEKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `VALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `UNICODE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ROMAN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `TIMEVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TBILLYIELD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `ISERR` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `TEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `TBILLPRICE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `TBILLEQ` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `TAKE` | BUG-FUNC-026(structural/handed_off/seam) | 34 | 05/09/2026 |
@@ -79,9 +77,10 @@ Inputs joined:
 | `SUMIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `SUMIF` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `STANDARDIZE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `OP_UNARY_PLUS` | BUG-FUNC-029(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `SQRTPI` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `TBILLYIELD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `INDEX` | BUG-FUNC-003(structural/handed_off/seam) | 0 |  |
+| `IFS` | BUG-FUNC-018(structural/validated_local/oxfunc) | 29 | 05/04/2026 |
 | `GESTEP` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `DECIMAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `DCOUNTA` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
@@ -102,7 +101,7 @@ Inputs joined:
 | `AREAS` | BUG-FUNC-003(structural/handed_off/seam) | 7 | 05/09/2026 |
 | `ARABIC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
 | `CLEAN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `IFS` | BUG-FUNC-018(structural/validated_local/oxfunc) | 29 | 05/04/2026 |
+| `YIELD` | BUG-FUNC-031(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `DGET` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DMIN` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `GCD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
@@ -301,9 +300,9 @@ _(none)_
 
 _(none)_
 
-## bit_exact_observed (287)
+## bit_exact_observed (288)
 
-ABS, RANK.EQ, RANK.AVG, RANK, RADIANS, QUARTILE, PV, RECEIVED, PROPER, PROB, PRICEMAT, PRICEDISC, PRICE, POISSON.DIST, POISSON, PRODUCT, PI, REGEXEXTRACT, REGEXTEST, SERIESSUM, SEQUENCE, SECOND, SEARCH, SEARCHB, RSQ, RRI, REGEXREPLACE, ROWS, ROUNDUP, ROUNDDOWN, ROUND, RIGHT, RIGHTB, REPT, REPLACE, REPLACEB, ROW, SIGN, PERMUT, PERCENTILE, MODE, MMULT, MIRR, MINUTE, MINA, MIN, MODE.MULT, MID, MIDB, MDURATION, MDETERM, MAXA, MAX, MATCH, LOWER, MEDIAN, PERCENTOF, MODE.SNGL, MUNIT, PEARSON, PDURATION, OR, ODDLYIELD, ODDLPRICE, ODD, MONTH, OCT2HEX, NORMINV, NORM.INV, NORM.DIST, NOMINAL, NA, N, OCT2BIN, LOOKUP, SLN, SMALL, WRAPCOLS, WEIBULL.DIST, WEIBULL, VSTACK, VLOOKUP, VDB, WRAPROWS, VARPA, VARA, VAR.S, VAR.P, VAR, VALUETOTEXT, UPPER, VARP, UNIQUE, XIRR, XOR, OP_PERCENT, OP_NOT_EQUAL, OP_NEGATE, OP_MULTIPLY, OP_LESS_THAN, OP_LESS_EQUAL, XMATCH, OP_GREATER_THAN, OP_EQUAL, OP_DIVIDE, OP_CONCAT, OP_ADD, ZTEST, YEAR, OP_GREATER_EQUAL, SLOPE, UNICHAR, TTEST, SUMSQ, SUMPRODUCT, SUM, SUBSTITUTE, STEYX, STDEVPA, SUMX2MY2, STDEVP, STDEV.S, STDEV.P, STDEV, SQRT, SORTBY, SORT, STDEVA, TYPE, SUMX2PY2, SYD, TRUNC, TRUE, TRIMMEAN, TRIM, TRANSPOSE, TOROW, SUMXMY2, TOCOL, TEXTSPLIT, TEXTJOIN, TEXTBEFORE, TEXTAFTER, T.TEST, T, TIME, OP_POWER, LOGNORMDIST, LOGNORM.DIST, COVARIANCE.P, COVAR, COUPPCD, COUPNUM, COUPNCD, COUPDAYSNC, COVARIANCE.S, COUPDAYS, COUNTBLANK, COUNTA, COUNT, CORREL, CONCATENATE, CONCAT, COUPDAYBS, COLUMNS, CRITBINOM, DATE, DURATION, DROP, DISC, DEVSQ, DEGREES, DEC2OCT, CUMIPMT, DEC2HEX, DDB, DB, DAYS360, DAYS, DAY, DATEDIF, DEC2BIN, EDATE, COLUMN, CHOOSEROWS, BESSELJ, BESSELI, BASE, AVERAGEA, AVERAGE, AVEDEV, BESSELK, ATAN, ASIN, AND, AMORLINC, AMORDEGRC, ACOS, ACCRINTM, ASINH, CODE, BIN2DEC, BINOM.DIST, CHOOSECOLS, CHOOSE, CHAR, CELL, CEILING.PRECISE, CEILING.MATH, BIN2HEX, CEILING, BITRSHIFT, BITOR, BITLSHIFT, BITAND, BINOM.INV, BINOM.DIST.RANGE, BITXOR, LOGNORM.INV, EFFECT, EVEN, IMSUB, IMSQRT, IMSINH, IMSIN, IMSECH, IMSEC, IMSUM, IMREAL, IMPOWER, IMLOG2, IMLOG10, IMLN, IMEXP, IMDIV, IMPRODUCT, IMCSCH, IMTAN, INTERCEPT, LOGINV, LOG10, LN, LEN, LENB, LEFT, LEFTB, LARGE, INT, ISREF, ISO.CEILING, ISNUMBER, ISNA, ISERROR, ISBLANK, INTRATE, ISPMT, ERROR.TYPE, IMCSC, IMCOSH, FREQUENCY, FLOOR.PRECISE, FLOOR.MATH, FLOOR, FISHER, FIND, FINDB, FV, FILTER, FACT, EXPONDIST, EXPON.DIST, EXPAND, EXP, EXACT, FALSE, IMCOT, FVSCHEDULE, HARMEAN, IMCOS, IMCONJUGATE, IMARGUMENT, IMAGINARY, IMABS, IFNA, GEOMEAN, IFERROR, HSTACK, HOUR, HLOOKUP, HEX2OCT, HEX2DEC, HEX2BIN, IF, OP_SUBTRACT
+ABS, RECEIVED, RANK.EQ, RANK.AVG, RANK, RADIANS, QUARTILE, REGEXEXTRACT, PV, PRODUCT, PROB, PRICEMAT, PRICEDISC, PRICE, POISSON.DIST, PROPER, POISSON, REGEXREPLACE, REPLACE, REPLACEB, SIGN, SERIESSUM, SEQUENCE, SECOND, SEARCH, SEARCHB, RSQ, REGEXTEST, RRI, ROW, ROUNDUP, ROUNDDOWN, ROUND, RIGHT, RIGHTB, REPT, ROWS, SLN, PI, PERCENTOF, MODE.MULT, MODE, MMULT, MIRR, MINUTE, MINA, MODE.SNGL, MIN, MEDIAN, MDURATION, MDETERM, MAXA, MAX, MATCH, MID, MIDB, PERMUT, MONTH, N, PERCENTILE, PEARSON, PDURATION, OR, ODDLYIELD, ODDLPRICE, MUNIT, ODD, OCT2BIN, NORMINV, NORM.INV, NORM.DIST, NOMINAL, NA, OCT2HEX, LOWER, SLOPE, SORT, WRAPROWS, WRAPCOLS, WEIBULL.DIST, WEIBULL, VSTACK, VLOOKUP, XIRR, VDB, VARP, VARA, VAR.S, VAR.P, VAR, VALUETOTEXT, VARPA, UPPER, XMATCH, YEAR, OP_POWER, OP_PERCENT, OP_NOT_EQUAL, OP_NEGATE, OP_MULTIPLY, OP_LESS_THAN, XOR, OP_LESS_EQUAL, OP_GREATER_EQUAL, OP_EQUAL, OP_DIVIDE, OP_CONCAT, OP_ADD, ZTEST, OP_GREATER_THAN, SMALL, UNIQUE, TYPE, SUMX2MY2, SUMSQ, SUMPRODUCT, SUM, SUBSTITUTE, STEYX, SUMX2PY2, STDEVPA, STDEVA, STDEV.S, STDEV.P, STDEV, SQRT, SORTBY, STDEVP, UNICHAR, SUMXMY2, T, TTEST, TRUNC, TRUE, TRIMMEAN, TRIM, TRANSPOSE, SYD, TOROW, TIME, TEXTSPLIT, TEXTJOIN, TEXTBEFORE, TEXTAFTER, T.TEST, TOCOL, LOOKUP, LOGNORMDIST, LOGNORM.INV, COVARIANCE.P, COVAR, COUPPCD, COUPNUM, COUPNCD, COUPDAYSNC, COVARIANCE.S, COUPDAYS, COUNTBLANK, COUNTA, COUNT, CORREL, CONCATENATE, CONCAT, COUPDAYBS, COLUMNS, CRITBINOM, DATE, DURATION, DROP, DISC, DEVSQ, DEGREES, DEC2OCT, CUMIPMT, DEC2HEX, DDB, DB, DAYS360, DAYS, DAY, DATEDIF, DEC2BIN, EDATE, COLUMN, CHOOSEROWS, BESSELJ, BESSELI, BASE, AVERAGEA, AVERAGE, AVEDEV, BESSELK, ATAN, ASIN, AND, AMORLINC, AMORDEGRC, ACOS, ACCRINTM, ASINH, CODE, BIN2DEC, BINOM.DIST, CHOOSECOLS, CHOOSE, CHAR, CELL, CEILING.PRECISE, CEILING.MATH, BIN2HEX, CEILING, BITRSHIFT, BITOR, BITLSHIFT, BITAND, BINOM.INV, BINOM.DIST.RANGE, BITXOR, EFFECT, ERROR.TYPE, EVEN, IMSUM, IMSUB, IMSQRT, IMSINH, IMSIN, IMSECH, IMTAN, IMSEC, IMPRODUCT, IMPOWER, IMLOG2, IMLOG10, IMLN, IMEXP, IMREAL, IMDIV, INT, INTRATE, LOGNORM.DIST, LOGINV, LOG10, LN, LEN, LENB, LEFT, LEFTB, INTERCEPT, LARGE, ISPMT, ISO.CEILING, ISNUMBER, ISNA, ISERROR, ISBLANK, ISREF, IMCSCH, IMCSC, IMCOT, FREQUENCY, FLOOR.PRECISE, FLOOR.MATH, FLOOR, FISHER, FIND, FINDB, FV, FILTER, FACT, EXPONDIST, EXPON.DIST, EXPAND, EXP, EXACT, FALSE, FVSCHEDULE, GEOMEAN, HARMEAN, IMCOSH, IMCOS, IMCONJUGATE, IMARGUMENT, IMAGINARY, IMABS, IFNA, IFERROR, IF, HSTACK, HOUR, HLOOKUP, HEX2OCT, HEX2DEC, HEX2BIN, OP_SUBTRACT, OP_UNARY_PLUS
 
 ## deferred (17)
 

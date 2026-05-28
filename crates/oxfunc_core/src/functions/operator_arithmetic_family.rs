@@ -5,13 +5,14 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
+use crate::functions::adapters::{PreparedArgValue, expand_arg_values_only, prepare_arg_values_only};
 use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::functions::power_fn::power_kernel;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const OP_UNARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_UNARY_NUMERIC_BASE",
@@ -104,11 +105,69 @@ pub fn op_divide_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
     }
 }
 
+/// Excel's unary plus (`+x`) is a type-preserving identity, NOT a numeric
+/// coercion (unlike unary minus). `+"2"` stays text `"2"`, `+TRUE` stays
+/// logical `TRUE`, arrays are mapped elementwise unchanged. The only
+/// adjustments are: a blank/empty operand becomes `0`, and numeric values
+/// get Excel's underflow-to-zero normalization. Empirically confirmed against
+/// Excel `16.0` across number/text/logical/error/array/blank operands
+/// (BUG-FUNC-029; run `unary-plus-operand-001`).
 pub fn eval_op_unary_plus_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, op_unary_plus_kernel)
+    if args.len() != 1 {
+        return Err(UnaryNumericSurfaceError::ArityMismatch {
+            expected: 1,
+            actual: args.len(),
+        });
+    }
+    let prepared =
+        prepare_arg_values_only(&args[0], resolver).map_err(UnaryNumericSurfaceError::Coercion)?;
+    match prepared {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = expand_arg_values_only(&args[0], resolver)
+                .map_err(UnaryNumericSurfaceError::Coercion)?
+                .into_iter()
+                .map(unary_plus_identity_cell)
+                .collect::<Vec<_>>();
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells).expect("shape preserved"),
+            ))
+        }
+        other => unary_plus_identity_scalar(other),
+    }
+}
+
+/// Identity map for a scalar unary-plus operand (blank -> 0, number -> underflow-normalized).
+fn unary_plus_identity_scalar(
+    prepared: PreparedArgValue,
+) -> Result<EvalValue, UnaryNumericSurfaceError> {
+    match prepared {
+        PreparedArgValue::Eval(EvalValue::Number(n)) => {
+            Ok(EvalValue::Number(excel_underflow_to_zero(n)))
+        }
+        PreparedArgValue::Eval(value @ (EvalValue::Text(_) | EvalValue::Logical(_))) => Ok(value),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => Ok(EvalValue::Error(code)),
+        PreparedArgValue::EmptyCell => Ok(EvalValue::Number(0.0)),
+        // Reference / Lambda / Array(unreachable here) / MissingArg are not
+        // valid scalar unary-plus operands -> #VALUE!.
+        _ => Err(UnaryNumericSurfaceError::Domain(WorksheetErrorCode::Value)),
+    }
+}
+
+/// Identity map for one array cell under unary plus.
+fn unary_plus_identity_cell(item: PreparedArgValue) -> ArrayCellValue {
+    match item {
+        PreparedArgValue::Eval(EvalValue::Number(n)) => {
+            ArrayCellValue::Number(excel_underflow_to_zero(n))
+        }
+        PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t),
+        PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(b),
+        PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(code),
+        PreparedArgValue::EmptyCell => ArrayCellValue::Number(0.0),
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    }
 }
 
 pub fn eval_op_negate_surface(
@@ -189,15 +248,77 @@ mod tests {
     }
 
     #[test]
-    fn unary_plus_and_negate_follow_numeric_coercion() {
+    fn negate_follows_numeric_coercion() {
+        // Unary minus DOES coerce (unlike unary plus).
         assert_eq!(
-            eval_op_unary_plus_surface(&[CallArgValue::Eval(txt("2"))], &NoResolver),
-            Ok(EvalValue::Number(2.0))
+            eval_op_negate_surface(&[CallArgValue::Eval(txt("2"))], &NoResolver),
+            Ok(EvalValue::Number(-2.0))
         );
         assert_eq!(
             eval_op_negate_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &NoResolver),
             Ok(EvalValue::Number(-1.0))
         );
+    }
+
+    #[test]
+    fn unary_plus_is_type_preserving_identity() {
+        // BUG-FUNC-029: +x preserves type (text stays text, logical stays logical),
+        // matching Excel; it must NOT coerce to number.
+        assert_eq!(
+            eval_op_unary_plus_surface(&[CallArgValue::Eval(txt("2"))], &NoResolver),
+            Ok(txt("2"))
+        );
+        assert_eq!(
+            eval_op_unary_plus_surface(
+                &[CallArgValue::Eval(EvalValue::Logical(true))],
+                &NoResolver
+            ),
+            Ok(EvalValue::Logical(true))
+        );
+        // number is unchanged; error propagates; blank -> 0.
+        assert_eq!(
+            eval_op_unary_plus_surface(&[CallArgValue::Eval(EvalValue::Number(2.0))], &NoResolver),
+            Ok(EvalValue::Number(2.0))
+        );
+        assert_eq!(
+            eval_op_unary_plus_surface(
+                &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))],
+                &NoResolver
+            ),
+            Ok(EvalValue::Error(WorksheetErrorCode::NA))
+        );
+        assert_eq!(
+            eval_op_unary_plus_surface(&[CallArgValue::EmptyCell], &NoResolver),
+            Ok(EvalValue::Number(0.0))
+        );
+    }
+
+    #[test]
+    fn unary_plus_maps_arrays_elementwise_preserving_type() {
+        let got = eval_op_unary_plus_surface(
+            &[CallArgValue::Eval(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                        "a".encode_utf16().collect(),
+                    )),
+                    ArrayCellValue::Logical(true),
+                ]])
+                .unwrap(),
+            ))],
+            &NoResolver,
+        );
+        let expected = EvalValue::Array(
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Number(1.0),
+                ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                    "a".encode_utf16().collect(),
+                )),
+                ArrayCellValue::Logical(true),
+            ]])
+            .unwrap(),
+        );
+        assert_eq!(got, Ok(expected));
     }
 
     #[test]
