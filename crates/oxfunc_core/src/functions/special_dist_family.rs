@@ -327,13 +327,35 @@ pub fn weibull_kernel(
     weibull_dist_kernel(x, alpha, beta, cumulative)
 }
 
+/// Coerce an operand to a number, optionally rejecting a logical operand with
+/// `#VALUE!`. The ERF/ERFC family rejects logical operands (Excel returns
+/// `#VALUE!` for `=ERF(TRUE)`) while still accepting numeric text; the
+/// GAMMA/GAMMALN family accepts logicals (e.g. `=GAMMALN.PRECISE(TRUE)` -> 0).
+/// Confirmed empirically against Excel `16.0` (BUG-FUNC scalar-swept sweep).
+fn coerce_operand_with_logical_policy(
+    arg: &PreparedArgValue,
+    reject_logical: bool,
+) -> Result<f64, CoercionError> {
+    if reject_logical {
+        if let PreparedArgValue::Eval(EvalValue::Logical(_)) = arg {
+            return Err(CoercionError::WorksheetError(WorksheetErrorCode::Value));
+        }
+    }
+    coerce_prepared_to_number(arg)
+}
+
 fn eval_erf_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SpecialDistEvalError> {
     if !ERF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ERF_META, args.len()));
     }
-    let lower = coerce_prepared_to_number(&args[0]).map_err(SpecialDistEvalError::Coercion)?;
+    // ERF rejects a logical operand (Excel #VALUE!); numeric text is accepted.
+    let lower = coerce_operand_with_logical_policy(&args[0], true)
+        .map_err(SpecialDistEvalError::Coercion)?;
     let upper = if args.len() > 1 {
-        Some(coerce_prepared_to_number(&args[1]).map_err(SpecialDistEvalError::Coercion)?)
+        Some(
+            coerce_operand_with_logical_policy(&args[1], true)
+                .map_err(SpecialDistEvalError::Coercion)?,
+        )
     } else {
         None
     };
@@ -347,11 +369,13 @@ fn eval_unary_prepared(
     args: &[PreparedArgValue],
     meta: &FunctionMeta,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
+    reject_logical: bool,
 ) -> Result<EvalValue, SpecialDistEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
-    let x = coerce_prepared_to_number(&args[0]).map_err(SpecialDistEvalError::Coercion)?;
+    let x = coerce_operand_with_logical_policy(&args[0], reject_logical)
+        .map_err(SpecialDistEvalError::Coercion)?;
     Ok(match kernel(x) {
         Ok(value) => EvalValue::Number(value),
         Err(code) => EvalValue::Error(code),
@@ -397,7 +421,7 @@ pub fn eval_erf_precise_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &ERF_PRECISE_META, erf_precise_kernel),
+        |prepared| eval_unary_prepared(prepared, &ERF_PRECISE_META, erf_precise_kernel, true),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -409,7 +433,7 @@ pub fn eval_erfc_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &ERFC_META, erfc_kernel),
+        |prepared| eval_unary_prepared(prepared, &ERFC_META, erfc_kernel, true),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -421,7 +445,7 @@ pub fn eval_erfc_precise_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &ERFC_PRECISE_META, erfc_precise_kernel),
+        |prepared| eval_unary_prepared(prepared, &ERFC_PRECISE_META, erfc_precise_kernel, true),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -433,7 +457,7 @@ pub fn eval_gamma_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &GAMMA_META, gamma_kernel),
+        |prepared| eval_unary_prepared(prepared, &GAMMA_META, gamma_kernel, false),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -445,7 +469,7 @@ pub fn eval_gammaln_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &GAMMALN_META, gammaln_kernel),
+        |prepared| eval_unary_prepared(prepared, &GAMMALN_META, gammaln_kernel, false),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -457,7 +481,7 @@ pub fn eval_gammaln_precise_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &GAMMALN_PRECISE_META, gammaln_precise_kernel),
+        |prepared| eval_unary_prepared(prepared, &GAMMALN_PRECISE_META, gammaln_precise_kernel, false),
         SpecialDistEvalError::Coercion,
     )
 }
@@ -498,7 +522,7 @@ pub fn map_special_dist_error_to_ws(error: &SpecialDistEvalError) -> WorksheetEr
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::value::{ExcelText, ReferenceLike};
 
     struct NoResolver;
 
@@ -538,6 +562,41 @@ mod tests {
     #[test]
     fn erfc_one_matches_excel_exact_bits() {
         assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
+    }
+
+    #[test]
+    fn erf_family_rejects_logical_but_gamma_family_accepts_it() {
+        let r = NoResolver;
+        let lgl = || CallArgValue::Eval(EvalValue::Logical(true));
+        // ERF/ERFC family: logical operand -> #VALUE! (Excel behavior). The
+        // coercion rejection surfaces on the Err channel, which dispatch maps
+        // to #VALUE!.
+        let value_err = Err(SpecialDistEvalError::Coercion(
+            CoercionError::WorksheetError(WorksheetErrorCode::Value),
+        ));
+        for got in [
+            eval_erf_surface(&[lgl()], &r),
+            eval_erf_precise_surface(&[lgl()], &r),
+            eval_erfc_surface(&[lgl()], &r),
+            eval_erfc_precise_surface(&[lgl()], &r),
+        ] {
+            assert_eq!(got, value_err);
+        }
+        // GAMMA/GAMMALN family: logical accepted (TRUE -> 1) and computed.
+        // GAMMALN.PRECISE(TRUE)=GAMMALN(1)≈0 (exact-0 vs near-0 numeric drift is
+        // a separate finding; here we only assert the operand is accepted).
+        match eval_gammaln_precise_surface(&[lgl()], &r) {
+            Ok(EvalValue::Number(n)) => assert!(n.abs() < 1.0e-9, "gammaln.precise(TRUE) ~ 0, got {n}"),
+            other => panic!("expected gammaln.precise(TRUE) to accept logical, got {other:?}"),
+        }
+        // ERF still accepts numeric text (only logical is rejected).
+        let txt2 = CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            "2".encode_utf16().collect(),
+        )));
+        assert_eq!(
+            eval_erf_surface(&[txt2], &r),
+            Ok(EvalValue::Number(erf_approx(2.0)))
+        );
     }
 
     #[test]
@@ -872,3 +931,4 @@ mod tests {
         );
     }
 }
+

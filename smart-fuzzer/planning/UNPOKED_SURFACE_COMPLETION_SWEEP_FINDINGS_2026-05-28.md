@@ -84,6 +84,12 @@ cluster: both sides accept the logical, so it is numeric drift only (§2.3).
 Recorded as a candidate new cluster; needs its own stream decision on
 triage (do not silently fold into BUG-FUNC-028).
 
+**Fixed (2026-05-28) → BUG-FUNC-033.** ERF/ERF.PRECISE/ERFC/ERFC.PRECISE now
+reject a logical operand (`#VALUE!`) via a `reject_logical` coercion policy in
+`special_dist_family.rs`, scoped so the GAMMA/GAMMALN family still accepts
+logicals. Verified `erf-logical-recheck-001` (all four logical probes →
+`error:Value`) + lib suite `1315 passed`. Bead `oxf-83e5` closed.
+
 ### 2.3 ERFC/ERFC.PRECISE >1 ULP numeric drift (new numeric finding)
 
 | Formula | OxFunc local | Excel | Δ |

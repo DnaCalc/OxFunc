@@ -58,7 +58,13 @@ if ([string]::IsNullOrWhiteSpace($OutputPath)) {
 
 $statusRows = Import-Csv -LiteralPath $StatusMapCsv
 $onlySet = New-Object 'System.Collections.Generic.HashSet[string]'
-foreach ($o in $OnlySurfaces) { if (-not [string]::IsNullOrWhiteSpace($o)) { [void]$onlySet.Add($o.Trim()) } }
+# Split on commas too: pwsh -File passes `-OnlySurfaces a,b,c` as a single
+# string, not a 3-element array, so accept both forms.
+foreach ($o in $OnlySurfaces) {
+    foreach ($name in ($o -split ',')) {
+        if (-not [string]::IsNullOrWhiteSpace($name)) { [void]$onlySet.Add($name.Trim()) }
+    }
+}
 $targetNames = New-Object 'System.Collections.Generic.HashSet[string]'
 foreach ($r in $statusRows) {
     $st = [string]$r.status
