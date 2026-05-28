@@ -135,3 +135,44 @@ Functions where the baseline probe is structurally wrong for the surface
    `structural_mismatch` (see §4.2).
 5. Re-run `Build-FunctionStatusMap.ps1` — the `137` swept surfaces move
    out of `unswept`.
+
+## 8. Second sweep (`unswept-structural-sweep-002`)
+
+Generator extended: multi-alias names split to the first alias
+(`"FIND, FINDB"` → `FIND`), full `arity.min` filled (was capped at 3,
+which produced under-arity calls), text-category functions get a text
+arg0, and empty-profile / empty-determinism surfaces are attempted
+(filtered by known-bad rather than required-good). RAND-family excluded.
+
+Run: `450` cases over `75` previously-skipped surfaces (bond / financial
+/ date / CONVERT / info-predicate / regression). Result: `76` match,
+`26` structural_mismatch, `348` harness_blocked.
+
+The high harness-blocked rate confirms that the complex multi-arg
+financial/bond functions (`ACCRINT`, `COUPDAYS`, `CONVERT`, …) cannot be
+tested with naive numeric fill — they need a typed-argument generator
+(valid date serials, basis codes, unit strings). They land in
+`harness_blocked`, flagged for that generator, not counted as bugs.
+
+New real findings (extend the BUG-FUNC-028 family unless noted):
+
+1. **Array-lift gap on info predicates and date-value functions.**
+   `ISERR`, `ISLOGICAL`, `ISNONTEXT`, `ISTEXT`, `ISODD`, `DATEVALUE`,
+   `TIMEVALUE` return a scalar where Excel spills an array over an array
+   argument (e.g. `=ISODD({2;3})` → local `#VALUE!`, Excel
+   `array 2x1 [FALSE|TRUE]`). Added to `BUG-FUNC-028`.
+2. **Error-propagation kind drift (`#VALUE!` vs `#N/A`).** New sub-class:
+   `=DATEVALUE(NA())`, `=TIMEVALUE(NA())` return local `#VALUE!` where
+   Excel propagates `#N/A`; `=ARRAYTOTEXT(NA())` returns local text
+   `"#N/A"` where Excel propagates the `#N/A` error. Recorded as a
+   `BUG-FUNC-028` sub-finding (error propagation, distinct from array-lift).
+3. **IRR scalar error-code drift.** `=IRR("")`, `=IRR("2")`, `=IRR(TRUE)`
+   return local `#VALUE!` where Excel returns `#NUM!`. Candidate;
+   needs its own confirmation (not folded into BUG-FUNC-028).
+4. **Regression family (`GROWTH`, `TREND`, `LINEST`, `LOGEST`).** Two
+   issues: (a) single-point degenerate input — `=GROWTH(2)`/`=TREND(2)`
+   return local `#NUM!` where Excel returns the value; (b) array inputs
+   match shape but drift a few ULP per cell. Candidate for a separate
+   regression-accuracy review, not BUG-FUNC-028.
+5. **RANDARRAY** leaked through (blank determinism); excluded going
+   forward. Not a bug — stochastic.

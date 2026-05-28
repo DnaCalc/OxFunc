@@ -78,6 +78,34 @@ coercion, a missing array-lift, or an unimplemented kernel path, and
 re-replay under `Run-ArraySupportTranche.ps1` before that surface is
 closed.
 
+### Second sweep additions (`unswept-structural-sweep-002`)
+Array-lift gap confirmed on info predicates and date-value functions:
+`ISERR`, `ISLOGICAL`, `ISNONTEXT`, `ISTEXT`, `ISODD`, `DATEVALUE`,
+`TIMEVALUE`. Example: `=ISODD({2;3})` → local `#VALUE!`, Excel
+`array 2x1 [FALSE|TRUE]`.
+
+### Sub-finding: error-propagation kind drift (`#VALUE!` vs `#N/A`)
+A distinct sub-class from the same sweep: some surfaces return local
+`#VALUE!` (or stringify the error) where Excel propagates the incoming
+error unchanged.
+
+| Formula | OxFunc local | Excel |
+| --- | --- | --- |
+| `=DATEVALUE(NA())` | `#VALUE!` | `#N/A` |
+| `=TIMEVALUE(NA())` | `#VALUE!` | `#N/A` |
+| `=ARRAYTOTEXT(NA())` | `text:#N/A` | `#N/A` |
+
+Repair direction: propagate the incoming worksheet error rather than
+re-classifying it to `#VALUE!` or stringifying it.
+
+### Out of this stream (separate candidates)
+- `IRR` scalar error-code drift (`#VALUE!` vs `#NUM!`).
+- Regression family `GROWTH` / `TREND` / `LINEST` / `LOGEST`
+  (single-point `#NUM!` vs value, plus per-cell ULP drift) — belongs to
+  a regression-accuracy review, not this array-lift/coercion stream.
+See `smart-fuzzer/planning/UNSWEPT_STRUCTURAL_SWEEP_FINDINGS_2026-05-28.md`
+§8 for the full sweep-002 triage.
+
 ## Fix
 Not yet fixed.
 

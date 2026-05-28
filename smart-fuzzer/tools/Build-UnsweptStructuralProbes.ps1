@@ -3,7 +3,7 @@ param(
     [string] $RepoRoot,
     [string] $StatusMapCsv,
     [string] $OutputPath,
-    [int]    $MaxArgsToFill = 3
+    [int]    $MaxArgsToFill = 10
 )
 
 # Synthesize structural-axis probe cases for the unswept value-taking
@@ -96,9 +96,12 @@ $baselineNumber = 2
 # ASC/DBCS are kept: they are genuine BUG-FUNC-028 coercion witnesses.
 $ExcludedSurfaces = New-Object 'System.Collections.Generic.HashSet[string]'
 @(
-    "LAMBDA","MAKEARRAY","BYROW","BYCOL","MAP","REDUCE","SCAN",
+    "LAMBDA","LET","MAKEARRAY","BYROW","BYCOL","MAP","REDUCE","SCAN",
     "GROUPBY","PIVOTBY","ISOMITTED",
-    "JIS","PHONETIC","HYPERLINK"
+    "JIS","PHONETIC","HYPERLINK",
+    # Stochastic surfaces with blank determinism metadata that slip past
+    # the determinism filter; they cannot bit-match Excel per-draw.
+    "RAND","RANDARRAY","RANDBETWEEN"
 ) | ForEach-Object { [void]$ExcludedSurfaces.Add($_) }
 
 $cases = New-Object 'System.Collections.Generic.List[object]'
@@ -120,34 +123,57 @@ foreach ($name in $sortedNames) {
     $vol = [string]$fs.volatility_class
     $entryKind = [string]$fs.entry_kind
     $category = [string]$surf.category
-    $functionId = [string]$surf.surface_id
+
+    # A canonical_surface_name may bundle aliases (e.g. "FIND, FINDB").
+    # Use the first alias as the Excel formula name and the local
+    # function id, so the formula is valid and dispatch resolves.
+    $bareName = ($name -split ',')[0].Trim()
+    $functionId = "FUNC.$bareName"
 
     if ($entryKind -ne "built_in_function") {
         $skipped.Add([ordered]@{ name = $name; reason = "not_a_function ($entryKind)" }) | Out-Null
         continue
     }
-    if ($ExcludedSurfaces.Contains($name)) {
+    if ($ExcludedSurfaces.Contains($name) -or $ExcludedSurfaces.Contains($bareName)) {
         $skipped.Add([ordered]@{ name = $name; reason = "excluded_lambda_locale_or_host" }) | Out-Null
         continue
     }
-    if ($prep -ne "ValuesOnlyPreAdapter") {
-        $skipped.Add([ordered]@{ name = $name; reason = "arg_prep_profile=$prep (needs ref-aware generator)" }) | Out-Null
+    # Reference-taking surfaces need a fixture-aware generator; skip here.
+    if ($prep -eq "RefsVisibleInAdapter") {
+        $skipped.Add([ordered]@{ name = $name; reason = "arg_prep_profile=RefsVisibleInAdapter (needs ref-aware generator)" }) | Out-Null
         continue
     }
-    if ($det -ne "Deterministic") {
+    # ValuesOnlyPreAdapter and empty/unknown profiles are attempted; an
+    # unknown profile that turns out to need references will surface as
+    # harness_blocked rather than a false bug.
+    #
+    # Determinism/volatility are filtered by KNOWN-bad rather than
+    # required-good, because many curated rows leave these fields blank.
+    # A blank (unknown) field is attempted; only explicitly stochastic /
+    # time / event / volatile surfaces are excluded (they cannot bit-match).
+    $nonDeterministic = @("PseudoRandom","TimeDependent","ExternalEventDependent")
+    if ($nonDeterministic -contains $det) {
         $skipped.Add([ordered]@{ name = $name; reason = "determinism=$det" }) | Out-Null
         continue
     }
-    if ($vol -ne "NonVolatile") {
+    if ($vol -eq "VolatileContextual" -or $vol -eq "Volatile") {
         $skipped.Add([ordered]@{ name = $name; reason = "volatility=$vol" }) | Out-Null
         continue
     }
 
     $arityMin = Get-ArityInt ([string]$surf.arity.min) 1
     $arityMax = Get-ArityInt ([string]$surf.arity.max) $arityMin
-    # Number of required positions to fill for a baseline call.
+    # Fill the full required arity (capped only to avoid pathological
+    # variadic blowups). Under-filling produced invalid Excel calls that
+    # the harness flagged as blocked rather than testing the function.
     $fill = [Math]::Max(0, $arityMin)
     if ($fill -gt $MaxArgsToFill) { $fill = $MaxArgsToFill }
+
+    # Type-aware baseline: text-category functions take a text first
+    # argument; everything else takes a short number. Later positions
+    # are short numbers (most are scalar/position-like).
+    $isTextCategory = ($category -eq "Text functions")
+    $baselineArg0 = if ($isTextCategory) { [ordered]@{ kind = "text"; value = "abc" } } else { New-NumberArg $baselineNumber }
 
     # Probe definitions: each replaces position 0 (when present) with a
     # structural stressor; baseline keeps the all-number vector.
@@ -164,12 +190,15 @@ foreach ($name in $sortedNames) {
     foreach ($probe in $probes) {
         $argVec = @()
         for ($i = 0; $i -lt $fill; $i++) {
-            if ($i -eq 0 -and $null -ne $probe.arg0) { $argVec += $probe.arg0 }
-            else { $argVec += (New-NumberArg $baselineNumber) }
+            if ($i -eq 0) {
+                if ($null -ne $probe.arg0) { $argVec += $probe.arg0 }
+                else { $argVec += $baselineArg0 }
+            } else {
+                $argVec += (New-NumberArg $baselineNumber)
+            }
         }
         $tokens = @()
         foreach ($a in $argVec) { $tokens += (New-ArgFormulaToken $a) }
-        $bareName = $name
         $formula = "=$bareName(" + ($tokens -join ",") + ")"
 
         $seq += 1
