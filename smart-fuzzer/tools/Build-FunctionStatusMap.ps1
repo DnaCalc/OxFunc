@@ -98,7 +98,8 @@ $StreamCoverage = @(
         "WORKDAY","WORKDAY.INTL","YEARFRAC",
         # sweep-002 additions: array-lift gap on info predicates + date-value
         "ISERR","ISLOGICAL","ISNONTEXT","ISTEXT","ISODD","DATEVALUE","TIMEVALUE","ARRAYTOTEXT"
-    ) }
+    ) },
+    @{ stream = "BUG-FUNC-029"; severity = "structural"; ownership = "oxfunc"; surfaces = @("OP_UNARY_PLUS") }
 )
 
 # --------------------------------------------------------------------------
