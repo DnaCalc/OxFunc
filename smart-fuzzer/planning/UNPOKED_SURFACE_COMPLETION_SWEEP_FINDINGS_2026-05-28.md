@@ -401,6 +401,16 @@ the recorded v1 follow-up. The three surfaces remain `harness_pending` in
 the status map (statistical, not bit-exact, by nature), now with the
 harness built.
 
+**RAND characterization study (2026-05-28).** Separately from the contract
+harness, a characterization exercise compared Excel `RAND()` against five
+candidate Rust RNGs (LCG, MT19937-res53, xorshift128+, splitmix64,
+Wichmann-Hill) over `N=50000` to ask whether a statistical battery can
+*distinguish* them. Result: only **output granularity** distinguishes a
+coarse 32-bit RNG from Excel; good 53-bit RNGs (incl. MT19937, Excel's
+documented family) are statistically indistinguishable from Excel on
+moments / uniformity / KS / autocorrelation. Full writeup:
+`RAND_CHARACTERIZATION_2026-05-28.md`.
+
 ## 10. Reference-sensitive functions — testing-ownership decision (2026-05-28)
 
 The 8 reference-identity / host-context functions (`XLOOKUP`, `OFFSET`,

@@ -34,3 +34,7 @@ path = "src/bin/stat_distribution_explorer.rs"
 [[bin]]
 name = "matrix_local_eval"
 path = "src/bin/matrix_local_eval.rs"
+
+[[bin]]
+name = "rand_characterize"
+path = "src/bin/rand_characterize.rs"
