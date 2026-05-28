@@ -97,7 +97,12 @@ $StreamCoverage = @(
         "STANDARDIZE","TBILLEQ","TBILLPRICE","TBILLYIELD","TEXT","UNICODE","VALUE","WEEKDAY","WEEKNUM",
         "WORKDAY","WORKDAY.INTL","YEARFRAC",
         # sweep-002 additions: array-lift gap on info predicates + date-value
-        "ISERR","ISLOGICAL","ISNONTEXT","ISTEXT","ISODD","DATEVALUE","TIMEVALUE","ARRAYTOTEXT"
+        "ISERR","ISLOGICAL","ISNONTEXT","ISTEXT","ISODD","DATEVALUE","TIMEVALUE","ARRAYTOTEXT",
+        # un-poked completion sweep tranche A: same array-lift gap on the
+        # engineering/statistical error-function family (scalar #VALUE! vs
+        # Excel elementwise spill). Logical-over-coercion + ERFC numeric drift
+        # tracked as separate clusters (see UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md §2.2/§2.3).
+        "ERF","ERF.PRECISE","ERFC","ERFC.PRECISE","GAMMALN.PRECISE"
     ) },
     @{ stream = "BUG-FUNC-029"; severity = "structural"; ownership = "oxfunc"; surfaces = @("OP_UNARY_PLUS") }
 )
@@ -117,6 +122,68 @@ $deferredRows = Import-Csv -LiteralPath $deferredPath
 $deferredSet = New-Object 'System.Collections.Generic.HashSet[string]'
 foreach ($r in $deferredRows) { [void]$deferredSet.Add([string]$r.entry_name) }
 Write-Host "Loaded W050 deferred: $($deferredSet.Count) rows"
+
+# --------------------------------------------------------------------------
+# Curated value-comparison status overlays (un-poked completion sweep,
+# 2026-05-28). Two categories that the run-observation logic would
+# otherwise mislabel as unswept / mixed_or_open:
+#
+#   excluded         — deliberately NOT value-comparable and NOT planned for
+#                      a harness (volatile clock, host/provider, locale,
+#                      callable/lambda form). Honest "known excluded", not
+#                      "unknown unswept".
+#   harness_pending  — poked, but the value-comparison harness cannot judge
+#                      them honestly; they need a richer / different harness
+#                      (reference-identity + host context, or the statistical
+#                      RAND harness). Tracked, not a bug.
+#
+# Rationale per surface is the status_reason. See
+# smart-fuzzer/planning/UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md.
+# --------------------------------------------------------------------------
+$ValueComparisonExcluded = [ordered]@{
+    "NOW"         = "volatile clock (TimeDependent); not bit-comparable per evaluation"
+    "TODAY"       = "volatile clock (TimeDependent)"
+    "IMAGE"       = "host: image / web resource"
+    "RTD"         = "host: real-time data provider"
+    "CALL"        = "host: external DLL call"
+    "REGISTER.ID" = "host: external DLL registration"
+    "BAHTTEXT"    = "locale-specific Thai baht text; deterministic but excluded per scope decision"
+    "INFO"        = "host / system environment state"
+    "INDIRECT"    = "reference-from-text; needs reference/host resolution"
+    "LAMBDA"      = "callable formation; needs a lambda fixture (W089 deferred)"
+    "LET"         = "special binding syntax; not a flat value-vector call"
+    "MAKEARRAY"   = "callable (lambda) argument"
+    "BYROW"       = "callable (lambda) argument"
+    "BYCOL"       = "callable (lambda) argument"
+    "MAP"         = "callable (lambda) argument"
+    "REDUCE"      = "callable (lambda) argument"
+    "SCAN"        = "callable (lambda) argument"
+    "GROUPBY"     = "callable / pivot aggregation form"
+    "PIVOTBY"     = "callable / pivot aggregation form"
+    "ISOMITTED"   = "only meaningful inside a LAMBDA"
+}
+$HarnessPending = [ordered]@{
+    # reference-identity / host-context (need a richer local harness — task #8)
+    "XLOOKUP"                  = "reference-identity local harness"
+    "OFFSET"                   = "reference-return local harness"
+    "SHEET"                    = "sheet-identity host context"
+    "SHEETS"                   = "workbook/sheet host context"
+    "FORMULATEXT"              = "cell formula metadata"
+    "ISFORMULA"                = "cell formula metadata"
+    "AGGREGATE"                = "AggregateReferenceContext host info"
+    "SUBTOTAL"                 = "AggregateReferenceContext host info"
+    "OP_RANGE_REF"             = "reference-materialisation"
+    "OP_INTERSECTION_REF"      = "reference-materialisation"
+    "OP_SPILL_REF"             = "spill-anchor host context"
+    "OP_IMPLICIT_INTERSECTION" = "formula-position host context"
+    "OP_TRIM_REF_LEADING"      = "newest range-trim syntax + spill context"
+    "OP_TRIM_REF_TRAILING"     = "newest range-trim syntax + spill context"
+    "OP_TRIM_REF_BOTH"         = "newest range-trim syntax + spill context"
+    # stochastic uniform-draw family (need the statistical-profile harness — Tranche E)
+    "RAND"                     = "statistical-profile harness (distribution, not bit-exact)"
+    "RANDARRAY"                = "statistical-profile harness"
+    "RANDBETWEEN"              = "statistical-profile harness (sibling of RAND family)"
+}
 
 # --------------------------------------------------------------------------
 # Load BUG-FUNC stream register and select non-closed streams.
@@ -258,17 +325,38 @@ foreach ($s in $snapshot) {
     $category = [string]$s.category
     $isDeferred = $deferredSet.Contains($name)
 
+    # A snapshot canonical_surface_name may bundle aliases ("FIND, FINDB").
+    # Probes / bug streams / runs key by a single (usually first) alias, so
+    # match coverage and overlays against ANY alias, not just the bundled
+    # string. Resolve the first alias that has an entry in each map.
+    $aliases = @($name -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" })
+    if ($aliases.Count -eq 0) { $aliases = @($name) }
+
     $bugInfo = $null
-    if ($bugBySurface.ContainsKey($name)) { $bugInfo = $bugBySurface[$name] }
+    foreach ($a in $aliases) { if ($bugBySurface.ContainsKey($a)) { $bugInfo = $bugBySurface[$a]; break } }
 
     $cov = $null
-    if ($coverage.ContainsKey($name)) { $cov = $coverage[$name] }
+    foreach ($a in $aliases) { if ($coverage.ContainsKey($a)) { $cov = $coverage[$a]; break } }
+
+    if (-not $isDeferred) { foreach ($a in $aliases) { if ($deferredSet.Contains($a)) { $isDeferred = $true; break } } }
+    $excludedReason = $null
+    foreach ($a in $aliases) { if ($ValueComparisonExcluded.Contains($a)) { $excludedReason = $ValueComparisonExcluded[$a]; break } }
+    $pendingReason = $null
+    foreach ($a in $aliases) { if ($HarnessPending.Contains($a)) { $pendingReason = $HarnessPending[$a]; break } }
+    $broadRec = $null
+    foreach ($a in $aliases) { if ($broadCoverage.ContainsKey($a)) { $broadRec = $broadCoverage[$a]; break } }
 
     $status = "unswept"
     $statusReason = ""
     if ($isDeferred) {
         $status = "deferred"
         $statusReason = "in W050 deferred inventory"
+    } elseif ($null -ne $excludedReason) {
+        $status = "excluded"
+        $statusReason = $excludedReason
+    } elseif ($null -ne $pendingReason) {
+        $status = "harness_pending"
+        $statusReason = $pendingReason
     } elseif ($null -ne $bugInfo) {
         $structural = $false; $numeric = $false
         foreach ($b in $bugInfo) {
@@ -301,8 +389,8 @@ foreach ($s in $snapshot) {
             $status = "bit_exact_observed"
             $statusReason = "most recent run was all bit-exact (across $($cov.runs_seen) array_rollup runs)"
         }
-    } elseif ($broadCoverage.ContainsKey($name)) {
-        $b = $broadCoverage[$name]
+    } elseif ($null -ne $broadRec) {
+        $b = $broadRec
         $status = "scalar_swept_only"
         if ($b.ever_non_match) {
             $statusReason = "broad-scalar numeric runner only; non-match seen (no linked stream) — structural axes unswept"
@@ -385,13 +473,15 @@ $mdLines = New-Object 'System.Collections.Generic.List[string]'
 [void]$mdLines.Add("")
 [void]$mdLines.Add("| Status | Count | Meaning |")
 [void]$mdLines.Add("| --- | ---: | --- |")
-$statusOrder = @("deferred","structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","bit_exact_observed","scalar_swept_only","unswept")
+$statusOrder = @("deferred","structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","harness_pending","excluded","bit_exact_observed","scalar_swept_only","unswept")
 $statusMeaning = @{
     "deferred"            = "in W050; not part of the 517 in-scope rows"
     "structural_bug_open" = "open BUG-FUNC stream with structural severity (kind/error/shape/array-lift)"
     "numeric_drift_open"  = "open BUG-FUNC stream with numeric drift severity (1 or >1 ULP)"
     "mixed_or_open"       = "genuine non-match rows in the latest run, no linked stream — needs triage"
     "harness_blocked"     = "latest run only harness-blocked / generator-invalid — needs a better probe, not a function bug"
+    "harness_pending"     = "poked, but needs a richer/different harness to judge honestly (reference-identity/host context, or statistical RAND harness) — not a bug"
+    "excluded"            = "deliberately not value-comparable and not planned for a harness (volatile clock / host / locale / callable)"
     "bit_exact_observed"  = "covered by ≥1 array_rollup run and never produced a non-match row"
     "scalar_swept_only"   = "swept only by the broad-scalar numeric runner; structural axes still unswept"
     "unswept"             = "never observed in any run and no open stream targets it"
@@ -412,7 +502,7 @@ foreach ($k in $statusOrder) {
 [void]$mdLines.Add("")
 
 # Per-status detail (compact).
-foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","unswept","scalar_swept_only","bit_exact_observed","deferred")) {
+foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","harness_blocked","harness_pending","excluded","unswept","scalar_swept_only","bit_exact_observed","deferred")) {
     $list = @($rows | Where-Object { $_.status -eq $k } | Sort-Object canonical_surface_name)
     [void]$mdLines.Add("## $k ($($list.Count))")
     [void]$mdLines.Add("")
@@ -425,6 +515,14 @@ foreach ($k in @("structural_bug_open","numeric_drift_open","mixed_or_open","har
         # Compact comma-separated list.
         $names = ($list | ForEach-Object { $_.canonical_surface_name })
         [void]$mdLines.Add(($names -join ", "))
+        [void]$mdLines.Add("")
+    } elseif ($k -eq "excluded" -or $k -eq "harness_pending") {
+        # Surface | Reason table (the rationale is the status_reason).
+        [void]$mdLines.Add("| Surface | Reason |")
+        [void]$mdLines.Add("| --- | --- |")
+        foreach ($r in $list) {
+            [void]$mdLines.Add("| ``$($r.canonical_surface_name)`` | $($r.status_reason) |")
+        }
         [void]$mdLines.Add("")
     } else {
         [void]$mdLines.Add("| Surface | Streams | Runs seen | Last seen |")

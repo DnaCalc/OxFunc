@@ -1,9 +1,22 @@
 [CmdletBinding(PositionalBinding = $false)]
 param(
-    [string] $RepoRoot,
-    [string] $StatusMapCsv,
-    [string] $OutputPath,
-    [int]    $MaxArgsToFill = 10
+    [string]   $RepoRoot,
+    [string]   $StatusMapCsv,
+    [string]   $OutputPath,
+    [int]      $MaxArgsToFill = 10,
+    # Which status-map buckets to target. Default is the original `unswept`
+    # set; pass e.g. `scalar_swept_only` to add structural axes to surfaces
+    # the broad-scalar numeric runner has already touched but the structural
+    # (array/error/blank/coercion) axes have not.
+    [string[]] $IncludeStatuses = @("unswept"),
+    # Optional explicit surface allowlist (canonical names). When non-empty,
+    # only these surfaces are emitted, still subject to the structural-validity
+    # filters below. Lets a caller drive a narrow, named tranche.
+    [string[]] $OnlySurfaces = @(),
+    # Tranche / case-id identity, so a narrow re-run does not collide with the
+    # default `unswept-structural-probes-v0` cache and run lineage.
+    [string]   $TrancheId = "unswept-structural-probes-v0",
+    [string]   $CaseIdPrefix = "unswept"
 )
 
 # Synthesize structural-axis probe cases for the unswept value-taking
@@ -44,11 +57,17 @@ if ([string]::IsNullOrWhiteSpace($OutputPath)) {
 }
 
 $statusRows = Import-Csv -LiteralPath $StatusMapCsv
-$unsweptNames = New-Object 'System.Collections.Generic.HashSet[string]'
+$onlySet = New-Object 'System.Collections.Generic.HashSet[string]'
+foreach ($o in $OnlySurfaces) { if (-not [string]::IsNullOrWhiteSpace($o)) { [void]$onlySet.Add($o.Trim()) } }
+$targetNames = New-Object 'System.Collections.Generic.HashSet[string]'
 foreach ($r in $statusRows) {
-    if ([string]$r.status -eq "unswept") { [void]$unsweptNames.Add([string]$r.canonical_surface_name) }
+    $st = [string]$r.status
+    $nm = [string]$r.canonical_surface_name
+    if ($IncludeStatuses -notcontains $st) { continue }
+    if ($onlySet.Count -gt 0 -and -not $onlySet.Contains($nm)) { continue }
+    [void]$targetNames.Add($nm)
 }
-Write-Host "Unswept surfaces in status map: $($unsweptNames.Count)"
+Write-Host "Target surfaces (statuses [$($IncludeStatuses -join ',')]$(if($onlySet.Count){"; allowlist of $($onlySet.Count)"})): $($targetNames.Count)"
 
 $di = Get-Content -Raw (Join-Path $RepoRoot "smart-fuzzer\cache\dimension-inventory-v0.json") | ConvertFrom-Json
 $byName = @{}
@@ -109,7 +128,7 @@ $skipped = New-Object 'System.Collections.Generic.List[object]'
 $byCategoryTranche = @{}
 
 $seq = 0
-$sortedNames = @($unsweptNames) | Sort-Object
+$sortedNames = @($targetNames) | Sort-Object
 foreach ($name in $sortedNames) {
   try {
     $surf = $byName[$name]
@@ -202,11 +221,11 @@ foreach ($name in $sortedNames) {
         $formula = "=$bareName(" + ($tokens -join ",") + ")"
 
         $seq += 1
-        $caseId = ("unswept-{0:D5}-{1}-{2}" -f $seq, ($name.ToLower() -replace '[^a-z0-9]','_'), $probe.tag)
+        $caseId = ("{0}-{1:D5}-{2}-{3}" -f $CaseIdPrefix, $seq, ($name.ToLower() -replace '[^a-z0-9]','_'), $probe.tag)
         $case = [ordered]@{
             schema_version = "oxfunc.smart_fuzzer.scenario_seed_case.v0"
             run_id = "assigned_by_runner"
-            tranche_id = "unswept-structural-probes-v0"
+            tranche_id = $TrancheId
             case_id = $caseId
             function_id = $functionId
             canonical_surface_name = $name
@@ -220,7 +239,7 @@ foreach ($name in $sortedNames) {
             known_deviation_tags = @()
         }
         $cases.Add($case) | Out-Null
-        $trKey = "unswept-structural-" + (($category.ToLower() -replace '[^a-z0-9]+','-').Trim('-'))
+        $trKey = "$CaseIdPrefix-structural-" + (($category.ToLower() -replace '[^a-z0-9]+','-').Trim('-'))
         if (-not $byCategoryTranche.ContainsKey($trKey)) {
             $byCategoryTranche[$trKey] = New-Object 'System.Collections.Generic.List[string]'
         }
@@ -242,7 +261,7 @@ $out = [ordered]@{
     authority = "non_semantic_exploration_input"
     generated_utc = (Get-Date).ToUniversalTime().ToString("o")
     generator = "Build-UnsweptStructuralProbes.ps1"
-    tranche_id = "unswept-structural-probes-v0"
+    tranche_id = $TrancheId
     comparison_policy = "exact_typed_bit_match_no_tolerance"
     cases = $cases.ToArray()
     tranches = $tranches.ToArray()
