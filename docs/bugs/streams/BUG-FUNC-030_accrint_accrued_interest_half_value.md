@@ -17,12 +17,27 @@
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
 - **Root cause class**: `computation_defect`
-- **Root cause summary**: `ACCRINT` returns exactly half of Excel's accrued
-  interest, consistent with an erroneous divide-by-frequency (or a missing
-  multiply-by-period-count) in the accrual-from-issue path. This is a value
-  defect, not a ULP drift. The maturity-form sibling `ACCRINTM` matched
-  Excel bit-exactly on equivalent inputs, so the defect is specific to the
-  periodic `ACCRINT` accrual.
+- **Root cause summary** (diagnosed 2026-05-28): the bug is in the
+  `settlement <= first_interest` (odd-first-stub) branch of `accrint_kernel`
+  (`crates/oxfunc_core/src/functions/bond_core_family.rs`). It returns
+  `coup * dd(issue, settlement) / dd(issue, first)` with `coup = par*rate/freq`.
+  The denominator `dd(issue, first)` is the **entire** issue→first-interest
+  span, which can be **more than one** quasi-coupon period. For the witness
+  (issue 2020-01-01, first 2021-01-01, freq 2 → a 1-year, 2-period stub;
+  settlement 2020-07-01) this gives `25 * 180/360 = 12.5`, whereas Excel sums
+  over quasi-coupon periods: settlement is exactly one full quasi-period after
+  issue, so `par*(rate/freq)*1 = 25`. The single linear interpolation is only
+  correct when issue→first is exactly one period; it mishandles multi-quasi-
+  coupon-period first stubs.
+- **Correct algorithm**: MS ACCRINT first-stub formula
+  `par * (rate/freq) * Σ_i (A_i / NL_i)` over the quasi-coupon periods (defined
+  backward from `first_interest` by `12/freq` months) that the issue→settlement
+  span touches, with day-counts per `basis`.
+- **Lane (re-triaged 2026-05-28)**: `needs-analysis`, not the localized
+  code-fix originally assumed. Requires implementing the quasi-coupon-period
+  summation and verifying against an Excel matrix across basis conventions and
+  1-period vs multi-period stubs (and the partial-end-period case). `ACCRINTM`
+  matched, so the defect is specific to periodic `ACCRINT`.
 
 ## Reproduction
 ```powershell
