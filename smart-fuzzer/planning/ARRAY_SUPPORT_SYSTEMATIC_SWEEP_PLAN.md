@@ -1,5 +1,7 @@
 # W090 Array Support Systematic Sweep Plan
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 Status: `successor_sweep_executed_bugs_open`
 
 ## 1. Purpose

@@ -1,5 +1,7 @@
 # W090 Successor Array-Support Sweep - 2026-04-30
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 ## Scope
 This record covers the executable successor pass after W090 tranche A. It uses
 the generated candidate inventory plus existing scenario manifests to explore

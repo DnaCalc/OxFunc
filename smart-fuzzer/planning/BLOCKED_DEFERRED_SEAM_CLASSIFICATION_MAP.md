@@ -1,5 +1,7 @@
 # Blocked And Deferred Seam Classification Map
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 Status: `planning_artifact_ready`
 
 Owning bead: `oxf-1avj.5`

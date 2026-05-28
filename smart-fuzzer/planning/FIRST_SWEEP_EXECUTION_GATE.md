@@ -1,5 +1,7 @@
 # First Sweep Execution Gate
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 Status: `execution_gate_ready_run_not_started`
 
 Owning bead: `oxf-1avj.8`

@@ -1,5 +1,7 @@
 # Expanded Smart-Fuzzer Run Roadmap
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 Status: `planning_sandbox`
 
 This note records the intended shape for larger smart-fuzzer runs without

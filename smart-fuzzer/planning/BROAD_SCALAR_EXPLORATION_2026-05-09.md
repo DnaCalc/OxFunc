@@ -1,5 +1,7 @@
 # Broad Scalar Explorer — 2026-05-09 Cycles
 
+> **Historical — retained as audit trail.** Live coverage is in [FUNCTION_STATUS_MAP.md](FUNCTION_STATUS_MAP.md); see [README.md](README.md) for the planning index.
+
 Status: `run_summary`
 
 Owning workset: `docs/worksets/W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md`
