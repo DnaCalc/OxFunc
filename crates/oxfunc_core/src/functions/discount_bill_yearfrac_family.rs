@@ -290,10 +290,12 @@ pub fn yearfrac_kernel(
     let start = parse_date_serial(start_date)?;
     let end = parse_date_serial(end_date)?;
     let basis = parse_basis(basis.unwrap_or(0.0))?;
+    // Excel YEARFRAC is always non-negative: a reversed date order yields the
+    // same positive fraction (it is |end - start| based), not a negated value.
     if end >= start {
         yearfrac_positive(start, end, basis)
     } else {
-        Ok(-yearfrac_positive(end, start, basis)?)
+        yearfrac_positive(end, start, basis)
     }
 }
 
@@ -704,12 +706,17 @@ mod tests {
     }
 
     #[test]
-    fn yearfrac_is_sign_symmetric_in_bounded_slice() {
+    fn yearfrac_is_nonnegative_and_order_independent() {
+        // Excel YEARFRAC is always non-negative: reversing the date order
+        // yields the same positive fraction (verified vs Excel, run yf-rev-001:
+        // both orders -> 0.5765027322404371).
         let start = serial(2012, 1, 1);
         let end = serial(2012, 7, 30);
         let forward = yearfrac_kernel(start, end, Some(1.0)).unwrap();
         let reverse = yearfrac_kernel(end, start, Some(1.0)).unwrap();
-        assert_close(forward, -reverse, 1.0e-12);
+        assert_close(forward, reverse, 1.0e-12);
+        assert!(forward > 0.0, "yearfrac should be non-negative, got {forward}");
+        assert_close(forward, 0.5765027322404371, 1.0e-12);
     }
 
     #[test]

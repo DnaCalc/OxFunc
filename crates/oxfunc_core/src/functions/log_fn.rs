@@ -40,7 +40,13 @@ pub fn log_kernel(number: f64, base: f64) -> Result<f64, WorksheetErrorCode> {
     if base == 1.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(number.ln() / base.ln())
+    // Match Excel bit-for-bit: Excel evaluates the common bases via dedicated
+    // log10/log2 rather than ln(x)/ln(base) (which is ~1 ULP off, e.g. LOG(2)).
+    Ok(match base {
+        10.0 => number.log10(),
+        2.0 => number.log2(),
+        _ => number.ln() / base.ln(),
+    })
 }
 
 fn log_array_cell(cell: &ArrayCellValue, base: f64) -> ArrayCellValue {
