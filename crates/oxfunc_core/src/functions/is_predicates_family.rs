@@ -5,6 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
@@ -252,7 +253,7 @@ pub fn eval_isodd_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -264,6 +265,7 @@ pub fn eval_isodd_surface(
                     .map_err(InformationPredicateEvalError::Preparation)?,
             )))
         },
+        map_information_predicate_error_to_ws,
         InformationPredicateEvalError::Preparation,
     )
 }
