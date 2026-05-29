@@ -118,7 +118,9 @@ fn eval_boolean_predicate_surface(
     resolver: &(impl ReferenceResolver + ?Sized),
     predicate: impl Fn(&PreparedArgValue) -> bool,
 ) -> Result<EvalValue, InformationPredicateEvalError> {
-    run_values_only_prepared(
+    // Type predicates classify each element (Excel spills over an array
+    // argument), so lift the per-cell classifier elementwise.
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -127,6 +129,7 @@ fn eval_boolean_predicate_surface(
             }
             Ok(EvalValue::Logical(predicate(&prepared[0])))
         },
+        map_information_predicate_error_to_ws,
         InformationPredicateEvalError::Preparation,
     )
 }
