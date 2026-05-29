@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
+use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
@@ -132,10 +132,11 @@ pub fn eval_dollarde_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DollarFractionEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_family_prepared(prepared, &DOLLARDE_META, dollarde_kernel),
+        map_dollar_fraction_error_to_ws,
         DollarFractionEvalError::Coercion,
     )
 }
@@ -144,10 +145,11 @@ pub fn eval_dollarfr_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DollarFractionEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_family_prepared(prepared, &DOLLARFR_META, dollarfr_kernel),
+        map_dollar_fraction_error_to_ws,
         DollarFractionEvalError::Coercion,
     )
 }
