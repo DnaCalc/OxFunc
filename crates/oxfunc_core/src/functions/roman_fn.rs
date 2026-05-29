@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
@@ -220,7 +220,7 @@ pub fn eval_roman_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, RomanEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -239,6 +239,7 @@ pub fn eval_roman_surface(
                 Err(code) => Ok(EvalValue::Error(code)),
             }
         },
+        map_roman_error_to_ws,
         RomanEvalError::Coercion,
     )
 }

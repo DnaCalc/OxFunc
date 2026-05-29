@@ -4,7 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
+    run_values_only_prepared_lifted,
 };
 use crate::functions::base_fn::base_kernel;
 use crate::resolver::ReferenceResolver;
@@ -338,10 +339,11 @@ pub fn eval_dec2bin_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_dec_to_target_prepared(&DEC2BIN_META, prepared, dec2bin_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -350,10 +352,11 @@ pub fn eval_dec2hex_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_dec_to_target_prepared(&DEC2HEX_META, prepared, dec2hex_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -362,10 +365,11 @@ pub fn eval_dec2oct_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_dec_to_target_prepared(&DEC2OCT_META, prepared, dec2oct_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -374,10 +378,11 @@ pub fn eval_bin2dec_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_decimal_prepared(&BIN2DEC_META, prepared, bin2dec_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -386,10 +391,11 @@ pub fn eval_bin2hex_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&BIN2HEX_META, prepared, bin2hex_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -398,10 +404,11 @@ pub fn eval_bin2oct_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&BIN2OCT_META, prepared, bin2oct_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -410,10 +417,11 @@ pub fn eval_hex2bin_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&HEX2BIN_META, prepared, hex2bin_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -422,10 +430,11 @@ pub fn eval_hex2dec_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_decimal_prepared(&HEX2DEC_META, prepared, hex2dec_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -434,10 +443,11 @@ pub fn eval_hex2oct_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&HEX2OCT_META, prepared, hex2oct_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -446,10 +456,11 @@ pub fn eval_oct2bin_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&OCT2BIN_META, prepared, oct2bin_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -458,10 +469,11 @@ pub fn eval_oct2dec_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_decimal_prepared(&OCT2DEC_META, prepared, oct2dec_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }
@@ -470,10 +482,11 @@ pub fn eval_oct2hex_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| eval_source_to_target_prepared(&OCT2HEX_META, prepared, oct2hex_kernel),
+        map_engineering_radix_error_to_ws,
         EngineeringRadixEvalError::Coercion,
     )
 }

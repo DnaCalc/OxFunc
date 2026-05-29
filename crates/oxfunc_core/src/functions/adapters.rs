@@ -5,6 +5,7 @@ use crate::resolver::{
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
+    WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -297,6 +298,52 @@ pub fn run_values_only_prepared<Out, E>(
 ) -> Result<Out, E> {
     let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
     on_prepared(&prepared)
+}
+
+/// Convert a scalar `EvalValue` into an array cell (for elementwise lift).
+/// A scalar per-cell kernel should never yield array/reference/lambda.
+fn scalar_eval_to_cell(value: EvalValue) -> ArrayCellValue {
+    match value {
+        EvalValue::Number(n) => ArrayCellValue::Number(n),
+        EvalValue::Text(t) => ArrayCellValue::Text(t),
+        EvalValue::Logical(b) => ArrayCellValue::Logical(b),
+        EvalValue::Error(code) => ArrayCellValue::Error(code),
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    }
+}
+
+/// Like [`run_values_only_prepared`], but lifts the scalar per-cell evaluator
+/// elementwise over array arguments (Excel spill), broadcasting scalar args to
+/// the common shape. When no argument is an array it behaves exactly like the
+/// scalar path. The per-cell evaluator returns a *scalar* `EvalValue`; on a
+/// per-cell `Err`, `map_err_to_ws` decides the cell's worksheet error so the
+/// array can carry per-element errors the way Excel does.
+pub fn run_values_only_prepared_lifted<E>(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+    on_cell: impl Fn(&[PreparedArgValue]) -> Result<EvalValue, E>,
+    map_err_to_ws: impl Fn(&E) -> WorksheetErrorCode,
+    map_preparation_error: impl FnOnce(CoercionError) -> E,
+) -> Result<EvalValue, E> {
+    let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
+    if let Some((shape, groups)) = expand_prepared_broadcast_grid(&prepared) {
+        let cells = groups
+            .into_iter()
+            .map(|group| match group {
+                BroadcastPreparedGroup::Values(values) => match on_cell(&values) {
+                    Ok(value) => scalar_eval_to_cell(value),
+                    Err(error) => ArrayCellValue::Error(map_err_to_ws(&error)),
+                },
+                BroadcastPreparedGroup::MissingCoordinate => {
+                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                }
+            })
+            .collect();
+        return Ok(EvalValue::Array(
+            EvalArray::new(shape, cells).expect("broadcast shape preserved"),
+        ));
+    }
+    on_cell(&prepared)
 }
 
 pub fn map_values_only_prepared<Out>(

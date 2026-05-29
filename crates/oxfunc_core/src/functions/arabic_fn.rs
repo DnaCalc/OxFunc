@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
+use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
@@ -64,7 +64,7 @@ pub fn eval_arabic_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, ArabicEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -79,6 +79,7 @@ pub fn eval_arabic_surface(
                 .map(EvalValue::Number)
                 .map_err(ArabicEvalError::Domain)
         },
+        map_arabic_error_to_ws,
         ArabicEvalError::Coercion,
     )
 }
