@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+    coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
@@ -75,7 +75,7 @@ pub fn eval_unichar_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -92,6 +92,7 @@ pub fn eval_unichar_surface(
                 .map(EvalValue::Text)
                 .map_err(TextUnicodeEvalError::Domain)
         },
+        map_text_unicode_error_to_ws,
         TextUnicodeEvalError::Coercion,
     )
 }
@@ -100,7 +101,7 @@ pub fn eval_unicode_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -117,6 +118,7 @@ pub fn eval_unicode_surface(
                 .map(EvalValue::Number)
                 .map_err(TextUnicodeEvalError::Domain)
         },
+        map_text_unicode_error_to_ws,
         TextUnicodeEvalError::Coercion,
     )
 }
