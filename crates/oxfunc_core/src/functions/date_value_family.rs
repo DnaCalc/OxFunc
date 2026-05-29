@@ -3,7 +3,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
+    run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -489,7 +490,7 @@ pub fn eval_datevalue_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared: &[PreparedArgValue]| {
@@ -508,6 +509,7 @@ pub fn eval_datevalue_surface(
                 },
             )
         },
+        map_date_value_family_error_to_ws,
         |_| DateValueFamilyError::Coercion,
     )
 }
@@ -516,7 +518,7 @@ pub fn eval_timevalue_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared: &[PreparedArgValue]| {
@@ -535,6 +537,7 @@ pub fn eval_timevalue_surface(
                 },
             )
         },
+        map_date_value_family_error_to_ws,
         |_| DateValueFamilyError::Coercion,
     )
 }
@@ -543,7 +546,7 @@ pub fn eval_days360_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared: &[PreparedArgValue]| {
@@ -569,6 +572,7 @@ pub fn eval_days360_surface(
                 Err(err) => map_family_err_to_eval(err),
             })
         },
+        map_date_value_family_error_to_ws,
         |_| DateValueFamilyError::Coercion,
     )
 }
@@ -577,7 +581,7 @@ pub fn eval_datedif_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared: &[PreparedArgValue]| {
@@ -597,6 +601,7 @@ pub fn eval_datedif_surface(
                 Err(err) => map_family_err_to_eval(err),
             })
         },
+        map_date_value_family_error_to_ws,
         |_| DateValueFamilyError::Coercion,
     )
 }

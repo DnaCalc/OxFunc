@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -245,7 +245,7 @@ pub fn eval_edate_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -264,6 +264,7 @@ pub fn eval_edate_surface(
                 .map(EvalValue::Number)
                 .map_err(DateWeekEvalError::Domain)
         },
+        map_date_week_error_to_ws,
         DateWeekEvalError::Coercion,
     )
 }
@@ -272,7 +273,7 @@ pub fn eval_eomonth_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -291,6 +292,7 @@ pub fn eval_eomonth_surface(
                 .map(EvalValue::Number)
                 .map_err(DateWeekEvalError::Domain)
         },
+        map_date_week_error_to_ws,
         DateWeekEvalError::Coercion,
     )
 }
@@ -299,7 +301,7 @@ pub fn eval_weekday_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -321,6 +323,7 @@ pub fn eval_weekday_surface(
                 .map(EvalValue::Number)
                 .map_err(DateWeekEvalError::Domain)
         },
+        map_date_week_error_to_ws,
         DateWeekEvalError::Coercion,
     )
 }
@@ -329,7 +332,7 @@ pub fn eval_weeknum_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -351,6 +354,7 @@ pub fn eval_weeknum_surface(
                 .map(EvalValue::Number)
                 .map_err(DateWeekEvalError::Domain)
         },
+        map_date_week_error_to_ws,
         DateWeekEvalError::Coercion,
     )
 }
@@ -359,7 +363,7 @@ pub fn eval_isoweeknum_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| {
@@ -376,6 +380,7 @@ pub fn eval_isoweeknum_surface(
                 .map(EvalValue::Number)
                 .map_err(DateWeekEvalError::Domain)
         },
+        map_date_week_error_to_ws,
         DateWeekEvalError::Coercion,
     )
 }
