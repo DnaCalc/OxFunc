@@ -4,11 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    expand_prepared_broadcast_grid, run_values_only_prepared,
 };
 use crate::functions::normal_dist_common::erf_approx;
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const SPECIAL_DIST_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SPECIAL_DIST_BASE",
@@ -344,9 +345,74 @@ fn coerce_operand_with_logical_policy(
     coerce_prepared_to_number(arg)
 }
 
+fn coercion_err_to_ws(error: &CoercionError) -> WorksheetErrorCode {
+    match error {
+        CoercionError::WorksheetError(code) => *code,
+        _ => WorksheetErrorCode::Value,
+    }
+}
+
+/// One array cell for ERF (1-2 operands, logical rejected per element).
+fn erf_cell(values: &[PreparedArgValue]) -> ArrayCellValue {
+    let lower = match coerce_operand_with_logical_policy(&values[0], true) {
+        Ok(x) => x,
+        Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+    };
+    let upper = if values.len() > 1 {
+        match coerce_operand_with_logical_policy(&values[1], true) {
+            Ok(x) => Some(x),
+            Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+        }
+    } else {
+        None
+    };
+    match erf_kernel(lower, upper) {
+        Ok(v) => ArrayCellValue::Number(v),
+        Err(code) => ArrayCellValue::Error(code),
+    }
+}
+
+/// One array cell for a unary special-dist kernel (logical policy per element).
+fn unary_cell(
+    values: &[PreparedArgValue],
+    reject_logical: bool,
+    kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
+) -> ArrayCellValue {
+    match coerce_operand_with_logical_policy(&values[0], reject_logical) {
+        Ok(x) => match kernel(x) {
+            Ok(v) => ArrayCellValue::Number(v),
+            Err(code) => ArrayCellValue::Error(code),
+        },
+        Err(e) => ArrayCellValue::Error(coercion_err_to_ws(&e)),
+    }
+}
+
+/// Lift a per-cell mapper over a broadcast grid, if any argument is an array.
+/// Returns `None` when all arguments are scalar (caller takes the scalar path).
+fn lift_special_dist(
+    args: &[PreparedArgValue],
+    cell: impl Fn(&[PreparedArgValue]) -> ArrayCellValue,
+) -> Option<EvalValue> {
+    let (shape, cells) = expand_prepared_broadcast_grid(args)?;
+    let mapped = cells
+        .into_iter()
+        .map(|group| match group {
+            BroadcastPreparedGroup::Values(values) => cell(&values),
+            BroadcastPreparedGroup::MissingCoordinate => ArrayCellValue::Error(WorksheetErrorCode::NA),
+        })
+        .collect();
+    Some(EvalValue::Array(
+        EvalArray::new(shape, mapped).expect("shape preserved"),
+    ))
+}
+
 fn eval_erf_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SpecialDistEvalError> {
     if !ERF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ERF_META, args.len()));
+    }
+    // Array argument -> spill elementwise (Excel BUG-FUNC-028 array-lift).
+    if let Some(array) = lift_special_dist(args, erf_cell) {
+        return Ok(array);
     }
     // ERF rejects a logical operand (Excel #VALUE!); numeric text is accepted.
     let lower = coerce_operand_with_logical_policy(&args[0], true)
@@ -374,12 +440,33 @@ fn eval_unary_prepared(
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
+    if let Some(array) = lift_special_dist(args, |values| unary_cell(values, reject_logical, kernel))
+    {
+        return Ok(array);
+    }
     let x = coerce_operand_with_logical_policy(&args[0], reject_logical)
         .map_err(SpecialDistEvalError::Coercion)?;
     Ok(match kernel(x) {
         Ok(value) => EvalValue::Number(value),
         Err(code) => EvalValue::Error(code),
     })
+}
+
+fn weibull_cell(
+    values: &[PreparedArgValue],
+    kernel: fn(f64, f64, f64, bool) -> Result<f64, WorksheetErrorCode>,
+) -> ArrayCellValue {
+    let mut nums = [0.0f64; 4];
+    for (i, slot) in nums.iter_mut().enumerate() {
+        match coerce_prepared_to_number(&values[i]) {
+            Ok(n) => *slot = n,
+            Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+        }
+    }
+    match kernel(nums[0], nums[1], nums[2], bool_flag_from_number(nums[3])) {
+        Ok(v) => ArrayCellValue::Number(v),
+        Err(code) => ArrayCellValue::Error(code),
+    }
 }
 
 fn eval_weibull_prepared(
@@ -389,6 +476,9 @@ fn eval_weibull_prepared(
 ) -> Result<EvalValue, SpecialDistEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
+    }
+    if let Some(array) = lift_special_dist(args, |values| weibull_cell(values, kernel)) {
+        return Ok(array);
     }
     let x = coerce_prepared_to_number(&args[0]).map_err(SpecialDistEvalError::Coercion)?;
     let alpha = coerce_prepared_to_number(&args[1]).map_err(SpecialDistEvalError::Coercion)?;
@@ -562,6 +652,45 @@ mod tests {
     #[test]
     fn erfc_one_matches_excel_exact_bits() {
         assert_bits_eq("erfc(1)", erfc_kernel(1.0).unwrap(), 0.15729920705028513);
+    }
+
+    #[test]
+    fn erf_family_lifts_arrays_elementwise() {
+        let r = NoResolver;
+        // BUG-FUNC-028: ERF over a column array spills erf(x) elementwise.
+        let arr = CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(2.0)],
+                vec![ArrayCellValue::Number(3.0)],
+            ])
+            .unwrap(),
+        ));
+        let expected = EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(erf_approx(2.0))],
+                vec![ArrayCellValue::Number(erf_approx(3.0))],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(eval_erf_surface(&[arr], &r), Ok(expected));
+
+        // A logical element in an ERF array errors only that cell (#VALUE!),
+        // the numeric element still computes (Excel spills per-element errors).
+        let mixed = CallArgValue::Eval(EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Logical(true)],
+                vec![ArrayCellValue::Number(2.0)],
+            ])
+            .unwrap(),
+        ));
+        let mixed_expected = EvalValue::Array(
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Error(WorksheetErrorCode::Value)],
+                vec![ArrayCellValue::Number(erf_approx(2.0))],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(eval_erf_surface(&[mixed], &r), Ok(mixed_expected));
     }
 
     #[test]
