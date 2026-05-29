@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceResolver;
@@ -489,15 +489,16 @@ fn eval_numeric(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, DiscountBillYearfracEvalError>,
+    kernel: impl Fn(&[PreparedArgValue]) -> Result<f64, DiscountBillYearfracEvalError>,
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
-    run_values_only_prepared(
+    run_values_only_prepared_lifted(
         args,
         resolver,
         |prepared| kernel(prepared).map(EvalValue::Number),
+        map_discount_bill_yearfrac_error_to_ws,
         DiscountBillYearfracEvalError::Coercion,
     )
 }
