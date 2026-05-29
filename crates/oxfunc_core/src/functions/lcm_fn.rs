@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::lcm_int;
 use crate::resolver::ReferenceResolver;
@@ -56,11 +56,15 @@ pub fn eval_lcm_surface(
             actual: argc,
         });
     }
-    let prepared = prepare_args_values_only(args, resolver).map_err(LcmEvalError::Coercion)?;
-    let items = prepared
-        .iter()
-        .map(coerce_prepared_to_nonnegative_int)
-        .collect::<Result<Vec<_>, _>>()?;
+    // Accept array arguments by flattening each into its constituent values
+    // (Excel reduces LCM/GCD over arrays to a scalar, like GCD's surface).
+    let mut items = Vec::new();
+    for arg in args {
+        let expanded = expand_aggregate_arg(arg, resolver).map_err(LcmEvalError::Coercion)?;
+        for item in expanded {
+            items.push(coerce_prepared_to_nonnegative_int(&item.value)?);
+        }
+    }
     Ok(EvalValue::Number(lcm_kernel(&items)))
 }
 

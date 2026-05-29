@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative};
 use crate::resolver::ReferenceResolver;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
@@ -228,12 +228,15 @@ pub fn eval_multinomial_surface(
         });
     }
 
-    let prepared =
-        prepare_args_values_only(args, resolver).map_err(MultinomialEvalError::Coercion)?;
-    let items = prepared
-        .iter()
-        .map(coerce_prepared_to_nonnegative_int)
-        .collect::<Result<Vec<_>, _>>()?;
+    // Accept array arguments by flattening each into its constituent values
+    // (Excel reduces MULTINOMIAL over arrays to a scalar).
+    let mut items = Vec::new();
+    for arg in args {
+        let expanded = expand_aggregate_arg(arg, resolver).map_err(MultinomialEvalError::Coercion)?;
+        for item in expanded {
+            items.push(coerce_prepared_to_nonnegative_int(&item.value)?);
+        }
+    }
     multinomial_kernel(&items)
         .map(EvalValue::Number)
         .map_err(MultinomialEvalError::Domain)
