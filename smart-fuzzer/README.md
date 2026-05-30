@@ -25,6 +25,23 @@ Full design and severity-aware classification scheme: `smart-fuzzer/planning/SMA
 4. `docs/worksets/W092_SPARK_GUIDED_SMART_FUZZER_LONG_RUN.md` — feedback-guided long-run loop.
 5. `docs/worksets/W097_BIT_EXACT_RESWEEP_OF_KNOWN_MISMATCHES.md` — cell-ref-plumbing re-measurement.
 
+## Doc Map
+
+Start with these docs, in this order:
+
+1. `smart-fuzzer/planning/README.md` — planning directory index; separates current authority from historical run notes.
+2. `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md` — design authority; includes the AFL/AFL++ reference mapping and the semantic feedback queue prototype direction.
+3. `smart-fuzzer/planning/EXCEL_RUNNER_PLUMBING_NOTE.md` — binding `Range.Value2` cell-ref plumbing rule for bit-exact Excel comparison.
+4. `smart-fuzzer/planning/CASE_SCHEMA_V0.md` — structured invocation-case record schema.
+5. `smart-fuzzer/planning/RUN_ARTIFACT_CONTRACT.md` — run, rollup, failure-packet, and feedback-queue artifact contract.
+6. `smart-fuzzer/planning/UNEXPECTED_MISMATCH_TRIAGE_AND_MINIMIZATION_PROTOCOL.md` — mismatch classification, reduction order, and promotion rules.
+7. `smart-fuzzer/planning/FUNCTION_STATUS_MAP.md` — derived current per-surface state; rebuild with `smart-fuzzer/tools/Build-FunctionStatusMap.ps1`.
+8. `smart-fuzzer/planning/SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md` — W092 feedback-loop guide and cycle ledger.
+9. `smart-fuzzer/tools/README.md` — runner/comparator tooling notes.
+
+Historical run notes and W089 planning-gate docs remain useful audit trail, but
+the current design and status surfaces are the docs above.
+
 The smart-fuzzer is an evidence-generation and regression-discovery system. It does not define OxFunc semantics, does not replace function contracts, and does not by itself promote any function status. Any durable mismatch found here must be promoted through the ordinary OxFunc bug intake, evidence, workset, and bead surfaces.
 
 The fuzzer is expected to produce many more passes than failures. Passing case records are exploration telemetry, not individually sacred evidence artifacts. Keep them compact, aggregatable, and cheap to discard or regenerate. Reserve detailed narrative and promotion effort for failures, minimized mismatches, and small representative pass samples that explain coverage.

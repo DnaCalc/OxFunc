@@ -57,6 +57,65 @@ replay sampling, deduplication, and future prioritization. Detailed human notes
 belong on mismatch clusters, reduced failures, promotion candidates, and small
 coverage exemplars.
 
+### 2.1 AFL/AFL++ Reference Translation
+
+External fuzzer methodology may inform smart-fuzzer tooling design, but it
+does not provide Excel semantics. The clean-room rule still limits function
+truth to public specifications, published research, and reproducible black-box
+Excel observations.
+
+Primary methodology references:
+
+1. Original AFL project page: `https://lcamtuf.coredump.cx/afl/`.
+2. Google AFL archive and README: `https://github.com/google/AFL`.
+3. AFL++ project: `https://aflplus.plus/` and
+   `https://github.com/AFLplusplus/AFLplusplus`.
+4. AFL++ feature inventory:
+   `https://aflplus.plus/docs/features/`.
+5. AFL++ custom mutator documentation:
+   `https://aflplus.plus/docs/custom_mutators/`.
+
+The transferable ideas are:
+
+1. **Feedback-guided queue.** AFL keeps inputs that discover new instrumented
+   behavior and mutates from that queue. OxFunc should keep structured cases
+   that discover new local code coverage, semantic buckets, outcome classes,
+   or Excel mismatch classes.
+2. **Small starting corpus.** AFL prefers compact, functionally distinct seed
+   inputs. OxFunc seeds should be existing scenario manifests, minimized bug
+   witnesses, representative pass samples, and small hand-authored edge cases,
+   not huge exhaustive manifests.
+3. **Corpus culling and minimization.** AFL-style `cmin` and `tmin` map to
+   OxFunc queue culling, semantic-bucket-preserving reduction, and
+   mismatch-preserving minimization before bug promotion.
+4. **Dictionaries and structured mutators.** AFL dictionaries and AFL++ custom
+   mutators map to OxFunc typed mutators over invocation records. Raw byte
+   mutation over formula text is secondary because it wastes Excel budget on
+   invalid syntax and erases prepared-argument distinctions.
+5. **Persistent fast local loop.** AFL++ persistent mode maps to long-lived
+   local Rust/OxFml harnesses and batched evaluation. Excel remains a separate
+   scarce oracle and should be batched, not placed inside the hot mutation
+   loop.
+6. **Comparison-guided exploration.** AFL++ LAF-Intel/CmpLog-style ideas map
+   to OxFunc boundary-hint generation: produce values near domain checks,
+   equality comparisons, solver thresholds, overflow/underflow limits, shape
+   transitions, and error-code branch points observed in local code. This is
+   a generation tactic, not reverse engineering of Excel internals.
+7. **Beyond crashes.** AFL explicitly supports using fuzzing to find
+   non-crashing design or implementation errors by turning invariant failures
+   into a fuzzer-visible failure. OxFunc should treat local invariant breaks,
+   local-vs-local disagreement, and local-vs-Excel typed mismatches as
+   interesting outcomes while still routing durable Excel findings through the
+   ordinary bug stream.
+
+The non-transferable pieces are equally important:
+
+1. Do not instrument Excel; it is a black-box oracle.
+2. Do not let code coverage stand in for Excel semantic coverage.
+3. Do not treat AFL-found local crashes or panics as function closure evidence.
+4. Do not spend Excel budget on raw syntactic fuzzing until a structured
+   invocation has survived local validity checks.
+
 ## 3. Inputs
 
 Primary local inputs:
@@ -322,6 +381,61 @@ Useful agent tasks:
 Agent outputs must never become semantics without replay evidence and ordinary
 promotion.
 
+### 6.9 AFL-Style Semantic Feedback Queue Prototype
+
+The first AFL-inspired prototype should be local-first and optional-backend.
+It may use AFL++ through a Linux/WSL toolchain later, but the first useful
+prototype can be an in-repo Rust loop that copies AFL's queue discipline
+without adding a hard external dependency.
+
+Prototype scope:
+
+1. target one low-pressure pure-value function family already admitted to the
+   current OxFunc-accessible runner,
+2. consume structured invocation records rather than raw formula text,
+3. mutate with the existing typed mutator vocabulary,
+4. run only the cheap local OxFunc/OxFml surface in the hot loop,
+5. retain cases that add new coverage or semantic signal,
+6. batch a small favored subset through Excel after local queue growth,
+7. write only compact queue and rollup artifacts unless a mismatch is found.
+
+Prototype interestingness signals:
+
+1. new instrumented Rust edge or region coverage when available,
+2. new function id plus arity-shape bucket,
+3. new argument value-kind vector,
+4. new coercion or array-lift bucket,
+5. new shape class or reference-kind bucket,
+6. new local semantic outcome class,
+7. new worksheet error code,
+8. new local panic, rejection, or unstable outcome,
+9. new local-vs-Excel typed mismatch class after oracle sampling,
+10. successful minimization of an existing mismatch.
+
+Prototype artifacts:
+
+1. `feedback_queue.jsonl` — retained interesting cases with parent linkage,
+   generator, mutator, seed, and reason retained.
+2. `feedback_coverage.json` — aggregate code and semantic bucket counters.
+3. `favored_cases.jsonl` — small queue subset selected for Excel spend.
+4. `queue_cull_report.json` — cases removed or superseded by smaller cases
+   covering the same signal.
+5. ordinary `failure_packets/` and `minimized/` outputs for durable
+   mismatches.
+
+Exit gates:
+
+1. the prototype can reproduce at least one existing promoted bug witness from
+   a smaller seed or adjacent mutation,
+2. or it grows the semantic bucket set without finding a mismatch and records
+   the plateau honestly,
+3. or it finds a new durable mismatch and routes it through `docs/bugs/`,
+4. or it is blocked because the local harness cannot yet expose useful
+   coverage or semantic-bucket signals.
+
+This prototype is exploration infrastructure. It must not be reported as
+function implementation evidence or semantic closure.
+
 ## 7. Coverage And Confidence
 
 The fuzzer should report coverage as explored dimensions, not as semantic
@@ -424,7 +538,9 @@ Sequence-only staged rollout:
 7. risk scoring from bug streams and source-code hints,
 8. OxFml adapter lane,
 9. wider reference/provider/seam-heavy lanes,
-10. agent-assisted tactic loop.
+10. AFL-style semantic feedback queue prototype,
+11. optional AFL++/LibAFL backend experiment if the in-repo queue proves useful,
+12. agent-assisted tactic loop.
 
 Each stage should close through evidence-bearing beads if this becomes an
 active workset.

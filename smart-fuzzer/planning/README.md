@@ -14,10 +14,10 @@ For the current state of every surface, start with the derived view:
 
 These are live and binding for ongoing work:
 
-- [SMART_FUZZER_DESIGN.md](SMART_FUZZER_DESIGN.md) — design authority; goal, severity grading (CHARTER §4.1), pipeline.
+- [SMART_FUZZER_DESIGN.md](SMART_FUZZER_DESIGN.md) — design authority; goal, severity grading (CHARTER §4.1), pipeline, AFL/AFL++ reference mapping, and semantic feedback queue prototype direction.
 - [EXCEL_RUNNER_PLUMBING_NOTE.md](EXCEL_RUNNER_PLUMBING_NOTE.md) — binding cell-ref plumbing rule and witness.
 - [CASE_SCHEMA_V0.md](CASE_SCHEMA_V0.md) — invocation-case record schema.
-- [RUN_ARTIFACT_CONTRACT.md](RUN_ARTIFACT_CONTRACT.md) — run output / rollup / failure-packet contract.
+- [RUN_ARTIFACT_CONTRACT.md](RUN_ARTIFACT_CONTRACT.md) — run output / rollup / failure-packet / feedback-queue contract.
 - [UNEXPECTED_MISMATCH_TRIAGE_AND_MINIMIZATION_PROTOCOL.md](UNEXPECTED_MISMATCH_TRIAGE_AND_MINIMIZATION_PROTOCOL.md) — how to triage and minimize a finding.
 - [SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md](SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md) — W092 controlling run guide and cycle ledger.
 

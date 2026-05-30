@@ -36,6 +36,10 @@ Conditional files and directories:
 
 ```text
 representative_samples.jsonl
+feedback_queue.jsonl
+feedback_coverage.json
+favored_cases.jsonl
+queue_cull_report.json
 cases/
 outcomes/
 comparisons/
@@ -191,6 +195,56 @@ Sampling should prefer diversity across:
 
 Representative samples are not conformance evidence by themselves. They are
 inputs for future deterministic replay or regression promotion.
+
+## Feedback Queue Artifacts
+
+Feedback-guided runs may emit AFL-style queue artifacts. These are exploration
+state, not semantic authority.
+
+`feedback_queue.jsonl` contains retained interesting cases. Required fields:
+
+```json
+{
+  "queue_id": "",
+  "case_id": "",
+  "parent_queue_id": null,
+  "generator_id": "",
+  "mutator_id": "",
+  "seed": 0,
+  "retention_reasons": [],
+  "coverage_bucket_ids": [],
+  "semantic_bucket_ids": [],
+  "local_outcome_class": "",
+  "excel_sample_state": "not_sampled",
+  "minimization_state": "not_minimized"
+}
+```
+
+`feedback_coverage.json` aggregates the current code and semantic signal
+surface:
+
+```json
+{
+  "schema_version": "oxfunc.smart_fuzzer.feedback_coverage.v0",
+  "run_id": "",
+  "code_coverage_summary": {},
+  "semantic_bucket_summary": {},
+  "outcome_class_summary": {},
+  "new_signal_counts": {}
+}
+```
+
+`favored_cases.jsonl` is a bounded subset selected for Excel spend or deeper
+local minimization. Selection should prefer structural novelty, rare value-kind
+vectors, new outcome classes, risk-adjacent buckets, and small reproducers.
+
+`queue_cull_report.json` records cases removed or superseded by smaller cases
+that preserve the same interestingness signal. Queue culling must not delete a
+durable mismatch witness before it is promoted or explicitly rejected.
+
+Feedback queue rows may guide future generation, but they do not replace
+`telemetry.jsonl`, `rollup.json`, failure packets, minimized reproducers, or
+ordinary `docs/bugs/` promotion.
 
 ## Heavy Artifacts
 
