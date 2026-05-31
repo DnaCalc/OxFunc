@@ -21,6 +21,28 @@ Interpretation rule:
 2. not every tag is admitted at every boundary,
 3. the current Rust `EvalValue` type corresponds most closely to `PublishedFormulaResult`, not to the broadest raw interop/UDF return universe.
 
+## 2A. Two-Tier CalcValue Direction
+W098 promotes this boundary-scoped algebra into the system value carrier:
+
+`CalcValue { core: CoreValue, rich: Option<Rc<RichValue>> }`
+
+This is deliberately a two-tier model rather than one flat enum containing every current and future value shape.
+
+1. `CoreValue` is the traditional Excel-compatible calculation substrate. It captures the limited value gamut shared by the mature public Excel surfaces: C API/XLOPER12-style values, COM automation `Range.Value`/`Value2` payloads, VBA UDF interaction, and ordinary worksheet formula exchange.
+2. `RichValue` is the extension layer. It carries modern Excel value features and DNA Calc-specific extensions whose meaning exceeds the traditional core substrate.
+3. Every `CalcValue` has a `core` projection. For ordinary scalar/array/reference values, the core is the whole value. For rich values, the core is the compatibility projection used by legacy-style calculation, coercion, publication fallback, display fallback, and degradation.
+4. Not every `CoreValue` has a rich companion. Rich payloads are used only when a value has additional semantic identity or payload that cannot be faithfully represented by the core projection alone.
+5. This mirrors Excel's own interface reality: Excel exposes a small traditional gamut through C API/COM/VBA surfaces while newer rich-cell features travel through richer object models and metadata-bearing carriers. DNA Calc keeps that separation explicit instead of flattening all value forms into one extended legacy-facing enum.
+
+The durable naming direction is:
+1. `CalcValue` — the system value carrier passed through OxFunc/OxFml/OxCalc and stored as a node value where admitted.
+2. `CoreValue` — the required traditional calculation projection. Rust-facing names are
+   `CoreValue::Empty` for the `empty_cell` tag and `CoreValue::Missing` for the `missing_arg`
+   tag.
+3. `RichValue` — the optional modern/extended semantic payload, including callable handles.
+   W098 maps the legacy `lambda_value` tag to `RichValue::Callable`, not to a core value
+   variant.
+
 ## 3. Tag Algebra
 Canonical tag list for W3 baseline:
 1. `number`
@@ -62,13 +84,17 @@ Machine-readable table:
 ## 5. Disputed Categories
 ### 5.1 Missing
 1. represented as `missing_arg`,
-2. treated as call-boundary specific, not published-result specific.
+2. Rust-facing name: `CoreValue::Missing`,
+3. treated as call-boundary specific, not published-result specific,
+4. not admitted as a node literal, ordinary array element, persisted value, or published
+   formula result.
 
 ### 5.2 Empty
 1. represented as `empty_cell`,
-2. treated as cell/call-boundary representable,
-3. admitted in `RawFunctionReturn` for interop/UDF raw-return characterization,
-4. not admitted in `PublishedFormulaResult`.
+2. Rust-facing name: `CoreValue::Empty`,
+3. treated as cell/call-boundary representable,
+4. admitted in `RawFunctionReturn` for interop/UDF raw-return characterization,
+5. not admitted in `PublishedFormulaResult`.
 
 ### 5.3 Null
 1. represented only as reserved `null_like` tag in baseline algebra,
@@ -101,7 +127,8 @@ Evidence binding:
 1. arrays are first-class `RawFunctionReturn` and `PublishedFormulaResult` tags; materialization policy is downstream (W4/W5/W6).
 2. the current `array` tag models ordinary worksheet arrays (`EvalArray`) whose cells are scalar worksheet-like atoms.
 3. spec `rich array` is different: it is a rich-value-data container whose elements may themselves be rich value data, including nested rich values.
-4. lambda values are intermediate-eval tags, not baseline cell content tags.
+4. callable/lambda values are intermediate-eval tags, not baseline cell content tags; under
+   W098 they are represented as `RichValue::Callable` with a `#CALC!` core projection.
 5. 3D references are modeled as a `reference_like` subtype (`reference_kind=three_d`) and require resolver-policy handling in W4.
 
 ## 9. Rich Value Alignment

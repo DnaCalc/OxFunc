@@ -957,3 +957,42 @@ Notes:
 4. The intended backend is a uniform resolved function-call-target ABI plus generated or table-driven full-catalog dispatch.
 5. Typed inner kernels should remain separable so later backends can inline, specialize, vectorize, or lower them into other execution representations.
 6. The initial open lanes are resolver-signature mechanical refactor, erased FEC provider ABI, full-catalog handler table, metadata enrichment, parity tests, and OxFml compiled-plan handoff.
+
+## W098 Unified Value Model — CalcValue And Callable Rich
+
+Status: `planned`
+
+Execution target:
+replace OxFunc's evaluation value type `EvalValue` with a single uniform
+`CalcValue { core: CoreValue, rich: Option<Rc<RichValue>> }` (core + optional rich), and
+represent a callable as one of the `RichValue` types (`RichValue::Callable`) carried by an
+opaque, refcounted `Rc<dyn OpaqueCallable>` handle — the foundation for TreeCalc
+node-as-function. Spans the OxFunc big-bang value-model refactor (W2) plus OxFml eval/carrier
+(W3), OxCalc node-value + node-as-function intake (W4), and DnaTreeCalc evidence (W5).
+
+Canonical surfaces:
+1. `docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md`
+2. `crates/oxfunc_value_types/src/lib.rs` (`EvalValue` / `LambdaValue` / `RichValue` /
+   `ExtendedValue` — fold/replace)
+3. `crates/oxfunc_core/src/functions/callable_helpers.rs` (`CallableInvoker`, `require_callable`)
+4. `../OxFml/crates/oxfml_core/src/eval/mod.rs` (`SPECIAL.LAMBDA`, `OxFmlCallableInvoker`,
+   W1 compiled-body cache) and `../OxFml/crates/oxfml_core/src/seam/mod.rs` (`ValuePayload`)
+5. `.beads/` W098 epic plus the kept cross-repo workstream beads `oxf-ahi7` (W2),
+   `fml-oh8.2` (W3), `calc-4vs8.73` (W4), `dtc-z0i.8` (W5)
+
+Depends on: `W1` (OxFml `fml-oh8.1` compiled-body cache, landed).
+
+Notes:
+1. `CalcValue` is the one uniform value type; kernels read `.core`. No layering, no
+   CoreValue-working-type-vs-CalcValue-boundary split.
+2. A callable is `RichValue::Callable(CallableValue{ arity, summary, handle })` with
+   `core: Error(#CALC!)`; opaque to OxFunc (downcast only in OxFml's invoker); the `Rc` is the
+   lifetime (no token-map GC); OxFml may rebind/JIT behind it.
+3. The existing structured rich payload is folded into `RichValue::Object(RichObjectValue)`,
+   preserving the string-keyed extensible rich-data system while freeing `RichValue` to be the
+   full rich enum.
+4. No persistence — callables rebuild from formulas on load; the carrier does not serialize.
+5. Migration is big-bang (~5k `EvalValue` sites → `CalcValue`); compiler + existing suites are
+   the safety net. No code lands under W098 itself — this packet is design + tracking only.
+6. Downstream companion worksets (OxFml W077, OxCalc W059, DnaTreeCalc corpus) are created when
+   each phase starts.
