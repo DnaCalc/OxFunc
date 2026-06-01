@@ -42,6 +42,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 27. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md)
 28. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md)
 29. [W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md)
+30. [W099_CALCVALUE_END_TO_END_MIGRATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W099_CALCVALUE_END_TO_END_MIGRATION.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -73,6 +74,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 26. [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md) owns the planning lane for the next broad smart-fuzzer sweep across function identity, arity, value type, numeric/text bands, arrays, references, context, execution seam, comparison policy, coverage telemetry, and explicit execution gates.
 27. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md) owns the broader array-support sweep after `W080`, including function/argument inventory, static risk classification, compact replay matrices, first post-text tranche selection, local-vs-Excel comparison, and ordinary bug promotion for confirmed divergences.
 28. [W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md) is the design-of-record for the unified `CalcValue` (core + optional rich) value model and the callable as one of the `RichValue` types carried by an opaque Rc handle, spanning the OxFunc value-model refactor plus OxFml/OxCalc/DnaTreeCalc consumer workstreams (W2–W5); `.beads/` owns execution, this packet owns the design and cross-repo lane map.
+29. [W099_CALCVALUE_END_TO_END_MIGRATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W099_CALCVALUE_END_TO_END_MIGRATION.md) owns the execution plan and migration gates for making `CalcValue` the native semantic value type throughout OxFunc function dispatch, argument preparation, kernels, arrays, callable lanes, and rich-value publication, and now explicitly includes the OxFml callable follow-through needed to replace `EvalValue::Lambda` with `CalcValue` / `RichValue::Callable` backed by a real `OxFmlCallableBinding`; its first planning round records that `CalcValue.core` covers every current `CallArgValue` case, so the call boundary should migrate directly to `CalcValue` unless a concrete audited counterexample appears.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

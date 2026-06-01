@@ -996,3 +996,48 @@ Notes:
    the safety net. No code lands under W098 itself — this packet is design + tracking only.
 6. Downstream companion worksets (OxFml W077, OxCalc W059, DnaTreeCalc corpus) are created when
    each phase starts.
+
+## W099 CalcValue End-To-End Migration
+
+Status: `planned`
+
+Execution target:
+execute the full OxFunc migration from the legacy `EvalValue` / `CallArgValue` /
+`EvalArray` / `ArrayCellValue` / `ExtendedValue` surface to `CalcValue` as the native semantic
+value carrier used throughout function dispatch, argument preparation, kernels, arrays,
+references, callable lanes, and rich-value publication, plus the OxFml callable follow-through
+required to make `RichValue::Callable` the real runtime callable carrier rather than a projection
+beside `EvalValue::Lambda`.
+
+Canonical surfaces:
+1. `docs/worksets/W099_CALCVALUE_END_TO_END_MIGRATION.md`
+2. `docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md`
+3. `crates/oxfunc_value_types/src/lib.rs`
+4. `crates/oxfunc_core/src/function_call.rs`
+5. `crates/oxfunc_core/src/functions/surface_dispatch.rs`
+6. `crates/oxfunc_core/src/functions/`
+7. `../OxFml/crates/oxfml_core/src/eval/mod.rs`
+8. downstream handoff surfaces when OxCalc/DnaTreeCalc intake starts
+9. `.beads/` W099 epic `oxf-im4m`
+
+Depends on: `W098`.
+
+Notes:
+1. W099 is the execution/planning successor to W098. W098 owns the model; W099 owns the
+   migration gates, inventories, implementation batches, and final legacy-type audit.
+2. The first planning focus is the distinction between `CallArgValue` and `EvalValue`.
+   Current decision: `CalcValue.core` covers every current `CallArgValue` case, including
+   `MissingArg` -> `CoreValue::Missing`, `EmptyCell` -> `CoreValue::Empty`, and both reference
+   lanes -> `CoreValue::Reference`.
+3. The safe migration default is to replace `CallArgValue` with `CalcValue` at the call
+   boundary, not to introduce a new argument-slot wrapper. Direct-array versus
+   reference-derived provenance is preserved in preparation/resolution, starting from
+   `CoreValue::Array` versus `CoreValue::Reference`.
+4. No implementation batch starts until the call-boundary, array-cell, dispatch-ABI, and first
+   kernel-batch gates are recorded.
+5. OxFml callable completion is in scope: `SPECIAL.LAMBDA`, helper/defined-name callables,
+   returned/curried lambdas, publication, re-supply, and higher-order invocation must use
+   `CalcValue` / `RichValue::Callable` with a real `OxFmlCallableBinding` handle before W099 can
+   close.
+6. W099 remains `scope_partial` / `target_partial` / `integration_partial` until no unowned
+   legacy value path remains.

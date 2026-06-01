@@ -3,7 +3,7 @@
 Status: `planned`
 
 > Names (`CoreValue` / `RichValue` / `CalcValue` / `CallableValue` / `OpaqueCallable`) are
-> design-of-record names unless implementation evidence forces a later correction.
+> design-of-record names for W098/W099.
 >
 > Note on numbering: `W2`–`W5` below are the **value-model workstream** labels (continuing
 > from the already-landed `W1` OxFml compiled-body cache). They are distinct from the OxFunc
@@ -76,22 +76,26 @@ the concrete refactor and callable-carrier work.
 ```rust
 // Core calculus value — XLOPER12-like; the `.core` every CalcValue carries.
 enum CoreValue { Number(f64), Text(ExcelText), Logical(bool), Error(WorksheetErrorCode),
-                 Empty, Missing, Array(EvalArray), Reference(ReferenceLike) }
+                 Empty, Missing, Array(CalcArray), Reference(ReferenceLike) }
 
 // Extensible rich layer — Callable is ONE of the RichValue types, a peer of the existing
 // structured/linked-data rich. The current `RichValue` struct
 // { value_type: RichValueType, fallback: RichValueData, kvps } — string-keyed,
-// runtime-extensible — remains the structured/object payload inside the broader `RichValue`
-// enum. Image/extended-error/entity/formatted-number/dynamic-array can split out as future
-// typed variants when evidence or implementation pressure justifies it.
+// runtime-extensible — becomes the structured/object payload inside the broader `RichValue`
+// enum.
 enum RichValue {
     Object(RichObjectValue),           // existing kvp/linked-data rich (image, entity, ...)
     Callable(CallableValue),           // the new callable type — one of the rich types
-    // future: Image(..), ExtendedError(..), DynamicArrayAnchor(..), …
+    Presentation(PresentationValue),   // display/formatting hint attached to a core value
+    ErrorMetadata(ErrorMetadataValue), // error-surface metadata attached to an error core
 }
 
 // THE uniform value: returned from and passed to OxFunc as args; stored by OxCalc on a node.
 struct CalcValue { core: CoreValue, rich: Option<Rc<RichValue>> }
+
+// Universal array carrier. Representation-level arrays hold CalcValues. Later policy may
+// restrict particular contexts, but the system value type must not depend on legacy array cells.
+struct CalcArray { shape: ArrayShape, cells: Vec<CalcValue> }
 
 struct CallableValue { arity: CallableArityShape, summary: String, handle: Rc<dyn OpaqueCallable> }
 
@@ -106,6 +110,13 @@ trait OpaqueCallable: std::fmt::Debug + 'static {
 and stored by OxCalc on a node. Kernels read `.core`. `CoreValue` is the inner calculus enum,
 not a separate "working type" — the thing passed around is always `CalcValue`. A scalar is
 `CalcValue { core: Number(3.0), rich: None }`.
+
+**Core projection rule:** every `CalcValue` has a canonical ordinary value projection in
+`.core`. `rich` never replaces `core`; it only augments it. Consumers that are not rich-aware,
+or whose metadata does not admit the specific rich type, must be able to degrade through
+`.core` with deterministic Excel-compatible behavior. Rich-aware consumers may inspect
+`.rich`, but the value remains a `CalcValue { core, rich }` pair rather than a rich payload
+standing alone.
 
 The model is intentionally two-tier, not one flat extended enum. `CoreValue` captures the
 traditional Excel-compatible value gamut shared by C API/XLOPER12-style interop, COM/VBA
@@ -155,10 +166,170 @@ Today's structured rich lives only in `ExtendedValue`
 `crates/oxfunc_value_types/src/lib.rs:633`) and is produced by
 `image_fn`/`hyperlink_fn`/`now_fn`/`today_fn`/`surface_dispatch` (5 files, ~31 sites).
 Under the unified model these become `CalcValue` with `rich = Some(RichValue::Object(..))`;
-`ExtendedValue`'s role (core + rich + presentation superset) is subsumed by `CalcValue`
-(presentation reconciled as a future rich type / side-channel). The string-keyed
+`ExtendedValue`'s role (core + rich + presentation superset) is subsumed by `CalcValue`;
+current presentation wrappers map to `RichValue::Presentation`. The string-keyed
 `RichValueType`/`RichValueData` extensibility is preserved inside `RichValue::Object` —
 runtime-unknown rich types still ride there, which is the extensibility the design requires.
+
+### 4.4A Legacy rich/extended mapping to `CalcValue`
+
+There is no known current rich-value usage that cannot map cleanly into `CalcValue`, provided
+the migration preserves the core projection rule:
+
+1. every `CalcValue` has exactly one `core`,
+2. `rich` is optional metadata/payload attached to that core,
+3. ordinary value semantics, fallback display, coercion degradation, and unsupported-kernel
+   behavior start from `.core`,
+4. rich-aware consumers inspect `rich` only when their metadata admits that rich type.
+
+Current legacy-to-target map:
+
+| Current carrier | Current producers | Target `CalcValue` |
+| --- | --- | --- |
+| `ExtendedValue::Core(EvalValue::Number/Text/Logical/Error/Array/Reference)` | extended dispatch wrapper for ordinary functions and provider failures | `CalcValue { core: CoreValue::<matching case>, rich: None }` |
+| `ExtendedValue::RichValue(Box<RichValue>)` where old `RichValue` is `{ value_type, fallback, kvps }` | `IMAGE` / `_webimage` | `CalcValue { core: rich_object_fallback_to_core(fallback), rich: Some(Rc::new(RichValue::Object(RichObjectValue { value_type, fallback, kvps }))) }` |
+| `ExtendedValue::ValueWithPresentation { value, hint }` | `NOW`, `TODAY`, `HYPERLINK` | `CalcValue { core: CoreValue::from(value), rich: Some(Rc::new(RichValue::Presentation(PresentationValue { hint }))) }` |
+| `ExtendedValue::ErrorWithMetadata { code, surface }` | no current ordinary function producer found in OxFunc scan; reserved extended-error lane | `CalcValue { core: CoreValue::Error(code), rich: Some(Rc::new(RichValue::ErrorMetadata(ErrorMetadataValue { surface }))) }` |
+| `EvalValue::Lambda(lambda)` | current OxFml callable token path and helper tests | `CalcValue { core: CoreValue::Error(#CALC!), rich: Some(Rc::new(RichValue::Callable(CallableValue { arity, summary, handle }))) }` |
+
+Old structured rich payload mapping:
+
+| Current structured rich type | Target type |
+| --- | --- |
+| `RichValue` struct | `RichValue::Object(RichObjectValue)` |
+| `RichValueType` | `RichObjectType` |
+| `RichValueData::Number/Text/Logical/Error/EmptyCell` | `RichObjectData::Number/Text/Logical/Error/Empty` |
+| `RichValueData::Array(RichArray)` | `RichObjectData::Array(CalcArray)` where each element is a `CalcValue` |
+| `RichValueData::RichValue(Box<RichValue>)` | `RichObjectData::Object(Box<RichObjectValue>)` |
+| `RichValueKeyValue` | `RichObjectKeyValue` |
+
+Function-specific current mappings:
+
+1. `IMAGE`: old `ExtendedValue::RichValue(_webimage)` becomes a `CalcValue` whose `core` is the
+   `_webimage` fallback text and whose `rich` is `RichValue::Object(_webimage)`. Provider errors
+   remain `CalcValue { core: Error(...), rich: None }` unless a later extended-error lane adds
+   metadata.
+2. `HYPERLINK`: old `ValueWithPresentation { value: Text(display), style: Hyperlink }` becomes
+   `CalcValue { core: Text(display), rich: Some(Presentation(style=Hyperlink)) }`.
+3. `NOW` / `TODAY`: old `ValueWithPresentation { value: Number(serial), number_format:
+   DateLike }` becomes `CalcValue { core: Number(serial), rich: Some(Presentation(DateLike)) }`.
+4. Callable values: old session-local `EvalValue::Lambda` is not an object rich value; it maps
+   to `RichValue::Callable` with `#CALC!` as its core projection.
+
+Migration-only legacy projection:
+
+1. `ExtendedValue -> CalcValue` is lossless for current OxFunc producers.
+2. `CalcValue -> ExtendedValue` may exist only as a W099 staging aid while legacy call sites are
+   being removed:
+   - `rich = None` projects to `ExtendedValue::Core(core_to_eval_value(core))` when the core is
+     representable by legacy `EvalValue`,
+   - `RichValue::Object` projects to `ExtendedValue::RichValue`,
+   - `RichValue::Presentation` projects to `ExtendedValue::ValueWithPresentation`,
+   - `RichValue::ErrorMetadata` projects to `ExtendedValue::ErrorWithMetadata`,
+   - `RichValue::Callable` has no faithful legacy `ExtendedValue` projection; any staging-only
+     fallback is the `#CALC!` core unless the caller is the callable-aware OxFml path.
+3. No `CalcValue -> ExtendedValue` projection survives the W099 end state.
+
+Arrays are representation-level arrays of `CalcValue`. Rich values may appear as array elements
+because an element is a `CalcValue { core, rich }`. W098 does not impose a representation-level
+ban on rich elements, callable elements, empty elements, or nested-array elements while the
+legacy value model is being cleared out. Later semantic/admission policy may reject some of
+those cases at particular boundaries or in particular functions, but the universal system value
+type should be broad enough to carry them.
+
+Each `CalcValue` holds one optional `RichValue`. That is the W098 target shape. Multiple rich
+facets on one `CalcValue` are not represented by W098/W099 and are outside the end-state model
+for this migration.
+
+### 4.4B Rich-awareness metadata rule
+
+The value model is universal, but rich handling is not implicit. Function metadata must say when
+an input position or return value admits rich handling.
+
+Rule:
+
+1. every function receives and returns `CalcValue`,
+2. every function can always degrade through `.core`,
+3. a function may inspect, preserve, transform, or produce `.rich` only when its metadata marks
+   that input or return position as rich-aware,
+4. rich-blind inputs must treat rich payloads through the core projection rule unless the
+   function's ordinary Excel semantics explicitly reject the core value,
+5. rich-producing returns must mark the return surface as rich-aware so downstream consumers know
+   to preserve `.rich` rather than projecting to `.core` only.
+
+Current metadata shape:
+
+1. `FunctionMeta` carries broad execution facts: arity, determinism, volatility, host
+   interaction, thread safety, `ArgPreparationProfile`, `CoercionLiftProfile`,
+   `KernelSignatureClass`, and FEC dependency profiles.
+2. `RegistryFunctionMeta` wraps `FunctionMeta` and adds `SemanticKernelMetadata`,
+   `ArgAdmissionMetadata`, metadata version keys, and `producer_capability_set_keys`.
+3. `ArgAdmissionMetadata` currently has coarse variants:
+   - `ExistingArgPreparation { profile }`,
+   - `RichArgAccepted { required_capability_set_keys }`,
+   - `SparseRangeAccepted { extent_class, cardinality_class }`.
+4. `ParameterDescriptor` carries signature display data: name, optional/repeats, and optional
+   help text.
+5. There is no current per-input rich-awareness flag and no current return rich-awareness flag.
+   `IMAGE` exposes producer capability keys, and `ArgAdmissionMetadata::RichArgAccepted` exists
+   for rich argument admission, but this is not yet the simple per-input/per-return metadata W098
+   needs.
+
+Chosen W098 target shape:
+
+```rust
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RichValueHandling {
+    CoreOnly,      // default: ignore/degrade through `.core`
+    RichAware,    // may inspect/preserve/transform `.rich`
+}
+```
+
+`RichValueUsageMetadata` belongs on `RegistryFunctionMeta`, not directly on `FunctionMeta`.
+`FunctionMeta` stays the compact static execution-shape carrier authored by function modules.
+Rich usage is registry/admission/export metadata: it is parameter-aligned, versioned, visible in
+registry snapshots, and may be generated or overlaid from catalog/signature data.
+
+```rust
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RichValueUsageMetadata {
+    pub input_rich_value_handling: Vec<RichValueHandling>, // aligned with signature parameters
+    pub repeating_input_rich_value_handling: Option<RichValueHandling>,
+    pub return_rich_value_handling: RichValueHandling,
+}
+
+pub struct RegistryFunctionMeta {
+    // existing fields...
+    pub rich_value_usage: RichValueUsageMetadata,
+    pub rich_value_usage_version: String,
+}
+```
+
+`ParameterDescriptor` remains signature display/help metadata. Consumers that want
+per-parameter rich flags read the parameter-aligned projection from
+`RegistryFunctionMeta.rich_value_usage`. Only add a direct `FunctionMeta` field if a later
+runtime-hot path proves it needs a compact constant there.
+
+Initial defaults and examples:
+
+1. default for all ordinary inputs: `CoreOnly`,
+2. default for ordinary returns: `CoreOnly`,
+3. `IMAGE` return: `RichAware` because it produces `_webimage` rich object payload,
+4. `HYPERLINK`, `NOW`, `TODAY` returns: `RichAware` because they produce presentation rich
+   payloads,
+5. rich-consuming functions mark the relevant input position `RichAware`; only those positions
+   may inspect `.rich`,
+6. functions that merely tolerate rich inputs by degrading to `.core` stay `CoreOnly`.
+
+Version/export implication:
+
+1. add `rich_value_usage_version` to the registry snapshot identity,
+2. export one compact return column, e.g. `return_rich_value_handling`,
+3. export compact input columns, e.g. `input_rich_value_handling` as `CoreOnly|RichAware|...`
+   aligned to the signature parameter order, and `repeating_input_rich_value_handling` for
+   trailing repeat parameters,
+4. keep capability-set metadata separate: rich-awareness says the function may use/preserve
+   `.rich`; capability keys say which concrete rich object features are required or produced.
 
 ### 4.5 Derive mechanics
 
@@ -228,8 +399,9 @@ must travel as a value.
 
 In scope:
 
-1. OxFunc value-model refactor (`EvalValue` → `CalcValue`; `CoreValue`; `RichValue` enum with
-   `Callable`; `Object`; `CallableValue`; `OpaqueCallable`); generalized
+1. OxFunc value-model refactor (`EvalValue` → `CalcValue`; `CoreValue`; `CalcArray`;
+   `RichValue` enum with `Object`, `Callable`, `Presentation`, and `ErrorMetadata`;
+   `CallableValue`; `OpaqueCallable`); generalized
    `CallableInvoker`; retired `LambdaValue` (W2).
 2. OxFml eval on `CalcValue`; `SPECIAL.LAMBDA` produces the callable carrier; invoker downcasts
    and runs without per-call recompile; full-scope (IF/LET/curried) by construction (W3).
@@ -238,12 +410,14 @@ In scope:
    (W4).
 4. DnaTreeCalc node-as-function producer corpus + at-scale evidence (W5).
 
-Out of scope (deferred, designed-for):
+Out of scope for W098/W099:
 
-1. Rich-data `RichValue` members beyond the callable (Image, ExtendedError, Entity,
-   FormattedNumber, dynamic-array anchor) — the shape hosts them; populating them is later work.
-2. Callables nested inside an OxFunc container (array/entity of lambdas) — the only case needing
-   the carrier to live *inside* an OxFunc rich value.
+1. Adding more typed `RichValue` variants beyond `Object`, `Callable`, `Presentation`, and
+   `ErrorMetadata`. Runtime-unknown rich objects remain represented by
+   `RichValue::Object(RichObjectValue)`.
+2. Boundary-specific restrictions on callable/rich/nested-array values inside arrays. The system
+   representation admits arrays of `CalcValue`; later function/profile policy may reject
+   specific contained values where Excel behavior or host constraints require it.
 3. Persistence/serialization of the carrier (callables rebuild from formulas on load).
 4. Cross-workspace references, raw reference-literal arrays, dynamic-INDIRECT-in-raw-context,
    strict-excel profile (separately deprioritized).
@@ -253,14 +427,16 @@ Out of scope (deferred, designed-for):
 ### W2 — OxFunc value-model refactor (the foundation, big-bang)
 
 1. Define `CoreValue`, the `RichValue` **enum** (`Callable` peer to the existing structured
-   rich object payload), `CalcValue`, `CallableValue`, `OpaqueCallable`. Move `EvalValue`
-   variants into `CoreValue` **minus `Lambda`** (→ `RichValue::Callable`). Fold the existing
-   structured `RichValue` payload into `RichValue::Object(RichObjectValue)`, retarget the
-   `RichValueData::RichValue` / `ExtendedValue::RichValue` references.
+   rich object payload), `CalcValue`, `CalcArray`, `CallableValue`, `OpaqueCallable`, and rich
+   metadata variants. Move `EvalValue` variants into `CoreValue` **minus `Lambda`** (→
+   `RichValue::Callable`). Fold the existing structured `RichValue` payload into
+   `RichValue::Object(RichObjectValue)`, retarget the `RichValueData::RichValue` /
+   `ExtendedValue::RichValue` references, and map presentation/error metadata through §4.4A.
 2. **Replace `EvalValue` with `CalcValue`** uniformly across OxFunc — returned from and passed
    to every kernel as args. Compiler-guided fix of the ~5k sites: scalar/array kernels read
-   `.core` and emit `CalcValue { core, rich: None }`; a non-`None` `rich` that isn't meaningful
-   to a scalar kernel errors via the `#CALC!` core. Mechanical breadth, shallow depth.
+   `.core` and emit `CalcValue { core, rich: None }` unless the function is rich-aware by
+   metadata. Rich-blind functions degrade through `.core` under the core projection rule.
+   Mechanical breadth, shallow depth.
 3. **Generalize `CallableInvoker`** (`callable_helpers.rs:~117`, 3 impls): take `&CallableValue`
    instead of `&LambdaValue`; use `arity` for arg shaping and pass the opaque `handle` straight
    to the (OxFml) invoker. Update `MAP`/`REDUCE`/`SCAN`/`BYROW`/`BYCOL`/`MAKEARRAY`/`GROUPBY`/
@@ -390,20 +566,21 @@ Preflight on `2026-05-31` found the following current-state anchors:
 
 Recommended execution order:
 
-1. **Value-crate scaffolding first.** Introduce `CoreValue`, `CalcValue`, `RichValue::Object`,
-   `RichValue::Callable`, `CallableValue`, and `OpaqueCallable` in
+1. **Value-crate scaffolding first.** Introduce `CoreValue`, `CalcValue`, `CalcArray`,
+   `RichValue::Object`, `RichValue::Callable`, `RichValue::Presentation`,
+   `RichValue::ErrorMetadata`, `CallableValue`, and `OpaqueCallable` in
    `crates/oxfunc_value_types/src/lib.rs`; preserve temporary helper constructors/conversions so
    ordinary scalar kernels can be migrated mechanically.
-2. **Adapter/preparation layer second.** Update `CallArgValue`, `PreparedArgValue`, array-cell
-   conversions, coercion, and reference resolution to use `CalcValue.core` deliberately. This is
-   where `Empty` and `Missing` admission must be enforced.
+2. **Adapter/preparation layer second.** Move call arguments, prepared frame values, array-cell
+   conversions, coercion, and reference resolution onto `CalcValue.core` deliberately. Delete
+   `CallArgValue`, `PreparedArgValue`, `EvalArray`, and `ArrayCellValue` as carriers once their
+   behavior is ported.
 3. **Callable helpers third.** Change `CallableInvoker` and `require_callable` from
    `&LambdaValue` / `EvalValue::Lambda` to `&CallableValue` / `RichValue::Callable`. Keep
    helper-function dispatch details in the test/mock invokers or OxFml invoker, not on
    `OpaqueCallable`.
 4. **Rich/extended fold fourth.** Replace `ExtendedValue::RichValue` and presentation wrappers
-   with `CalcValue { core, rich: Some(...) }` or an explicit side-channel where the value model
-   should not own presentation.
+   with `CalcValue { core, rich: Some(...) }` according to §4.4A.
 5. **Mechanical kernel sweep last.** Migrate the broad scalar/array kernel surface from
    `EvalValue::*` to `CalcValue` constructors and `.core` matches. Do this after the central
    constructors and helper accessors exist, otherwise every file will invent its own pattern.
@@ -417,6 +594,50 @@ Implementation guardrails:
    v1 equality is handle identity plus arity.
 4. Do not encode captured-reference dependency edges in `CalcValue`; they belong on the
    OxFml/OxCalc publication/candidate surface.
+
+## 8B. End-State Design Decisions
+
+This decision list belongs to W098 because it clarifies the desired end-state value model. W099
+consumes these decisions during migration; it should not invent a different final shape.
+
+Resolved design decisions:
+
+1. **Universal value carrier:** `CalcValue` is the one system value type. Function inputs,
+   function outputs, prepared frame values, array cells, node values, rich values, and callable
+   values are all represented as `CalcValue`.
+2. **No parallel prepared-value carrier:** there is no independent `PreparedArgValue` /
+   aggregate-provenance value type in the target model. Preparation may compute transient local
+   facts, but values in the call stack/frame remain `CalcValue`.
+3. **Universal arrays:** `CalcArray` is an array of `CalcValue`. `CoreValue::Missing`,
+   `CoreValue::Empty`, nested arrays, callables, and rich values are representable as array
+   elements. Any rejection/coercion is boundary/function policy ported from existing behavior,
+   not a narrower representation type.
+4. **References:** functions needing reference-visible semantics receive
+   `CoreValue::Reference` and resolve internally. Value-only functions may receive
+   post-dereferenced `CalcValue`s according to metadata. Direct-array versus reference-derived
+   behavior follows from `CoreValue::Array` versus `CoreValue::Reference`, not a separate value
+   carrier.
+5. **Rich values:** rich/object/presentation/error-metadata values are represented by
+   `CalcValue { core, rich }` using the core projection rule and the §4.4A mapping. Multiple
+   rich facets are not supported by the current `CalcValue` shape and are not an open design
+   issue for W098/W099.
+6. **Callables:** callables are represented as `RichValue::Callable` on `CalcValue` with a
+   `#CALC!` core projection. `EvalValue::Lambda` is deleted during migration; no final callable
+   bridge or side carrier remains.
+7. **Metadata admits rich handling:** rich-aware input and return behavior is declared by
+   `RegistryFunctionMeta.rich_value_usage` (§4.4B). Rich-blind functions use `.core`.
+8. **No final bridges, shims, or side-cars:** temporary compatibility conversions may exist only
+   inside W099 migration commits and must be removed before W099 closure. After the full
+   migration, delete the old value carriers (`EvalValue`, `CallArgValue`, `EvalArray`,
+   `ArrayCellValue`, `PreparedArgValue`, `ExtendedValue`) rather than preserving aliases.
+
+Execution work still required by W099:
+
+1. migrate all OxFunc-local APIs and kernels to `CalcValue`,
+2. port current boundary/function policy onto `CalcValue` matches,
+3. add/update `RegistryFunctionMeta.rich_value_usage` metadata and exports,
+4. run the full local and downstream validation matrix,
+5. remove all legacy value carriers and prove their absence by grep/audit.
 
 ## 9. Key files (verified anchors)
 
@@ -444,28 +665,28 @@ Implementation guardrails:
    (worksheet_error_literal ~60, FormulaValuePresentation ~213), live_bridge.rs
    (format_eval_value_for_display ~1326)}`.
 
-## 10. Risks / open items
+## 10. Execution Risks
 
 1. **Blast radius:** ~5,000 `EvalValue` mentions across ~250 OxFunc files become `CalcValue`.
    Mechanical breadth, shallow depth (kernels gain `.core`). Big-bang on a coordinated branch;
    compiler + existing suites are the net. No serde/FFI/hashing/structural-callable-equality
    reliance (sweep-confirmed).
-2. **`PartialEq`/identity for callables:** equality = `Rc::ptr_eq(handle)` + `arity` (reference
-   identity); the sweep confirmed no kernel/test relies on structural callable equality.
+2. **Callable identity:** callable equality is `Rc::ptr_eq(handle)` + `arity` (reference
+   identity). Migration must remove any implementation that derives callable equality from
+   `summary`, arity alone, or structural body identity.
 3. **Lifetime is the Rc, not a registry:** the node's `Rc` handle keeps the OxFml binding alive;
    structural-cache sharing = `Rc::clone`; node clear/edit drops it. No token-map GC, no
    per-frame rehydration of a "durable definition".
 4. **Cross-frame invocation:** the compiled body behind the handle is zero-based and binds into
    the invoking frame's slots (existing path); the W1 cache ensures no per-call recompile.
 5. **`RichValue` enum-vs-object payload:** the existing structured rich payload becomes
-   `RichValue::Object(RichObjectValue)`. Splitting common modern cases into typed peers
-   (Image/Entity/FormattedNumber/…) is allowed later when evidence or implementation pressure
-   justifies it. The v1 choice keeps string-keyed extensibility intact.
+   `RichValue::Object(RichObjectValue)`. The W098 target keeps string-keyed extensibility there
+   rather than adding typed `Image` / `Entity` / `FormattedNumber` variants in this migration.
 6. **Incremental-recalc lifetime:** confirm the `Rc`-on-node model interacts correctly with
    OxCalc's dirty/invalidation (clean callable nodes keep a live `Rc`; dirtied/edited ones drop
    and re-materialize).
-7. **Names** are provisional ("portable_callable" is dropped from the public model — it's just a
-   callable; "portable" is an OxFml-internal build detail).
+7. **No hidden compatibility residue:** W099 must prove by grep/audit that the old value
+   carriers are deleted rather than aliased or retained behind compatibility wrappers.
 
 ## 11. Companion worksets (downstream — create when each phase starts)
 
