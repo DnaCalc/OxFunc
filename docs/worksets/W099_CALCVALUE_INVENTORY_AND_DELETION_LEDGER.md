@@ -535,3 +535,69 @@ Validation:
 6. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test evaluator_tests evaluator_executes_foundation_array_lambda_carrier_case_ftc_0455`: passed, 1 test.
 7. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test callable_transport_tests`: passed, 1 test.
 8. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test evaluator_tests`: attempted after the bridge correction; 99 passed, 4 failed. The remaining failing tests are outside the call-boundary migration slice and sit in an OxFml worktree that already has unrelated dirty parser/binding/test files; they are not treated as W099-005 closure evidence.
+
+## 13. W099-006 Array Model Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-007 must move preparation and adapter surfaces away from legacy array-cell carriers.
+2. W099-008/W099-012 must move dispatcher and kernel return/input paths away from `EvalValue::Array(EvalArray)`.
+3. W099-015 must delete `EvalArray`, `ArrayCellValue`, and the lossy legacy projection helpers after all active callers use `CalcArray` / `CalcValue`.
+
+Planned scope:
+1. Make `CalcArray` the shared construction/projection surface for row-major array shape validation.
+2. Centralize legacy array-cell coercion policy on `CalcValue` / `CalcArray` instead of open-coded conversions.
+3. Route dynamic-array spill/result construction through `CalcArray` while preserving the legacy dispatcher return carrier for later beads.
+4. Preserve empty-cell and error-cell behavior in both CalcValue-native and legacy-projected paths.
+
+Evidence:
+1. `CalcArray::from_cells_iter`, `CalcArray::from_legacy_cells_iter`, `CalcArray::cell_count`, and `CalcArray::to_legacy_eval_array_lossy` now provide native array construction/projection helpers.
+2. `CalcValue::to_legacy_array_cell_lossy` and `ArrayCellValue::to_calc_value_lossy` centralize the temporary legacy array-cell coercion policy, including `CoreValue::Empty -> ArrayCellValue::EmptyCell` and unrepresentable nested/missing/reference cells to `#VALUE!`.
+3. `CallArgValue::value(CalcValue)` now projects `CoreValue::Array(CalcArray)` through the shared `CalcArray` legacy projection helper instead of duplicating array-cell mapping.
+4. Dynamic-array reshape result construction now validates and constructs through `CalcArray` before projecting back to the legacy `EvalArray` return carrier.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-006 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-006 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused value-type array tests and dynamic-array helper tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not a function-semantic bead; array carrier behavior is pinned by deterministic Rust tests. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this array carrier bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this array carrier bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new cross-repo caller API change was introduced in this bead. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-006 scope is shared array carrier/conversion helpers and dynamic-array result routing, not deletion of all legacy array consumers. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-006 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.6` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asked for array model migration, not full deletion of every `EvalArray` and `ArrayCellValue` occurrence in all function modules.
+2. Gate criteria re-read: passed. Shared array construction, row-major access, shape validation, dynamic-array result construction, and array-cell coercion policy now route through `CalcArray` / `CalcValue` surfaces.
+3. Silent scope reduction check: passed. Remaining `EvalArray` / `ArrayCellValue` consumers are reported as W099-007/W099-008/W099-012/W099-015 lanes rather than final architecture.
+4. "Looks done but is not" pattern check: passed. Legacy projection helpers are named `lossy` and recorded as migration-only.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, and remaining integration lanes for the W099-006 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: the first value-type pass left `EvalValue::Array` conversion using the older optional `ArrayCellValue::to_calc_value` path; it now uses `to_calc_value_lossy` so empty array cells consistently become `CoreValue::Empty`.
+2. Issue found and corrected: dynamic-array `VSTACK` still bypassed the central `build_array` helper through `EvalArray::from_cells_iter`; it now routes through the `CalcArray`-backed result builder.
+3. Remaining tension: many function modules still carry `EvalArray` / `ArrayCellValue` in signatures and tests because W099-007/W099-008/W099-012 own adapter/dispatcher/kernel migration and W099-015 owns deletion.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml calc_array --lib`: passed, 4 tests.
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml dynamic_array_reshape --lib`: passed, 11 tests.
+3. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 24 tests.
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1332 passed, 1 ignored.

@@ -567,6 +567,19 @@ impl CalcValue {
     pub fn allowed_at(&self, boundary: ValueBoundary) -> bool {
         boundary.allows(self.tag())
     }
+
+    pub fn to_legacy_array_cell_lossy(&self) -> ArrayCellValue {
+        match &self.core {
+            CoreValue::Number(n) => ArrayCellValue::Number(*n),
+            CoreValue::Text(t) => ArrayCellValue::Text(t.clone()),
+            CoreValue::Logical(b) => ArrayCellValue::Logical(*b),
+            CoreValue::Error(code) => ArrayCellValue::Error(*code),
+            CoreValue::Empty => ArrayCellValue::EmptyCell,
+            CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => {
+                ArrayCellValue::Error(WorksheetErrorCode::Value)
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -608,8 +621,30 @@ impl CalcArray {
         )
     }
 
+    pub fn from_cells_iter(
+        shape: ArrayShape,
+        cells: impl IntoIterator<Item = CalcValue>,
+    ) -> Option<Self> {
+        if shape.rows == 0 || shape.cols == 0 {
+            return None;
+        }
+        let cells: Vec<CalcValue> = cells.into_iter().collect();
+        Self::new(shape, cells)
+    }
+
+    pub fn from_legacy_cells_iter(
+        shape: ArrayShape,
+        cells: impl IntoIterator<Item = ArrayCellValue>,
+    ) -> Option<Self> {
+        Self::from_cells_iter(shape, cells.into_iter().map(CalcValue::from))
+    }
+
     pub const fn shape(&self) -> ArrayShape {
         self.shape
+    }
+
+    pub const fn cell_count(&self) -> usize {
+        self.shape.cell_count()
     }
 
     pub fn get(&self, row: usize, col: usize) -> Option<&CalcValue> {
@@ -631,6 +666,16 @@ impl CalcArray {
         let start = row.checked_mul(self.shape.cols)?;
         let end = start.checked_add(self.shape.cols)?;
         self.cells.get(start..end)
+    }
+
+    pub fn to_legacy_eval_array_lossy(&self) -> EvalArray {
+        EvalArray::new(
+            self.shape,
+            self.iter_row_major()
+                .map(CalcValue::to_legacy_array_cell_lossy)
+                .collect(),
+        )
+        .expect("CalcArray invariants convert into EvalArray")
     }
 }
 
@@ -802,6 +847,16 @@ pub enum ArrayCellValue {
 }
 
 impl ArrayCellValue {
+    pub fn to_calc_value_lossy(&self) -> CalcValue {
+        match self {
+            Self::Number(n) => CalcValue::number(*n),
+            Self::Text(t) => CalcValue::text(t.clone()),
+            Self::Logical(b) => CalcValue::logical(*b),
+            Self::Error(code) => CalcValue::error(*code),
+            Self::EmptyCell => CalcValue::empty(),
+        }
+    }
+
     pub fn to_calc_value(&self) -> Option<CalcValue> {
         match self {
             Self::Number(n) => Some(CalcValue::number(*n)),
@@ -820,6 +875,12 @@ impl ArrayCellValue {
             Self::Error(code) => Some(EvalValue::Error(*code)),
             Self::EmptyCell => None,
         }
+    }
+}
+
+impl From<ArrayCellValue> for CalcValue {
+    fn from(value: ArrayCellValue) -> Self {
+        value.to_calc_value_lossy()
     }
 }
 
@@ -1078,7 +1139,7 @@ impl From<EvalValue> for CalcValue {
             EvalValue::Array(array) => {
                 let cells = array
                     .iter_row_major()
-                    .map(|cell| cell.to_calc_value().unwrap_or_else(CalcValue::empty))
+                    .map(ArrayCellValue::to_calc_value_lossy)
                     .collect();
                 Self::array(
                     CalcArray::new(array.shape(), cells)
@@ -1144,21 +1205,7 @@ impl CallArgValue {
             CoreValue::Empty => Self::EmptyCell,
             CoreValue::Missing => Self::MissingArg,
             CoreValue::Array(array) => {
-                let cells = array
-                    .iter_row_major()
-                    .map(|cell| match &cell.core {
-                        CoreValue::Number(n) => ArrayCellValue::Number(*n),
-                        CoreValue::Text(t) => ArrayCellValue::Text(t.clone()),
-                        CoreValue::Logical(b) => ArrayCellValue::Logical(*b),
-                        CoreValue::Error(code) => ArrayCellValue::Error(*code),
-                        CoreValue::Empty => ArrayCellValue::EmptyCell,
-                        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
-                    })
-                    .collect();
-                Self::Eval(EvalValue::Array(
-                    EvalArray::new(array.shape(), cells)
-                        .expect("CalcArray invariants convert into EvalArray"),
-                ))
+                Self::Eval(EvalValue::Array(array.to_legacy_eval_array_lossy()))
             }
             CoreValue::Reference(reference) => Self::Reference(reference),
         }
@@ -1272,13 +1319,14 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayShape, CalcArray, CalcValue, CallArgValue, CallableArityShape, CallableCaptureMode,
-        CellStyleHint, CompositeReferenceOperation, CoreValue, ErrorMetadataValue, ErrorSurface,
-        EvalValue, ExcelText, LambdaValue, NumberFormatHint, PresentationHint, PresentationValue,
-        ReferenceDisplay, ReferenceHandle, ReferenceHandleId, ReferenceIdentity, ReferenceKind,
-        ReferenceLike, ReferenceSystemId, RichObjectData, RichObjectKeyValue, RichObjectType,
-        RichObjectValue, RichValue, RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary,
-        ValueTag, WorksheetErrorCode, EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
+        ArrayCellValue, ArrayShape, CalcArray, CalcValue, CallArgValue, CallableArityShape,
+        CallableCaptureMode, CellStyleHint, CompositeReferenceOperation, CoreValue,
+        ErrorMetadataValue, ErrorSurface, EvalArray, EvalValue, ExcelText, LambdaValue,
+        NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
+        ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
+        RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
+        RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
+        EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
     };
 
     #[test]
@@ -1475,6 +1523,52 @@ mod tests {
         assert_eq!(
             CallArgValue::value(value),
             CallArgValue::Eval(EvalValue::Lambda(lambda))
+        );
+    }
+
+    #[test]
+    fn calc_array_legacy_projection_preserves_empty_and_error_cells() {
+        let shape = ArrayShape { rows: 2, cols: 2 };
+        let array = CalcArray::from_cells_iter(
+            shape,
+            [
+                CalcValue::number(1.0),
+                CalcValue::empty(),
+                CalcValue::error(WorksheetErrorCode::Div0),
+                CalcValue::text(ExcelText::from_interop_assignment("x")),
+            ],
+        )
+        .unwrap();
+
+        assert_eq!(array.cell_count(), 4);
+        assert_eq!(
+            array.to_legacy_eval_array_lossy(),
+            EvalArray::from_rows(vec![
+                vec![ArrayCellValue::Number(1.0), ArrayCellValue::EmptyCell],
+                vec![
+                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
+                    ArrayCellValue::Text(ExcelText::from_interop_assignment("x"))
+                ],
+            ])
+            .unwrap()
+        );
+    }
+
+    #[test]
+    fn calc_array_legacy_projection_maps_unrepresentable_cells_to_value_error() {
+        let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
+        let reference = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
+        let array = CalcArray::from_rows(vec![vec![nested, CalcValue::missing(), reference]])
+            .expect("nested CalcArray cells are representable in CalcArray");
+
+        assert_eq!(
+            array.to_legacy_eval_array_lossy(),
+            EvalArray::from_rows(vec![vec![
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+                ArrayCellValue::Error(WorksheetErrorCode::Value),
+            ]])
+            .unwrap()
         );
     }
 

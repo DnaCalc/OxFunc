@@ -7,12 +7,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
-    run_values_only_prepared,
+    coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    run_values_only_prepared, PreparedArgValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcArray, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
 
 macro_rules! reshape_meta {
@@ -194,8 +194,8 @@ fn build_array(
     cols: usize,
     cells: Vec<ArrayCellValue>,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
-    EvalArray::new(ArrayShape { rows, cols }, cells)
-        .map(EvalValue::Array)
+    CalcArray::from_legacy_cells_iter(ArrayShape { rows, cols }, cells)
+        .map(|array| EvalValue::Array(array.to_legacy_eval_array_lossy()))
         .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
@@ -545,9 +545,7 @@ pub fn eval_vstack_prepared(
             })
         })
     });
-    EvalArray::from_cells_iter(ArrayShape { rows, cols }, cells)
-        .map(EvalValue::Array)
-        .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
+    build_array(rows, cols, cells.collect())
 }
 
 pub fn eval_wraprows_prepared(
@@ -765,7 +763,11 @@ pub fn eval_sort_prepared(
             let lhs_cell = array.get(sort_index, *lhs).expect("validated column");
             let rhs_cell = array.get(sort_index, *rhs).expect("validated column");
             let ord = compare_cell_values(lhs_cell, rhs_cell);
-            if descending { ord.reverse() } else { ord }
+            if descending {
+                ord.reverse()
+            } else {
+                ord
+            }
         });
         let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
         for row in 0..array.shape().rows {
@@ -782,7 +784,11 @@ pub fn eval_sort_prepared(
         let lhs_cell = array.get(*lhs, sort_index).expect("validated row");
         let rhs_cell = array.get(*rhs, sort_index).expect("validated row");
         let ord = compare_cell_values(lhs_cell, rhs_cell);
-        if descending { ord.reverse() } else { ord }
+        if descending {
+            ord.reverse()
+        } else {
+            ord
+        }
     });
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
     for row in order {
