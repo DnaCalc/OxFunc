@@ -105,7 +105,7 @@ pub fn eval_countblank_surface(
         }
         for item in expand_aggregate_arg(arg, resolver).map_err(CountBlankEvalError::Preparation)? {
             if matches!(
-                item.origin,
+                item.origin(),
                 AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)
                     | AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)
             ) {
@@ -113,7 +113,7 @@ pub fn eval_countblank_surface(
                     CoercionError::UnsupportedValueKind("countblank_array_substitute"),
                 ));
             }
-            if calc_value_counts_as_blank(&item.value).map_err(CountBlankEvalError::Preparation)? {
+            if calc_value_counts_as_blank(item.value()).map_err(CountBlankEvalError::Preparation)? {
                 count += 1.0;
             }
         }

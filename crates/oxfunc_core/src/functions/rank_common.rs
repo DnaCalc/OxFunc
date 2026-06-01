@@ -1,6 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{
-    AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
+    coerce_prepared_to_number, prepare_arg_values_only, AggregatePreparedValue, PreparedArgValue,
 };
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceResolver;
@@ -12,7 +12,9 @@ pub enum RankOrder {
     Ascending,
 }
 
-pub fn collect_rank_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, CoercionError> {
+pub(crate) fn collect_rank_values(
+    args: &[AggregatePreparedValue],
+) -> Result<Vec<f64>, CoercionError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = median_argument_value(arg)? {

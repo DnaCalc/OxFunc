@@ -1127,7 +1127,7 @@ pub fn eval_surface_value_call_with_dispatch_key(
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<CalcValue, WorksheetErrorCode> {
-    let dispatch_args = dispatch_args_from_calc_values(args);
+    let dispatch_args = legacy_kernel_args_from_calc_values(args);
     let args = dispatch_args.as_slice();
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
@@ -1165,11 +1165,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
     }
 }
 
-fn dispatch_args_from_calc_values(args: &[CalcValue]) -> Vec<CallArgValue> {
+fn legacy_kernel_args_from_calc_values(args: &[CalcValue]) -> Vec<CallArgValue> {
     args.iter().cloned().map(CallArgValue::value).collect()
 }
 
-fn calc_values_from_call_args(args: &[CallArgValue]) -> Vec<CalcValue> {
+fn calc_values_from_legacy_call_args(args: &[CallArgValue]) -> Vec<CalcValue> {
     args.iter().cloned().map(calc_value_from_call_arg).collect()
 }
 
@@ -2392,7 +2392,7 @@ pub fn eval_surface_extended_call(
             eval_today_surface_extended(args, &provider).map_err(|e| map_today_error_to_ws(&e))
         }
         _ => {
-            let calc_args = calc_values_from_call_args(args);
+            let calc_args = calc_values_from_legacy_call_args(args);
             eval_surface_value_call(
                 function_id,
                 &calc_args,
@@ -2581,7 +2581,7 @@ fn try_observed_scalar_array_lift(
                 continue;
             }
 
-            let cell_calc_args = calc_values_from_call_args(&cell_args);
+            let cell_calc_args = calc_values_from_legacy_call_args(&cell_args);
             let cell = match eval_surface_value_call_with_callable(
                 function_id,
                 &cell_calc_args,
@@ -2839,7 +2839,7 @@ mod tests {
         function_id: &str,
         args: &[CallArgValue],
     ) -> Result<EvalValue, CallableInvocationError> {
-        eval_surface_value_call(
+        eval_test_surface_value_call(
             function_id,
             args,
             &NoReferenceResolver,
@@ -2851,7 +2851,7 @@ mod tests {
         .map_err(CallableInvocationError::Worksheet)
     }
 
-    fn eval_surface_value_call(
+    fn eval_test_surface_value_call(
         function_id: &str,
         args: &[CallArgValue],
         resolver: &(impl ReferenceResolver + ?Sized),
@@ -2860,7 +2860,7 @@ mod tests {
         locale_ctx: Option<&LocaleFormatContext>,
         host_info: Option<&dyn HostInfoProvider>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
-        let calc_args = super::calc_values_from_call_args(args);
+        let calc_args = super::calc_values_from_legacy_call_args(args);
         super::eval_surface_value_call(
             function_id,
             &calc_args,
@@ -2873,7 +2873,7 @@ mod tests {
         .map(super::eval_value_from_calc_value)
     }
 
-    fn eval_surface_value_call_with_callable(
+    fn eval_test_surface_value_call_with_callable(
         function_id: &str,
         args: &[CallArgValue],
         resolver: &(impl ReferenceResolver + ?Sized),
@@ -2886,7 +2886,7 @@ mod tests {
         rtd_provider: Option<&dyn RtdProvider>,
         registered_external_provider: Option<&dyn RegisteredExternalProvider>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
-        let calc_args = super::calc_values_from_call_args(args);
+        let calc_args = super::calc_values_from_legacy_call_args(args);
         super::eval_surface_value_call_with_callable(
             function_id,
             &calc_args,
@@ -3210,7 +3210,7 @@ mod tests {
         args: &[CallArgValue],
         invoker: &dyn CallableInvoker,
     ) -> Result<EvalValue, CallableInvocationError> {
-        eval_surface_value_call_with_callable(
+        eval_test_surface_value_call_with_callable(
             function_id,
             args,
             &NoReferenceResolver,
@@ -3287,7 +3287,7 @@ mod tests {
                         )
                         .expect("last day serial");
                         if *n >= first_day && *n <= last_day {
-                            let day = eval_surface_value_call(
+                            let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
@@ -3298,7 +3298,7 @@ mod tests {
                             )
                             .map_err(CallableInvocationError::Worksheet)?;
                             let ctx = test_current_excel_host_context();
-                            let text = eval_surface_value_call(
+                            let text = eval_test_surface_value_call(
                                 FUNC_ID_TEXT,
                                 &[
                                     CallArgValue::Eval(day),
@@ -3341,7 +3341,7 @@ mod tests {
                         )
                         .expect("last day serial");
                         if *n >= first_day && *n <= last_day {
-                            let day = eval_surface_value_call(
+                            let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
@@ -3352,7 +3352,7 @@ mod tests {
                             )
                             .map_err(CallableInvocationError::Worksheet)?;
                             let ctx = test_current_excel_host_context();
-                            let text = eval_surface_value_call(
+                            let text = eval_test_surface_value_call(
                                 FUNC_ID_TEXT,
                                 &[
                                     CallArgValue::Eval(day),
@@ -3395,7 +3395,7 @@ mod tests {
                         )
                         .expect("last day serial");
                         if *n >= first_day && *n <= last_day {
-                            let day = eval_surface_value_call(
+                            let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
                                 &NoReferenceResolver,
@@ -3438,7 +3438,7 @@ mod tests {
         let arg = CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
             " -2 ".encode_utf16().collect(),
         )));
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_ABS,
             &[arg],
             &NoReferenceResolver,
@@ -3453,7 +3453,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_power_zero_to_zero_returns_num_error() {
         for function_id in [FUNC_ID_OP_POWER, FUNC_ID_POWER] {
-            let got = eval_surface_value_call(
+            let got = eval_test_surface_value_call(
                 function_id,
                 &[
                     CallArgValue::Eval(EvalValue::Number(0.0)),
@@ -3471,7 +3471,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_add_lifts_arrays() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3509,7 +3509,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_add_broadcasts_arrays() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3547,7 +3547,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_equal_broadcasts_arrays() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_EQUAL,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3591,7 +3591,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_concat_marks_missing_broadcast_coordinates_as_na() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_CONCAT,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3631,7 +3631,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_range_ref_normalizes_bounds() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_RANGE_REF,
             &[
                 CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
@@ -3654,7 +3654,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_op_union_ref_returns_multi_area_reference() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_OP_UNION_REF,
             &[
                 CallArgValue::Reference(ReferenceLike::new(
@@ -3683,7 +3683,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_vlookup_spills_array_lookup_value_results() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_VLOOKUP,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3727,7 +3727,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_hlookup_spills_array_lookup_value_results() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_HLOOKUP,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -3779,7 +3779,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_left_spills_array_counts() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_LEFT,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
@@ -3821,7 +3821,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_right_spills_array_counts() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_RIGHT,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
@@ -3863,7 +3863,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_mid_spills_array_start_positions() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_MID,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
@@ -3938,7 +3938,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_char_spills_array_numbers() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_CHAR,
             &[CallArgValue::Eval(EvalValue::Array(
                 EvalArray::from_rows(vec![
@@ -3975,7 +3975,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_rept_spills_array_counts() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_REPT,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("x"))),
@@ -4015,7 +4015,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_textafter_spills_array_instance_numbers() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXTAFTER,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a-b-c"))),
@@ -4054,7 +4054,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_textbefore_spills_array_text_inputs() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXTBEFORE,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4086,7 +4086,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_areas_counts_multi_area_reference() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_AREAS,
             &[CallArgValue::Reference(
                 ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
@@ -4102,7 +4102,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_areas_rejects_legacy_parenthesized_area_carrier() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_AREAS,
             &[CallArgValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
@@ -4119,7 +4119,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_index_rejects_legacy_parenthesized_area_carrier() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Reference(ReferenceLike::new(
@@ -4142,7 +4142,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_rejects_unknown_id() {
         let arg = CallArgValue::Eval(EvalValue::Number(1.0));
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             "FUNC.UNKNOWN",
             &[arg],
             &NoReferenceResolver,
@@ -4156,7 +4156,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_roman_returns_text_result() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_ROMAN,
             &[
                 CallArgValue::Eval(EvalValue::Number(499.0)),
@@ -4189,7 +4189,7 @@ mod tests {
             CallableCaptureMode::NoCapture,
             "lambda.map.add1",
         );
-        let got = eval_surface_value_call_with_callable(
+        let got = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(EvalValue::Array(array)),
@@ -4228,7 +4228,7 @@ mod tests {
             ArrayCellValue::Number(8.0),
         ]])
         .expect("row vector");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
@@ -4266,7 +4266,7 @@ mod tests {
             ArrayCellValue::Number(8.0),
         ]])
         .expect("row vector");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
@@ -4315,7 +4315,7 @@ mod tests {
         ]])
         .expect("row vector");
 
-        let xmatch = eval_surface_value_call(
+        let xmatch = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
@@ -4329,7 +4329,7 @@ mod tests {
         )
         .expect("xmatch result");
 
-        let isnumber = eval_surface_value_call(
+        let isnumber = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
             &[CallArgValue::Eval(xmatch)],
             &NoReferenceResolver,
@@ -4340,7 +4340,7 @@ mod tests {
         )
         .expect("isnumber result");
 
-        let filtered = eval_surface_value_call(
+        let filtered = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
                 CallArgValue::Eval(EvalValue::Array(source)),
@@ -4354,7 +4354,7 @@ mod tests {
         )
         .expect("filter result");
 
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(filtered)],
             &NoReferenceResolver,
@@ -4382,7 +4382,7 @@ mod tests {
         ]])
         .expect("row vector");
 
-        let iserror = eval_surface_value_call(
+        let iserror = eval_test_surface_value_call(
             FUNC_ID_ISERROR,
             &[CallArgValue::Eval(EvalValue::Array(mapped))],
             &NoReferenceResolver,
@@ -4393,7 +4393,7 @@ mod tests {
         )
         .expect("iserror result");
 
-        let keep = eval_surface_value_call(
+        let keep = eval_test_surface_value_call(
             FUNC_ID_NOT,
             &[CallArgValue::Eval(iserror)],
             &NoReferenceResolver,
@@ -4404,7 +4404,7 @@ mod tests {
         )
         .expect("not result");
 
-        let filtered = eval_surface_value_call(
+        let filtered = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
                 CallArgValue::Eval(EvalValue::Array(keys)),
@@ -4418,7 +4418,7 @@ mod tests {
         )
         .expect("filter result");
 
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(filtered)],
             &NoReferenceResolver,
@@ -4433,7 +4433,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0702_day_of_date_1900_march_zero_returns_twenty_nine() {
-        let serial = eval_surface_value_call(
+        let serial = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(1900.0)),
@@ -4448,7 +4448,7 @@ mod tests {
         )
         .expect("date result");
 
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(serial)],
             &NoReferenceResolver,
@@ -4470,7 +4470,7 @@ mod tests {
             "2024-03-20",
         )));
         let unit_y = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Y")));
-        let got_y = eval_surface_value_call(
+        let got_y = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[start_y, end_y, unit_y],
             &NoReferenceResolver,
@@ -4487,7 +4487,7 @@ mod tests {
         let end_m = CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
             "2024-04-10",
         )));
-        let got_m = eval_surface_value_call(
+        let got_m = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[
                 start_m.clone(),
@@ -4502,7 +4502,7 @@ mod tests {
         );
         assert_eq!(got_m, Ok(EvalValue::Number(2.0)));
 
-        let got_md = eval_surface_value_call(
+        let got_md = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[
                 start_m,
@@ -4520,7 +4520,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0706_0708_weekday_iso_cluster_matches_expected_values() {
-        let jan1 = eval_surface_value_call(
+        let jan1 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -4534,7 +4534,7 @@ mod tests {
             None,
         )
         .expect("DATE(2024,1,1)");
-        let got_0706 = eval_surface_value_call(
+        let got_0706 = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[CallArgValue::Eval(jan1.clone())],
             &NoReferenceResolver,
@@ -4545,7 +4545,7 @@ mod tests {
         );
         assert_eq!(got_0706, Ok(EvalValue::Number(2.0)));
 
-        let got_0707 = eval_surface_value_call(
+        let got_0707 = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[
                 CallArgValue::Eval(jan1),
@@ -4559,7 +4559,7 @@ mod tests {
         );
         assert_eq!(got_0707, Ok(EvalValue::Number(1.0)));
 
-        let dec30 = eval_surface_value_call(
+        let dec30 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -4573,7 +4573,7 @@ mod tests {
             None,
         )
         .expect("DATE(2024,12,30)");
-        let got_0708 = eval_surface_value_call(
+        let got_0708 = eval_test_surface_value_call(
             FUNC_ID_ISOWEEKNUM,
             &[CallArgValue::Eval(dec30)],
             &NoReferenceResolver,
@@ -4587,7 +4587,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0709_0711_month_end_shift_cluster_matches_expected_values() {
-        let jan15 = eval_surface_value_call(
+        let jan15 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -4601,10 +4601,10 @@ mod tests {
             None,
         )
         .expect("DATE(2024,1,15)");
-        let got_0709 = eval_surface_value_call(
+        let got_0709 = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_EOMONTH,
                     &[
                         CallArgValue::Eval(jan15),
@@ -4626,7 +4626,7 @@ mod tests {
         );
         assert_eq!(got_0709, Ok(EvalValue::Number(29.0)));
 
-        let mar15 = eval_surface_value_call(
+        let mar15 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -4640,10 +4640,10 @@ mod tests {
             None,
         )
         .expect("DATE(2024,3,15)");
-        let got_0710 = eval_surface_value_call(
+        let got_0710 = eval_test_surface_value_call(
             FUNC_ID_MONTH,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_EOMONTH,
                     &[
                         CallArgValue::Eval(mar15),
@@ -4665,7 +4665,7 @@ mod tests {
         );
         assert_eq!(got_0710, Ok(EvalValue::Number(2.0)));
 
-        let jan31 = eval_surface_value_call(
+        let jan31 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -4679,10 +4679,10 @@ mod tests {
             None,
         )
         .expect("DATE(2024,1,31)");
-        let got_0711 = eval_surface_value_call(
+        let got_0711 = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_EDATE,
                     &[
                         CallArgValue::Eval(jan31),
@@ -4707,15 +4707,15 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0712_time_second_roundtrip_returns_one() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_ROUND,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_MULTIPLY,
                         &[
                             CallArgValue::Eval(
-                                eval_surface_value_call(
+                                eval_test_surface_value_call(
                                     FUNC_ID_TIME,
                                     &[
                                         CallArgValue::Eval(EvalValue::Number(0.0)),
@@ -4753,7 +4753,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0805_iferror_sum_filter_false_returns_empty() {
-        let filtered_err = eval_surface_value_call(
+        let filtered_err = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4773,7 +4773,7 @@ mod tests {
             None,
         )
         .expect_err("FILTER({1,2,3},FALSE) should error locally");
-        let sum_err = eval_surface_value_call(
+        let sum_err = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(EvalValue::Error(filtered_err))],
             &NoReferenceResolver,
@@ -4783,7 +4783,7 @@ mod tests {
             None,
         )
         .expect_err("SUM should propagate the same local error lane");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_IFERROR,
             &[
                 CallArgValue::Eval(EvalValue::Error(sum_err)),
@@ -4803,7 +4803,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0807_sort_row_vector_default_axis_returns_first_cell() {
-        let sorted = eval_surface_value_call(
+        let sorted = eval_test_surface_value_call(
             FUNC_ID_SORT,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4829,7 +4829,7 @@ mod tests {
             None,
         )
         .expect("sort result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(sorted),
@@ -4846,7 +4846,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0808_sortby_row_vector_index_first_returns_d() {
-        let sorted = eval_surface_value_call(
+        let sorted = eval_test_surface_value_call(
             FUNC_ID_SORTBY,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4875,7 +4875,7 @@ mod tests {
             None,
         )
         .expect("sortby result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(sorted),
@@ -4895,7 +4895,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0814_sum_of_drop_row_vector_negative_count_returns_calc() {
-        let drop_err = eval_surface_value_call(
+        let drop_err = eval_test_surface_value_call(
             FUNC_ID_DROP,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4917,7 +4917,7 @@ mod tests {
             None,
         )
         .expect_err("DROP should stay on the row axis and empty out the array locally");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(EvalValue::Error(drop_err))],
             &NoReferenceResolver,
@@ -4931,7 +4931,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0820_choosecols_sum_returns_ninety() {
-        let chosen = eval_surface_value_call(
+        let chosen = eval_test_surface_value_call(
             FUNC_ID_CHOOSECOLS,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -4960,7 +4960,7 @@ mod tests {
             None,
         )
         .expect("choosecols result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(chosen)],
             &NoReferenceResolver,
@@ -4982,7 +4982,7 @@ mod tests {
             ArrayCellValue::Number(500.0),
         ]])
         .expect("row vector");
-        let matched = eval_surface_value_call(
+        let matched = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
                 CallArgValue::Eval(EvalValue::Number(300.0)),
@@ -4996,7 +4996,7 @@ mod tests {
             None,
         )
         .expect("match result");
-        let got_0846 = eval_surface_value_call(
+        let got_0846 = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(EvalValue::Array(row_vector)),
@@ -5010,7 +5010,7 @@ mod tests {
         );
         assert_eq!(got_0846, Ok(EvalValue::Number(300.0)));
 
-        let got_0848 = eval_surface_value_call(
+        let got_0848 = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
                 CallArgValue::Eval(EvalValue::Number(99.0)),
@@ -5032,7 +5032,7 @@ mod tests {
         );
         assert_eq!(got_0848, Err(WorksheetErrorCode::NA));
 
-        let got_0849 = eval_surface_value_call(
+        let got_0849 = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
                 CallArgValue::Eval(EvalValue::Number(3.0)),
@@ -5052,7 +5052,7 @@ mod tests {
             Ok(EvalValue::Text(ExcelText::from_interop_assignment("c")))
         );
 
-        let got_0850 = eval_surface_value_call(
+        let got_0850 = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
                 CallArgValue::Eval(EvalValue::Number(5.0)),
@@ -5071,7 +5071,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0851_and_ftc_0858_lookup_cluster_matches_expected() {
-        let got_0851 = eval_surface_value_call(
+        let got_0851 = eval_test_surface_value_call(
             FUNC_ID_XLOOKUP,
             &[
                 CallArgValue::Eval(EvalValue::Number(99.0)),
@@ -5108,7 +5108,7 @@ mod tests {
             )))
         );
 
-        let got_0858 = eval_surface_value_call(
+        let got_0858 = eval_test_surface_value_call(
             FUNC_ID_LOOKUP,
             &[
                 CallArgValue::Eval(EvalValue::Number(25.0)),
@@ -5147,7 +5147,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_xlookup_spills_array_lookup_value_results() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_XLOOKUP,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -5199,7 +5199,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
-        let cols = eval_surface_value_call(
+        let cols = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
             &[
                 CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -5212,7 +5212,7 @@ mod tests {
             None,
         )
         .expect("sequence result");
-        let result = eval_surface_value_call(
+        let result = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
                 CallArgValue::Eval(cols),
@@ -5231,7 +5231,7 @@ mod tests {
         )
         .expect("choose result");
 
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(result),
@@ -5255,11 +5255,11 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1030_choose_transpose_index_returns_two() {
-        let data = eval_surface_value_call(
+        let data = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_SEQUENCE,
                         &[
                             CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -5305,7 +5305,7 @@ mod tests {
             None,
         )
         .expect("choose result");
-        let result = eval_surface_value_call(
+        let result = eval_test_surface_value_call(
             FUNC_ID_TRANSPOSE,
             &[CallArgValue::Eval(data)],
             &NoReferenceResolver,
@@ -5316,7 +5316,7 @@ mod tests {
         )
         .expect("transpose result");
 
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(result),
@@ -5337,7 +5337,7 @@ mod tests {
     fn eval_surface_value_call_ftc_1021_conditional_text_date_format_returns_fifteen() {
         let ctx = test_current_excel_host_context();
         let concat = |lhs: EvalValue, rhs: EvalValue| {
-            eval_surface_value_call(
+            eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
                 &NoReferenceResolver,
@@ -5348,7 +5348,7 @@ mod tests {
             )
             .expect("concat result")
         };
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5362,7 +5362,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let last_day = eval_surface_value_call(
+        let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -5375,7 +5375,7 @@ mod tests {
             None,
         )
         .expect("last day");
-        let test_date = eval_surface_value_call(
+        let test_date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5402,7 +5402,7 @@ mod tests {
             ),
             EvalValue::Text(ExcelText::from_interop_assignment("] ;dd")),
         );
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(test_date),
@@ -5424,7 +5424,7 @@ mod tests {
     fn eval_surface_value_call_ftc_1022_conditional_text_out_of_range_trims_to_zero() {
         let ctx = test_current_excel_host_context();
         let concat = |lhs: EvalValue, rhs: EvalValue| {
-            eval_surface_value_call(
+            eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
                 &NoReferenceResolver,
@@ -5435,7 +5435,7 @@ mod tests {
             )
             .expect("concat result")
         };
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5449,7 +5449,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let last_day = eval_surface_value_call(
+        let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -5462,7 +5462,7 @@ mod tests {
             None,
         )
         .expect("last day");
-        let test_date = eval_surface_value_call(
+        let test_date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5489,7 +5489,7 @@ mod tests {
             ),
             EvalValue::Text(ExcelText::from_interop_assignment("] ;dd")),
         );
-        let rendered = eval_surface_value_call(
+        let rendered = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(test_date),
@@ -5502,7 +5502,7 @@ mod tests {
             None,
         )
         .expect("text result");
-        let trimmed = eval_surface_value_call(
+        let trimmed = eval_test_surface_value_call(
             FUNC_ID_TRIM,
             &[CallArgValue::Eval(rendered)],
             &NoReferenceResolver,
@@ -5512,7 +5512,7 @@ mod tests {
             None,
         )
         .expect("trim result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_LEN,
             &[CallArgValue::Eval(trimmed)],
             &NoReferenceResolver,
@@ -5526,7 +5526,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1024_first_week_textjoin_returns_expected_row() {
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5540,7 +5540,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let weekday = eval_surface_value_call(
+        let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -5553,11 +5553,11 @@ mod tests {
             None,
         )
         .expect("weekday");
-        let grid_start = eval_surface_value_call(
+        let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[
                             CallArgValue::Eval(first_day.clone()),
@@ -5580,12 +5580,12 @@ mod tests {
             None,
         )
         .expect("grid start");
-        let dates = eval_surface_value_call(
+        let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(grid_start),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_SEQUENCE,
                         &[
                             CallArgValue::Eval(EvalValue::Number(7.0)),
@@ -5608,7 +5608,7 @@ mod tests {
             None,
         )
         .expect("dates");
-        let day_texts = eval_surface_value_call_with_callable(
+        let day_texts = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(dates),
@@ -5630,7 +5630,7 @@ mod tests {
             None,
         )
         .expect("map result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXTJOIN,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(","))),
@@ -5654,7 +5654,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1023_weekday_headers_index_returns_sun() {
         let ctx = test_current_excel_host_context();
-        let base_sun = eval_surface_value_call(
+        let base_sun = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5668,20 +5668,20 @@ mod tests {
             None,
         )
         .expect("base sun");
-        let headers = eval_surface_value_call(
+        let headers = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[
                             CallArgValue::Eval(
-                                eval_surface_value_call(
+                                eval_test_surface_value_call(
                                     FUNC_ID_OP_ADD,
                                     &[
                                         CallArgValue::Eval(base_sun),
                                         CallArgValue::Eval(
-                                            eval_surface_value_call(
+                                            eval_test_surface_value_call(
                                                 FUNC_ID_SEQUENCE,
                                                 &[
                                                     CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -5723,7 +5723,7 @@ mod tests {
             None,
         )
         .expect("text result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(headers),
@@ -5745,7 +5745,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1028_text_month_name_returns_july() {
         let ctx = test_current_excel_host_context();
-        let date = eval_surface_value_call(
+        let date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5759,7 +5759,7 @@ mod tests {
             None,
         )
         .expect("date result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(date),
@@ -5780,7 +5780,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_1040_one_month_calendar_prefix_returns_expected_text() {
         let ctx = test_current_excel_host_context();
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -5794,7 +5794,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let weekday = eval_surface_value_call(
+        let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -5807,11 +5807,11 @@ mod tests {
             None,
         )
         .expect("weekday");
-        let grid_start = eval_surface_value_call(
+        let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[
                             CallArgValue::Eval(first_day.clone()),
@@ -5834,12 +5834,12 @@ mod tests {
             None,
         )
         .expect("grid start");
-        let dates = eval_surface_value_call(
+        let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(grid_start),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_SEQUENCE,
                         &[
                             CallArgValue::Eval(EvalValue::Number(42.0)),
@@ -5862,7 +5862,7 @@ mod tests {
             None,
         )
         .expect("dates");
-        let day_strs = eval_surface_value_call_with_callable(
+        let day_strs = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(dates),
@@ -5884,7 +5884,7 @@ mod tests {
             None,
         )
         .expect("map result");
-        let month_name = eval_surface_value_call(
+        let month_name = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(first_day),
@@ -5897,14 +5897,14 @@ mod tests {
             None,
         )
         .expect("month name");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXTJOIN,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("|"))),
                 CallArgValue::Eval(EvalValue::Logical(false)),
                 CallArgValue::Eval(month_name),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5919,7 +5919,7 @@ mod tests {
                     .expect("index 1"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5934,7 +5934,7 @@ mod tests {
                     .expect("index 2"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5949,7 +5949,7 @@ mod tests {
                     .expect("index 3"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5964,7 +5964,7 @@ mod tests {
                     .expect("index 4"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5979,7 +5979,7 @@ mod tests {
                     .expect("index 5"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs.clone()),
@@ -5994,7 +5994,7 @@ mod tests {
                     .expect("index 6"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_INDEX,
                         &[
                             CallArgValue::Eval(day_strs),
@@ -6025,7 +6025,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1031_first_week_sum_returns_twenty_one() {
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -6039,7 +6039,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let weekday = eval_surface_value_call(
+        let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -6052,11 +6052,11 @@ mod tests {
             None,
         )
         .expect("weekday");
-        let grid_start = eval_surface_value_call(
+        let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[CallArgValue::Eval(first_day), CallArgValue::Eval(weekday)],
                         &NoReferenceResolver,
@@ -6076,16 +6076,16 @@ mod tests {
             None,
         )
         .expect("grid start");
-        let week1 = eval_surface_value_call(
+        let week1 = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_ADD,
                         &[
                             CallArgValue::Eval(grid_start),
                             CallArgValue::Eval(
-                                eval_surface_value_call(
+                                eval_test_surface_value_call(
                                     FUNC_ID_SEQUENCE,
                                     &[
                                         CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -6119,7 +6119,7 @@ mod tests {
             None,
         )
         .expect("week1");
-        let day_nums = eval_surface_value_call_with_callable(
+        let day_nums = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(week1),
@@ -6141,7 +6141,7 @@ mod tests {
             None,
         )
         .expect("map result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(day_nums)],
             &NoReferenceResolver,
@@ -6155,7 +6155,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1032_after_direct_seam_fixes_returns_zero() {
-        let first_day = eval_surface_value_call(
+        let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
                 CallArgValue::Eval(EvalValue::Number(2024.0)),
@@ -6169,7 +6169,7 @@ mod tests {
             None,
         )
         .expect("first day");
-        let last_day = eval_surface_value_call(
+        let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
             &[
                 CallArgValue::Eval(first_day.clone()),
@@ -6182,7 +6182,7 @@ mod tests {
             None,
         )
         .expect("last day");
-        let days_in_month = eval_surface_value_call(
+        let days_in_month = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(last_day)],
             &NoReferenceResolver,
@@ -6192,11 +6192,11 @@ mod tests {
             None,
         )
         .expect("days in month");
-        let offset = eval_surface_value_call(
+        let offset = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_WEEKDAY,
                         &[
                             CallArgValue::Eval(first_day),
@@ -6219,7 +6219,7 @@ mod tests {
             None,
         )
         .expect("offset");
-        let grid = eval_surface_value_call(
+        let grid = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
             &[CallArgValue::Eval(EvalValue::Number(42.0))],
             &NoReferenceResolver,
@@ -6229,15 +6229,15 @@ mod tests {
             None,
         )
         .expect("grid");
-        let day_vals = eval_surface_value_call(
+        let day_vals = eval_test_surface_value_call(
             FUNC_ID_IF,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_AND,
                         &[
                             CallArgValue::Eval(
-                                eval_surface_value_call(
+                                eval_test_surface_value_call(
                                     FUNC_ID_OP_GREATER_THAN,
                                     &[
                                         CallArgValue::Eval(grid.clone()),
@@ -6252,12 +6252,12 @@ mod tests {
                                 .expect("gt result"),
                             ),
                             CallArgValue::Eval(
-                                eval_surface_value_call(
+                                eval_test_surface_value_call(
                                     FUNC_ID_OP_LESS_EQUAL,
                                     &[
                                         CallArgValue::Eval(grid.clone()),
                                         CallArgValue::Eval(
-                                            eval_surface_value_call(
+                                            eval_test_surface_value_call(
                                                 FUNC_ID_OP_ADD,
                                                 &[
                                                     CallArgValue::Eval(offset.clone()),
@@ -6290,7 +6290,7 @@ mod tests {
                     .expect("and result"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[CallArgValue::Eval(grid), CallArgValue::Eval(offset)],
                         &NoReferenceResolver,
@@ -6310,7 +6310,7 @@ mod tests {
             None,
         )
         .expect("day vals");
-        let weekly = eval_surface_value_call(
+        let weekly = eval_test_surface_value_call(
             FUNC_ID_WRAPROWS,
             &[
                 CallArgValue::Eval(day_vals),
@@ -6323,10 +6323,10 @@ mod tests {
             None,
         )
         .expect("weekly");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_INDEX,
                     &[
                         CallArgValue::Eval(weekly),
@@ -6352,7 +6352,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0798_scalar_seed_index_lane_returns_zero() {
-        let cols = eval_surface_value_call(
+        let cols = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(EvalValue::Number(0.0))],
             &NoReferenceResolver,
@@ -6362,7 +6362,7 @@ mod tests {
             None,
         )
         .expect("columns result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(EvalValue::Number(0.0)),
@@ -6391,7 +6391,7 @@ mod tests {
             ArrayCellValue::Number(6.0),
         ]])
         .unwrap();
-        let n = eval_surface_value_call(
+        let n = eval_test_surface_value_call(
             FUNC_ID_COUNTA,
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
             &NoReferenceResolver,
@@ -6401,7 +6401,7 @@ mod tests {
             None,
         )
         .expect("counta result");
-        let mean = eval_surface_value_call(
+        let mean = eval_test_surface_value_call(
             FUNC_ID_AVERAGE,
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
             &NoReferenceResolver,
@@ -6411,7 +6411,7 @@ mod tests {
             None,
         )
         .expect("average result");
-        let centered = eval_surface_value_call(
+        let centered = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
             &[
                 CallArgValue::Eval(EvalValue::Array(data)),
@@ -6424,7 +6424,7 @@ mod tests {
             None,
         )
         .expect("subtract result");
-        let squares = eval_surface_value_call(
+        let squares = eval_test_surface_value_call(
             FUNC_ID_OP_POWER,
             &[
                 CallArgValue::Eval(centered),
@@ -6437,11 +6437,11 @@ mod tests {
             None,
         )
         .expect("power result");
-        let variance = eval_surface_value_call(
+        let variance = eval_test_surface_value_call(
             FUNC_ID_OP_DIVIDE,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_SUMPRODUCT,
                         &[CallArgValue::Eval(squares)],
                         &NoReferenceResolver,
@@ -6461,7 +6461,7 @@ mod tests {
             None,
         )
         .expect("variance result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SQRT,
             &[CallArgValue::Eval(variance)],
             &NoReferenceResolver,
@@ -6475,7 +6475,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0256_sumproduct_of_double_unary_compare_returns_two() {
-        let include = eval_surface_value_call(
+        let include = eval_test_surface_value_call(
             FUNC_ID_OP_GREATER_THAN,
             &[
                 CallArgValue::Eval(EvalValue::Array(
@@ -6495,10 +6495,10 @@ mod tests {
             None,
         )
         .expect("comparison result");
-        let coerced = eval_surface_value_call(
+        let coerced = eval_test_surface_value_call(
             FUNC_ID_OP_NEGATE,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_OP_NEGATE,
                     &[CallArgValue::Eval(include)],
                     &NoReferenceResolver,
@@ -6516,7 +6516,7 @@ mod tests {
             None,
         )
         .expect("double-negated result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUMPRODUCT,
             &[CallArgValue::Eval(coerced)],
             &NoReferenceResolver,
@@ -6531,7 +6531,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_0288_text_grouped_decimal_format_returns_en_us_text() {
         let ctx = crate::locale_format::test_en_us_context();
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
                 CallArgValue::Eval(EvalValue::Number(1234567.89)),
@@ -6555,7 +6555,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0505_columns_of_randarray_returns_three() {
-        let generated = eval_surface_value_call(
+        let generated = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
             &[
                 CallArgValue::Eval(EvalValue::Number(5.0)),
@@ -6568,7 +6568,7 @@ mod tests {
             None,
         )
         .expect("randarray result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(generated)],
             &NoReferenceResolver,
@@ -6583,7 +6583,7 @@ mod tests {
     #[test]
     fn eval_surface_value_call_randarray_consumes_one_random_draw_per_cell() {
         let provider = SequenceRandomProvider { next: Cell::new(1) };
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
             &[
                 CallArgValue::Eval(EvalValue::Number(5.0)),
@@ -6610,7 +6610,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_randarray_requires_random_provider() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
             &[
                 CallArgValue::Eval(EvalValue::Number(5.0)),
@@ -6629,7 +6629,7 @@ mod tests {
     fn eval_surface_value_call_ftc_0600_extract_digits_from_string_returns_123() {
         let ctx = test_current_excel_host_context();
         let text = EvalValue::Text(ExcelText::from_interop_assignment("Hello World 123"));
-        let length = eval_surface_value_call(
+        let length = eval_test_surface_value_call(
             FUNC_ID_LEN,
             &[CallArgValue::Eval(text.clone())],
             &NoReferenceResolver,
@@ -6639,7 +6639,7 @@ mod tests {
             None,
         )
         .expect("len result");
-        let positions = eval_surface_value_call(
+        let positions = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
             &[CallArgValue::Eval(length)],
             &NoReferenceResolver,
@@ -6649,7 +6649,7 @@ mod tests {
             None,
         )
         .expect("sequence result");
-        let chars = eval_surface_value_call(
+        let chars = eval_test_surface_value_call(
             FUNC_ID_MID,
             &[
                 CallArgValue::Eval(text),
@@ -6663,7 +6663,7 @@ mod tests {
             None,
         )
         .expect("mid result");
-        let multiplied = eval_surface_value_call(
+        let multiplied = eval_test_surface_value_call(
             FUNC_ID_OP_MULTIPLY,
             &[
                 CallArgValue::Eval(chars.clone()),
@@ -6676,7 +6676,7 @@ mod tests {
             None,
         )
         .expect("chars times one");
-        let recovered = eval_surface_value_call(
+        let recovered = eval_test_surface_value_call(
             FUNC_ID_IFERROR,
             &[
                 CallArgValue::Eval(multiplied),
@@ -6689,7 +6689,7 @@ mod tests {
             None,
         )
         .expect("iferror result");
-        let numeric_text = eval_surface_value_call(
+        let numeric_text = eval_test_surface_value_call(
             FUNC_ID_VALUE,
             &[CallArgValue::Eval(recovered)],
             &NoReferenceResolver,
@@ -6699,7 +6699,7 @@ mod tests {
             None,
         )
         .expect("value result");
-        let is_digit = eval_surface_value_call(
+        let is_digit = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
             &[CallArgValue::Eval(numeric_text)],
             &NoReferenceResolver,
@@ -6709,7 +6709,7 @@ mod tests {
             None,
         )
         .expect("isnumber result");
-        let digits = eval_surface_value_call(
+        let digits = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
                 CallArgValue::Eval(chars),
@@ -6723,7 +6723,7 @@ mod tests {
             None,
         )
         .expect("filter result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_CONCAT,
             &[CallArgValue::Eval(digits)],
             &NoReferenceResolver,
@@ -6746,7 +6746,7 @@ mod tests {
             vec![ArrayCellValue::Number(3.0)],
         ])
         .unwrap();
-        let step1 = eval_surface_value_call_with_callable(
+        let step1 = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(EvalValue::Array(data)),
@@ -6768,7 +6768,7 @@ mod tests {
             None,
         )
         .expect("first map result");
-        let step2 = eval_surface_value_call_with_callable(
+        let step2 = eval_test_surface_value_call_with_callable(
             FUNC_ID_MAP,
             &[
                 CallArgValue::Eval(step1),
@@ -6790,7 +6790,7 @@ mod tests {
             None,
         )
         .expect("second map result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(step2)],
             &NoReferenceResolver,
@@ -7252,7 +7252,7 @@ mod tests {
             vec![ArrayCellValue::Number(5.0)],
         ])
         .unwrap();
-        let include = eval_surface_value_call(
+        let include = eval_test_surface_value_call(
             FUNC_ID_OP_GREATER_THAN,
             &[
                 CallArgValue::Eval(EvalValue::Array(data.clone())),
@@ -7265,7 +7265,7 @@ mod tests {
             None,
         )
         .expect("comparison result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
                 CallArgValue::Eval(EvalValue::Array(data)),
@@ -7602,7 +7602,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1008_complex_magnitude_returns_five() {
-        let z = eval_surface_value_call(
+        let z = eval_test_surface_value_call(
             FUNC_ID_HSTACK,
             &[
                 CallArgValue::Eval(EvalValue::Number(3.0)),
@@ -7615,7 +7615,7 @@ mod tests {
             None,
         )
         .expect("hstack result");
-        let re = eval_surface_value_call(
+        let re = eval_test_surface_value_call(
             FUNC_ID_TAKE,
             &[
                 CallArgValue::Eval(z.clone()),
@@ -7629,7 +7629,7 @@ mod tests {
             None,
         )
         .expect("real part");
-        let im = eval_surface_value_call(
+        let im = eval_test_surface_value_call(
             FUNC_ID_TAKE,
             &[
                 CallArgValue::Eval(z),
@@ -7643,11 +7643,11 @@ mod tests {
             None,
         )
         .expect("imaginary part");
-        let sumsq = eval_surface_value_call(
+        let sumsq = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_POWER,
                         &[
                             CallArgValue::Eval(re),
@@ -7662,7 +7662,7 @@ mod tests {
                     .expect("re squared"),
                 ),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_OP_POWER,
                         &[
                             CallArgValue::Eval(im),
@@ -7684,7 +7684,7 @@ mod tests {
             None,
         )
         .expect("sumsq result");
-        let magnitude = eval_surface_value_call(
+        let magnitude = eval_test_surface_value_call(
             FUNC_ID_SQRT,
             &[CallArgValue::Eval(sumsq)],
             &NoReferenceResolver,
@@ -7694,7 +7694,7 @@ mod tests {
             None,
         )
         .expect("sqrt result");
-        let indexed = eval_surface_value_call(
+        let indexed = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
                 CallArgValue::Eval(magnitude),
@@ -7708,7 +7708,7 @@ mod tests {
             None,
         )
         .expect("index result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_ROUND,
             &[
                 CallArgValue::Eval(indexed),
@@ -7725,12 +7725,12 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_1020_calendar_grid_counts_january_days() {
-        let dates = eval_surface_value_call(
+        let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
                 CallArgValue::Eval(EvalValue::Number(45291.0)),
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_SEQUENCE,
                         &[
                             CallArgValue::Eval(EvalValue::Number(42.0)),
@@ -7753,11 +7753,11 @@ mod tests {
             None,
         )
         .expect("dates result");
-        let in_month = eval_surface_value_call(
+        let in_month = eval_test_surface_value_call(
             FUNC_ID_OP_EQUAL,
             &[
                 CallArgValue::Eval(
-                    eval_surface_value_call(
+                    eval_test_surface_value_call(
                         FUNC_ID_MONTH,
                         &[CallArgValue::Eval(dates)],
                         &NoReferenceResolver,
@@ -7777,10 +7777,10 @@ mod tests {
             None,
         )
         .expect("equal result");
-        let coerced = eval_surface_value_call(
+        let coerced = eval_test_surface_value_call(
             FUNC_ID_OP_NEGATE,
             &[CallArgValue::Eval(
-                eval_surface_value_call(
+                eval_test_surface_value_call(
                     FUNC_ID_OP_NEGATE,
                     &[CallArgValue::Eval(in_month)],
                     &NoReferenceResolver,
@@ -7798,7 +7798,7 @@ mod tests {
             None,
         )
         .expect("double-negated result");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(coerced)],
             &NoReferenceResolver,
@@ -7825,7 +7825,7 @@ mod tests {
             ArrayCellValue::Number(8.0),
         ]])
         .expect("row vector");
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
@@ -7944,7 +7944,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_routes_image_through_host_provider() {
-        let got = eval_surface_value_call(
+        let got = eval_test_surface_value_call(
             FUNC_ID_IMAGE,
             &[
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(

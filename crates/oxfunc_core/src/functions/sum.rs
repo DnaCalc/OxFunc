@@ -57,17 +57,17 @@ fn accumulate_range_like(arg: &CalcValue) -> Result<f64, CoercionError> {
     }
 }
 
-pub fn eval_sum_prepared_aggregate(
+pub(crate) fn eval_sum_prepared_aggregate(
     args: &[AggregatePreparedValue],
 ) -> Result<EvalValue, SumEvalError> {
     let mut values = Vec::with_capacity(args.len());
     for item in args {
-        let value = match item.origin {
+        let value = match item.origin() {
             AggregateArgOrigin::DirectScalar => {
-                accumulate_direct_scalar(&item.value).map_err(SumEvalError::Coercion)?
+                accumulate_direct_scalar(item.value()).map_err(SumEvalError::Coercion)?
             }
             AggregateArgOrigin::ArrayLike(_) => {
-                accumulate_range_like(&item.value).map_err(SumEvalError::Coercion)?
+                accumulate_range_like(item.value()).map_err(SumEvalError::Coercion)?
             }
         };
         values.push(value);
@@ -429,18 +429,9 @@ mod tests {
     #[test]
     fn eval_sum_exercises_sequential_left_fold_reduction_policy() {
         let prepared = vec![
-            AggregatePreparedValue {
-                origin: AggregateArgOrigin::DirectScalar,
-                value: CalcValue::number(1.0e16),
-            },
-            AggregatePreparedValue {
-                origin: AggregateArgOrigin::DirectScalar,
-                value: CalcValue::number(1.0),
-            },
-            AggregatePreparedValue {
-                origin: AggregateArgOrigin::DirectScalar,
-                value: CalcValue::number(-1.0e16),
-            },
+            AggregatePreparedValue::direct_scalar(CalcValue::number(1.0e16)),
+            AggregatePreparedValue::direct_scalar(CalcValue::number(1.0)),
+            AggregatePreparedValue::direct_scalar(CalcValue::number(-1.0e16)),
         ];
 
         let got = eval_sum_prepared_aggregate(&prepared);

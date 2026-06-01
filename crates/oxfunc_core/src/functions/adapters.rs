@@ -60,9 +60,33 @@ pub enum AggregateArgOrigin {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct AggregatePreparedValue {
-    pub origin: AggregateArgOrigin,
-    pub value: CalcValue,
+pub(crate) struct AggregatePreparedValue {
+    origin: AggregateArgOrigin,
+    value: CalcValue,
+}
+
+impl AggregatePreparedValue {
+    pub(crate) fn direct_scalar(value: CalcValue) -> Self {
+        Self {
+            origin: AggregateArgOrigin::DirectScalar,
+            value,
+        }
+    }
+
+    pub(crate) fn array_like(value: CalcValue, provenance: AggregateArrayProvenance) -> Self {
+        Self {
+            origin: AggregateArgOrigin::ArrayLike(provenance),
+            value,
+        }
+    }
+
+    pub(crate) fn origin(&self) -> AggregateArgOrigin {
+        self.origin
+    }
+
+    pub(crate) fn value(&self) -> &CalcValue {
+        &self.value
+    }
 }
 
 fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
@@ -98,17 +122,14 @@ fn prepared_vec_from_calc_values(values: &[CalcValue]) -> Vec<PreparedArgValue> 
     values.iter().map(prepared_from_calc_value).collect()
 }
 
-pub fn expand_aggregate_array_with_provenance(
+pub(crate) fn expand_aggregate_array_with_provenance(
     array: &EvalArray,
     provenance: AggregateArrayProvenance,
 ) -> Vec<AggregatePreparedValue> {
     array
         .iter_row_major()
         .map(ArrayCellValue::to_calc_value_lossy)
-        .map(|value| AggregatePreparedValue {
-            origin: AggregateArgOrigin::ArrayLike(provenance),
-            value,
-        })
+        .map(|value| AggregatePreparedValue::array_like(value, provenance))
         .collect()
 }
 
@@ -133,7 +154,7 @@ fn expand_resolved_reference_values(
         .collect())
 }
 
-pub fn expand_sparse_reference_values_with_provenance(
+pub(crate) fn expand_sparse_reference_values_with_provenance(
     values: ResolvedReferenceValues,
     provenance: AggregateArrayProvenance,
 ) -> Vec<AggregatePreparedValue> {
@@ -141,10 +162,7 @@ pub fn expand_sparse_reference_values_with_provenance(
         .defined_cells
         .into_iter()
         .map(|cell| cell.value.to_calc_value_lossy())
-        .map(|value| AggregatePreparedValue {
-            origin: AggregateArgOrigin::ArrayLike(provenance),
-            value,
-        })
+        .map(|value| AggregatePreparedValue::array_like(value, provenance))
         .collect()
 }
 
@@ -335,7 +353,7 @@ pub fn expand_lookup_vector_arg(
     }
 }
 
-pub fn expand_aggregate_arg(
+pub(crate) fn expand_aggregate_arg(
     arg: &CallArgValue,
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
@@ -353,12 +371,10 @@ pub fn expand_aggregate_arg(
                     &array,
                     AggregateArrayProvenance::ReferenceDerived,
                 )),
-                value => Ok(vec![AggregatePreparedValue {
-                    origin: AggregateArgOrigin::ArrayLike(
-                        AggregateArrayProvenance::ReferenceDerived,
-                    ),
-                    value: CalcValue::from(value),
-                }]),
+                value => Ok(vec![AggregatePreparedValue::array_like(
+                    CalcValue::from(value),
+                    AggregateArrayProvenance::ReferenceDerived,
+                )]),
             }
         }
         CallArgValue::Eval(EvalValue::Array(array)) => Ok(expand_aggregate_array_with_provenance(
@@ -367,10 +383,7 @@ pub fn expand_aggregate_arg(
         )),
         other => Ok(expand_arg_values_only(other, resolver)?
             .into_iter()
-            .map(|value| AggregatePreparedValue {
-                origin: AggregateArgOrigin::DirectScalar,
-                value: calc_value_from_prepared(value),
-            })
+            .map(|value| AggregatePreparedValue::direct_scalar(calc_value_from_prepared(value)))
             .collect()),
     }
 }
@@ -1053,7 +1066,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(got.len(), 2);
-        assert!(got.iter().all(|item| item.origin
+        assert!(got.iter().all(|item| item.origin()
             == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
     }
 
@@ -1076,7 +1089,7 @@ mod tests {
         .unwrap();
 
         assert_eq!(got.len(), 2);
-        assert!(got.iter().all(|item| item.origin
+        assert!(got.iter().all(|item| item.origin()
             == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived)));
     }
 
@@ -1096,7 +1109,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(got.len(), 2);
-        assert!(got.iter().all(|item| item.origin
+        assert!(got.iter().all(|item| item.origin()
             == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::OpaqueArrayValue)));
     }
 
@@ -1116,7 +1129,7 @@ mod tests {
         );
 
         assert_eq!(got.len(), 2);
-        assert!(got.iter().all(|item| item.origin
+        assert!(got.iter().all(|item| item.origin()
             == AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::DirectArrayLiteral)));
     }
 

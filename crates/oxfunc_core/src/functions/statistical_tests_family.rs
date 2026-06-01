@@ -177,8 +177,8 @@ fn numeric_matrices_from_args(
 fn aggregate_item_number(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, StatisticalTestsEvalError> {
-    match item.origin {
-        AggregateArgOrigin::DirectScalar => match item.value.core() {
+    match item.origin() {
+        AggregateArgOrigin::DirectScalar => match item.value().core() {
             CoreValue::Number(n) => Ok(Some(*n)),
             CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
             CoreValue::Array(_) => Err(StatisticalTestsEvalError::Coercion(
@@ -191,7 +191,7 @@ fn aggregate_item_number(
                 Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
             }
         },
-        AggregateArgOrigin::ArrayLike(_) => match item.value.core() {
+        AggregateArgOrigin::ArrayLike(_) => match item.value().core() {
             CoreValue::Number(n) => Ok(Some(*n)),
             CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
             CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {

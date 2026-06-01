@@ -15,7 +15,7 @@ pub enum VarianceDivisor {
     Sample,
 }
 
-pub fn collect_variance_values(
+pub(crate) fn collect_variance_values(
     args: &[AggregatePreparedValue],
     policy: VarianceInclusionPolicy,
 ) -> Result<Vec<f64>, CoercionError> {

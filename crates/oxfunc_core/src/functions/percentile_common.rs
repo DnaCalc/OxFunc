@@ -4,10 +4,10 @@ use crate::functions::adapters::{
 };
 use crate::value::{CoreValue, WorksheetErrorCode};
 
-pub fn percentile_argument_value(
+pub(crate) fn percentile_argument_value(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, CoercionError> {
-    match item.value.core() {
+    match item.value().core() {
         CoreValue::Number(n) => Ok(Some(*n)),
         CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
@@ -18,7 +18,7 @@ pub fn percentile_argument_value(
     }
 }
 
-pub fn collect_percentile_values(
+pub(crate) fn collect_percentile_values(
     args: &[AggregatePreparedValue],
 ) -> Result<Vec<f64>, CoercionError> {
     let mut values = Vec::new();

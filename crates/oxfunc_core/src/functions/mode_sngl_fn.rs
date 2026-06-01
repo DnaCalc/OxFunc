@@ -33,7 +33,7 @@ pub enum ModeSnglEvalError {
 }
 
 fn mode_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64>, CoercionError> {
-    match item.value.core() {
+    match item.value().core() {
         CoreValue::Number(n) => Ok(Some(*n)),
         CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
