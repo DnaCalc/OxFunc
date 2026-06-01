@@ -1,3 +1,6 @@
+use std::any::Any;
+use std::rc::Rc;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EvalError {
     ArityMismatch { expected: usize, actual: usize },
@@ -35,48 +38,15 @@ pub enum ValueTag {
     Text,
     Logical,
     Error,
+    Empty,
+    Missing,
     Array,
-    RichValue,
     ReferenceLike,
-    MissingArg,
-    EmptyCell,
-    LambdaValue,
-    ExtendedWrapper,
+    RichValue,
+    Callable,
+    Presentation,
+    ErrorMetadata,
     NullLike,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CallableOriginKind {
-    HelperLambda,
-    DefinedNameCallable,
-    BuiltInCallable,
-    ExternalRegisteredCallable,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CallableCaptureMode {
-    NoCapture,
-    LexicalCapture,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct CallableArityShape {
-    pub min: usize,
-    pub max: usize,
-}
-
-impl CallableArityShape {
-    pub const fn exact(n: usize) -> Self {
-        Self { min: n, max: n }
-    }
-
-    pub const fn range(min: usize, max: usize) -> Self {
-        Self { min, max }
-    }
-
-    pub const fn accepts(self, argc: usize) -> bool {
-        argc >= self.min && argc <= self.max
-    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -247,6 +217,332 @@ impl ExcelText {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum CoreValue {
+    Number(f64),
+    Text(ExcelText),
+    Logical(bool),
+    Error(WorksheetErrorCode),
+    Empty,
+    Missing,
+    Array(CalcArray),
+    Reference(ReferenceLike),
+}
+
+#[derive(Debug, Clone)]
+pub struct CalcValue {
+    pub core: CoreValue,
+    pub rich: Option<Rc<RichValue>>,
+}
+
+impl PartialEq for CalcValue {
+    fn eq(&self, other: &Self) -> bool {
+        self.core == other.core
+            && match (&self.rich, &other.rich) {
+                (None, None) => true,
+                (Some(left), Some(right)) => left.as_ref() == right.as_ref(),
+                _ => false,
+            }
+    }
+}
+
+impl CalcValue {
+    pub const fn new(core: CoreValue) -> Self {
+        Self { core, rich: None }
+    }
+
+    pub fn with_rich(core: CoreValue, rich: RichValue) -> Self {
+        Self {
+            core,
+            rich: Some(Rc::new(rich)),
+        }
+    }
+
+    pub fn number(value: f64) -> Self {
+        Self::new(CoreValue::Number(value))
+    }
+
+    pub fn text(value: ExcelText) -> Self {
+        Self::new(CoreValue::Text(value))
+    }
+
+    pub fn logical(value: bool) -> Self {
+        Self::new(CoreValue::Logical(value))
+    }
+
+    pub fn error(code: WorksheetErrorCode) -> Self {
+        Self::new(CoreValue::Error(code))
+    }
+
+    pub fn empty() -> Self {
+        Self::new(CoreValue::Empty)
+    }
+
+    pub fn missing() -> Self {
+        Self::new(CoreValue::Missing)
+    }
+
+    pub fn array(array: CalcArray) -> Self {
+        Self::new(CoreValue::Array(array))
+    }
+
+    pub fn reference(reference: ReferenceLike) -> Self {
+        Self::new(CoreValue::Reference(reference))
+    }
+
+    pub fn callable(callable: CallableValue) -> Self {
+        Self::with_rich(
+            CoreValue::Error(WorksheetErrorCode::Calc),
+            RichValue::Callable(callable),
+        )
+    }
+
+    pub fn tag(&self) -> ValueTag {
+        if let Some(rich) = self.rich.as_deref() {
+            return match rich {
+                RichValue::Object(_) => ValueTag::RichValue,
+                RichValue::Callable(_) => ValueTag::Callable,
+                RichValue::Presentation(_) => ValueTag::Presentation,
+                RichValue::ErrorMetadata(_) => ValueTag::ErrorMetadata,
+            };
+        }
+
+        match &self.core {
+            CoreValue::Number(_) => ValueTag::Number,
+            CoreValue::Text(_) => ValueTag::Text,
+            CoreValue::Logical(_) => ValueTag::Logical,
+            CoreValue::Error(_) => ValueTag::Error,
+            CoreValue::Empty => ValueTag::Empty,
+            CoreValue::Missing => ValueTag::Missing,
+            CoreValue::Array(_) => ValueTag::Array,
+            CoreValue::Reference(_) => ValueTag::ReferenceLike,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CalcArray {
+    shape: ArrayShape,
+    cells: Vec<CalcValue>,
+}
+
+impl CalcArray {
+    pub fn new(shape: ArrayShape, cells: Vec<CalcValue>) -> Option<Self> {
+        if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
+            return None;
+        }
+        Some(Self { shape, cells })
+    }
+
+    pub fn from_scalar(value: CalcValue) -> Option<Self> {
+        Self::new(ArrayShape { rows: 1, cols: 1 }, vec![value])
+    }
+
+    pub fn from_rows(rows: Vec<Vec<CalcValue>>) -> Option<Self> {
+        let row_count = rows.len();
+        let col_count = rows.first()?.len();
+        if row_count == 0 || col_count == 0 || rows.iter().any(|row| row.len() != col_count) {
+            return None;
+        }
+
+        let mut cells = Vec::with_capacity(row_count * col_count);
+        for row in rows {
+            cells.extend(row);
+        }
+
+        Self::new(
+            ArrayShape {
+                rows: row_count,
+                cols: col_count,
+            },
+            cells,
+        )
+    }
+
+    pub const fn shape(&self) -> ArrayShape {
+        self.shape
+    }
+
+    pub fn get(&self, row: usize, col: usize) -> Option<&CalcValue> {
+        if row >= self.shape.rows || col >= self.shape.cols {
+            return None;
+        }
+        let index = row.checked_mul(self.shape.cols)?.checked_add(col)?;
+        self.cells.get(index)
+    }
+
+    pub fn iter_row_major(&self) -> impl Iterator<Item = &CalcValue> {
+        self.cells.iter()
+    }
+
+    pub fn row_slice(&self, row: usize) -> Option<&[CalcValue]> {
+        if row >= self.shape.rows {
+            return None;
+        }
+        let start = row.checked_mul(self.shape.cols)?;
+        let end = start.checked_add(self.shape.cols)?;
+        self.cells.get(start..end)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RichValueKeyFlag {
+    pub key: String,
+    pub flag: String,
+    pub value: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RichObjectType {
+    pub type_name: String,
+    pub required_keys: Vec<String>,
+    pub key_flags: Vec<RichValueKeyFlag>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum RichObjectData {
+    Number(f64),
+    Text(ExcelText),
+    Logical(bool),
+    Error(WorksheetErrorCode),
+    Empty,
+    Array(CalcArray),
+    Object(Box<RichObjectValue>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RichObjectKeyValue {
+    pub key: String,
+    pub value: RichObjectData,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RichObjectValue {
+    pub value_type: RichObjectType,
+    pub fallback: RichObjectData,
+    pub kvps: Vec<RichObjectKeyValue>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CallableArityShape {
+    pub min: usize,
+    pub max: usize,
+}
+
+impl CallableArityShape {
+    pub const fn exact(n: usize) -> Self {
+        Self { min: n, max: n }
+    }
+
+    pub const fn range(min: usize, max: usize) -> Self {
+        Self { min, max }
+    }
+
+    pub const fn accepts(self, argc: usize) -> bool {
+        argc >= self.min && argc <= self.max
+    }
+}
+
+pub trait OpaqueCallable: std::fmt::Debug + 'static {
+    fn as_any(&self) -> &dyn Any;
+}
+
+#[derive(Debug, Clone)]
+pub struct CallableValue {
+    pub arity: CallableArityShape,
+    pub summary: String,
+    pub handle: Rc<dyn OpaqueCallable>,
+}
+
+impl PartialEq for CallableValue {
+    fn eq(&self, other: &Self) -> bool {
+        self.arity == other.arity && Rc::ptr_eq(&self.handle, &other.handle)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum NumberFormatHint {
+    General,
+    DateLike,
+    Percentage,
+    Currency,
+    Scientific,
+    Fraction,
+    Custom,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CellStyleHint {
+    Hyperlink,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PresentationHint {
+    pub number_format: Option<NumberFormatHint>,
+    pub style: Option<CellStyleHint>,
+}
+
+impl PresentationHint {
+    pub const fn number_format(number_format: NumberFormatHint) -> Self {
+        Self {
+            number_format: Some(number_format),
+            style: None,
+        }
+    }
+
+    pub const fn style(style: CellStyleHint) -> Self {
+        Self {
+            number_format: None,
+            style: Some(style),
+        }
+    }
+
+    pub const fn with_both(number_format: NumberFormatHint, style: CellStyleHint) -> Self {
+        Self {
+            number_format: Some(number_format),
+            style: Some(style),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PresentationValue {
+    pub hint: PresentationHint,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ErrorSurface {
+    Worksheet,
+    XllTransferable,
+    ExtendedWorksheetOnly,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ErrorMetadataValue {
+    pub surface: ErrorSurface,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum RichValue {
+    Object(RichObjectValue),
+    Callable(CallableValue),
+    Presentation(PresentationValue),
+    ErrorMetadata(ErrorMetadataValue),
+}
+
+pub type RichValueType = RichObjectType;
+pub type RichValueData = RichObjectData;
+pub type RichValueKeyValue = RichObjectKeyValue;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum CellContentValue {
+    Number(f64),
+    Text(ExcelText),
+    Logical(bool),
+    Error(WorksheetErrorCode),
+    Empty,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum ArrayCellValue {
     Number(f64),
     Text(ExcelText),
@@ -256,6 +552,16 @@ pub enum ArrayCellValue {
 }
 
 impl ArrayCellValue {
+    pub fn to_calc_value(&self) -> Option<CalcValue> {
+        match self {
+            Self::Number(n) => Some(CalcValue::number(*n)),
+            Self::Text(t) => Some(CalcValue::text(t.clone())),
+            Self::Logical(b) => Some(CalcValue::logical(*b)),
+            Self::Error(code) => Some(CalcValue::error(*code)),
+            Self::EmptyCell => None,
+        }
+    }
+
     pub fn to_eval_value(&self) -> Option<EvalValue> {
         match self {
             Self::Number(n) => Some(EvalValue::Number(*n)),
@@ -290,71 +596,6 @@ impl PartialEq for EvalArray {
     fn eq(&self, other: &Self) -> bool {
         self.shape == other.shape && self.cells() == other.cells()
     }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RichValueKeyFlag {
-    pub key: String,
-    pub flag: String,
-    pub value: bool,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RichValueType {
-    pub type_name: String,
-    pub required_keys: Vec<String>,
-    pub key_flags: Vec<RichValueKeyFlag>,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum RichValueData {
-    Number(f64),
-    Text(ExcelText),
-    Logical(bool),
-    Error(WorksheetErrorCode),
-    EmptyCell,
-    Array(RichArray),
-    RichValue(Box<RichValue>),
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct RichArray {
-    shape: ArrayShape,
-    cells: Vec<RichValueData>,
-}
-
-impl RichArray {
-    pub fn new(shape: ArrayShape, cells: Vec<RichValueData>) -> Option<Self> {
-        if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
-            return None;
-        }
-        Some(Self { shape, cells })
-    }
-
-    pub const fn shape(&self) -> ArrayShape {
-        self.shape
-    }
-
-    pub fn get(&self, row: usize, col: usize) -> Option<&RichValueData> {
-        if row >= self.shape.rows || col >= self.shape.cols {
-            return None;
-        }
-        let index = row.checked_mul(self.shape.cols)?.checked_add(col)?;
-        self.cells.get(index)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct RichValueKeyValue {
-    pub key: String,
-    pub value: RichValueData,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct RichValue {
-    pub value_type: RichValueType,
-    pub fallback: RichValueData,
-    pub kvps: Vec<RichValueKeyValue>,
 }
 
 impl EvalArray {
@@ -492,6 +733,20 @@ impl EvalArray {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallableOriginKind {
+    HelperLambda,
+    DefinedNameCallable,
+    BuiltInCallable,
+    ExternalRegisteredCallable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallableCaptureMode {
+    NoCapture,
+    LexicalCapture,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LambdaValue {
     pub callable_token: String,
@@ -560,13 +815,43 @@ pub enum EvalValue {
     Lambda(LambdaValue),
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum CellContentValue {
-    Number(f64),
-    Text(ExcelText),
-    Logical(bool),
-    Error(WorksheetErrorCode),
-    EmptyCell,
+impl From<EvalValue> for CalcValue {
+    fn from(value: EvalValue) -> Self {
+        match value {
+            EvalValue::Number(n) => Self::number(n),
+            EvalValue::Text(t) => Self::text(t),
+            EvalValue::Logical(b) => Self::logical(b),
+            EvalValue::Error(code) => Self::error(code),
+            EvalValue::Array(array) => {
+                let cells = array
+                    .iter_row_major()
+                    .map(|cell| cell.to_calc_value().unwrap_or_else(CalcValue::empty))
+                    .collect();
+                Self::array(
+                    CalcArray::new(array.shape(), cells)
+                        .expect("legacy EvalArray invariants convert into CalcArray"),
+                )
+            }
+            EvalValue::Reference(reference) => Self::reference(reference),
+            EvalValue::Lambda(lambda) => Self::with_rich(
+                CoreValue::Error(WorksheetErrorCode::Calc),
+                RichValue::Callable(CallableValue {
+                    arity: lambda.arity_shape,
+                    summary: lambda.callable_token,
+                    handle: Rc::new(LegacyLambdaCallable),
+                }),
+            ),
+        }
+    }
+}
+
+#[derive(Debug)]
+struct LegacyLambdaCallable;
+
+impl OpaqueCallable for LegacyLambdaCallable {
+    fn as_any(&self) -> &dyn Any {
+        self
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -577,56 +862,43 @@ pub enum CallArgValue {
     Reference(ReferenceLike),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum NumberFormatHint {
-    General,
-    DateLike,
-    Percentage,
-    Currency,
-    Scientific,
-    Fraction,
-    Custom,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CellStyleHint {
-    Hyperlink,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct PresentationHint {
-    pub number_format: Option<NumberFormatHint>,
-    pub style: Option<CellStyleHint>,
-}
-
-impl PresentationHint {
-    pub const fn number_format(number_format: NumberFormatHint) -> Self {
-        Self {
-            number_format: Some(number_format),
-            style: None,
+impl CallArgValue {
+    pub fn value(value: CalcValue) -> Self {
+        match value.core {
+            CoreValue::Number(n) => Self::Eval(EvalValue::Number(n)),
+            CoreValue::Text(t) => Self::Eval(EvalValue::Text(t)),
+            CoreValue::Logical(b) => Self::Eval(EvalValue::Logical(b)),
+            CoreValue::Error(code) => Self::Eval(EvalValue::Error(code)),
+            CoreValue::Empty => Self::EmptyCell,
+            CoreValue::Missing => Self::MissingArg,
+            CoreValue::Array(array) => {
+                let cells = array
+                    .iter_row_major()
+                    .map(|cell| match &cell.core {
+                        CoreValue::Number(n) => ArrayCellValue::Number(*n),
+                        CoreValue::Text(t) => ArrayCellValue::Text(t.clone()),
+                        CoreValue::Logical(b) => ArrayCellValue::Logical(*b),
+                        CoreValue::Error(code) => ArrayCellValue::Error(*code),
+                        CoreValue::Empty => ArrayCellValue::EmptyCell,
+                        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+                    })
+                    .collect();
+                Self::Eval(EvalValue::Array(
+                    EvalArray::new(array.shape(), cells)
+                        .expect("CalcArray invariants convert into EvalArray"),
+                ))
+            }
+            CoreValue::Reference(reference) => Self::Reference(reference),
         }
     }
 
-    pub const fn style(style: CellStyleHint) -> Self {
-        Self {
-            number_format: None,
-            style: Some(style),
-        }
+    pub fn missing() -> Self {
+        Self::MissingArg
     }
 
-    pub const fn with_both(number_format: NumberFormatHint, style: CellStyleHint) -> Self {
-        Self {
-            number_format: Some(number_format),
-            style: Some(style),
-        }
+    pub fn empty() -> Self {
+        Self::EmptyCell
     }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ErrorSurface {
-    Worksheet,
-    XllTransferable,
-    ExtendedWorksheetOnly,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -662,7 +934,7 @@ impl ValueBoundary {
                     | ValueTag::Text
                     | ValueTag::Logical
                     | ValueTag::Error
-                    | ValueTag::EmptyCell
+                    | ValueTag::Empty
             ),
             Self::RawFunctionReturn => matches!(
                 tag,
@@ -670,11 +942,13 @@ impl ValueBoundary {
                     | ValueTag::Text
                     | ValueTag::Logical
                     | ValueTag::Error
+                    | ValueTag::Empty
                     | ValueTag::Array
-                    | ValueTag::RichValue
                     | ValueTag::ReferenceLike
-                    | ValueTag::EmptyCell
-                    | ValueTag::LambdaValue
+                    | ValueTag::RichValue
+                    | ValueTag::Callable
+                    | ValueTag::Presentation
+                    | ValueTag::ErrorMetadata
             ),
             Self::PublishedFormulaResult => matches!(
                 tag,
@@ -683,9 +957,11 @@ impl ValueBoundary {
                     | ValueTag::Logical
                     | ValueTag::Error
                     | ValueTag::Array
-                    | ValueTag::RichValue
                     | ValueTag::ReferenceLike
-                    | ValueTag::LambdaValue
+                    | ValueTag::RichValue
+                    | ValueTag::Callable
+                    | ValueTag::Presentation
+                    | ValueTag::ErrorMetadata
             ),
             Self::CallArg => matches!(
                 tag,
@@ -693,12 +969,14 @@ impl ValueBoundary {
                     | ValueTag::Text
                     | ValueTag::Logical
                     | ValueTag::Error
+                    | ValueTag::Empty
+                    | ValueTag::Missing
                     | ValueTag::Array
-                    | ValueTag::RichValue
                     | ValueTag::ReferenceLike
-                    | ValueTag::MissingArg
-                    | ValueTag::EmptyCell
-                    | ValueTag::LambdaValue
+                    | ValueTag::RichValue
+                    | ValueTag::Callable
+                    | ValueTag::Presentation
+                    | ValueTag::ErrorMetadata
             ),
             Self::ReferenceDomain => matches!(tag, ValueTag::ReferenceLike),
             Self::ExtendedDomain => matches!(
@@ -707,11 +985,13 @@ impl ValueBoundary {
                     | ValueTag::Text
                     | ValueTag::Logical
                     | ValueTag::Error
+                    | ValueTag::Empty
                     | ValueTag::Array
-                    | ValueTag::RichValue
                     | ValueTag::ReferenceLike
-                    | ValueTag::LambdaValue
-                    | ValueTag::ExtendedWrapper
+                    | ValueTag::RichValue
+                    | ValueTag::Callable
+                    | ValueTag::Presentation
+                    | ValueTag::ErrorMetadata
             ),
         }
     }
@@ -720,37 +1000,37 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayCellValue, ArrayShape, CallableArityShape, CallableCaptureMode, CallableOriginKind,
-        CellStyleHint, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalArray, EvalValue, ExcelText,
-        ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, RichArray, RichValue,
-        RichValueData, RichValueKeyFlag, RichValueKeyValue, RichValueType, ValueBoundary, ValueTag,
+        ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint, CoreValue,
+        EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, NumberFormatHint, PresentationHint,
+        PresentationValue, RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue,
+        RichValue, RichValueKeyFlag, ValueBoundary, ValueTag, WorksheetErrorCode,
     };
 
     #[test]
     fn published_formula_result_excludes_missing_empty_and_null() {
-        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::MissingArg));
-        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::EmptyCell));
+        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::Missing));
+        assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::Empty));
         assert!(!ValueBoundary::PublishedFormulaResult.allows(ValueTag::NullLike));
     }
 
     #[test]
-    fn raw_function_return_allows_empty_cell_but_not_missing_or_null() {
-        assert!(ValueBoundary::RawFunctionReturn.allows(ValueTag::EmptyCell));
-        assert!(!ValueBoundary::RawFunctionReturn.allows(ValueTag::MissingArg));
+    fn raw_function_return_allows_empty_but_not_missing_or_null() {
+        assert!(ValueBoundary::RawFunctionReturn.allows(ValueTag::Empty));
+        assert!(!ValueBoundary::RawFunctionReturn.allows(ValueTag::Missing));
         assert!(!ValueBoundary::RawFunctionReturn.allows(ValueTag::NullLike));
     }
 
     #[test]
-    fn cell_content_boundary_excludes_missing_lambda_and_null() {
-        assert!(!ValueBoundary::CellContent.allows(ValueTag::MissingArg));
-        assert!(!ValueBoundary::CellContent.allows(ValueTag::LambdaValue));
+    fn cell_content_boundary_excludes_missing_callable_and_null() {
+        assert!(!ValueBoundary::CellContent.allows(ValueTag::Missing));
+        assert!(!ValueBoundary::CellContent.allows(ValueTag::Callable));
         assert!(!ValueBoundary::CellContent.allows(ValueTag::NullLike));
     }
 
     #[test]
     fn call_arg_boundary_allows_missing_and_empty() {
-        assert!(ValueBoundary::CallArg.allows(ValueTag::MissingArg));
-        assert!(ValueBoundary::CallArg.allows(ValueTag::EmptyCell));
+        assert!(ValueBoundary::CallArg.allows(ValueTag::Missing));
+        assert!(ValueBoundary::CallArg.allows(ValueTag::Empty));
         assert!(ValueBoundary::CallArg.allows(ValueTag::ReferenceLike));
     }
 
@@ -784,22 +1064,35 @@ mod tests {
     }
 
     #[test]
-    fn eval_array_preserves_shape_and_row_major_access() {
-        let array = EvalArray::from_rows(vec![
+    fn calc_array_preserves_shape_and_row_major_access() {
+        let array = CalcArray::from_rows(vec![
             vec![
-                ArrayCellValue::Number(1.0),
-                ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                CalcValue::number(1.0),
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 )),
             ],
-            vec![ArrayCellValue::Logical(true), ArrayCellValue::EmptyCell],
+            vec![CalcValue::logical(true), CalcValue::empty()],
         ])
         .unwrap();
 
         assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 2 });
-        assert_eq!(array.get(0, 0), Some(&ArrayCellValue::Number(1.0)));
-        assert_eq!(array.get(1, 1), Some(&ArrayCellValue::EmptyCell));
+        assert_eq!(
+            array.get(0, 0),
+            Some(&CalcValue {
+                core: CoreValue::Number(1.0),
+                rich: None
+            })
+        );
+        assert_eq!(array.get(1, 1), Some(&CalcValue::empty()));
         assert_eq!(array.iter_row_major().count(), 4);
+    }
+
+    #[test]
+    fn calc_array_admits_nested_arrays_and_missing_elements() {
+        let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
+        assert!(CalcArray::from_scalar(nested).is_some());
+        assert!(CalcArray::from_scalar(CalcValue::missing()).is_some());
     }
 
     #[test]
@@ -811,33 +1104,8 @@ mod tests {
     }
 
     #[test]
-    fn helper_and_defined_name_lambda_constructors_preserve_metadata() {
-        let helper = LambdaValue::helper_lambda(
-            "helper.lambda.1",
-            CallableArityShape::exact(1),
-            CallableCaptureMode::LexicalCapture,
-            "helper.invoke.v1",
-        );
-        assert_eq!(helper.origin_kind, CallableOriginKind::HelperLambda);
-        assert_eq!(helper.arity_shape, CallableArityShape::exact(1));
-        assert_eq!(helper.capture_mode, CallableCaptureMode::LexicalCapture);
-        assert_eq!(helper.invocation_contract_ref, "helper.invoke.v1");
-
-        let defined = LambdaValue::defined_name_callable(
-            "name.MyAdder",
-            CallableArityShape::range(1, 1),
-            CallableCaptureMode::NoCapture,
-            "name.invoke.v1",
-        );
-        assert_eq!(defined.origin_kind, CallableOriginKind::DefinedNameCallable);
-        assert_eq!(defined.arity_shape, CallableArityShape::exact(1));
-        assert_eq!(defined.capture_mode, CallableCaptureMode::NoCapture);
-        assert_eq!(defined.invocation_contract_ref, "name.invoke.v1");
-    }
-
-    #[test]
-    fn rich_value_model_supports_fallback_and_nested_array_data() {
-        let web_image_type = RichValueType {
+    fn rich_value_model_supports_object_fallback_and_nested_array_data() {
+        let web_image_type = RichObjectType {
             type_name: "_webimage".to_string(),
             required_keys: vec!["WebImageIdentifier".to_string()],
             key_flags: vec![RichValueKeyFlag {
@@ -847,81 +1115,121 @@ mod tests {
             }],
         };
 
-        let rich_array = RichArray::new(
+        let rich_array = CalcArray::new(
             ArrayShape { rows: 1, cols: 2 },
             vec![
-                RichValueData::Text(ExcelText::from_utf16_code_units(
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "A".encode_utf16().collect(),
                 )),
-                RichValueData::Number(2.0),
+                CalcValue::number(2.0),
             ],
         )
         .unwrap();
 
-        let rich = RichValue {
+        let rich = RichValue::Object(RichObjectValue {
             value_type: web_image_type,
-            fallback: RichValueData::Text(ExcelText::from_utf16_code_units(
+            fallback: RichObjectData::Text(ExcelText::from_utf16_code_units(
                 "Sphere".encode_utf16().collect(),
             )),
             kvps: vec![
-                RichValueKeyValue {
+                RichObjectKeyValue {
                     key: "WebImageIdentifier".to_string(),
-                    value: RichValueData::Text(ExcelText::from_utf16_code_units(
+                    value: RichObjectData::Text(ExcelText::from_utf16_code_units(
                         "img-1".encode_utf16().collect(),
                     )),
                 },
-                RichValueKeyValue {
+                RichObjectKeyValue {
                     key: "Preview".to_string(),
-                    value: RichValueData::Array(rich_array.clone()),
+                    value: RichObjectData::Array(rich_array.clone()),
                 },
             ],
-        };
+        });
 
-        assert_eq!(rich.value_type.type_name, "_webimage");
-        assert_eq!(rich.kvps.len(), 2);
-        match &rich.kvps[1].value {
-            RichValueData::Array(arr) => {
-                assert_eq!(arr.shape(), ArrayShape { rows: 1, cols: 2 });
-                assert!(matches!(arr.get(1, 0), None));
+        match rich {
+            RichValue::Object(object) => {
+                assert_eq!(object.value_type.type_name, "_webimage");
+                assert_eq!(object.kvps.len(), 2);
+                match &object.kvps[1].value {
+                    RichObjectData::Array(arr) => {
+                        assert_eq!(arr.shape(), ArrayShape { rows: 1, cols: 2 });
+                        assert!(matches!(arr.get(1, 0), None));
+                    }
+                    _ => panic!("expected nested rich array"),
+                }
             }
-            _ => panic!("expected nested rich array"),
+            _ => panic!("expected object rich value"),
         }
     }
 
     #[test]
-    fn presentation_hint_can_carry_number_format_only() {
-        let wrapped = ExtendedValue::ValueWithPresentation {
-            value: EvalValue::Number(46_102.0),
-            hint: PresentationHint::number_format(NumberFormatHint::DateLike),
-        };
+    fn presentation_hint_is_rich_metadata_on_calc_value() {
+        let value = CalcValue::with_rich(
+            CoreValue::Number(46_102.0),
+            RichValue::Presentation(PresentationValue {
+                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
+            }),
+        );
 
-        match wrapped {
-            ExtendedValue::ValueWithPresentation { value, hint } => {
-                assert_eq!(value, EvalValue::Number(46_102.0));
-                assert_eq!(hint.number_format, Some(NumberFormatHint::DateLike));
-                assert_eq!(hint.style, None);
-            }
-            _ => panic!("expected presentation wrapper"),
-        }
-    }
-
-    #[test]
-    fn presentation_hint_can_carry_style_only() {
-        let wrapped = ExtendedValue::ValueWithPresentation {
-            value: EvalValue::Text(ExcelText::from_interop_assignment("Go")),
-            hint: PresentationHint::style(CellStyleHint::Hyperlink),
-        };
-
-        match wrapped {
-            ExtendedValue::ValueWithPresentation { value, hint } => {
+        assert_eq!(value.core, CoreValue::Number(46_102.0));
+        assert_eq!(value.tag(), ValueTag::Presentation);
+        match value.rich.as_deref() {
+            Some(RichValue::Presentation(presentation)) => {
                 assert_eq!(
-                    value,
-                    EvalValue::Text(ExcelText::from_interop_assignment("Go"))
+                    presentation.hint.number_format,
+                    Some(NumberFormatHint::DateLike)
                 );
-                assert_eq!(hint.number_format, None);
-                assert_eq!(hint.style, Some(CellStyleHint::Hyperlink));
+                assert_eq!(presentation.hint.style, None);
             }
-            _ => panic!("expected presentation wrapper"),
+            _ => panic!("expected presentation rich value"),
         }
+
+        let hyperlink = CalcValue::with_rich(
+            CoreValue::Text(ExcelText::from_interop_assignment("Go")),
+            RichValue::Presentation(PresentationValue {
+                hint: PresentationHint::style(CellStyleHint::Hyperlink),
+            }),
+        );
+        assert!(matches!(
+            hyperlink.rich.as_deref(),
+            Some(RichValue::Presentation(_))
+        ));
+    }
+
+    #[test]
+    fn rich_object_tag_is_not_confused_with_core_fallback() {
+        let value = CalcValue::with_rich(
+            CoreValue::Text(ExcelText::from_interop_assignment("fallback")),
+            RichValue::Object(RichObjectValue {
+                value_type: RichObjectType {
+                    type_name: "_webimage".to_string(),
+                    required_keys: Vec::new(),
+                    key_flags: Vec::new(),
+                },
+                fallback: RichObjectData::Text(ExcelText::from_interop_assignment("fallback")),
+                kvps: Vec::new(),
+            }),
+        );
+
+        assert_eq!(value.tag(), ValueTag::RichValue);
+    }
+
+    #[test]
+    fn callable_values_have_calc_error_core_and_callable_tag() {
+        #[derive(Debug)]
+        struct TestCallable;
+        impl super::OpaqueCallable for TestCallable {
+            fn as_any(&self) -> &dyn std::any::Any {
+                self
+            }
+        }
+
+        let callable = CalcValue::callable(super::CallableValue {
+            arity: CallableArityShape::exact(1),
+            summary: "LAMBDA(x, x)".to_string(),
+            handle: std::rc::Rc::new(TestCallable),
+        });
+
+        assert_eq!(callable.core, CoreValue::Error(WorksheetErrorCode::Calc));
+        assert_eq!(callable.tag(), ValueTag::Callable);
     }
 }

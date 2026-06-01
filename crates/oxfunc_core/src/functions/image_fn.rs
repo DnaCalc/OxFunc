@@ -212,7 +212,7 @@ fn build_web_image_rich_value(request: &ImageRequest, resolved: &ResolvedWebImag
         });
     }
 
-    RichValue {
+    RichValue::Object(crate::value::RichObjectValue {
         value_type: RichValueType {
             type_name: WEB_IMAGE_TYPE_NAME.to_string(),
             required_keys: vec![WEB_IMAGE_IDENTIFIER_KEY.to_string()],
@@ -224,7 +224,7 @@ fn build_web_image_rich_value(request: &ImageRequest, resolved: &ResolvedWebImag
         },
         fallback: RichValueData::Text(resolved.published_fallback.clone()),
         kvps,
-    }
+    })
 }
 
 fn image_provider_error_value(result: &ImageProviderResult) -> EvalValue {
@@ -500,6 +500,9 @@ mod tests {
 
         match got {
             ExtendedValue::RichValue(rich) => {
+                let RichValue::Object(rich) = rich.as_ref() else {
+                    panic!("expected rich object");
+                };
                 assert_eq!(rich.value_type.type_name, WEB_IMAGE_TYPE_NAME);
                 assert_eq!(
                     rich.kvps[0],

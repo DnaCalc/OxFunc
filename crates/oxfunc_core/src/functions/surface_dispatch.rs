@@ -7846,8 +7846,11 @@ mod tests {
         );
         match got {
             Ok(ExtendedValue::RichValue(rich)) => {
-                assert_eq!(rich.value_type.type_name, "_webimage");
-                assert!(matches!(rich.fallback, RichValueData::Text(_)));
+                let crate::value::RichValue::Object(object) = rich.as_ref() else {
+                    panic!("expected rich object");
+                };
+                assert_eq!(object.value_type.type_name, "_webimage");
+                assert!(matches!(object.fallback, RichValueData::Text(_)));
             }
             other => panic!("expected rich image surface, got {other:?}"),
         }
