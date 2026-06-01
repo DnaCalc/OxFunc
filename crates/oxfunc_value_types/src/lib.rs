@@ -405,6 +405,18 @@ impl CalcValue {
         }
     }
 
+    pub fn rich_object(core: CoreValue, object: RichObjectValue) -> Self {
+        Self::with_rich(core, RichValue::Object(object))
+    }
+
+    pub fn with_presentation(core: CoreValue, hint: PresentationHint) -> Self {
+        Self::with_rich(core, RichValue::Presentation(PresentationValue { hint }))
+    }
+
+    pub fn with_error_metadata(core: CoreValue, metadata: ErrorMetadataValue) -> Self {
+        Self::with_rich(core, RichValue::ErrorMetadata(metadata))
+    }
+
     pub fn number(value: f64) -> Self {
         Self::new(CoreValue::Number(value))
     }
@@ -464,6 +476,96 @@ impl CalcValue {
             CoreValue::Array(_) => ValueTag::Array,
             CoreValue::Reference(_) => ValueTag::ReferenceLike,
         }
+    }
+
+    pub fn core(&self) -> &CoreValue {
+        &self.core
+    }
+
+    pub fn rich(&self) -> Option<&RichValue> {
+        self.rich.as_deref()
+    }
+
+    pub fn as_number(&self) -> Option<f64> {
+        match self.core {
+            CoreValue::Number(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn as_text(&self) -> Option<&ExcelText> {
+        match &self.core {
+            CoreValue::Text(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn as_logical(&self) -> Option<bool> {
+        match self.core {
+            CoreValue::Logical(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn as_error(&self) -> Option<WorksheetErrorCode> {
+        match self.core {
+            CoreValue::Error(code) => Some(code),
+            _ => None,
+        }
+    }
+
+    pub fn as_array(&self) -> Option<&CalcArray> {
+        match &self.core {
+            CoreValue::Array(array) => Some(array),
+            _ => None,
+        }
+    }
+
+    pub fn as_reference(&self) -> Option<&ReferenceLike> {
+        match &self.core {
+            CoreValue::Reference(reference) => Some(reference),
+            _ => None,
+        }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        matches!(self.core, CoreValue::Empty)
+    }
+
+    pub fn is_missing(&self) -> bool {
+        matches!(self.core, CoreValue::Missing)
+    }
+
+    pub fn rich_object_value(&self) -> Option<&RichObjectValue> {
+        match self.rich() {
+            Some(RichValue::Object(value)) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn callable_value(&self) -> Option<&CallableValue> {
+        match self.rich() {
+            Some(RichValue::Callable(value)) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn presentation_value(&self) -> Option<&PresentationValue> {
+        match self.rich() {
+            Some(RichValue::Presentation(value)) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn error_metadata_value(&self) -> Option<&ErrorMetadataValue> {
+        match self.rich() {
+            Some(RichValue::ErrorMetadata(value)) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub fn allowed_at(&self, boundary: ValueBoundary) -> bool {
+        boundary.allows(self.tag())
     }
 }
 
@@ -964,6 +1066,9 @@ pub enum EvalValue {
 }
 
 impl From<EvalValue> for CalcValue {
+    // W099 migration-only adapter for legacy EvalValue-producing call sites.
+    // W099-008/W099-012 own moving dispatch/kernel paths to native CalcValue,
+    // and W099-015 owns deleting this conversion with EvalValue.
     fn from(value: EvalValue) -> Self {
         match value {
             EvalValue::Number(n) => Self::number(n),
@@ -1012,6 +1117,9 @@ pub enum CallArgValue {
 
 impl CallArgValue {
     pub fn value(value: CalcValue) -> Self {
+        // W099 migration-only adapter for legacy CallArgValue call boundaries.
+        // W099-005 owns replacing call-boundary construction with CalcValue
+        // directly, and W099-015 owns deleting this conversion.
         match value.core {
             CoreValue::Number(n) => Self::Eval(EvalValue::Number(n)),
             CoreValue::Text(t) => Self::Eval(EvalValue::Text(t)),
@@ -1149,11 +1257,12 @@ impl ValueBoundary {
 mod tests {
     use super::{
         ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint,
-        CompositeReferenceOperation, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText,
+        CompositeReferenceOperation, CoreValue, ErrorMetadataValue, ErrorSurface, ExcelText,
         NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
         ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
         RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
         RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
+        EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
     };
 
     #[test]
@@ -1243,6 +1352,94 @@ mod tests {
         let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
         assert!(CalcArray::from_scalar(nested).is_some());
         assert!(CalcArray::from_scalar(CalcValue::missing()).is_some());
+    }
+
+    #[test]
+    fn calc_value_scalar_projection_helpers_are_core_explicit() {
+        let number = CalcValue::number(12.5);
+        let text = CalcValue::text(ExcelText::from_interop_assignment("x"));
+        let logical = CalcValue::logical(true);
+        let error = CalcValue::error(WorksheetErrorCode::NA);
+
+        assert_eq!(number.core(), &CoreValue::Number(12.5));
+        assert_eq!(number.as_number(), Some(12.5));
+        assert_eq!(
+            text.as_text().map(ExcelText::to_string_lossy),
+            Some("x".to_string())
+        );
+        assert_eq!(logical.as_logical(), Some(true));
+        assert_eq!(error.as_error(), Some(WorksheetErrorCode::NA));
+        assert!(CalcValue::empty().is_empty());
+        assert!(CalcValue::missing().is_missing());
+    }
+
+    #[test]
+    fn calc_value_reference_array_and_rich_projection_helpers_are_typed() {
+        let reference = ReferenceLike::new(ReferenceKind::A1, "A1");
+        let reference_value = CalcValue::reference(reference.clone());
+        assert_eq!(reference_value.as_reference(), Some(&reference));
+
+        let array = CalcArray::from_scalar(CalcValue::number(1.0)).unwrap();
+        let array_value = CalcValue::array(array.clone());
+        assert_eq!(array_value.as_array(), Some(&array));
+
+        let presentation = CalcValue::with_presentation(
+            CoreValue::Number(46_102.0),
+            PresentationHint::number_format(NumberFormatHint::DateLike),
+        );
+        assert!(presentation.presentation_value().is_some());
+        assert!(presentation.allowed_at(ValueBoundary::PublishedFormulaResult));
+
+        let object = RichObjectValue {
+            value_type: RichObjectType {
+                type_name: "test.object".to_string(),
+                required_keys: vec![],
+                key_flags: vec![],
+            },
+            fallback: RichObjectData::Text(ExcelText::from_interop_assignment("fallback")),
+            kvps: vec![],
+        };
+        let rich_object = CalcValue::rich_object(
+            CoreValue::Text(ExcelText::from_interop_assignment("fallback")),
+            object.clone(),
+        );
+        assert_eq!(rich_object.rich_object_value(), Some(&object));
+        assert!(rich_object.allowed_at(ValueBoundary::ExtendedDomain));
+
+        let metadata = CalcValue::with_error_metadata(
+            CoreValue::Error(WorksheetErrorCode::Value),
+            ErrorMetadataValue {
+                surface: ErrorSurface::XllTransferable,
+            },
+        );
+        assert_eq!(
+            metadata.error_metadata_value().map(|value| value.surface),
+            Some(ErrorSurface::XllTransferable)
+        );
+    }
+
+    #[test]
+    fn calc_value_callable_constructor_and_projection_are_rich_only() {
+        #[derive(Debug)]
+        struct TestCallable;
+
+        impl super::OpaqueCallable for TestCallable {
+            fn as_any(&self) -> &dyn std::any::Any {
+                self
+            }
+        }
+
+        let value = CalcValue::callable(super::CallableValue {
+            arity: CallableArityShape::exact(1),
+            summary: "test.callable".to_string(),
+            handle: std::rc::Rc::new(TestCallable),
+        });
+
+        assert_eq!(value.core, CoreValue::Error(WorksheetErrorCode::Calc));
+        assert_eq!(
+            value.callable_value().map(|callable| callable.arity),
+            Some(CallableArityShape::exact(1))
+        );
     }
 
     #[test]

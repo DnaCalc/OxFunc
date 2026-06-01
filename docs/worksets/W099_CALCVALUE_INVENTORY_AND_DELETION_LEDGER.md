@@ -392,3 +392,73 @@ Validation:
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1328 passed, 1 ignored.
 5. `git diff --check`: passed.
 6. `scripts/check-worksets.ps1`: passed.
+
+## 11. W099-004 Central CalcValue Construction And Coercion Helper Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-005 must move call-boundary construction to native `CalcValue`.
+2. W099-008/W099-012 must move dispatch and kernel paths to native `CalcValue`.
+3. W099-009 must move reference-sensitive coercion/function paths onto `ReferenceSystemProvider`.
+4. W099-015 must delete the migration-only `EvalValue -> CalcValue` and `CalcValue -> CallArgValue` adapters with the legacy carrier types.
+
+Planned scope:
+1. Add central `CalcValue` constructors/projection helpers for scalar, error, empty, missing, array, reference, rich, and callable lanes.
+2. Add CalcValue-first scalar numeric coercion helpers without constructing legacy carriers.
+3. Mark legacy carrier conversion adapters with explicit W099 deletion owners.
+4. Keep resolver-backed reference coercion on the old path for later reference/call-boundary migration beads.
+
+Evidence:
+1. `CalcValue` exposes `core`, `rich`, scalar projections, array/reference projections, rich-object/callable/presentation/error-metadata projections, and rich construction helpers.
+2. `coerce_calc_scalar_to_number` works over `CalcValue.core` and returns explicit missing/empty/reference/array errors without constructing `EvalValue` or `CallArgValue`.
+3. Existing `From<EvalValue> for CalcValue` and `CallArgValue::value(CalcValue)` are now marked W099 migration-only with W099-005/W099-008/W099-012/W099-015 deletion owners.
+4. `CalcValue::allowed_at(ValueBoundary)` routes rich/core values through the central admission table instead of requiring callers to duplicate tag checks.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-004 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-004 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - value-type helper tests, CalcValue coercion tests, full value-type tests, and full core lib tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not in W099-004 scope; no Excel function behavior claim is made. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this helper-foundation bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical behavior discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this helper-foundation bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - this bead adds OxFunc-local helper APIs and marks adapters; downstream migration remains in later W099 beads. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-004 scope is central helper construction/projection/coercion, not broad call-boundary adoption. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-004 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 is already represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.4` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asked for central helper shape, not broad replacement of every existing `EvalValue`/`CallArgValue` call site.
+2. Gate criteria re-read: passed. Constructors/projections/coercion helpers exist, tests cover the helper shape, and legacy adapters have deletion-owner comments.
+3. Silent scope reduction check: passed. Reference coercion remains unresolved-shape-only in the CalcValue scalar helper and old resolver-backed reference coercion remains an explicit later lane.
+4. "Looks done but is not" pattern check: passed. Compatibility conversions are reported as migration-only adapters rather than permanent architecture.
+5. Included result: passed. This section records checklist, self-audit, evidence, and remaining integration lanes for the W099-004 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: the first rich-object projection test used non-existent `RichObjectType` fields; it now uses the actual `type_name`, `required_keys`, and `key_flags` shape.
+2. Issue found and corrected: callable projection coverage was missing from the first helper test pass; a callable constructor/projection test now pins the rich-only callable lane.
+3. Issue found and corrected: rich projection helpers initially exposed metadata but did not provide an admission-aware entry point; `CalcValue::allowed_at(ValueBoundary)` now routes helper callers through the central boundary table.
+4. Remaining tension: `coerce_calc_scalar_to_number` deliberately rejects references rather than dereferencing them because provider-backed reference coercion belongs to W099-005/W099-009.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml calc_value --lib`: passed, 4 tests.
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib coerce_calc_scalar`: passed, 2 tests.
+3. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 21 tests.
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1330 passed, 1 ignored.
+5. `git diff --check`: passed.
+6. `scripts/check-worksets.ps1`: passed.

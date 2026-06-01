@@ -1,5 +1,5 @@
-use crate::resolver::{RefResolutionError, ReferenceResolver, resolve_eval_value};
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::resolver::{resolve_eval_value, RefResolutionError, ReferenceResolver};
+use crate::value::{CalcValue, CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AggregateScanPolicy {
@@ -52,6 +52,22 @@ pub fn coerce_eval_to_number(
     }
 }
 
+pub fn coerce_calc_scalar_to_number(value: &CalcValue) -> Result<f64, CoercionError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Logical(b) => Ok(if *b { 1.0 } else { 0.0 }),
+        CoreValue::Text(t) => {
+            let raw = t.to_string_lossy();
+            parse_excel_number(&raw).ok_or(CoercionError::NonNumericText(raw))
+        }
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Empty => Err(CoercionError::EmptyCell),
+        CoreValue::Missing => Err(CoercionError::MissingArg),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference")),
+    }
+}
+
 pub fn coerce_arg_to_number(
     arg: &CallArgValue,
     resolver: &(impl ReferenceResolver + ?Sized),
@@ -100,7 +116,7 @@ pub fn aggregate_scan_sum(
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceResolver, ResolverCapabilities};
-    use crate::value::{EvalValue, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         caps: ResolverCapabilities,
@@ -147,6 +163,43 @@ mod tests {
         ));
         let got = coerce_eval_to_number(&value, &resolver());
         assert_eq!(got, Err(CoercionError::NonNumericText("asd".to_string())));
+    }
+
+    #[test]
+    fn coerce_calc_scalar_to_number_uses_calcvalue_core() {
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::number(7.0)),
+            Ok(7.0)
+        );
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::logical(true)),
+            Ok(1.0)
+        );
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::text(ExcelText::from_utf16_code_units(
+                "2.5".encode_utf16().collect()
+            ))),
+            Ok(2.5)
+        );
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::missing()),
+            Err(CoercionError::MissingArg)
+        );
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::empty()),
+            Err(CoercionError::EmptyCell)
+        );
+    }
+
+    #[test]
+    fn coerce_calc_scalar_to_number_rejects_unresolved_shapes_without_legacy_construction() {
+        assert_eq!(
+            coerce_calc_scalar_to_number(&CalcValue::reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "A1"
+            ))),
+            Err(CoercionError::UnsupportedValueKind("reference"))
+        );
     }
 
     #[test]
