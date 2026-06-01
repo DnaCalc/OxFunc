@@ -408,6 +408,11 @@ Scope:
 3. create a deletion ledger mapping every compatibility adapter and legacy name to the bead that
    removes it.
 
+Current artifact:
+
+1. `docs/worksets/W099_CALCVALUE_INVENTORY_AND_DELETION_LEDGER.md`
+2. `docs/worksets/W099_CALCVALUE_OCCURRENCE_LEDGER.csv`
+
 Acceptance:
 
 1. inventory artifact committed under W099;

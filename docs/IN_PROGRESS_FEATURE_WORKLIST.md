@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-05-23
+Last updated: 2026-06-01
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -123,6 +123,7 @@ Current reading:
 13. `IP-22` is `active`.
 14. `IP-23` is `proposed`.
 15. `IP-24` is `active`.
+16. `IP-25` is `active`.
 
 ## 2026-05-03 W091 OxFunc-local execution update
 
@@ -289,6 +290,16 @@ Status axes:
 ### IP-24 Kernel Metadata And Rich/Sparse Admission Profiles
 - Current state: current-scope Rust bridge work landed locally. OxFunc accepts ownership of reduction-sensitive and error-collapse-sensitive kernel metadata, exact `NumericalReductionPolicy` semantics, exact `ErrorAlgebra` precedence semantics, an admission profile equivalent to `RichArgAccepted(required_capability_set)`, sparse-reader admission as a successor metadata lane, and prepared-package invalidation signals `semantic_kernel_metadata_version` and `arg_admission_metadata_version`. `RegistryFunctionMeta` now exposes semantic-kernel metadata/version, arg-admission metadata/version, and `IMAGE` `_webimage` producer capability keys; `render_registry_metadata_csv(...)` exports those fields for downstream consumers. `SUM` prepared aggregate evaluation exercises `SequentialLeftFold`; `ErrorAlgebra::CanonicalExcelLegacy` has a tested helper boundary; rich-admission capability mismatch has deterministic required/missing-key reporting; and `IMAGE` exposes adjacent runtime `producer_capability_set_keys` / `exercised_capability_keys` for successful `_webimage` results. Pairwise/Kahan replay fields, broad per-family error-collapse wiring, generic rich-argument consumers, generic rich producer protocol, and sparse support remain open.
 - Canonical owner: [OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md), [HANDOFF-CALC-003_OXFUNC_RECEIPT.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-CALC-003_OXFUNC_RECEIPT.md), [HANDOFF-CALC-004_OXFUNC_RECEIPT.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-CALC-004_OXFUNC_RECEIPT.md), and [NOTES_FOR_OXCALC.md](C:\Work\DnaCalc\OxFunc\docs\upstream\NOTES_FOR_OXCALC.md).
+
+### IP-25 CalcValue End-To-End Migration
+- Current state: active W099 execution lane. The initial W099-001 inventory maps legacy `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, `ExtendedValue`, `LambdaValue`, old reference-provider, and `.target` surfaces to deletion batches before the foundation code rework starts. The next code gate is the W099-002/W099-003 foundation shape: typed `ReferenceLike` payload plus `ReferenceSystemProvider`, not the broad function-call or kernel sweep.
+- Canonical owner: [W099_CALCVALUE_END_TO_END_MIGRATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_END_TO_END_MIGRATION.md), [W099_CALCVALUE_INVENTORY_AND_DELETION_LEDGER.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_INVENTORY_AND_DELETION_LEDGER.md), [W099_CALCVALUE_OCCURRENCE_LEDGER.csv](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_OCCURRENCE_LEDGER.csv), and `.beads/` epic `oxf-im4m`.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: typed reference payload foundation, `ReferenceSystemProvider` foundation, call-boundary migration, array/preparation/dispatch/kernel/rich/callable migration, OxFml callable follow-through, OxCalc reference-system integration, legacy type/provider/adapter deletion audit, and final cross-repo validation.
 
 ### IP-22 REDUCE Lambda-Helper Hot-Loop Performance
 - Current state: stopped at the OxFunc-local gate. W095 has local helper iteration changes so `MAP`, `REDUCE`, and `SCAN` consume iterable items lazily instead of materializing a full `Vec<PreparedArgValue>` upfront; `BYROW`/`BYCOL` avoid cloning an already-array source; `REDUCE` has a numeric-array fast path; `HSTACK`/`VSTACK` use borrowed/inline argument sources; `EvalArray` stores arrays with up to `8` cells inline; and `CallableInvoker::invoke_many(...)` exposes the OxFml-facing batching seam.
