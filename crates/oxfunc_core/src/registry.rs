@@ -1655,6 +1655,23 @@ mod tests {
     }
 
     #[test]
+    fn udf_registration_does_not_mutate_builtin_registry_singleton() {
+        let builtin_before = builtin_registry().snapshot_identity();
+        let mut host_registry = builtin_registry().clone();
+        host_registry
+            .register_udf(test_udf_entry("FUNC.UDF.MYFUNC", "MYFUNC"))
+            .expect("UDF registration");
+
+        assert!(host_registry.lookup_by_surface_name("MYFUNC").is_some());
+        assert!(
+            builtin_registry()
+                .lookup_by_surface_name("MYFUNC")
+                .is_none()
+        );
+        assert_eq!(builtin_registry().snapshot_identity(), builtin_before);
+    }
+
+    #[test]
     fn duplicate_udf_surface_requires_explicit_builtin_replacement() {
         let mut registry = builtin_registry().clone();
         let collision = test_udf_entry("FUNC.UDF.NOW", "NOW");
