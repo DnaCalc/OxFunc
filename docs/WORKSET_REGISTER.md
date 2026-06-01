@@ -967,8 +967,12 @@ replace OxFunc's evaluation value type `EvalValue` with a single uniform
 `CalcValue { core: CoreValue, rich: Option<Rc<RichValue>> }` (core + optional rich), and
 represent a callable as one of the `RichValue` types (`RichValue::Callable`) carried by an
 opaque, refcounted `Rc<dyn OpaqueCallable>` handle — the foundation for TreeCalc
-node-as-function. Spans the OxFunc big-bang value-model refactor (W2) plus OxFml eval/carrier
-(W3), OxCalc node-value + node-as-function intake (W4), and DnaTreeCalc evidence (W5).
+node-as-function. The reference endpoint is also clarified: `CoreValue::Reference` carries a
+typed host/profile reference identity, with active reference behavior routed through a FEC
+`ReferenceSystemProvider` rather than the legacy resolver/text-resolver split. Spans the OxFunc
+big-bang value-model refactor (W2) plus OxFml eval/carrier (W3), OxCalc node-value +
+node-as-function intake (W4), OxCalc W060 reference-system follow-through, and DnaTreeCalc
+evidence (W5).
 
 Canonical surfaces:
 1. `docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md`
@@ -994,8 +998,8 @@ Notes:
 4. No persistence — callables rebuild from formulas on load; the carrier does not serialize.
 5. Migration is big-bang (~5k `EvalValue` sites → `CalcValue`); compiler + existing suites are
    the safety net. No code lands under W098 itself — this packet is design + tracking only.
-6. Downstream companion worksets (OxFml W077, OxCalc W059, DnaTreeCalc corpus) are created when
-   each phase starts.
+6. Downstream companion worksets (OxFml W077, OxCalc W059, OxCalc W060, DnaTreeCalc corpus) are
+   created or linked when each phase starts.
 
 ## W099 CalcValue End-To-End Migration
 
@@ -1033,11 +1037,17 @@ Notes:
    boundary, not to introduce a new argument-slot wrapper. Direct-array versus
    reference-derived provenance is preserved in preparation/resolution, starting from
    `CoreValue::Array` versus `CoreValue::Reference`.
-4. No implementation batch starts until the call-boundary, array-cell, dispatch-ABI, and first
-   kernel-batch gates are recorded.
-5. OxFml callable completion is in scope: `SPECIAL.LAMBDA`, helper/defined-name callables,
+4. The first implementation batch is a foundation-shape batch: typed `CoreValue::Reference`
+   payload, FEC `ReferenceSystemProvider`, FEC provider slot, compatibility adapters, and focused
+   tests. Broad call-boundary, dispatch, or kernel migration does not start on top of the old
+   `ReferenceLike { kind, target }` / split-resolver shape.
+5. The reference-system provider migration is in scope before broad reference-sensitive
+   migration: `ReferenceResolver` and `ReferenceTextResolver` are replaced by the W098
+   `ReferenceSystemProvider`, and direct `ReferenceLike.target` / `HOST_REF_*` identity handling
+   is not allowed to spread.
+6. OxFml callable completion is in scope: `SPECIAL.LAMBDA`, helper/defined-name callables,
    returned/curried lambdas, publication, re-supply, and higher-order invocation must use
    `CalcValue` / `RichValue::Callable` with a real `OxFmlCallableBinding` handle before W099 can
-   close.
-6. W099 remains `scope_partial` / `target_partial` / `integration_partial` until no unowned
-   legacy value path remains.
+   reach its terminal gate.
+7. W099 remains `scope_partial` / `target_partial` / `integration_partial` until no unowned
+   legacy value path or old reference-provider path remains.

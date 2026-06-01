@@ -9,6 +9,8 @@ Status: `planned`
 > from the already-landed `W1` OxFml compiled-body cache). They are distinct from the OxFunc
 > workset id `W098`. The workstreams span four repos (OxFunc/OxFml/OxCalc/DnaTreeCalc); this
 > OxFunc packet is the authoritative design-of-record because OxFunc owns the value type.
+> OxCalc W060 is an added reference-system companion lane that sharpens the reference payload
+> and FEC provider endpoint without changing the core W2-W5 callable/value workstream labels.
 
 ## 1. Purpose
 
@@ -19,7 +21,12 @@ carried by an opaque, refcounted handle. This is the foundation that lets a Tree
 hold a `=LAMBDA(...)` and be invoked by name from other nodes (node-as-function), while
 keeping the callable opaque to OxFunc and owned by OxFml.
 
-This packet captures the full design and the four-repo workstream plan. It does **not**
+W098 also records the CalcValue reference endpoint: references remain `CoreValue::Reference`,
+but the payload is a typed host/profile identity operated on through a FEC
+`ReferenceSystemProvider`, not through stringly `HOST_REF_*` identities or the legacy
+resolver/text-resolver split.
+
+This packet captures the full design and the cross-repo workstream plan. It does **not**
 execute the refactor; `.beads/` owns live execution truth (see §12).
 
 ## 2. Why This Packet Exists
@@ -66,7 +73,11 @@ the concrete refactor and callable-carrier work.
 5. Display/formatting reference (DnaOneCalc): `../DnaOneCalc/src/dnaonecalc-host/src/adapters/oxfml/types.rs`
    (`worksheet_error_literal`, `FormulaValuePresentation`),
    `../DnaOneCalc/src/dnaonecalc-host/src/adapters/oxfml/live_bridge.rs` (`format_eval_value_for_display`).
-6. Design dialogue: session `64923573-2a4e-4346-b8cc-d3f88d011f45` (the `core + optional rich`
+6. Reference-system companion lane: `../OxCalc/docs/worksets/W060_CALC_TIME_REFERENCE_REPRESENTATION_AND_HOST_REFERENCE_SYSTEM.md`,
+   which identifies `CoreValue::Reference` as the right value lane while replacing
+   `HOST_REF_*` runtime identity with typed host/profile reference identity and a FEC reference
+   system.
+7. Design dialogue: session `64923573-2a4e-4346-b8cc-d3f88d011f45` (the `core + optional rich`
    shape; callable as one of the RichValue types; Rc-handle lifetime; no persistence).
 
 ## 4. The Value Model (design of record)
@@ -124,6 +135,143 @@ automation and UDF exchange, and ordinary worksheet formula values. `RichValue` 
 modern and DNA Calc-specific semantic payloads that exceed that core projection. Every
 rich value still has a coherent `.core` projection for compatibility, coercion, publication
 fallback, display fallback, and degradation.
+
+### 4.1A Reference payload and FEC reference-system target
+
+References remain `CoreValue::Reference`, not rich values. The W098 endpoint adopts the
+OxCalc `W060_CALC_TIME_REFERENCE_REPRESENTATION_AND_HOST_REFERENCE_SYSTEM.md` direction:
+the reference payload is a typed host/profile identity and all active reference behavior goes
+through a FEC-hosted reference-system provider. The current
+`ReferenceLike { kind: ReferenceKind, target: String }` scaffold is therefore a textual /
+compatibility payload only, not the final reference model.
+
+Target shape, names provisional:
+
+```rust
+struct ReferenceLike {
+    system: ReferenceSystemId,
+    identity: ReferenceIdentity,
+    display: Option<ReferenceDisplay>,
+}
+
+struct ReferenceSystemId(String); // e.g. "excel.grid.v1", "dna.treecalc.v1"
+
+enum ReferenceIdentity {
+    Textual(TextualReferenceIdentity),
+    Opaque(ReferenceHandle),
+    Composite(CompositeReferenceIdentity),
+}
+
+struct TextualReferenceIdentity {
+    kind: TextualReferenceKind,
+    text: ExcelText,
+}
+
+struct ReferenceHandle {
+    id: ReferenceHandleId, // host-owned opaque identity; not parsed by OxFunc
+}
+
+struct ReferenceHandleId { /* opaque bytes / integer / interned host id */ }
+
+struct CompositeReferenceIdentity {
+    operation: CompositeReferenceOperation,
+    members: Vec<ReferenceLike>,
+}
+
+struct ReferenceDisplay {
+    text: ExcelText, // diagnostics/display only; never functional identity
+}
+```
+
+Ownership split:
+
+1. `ReferenceLike`, `ReferenceSystemId`, `ReferenceIdentity`, and display-only metadata belong
+   with the value model because they are passive `CalcValue` payloads.
+2. `ReferenceSystemProvider` belongs with the OxFunc function-call/FEC layer because it is an
+   execution capability, not value data.
+3. Host/profile concrete implementations belong outside OxFunc. OxCalc implements the current
+   TreeCalc/reference-profile behavior; OxFml owns syntax and binding callbacks where text must
+   be parsed or rebound.
+
+The current `ReferenceKind` vocabulary may survive only inside
+`TextualReferenceIdentity` / compatibility constructors, or as request/fact enums where a
+textual reference system needs it. OxFunc kernels must not rely on `display.text` or on the
+concrete storage of `ReferenceHandleId` as semantic identity. Opaque handles are correlation /
+lookup identities owned by the active reference system, not reference text and not durable
+workbook syntax.
+
+The FEC bundle should contain one reference-system provider that replaces and subsumes the
+current `ReferenceResolver` and `ReferenceTextResolver` split. Target shape, names provisional:
+
+```rust
+trait ReferenceSystemProvider {
+    fn capabilities(&self) -> ReferenceSystemCapabilities;
+
+    fn describe_reference(
+        &self,
+        reference: &ReferenceLike,
+        request: ReferenceDescribeRequest,
+    ) -> Result<ReferenceDescription, ReferenceSystemError>;
+
+    fn dereference(
+        &self,
+        reference: &ReferenceLike,
+        request: ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceSystemError>;
+
+    fn enumerate_values(
+        &self,
+        reference: &ReferenceLike,
+        request: ReferenceEnumerationRequest,
+    ) -> Result<ReferenceEnumeration, ReferenceSystemError>;
+
+    fn query_facts(
+        &self,
+        reference: &ReferenceLike,
+        request: ReferenceFactRequest,
+    ) -> Result<ReferenceFacts, ReferenceSystemError>;
+
+    fn resolve_text(
+        &self,
+        request: ReferenceTextResolveRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError>;
+
+    fn transform(
+        &self,
+        reference: &ReferenceLike,
+        request: ReferenceTransformRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError>;
+}
+```
+
+The intended operation families are:
+
+1. describe for diagnostics, trace, replay, and display;
+2. dereference to a non-reference top-level `CalcValue` for value-only semantics;
+3. enumerate sparse/lazy reference values with shape, defined positions, blank/empty
+   distinction, ordering, duplicate semantics where applicable, and reader identity;
+4. query reference facts such as area count, extent, anchor/address, caller-sensitive address,
+   and shape;
+5. resolve text in the current execution context for `INDIRECT`-style semantics, with parsing
+   and binding owned by OxFml/OxCalc rather than OxFunc;
+6. transform/compose references for `OFFSET`, reference-form `INDEX`, union, intersection, and
+   structural selector application.
+
+`FunctionExecutionContextBundle` should therefore move from separate
+`resolver: &R` plus `reference_text_resolver: Option<&dyn ReferenceTextResolver>` fields toward
+one `reference_system: &dyn ReferenceSystemProvider` field. Other providers such as locale,
+time, random, RTD, registered-external, callable invocation, and host-info may remain separate
+FEC capabilities unless later work proves they should also be grouped. The important W098
+boundary is that OxFunc asks for reference capabilities; OxCalc implements the active
+TreeCalc/grid/host profile mechanics; OxFml owns syntax and binding; and `HOST_REF_*` strings
+do not survive as runtime reference identity.
+
+`ReferenceEnumeration` is deliberately named as an abstraction rather than a fixed container:
+the first implementation may be a concrete sparse value collection for current tests, but the
+API shape must leave room for host-owned sparse/lazy readers. A dereference result is
+"non-reference" at its top-level `CalcValue.core`; array elements remain `CalcValue` because
+`CalcArray` is universal, and any later profile/function restriction on nested references is a
+policy layer rather than a representation limit.
 
 ### 4.2 The callable as one of the RichValue types
 
@@ -531,17 +679,22 @@ New tests this refactor must add:
 1. *Value-model invariants* (OxFunc `oxfunc_value_types`): `CalcValue` core+rich construction; a
    callable's `core == Error(#CALC!)`; `CallableValue` `PartialEq` = `Rc::ptr_eq(handle)` +
    `arity`; `Debug` delegates to the carrier.
-2. *Callable round-trip* (OxFml): `SPECIAL.LAMBDA` → `CalcValue` with `rich = Some(Callable)` and
+2. *Reference model and FEC provider* (OxFunc): textual and opaque `ReferenceLike` identities
+   carry system/identity/display separately; display is non-functional; compatibility textual
+   constructors do not reintroduce universal `.target`; provider-backed dereference and text
+   resolution route through `ReferenceSystemProvider`; source scans show no active
+   `HOST_REF_*` runtime identity.
+3. *Callable round-trip* (OxFml): `SPECIAL.LAMBDA` → `CalcValue` with `rich = Some(Callable)` and
    `#CALC!` core; invoker downcasts the handle and runs; **no recompile on a second invoking
    frame** (W1 cache hit); full-scope (IF/LET/curried) invokes.
-3. *Lifetime* (OxFml/OxCalc): a node-stored callable's `Rc::strong_count` drops to 0 when the
+4. *Lifetime* (OxFml/OxCalc): a node-stored callable's `Rc::strong_count` drops to 0 when the
    node is cleared/re-pointed; structural-cache sharing = a clone bumps the count.
-4. *OxCalc intake* (replaces the W074 exclusion): the §7 anchor — `B = LAMBDA(X, X+A)`,
+5. *OxCalc intake* (replaces the W074 exclusion): the §7 anchor — `B = LAMBDA(X, X+A)`,
    `C = B(2)` resolves & computes to 5; edit `A` → `C` recomputes (captured-ref dependency edge);
    the `LET` form matches; a set-valued callee (`@CHILDREN(1)(…)`) still rejects.
-5. *Display* (OxCalc): the typed `format_cell_value_for_display` mirrors DnaOneCalc; a callable
+6. *Display* (OxCalc): the typed `format_cell_value_for_display` mirrors DnaOneCalc; a callable
    node displays `#CALC!`.
-6. *At-scale* (DnaTreeCalc/OxFml): `MAP` over a large array invoking a node-defined lambda —
+7. *At-scale* (DnaTreeCalc/OxFml): `MAP` over a large array invoking a node-defined lambda —
    assert W1-cache hits (no per-call recompile).
 
 Commands: `cargo test -p oxfunc_value_types -p oxfunc_core`;
@@ -566,15 +719,19 @@ Preflight on `2026-05-31` found the following current-state anchors:
 
 Recommended execution order:
 
-1. **Value-crate scaffolding first.** Introduce `CoreValue`, `CalcValue`, `CalcArray`,
+1. **Foundation shape first.** Introduce the final-direction passive value shapes in
+   `crates/oxfunc_value_types/src/lib.rs`: `CoreValue`, `CalcValue`, `CalcArray`,
    `RichValue::Object`, `RichValue::Callable`, `RichValue::Presentation`,
-   `RichValue::ErrorMetadata`, `CallableValue`, and `OpaqueCallable` in
-   `crates/oxfunc_value_types/src/lib.rs`; preserve temporary helper constructors/conversions so
-   ordinary scalar kernels can be migrated mechanically.
+   `RichValue::ErrorMetadata`, `CallableValue`, `OpaqueCallable`, and the typed
+   `ReferenceLike` payload (`system`, `identity`, optional display). In `oxfunc_core`, add the
+   FEC `ReferenceSystemProvider` slot and compatibility adapters for old resolver/text-resolver
+   tests before broad migration begins. Preserve temporary helper constructors/conversions only
+   as migration aids.
 2. **Adapter/preparation layer second.** Move call arguments, prepared frame values, array-cell
    conversions, coercion, and reference resolution onto `CalcValue.core` deliberately. Delete
    `CallArgValue`, `PreparedArgValue`, `EvalArray`, and `ArrayCellValue` as carriers once their
-   behavior is ported.
+   behavior is ported; delete `ReferenceResolver` / `ReferenceTextResolver` after all provider
+   compatibility adapters are gone.
 3. **Callable helpers third.** Change `CallableInvoker` and `require_callable` from
    `&LambdaValue` / `EvalValue::Lambda` to `&CallableValue` / `RichValue::Callable`. Keep
    helper-function dispatch details in the test/mock invokers or OxFml invoker, not on
@@ -594,6 +751,12 @@ Implementation guardrails:
    v1 equality is handle identity plus arity.
 4. Do not encode captured-reference dependency edges in `CalcValue`; they belong on the
    OxFml/OxCalc publication/candidate surface.
+5. Do not encode runtime host references as `HOST_REF_*` strings or as a universal
+   `ReferenceLike.target`; host-owned reference identity belongs in the typed
+   `ReferenceIdentity` payload and is operated on only through the FEC reference-system provider.
+6. Do not start broad call-boundary, dispatch, or reference-sensitive function migration on top
+   of the old reference scaffold. The typed reference payload and FEC provider slot are part of
+   the first foundation shape, not a late cleanup.
 
 ## 8B. End-State Design Decisions
 
@@ -613,10 +776,13 @@ Resolved design decisions:
    elements. Any rejection/coercion is boundary/function policy ported from existing behavior,
    not a narrower representation type.
 4. **References:** functions needing reference-visible semantics receive
-   `CoreValue::Reference` and resolve internally. Value-only functions may receive
-   post-dereferenced `CalcValue`s according to metadata. Direct-array versus reference-derived
-   behavior follows from `CoreValue::Array` versus `CoreValue::Reference`, not a separate value
-   carrier.
+   `CoreValue::Reference(ReferenceLike)` where `ReferenceLike` is the typed host/profile identity
+   from §4.1A. Value-only functions may receive post-dereferenced `CalcValue`s according to
+   metadata. Direct-array versus reference-derived behavior follows from `CoreValue::Array`
+   versus `CoreValue::Reference`, not a separate value carrier. Dereference, sparse/lazy
+   enumeration, reference-fact query, text resolution, and transform/composition go through the
+   FEC `ReferenceSystemProvider`; OxFunc must not parse opaque reference handles or rely on
+   display text as identity.
 5. **Rich values:** rich/object/presentation/error-metadata values are represented by
    `CalcValue { core, rich }` using the core projection rule and the §4.4A mapping. Multiple
    rich facets are not supported by the current `CalcValue` shape and are not an open design
@@ -633,16 +799,23 @@ Resolved design decisions:
 
 Execution work still required by W099:
 
-1. migrate all OxFunc-local APIs and kernels to `CalcValue`,
-2. port current boundary/function policy onto `CalcValue` matches,
-3. add/update `RegistryFunctionMeta.rich_value_usage` metadata and exports,
-4. run the full local and downstream validation matrix,
-5. remove all legacy value carriers and prove their absence by grep/audit.
+1. put the typed reference payload and FEC `ReferenceSystemProvider` foundation in place,
+2. migrate all OxFunc-local APIs and kernels to `CalcValue`,
+3. port current boundary/function policy onto `CalcValue` matches,
+4. add/update `RegistryFunctionMeta.rich_value_usage` metadata and exports,
+5. run the full local and downstream validation matrix,
+6. remove all legacy value carriers and old reference providers and prove their absence by
+   grep/audit.
 
 ## 9. Key files (verified anchors)
 
 1. **OxFunc** `crates/oxfunc_value_types/src/lib.rs` (`EvalValue` ~552, `LambdaValue` ~495,
-   `RichValue`/`RichValueData`/`ExtendedValue` ~303–644 — fold/replace),
+   `RichValue`/`RichValueData`/`ExtendedValue` ~303–644 — fold/replace; `ReferenceLike` /
+   `ReferenceKind` scaffold — replace with typed identity payload),
+   `crates/oxfunc_core/src/function_call.rs` (`FunctionExecutionContextBundle` and
+   `FunctionExecutionContext` — add `ReferenceSystemProvider` slot),
+   `crates/oxfunc_core/src/resolver.rs` (`ReferenceResolver` / `ReferenceTextResolver` — replace
+   or adapt during migration),
    `crates/oxfunc_core/src/functions/callable_helpers.rs` (`CallableInvoker` ~117,
    `require_callable` ~817, MAP/REDUCE/SCAN/…), `functions/{groupby_fn.rs, pivotby_fn.rs}`
    (token tag-checks at :419/:465 are in *test* invokers — production dispatch is the invoker's
@@ -658,8 +831,9 @@ Execution work still required by W099:
    `seam/mod.rs:26` (`ValuePayload` — the stringly path W4 replaces).
 3. **OxCalc** `src/oxcalc-core/src/treecalc.rs` (`adapt_oxfml_runtime_candidate` ~4759,
    `value_payload_to_string` ~5448, `string_to_eval_value` ~5423, `runtime_binding_for_reference`
-   ~4050), `src/oxcalc-core/src/consumer.rs` (`published_values` ~88, `OxCalcTreeNodeView`/
-   `value_text` ~164/170, node-as-function exclusion ~3247), plus `coordinator.rs`/`repository.rs`
+   ~4050, runtime `HOST_REF_*` / sparse-reference binding paths covered by OxCalc W060),
+   `src/oxcalc-core/src/consumer.rs` (`published_values` ~88, `OxCalcTreeNodeView`/`value_text`
+   ~164/170, node-as-function exclusion ~3247), plus `coordinator.rs`/`repository.rs`
    publication pipeline.
 4. **Reference pattern** (DnaOneCalc) `src/dnaonecalc-host/src/adapters/oxfml/{types.rs
    (worksheet_error_literal ~60, FormulaValuePresentation ~213), live_bridge.rs
@@ -682,11 +856,16 @@ Execution work still required by W099:
 5. **`RichValue` enum-vs-object payload:** the existing structured rich payload becomes
    `RichValue::Object(RichObjectValue)`. The W098 target keeps string-keyed extensibility there
    rather than adding typed `Image` / `Entity` / `FormattedNumber` variants in this migration.
-6. **Incremental-recalc lifetime:** confirm the `Rc`-on-node model interacts correctly with
+6. **Reference-system seam:** the new typed `ReferenceLike` payload and
+   `ReferenceSystemProvider` must land before broad migration. Otherwise new `CalcValue` code
+   will preserve `ReferenceLike.target` and `HOST_REF_*` assumptions that W060 is explicitly
+   trying to remove.
+7. **Incremental-recalc lifetime:** confirm the `Rc`-on-node model interacts correctly with
    OxCalc's dirty/invalidation (clean callable nodes keep a live `Rc`; dirtied/edited ones drop
    and re-materialize).
-7. **No hidden compatibility residue:** W099 must prove by grep/audit that the old value
-   carriers are deleted rather than aliased or retained behind compatibility wrappers.
+8. **No hidden compatibility residue:** W099 must prove by grep/audit that the old value
+   carriers and old reference providers are deleted rather than aliased or retained behind
+   compatibility wrappers.
 
 ## 11. Companion worksets (downstream — create when each phase starts)
 
@@ -694,9 +873,13 @@ Execution work still required by W099:
    full-scope-by-construction (this packet's W3).
 2. OxCalc **W059** — node `CalcValue` + node-as-function intake; derived display; captured-ref
    dependency edges (this packet's W4).
-3. DnaTreeCalc — node-as-function producer corpus + at-scale evidence (this packet's W5).
+3. OxCalc **W060** — calc-time reference representation and host reference system:
+   `CalcValue::Reference` typed identity plus FEC `ReferenceSystemProvider` replacing
+   `HOST_REF_*` runtime identity and the old resolver/text-resolver split.
+4. DnaTreeCalc — node-as-function producer corpus + at-scale evidence (this packet's W5).
 
-This packet references these as downstream lanes; it does not pre-create them.
+This packet references or links these downstream lanes; it does not fold their execution
+ownership into W098.
 
 ## 12. Bead Workset
 
@@ -706,7 +889,8 @@ workstream beads:
 
 1. OxFunc epic (this packet) → owns `W098`.
 2. Kept, linked as `related`: `oxf-ahi7` (W2), `fml-oh8.2` (W3, OxFml store),
-   `calc-4vs8.73` (W4, OxCalc store), `dtc-z0i.8` (W5, DnaTreeCalc store).
+   `calc-4vs8.73` (W4, OxCalc store), OxCalc W060 reference-system lane, and `dtc-z0i.8`
+   (W5, DnaTreeCalc store).
 
 W098 supersedes stale terminology inside those related beads where it conflicts with this
 packet, but does not fold, reparent, or close their execution ownership.
@@ -717,8 +901,9 @@ packet, but does not fold, reparent, or close their execution ownership.
 
 1. the value model in §4 is recorded as design-of-record and registered in
    `docs/WORKSET_REGISTER.md` + `docs/worksets/README.md`,
-2. the OxFunc epic bead exists, owns the doc, and links the kept W2–W5 workstream beads,
-3. the workstream sequencing (W2 → W3 → W4 → W5) and the verification/test plan in §8 are
-   captured for execution,
+2. the OxFunc epic bead exists, owns the doc, and links the kept W2–W5 workstream beads plus
+   the OxCalc W060 reference-system companion lane,
+3. the workstream sequencing (W2 → W3 → W4 → W5), the W060 reference-system dependency, and the
+   verification/test plan in §8 are captured for execution,
 4. the downstream companion worksets (§11) are named as future lanes,
 5. no surface claims the refactor has been executed — this packet is design + tracking only.
