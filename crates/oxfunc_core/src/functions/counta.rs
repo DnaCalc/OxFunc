@@ -154,10 +154,10 @@ mod tests {
 
     #[test]
     fn eval_counta_counts_reference_derived_error_and_empty_string_but_not_empty_cells() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A3".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A3".to_string(),
+        ))];
         let got = eval_counta_surface(
             &args,
             &MockResolver {
@@ -176,10 +176,9 @@ mod tests {
 
     #[test]
     fn eval_counta_admits_opaque_reference_value_through_generic_resolver() {
-        let args = vec![CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "NameBackedRange".to_string(),
-        }))];
+        let args = vec![CallArgValue::Eval(EvalValue::Reference(
+            ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
+        ))];
         let got = eval_counta_surface(
             &args,
             &MockResolver {

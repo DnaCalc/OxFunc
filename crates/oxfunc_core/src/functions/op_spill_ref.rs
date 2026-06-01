@@ -66,10 +66,10 @@ pub fn eval_op_spill_ref_surface(
 
     let reference = reference_arg(&args[0])?;
     let target = normalize_anchor_target(&reference)?;
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: ReferenceKind::SpillAnchor,
+    Ok(EvalValue::Reference(ReferenceLike::new(
+        ReferenceKind::SpillAnchor,
         target,
-    }))
+    )))
 }
 
 pub fn map_op_spill_ref_error_to_ws(e: &SpillRefEvalError) -> WorksheetErrorCode {
@@ -105,46 +105,46 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_a1_anchor_returns_spill_anchor_reference() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "Sheet1!B2".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "Sheet1!B2".to_string(),
+            ))],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::SpillAnchor,
-                target: "Sheet1!B2#".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::SpillAnchor,
+                "Sheet1!B2#".to_string()
+            )))
         );
     }
 
     #[test]
     fn eval_op_spill_ref_passes_through_existing_spill_anchor() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::SpillAnchor,
-                target: "B1#".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::SpillAnchor,
+                "B1#".to_string(),
+            ))],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::SpillAnchor,
-                target: "B1#".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::SpillAnchor,
+                "B1#".to_string()
+            )))
         );
     }
 
     #[test]
     fn eval_op_spill_ref_rejects_multi_cell_a1_area() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A3".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A3".to_string(),
+            ))],
             &NoResolver,
         );
         assert_eq!(
@@ -156,18 +156,18 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_accepts_named_anchor_text_verbatim() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "SpillName".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "SpillName".to_string(),
+            ))],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::SpillAnchor,
-                target: "SpillName#".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::SpillAnchor,
+                "SpillName#".to_string()
+            )))
         );
     }
 

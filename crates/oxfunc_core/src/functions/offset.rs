@@ -100,14 +100,14 @@ pub fn eval_offset_surface(
         .ok_or(OffsetEvalError::InvalidDimension)?;
     let target = format_relative_target(&shifted).ok_or(OffsetEvalError::InvalidDimension)?;
 
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: if shifted.width() == 1 && shifted.height() == 1 {
+    Ok(EvalValue::Reference(ReferenceLike::new(
+        if shifted.width() == 1 && shifted.height() == 1 {
             ReferenceKind::A1
         } else {
             ReferenceKind::Area
         },
         target,
-    }))
+    )))
 }
 
 pub fn map_offset_error_to_ws(e: &OffsetEvalError) -> WorksheetErrorCode {
@@ -147,10 +147,7 @@ mod tests {
     fn eval_offset_shifts_single_cell_reference() {
         let got = eval_offset_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
@@ -158,10 +155,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "C2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "C2".to_string()
+            )))
         );
     }
 
@@ -169,10 +166,10 @@ mod tests {
     fn eval_offset_resizes_reference_area() {
         let got = eval_offset_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "A1:B2".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:B2".to_string(),
+                )),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
@@ -182,10 +179,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B1:D1".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B1:D1".to_string()
+            )))
         );
     }
 
@@ -193,10 +190,10 @@ mod tests {
     fn eval_offset_defaults_height_and_width_to_base_shape() {
         let got = eval_offset_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "B2:C3".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "B2:C3".to_string(),
+                )),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
@@ -204,10 +201,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "C3:D4".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "C3:D4".to_string()
+            )))
         );
     }
 
@@ -215,10 +212,10 @@ mod tests {
     fn eval_offset_preserves_sheet_prefix() {
         let got = eval_offset_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "Sheet1!B2".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "Sheet1!B2".to_string(),
+                )),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
@@ -226,10 +223,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "Sheet1!D3".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "Sheet1!D3".to_string()
+            )))
         );
     }
 }

@@ -159,10 +159,8 @@ mod tests {
 
     #[test]
     fn concat_flattens_ranges_but_concatenate_rejects_multi_cell_ranges() {
-        let range_arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "D1:D3".to_string(),
-        });
+        let range_arg =
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "D1:D3".to_string()));
         let resolved = Some(EvalValue::Array(
             EvalArray::from_rows(vec![vec![
                 ArrayCellValue::EmptyCell,
@@ -195,18 +193,18 @@ mod tests {
         assert_eq!(
             eval_concatenate_surface(
                 &[
-                    CallArgValue::Reference(ReferenceLike {
-                        kind: ReferenceKind::A1,
-                        target: "D1".to_string(),
-                    }),
-                    CallArgValue::Reference(ReferenceLike {
-                        kind: ReferenceKind::A1,
-                        target: "D2".to_string(),
-                    }),
-                    CallArgValue::Reference(ReferenceLike {
-                        kind: ReferenceKind::A1,
-                        target: "D3".to_string(),
-                    }),
+                    CallArgValue::Reference(ReferenceLike::new(
+                        ReferenceKind::A1,
+                        "D1".to_string()
+                    )),
+                    CallArgValue::Reference(ReferenceLike::new(
+                        ReferenceKind::A1,
+                        "D2".to_string()
+                    )),
+                    CallArgValue::Reference(ReferenceLike::new(
+                        ReferenceKind::A1,
+                        "D3".to_string()
+                    )),
                 ],
                 &MockResolver {
                     resolved: Some(txt("x")),

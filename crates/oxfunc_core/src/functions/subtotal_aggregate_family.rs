@@ -697,10 +697,7 @@ mod tests {
     }
 
     fn area_ref(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     fn vertical_array(values: Vec<ArrayCellValue>) -> EvalValue {

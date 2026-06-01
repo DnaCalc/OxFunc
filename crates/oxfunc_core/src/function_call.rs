@@ -707,10 +707,7 @@ mod tests {
     }
 
     fn reference_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
     fn lambda_arg(token: &str, arity: usize) -> CallArgValue {

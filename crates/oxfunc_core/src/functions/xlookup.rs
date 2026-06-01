@@ -140,10 +140,7 @@ fn reference_from_cell(parsed: &A1Reference, row: usize, col: usize) -> Referenc
         notation: A1ReferenceNotation::Rect,
     };
     let target = format_relative_target(&single).expect("single cell reference is formattable");
-    ReferenceLike {
-        kind: ReferenceKind::A1,
-        target,
-    }
+    ReferenceLike::new(ReferenceKind::A1, target)
 }
 
 fn flatten_reference_vector(
@@ -446,14 +443,14 @@ fn select_reference_slice(
         VectorOrientation::Scalar => reference.clone(),
     };
     let target = format_relative_target(&selected).expect("selected reference remains formattable");
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: if selected.height() == 1 && selected.width() == 1 {
+    Ok(EvalValue::Reference(ReferenceLike::new(
+        if selected.height() == 1 && selected.width() == 1 {
             ReferenceKind::A1
         } else {
             ReferenceKind::Area
         },
         target,
-    }))
+    )))
 }
 
 fn select_return_value(
@@ -987,10 +984,10 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
             ],
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B1:D1".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B1:D1".to_string(),
+            ))],
             None,
             None,
             None,
@@ -998,10 +995,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "C1".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "C1".to_string()
+            )))
         );
     }
 
@@ -1082,10 +1079,10 @@ mod tests {
                 ]])
                 .unwrap(),
             ))],
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B2:D4".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B2:D4".to_string(),
+            ))],
             None,
             None,
             None,
@@ -1093,10 +1090,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "C2:C4".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "C2:C4".to_string()
+            )))
         );
     }
 

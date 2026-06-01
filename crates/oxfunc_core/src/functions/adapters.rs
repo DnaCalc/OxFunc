@@ -612,20 +612,14 @@ mod tests {
 
     #[test]
     fn prepare_values_only_dereferences_reference_arg() {
-        let arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         let prepared = prepare_arg_values_only(&arg, &resolver_with(EvalValue::Number(3.0)));
         assert_eq!(prepared, Ok(PreparedArgValue::Eval(EvalValue::Number(3.0))));
     }
 
     #[test]
     fn prepare_values_only_normalizes_single_blank_area_to_empty_cell() {
-        let arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         let prepared = prepare_arg_values_only(
             &arg,
             &resolver_with(EvalValue::Array(
@@ -757,10 +751,10 @@ mod tests {
 
     #[test]
     fn prepared_coercion_rejects_reference_if_invariant_broken() {
-        let prepared = PreparedArgValue::Eval(EvalValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        }));
+        let prepared = PreparedArgValue::Eval(EvalValue::Reference(ReferenceLike::new(
+            ReferenceKind::A1,
+            "A1".to_string(),
+        )));
         let got = coerce_prepared_to_number(&prepared);
         assert_eq!(
             got,
@@ -804,10 +798,7 @@ mod tests {
     #[test]
     fn map_values_only_prepared_maps_preparation_errors_per_arg() {
         let args = vec![
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
         let resolver = MockResolver {
@@ -863,10 +854,8 @@ mod tests {
 
     #[test]
     fn expand_aggregate_arg_marks_reference_derived_values() {
-        let arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A2".to_string(),
-        });
+        let arg =
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:A2".to_string()));
         let got = expand_aggregate_arg(
             &arg,
             &resolver_with(EvalValue::Array(
@@ -887,10 +876,10 @@ mod tests {
 
     #[test]
     fn expand_aggregate_arg_admits_opaque_reference_values_as_reference_derived() {
-        let arg = CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "NameBackedRange".to_string(),
-        }));
+        let arg = CallArgValue::Eval(EvalValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "NameBackedRange".to_string(),
+        )));
         let got = expand_aggregate_arg(
             &arg,
             &resolver_with(EvalValue::Array(

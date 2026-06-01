@@ -1158,10 +1158,8 @@ mod tests {
     #[test]
     fn dummy_resolver_reference_lane_stays_unresolved() {
         let resolver = DummyResolver;
-        let got = resolver.resolve_reference(&ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let got =
+            resolver.resolve_reference(&ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         assert!(matches!(
             got,
             Err(RefResolutionError::UnresolvedReference { .. })

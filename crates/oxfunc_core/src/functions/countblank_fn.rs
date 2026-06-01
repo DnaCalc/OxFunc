@@ -202,10 +202,10 @@ mod tests {
     #[test]
     fn countblank_counts_empty_cells_and_empty_strings() {
         let got = eval_countblank_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "D1:D3".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "D1:D3".to_string(),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
@@ -225,10 +225,9 @@ mod tests {
     #[test]
     fn countblank_admits_opaque_reference_value_through_generic_resolver() {
         let got = eval_countblank_surface(
-            &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "NameBackedRange".to_string(),
-            }))],
+            &[CallArgValue::Eval(EvalValue::Reference(
+                ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
@@ -248,10 +247,10 @@ mod tests {
     #[test]
     fn countblank_propagates_errors() {
         let got = eval_countblank_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "D1".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "D1".to_string(),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![ArrayCellValue::Error(WorksheetErrorCode::NA)]])

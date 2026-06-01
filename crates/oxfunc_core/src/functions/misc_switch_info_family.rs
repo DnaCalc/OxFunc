@@ -345,10 +345,10 @@ mod tests {
     fn isformula_uses_host_query_on_reference_only() {
         let provider = MockHostInfoProvider;
         let got = eval_isformula_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A2".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A2".to_string(),
+            ))],
             Some(&provider),
         );
         assert_eq!(got, Ok(EvalValue::Logical(true)));

@@ -149,10 +149,10 @@ mod tests {
     #[test]
     fn eval_row_single_cell_reference_returns_scalar() {
         let got = eval_row_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "B2".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "B2".to_string(),
+            ))],
             &MockResolver { caller: None },
         );
         assert_eq!(got, Ok(EvalValue::Number(2.0)));
@@ -161,10 +161,10 @@ mod tests {
     #[test]
     fn eval_row_area_reference_spills_vertically() {
         let got = eval_row_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B2:C3".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B2:C3".to_string(),
+            ))],
             &MockResolver { caller: None },
         )
         .unwrap();
@@ -183,10 +183,10 @@ mod tests {
     #[test]
     fn eval_row_whole_column_reference_builds_full_height_vector() {
         let got = eval_row_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A:A".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A:A".to_string(),
+            ))],
             &MockResolver { caller: None },
         )
         .unwrap();

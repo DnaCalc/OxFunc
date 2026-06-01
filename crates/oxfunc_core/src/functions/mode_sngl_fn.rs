@@ -168,10 +168,10 @@ mod tests {
 
     #[test]
     fn eval_mode_sngl_propagates_reference_error_lane() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A3".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A3".to_string(),
+        ))];
         let array = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Text(crate::value::ExcelText::from_utf16_code_units(
                 "x".encode_utf16().collect(),

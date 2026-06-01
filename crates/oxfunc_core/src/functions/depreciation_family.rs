@@ -624,10 +624,7 @@ mod tests {
         let resolver = NoRefResolver;
         let got = eval_sln_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
                 num(0.0),
                 num(10.0),
             ],

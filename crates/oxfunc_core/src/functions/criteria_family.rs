@@ -304,14 +304,14 @@ fn try_anchor_reference_to_shape(
     let target = format_relative_target(&anchored)
         .ok_or(CriteriaEvalError::Domain(WorksheetErrorCode::Ref))?;
     flatten_arg(
-        &CallArgValue::Reference(ReferenceLike {
-            kind: if desired_shape.rows == 1 && desired_shape.cols == 1 {
+        &CallArgValue::Reference(ReferenceLike::new(
+            if desired_shape.rows == 1 && desired_shape.cols == 1 {
                 ReferenceKind::A1
             } else {
                 ReferenceKind::Area
             },
             target,
-        }),
+        )),
         resolver,
     )
     .map(Some)
@@ -850,10 +850,7 @@ mod tests {
         CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
     }
     fn area_ref(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     #[test]
@@ -1164,15 +1161,12 @@ mod tests {
         };
         let anchored = eval_sumif_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "A1:A3".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:A3".to_string(),
+                )),
                 scalar_text("1"),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "B2".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
             ],
             &resolver,
         );
@@ -1233,15 +1227,12 @@ mod tests {
 
         let got = eval_averageif_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "A1:A3".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:A3".to_string(),
+                )),
                 scalar_text("1"),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "B2".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
             ],
             &resolver,
         );

@@ -128,10 +128,10 @@ mod tests {
         );
         assert_eq!(
             eval_iseven_surface(
-                &[CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "D1".to_string(),
-                })],
+                &[CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "D1".to_string()
+                ))],
                 &MockResolver {
                     resolved: Some(EvalValue::Array(
                         crate::value::EvalArray::from_rows(vec![vec![

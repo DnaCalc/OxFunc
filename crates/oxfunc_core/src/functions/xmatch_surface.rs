@@ -207,10 +207,7 @@ mod tests {
         };
 
         let got = eval_xmatch_surface(
-            &CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            }),
+            &CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             &[
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),

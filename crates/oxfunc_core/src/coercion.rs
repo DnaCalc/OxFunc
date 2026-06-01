@@ -167,10 +167,7 @@ mod tests {
             caps: ResolverCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(2.5)),
         };
-        let arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
 
         let got = coerce_arg_to_number(&arg, &r);
         assert_eq!(got, Ok(2.5));
@@ -178,10 +175,7 @@ mod tests {
 
     #[test]
     fn unresolved_reference_propagates_resolution_error() {
-        let arg = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
 
         let got = coerce_arg_to_number(&arg, &resolver());
         assert_eq!(

@@ -120,10 +120,10 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
     let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
     assert_eq!(
         args,
-        vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        })]
+        vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::A1,
+            "A1".to_string()
+        ))]
     );
 }
 

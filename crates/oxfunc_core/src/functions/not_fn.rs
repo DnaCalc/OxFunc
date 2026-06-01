@@ -157,10 +157,10 @@ mod tests {
     #[test]
     fn eval_not_reference_uses_resolved_scalar() {
         let got = eval_not_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "A1".to_string(),
+            ))],
             &MockResolver {
                 resolved_value: Some(EvalValue::Logical(true)),
             },

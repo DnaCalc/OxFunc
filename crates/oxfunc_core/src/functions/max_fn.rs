@@ -135,10 +135,10 @@ mod tests {
 
     #[test]
     fn eval_max_ignores_reference_derived_text_and_logical() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A2".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A2".to_string(),
+        ))];
         let got = eval_max_surface(
             &args,
             &MockResolver {
@@ -158,10 +158,10 @@ mod tests {
 
     #[test]
     fn eval_max_propagates_reference_derived_errors() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A3".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A3".to_string(),
+        ))];
         let got = eval_max_surface(
             &args,
             &MockResolver {

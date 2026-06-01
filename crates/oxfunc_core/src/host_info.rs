@@ -216,10 +216,7 @@ mod tests {
         let provider = EmptyProvider;
         let got = provider.query_cell_info(
             CellInfoQuery::Filename,
-            Some(&ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            }),
+            Some(&ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
         );
         assert_eq!(
             got,
@@ -242,10 +239,8 @@ mod tests {
     #[test]
     fn default_provider_rejects_formula_text_query() {
         let provider = EmptyProvider;
-        let got = provider.query_formula_text(&ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        });
+        let got =
+            provider.query_formula_text(&ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         assert_eq!(got, Err(HostInfoError::UnsupportedFormulaTextQuery));
     }
 
@@ -266,10 +261,10 @@ mod tests {
     fn default_provider_rejects_aggregate_reference_context_query() {
         let provider = EmptyProvider;
         assert_eq!(
-            provider.query_aggregate_reference_context(&ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A2".to_string(),
-            }),
+            provider.query_aggregate_reference_context(&ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A2".to_string()
+            )),
             Err(HostInfoError::UnsupportedAggregateReferenceContextQuery)
         );
     }

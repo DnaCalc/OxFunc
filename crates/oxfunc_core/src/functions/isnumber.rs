@@ -160,10 +160,10 @@ mod tests {
 
     #[test]
     fn eval_isnumber_reference_path_uses_preparation() {
-        let args = [CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        })];
+        let args = [CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::A1,
+            "A1".to_string(),
+        ))];
         let got = eval_isnumber_surface(
             &args,
             &MockResolver {

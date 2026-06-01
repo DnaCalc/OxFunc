@@ -119,10 +119,10 @@ mod tests {
     #[test]
     fn eval_xor_ignores_reference_text_and_empty_cells() {
         let got = eval_xor_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A4".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A4".to_string(),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
@@ -157,10 +157,10 @@ mod tests {
     #[test]
     fn eval_xor_returns_value_when_all_inputs_are_ignored() {
         let got = eval_xor_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A2".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A2".to_string(),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![

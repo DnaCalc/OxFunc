@@ -379,10 +379,10 @@ mod tests {
             caps: ResolverCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(-7.0)),
         };
-        let args = [CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "A1".to_string(),
-        })];
+        let args = [CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::A1,
+            "A1".to_string(),
+        ))];
 
         let got = eval_abs_scalar(&args, &r);
         assert_eq!(got, Ok(7.0));

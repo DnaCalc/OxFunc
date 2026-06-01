@@ -3542,14 +3542,8 @@ mod tests {
         let got = eval_surface_value_call(
             FUNC_ID_OP_RANGE_REF,
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "B2".to_string(),
-                }),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -3559,10 +3553,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:B2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:B2".to_string()
+            )))
         );
     }
 
@@ -3571,14 +3565,14 @@ mod tests {
         let got = eval_surface_value_call(
             FUNC_ID_OP_UNION_REF,
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "A1:A2".to_string(),
-                }),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "G1:G2".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:A2".to_string(),
+                )),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "G1:G2".to_string(),
+                )),
             ],
             &NoReferenceResolver,
             Some(46000.0),
@@ -3588,10 +3582,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::MultiArea,
-                target: "(A1:A2,G1:G2)".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,G1:G2)".to_string()
+            )))
         );
     }
 
@@ -4018,10 +4012,10 @@ mod tests {
     fn eval_surface_value_call_areas_rejects_legacy_parenthesized_area_carrier() {
         let got = eval_surface_value_call(
             FUNC_ID_AREAS,
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "(A1,B2:B3)".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "(A1,B2:B3)".to_string(),
+            ))],
             &NoReferenceResolver,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4036,10 +4030,10 @@ mod tests {
         let got = eval_surface_value_call(
             FUNC_ID_INDEX,
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "(A1:A2,G1:G2)".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "(A1:A2,G1:G2)".to_string(),
+                )),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),

@@ -253,3 +253,71 @@ Validation:
 1. `git diff --check`: passed.
 2. `scripts/check-worksets.ps1`: passed.
 3. CSV consistency scan: passed; the occurrence ledger matches the live `rg` source scan and has no missing owner, deletion batch, or deletion route fields.
+
+## 9. W099-002 Value-Type Foundation Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-003 provider foundation has not landed.
+2. W099-009/W099-015 must delete the migration-only `ReferenceLike.kind` and `ReferenceLike.target` mirrors after downstream callers stop reading them.
+3. OxFml has a filed handoff, `HO-FN-017`; its constructor-use repairs are a compatibility landing, not cross-repo seam completion.
+
+Planned scope:
+1. Establish the first typed `ReferenceLike` shape with `system`, `identity`, and `display`.
+2. Keep `CalcArray` on `CalcValue`.
+3. Preserve `CallableValue` equality semantics by opaque handle identity plus arity.
+4. Avoid a final-looking `EvalValue = CalcValue` alias.
+5. Mark migration-only reference mirrors for later deletion.
+
+Evidence:
+1. `CalcArray` already stores `Vec<CalcValue>` and remains unchanged.
+2. `CallableValue` equality remains handle id plus arity.
+3. `ReferenceLike` now carries `ReferenceSystemId`, `ReferenceIdentity`, and optional `ReferenceDisplay`.
+4. `ReferenceLike.kind` and `ReferenceLike.target` remain only as W099 migration mirrors with an inline deletion-owner comment.
+5. `HO-FN-017` records the OxFml evaluator-facing impact.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-002 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-002 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - value-type tests, core lib tests, and core test compilation passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not in W099-002 scope; no Excel function behavior claim is made. |
+| 5 | Evidence links complete and reproducible? | Yes - commands are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this value-type foundation bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical behavior discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this value-type foundation bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - `HO-FN-017` filed for OxFml evaluator `ReferenceLike` construction. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-002 scope is the value-type foundation shape and migration-only constructor landing. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-002 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 is already represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.2` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asked for value-type foundation shape, not provider behavior or full call-boundary migration.
+2. Gate criteria re-read: passed. All W099-002 acceptance checks were addressed directly or verified as already true.
+3. Silent scope reduction check: passed. The `kind`/`target` mirrors are explicitly marked migration-only and routed to later deletion beads rather than treated as final design.
+4. "Looks done but is not" pattern check: passed. Constructor migration is compatibility work only; provider integration and mirror deletion remain open lanes.
+5. Included result: passed. This section records checklist, self-audit, evidence, and remaining integration lanes for the W099-002 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: `cargo check --lib` initially missed test and OxFml construction sites; a full `cargo test --lib --no-run` exposed the missing `ReferenceLike` fields, and 155 legacy literals plus one shorthand helper were moved to `ReferenceLike::new`.
+2. Issue found and corrected: full rustfmt introduced unrelated formatting churn in non-reference files; those diffs were removed from the OxFunc commit.
+3. Issue found and corrected: the OxFml evaluator compile surface required matching constructor repairs; the impact is recorded in `HO-FN-017`.
+4. Remaining tension: structured, opaque, and composite references still have textual migration mirrors for legacy callers. This is intentional W099 scaffolding and remains owned by later deletion/provider beads.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 18 tests.
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib --no-run`: passed.
+3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1320 passed, 1 ignored.

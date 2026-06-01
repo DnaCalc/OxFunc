@@ -55,9 +55,9 @@ fn top_left_array_value(array: &EvalArray) -> Result<EvalValue, ImplicitIntersec
 }
 
 fn make_single_cell_reference(prefix: Option<String>, row: usize, col: usize) -> ReferenceLike {
-    ReferenceLike {
-        kind: ReferenceKind::A1,
-        target: format_relative_target(&A1Reference {
+    ReferenceLike::new(
+        ReferenceKind::A1,
+        format_relative_target(&A1Reference {
             prefix,
             start_row: row,
             start_col: col,
@@ -66,7 +66,7 @@ fn make_single_cell_reference(prefix: Option<String>, row: usize, col: usize) ->
             notation: A1ReferenceNotation::Rect,
         })
         .expect("single-cell A1 reference should format"),
-    }
+    )
 }
 
 fn select_reference_cell(
@@ -228,10 +228,7 @@ mod tests {
     }
 
     fn reference(kind: ReferenceKind, target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(kind, target.to_string()))
     }
 
     #[test]
@@ -336,10 +333,9 @@ mod tests {
             resolved: BTreeMap::from([("A2".to_string(), EvalValue::Number(20.0))]),
         };
         let got = eval_op_implicit_intersection_surface(
-            &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A3".to_string(),
-            }))],
+            &[CallArgValue::Eval(EvalValue::Reference(
+                ReferenceLike::new(ReferenceKind::Area, "A1:A3".to_string()),
+            ))],
             &resolver,
         );
         assert_eq!(got, Ok(EvalValue::Number(20.0)));

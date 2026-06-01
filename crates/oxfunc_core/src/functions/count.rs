@@ -158,10 +158,10 @@ mod tests {
     #[test]
     fn eval_count_ignores_reference_text_and_logical() {
         let got = eval_count_surface(
-            &[CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A3".to_string(),
-            })],
+            &[CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:A3".to_string(),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
@@ -181,10 +181,9 @@ mod tests {
     #[test]
     fn eval_count_admits_opaque_reference_value_through_generic_resolver() {
         let got = eval_count_surface(
-            &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "NameBackedRange".to_string(),
-            }))],
+            &[CallArgValue::Eval(EvalValue::Reference(
+                ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
+            ))],
             &MockResolver {
                 resolved: Some(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![

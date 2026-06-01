@@ -363,10 +363,7 @@ mod tests {
     }
 
     fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     fn num(n: f64) -> CallArgValue {

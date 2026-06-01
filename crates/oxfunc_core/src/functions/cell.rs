@@ -255,10 +255,10 @@ mod tests {
     }
 
     fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: crate::value::ReferenceKind::A1,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(
+            crate::value::ReferenceKind::A1,
+            target.to_string(),
+        ))
     }
 
     #[test]

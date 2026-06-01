@@ -311,10 +311,10 @@ mod tests {
         let got = eval_choose_surface(
             &[
                 number_arg(2.9),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "POISON".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "POISON".to_string(),
+                )),
                 text_arg("picked"),
                 CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
             ],
@@ -356,10 +356,7 @@ mod tests {
         let got = eval_choose_surface(
             &[
                 number_arg(1.0),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "BLANK".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "BLANK".to_string())),
                 number_arg(7.0),
             ],
             &MockResolver,
@@ -478,16 +475,16 @@ mod tests {
         let got = eval_ifs_surface(
             &[
                 CallArgValue::Eval(EvalValue::Logical(false)),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "POISON".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "POISON".to_string(),
+                )),
                 number_arg(2.0),
                 text_arg("hit"),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "POISON".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "POISON".to_string(),
+                )),
                 number_arg(99.0),
             ],
             &MockResolver,

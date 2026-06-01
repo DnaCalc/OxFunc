@@ -451,10 +451,7 @@ mod tests {
                 text_arg("Kernel32"),
                 text_arg("GetTickCount"),
                 text_arg("J!"),
-                CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             ],
             &MockResolver,
             Some(&provider),
@@ -466,10 +463,10 @@ mod tests {
         let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
         assert_eq!(
             args,
-            vec![CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A1".to_string(),
-            })]
+            vec![CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "A1".to_string()
+            ))]
         );
     }
 

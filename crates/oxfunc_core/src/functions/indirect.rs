@@ -225,10 +225,10 @@ mod tests {
                 assert_eq!(request.text, "R1C2");
                 assert_eq!(request.mode, ReferenceTextResolutionMode::Indirect);
                 assert_eq!(request.a1_style, Some(false));
-                Ok(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "hostref:R1C2".to_string(),
-                })
+                Ok(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "hostref:R1C2".to_string(),
+                ))
             }
         }
 
@@ -243,10 +243,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "hostref:R1C2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "hostref:R1C2".to_string()
+            )))
         );
     }
 
@@ -266,10 +266,10 @@ mod tests {
                     col: 8,
                 })
             );
-            Ok(ReferenceLike {
-                kind: ReferenceKind::Structured,
-                target: "hostref:Tree.Node".to_string(),
-            })
+            Ok(ReferenceLike::new(
+                ReferenceKind::Structured,
+                "hostref:Tree.Node".to_string(),
+            ))
         }
     }
 
@@ -286,10 +286,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Structured,
-                target: "hostref:Tree.Node".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Structured,
+                "hostref:Tree.Node".to_string()
+            )))
         );
     }
 }

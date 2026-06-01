@@ -112,10 +112,10 @@ fn coerce_array_index_selector(
 }
 
 fn project_reference(base: &ReferenceLike, row: usize, col: usize) -> EvalValue {
-    EvalValue::Reference(ReferenceLike {
-        kind: base.kind,
-        target: format!("{}#INDEX({row},{col})", base.target),
-    })
+    EvalValue::Reference(ReferenceLike::new(
+        base.kind,
+        format!("{}#INDEX({row},{col})", base.target),
+    ))
 }
 
 fn has_legacy_multi_area_carrier(reference: &ReferenceLike) -> bool {
@@ -221,14 +221,14 @@ fn select_a1_reference(
 fn reference_from_a1(reference: A1Reference) -> Result<EvalValue, IndexEvalError> {
     let target = format_relative_target(&reference)
         .ok_or(IndexEvalError::UnsupportedSource("unformattable_reference"))?;
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: if reference.width() == 1 && reference.height() == 1 {
+    Ok(EvalValue::Reference(ReferenceLike::new(
+        if reference.width() == 1 && reference.height() == 1 {
             ReferenceKind::A1
         } else {
             ReferenceKind::Area
         },
         target,
-    }))
+    )))
 }
 
 fn project_reference_with_extent(
@@ -580,20 +580,17 @@ mod tests {
     #[test]
     fn eval_index_reference_projection_projects_actual_a1_target() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:C3".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
             CallArgValue::Eval(EvalValue::Number(2.0)),
             CallArgValue::Eval(EvalValue::Number(1.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "A2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "A2".to_string()
+            )))
         );
     }
 
@@ -862,10 +859,7 @@ mod tests {
     #[test]
     fn eval_index_invalid_area_num_rejected() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:C3".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Number(2.0)),
@@ -877,47 +871,41 @@ mod tests {
     #[test]
     fn eval_index_missing_row_and_col_follow_excel_defaults() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B1:C2".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
             CallArgValue::MissingArg,
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "C1:C2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "C1:C2".to_string()
+            )))
         );
 
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B1:C2".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
             CallArgValue::Eval(EvalValue::Number(2.0)),
             CallArgValue::MissingArg,
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B2:C2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B2:C2".to_string()
+            )))
         );
     }
 
     #[test]
     fn eval_index_multi_area_reference_selects_area_num() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::MultiArea,
-                target: "(A1:A2,G1:G2)".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,G1:G2)".to_string(),
+            )),
             CallArgValue::Eval(EvalValue::Number(2.0)),
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Number(2.0)),
@@ -925,20 +913,20 @@ mod tests {
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::A1,
-                target: "G2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::A1,
+                "G2".to_string()
+            )))
         );
     }
 
     #[test]
     fn eval_index_mixed_sheet_multi_area_is_rejected() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::MultiArea,
-                target: "(Sheet1!A1:A2,Sheet2!G1:G2)".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(Sheet1!A1:A2,Sheet2!G1:G2)".to_string(),
+            )),
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Number(1.0)),
         ];
@@ -952,10 +940,10 @@ mod tests {
     #[test]
     fn eval_index_rejects_legacy_parenthesized_area_carrier() {
         let args = [
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "(A1:A2,G1:G2)".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "(A1:A2,G1:G2)".to_string(),
+            )),
             CallArgValue::Eval(EvalValue::Number(2.0)),
             CallArgValue::Eval(EvalValue::Number(1.0)),
             CallArgValue::Eval(EvalValue::Number(2.0)),

@@ -440,10 +440,7 @@ mod tests {
 
     #[test]
     fn normalize_reference_trims_target() {
-        let input = ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "  Sheet1!A1  ".to_string(),
-        };
+        let input = ReferenceLike::new(ReferenceKind::A1, "  Sheet1!A1  ".to_string());
         let got = normalize_reference(&input);
         assert_eq!(got.target, "Sheet1!A1");
     }
@@ -462,10 +459,7 @@ mod tests {
             by_target: BTreeMap::new(),
         };
 
-        let input = ReferenceLike {
-            kind: ReferenceKind::ThreeD,
-            target: "Sheet1:Sheet2!A1".to_string(),
-        };
+        let input = ReferenceLike::new(ReferenceKind::ThreeD, "Sheet1:Sheet2!A1".to_string());
 
         let got = resolve_eval_value(&resolver, &input);
         assert_eq!(
@@ -484,10 +478,7 @@ mod tests {
             resolved: Some(EvalValue::Number(1.0)),
             by_target: BTreeMap::new(),
         };
-        let input = ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "[External.xlsx]Sheet1!A1".to_string(),
-        };
+        let input = ReferenceLike::new(ReferenceKind::A1, "[External.xlsx]Sheet1!A1".to_string());
 
         let got = resolve_eval_value(&resolver, &input);
         assert_eq!(
@@ -507,10 +498,7 @@ mod tests {
             by_target: BTreeMap::new(),
         };
 
-        let input = ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "  A1 ".to_string(),
-        };
+        let input = ReferenceLike::new(ReferenceKind::A1, "  A1 ".to_string());
 
         let got = resolve_eval_value(&resolver, &input);
         assert_eq!(got, Ok(EvalValue::Number(3.0)));

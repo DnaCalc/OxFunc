@@ -127,10 +127,10 @@ mod tests {
         let got = eval_iferror_surface(
             &[
                 CallArgValue::EmptyCell,
-                CallArgValue::Reference(ReferenceLike {
-                    kind: crate::value::ReferenceKind::A1,
-                    target: "Z99".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    crate::value::ReferenceKind::A1,
+                    "Z99".to_string(),
+                )),
             ],
             &NoResolver,
         );

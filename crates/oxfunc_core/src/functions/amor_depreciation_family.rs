@@ -714,10 +714,10 @@ mod tests {
         assert_eq!(
             eval_amorlinc_surface(
                 &[
-                    CallArgValue::Reference(ReferenceLike {
-                        kind: ReferenceKind::A1,
-                        target: "A1".to_string(),
-                    }),
+                    CallArgValue::Reference(ReferenceLike::new(
+                        ReferenceKind::A1,
+                        "A1".to_string()
+                    )),
                     num(39679.0),
                     num(39813.0),
                     num(300.0),

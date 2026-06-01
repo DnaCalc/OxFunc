@@ -60,42 +60,162 @@ pub enum ReferenceKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceSystemId(pub String);
+
+impl ReferenceSystemId {
+    pub fn excel_grid_v1() -> Self {
+        Self("excel.grid.v1".to_string())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TextualReferenceIdentity {
+    pub kind: ReferenceKind,
+    pub text: ExcelText,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceHandleId {
+    pub bytes: Vec<u8>,
+}
+
+impl ReferenceHandleId {
+    pub fn from_bytes(bytes: impl Into<Vec<u8>>) -> Self {
+        Self {
+            bytes: bytes.into(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceHandle {
+    pub id: ReferenceHandleId,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CompositeReferenceOperation {
+    Union,
+    Intersection,
+    SpillExpansion,
+    Selector,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CompositeReferenceIdentity {
+    pub operation: CompositeReferenceOperation,
+    pub members: Vec<ReferenceLike>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ReferenceIdentity {
+    Textual(TextualReferenceIdentity),
+    Opaque(ReferenceHandle),
+    Composite(CompositeReferenceIdentity),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceDisplay {
+    pub text: ExcelText,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ReferenceLike {
+    pub system: ReferenceSystemId,
+    pub identity: ReferenceIdentity,
+    pub display: Option<ReferenceDisplay>,
+    // W099 migration-only mirror for legacy call sites. New code should use
+    // `identity`/`display`; W099-009 and W099-015 own deleting these fields.
     pub kind: ReferenceKind,
     pub target: String,
 }
 
 impl ReferenceLike {
     pub fn new(kind: ReferenceKind, target: impl Into<String>) -> Self {
+        let target = target.into();
         Self {
+            system: ReferenceSystemId::excel_grid_v1(),
+            identity: ReferenceIdentity::Textual(TextualReferenceIdentity {
+                kind,
+                text: ExcelText::from_interop_assignment(&target),
+            }),
+            display: Some(ReferenceDisplay {
+                text: ExcelText::from_interop_assignment(&target),
+            }),
             kind,
-            target: target.into(),
+            target,
         }
+    }
+
+    pub fn typed(
+        system: ReferenceSystemId,
+        identity: ReferenceIdentity,
+        display: Option<ReferenceDisplay>,
+    ) -> Self {
+        let (kind, target) = legacy_reference_mirror(&identity, display.as_ref());
+        Self {
+            system,
+            identity,
+            display,
+            kind,
+            target,
+        }
+    }
+
+    pub fn textual(
+        system: ReferenceSystemId,
+        kind: ReferenceKind,
+        text: ExcelText,
+        display: Option<ReferenceDisplay>,
+    ) -> Self {
+        Self::typed(
+            system,
+            ReferenceIdentity::Textual(TextualReferenceIdentity { kind, text }),
+            display,
+        )
+    }
+
+    pub fn opaque(
+        system: ReferenceSystemId,
+        handle: ReferenceHandle,
+        display: Option<ReferenceDisplay>,
+    ) -> Self {
+        Self::typed(system, ReferenceIdentity::Opaque(handle), display)
+    }
+
+    pub fn composite(
+        system: ReferenceSystemId,
+        operation: CompositeReferenceOperation,
+        members: Vec<ReferenceLike>,
+        display: Option<ReferenceDisplay>,
+    ) -> Self {
+        Self::typed(
+            system,
+            ReferenceIdentity::Composite(CompositeReferenceIdentity { operation, members }),
+            display,
+        )
     }
 
     pub fn multi_area(targets: Vec<String>) -> Option<Self> {
         let normalized = normalize_multi_area_parts(targets)?;
-        Some(Self {
-            kind: ReferenceKind::MultiArea,
-            target: format!("({})", normalized.join(",")),
-        })
+        Some(Self::new(
+            ReferenceKind::MultiArea,
+            format!("({})", normalized.join(",")),
+        ))
     }
 
     pub fn normalized(self) -> Self {
+        if !matches!(self.identity, ReferenceIdentity::Textual(_)) {
+            return self;
+        }
+
         match self.kind {
             ReferenceKind::MultiArea => {
                 if let Some(parts) = self.multi_area_targets() {
                     return Self::multi_area(parts).unwrap_or(self);
                 }
-                Self {
-                    kind: self.kind,
-                    target: self.target.trim().to_string(),
-                }
+                Self::new(self.kind, self.target.trim().to_string())
             }
-            _ => Self {
-                kind: self.kind,
-                target: self.target.trim().to_string(),
-            },
+            _ => Self::new(self.kind, self.target.trim().to_string()),
         }
     }
 
@@ -108,6 +228,34 @@ impl ReferenceLike {
 
     pub fn area_count(&self) -> usize {
         self.multi_area_targets().map_or(1, |parts| parts.len())
+    }
+}
+
+fn legacy_reference_mirror(
+    identity: &ReferenceIdentity,
+    display: Option<&ReferenceDisplay>,
+) -> (ReferenceKind, String) {
+    match identity {
+        ReferenceIdentity::Textual(textual) => (textual.kind, textual.text.to_string_lossy()),
+        ReferenceIdentity::Opaque(_) => (
+            ReferenceKind::Structured,
+            display
+                .map(|value| value.text.to_string_lossy())
+                .unwrap_or_else(|| "<opaque-reference>".to_string()),
+        ),
+        ReferenceIdentity::Composite(composite) => {
+            let target = display
+                .map(|value| value.text.to_string_lossy())
+                .unwrap_or_else(|| {
+                    composite
+                        .members
+                        .iter()
+                        .map(|member| member.target.as_str())
+                        .collect::<Vec<_>>()
+                        .join(",")
+                });
+            (ReferenceKind::MultiArea, target)
+        }
     }
 }
 
@@ -1000,10 +1148,12 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint, CoreValue,
-        EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, NumberFormatHint, PresentationHint,
-        PresentationValue, RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue,
-        RichValue, RichValueKeyFlag, ValueBoundary, ValueTag, WorksheetErrorCode,
+        ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint,
+        CompositeReferenceOperation, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText,
+        NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
+        ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
+        RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
+        RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
     };
 
     #[test]
@@ -1093,6 +1243,70 @@ mod tests {
         let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
         assert!(CalcArray::from_scalar(nested).is_some());
         assert!(CalcArray::from_scalar(CalcValue::missing()).is_some());
+    }
+
+    #[test]
+    fn textual_reference_carries_typed_identity_and_legacy_mirror() {
+        let reference = ReferenceLike::new(ReferenceKind::Area, " A1:B2 ").normalized();
+
+        assert_eq!(reference.system, ReferenceSystemId::excel_grid_v1());
+        assert_eq!(reference.kind, ReferenceKind::Area);
+        assert_eq!(reference.target, "A1:B2");
+        match &reference.identity {
+            ReferenceIdentity::Textual(TextualReferenceIdentity { kind, text }) => {
+                assert_eq!(*kind, ReferenceKind::Area);
+                assert_eq!(text.to_string_lossy(), "A1:B2");
+            }
+            _ => panic!("expected textual reference identity"),
+        }
+    }
+
+    #[test]
+    fn opaque_reference_identity_does_not_require_display_as_identity() {
+        let reference = ReferenceLike::opaque(
+            ReferenceSystemId("dna.treecalc.v1".to_string()),
+            ReferenceHandle {
+                id: ReferenceHandleId::from_bytes([1, 2, 3]),
+            },
+            Some(ReferenceDisplay {
+                text: ExcelText::from_interop_assignment("Node A"),
+            }),
+        );
+
+        assert_eq!(reference.system.0, "dna.treecalc.v1");
+        assert_eq!(reference.target, "Node A");
+        assert!(matches!(reference.identity, ReferenceIdentity::Opaque(_)));
+        assert_eq!(
+            reference
+                .display
+                .as_ref()
+                .map(|display| display.text.to_string_lossy()),
+            Some("Node A".to_string())
+        );
+    }
+
+    #[test]
+    fn composite_reference_can_represent_union_without_reparsing_display() {
+        let left = ReferenceLike::new(ReferenceKind::Area, "A1:A2");
+        let right = ReferenceLike::new(ReferenceKind::Area, "C1:C2");
+        let composite = ReferenceLike::composite(
+            ReferenceSystemId::excel_grid_v1(),
+            CompositeReferenceOperation::Union,
+            vec![left.clone(), right.clone()],
+            Some(ReferenceDisplay {
+                text: ExcelText::from_interop_assignment("(A1:A2,C1:C2)"),
+            }),
+        );
+
+        assert_eq!(composite.kind, ReferenceKind::MultiArea);
+        assert_eq!(composite.target, "(A1:A2,C1:C2)");
+        match &composite.identity {
+            ReferenceIdentity::Composite(identity) => {
+                assert_eq!(identity.operation, CompositeReferenceOperation::Union);
+                assert_eq!(identity.members, vec![left, right]);
+            }
+            _ => panic!("expected composite reference identity"),
+        }
     }
 
     #[test]

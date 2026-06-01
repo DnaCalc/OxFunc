@@ -106,10 +106,7 @@ mod tests {
     use crate::value::{ArrayCellValue, ArrayShape, EvalArray, ReferenceKind, ReferenceLike};
 
     fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     // --- Meta property tests ---

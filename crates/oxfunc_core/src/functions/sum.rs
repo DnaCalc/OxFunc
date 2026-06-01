@@ -343,10 +343,10 @@ mod tests {
 
     #[test]
     fn eval_sum_ignores_reference_derived_text_and_logical() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A3".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A3".to_string(),
+        ))];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
@@ -368,10 +368,9 @@ mod tests {
 
     #[test]
     fn eval_sum_admits_opaque_reference_value_through_generic_resolver() {
-        let args = vec![CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "NameBackedRange".to_string(),
-        }))];
+        let args = vec![CallArgValue::Eval(EvalValue::Reference(
+            ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
+        ))];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
@@ -397,10 +396,7 @@ mod tests {
             CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:A3".to_string(),
-            }),
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:A3".to_string())),
         ];
         let got = eval_sum_surface(
             &args,
@@ -528,10 +524,10 @@ mod tests {
 
     #[test]
     fn eval_sum_reference_derived_empty_cells_are_ignored() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A3".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A3".to_string(),
+        ))];
         let got = eval_sum_surface(
             &args,
             &MockResolver {

@@ -158,10 +158,10 @@ mod tests {
 
     #[test]
     fn eval_median_ignored_reference_values_yield_num_when_empty() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A2".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A2".to_string(),
+        ))];
         let got = eval_median_surface(
             &args,
             &MockResolver {

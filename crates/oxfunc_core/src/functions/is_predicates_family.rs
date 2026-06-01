@@ -329,10 +329,8 @@ mod tests {
 
     #[test]
     fn isblank_distinguishes_empty_cell_from_empty_string() {
-        let blank_ref = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: "B1".to_string(),
-        });
+        let blank_ref =
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B1".to_string()));
         let blank_resolver = MockResolver {
             resolved: Some(EvalValue::Array(
                 EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]]).unwrap(),
@@ -486,10 +484,10 @@ mod tests {
         );
         assert_eq!(
             eval_isodd_surface(
-                &[CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "B1".to_string(),
-                })],
+                &[CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::A1,
+                    "B1".to_string()
+                ))],
                 &MockResolver {
                     resolved: Some(EvalValue::Array(
                         EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]]).unwrap(),
@@ -513,20 +511,19 @@ mod tests {
     fn isref_sees_reference_like_args_without_dereferencing() {
         assert_eq!(
             eval_isref_surface(
-                &[CallArgValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::Area,
-                    target: "A1:A2".to_string(),
-                })],
+                &[CallArgValue::Reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:A2".to_string()
+                ))],
                 &MockResolver { resolved: None },
             ),
             Ok(EvalValue::Logical(true))
         );
         assert_eq!(
             eval_isref_surface(
-                &[CallArgValue::Eval(EvalValue::Reference(ReferenceLike {
-                    kind: ReferenceKind::A1,
-                    target: "A1".to_string(),
-                }))],
+                &[CallArgValue::Eval(EvalValue::Reference(
+                    ReferenceLike::new(ReferenceKind::A1, "A1".to_string())
+                ))],
                 &MockResolver { resolved: None },
             ),
             Ok(EvalValue::Logical(true))

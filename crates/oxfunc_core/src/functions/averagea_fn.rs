@@ -125,10 +125,10 @@ mod tests {
 
     #[test]
     fn eval_averagea_counts_reference_derived_text_as_zero_and_logical_as_one() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A2".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A2".to_string(),
+        ))];
         let got = eval_averagea_surface(
             &args,
             &MockResolver {
@@ -148,10 +148,10 @@ mod tests {
 
     #[test]
     fn eval_averagea_ignores_empty_cells() {
-        let args = vec![CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "A1:A2".to_string(),
-        })];
+        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "A1:A2".to_string(),
+        ))];
         let got = eval_averagea_surface(
             &args,
             &MockResolver {

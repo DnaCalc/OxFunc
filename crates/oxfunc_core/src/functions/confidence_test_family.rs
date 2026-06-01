@@ -270,10 +270,10 @@ mod tests {
     fn z_test_surface_collects_numeric_reference_values() {
         let got = eval_z_test_surface(
             &[
-                CallArgValue::Reference(ReferenceLike {
-                    kind: crate::value::ReferenceKind::Area,
-                    target: "A1:A5".to_string(),
-                }),
+                CallArgValue::Reference(ReferenceLike::new(
+                    crate::value::ReferenceKind::Area,
+                    "A1:A5".to_string(),
+                )),
                 num(4.0),
                 num(1.5),
             ],

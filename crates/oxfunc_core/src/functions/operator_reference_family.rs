@@ -124,14 +124,14 @@ fn eval_from_a1(reference: A1Reference) -> Result<EvalValue, OperatorReferenceEr
     let target = format_relative_target(&reference).ok_or(
         OperatorReferenceError::UnsupportedReferenceSource("unformattable_reference"),
     )?;
-    Ok(EvalValue::Reference(ReferenceLike {
-        kind: if reference.width() == 1 && reference.height() == 1 {
+    Ok(EvalValue::Reference(ReferenceLike::new(
+        if reference.width() == 1 && reference.height() == 1 {
             ReferenceKind::A1
         } else {
             ReferenceKind::Area
         },
         target,
-    }))
+    )))
 }
 
 fn trim_reference(reference: ReferenceLike, mode: TrimMode) -> EvalValue {
@@ -140,10 +140,7 @@ fn trim_reference(reference: ReferenceLike, mode: TrimMode) -> EvalValue {
         TrimMode::Trailing => reference.target.trim_end().to_string(),
         TrimMode::Both => reference.target.trim().to_string(),
     };
-    EvalValue::Reference(ReferenceLike {
-        kind: reference.kind,
-        target,
-    })
+    EvalValue::Reference(ReferenceLike::new(reference.kind, target))
 }
 
 fn union_targets(reference: &ReferenceLike) -> Result<Vec<String>, OperatorReferenceError> {
@@ -310,17 +307,11 @@ mod tests {
     }
 
     fn area(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     fn a1(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::A1,
-            target: target.to_string(),
-        })
+        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
     #[test]
@@ -328,10 +319,10 @@ mod tests {
         let got = eval_op_range_ref_surface(&[a1("B2"), a1("A1")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "A1:B2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "A1:B2".to_string()
+            )))
         );
     }
 
@@ -340,10 +331,10 @@ mod tests {
         let got = eval_op_intersection_ref_surface(&[area("A1:C3"), area("B2:D4")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "B2:C3".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "B2:C3".to_string()
+            )))
         );
 
         let none = eval_op_intersection_ref_surface(&[area("A1:A2"), area("C1:C2")], &NoResolver);
@@ -355,10 +346,10 @@ mod tests {
         let got = eval_op_union_ref_surface(&[area("A1:A2"), area("G1:G2")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::MultiArea,
-                target: "(A1:A2,G1:G2)".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,G1:G2)".to_string()
+            )))
         );
     }
 
@@ -371,39 +362,39 @@ mod tests {
         let got = eval_op_union_ref_surface(&[lhs, rhs], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::MultiArea,
-                target: "(A1:A2,G1:G2,J1:J2)".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::MultiArea,
+                "(A1:A2,G1:G2,J1:J2)".to_string()
+            )))
         );
     }
 
     #[test]
     fn trim_ref_variants_trim_only_requested_edges() {
-        let input = CallArgValue::Reference(ReferenceLike {
-            kind: ReferenceKind::Area,
-            target: "  Sheet1!A1:A2  ".to_string(),
-        });
+        let input = CallArgValue::Reference(ReferenceLike::new(
+            ReferenceKind::Area,
+            "  Sheet1!A1:A2  ".to_string(),
+        ));
         assert_eq!(
             eval_op_trim_ref_leading_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "Sheet1!A1:A2  ".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "Sheet1!A1:A2  ".to_string()
+            )))
         );
         assert_eq!(
             eval_op_trim_ref_trailing_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "  Sheet1!A1:A2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "  Sheet1!A1:A2".to_string()
+            )))
         );
         assert_eq!(
             eval_op_trim_ref_both_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target: "Sheet1!A1:A2".to_string(),
-            }))
+            Ok(EvalValue::Reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "Sheet1!A1:A2".to_string()
+            )))
         );
     }
 }
