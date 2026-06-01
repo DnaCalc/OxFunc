@@ -601,3 +601,70 @@ Validation:
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml dynamic_array_reshape --lib`: passed, 11 tests.
 3. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 24 tests.
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1332 passed, 1 ignored.
+
+## 14. W099-007 Preparation And Adapter Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-008 and W099-012 must migrate remaining dispatcher and kernel callbacks that still receive `PreparedArgValue` compatibility projections.
+2. Aggregate reference provenance still uses `AggregatePreparedValue` and legacy `PreparedArgValue` inside the aggregate-only adapter lane; it remains local/transient but must be migrated before final deletion.
+3. W099-015 must delete `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, and migration projection helpers after all active callers consume `CalcValue` / `CalcArray` directly.
+
+Planned scope:
+1. Add CalcValue-first values-only preparation APIs so adapter preparation can output `CalcValue` rather than a replacement prepared-value carrier.
+2. Route existing values-only prepared adapter entry points through CalcValue preparation before compatibility projection for legacy callbacks.
+3. Preserve missing-argument, empty-cell, reference resolution, single-cell array normalization, and callable payload behavior across the new CalcValue preparation lane.
+4. Keep aggregate/reference facts scoped to existing adapter-local preparation structures; do not introduce a final public aggregate-provenance value carrier.
+
+Evidence:
+1. `prepare_calc_value_values_only`, `prepare_calc_values_only`, `prepare_call_arg_as_calc_value_values_only`, and `prepare_call_args_as_calc_values_only` provide CalcValue-first preparation entry points.
+2. `run_calc_values_only_prepared` and `map_calc_values_only_prepared` expose callback paths that consume prepared `CalcValue` slices directly.
+3. `run_values_only_prepared`, `prepare_arg_values_only`, and `prepare_args_values_only` now route through CalcValue preparation before projecting to `PreparedArgValue` for migration-only legacy callers.
+4. Legacy projection uses `CallArgValue::value(CalcValue)` so callable/lambda payloads survive the temporary compatibility bridge instead of collapsing to their core error sentinel.
+5. `PreparedArgValue` is documented as W099 migration-only compatibility projection rather than a final replacement type.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-007 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-007 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused adapter, aggregate, callable-helper, and full core library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not a function-semantic bead; adapter carrier behavior is pinned by deterministic Rust tests. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this adapter-carrier bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this adapter-carrier bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no OxFml evaluator-facing clause or FEC/F3E boundary change was introduced in this OxFunc bead. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-007 scope is CalcValue preparation/adapters, not final deletion of every legacy callback. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-007 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.7` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asks for preparation and adapter migration, not full W099 deletion of all legacy value carriers.
+2. Gate criteria re-read: passed. CalcValue preparation paths now exist, legacy values-only adapter paths route through them, and no new final `PreparedArgValue` replacement type was created.
+3. Silent scope reduction check: passed. The remaining aggregate-only provenance container and dispatcher/kernel callback projections are explicitly listed as open integration lanes.
+4. "Looks done but is not" pattern check: passed. `PreparedArgValue` remains only as documented compatibility projection for legacy callbacks and is not presented as the target architecture.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, and remaining integration lanes for the W099-007 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: direct projection from `CalcValue.core()` would have erased richer callable/lambda payloads carried beside the core sentinel. Projection now goes through `CallArgValue::value(CalcValue)` and has a regression test.
+2. Issue checked: 1x1 array normalization still matches the previous values-only preparation behavior while preserving `CalcValue::empty()` for blank single-cell references.
+3. Issue checked: no new public aggregate/reference value carrier was added. Existing aggregate provenance remains local to aggregate adapter expansion and is listed as a follow-up lane.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml adapters::tests --lib`: passed, 21 tests.
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml aggregate --lib`: passed, 13 tests.
+3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml callable_helpers --lib`: passed, 29 tests.
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1336 passed, 1 ignored.

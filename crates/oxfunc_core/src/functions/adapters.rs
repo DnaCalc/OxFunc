@@ -1,11 +1,11 @@
-use crate::coercion::{CoercionError, coerce_eval_to_number};
+use crate::coercion::{coerce_eval_to_number, CoercionError};
 use crate::resolver::{
-    RefResolutionError, ReferenceResolver, ResolvedReferenceValues, ResolverCapabilities,
     materialize_resolved_reference_values, resolve_eval_value, resolve_reference_values,
+    RefResolutionError, ReferenceResolver, ResolvedReferenceValues, ResolverCapabilities,
 };
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
-    WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalValue,
+    ReferenceKind, ReferenceLike, WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -27,6 +27,18 @@ fn normalize_prepared_eval(value: EvalValue) -> PreparedArgValue {
     }
 }
 
+fn normalize_prepared_calc_value(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
+            array.get(0, 0).cloned().unwrap_or_else(CalcValue::empty)
+        }
+        _ => value,
+    }
+}
+
+/// W099 migration-only compatibility projection for legacy prepared adapters.
+/// Native preparation output is `CalcValue`; W099-015 deletes this after the
+/// dispatcher and kernel migration beads no longer need legacy callbacks.
 #[derive(Debug, Clone, PartialEq)]
 pub enum PreparedArgValue {
     Eval(EvalValue),
@@ -61,6 +73,21 @@ fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
         ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
         ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
     }
+}
+
+fn prepared_from_calc_value(value: &CalcValue) -> PreparedArgValue {
+    match CallArgValue::value(value.clone()) {
+        CallArgValue::Eval(value) => PreparedArgValue::Eval(value),
+        CallArgValue::MissingArg => PreparedArgValue::MissingArg,
+        CallArgValue::EmptyCell => PreparedArgValue::EmptyCell,
+        CallArgValue::Reference(reference) => {
+            PreparedArgValue::Eval(EvalValue::Reference(reference))
+        }
+    }
+}
+
+fn prepared_vec_from_calc_values(values: &[CalcValue]) -> Vec<PreparedArgValue> {
+    values.iter().map(prepared_from_calc_value).collect()
 }
 
 pub fn expand_aggregate_array_with_provenance(
@@ -154,32 +181,82 @@ fn resolve_eval_references(
     }
 }
 
+fn resolve_calc_references(
+    value: &CalcValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<CalcValue, CoercionError> {
+    match value.core() {
+        CoreValue::Reference(reference) => {
+            let resolved =
+                resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
+            resolve_calc_references(&CalcValue::from(resolved), resolver)
+        }
+        _ => Ok(value.clone()),
+    }
+}
+
+fn calc_value_from_call_arg(arg: &CallArgValue) -> CalcValue {
+    match arg {
+        CallArgValue::Eval(value) => CalcValue::from(value.clone()),
+        CallArgValue::MissingArg => CalcValue::missing(),
+        CallArgValue::EmptyCell => CalcValue::empty(),
+        CallArgValue::Reference(reference) => CalcValue::reference(reference.clone()),
+    }
+}
+
+pub fn prepare_calc_value_values_only(
+    arg: &CalcValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<CalcValue, CoercionError> {
+    Ok(normalize_prepared_calc_value(resolve_calc_references(
+        arg, resolver,
+    )?))
+}
+
+pub fn prepare_calc_values_only(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<Vec<CalcValue>, CoercionError> {
+    args.iter()
+        .map(|arg| prepare_calc_value_values_only(arg, resolver))
+        .collect()
+}
+
+pub fn prepare_call_arg_as_calc_value_values_only(
+    arg: &CallArgValue,
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<CalcValue, CoercionError> {
+    prepare_calc_value_values_only(&calc_value_from_call_arg(arg), resolver)
+}
+
+pub fn prepare_call_args_as_calc_values_only(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+) -> Result<Vec<CalcValue>, CoercionError> {
+    args.iter()
+        .map(|arg| prepare_call_arg_as_calc_value_values_only(arg, resolver))
+        .collect()
+}
+
 pub fn prepare_arg_values_only(
     arg: &CallArgValue,
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<PreparedArgValue, CoercionError> {
-    match arg {
-        CallArgValue::Eval(v) => Ok(normalize_prepared_eval(resolve_eval_references(
-            v, resolver,
-        )?)),
-        CallArgValue::MissingArg => Ok(PreparedArgValue::MissingArg),
-        CallArgValue::EmptyCell => Ok(PreparedArgValue::EmptyCell),
-        CallArgValue::Reference(r) => {
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            Ok(normalize_prepared_eval(resolve_eval_references(
-                &resolved, resolver,
-            )?))
+    prepare_call_arg_as_calc_value_values_only(arg, resolver).map(|value| {
+        let prepared = prepared_from_calc_value(&value);
+        match prepared {
+            PreparedArgValue::Eval(value) => normalize_prepared_eval(value),
+            other => other,
         }
-    }
+    })
 }
 
 pub fn prepare_args_values_only(
     args: &[CallArgValue],
     resolver: &(impl ReferenceResolver + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
-    args.iter()
-        .map(|arg| prepare_arg_values_only(arg, resolver))
-        .collect()
+    prepare_call_args_as_calc_values_only(args, resolver)
+        .map(|values| prepared_vec_from_calc_values(&values))
 }
 
 pub fn expand_arg_values_only(
@@ -296,7 +373,19 @@ pub fn run_values_only_prepared<Out, E>(
     on_prepared: impl FnOnce(&[PreparedArgValue]) -> Result<Out, E>,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
 ) -> Result<Out, E> {
-    let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
+    let prepared_calc =
+        prepare_call_args_as_calc_values_only(args, resolver).map_err(map_preparation_error)?;
+    let prepared = prepared_vec_from_calc_values(&prepared_calc);
+    on_prepared(&prepared)
+}
+
+pub fn run_calc_values_only_prepared<Out, E>(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+    on_prepared: impl FnOnce(&[CalcValue]) -> Result<Out, E>,
+    map_preparation_error: impl FnOnce(CoercionError) -> E,
+) -> Result<Out, E> {
+    let prepared = prepare_calc_values_only(args, resolver).map_err(map_preparation_error)?;
     on_prepared(&prepared)
 }
 
@@ -354,6 +443,20 @@ pub fn map_values_only_prepared<Out>(
 ) -> Vec<Out> {
     args.iter()
         .map(|arg| match prepare_arg_values_only(arg, resolver) {
+            Ok(prepared) => on_prepared_arg(&prepared),
+            Err(e) => on_preparation_error(e),
+        })
+        .collect()
+}
+
+pub fn map_calc_values_only_prepared<Out>(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceResolver + ?Sized),
+    on_prepared_arg: impl Fn(&CalcValue) -> Out,
+    on_preparation_error: impl Fn(CoercionError) -> Out,
+) -> Vec<Out> {
+    args.iter()
+        .map(|arg| match prepare_calc_value_values_only(arg, resolver) {
             Ok(prepared) => on_prepared_arg(&prepared),
             Err(e) => on_preparation_error(e),
         })
@@ -573,7 +676,10 @@ pub fn apply_unary_numeric_array_map_prepared(
 mod tests {
     use super::*;
     use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+    use crate::value::{
+        CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue, ReferenceKind,
+        ReferenceLike, WorksheetErrorCode,
+    };
     use std::collections::BTreeMap;
 
     struct MockResolver {
@@ -682,6 +788,75 @@ mod tests {
                 ]])
                 .unwrap()
             )))
+        );
+    }
+
+    #[test]
+    fn prepare_calc_values_only_preserves_calcvalue_carriers_without_public_wrapper() {
+        let args = vec![
+            CalcValue::number(3.0),
+            CalcValue::empty(),
+            CalcValue::missing(),
+            CalcValue::array(
+                crate::value::CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::empty(),
+                ]])
+                .unwrap(),
+            ),
+        ];
+
+        let prepared = prepare_calc_values_only(&args, &resolver_with(EvalValue::Number(0.0)));
+
+        assert_eq!(prepared, Ok(args));
+    }
+
+    #[test]
+    fn prepare_call_arg_as_calc_value_values_only_normalizes_single_blank_area() {
+        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
+        let prepared = prepare_call_arg_as_calc_value_values_only(
+            &arg,
+            &resolver_with(EvalValue::Array(
+                EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]]).unwrap(),
+            )),
+        );
+
+        assert_eq!(prepared, Ok(CalcValue::empty()));
+    }
+
+    #[test]
+    fn run_calc_values_only_prepared_keeps_adapter_values_as_calcvalue() {
+        let args = vec![
+            CalcValue::number(2.0),
+            CalcValue::text(ExcelText::from_utf16_code_units(
+                "x".encode_utf16().collect(),
+            )),
+        ];
+        let got = run_calc_values_only_prepared(
+            &args,
+            &resolver_with(EvalValue::Number(0.0)),
+            |prepared| Ok::<_, CoercionError>(prepared.to_vec()),
+            |e| e,
+        );
+
+        assert_eq!(got, Ok(args));
+    }
+
+    #[test]
+    fn legacy_prepared_projection_preserves_callable_payload_after_calc_preparation() {
+        let lambda = LambdaValue::helper_lambda(
+            "helper.lambda".to_string(),
+            CallableArityShape::exact(1),
+            CallableCaptureMode::NoCapture,
+            "adapter.test",
+        );
+        let arg = CallArgValue::Eval(EvalValue::Lambda(lambda.clone()));
+
+        let prepared = prepare_arg_values_only(&arg, &resolver_with(EvalValue::Number(0.0)));
+
+        assert_eq!(
+            prepared,
+            Ok(PreparedArgValue::Eval(EvalValue::Lambda(lambda)))
         );
     }
 
