@@ -884,3 +884,77 @@ Validation:
 2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1331 passed, 1 ignored.
 3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`: passed, 8 passed.
 4. `rg "collect_multi_area_member|materialize_multi_area_eval_value|mixed_sheet_multi_area|unsupported_multi_area_reference_part|multi_area_reference_shape_invalid|target\.starts_with|legacy_multi_area_carrier_removed|resolve_reference_values|\bReferenceResolver\b|ReferenceTextResolver|reference_text_resolver|with_reference_text_resolver|reference_resolver\(|ResolverCapabilities|RefResolutionError|\.resolve_reference\(|fn resolve_reference\(" crates\oxfunc_core\src crates\oxfunc_core\tests -n`: passed with no active-code matches.
+
+## 18. W099-010 Rich And Extended Value Fold Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. The staging `ExtendedValue` type still exists in `oxfunc_value_types` for older downstream returned-surface adapters; W099-015 owns final type deletion.
+2. OxFml still has legacy returned-surface constructors for non-rich output wrapping; W099-013/W099-015 own full downstream CalcValue follow-through and deletion.
+3. `RichValue::ErrorMetadata` is represented in the value model and registry vocabulary, but no in-scope producer was migrated in this bead because the current IMAGE/HYPERLINK/NOW/TODAY slice produces rich objects or presentation hints.
+4. Fixture strings still use returned-surface labels such as `ValueWithPresentation`; those are interface fixture labels, not active OxFunc extended-value producers.
+
+Planned scope:
+1. Fold IMAGE, HYPERLINK, NOW, and TODAY extended-surface producers into `CalcValue { core, rich }`.
+2. Represent IMAGE `_webimage` payloads as `RichValue::Object` while preserving the published fallback core value.
+3. Represent HYPERLINK/NOW/TODAY presentation hints as `RichValue::Presentation`.
+4. Rename the dispatch entry point from extended-value wording to rich-value wording.
+5. Export function-level `rich_value_usage` metadata through the registry CSV.
+
+Evidence:
+1. `eval_image_surface_rich` and `eval_image_surface_rich_with_capabilities` now return `CalcValue`; successful IMAGE results carry `CoreValue::Text("-2146826273")` plus `RichValue::Object(_webimage)`.
+2. `eval_hyperlink_surface_rich`, `eval_now_surface_rich`, and `eval_today_surface_rich` now return `CalcValue::with_presentation(...)`.
+3. `eval_surface_rich_value_call` returns `CalcValue`, dispatches the rich producers directly, and returns ordinary fallback calls as native `CalcValue` instead of wrapping them in `ExtendedValue::Core`.
+4. `RegistryFunctionMeta.rich_value_usage` and `RichValueUsage` publish `rich_blind`, `produces_presentation`, `produces_rich_object`, and `produces_error_metadata` vocabulary.
+5. Registry CSV export includes a `rich_value_usage` column; row-level tests pin SUM as rich-blind and IMAGE as rich-object-producing.
+6. The OxFml dev-dependency adapter used by OxFunc integration tests now has `ReturnedValueSurface::from_calc_value*` constructors for the rich return path.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; registry metadata for rich usage was updated and tested. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic slice claim is made by this value-carrier fold. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused rich-surface tests, full core library tests, and the OxFml image carrier integration passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover IMAGE rich object and HYPERLINK/NOW/TODAY presentation carriers. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and source scans are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed; this bead changes carrier shape for already-scoped functions. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this carrier fold bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - OxFml dev-dependency adapter calls were updated locally for verification; full downstream deletion remains in W099-013/W099-015. |
+| 10 | No known semantic gap remains in declared scope? | Yes - in-scope rich/presentation producers now return `CalcValue` rich metadata directly. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-010 bead closure, not W099 terminal carrier deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.10` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asks for rich/extended value folding for structured rich objects and presentation/error metadata vocabulary.
+2. Gate criteria re-read: passed. IMAGE uses `RichValue::Object`; HYPERLINK/NOW/TODAY use `RichValue::Presentation`; registry metadata and exports are updated.
+3. Silent scope reduction check: passed. The remaining `ExtendedValue` type is explicitly left to W099-015 as staging residue rather than being hidden as done.
+4. "Looks done but is not" pattern check: passed. OxFml returned-surface compatibility constructors remain visible and assigned to downstream W099 lanes.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining integration lanes for W099-010.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: OxFml dev-dependency tests initially failed because the returned-surface adapter still called removed extended-surface function names. The adapter now consumes `CalcValue` for IMAGE/HYPERLINK/NOW/TODAY rich paths.
+2. Issue found and corrected: two test names still said `extended` after the code moved to rich carriers. They were renamed to `rich`.
+3. Issue found and corrected: the first registry CSV rich-usage assertions were too broad and could pass if a token appeared in the wrong row. They now assert row-level placement.
+4. Issue checked: active OxFunc source no longer calls `eval_*_surface_extended` or `eval_surface_extended_call`; remaining `ExtendedValue` hits are the staging enum and fixture/interface labels.
+
+Validation:
+
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo check --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml registry_metadata_csv_exports_version_and_capability_columns --lib`: passed, 1 test.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml eval_surface_rich_value_call --lib`: passed, 4 tests.
+5. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1331 passed, 1 ignored.
+6. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_image_return_carrier_integration`: passed, 1 test.
+7. `rg "eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|ExtendedValue|ValueWithPresentation|ErrorWithMetadata|extended_surface" crates\oxfunc_core\src crates\oxfunc_core\tests crates\oxfunc_value_types\src\lib.rs -n`: passed with only the staging `ExtendedValue` enum and returned-surface fixture labels remaining.

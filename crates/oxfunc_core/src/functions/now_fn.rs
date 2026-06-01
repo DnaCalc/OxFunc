@@ -3,7 +3,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{
-    CallArgValue, EvalValue, ExtendedValue, NumberFormatHint, PresentationHint, WorksheetErrorCode,
+    CalcValue, CallArgValue, CoreValue, EvalValue, NumberFormatHint, PresentationHint,
+    WorksheetErrorCode,
 };
 
 pub const NOW_META: FunctionMeta = FunctionMeta {
@@ -49,15 +50,17 @@ pub fn eval_now_surface(
     Ok(EvalValue::Number(serial))
 }
 
-pub fn eval_now_surface_extended(
+pub fn eval_now_surface_rich(
     args: &[CallArgValue],
     provider: &impl NowProvider,
-) -> Result<ExtendedValue, NowEvalError> {
-    let value = eval_now_surface(args, provider)?;
-    Ok(ExtendedValue::ValueWithPresentation {
-        value,
-        hint: PresentationHint::number_format(NumberFormatHint::DateLike),
-    })
+) -> Result<CalcValue, NowEvalError> {
+    let EvalValue::Number(value) = eval_now_surface(args, provider)? else {
+        unreachable!("NOW surface returns number");
+    };
+    Ok(CalcValue::with_presentation(
+        CoreValue::Number(value),
+        PresentationHint::number_format(NumberFormatHint::DateLike),
+    ))
 }
 
 pub fn map_now_error_to_ws(e: &NowEvalError) -> WorksheetErrorCode {
@@ -89,15 +92,15 @@ mod tests {
     }
 
     #[test]
-    fn eval_now_extended_wraps_value_with_number_format_hint() {
+    fn eval_now_rich_wraps_value_with_number_format_hint() {
         let provider = FixedNowProvider { serial: 46000.25 };
-        let got = eval_now_surface_extended(&[], &provider);
+        let got = eval_now_surface_rich(&[], &provider);
         assert_eq!(
             got,
-            Ok(ExtendedValue::ValueWithPresentation {
-                value: EvalValue::Number(46000.25),
-                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
-            })
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.25),
+                PresentationHint::number_format(NumberFormatHint::DateLike),
+            ))
         );
     }
 

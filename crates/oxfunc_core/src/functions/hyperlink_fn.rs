@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    CallArgValue, CellStyleHint, EvalValue, ExcelText, ExtendedValue, PresentationHint,
+    CalcValue, CallArgValue, CellStyleHint, CoreValue, EvalValue, ExcelText, PresentationHint,
     WorksheetErrorCode,
 };
 
@@ -74,15 +74,17 @@ pub fn eval_hyperlink_surface(
     Ok(EvalValue::Text(request.display_text))
 }
 
-pub fn eval_hyperlink_surface_extended(
+pub fn eval_hyperlink_surface_rich(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<ExtendedValue, HyperlinkEvalError> {
-    let value = eval_hyperlink_surface(args, resolver)?;
-    Ok(ExtendedValue::ValueWithPresentation {
-        value,
-        hint: PresentationHint::style(CellStyleHint::Hyperlink),
-    })
+) -> Result<CalcValue, HyperlinkEvalError> {
+    let EvalValue::Text(value) = eval_hyperlink_surface(args, resolver)? else {
+        unreachable!("hyperlink surface returns text");
+    };
+    Ok(CalcValue::with_presentation(
+        CoreValue::Text(value),
+        PresentationHint::style(CellStyleHint::Hyperlink),
+    ))
 }
 
 pub fn map_hyperlink_error_to_ws(error: &HyperlinkEvalError) -> WorksheetErrorCode {
@@ -154,16 +156,16 @@ mod tests {
     }
 
     #[test]
-    fn hyperlink_extended_surface_wraps_text_with_hyperlink_style_hint() {
+    fn hyperlink_rich_surface_wraps_text_with_hyperlink_style_hint() {
         assert_eq!(
-            eval_hyperlink_surface_extended(
+            eval_hyperlink_surface_rich(
                 &[text_arg("https://example.com"), text_arg("Go")],
                 &MockResolver
             ),
-            Ok(ExtendedValue::ValueWithPresentation {
-                value: EvalValue::Text(ExcelText::from_interop_assignment("Go")),
-                hint: PresentationHint::style(CellStyleHint::Hyperlink),
-            })
+            Ok(CalcValue::with_presentation(
+                CoreValue::Text(ExcelText::from_interop_assignment("Go")),
+                PresentationHint::style(CellStyleHint::Hyperlink),
+            ))
         );
     }
 }

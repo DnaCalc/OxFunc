@@ -3,7 +3,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{
-    CallArgValue, EvalValue, ExtendedValue, NumberFormatHint, PresentationHint, WorksheetErrorCode,
+    CalcValue, CallArgValue, CoreValue, EvalValue, NumberFormatHint, PresentationHint,
+    WorksheetErrorCode,
 };
 
 pub const TODAY_META: FunctionMeta = FunctionMeta {
@@ -49,15 +50,17 @@ pub fn eval_today_surface(
     Ok(EvalValue::Number(serial.floor()))
 }
 
-pub fn eval_today_surface_extended(
+pub fn eval_today_surface_rich(
     args: &[CallArgValue],
     provider: &impl TodayProvider,
-) -> Result<ExtendedValue, TodayEvalError> {
-    let value = eval_today_surface(args, provider)?;
-    Ok(ExtendedValue::ValueWithPresentation {
-        value,
-        hint: PresentationHint::number_format(NumberFormatHint::DateLike),
-    })
+) -> Result<CalcValue, TodayEvalError> {
+    let EvalValue::Number(value) = eval_today_surface(args, provider)? else {
+        unreachable!("TODAY surface returns number");
+    };
+    Ok(CalcValue::with_presentation(
+        CoreValue::Number(value),
+        PresentationHint::number_format(NumberFormatHint::DateLike),
+    ))
 }
 
 pub fn map_today_error_to_ws(e: &TodayEvalError) -> WorksheetErrorCode {
@@ -88,14 +91,14 @@ mod tests {
     }
 
     #[test]
-    fn eval_today_extended_wraps_value_with_number_format_hint() {
-        let got = eval_today_surface_extended(&[], &FixedTodayProvider { serial: 46000.75 });
+    fn eval_today_rich_wraps_value_with_number_format_hint() {
+        let got = eval_today_surface_rich(&[], &FixedTodayProvider { serial: 46000.75 });
         assert_eq!(
             got,
-            Ok(ExtendedValue::ValueWithPresentation {
-                value: EvalValue::Number(46000.0),
-                hint: PresentationHint::number_format(NumberFormatHint::DateLike),
-            })
+            Ok(CalcValue::with_presentation(
+                CoreValue::Number(46000.0),
+                PresentationHint::number_format(NumberFormatHint::DateLike),
+            ))
         );
     }
 

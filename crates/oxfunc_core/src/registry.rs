@@ -70,6 +70,7 @@ pub struct RegistryFunctionMeta {
     pub semantic_kernel_metadata_version: String,
     pub arg_admission_metadata: ArgAdmissionMetadata,
     pub arg_admission_metadata_version: String,
+    pub rich_value_usage: RichValueUsage,
     pub producer_capability_set_keys: Vec<String>,
 }
 
@@ -94,7 +95,27 @@ impl From<FunctionMeta> for RegistryFunctionMeta {
             semantic_kernel_metadata,
             arg_admission_metadata_version: arg_admission_metadata.version_key(),
             arg_admission_metadata,
+            rich_value_usage: rich_value_usage_for_id(meta.function_id),
             producer_capability_set_keys: producer_capability_set_keys_for_id(meta.function_id),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RichValueUsage {
+    RichBlind,
+    ProducesPresentation,
+    ProducesRichObject,
+    ProducesErrorMetadata,
+}
+
+impl RichValueUsage {
+    pub const fn version_key(self) -> &'static str {
+        match self {
+            Self::RichBlind => "rich_value_usage.v1;rich_blind",
+            Self::ProducesPresentation => "rich_value_usage.v1;produces_presentation",
+            Self::ProducesRichObject => "rich_value_usage.v1;produces_rich_object",
+            Self::ProducesErrorMetadata => "rich_value_usage.v1;produces_error_metadata",
         }
     }
 }
@@ -971,7 +992,7 @@ pub fn builtin_registry() -> &'static FunctionRegistry {
 
 pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
     let mut out = String::from(
-        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,producer_capability_set_keys\n",
+        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys\n",
     );
 
     for entry in registry.iter() {
@@ -982,7 +1003,7 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
             sparse_cardinality_class,
         ) = arg_admission_export_fields(&entry.meta.arg_admission_metadata);
         out.push_str(&format!(
-            "{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             csv_escape(&entry.meta.function_id),
             csv_escape(&entry.surface_name),
             csv_escape(&entry.meta.semantic_kernel_metadata_version),
@@ -1009,6 +1030,7 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
             csv_escape(&rich_required_capability_set_keys),
             csv_escape(&sparse_extent_class),
             csv_escape(&sparse_cardinality_class),
+            csv_escape(entry.meta.rich_value_usage.version_key()),
             csv_escape(&entry.meta.producer_capability_set_keys.join("|")),
         ));
     }
@@ -1125,6 +1147,7 @@ fn udf_entry_from_request(request: UdfRegistrationRequest) -> FunctionEntry {
             semantic_kernel_metadata,
             arg_admission_metadata_version: arg_admission_metadata.version_key(),
             arg_admission_metadata,
+            rich_value_usage: RichValueUsage::RichBlind,
             producer_capability_set_keys: capability_keys,
         },
         surface_name: surface_name.clone(),
@@ -1338,6 +1361,14 @@ pub fn producer_capability_set_keys_for_id(function_id: &str) -> Vec<String> {
     match function_id {
         "FUNC.IMAGE" => webimage_producer_capability_set_keys(),
         _ => Vec::new(),
+    }
+}
+
+pub fn rich_value_usage_for_id(function_id: &str) -> RichValueUsage {
+    match function_id {
+        "FUNC.IMAGE" => RichValueUsage::ProducesRichObject,
+        "FUNC.HYPERLINK" | "FUNC.NOW" | "FUNC.TODAY" => RichValueUsage::ProducesPresentation,
+        _ => RichValueUsage::RichBlind,
     }
 }
 
@@ -1566,7 +1597,7 @@ mod tests {
         let header = csv.lines().next().expect("csv header");
         assert_eq!(
             header,
-            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,producer_capability_set_keys"
+            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys"
         );
         assert!(
             csv.contains("FUNC.SUM,SUM,semantic_kernel_metadata.v1;reduction_sensitive=true;error_collapse_sensitive=true;numerical_reduction_policy=SequentialLeftFold;error_algebra=CanonicalExcelLegacy,true,true,SequentialLeftFold,CanonicalExcelLegacy,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
@@ -1575,6 +1606,14 @@ mod tests {
         assert!(
             csv.contains("FUNC.IMAGE,IMAGE,semantic_kernel_metadata.v1;reduction_sensitive=false;error_collapse_sensitive=false;numerical_reduction_policy=none;error_algebra=none,false,false,,,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
             "IMAGE row must remain ordinary arg admission"
+        );
+        assert!(
+            csv.contains("FUNC.SUM,SUM,semantic_kernel_metadata.v1;reduction_sensitive=true;error_collapse_sensitive=true;numerical_reduction_policy=SequentialLeftFold;error_algebra=CanonicalExcelLegacy,true,true,SequentialLeftFold,CanonicalExcelLegacy,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter,,,,rich_value_usage.v1;rich_blind,"),
+            "SUM row must publish rich-blind metadata"
+        );
+        assert!(
+            csv.contains("FUNC.IMAGE,IMAGE,semantic_kernel_metadata.v1;reduction_sensitive=false;error_collapse_sensitive=false;numerical_reduction_policy=none;error_algebra=none,false,false,,,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter,,,,rich_value_usage.v1;produces_rich_object,"),
+            "IMAGE row must publish rich-object metadata"
         );
         assert!(
             csv.contains("Materialisable(target_class=published_fallback_text)"),
@@ -2027,6 +2066,7 @@ mod tests {
                     ArgPreparationProfile::ValuesOnlyPreAdapter,
                 )
                 .version_key(),
+                rich_value_usage: RichValueUsage::RichBlind,
                 producer_capability_set_keys: Vec::new(),
             },
             surface_name: surface_name.to_string(),
