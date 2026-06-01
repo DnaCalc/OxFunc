@@ -1169,7 +1169,7 @@
       "A3": "Number(50)",
       "B3": "Number(60)"
     },
-    "expected_value_summary": "Reference(B2)",
+    "expected_value_summary": "Number(40)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": null,
     "expected_prepared_argument_sources": null,
@@ -2006,7 +2006,7 @@
       "B2": "Text(two)",
       "B3": "Text(three)"
     },
-    "expected_value_summary": "Reference(B2)",
+    "expected_value_summary": "Text(two)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": null,
     "expected_prepared_argument_sources": null,
