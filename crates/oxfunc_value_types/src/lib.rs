@@ -1086,20 +1086,27 @@ impl From<EvalValue> for CalcValue {
                 )
             }
             EvalValue::Reference(reference) => Self::reference(reference),
-            EvalValue::Lambda(lambda) => Self::with_rich(
-                CoreValue::Error(WorksheetErrorCode::Calc),
-                RichValue::Callable(CallableValue {
+            EvalValue::Lambda(lambda) => {
+                let callable = CallableValue {
                     arity: lambda.arity_shape,
-                    summary: lambda.callable_token,
-                    handle: Rc::new(LegacyLambdaCallable),
-                }),
-            ),
+                    summary: lambda.callable_token.clone(),
+                    handle: Rc::new(LegacyLambdaCallable {
+                        lambda: lambda.clone(),
+                    }),
+                };
+                Self::with_rich(
+                    CoreValue::Error(WorksheetErrorCode::Calc),
+                    RichValue::Callable(callable),
+                )
+            }
         }
     }
 }
 
 #[derive(Debug)]
-struct LegacyLambdaCallable;
+struct LegacyLambdaCallable {
+    lambda: LambdaValue,
+}
 
 impl OpaqueCallable for LegacyLambdaCallable {
     fn as_any(&self) -> &dyn Any {
@@ -1120,6 +1127,15 @@ impl CallArgValue {
         // W099 migration-only adapter for legacy CallArgValue call boundaries.
         // W099-005 owns replacing call-boundary construction with CalcValue
         // directly, and W099-015 owns deleting this conversion.
+        if let Some(RichValue::Callable(callable)) = value.rich.as_deref() {
+            if let Some(legacy) = callable
+                .handle
+                .as_any()
+                .downcast_ref::<LegacyLambdaCallable>()
+            {
+                return Self::Eval(EvalValue::Lambda(legacy.lambda.clone()));
+            }
+        }
         match value.core {
             CoreValue::Number(n) => Self::Eval(EvalValue::Number(n)),
             CoreValue::Text(t) => Self::Eval(EvalValue::Text(t)),
@@ -1256,13 +1272,13 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint,
-        CompositeReferenceOperation, CoreValue, ErrorMetadataValue, ErrorSurface, ExcelText,
-        NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
-        ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
-        RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
-        RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
-        EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
+        ArrayShape, CalcArray, CalcValue, CallArgValue, CallableArityShape, CallableCaptureMode,
+        CellStyleHint, CompositeReferenceOperation, CoreValue, ErrorMetadataValue, ErrorSurface,
+        EvalValue, ExcelText, LambdaValue, NumberFormatHint, PresentationHint, PresentationValue,
+        ReferenceDisplay, ReferenceHandle, ReferenceHandleId, ReferenceIdentity, ReferenceKind,
+        ReferenceLike, ReferenceSystemId, RichObjectData, RichObjectKeyValue, RichObjectType,
+        RichObjectValue, RichValue, RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary,
+        ValueTag, WorksheetErrorCode, EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
     };
 
     #[test]
@@ -1439,6 +1455,26 @@ mod tests {
         assert_eq!(
             value.callable_value().map(|callable| callable.arity),
             Some(CallableArityShape::exact(1))
+        );
+    }
+
+    #[test]
+    fn legacy_lambda_adapter_round_trips_through_calcvalue_callable() {
+        let lambda = LambdaValue::helper_lambda(
+            "helper.lambda".to_string(),
+            CallableArityShape::exact(2),
+            CallableCaptureMode::NoCapture,
+            "test.lambda",
+        );
+        let value = CalcValue::from(EvalValue::Lambda(lambda.clone()));
+
+        assert_eq!(
+            value.callable_value().map(|callable| callable.arity),
+            Some(CallableArityShape::exact(2))
+        );
+        assert_eq!(
+            CallArgValue::value(value),
+            CallArgValue::Eval(EvalValue::Lambda(lambda))
         );
     }
 

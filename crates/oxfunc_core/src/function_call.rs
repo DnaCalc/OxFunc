@@ -16,7 +16,7 @@ use crate::registry::{builtin_registry, FunctionEntry, FunctionRegistry};
 use crate::resolver::{
     CallerContext, ReferenceResolver, ReferenceSystemProvider, ReferenceTextResolver,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FunctionCallTargetResolveError {
@@ -74,7 +74,7 @@ impl Default for ExpressionHoistPolicy {
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct FunctionCallScratch {
-    call_args: Vec<CallArgValue>,
+    call_args: Vec<CalcValue>,
 }
 
 impl FunctionCallScratch {
@@ -88,19 +88,19 @@ impl FunctionCallScratch {
         self.call_args.clear();
     }
 
-    pub fn call_args(&self) -> &[CallArgValue] {
+    pub fn call_args(&self) -> &[CalcValue] {
         &self.call_args
     }
 
-    pub fn call_args_mut(&mut self) -> &mut Vec<CallArgValue> {
+    pub fn call_args_mut(&mut self) -> &mut Vec<CalcValue> {
         &mut self.call_args
     }
 
-    pub fn push_arg(&mut self, arg: CallArgValue) {
+    pub fn push_arg(&mut self, arg: CalcValue) {
         self.call_args.push(arg);
     }
 
-    pub fn extend_args(&mut self, args: impl IntoIterator<Item = CallArgValue>) {
+    pub fn extend_args(&mut self, args: impl IntoIterator<Item = CalcValue>) {
         self.call_args.extend(args);
     }
 
@@ -307,12 +307,13 @@ impl FunctionCallTarget {
 
     pub fn invoke<R: ReferenceResolver>(
         &self,
-        args: &[CallArgValue],
+        args: &[CalcValue],
         fec: &mut FunctionExecutionContextBundle<'_, R>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
+        let dispatch_args = legacy_call_args_for_dispatch(args);
         eval_surface_value_call_with_dispatch_key(
             self.dispatch_key,
-            args,
+            &dispatch_args,
             fec.resolver,
             fec.reference_text_resolver,
             fec.effective_now_serial(),
@@ -341,12 +342,16 @@ impl FunctionCallTarget {
     ) -> Result<EvalValue, WorksheetErrorCode>
     where
         R: ReferenceResolver,
-        F: FnOnce(&mut Vec<CallArgValue>),
+        F: FnOnce(&mut Vec<CalcValue>),
     {
         scratch.clear();
         build_args(scratch.call_args_mut());
         self.invoke_scratch(scratch, fec)
     }
+}
+
+fn legacy_call_args_for_dispatch(args: &[CalcValue]) -> Vec<CallArgValue> {
+    args.iter().cloned().map(CallArgValue::value).collect()
 }
 
 pub struct FunctionExecutionContextBundle<'a, R: ReferenceResolver> {
@@ -628,8 +633,8 @@ mod tests {
         ReferenceSystemProvider, ResolverCapabilities,
     };
     use crate::value::{
-        ArrayCellValue, CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue,
-        ReferenceKind, ReferenceLike,
+        ArrayCellValue, CalcArray, CallableArityShape, CallableCaptureMode, EvalArray, ExcelText,
+        LambdaValue, ReferenceKind, ReferenceLike,
     };
 
     struct NoReferenceResolver;
@@ -772,20 +777,20 @@ mod tests {
         }
     }
 
-    fn text_arg(value: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(text(value)))
+    fn text_arg(value: &str) -> CalcValue {
+        CalcValue::text(text(value))
     }
 
-    fn num_arg(value: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(value))
+    fn num_arg(value: f64) -> CalcValue {
+        CalcValue::number(value)
     }
 
-    fn reference_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
+    fn reference_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
-    fn lambda_arg(token: &str, arity: usize) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
+    fn lambda_arg(token: &str, arity: usize) -> CalcValue {
+        CalcValue::from(EvalValue::Lambda(LambdaValue::helper_lambda(
             token.to_string(),
             CallableArityShape::exact(arity),
             CallableCaptureMode::NoCapture,
@@ -793,13 +798,13 @@ mod tests {
         )))
     }
 
-    fn array_arg(rows: Vec<Vec<ArrayCellValue>>) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
+    fn array_arg(rows: Vec<Vec<ArrayCellValue>>) -> CalcValue {
+        CalcValue::from(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
     }
 
     fn assert_call_target_parity(
         function_id: &str,
-        args: &[CallArgValue],
+        args: &[CalcValue],
         callable_invoker: Option<&dyn CallableInvoker>,
         host_info: Option<&dyn HostInfoProvider>,
     ) {
@@ -813,9 +818,10 @@ mod tests {
         fec.host_info = host_info;
 
         let got = call_target.invoke(args, &mut fec);
+        let legacy_args = legacy_call_args_for_dispatch(args);
         let expected = eval_surface_value_call_with_callable(
             function_id,
-            args,
+            &legacy_args,
             &resolver,
             None,
             Some(46000.0),
@@ -831,7 +837,7 @@ mod tests {
 
     fn assert_call_target_parity_with_providers(
         function_id: &str,
-        args: &[CallArgValue],
+        args: &[CalcValue],
         locale_ctx: Option<&LocaleFormatContext<'_>>,
         rtd_provider: Option<&dyn RtdProvider>,
         registered_external_provider: Option<&dyn RegisteredExternalProvider>,
@@ -847,9 +853,10 @@ mod tests {
         fec.registered_external_provider = registered_external_provider;
 
         let got = call_target.invoke(args, &mut fec);
+        let legacy_args = legacy_call_args_for_dispatch(args);
         let expected = eval_surface_value_call_with_callable(
             function_id,
-            args,
+            &legacy_args,
             &resolver,
             None,
             Some(46000.0),
@@ -1076,6 +1083,55 @@ mod tests {
             .unwrap();
         assert!(matches!(got, EvalValue::Array(_)));
         assert_eq!(scratch.capacity(), initial_capacity);
+    }
+
+    #[test]
+    fn function_call_boundary_uses_calcvalue_for_missing_empty_and_reference_arguments() {
+        let mut scratch = FunctionCallScratch::with_capacity(3);
+        let reference = ReferenceLike::new(ReferenceKind::A1, "A1");
+        scratch.extend_args([
+            CalcValue::missing(),
+            CalcValue::empty(),
+            CalcValue::reference(reference.clone()),
+        ]);
+
+        assert!(scratch.call_args()[0].is_missing());
+        assert!(scratch.call_args()[1].is_empty());
+        assert_eq!(scratch.call_args()[2].as_reference(), Some(&reference));
+
+        let dispatch_args = legacy_call_args_for_dispatch(scratch.call_args());
+        assert_eq!(
+            dispatch_args,
+            vec![
+                CallArgValue::MissingArg,
+                CallArgValue::EmptyCell,
+                CallArgValue::Reference(reference)
+            ]
+        );
+    }
+
+    #[test]
+    fn function_call_boundary_preserves_direct_array_vs_reference_visible_arguments() {
+        let direct_array = CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .unwrap(),
+        );
+        let reference = ReferenceLike::new(ReferenceKind::Area, "A1:B1");
+        let reference_visible = CalcValue::reference(reference.clone());
+
+        let dispatch_args =
+            legacy_call_args_for_dispatch(&[direct_array.clone(), reference_visible.clone()]);
+
+        assert!(matches!(
+            dispatch_args.first(),
+            Some(CallArgValue::Eval(EvalValue::Array(_)))
+        ));
+        assert_eq!(
+            dispatch_args.get(1),
+            Some(&CallArgValue::Reference(reference))
+        );
+        assert!(direct_array.as_array().is_some());
+        assert!(reference_visible.as_reference().is_some());
     }
 
     #[test]

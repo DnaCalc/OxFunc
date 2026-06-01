@@ -462,3 +462,76 @@ Validation:
 4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1330 passed, 1 ignored.
 5. `git diff --check`: passed.
 6. `scripts/check-worksets.ps1`: passed.
+
+## 12. W099-005 Call-Boundary Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-006 must move array storage and array-cell policy fully to `CalcArray` / `CalcValue`.
+2. W099-008/W099-012 must move dispatcher and kernel input/return paths away from `EvalValue`.
+3. W099-009 must move reference-sensitive function paths onto `ReferenceSystemProvider`.
+4. W099-015 must delete `CallArgValue`, the private `FunctionCallTarget` dispatch bridge, and OxFml caller-side bridge helpers after downstream paths no longer require legacy argument carriers.
+
+Planned scope:
+1. Replace the public `FunctionCallScratch` argument storage and call-target invocation argument API with `CalcValue`.
+2. Preserve omitted, empty, and reference-visible argument distinctions as `CoreValue::Missing`, `CoreValue::Empty`, and `CoreValue::Reference`.
+3. Preserve direct-array versus reference-visible behavior while the legacy dispatcher still consumes `CallArgValue`.
+4. Update the OxFml caller edge so the migrated OxFunc call-boundary API is exercised by the downstream evaluator seam.
+
+Evidence:
+1. `FunctionCallScratch` now stores `Vec<CalcValue>` and exposes `CalcValue` push/extend/mutator APIs.
+2. `FunctionCallTarget::invoke`, `invoke_scratch`, and `invoke_with_scratch_builder` now accept `&[CalcValue]` / `Vec<CalcValue>` builder arguments.
+3. The only `CallArgValue` use in `crates/oxfunc_core/src/function_call.rs` is the private `legacy_call_args_for_dispatch` adapter plus tests that prove its temporary behavior.
+4. OxFml evaluator call sites now convert their existing internal `CallArgValue` carriers to `CalcValue` before invoking OxFunc call targets, and convert back only for legacy prepared-call/register/host-fallback helpers that still require `CallArgValue`.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-005 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-005 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused call-boundary tests and downstream evaluator seam tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not a function-semantic bead; call-boundary behavior is pinned by deterministic Rust tests. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this call-boundary carrier bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this call-boundary carrier bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - OxFml caller-edge changes were integrated directly; no unresolved handoff remains for this bead. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-005 scope is the call-boundary carrier API, with legacy dispatcher bridging explicitly left to later beads. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-005 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.5` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asked for call-boundary migration, not full removal of every function-module `CallArgValue` signature.
+2. Gate criteria re-read: passed. Function-call APIs and scratch now use `CalcValue`; missing/empty/reference-visible and direct-array/reference-visible cases have focused tests.
+3. Silent scope reduction check: passed. The private bridge to `CallArgValue` remains only because the dispatcher and function kernels are later W099 lanes, and it is recorded as W099-015 residue.
+4. "Looks done but is not" pattern check: passed. OxFml still has internal `CallArgValue` helpers, reported as caller-side compatibility residue rather than native architecture.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, and remaining integration lanes for the W099-005 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: the first API pass returned `CalcValue` from `FunctionCallTarget::invoke`, which was premature because dispatcher/kernel return migration belongs to W099-008/W099-012; the return type remains `EvalValue` in this bead.
+2. Issue found and corrected: OxFml caller edges still passed `CallArgValue` into the migrated OxFunc API; they now convert to `CalcValue` before invocation.
+3. Issue found and corrected: trimming trailing omitted arguments initially checked for `CallArgValue::MissingArg` on scratch storage; it now checks `CalcValue::is_missing`.
+4. Issue found and corrected: the first CalcValue-to-legacy bridge erased legacy lambda payloads by converting callable core to `#CALC!`; the temporary callable adapter now retains the legacy `LambdaValue` until W099-011/W099-015 delete that bridge.
+5. Remaining tension: OxFml still converts back to `CallArgValue` for prepared-call register parsing, CALL parsing, host fallback, and HSTACK empty-carrier compatibility until later W099 dispatcher/kernel beads remove those consumers.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml function_call --lib`: passed, 12 tests.
+2. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml legacy_lambda_adapter --lib`: passed, 1 test.
+3. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 22 tests.
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1332 passed, 1 ignored.
+5. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test evaluator_tests evaluator_executes_map_with_local_lambda_callable`: passed, 1 test.
+6. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test evaluator_tests evaluator_executes_foundation_array_lambda_carrier_case_ftc_0455`: passed, 1 test.
+7. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test callable_transport_tests`: passed, 1 test.
+8. `cargo test --manifest-path C:/Work/DnaCalc/OxFml/crates/oxfml_core/Cargo.toml --test evaluator_tests`: attempted after the bridge correction; 99 passed, 4 failed. The remaining failing tests are outside the call-boundary migration slice and sit in an OxFml worktree that already has unrelated dirty parser/binding/test files; they are not treated as W099-005 closure evidence.
