@@ -1,6 +1,6 @@
 use crate::coercion::CoercionError;
-use crate::functions::adapters::{AggregatePreparedValue, PreparedArgValue};
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::functions::adapters::AggregatePreparedValue;
+use crate::value::{CoreValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CovarianceDivisor {
@@ -9,22 +9,14 @@ pub enum CovarianceDivisor {
 }
 
 fn paired_numeric_value(item: &AggregatePreparedValue) -> Result<Option<f64>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(Some(*n)),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
-        PreparedArgValue::Eval(EvalValue::Text(_))
-        | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
+    match item.value.core() {
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            Ok(None)
         }
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
@@ -138,7 +130,7 @@ pub fn rsq_from_pairs(pairs: &[(f64, f64)]) -> Result<f64, WorksheetErrorCode> {
 mod tests {
     use super::*;
     use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
-    use crate::value::ExcelText;
+    use crate::value::{CalcValue, ExcelText};
 
     fn assert_bits(actual: f64, expected: f64) {
         assert_eq!(
@@ -153,23 +145,23 @@ mod tests {
         let xs = vec![
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
-                value: PreparedArgValue::Eval(EvalValue::Number(1.0)),
+                value: CalcValue::number(1.0),
             },
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
-                value: PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                value: CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
-                ))),
+                )),
             },
         ];
         let ys = vec![
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
-                value: PreparedArgValue::Eval(EvalValue::Number(2.0)),
+                value: CalcValue::number(2.0),
             },
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
-                value: PreparedArgValue::Eval(EvalValue::Number(3.0)),
+                value: CalcValue::number(3.0),
             },
         ];
 

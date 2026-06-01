@@ -1,12 +1,12 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
+use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const MULTINOMIAL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MULTINOMIAL",
@@ -33,9 +33,8 @@ pub enum MultinomialEvalError {
     Domain(WorksheetErrorCode),
 }
 
-fn coerce_prepared_to_nonnegative_int(arg: &PreparedArgValue) -> Result<i64, MultinomialEvalError> {
-    let n = crate::functions::adapters::coerce_prepared_to_number(arg)
-        .map_err(MultinomialEvalError::Coercion)?;
+fn coerce_calc_to_nonnegative_int(arg: &CalcValue) -> Result<i64, MultinomialEvalError> {
+    let n = coerce_calc_scalar_to_number(arg).map_err(MultinomialEvalError::Coercion)?;
     trunc_nonnegative(n).map_err(MultinomialEvalError::Domain)
 }
 
@@ -232,9 +231,10 @@ pub fn eval_multinomial_surface(
     // (Excel reduces MULTINOMIAL over arrays to a scalar).
     let mut items = Vec::new();
     for arg in args {
-        let expanded = expand_aggregate_arg(arg, resolver).map_err(MultinomialEvalError::Coercion)?;
+        let expanded =
+            expand_aggregate_arg(arg, resolver).map_err(MultinomialEvalError::Coercion)?;
         for item in expanded {
-            items.push(coerce_prepared_to_nonnegative_int(&item.value)?);
+            items.push(coerce_calc_to_nonnegative_int(&item.value)?);
         }
     }
     multinomial_kernel(&items)

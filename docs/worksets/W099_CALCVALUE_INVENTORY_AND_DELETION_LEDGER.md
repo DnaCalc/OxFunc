@@ -614,7 +614,7 @@ integration_completeness: `partial`
 
 open_lanes:
 1. W099-008 and W099-012 must migrate remaining dispatcher and kernel callbacks that still receive `PreparedArgValue` compatibility projections.
-2. Aggregate reference provenance still uses `AggregatePreparedValue` and legacy `PreparedArgValue` inside the aggregate-only adapter lane; it remains local/transient but must be migrated before final deletion.
+2. Aggregate reference provenance still uses local `AggregatePreparedValue` origin facts, but its payload is now `CalcValue`; W099-015 may delete or tuple-elide the local fact container after the remaining aggregate callers settle.
 3. W099-015 must delete `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, and migration projection helpers after all active callers consume `CalcValue` / `CalcArray` directly.
 
 Planned scope:

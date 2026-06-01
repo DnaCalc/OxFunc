@@ -62,7 +62,7 @@ pub enum AggregateArgOrigin {
 #[derive(Debug, Clone, PartialEq)]
 pub struct AggregatePreparedValue {
     pub origin: AggregateArgOrigin,
-    pub value: PreparedArgValue,
+    pub value: CalcValue,
 }
 
 fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
@@ -72,6 +72,14 @@ fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
         ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
         ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
         ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+    }
+}
+
+fn calc_value_from_prepared(value: PreparedArgValue) -> CalcValue {
+    match value {
+        PreparedArgValue::Eval(value) => CalcValue::from(value),
+        PreparedArgValue::MissingArg => CalcValue::missing(),
+        PreparedArgValue::EmptyCell => CalcValue::empty(),
     }
 }
 
@@ -96,7 +104,7 @@ pub fn expand_aggregate_array_with_provenance(
 ) -> Vec<AggregatePreparedValue> {
     array
         .iter_row_major()
-        .map(prepared_from_array_cell)
+        .map(ArrayCellValue::to_calc_value_lossy)
         .map(|value| AggregatePreparedValue {
             origin: AggregateArgOrigin::ArrayLike(provenance),
             value,
@@ -132,7 +140,7 @@ pub fn expand_sparse_reference_values_with_provenance(
     values
         .defined_cells
         .into_iter()
-        .map(|cell| prepared_from_array_cell(&cell.value))
+        .map(|cell| cell.value.to_calc_value_lossy())
         .map(|value| AggregatePreparedValue {
             origin: AggregateArgOrigin::ArrayLike(provenance),
             value,
@@ -349,7 +357,7 @@ pub fn expand_aggregate_arg(
                     origin: AggregateArgOrigin::ArrayLike(
                         AggregateArrayProvenance::ReferenceDerived,
                     ),
-                    value: PreparedArgValue::Eval(value),
+                    value: CalcValue::from(value),
                 }]),
             }
         }
@@ -361,7 +369,7 @@ pub fn expand_aggregate_arg(
             .into_iter()
             .map(|value| AggregatePreparedValue {
                 origin: AggregateArgOrigin::DirectScalar,
-                value,
+                value: calc_value_from_prepared(value),
             })
             .collect()),
     }

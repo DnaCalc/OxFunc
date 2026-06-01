@@ -1,16 +1,17 @@
-use crate::coercion::{CoercionError, coerce_eval_to_number};
+use crate::coercion::{coerce_eval_to_number, CoercionError};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedValue, PreparedArgValue, expand_aggregate_arg,
+    expand_aggregate_arg, AggregateArgOrigin, AggregatePreparedValue,
 };
 use crate::functions::chi_f_t_family::{chisq_dist_rt_kernel, f_dist_rt_kernel};
 use crate::functions::special_math_common::regularized_beta;
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{resolve_eval_value, ReferenceResolver};
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceLike, WorksheetErrorCode,
+    ArrayCellValue, CallArgValue, CoreValue, EvalArray, EvalValue, ReferenceLike,
+    WorksheetErrorCode,
 };
 
 const BASE_META: FunctionMeta = FunctionMeta {
@@ -177,53 +178,31 @@ fn aggregate_item_number(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, StatisticalTestsEvalError> {
     match item.origin {
-        AggregateArgOrigin::DirectScalar => match &item.value {
-            PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(Some(*n)),
-            PreparedArgValue::Eval(EvalValue::Error(code)) => {
-                Err(StatisticalTestsEvalError::Domain(*code))
-            }
-            PreparedArgValue::Eval(EvalValue::Array(_)) => Err(
-                StatisticalTestsEvalError::Coercion(CoercionError::UnsupportedValueKind("array")),
-            ),
-            PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-                Err(StatisticalTestsEvalError::Coercion(
-                    CoercionError::UnsupportedValueKind("reference_like"),
-                ))
-            }
-            PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-                Err(StatisticalTestsEvalError::Coercion(
-                    CoercionError::UnsupportedValueKind("lambda_value"),
-                ))
-            }
-            PreparedArgValue::Eval(EvalValue::Text(_))
-            | PreparedArgValue::Eval(EvalValue::Logical(_))
-            | PreparedArgValue::MissingArg
-            | PreparedArgValue::EmptyCell => {
+        AggregateArgOrigin::DirectScalar => match item.value.core() {
+            CoreValue::Number(n) => Ok(Some(*n)),
+            CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
+            CoreValue::Array(_) => Err(StatisticalTestsEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("array"),
+            )),
+            CoreValue::Reference(_) => Err(StatisticalTestsEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("reference_like"),
+            )),
+            CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
                 Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
             }
         },
-        AggregateArgOrigin::ArrayLike(_) => match &item.value {
-            PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(Some(*n)),
-            PreparedArgValue::Eval(EvalValue::Error(code)) => {
-                Err(StatisticalTestsEvalError::Domain(*code))
+        AggregateArgOrigin::ArrayLike(_) => match item.value.core() {
+            CoreValue::Number(n) => Ok(Some(*n)),
+            CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
+            CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+                Ok(None)
             }
-            PreparedArgValue::Eval(EvalValue::Text(_))
-            | PreparedArgValue::Eval(EvalValue::Logical(_))
-            | PreparedArgValue::MissingArg
-            | PreparedArgValue::EmptyCell => Ok(None),
-            PreparedArgValue::Eval(EvalValue::Array(_)) => Err(
-                StatisticalTestsEvalError::Coercion(CoercionError::UnsupportedValueKind("array")),
-            ),
-            PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-                Err(StatisticalTestsEvalError::Coercion(
-                    CoercionError::UnsupportedValueKind("reference_like"),
-                ))
-            }
-            PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-                Err(StatisticalTestsEvalError::Coercion(
-                    CoercionError::UnsupportedValueKind("lambda_value"),
-                ))
-            }
+            CoreValue::Array(_) => Err(StatisticalTestsEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("array"),
+            )),
+            CoreValue::Reference(_) => Err(StatisticalTestsEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("reference_like"),
+            )),
         },
     }
 }

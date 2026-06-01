@@ -3,12 +3,12 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::adapters::{expand_aggregate_arg, sparse_reference_values_for_aggregate_arg};
 use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
-use crate::functions::adapters::{
-    PreparedArgValue, expand_aggregate_arg, sparse_reference_values_for_aggregate_arg,
-};
 use crate::resolver::ReferenceResolver;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CalcValue, CallArgValue, CoreValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const COUNTBLANK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COUNTBLANK",
@@ -46,23 +46,13 @@ fn value_error_array_like(array: &EvalArray) -> EvalValue {
     EvalValue::Array(EvalArray::from_rows(rows).expect("countblank error array shape"))
 }
 
-fn prepared_counts_as_blank(value: &PreparedArgValue) -> Result<bool, CoercionError> {
-    match value {
-        PreparedArgValue::EmptyCell => Ok(true),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => Ok(t.utf16_code_units().is_empty()),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
-        PreparedArgValue::MissingArg => Ok(false),
+fn calc_value_counts_as_blank(value: &CalcValue) -> Result<bool, CoercionError> {
+    match value.core() {
+        CoreValue::Empty => Ok(true),
+        CoreValue::Text(t) => Ok(t.utf16_code_units().is_empty()),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Missing => Ok(false),
         _ => Ok(false),
-    }
-}
-
-fn prepared_from_sparse_cell(cell: &ArrayCellValue) -> PreparedArgValue {
-    match cell {
-        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
-        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
-        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
-        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
-        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
     }
 }
 
@@ -80,8 +70,8 @@ fn count_sparse_reference_blanks(
         .declared_cell_count()
         .saturating_sub(values.defined_cells.len()) as f64;
     for cell in &values.defined_cells {
-        let prepared = prepared_from_sparse_cell(&cell.value);
-        if prepared_counts_as_blank(&prepared).map_err(CountBlankEvalError::Preparation)? {
+        let value = cell.value.to_calc_value_lossy();
+        if calc_value_counts_as_blank(&value).map_err(CountBlankEvalError::Preparation)? {
             count += 1.0;
         }
     }
@@ -123,7 +113,7 @@ pub fn eval_countblank_surface(
                     CoercionError::UnsupportedValueKind("countblank_array_substitute"),
                 ));
             }
-            if prepared_counts_as_blank(&item.value).map_err(CountBlankEvalError::Preparation)? {
+            if calc_value_counts_as_blank(&item.value).map_err(CountBlankEvalError::Preparation)? {
                 count += 1.0;
             }
         }

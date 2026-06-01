@@ -1,13 +1,13 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, expand_aggregate_arg};
+use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const GCD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GCD",
@@ -34,9 +34,8 @@ pub enum GcdEvalError {
     Domain(WorksheetErrorCode),
 }
 
-fn coerce_prepared_to_nonnegative_int(arg: &PreparedArgValue) -> Result<i64, GcdEvalError> {
-    let n = crate::functions::adapters::coerce_prepared_to_number(arg)
-        .map_err(GcdEvalError::Coercion)?;
+fn coerce_calc_to_nonnegative_int(arg: &CalcValue) -> Result<i64, GcdEvalError> {
+    let n = coerce_calc_scalar_to_number(arg).map_err(GcdEvalError::Coercion)?;
     trunc_nonnegative(n).map_err(GcdEvalError::Domain)
 }
 
@@ -60,7 +59,7 @@ pub fn eval_gcd_surface(
     for arg in args {
         let expanded = expand_aggregate_arg(arg, resolver).map_err(GcdEvalError::Coercion)?;
         for item in expanded {
-            items.push(coerce_prepared_to_nonnegative_int(&item.value)?);
+            items.push(coerce_calc_to_nonnegative_int(&item.value)?);
         }
     }
     Ok(EvalValue::Number(gcd_kernel(&items)))

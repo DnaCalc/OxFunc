@@ -1,18 +1,17 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number,
     expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
-    sparse_reference_values_for_aggregate_arg,
+    sparse_reference_values_for_aggregate_arg, AggregateArgOrigin, AggregatePreparedValue,
 };
 use crate::resolver::ReferenceResolver;
 use crate::semantic_kernel::{
-    NumericalReductionPolicy, SemanticKernelRuntimeError, reduce_numeric_sum,
+    reduce_numeric_sum, NumericalReductionPolicy, SemanticKernelRuntimeError,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
 
 pub const SUM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUM",
@@ -39,30 +38,22 @@ pub enum SumEvalError {
     SemanticKernel(SemanticKernelRuntimeError),
 }
 
-fn accumulate_direct_scalar(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
-    match arg {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
-        other => coerce_prepared_to_number(other),
+fn accumulate_direct_scalar(arg: &CalcValue) -> Result<f64, CoercionError> {
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(0.0),
+        _ => coerce_calc_scalar_to_number(arg),
     }
 }
 
-fn accumulate_range_like(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
-    match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
+fn accumulate_range_like(arg: &CalcValue) -> Result<f64, CoercionError> {
+    match arg.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            Ok(0.0)
         }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
-        PreparedArgValue::Eval(EvalValue::Text(_))
-        | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(0.0),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
     }
 }
 
@@ -128,7 +119,7 @@ pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::functions::adapters::{
-        AggregateArrayProvenance, expand_aggregate_array_with_provenance,
+        expand_aggregate_array_with_provenance, AggregateArrayProvenance,
     };
     use crate::resolver::{
         RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
@@ -440,15 +431,15 @@ mod tests {
         let prepared = vec![
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::DirectScalar,
-                value: PreparedArgValue::Eval(EvalValue::Number(1.0e16)),
+                value: CalcValue::number(1.0e16),
             },
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::DirectScalar,
-                value: PreparedArgValue::Eval(EvalValue::Number(1.0)),
+                value: CalcValue::number(1.0),
             },
             AggregatePreparedValue {
                 origin: AggregateArgOrigin::DirectScalar,
-                value: PreparedArgValue::Eval(EvalValue::Number(-1.0e16)),
+                value: CalcValue::number(-1.0e16),
             },
         ];
 

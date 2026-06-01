@@ -1,7 +1,6 @@
-use crate::coercion::CoercionError;
-use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number,
-};
+use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedValue};
+use crate::value::CoreValue;
 
 fn is_direct_scalar(origin: AggregateArgOrigin) -> bool {
     matches!(origin, AggregateArgOrigin::DirectScalar)
@@ -10,27 +9,15 @@ fn is_direct_scalar(origin: AggregateArgOrigin) -> bool {
 pub fn dual_policy_numeric_value(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(_) if is_direct_scalar(item.origin) => {
-            coerce_prepared_to_number(&item.value).map(Some)
+    match item.value.core() {
+        _ if is_direct_scalar(item.origin) => coerce_calc_scalar_to_number(&item.value).map(Some),
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            Ok(None)
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(n)) => Ok(Some(*n)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-        | PreparedArgValue::Eval(crate::value::EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
@@ -45,35 +32,20 @@ pub fn average_argument_value(item: &AggregatePreparedValue) -> Result<Option<f6
 pub fn averagea_argument_value(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(n)) => Ok(Some(*n)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
+    match item.value.core() {
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) if is_direct_scalar(item.origin) => {
+            coerce_calc_scalar_to_number(&item.value).map(Some)
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-            if is_direct_scalar(item.origin) =>
-        {
-            coerce_prepared_to_number(&item.value).map(Some)
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(b))
-            if is_direct_scalar(item.origin) =>
-        {
+        CoreValue::Logical(b) if is_direct_scalar(item.origin) => {
             Ok(Some(if *b { 1.0 } else { 0.0 }))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_)) => Ok(Some(0.0)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(b)) => {
-            Ok(Some(if *b { 1.0 } else { 0.0 }))
-        }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Text(_) => Ok(Some(0.0)),
+        CoreValue::Logical(b) => Ok(Some(if *b { 1.0 } else { 0.0 })),
+        CoreValue::Missing | CoreValue::Empty => Ok(None),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
@@ -84,105 +56,61 @@ pub fn median_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64
 pub fn extrema_a_argument_value(
     item: &AggregatePreparedValue,
 ) -> Result<Option<f64>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(n)) => Ok(Some(*n)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
+    match item.value.core() {
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) if is_direct_scalar(item.origin) => {
+            coerce_calc_scalar_to_number(&item.value).map(Some)
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-            if is_direct_scalar(item.origin) =>
-        {
-            coerce_prepared_to_number(&item.value).map(Some)
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(b))
-            if is_direct_scalar(item.origin) =>
-        {
+        CoreValue::Logical(b) if is_direct_scalar(item.origin) => {
             Ok(Some(if *b { 1.0 } else { 0.0 }))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_)) => Ok(Some(0.0)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(b)) => {
-            Ok(Some(if *b { 1.0 } else { 0.0 }))
-        }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Text(_) => Ok(Some(0.0)),
+        CoreValue::Logical(b) => Ok(Some(if *b { 1.0 } else { 0.0 })),
+        CoreValue::Missing | CoreValue::Empty => Ok(None),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
 pub fn count_argument_included(item: &AggregatePreparedValue) -> Result<bool, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(_)) => Ok(true),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-            if is_direct_scalar(item.origin) =>
-        {
-            coerce_prepared_to_number(&item.value)
+    match item.value.core() {
+        CoreValue::Number(_) => Ok(true),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) if is_direct_scalar(item.origin) => {
+            coerce_calc_scalar_to_number(&item.value)
                 .map(|_| true)
                 .or_else(|err| match err {
                     CoercionError::NonNumericText(_) => Ok(false),
                     other => Err(other),
                 })
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(_))
-            if is_direct_scalar(item.origin) =>
-        {
-            Ok(true)
+        CoreValue::Logical(_) if is_direct_scalar(item.origin) => Ok(true),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            Ok(false)
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-        | PreparedArgValue::Eval(crate::value::EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(false),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
 pub fn counta_argument_included(item: &AggregatePreparedValue) -> Result<bool, CoercionError> {
-    match &item.value {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(false),
-        PreparedArgValue::Eval(_) => Ok(true),
+    match item.value.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(false),
+        _ => Ok(true),
     }
 }
 
 pub fn and_argument_truth(item: &AggregatePreparedValue) -> Result<Option<bool>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(crate::value::EvalValue::Logical(b)) => Ok(Some(*b)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(n)) => Ok(Some(*n != 0.0)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-            if is_direct_scalar(item.origin) =>
-        {
+    match item.value.core() {
+        CoreValue::Logical(b) => Ok(Some(*b)),
+        CoreValue::Number(n) => Ok(Some(*n != 0.0)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) if is_direct_scalar(item.origin) => {
             Err(CoercionError::NonNumericText("direct_text".to_string()))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Text(_) | CoreValue::Missing | CoreValue::Empty => Ok(None),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }

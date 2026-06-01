@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, PreparedArgValue, expand_aggregate_arg};
+use crate::functions::adapters::{expand_aggregate_arg, AggregatePreparedValue};
 use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
 use std::collections::BTreeMap;
 
 pub const MODE_SNGL_META: FunctionMeta = FunctionMeta {
@@ -33,22 +33,14 @@ pub enum ModeSnglEvalError {
 }
 
 fn mode_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64>, CoercionError> {
-    match &item.value {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(Some(*n)),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CoercionError::WorksheetError(*code)),
-        PreparedArgValue::Eval(EvalValue::Text(_))
-        | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
+    match item.value.core() {
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            Ok(None)
         }
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            Err(CoercionError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::UnsupportedValueKind("reference_like")),
     }
 }
 
