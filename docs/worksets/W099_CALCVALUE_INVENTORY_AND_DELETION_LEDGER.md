@@ -321,3 +321,74 @@ Validation:
 1. `cargo test --manifest-path crates/oxfunc_value_types/Cargo.toml`: passed, 18 tests.
 2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib --no-run`: passed.
 3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1320 passed, 1 ignored.
+
+## 10. W099-003 ReferenceSystemProvider Foundation Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. W099-009 must move reference-sensitive functions from `ReferenceResolver` / `ReferenceTextResolver` and legacy `.target` parsing onto `ReferenceSystemProvider` operations.
+2. W099-015 must delete the migration-only `LegacyReferenceSystemProvider` adapter, the old resolver/text-resolver traits, and remaining compatibility residue.
+3. OxFml/OxCalc follow-through is still outside this OxFunc-local provider foundation bead.
+
+Planned scope:
+1. Introduce `ReferenceSystemProvider` as the native FEC reference capability shape.
+2. Add minimal request/result/error packets for dereference, enumeration, text resolution, and facts.
+3. Expose an optional provider slot through `FunctionExecutionContextBundle` and `FunctionExecutionContext`.
+4. Keep old resolver/text-resolver paths only behind an explicitly marked W099 migration adapter.
+5. Record a fresh `HOST_REF_` / `.target` / resolver residue scan.
+
+Evidence:
+1. `ReferenceSystemProvider` exists with `dereference`, `enumerate_values`, `resolve_text`, and `facts`.
+2. New packets include `ReferenceDereferenceRequest`, `ReferenceEnumerationRequest`, `ReferenceTextResolveRequest`, `ReferenceFactsRequest`, `ReferenceFacts`, `ReferenceSystemError`, and operation/identity classifiers.
+3. `FunctionExecutionContextBundle` and `FunctionExecutionContextRef` expose `reference_system_provider`.
+4. `LegacyReferenceSystemProvider` is marked W099 migration-only and routes old resolver/text-resolver behavior through the new provider shape for compatibility.
+5. Residue scan over active OxFunc Rust sources: `HOST_REF_` = 0, `.target` = 204, `ReferenceResolver` = 1275, `ReferenceTextResolver` = 24. These are expected W099-009/W099-015 lanes, not W099-003 closure blockers.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-003 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-003 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - provider/FEC tests, core test compilation, and core lib tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - not in W099-003 scope; no Excel function behavior claim is made. |
+| 5 | Evidence links complete and reproducible? | Yes - commands and residue counts are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - not material to this provider-foundation bead; no Excel version behavior claim is made. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical behavior discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this provider-foundation bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - this bead adds an OxFunc FEC slot only; downstream migration remains open under W099 follow-through beads. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared W099-003 scope is the provider capability foundation, not full provider adoption. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-003 bead closure, not W099 terminal migration or reference-function migration. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 is already represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.3` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asked for provider foundation in FEC, not broad conversion of all resolver users.
+2. Gate criteria re-read: passed. Request/result/error types, provider slot exposure, tests, migration adapter marking, and residue scan are present.
+3. Silent scope reduction check: passed. The old resolver/text-resolver paths remain visible as open lanes and are not reported as migrated.
+4. "Looks done but is not" pattern check: passed. `LegacyReferenceSystemProvider` is explicitly migration-only and routed to W099-015 deletion.
+5. Included result: passed. This section records checklist, self-audit, evidence, and remaining integration lanes for the W099-003 closure claim.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: an invalid multi-filter cargo command was replaced by full core test compilation and focused provider/FEC test runs.
+2. Issue found and corrected: full `cargo fmt` introduced unrelated formatting churn in non-provider function files; those diffs were removed from the commit.
+3. Issue found and corrected: the legacy adapter initially mapped all old resolver errors as dereference failures and did not preserve typed identity for unresolved opaque references; error mapping now carries the actual provider operation and typed identity class.
+4. Remaining tension: `FunctionCallTarget::invoke` still dispatches through the old resolver arguments because broad dispatch migration belongs to W099-008/W099-009. The new FEC provider slot is therefore foundational, not yet the active dispatch path.
+
+Validation:
+
+1. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib --no-run`: passed.
+2. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib reference_system`: passed, 8 tests.
+3. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib function_execution_context`: passed, 2 tests.
+4. `cargo test --manifest-path crates/oxfunc_core/Cargo.toml --lib`: passed, 1328 passed, 1 ignored.
+5. `git diff --check`: passed.
+6. `scripts/check-worksets.ps1`: passed.

@@ -1,6 +1,7 @@
-use crate::functions::a1_refs::{A1ReferenceNotation, format_relative_target, parse_a1_reference};
+use crate::functions::a1_refs::{format_relative_target, parse_a1_reference, A1ReferenceNotation};
 use crate::value::{
-    ArrayCellValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode,
+    ArrayCellValue, EvalArray, EvalValue, ReferenceIdentity, ReferenceKind, ReferenceLike,
+    ReferenceSystemId, WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -74,6 +75,184 @@ pub trait ReferenceTextResolver {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ReferenceSystemOperation {
+    Dereference,
+    EnumerateValues,
+    ResolveText,
+    Facts,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ReferenceIdentityClass {
+    Textual,
+    Opaque,
+    Composite,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ReferenceSystemError {
+    CapabilityDenied {
+        operation: ReferenceSystemOperation,
+        detail: String,
+    },
+    Unsupported {
+        operation: ReferenceSystemOperation,
+    },
+    InvalidReferenceText {
+        text: String,
+    },
+    UnresolvedReference {
+        system: ReferenceSystemId,
+        identity_class: ReferenceIdentityClass,
+    },
+    ProviderFailure {
+        detail: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceDereferenceRequest {
+    pub reference: ReferenceLike,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceEnumerationRequest {
+    pub reference: ReferenceLike,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceTextResolveRequest {
+    pub text: String,
+    pub mode: ReferenceTextResolutionMode,
+    pub a1_style: Option<bool>,
+    pub caller_context: Option<CallerContext>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceFactsRequest {
+    pub reference: ReferenceLike,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReferenceFacts {
+    pub system: ReferenceSystemId,
+    pub identity_class: ReferenceIdentityClass,
+    pub textual_kind: Option<ReferenceKind>,
+    pub display_text: Option<String>,
+    pub legacy_kind: ReferenceKind,
+    pub legacy_target: String,
+}
+
+pub trait ReferenceSystemProvider {
+    fn dereference(
+        &self,
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, ReferenceSystemError>;
+
+    fn enumerate_values(
+        &self,
+        _request: &ReferenceEnumerationRequest,
+    ) -> Result<Option<ResolvedReferenceValues>, ReferenceSystemError> {
+        Ok(None)
+    }
+
+    fn resolve_text(
+        &self,
+        _request: &ReferenceTextResolveRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError> {
+        Err(ReferenceSystemError::Unsupported {
+            operation: ReferenceSystemOperation::ResolveText,
+        })
+    }
+
+    fn facts(
+        &self,
+        request: &ReferenceFactsRequest,
+    ) -> Result<ReferenceFacts, ReferenceSystemError> {
+        Ok(reference_facts(&request.reference))
+    }
+}
+
+impl<T: ReferenceSystemProvider + ?Sized> ReferenceSystemProvider for &T {
+    fn dereference(
+        &self,
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, ReferenceSystemError> {
+        (**self).dereference(request)
+    }
+
+    fn enumerate_values(
+        &self,
+        request: &ReferenceEnumerationRequest,
+    ) -> Result<Option<ResolvedReferenceValues>, ReferenceSystemError> {
+        (**self).enumerate_values(request)
+    }
+
+    fn resolve_text(
+        &self,
+        request: &ReferenceTextResolveRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError> {
+        (**self).resolve_text(request)
+    }
+
+    fn facts(
+        &self,
+        request: &ReferenceFactsRequest,
+    ) -> Result<ReferenceFacts, ReferenceSystemError> {
+        (**self).facts(request)
+    }
+}
+
+pub fn reference_facts(reference: &ReferenceLike) -> ReferenceFacts {
+    let identity_class = reference_identity_class(reference);
+    let textual_kind = match &reference.identity {
+        ReferenceIdentity::Textual(textual) => Some(textual.kind),
+        ReferenceIdentity::Opaque(_) | ReferenceIdentity::Composite(_) => None,
+    };
+    ReferenceFacts {
+        system: reference.system.clone(),
+        identity_class,
+        textual_kind,
+        display_text: reference
+            .display
+            .as_ref()
+            .map(|display| display.text.to_string_lossy()),
+        legacy_kind: reference.kind,
+        legacy_target: reference.target.clone(),
+    }
+}
+
+pub fn reference_identity_class(reference: &ReferenceLike) -> ReferenceIdentityClass {
+    match &reference.identity {
+        ReferenceIdentity::Textual(_) => ReferenceIdentityClass::Textual,
+        ReferenceIdentity::Opaque(_) => ReferenceIdentityClass::Opaque,
+        ReferenceIdentity::Composite(_) => ReferenceIdentityClass::Composite,
+    }
+}
+
+// W099 migration-only adapter for legacy FEC call sites. W099-009 moves
+// reference-sensitive functions to ReferenceSystemProvider directly, and
+// W099-015 owns deleting this adapter with the old resolver traits.
+pub struct LegacyReferenceSystemProvider<'a> {
+    resolver: &'a dyn ReferenceResolver,
+    text_resolver: Option<&'a dyn ReferenceTextResolver>,
+}
+
+impl<'a> LegacyReferenceSystemProvider<'a> {
+    pub fn new(resolver: &'a dyn ReferenceResolver) -> Self {
+        Self {
+            resolver,
+            text_resolver: None,
+        }
+    }
+
+    pub fn with_text_resolver(mut self, text_resolver: &'a dyn ReferenceTextResolver) -> Self {
+        self.text_resolver = Some(text_resolver);
+        self
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ResolvedReferenceExtent {
     pub rows: usize,
     pub cols: usize,
@@ -138,7 +317,7 @@ impl ResolvedReferenceValues {
 pub trait ReferenceResolver {
     fn capabilities(&self) -> ResolverCapabilities;
     fn resolve_reference(&self, reference: &ReferenceLike)
-    -> Result<EvalValue, RefResolutionError>;
+        -> Result<EvalValue, RefResolutionError>;
 
     fn resolve_reference_values(
         &self,
@@ -173,6 +352,101 @@ impl<T: ReferenceResolver + ?Sized> ReferenceResolver for &T {
 
     fn caller_context(&self) -> Option<CallerContext> {
         (**self).caller_context()
+    }
+}
+
+impl ReferenceSystemProvider for LegacyReferenceSystemProvider<'_> {
+    fn dereference(
+        &self,
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, ReferenceSystemError> {
+        self.resolver
+            .resolve_reference(&request.reference)
+            .map_err(|error| {
+                reference_resolution_error_to_system_error(
+                    error,
+                    ReferenceSystemOperation::Dereference,
+                    &request.reference,
+                )
+            })
+    }
+
+    fn enumerate_values(
+        &self,
+        request: &ReferenceEnumerationRequest,
+    ) -> Result<Option<ResolvedReferenceValues>, ReferenceSystemError> {
+        self.resolver
+            .resolve_reference_values(&request.reference)
+            .map_err(|error| {
+                reference_resolution_error_to_system_error(
+                    error,
+                    ReferenceSystemOperation::EnumerateValues,
+                    &request.reference,
+                )
+            })
+    }
+
+    fn resolve_text(
+        &self,
+        request: &ReferenceTextResolveRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError> {
+        let Some(text_resolver) = self.text_resolver else {
+            return Err(ReferenceSystemError::Unsupported {
+                operation: ReferenceSystemOperation::ResolveText,
+            });
+        };
+        text_resolver
+            .resolve_reference_text(&ReferenceTextResolutionRequest {
+                text: request.text.clone(),
+                mode: request.mode,
+                a1_style: request.a1_style,
+                caller_context: request.caller_context.clone(),
+            })
+            .map_err(reference_text_resolution_error_to_system_error)
+    }
+}
+
+fn reference_resolution_error_to_system_error(
+    error: RefResolutionError,
+    operation: ReferenceSystemOperation,
+    reference: &ReferenceLike,
+) -> ReferenceSystemError {
+    match error {
+        RefResolutionError::EvalTimeDerefNotAllowed => ReferenceSystemError::CapabilityDenied {
+            operation,
+            detail: "eval_time_deref_not_allowed".to_string(),
+        },
+        RefResolutionError::CapabilityDenied { capability, .. } => {
+            ReferenceSystemError::CapabilityDenied {
+                operation,
+                detail: capability.to_string(),
+            }
+        }
+        RefResolutionError::UnresolvedReference { .. } => {
+            ReferenceSystemError::UnresolvedReference {
+                system: reference.system.clone(),
+                identity_class: reference_identity_class(reference),
+            }
+        }
+        RefResolutionError::ProviderFailure { detail } => {
+            ReferenceSystemError::ProviderFailure { detail }
+        }
+    }
+}
+
+fn reference_text_resolution_error_to_system_error(
+    error: ReferenceTextResolutionError,
+) -> ReferenceSystemError {
+    match error {
+        ReferenceTextResolutionError::Unsupported => ReferenceSystemError::Unsupported {
+            operation: ReferenceSystemOperation::ResolveText,
+        },
+        ReferenceTextResolutionError::InvalidReferenceText { text } => {
+            ReferenceSystemError::InvalidReferenceText { text }
+        }
+        ReferenceTextResolutionError::ProviderFailure { detail } => {
+            ReferenceSystemError::ProviderFailure { detail }
+        }
     }
 }
 
@@ -408,7 +682,10 @@ fn ensure_reference_resolution_allowed(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::value::{ArrayCellValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike};
+    use crate::value::{
+        ArrayCellValue, EvalArray, EvalValue, ExcelText, ReferenceDisplay, ReferenceHandle,
+        ReferenceHandleId, ReferenceKind, ReferenceLike, ReferenceSystemId,
+    };
     use std::collections::BTreeMap;
 
     struct MockResolver {
@@ -438,11 +715,159 @@ mod tests {
         }
     }
 
+    struct MockTextResolver;
+
+    impl ReferenceTextResolver for MockTextResolver {
+        fn resolve_reference_text(
+            &self,
+            request: &ReferenceTextResolutionRequest,
+        ) -> Result<ReferenceLike, ReferenceTextResolutionError> {
+            Ok(ReferenceLike::new(ReferenceKind::A1, request.text.clone()))
+        }
+    }
+
+    struct NativeProvider {
+        deref: EvalValue,
+    }
+
+    impl ReferenceSystemProvider for NativeProvider {
+        fn dereference(
+            &self,
+            request: &ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, ReferenceSystemError> {
+            assert_eq!(request.reference.system, ReferenceSystemId::excel_grid_v1());
+            Ok(self.deref.clone())
+        }
+    }
+
     #[test]
     fn normalize_reference_trims_target() {
         let input = ReferenceLike::new(ReferenceKind::A1, "  Sheet1!A1  ".to_string());
         let got = normalize_reference(&input);
         assert_eq!(got.target, "Sheet1!A1");
+    }
+
+    #[test]
+    fn reference_system_facts_describe_textual_identity() {
+        let reference = ReferenceLike::new(ReferenceKind::Area, "Sheet1!A1:B2").normalized();
+
+        let facts = reference_facts(&reference);
+
+        assert_eq!(facts.system, ReferenceSystemId::excel_grid_v1());
+        assert_eq!(facts.identity_class, ReferenceIdentityClass::Textual);
+        assert_eq!(facts.textual_kind, Some(ReferenceKind::Area));
+        assert_eq!(facts.display_text, Some("Sheet1!A1:B2".to_string()));
+        assert_eq!(facts.legacy_target, "Sheet1!A1:B2");
+    }
+
+    #[test]
+    fn reference_system_facts_keep_opaque_identity_separate_from_display() {
+        let reference = ReferenceLike::opaque(
+            ReferenceSystemId("host.opaque.v1".to_string()),
+            ReferenceHandle {
+                id: ReferenceHandleId::from_bytes([7, 9]),
+            },
+            Some(ReferenceDisplay {
+                text: ExcelText::from_interop_assignment("visible label"),
+            }),
+        );
+
+        let facts = reference_facts(&reference);
+
+        assert_eq!(facts.system.0, "host.opaque.v1");
+        assert_eq!(facts.identity_class, ReferenceIdentityClass::Opaque);
+        assert_eq!(facts.textual_kind, None);
+        assert_eq!(facts.display_text, Some("visible label".to_string()));
+        assert_eq!(facts.legacy_target, "visible label");
+    }
+
+    #[test]
+    fn legacy_reference_system_provider_adapts_dereference() {
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved: Some(EvalValue::Number(42.0)),
+            by_target: BTreeMap::new(),
+        };
+        let provider = LegacyReferenceSystemProvider::new(&resolver);
+
+        let got = provider.dereference(&ReferenceDereferenceRequest {
+            reference: ReferenceLike::new(ReferenceKind::A1, "A1"),
+        });
+
+        assert_eq!(got, Ok(EvalValue::Number(42.0)));
+    }
+
+    #[test]
+    fn legacy_reference_system_provider_maps_unresolved_to_typed_identity_error() {
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved: None,
+            by_target: BTreeMap::new(),
+        };
+        let provider = LegacyReferenceSystemProvider::new(&resolver);
+
+        let got = provider.dereference(&ReferenceDereferenceRequest {
+            reference: ReferenceLike::opaque(
+                ReferenceSystemId("host.opaque.v1".to_string()),
+                ReferenceHandle {
+                    id: ReferenceHandleId::from_bytes([1]),
+                },
+                Some(ReferenceDisplay {
+                    text: ExcelText::from_interop_assignment("display only"),
+                }),
+            ),
+        });
+
+        assert_eq!(
+            got,
+            Err(ReferenceSystemError::UnresolvedReference {
+                system: ReferenceSystemId("host.opaque.v1".to_string()),
+                identity_class: ReferenceIdentityClass::Opaque,
+            })
+        );
+    }
+
+    #[test]
+    fn legacy_reference_system_provider_adapts_text_resolution() {
+        let resolver = MockResolver {
+            caps: ResolverCapabilities::permissive_local(),
+            resolved: Some(EvalValue::Number(1.0)),
+            by_target: BTreeMap::new(),
+        };
+        let text_resolver = MockTextResolver;
+        let provider =
+            LegacyReferenceSystemProvider::new(&resolver).with_text_resolver(&text_resolver);
+
+        let got = provider
+            .resolve_text(&ReferenceTextResolveRequest {
+                text: "B2".to_string(),
+                mode: ReferenceTextResolutionMode::Indirect,
+                a1_style: Some(true),
+                caller_context: None,
+            })
+            .unwrap();
+
+        assert_eq!(got.target, "B2");
+        assert_eq!(
+            reference_facts(&got).identity_class,
+            ReferenceIdentityClass::Textual
+        );
+    }
+
+    #[test]
+    fn native_reference_system_provider_can_dereference_textual_identity() {
+        let provider = NativeProvider {
+            deref: EvalValue::Text(ExcelText::from_interop_assignment("ok")),
+        };
+
+        let got = provider.dereference(&ReferenceDereferenceRequest {
+            reference: ReferenceLike::new(ReferenceKind::A1, "A1"),
+        });
+
+        assert_eq!(
+            got,
+            Ok(EvalValue::Text(ExcelText::from_interop_assignment("ok")))
+        );
     }
 
     #[test]
