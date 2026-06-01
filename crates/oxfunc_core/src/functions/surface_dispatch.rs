@@ -1,6 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
-use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
+use crate::functions::abs::{abs_kernel, eval_abs_scalar_value, AbsEvalError};
 use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
 use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
 use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
@@ -46,14 +46,14 @@ use crate::functions::bond_core_family::{
     eval_yieldmat_surface, map_bond_core_error_to_ws,
 };
 use crate::functions::call_register_id_family::{
-    CALL_META, REGISTER_ID_META, RegisteredExternalProvider, eval_call_surface,
-    eval_register_id_surface, map_call_register_id_error_to_ws,
+    eval_call_surface, eval_register_id_surface, map_call_register_id_error_to_ws,
+    RegisteredExternalProvider, CALL_META, REGISTER_ID_META,
 };
 use crate::functions::callable_helpers::{
-    BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
-    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_surface, eval_byrow_surface,
-    eval_isomitted_surface, eval_makearray_surface, eval_map_surface, eval_reduce_surface,
-    eval_scan_surface, map_lambda_helper_error_to_ws,
+    eval_bycol_surface, eval_byrow_surface, eval_isomitted_surface, eval_makearray_surface,
+    eval_map_surface, eval_reduce_surface, eval_scan_surface, map_lambda_helper_error_to_ws,
+    CallableInvocationError, CallableInvoker, BYCOL_META, BYROW_META, ISOMITTED_META,
+    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META,
 };
 use crate::functions::cashflow_rate_family::{
     eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
@@ -83,7 +83,7 @@ use crate::functions::complex_family::{
     eval_complex_surface, eval_imabs_surface, eval_imaginary_surface, eval_imargument_surface,
     eval_imconjugate_surface, eval_imcos_surface, eval_imcosh_surface, eval_imcot_surface,
     eval_imcsc_surface, eval_imcsch_surface, eval_imdiv_surface, eval_imexp_surface,
-    eval_imln_surface, eval_imlog2_surface, eval_imlog10_surface, eval_impower_surface,
+    eval_imln_surface, eval_imlog10_surface, eval_imlog2_surface, eval_impower_surface,
     eval_improduct_surface, eval_imreal_surface, eval_imsec_surface, eval_imsech_surface,
     eval_imsin_surface, eval_imsinh_surface, eval_imsqrt_surface, eval_imsub_surface,
     eval_imsum_surface, eval_imtan_surface, map_complex_family_error_to_ws,
@@ -163,13 +163,13 @@ use crate::functions::dollar_fraction_family::{
     eval_dollarde_surface, eval_dollarfr_surface, map_dollar_fraction_error_to_ws,
 };
 use crate::functions::dynamic_array_reshape_family::{
-    CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
-    TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
-    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
-    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
-    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
-    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
-    map_dynamic_array_reshape_error_to_ws,
+    eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface, eval_expand_surface,
+    eval_filter_surface, eval_sort_surface, eval_sortby_surface, eval_take_surface,
+    eval_tocol_surface, eval_torow_surface, eval_transpose_surface, eval_unique_surface,
+    eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
+    map_dynamic_array_reshape_error_to_ws, CHOOSECOLS_META, CHOOSEROWS_META, DROP_META,
+    EXPAND_META, FILTER_META, SORTBY_META, SORT_META, TAKE_META, TOCOL_META, TOROW_META,
+    TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META, WRAPROWS_META,
 };
 use crate::functions::engineering_radix_family::{
     eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
@@ -230,8 +230,8 @@ use crate::functions::legacy_stats_alias_family::{
     eval_percentrank_surface, eval_quartile_surface, map_legacy_stats_alias_error_to_ws,
 };
 use crate::functions::ln_fn::{eval_ln_surface, ln_kernel, map_ln_error_to_ws};
-use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
 use crate::functions::log10_fn::{eval_log10_surface, log10_kernel, map_log10_error_to_ws};
+use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
 use crate::functions::lookup_prob_frequency_family::{
     eval_frequency_surface, eval_lookup_surface, eval_mode_mult_surface, eval_prob_surface,
     map_lookup_prob_frequency_error_to_ws,
@@ -272,7 +272,7 @@ use crate::functions::normal_log_family::{
 };
 use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
 use crate::functions::now_fn::{
-    NowProvider, eval_now_surface, eval_now_surface_extended, map_now_error_to_ws,
+    eval_now_surface, eval_now_surface_extended, map_now_error_to_ws, NowProvider,
 };
 use crate::functions::number_regex_translate_family::{
     eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
@@ -286,30 +286,30 @@ use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::op_implicit_intersection::{
-    OP_IMPLICIT_INTERSECTION_META, eval_op_implicit_intersection_surface,
-    map_op_implicit_intersection_error_to_ws,
+    eval_op_implicit_intersection_surface, map_op_implicit_intersection_error_to_ws,
+    OP_IMPLICIT_INTERSECTION_META,
 };
 use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
 use crate::functions::operator_arithmetic_family::{
-    OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
-    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_divide_surface, eval_op_multiply_surface,
-    eval_op_negate_surface, eval_op_percent_surface, eval_op_power_surface,
-    eval_op_subtract_surface, eval_op_unary_plus_surface, map_operator_binary_error_to_ws,
-    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
-    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
+    eval_op_divide_surface, eval_op_multiply_surface, eval_op_negate_surface,
+    eval_op_percent_surface, eval_op_power_surface, eval_op_subtract_surface,
+    eval_op_unary_plus_surface, map_operator_binary_error_to_ws, map_operator_unary_error_to_ws,
+    op_divide_kernel, op_multiply_kernel, op_negate_kernel, op_percent_kernel, op_subtract_kernel,
+    op_unary_plus_kernel, OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META,
+    OP_POWER_META, OP_SUBTRACT_META, OP_UNARY_PLUS_META,
 };
 use crate::functions::operator_compare_concat_family::{
-    OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
-    OP_LESS_THAN_META, OP_NOT_EQUAL_META, eval_op_concat_surface, eval_op_equal_surface,
-    eval_op_greater_equal_surface, eval_op_greater_than_surface, eval_op_less_equal_surface,
-    eval_op_less_than_surface, eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws,
+    eval_op_concat_surface, eval_op_equal_surface, eval_op_greater_equal_surface,
+    eval_op_greater_than_surface, eval_op_less_equal_surface, eval_op_less_than_surface,
+    eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws, OP_CONCAT_META,
+    OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
+    OP_LESS_THAN_META, OP_NOT_EQUAL_META,
 };
 use crate::functions::operator_reference_family::{
-    OP_INTERSECTION_REF_META, OP_RANGE_REF_META, OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META,
-    OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META, eval_op_intersection_ref_surface,
-    eval_op_range_ref_surface, eval_op_trim_ref_both_surface, eval_op_trim_ref_leading_surface,
-    eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
-    map_operator_reference_error_to_ws,
+    eval_op_intersection_ref_surface, eval_op_range_ref_surface, eval_op_trim_ref_both_surface,
+    eval_op_trim_ref_leading_surface, eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
+    map_operator_reference_error_to_ws, OP_INTERSECTION_REF_META, OP_RANGE_REF_META,
+    OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META, OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META,
 };
 use crate::functions::or_fn::{eval_or_surface, map_or_error_to_ws};
 use crate::functions::pearson_fn::{eval_pearson_surface, map_pearson_error_to_ws};
@@ -338,15 +338,15 @@ use crate::functions::quotient_fn::{
     eval_quotient_surface, map_quotient_error_to_ws, quotient_kernel,
 };
 use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
-use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
+use crate::functions::rand_fn::{eval_rand_surface, map_rand_error_to_ws, RandomProvider};
 use crate::functions::randbetween_fn::{eval_randbetween_surface, map_randbetween_error_to_ws};
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
 use crate::functions::reference_metadata_family::{
-    ADDRESS_META, AREAS_META, FORMULATEXT_META, SHEET_META, SHEETS_META, eval_address_surface,
-    eval_areas_surface, eval_formulatext_surface, eval_sheet_surface, eval_sheets_surface,
-    map_reference_metadata_error_to_ws,
+    eval_address_surface, eval_areas_surface, eval_formulatext_surface, eval_sheet_surface,
+    eval_sheets_surface, map_reference_metadata_error_to_ws, ADDRESS_META, AREAS_META,
+    FORMULATEXT_META, SHEETS_META, SHEET_META,
 };
 use crate::functions::regression_forecast_family::{
     eval_forecast_linear_surface, eval_forecast_surface, eval_growth_surface, eval_linest_surface,
@@ -359,7 +359,7 @@ use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws
 use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
 use crate::functions::rows_fn::{eval_rows_surface_with_resolver, map_rows_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
-use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
+use crate::functions::rtd_fn::{eval_rtd_surface, map_rtd_error_to_ws, RtdProvider};
 use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
 use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
@@ -425,7 +425,7 @@ use crate::functions::text_unicode_fn::{
 };
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{
-    TodayProvider, eval_today_surface, eval_today_surface_extended, map_today_error_to_ws,
+    eval_today_surface, eval_today_surface_extended, map_today_error_to_ws, TodayProvider,
 };
 use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
 use crate::functions::true_fn::eval_true_surface;
@@ -458,8 +458,8 @@ use crate::locale_format::LocaleFormatContext;
 use crate::resolver::RefResolutionError;
 use crate::resolver::{ReferenceResolver, ReferenceTextResolver};
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalError, EvalValue, ExtendedValue,
-    Value, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalError,
+    EvalValue, ExtendedValue, Value, WorksheetErrorCode,
 };
 
 pub const FUNC_ID_ACOS: &str = "FUNC.ACOS";
@@ -1116,7 +1116,7 @@ pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatch
 
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
-    args: &[CallArgValue],
+    args: &[CalcValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     reference_text_resolver: Option<&dyn ReferenceTextResolver>,
     now_serial: Option<f64>,
@@ -1126,7 +1126,9 @@ pub fn eval_surface_value_call_with_dispatch_key(
     callable_invoker: Option<&dyn CallableInvoker>,
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
-) -> Result<EvalValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
+    let dispatch_args = dispatch_args_from_calc_values(args);
+    let args = dispatch_args.as_slice();
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
     let result = include!("surface_dispatch_by_index_generated.rs");
@@ -1148,14 +1150,47 @@ pub fn eval_surface_value_call_with_dispatch_key(
     };
 
     match result {
-        Err(code) => lifted_result().unwrap_or(Err(code)),
+        Err(code) => lifted_result()
+            .map(|result| result.map(CalcValue::from))
+            .unwrap_or(Err(code)),
         Ok(EvalValue::Error(code))
             if code == WorksheetErrorCode::Value
                 || observed_error_result_array_lift(dispatch_key.function_id) =>
         {
-            lifted_result().unwrap_or(Ok(EvalValue::Error(code)))
+            lifted_result()
+                .map(|result| result.map(CalcValue::from))
+                .unwrap_or(Ok(CalcValue::error(code)))
         }
-        other => other,
+        other => other.map(CalcValue::from),
+    }
+}
+
+fn dispatch_args_from_calc_values(args: &[CalcValue]) -> Vec<CallArgValue> {
+    args.iter().cloned().map(CallArgValue::value).collect()
+}
+
+fn calc_values_from_call_args(args: &[CallArgValue]) -> Vec<CalcValue> {
+    args.iter().cloned().map(calc_value_from_call_arg).collect()
+}
+
+fn calc_value_from_call_arg(arg: CallArgValue) -> CalcValue {
+    match arg {
+        CallArgValue::Eval(value) => CalcValue::from(value),
+        CallArgValue::MissingArg => CalcValue::missing(),
+        CallArgValue::EmptyCell => CalcValue::empty(),
+        CallArgValue::Reference(reference) => CalcValue::reference(reference),
+    }
+}
+
+fn eval_value_from_calc_value(value: CalcValue) -> EvalValue {
+    match value.core {
+        CoreValue::Number(n) => EvalValue::Number(n),
+        CoreValue::Text(t) => EvalValue::Text(t),
+        CoreValue::Logical(b) => EvalValue::Logical(b),
+        CoreValue::Error(code) => EvalValue::Error(code),
+        CoreValue::Empty | CoreValue::Missing => EvalValue::Error(WorksheetErrorCode::Value),
+        CoreValue::Array(array) => EvalValue::Array(array.to_legacy_eval_array_lossy()),
+        CoreValue::Reference(reference) => EvalValue::Reference(reference),
     }
 }
 
@@ -2308,13 +2343,13 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
 
 pub fn eval_surface_value_call(
     function_id: &str,
-    args: &[CallArgValue],
+    args: &[CalcValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<EvalValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     eval_surface_value_call_with_callable(
         function_id,
         args,
@@ -2356,16 +2391,20 @@ pub fn eval_surface_extended_call(
             };
             eval_today_surface_extended(args, &provider).map_err(|e| map_today_error_to_ws(&e))
         }
-        _ => eval_surface_value_call(
-            function_id,
-            args,
-            resolver,
-            now_serial,
-            random_provider,
-            locale_ctx,
-            host_info,
-        )
-        .map(ExtendedValue::Core),
+        _ => {
+            let calc_args = calc_values_from_call_args(args);
+            eval_surface_value_call(
+                function_id,
+                &calc_args,
+                resolver,
+                now_serial,
+                random_provider,
+                locale_ctx,
+                host_info,
+            )
+            .map(eval_value_from_calc_value)
+            .map(ExtendedValue::Core)
+        }
     }
 }
 
@@ -2542,9 +2581,10 @@ fn try_observed_scalar_array_lift(
                 continue;
             }
 
+            let cell_calc_args = calc_values_from_call_args(&cell_args);
             let cell = match eval_surface_value_call_with_callable(
                 function_id,
-                &cell_args,
+                &cell_calc_args,
                 resolver,
                 reference_text_resolver,
                 now_serial,
@@ -2555,7 +2595,7 @@ fn try_observed_scalar_array_lift(
                 rtd_provider,
                 registered_external_provider,
             ) {
-                Ok(value) => scalar_output_cell(value),
+                Ok(value) => scalar_output_cell(eval_value_from_calc_value(value)),
                 Err(code) => ArrayCellValue::Error(code),
             };
             cells.push(cell);
@@ -2571,7 +2611,7 @@ fn try_observed_scalar_array_lift(
 
 pub fn eval_surface_value_call_with_callable(
     function_id: &str,
-    args: &[CallArgValue],
+    args: &[CalcValue],
     resolver: &(impl ReferenceResolver + ?Sized),
     reference_text_resolver: Option<&dyn ReferenceTextResolver>,
     now_serial: Option<f64>,
@@ -2581,7 +2621,7 @@ pub fn eval_surface_value_call_with_callable(
     callable_invoker: Option<&dyn CallableInvoker>,
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
-) -> Result<EvalValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     let dispatch_key =
         resolve_surface_dispatch_key(function_id).ok_or(WorksheetErrorCode::Value)?;
     eval_surface_value_call_with_dispatch_key(
@@ -2809,6 +2849,58 @@ mod tests {
             None,
         )
         .map_err(CallableInvocationError::Worksheet)
+    }
+
+    fn eval_surface_value_call(
+        function_id: &str,
+        args: &[CallArgValue],
+        resolver: &(impl ReferenceResolver + ?Sized),
+        now_serial: Option<f64>,
+        random_provider: Option<&dyn RandomProvider>,
+        locale_ctx: Option<&LocaleFormatContext>,
+        host_info: Option<&dyn HostInfoProvider>,
+    ) -> Result<EvalValue, WorksheetErrorCode> {
+        let calc_args = super::calc_values_from_call_args(args);
+        super::eval_surface_value_call(
+            function_id,
+            &calc_args,
+            resolver,
+            now_serial,
+            random_provider,
+            locale_ctx,
+            host_info,
+        )
+        .map(super::eval_value_from_calc_value)
+    }
+
+    fn eval_surface_value_call_with_callable(
+        function_id: &str,
+        args: &[CallArgValue],
+        resolver: &(impl ReferenceResolver + ?Sized),
+        reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+        now_serial: Option<f64>,
+        random_provider: Option<&dyn RandomProvider>,
+        locale_ctx: Option<&LocaleFormatContext>,
+        host_info: Option<&dyn HostInfoProvider>,
+        callable_invoker: Option<&dyn CallableInvoker>,
+        rtd_provider: Option<&dyn RtdProvider>,
+        registered_external_provider: Option<&dyn RegisteredExternalProvider>,
+    ) -> Result<EvalValue, WorksheetErrorCode> {
+        let calc_args = super::calc_values_from_call_args(args);
+        super::eval_surface_value_call_with_callable(
+            function_id,
+            &calc_args,
+            resolver,
+            reference_text_resolver,
+            now_serial,
+            random_provider,
+            locale_ctx,
+            host_info,
+            callable_invoker,
+            rtd_provider,
+            registered_external_provider,
+        )
+        .map(super::eval_value_from_calc_value)
     }
 
     fn array_arg(rows: Vec<Vec<ArrayCellValue>>) -> CallArgValue {

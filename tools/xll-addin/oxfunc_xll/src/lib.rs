@@ -9,6 +9,7 @@ use oxfunc_core::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, EXCEL_MAX_COLS, EXCEL_MAX_ROWS, format_relative_target,
     parse_a1_reference,
 };
+use oxfunc_core::functions::rand_fn::RandomProvider;
 use oxfunc_core::functions::surface_dispatch::{
     eval_surface_q_binary_number, eval_surface_q_nullary_number, eval_surface_q_unary_number,
     eval_surface_value_call,
@@ -22,8 +23,8 @@ use oxfunc_core::resolver::{
     CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
 };
 use oxfunc_core::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind,
-    ReferenceLike, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalValue,
+    ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
 };
 use windows_sys::Win32::Foundation::HMODULE;
 use windows_sys::Win32::System::LibraryLoader::{
@@ -807,14 +808,14 @@ fn reference_like_from_bounds(
                 format!("R{r1}C{c1}:R{r2}C{c2}")
             }
         });
-    ReferenceLike {
-        kind: if rw_first == rw_last && col_first == col_last {
+    ReferenceLike::new(
+        if rw_first == rw_last && col_first == col_last {
             ReferenceKind::A1
         } else {
             ReferenceKind::Area
         },
         target,
-    }
+    )
 }
 
 fn parse_pascal_utf16_string(value: *const XLOPER12) -> Option<String> {
@@ -906,10 +907,7 @@ fn current_caller_context() -> Option<CallerContext> {
                 sref.r#ref.col_last,
                 None,
             )?;
-            caller_context_from_reference(&ReferenceLike {
-                kind: ReferenceKind::A1,
-                target,
-            })
+            caller_context_from_reference(&ReferenceLike::new(ReferenceKind::A1, target))
         }
         XLTYPE_REF => {
             let mref = unsafe { out.val.mref };
@@ -922,10 +920,7 @@ fn current_caller_context() -> Option<CallerContext> {
                 first.col_last,
                 None,
             )?;
-            caller_context_from_reference(&ReferenceLike {
-                kind: ReferenceKind::Area,
-                target,
-            })
+            caller_context_from_reference(&ReferenceLike::new(ReferenceKind::Area, target))
         }
         _ => None,
     };
@@ -1454,10 +1449,7 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
             } else {
                 format!("({})", targets.join(","))
             };
-            CallArgValue::Reference(ReferenceLike {
-                kind: ReferenceKind::Area,
-                target,
-            })
+            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target))
         }
         _ => CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
     }
@@ -1491,17 +1483,48 @@ fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
         caller: current_caller_context(),
     };
     let host_info = ExcelHostInfoProvider;
+    let random_provider = ExcelRandomProvider;
+    let calc_args: Vec<CalcValue> = args.iter().cloned().map(calc_value_from_call_arg).collect();
     match eval_surface_value_call(
         function_id,
-        args,
+        &calc_args,
         &resolver,
         Some(current_excel_serial_utc()),
-        Some(current_random_unit()),
+        Some(&random_provider),
         Some(&current_excel_host_context()),
         Some(&host_info),
     ) {
-        Ok(v) => v,
+        Ok(v) => eval_value_from_calc_value(v),
         Err(code) => EvalValue::Error(code),
+    }
+}
+
+struct ExcelRandomProvider;
+
+impl RandomProvider for ExcelRandomProvider {
+    fn random_unit(&self) -> f64 {
+        current_random_unit()
+    }
+}
+
+fn calc_value_from_call_arg(arg: CallArgValue) -> CalcValue {
+    match arg {
+        CallArgValue::Eval(value) => CalcValue::from(value),
+        CallArgValue::MissingArg => CalcValue::missing(),
+        CallArgValue::EmptyCell => CalcValue::empty(),
+        CallArgValue::Reference(reference) => CalcValue::reference(reference),
+    }
+}
+
+fn eval_value_from_calc_value(value: CalcValue) -> EvalValue {
+    match value.core {
+        CoreValue::Number(n) => EvalValue::Number(n),
+        CoreValue::Text(t) => EvalValue::Text(t),
+        CoreValue::Logical(b) => EvalValue::Logical(b),
+        CoreValue::Error(code) => EvalValue::Error(code),
+        CoreValue::Empty | CoreValue::Missing => EvalValue::Error(WorksheetErrorCode::Value),
+        CoreValue::Array(array) => EvalValue::Array(array.to_legacy_eval_array_lossy()),
+        CoreValue::Reference(reference) => EvalValue::Reference(reference),
     }
 }
 

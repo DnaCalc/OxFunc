@@ -16,7 +16,7 @@ use crate::registry::{builtin_registry, FunctionEntry, FunctionRegistry};
 use crate::resolver::{
     CallerContext, ReferenceResolver, ReferenceSystemProvider, ReferenceTextResolver,
 };
-use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FunctionCallTargetResolveError {
@@ -309,11 +309,10 @@ impl FunctionCallTarget {
         &self,
         args: &[CalcValue],
         fec: &mut FunctionExecutionContextBundle<'_, R>,
-    ) -> Result<EvalValue, WorksheetErrorCode> {
-        let dispatch_args = legacy_call_args_for_dispatch(args);
+    ) -> Result<CalcValue, WorksheetErrorCode> {
         eval_surface_value_call_with_dispatch_key(
             self.dispatch_key,
-            &dispatch_args,
+            args,
             fec.resolver,
             fec.reference_text_resolver,
             fec.effective_now_serial(),
@@ -330,7 +329,7 @@ impl FunctionCallTarget {
         &self,
         scratch: &FunctionCallScratch,
         fec: &mut FunctionExecutionContextBundle<'_, R>,
-    ) -> Result<EvalValue, WorksheetErrorCode> {
+    ) -> Result<CalcValue, WorksheetErrorCode> {
         self.invoke(scratch.call_args(), fec)
     }
 
@@ -339,7 +338,7 @@ impl FunctionCallTarget {
         scratch: &mut FunctionCallScratch,
         fec: &mut FunctionExecutionContextBundle<'_, R>,
         build_args: F,
-    ) -> Result<EvalValue, WorksheetErrorCode>
+    ) -> Result<CalcValue, WorksheetErrorCode>
     where
         R: ReferenceResolver,
         F: FnOnce(&mut Vec<CalcValue>),
@@ -350,8 +349,12 @@ impl FunctionCallTarget {
     }
 }
 
-fn legacy_call_args_for_dispatch(args: &[CalcValue]) -> Vec<CallArgValue> {
-    args.iter().cloned().map(CallArgValue::value).collect()
+#[cfg(test)]
+fn legacy_call_args_for_dispatch(args: &[CalcValue]) -> Vec<crate::value::CallArgValue> {
+    args.iter()
+        .cloned()
+        .map(crate::value::CallArgValue::value)
+        .collect()
 }
 
 pub struct FunctionExecutionContextBundle<'a, R: ReferenceResolver> {
@@ -633,8 +636,8 @@ mod tests {
         ReferenceSystemProvider, ResolverCapabilities,
     };
     use crate::value::{
-        ArrayCellValue, CalcArray, CallableArityShape, CallableCaptureMode, EvalArray, ExcelText,
-        LambdaValue, ReferenceKind, ReferenceLike,
+        ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableCaptureMode,
+        CoreValue, EvalArray, EvalValue, ExcelText, LambdaValue, ReferenceKind, ReferenceLike,
     };
 
     struct NoReferenceResolver;
@@ -818,10 +821,9 @@ mod tests {
         fec.host_info = host_info;
 
         let got = call_target.invoke(args, &mut fec);
-        let legacy_args = legacy_call_args_for_dispatch(args);
         let expected = eval_surface_value_call_with_callable(
             function_id,
-            &legacy_args,
+            args,
             &resolver,
             None,
             Some(46000.0),
@@ -853,10 +855,9 @@ mod tests {
         fec.registered_external_provider = registered_external_provider;
 
         let got = call_target.invoke(args, &mut fec);
-        let legacy_args = legacy_call_args_for_dispatch(args);
         let expected = eval_surface_value_call_with_callable(
             function_id,
-            &legacy_args,
+            args,
             &resolver,
             None,
             Some(46000.0),
@@ -1071,7 +1072,7 @@ mod tests {
                 args.push(num_arg(3.0));
             })
             .unwrap();
-        assert!(matches!(got, EvalValue::Array(_)));
+        assert!(matches!(got.core(), CoreValue::Array(_)));
         assert_eq!(scratch.capacity(), initial_capacity);
 
         let got = call_target
@@ -1081,7 +1082,7 @@ mod tests {
                 args.push(num_arg(6.0));
             })
             .unwrap();
-        assert!(matches!(got, EvalValue::Array(_)));
+        assert!(matches!(got.core(), CoreValue::Array(_)));
         assert_eq!(scratch.capacity(), initial_capacity);
     }
 
