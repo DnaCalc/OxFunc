@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const EPSILON: f64 = 1.0e-12;
@@ -326,7 +326,7 @@ pub fn cumprinc_kernel(
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, CumulativeFinanceEvalError>,
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
@@ -343,7 +343,7 @@ fn eval_numeric(
 
 pub fn eval_cumipmt_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMIPMT_META, |prepared| {
         cumipmt_kernel(
@@ -359,7 +359,7 @@ pub fn eval_cumipmt_surface(
 
 pub fn eval_cumprinc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMPRINC_META, |prepared| {
         cumprinc_kernel(

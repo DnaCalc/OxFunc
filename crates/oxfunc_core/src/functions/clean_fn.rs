@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const CLEAN_META: FunctionMeta = FunctionMeta {
@@ -57,7 +57,7 @@ pub fn eval_clean_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
 
 pub fn eval_clean_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CleanEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -79,23 +79,25 @@ pub fn map_clean_error_to_ws(e: &CleanEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

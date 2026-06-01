@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const ISEVEN_META: FunctionMeta = FunctionMeta {
@@ -49,7 +49,7 @@ pub fn iseven_kernel(n: f64) -> bool {
 
 pub fn eval_iseven_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, IsEvenEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -82,27 +82,28 @@ pub fn map_iseven_error_to_ws(e: &IsEvenEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         resolved: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 

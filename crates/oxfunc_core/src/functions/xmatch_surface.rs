@@ -5,12 +5,12 @@ use crate::functions::xmatch::{
     XmatchEvalError, eval_xmatch_adapter_prepared, eval_xmatch_adapter_prepared_value,
     validate_xmatch_surface_arity,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 fn prepare_lookup_vector(
     lookup_array: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, XmatchEvalError> {
     let mut prepared = Vec::new();
     for arg in lookup_array {
@@ -92,7 +92,7 @@ pub fn eval_xmatch_surface(
     lookup_array: &[CallArgValue],
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
@@ -122,7 +122,7 @@ pub fn eval_xmatch_surface_value(
     lookup_array: &[CallArgValue],
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
@@ -152,41 +152,42 @@ mod tests {
     use super::*;
     use crate::coercion::CoercionError;
     use crate::function::Arity;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
         ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
     };
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        caps: ResolverCapabilities,
+        caps: ReferenceSystemCapabilities,
         resolved_value: Option<EvalValue>,
         by_target: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
             self.caps
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             if let Some(value) = self.by_target.get(&reference.target) {
                 return Ok(value.clone());
             }
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
     fn resolver() -> MockResolver {
         MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
             by_target: BTreeMap::new(),
         }
@@ -201,7 +202,7 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_uses_reference_preparation_for_lookup_value() {
         let r = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(2.0)),
             by_target: BTreeMap::new(),
         };
@@ -326,21 +327,21 @@ mod tests {
     }
 
     #[test]
-    fn eval_xmatch_surface_flattens_multi_area_lookup_array_argument() {
+    fn eval_xmatch_surface_accepts_provider_materialized_multi_area_lookup_array() {
         let mut by_target = BTreeMap::new();
         by_target.insert(
-            "A1:A2".to_string(),
+            "(A1:A2,C1)".to_string(),
             EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(1.0)],
-                    vec![ArrayCellValue::Number(2.0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
                 .unwrap(),
             ),
         );
-        by_target.insert("C1".to_string(), EvalValue::Number(3.0));
         let resolver = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
             by_target,
         };

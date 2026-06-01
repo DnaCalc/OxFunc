@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
 use sxd_document::parser;
 use sxd_xpath::{Context, Factory, Value};
@@ -113,7 +113,7 @@ pub fn encodeurl_kernel(text: &str) -> String {
 
 pub fn eval_encodeurl_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WebTextXmlEvalError> {
     if !ENCODEURL_META.arity.accepts(args.len()) {
         return Err(arity_error(&ENCODEURL_META, args.len()));
@@ -128,7 +128,7 @@ pub fn eval_encodeurl_surface(
 
 pub fn eval_filterxml_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WebTextXmlEvalError> {
     if !FILTERXML_META.arity.accepts(args.len()) {
         return Err(arity_error(&FILTERXML_META, args.len()));
@@ -190,23 +190,26 @@ pub fn map_web_text_xml_error_to_ws(error: &WebTextXmlEvalError) -> WorksheetErr
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{CallArgValue, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::CallArgValue;
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const OPTIONAL_BASIS_ARITY: Arity = Arity { min: 6, max: 7 };
@@ -412,7 +412,7 @@ fn eval_amordegrc_prepared(
 
 pub fn eval_amorlinc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -424,7 +424,7 @@ pub fn eval_amorlinc_surface(
 
 pub fn eval_amordegrc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -449,23 +449,26 @@ pub fn map_amor_depreciation_error_to_ws(error: &AmorDepreciationEvalError) -> W
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct NoRefResolver;
 
-    impl ReferenceResolver for NoRefResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoRefResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -727,9 +730,11 @@ mod tests {
                 &resolver,
             ),
             Err(AmorDepreciationEvalError::Coercion(
-                CoercionError::RefResolution(RefResolutionError::UnresolvedReference {
-                    target: "A1".to_string(),
-                })
+                CoercionError::RefResolution(
+                    crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                        target: "A1".to_string(),
+                    }
+                )
             ))
         );
     }

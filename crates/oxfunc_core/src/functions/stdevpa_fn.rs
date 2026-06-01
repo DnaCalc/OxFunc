@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::variance_common::{
     VarianceDivisor, VarianceInclusionPolicy, collect_variance_values, stdev_from_values,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const STDEVPA_META: FunctionMeta = FunctionMeta {
@@ -36,7 +36,7 @@ pub enum StdevPAEvalError {
 
 pub fn eval_stdevpa_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StdevPAEvalError> {
     let argc = args.len();
     if !STDEVPA_META.arity.accepts(argc) {

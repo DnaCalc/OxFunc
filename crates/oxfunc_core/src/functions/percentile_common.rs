@@ -1,6 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{
-    coerce_prepared_to_number, AggregatePreparedValue, PreparedArgValue,
+    AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number,
 };
 use crate::value::{CoreValue, WorksheetErrorCode};
 

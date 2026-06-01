@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const COUPON_BASE_META: FunctionMeta = FunctionMeta {
@@ -400,7 +400,7 @@ pub fn couppcd_kernel(
 
 fn eval_coupon_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(f64, f64, f64, Option<f64>) -> Result<f64, WorksheetErrorCode>,
 ) -> Result<EvalValue, CouponEvalError> {
@@ -436,42 +436,42 @@ fn eval_coupon_surface(
 
 pub fn eval_coupdaybs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYBS_META, coupdaybs_kernel)
 }
 
 pub fn eval_coupdays_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYS_META, coupdays_kernel)
 }
 
 pub fn eval_coupdaysnc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYSNC_META, coupdaysnc_kernel)
 }
 
 pub fn eval_coupncd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNCD_META, coupncd_kernel)
 }
 
 pub fn eval_coupnum_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNUM_META, coupnum_kernel)
 }
 
 pub fn eval_couppcd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPPCD_META, couppcd_kernel)
 }
@@ -488,23 +488,25 @@ pub fn map_coupon_error_to_ws(error: &CouponEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

@@ -1,4 +1,4 @@
-use crate::resolver::{resolve_eval_value, RefResolutionError, ReferenceResolver};
+use crate::resolver::{ReferenceResolutionError, ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{CalcValue, CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -14,7 +14,7 @@ pub enum CoercionError {
     NonNumericText(String),
     UnsupportedValueKind(&'static str),
     WorksheetError(WorksheetErrorCode),
-    RefResolution(RefResolutionError),
+    RefResolution(ReferenceResolutionError),
 }
 
 fn parse_excel_number(text: &str) -> Option<f64> {
@@ -32,7 +32,7 @@ fn parse_excel_number(text: &str) -> Option<f64> {
 
 pub fn coerce_eval_to_number(
     value: &EvalValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, CoercionError> {
     match value {
         EvalValue::Number(n) => Ok(*n),
@@ -70,7 +70,7 @@ pub fn coerce_calc_scalar_to_number(value: &CalcValue) -> Result<f64, CoercionEr
 
 pub fn coerce_arg_to_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, CoercionError> {
     match arg {
         CallArgValue::Eval(eval) => coerce_eval_to_number(eval, resolver),
@@ -86,7 +86,7 @@ pub fn coerce_arg_to_number(
 
 pub fn coerce_direct_args_to_numbers(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, CoercionError> {
     args.iter()
         .map(|arg| coerce_arg_to_number(arg, resolver))
@@ -95,7 +95,7 @@ pub fn coerce_direct_args_to_numbers(
 
 pub fn aggregate_scan_sum(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     policy: AggregateScanPolicy,
 ) -> Result<f64, CoercionError> {
     let mut acc = 0.0;
@@ -115,34 +115,35 @@ pub fn aggregate_scan_sum(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{ReferenceResolver, ResolverCapabilities};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
     use crate::value::{CalcValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        caps: ResolverCapabilities,
+        caps: ReferenceSystemCapabilities,
         resolved_value: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
             self.caps
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
     fn resolver() -> MockResolver {
         MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
         }
     }
@@ -217,7 +218,7 @@ mod tests {
     #[test]
     fn reference_is_dereferenced_via_resolver() {
         let r = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(2.5)),
         };
         let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
@@ -234,7 +235,7 @@ mod tests {
         assert_eq!(
             got,
             Err(CoercionError::RefResolution(
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: "A1".to_string()
                 }
             ))

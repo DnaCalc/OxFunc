@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -235,7 +235,7 @@ pub(crate) fn trimrange_kernel(
 
 pub fn eval_trimrange_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TrimRangeEvalError> {
     if !TRIMRANGE_META.arity.accepts(args.len()) {
         return Err(TrimRangeEvalError::ArityMismatch {
@@ -272,21 +272,23 @@ pub fn map_trimrange_error_to_ws(e: &TrimRangeEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{CallerContext, RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::{CallerContext, ReferenceSystemCapabilities};
 
     struct MockResolver;
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
         fn caller_context(&self) -> Option<CallerContext> {
             None

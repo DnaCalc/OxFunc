@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -117,7 +117,7 @@ fn choose_index_from_cell(
 fn choose_array_surface(
     index_array: &EvalArray,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     let mut choice_arrays = Vec::with_capacity(args.len().saturating_sub(1));
     for arg in &args[1..] {
@@ -195,7 +195,7 @@ fn prepared_condition_truthy(prepared: &PreparedArgValue) -> Result<bool, Coerci
 
 pub fn eval_choose_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     if !CHOOSE_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {
@@ -224,7 +224,7 @@ pub fn eval_choose_surface(
 
 pub fn eval_ifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ChooseIfsEvalError> {
     if !IFS_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {
@@ -268,30 +268,35 @@ pub fn map_choose_ifs_error_to_ws(error: &ChooseIfsEvalError) -> WorksheetErrorC
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             match reference.target.as_str() {
                 "BLANK" => Ok(EvalValue::Array(crate::value::EvalArray::from_scalar(
                     crate::value::ArrayCellValue::EmptyCell,
                 ))),
-                "POISON" => Err(RefResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
-                }),
-                other => Err(RefResolutionError::UnresolvedReference {
-                    target: other.to_string(),
-                }),
+                "POISON" => Err(
+                    crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                        target: reference.target.clone(),
+                    },
+                ),
+                other => Err(
+                    crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                        target: other.to_string(),
+                    },
+                ),
             }
         }
     }

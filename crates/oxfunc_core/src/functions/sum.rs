@@ -1,15 +1,15 @@
-use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
-    sparse_reference_values_for_aggregate_arg, AggregateArgOrigin, AggregatePreparedValue,
+    AggregateArgOrigin, AggregatePreparedValue, expand_aggregate_arg,
+    expand_sparse_reference_values_with_provenance, sparse_reference_values_for_aggregate_arg,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::semantic_kernel::{
-    reduce_numeric_sum, NumericalReductionPolicy, SemanticKernelRuntimeError,
+    NumericalReductionPolicy, SemanticKernelRuntimeError, reduce_numeric_sum,
 };
 use crate::value::{CalcValue, CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
 
@@ -79,7 +79,7 @@ pub(crate) fn eval_sum_prepared_aggregate(
 
 pub fn eval_sum_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SumEvalError> {
     let argc = args.len();
     if !SUM_META.arity.accepts(argc) {
@@ -119,11 +119,11 @@ pub fn map_sum_error_to_ws(e: &SumEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::functions::adapters::{
-        expand_aggregate_array_with_provenance, AggregateArrayProvenance,
+        AggregateArrayProvenance, expand_aggregate_array_with_provenance,
     };
     use crate::resolver::{
-        RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
-        ResolvedReferenceValues, ResolverCapabilities,
+        ReferenceResolutionError, ReferenceSystemCapabilities, ResolvedReferenceCell,
+        ResolvedReferenceExtent, ResolvedReferenceValues,
     };
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::cell::Cell;
@@ -134,23 +134,24 @@ mod tests {
         by_target: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             if let Some(value) = self.by_target.get(&reference.target) {
                 return Ok(value.clone());
             }
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
@@ -159,25 +160,28 @@ mod tests {
         dense_calls: Cell<usize>,
     }
 
-    impl ReferenceResolver for SparseResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for SparseResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.dense_calls.set(self.dense_calls.get() + 1);
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
 
-        fn resolve_reference_values(
+        fn enumerate_values(
             &self,
-            _reference: &ReferenceLike,
-        ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+            _request: &crate::resolver::ReferenceEnumerationRequest,
+        ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
             Ok(Some(self.values.clone()))
         }
     }
@@ -274,19 +278,19 @@ mod tests {
     }
 
     #[test]
-    fn eval_sum_materializes_multi_area_reference_through_resolver() {
+    fn eval_sum_accepts_provider_materialized_multi_area_reference() {
         let mut by_target = BTreeMap::new();
         by_target.insert(
-            "Alpha!A1:A2".to_string(),
+            "(Alpha!A1:A2,Alpha!B2)".to_string(),
             EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(7.0)],
-                    vec![ArrayCellValue::Number(11.0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(7.0),
+                    ArrayCellValue::Number(11.0),
+                    ArrayCellValue::Number(13.0),
+                ]])
                 .unwrap(),
             ),
         );
-        by_target.insert("Alpha!B2".to_string(), EvalValue::Number(13.0));
         let got = eval_sum_surface(
             &[CallArgValue::Reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
@@ -301,19 +305,19 @@ mod tests {
     }
 
     #[test]
-    fn eval_sum_preserves_multi_area_member_error_cells() {
+    fn eval_sum_preserves_provider_materialized_multi_area_error_cells() {
         let mut by_target = BTreeMap::new();
         by_target.insert(
-            "A1:A2".to_string(),
+            "(A1:A2,C1)".to_string(),
             EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(7.0)],
-                    vec![ArrayCellValue::Error(WorksheetErrorCode::Div0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(7.0),
+                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
+                    ArrayCellValue::Number(13.0),
+                ]])
                 .unwrap(),
             ),
         );
-        by_target.insert("C1".to_string(), EvalValue::Number(13.0));
         let got = eval_sum_surface(
             &[CallArgValue::Reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,

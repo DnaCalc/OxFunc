@@ -6,7 +6,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
     run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const DATE_VALUE_FAMILY_BASE_META: FunctionMeta = FunctionMeta {
@@ -488,7 +488,7 @@ fn coerce_prepared_to_date_serial(
 
 pub fn eval_datevalue_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
@@ -516,7 +516,7 @@ pub fn eval_datevalue_surface(
 
 pub fn eval_timevalue_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
@@ -544,7 +544,7 @@ pub fn eval_timevalue_surface(
 
 pub fn eval_days360_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
@@ -579,7 +579,7 @@ pub fn eval_days360_surface(
 
 pub fn eval_datedif_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
@@ -617,8 +617,7 @@ pub fn map_date_value_family_error_to_ws(error: &DateValueFamilyError) -> Worksh
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
 
     fn assert_close(actual: f64, expected: f64) {
         let delta = (actual - expected).abs();
@@ -634,18 +633,21 @@ mod tests {
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

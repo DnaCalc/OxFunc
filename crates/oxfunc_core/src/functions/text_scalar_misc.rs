@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::functions::excel_casing::{lower_text, upper_text};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -241,7 +241,7 @@ fn eval_rept_prepared_value(
 
 pub fn eval_char_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
@@ -250,7 +250,7 @@ pub fn eval_char_surface(
 
 pub fn eval_code_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
@@ -259,7 +259,7 @@ pub fn eval_code_surface(
 
 fn eval_text_unary_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(&ExcelText) -> ExcelText,
 ) -> Result<EvalValue, TextScalarEvalError> {
@@ -280,28 +280,28 @@ fn eval_text_unary_surface(
 
 pub fn eval_lower_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &LOWER_META, lower_text)
 }
 
 pub fn eval_upper_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &UPPER_META, upper_text)
 }
 
 pub fn eval_trim_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &TRIM_META, trim_ascii_spaces)
 }
 
 pub fn eval_rept_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
@@ -320,23 +320,25 @@ pub fn map_text_scalar_error_to_ws(e: &TextScalarEvalError) -> WorksheetErrorCod
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

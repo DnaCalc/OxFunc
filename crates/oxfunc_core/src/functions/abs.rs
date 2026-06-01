@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, UnaryNumericCoercionLiftProfile, apply_unary_numeric_scalar_prepared,
     map_values_only_prepared, run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue};
 
 pub const ABS_META: FunctionMeta = FunctionMeta {
@@ -73,7 +73,7 @@ pub fn eval_abs_adapter_array_lift_prepared(args: &[PreparedArgValue]) -> Vec<Ab
 
 pub fn eval_abs_scalar(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, AbsEvalError> {
     run_values_only_prepared(
         args,
@@ -85,7 +85,7 @@ pub fn eval_abs_scalar(
 
 pub fn eval_abs_scalar_value(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, AbsEvalError> {
     run_values_only_prepared(
         args,
@@ -97,7 +97,7 @@ pub fn eval_abs_scalar_value(
 
 pub fn eval_abs_array_lift(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Vec<AbsLiftOutcome> {
     map_values_only_prepared(
         args,
@@ -110,7 +110,7 @@ pub fn eval_abs_array_lift(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
     fn text_prepared(s: &str) -> PreparedArgValue {
@@ -120,30 +120,31 @@ mod tests {
     }
 
     struct MockResolver {
-        caps: ResolverCapabilities,
+        caps: ReferenceSystemCapabilities,
         resolved_value: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
             self.caps
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
     fn resolver() -> MockResolver {
         MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
         }
     }
@@ -376,7 +377,7 @@ mod tests {
     #[test]
     fn eval_abs_scalar_reference_uses_resolver() {
         let r = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(EvalValue::Number(-7.0)),
         };
         let args = [CallArgValue::Reference(ReferenceLike::new(

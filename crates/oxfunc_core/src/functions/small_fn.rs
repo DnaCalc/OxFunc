@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const SMALL_META: FunctionMeta = FunctionMeta {
@@ -59,7 +59,7 @@ fn coerce_k(prepared: &PreparedArgValue) -> Result<usize, SmallEvalError> {
 
 pub fn eval_small_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SmallEvalError> {
     let argc = args.len();
     if !SMALL_META.arity.accepts(argc) {

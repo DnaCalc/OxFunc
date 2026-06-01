@@ -10,8 +10,8 @@ use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
 use crate::resolver::{
-    ReferenceResolver, materialize_resolved_reference_values, resolve_eval_value,
-    resolve_reference_values,
+    ReferenceSystemProvider, enumerate_reference_values, materialize_resolved_reference_values,
+    resolve_eval_value,
 };
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
@@ -180,12 +180,12 @@ fn scalar_to_cell(value: EvalValue) -> Result<ArrayCellValue, CriteriaEvalError>
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     match arg {
         CallArgValue::Reference(reference)
         | CallArgValue::Eval(EvalValue::Reference(reference)) => {
-            if let Some(values) = resolve_reference_values(resolver, reference)
+            if let Some(values) = enumerate_reference_values(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CriteriaEvalError::Coercion)?
             {
@@ -209,7 +209,7 @@ fn resolve_arg_eval(
 
 fn flatten_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<FlatCells, CriteriaEvalError> {
     match resolve_arg_eval(arg, resolver)? {
         EvalValue::Array(array) => {
@@ -265,7 +265,7 @@ fn reference_like_from_arg(arg: &CallArgValue) -> Option<&ReferenceLike> {
 fn try_anchor_reference_to_shape(
     arg: &CallArgValue,
     desired_shape: FlatShape,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<FlatCells>, CriteriaEvalError> {
     let Some(reference) = reference_like_from_arg(arg) else {
         return Ok(None);
@@ -475,7 +475,7 @@ fn ensure_same_shape(ranges: &[&FlatCells]) -> Result<(), CriteriaEvalError> {
 
 fn parse_criteria_pairs(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<(FlatCells, CriteriaSpec)>, CriteriaEvalError> {
     if args.len() % 2 != 0 {
         return Err(CriteriaEvalError::PairStructureMismatch { actual: args.len() });
@@ -576,7 +576,7 @@ fn eval_extreme_filtered(
 
 pub fn eval_countif_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !COUNTIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -600,7 +600,7 @@ pub fn eval_countif_surface(
 
 pub fn eval_countifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !COUNTIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -615,7 +615,7 @@ pub fn eval_countifs_surface(
 
 pub fn eval_sumifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !SUMIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -638,7 +638,7 @@ pub fn eval_sumifs_surface(
 
 pub fn eval_sumif_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !SUMIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -676,7 +676,7 @@ pub fn eval_sumif_surface(
 
 pub fn eval_averageif_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !AVERAGEIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -714,7 +714,7 @@ pub fn eval_averageif_surface(
 
 pub fn eval_averageifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !AVERAGEIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -737,7 +737,7 @@ pub fn eval_averageifs_surface(
 
 pub fn eval_maxifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !MAXIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -763,7 +763,7 @@ pub fn eval_maxifs_surface(
 
 pub fn eval_minifs_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CriteriaEvalError> {
     if !MINIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
@@ -800,22 +800,25 @@ pub fn map_criteria_error_to_ws(error: &CriteriaEvalError) -> WorksheetErrorCode
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{EvalArray, ReferenceLike};
     use std::collections::HashMap;
 
     struct NoResolver;
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -823,17 +826,18 @@ mod tests {
         refs: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MapResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MapResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.refs.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

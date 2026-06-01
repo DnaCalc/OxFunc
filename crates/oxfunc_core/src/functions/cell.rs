@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::a1_refs::{format_absolute_address, parse_a1_reference};
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
 use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{CallArgValue, EvalValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
 pub const CELL_META: FunctionMeta = FunctionMeta {
@@ -53,7 +53,7 @@ pub enum CellEvalError {
 
 fn parse_info_type(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CellInfoType, CellEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(CellEvalError::InfoTypeCoercion)?;
@@ -115,7 +115,7 @@ fn host_query_for_info_type(info_type: CellInfoType) -> Option<CellInfoQuery> {
 
 pub fn eval_cell_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, CellEvalError> {
     if !CELL_META.arity.accepts(args.len()) {
@@ -163,13 +163,11 @@ pub fn eval_cell_surface(
                 .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
             Ok(EvalValue::Number(parsed.start_col as f64))
         }
-        CellInfoType::Contents => resolver
-            .resolve_reference(&reference)
+        CellInfoType::Contents => resolve_eval_value(resolver, &reference)
             .map_err(CoercionError::RefResolution)
             .map_err(CellEvalError::RefResolution),
         CellInfoType::Type => {
-            let value = resolver
-                .resolve_reference(&reference)
+            let value = resolve_eval_value(resolver, &reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CellEvalError::RefResolution)?;
             Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
@@ -206,7 +204,7 @@ pub fn map_cell_error_to_ws(e: &CellEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct MockResolver {
         resolved: Option<EvalValue>,
@@ -231,20 +229,21 @@ mod tests {
         }
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 

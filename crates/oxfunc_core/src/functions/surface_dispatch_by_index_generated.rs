@@ -1533,8 +1533,7 @@ match dispatch_key.catalog_index {
                 .map_err(|e| map_xlookup_error_to_ws(&e))
             }
             213 => {
-                let fec = crate::function_call::FunctionExecutionContextRef::new(&resolver)
-                    .with_reference_text_resolver(reference_text_resolver);
+                let fec = crate::function_call::FunctionExecutionContextRef::new(&resolver);
                 eval_indirect_surface(args, &fec).map_err(|e| map_indirect_error_to_ws(&e))
             }
             239 => {

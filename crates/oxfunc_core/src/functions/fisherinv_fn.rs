@@ -5,7 +5,7 @@ use crate::function::{
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const FISHERINV_META: FunctionMeta = FunctionMeta {
@@ -29,7 +29,7 @@ pub fn fisherinv_kernel(y: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_fisherinv_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, fisherinv_kernel)
 }

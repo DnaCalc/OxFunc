@@ -8,14 +8,12 @@ use crate::functions::now_fn::NowProvider;
 use crate::functions::rand_fn::RandomProvider;
 use crate::functions::rtd_fn::RtdProvider;
 use crate::functions::surface_dispatch::{
-    eval_surface_value_call_with_dispatch_key, resolve_surface_dispatch_key, SurfaceDispatchKey,
+    SurfaceDispatchKey, eval_surface_value_call_with_dispatch_key, resolve_surface_dispatch_key,
 };
 use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
-use crate::registry::{builtin_registry, FunctionEntry, FunctionRegistry};
-use crate::resolver::{
-    CallerContext, ReferenceResolver, ReferenceSystemProvider, ReferenceTextResolver,
-};
+use crate::registry::{FunctionEntry, FunctionRegistry, builtin_registry};
+use crate::resolver::{CallerContext, NULL_REFERENCE_SYSTEM_PROVIDER, ReferenceSystemProvider};
 use crate::value::{CalcValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -305,7 +303,7 @@ impl FunctionCallTarget {
             )
     }
 
-    pub fn invoke<R: ReferenceResolver>(
+    pub fn invoke<R: ReferenceSystemProvider>(
         &self,
         args: &[CalcValue],
         fec: &mut FunctionExecutionContextBundle<'_, R>,
@@ -313,8 +311,7 @@ impl FunctionCallTarget {
         eval_surface_value_call_with_dispatch_key(
             self.dispatch_key,
             args,
-            fec.resolver,
-            fec.reference_text_resolver,
+            fec.reference_system_base,
             fec.effective_now_serial(),
             fec.random_provider,
             fec.locale_ctx,
@@ -325,7 +322,7 @@ impl FunctionCallTarget {
         )
     }
 
-    pub fn invoke_scratch<R: ReferenceResolver>(
+    pub fn invoke_scratch<R: ReferenceSystemProvider>(
         &self,
         scratch: &FunctionCallScratch,
         fec: &mut FunctionExecutionContextBundle<'_, R>,
@@ -340,7 +337,7 @@ impl FunctionCallTarget {
         build_args: F,
     ) -> Result<CalcValue, WorksheetErrorCode>
     where
-        R: ReferenceResolver,
+        R: ReferenceSystemProvider,
         F: FnOnce(&mut Vec<CalcValue>),
     {
         scratch.clear();
@@ -357,10 +354,9 @@ fn legacy_call_args_for_dispatch(args: &[CalcValue]) -> Vec<crate::value::CallAr
         .collect()
 }
 
-pub struct FunctionExecutionContextBundle<'a, R: ReferenceResolver> {
-    pub resolver: &'a R,
+pub struct FunctionExecutionContextBundle<'a, R: ReferenceSystemProvider> {
+    pub reference_system_base: &'a R,
     pub reference_system_provider: Option<&'a dyn ReferenceSystemProvider>,
-    pub reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
     pub now_serial: Option<f64>,
     pub now_provider: Option<&'a dyn NowProvider>,
     pub random_provider: Option<&'a dyn RandomProvider>,
@@ -371,12 +367,11 @@ pub struct FunctionExecutionContextBundle<'a, R: ReferenceResolver> {
     pub registered_external_provider: Option<&'a dyn RegisteredExternalProvider>,
 }
 
-impl<'a, R: ReferenceResolver> FunctionExecutionContextBundle<'a, R> {
-    pub fn new(resolver: &'a R) -> Self {
+impl<'a, R: ReferenceSystemProvider> FunctionExecutionContextBundle<'a, R> {
+    pub fn new(reference_system_base: &'a R) -> Self {
         Self {
-            resolver,
+            reference_system_base,
             reference_system_provider: None,
-            reference_text_resolver: None,
             now_serial: None,
             now_provider: None,
             random_provider: None,
@@ -397,14 +392,6 @@ impl<'a, R: ReferenceResolver> FunctionExecutionContextBundle<'a, R> {
     pub fn with_now_provider(mut self, now_provider: &'a dyn NowProvider) -> Self {
         self.now_serial = None;
         self.now_provider = Some(now_provider);
-        self
-    }
-
-    pub fn with_reference_text_resolver(
-        mut self,
-        reference_text_resolver: &'a dyn ReferenceTextResolver,
-    ) -> Self {
-        self.reference_text_resolver = Some(reference_text_resolver);
         self
     }
 
@@ -456,33 +443,25 @@ impl<'a, R: ReferenceResolver> FunctionExecutionContextBundle<'a, R> {
 }
 
 pub trait FunctionExecutionContext {
-    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_);
-
-    fn reference_system_provider(&self) -> Option<&dyn ReferenceSystemProvider> {
-        None
-    }
-
-    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
-        None
+    fn reference_system_provider(&self) -> &dyn ReferenceSystemProvider {
+        &NULL_REFERENCE_SYSTEM_PROVIDER
     }
 
     fn caller_context(&self) -> Option<CallerContext> {
-        self.reference_resolver().caller_context()
+        self.reference_system_provider().caller_context()
     }
 }
 
-pub struct FunctionExecutionContextRef<'a, R: ReferenceResolver> {
-    reference_resolver: &'a R,
+pub struct FunctionExecutionContextRef<'a, R: ReferenceSystemProvider> {
+    reference_system_base: &'a R,
     reference_system_provider: Option<&'a dyn ReferenceSystemProvider>,
-    reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
 }
 
-impl<'a, R: ReferenceResolver> FunctionExecutionContextRef<'a, R> {
-    pub fn new(reference_resolver: &'a R) -> Self {
+impl<'a, R: ReferenceSystemProvider> FunctionExecutionContextRef<'a, R> {
+    pub fn new(reference_system_base: &'a R) -> Self {
         Self {
-            reference_resolver,
+            reference_system_base,
             reference_system_provider: None,
-            reference_text_resolver: None,
         }
     }
 
@@ -493,41 +472,35 @@ impl<'a, R: ReferenceResolver> FunctionExecutionContextRef<'a, R> {
         self.reference_system_provider = reference_system_provider;
         self
     }
+}
 
-    pub fn with_reference_text_resolver(
-        mut self,
-        reference_text_resolver: Option<&'a dyn ReferenceTextResolver>,
-    ) -> Self {
-        self.reference_text_resolver = reference_text_resolver;
-        self
+impl<R: ReferenceSystemProvider> FunctionExecutionContext for FunctionExecutionContextRef<'_, R> {
+    fn reference_system_provider(&self) -> &dyn ReferenceSystemProvider {
+        self.reference_system_provider
+            .unwrap_or(self.reference_system_base)
+    }
+
+    fn caller_context(&self) -> Option<CallerContext> {
+        self.reference_system_base.caller_context().or_else(|| {
+            self.reference_system_provider
+                .and_then(|p| p.caller_context())
+        })
     }
 }
 
-impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextRef<'_, R> {
-    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
-        self.reference_resolver
-    }
-
-    fn reference_system_provider(&self) -> Option<&dyn ReferenceSystemProvider> {
+impl<R: ReferenceSystemProvider> FunctionExecutionContext
+    for FunctionExecutionContextBundle<'_, R>
+{
+    fn reference_system_provider(&self) -> &dyn ReferenceSystemProvider {
         self.reference_system_provider
+            .unwrap_or(self.reference_system_base)
     }
 
-    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
-        self.reference_text_resolver
-    }
-}
-
-impl<R: ReferenceResolver> FunctionExecutionContext for FunctionExecutionContextBundle<'_, R> {
-    fn reference_resolver(&self) -> &(dyn ReferenceResolver + '_) {
-        self.resolver
-    }
-
-    fn reference_system_provider(&self) -> Option<&dyn ReferenceSystemProvider> {
-        self.reference_system_provider
-    }
-
-    fn reference_text_resolver(&self) -> Option<&dyn ReferenceTextResolver> {
-        self.reference_text_resolver
+    fn caller_context(&self) -> Option<CallerContext> {
+        self.reference_system_base.caller_context().or_else(|| {
+            self.reference_system_provider
+                .and_then(|p| p.caller_context())
+        })
     }
 }
 
@@ -624,29 +597,28 @@ mod tests {
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::functions::rtd_fn::{RtdProvider, RtdProviderResult, RtdRequest};
     use crate::functions::surface_dispatch::{
-        eval_surface_value_call_with_callable, FUNC_ID_BYROW, FUNC_ID_CELL, FUNC_ID_GROUPBY,
-        FUNC_ID_HSTACK, FUNC_ID_INDEX, FUNC_ID_MAP, FUNC_ID_NOW, FUNC_ID_OP_ADD, FUNC_ID_PI,
-        FUNC_ID_PIVOTBY, FUNC_ID_RAND, FUNC_ID_REDUCE, FUNC_ID_REGISTER_ID, FUNC_ID_RTD,
-        FUNC_ID_VALUE, FUNC_ID_VSTACK,
+        FUNC_ID_BYROW, FUNC_ID_CELL, FUNC_ID_GROUPBY, FUNC_ID_HSTACK, FUNC_ID_INDEX, FUNC_ID_MAP,
+        FUNC_ID_NOW, FUNC_ID_OP_ADD, FUNC_ID_PI, FUNC_ID_PIVOTBY, FUNC_ID_RAND, FUNC_ID_REDUCE,
+        FUNC_ID_REGISTER_ID, FUNC_ID_RTD, FUNC_ID_VALUE, FUNC_ID_VSTACK,
+        eval_surface_value_call_with_callable,
     };
     use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
     use crate::locale_format::test_en_us_context;
     use crate::resolver::{
-        RefResolutionError, ReferenceDereferenceRequest, ReferenceSystemError,
-        ReferenceSystemProvider, ResolverCapabilities,
+        ReferenceDereferenceRequest, ReferenceSystemCapabilities, ReferenceSystemError,
+        ReferenceSystemOperation,
     };
     use crate::value::{
         ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableCaptureMode,
         CoreValue, EvalArray, EvalValue, ExcelText, LambdaValue, ReferenceKind, ReferenceLike,
     };
 
-    struct NoReferenceResolver;
+    struct NoReferenceSystemProvider;
     struct TestCallableInvoker;
     struct TestHostInfoProvider;
     struct TestRtdProvider;
     struct TestRegisteredExternalProvider;
     struct TestRandomProvider;
-    struct TestReferenceSystemProvider;
 
     impl RandomProvider for TestRandomProvider {
         fn random_unit(&self) -> f64 {
@@ -654,27 +626,21 @@ mod tests {
         }
     }
 
-    impl ReferenceResolver for NoReferenceResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoReferenceSystemProvider {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
-            &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
-        }
-    }
-
-    impl ReferenceSystemProvider for TestReferenceSystemProvider {
         fn dereference(
             &self,
-            _request: &ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, ReferenceSystemError> {
-            Ok(EvalValue::Number(9.0))
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -718,30 +684,46 @@ mod tests {
     }
 
     #[test]
-    fn function_execution_context_bundle_exposes_reference_system_provider() {
-        let resolver = NoReferenceResolver;
-        let provider = TestReferenceSystemProvider;
-        let fec = FunctionExecutionContextBundle::new(&resolver)
-            .with_reference_system_provider(&provider);
+    fn function_execution_context_bundle_defaults_to_null_reference_system_provider() {
+        let resolver = NoReferenceSystemProvider;
+        let fec = FunctionExecutionContextBundle::new(&resolver);
 
         let got = fec
             .reference_system_provider()
-            .expect("reference-system provider")
             .dereference(&ReferenceDereferenceRequest {
                 reference: ReferenceLike::new(ReferenceKind::A1, "A1"),
             });
 
-        assert_eq!(got, Ok(EvalValue::Number(9.0)));
+        assert_eq!(
+            got,
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: "A1".to_string(),
+                }
+            )
+        );
     }
 
     #[test]
-    fn function_execution_context_ref_exposes_reference_system_provider() {
-        let resolver = NoReferenceResolver;
-        let provider = TestReferenceSystemProvider;
-        let fec = FunctionExecutionContextRef::new(&resolver)
-            .with_reference_system_provider(Some(&provider));
+    fn function_execution_context_ref_defaults_to_null_reference_system_provider() {
+        let resolver = NoReferenceSystemProvider;
+        let fec = FunctionExecutionContextRef::new(&resolver);
 
-        assert!(fec.reference_system_provider().is_some());
+        let got = fec.reference_system_provider().resolve_text(
+            &crate::resolver::ReferenceTextResolveRequest {
+                text: "A1".to_string(),
+                mode: crate::resolver::ReferenceTextResolutionMode::Indirect,
+                a1_style: Some(true),
+                caller_context: None,
+            },
+        );
+
+        assert_eq!(
+            got,
+            Err(ReferenceSystemError::Unsupported {
+                operation: ReferenceSystemOperation::ResolveText,
+            })
+        );
     }
 
     impl RtdProvider for TestRtdProvider {
@@ -811,7 +793,7 @@ mod tests {
         callable_invoker: Option<&dyn CallableInvoker>,
         host_info: Option<&dyn HostInfoProvider>,
     ) {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
         let random_provider = TestRandomProvider;
         let call_target = FunctionCallTarget::from_function_id(function_id).unwrap();
         let mut fec = FunctionExecutionContextBundle::new(&resolver)
@@ -825,7 +807,6 @@ mod tests {
             function_id,
             args,
             &resolver,
-            None,
             Some(46000.0),
             Some(&random_provider),
             None,
@@ -844,7 +825,7 @@ mod tests {
         rtd_provider: Option<&dyn RtdProvider>,
         registered_external_provider: Option<&dyn RegisteredExternalProvider>,
     ) {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
         let random_provider = TestRandomProvider;
         let call_target = FunctionCallTarget::from_function_id(function_id).unwrap();
         let mut fec = FunctionExecutionContextBundle::new(&resolver)
@@ -859,7 +840,6 @@ mod tests {
             function_id,
             args,
             &resolver,
-            None,
             Some(46000.0),
             Some(&random_provider),
             locale_ctx,
@@ -1059,7 +1039,7 @@ mod tests {
 
     #[test]
     fn function_call_scratch_reuses_argument_storage_for_repeated_invocation() {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
         let call_target = FunctionCallTarget::from_function_id(FUNC_ID_HSTACK).unwrap();
         let mut fec = FunctionExecutionContextBundle::new(&resolver);
         let mut scratch = call_target.new_scratch();

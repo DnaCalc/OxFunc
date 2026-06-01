@@ -7,7 +7,7 @@ use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values, variance_from_values};
 use crate::functions::xmatch::wildcard_match;
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -170,7 +170,7 @@ fn header_label(cell: &ArrayCellValue) -> Result<Option<String>, DatabaseEvalErr
 
 fn resolve_eval(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     match arg {
         CallArgValue::Reference(reference)
@@ -213,7 +213,7 @@ fn eval_to_grid(value: EvalValue) -> Result<Vec<Vec<ArrayCellValue>>, DatabaseEv
 
 fn parse_database_table(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<DatabaseTable, DatabaseEvalError> {
     let rows = eval_to_grid(resolve_eval(arg, resolver)?)?;
     if rows.is_empty() || rows[0].is_empty() {
@@ -234,7 +234,7 @@ fn parse_database_table(
 
 fn parse_criteria_table(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CriteriaTable, DatabaseEvalError> {
     let rows = eval_to_grid(resolve_eval(arg, resolver)?)?;
     if rows.is_empty() || rows[0].is_empty() {
@@ -441,7 +441,7 @@ fn field_index_from_text(headers: &[String], label: &str) -> Option<usize> {
 fn resolve_field_index(
     database: &DatabaseTable,
     field_arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     allow_omitted: bool,
 ) -> Result<Option<usize>, DatabaseEvalError> {
     let prepared =
@@ -689,7 +689,7 @@ fn eval_database_surface(
     meta: &FunctionMeta,
     kind: DatabaseAggregateKind,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     allow_omitted_field: bool,
 ) -> Result<EvalValue, DatabaseEvalError> {
     if !meta.arity.accepts(args.len()) {
@@ -704,7 +704,7 @@ fn eval_database_surface(
 
 pub fn eval_daverage_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DAVERAGE_META,
@@ -716,7 +716,7 @@ pub fn eval_daverage_surface(
 }
 pub fn eval_dcount_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DCOUNT_META,
@@ -728,7 +728,7 @@ pub fn eval_dcount_surface(
 }
 pub fn eval_dcounta_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DCOUNTA_META,
@@ -740,7 +740,7 @@ pub fn eval_dcounta_surface(
 }
 pub fn eval_dget_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DGET_META,
@@ -752,7 +752,7 @@ pub fn eval_dget_surface(
 }
 pub fn eval_dmax_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DMAX_META,
@@ -764,7 +764,7 @@ pub fn eval_dmax_surface(
 }
 pub fn eval_dmin_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DMIN_META,
@@ -776,7 +776,7 @@ pub fn eval_dmin_surface(
 }
 pub fn eval_dproduct_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DPRODUCT_META,
@@ -788,7 +788,7 @@ pub fn eval_dproduct_surface(
 }
 pub fn eval_dstdev_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DSTDEV_META,
@@ -800,7 +800,7 @@ pub fn eval_dstdev_surface(
 }
 pub fn eval_dstdevp_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DSTDEVP_META,
@@ -812,7 +812,7 @@ pub fn eval_dstdevp_surface(
 }
 pub fn eval_dsum_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DSUM_META,
@@ -824,7 +824,7 @@ pub fn eval_dsum_surface(
 }
 pub fn eval_dvar_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DVAR_META,
@@ -836,7 +836,7 @@ pub fn eval_dvar_surface(
 }
 pub fn eval_dvarp_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatabaseEvalError> {
     eval_database_surface(
         &DVARP_META,
@@ -858,7 +858,7 @@ pub fn map_database_error_to_ws(error: &DatabaseEvalError) -> WorksheetErrorCode
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
@@ -866,16 +866,17 @@ mod tests {
         cells: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.cells.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

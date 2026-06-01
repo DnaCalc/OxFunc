@@ -1,11 +1,11 @@
-use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const MULTINOMIAL_META: FunctionMeta = FunctionMeta {
@@ -216,7 +216,7 @@ pub fn multinomial_kernel(items: &[i64]) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_multinomial_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MultinomialEvalError> {
     let argc = args.len();
     if !MULTINOMIAL_META.arity.accepts(argc) {

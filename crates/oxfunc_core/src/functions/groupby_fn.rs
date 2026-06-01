@@ -14,7 +14,7 @@ use crate::functions::group_pivot_common::{
     parse_field_relationship, parse_filter_vector, parse_sort_orders, prepared_to_array,
     require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const GROUPBY_META: FunctionMeta = FunctionMeta {
@@ -305,7 +305,7 @@ fn build_output_rows(
 
 pub fn eval_groupby_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !GROUPBY_META.arity.accepts(args.len()) {
@@ -376,7 +376,7 @@ pub fn eval_groupby_surface(
 
 pub fn eval_groupby_surface_ws(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, WorksheetErrorCode> {
     eval_groupby_surface(args, resolver, invoker).map_err(|err| map_lambda_helper_error_to_ws(&err))
@@ -387,26 +387,27 @@ mod tests {
     use super::*;
     use crate::functions::adapters::PreparedArgValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{
-        CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue, ReferenceLike,
-    };
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue};
 
     struct NoResolver;
     struct TestInvoker;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

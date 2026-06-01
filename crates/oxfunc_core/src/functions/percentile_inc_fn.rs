@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     coerce_prepared_to_number, expand_aggregate_arg, prepare_arg_values_only,
 };
 use crate::functions::percentile_common::{collect_percentile_values, percentile_inc_kernel};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const PERCENTILE_INC_META: FunctionMeta = FunctionMeta {
@@ -32,7 +32,7 @@ pub enum PercentileIncEvalError {
 
 pub fn eval_percentile_inc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, PercentileIncEvalError> {
     if !PERCENTILE_INC_META.arity.accepts(args.len()) {
         return Err(PercentileIncEvalError::ArityMismatch {

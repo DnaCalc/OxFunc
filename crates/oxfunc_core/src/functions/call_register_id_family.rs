@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_text, prepare_args_values_only,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const CALL_META: FunctionMeta = FunctionMeta {
@@ -151,7 +151,7 @@ fn coerce_prepared_to_procedure_spec(
 
 pub fn parse_register_id_request(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RegisterIdRequest, CallRegisterIdEvalError> {
     if !REGISTER_ID_META.arity.accepts(args.len()) {
         return Err(CallRegisterIdEvalError::ArityMismatch {
@@ -181,7 +181,7 @@ pub fn parse_register_id_request(
 
 pub fn parse_call_request(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RegisteredExternalCallRequest, CallRegisterIdEvalError> {
     if !CALL_META.arity.accepts(args.len()) {
         return Err(CallRegisterIdEvalError::ArityMismatch {
@@ -236,7 +236,7 @@ pub fn parse_call_request(
 
 pub fn eval_register_id_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, CallRegisterIdEvalError> {
     let request = parse_register_id_request(args, resolver)?;
@@ -249,7 +249,7 @@ pub fn eval_register_id_surface(
 
 pub fn eval_call_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<EvalValue, CallRegisterIdEvalError> {
     let request = parse_call_request(args, resolver)?;
@@ -286,23 +286,26 @@ pub fn map_call_register_id_error_to_ws(error: &CallRegisterIdEvalError) -> Work
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ReferenceKind, ReferenceLike};
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

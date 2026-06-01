@@ -8,7 +8,7 @@ use crate::functions::adapters::{
 };
 use crate::functions::percentile_common::collect_percentile_values;
 use crate::functions::percentrank_common::{PercentRankMode, percentrank};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const PERCENTRANK_EXC_META: FunctionMeta = FunctionMeta {
@@ -37,7 +37,7 @@ pub enum PercentRankExcEvalError {
 
 pub fn eval_percentrank_exc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, PercentRankExcEvalError> {
     if !PERCENTRANK_EXC_META.arity.accepts(args.len()) {
         return Err(PercentRankExcEvalError::ArityMismatch {

@@ -9,7 +9,7 @@ use crate::functions::adapters::{
 };
 use crate::functions::aggregate_common::sum_argument_value;
 use crate::functions::rand_fn::RandomProvider;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -596,7 +596,7 @@ fn coerce_boolish_arg(arg: &PreparedArgValue) -> Result<bool, MiscConversionErro
 
 fn sum_surface_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, MiscConversionError> {
     let prepared = expand_aggregate_arg(arg, resolver).map_err(MiscConversionError::Coercion)?;
     let mut total = 0.0;
@@ -611,7 +611,7 @@ fn sum_surface_arg(
 
 pub fn eval_bahttext_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -632,7 +632,7 @@ pub fn eval_bahttext_surface(
 
 pub fn eval_convert_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -658,7 +658,7 @@ pub fn eval_convert_surface(
 
 pub fn eval_euroconvert_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(
         args,
@@ -695,7 +695,7 @@ pub fn eval_euroconvert_surface(
 
 pub fn eval_percentof_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     if !PERCENTOF_META.arity.accepts(args.len()) {
         return Err(arity_error(&PERCENTOF_META, args.len()));
@@ -709,7 +709,7 @@ pub fn eval_percentof_surface(
 
 pub fn eval_randarray_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: &(impl RandomProvider + ?Sized),
 ) -> Result<EvalValue, MiscConversionError> {
     run_values_only_prepared(

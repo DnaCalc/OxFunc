@@ -9,7 +9,7 @@ use crate::host_info::{
     HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ImageSizingMode,
     ResolvedWebImage,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     CallArgValue, EvalValue, ExcelText, ExtendedValue, RichValue, RichValueData, RichValueKeyFlag,
     RichValueKeyValue, RichValueType, WorksheetErrorCode,
@@ -144,7 +144,7 @@ fn validate_image_request(request: &ImageRequest) -> Result<(), ImageEvalError> 
 
 pub fn parse_image_request(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<ImageRequest, ImageEvalError> {
     if !IMAGE_META.arity.accepts(args.len()) {
         return Err(ImageEvalError::ArityMismatch {
@@ -238,7 +238,7 @@ fn image_provider_error_value(result: &ImageProviderResult) -> EvalValue {
 
 pub fn eval_image_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
@@ -254,7 +254,7 @@ pub fn eval_image_surface(
 
 pub fn eval_image_surface_extended(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ExtendedValue, ImageEvalError> {
     eval_image_surface_extended_with_capabilities(args, resolver, host_info)
@@ -263,7 +263,7 @@ pub fn eval_image_surface_extended(
 
 pub fn eval_image_surface_extended_with_capabilities(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ExtendedImageResult, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
@@ -313,23 +313,25 @@ pub fn map_image_error_to_ws(error: &ImageEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

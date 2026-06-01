@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const BASE: FunctionMeta = FunctionMeta {
@@ -664,7 +664,7 @@ pub fn accrint_kernel(
 }
 fn evaln(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
     m: &FunctionMeta,
     k: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BondCoreEvalError>,
 ) -> Result<EvalValue, BondCoreEvalError> {
@@ -682,7 +682,7 @@ fn evaln(
 }
 pub fn eval_accrint_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINT_META, |p| {
         accrint_kernel(
@@ -699,7 +699,7 @@ pub fn eval_accrint_surface(
 }
 pub fn eval_accrintm_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINTM_META, |p| {
         accrintm_kernel(
@@ -713,7 +713,7 @@ pub fn eval_accrintm_surface(
 }
 pub fn eval_duration_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &DURATION_META, |p| {
         duration_kernel(
@@ -728,7 +728,7 @@ pub fn eval_duration_surface(
 }
 pub fn eval_mduration_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &MDURATION_META, |p| {
         mduration_kernel(
@@ -743,7 +743,7 @@ pub fn eval_mduration_surface(
 }
 pub fn eval_price_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &PRICE_META, |p| {
         price_kernel(
@@ -759,7 +759,7 @@ pub fn eval_price_surface(
 }
 pub fn eval_pricemat_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &PRICEMAT_META, |p| {
         pricemat_kernel(
@@ -774,7 +774,7 @@ pub fn eval_pricemat_surface(
 }
 pub fn eval_yield_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELD_META, |p| {
         yield_kernel(
@@ -790,7 +790,7 @@ pub fn eval_yield_surface(
 }
 pub fn eval_yielddisc_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELDDISC_META, |p| {
         yielddisc_kernel(
@@ -804,7 +804,7 @@ pub fn eval_yielddisc_surface(
 }
 pub fn eval_yieldmat_surface(
     args: &[CallArgValue],
-    r: &(impl ReferenceResolver + ?Sized),
+    r: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BondCoreEvalError> {
     evaln(args, r, &YIELDMAT_META, |p| {
         yieldmat_kernel(
@@ -829,8 +829,8 @@ pub fn map_bond_core_error_to_ws(e: &BondCoreEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{CallArgValue, EvalValue, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{CallArgValue, EvalValue};
     fn serial(y: i64, m: i64, d: i64) -> f64 {
         excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap()
     }
@@ -838,17 +838,20 @@ mod tests {
         CallArgValue::Eval(EvalValue::Number(n))
     }
     struct Dummy;
-    impl ReferenceResolver for Dummy {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for Dummy {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
     fn close(a: f64, b: f64, t: f64) {

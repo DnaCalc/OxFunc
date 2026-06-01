@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const DEVSQ_META: FunctionMeta = FunctionMeta {
@@ -57,7 +57,7 @@ fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, De
 
 pub fn eval_devsq_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DevSqEvalError> {
     let argc = args.len();
     if !DEVSQ_META.arity.accepts(argc) {
@@ -86,27 +86,28 @@ pub fn map_devsq_error_to_ws(e: &DevSqEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         resolved_value: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 

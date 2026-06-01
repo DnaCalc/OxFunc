@@ -5,7 +5,9 @@ use crate::function::{
 use crate::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
-use crate::resolver::{CallerContext, RefResolutionError, ReferenceResolver, resolve_eval_value};
+use crate::resolver::{
+    CallerContext, ReferenceResolutionError, ReferenceSystemProvider, resolve_eval_value,
+};
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
     WorksheetErrorCode,
@@ -34,7 +36,7 @@ pub enum ImplicitIntersectionError {
     NoCallerAlignedIntersection,
     EmptyArray,
     EmptyCellTopLeft,
-    RefResolution(RefResolutionError),
+    RefResolution(ReferenceResolutionError),
 }
 
 fn scalar_from_array_value(value: &ArrayCellValue) -> Result<EvalValue, ImplicitIntersectionError> {
@@ -110,7 +112,7 @@ fn select_reference_cell(
 
 fn scalarize_eval_value(
     value: EvalValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     caller: Option<&CallerContext>,
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     match value {
@@ -126,7 +128,7 @@ fn scalarize_eval_value(
 
 fn scalarize_reference(
     reference: ReferenceLike,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     caller: Option<&CallerContext>,
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     match reference.kind {
@@ -158,7 +160,7 @@ fn scalarize_reference(
 
 pub fn eval_op_implicit_intersection_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     if args.len() != 1 {
         return Err(ImplicitIntersectionError::ArityMismatch {
@@ -197,7 +199,7 @@ pub fn map_op_implicit_intersection_error_to_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{ReferenceResolver, ResolverCapabilities};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
     use crate::value::ExcelText;
     use std::collections::BTreeMap;
 
@@ -206,17 +208,18 @@ mod tests {
         resolved: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for TestResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for TestResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.resolved.get(&reference.target).cloned().ok_or(
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 },
             )

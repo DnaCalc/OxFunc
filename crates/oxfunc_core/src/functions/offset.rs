@@ -3,9 +3,11 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::a1_refs::{format_relative_target, offset_reference, parse_a1_reference};
-use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+use crate::resolver::{
+    ReferenceSystemError, ReferenceSystemProvider, ReferenceTransformKind,
+    ReferenceTransformRequest, resolve_eval_value,
+};
+use crate::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
 
 pub const OFFSET_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OFFSET",
@@ -29,19 +31,18 @@ pub enum OffsetEvalError {
         actual: usize,
     },
     RefArgRequired,
-    InvalidReferenceText(String),
+    ReferenceSystem(ReferenceSystemError),
     Coercion(CoercionError),
     InvalidDimension,
 }
 
 fn parse_offset_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i64, OffsetEvalError> {
     let number = match arg {
         CallArgValue::Eval(v) => coerce_eval_to_number(v, resolver),
-        CallArgValue::Reference(r) => resolver
-            .resolve_reference(r)
+        CallArgValue::Reference(r) => resolve_eval_value(resolver, r)
             .map_err(CoercionError::RefResolution)
             .and_then(|v| coerce_eval_to_number(&v, resolver)),
         CallArgValue::MissingArg => Err(CoercionError::MissingArg),
@@ -53,7 +54,7 @@ fn parse_offset_number(
 
 fn parse_optional_positive_dimension(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<usize>, OffsetEvalError> {
     let Some(arg) = arg else {
         return Ok(None);
@@ -78,7 +79,7 @@ fn parse_reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, OffsetEvalEr
 
 pub fn eval_offset_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OffsetEvalError> {
     let argc = args.len();
     if !OFFSET_META.arity.accepts(argc) {
@@ -90,31 +91,29 @@ pub fn eval_offset_surface(
     }
 
     let base = parse_reference_arg(&args[0])?;
-    let parsed = parse_a1_reference(&base.target)
-        .ok_or_else(|| OffsetEvalError::InvalidReferenceText(base.target.clone()))?;
     let row_offset = parse_offset_number(&args[1], resolver)?;
     let col_offset = parse_offset_number(&args[2], resolver)?;
     let height = parse_optional_positive_dimension(args.get(3), resolver)?;
     let width = parse_optional_positive_dimension(args.get(4), resolver)?;
-    let shifted = offset_reference(&parsed, row_offset, col_offset, height, width)
-        .ok_or(OffsetEvalError::InvalidDimension)?;
-    let target = format_relative_target(&shifted).ok_or(OffsetEvalError::InvalidDimension)?;
-
-    Ok(EvalValue::Reference(ReferenceLike::new(
-        if shifted.width() == 1 && shifted.height() == 1 {
-            ReferenceKind::A1
-        } else {
-            ReferenceKind::Area
-        },
-        target,
-    )))
+    resolver
+        .transform_reference(&ReferenceTransformRequest {
+            reference: base,
+            transform: ReferenceTransformKind::Offset {
+                row_offset,
+                col_offset,
+                height,
+                width,
+            },
+        })
+        .map(EvalValue::Reference)
+        .map_err(OffsetEvalError::ReferenceSystem)
 }
 
 pub fn map_offset_error_to_ws(e: &OffsetEvalError) -> WorksheetErrorCode {
     match e {
         OffsetEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
         OffsetEvalError::RefArgRequired => WorksheetErrorCode::Value,
-        OffsetEvalError::InvalidReferenceText(_) => WorksheetErrorCode::Ref,
+        OffsetEvalError::ReferenceSystem(_) => WorksheetErrorCode::Ref,
         OffsetEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
         OffsetEvalError::Coercion(_) => WorksheetErrorCode::Value,
         OffsetEvalError::InvalidDimension => WorksheetErrorCode::Ref,
@@ -124,22 +123,62 @@ pub fn map_offset_error_to_ws(e: &OffsetEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ReferenceKind;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
+        }
+
+        fn transform_reference(
+            &self,
+            request: &ReferenceTransformRequest,
+        ) -> Result<ReferenceLike, ReferenceSystemError> {
+            let ReferenceTransformKind::Offset {
+                row_offset,
+                col_offset,
+                height,
+                width,
+            } = request.transform
+            else {
+                return Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                });
+            };
+            match (
+                request.reference.target.as_str(),
+                row_offset,
+                col_offset,
+                height,
+                width,
+            ) {
+                ("A1", 1, 2, None, None) => Ok(ReferenceLike::new(ReferenceKind::A1, "C2")),
+                ("A1:B2", 0, 1, Some(1), Some(3)) => {
+                    Ok(ReferenceLike::new(ReferenceKind::Area, "B1:D1"))
+                }
+                ("B2:C3", 1, 1, None, None) => Ok(ReferenceLike::new(ReferenceKind::Area, "C3:D4")),
+                ("Sheet1!B2", 1, 2, None, None) => {
+                    Ok(ReferenceLike::new(ReferenceKind::A1, "Sheet1!D3"))
+                }
+                _ => Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                }),
+            }
         }
     }
 

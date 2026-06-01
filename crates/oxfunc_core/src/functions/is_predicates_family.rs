@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
     run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const INFORMATION_PREDICATE_BASE_META: FunctionMeta = FunctionMeta {
@@ -115,7 +115,7 @@ fn is_na_cell(cell: &ArrayCellValue) -> ArrayCellValue {
 fn eval_boolean_predicate_surface(
     meta: &FunctionMeta,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     predicate: impl Fn(&PreparedArgValue) -> bool,
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     // Type predicates classify each element (Excel spills over an array
@@ -150,7 +150,7 @@ pub fn isodd_kernel(n: f64) -> bool {
 
 pub fn eval_isblank_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISBLANK_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::EmptyCell)
@@ -159,7 +159,7 @@ pub fn eval_isblank_surface(
 
 pub fn eval_iserr_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISERR_META, args, resolver, |arg| {
         matches!(
@@ -171,7 +171,7 @@ pub fn eval_iserr_surface(
 
 pub fn eval_iserror_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
@@ -199,7 +199,7 @@ pub fn eval_iserror_surface(
 
 pub fn eval_islogical_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISLOGICAL_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::Eval(EvalValue::Logical(_)))
@@ -208,7 +208,7 @@ pub fn eval_islogical_surface(
 
 pub fn eval_isna_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
@@ -236,7 +236,7 @@ pub fn eval_isna_surface(
 
 pub fn eval_isnontext_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISNONTEXT_META, args, resolver, |arg| {
         !matches!(arg, PreparedArgValue::Eval(EvalValue::Text(_)))
@@ -245,7 +245,7 @@ pub fn eval_isnontext_surface(
 
 pub fn eval_istext_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISTEXT_META, args, resolver, |arg| {
         matches!(arg, PreparedArgValue::Eval(EvalValue::Text(_)))
@@ -254,7 +254,7 @@ pub fn eval_istext_surface(
 
 pub fn eval_isodd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -275,7 +275,7 @@ pub fn eval_isodd_surface(
 
 pub fn eval_isref_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    _resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InformationPredicateEvalError> {
     if !ISREF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ISREF_META, args.len()));
@@ -299,27 +299,28 @@ pub fn map_information_predicate_error_to_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         resolved: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 

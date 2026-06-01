@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const STANDARDIZE_META: FunctionMeta = FunctionMeta {
@@ -54,7 +54,7 @@ fn eval_standardize_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Sta
 
 pub fn eval_standardize_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StandardizeEvalError> {
     run_values_only_prepared_lifted(
         args,

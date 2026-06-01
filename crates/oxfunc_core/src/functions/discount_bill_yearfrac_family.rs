@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const DISCOUNT_BILL_YEARFRAC_META_BASE: FunctionMeta = FunctionMeta {
@@ -489,7 +489,7 @@ pub fn tbilleq_kernel(
 
 fn eval_numeric(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: impl Fn(&[PreparedArgValue]) -> Result<f64, DiscountBillYearfracEvalError>,
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
@@ -507,7 +507,7 @@ fn eval_numeric(
 
 pub fn eval_disc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &DISC_META, |prepared| {
         disc_kernel(
@@ -525,7 +525,7 @@ pub fn eval_disc_surface(
 
 pub fn eval_intrate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &INTRATE_META, |prepared| {
         intrate_kernel(
@@ -543,7 +543,7 @@ pub fn eval_intrate_surface(
 
 pub fn eval_received_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &RECEIVED_META, |prepared| {
         received_kernel(
@@ -561,7 +561,7 @@ pub fn eval_received_surface(
 
 pub fn eval_pricedisc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &PRICEDISC_META, |prepared| {
         pricedisc_kernel(
@@ -579,7 +579,7 @@ pub fn eval_pricedisc_surface(
 
 pub fn eval_tbilleq_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLEQ_META, |prepared| {
         tbilleq_kernel(
@@ -592,7 +592,7 @@ pub fn eval_tbilleq_surface(
 
 pub fn eval_tbillprice_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLPRICE_META, |prepared| {
         tbillprice_kernel(
@@ -605,7 +605,7 @@ pub fn eval_tbillprice_surface(
 
 pub fn eval_tbillyield_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLYIELD_META, |prepared| {
         tbillyield_kernel(
@@ -618,7 +618,7 @@ pub fn eval_tbillyield_surface(
 
 pub fn eval_yearfrac_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &YEARFRAC_META, |prepared| {
         yearfrac_kernel(
@@ -715,7 +715,10 @@ mod tests {
         let forward = yearfrac_kernel(start, end, Some(1.0)).unwrap();
         let reverse = yearfrac_kernel(end, start, Some(1.0)).unwrap();
         assert_close(forward, reverse, 1.0e-12);
-        assert!(forward > 0.0, "yearfrac should be non-negative, got {forward}");
+        assert!(
+            forward > 0.0,
+            "yearfrac should be non-negative, got {forward}"
+        );
         assert_close(forward, 0.5765027322404371, 1.0e-12);
     }
 

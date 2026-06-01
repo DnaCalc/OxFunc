@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::rank_eq_fn::{RankEqEvalError, eval_rank_eq_surface};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const RANK_META: FunctionMeta = FunctionMeta {
@@ -33,7 +33,7 @@ pub enum RankEvalError {
 
 pub fn eval_rank_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, RankEvalError> {
     eval_rank_eq_surface(args, resolver).map_err(|err| match err {
         RankEqEvalError::ArityMismatch {

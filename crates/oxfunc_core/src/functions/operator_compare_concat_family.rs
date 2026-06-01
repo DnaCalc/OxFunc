@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     run_values_only_prepared,
 };
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -240,7 +240,7 @@ fn map_concat_item(lhs: &PreparedArgValue, rhs: &PreparedArgValue) -> ArrayCellV
 
 fn eval_operator_compare_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     op: CompareOp,
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     run_values_only_prepared(
@@ -276,7 +276,7 @@ fn eval_operator_compare_surface(
 
 pub fn eval_op_concat_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     run_values_only_prepared(
         args,
@@ -311,42 +311,42 @@ pub fn eval_op_concat_surface(
 
 pub fn eval_op_equal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Eq)
 }
 
 pub fn eval_op_not_equal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ne)
 }
 
 pub fn eval_op_less_than_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Lt)
 }
 
 pub fn eval_op_less_equal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Le)
 }
 
 pub fn eval_op_greater_than_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Gt)
 }
 
 pub fn eval_op_greater_equal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ge)
 }
@@ -364,23 +364,26 @@ pub fn map_operator_compare_concat_error_to_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ArrayCellValue;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

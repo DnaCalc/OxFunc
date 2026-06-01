@@ -29,8 +29,8 @@ use crate::functions::var_p_fn::{eval_var_p_surface, map_var_p_error_to_ws};
 use crate::functions::var_s_fn::{eval_var_s_surface, map_var_s_error_to_ws};
 use crate::host_info::{AggregateReferenceContext, HostInfoError, HostInfoProvider};
 use crate::resolver::{
-    RefResolutionError, ReferenceResolver, ResolverCapabilities,
-    materialize_resolved_reference_values, resolve_eval_value, resolve_reference_values,
+    ReferenceSystemCapabilities, ReferenceSystemProvider, enumerate_reference_values,
+    materialize_resolved_reference_values, resolve_eval_value,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceLike,
@@ -116,24 +116,26 @@ pub enum SubtotalAggregateEvalError {
 
 struct PreparedOnlyResolver;
 
-impl ReferenceResolver for PreparedOnlyResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for PreparedOnlyResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
-        })
+        request: &crate::resolver::ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        Err(
+            crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                target: request.reference.target.clone(),
+            },
+        )
     }
 }
 
 fn coerce_scalar_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
@@ -151,7 +153,7 @@ fn coerce_scalar_number(
 
 fn coerce_whole_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i32, SubtotalAggregateEvalError> {
     let value = coerce_scalar_number(arg, resolver)?;
     let truncated = value.trunc();
@@ -163,7 +165,7 @@ fn coerce_whole_number(
 
 fn coerce_k_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CallArgValue, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
@@ -350,10 +352,10 @@ fn filter_reference_cells(
 fn materialize_ref_filtered_arg(
     reference: &ReferenceLike,
     rules: AggregateFilterRules,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: &dyn HostInfoProvider,
 ) -> Result<CallArgValue, SubtotalAggregateEvalError> {
-    let resolved = if let Some(values) = resolve_reference_values(resolver, reference)
+    let resolved = if let Some(values) = enumerate_reference_values(resolver, reference)
         .map_err(CoercionError::RefResolution)
         .map_err(SubtotalAggregateEvalError::Coercion)?
     {
@@ -405,7 +407,7 @@ fn materialize_ref_filtered_arg(
 fn prepare_reference_form_args(
     args: &[CallArgValue],
     rules: AggregateFilterRules,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: &dyn HostInfoProvider,
 ) -> Result<Vec<CallArgValue>, SubtotalAggregateEvalError> {
     let mut prepared = Vec::new();
@@ -569,7 +571,7 @@ fn dispatch_array_form(
 
 pub fn eval_subtotal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, SubtotalAggregateEvalError> {
     if !SUBTOTAL_META.arity.accepts(args.len()) {
@@ -590,7 +592,7 @@ pub fn eval_subtotal_surface(
 
 pub fn eval_aggregate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, SubtotalAggregateEvalError> {
     if !AGGREGATE_META.arity.accepts(args.len()) {
@@ -655,7 +657,7 @@ pub fn map_subtotal_aggregate_error_to_ws(e: &SubtotalAggregateEvalError) -> Wor
 mod tests {
     use super::*;
     use crate::host_info::{AggregateCellContext, HostInfoProvider};
-    use crate::resolver::ResolverCapabilities;
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ReferenceKind, WorksheetErrorCode};
     use std::collections::BTreeMap;
 
@@ -663,17 +665,18 @@ mod tests {
         values: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.values.get(&reference.target).cloned().ok_or(
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 },
             )

@@ -7,7 +7,7 @@ use crate::functions::adapters::{expand_aggregate_arg, prepare_arg_values_only};
 use crate::functions::percentile_common::{
     collect_percentile_values, percentile_inc_kernel, quartile_k,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const QUARTILE_INC_META: FunctionMeta = FunctionMeta {
@@ -32,7 +32,7 @@ pub enum QuartileIncEvalError {
 
 pub fn eval_quartile_inc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, QuartileIncEvalError> {
     if !QUARTILE_INC_META.arity.accepts(args.len()) {
         return Err(QuartileIncEvalError::ArityMismatch {

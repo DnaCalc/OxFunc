@@ -12,7 +12,7 @@ use crate::functions::percentrank_inc_fn::{
     eval_percentrank_inc_surface, map_percentrank_inc_error_to_ws,
 };
 use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_inc_error_to_ws};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const LEGACY_ALIAS_BASE_META: FunctionMeta = FunctionMeta {
@@ -87,7 +87,7 @@ fn guard_arity(
 
 pub fn eval_covar_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&COVAR_META, args)?;
     eval_covariance_p_surface(args, resolver)
@@ -96,7 +96,7 @@ pub fn eval_covar_surface(
 
 pub fn eval_mode_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&MODE_META, args)?;
     eval_mode_sngl_surface(args, resolver)
@@ -105,7 +105,7 @@ pub fn eval_mode_surface(
 
 pub fn eval_percentile_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTILE_META, args)?;
     eval_percentile_inc_surface(args, resolver)
@@ -114,7 +114,7 @@ pub fn eval_percentile_surface(
 
 pub fn eval_percentrank_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTRANK_META, args)?;
     eval_percentrank_inc_surface(args, resolver)
@@ -123,7 +123,7 @@ pub fn eval_percentrank_surface(
 
 pub fn eval_quartile_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&QUARTILE_META, args)?;
     eval_quartile_inc_surface(args, resolver)
@@ -132,7 +132,7 @@ pub fn eval_quartile_surface(
 
 pub fn eval_loginv_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LegacyStatsAliasEvalError> {
     guard_arity(&LOGINV_META, args)?;
     eval_lognorm_inv_surface(args, resolver)
@@ -149,7 +149,7 @@ pub fn map_legacy_stats_alias_error_to_ws(error: &LegacyStatsAliasEvalError) -> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
     use crate::value::{ArrayCellValue, EvalArray, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
@@ -157,17 +157,18 @@ mod tests {
         cells: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.cells.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::var_p_fn::{VarPEvalError, eval_var_p_surface};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const VARP_META: FunctionMeta = FunctionMeta {
@@ -33,7 +33,7 @@ pub enum VarpEvalError {
 
 pub fn eval_varp_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, VarpEvalError> {
     eval_var_p_surface(args, resolver).map_err(|err| match err {
         VarPEvalError::ArityMismatch {

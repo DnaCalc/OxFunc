@@ -3,7 +3,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::parse_a1_reference;
-use crate::resolver::{RefResolutionError, ReferenceResolver, resolve_reference_values};
+use crate::resolver::{
+    ReferenceResolutionError, ReferenceSystemProvider, enumerate_reference_values,
+};
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const COLUMNS_META: FunctionMeta = FunctionMeta {
@@ -28,7 +30,7 @@ pub enum ColumnsEvalError {
         actual: usize,
     },
     InvalidReferenceArg,
-    RefResolution(RefResolutionError),
+    RefResolution(ReferenceResolutionError),
 }
 
 pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsEvalError> {
@@ -66,7 +68,7 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
 
 pub fn eval_columns_surface_with_resolver(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ColumnsEvalError> {
     if !COLUMNS_META.arity.accepts(args.len()) {
         return Err(ColumnsEvalError::ArityMismatch {
@@ -100,7 +102,7 @@ pub fn eval_columns_surface_with_resolver(
     let count = if let Some(parsed) = parse_a1_reference(&reference.target) {
         parsed.end_col - parsed.start_col + 1
     } else {
-        resolve_reference_values(resolver, reference)
+        enumerate_reference_values(resolver, reference)
             .map_err(ColumnsEvalError::RefResolution)?
             .map(|values| values.declared_extent.cols)
             .ok_or(ColumnsEvalError::InvalidReferenceArg)?

@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::stdev_s_fn::{StdevSEvalError, eval_stdev_s_surface};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const STDEV_META: FunctionMeta = FunctionMeta {
@@ -33,7 +33,7 @@ pub enum StdevEvalError {
 
 pub fn eval_stdev_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StdevEvalError> {
     eval_stdev_s_surface(args, resolver).map_err(|err| match err {
         StdevSEvalError::ArityMismatch {

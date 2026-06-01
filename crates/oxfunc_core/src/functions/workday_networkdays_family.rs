@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::average_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 use std::collections::BTreeSet;
 
@@ -152,7 +152,7 @@ fn guard_arity(
 fn optional_prepared_arg(
     args: &[CallArgValue],
     index: usize,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<PreparedArgValue>, WorkdayNetworkdaysEvalError> {
     args.get(index)
         .map(|arg| {
@@ -169,7 +169,7 @@ struct DatePairPreparedArg {
 fn optional_date_pair_arg(
     args: &[CallArgValue],
     index: usize,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<DatePairPreparedArg>, WorkdayNetworkdaysEvalError> {
     let Some(arg) = args.get(index) else {
         return Ok(None);
@@ -262,7 +262,7 @@ fn parse_weekend_arg(
 
 fn collect_holiday_serials(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<BTreeSet<i64>, WorkdayNetworkdaysEvalError> {
     let Some(arg) = arg else {
         return Ok(BTreeSet::new());
@@ -415,7 +415,7 @@ fn lift_date_pair(
 
 pub fn eval_workday_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
@@ -440,7 +440,7 @@ pub fn eval_workday_surface(
 
 pub fn eval_workday_intl_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_INTL_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
@@ -471,7 +471,7 @@ pub fn eval_workday_intl_surface(
 
 pub fn eval_networkdays_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
@@ -496,7 +496,7 @@ pub fn eval_networkdays_surface(
 
 pub fn eval_networkdays_intl_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_INTL_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
@@ -541,7 +541,7 @@ pub fn map_workday_networkdays_error_to_ws(
 mod tests {
     use super::*;
     use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd};
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
 
@@ -549,17 +549,18 @@ mod tests {
         cells: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.cells.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

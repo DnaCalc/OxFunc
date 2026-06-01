@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{
     CovarianceDivisor, collect_paired_values, covariance_from_pairs,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const COVARIANCE_P_META: FunctionMeta = FunctionMeta {
@@ -36,7 +36,7 @@ pub enum CovariancePEvalError {
 
 pub fn eval_covariance_p_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CovariancePEvalError> {
     let argc = args.len();
     if !COVARIANCE_P_META.arity.accepts(argc) {

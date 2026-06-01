@@ -1,11 +1,11 @@
-use crate::coercion::{coerce_eval_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::resolver::{
-    materialize_resolved_reference_values, resolve_eval_value, resolve_reference_values,
-    RefResolutionError, ReferenceResolver, ResolvedReferenceValues, ResolverCapabilities,
+    ReferenceSystemCapabilities, ReferenceSystemProvider, ResolvedReferenceValues,
+    enumerate_reference_values, materialize_resolved_reference_values, resolve_eval_value,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalValue,
-    ReferenceKind, ReferenceLike, WorksheetErrorCode,
+    WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -168,11 +168,11 @@ pub(crate) fn expand_sparse_reference_values_with_provenance(
 
 pub fn sparse_reference_values_for_aggregate_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<ResolvedReferenceValues>, CoercionError> {
     match arg {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
-            resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)
+            enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)
         }
         _ => Ok(None),
     }
@@ -196,7 +196,7 @@ fn expand_lookup_eval_value(value: &EvalValue) -> Result<Vec<PreparedArgValue>, 
 
 fn resolve_eval_references(
     value: &EvalValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CoercionError> {
     match value {
         EvalValue::Reference(r) => {
@@ -209,7 +209,7 @@ fn resolve_eval_references(
 
 fn resolve_calc_references(
     value: &CalcValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, CoercionError> {
     match value.core() {
         CoreValue::Reference(reference) => {
@@ -232,7 +232,7 @@ fn calc_value_from_call_arg(arg: &CallArgValue) -> CalcValue {
 
 pub fn prepare_calc_value_values_only(
     arg: &CalcValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, CoercionError> {
     Ok(normalize_prepared_calc_value(resolve_calc_references(
         arg, resolver,
@@ -241,7 +241,7 @@ pub fn prepare_calc_value_values_only(
 
 pub fn prepare_calc_values_only(
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<CalcValue>, CoercionError> {
     args.iter()
         .map(|arg| prepare_calc_value_values_only(arg, resolver))
@@ -250,14 +250,14 @@ pub fn prepare_calc_values_only(
 
 pub fn prepare_call_arg_as_calc_value_values_only(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, CoercionError> {
     prepare_calc_value_values_only(&calc_value_from_call_arg(arg), resolver)
 }
 
 pub fn prepare_call_args_as_calc_values_only(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<CalcValue>, CoercionError> {
     args.iter()
         .map(|arg| prepare_call_arg_as_calc_value_values_only(arg, resolver))
@@ -266,7 +266,7 @@ pub fn prepare_call_args_as_calc_values_only(
 
 pub fn prepare_arg_values_only(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<PreparedArgValue, CoercionError> {
     prepare_call_arg_as_calc_value_values_only(arg, resolver).map(|value| {
         let prepared = prepared_from_calc_value(&value);
@@ -279,7 +279,7 @@ pub fn prepare_arg_values_only(
 
 pub fn prepare_args_values_only(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     prepare_call_args_as_calc_values_only(args, resolver)
         .map(|values| prepared_vec_from_calc_values(&values))
@@ -287,12 +287,12 @@ pub fn prepare_args_values_only(
 
 pub fn expand_arg_values_only(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
         CallArgValue::Eval(EvalValue::Reference(r)) => {
             if let Some(values) =
-                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
                 return expand_resolved_reference_values(values);
             }
@@ -308,7 +308,7 @@ pub fn expand_arg_values_only(
         CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
         CallArgValue::Reference(r) => {
             if let Some(values) =
-                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
                 return expand_resolved_reference_values(values);
             }
@@ -322,12 +322,12 @@ pub fn expand_arg_values_only(
 
 pub fn expand_lookup_vector_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, CoercionError> {
     match arg {
         CallArgValue::Eval(EvalValue::Reference(r)) => {
             if let Some(values) =
-                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
                 let array = materialize_resolved_reference_values(&values)
                     .map_err(CoercionError::RefResolution)?;
@@ -341,7 +341,7 @@ pub fn expand_lookup_vector_arg(
         CallArgValue::EmptyCell => Ok(vec![PreparedArgValue::EmptyCell]),
         CallArgValue::Reference(r) => {
             if let Some(values) =
-                resolve_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
                 let array = materialize_resolved_reference_values(&values)
                     .map_err(CoercionError::RefResolution)?;
@@ -355,7 +355,7 @@ pub fn expand_lookup_vector_arg(
 
 pub(crate) fn expand_aggregate_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
     match arg {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
@@ -390,7 +390,7 @@ pub(crate) fn expand_aggregate_arg(
 
 pub fn run_values_only_prepared<Out, E>(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     on_prepared: impl FnOnce(&[PreparedArgValue]) -> Result<Out, E>,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
 ) -> Result<Out, E> {
@@ -402,7 +402,7 @@ pub fn run_values_only_prepared<Out, E>(
 
 pub fn run_calc_values_only_prepared<Out, E>(
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     on_prepared: impl FnOnce(&[CalcValue]) -> Result<Out, E>,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
 ) -> Result<Out, E> {
@@ -430,7 +430,7 @@ fn scalar_eval_to_cell(value: EvalValue) -> ArrayCellValue {
 /// array can carry per-element errors the way Excel does.
 pub fn run_values_only_prepared_lifted<E>(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     on_cell: impl Fn(&[PreparedArgValue]) -> Result<EvalValue, E>,
     map_err_to_ws: impl Fn(&E) -> WorksheetErrorCode,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
@@ -458,7 +458,7 @@ pub fn run_values_only_prepared_lifted<E>(
 
 pub fn map_values_only_prepared<Out>(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     on_prepared_arg: impl Fn(&PreparedArgValue) -> Out,
     on_preparation_error: impl Fn(CoercionError) -> Out,
 ) -> Vec<Out> {
@@ -472,7 +472,7 @@ pub fn map_values_only_prepared<Out>(
 
 pub fn map_calc_values_only_prepared<Out>(
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     on_prepared_arg: impl Fn(&CalcValue) -> Out,
     on_preparation_error: impl Fn(CoercionError) -> Out,
 ) -> Vec<Out> {
@@ -609,11 +609,11 @@ pub fn expand_prepared_broadcast_grid(
     Some((shape, cells))
 }
 
-struct NoReferenceResolver;
+struct NoReferenceSystemProvider;
 
-impl ReferenceResolver for NoReferenceResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities {
+impl ReferenceSystemProvider for NoReferenceSystemProvider {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities {
             allow_eval_time_deref: false,
             allow_three_d_refs: false,
             allow_structured_refs: false,
@@ -622,27 +622,22 @@ impl ReferenceResolver for NoReferenceResolver {
         }
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::CapabilityDenied {
-            kind: match reference.kind {
-                ReferenceKind::A1 => ReferenceKind::A1,
-                ReferenceKind::Area => ReferenceKind::Area,
-                ReferenceKind::MultiArea => ReferenceKind::MultiArea,
-                ReferenceKind::ThreeD => ReferenceKind::ThreeD,
-                ReferenceKind::Structured => ReferenceKind::Structured,
-                ReferenceKind::SpillAnchor => ReferenceKind::SpillAnchor,
+        _request: &crate::resolver::ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        Err(
+            crate::resolver::ReferenceResolutionError::CapabilityDenied {
+                kind: crate::value::ReferenceKind::A1,
+                capability: "values_only_pre_adapter_invariant",
             },
-            capability: "values_only_pre_adapter_invariant",
-        })
+        )
     }
 }
 
 pub fn coerce_prepared_to_number(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
     match arg {
-        PreparedArgValue::Eval(v) => coerce_eval_to_number(v, &NoReferenceResolver),
+        PreparedArgValue::Eval(v) => coerce_eval_to_number(v, &NoReferenceSystemProvider),
         PreparedArgValue::MissingArg => Err(CoercionError::MissingArg),
         PreparedArgValue::EmptyCell => Err(CoercionError::EmptyCell),
     }
@@ -666,7 +661,7 @@ pub fn coerce_prepared_to_text(
             Err(CoercionError::UnsupportedValueKind("array"))
         }
         PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(CoercionError::RefResolution(
-            RefResolutionError::EvalTimeDerefNotAllowed,
+            crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed,
         )),
         PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
             Err(CoercionError::UnsupportedValueKind("lambda_value"))
@@ -696,7 +691,7 @@ pub fn apply_unary_numeric_array_map_prepared(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
         CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue, ReferenceKind,
         ReferenceLike, WorksheetErrorCode,
@@ -704,34 +699,35 @@ mod tests {
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        caps: ResolverCapabilities,
+        caps: ReferenceSystemCapabilities,
         resolved_value: Option<EvalValue>,
         by_target: BTreeMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
             self.caps
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             if let Some(value) = self.by_target.get(&reference.target) {
                 return Ok(value.clone());
             }
-            self.resolved_value
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            self.resolved_value.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
     fn resolver_with(value: EvalValue) -> MockResolver {
         MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(value),
             by_target: BTreeMap::new(),
         }
@@ -775,21 +771,21 @@ mod tests {
     }
 
     #[test]
-    fn prepare_values_only_materializes_multi_area_reference_into_row_vector() {
+    fn prepare_values_only_accepts_provider_materialized_multi_area_reference() {
         let mut by_target = BTreeMap::new();
         by_target.insert(
-            "Alpha!A1:A2".to_string(),
+            "(Alpha!A1:A2,Alpha!B2)".to_string(),
             EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(7.0)],
-                    vec![ArrayCellValue::Number(11.0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(7.0),
+                    ArrayCellValue::Number(11.0),
+                    ArrayCellValue::Number(13.0),
+                ]])
                 .unwrap(),
             ),
         );
-        by_target.insert("Alpha!B2".to_string(), EvalValue::Number(13.0));
         let resolver = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
             by_target,
         };
@@ -882,21 +878,21 @@ mod tests {
     }
 
     #[test]
-    fn expand_lookup_vector_materializes_multi_area_reference_in_member_order() {
+    fn expand_lookup_vector_accepts_provider_materialized_multi_area_reference() {
         let mut by_target = BTreeMap::new();
         by_target.insert(
-            "A1:A2".to_string(),
+            "(A1:A2,C1)".to_string(),
             EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(1.0)],
-                    vec![ArrayCellValue::Number(2.0)],
-                ])
+                EvalArray::from_rows(vec![vec![
+                    ArrayCellValue::Number(1.0),
+                    ArrayCellValue::Number(2.0),
+                    ArrayCellValue::Number(3.0),
+                ]])
                 .unwrap(),
             ),
         );
-        by_target.insert("C1".to_string(), EvalValue::Number(3.0));
         let resolver = MockResolver {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
             by_target,
         };
@@ -955,7 +951,7 @@ mod tests {
         assert_eq!(
             got,
             Err(CoercionError::RefResolution(
-                RefResolutionError::EvalTimeDerefNotAllowed
+                crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed
             ))
         );
     }
@@ -998,7 +994,7 @@ mod tests {
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
         let resolver = MockResolver {
-            caps: ResolverCapabilities {
+            caps: ReferenceSystemCapabilities {
                 allow_eval_time_deref: false,
                 allow_three_d_refs: false,
                 allow_structured_refs: false,

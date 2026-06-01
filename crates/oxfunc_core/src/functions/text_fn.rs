@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared,
 };
 use crate::locale_format::{FormatFailure, LocaleFormatContext};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const TEXT_META: FunctionMeta = FunctionMeta {
@@ -138,7 +138,7 @@ pub fn eval_text_adapter_prepared(
 
 pub fn eval_text_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, TextEvalError> {
     run_values_only_prepared(
@@ -161,21 +161,23 @@ pub fn map_text_error_to_ws(e: &TextEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::locale_format::test_current_excel_host_context;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

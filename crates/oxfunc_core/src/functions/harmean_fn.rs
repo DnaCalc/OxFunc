@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const HARMEAN_META: FunctionMeta = FunctionMeta {
@@ -52,7 +52,7 @@ fn eval_harmean_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, 
 
 pub fn eval_harmean_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, HarMeanEvalError> {
     let argc = args.len();
     if !HARMEAN_META.arity.accepts(argc) {

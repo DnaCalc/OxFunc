@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::parse_a1_reference;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -66,7 +66,7 @@ fn column_result(start_col: usize, end_col: usize) -> EvalValue {
 
 pub fn eval_column_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ColumnEvalError> {
     if !COLUMN_META.arity.accepts(args.len()) {
         return Err(ColumnEvalError::ArityMismatch {
@@ -98,25 +98,28 @@ pub fn map_column_error_to_ws(e: &ColumnEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{CallerContext, RefResolutionError, ResolverCapabilities};
+    use crate::resolver::{CallerContext, ReferenceSystemCapabilities};
     use crate::value::{ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         caller: Option<CallerContext>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
 
         fn caller_context(&self) -> Option<CallerContext> {

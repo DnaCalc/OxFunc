@@ -811,3 +811,76 @@ Validation:
 5. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml function_call_target --lib`: passed, 6 tests.
 6. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1336 passed, 1 ignored.
 7. `rg -n "eval_surface_calc_value_call|eval_surface_legacy_value_call|dispatch_args_from_calc_values|calc_values_from_call_args|fn eval_surface_value_call\(|fn eval_surface_value_call_with_callable\(|AggregatePreparedValue \{|pub struct AggregatePreparedValue|pub fn .*AggregatePreparedValue|item\.value\b|item\.origin\b" crates tools`: passed; expected hits were only canonical production dispatch functions, crate-local aggregate state/accessors, and aggregate accessor use.
+
+## 17. W099-009 Reference System Provider Cleanup Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. `ReferenceLike.kind` and `ReferenceLike.target` remain as compatibility mirrors until the typed-reference identity deletion lane in W099-015.
+2. Function-lane historical/interface documents still mention `ReferenceResolver`; those are not active code surfaces and need a later doctrine refresh rather than code migration.
+3. OxFml/OxCalc still own host reference-system implementations and downstream flow-through; OxFunc now owns only the null provider plus provider-facing contracts.
+4. Kernel/value carrier migration remains with W099-010 through W099-015.
+
+Planned scope:
+1. Remove active `ReferenceResolver` and `ReferenceTextResolver` traits from OxFunc code.
+2. Make `ReferenceSystemProvider` the sole FEC reference capability surface.
+3. Keep `NullReferenceSystemProvider` as the only OxFunc-owned provider implementation for absent host reference systems.
+4. Move reference-sensitive functions away from OxFunc-local textual reference transformations and toward provider transform/compose/resolve/enumerate requests.
+5. Retain behavior evidence without reintroducing local production reference systems.
+
+Evidence:
+1. `ReferenceResolver`, `ReferenceTextResolver`, `ResolverCapabilities`, `RefResolutionError`, and compatibility FEC slots/methods were removed from active code.
+2. `FunctionExecutionContext`, `FunctionExecutionContextRef`, and `FunctionExecutionContextBundle` now expose `reference_system_provider()` as the native reference capability; the bundle base field is named `reference_system_base`.
+3. `NullReferenceSystemProvider` is the default no-host provider and rejects dereference/enumeration/resolve/facts/transform/compose operations through typed provider errors.
+4. `INDIRECT`, `INDEX`, `OFFSET`, reference operators, sparse aggregate/lookup paths, rows/columns, criteria, and structured-table guardrails now route through `ReferenceSystemProvider`.
+5. The old helper `resolve_reference_values` was renamed to `enumerate_reference_values`.
+6. The OxFunc-local multi-area text materializer was removed; multi-area dereference/enumeration is delegated to the host provider.
+7. Tests that require reference transforms use local scripted test doubles only; no production textual reference provider was added.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - not in W099-009 scope; no function contract rows were changed. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - not in W099-009 scope; no function slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - provider/FEC/reference-sensitive code compiles and targeted/full core tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover FEC defaults, provider delegation, reference transform/compose paths, sparse structured references, and surface error mapping. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and source scans are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is made by this reference-seam cleanup bead. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this provider cleanup bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - OxFml already moved off the old resolver path in the companion working tree; final downstream reference-system implementation remains owned outside OxFunc. |
+| 10 | No known semantic gap remains in declared scope? | Yes - declared scope was active OxFunc legacy resolver deletion and provider-only routing, not terminal typed-reference mirror deletion. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-009 bead closure, not W099 terminal migration or function semantic completion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.9` is the live execution surface and is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asks for reference-provider cleanup, and active OxFunc code no longer defines the old resolver traits or FEC resolver/text-resolver slots.
+2. Gate criteria re-read: passed. `ReferenceSystemProvider` is the active FEC and function-facing reference capability, with null-provider fallback for absent host systems.
+3. Silent scope reduction check: passed. Remaining compatibility mirrors on `ReferenceLike` and old carrier types are listed as later W099 lanes, not claimed as deleted here.
+4. "Looks done but is not" pattern check: passed. Test-only scripted providers remain local test doubles; production OxFunc defines no textual reference-system implementation beyond the null provider.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining integration lanes for W099-009.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: a public helper still had the old `resolve_reference_values` name. It was renamed to `enumerate_reference_values` and all active call sites were updated.
+2. Issue found and corrected: `FunctionExecutionContextBundle` still exposed a public `resolver` base field. It now exposes `reference_system_base`.
+3. Issue found and corrected: `INDEX` still had target-string checks for legacy parenthesized carriers and mixed-sheet multi-area text. Those checks were deleted and provider errors now drive the surface result.
+4. Issue found and corrected: `resolver.rs` still decomposed multi-area reference target text to materialize values. That local textual reference-system behavior was removed; dereference and enumeration now delegate multi-area references to the provider.
+5. Issue found and corrected: tests for SUM, adapter preparation, XMATCH, and surface INDEX assumed OxFunc-local multi-area decomposition. They now use provider-materialized whole-reference results or provider failure expectations.
+
+Validation:
+
+1. `cargo check --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1331 passed, 1 ignored.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test structured_table_reference_guardrails`: passed, 8 passed.
+4. `rg "collect_multi_area_member|materialize_multi_area_eval_value|mixed_sheet_multi_area|unsupported_multi_area_reference_part|multi_area_reference_shape_invalid|target\.starts_with|legacy_multi_area_carrier_removed|resolve_reference_values|\bReferenceResolver\b|ReferenceTextResolver|reference_text_resolver|with_reference_text_resolver|reference_resolver\(|ResolverCapabilities|RefResolutionError|\.resolve_reference\(|fn resolve_reference\(" crates\oxfunc_core\src crates\oxfunc_core\tests -n`: passed with no active-code matches.

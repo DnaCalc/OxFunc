@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, LambdaValue, WorksheetErrorCode,
 };
@@ -805,7 +805,7 @@ pub fn eval_makearray_prepared(
 pub fn prepare_and_invoke_callable(
     args: &[CallArgValue],
     callable: &LambdaValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
     let prepared =
@@ -849,7 +849,7 @@ fn parse_positive_dimension(prepared: &PreparedArgValue) -> Result<usize, Lambda
 
 pub fn eval_map_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !MAP_META.arity.accepts(args.len()) {
@@ -864,7 +864,7 @@ pub fn eval_map_surface(
 
 pub fn eval_reduce_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
     if !REDUCE_META.arity.accepts(args.len()) {
@@ -878,7 +878,7 @@ pub fn eval_reduce_surface(
 
 pub fn eval_scan_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !SCAN_META.arity.accepts(args.len()) {
@@ -892,7 +892,7 @@ pub fn eval_scan_surface(
 
 pub fn eval_byrow_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !BYROW_META.arity.accepts(args.len()) {
@@ -906,7 +906,7 @@ pub fn eval_byrow_surface(
 
 pub fn eval_bycol_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !BYCOL_META.arity.accepts(args.len()) {
@@ -920,7 +920,7 @@ pub fn eval_bycol_surface(
 
 pub fn eval_makearray_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !MAKEARRAY_META.arity.accepts(args.len()) {
@@ -952,7 +952,7 @@ pub fn map_lambda_helper_error_to_ws(error: &LambdaHelperEvalError) -> Worksheet
 
 pub fn eval_isomitted_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if !ISOMITTED_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&ISOMITTED_META, args.len()));
@@ -969,10 +969,8 @@ pub fn eval_isomitted_surface(
 mod tests {
     use super::*;
     use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::{
-        CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, ReferenceLike,
-    };
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
+    use crate::value::{CallableArityShape, CallableCaptureMode, EvalArray, ExcelText};
     use std::cell::Cell;
 
     struct MockCallableInvoker;
@@ -1142,18 +1140,21 @@ mod tests {
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

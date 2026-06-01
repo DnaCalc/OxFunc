@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, rsq_from_pairs};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const RSQ_META: FunctionMeta = FunctionMeta {
@@ -34,7 +34,7 @@ pub enum RsqEvalError {
 
 pub fn eval_rsq_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, RsqEvalError> {
     let argc = args.len();
     if !RSQ_META.arity.accepts(argc) {

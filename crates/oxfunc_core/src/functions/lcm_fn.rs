@@ -1,4 +1,4 @@
-use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::lcm_int;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const LCM_META: FunctionMeta = FunctionMeta {
@@ -45,7 +45,7 @@ pub fn lcm_kernel(items: &[i64]) -> f64 {
 
 pub fn eval_lcm_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, LcmEvalError> {
     let argc = args.len();
     if !LCM_META.arity.accepts(argc) {

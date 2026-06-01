@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const UNICHAR_META: FunctionMeta = FunctionMeta {
@@ -73,7 +73,7 @@ pub fn unicode_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_unichar_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -99,7 +99,7 @@ pub fn eval_unichar_surface(
 
 pub fn eval_unicode_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TextUnicodeEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -135,23 +135,25 @@ pub fn map_text_unicode_error_to_ws(e: &TextUnicodeEvalError) -> WorksheetErrorC
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

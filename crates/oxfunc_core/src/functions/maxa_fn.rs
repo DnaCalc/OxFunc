@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::extrema_a_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const MAXA_META: FunctionMeta = FunctionMeta {
@@ -47,7 +47,7 @@ fn eval_maxa_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, Max
 
 pub fn eval_maxa_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MaxAEvalError> {
     let argc = args.len();
     if !MAXA_META.arity.accepts(argc) {

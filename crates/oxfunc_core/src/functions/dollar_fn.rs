@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
 use crate::locale_format::LocaleFormatContext;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const DOLLAR_META: FunctionMeta = FunctionMeta {
@@ -86,7 +86,7 @@ pub fn eval_dollar_adapter_prepared(
 
 pub fn eval_dollar_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     ctx: &LocaleFormatContext,
 ) -> Result<EvalValue, DollarEvalError> {
     run_values_only_prepared(
@@ -109,22 +109,25 @@ pub fn map_dollar_error_to_ws(e: &DollarEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::locale_format::test_current_excel_host_context;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

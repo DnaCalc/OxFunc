@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::variance_common::{
     VarianceDivisor, VarianceInclusionPolicy, collect_variance_values, variance_from_values,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const VARPA_META: FunctionMeta = FunctionMeta {
@@ -36,7 +36,7 @@ pub enum VarPAEvalError {
 
 pub fn eval_varpa_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, VarPAEvalError> {
     let argc = args.len();
     if !VARPA_META.arity.accepts(argc) {

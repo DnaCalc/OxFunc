@@ -7,10 +7,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
-    run_values_only_prepared, PreparedArgValue,
+    PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CalcArray, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -763,11 +763,7 @@ pub fn eval_sort_prepared(
             let lhs_cell = array.get(sort_index, *lhs).expect("validated column");
             let rhs_cell = array.get(sort_index, *rhs).expect("validated column");
             let ord = compare_cell_values(lhs_cell, rhs_cell);
-            if descending {
-                ord.reverse()
-            } else {
-                ord
-            }
+            if descending { ord.reverse() } else { ord }
         });
         let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
         for row in 0..array.shape().rows {
@@ -784,11 +780,7 @@ pub fn eval_sort_prepared(
         let lhs_cell = array.get(*lhs, sort_index).expect("validated row");
         let rhs_cell = array.get(*rhs, sort_index).expect("validated row");
         let ord = compare_cell_values(lhs_cell, rhs_cell);
-        if descending {
-            ord.reverse()
-        } else {
-            ord
-        }
+        if descending { ord.reverse() } else { ord }
     });
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
     for row in order {
@@ -1011,7 +1003,7 @@ fn surface_arity_error(meta: &FunctionMeta, actual: usize) -> DynamicArrayReshap
 
 fn eval_surface_common(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     eval: impl FnOnce(&[PreparedArgValue]) -> Result<EvalValue, DynamicArrayReshapeEvalError>,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -1028,7 +1020,7 @@ fn eval_surface_common(
 
 fn eval_choose_axes_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     eval: impl FnOnce(&[PreparedArgValue]) -> Result<EvalValue, DynamicArrayReshapeEvalError>,
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -1052,105 +1044,105 @@ fn eval_choose_axes_surface(
 
 pub fn eval_choosecols_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSECOLS_META, eval_choosecols_prepared)
 }
 
 pub fn eval_chooserows_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSEROWS_META, eval_chooserows_prepared)
 }
 
 pub fn eval_drop_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &DROP_META, eval_drop_prepared)
 }
 
 pub fn eval_expand_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &EXPAND_META, eval_expand_prepared)
 }
 
 pub fn eval_filter_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &FILTER_META, eval_filter_prepared)
 }
 
 pub fn eval_sort_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORT_META, eval_sort_prepared)
 }
 
 pub fn eval_sortby_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORTBY_META, eval_sortby_prepared)
 }
 
 pub fn eval_take_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TAKE_META, eval_take_prepared)
 }
 
 pub fn eval_tocol_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOCOL_META, eval_tocol_prepared)
 }
 
 pub fn eval_torow_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOROW_META, eval_torow_prepared)
 }
 
 pub fn eval_transpose_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TRANSPOSE_META, eval_transpose_prepared)
 }
 
 pub fn eval_unique_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &UNIQUE_META, eval_unique_prepared)
 }
 
 pub fn eval_vstack_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &VSTACK_META, eval_vstack_prepared)
 }
 
 pub fn eval_wrapcols_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPCOLS_META, eval_wrapcols_prepared)
 }
 
 pub fn eval_wraprows_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPROWS_META, eval_wraprows_prepared)
 }
@@ -1175,23 +1167,26 @@ pub fn map_dynamic_array_reshape_error_to_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

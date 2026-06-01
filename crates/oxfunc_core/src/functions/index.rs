@@ -3,13 +3,12 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::a1_refs::{
-    A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
+use crate::resolver::{
+    ReferenceSystemError, ReferenceSystemProvider, ReferenceTransformKind,
+    ReferenceTransformRequest, enumerate_reference_values,
 };
-use crate::resolver::{ReferenceResolver, resolve_reference_values};
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind,
-    ReferenceLike, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
 
 pub const INDEX_META: FunctionMeta = FunctionMeta {
@@ -44,6 +43,7 @@ pub enum IndexEvalError {
     },
     UnsupportedSource(&'static str),
     ArrayPayloadUnavailable,
+    ReferenceSystem(ReferenceSystemError),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -54,7 +54,7 @@ enum ArrayIndexSelector {
 
 fn coerce_index_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     let n = coerce_arg_to_number(arg, resolver).map_err(IndexEvalError::Coercion)?;
     if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
@@ -65,7 +65,7 @@ fn coerce_index_number(
 
 fn coerce_optional_index_number(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<usize, IndexEvalError> {
@@ -78,7 +78,7 @@ fn coerce_optional_index_number(
 
 fn coerce_area_number(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     match arg {
         None => Ok(1),
@@ -95,7 +95,7 @@ fn coerce_area_number(
 
 fn coerce_array_index_selector(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<ArrayIndexSelector, IndexEvalError> {
@@ -108,148 +108,6 @@ fn coerce_array_index_selector(
             Ok(ArrayIndexSelector::SelectorArray(array.clone()))
         }
         Some(other) => coerce_index_number(other, resolver).map(ArrayIndexSelector::Scalar),
-    }
-}
-
-fn project_reference(base: &ReferenceLike, row: usize, col: usize) -> EvalValue {
-    EvalValue::Reference(ReferenceLike::new(
-        base.kind,
-        format!("{}#INDEX({row},{col})", base.target),
-    ))
-}
-
-fn has_legacy_multi_area_carrier(reference: &ReferenceLike) -> bool {
-    !matches!(reference.kind, ReferenceKind::MultiArea)
-        && reference.target.trim().starts_with('(')
-        && reference.target.trim().ends_with(')')
-}
-
-fn parse_reference_areas(
-    reference: &ReferenceLike,
-) -> Result<Option<Vec<A1Reference>>, IndexEvalError> {
-    let parts: Vec<String> = if matches!(reference.kind, ReferenceKind::MultiArea) {
-        reference
-            .multi_area_targets()
-            .ok_or(IndexEvalError::UnsupportedSource(
-                "invalid_multi_area_reference",
-            ))?
-    } else {
-        return Ok(None);
-    };
-    if parts.is_empty() {
-        return Ok(None);
-    }
-
-    let mut areas = Vec::with_capacity(parts.len());
-    for part in parts {
-        let Some(area) = parse_a1_reference(&part) else {
-            return Ok(None);
-        };
-        areas.push(area);
-    }
-
-    if areas.len() > 1 {
-        let first_prefix = areas[0].prefix.clone();
-        if areas.iter().any(|area| area.prefix != first_prefix) {
-            return Err(IndexEvalError::UnsupportedSource("mixed_sheet_multi_area"));
-        }
-    }
-
-    Ok(Some(areas))
-}
-
-fn select_a1_reference(
-    base: &A1Reference,
-    row: usize,
-    col: usize,
-) -> Result<A1Reference, IndexEvalError> {
-    let height = base.height();
-    let width = base.width();
-
-    if row > height || col > width {
-        return Err(IndexEvalError::OutOfBounds {
-            rows: height,
-            cols: width,
-            row,
-            col,
-        });
-    }
-
-    let mut selected = match (row, col) {
-        (0, 0) => base.clone(),
-        (0, c) => A1Reference {
-            prefix: base.prefix.clone(),
-            start_row: base.start_row,
-            end_row: base.end_row,
-            start_col: base.start_col + c - 1,
-            end_col: base.start_col + c - 1,
-            notation: A1ReferenceNotation::Rect,
-        },
-        (r, 0) => A1Reference {
-            prefix: base.prefix.clone(),
-            start_row: base.start_row + r - 1,
-            end_row: base.start_row + r - 1,
-            start_col: base.start_col,
-            end_col: base.end_col,
-            notation: A1ReferenceNotation::Rect,
-        },
-        (r, c) => A1Reference {
-            prefix: base.prefix.clone(),
-            start_row: base.start_row + r - 1,
-            end_row: base.start_row + r - 1,
-            start_col: base.start_col + c - 1,
-            end_col: base.start_col + c - 1,
-            notation: A1ReferenceNotation::Rect,
-        },
-    };
-
-    selected.notation = if selected.start_row == 1
-        && selected.end_row == crate::functions::a1_refs::EXCEL_MAX_ROWS
-    {
-        A1ReferenceNotation::WholeColumn
-    } else if selected.start_col == 1
-        && selected.end_col == crate::functions::a1_refs::EXCEL_MAX_COLS
-    {
-        A1ReferenceNotation::WholeRow
-    } else {
-        A1ReferenceNotation::Rect
-    };
-
-    Ok(selected)
-}
-
-fn reference_from_a1(reference: A1Reference) -> Result<EvalValue, IndexEvalError> {
-    let target = format_relative_target(&reference)
-        .ok_or(IndexEvalError::UnsupportedSource("unformattable_reference"))?;
-    Ok(EvalValue::Reference(ReferenceLike::new(
-        if reference.width() == 1 && reference.height() == 1 {
-            ReferenceKind::A1
-        } else {
-            ReferenceKind::Area
-        },
-        target,
-    )))
-}
-
-fn project_reference_with_extent(
-    reference: &ReferenceLike,
-    rows: usize,
-    cols: usize,
-    row: usize,
-    col: usize,
-) -> Result<EvalValue, IndexEvalError> {
-    if row > rows || col > cols {
-        return Err(IndexEvalError::OutOfBounds {
-            rows,
-            cols,
-            row,
-            col,
-        });
-    }
-    if row == 0 && col == 0 {
-        Ok(EvalValue::Reference(reference.clone()))
-    } else {
-        Ok(project_reference(reference, row, col))
     }
 }
 
@@ -450,7 +308,7 @@ fn try_slice_vector_with_selector_array(
 
 pub fn eval_index_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, IndexEvalError> {
     let argc = args.len();
     if !INDEX_META.arity.accepts(argc) {
@@ -466,35 +324,30 @@ pub fn eval_index_surface(
             let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
             let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
             let area = coerce_area_number(args.get(3), resolver)?;
-            if let Some(areas) = parse_reference_areas(r)? {
-                let Some(selected_area) = areas.get(area - 1) else {
-                    return Err(IndexEvalError::InvalidAreaNumber(area as f64));
-                };
-                reference_from_a1(select_a1_reference(selected_area, row, col)?)
-            } else if has_legacy_multi_area_carrier(r) {
-                Err(IndexEvalError::UnsupportedSource(
-                    "legacy_multi_area_carrier_removed",
-                ))
-            } else if area != 1 {
-                Err(IndexEvalError::InvalidAreaNumber(area as f64))
-            } else if let Some(parsed) = parse_a1_reference(&r.target) {
-                reference_from_a1(select_a1_reference(&parsed, row, col)?)
-            } else if let Some(values) = resolve_reference_values(resolver, r)
-                .map_err(CoercionError::RefResolution)
-                .map_err(IndexEvalError::Coercion)?
-            {
-                project_reference_with_extent(
-                    r,
-                    values.declared_extent.rows,
-                    values.declared_extent.cols,
-                    row,
-                    col,
-                )
-            } else if row == 0 && col == 0 {
-                Ok(EvalValue::Reference(r.clone()))
-            } else {
-                Ok(project_reference(r, row, col))
+            if area != 1 && !matches!(r.kind, crate::value::ReferenceKind::MultiArea) {
+                return Err(IndexEvalError::InvalidAreaNumber(area as f64));
             }
+            if let Some(values) = enumerate_reference_values(resolver, r)
+                .map_err(|e| IndexEvalError::Coercion(CoercionError::RefResolution(e)))?
+            {
+                let rows = values.declared_extent.rows;
+                let cols = values.declared_extent.cols;
+                if (row > 0 && row > rows) || (col > 0 && col > cols) {
+                    return Err(IndexEvalError::OutOfBounds {
+                        rows,
+                        cols,
+                        row,
+                        col,
+                    });
+                }
+            }
+            resolver
+                .transform_reference(&ReferenceTransformRequest {
+                    reference: r.clone(),
+                    transform: ReferenceTransformKind::Index { row, col, area },
+                })
+                .map(EvalValue::Reference)
+                .map_err(IndexEvalError::ReferenceSystem)
         }
         CallArgValue::Eval(EvalValue::Array(array)) => {
             let row_selector = coerce_array_index_selector(args.get(1), resolver, 0, 0)?;
@@ -552,6 +405,7 @@ pub fn map_index_error_to_ws(e: &IndexEvalError) -> WorksheetErrorCode {
         IndexEvalError::OutOfBounds { .. } => WorksheetErrorCode::Ref,
         IndexEvalError::UnsupportedSource(_) => WorksheetErrorCode::Value,
         IndexEvalError::ArrayPayloadUnavailable => WorksheetErrorCode::Calc,
+        IndexEvalError::ReferenceSystem(_) => WorksheetErrorCode::Ref,
         IndexEvalError::Coercion(_) => WorksheetErrorCode::Value,
     }
 }
@@ -559,21 +413,45 @@ pub fn map_index_error_to_ws(e: &IndexEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{ReferenceKind, ReferenceLike};
 
     struct NoResolver;
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
+        }
+
+        fn transform_reference(
+            &self,
+            request: &ReferenceTransformRequest,
+        ) -> Result<ReferenceLike, ReferenceSystemError> {
+            let ReferenceTransformKind::Index { row, col, area } = request.transform else {
+                return Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                });
+            };
+            match (request.reference.target.as_str(), row, col, area) {
+                ("A1:C3", 2, 1, 1) => Ok(ReferenceLike::new(ReferenceKind::A1, "A2")),
+                ("B1:C2", 0, 2, 1) => Ok(ReferenceLike::new(ReferenceKind::Area, "C1:C2")),
+                ("B1:C2", 2, 0, 1) => Ok(ReferenceLike::new(ReferenceKind::Area, "B2:C2")),
+                ("(A1:A2,G1:G2)", 2, 1, 2) => Ok(ReferenceLike::new(ReferenceKind::A1, "G2")),
+                _ => Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                }),
+            }
         }
     }
 
@@ -921,7 +799,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_index_mixed_sheet_multi_area_is_rejected() {
+    fn eval_index_multi_area_transform_failure_is_reported_from_provider() {
         let args = [
             CallArgValue::Reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
@@ -933,7 +811,11 @@ mod tests {
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Err(IndexEvalError::UnsupportedSource("mixed_sheet_multi_area"))
+            Err(IndexEvalError::ReferenceSystem(
+                ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                }
+            ))
         );
     }
 
@@ -949,11 +831,6 @@ mod tests {
             CallArgValue::Eval(EvalValue::Number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(
-            got,
-            Err(IndexEvalError::UnsupportedSource(
-                "legacy_multi_area_carrier_removed"
-            ))
-        );
+        assert_eq!(got, Err(IndexEvalError::InvalidAreaNumber(2.0)));
     }
 }

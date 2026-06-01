@@ -1,4 +1,4 @@
-use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedValue};
 use crate::value::CoreValue;
 

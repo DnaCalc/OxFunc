@@ -1,9 +1,9 @@
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{
-    coerce_prepared_to_number, prepare_arg_values_only, AggregatePreparedValue, PreparedArgValue,
+    AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -26,7 +26,7 @@ pub(crate) fn collect_rank_values(
 
 pub fn prepare_rank_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<f64>, CoercionError> {
     let prepared = prepare_arg_values_only(arg, resolver)?;
     match prepared {
@@ -52,7 +52,7 @@ pub fn prepare_rank_number(
 
 pub fn prepare_rank_order(
     arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RankOrder, CoercionError> {
     let Some(arg) = arg else {
         return Ok(RankOrder::Descending);

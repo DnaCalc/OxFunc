@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::functions::paired_stats_common::collect_paired_values;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const MOMENT_STATS_BASE_META: FunctionMeta = FunctionMeta {
@@ -240,7 +240,7 @@ fn guard_arity(meta: &FunctionMeta, args: &[CallArgValue]) -> Result<(), MomentS
 
 pub fn eval_kurt_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&KURT_META, args)?;
     let mut prepared = Vec::new();
@@ -257,7 +257,7 @@ pub fn eval_kurt_surface(
 
 pub fn eval_skew_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&SKEW_META, args)?;
     let mut prepared = Vec::new();
@@ -274,7 +274,7 @@ pub fn eval_skew_surface(
 
 pub fn eval_skew_p_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&SKEW_P_META, args)?;
     let mut prepared = Vec::new();
@@ -291,7 +291,7 @@ pub fn eval_skew_p_surface(
 
 pub fn eval_steyx_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&STEYX_META, args)?;
     let ys = expand_aggregate_arg(&args[0], resolver).map_err(MomentStatsEvalError::Coercion)?;
@@ -305,7 +305,7 @@ pub fn eval_steyx_surface(
 
 pub fn eval_trimmean_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MomentStatsEvalError> {
     guard_arity(&TRIMMEAN_META, args)?;
     let prepared =
@@ -337,7 +337,7 @@ pub fn map_moment_stats_error_to_ws(error: &MomentStatsEvalError) -> WorksheetEr
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
@@ -345,17 +345,18 @@ mod tests {
         cells: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.cells.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

@@ -6,7 +6,7 @@ use crate::functions::normal_dist_common::phi_kernel as phi_kernel_impl;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const PHI_META: FunctionMeta = FunctionMeta {
@@ -29,7 +29,7 @@ pub fn phi_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_phi_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, phi_kernel)
 }

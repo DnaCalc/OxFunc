@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     CallArgValue, CellStyleHint, EvalValue, ExcelText, ExtendedValue, PresentationHint,
     WorksheetErrorCode,
@@ -42,7 +42,7 @@ pub enum HyperlinkEvalError {
 
 pub fn parse_hyperlink_request(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(args.len()) {
         return Err(HyperlinkEvalError::ArityMismatch {
@@ -68,7 +68,7 @@ pub fn parse_hyperlink_request(
 
 pub fn eval_hyperlink_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, HyperlinkEvalError> {
     let request = parse_hyperlink_request(args, resolver)?;
     Ok(EvalValue::Text(request.display_text))
@@ -76,7 +76,7 @@ pub fn eval_hyperlink_surface(
 
 pub fn eval_hyperlink_surface_extended(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<ExtendedValue, HyperlinkEvalError> {
     let value = eval_hyperlink_surface(args, resolver)?;
     Ok(ExtendedValue::ValueWithPresentation {
@@ -96,23 +96,25 @@ pub fn map_hyperlink_error_to_ws(error: &HyperlinkEvalError) -> WorksheetErrorCo
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

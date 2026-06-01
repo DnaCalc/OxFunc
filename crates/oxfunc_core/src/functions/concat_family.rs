@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     coerce_prepared_to_text, expand_arg_values_only, prepare_arg_values_only,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     CallArgValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -61,7 +61,7 @@ fn finalize_concat_text(out: Vec<u16>) -> EvalValue {
 
 pub fn eval_concat_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ConcatEvalError> {
     if !CONCAT_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {
@@ -83,7 +83,7 @@ pub fn eval_concat_surface(
 
 pub fn eval_concatenate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ConcatEvalError> {
     if !CONCATENATE_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {
@@ -114,27 +114,28 @@ pub fn map_concat_error_to_ws(e: &ConcatEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ArrayCellValue, EvalArray, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         resolved: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 

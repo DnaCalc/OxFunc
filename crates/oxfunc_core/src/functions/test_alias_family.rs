@@ -5,7 +5,7 @@ use crate::function::{
 use crate::functions::confidence_test_family::{
     eval_z_test_surface, map_confidence_test_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const TEST_ALIAS_BASE_META: FunctionMeta = FunctionMeta {
@@ -93,7 +93,7 @@ fn missing_target(function_id: &'static str) -> Result<EvalValue, TestAliasEvalE
 
 pub fn eval_chisq_test_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    _resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&CHISQ_TEST_META, args)?;
     missing_target(CHISQ_TEST_META.function_id)
@@ -101,7 +101,7 @@ pub fn eval_chisq_test_surface(
 
 pub fn eval_chitest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&CHITEST_META, args)?;
     eval_chisq_test_surface(args, resolver)
@@ -109,7 +109,7 @@ pub fn eval_chitest_surface(
 
 pub fn eval_f_test_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    _resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&F_TEST_META, args)?;
     missing_target(F_TEST_META.function_id)
@@ -117,7 +117,7 @@ pub fn eval_f_test_surface(
 
 pub fn eval_ftest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&FTEST_META, args)?;
     eval_f_test_surface(args, resolver)
@@ -125,7 +125,7 @@ pub fn eval_ftest_surface(
 
 pub fn eval_t_test_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    _resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&T_TEST_META, args)?;
     missing_target(T_TEST_META.function_id)
@@ -133,7 +133,7 @@ pub fn eval_t_test_surface(
 
 pub fn eval_ttest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&TTEST_META, args)?;
     eval_t_test_surface(args, resolver)
@@ -141,7 +141,7 @@ pub fn eval_ttest_surface(
 
 pub fn eval_ztest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TestAliasEvalError> {
     guard_arity(&ZTEST_META, args)?;
     eval_z_test_surface(args, resolver)
@@ -159,7 +159,7 @@ pub fn map_test_alias_error_to_ws(error: &TestAliasEvalError) -> WorksheetErrorC
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ArrayCellValue, EvalArray, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
@@ -167,17 +167,18 @@ mod tests {
         cells: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.cells.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })

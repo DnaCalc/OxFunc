@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const RTD_META: FunctionMeta = FunctionMeta {
@@ -54,7 +54,7 @@ pub enum RtdEvalError {
 
 pub fn parse_rtd_request(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RtdRequest, RtdEvalError> {
     if !RTD_META.arity.accepts(args.len()) {
         return Err(RtdEvalError::ArityMismatch {
@@ -82,7 +82,7 @@ pub fn parse_rtd_request(
 
 pub fn eval_rtd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RtdProvider>,
 ) -> Result<EvalValue, RtdEvalError> {
     let request = parse_rtd_request(args, resolver)?;
@@ -108,23 +108,26 @@ pub fn map_rtd_error_to_ws(error: &RtdEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, ArrayShape, EvalArray, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{ArrayCellValue, ArrayShape, EvalArray};
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

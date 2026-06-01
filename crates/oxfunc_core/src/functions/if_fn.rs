@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -81,7 +81,7 @@ fn materialize_branch_for_shape(
 
 fn eval_condition_bool(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<bool, CoercionError> {
     match arg {
         CallArgValue::MissingArg | CallArgValue::EmptyCell => Ok(false),
@@ -94,9 +94,7 @@ fn eval_condition_bool(
             }
         },
         CallArgValue::Reference(r) => {
-            let resolved = resolver
-                .resolve_reference(r)
-                .map_err(CoercionError::RefResolution)?;
+            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             eval_condition_bool(&CallArgValue::Eval(resolved), resolver)
         }
     }
@@ -106,7 +104,7 @@ fn eval_if_elementwise_surface(
     condition: &EvalArray,
     true_arg: &CallArgValue,
     false_arg: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, IfEvalError> {
     let true_value = prepared_to_eval_value(
         prepare_arg_values_only(true_arg, resolver).map_err(IfEvalError::BranchPreparation)?,
@@ -147,7 +145,7 @@ fn eval_if_elementwise_surface(
 
 pub fn eval_if_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, IfEvalError> {
     let argc = args.len();
     if !IF_META.arity.accepts(argc) {
@@ -189,21 +187,24 @@ pub fn map_if_error_to_ws(e: &IfEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{ArrayCellValue, EvalArray};
 
     struct NoResolver;
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

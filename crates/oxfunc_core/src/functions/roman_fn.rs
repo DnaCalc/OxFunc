@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const ROMAN_META: FunctionMeta = FunctionMeta {
@@ -218,7 +218,7 @@ pub fn roman_kernel(number: f64, form: i32) -> Result<ExcelText, WorksheetErrorC
 
 pub fn eval_roman_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, RomanEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -255,22 +255,25 @@ pub fn map_roman_error_to_ws(e: &RomanEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
 
-    struct NoReferenceResolver;
+    struct NoReferenceSystemProvider;
 
-    impl ReferenceResolver for NoReferenceResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoReferenceSystemProvider {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &crate::value::ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -337,7 +340,7 @@ mod tests {
 
     #[test]
     fn eval_roman_surface_matches_blank_and_boolean_excel_lanes() {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
 
         let blank_number = eval_roman_surface(&[CallArgValue::EmptyCell], &resolver).unwrap();
         assert_eq!(
@@ -374,7 +377,7 @@ mod tests {
 
     #[test]
     fn eval_roman_surface_handles_optional_form_and_text_numeric_inputs() {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
 
         let blank_form = eval_roman_surface(
             &[
@@ -414,7 +417,7 @@ mod tests {
 
     #[test]
     fn eval_roman_surface_returns_value_error_for_out_of_range_lanes() {
-        let resolver = NoReferenceResolver;
+        let resolver = NoReferenceSystemProvider;
         let cases = [
             vec![CallArgValue::Eval(EvalValue::Number(-1.0))],
             vec![CallArgValue::Eval(EvalValue::Number(4000.0))],

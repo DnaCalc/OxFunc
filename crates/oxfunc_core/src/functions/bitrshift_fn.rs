@@ -6,7 +6,7 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::functions::bit_common::{coerce_bit_operand, coerce_shift_count};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const BITRSHIFT_META: FunctionMeta = FunctionMeta {
@@ -38,7 +38,7 @@ pub fn bitrshift_kernel(number: f64, shift: f64) -> Result<f64, WorksheetErrorCo
 
 pub fn eval_bitrshift_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, bitrshift_kernel)
 }

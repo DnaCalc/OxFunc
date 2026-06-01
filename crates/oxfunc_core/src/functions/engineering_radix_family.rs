@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     run_values_only_prepared_lifted,
 };
 use crate::functions::base_fn::base_kernel;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -337,7 +337,7 @@ fn eval_source_to_target_prepared(
 
 pub fn eval_dec2bin_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -350,7 +350,7 @@ pub fn eval_dec2bin_surface(
 
 pub fn eval_dec2hex_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -363,7 +363,7 @@ pub fn eval_dec2hex_surface(
 
 pub fn eval_dec2oct_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -376,7 +376,7 @@ pub fn eval_dec2oct_surface(
 
 pub fn eval_bin2dec_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -389,7 +389,7 @@ pub fn eval_bin2dec_surface(
 
 pub fn eval_bin2hex_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -402,7 +402,7 @@ pub fn eval_bin2hex_surface(
 
 pub fn eval_bin2oct_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -415,7 +415,7 @@ pub fn eval_bin2oct_surface(
 
 pub fn eval_hex2bin_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -428,7 +428,7 @@ pub fn eval_hex2bin_surface(
 
 pub fn eval_hex2dec_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -441,7 +441,7 @@ pub fn eval_hex2dec_surface(
 
 pub fn eval_hex2oct_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -454,7 +454,7 @@ pub fn eval_hex2oct_surface(
 
 pub fn eval_oct2bin_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -467,7 +467,7 @@ pub fn eval_oct2bin_surface(
 
 pub fn eval_oct2dec_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -480,7 +480,7 @@ pub fn eval_oct2dec_surface(
 
 pub fn eval_oct2hex_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,

@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
 use crate::host_info::{HostInfoError, HostInfoProvider, InfoQuery};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const INFO_META: FunctionMeta = FunctionMeta {
@@ -33,7 +33,7 @@ pub enum InfoEvalError {
 
 fn parse_info_query(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<InfoQuery, InfoEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(InfoEvalError::TypeTextCoercion)?;
@@ -60,7 +60,7 @@ fn parse_info_query(
 
 pub fn eval_info_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, InfoEvalError> {
     if !INFO_META.arity.accepts(args.len()) {
@@ -89,23 +89,26 @@ pub fn map_info_error_to_ws(e: &InfoEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ExcelText;
 
     struct MockResolver;
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

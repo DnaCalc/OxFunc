@@ -5,7 +5,7 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const DELTA_META: FunctionMeta = FunctionMeta {
@@ -28,7 +28,7 @@ pub fn delta_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_delta_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     let actual = args.len();
     if actual == 1 {
@@ -51,23 +51,25 @@ pub fn map_delta_error_to_ws(e: &BinaryNumericSurfaceError) -> WorksheetErrorCod
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

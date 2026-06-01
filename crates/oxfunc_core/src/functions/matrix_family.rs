@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
@@ -60,7 +60,7 @@ pub enum MatrixEvalError {
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     match arg {
         CallArgValue::Eval(EvalValue::Reference(reference))
@@ -291,7 +291,7 @@ fn identity_matrix(size: usize) -> Vec<Vec<f64>> {
 
 pub fn eval_mdeterm_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MDETERM_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -309,7 +309,7 @@ pub fn eval_mdeterm_surface(
 
 pub fn eval_minverse_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MINVERSE_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -327,7 +327,7 @@ pub fn eval_minverse_surface(
 
 pub fn eval_mmult_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MMULT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -347,7 +347,7 @@ pub fn eval_mmult_surface(
 
 pub fn eval_munit_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, MatrixEvalError> {
     if !MUNIT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
@@ -374,23 +374,26 @@ pub fn map_matrix_error_to_ws(error: &MatrixEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

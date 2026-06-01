@@ -1,4 +1,4 @@
-use crate::coercion::{coerce_calc_scalar_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const GCD_META: FunctionMeta = FunctionMeta {
@@ -45,7 +45,7 @@ pub fn gcd_kernel(items: &[i64]) -> f64 {
 
 pub fn eval_gcd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, GcdEvalError> {
     let argc = args.len();
     if !GCD_META.arity.accepts(argc) {
@@ -77,23 +77,26 @@ pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
+    use crate::value::{ArrayCellValue, EvalArray};
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

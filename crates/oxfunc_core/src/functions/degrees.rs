@@ -5,7 +5,7 @@ use crate::function::{
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const DEGREES_META: FunctionMeta = FunctionMeta {
@@ -28,7 +28,7 @@ pub fn degrees_kernel(n: f64) -> f64 {
 
 pub fn eval_degrees_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, |n| Ok(degrees_kernel(n)))
 }

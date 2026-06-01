@@ -22,8 +22,10 @@ use oxfunc_core::host_info::{
     AggregateCellContext, AggregateReferenceContext, CellInfoQuery, HostInfoError, HostInfoProvider,
 };
 use oxfunc_core::resolver::{
-    RefResolutionError, ReferenceResolver, ResolvedReferenceCell, ResolvedReferenceExtent,
-    ResolvedReferenceValues, ResolverCapabilities,
+    ReferenceDereferenceRequest, ReferenceEnumerationRequest, ReferenceResolutionError,
+    ReferenceSystemCapabilities, ReferenceSystemError, ReferenceSystemOperation,
+    ReferenceSystemProvider, ReferenceTransformKind, ReferenceTransformRequest,
+    ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
 };
 use oxfunc_core::value::{
     ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
@@ -68,7 +70,7 @@ fn sparse_values(
 }
 
 struct StructuredSparseResolver {
-    caps: ResolverCapabilities,
+    caps: ReferenceSystemCapabilities,
     sparse_values_by_target: BTreeMap<String, ResolvedReferenceValues>,
     dense_calls: RefCell<Vec<ReferenceLike>>,
     sparse_calls: RefCell<Vec<ReferenceLike>>,
@@ -77,14 +79,14 @@ struct StructuredSparseResolver {
 impl StructuredSparseResolver {
     fn with_values(values: BTreeMap<String, ResolvedReferenceValues>) -> Self {
         Self {
-            caps: ResolverCapabilities::permissive_local(),
+            caps: ReferenceSystemCapabilities::permissive_local(),
             sparse_values_by_target: values,
             dense_calls: RefCell::new(Vec::new()),
             sparse_calls: RefCell::new(Vec::new()),
         }
     }
 
-    fn with_caps(caps: ResolverCapabilities) -> Self {
+    fn with_caps(caps: ReferenceSystemCapabilities) -> Self {
         Self {
             caps,
             sparse_values_by_target: BTreeMap::new(),
@@ -94,27 +96,44 @@ impl StructuredSparseResolver {
     }
 }
 
-impl ReferenceResolver for StructuredSparseResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
+impl ReferenceSystemProvider for StructuredSparseResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
         self.caps
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, ReferenceResolutionError> {
+        let reference = &request.reference;
         self.dense_calls.borrow_mut().push(reference.clone());
-        Err(RefResolutionError::UnresolvedReference {
+        Err(ReferenceResolutionError::UnresolvedReference {
             target: reference.target.clone(),
         })
     }
 
-    fn resolve_reference_values(
+    fn enumerate_values(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+        request: &ReferenceEnumerationRequest,
+    ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
+        let reference = &request.reference;
         self.sparse_calls.borrow_mut().push(reference.clone());
         Ok(self.sparse_values_by_target.get(&reference.target).cloned())
+    }
+
+    fn transform_reference(
+        &self,
+        request: &ReferenceTransformRequest,
+    ) -> Result<ReferenceLike, ReferenceSystemError> {
+        match request.transform {
+            ReferenceTransformKind::Index { row, col, area: 1 } => Ok(ReferenceLike::new(
+                request.reference.kind,
+                format!("{}#INDEX({row},{col})", request.reference.target),
+            )),
+            _ => Err(ReferenceSystemError::Unsupported {
+                operation: ReferenceSystemOperation::Transform,
+            }),
+        }
     }
 }
 
@@ -268,7 +287,7 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
 
 #[test]
 fn structured_reference_capability_denial_is_generic_and_precedes_provider_calls() {
-    let resolver = StructuredSparseResolver::with_caps(ResolverCapabilities {
+    let resolver = StructuredSparseResolver::with_caps(ReferenceSystemCapabilities {
         allow_eval_time_deref: true,
         allow_three_d_refs: true,
         allow_structured_refs: false,
@@ -284,7 +303,7 @@ fn structured_reference_capability_denial_is_generic_and_precedes_provider_calls
     assert!(matches!(
         got,
         Err(oxfunc_core::functions::sum::SumEvalError::Coercion(
-            CoercionError::RefResolution(RefResolutionError::CapabilityDenied {
+            CoercionError::RefResolution(ReferenceResolutionError::CapabilityDenied {
                 kind: ReferenceKind::Structured,
                 capability: "allow_structured_refs",
             })

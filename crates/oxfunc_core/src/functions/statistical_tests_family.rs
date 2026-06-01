@@ -1,17 +1,16 @@
-use crate::coercion::{coerce_eval_to_number, CoercionError};
+use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    expand_aggregate_arg, AggregateArgOrigin, AggregatePreparedValue,
+    AggregateArgOrigin, AggregatePreparedValue, expand_aggregate_arg,
 };
 use crate::functions::chi_f_t_family::{chisq_dist_rt_kernel, f_dist_rt_kernel};
 use crate::functions::special_math_common::regularized_beta;
-use crate::resolver::{resolve_eval_value, ReferenceResolver};
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{
-    ArrayCellValue, CallArgValue, CoreValue, EvalArray, EvalValue, ReferenceLike,
-    WorksheetErrorCode,
+    ArrayCellValue, CallArgValue, CoreValue, EvalArray, EvalValue, WorksheetErrorCode,
 };
 
 const BASE_META: FunctionMeta = FunctionMeta {
@@ -80,7 +79,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> StatisticalTestsEvalError 
 
 fn resolve_arg_eval(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     match arg {
         CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
@@ -122,7 +121,7 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, StatisticalTestsEva
 
 fn truncated_flag_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i32, StatisticalTestsEvalError> {
     let number = scalar_number_from_eval(&resolve_arg_eval(arg, resolver)?)?;
     if !number.is_finite() {
@@ -156,7 +155,7 @@ fn eval_to_numeric_matrix(value: &EvalValue) -> Result<EvalArray, StatisticalTes
 fn numeric_matrices_from_args(
     actual: &CallArgValue,
     expected: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<(EvalArray, EvalArray), StatisticalTestsEvalError> {
     let actual = eval_to_numeric_matrix(&resolve_arg_eval(actual, resolver)?)?;
     let expected = eval_to_numeric_matrix(&resolve_arg_eval(expected, resolver)?)?;
@@ -208,7 +207,7 @@ fn aggregate_item_number(
 }
 fn collect_numeric_sample_arg(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, StatisticalTestsEvalError> {
     let expanded =
         expand_aggregate_arg(arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
@@ -224,7 +223,7 @@ fn collect_numeric_sample_arg(
 fn collect_paired_numeric_samples(
     x_arg: &CallArgValue,
     y_arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<(f64, f64)>, StatisticalTestsEvalError> {
     let xs = expand_aggregate_arg(x_arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
     let ys = expand_aggregate_arg(y_arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
@@ -398,7 +397,7 @@ fn t_test_unequal_variance_kernel(
 
 fn eval_chisq_test_prepared(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !CHISQ_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_TEST_META, args.len()));
@@ -412,7 +411,7 @@ fn eval_chisq_test_prepared(
 
 fn eval_f_test_prepared(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !F_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_TEST_META, args.len()));
@@ -427,7 +426,7 @@ fn eval_f_test_prepared(
 
 fn eval_t_test_prepared(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !T_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_TEST_META, args.len()));
@@ -458,14 +457,14 @@ fn eval_t_test_prepared(
 }
 pub fn eval_chisq_test_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_chisq_test_prepared(args, resolver))
 }
 
 pub fn eval_chitest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !CHITEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHITEST_META, args.len()));
@@ -475,14 +474,14 @@ pub fn eval_chitest_surface(
 
 pub fn eval_f_test_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_f_test_prepared(args, resolver))
 }
 
 pub fn eval_ftest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !FTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&FTEST_META, args.len()));
@@ -492,14 +491,14 @@ pub fn eval_ftest_surface(
 
 pub fn eval_t_test_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     surface_domain(eval_t_test_prepared(args, resolver))
 }
 
 pub fn eval_ttest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, StatisticalTestsEvalError> {
     if !TTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&TTEST_META, args.len()));
@@ -533,25 +532,27 @@ pub fn map_statistical_tests_error_to_ws(error: &StatisticalTestsEvalError) -> W
 
 struct NoResolver;
 
-impl ReferenceResolver for NoResolver {
-    fn capabilities(&self) -> crate::resolver::ResolverCapabilities {
-        crate::resolver::ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for NoResolver {
+    fn capabilities(&self) -> crate::resolver::ReferenceSystemCapabilities {
+        crate::resolver::ReferenceSystemCapabilities::permissive_local()
     }
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, crate::resolver::RefResolutionError> {
-        Err(crate::resolver::RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
-        })
+        request: &crate::resolver::ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        Err(
+            crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                target: request.reference.target.clone(),
+            },
+        )
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceKind};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
     #[derive(Default)]
@@ -559,16 +560,17 @@ mod tests {
         values: HashMap<String, EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.values.get(&reference.target).cloned().ok_or_else(|| {
-                RefResolutionError::UnresolvedReference {
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
                 }
             })
@@ -882,7 +884,9 @@ mod tests {
         );
         assert_eq!(
             map_statistical_tests_error_to_ws(&StatisticalTestsEvalError::Coercion(
-                CoercionError::RefResolution(RefResolutionError::EvalTimeDerefNotAllowed)
+                CoercionError::RefResolution(
+                    crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed
+                )
             )),
             WorksheetErrorCode::Ref
         );

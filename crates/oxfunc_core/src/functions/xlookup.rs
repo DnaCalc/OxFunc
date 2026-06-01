@@ -11,8 +11,8 @@ use crate::functions::adapters::{
 };
 use crate::functions::xmatch::{XmatchEvalError, eval_xmatch_adapter_prepared};
 use crate::resolver::{
-    ReferenceResolver, materialize_resolved_reference_values, resolve_eval_value,
-    resolve_reference_values,
+    ReferenceSystemProvider, enumerate_reference_values, materialize_resolved_reference_values,
+    resolve_eval_value,
 };
 use crate::value::{
     ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceKind, ReferenceLike,
@@ -260,7 +260,7 @@ fn materialized_eval_value_to_array_cell(value: EvalValue) -> ArrayCellValue {
 
 fn eval_value_to_array_cell(
     value: EvalValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> ArrayCellValue {
     match value {
         EvalValue::Reference(reference) => resolve_eval_value(resolver, &reference)
@@ -302,7 +302,7 @@ fn return_selection_from_array(array: &EvalArray) -> ReturnSelection {
 
 fn prepare_return_selection(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<ReturnSelection, XlookupEvalError> {
     if args.len() != 1 {
         let mut items = Vec::new();
@@ -323,7 +323,7 @@ fn prepare_return_selection(
     match &args[0] {
         CallArgValue::Reference(reference)
         | CallArgValue::Eval(EvalValue::Reference(reference)) => {
-            if let Some(values) = resolve_reference_values(resolver, reference)
+            if let Some(values) = enumerate_reference_values(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(XlookupEvalError::Coercion)?
             {
@@ -525,7 +525,7 @@ fn select_return_array_cell(
     selection: &ReturnSelection,
     lookup_orientation: Option<VectorOrientation>,
     index: usize,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> ArrayCellValue {
     match selection {
         ReturnSelection::Scalar(item) => {
@@ -558,7 +558,7 @@ fn select_return_array_cell(
 
 fn prepare_lookup_vector(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<(Vec<PreparedArgValue>, Option<VectorOrientation>), XlookupEvalError> {
     let mut prepared = Vec::new();
     let mut orientation = None;
@@ -569,7 +569,7 @@ fn prepare_lookup_vector(
                 orientation = Some(orientation_from_shape(shape.rows, shape.cols)?);
             }
             CallArgValue::Reference(reference) => {
-                if let Some(values) = resolve_reference_values(resolver, reference)
+                if let Some(values) = enumerate_reference_values(resolver, reference)
                     .map_err(CoercionError::RefResolution)
                     .map_err(XlookupEvalError::Coercion)?
                 {
@@ -604,7 +604,7 @@ fn xlookup_lookup_value_array_result_to_cell(
     return_selection: &ReturnSelection,
     lookup_orientation: Option<VectorOrientation>,
     if_not_found: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> ArrayCellValue {
     match result {
         Ok(index) => {
@@ -629,7 +629,7 @@ fn eval_xlookup_lookup_value_array(
     if_not_found: Option<&CallArgValue>,
     match_mode: Option<&PreparedArgValue>,
     search_mode: Option<&PreparedArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> EvalValue {
     let cells = lookup_value_array
         .iter_row_major()
@@ -659,7 +659,7 @@ pub fn eval_xlookup_surface(
     if_not_found: Option<&CallArgValue>,
     match_mode: Option<&CallArgValue>,
     search_mode: Option<&CallArgValue>,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, XlookupEvalError> {
     let argc = 3
         + usize::from(if_not_found.is_some())
@@ -744,22 +744,25 @@ pub fn map_xlookup_error_to_ws(e: &XlookupEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{EvalArray, ExcelText};
 
     struct NoResolver;
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

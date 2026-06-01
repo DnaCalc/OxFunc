@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     sparse_reference_values_for_aggregate_arg,
 };
 use crate::functions::aggregate_common::count_argument_included;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const COUNT_META: FunctionMeta = FunctionMeta {
@@ -37,7 +37,7 @@ pub enum CountEvalError {
 
 pub fn eval_count_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CountEvalError> {
     let argc = args.len();
     if !COUNT_META.arity.accepts(argc) {
@@ -83,8 +83,8 @@ pub fn map_count_error_to_ws(e: &CountEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{
-        RefResolutionError, ResolvedReferenceCell, ResolvedReferenceExtent,
-        ResolvedReferenceValues, ResolverCapabilities,
+        ReferenceResolutionError, ReferenceSystemCapabilities, ResolvedReferenceCell,
+        ResolvedReferenceExtent, ResolvedReferenceValues,
     };
     use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::cell::Cell;
@@ -93,20 +93,21 @@ mod tests {
         resolved: Option<EvalValue>,
     }
 
-    impl ReferenceResolver for MockResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for MockResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            self.resolved
-                .clone()
-                .ok_or(RefResolutionError::UnresolvedReference {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            self.resolved.clone().ok_or(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
                     target: reference.target.clone(),
-                })
+                },
+            )
         }
     }
 
@@ -115,25 +116,28 @@ mod tests {
         dense_calls: Cell<usize>,
     }
 
-    impl ReferenceResolver for SparseResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for SparseResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             self.dense_calls.set(self.dense_calls.get() + 1);
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
 
-        fn resolve_reference_values(
+        fn enumerate_values(
             &self,
-            _reference: &ReferenceLike,
-        ) -> Result<Option<ResolvedReferenceValues>, RefResolutionError> {
+            _request: &crate::resolver::ReferenceEnumerationRequest,
+        ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
             Ok(Some(self.values.clone()))
         }
     }

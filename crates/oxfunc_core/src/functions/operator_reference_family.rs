@@ -2,12 +2,11 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::a1_refs::{
-    A1Reference, A1ReferenceNotation, EXCEL_MAX_COLS, EXCEL_MAX_ROWS, format_relative_target,
-    parse_a1_reference,
+use crate::resolver::{
+    ReferenceComposeOperation, ReferenceComposeRequest, ReferenceSystemError,
+    ReferenceSystemProvider, ReferenceTransformKind, ReferenceTransformRequest, ReferenceTrimMode,
 };
-use crate::resolver::ReferenceResolver;
-use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+use crate::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
 
 const OP_REFERENCE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_REFERENCE_BASE",
@@ -73,23 +72,7 @@ pub enum OperatorReferenceError {
     ReferenceRequired,
     UnsupportedReferenceSource(&'static str),
     NullIntersection,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum TrimMode {
-    Leading,
-    Trailing,
-    Both,
-}
-
-fn infer_notation(reference: &A1Reference) -> A1ReferenceNotation {
-    if reference.start_row == 1 && reference.end_row == EXCEL_MAX_ROWS {
-        A1ReferenceNotation::WholeColumn
-    } else if reference.start_col == 1 && reference.end_col == EXCEL_MAX_COLS {
-        A1ReferenceNotation::WholeRow
-    } else {
-        A1ReferenceNotation::Rect
-    }
+    ReferenceSystem(ReferenceSystemError),
 }
 
 fn reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, OperatorReferenceError> {
@@ -100,125 +83,9 @@ fn reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, OperatorReferenceE
     }
 }
 
-fn parse_a1_operand(arg: &CallArgValue) -> Result<A1Reference, OperatorReferenceError> {
-    let reference = reference_arg(arg)?;
-    parse_a1_reference(&reference.target).ok_or(OperatorReferenceError::UnsupportedReferenceSource(
-        "non_a1_reference",
-    ))
-}
-
-fn ensure_same_prefix(
-    lhs: &A1Reference,
-    rhs: &A1Reference,
-) -> Result<Option<String>, OperatorReferenceError> {
-    if lhs.prefix == rhs.prefix {
-        Ok(lhs.prefix.clone())
-    } else {
-        Err(OperatorReferenceError::UnsupportedReferenceSource(
-            "mixed_prefix_reference",
-        ))
-    }
-}
-
-fn eval_from_a1(reference: A1Reference) -> Result<EvalValue, OperatorReferenceError> {
-    let target = format_relative_target(&reference).ok_or(
-        OperatorReferenceError::UnsupportedReferenceSource("unformattable_reference"),
-    )?;
-    Ok(EvalValue::Reference(ReferenceLike::new(
-        if reference.width() == 1 && reference.height() == 1 {
-            ReferenceKind::A1
-        } else {
-            ReferenceKind::Area
-        },
-        target,
-    )))
-}
-
-fn trim_reference(reference: ReferenceLike, mode: TrimMode) -> EvalValue {
-    let target = match mode {
-        TrimMode::Leading => reference.target.trim_start().to_string(),
-        TrimMode::Trailing => reference.target.trim_end().to_string(),
-        TrimMode::Both => reference.target.trim().to_string(),
-    };
-    EvalValue::Reference(ReferenceLike::new(reference.kind, target))
-}
-
-fn union_targets(reference: &ReferenceLike) -> Result<Vec<String>, OperatorReferenceError> {
-    if matches!(reference.kind, ReferenceKind::MultiArea) {
-        return reference.multi_area_targets().ok_or(
-            OperatorReferenceError::UnsupportedReferenceSource("invalid_multi_area_reference"),
-        );
-    }
-
-    let target = reference.target.trim();
-    if target.is_empty() {
-        return Err(OperatorReferenceError::UnsupportedReferenceSource(
-            "invalid_multi_area_reference",
-        ));
-    }
-    Ok(vec![target.to_string()])
-}
-
 pub fn eval_op_range_ref_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
-    if args.len() != 2 {
-        return Err(OperatorReferenceError::ArityMismatch {
-            expected: 2,
-            actual: args.len(),
-        });
-    }
-    let lhs = parse_a1_operand(&args[0])?;
-    let rhs = parse_a1_operand(&args[1])?;
-    let prefix = ensure_same_prefix(&lhs, &rhs)?;
-    let merged = A1Reference {
-        prefix,
-        start_row: lhs.start_row.min(rhs.start_row),
-        start_col: lhs.start_col.min(rhs.start_col),
-        end_row: lhs.end_row.max(rhs.end_row),
-        end_col: lhs.end_col.max(rhs.end_col),
-        notation: A1ReferenceNotation::Rect,
-    };
-    eval_from_a1(A1Reference {
-        notation: infer_notation(&merged),
-        ..merged
-    })
-}
-
-pub fn eval_op_intersection_ref_surface(
-    args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
-    if args.len() != 2 {
-        return Err(OperatorReferenceError::ArityMismatch {
-            expected: 2,
-            actual: args.len(),
-        });
-    }
-    let lhs = parse_a1_operand(&args[0])?;
-    let rhs = parse_a1_operand(&args[1])?;
-    let prefix = ensure_same_prefix(&lhs, &rhs)?;
-    let overlap = A1Reference {
-        prefix,
-        start_row: lhs.start_row.max(rhs.start_row),
-        start_col: lhs.start_col.max(rhs.start_col),
-        end_row: lhs.end_row.min(rhs.end_row),
-        end_col: lhs.end_col.min(rhs.end_col),
-        notation: A1ReferenceNotation::Rect,
-    };
-    if overlap.start_row > overlap.end_row || overlap.start_col > overlap.end_col {
-        return Err(OperatorReferenceError::NullIntersection);
-    }
-    eval_from_a1(A1Reference {
-        notation: infer_notation(&overlap),
-        ..overlap
-    })
-}
-
-pub fn eval_op_union_ref_surface(
-    args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -228,17 +95,68 @@ pub fn eval_op_union_ref_surface(
     }
     let lhs = reference_arg(&args[0])?;
     let rhs = reference_arg(&args[1])?;
-    let mut targets = union_targets(&lhs)?;
-    targets.extend(union_targets(&rhs)?);
-    let multi = ReferenceLike::multi_area(targets).ok_or(
-        OperatorReferenceError::UnsupportedReferenceSource("invalid_multi_area_reference"),
-    )?;
-    Ok(EvalValue::Reference(multi))
+    resolver
+        .compose_references(&ReferenceComposeRequest {
+            lhs,
+            rhs,
+            operation: ReferenceComposeOperation::Range,
+        })
+        .map(EvalValue::Reference)
+        .map_err(OperatorReferenceError::ReferenceSystem)
+}
+
+pub fn eval_op_intersection_ref_surface(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<EvalValue, OperatorReferenceError> {
+    if args.len() != 2 {
+        return Err(OperatorReferenceError::ArityMismatch {
+            expected: 2,
+            actual: args.len(),
+        });
+    }
+    let lhs = reference_arg(&args[0])?;
+    let rhs = reference_arg(&args[1])?;
+    resolver
+        .compose_references(&ReferenceComposeRequest {
+            lhs,
+            rhs,
+            operation: ReferenceComposeOperation::Intersection,
+        })
+        .map(EvalValue::Reference)
+        .map_err(|error| match error {
+            ReferenceSystemError::ProviderFailure { detail } if detail == "null_intersection" => {
+                OperatorReferenceError::NullIntersection
+            }
+            other => OperatorReferenceError::ReferenceSystem(other),
+        })
+}
+
+pub fn eval_op_union_ref_surface(
+    args: &[CallArgValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<EvalValue, OperatorReferenceError> {
+    if args.len() != 2 {
+        return Err(OperatorReferenceError::ArityMismatch {
+            expected: 2,
+            actual: args.len(),
+        });
+    }
+    let lhs = reference_arg(&args[0])?;
+    let rhs = reference_arg(&args[1])?;
+    resolver
+        .compose_references(&ReferenceComposeRequest {
+            lhs,
+            rhs,
+            operation: ReferenceComposeOperation::Union,
+        })
+        .map(EvalValue::Reference)
+        .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_leading_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -246,12 +164,20 @@ pub fn eval_op_trim_ref_leading_surface(
             actual: args.len(),
         });
     }
-    Ok(trim_reference(reference_arg(&args[0])?, TrimMode::Leading))
+    resolver
+        .transform_reference(&ReferenceTransformRequest {
+            reference: reference_arg(&args[0])?,
+            transform: ReferenceTransformKind::Trim {
+                mode: ReferenceTrimMode::Leading,
+            },
+        })
+        .map(EvalValue::Reference)
+        .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_trailing_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -259,12 +185,20 @@ pub fn eval_op_trim_ref_trailing_surface(
             actual: args.len(),
         });
     }
-    Ok(trim_reference(reference_arg(&args[0])?, TrimMode::Trailing))
+    resolver
+        .transform_reference(&ReferenceTransformRequest {
+            reference: reference_arg(&args[0])?,
+            transform: ReferenceTransformKind::Trim {
+                mode: ReferenceTrimMode::Trailing,
+            },
+        })
+        .map(EvalValue::Reference)
+        .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_both_surface(
     args: &[CallArgValue],
-    _resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
@@ -272,7 +206,15 @@ pub fn eval_op_trim_ref_both_surface(
             actual: args.len(),
         });
     }
-    Ok(trim_reference(reference_arg(&args[0])?, TrimMode::Both))
+    resolver
+        .transform_reference(&ReferenceTransformRequest {
+            reference: reference_arg(&args[0])?,
+            transform: ReferenceTransformKind::Trim {
+                mode: ReferenceTrimMode::Both,
+            },
+        })
+        .map(EvalValue::Reference)
+        .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn map_operator_reference_error_to_ws(e: &OperatorReferenceError) -> WorksheetErrorCode {
@@ -281,28 +223,85 @@ pub fn map_operator_reference_error_to_ws(e: &OperatorReferenceError) -> Workshe
         OperatorReferenceError::ReferenceRequired => WorksheetErrorCode::Ref,
         OperatorReferenceError::UnsupportedReferenceSource(_) => WorksheetErrorCode::Ref,
         OperatorReferenceError::NullIntersection => WorksheetErrorCode::Null,
+        OperatorReferenceError::ReferenceSystem(_) => WorksheetErrorCode::Ref,
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ReferenceKind;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
+        }
+
+        fn transform_reference(
+            &self,
+            request: &ReferenceTransformRequest,
+        ) -> Result<ReferenceLike, ReferenceSystemError> {
+            match (&request.reference.target[..], request.transform.clone()) {
+                ("  Sheet1!A1:A2  ", ReferenceTransformKind::Trim { mode }) => {
+                    let target = match mode {
+                        ReferenceTrimMode::Leading => "Sheet1!A1:A2  ",
+                        ReferenceTrimMode::Trailing => "  Sheet1!A1:A2",
+                        ReferenceTrimMode::Both => "Sheet1!A1:A2",
+                    };
+                    Ok(ReferenceLike::new(ReferenceKind::Area, target))
+                }
+                _ => Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Transform,
+                }),
+            }
+        }
+
+        fn compose_references(
+            &self,
+            request: &ReferenceComposeRequest,
+        ) -> Result<ReferenceLike, ReferenceSystemError> {
+            match (
+                request.lhs.target.as_str(),
+                request.rhs.target.as_str(),
+                request.operation,
+            ) {
+                ("B2", "A1", ReferenceComposeOperation::Range) => {
+                    Ok(ReferenceLike::new(ReferenceKind::Area, "A1:B2"))
+                }
+                ("A1:C3", "B2:D4", ReferenceComposeOperation::Intersection) => {
+                    Ok(ReferenceLike::new(ReferenceKind::Area, "B2:C3"))
+                }
+                ("A1:A2", "C1:C2", ReferenceComposeOperation::Intersection) => {
+                    Err(ReferenceSystemError::ProviderFailure {
+                        detail: "null_intersection".to_string(),
+                    })
+                }
+                ("A1:A2", "G1:G2", ReferenceComposeOperation::Union) => Ok(ReferenceLike::new(
+                    ReferenceKind::MultiArea,
+                    "(A1:A2,G1:G2)",
+                )),
+                ("(A1:A2,G1:G2)", "J1:J2", ReferenceComposeOperation::Union) => Ok(
+                    ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,G1:G2,J1:J2)"),
+                ),
+                _ => Err(ReferenceSystemError::Unsupported {
+                    operation: crate::resolver::ReferenceSystemOperation::Compose,
+                }),
+            }
         }
     }
 

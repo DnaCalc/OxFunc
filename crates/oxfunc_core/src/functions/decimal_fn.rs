@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
     run_values_only_prepared_lifted,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const DECIMAL_META: FunctionMeta = FunctionMeta {
@@ -82,7 +82,7 @@ fn eval_decimal_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Decimal
 
 pub fn eval_decimal_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DecimalEvalError> {
     run_values_only_prepared_lifted(
         args,

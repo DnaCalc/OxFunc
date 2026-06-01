@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const DATE_WEEK_BASE_META: FunctionMeta = FunctionMeta {
@@ -243,7 +243,7 @@ pub fn isoweeknum_kernel(serial: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_edate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -271,7 +271,7 @@ pub fn eval_edate_surface(
 
 pub fn eval_eomonth_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -299,7 +299,7 @@ pub fn eval_eomonth_surface(
 
 pub fn eval_weekday_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -330,7 +330,7 @@ pub fn eval_weekday_surface(
 
 pub fn eval_weeknum_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
@@ -361,7 +361,7 @@ pub fn eval_weeknum_surface(
 
 pub fn eval_isoweeknum_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,

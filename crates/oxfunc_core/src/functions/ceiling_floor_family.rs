@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
     expand_prepared_broadcast_grid, run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const OPTIONAL_ARITY_2: Arity = Arity { min: 1, max: 2 };
@@ -339,7 +339,7 @@ fn map_optional3_item(
 
 pub fn eval_ceiling_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -351,7 +351,7 @@ pub fn eval_ceiling_surface(
 
 pub fn eval_floor_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -363,7 +363,7 @@ pub fn eval_floor_surface(
 
 pub fn eval_ceiling_math_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -375,7 +375,7 @@ pub fn eval_ceiling_math_surface(
 
 pub fn eval_floor_math_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -387,7 +387,7 @@ pub fn eval_floor_math_surface(
 
 pub fn eval_ceiling_precise_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -399,7 +399,7 @@ pub fn eval_ceiling_precise_surface(
 
 pub fn eval_floor_precise_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -411,7 +411,7 @@ pub fn eval_floor_precise_surface(
 
 pub fn eval_iso_ceiling_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
@@ -432,23 +432,25 @@ pub fn map_ceiling_floor_error_to_ws(e: &CeilingFloorEvalError) -> WorksheetErro
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::ReferenceLike;
+    use crate::resolver::ReferenceSystemCapabilities;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

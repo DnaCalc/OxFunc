@@ -9,7 +9,7 @@ use crate::functions::adapters::{
 use crate::functions::chi_f_t_family::t_inv_2t_kernel;
 use crate::functions::normal_dist_common::erf_approx;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values};
-use crate::resolver::{ReferenceResolver, resolve_eval_value};
+use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const CONFIDENCE_T_META: FunctionMeta = FunctionMeta {
@@ -53,7 +53,7 @@ pub enum ConfidenceTestEvalError {
 
 fn scalar_number(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, ConfidenceTestEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(ConfidenceTestEvalError::Coercion)?;
@@ -100,7 +100,7 @@ fn collect_numeric_values_from_eval(
 
 fn collect_numeric_values(
     arg: &CallArgValue,
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, ConfidenceTestEvalError> {
     let eval = match arg {
         CallArgValue::Reference(reference)
@@ -153,7 +153,7 @@ pub fn z_test_kernel(
 
 pub fn eval_confidence_t_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ConfidenceTestEvalError> {
     if !CONFIDENCE_T_META.arity.accepts(args.len()) {
         return Err(ConfidenceTestEvalError::ArityMismatch {
@@ -173,7 +173,7 @@ pub fn eval_confidence_t_surface(
 
 pub fn eval_z_test_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ConfidenceTestEvalError> {
     if !Z_TEST_META.arity.accepts(args.len()) {
         return Err(ConfidenceTestEvalError::ArityMismatch {
@@ -210,15 +210,16 @@ mod tests {
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> crate::resolver::ResolverCapabilities {
-            crate::resolver::ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> crate::resolver::ReferenceSystemCapabilities {
+            crate::resolver::ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, crate::resolver::RefResolutionError> {
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
             assert_eq!(reference.target, "A1:A5");
             Ok(EvalValue::Array(
                 EvalArray::from_rows(vec![

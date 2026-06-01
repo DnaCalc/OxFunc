@@ -2,16 +2,18 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::adapters::{
+    PreparedArgValue, expand_arg_values_only, prepare_arg_values_only,
+};
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
-use crate::functions::adapters::{PreparedArgValue, expand_arg_values_only, prepare_arg_values_only};
 use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::functions::power_fn::power_kernel;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const OP_UNARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
@@ -114,7 +116,7 @@ pub fn op_divide_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 /// (BUG-FUNC-029; run `unary-plus-operand-001`).
 pub fn eval_op_unary_plus_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     if args.len() != 1 {
         return Err(UnaryNumericSurfaceError::ArityMismatch {
@@ -172,42 +174,42 @@ fn unary_plus_identity_cell(item: PreparedArgValue) -> ArrayCellValue {
 
 pub fn eval_op_negate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_negate_kernel)
 }
 
 pub fn eval_op_percent_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_percent_kernel)
 }
 
 pub fn eval_op_subtract_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_subtract_kernel)
 }
 
 pub fn eval_op_multiply_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_multiply_kernel)
 }
 
 pub fn eval_op_divide_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_divide_kernel)
 }
 
 pub fn eval_op_power_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, power_kernel)
 }
@@ -223,23 +225,26 @@ pub fn map_operator_binary_error_to_ws(e: &BinaryNumericSurfaceError) -> Workshe
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceLike};
+    use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
+    use crate::value::{ArrayCellValue, EvalArray, ExcelText};
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, intercept_from_pairs};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const INTERCEPT_META: FunctionMeta = FunctionMeta {
@@ -34,7 +34,7 @@ pub enum InterceptEvalError {
 
 pub fn eval_intercept_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, InterceptEvalError> {
     let argc = args.len();
     if !INTERCEPT_META.arity.accepts(argc) {

@@ -6,7 +6,7 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::functions::factorial_common::trunc_nonnegative;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{EvalValue, WorksheetErrorCode};
 
 pub const PERMUTATIONA_META: FunctionMeta = FunctionMeta {
@@ -31,7 +31,7 @@ pub fn permutationa_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_permutationa_surface(
     args: &[crate::value::CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, permutationa_kernel)
 }

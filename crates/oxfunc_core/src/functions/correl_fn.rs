@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, correlation_from_pairs};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const CORREL_META: FunctionMeta = FunctionMeta {
@@ -34,7 +34,7 @@ pub enum CorrelEvalError {
 
 pub fn eval_correl_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, CorrelEvalError> {
     let argc = args.len();
     if !CORREL_META.arity.accepts(argc) {

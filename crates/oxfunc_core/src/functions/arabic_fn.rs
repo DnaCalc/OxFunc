@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared_lifted};
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
 
 pub const ARABIC_META: FunctionMeta = FunctionMeta {
@@ -62,7 +62,7 @@ pub fn arabic_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 
 pub fn eval_arabic_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, ArabicEvalError> {
     run_values_only_prepared_lifted(
         args,

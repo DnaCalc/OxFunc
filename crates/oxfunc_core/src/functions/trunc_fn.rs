@@ -7,7 +7,7 @@ use crate::functions::adapters::{
     BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
     expand_prepared_broadcast_grid, prepare_args_values_only,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 pub const TRUNC_META: FunctionMeta = FunctionMeta {
@@ -99,7 +99,7 @@ fn map_trunc_item(args: &[PreparedArgValue]) -> ArrayCellValue {
 
 pub fn eval_trunc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, TruncEvalError> {
     let prepared = prepare_args_values_only(args, resolver).map_err(TruncEvalError::Coercion)?;
     eval_trunc_adapter_prepared(&prepared)
@@ -116,23 +116,26 @@ pub fn map_trunc_error_to_ws(e: &TruncEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ArrayCellValue, EvalArray, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::{ArrayCellValue, EvalArray};
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 

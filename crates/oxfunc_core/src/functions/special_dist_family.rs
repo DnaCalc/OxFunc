@@ -8,7 +8,7 @@ use crate::functions::adapters::{
     expand_prepared_broadcast_grid, run_values_only_prepared,
 };
 use crate::functions::normal_dist_common::erf_approx;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 const SPECIAL_DIST_BASE_META: FunctionMeta = FunctionMeta {
@@ -398,7 +398,9 @@ fn lift_special_dist(
         .into_iter()
         .map(|group| match group {
             BroadcastPreparedGroup::Values(values) => cell(&values),
-            BroadcastPreparedGroup::MissingCoordinate => ArrayCellValue::Error(WorksheetErrorCode::NA),
+            BroadcastPreparedGroup::MissingCoordinate => {
+                ArrayCellValue::Error(WorksheetErrorCode::NA)
+            }
         })
         .collect();
     Some(EvalValue::Array(
@@ -440,7 +442,8 @@ fn eval_unary_prepared(
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
-    if let Some(array) = lift_special_dist(args, |values| unary_cell(values, reject_logical, kernel))
+    if let Some(array) =
+        lift_special_dist(args, |values| unary_cell(values, reject_logical, kernel))
     {
         return Ok(array);
     }
@@ -494,7 +497,7 @@ fn eval_weibull_prepared(
 
 pub fn eval_erf_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -506,7 +509,7 @@ pub fn eval_erf_surface(
 
 pub fn eval_erf_precise_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -518,7 +521,7 @@ pub fn eval_erf_precise_surface(
 
 pub fn eval_erfc_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -530,7 +533,7 @@ pub fn eval_erfc_surface(
 
 pub fn eval_erfc_precise_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -542,7 +545,7 @@ pub fn eval_erfc_precise_surface(
 
 pub fn eval_gamma_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -554,7 +557,7 @@ pub fn eval_gamma_surface(
 
 pub fn eval_gammaln_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -566,19 +569,26 @@ pub fn eval_gammaln_surface(
 
 pub fn eval_gammaln_precise_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| eval_unary_prepared(prepared, &GAMMALN_PRECISE_META, gammaln_precise_kernel, false),
+        |prepared| {
+            eval_unary_prepared(
+                prepared,
+                &GAMMALN_PRECISE_META,
+                gammaln_precise_kernel,
+                false,
+            )
+        },
         SpecialDistEvalError::Coercion,
     )
 }
 
 pub fn eval_weibull_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -590,7 +600,7 @@ pub fn eval_weibull_surface(
 
 pub fn eval_weibull_dist_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
@@ -611,23 +621,26 @@ pub fn map_special_dist_error_to_ws(error: &SpecialDistEvalError) -> WorksheetEr
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
-    use crate::value::{ExcelText, ReferenceLike};
+    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
-    impl ReferenceResolver for NoResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -715,7 +728,9 @@ mod tests {
         // GAMMALN.PRECISE(TRUE)=GAMMALN(1)≈0 (exact-0 vs near-0 numeric drift is
         // a separate finding; here we only assert the operand is accepted).
         match eval_gammaln_precise_surface(&[lgl()], &r) {
-            Ok(EvalValue::Number(n)) => assert!(n.abs() < 1.0e-9, "gammaln.precise(TRUE) ~ 0, got {n}"),
+            Ok(EvalValue::Number(n)) => {
+                assert!(n.abs() < 1.0e-9, "gammaln.precise(TRUE) ~ 0, got {n}")
+            }
             other => panic!("expected gammaln.precise(TRUE) to accept logical, got {other:?}"),
         }
         // ERF still accepts numeric text (only logical is rejected).
@@ -1060,4 +1075,3 @@ mod tests {
         );
     }
 }
-

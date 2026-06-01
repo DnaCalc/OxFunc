@@ -10,7 +10,7 @@ use crate::host_info::{
     HostInfoError, HostInfoProvider, TranslateProviderResult, TranslateRequest,
 };
 use crate::locale_format::LocaleFormatContext;
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     CallArgValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalValue, ExcelText, WorksheetErrorCode,
 };
@@ -156,7 +156,7 @@ fn guard_arity(meta: &FunctionMeta, argc: usize) -> Result<(), NumberRegexTransl
 fn prepare_and_guard(
     meta: &FunctionMeta,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<PreparedArgValue>, NumberRegexTranslateEvalError> {
     guard_arity(meta, args.len())?;
     prepare_args_values_only(args, resolver).map_err(NumberRegexTranslateEvalError::Coercion)
@@ -786,7 +786,7 @@ pub fn translate_kernel(
 
 pub fn eval_numbervalue_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     locale_ctx: Option<&LocaleFormatContext>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&NUMBERVALUE_META, args, resolver)?;
@@ -817,7 +817,7 @@ pub fn eval_numbervalue_surface(
 
 pub fn eval_regexextract_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXEXTRACT_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -832,7 +832,7 @@ pub fn eval_regexextract_surface(
 
 pub fn eval_regexreplace_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXREPLACE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -848,7 +848,7 @@ pub fn eval_regexreplace_surface(
 
 pub fn eval_regextest_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXTEST_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
@@ -862,7 +862,7 @@ pub fn eval_regextest_surface(
 
 pub fn eval_translate_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<EvalValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&TRANSLATE_META, args, resolver)?;
@@ -932,7 +932,7 @@ mod tests {
     use super::*;
     use crate::host_info::{HostInfoProvider, TranslateProviderResult, TranslateRequest};
     use crate::locale_format::{test_current_excel_host_context, test_en_us_context};
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{EvalValue, ReferenceKind, ReferenceLike};
 
     fn txt(input: &str) -> ExcelText {
@@ -941,18 +941,21 @@ mod tests {
 
     struct DummyResolver;
 
-    impl ReferenceResolver for DummyResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for DummyResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -1158,11 +1161,12 @@ mod tests {
     #[test]
     fn dummy_resolver_reference_lane_stays_unresolved() {
         let resolver = DummyResolver;
-        let got =
-            resolver.resolve_reference(&ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
+        let got = resolver.dereference(&crate::resolver::ReferenceDereferenceRequest {
+            reference: ReferenceLike::new(ReferenceKind::A1, "A1".to_string()),
+        });
         assert!(matches!(
             got,
-            Err(RefResolutionError::UnresolvedReference { .. })
+            Err(crate::resolver::ReferenceResolutionError::UnresolvedReference { .. })
         ));
     }
 }

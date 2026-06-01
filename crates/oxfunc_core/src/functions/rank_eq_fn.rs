@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::rank_common::{
     collect_rank_values, prepare_rank_number, prepare_rank_order, rank_eq,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const RANK_EQ_META: FunctionMeta = FunctionMeta {
@@ -36,7 +36,7 @@ pub enum RankEqEvalError {
 
 pub fn eval_rank_eq_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, RankEqEvalError> {
     let argc = args.len();
     if !RANK_EQ_META.arity.accepts(argc) {

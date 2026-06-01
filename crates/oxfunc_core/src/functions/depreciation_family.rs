@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
 };
-use crate::resolver::ReferenceResolver;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
 
 const OPTIONAL_ARITY_5: Arity = Arity { min: 4, max: 5 };
@@ -366,7 +366,7 @@ fn eval_vdb_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Depreciatio
 
 pub fn eval_sln_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -378,7 +378,7 @@ pub fn eval_sln_surface(
 
 pub fn eval_syd_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -390,7 +390,7 @@ pub fn eval_syd_surface(
 
 pub fn eval_db_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -402,7 +402,7 @@ pub fn eval_db_surface(
 
 pub fn eval_ddb_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -414,7 +414,7 @@ pub fn eval_ddb_surface(
 
 pub fn eval_vdb_surface(
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
@@ -435,23 +435,26 @@ pub fn map_depreciation_error_to_ws(error: &DepreciationEvalError) -> WorksheetE
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct NoRefResolver;
 
-    impl ReferenceResolver for NoRefResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoRefResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -633,9 +636,11 @@ mod tests {
         assert_eq!(
             got,
             Err(DepreciationEvalError::Coercion(
-                CoercionError::RefResolution(RefResolutionError::UnresolvedReference {
-                    target: "A1".to_string(),
-                })
+                CoercionError::RefResolution(
+                    crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                        target: "A1".to_string(),
+                    }
+                )
             ))
         );
     }

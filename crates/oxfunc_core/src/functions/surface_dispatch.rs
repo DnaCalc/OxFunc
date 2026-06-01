@@ -1,6 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
-use crate::functions::abs::{abs_kernel, eval_abs_scalar_value, AbsEvalError};
+use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
 use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
 use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
 use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
@@ -46,14 +46,14 @@ use crate::functions::bond_core_family::{
     eval_yieldmat_surface, map_bond_core_error_to_ws,
 };
 use crate::functions::call_register_id_family::{
-    eval_call_surface, eval_register_id_surface, map_call_register_id_error_to_ws,
-    RegisteredExternalProvider, CALL_META, REGISTER_ID_META,
+    CALL_META, REGISTER_ID_META, RegisteredExternalProvider, eval_call_surface,
+    eval_register_id_surface, map_call_register_id_error_to_ws,
 };
 use crate::functions::callable_helpers::{
-    eval_bycol_surface, eval_byrow_surface, eval_isomitted_surface, eval_makearray_surface,
-    eval_map_surface, eval_reduce_surface, eval_scan_surface, map_lambda_helper_error_to_ws,
-    CallableInvocationError, CallableInvoker, BYCOL_META, BYROW_META, ISOMITTED_META,
-    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META,
+    BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
+    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_surface, eval_byrow_surface,
+    eval_isomitted_surface, eval_makearray_surface, eval_map_surface, eval_reduce_surface,
+    eval_scan_surface, map_lambda_helper_error_to_ws,
 };
 use crate::functions::cashflow_rate_family::{
     eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
@@ -83,7 +83,7 @@ use crate::functions::complex_family::{
     eval_complex_surface, eval_imabs_surface, eval_imaginary_surface, eval_imargument_surface,
     eval_imconjugate_surface, eval_imcos_surface, eval_imcosh_surface, eval_imcot_surface,
     eval_imcsc_surface, eval_imcsch_surface, eval_imdiv_surface, eval_imexp_surface,
-    eval_imln_surface, eval_imlog10_surface, eval_imlog2_surface, eval_impower_surface,
+    eval_imln_surface, eval_imlog2_surface, eval_imlog10_surface, eval_impower_surface,
     eval_improduct_surface, eval_imreal_surface, eval_imsec_surface, eval_imsech_surface,
     eval_imsin_surface, eval_imsinh_surface, eval_imsqrt_surface, eval_imsub_surface,
     eval_imsum_surface, eval_imtan_surface, map_complex_family_error_to_ws,
@@ -163,13 +163,13 @@ use crate::functions::dollar_fraction_family::{
     eval_dollarde_surface, eval_dollarfr_surface, map_dollar_fraction_error_to_ws,
 };
 use crate::functions::dynamic_array_reshape_family::{
-    eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface, eval_expand_surface,
-    eval_filter_surface, eval_sort_surface, eval_sortby_surface, eval_take_surface,
-    eval_tocol_surface, eval_torow_surface, eval_transpose_surface, eval_unique_surface,
-    eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
-    map_dynamic_array_reshape_error_to_ws, CHOOSECOLS_META, CHOOSEROWS_META, DROP_META,
-    EXPAND_META, FILTER_META, SORTBY_META, SORT_META, TAKE_META, TOCOL_META, TOROW_META,
-    TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META, WRAPROWS_META,
+    CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
+    TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
+    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
+    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
+    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
+    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
+    map_dynamic_array_reshape_error_to_ws,
 };
 use crate::functions::engineering_radix_family::{
     eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
@@ -230,8 +230,8 @@ use crate::functions::legacy_stats_alias_family::{
     eval_percentrank_surface, eval_quartile_surface, map_legacy_stats_alias_error_to_ws,
 };
 use crate::functions::ln_fn::{eval_ln_surface, ln_kernel, map_ln_error_to_ws};
-use crate::functions::log10_fn::{eval_log10_surface, log10_kernel, map_log10_error_to_ws};
 use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
+use crate::functions::log10_fn::{eval_log10_surface, log10_kernel, map_log10_error_to_ws};
 use crate::functions::lookup_prob_frequency_family::{
     eval_frequency_surface, eval_lookup_surface, eval_mode_mult_surface, eval_prob_surface,
     map_lookup_prob_frequency_error_to_ws,
@@ -272,7 +272,7 @@ use crate::functions::normal_log_family::{
 };
 use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
 use crate::functions::now_fn::{
-    eval_now_surface, eval_now_surface_extended, map_now_error_to_ws, NowProvider,
+    NowProvider, eval_now_surface, eval_now_surface_extended, map_now_error_to_ws,
 };
 use crate::functions::number_regex_translate_family::{
     eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
@@ -286,30 +286,30 @@ use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::op_implicit_intersection::{
-    eval_op_implicit_intersection_surface, map_op_implicit_intersection_error_to_ws,
-    OP_IMPLICIT_INTERSECTION_META,
+    OP_IMPLICIT_INTERSECTION_META, eval_op_implicit_intersection_surface,
+    map_op_implicit_intersection_error_to_ws,
 };
 use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
 use crate::functions::operator_arithmetic_family::{
-    eval_op_divide_surface, eval_op_multiply_surface, eval_op_negate_surface,
-    eval_op_percent_surface, eval_op_power_surface, eval_op_subtract_surface,
-    eval_op_unary_plus_surface, map_operator_binary_error_to_ws, map_operator_unary_error_to_ws,
-    op_divide_kernel, op_multiply_kernel, op_negate_kernel, op_percent_kernel, op_subtract_kernel,
-    op_unary_plus_kernel, OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META,
-    OP_POWER_META, OP_SUBTRACT_META, OP_UNARY_PLUS_META,
+    OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
+    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_divide_surface, eval_op_multiply_surface,
+    eval_op_negate_surface, eval_op_percent_surface, eval_op_power_surface,
+    eval_op_subtract_surface, eval_op_unary_plus_surface, map_operator_binary_error_to_ws,
+    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
+    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
 };
 use crate::functions::operator_compare_concat_family::{
-    eval_op_concat_surface, eval_op_equal_surface, eval_op_greater_equal_surface,
-    eval_op_greater_than_surface, eval_op_less_equal_surface, eval_op_less_than_surface,
-    eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws, OP_CONCAT_META,
-    OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
-    OP_LESS_THAN_META, OP_NOT_EQUAL_META,
+    OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
+    OP_LESS_THAN_META, OP_NOT_EQUAL_META, eval_op_concat_surface, eval_op_equal_surface,
+    eval_op_greater_equal_surface, eval_op_greater_than_surface, eval_op_less_equal_surface,
+    eval_op_less_than_surface, eval_op_not_equal_surface, map_operator_compare_concat_error_to_ws,
 };
 use crate::functions::operator_reference_family::{
-    eval_op_intersection_ref_surface, eval_op_range_ref_surface, eval_op_trim_ref_both_surface,
-    eval_op_trim_ref_leading_surface, eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
-    map_operator_reference_error_to_ws, OP_INTERSECTION_REF_META, OP_RANGE_REF_META,
-    OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META, OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META,
+    OP_INTERSECTION_REF_META, OP_RANGE_REF_META, OP_TRIM_REF_BOTH_META, OP_TRIM_REF_LEADING_META,
+    OP_TRIM_REF_TRAILING_META, OP_UNION_REF_META, eval_op_intersection_ref_surface,
+    eval_op_range_ref_surface, eval_op_trim_ref_both_surface, eval_op_trim_ref_leading_surface,
+    eval_op_trim_ref_trailing_surface, eval_op_union_ref_surface,
+    map_operator_reference_error_to_ws,
 };
 use crate::functions::or_fn::{eval_or_surface, map_or_error_to_ws};
 use crate::functions::pearson_fn::{eval_pearson_surface, map_pearson_error_to_ws};
@@ -338,15 +338,15 @@ use crate::functions::quotient_fn::{
     eval_quotient_surface, map_quotient_error_to_ws, quotient_kernel,
 };
 use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
-use crate::functions::rand_fn::{eval_rand_surface, map_rand_error_to_ws, RandomProvider};
+use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
 use crate::functions::randbetween_fn::{eval_randbetween_surface, map_randbetween_error_to_ws};
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
 use crate::functions::rank_eq_fn::{eval_rank_eq_surface, map_rank_eq_error_to_ws};
 use crate::functions::rank_fn::{eval_rank_surface, map_rank_error_to_ws};
 use crate::functions::reference_metadata_family::{
-    eval_address_surface, eval_areas_surface, eval_formulatext_surface, eval_sheet_surface,
-    eval_sheets_surface, map_reference_metadata_error_to_ws, ADDRESS_META, AREAS_META,
-    FORMULATEXT_META, SHEETS_META, SHEET_META,
+    ADDRESS_META, AREAS_META, FORMULATEXT_META, SHEET_META, SHEETS_META, eval_address_surface,
+    eval_areas_surface, eval_formulatext_surface, eval_sheet_surface, eval_sheets_surface,
+    map_reference_metadata_error_to_ws,
 };
 use crate::functions::regression_forecast_family::{
     eval_forecast_linear_surface, eval_forecast_surface, eval_growth_surface, eval_linest_surface,
@@ -359,7 +359,7 @@ use crate::functions::roundup_fn::{eval_roundup_surface, map_roundup_error_to_ws
 use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
 use crate::functions::rows_fn::{eval_rows_surface_with_resolver, map_rows_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
-use crate::functions::rtd_fn::{eval_rtd_surface, map_rtd_error_to_ws, RtdProvider};
+use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
 use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
 use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
@@ -425,7 +425,7 @@ use crate::functions::text_unicode_fn::{
 };
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{
-    eval_today_surface, eval_today_surface_extended, map_today_error_to_ws, TodayProvider,
+    TodayProvider, eval_today_surface, eval_today_surface_extended, map_today_error_to_ws,
 };
 use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
 use crate::functions::true_fn::eval_true_surface;
@@ -455,8 +455,8 @@ use crate::functions::xmatch_surface::eval_xmatch_surface_value;
 use crate::functions::xor_fn::{eval_xor_surface, map_xor_error_to_ws};
 use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
-use crate::resolver::RefResolutionError;
-use crate::resolver::{ReferenceResolver, ReferenceTextResolver};
+use crate::resolver::ReferenceResolutionError;
+use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
     ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalError,
     EvalValue, ExtendedValue, Value, WorksheetErrorCode,
@@ -989,12 +989,20 @@ pub const FUNC_ID_YEARFRAC: &str = "FUNC.YEARFRAC";
 pub const FUNC_ID_Z_TEST: &str = "FUNC.Z.TEST";
 pub const FUNC_ID_ZTEST: &str = "FUNC.ZTEST";
 
-fn map_ref_resolution_to_ws(e: &RefResolutionError) -> WorksheetErrorCode {
+fn map_ref_resolution_to_ws(e: &ReferenceResolutionError) -> WorksheetErrorCode {
     match e {
-        RefResolutionError::CapabilityDenied { .. } => WorksheetErrorCode::Ref,
-        RefResolutionError::UnresolvedReference { .. } => WorksheetErrorCode::Ref,
-        RefResolutionError::EvalTimeDerefNotAllowed => WorksheetErrorCode::Ref,
-        RefResolutionError::ProviderFailure { .. } => WorksheetErrorCode::Value,
+        crate::resolver::ReferenceResolutionError::CapabilityDenied { .. } => {
+            WorksheetErrorCode::Ref
+        }
+        crate::resolver::ReferenceResolutionError::UnresolvedReference { .. } => {
+            WorksheetErrorCode::Ref
+        }
+        crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed => {
+            WorksheetErrorCode::Ref
+        }
+        crate::resolver::ReferenceResolutionError::ProviderFailure { .. } => {
+            WorksheetErrorCode::Value
+        }
     }
 }
 
@@ -1117,8 +1125,7 @@ pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatch
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
-    reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -1138,7 +1145,6 @@ pub fn eval_surface_value_call_with_dispatch_key(
             dispatch_key.function_id,
             args,
             resolver,
-            reference_text_resolver,
             now_serial,
             random_provider,
             locale_ctx,
@@ -2344,7 +2350,7 @@ pub fn arg_preparation_profile(function_id: &str) -> Option<ArgPreparationProfil
 pub fn eval_surface_value_call(
     function_id: &str,
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2354,7 +2360,6 @@ pub fn eval_surface_value_call(
         function_id,
         args,
         resolver,
-        None,
         now_serial,
         random_provider,
         locale_ctx,
@@ -2368,7 +2373,7 @@ pub fn eval_surface_value_call(
 pub fn eval_surface_extended_call(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2524,8 +2529,7 @@ fn scalar_output_cell(value: EvalValue) -> ArrayCellValue {
 fn try_observed_scalar_array_lift(
     function_id: &str,
     args: &[CallArgValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
-    reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2586,7 +2590,6 @@ fn try_observed_scalar_array_lift(
                 function_id,
                 &cell_calc_args,
                 resolver,
-                reference_text_resolver,
                 now_serial,
                 random_provider,
                 locale_ctx,
@@ -2612,8 +2615,7 @@ fn try_observed_scalar_array_lift(
 pub fn eval_surface_value_call_with_callable(
     function_id: &str,
     args: &[CalcValue],
-    resolver: &(impl ReferenceResolver + ?Sized),
-    reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
     locale_ctx: Option<&LocaleFormatContext>,
@@ -2628,7 +2630,6 @@ pub fn eval_surface_value_call_with_callable(
         dispatch_key,
         args,
         resolver,
-        reference_text_resolver,
         now_serial,
         random_provider,
         locale_ctx,
@@ -2737,14 +2738,14 @@ mod tests {
         HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
     };
     use crate::locale_format::test_current_excel_host_context;
-    use crate::resolver::{RefResolutionError, ResolverCapabilities};
+    use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
         ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
         ExcelText, ExtendedValue, LambdaValue, NumberFormatHint, PresentationHint, ReferenceKind,
         ReferenceLike, RichValueData,
     };
 
-    struct NoReferenceResolver;
+    struct NoReferenceSystemProvider;
 
     struct TestCallableInvoker;
     struct TestRandomProvider;
@@ -2800,18 +2801,21 @@ mod tests {
         }
     }
 
-    impl ReferenceResolver for NoReferenceResolver {
-        fn capabilities(&self) -> ResolverCapabilities {
-            ResolverCapabilities::permissive_local()
+    impl ReferenceSystemProvider for NoReferenceSystemProvider {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
         }
 
-        fn resolve_reference(
+        fn dereference(
             &self,
-            reference: &ReferenceLike,
-        ) -> Result<EvalValue, RefResolutionError> {
-            Err(RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
-            })
+            request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+            let reference = &request.reference;
+            Err(
+                crate::resolver::ReferenceResolutionError::UnresolvedReference {
+                    target: reference.target.clone(),
+                },
+            )
         }
     }
 
@@ -2842,7 +2846,7 @@ mod tests {
         eval_test_surface_value_call(
             function_id,
             args,
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -2854,7 +2858,7 @@ mod tests {
     fn eval_test_surface_value_call(
         function_id: &str,
         args: &[CallArgValue],
-        resolver: &(impl ReferenceResolver + ?Sized),
+        resolver: &(impl ReferenceSystemProvider + ?Sized),
         now_serial: Option<f64>,
         random_provider: Option<&dyn RandomProvider>,
         locale_ctx: Option<&LocaleFormatContext>,
@@ -2876,8 +2880,7 @@ mod tests {
     fn eval_test_surface_value_call_with_callable(
         function_id: &str,
         args: &[CallArgValue],
-        resolver: &(impl ReferenceResolver + ?Sized),
-        reference_text_resolver: Option<&dyn ReferenceTextResolver>,
+        resolver: &(impl ReferenceSystemProvider + ?Sized),
         now_serial: Option<f64>,
         random_provider: Option<&dyn RandomProvider>,
         locale_ctx: Option<&LocaleFormatContext>,
@@ -2891,7 +2894,6 @@ mod tests {
             function_id,
             &calc_args,
             resolver,
-            reference_text_resolver,
             now_serial,
             random_provider,
             locale_ctx,
@@ -3213,8 +3215,7 @@ mod tests {
         eval_test_surface_value_call_with_callable(
             function_id,
             args,
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3290,7 +3291,7 @@ mod tests {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
-                                &NoReferenceResolver,
+                                &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
                                 None,
@@ -3306,7 +3307,7 @@ mod tests {
                                         ExcelText::from_interop_assignment("00"),
                                     )),
                                 ],
-                                &NoReferenceResolver,
+                                &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
                                 Some(&ctx),
@@ -3344,7 +3345,7 @@ mod tests {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
-                                &NoReferenceResolver,
+                                &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
                                 None,
@@ -3360,7 +3361,7 @@ mod tests {
                                         ExcelText::from_interop_assignment("00"),
                                     )),
                                 ],
-                                &NoReferenceResolver,
+                                &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
                                 Some(&ctx),
@@ -3398,7 +3399,7 @@ mod tests {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
                                 &[CallArgValue::Eval(EvalValue::Number(*n))],
-                                &NoReferenceResolver,
+                                &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
                                 None,
@@ -3441,7 +3442,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_ABS,
             &[arg],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3459,7 +3460,7 @@ mod tests {
                     CallArgValue::Eval(EvalValue::Number(0.0)),
                     CallArgValue::Eval(EvalValue::Number(0.0)),
                 ],
-                &NoReferenceResolver,
+                &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
                 None,
@@ -3489,7 +3490,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3527,7 +3528,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3565,7 +3566,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3610,7 +3611,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3637,19 +3638,13 @@ mod tests {
                 CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
                 CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(
-            got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
-                ReferenceKind::Area,
-                "A1:B2".to_string()
-            )))
-        );
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
     }
 
     #[test]
@@ -3666,19 +3661,13 @@ mod tests {
                     "G1:G2".to_string(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(
-            got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
-                ReferenceKind::MultiArea,
-                "(A1:A2,G1:G2)".to_string()
-            )))
-        );
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
     }
 
     #[test]
@@ -3706,7 +3695,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Logical(false)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3758,7 +3747,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Logical(false)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3794,7 +3783,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3836,7 +3825,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3887,7 +3876,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3948,7 +3937,7 @@ mod tests {
                 ])
                 .unwrap(),
             ))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -3988,7 +3977,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4029,7 +4018,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4066,7 +4055,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("-"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4091,7 +4080,7 @@ mod tests {
             &[CallArgValue::Reference(
                 ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4108,7 +4097,7 @@ mod tests {
                 ReferenceKind::Area,
                 "(A1,B2:B3)".to_string(),
             ))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4118,7 +4107,7 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_value_call_index_rejects_legacy_parenthesized_area_carrier() {
+    fn eval_surface_value_call_index_reports_provider_failure_for_parenthesized_area_carrier() {
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
@@ -4130,13 +4119,13 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
+        assert_eq!(got, Err(WorksheetErrorCode::Ref));
     }
 
     #[test]
@@ -4145,7 +4134,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             "FUNC.UNKNOWN",
             &[arg],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4162,7 +4151,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(499.0)),
                 CallArgValue::Eval(EvalValue::Logical(false)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4195,8 +4184,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(array)),
                 CallArgValue::Eval(EvalValue::Lambda(callable)),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4234,7 +4222,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
                 CallArgValue::Eval(EvalValue::Array(lookup_array)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4272,7 +4260,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
                 CallArgValue::Eval(EvalValue::Array(lookup_array)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4321,7 +4309,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(lookup_values)),
                 CallArgValue::Eval(EvalValue::Array(lookup_array)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4332,7 +4320,7 @@ mod tests {
         let isnumber = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
             &[CallArgValue::Eval(xmatch)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4346,7 +4334,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(source)),
                 CallArgValue::Eval(isnumber),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4357,7 +4345,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(filtered)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4385,7 +4373,7 @@ mod tests {
         let iserror = eval_test_surface_value_call(
             FUNC_ID_ISERROR,
             &[CallArgValue::Eval(EvalValue::Array(mapped))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4396,7 +4384,7 @@ mod tests {
         let keep = eval_test_surface_value_call(
             FUNC_ID_NOT,
             &[CallArgValue::Eval(iserror)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4410,7 +4398,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(keys)),
                 CallArgValue::Eval(keep),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4421,7 +4409,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(filtered)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4440,7 +4428,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4451,7 +4439,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(serial)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4473,7 +4461,7 @@ mod tests {
         let got_y = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[start_y, end_y, unit_y],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4494,7 +4482,7 @@ mod tests {
                 end_m.clone(),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("M"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4509,7 +4497,7 @@ mod tests {
                 end_m,
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MD"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4527,7 +4515,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4537,7 +4525,7 @@ mod tests {
         let got_0706 = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
             &[CallArgValue::Eval(jan1.clone())],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4551,7 +4539,7 @@ mod tests {
                 CallArgValue::Eval(jan1),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4566,7 +4554,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(12.0)),
                 CallArgValue::Eval(EvalValue::Number(30.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4576,7 +4564,7 @@ mod tests {
         let got_0708 = eval_test_surface_value_call(
             FUNC_ID_ISOWEEKNUM,
             &[CallArgValue::Eval(dec30)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4594,7 +4582,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(15.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4610,7 +4598,7 @@ mod tests {
                         CallArgValue::Eval(jan15),
                         CallArgValue::Eval(EvalValue::Number(1.0)),
                     ],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -4618,7 +4606,7 @@ mod tests {
                 )
                 .expect("EOMONTH(...,1)"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4633,7 +4621,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(15.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4649,7 +4637,7 @@ mod tests {
                         CallArgValue::Eval(mar15),
                         CallArgValue::Eval(EvalValue::Number(-1.0)),
                     ],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -4657,7 +4645,7 @@ mod tests {
                 )
                 .expect("EOMONTH(...,-1)"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4672,7 +4660,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(31.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4688,7 +4676,7 @@ mod tests {
                         CallArgValue::Eval(jan31),
                         CallArgValue::Eval(EvalValue::Number(1.0)),
                     ],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -4696,7 +4684,7 @@ mod tests {
                 )
                 .expect("EDATE(...,1)"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4722,7 +4710,7 @@ mod tests {
                                         CallArgValue::Eval(EvalValue::Number(0.0)),
                                         CallArgValue::Eval(EvalValue::Number(1.0)),
                                     ],
-                                    &NoReferenceResolver,
+                                    &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
@@ -4732,7 +4720,7 @@ mod tests {
                             ),
                             CallArgValue::Eval(EvalValue::Number(86400.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -4742,7 +4730,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4766,7 +4754,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Logical(false)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4776,7 +4764,7 @@ mod tests {
         let sum_err = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(EvalValue::Error(filtered_err))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4789,7 +4777,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Error(sum_err)),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("empty"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4822,7 +4810,7 @@ mod tests {
                 CallArgValue::MissingArg,
                 CallArgValue::Eval(EvalValue::Number(-1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4835,7 +4823,7 @@ mod tests {
                 CallArgValue::Eval(sorted),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4868,7 +4856,7 @@ mod tests {
                     .expect("row vector"),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4881,7 +4869,7 @@ mod tests {
                 CallArgValue::Eval(sorted),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4910,7 +4898,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Number(-2.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4920,7 +4908,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(EvalValue::Error(drop_err))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4953,7 +4941,7 @@ mod tests {
                     .expect("selector row vector"),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4963,7 +4951,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(chosen)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -4989,7 +4977,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(row_vector.clone())),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5002,7 +4990,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(row_vector)),
                 CallArgValue::Eval(matched),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5024,7 +5012,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5041,7 +5029,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("c"))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("d"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5060,7 +5048,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("b"))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("c"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5095,7 +5083,7 @@ mod tests {
                     "missing",
                 ))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5133,7 +5121,7 @@ mod tests {
                     .expect("row vector"),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5178,7 +5166,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("NF"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5205,7 +5193,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(4.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5223,7 +5211,7 @@ mod tests {
                 ))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Delta"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5238,7 +5226,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5265,7 +5253,7 @@ mod tests {
                             CallArgValue::Eval(EvalValue::Number(1.0)),
                             CallArgValue::Eval(EvalValue::Number(3.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5298,7 +5286,7 @@ mod tests {
                     .unwrap(),
                 )),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5308,7 +5296,7 @@ mod tests {
         let result = eval_test_surface_value_call(
             FUNC_ID_TRANSPOSE,
             &[CallArgValue::Eval(data)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5323,7 +5311,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5340,7 +5328,7 @@ mod tests {
             eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
-                &NoReferenceResolver,
+                &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
                 None,
@@ -5355,7 +5343,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5368,7 +5356,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5382,7 +5370,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(15.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5408,7 +5396,7 @@ mod tests {
                 CallArgValue::Eval(test_date),
                 CallArgValue::Eval(format_code),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -5427,7 +5415,7 @@ mod tests {
             eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
                 &[CallArgValue::Eval(lhs), CallArgValue::Eval(rhs)],
-                &NoReferenceResolver,
+                &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
                 None,
@@ -5442,7 +5430,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5455,7 +5443,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5469,7 +5457,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(28.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5495,7 +5483,7 @@ mod tests {
                 CallArgValue::Eval(test_date),
                 CallArgValue::Eval(format_code),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -5505,7 +5493,7 @@ mod tests {
         let trimmed = eval_test_surface_value_call(
             FUNC_ID_TRIM,
             &[CallArgValue::Eval(rendered)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5515,7 +5503,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_LEN,
             &[CallArgValue::Eval(trimmed)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5533,7 +5521,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5546,7 +5534,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5563,7 +5551,7 @@ mod tests {
                             CallArgValue::Eval(first_day.clone()),
                             CallArgValue::Eval(weekday),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5573,7 +5561,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5592,7 +5580,7 @@ mod tests {
                             CallArgValue::MissingArg,
                             CallArgValue::Eval(EvalValue::Number(0.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5601,7 +5589,7 @@ mod tests {
                     .expect("sequence result"),
                 ),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5619,8 +5607,7 @@ mod tests {
                     "lambda.map.feb2024.daystr",
                 ))),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5637,7 +5624,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Logical(false)),
                 CallArgValue::Eval(day_texts),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5661,7 +5648,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(7.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5687,7 +5674,7 @@ mod tests {
                                                     CallArgValue::Eval(EvalValue::Number(1.0)),
                                                     CallArgValue::Eval(EvalValue::Number(7.0)),
                                                 ],
-                                                &NoReferenceResolver,
+                                                &NoReferenceSystemProvider,
                                                 Some(46000.0),
                                                 Some(&TEST_RANDOM_PROVIDER),
                                                 None,
@@ -5696,7 +5683,7 @@ mod tests {
                                             .expect("sequence result"),
                                         ),
                                     ],
-                                    &NoReferenceResolver,
+                                    &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
@@ -5706,7 +5693,7 @@ mod tests {
                             ),
                             CallArgValue::Eval(EvalValue::Number(1.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5716,7 +5703,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("DDD"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -5730,7 +5717,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5752,7 +5739,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(7.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5765,7 +5752,7 @@ mod tests {
                 CallArgValue::Eval(date),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MMMM"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -5787,7 +5774,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5800,7 +5787,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5817,7 +5804,7 @@ mod tests {
                             CallArgValue::Eval(first_day.clone()),
                             CallArgValue::Eval(weekday),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5827,7 +5814,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5846,7 +5833,7 @@ mod tests {
                             CallArgValue::MissingArg,
                             CallArgValue::Eval(EvalValue::Number(0.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5855,7 +5842,7 @@ mod tests {
                     .expect("sequence result"),
                 ),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5873,8 +5860,7 @@ mod tests {
                     "lambda.map.jan2024.daystr",
                 ))),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -5890,7 +5876,7 @@ mod tests {
                 CallArgValue::Eval(first_day),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("MMMM"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -5910,7 +5896,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(1.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5925,7 +5911,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(2.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5940,7 +5926,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(3.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5955,7 +5941,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(4.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5970,7 +5956,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(5.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -5985,7 +5971,7 @@ mod tests {
                             CallArgValue::Eval(day_strs.clone()),
                             CallArgValue::Eval(EvalValue::Number(6.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6000,7 +5986,7 @@ mod tests {
                             CallArgValue::Eval(day_strs),
                             CallArgValue::Eval(EvalValue::Number(7.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6009,7 +5995,7 @@ mod tests {
                     .expect("index 7"),
                 ),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6032,7 +6018,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6045,7 +6031,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6059,7 +6045,7 @@ mod tests {
                     eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[CallArgValue::Eval(first_day), CallArgValue::Eval(weekday)],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6069,7 +6055,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6093,7 +6079,7 @@ mod tests {
                                         CallArgValue::MissingArg,
                                         CallArgValue::Eval(EvalValue::Number(1.0)),
                                     ],
-                                    &NoReferenceResolver,
+                                    &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
@@ -6102,7 +6088,7 @@ mod tests {
                                 .expect("sequence"),
                             ),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6112,7 +6098,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6130,8 +6116,7 @@ mod tests {
                     "lambda.map.jan2024.dayzero",
                 ))),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6144,7 +6129,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(day_nums)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6162,7 +6147,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6175,7 +6160,7 @@ mod tests {
                 CallArgValue::Eval(first_day.clone()),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6185,7 +6170,7 @@ mod tests {
         let days_in_month = eval_test_surface_value_call(
             FUNC_ID_DAY,
             &[CallArgValue::Eval(last_day)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6202,7 +6187,7 @@ mod tests {
                             CallArgValue::Eval(first_day),
                             CallArgValue::Eval(EvalValue::Number(1.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6212,7 +6197,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6222,7 +6207,7 @@ mod tests {
         let grid = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
             &[CallArgValue::Eval(EvalValue::Number(42.0))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6243,7 +6228,7 @@ mod tests {
                                         CallArgValue::Eval(grid.clone()),
                                         CallArgValue::Eval(offset.clone()),
                                     ],
-                                    &NoReferenceResolver,
+                                    &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
@@ -6263,7 +6248,7 @@ mod tests {
                                                     CallArgValue::Eval(offset.clone()),
                                                     CallArgValue::Eval(days_in_month),
                                                 ],
-                                                &NoReferenceResolver,
+                                                &NoReferenceSystemProvider,
                                                 Some(46000.0),
                                                 Some(&TEST_RANDOM_PROVIDER),
                                                 None,
@@ -6272,7 +6257,7 @@ mod tests {
                                             .expect("offset+days"),
                                         ),
                                     ],
-                                    &NoReferenceResolver,
+                                    &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
@@ -6281,7 +6266,7 @@ mod tests {
                                 .expect("le result"),
                             ),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6293,7 +6278,7 @@ mod tests {
                     eval_test_surface_value_call(
                         FUNC_ID_OP_SUBTRACT,
                         &[CallArgValue::Eval(grid), CallArgValue::Eval(offset)],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6303,7 +6288,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6316,7 +6301,7 @@ mod tests {
                 CallArgValue::Eval(day_vals),
                 CallArgValue::Eval(EvalValue::Number(7.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6333,7 +6318,7 @@ mod tests {
                         CallArgValue::Eval(EvalValue::Number(1.0)),
                         CallArgValue::Eval(EvalValue::Number(0.0)),
                     ],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -6341,7 +6326,7 @@ mod tests {
                 )
                 .expect("index first row"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6355,7 +6340,7 @@ mod tests {
         let cols = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(EvalValue::Number(0.0))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6368,7 +6353,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(0.0)),
                 CallArgValue::Eval(cols),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6394,7 +6379,7 @@ mod tests {
         let n = eval_test_surface_value_call(
             FUNC_ID_COUNTA,
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6404,7 +6389,7 @@ mod tests {
         let mean = eval_test_surface_value_call(
             FUNC_ID_AVERAGE,
             &[CallArgValue::Eval(EvalValue::Array(data.clone()))],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6417,7 +6402,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(data)),
                 CallArgValue::Eval(mean.clone()),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6430,7 +6415,7 @@ mod tests {
                 CallArgValue::Eval(centered),
                 CallArgValue::Eval(EvalValue::Number(2.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6444,7 +6429,7 @@ mod tests {
                     eval_test_surface_value_call(
                         FUNC_ID_SUMPRODUCT,
                         &[CallArgValue::Eval(squares)],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -6454,7 +6439,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(n),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6464,7 +6449,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SQRT,
             &[CallArgValue::Eval(variance)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6488,7 +6473,7 @@ mod tests {
                 )),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6501,7 +6486,7 @@ mod tests {
                 eval_test_surface_value_call(
                     FUNC_ID_OP_NEGATE,
                     &[CallArgValue::Eval(include)],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -6509,7 +6494,7 @@ mod tests {
                 )
                 .expect("first negate"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6519,7 +6504,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUMPRODUCT,
             &[CallArgValue::Eval(coerced)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6539,7 +6524,7 @@ mod tests {
                     "#,##0.00",
                 ))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -6561,7 +6546,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(5.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6571,7 +6556,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
             &[CallArgValue::Eval(generated)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6589,7 +6574,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(5.0)),
                 CallArgValue::Eval(EvalValue::Number(5.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&provider),
             None,
@@ -6616,7 +6601,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(5.0)),
                 CallArgValue::Eval(EvalValue::Number(5.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             None,
             None,
@@ -6632,7 +6617,7 @@ mod tests {
         let length = eval_test_surface_value_call(
             FUNC_ID_LEN,
             &[CallArgValue::Eval(text.clone())],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6642,7 +6627,7 @@ mod tests {
         let positions = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
             &[CallArgValue::Eval(length)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6656,7 +6641,7 @@ mod tests {
                 CallArgValue::Eval(positions),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6669,7 +6654,7 @@ mod tests {
                 CallArgValue::Eval(chars.clone()),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6682,7 +6667,7 @@ mod tests {
                 CallArgValue::Eval(multiplied),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(""))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6692,7 +6677,7 @@ mod tests {
         let numeric_text = eval_test_surface_value_call(
             FUNC_ID_VALUE,
             &[CallArgValue::Eval(recovered)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             Some(&ctx),
@@ -6702,7 +6687,7 @@ mod tests {
         let is_digit = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
             &[CallArgValue::Eval(numeric_text)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6716,7 +6701,7 @@ mod tests {
                 CallArgValue::Eval(is_digit),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(""))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6726,7 +6711,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_CONCAT,
             &[CallArgValue::Eval(digits)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6757,8 +6742,7 @@ mod tests {
                     "helper.invoke.v1",
                 ))),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6779,8 +6763,7 @@ mod tests {
                     "helper.invoke.v1",
                 ))),
             ],
-            &NoReferenceResolver,
-            None,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -6793,7 +6776,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(step2)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7258,7 +7241,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(data.clone())),
                 CallArgValue::Eval(EvalValue::Number(10.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7272,7 +7255,7 @@ mod tests {
                 CallArgValue::Eval(include),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("none"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7608,7 +7591,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(3.0)),
                 CallArgValue::Eval(EvalValue::Number(4.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7622,7 +7605,7 @@ mod tests {
                 CallArgValue::MissingArg,
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7636,7 +7619,7 @@ mod tests {
                 CallArgValue::MissingArg,
                 CallArgValue::Eval(EvalValue::Number(-1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7653,7 +7636,7 @@ mod tests {
                             CallArgValue::Eval(re),
                             CallArgValue::Eval(EvalValue::Number(2.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -7668,7 +7651,7 @@ mod tests {
                             CallArgValue::Eval(im),
                             CallArgValue::Eval(EvalValue::Number(2.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -7677,7 +7660,7 @@ mod tests {
                     .expect("im squared"),
                 ),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7687,7 +7670,7 @@ mod tests {
         let magnitude = eval_test_surface_value_call(
             FUNC_ID_SQRT,
             &[CallArgValue::Eval(sumsq)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7701,7 +7684,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Number(1.0)),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7714,7 +7697,7 @@ mod tests {
                 CallArgValue::Eval(indexed),
                 CallArgValue::Eval(EvalValue::Number(6.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7737,7 +7720,7 @@ mod tests {
                             CallArgValue::MissingArg,
                             CallArgValue::Eval(EvalValue::Number(0.0)),
                         ],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -7746,7 +7729,7 @@ mod tests {
                     .expect("sequence result"),
                 ),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7760,7 +7743,7 @@ mod tests {
                     eval_test_surface_value_call(
                         FUNC_ID_MONTH,
                         &[CallArgValue::Eval(dates)],
-                        &NoReferenceResolver,
+                        &NoReferenceSystemProvider,
                         Some(46000.0),
                         Some(&TEST_RANDOM_PROVIDER),
                         None,
@@ -7770,7 +7753,7 @@ mod tests {
                 ),
                 CallArgValue::Eval(EvalValue::Number(1.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7783,7 +7766,7 @@ mod tests {
                 eval_test_surface_value_call(
                     FUNC_ID_OP_NEGATE,
                     &[CallArgValue::Eval(in_month)],
-                    &NoReferenceResolver,
+                    &NoReferenceSystemProvider,
                     Some(46000.0),
                     Some(&TEST_RANDOM_PROVIDER),
                     None,
@@ -7791,7 +7774,7 @@ mod tests {
                 )
                 .expect("first negate"),
             )],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7801,7 +7784,7 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
             &[CallArgValue::Eval(coerced)],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7832,7 +7815,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(lookup_array)),
                 CallArgValue::Eval(EvalValue::Number(0.0)),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7852,7 +7835,7 @@ mod tests {
         let got = eval_surface_extended_call(
             FUNC_ID_NOW,
             &[],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.25),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7872,7 +7855,7 @@ mod tests {
         let got = eval_surface_extended_call(
             FUNC_ID_TODAY,
             &[],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.75),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7897,7 +7880,7 @@ mod tests {
                 ))),
                 CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Go"))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7924,7 +7907,7 @@ mod tests {
                     "Sphere",
                 ))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
@@ -7954,7 +7937,7 @@ mod tests {
                     "Sphere",
                 ))),
             ],
-            &NoReferenceResolver,
+            &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
