@@ -1279,3 +1279,71 @@ Validation:
 3. `cargo test -p oxfunc_core eval_surface_value_call_routes_ --lib`: passed, 6 tests including the four migrated dynamic-array route tests.
 4. `cargo test -p oxfunc_core dynamic_array_reshape_family --lib`: passed, 11 tests.
 5. `cargo test -p oxfunc_core --lib`: passed, 1337 passed, 1 ignored.
+
+### W099-012.2 Lookup And Reference-Adjacent Kernel Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. `XLOOKUP`, `XMATCH`, `LOOKUP`, `HLOOKUP`, and `VLOOKUP` still use prepared legacy lookup carriers and remain W099-015 deletion residue after broader lookup migration.
+2. `INDEX` reference-source handling intentionally remains on the provider-aware legacy path until reference return and transform semantics can move without changing host-visible behavior.
+3. `INDEX` selector-array cases intentionally remain on the existing path because they rely on legacy selector-array semantics not migrated in this narrow slice.
+4. Cross-repo package-level seam failures remain the current OxFml W050 adapter/reference-materialization failures recorded in the parent W099-012 validation.
+
+Planned scope:
+1. Move a low-risk lookup/reference-adjacent slice to native `CalcValue` dispatch.
+2. Preserve reference-visible `INDEX` behavior by not preempting reference sources.
+3. Preserve existing selector-array behavior by not preempting selector-array calls.
+4. Keep the broader lookup family explicitly open rather than mixing search-mode and reference-return semantics into this bead.
+
+Evidence:
+1. `eval_index_calc_surface(...)` now handles non-reference `INDEX` array/scalar sources over `CalcValue` and `CalcArray`.
+2. `eval_lookup_reference_adjacent_calc_dispatch(...)` routes guarded non-reference `INDEX` calls before `legacy_kernel_args_from_calc_values(...)`.
+3. The dispatcher guard leaves reference sources and selector arrays for the existing reference-aware path.
+4. Focused dispatcher tests cover native `INDEX` array-cell selection and vector-position behavior over `CalcArray`.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrated a carrier path for existing `INDEX` semantics. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused native `INDEX` tests, `index`-filtered tests, `cargo check`, and full `oxfunc_core` library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover native CalcValue dispatch for the migrated `INDEX` slice. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and migrated function ids are recorded here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no new discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier migration. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new OxFml clause is introduced; reference-visible paths remain on the existing provider-aware path. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the guarded non-reference `INDEX` subset; broader lookup/reference work is listed as open lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-012.2 guarded `INDEX` carrier migration, not full lookup/reference migration or W099 terminal deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.12.2` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The child bead targets lookup/reference-adjacent migration; this pass moves guarded `INDEX` array/scalar sources and keeps reference-visible behavior out of the native preemption.
+2. Gate criteria re-read: passed. The migrated path uses native `CalcValue` / `CalcArray` at the dispatcher boundary and focused tests pass.
+3. Silent scope reduction check: passed. XLOOKUP/XMATCH/VLOOKUP/HLOOKUP/LOOKUP, reference-source `INDEX`, and selector-array `INDEX` are listed as open lanes.
+4. "Looks done but is not" pattern check: passed. The generated legacy table and non-migrated lookup functions remain assigned to later W099 deletion work.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue checked: preempting `INDEX` reference sources would risk changing provider transform/reference-return behavior; the dispatcher guard leaves those calls on the existing path.
+2. Issue checked: selector-array `INDEX` cases still depend on legacy selector-array handling; the dispatcher guard leaves selector-array calls on the existing path.
+3. Issue found and corrected while editing: scalar `CalcValue` sources now preserve their original carrier instead of reconstructing from `CoreValue`, avoiding accidental rich metadata erasure.
+4. Issue found and corrected while editing: direct `CalcValue::empty()` source is rejected like the old empty-cell source path rather than treated as a scalar array.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo check -p oxfunc_core`: passed.
+3. `cargo test -p oxfunc_core eval_surface_value_call_routes_index --lib`: passed, 2 tests.
+4. `cargo test -p oxfunc_core index --lib`: passed, 31 tests.
+5. `cargo test -p oxfunc_core --lib`: passed, 1339 passed, 1 ignored.

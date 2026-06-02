@@ -217,7 +217,7 @@ use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
 use crate::functions::image_fn::{
     eval_image_surface, eval_image_surface_rich, map_image_error_to_ws,
 };
-use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
+use crate::functions::index::{eval_index_calc_surface, eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
 use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
 use crate::functions::int_fn::{eval_int_surface, int_kernel, map_int_error_to_ws};
@@ -1200,6 +1200,32 @@ fn eval_dynamic_array_reshape_calc_dispatch(
     Some(result.map_err(|error| map_dynamic_array_reshape_error_to_ws(&error)))
 }
 
+fn eval_lookup_reference_adjacent_calc_dispatch(
+    function_id: &str,
+    args: &[CalcValue],
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    if function_id != FUNC_ID_INDEX {
+        return None;
+    }
+    if matches!(
+        args.first().map(CalcValue::core),
+        Some(CoreValue::Reference(_))
+    ) {
+        return None;
+    }
+    if args
+        .get(1)
+        .is_some_and(|value| matches!(value.core(), CoreValue::Array(_)))
+        || args
+            .get(2)
+            .is_some_and(|value| matches!(value.core(), CoreValue::Array(_)))
+    {
+        return None;
+    }
+
+    Some(eval_index_calc_surface(args).map_err(|error| map_index_error_to_ws(&error)))
+}
+
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
@@ -1256,6 +1282,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
                 .map_err(|error| map_lambda_helper_error_to_ws(&error));
         }
         _ => {
+            if let Some(result) =
+                eval_lookup_reference_adjacent_calc_dispatch(dispatch_key.function_id, args)
+            {
+                return result;
+            }
             if let Some(result) =
                 eval_dynamic_array_reshape_calc_dispatch(dispatch_key.function_id, args, resolver)
             {
@@ -8168,6 +8199,54 @@ mod tests {
                     .expect("array")
             ))
         );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_index_array_source_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0), CalcValue::number(40.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(30.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_index_vector_slice_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_INDEX,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                    ]])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
