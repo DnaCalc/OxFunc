@@ -292,14 +292,14 @@ Status axes:
 - Canonical owner: [OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md), [HANDOFF-CALC-003_OXFUNC_RECEIPT.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-CALC-003_OXFUNC_RECEIPT.md), [HANDOFF-CALC-004_OXFUNC_RECEIPT.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HANDOFF-CALC-004_OXFUNC_RECEIPT.md), and [NOTES_FOR_OXCALC.md](C:\Work\DnaCalc\OxFunc\docs\upstream\NOTES_FOR_OXCALC.md).
 
 ### IP-25 CalcValue End-To-End Migration
-- Current state: active W099 execution lane. The initial W099-001 inventory maps legacy `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, `ExtendedValue`, `LambdaValue`, old reference-provider, and `.target` surfaces to deletion batches before the foundation code rework starts. The next code gate is the W099-002/W099-003 foundation shape: typed `ReferenceLike` payload plus `ReferenceSystemProvider`, not the broad function-call or kernel sweep.
+- Current state: active W099 execution lane through W099-014. The initial W099-001 inventory mapped legacy `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, `ExtendedValue`, `LambdaValue`, old reference-provider, and `.target` surfaces to deletion batches; W099-002 through W099-013A landed the typed `ReferenceLike`, `ReferenceSystemProvider`, CalcValue, callable, and cleanup foundations; and W099-014 integrated the OxFml/OxCalc W060 provider path so TreeCalc runtime references use typed host-owned handles with no active `HOST_REF_*` runtime identity. The next code gate is W099-015 legacy type and adapter deletion.
 - Canonical owner: [W099_CALCVALUE_END_TO_END_MIGRATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_END_TO_END_MIGRATION.md), [W099_CALCVALUE_INVENTORY_AND_DELETION_LEDGER.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_INVENTORY_AND_DELETION_LEDGER.md), [W099_CALCVALUE_OCCURRENCE_LEDGER.csv](C:\Work\DnaCalc\OxFunc\docs\worksets\W099_CALCVALUE_OCCURRENCE_LEDGER.csv), and `.beads/` epic `oxf-im4m`.
 
 Status axes:
 1. `scope_completeness`: `scope_partial`
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
-4. `open_lanes`: typed reference payload foundation, `ReferenceSystemProvider` foundation, call-boundary migration, array/preparation/dispatch/kernel/rich/callable migration, OxFml callable follow-through, OxCalc reference-system integration, legacy type/provider/adapter deletion audit, and final cross-repo validation.
+4. `open_lanes`: W099-015 legacy type/provider/adapter deletion audit and W099-016 final cross-repo validation.
 
 ### IP-22 REDUCE Lambda-Helper Hot-Loop Performance
 - Current state: stopped at the OxFunc-local gate. W095 has local helper iteration changes so `MAP`, `REDUCE`, and `SCAN` consume iterable items lazily instead of materializing a full `Vec<PreparedArgValue>` upfront; `BYROW`/`BYCOL` avoid cloning an already-array source; `REDUCE` has a numeric-array fast path; `HSTACK`/`VSTACK` use borrowed/inline argument sources; `EvalArray` stores arrays with up to `8` cells inline; and `CallableInvoker::invoke_many(...)` exposes the OxFml-facing batching seam.

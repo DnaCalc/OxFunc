@@ -1780,3 +1780,76 @@ Validation:
 4. `cargo test -p oxfunc_core function_call --lib`: passed, 12 tests.
 5. `cargo test -p oxfunc_core surface_dispatch --lib`: passed, 102 tests.
 6. `cargo test -p oxfunc_core --lib`: passed, 1352 tests passed and 1 ignored.
+
+### W099-014 OxCalc W060 Integration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `integrated`
+
+open_lanes:
+1. W099-015 owns terminal deletion of legacy value/type/provider/adapters that remain after the OxCalc W060 provider integration.
+2. W099-016 owns final cross-repo audit across OxFunc, OxFml, OxCalc, and DnaTreeCalc.
+3. OxCalc retains an untracked local temp artifact `tmp/oxcalc_runtime_environment_flow.html`, outside the committed W060 integration.
+
+Planned scope:
+1. Integrate OxCalc TreeCalc runtime references with typed `ReferenceLike` and host-owned reference handles.
+2. Remove active runtime `HOST_REF_*` identities from the OxCalc/OxFml integration path.
+3. Route TreeCalc dereference/enumeration through `ReferenceSystemProvider` while preserving CTRO graph/runtime separation.
+
+Evidence:
+1. OxFml commit `9f82680 Carry host reference syntax into runtime host recalc` carries host-reference syntax through runtime host recalculation.
+2. OxCalc commit `5687e2e Align OxCalc with CalcValue reference provider path` aligns the W060 provider path with typed CalcValue references.
+3. OxCalc commit `bff5b12 Complete TreeCalc table and reference runtime backing` completes TreeCalc table/reference runtime backing for the W060 lane.
+4. TreeCalc provider dereference supports provider-owned sparse and descriptor-backed reference values.
+5. Structured-table formulas and raw children host-reference syntax execute through the OxFml/OxCalc provider path.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no OxFunc function contract promotion was in scope; this bead closed downstream reference-system integration. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no function semantic slice was promoted. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - OxFunc checks passed; OxCalc W060 canonical checks passed; OxFml compile check passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic OxCalc runtime tests cover TreeCalc reference/provider behavior and upstream-host fixture replay. |
+| 5 | Evidence links complete and reproducible? | Yes - commits and validation commands are recorded below. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel application/workbook compatibility claim changed in OxFunc; OxCalc W060 local runtime scope is the integration target. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - none were introduced or resolved by this integration bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this OxCalc/OxFml provider integration check. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - this bead consumed the coordinated OxFml/OxCalc W060 integration commits rather than changing the OxFunc FEC boundary. |
+| 10 | No known semantic gap remains in declared scope? | Yes for W099-014; terminal legacy deletion and final audit remain later W099 lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-014 integration, not W099 terminal closure. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - IP-25 now reflects W099 through W099-014 and points at W099-015 next. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.14` is closed after the recorded validation. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead is the OxCalc W060 integration lane, not broad OxFunc legacy deletion.
+2. Gate criteria re-read: passed. TreeCalc runtime references use typed `ReferenceLike`/host handles, `HOST_REF_*` scans are clean, and provider-based runtime tests pass.
+3. Silent scope reduction check: passed. W099-015 and W099-016 keep explicit ownership of terminal deletion and final cross-repo validation.
+4. "Looks done but is not" pattern check: passed. Ignored legacy raw-selector tests in OxCalc remain explicitly labelled parser/binder follow-up outside this bead's active W060 acceptance.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue found and corrected before closure: provider-owned sparse references initially enumerated but did not dereference; OxCalc now dereferences sparse and descriptor-backed values through `TreeCalcReferenceSystemProvider`.
+2. Issue found and corrected before closure: sparse reader worksheet coordinates needed conversion to one-based reference-relative `ResolvedReferenceCell` coordinates.
+3. Issue checked: the prior raw `@CHILDREN` failure is resolved by the OxFml/OxCalc host-reference syntax/runtime integration.
+4. Issue checked: the prior upstream-host structured-reference fixture failures are resolved without adding an OxFunc textual fallback provider.
+5. Issue checked: CTRO graph/runtime separation is preserved; dependency graph construction remains on bound formula/reference records while runtime dereference/enumeration uses provider-owned values.
+
+Validation:
+1. OxFunc `cargo check -p oxfunc_core`: passed.
+2. OxFunc `cargo test -p oxfunc_core --lib`: passed, 1352 tests passed and 1 ignored.
+3. OxCalc `cargo test -p oxcalc-core raw_children_formula_text_resolves_through_oxfml_host_reference_path --lib`: passed, 1 test.
+4. OxCalc `cargo test -p oxcalc-core checked_in_upstream_host_fixtures_execute_against_public_packet --lib`: passed, 1 test.
+5. OxCalc `cargo test -p oxcalc-core upstream_host_runner_emits_direct_oxfml_artifacts --lib`: passed, 1 test.
+6. OxCalc `cargo check -p oxcalc-core`: passed.
+7. OxCalc `cargo test -p oxcalc-core --lib`: passed, 311 tests passed and 11 ignored.
+8. OxCalc `rg -n "HOST_REF_" src/oxcalc-core/src -g "*.rs"`: passed with no matches.
+9. OxFml `cargo check`: passed.
+10. OxFml `rg -n "HOST_REF_|ReferenceResolver|ExtendedValue" crates -g "*.rs"`: passed with no matches.
