@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
+use crate::functions::adapters::{
+    PreparedArgValue, coerce_prepared_to_number, prepared_arg_to_calc_value_lossy,
+};
 use crate::functions::callable_helpers::{
     CallableInvocationError, CallableInvoker, LambdaHelperEvalError, invoke_callable_prepared,
 };
 use crate::value::{
-    ArrayCellValue, EvalArray, EvalValue, ExcelText, LambdaValue, WorksheetErrorCode,
+    ArrayCellValue, CallableValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -40,15 +42,19 @@ pub(crate) struct MatrixArg {
 
 pub(crate) fn require_callable(
     prepared: &PreparedArgValue,
-) -> Result<&LambdaValue, LambdaHelperEvalError> {
+) -> Result<CallableValue, LambdaHelperEvalError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Lambda(callable)) => Ok(callable),
         PreparedArgValue::Eval(EvalValue::Error(code)) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(*code),
         )),
-        _ => Err(LambdaHelperEvalError::Invocation(
-            CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
-        )),
+        _ => prepared_arg_to_calc_value_lossy(prepared)
+            .callable_value()
+            .cloned()
+            .ok_or_else(|| {
+                LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(
+                    WorksheetErrorCode::Value,
+                ))
+            }),
     }
 }
 
@@ -335,7 +341,7 @@ pub(crate) fn parse_sort_orders(
 }
 
 pub(crate) fn invoke_group_aggregate(
-    callable: &LambdaValue,
+    callable: &CallableValue,
     values: &[ArrayCellValue],
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<ArrayCellValue, LambdaHelperEvalError> {

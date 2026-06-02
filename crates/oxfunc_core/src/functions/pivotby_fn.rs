@@ -15,7 +15,9 @@ use crate::functions::group_pivot_common::{
     require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, CallableValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const PIVOTBY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PIVOTBY",
@@ -138,7 +140,7 @@ fn apply_axis_sort(
 fn aggregate_totals_for_groups(
     groups: &[AxisGroup],
     value_rows: &[Vec<ArrayCellValue>],
-    callable: &crate::value::LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<Vec<(Vec<CellKey>, Vec<ArrayCellValue>)>, LambdaHelperEvalError> {
     let value_cols = value_rows.first().map_or(1, Vec::len);
@@ -295,8 +297,8 @@ pub fn eval_pivotby_surface(
 
     let mut row_groups = build_axis_groups(&row_rows);
     let mut col_groups = build_axis_groups(&col_rows);
-    let row_totals = aggregate_totals_for_groups(&row_groups, &value_rows, callable, invoker)?;
-    let col_totals = aggregate_totals_for_groups(&col_groups, &value_rows, callable, invoker)?;
+    let row_totals = aggregate_totals_for_groups(&row_groups, &value_rows, &callable, invoker)?;
+    let col_totals = aggregate_totals_for_groups(&col_groups, &value_rows, &callable, invoker)?;
     apply_axis_sort(
         &mut row_groups,
         &row_totals,
@@ -378,7 +380,7 @@ pub fn eval_pivotby_surface(
                     .iter()
                     .map(|row_index| value_rows[*row_index][value_col].clone())
                     .collect::<Vec<_>>();
-                row.push(invoke_group_aggregate(callable, &members, invoker)?);
+                row.push(invoke_group_aggregate(&callable, &members, invoker)?);
             }
         }
         if row_total_depth != 0 {
@@ -387,7 +389,7 @@ pub fn eval_pivotby_surface(
                 .iter()
                 .map(|row_index| value_rows[*row_index][0].clone())
                 .collect::<Vec<_>>();
-            row.push(invoke_group_aggregate(callable, &members, invoker)?);
+            row.push(invoke_group_aggregate(&callable, &members, invoker)?);
         }
         rows.push(row);
     }
@@ -402,7 +404,7 @@ pub fn eval_pivotby_surface(
                     .iter()
                     .map(|row_index| value_rows[*row_index][value_col].clone())
                     .collect::<Vec<_>>();
-                total_row.push(invoke_group_aggregate(callable, &members, invoker)?);
+                total_row.push(invoke_group_aggregate(&callable, &members, invoker)?);
             }
         }
         if col_total_depth != 0 || row_total_depth != 0 {
@@ -410,7 +412,7 @@ pub fn eval_pivotby_surface(
                 .iter()
                 .map(|row| row[0].clone())
                 .collect::<Vec<_>>();
-            total_row.push(invoke_group_aggregate(callable, &members, invoker)?);
+            total_row.push(invoke_group_aggregate(&callable, &members, invoker)?);
         }
         rows.push(total_row);
     }
@@ -460,10 +462,10 @@ mod tests {
     impl CallableInvoker for TestInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            match callable.callable_token.as_str() {
+            match callable.summary.as_str() {
                 "helper.sum_array" => match &args[0] {
                     PreparedArgValue::Eval(EvalValue::Array(array)) => {
                         let total = array

@@ -15,7 +15,9 @@ use crate::functions::group_pivot_common::{
     require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CallArgValue, CallableValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 pub const GROUPBY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GROUPBY",
@@ -163,7 +165,7 @@ fn apply_sort(groups: &mut [LeafGroup], sort_orders: &[i32], row_field_cols: usi
 fn build_leaf_groups(
     key_rows: &[Vec<ArrayCellValue>],
     value_rows: &[Vec<ArrayCellValue>],
-    callable: &crate::value::LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<Vec<LeafGroup>, LambdaHelperEvalError> {
     if key_rows.is_empty() {
@@ -217,7 +219,7 @@ fn subtotal_row(
 fn build_output_rows(
     groups: &[LeafGroup],
     value_rows: &[Vec<ArrayCellValue>],
-    callable: &crate::value::LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
     total_depth: i32,
     relationship: FieldRelationship,
@@ -333,7 +335,7 @@ pub fn eval_groupby_surface(
 
     let (key_rows, value_rows) =
         extract_filtered_rows(&split_rows.array, &split_values.array, filter.as_deref())?;
-    let mut groups = build_leaf_groups(&key_rows, &value_rows, callable, invoker)?;
+    let mut groups = build_leaf_groups(&key_rows, &value_rows, &callable, invoker)?;
     apply_sort(&mut groups, &sort_orders, split_rows.array.shape().cols);
 
     let mut rows = Vec::new();
@@ -363,7 +365,7 @@ pub fn eval_groupby_surface(
     rows.extend(build_output_rows(
         &groups,
         &value_rows,
-        callable,
+        &callable,
         invoker,
         total_depth,
         relationship,
@@ -414,10 +416,10 @@ mod tests {
     impl CallableInvoker for TestInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            match callable.callable_token.as_str() {
+            match callable.summary.as_str() {
                 "helper.sum_array" => match &args[0] {
                     PreparedArgValue::Eval(EvalValue::Array(array)) => {
                         let mut total = 0.0;

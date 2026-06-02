@@ -610,7 +610,8 @@ mod tests {
     };
     use crate::value::{
         ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableCaptureMode,
-        CoreValue, EvalArray, EvalValue, ExcelText, LambdaValue, ReferenceKind, ReferenceLike,
+        CallableValue, CoreValue, EvalArray, EvalValue, ExcelText, LambdaValue, ReferenceKind,
+        ReferenceLike,
     };
 
     struct NoReferenceSystemProvider;
@@ -647,10 +648,10 @@ mod tests {
     impl CallableInvoker for TestCallableInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            match callable.callable_token.as_str() {
+            match callable.summary.as_str() {
                 "helper.add1" => match args.first() {
                     Some(PreparedArgValue::Eval(EvalValue::Number(n))) => {
                         Ok(PreparedArgValue::Eval(EvalValue::Number(n + 1.0)))

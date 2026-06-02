@@ -959,3 +959,79 @@ Validation:
 6. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_image_return_carrier_integration`: passed, 1 test.
 7. `rg "\bExtendedValue\b|pub enum ExtendedValue" crates C:\Work\DnaCalc\OxFml\crates -n`: passed with no matches.
 8. `rg "eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|extended_surface" crates\oxfunc_core\src crates\oxfunc_core\tests crates\oxfunc_value_types\src\lib.rs -n`: passed with no active-code matches.
+
+## 19. W099-011 OxFunc Callable Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. `LambdaValue` and `EvalValue::Lambda` remain as legacy carrier/input compatibility and callable-publication staging until W099-013/W099-015.
+2. `PreparedArgValue` remains the higher-order helper adapter input until W099-012/W099-015 remove the remaining legacy prepared carrier.
+3. OxFml owns full callable publication/re-supply follow-through; this bead only updated the OxFml invoker adapter needed by OxFunc dev-dependency validation.
+4. Non-callable kernels may still reject `EvalValue::Lambda` as an unsupported value kind; those are not native callable consumption paths.
+
+Planned scope:
+1. Move `CallableInvoker` and `invoke_callable_prepared` from `LambdaValue` parameters to `CallableValue`.
+2. Move MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY prepared and surface callable consumption to `RichValue::Callable` via `CallableValue`.
+3. Move GROUPBY/PIVOTBY aggregate callable consumption to `CallableValue`.
+4. Preserve legacy `EvalValue::Lambda` call arguments as compatibility inputs only, projected through `CalcValue` rich callable metadata.
+5. Update the OxFml dev-dependency invoker implementation to the new callable trait shape.
+
+Evidence:
+1. `CallableInvoker::invoke` and `invoke_many` now accept `&CallableValue` and check `CallableValue.arity`.
+2. `require_callable` in `callable_helpers` and `group_pivot_common` projects prepared arguments through `prepared_arg_to_calc_value_lossy(...).callable_value()` and returns owned `CallableValue`.
+3. MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY prepared evaluators now accept `&CallableValue`.
+4. GROUPBY/PIVOTBY aggregate helpers now pass `CallableValue` through `invoke_group_aggregate`.
+5. Test invokers and dispatch shims match on `CallableValue.summary` rather than `LambdaValue.callable_token`.
+6. OxFml `OxFmlCallableInvoker` now implements the new trait with `OxCallableValue` and extracts the token from the opaque `OxFmlCallableBinding` handle when available.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; callable carrier mechanics changed under existing helper tests. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic slice claim is made by this carrier migration bead. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused higher-order tests and full OxFunc core library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY/GROUPBY/PIVOTBY callable invocation. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and source scans are listed in this record. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed; this bead changes callable carrier shape. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no public-doc/empirical discrepancy is handled in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this callable carrier bead. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - OxFml invoker adapter was updated locally for the new trait shape; full downstream cleanup remains a later W099 lane. |
+| 10 | No known semantic gap remains in declared scope? | Yes - in-scope OxFunc native callable consumers use `CallableValue`. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-011 bead closure, not W099 terminal callable/type deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.11` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead asks for OxFunc callable helpers and higher-order kernels to consume `CallableValue` / `RichValue::Callable`.
+2. Gate criteria re-read: passed. `CallableInvoker`, `require_callable`, MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY, GROUPBY, and PIVOTBY now use `CallableValue`.
+3. Silent scope reduction check: passed. Remaining `EvalValue::Lambda` hits in the affected files are compatibility construction, tests, or unsupported-kind handling, not native callable invocation.
+4. "Looks done but is not" pattern check: passed. The record keeps `LambdaValue`, `EvalValue::Lambda`, and `PreparedArgValue` deletion in later W099 lanes.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining integration lanes for W099-011.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: OxFml's `OxFmlCallableInvoker` still implemented the old `&LambdaValue` trait shape after the OxFunc trait changed. It now accepts `OxCallableValue`.
+2. Issue found and corrected: direct prepared-level tests still passed `LambdaValue` to native invocation helpers. They now project legacy lambdas into `CallableValue` for native invocations while retaining legacy lambda call-arg construction for surface tests.
+3. Issue found and corrected: a broad token replacement changed local test factory parameter names awkwardly; those factories were split into `helper_lambda` / `defined_name_lambda` and native `helper` / `defined_name` callable factories.
+4. Issue checked: scans found no remaining `callable: &...LambdaValue`, `callable.arity_shape`, `callable.callable_token`, or `require_callable -> &LambdaValue` paths in active OxFunc source.
+
+Validation:
+
+1. `cargo fmt --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+2. `cargo check --manifest-path crates\oxfunc_core\Cargo.toml`: passed.
+3. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml callable_helpers --lib`: passed, 29 tests.
+4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml groupby_fn --lib`: passed, 6 tests.
+5. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml pivotby_fn --lib`: passed, 5 tests.
+6. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1331 passed, 1 ignored.
+7. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_image_return_carrier_integration`: passed, 1 test.
+8. `cargo check` in `C:\Work\DnaCalc\OxFml\crates\oxfml_core`: passed.
+9. `rg "callable: &.*LambdaValue|fn require_callable\([^\)]*\) -> Result<&LambdaValue|callable\.arity_shape|callable\.callable_token|EvalValue::Lambda\(callable\).*Ok\(callable\)" crates\oxfunc_core\src -n`: passed with no matches.

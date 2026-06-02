@@ -2,10 +2,13 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{
+    PreparedArgValue, prepare_args_values_only, prepared_arg_to_calc_value_lossy,
+};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, LambdaValue, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CallArgValue, CallableValue, EvalArray, EvalValue,
+    WorksheetErrorCode,
 };
 
 const FUNCTIONAL_LAMBDA_BASE_META: FunctionMeta = FunctionMeta {
@@ -117,13 +120,13 @@ pub trait CallableInvocationBatch {
 pub trait CallableInvoker {
     fn invoke(
         &self,
-        callable: &LambdaValue,
+        callable: &CallableValue,
         args: &[PreparedArgValue],
     ) -> Result<PreparedArgValue, CallableInvocationError>;
 
     fn invoke_many(
         &self,
-        callable: &LambdaValue,
+        callable: &CallableValue,
         batch: &mut dyn CallableInvocationBatch,
     ) -> Result<(), CallableInvocationError> {
         let _mode = batch.mode();
@@ -133,10 +136,10 @@ pub trait CallableInvoker {
             batch.prepare_next_args(&mut args)
         } {
             let argc = args.len();
-            if !callable.arity_shape.accepts(argc) {
+            if !callable.arity.accepts(argc) {
                 return Err(CallableInvocationError::ArityMismatch {
-                    expected_min: callable.arity_shape.min,
-                    expected_max: callable.arity_shape.max,
+                    expected_min: callable.arity.min,
+                    expected_max: callable.arity.max,
                     actual: argc,
                 });
             }
@@ -148,15 +151,15 @@ pub trait CallableInvoker {
 }
 
 pub fn invoke_callable_prepared(
-    callable: &LambdaValue,
+    callable: &CallableValue,
     args: &[PreparedArgValue],
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, CallableInvocationError> {
     let argc = args.len();
-    if !callable.arity_shape.accepts(argc) {
+    if !callable.arity.accepts(argc) {
         return Err(CallableInvocationError::ArityMismatch {
-            expected_min: callable.arity_shape.min,
-            expected_max: callable.arity_shape.max,
+            expected_min: callable.arity.min,
+            expected_max: callable.arity.max,
             actual: argc,
         });
     }
@@ -632,7 +635,7 @@ fn inferred_map_output_shape(
 
 pub fn eval_map_prepared(
     inputs: &[PreparedArgValue],
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if inputs.is_empty() {
@@ -665,7 +668,7 @@ pub fn eval_map_prepared(
 pub fn eval_reduce_prepared(
     initial: &PreparedArgValue,
     iterable: &PreparedArgValue,
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
     if let PreparedArgValue::Eval(EvalValue::Array(array)) = iterable {
@@ -692,7 +695,7 @@ pub fn eval_reduce_prepared(
 pub fn eval_scan_prepared(
     initial: &PreparedArgValue,
     iterable: &PreparedArgValue,
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     let source = PreparedIterableSource::new(iterable);
@@ -715,7 +718,7 @@ pub fn eval_scan_prepared(
 
 pub fn eval_byrow_prepared(
     source: &PreparedArgValue,
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     let scalar_source_array;
@@ -749,7 +752,7 @@ pub fn eval_byrow_prepared(
 
 pub fn eval_bycol_prepared(
     source: &PreparedArgValue,
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     let scalar_source_array;
@@ -784,7 +787,7 @@ pub fn eval_bycol_prepared(
 pub fn eval_makearray_prepared(
     rows: usize,
     cols: usize,
-    callable: &LambdaValue,
+    callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<EvalValue, LambdaHelperEvalError> {
     if rows == 0 || cols == 0 {
@@ -804,7 +807,7 @@ pub fn eval_makearray_prepared(
 
 pub fn prepare_and_invoke_callable(
     args: &[CallArgValue],
-    callable: &LambdaValue,
+    callable: &CallableValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<PreparedArgValue, LambdaHelperEvalError> {
@@ -814,15 +817,19 @@ pub fn prepare_and_invoke_callable(
         .map_err(LambdaHelperEvalError::Invocation)
 }
 
-fn require_callable(prepared: &PreparedArgValue) -> Result<&LambdaValue, LambdaHelperEvalError> {
+fn require_callable(prepared: &PreparedArgValue) -> Result<CallableValue, LambdaHelperEvalError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Lambda(callable)) => Ok(callable),
         PreparedArgValue::Eval(EvalValue::Error(code)) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(*code),
         )),
-        _ => Err(LambdaHelperEvalError::Invocation(
-            CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
-        )),
+        _ => prepared_arg_to_calc_value_lossy(prepared)
+            .callable_value()
+            .cloned()
+            .ok_or_else(|| {
+                LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(
+                    WorksheetErrorCode::Value,
+                ))
+            }),
     }
 }
 
@@ -859,7 +866,7 @@ pub fn eval_map_surface(
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let (input_args, callable_arg) = prepared.split_at(prepared.len() - 1);
     let callable = require_callable(&callable_arg[0])?;
-    eval_map_prepared(input_args, callable, invoker)
+    eval_map_prepared(input_args, &callable, invoker)
 }
 
 pub fn eval_reduce_surface(
@@ -873,7 +880,7 @@ pub fn eval_reduce_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[2])?;
-    eval_reduce_prepared(&prepared[0], &prepared[1], callable, invoker)
+    eval_reduce_prepared(&prepared[0], &prepared[1], &callable, invoker)
 }
 
 pub fn eval_scan_surface(
@@ -887,7 +894,7 @@ pub fn eval_scan_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[2])?;
-    eval_scan_prepared(&prepared[0], &prepared[1], callable, invoker)
+    eval_scan_prepared(&prepared[0], &prepared[1], &callable, invoker)
 }
 
 pub fn eval_byrow_surface(
@@ -901,7 +908,7 @@ pub fn eval_byrow_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[1])?;
-    eval_byrow_prepared(&prepared[0], callable, invoker)
+    eval_byrow_prepared(&prepared[0], &callable, invoker)
 }
 
 pub fn eval_bycol_surface(
@@ -915,7 +922,7 @@ pub fn eval_bycol_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[1])?;
-    eval_bycol_prepared(&prepared[0], callable, invoker)
+    eval_bycol_prepared(&prepared[0], &callable, invoker)
 }
 
 pub fn eval_makearray_surface(
@@ -931,7 +938,7 @@ pub fn eval_makearray_surface(
     let rows = parse_positive_dimension(&prepared[0])?;
     let cols = parse_positive_dimension(&prepared[1])?;
     let callable = require_callable(&prepared[2])?;
-    eval_makearray_prepared(rows, cols, callable, invoker)
+    eval_makearray_prepared(rows, cols, &callable, invoker)
 }
 
 pub fn map_lambda_helper_error_to_ws(error: &LambdaHelperEvalError) -> WorksheetErrorCode {
@@ -970,7 +977,9 @@ mod tests {
     use super::*;
     use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{CallableArityShape, CallableCaptureMode, EvalArray, ExcelText};
+    use crate::value::{
+        CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue,
+    };
     use std::cell::Cell;
 
     struct MockCallableInvoker;
@@ -978,7 +987,7 @@ mod tests {
     impl CallableInvoker for MockCallableInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
             if let Some(code) = args.iter().find_map(|arg| match arg {
@@ -988,7 +997,7 @@ mod tests {
                 return Ok(PreparedArgValue::Eval(EvalValue::Error(code)));
             }
 
-            match callable.callable_token.as_str() {
+            match callable.summary.as_str() {
                 "helper.add1" => {
                     let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
@@ -1104,7 +1113,7 @@ mod tests {
     impl CallableInvoker for BatchCountingInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
             self.invoke_calls.set(self.invoke_calls.get() + 1);
@@ -1113,7 +1122,7 @@ mod tests {
 
         fn invoke_many(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             batch: &mut dyn CallableInvocationBatch,
         ) -> Result<(), CallableInvocationError> {
             self.batch_calls.set(self.batch_calls.get() + 1);
@@ -1124,10 +1133,10 @@ mod tests {
                 batch.prepare_next_args(&mut args)
             } {
                 let argc = args.len();
-                if !callable.arity_shape.accepts(argc) {
+                if !callable.arity.accepts(argc) {
                     return Err(CallableInvocationError::ArityMismatch {
-                        expected_min: callable.arity_shape.min,
-                        expected_max: callable.arity_shape.max,
+                        expected_min: callable.arity.min,
+                        expected_max: callable.arity.max,
                         actual: argc,
                     });
                 }
@@ -1158,7 +1167,7 @@ mod tests {
         }
     }
 
-    fn helper(callable_token: &str, arity: usize) -> LambdaValue {
+    fn helper_lambda(callable_token: &str, arity: usize) -> LambdaValue {
         LambdaValue::helper_lambda(
             callable_token.to_string(),
             CallableArityShape::exact(arity),
@@ -1167,13 +1176,28 @@ mod tests {
         )
     }
 
-    fn defined_name(callable_token: &str, arity: usize) -> LambdaValue {
+    fn defined_name_lambda(callable_token: &str, arity: usize) -> LambdaValue {
         LambdaValue::defined_name_callable(
             callable_token.to_string(),
             CallableArityShape::exact(arity),
             CallableCaptureMode::LexicalCapture,
             "name.invoke.v1",
         )
+    }
+
+    fn callable_from_lambda(lambda: LambdaValue) -> CallableValue {
+        crate::value::CalcValue::from(EvalValue::Lambda(lambda))
+            .callable_value()
+            .cloned()
+            .expect("lambda conversion produces callable")
+    }
+
+    fn helper(callable_token: &str, arity: usize) -> CallableValue {
+        callable_from_lambda(helper_lambda(callable_token, arity))
+    }
+
+    fn defined_name(callable_token: &str, arity: usize) -> CallableValue {
+        callable_from_lambda(defined_name_lambda(callable_token, arity))
     }
 
     fn num(n: f64) -> PreparedArgValue {
@@ -1601,7 +1625,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.add1", 1)),
+                callable_arg(helper_lambda("helper.add1", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1632,7 +1656,7 @@ mod tests {
                 CallArgValue::Eval(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![ArrayCellValue::Number(10.0)]]).unwrap(),
                 )),
-                callable_arg(helper("helper.sum2", 2)),
+                callable_arg(helper_lambda("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1676,7 +1700,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.scalar_to_pair", 1)),
+                callable_arg(helper_lambda("helper.scalar_to_pair", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1701,7 +1725,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.sum2", 2)),
+                callable_arg(helper_lambda("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1722,7 +1746,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.sum2", 2)),
+                callable_arg(helper_lambda("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1751,7 +1775,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.sum_array", 1)),
+                callable_arg(helper_lambda("helper.sum_array", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1779,7 +1803,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.nonscalar_plus1", 1)),
+                callable_arg(helper_lambda("helper.nonscalar_plus1", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1802,7 +1826,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper("helper.sum_array", 1)),
+                callable_arg(helper_lambda("helper.sum_array", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1825,7 +1849,7 @@ mod tests {
             &[
                 CallArgValue::Eval(EvalValue::Number(2.0)),
                 CallArgValue::Eval(EvalValue::Number(3.0)),
-                callable_arg(helper("helper.makearray_coords", 2)),
+                callable_arg(helper_lambda("helper.makearray_coords", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1882,16 +1906,16 @@ mod tests {
         impl CallableInvoker for TextInvoker {
             fn invoke(
                 &self,
-                callable: &LambdaValue,
+                callable: &CallableValue,
                 _args: &[PreparedArgValue],
             ) -> Result<PreparedArgValue, CallableInvocationError> {
-                if callable.callable_token == "helper.text" {
+                if callable.summary == "helper.text" {
                     return Ok(PreparedArgValue::Eval(EvalValue::Text(
                         ExcelText::from_utf16_code_units("ok".encode_utf16().collect()),
                     )));
                 }
                 Err(CallableInvocationError::UnsupportedCallableToken(
-                    callable.callable_token.clone(),
+                    callable.summary.clone(),
                 ))
             }
         }

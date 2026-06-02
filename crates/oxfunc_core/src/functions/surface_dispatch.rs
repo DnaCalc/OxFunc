@@ -1068,11 +1068,11 @@ struct RejectingCallableInvoker;
 impl CallableInvoker for RejectingCallableInvoker {
     fn invoke(
         &self,
-        callable: &crate::value::LambdaValue,
+        callable: &crate::value::CallableValue,
         _args: &[crate::functions::adapters::PreparedArgValue],
     ) -> Result<crate::functions::adapters::PreparedArgValue, CallableInvocationError> {
         Err(CallableInvocationError::UnsupportedCallableToken(
-            callable.callable_token.clone(),
+            callable.summary.clone(),
         ))
     }
 }
@@ -2739,9 +2739,9 @@ mod tests {
     use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
-        ArrayCellValue, CallableArityShape, CallableCaptureMode, CellStyleHint, EvalArray,
-        ExcelText, LambdaValue, NumberFormatHint, PresentationHint, ReferenceKind, ReferenceLike,
-        RichValue, RichValueData,
+        ArrayCellValue, CallableArityShape, CallableCaptureMode, CallableValue, CellStyleHint,
+        EvalArray, ExcelText, LambdaValue, NumberFormatHint, PresentationHint, ReferenceKind,
+        ReferenceLike, RichValue, RichValueData,
     };
 
     struct NoReferenceSystemProvider;
@@ -2821,15 +2821,10 @@ mod tests {
     impl CallableInvoker for ClosureCallableInvoker<'_> {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            if let Some(handler) = self
-                .closures
-                .borrow()
-                .get(&callable.callable_token)
-                .cloned()
-            {
+            if let Some(handler) = self.closures.borrow().get(&callable.summary).cloned() {
                 return handler(args);
             }
 
@@ -3250,10 +3245,10 @@ mod tests {
     impl CallableInvoker for TestCallableInvoker {
         fn invoke(
             &self,
-            callable: &LambdaValue,
+            callable: &CallableValue,
             args: &[PreparedArgValue],
         ) -> Result<PreparedArgValue, CallableInvocationError> {
-            match callable.callable_token.as_str() {
+            match callable.summary.as_str() {
                 "helper.mul10" => match args {
                     [PreparedArgValue::Eval(EvalValue::Number(n))] => {
                         Ok(PreparedArgValue::Eval(EvalValue::Number(*n * 10.0)))
@@ -3415,7 +3410,7 @@ mod tests {
                     )),
                 },
                 _ => Err(CallableInvocationError::UnsupportedCallableToken(
-                    callable.callable_token.clone(),
+                    callable.summary.clone(),
                 )),
             }
         }
@@ -6793,8 +6788,12 @@ mod tests {
             CallableCaptureMode::LexicalCapture,
             "test.closure.invoke.v1",
         );
-        let gcd_self = gcd.clone();
         let recursive_invoker = invoker.clone();
+        let gcd_callable = CalcValue::from(EvalValue::Lambda(gcd.clone()))
+            .callable_value()
+            .cloned()
+            .expect("lambda conversion produces callable");
+        let gcd_self_callable = gcd_callable.clone();
         invoker.register(&gcd.callable_token.clone(), 3, move |args| match args {
             [
                 PreparedArgValue::Eval(EvalValue::Lambda(self_lambda)),
@@ -6812,7 +6811,7 @@ mod tests {
                         ],
                     )?;
                     recursive_invoker.invoke(
-                        &gcd_self,
+                        &gcd_self_callable,
                         &[
                             PreparedArgValue::Eval(EvalValue::Lambda(self_lambda.clone())),
                             PreparedArgValue::Eval(EvalValue::Number(*b)),
@@ -6827,7 +6826,7 @@ mod tests {
         });
 
         let got = invoker.invoke(
-            &gcd,
+            &gcd_callable,
             &[
                 PreparedArgValue::Eval(EvalValue::Lambda(gcd.clone())),
                 PreparedArgValue::Eval(EvalValue::Number(48.0)),

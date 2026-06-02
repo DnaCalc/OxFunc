@@ -46,6 +46,14 @@ pub enum PreparedArgValue {
     EmptyCell,
 }
 
+pub(crate) fn prepared_arg_to_calc_value_lossy(prepared: &PreparedArgValue) -> CalcValue {
+    match prepared {
+        PreparedArgValue::Eval(value) => CalcValue::from(value.clone()),
+        PreparedArgValue::MissingArg => CalcValue::missing(),
+        PreparedArgValue::EmptyCell => CalcValue::empty(),
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AggregateArrayProvenance {
     DirectArrayLiteral,
