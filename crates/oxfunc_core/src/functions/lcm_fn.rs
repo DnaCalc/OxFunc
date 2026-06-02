@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::lcm_int;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const LCM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LCM",
@@ -44,9 +44,9 @@ pub fn lcm_kernel(items: &[i64]) -> f64 {
 }
 
 pub fn eval_lcm_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LcmEvalError> {
+) -> Result<FunctionValue, LcmEvalError> {
     let argc = args.len();
     if !LCM_META.arity.accepts(argc) {
         return Err(LcmEvalError::ArityMismatch {
@@ -64,7 +64,7 @@ pub fn eval_lcm_surface(
             items.push(coerce_calc_to_nonnegative_int(item.value())?);
         }
     }
-    Ok(EvalValue::Number(lcm_kernel(&items)))
+    Ok(FunctionValue::Number(lcm_kernel(&items)))
 }
 
 pub fn map_lcm_error_to_ws(e: &LcmEvalError) -> WorksheetErrorCode {

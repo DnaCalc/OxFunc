@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{
-    CalcValue, CallArgValue, CoreValue, EvalValue, NumberFormatHint, PresentationHint,
+    CalcValue, CoreValue, FunctionArg, FunctionValue, NumberFormatHint, PresentationHint,
     WorksheetErrorCode,
 };
 
@@ -32,9 +32,9 @@ pub enum TodayEvalError {
 }
 
 pub fn eval_today_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     provider: &impl TodayProvider,
-) -> Result<EvalValue, TodayEvalError> {
+) -> Result<FunctionValue, TodayEvalError> {
     if !TODAY_META.arity.accepts(args.len()) {
         return Err(TodayEvalError::ArityMismatch {
             expected: TODAY_META.arity.min,
@@ -47,7 +47,7 @@ pub fn eval_today_surface(
         return Err(TodayEvalError::ProviderNonFinite(serial));
     }
 
-    Ok(EvalValue::Number(serial.floor()))
+    Ok(FunctionValue::Number(serial.floor()))
 }
 
 pub fn eval_today_calc_surface(
@@ -73,10 +73,10 @@ pub fn eval_today_calc_surface(
 }
 
 pub fn eval_today_surface_rich(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     provider: &impl TodayProvider,
 ) -> Result<CalcValue, TodayEvalError> {
-    let EvalValue::Number(value) = eval_today_surface(args, provider)? else {
+    let FunctionValue::Number(value) = eval_today_surface(args, provider)? else {
         unreachable!("TODAY surface returns number");
     };
     Ok(CalcValue::with_presentation(
@@ -109,7 +109,7 @@ mod tests {
     #[test]
     fn eval_today_floors_provider_serial() {
         let got = eval_today_surface(&[], &FixedTodayProvider { serial: 46000.75 });
-        assert_eq!(got, Ok(EvalValue::Number(46000.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(46000.0)));
     }
 
     #[test]
@@ -127,7 +127,7 @@ mod tests {
     #[test]
     fn eval_today_rejects_args() {
         let got = eval_today_surface(
-            &[CallArgValue::EmptyCell],
+            &[FunctionArg::EmptyCell],
             &FixedTodayProvider { serial: 46000.0 },
         );
         assert_eq!(

@@ -1088,7 +1088,7 @@ match dispatch_key.catalog_index {
                 }
                 let pi_args: Vec<Value> = Vec::new();
                 match eval_pi(&pi_args) {
-                    Ok(Value::Number(n)) => Ok(EvalValue::Number(n)),
+                    Ok(Value::Number(n)) => Ok(FunctionValue::Number(n)),
                     Ok(Value::Error(_)) => Err(WorksheetErrorCode::Value),
                     Err(e) => Err(map_eval_error_to_ws(&e)),
                 }
@@ -1181,13 +1181,13 @@ match dispatch_key.catalog_index {
             }
             396 => eval_reduce_surface(args, resolver, callable_invoker)
                 .map(|value| match value {
-                    crate::functions::adapters::PreparedArgValue::Eval(v) => v,
-                    crate::functions::adapters::PreparedArgValue::MissingArg => {
-                        EvalValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
+                    crate::functions::adapters::PreparedValue::Eval(v) => v,
+                    crate::functions::adapters::PreparedValue::MissingArg => {
+                        FunctionValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
                     }
-                    crate::functions::adapters::PreparedArgValue::EmptyCell => {
-                        EvalValue::Array(crate::value::EvalArray::from_scalar(
-                            crate::value::ArrayCellValue::EmptyCell,
+                    crate::functions::adapters::PreparedValue::EmptyCell => {
+                        FunctionValue::Array(crate::value::FunctionArray::from_scalar(
+                            crate::value::FunctionArrayCell::EmptyCell,
                         ))
                     }
                 })

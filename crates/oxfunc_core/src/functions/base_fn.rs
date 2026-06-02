@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    BroadcastPreparedGroup, PreparedValue, coerce_prepared_to_number,
     expand_prepared_broadcast_grid, prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const BASE_META: FunctionMeta = FunctionMeta {
@@ -72,9 +72,9 @@ pub fn base_kernel(
 }
 
 pub fn eval_base_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BaseEvalError> {
+) -> Result<FunctionValue, BaseEvalError> {
     let prepared = prepare_args_values_only(args, resolver).map_err(BaseEvalError::Coercion)?;
     if !BASE_META.arity.accepts(prepared.len()) {
         return Err(BaseEvalError::ArityMismatch {
@@ -89,12 +89,12 @@ pub fn eval_base_surface(
             .map(|cell| match cell {
                 BroadcastPreparedGroup::Values(values) => map_base_item(&values),
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    ArrayCellValue::Error(WorksheetErrorCode::NA)
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(EvalValue::Array(
-            EvalArray::new(shape, mapped).expect("shape preserved"),
+        return Ok(FunctionValue::Array(
+            FunctionArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
     let number = coerce_prepared_to_number(&prepared[0]).map_err(BaseEvalError::Coercion)?;
@@ -105,34 +105,34 @@ pub fn eval_base_surface(
         None
     };
     base_kernel(number, radix, min_length)
-        .map(EvalValue::Text)
+        .map(FunctionValue::Text)
         .map_err(BaseEvalError::Domain)
 }
 
-fn map_base_item(args: &[PreparedArgValue]) -> ArrayCellValue {
+fn map_base_item(args: &[PreparedValue]) -> FunctionArrayCell {
     let number = match coerce_prepared_to_number(&args[0]) {
         Ok(value) => value,
-        Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
-        Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(CoercionError::WorksheetError(code)) => return FunctionArrayCell::Error(code),
+        Err(_) => return FunctionArrayCell::Error(WorksheetErrorCode::Value),
     };
     let radix = match coerce_prepared_to_number(&args[1]) {
         Ok(value) => value,
-        Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
-        Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(CoercionError::WorksheetError(code)) => return FunctionArrayCell::Error(code),
+        Err(_) => return FunctionArrayCell::Error(WorksheetErrorCode::Value),
     };
     let min_length = if args.len() > 2 {
         match coerce_prepared_to_number(&args[2]) {
             Ok(value) => Some(value),
-            Err(CoercionError::WorksheetError(code)) => return ArrayCellValue::Error(code),
-            Err(_) => return ArrayCellValue::Error(WorksheetErrorCode::Value),
+            Err(CoercionError::WorksheetError(code)) => return FunctionArrayCell::Error(code),
+            Err(_) => return FunctionArrayCell::Error(WorksheetErrorCode::Value),
         }
     } else {
         None
     };
 
     match base_kernel(number, radix, min_length) {
-        Ok(text) => ArrayCellValue::Text(text),
-        Err(code) => ArrayCellValue::Error(code),
+        Ok(text) => FunctionArrayCell::Text(text),
+        Err(code) => FunctionArrayCell::Error(code),
     }
 }
 
@@ -149,7 +149,7 @@ pub fn map_base_error_to_ws(e: &BaseEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray};
+    use crate::value::{FunctionArray, FunctionArrayCell};
 
     struct NoResolver;
 
@@ -161,11 +161,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -185,23 +185,23 @@ mod tests {
     fn eval_base_spills_array_arguments() {
         let got = eval_base_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(15.0),
-                        ArrayCellValue::Number(16.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(15.0),
+                        FunctionArrayCell::Number(16.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("F")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("10")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("F")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("10")),
                 ]])
                 .unwrap()
             ))

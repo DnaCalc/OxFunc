@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 const TEXT_DELIM_BASE_META: FunctionMeta = FunctionMeta {
@@ -65,39 +65,39 @@ fn empty_text() -> ExcelText {
     ExcelText::from_utf16_code_units(Vec::new())
 }
 
-fn materialize_prepared_value(prepared: &PreparedArgValue) -> EvalValue {
+fn materialize_prepared_value(prepared: &PreparedValue) -> FunctionValue {
     match prepared {
-        PreparedArgValue::Eval(value) => value.clone(),
-        PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::NA),
-        PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+        PreparedValue::Eval(value) => value.clone(),
+        PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::NA),
+        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
     }
 }
 
-fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
     match cell {
-        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
-        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
-        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
-        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
-        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
+        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
+        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
+        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
+        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
     }
 }
 
 fn text_delim_result_to_array_cell(
-    result: Result<EvalValue, TextDelimEvalError>,
-) -> ArrayCellValue {
+    result: Result<FunctionValue, TextDelimEvalError>,
+) -> FunctionArrayCell {
     match result {
-        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
-        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
-        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
-        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
-        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
-        Err(err) => ArrayCellValue::Error(map_text_delim_error_to_ws(&err)),
+        Ok(FunctionValue::Text(text)) => FunctionArrayCell::Text(text),
+        Ok(FunctionValue::Number(n)) => FunctionArrayCell::Number(n),
+        Ok(FunctionValue::Logical(value)) => FunctionArrayCell::Logical(value),
+        Ok(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
+        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        Err(err) => FunctionArrayCell::Error(map_text_delim_error_to_ws(&err)),
     }
 }
 
 fn parse_truncated_integer(
-    prepared: &PreparedArgValue,
+    prepared: &PreparedValue,
     invalid: fn(f64) -> TextDelimEvalError,
 ) -> Result<f64, TextDelimEvalError> {
     let raw = coerce_prepared_to_number(prepared).map_err(TextDelimEvalError::Coercion)?;
@@ -107,7 +107,7 @@ fn parse_truncated_integer(
     Ok(raw.trunc())
 }
 
-fn parse_instance_num(prepared: &PreparedArgValue) -> Result<isize, TextDelimEvalError> {
+fn parse_instance_num(prepared: &PreparedValue) -> Result<isize, TextDelimEvalError> {
     let truncated = parse_truncated_integer(prepared, TextDelimEvalError::InvalidInstanceNum)?;
     if truncated == 0.0 || truncated.abs() > isize::MAX as f64 {
         return Err(TextDelimEvalError::InvalidInstanceNum(truncated));
@@ -116,7 +116,7 @@ fn parse_instance_num(prepared: &PreparedArgValue) -> Result<isize, TextDelimEva
 }
 
 fn parse_binary_flag(
-    prepared: &PreparedArgValue,
+    prepared: &PreparedValue,
     invalid: fn(f64) -> TextDelimEvalError,
 ) -> Result<bool, TextDelimEvalError> {
     let truncated = parse_truncated_integer(prepared, invalid)?;
@@ -252,18 +252,18 @@ fn eval_text_delim_kernel(
 }
 
 fn eval_text_delim_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     direction: TextDelimDirection,
-) -> Result<EvalValue, TextDelimEvalError> {
+) -> Result<FunctionValue, TextDelimEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextDelimEvalError::Coercion)?;
     let array_args = prepared
         .iter()
         .enumerate()
         .filter_map(|(idx, arg)| match arg {
-            PreparedArgValue::Eval(EvalValue::Array(array)) if matches!(idx, 0 | 2) => {
+            PreparedValue::Eval(FunctionValue::Array(array)) if matches!(idx, 0 | 2) => {
                 Some((idx, array))
             }
             _ => None,
@@ -284,8 +284,8 @@ fn eval_text_delim_surface(
                     ))
                 })
                 .collect();
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells)
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells)
                     .expect("text-delim lifted array shape remains valid"),
             ))
         }
@@ -294,10 +294,10 @@ fn eval_text_delim_surface(
 }
 
 fn eval_text_delim_prepared_value(
-    prepared: &[PreparedArgValue],
+    prepared: &[PreparedValue],
     meta: &FunctionMeta,
     direction: TextDelimDirection,
-) -> Result<EvalValue, TextDelimEvalError> {
+) -> Result<FunctionValue, TextDelimEvalError> {
     if !meta.arity.accepts(prepared.len()) {
         return Err(TextDelimEvalError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -332,7 +332,7 @@ fn eval_text_delim_prepared_value(
         match_mode_case_insensitive,
         match_end,
     ) {
-        Ok(result) => Ok(EvalValue::Text(result)),
+        Ok(result) => Ok(FunctionValue::Text(result)),
         Err(TextDelimEvalError::NotAvailable) if prepared.len() >= 6 => {
             Ok(materialize_prepared_value(&prepared[5]))
         }
@@ -341,16 +341,16 @@ fn eval_text_delim_prepared_value(
 }
 
 pub fn eval_textafter_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextDelimEvalError> {
+) -> Result<FunctionValue, TextDelimEvalError> {
     eval_text_delim_surface(args, resolver, &TEXTAFTER_META, TextDelimDirection::After)
 }
 
 pub fn eval_textbefore_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextDelimEvalError> {
+) -> Result<FunctionValue, TextDelimEvalError> {
     eval_text_delim_surface(args, resolver, &TEXTBEFORE_META, TextDelimDirection::Before)
 }
 
@@ -381,22 +381,22 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(s)))
     }
 
-    fn number_arg(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn number_arg(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
     #[test]
@@ -406,7 +406,7 @@ mod tests {
                 &[text_arg("One,Two,Three"), text_arg(","), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "Two,Three"
             )))
         );
@@ -415,7 +415,9 @@ mod tests {
                 &[text_arg("One,Two,Three"), text_arg(","), number_arg(-1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("Three")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "Three"
+            )))
         );
     }
 
@@ -426,14 +428,16 @@ mod tests {
                 &[text_arg("One,Two,Three"), text_arg(","), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("One")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "One"
+            )))
         );
         assert_eq!(
             eval_textbefore_surface(
                 &[text_arg("One,Two,Three"), text_arg(","), number_arg(-1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "One,Two"
             )))
         );
@@ -453,7 +457,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(empty_text()))
+            Ok(FunctionValue::Text(empty_text()))
         );
         assert_eq!(
             eval_textbefore_surface(
@@ -467,7 +471,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "Socrates"
             )))
         );
@@ -480,28 +484,32 @@ mod tests {
                 &[text_arg("abc"), text_arg(""), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("abc")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "abc"
+            )))
         );
         assert_eq!(
             eval_textbefore_surface(
                 &[text_arg("abc"), text_arg(""), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(empty_text()))
+            Ok(FunctionValue::Text(empty_text()))
         );
         assert_eq!(
             eval_textafter_surface(
                 &[text_arg("abc"), text_arg(""), number_arg(-1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(empty_text()))
+            Ok(FunctionValue::Text(empty_text()))
         );
         assert_eq!(
             eval_textbefore_surface(
                 &[text_arg("abc"), text_arg(""), number_arg(-1.0)],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("abc")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "abc"
+            )))
         );
     }
 
@@ -519,7 +527,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(7.0))
+            Ok(FunctionValue::Number(7.0))
         );
     }
 
@@ -537,7 +545,9 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("EF")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "EF"
+            )))
         );
     }
 
@@ -559,26 +569,26 @@ mod tests {
                 &[
                     text_arg("a-b-c"),
                     text_arg("-"),
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(2.0)],
-                            vec![ArrayCellValue::Number(3.0)],
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(2.0)],
+                            vec![FunctionArrayCell::Number(3.0)],
                         ])
                         .unwrap(),
                     )),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "b-c"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "c"
                     ))],
-                    vec![ArrayCellValue::Error(WorksheetErrorCode::NA)],
+                    vec![FunctionArrayCell::Error(WorksheetErrorCode::NA)],
                 ])
                 .unwrap()
             ))
@@ -588,26 +598,26 @@ mod tests {
                 &[
                     text_arg("a-b-c"),
                     text_arg("-"),
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(2.0)],
-                            vec![ArrayCellValue::Number(3.0)],
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(2.0)],
+                            vec![FunctionArrayCell::Number(3.0)],
                         ])
                         .unwrap(),
                     )),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "a"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "a-b"
                     ))],
-                    vec![ArrayCellValue::Error(WorksheetErrorCode::NA)],
+                    vec![FunctionArrayCell::Error(WorksheetErrorCode::NA)],
                 ])
                 .unwrap()
             ))
@@ -619,10 +629,10 @@ mod tests {
         assert_eq!(
             eval_textafter_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a-b")),
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c-d")),
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("a-b")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("c-d")),
                         ]])
                         .unwrap(),
                     )),
@@ -630,10 +640,10 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
                 ]])
                 .unwrap()
             ))
@@ -641,10 +651,10 @@ mod tests {
         assert_eq!(
             eval_textbefore_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a-b")),
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c-d")),
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("a-b")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("c-d")),
                         ]])
                         .unwrap(),
                     )),
@@ -652,10 +662,10 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
                 ]])
                 .unwrap()
             ))

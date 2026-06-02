@@ -8,7 +8,7 @@ use crate::functions::percentile_common::{
     collect_percentile_values, percentile_exc_kernel, quartile_k,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const QUARTILE_EXC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.QUARTILE.EXC",
@@ -31,9 +31,9 @@ pub enum QuartileExcEvalError {
 }
 
 pub fn eval_quartile_exc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, QuartileExcEvalError> {
+) -> Result<FunctionValue, QuartileExcEvalError> {
     if !QUARTILE_EXC_META.arity.accepts(args.len()) {
         return Err(QuartileExcEvalError::ArityMismatch {
             expected: QUARTILE_EXC_META.arity.min,
@@ -49,11 +49,11 @@ pub fn eval_quartile_exc_surface(
     )
     .map_err(QuartileExcEvalError::Coercion)?;
     if !(1..=3).contains(&q) {
-        return Ok(EvalValue::Error(WorksheetErrorCode::Num));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
     }
     match percentile_exc_kernel(&mut values, q as f64 / 4.0) {
-        Ok(v) => Ok(EvalValue::Number(v)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(v) => Ok(FunctionValue::Number(v)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

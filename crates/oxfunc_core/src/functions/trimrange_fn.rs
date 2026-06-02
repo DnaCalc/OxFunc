@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const TRIMRANGE_META: FunctionMeta = FunctionMeta {
@@ -48,9 +48,9 @@ pub enum TrimRangeEvalError {
     EmptyResult,
 }
 
-fn parse_trim_type(prepared: Option<&PreparedArgValue>) -> Result<TrimType, TrimRangeEvalError> {
+fn parse_trim_type(prepared: Option<&PreparedValue>) -> Result<TrimType, TrimRangeEvalError> {
     match prepared {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => {
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => {
             Ok(TrimType::Trailing)
         }
         Some(arg) => {
@@ -69,9 +69,9 @@ fn parse_trim_type(prepared: Option<&PreparedArgValue>) -> Result<TrimType, Trim
     }
 }
 
-fn parse_headers_count(prepared: Option<&PreparedArgValue>) -> Result<usize, TrimRangeEvalError> {
+fn parse_headers_count(prepared: Option<&PreparedValue>) -> Result<usize, TrimRangeEvalError> {
     match prepared {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(0),
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(0),
         Some(arg) => {
             let raw = coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
             if !raw.is_finite() || raw < 0.0 {
@@ -82,45 +82,45 @@ fn parse_headers_count(prepared: Option<&PreparedArgValue>) -> Result<usize, Tri
     }
 }
 
-fn is_blank_cell(cell: &ArrayCellValue) -> bool {
-    matches!(cell, ArrayCellValue::EmptyCell)
+fn is_blank_cell(cell: &FunctionArrayCell) -> bool {
+    matches!(cell, FunctionArrayCell::EmptyCell)
 }
 
-fn is_row_blank(array: &EvalArray, row: usize) -> bool {
+fn is_row_blank(array: &FunctionArray, row: usize) -> bool {
     let cols = array.shape().cols;
     (0..cols).all(|col| array.get(row, col).map_or(true, is_blank_cell))
 }
 
-fn is_col_blank(array: &EvalArray, col: usize) -> bool {
+fn is_col_blank(array: &FunctionArray, col: usize) -> bool {
     let rows = array.shape().rows;
     (0..rows).all(|row| array.get(row, col).map_or(true, is_blank_cell))
 }
 
-fn materialize_input(prepared: &PreparedArgValue) -> EvalArray {
+fn materialize_input(prepared: &PreparedValue) -> FunctionArray {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Array(arr)) => arr.clone(),
-        PreparedArgValue::Eval(v) => {
+        PreparedValue::Eval(FunctionValue::Array(arr)) => arr.clone(),
+        PreparedValue::Eval(v) => {
             let cell = match v {
-                EvalValue::Number(n) => ArrayCellValue::Number(*n),
-                EvalValue::Text(t) => ArrayCellValue::Text(t.clone()),
-                EvalValue::Logical(b) => ArrayCellValue::Logical(*b),
-                EvalValue::Error(code) => ArrayCellValue::Error(*code),
-                _ => ArrayCellValue::EmptyCell,
+                FunctionValue::Number(n) => FunctionArrayCell::Number(*n),
+                FunctionValue::Text(t) => FunctionArrayCell::Text(t.clone()),
+                FunctionValue::Logical(b) => FunctionArrayCell::Logical(*b),
+                FunctionValue::Error(code) => FunctionArrayCell::Error(*code),
+                _ => FunctionArrayCell::EmptyCell,
             };
-            EvalArray::from_scalar(cell)
+            FunctionArray::from_scalar(cell)
         }
-        PreparedArgValue::EmptyCell | PreparedArgValue::MissingArg => {
-            EvalArray::from_scalar(ArrayCellValue::EmptyCell)
+        PreparedValue::EmptyCell | PreparedValue::MissingArg => {
+            FunctionArray::from_scalar(FunctionArrayCell::EmptyCell)
         }
     }
 }
 
 pub(crate) fn trimrange_kernel(
-    array: &EvalArray,
+    array: &FunctionArray,
     trim_rows: TrimType,
     trim_cols: TrimType,
     headers_count: usize,
-) -> Result<EvalValue, TrimRangeEvalError> {
+) -> Result<FunctionValue, TrimRangeEvalError> {
     let total_rows = array.shape().rows;
     let total_cols = array.shape().cols;
 
@@ -216,13 +216,13 @@ pub(crate) fn trimrange_kernel(
                 array
                     .get(r, c)
                     .cloned()
-                    .unwrap_or(ArrayCellValue::EmptyCell),
+                    .unwrap_or(FunctionArrayCell::EmptyCell),
             );
         }
     }
 
-    Ok(EvalValue::Array(
-        EvalArray::new(
+    Ok(FunctionValue::Array(
+        FunctionArray::new(
             ArrayShape {
                 rows: out_rows,
                 cols: out_cols,
@@ -234,9 +234,9 @@ pub(crate) fn trimrange_kernel(
 }
 
 pub fn eval_trimrange_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TrimRangeEvalError> {
+) -> Result<FunctionValue, TrimRangeEvalError> {
     if !TRIMRANGE_META.arity.accepts(args.len()) {
         return Err(TrimRangeEvalError::ArityMismatch {
             expected_min: TRIMRANGE_META.arity.min,
@@ -282,11 +282,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -295,16 +295,16 @@ mod tests {
         }
     }
 
-    fn make_array(rows: usize, cols: usize, cells: Vec<ArrayCellValue>) -> EvalArray {
-        EvalArray::new(ArrayShape { rows, cols }, cells).unwrap()
+    fn make_array(rows: usize, cols: usize, cells: Vec<FunctionArrayCell>) -> FunctionArray {
+        FunctionArray::new(ArrayShape { rows, cols }, cells).unwrap()
     }
 
-    fn n(v: f64) -> ArrayCellValue {
-        ArrayCellValue::Number(v)
+    fn n(v: f64) -> FunctionArrayCell {
+        FunctionArrayCell::Number(v)
     }
 
-    fn e() -> ArrayCellValue {
-        ArrayCellValue::EmptyCell
+    fn e() -> FunctionArrayCell {
+        FunctionArrayCell::EmptyCell
     }
 
     // --- Meta tests ---
@@ -339,7 +339,7 @@ mod tests {
             vec![n(1.0), n(2.0), e(), n(3.0), n(4.0), e(), e(), e(), e()],
         );
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
-        let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -349,7 +349,7 @@ mod tests {
     fn trimrange_trims_leading_blank_rows() {
         let arr = make_array(3, 2, vec![e(), e(), n(1.0), n(2.0), n(3.0), n(4.0)]);
         let got = trimrange_kernel(&arr, TrimType::Leading, TrimType::None, 0).unwrap();
-        let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -380,7 +380,7 @@ mod tests {
             ],
         );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::Both, 0).unwrap();
-        let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -390,7 +390,7 @@ mod tests {
     fn trimrange_no_trim_preserves_all() {
         let arr = make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]);
         let got = trimrange_kernel(&arr, TrimType::None, TrimType::None, 0).unwrap();
-        let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]));
         assert_eq!(got, expected);
     }
 
@@ -413,7 +413,7 @@ mod tests {
         );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::None, 1).unwrap();
         // Header row kept + data row kept, trailing blank trimmed.
-        let expected = EvalValue::Array(make_array(2, 2, vec![e(), e(), n(1.0), n(2.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![e(), e(), n(1.0), n(2.0)]));
         assert_eq!(got, expected);
     }
 
@@ -432,7 +432,7 @@ mod tests {
     fn trimrange_already_trimmed_returns_same() {
         let arr = make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]);
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::Both, 0).unwrap();
-        let expected = EvalValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -442,14 +442,14 @@ mod tests {
     fn trimrange_single_cell_result_preserves_array_value() {
         let arr = make_array(2, 2, vec![n(42.0), e(), e(), e()]);
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
-        assert_eq!(got, EvalValue::Array(make_array(1, 1, vec![n(42.0)])));
+        assert_eq!(got, FunctionValue::Array(make_array(1, 1, vec![n(42.0)])));
     }
 
     // --- Invalid trim type ---
 
     #[test]
     fn trimrange_invalid_trim_type() {
-        let got = parse_trim_type(Some(&PreparedArgValue::Eval(EvalValue::Number(5.0))));
+        let got = parse_trim_type(Some(&PreparedValue::Eval(FunctionValue::Number(5.0))));
         assert!(matches!(got, Err(TrimRangeEvalError::InvalidTrimType(_))));
     }
 

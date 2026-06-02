@@ -6,7 +6,7 @@ use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const CSC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CSC",
@@ -31,9 +31,9 @@ pub fn csc_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_csc_surface(
-    args: &[crate::value::CallArgValue],
+    args: &[crate::value::FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, UnaryNumericSurfaceError> {
+) -> Result<FunctionValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, csc_kernel)
 }
 

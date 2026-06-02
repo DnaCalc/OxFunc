@@ -3,10 +3,12 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
+use crate::functions::adapters::{PreparedValue, run_values_only_prepared};
 use crate::locale_format::{LocaleFormatContext, ParseFailure};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 pub const VALUE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.VALUE",
@@ -30,29 +32,29 @@ pub enum ValueEvalError {
 }
 
 fn eval_value_array_cell(
-    cell: &ArrayCellValue,
+    cell: &FunctionArrayCell,
     ctx: &LocaleFormatContext,
-) -> Result<ArrayCellValue, ValueEvalError> {
+) -> Result<FunctionArrayCell, ValueEvalError> {
     match cell {
-        ArrayCellValue::Number(n) => Ok(ArrayCellValue::Number(*n)),
-        ArrayCellValue::Text(text) => match ctx.parser.parse_value_text(
+        FunctionArrayCell::Number(n) => Ok(FunctionArrayCell::Number(*n)),
+        FunctionArrayCell::Text(text) => match ctx.parser.parse_value_text(
             &ctx.profile,
             ctx.date_system,
             &text.to_string_lossy(),
         ) {
-            Ok(parsed) => Ok(ArrayCellValue::Number(parsed)),
-            Err(_) => Ok(ArrayCellValue::Error(WorksheetErrorCode::Value)),
+            Ok(parsed) => Ok(FunctionArrayCell::Number(parsed)),
+            Err(_) => Ok(FunctionArrayCell::Error(WorksheetErrorCode::Value)),
         },
-        ArrayCellValue::Error(code) => Ok(ArrayCellValue::Error(*code)),
-        ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
-            Ok(ArrayCellValue::Error(WorksheetErrorCode::Value))
+        FunctionArrayCell::Error(code) => Ok(FunctionArrayCell::Error(*code)),
+        FunctionArrayCell::Logical(_) | FunctionArrayCell::EmptyCell => {
+            Ok(FunctionArrayCell::Error(WorksheetErrorCode::Value))
         }
     }
 }
 pub fn eval_value_adapter_prepared(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     ctx: &LocaleFormatContext,
-) -> Result<EvalValue, ValueEvalError> {
+) -> Result<FunctionValue, ValueEvalError> {
     if !VALUE_META.arity.accepts(args.len()) {
         return Err(ValueEvalError::ArityMismatch {
             expected: VALUE_META.arity.min,
@@ -61,28 +63,28 @@ pub fn eval_value_adapter_prepared(
     }
 
     match &args[0] {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(EvalValue::Number(*n)),
-        PreparedArgValue::Eval(EvalValue::Text(text)) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(FunctionValue::Number(*n)),
+        PreparedValue::Eval(FunctionValue::Text(text)) => {
             let parsed = ctx
                 .parser
                 .parse_value_text(&ctx.profile, ctx.date_system, &text.to_string_lossy())
                 .map_err(ValueEvalError::Parse)?;
-            Ok(EvalValue::Number(parsed))
+            Ok(FunctionValue::Number(parsed))
         }
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let cells = array
                 .iter_row_major()
                 .map(|cell| eval_value_array_cell(cell, ctx))
                 .collect::<Result<Vec<_>, _>>()?;
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells).expect("input array shape is valid"),
             ))
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Ok(EvalValue::Error(*code)),
-        PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Err(ValueEvalError::Parse(ParseFailure::UnsupportedText(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Ok(FunctionValue::Error(*code)),
+        PreparedValue::Eval(FunctionValue::Logical(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_))
+        | PreparedValue::MissingArg
+        | PreparedValue::EmptyCell => Err(ValueEvalError::Parse(ParseFailure::UnsupportedText(
             String::new(),
         ))),
         _ => Err(ValueEvalError::Parse(ParseFailure::UnsupportedText(
@@ -92,10 +94,10 @@ pub fn eval_value_adapter_prepared(
 }
 
 pub fn eval_value_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     ctx: &LocaleFormatContext,
-) -> Result<EvalValue, ValueEvalError> {
+) -> Result<FunctionValue, ValueEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -128,11 +130,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -142,25 +144,25 @@ mod tests {
     fn value_current_host_seed_rows() {
         let ctx = test_current_excel_host_context();
         let mk = |s: &str| {
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 s.encode_utf16().collect(),
             )))
         };
         assert_eq!(
             eval_value_surface(&[mk("1 234.5")], &NoResolver, &ctx),
-            Ok(EvalValue::Number(1234.5))
+            Ok(FunctionValue::Number(1234.5))
         );
         assert_eq!(
             eval_value_surface(&[mk("R1 234.57")], &NoResolver, &ctx),
-            Ok(EvalValue::Number(1234.57))
+            Ok(FunctionValue::Number(1234.57))
         );
         assert_eq!(
             eval_value_surface(&[mk("12%")], &NoResolver, &ctx),
-            Ok(EvalValue::Number(0.12))
+            Ok(FunctionValue::Number(0.12))
         );
         assert_eq!(
             eval_value_surface(&[mk("2024-02-03")], &NoResolver, &ctx),
-            Ok(EvalValue::Number(45325.0))
+            Ok(FunctionValue::Number(45325.0))
         );
         assert!(matches!(
             eval_value_surface(&[mk("1/2/2024")], &NoResolver, &ctx),
@@ -171,24 +173,24 @@ mod tests {
     #[test]
     fn value_lifts_array_elementwise_and_preserves_errors() {
         let ctx = test_current_excel_host_context();
-        let args = [CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("12%")),
-                ArrayCellValue::Number(3.0),
-                ArrayCellValue::Error(WorksheetErrorCode::Div0),
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("x")),
+        let args = [FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("12%")),
+                FunctionArrayCell::Number(3.0),
+                FunctionArrayCell::Error(WorksheetErrorCode::Div0),
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
             ]])
             .unwrap(),
         ))];
         let got = eval_value_surface(&args, &NoResolver, &ctx);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(0.12),
-                    ArrayCellValue::Number(3.0),
-                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
-                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(0.12),
+                    FunctionArrayCell::Number(3.0),
+                    FunctionArrayCell::Error(WorksheetErrorCode::Div0),
+                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
                 ]])
                 .unwrap()
             ))

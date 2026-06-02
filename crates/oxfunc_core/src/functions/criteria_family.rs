@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::xmatch::wildcard_match;
 use crate::resolver::{
@@ -14,8 +14,8 @@ use crate::resolver::{
     resolve_eval_value,
 };
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
-    WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceKind,
+    ReferenceLike, WorksheetErrorCode,
 };
 
 const CRITERIA_BASE_META: FunctionMeta = FunctionMeta {
@@ -101,7 +101,7 @@ impl FlatShape {
 #[derive(Debug, Clone, PartialEq)]
 struct FlatCells {
     shape: FlatShape,
-    cells: Vec<ArrayCellValue>,
+    cells: Vec<FunctionArrayCell>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -166,13 +166,13 @@ fn normalize_text(text: &ExcelText) -> String {
     text.to_string_lossy()
 }
 
-fn scalar_to_cell(value: EvalValue) -> Result<ArrayCellValue, CriteriaEvalError> {
+fn scalar_to_cell(value: FunctionValue) -> Result<FunctionArrayCell, CriteriaEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(ArrayCellValue::Number(n)),
-        EvalValue::Text(t) => Ok(ArrayCellValue::Text(t)),
-        EvalValue::Logical(b) => Ok(ArrayCellValue::Logical(b)),
-        EvalValue::Error(code) => Ok(ArrayCellValue::Error(code)),
-        EvalValue::Array(_) | EvalValue::Reference(_) => {
+        FunctionValue::Number(n) => Ok(FunctionArrayCell::Number(n)),
+        FunctionValue::Text(t) => Ok(FunctionArrayCell::Text(t)),
+        FunctionValue::Logical(b) => Ok(FunctionArrayCell::Logical(b)),
+        FunctionValue::Error(code) => Ok(FunctionArrayCell::Error(code)),
+        FunctionValue::Array(_) | FunctionValue::Reference(_) => {
             Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value)),
@@ -180,12 +180,12 @@ fn scalar_to_cell(value: EvalValue) -> Result<ArrayCellValue, CriteriaEvalError>
 }
 
 fn resolve_arg_eval(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
             if let Some(values) = enumerate_reference_values(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CriteriaEvalError::Coercion)?
@@ -193,27 +193,27 @@ fn resolve_arg_eval(
                 let array = materialize_resolved_reference_values(&values)
                     .map_err(CoercionError::RefResolution)
                     .map_err(CriteriaEvalError::Coercion)?;
-                return Ok(EvalValue::Array(array));
+                return Ok(FunctionValue::Array(array));
             }
             let resolved = resolve_eval_value(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CriteriaEvalError::Coercion)?;
-            resolve_arg_eval(&CallArgValue::Eval(resolved), resolver)
+            resolve_arg_eval(&FunctionArg::Eval(resolved), resolver)
         }
-        CallArgValue::Eval(value) => Ok(value.clone()),
-        CallArgValue::EmptyCell => Ok(EvalValue::Array(crate::value::EvalArray::from_scalar(
-            ArrayCellValue::EmptyCell,
-        ))),
-        CallArgValue::MissingArg => Err(CriteriaEvalError::Coercion(CoercionError::MissingArg)),
+        FunctionArg::Eval(value) => Ok(value.clone()),
+        FunctionArg::EmptyCell => Ok(FunctionValue::Array(
+            crate::value::FunctionArray::from_scalar(FunctionArrayCell::EmptyCell),
+        )),
+        FunctionArg::MissingArg => Err(CriteriaEvalError::Coercion(CoercionError::MissingArg)),
     }
 }
 
 fn flatten_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<FlatCells, CriteriaEvalError> {
     match resolve_arg_eval(arg, resolver)? {
-        EvalValue::Array(array) => {
+        FunctionValue::Array(array) => {
             let shape = array.shape();
             Ok(FlatCells {
                 shape: FlatShape {
@@ -230,20 +230,20 @@ fn flatten_arg(
     }
 }
 
-fn shaped_value_error_from_direct_array(arg: &CallArgValue) -> Option<EvalValue> {
-    let CallArgValue::Eval(EvalValue::Array(array)) = arg else {
+fn shaped_value_error_from_direct_array(arg: &FunctionArg) -> Option<FunctionValue> {
+    let FunctionArg::Eval(FunctionValue::Array(array)) = arg else {
         return None;
     };
-    Some(EvalValue::Array(
-        EvalArray::new(
+    Some(FunctionValue::Array(
+        FunctionArray::new(
             array.shape(),
-            vec![ArrayCellValue::Error(WorksheetErrorCode::Value); array.shape().cell_count()],
+            vec![FunctionArrayCell::Error(WorksheetErrorCode::Value); array.shape().cell_count()],
         )
         .expect("shape preserved"),
     ))
 }
 
-fn extrema_ifs_direct_array_value_error(args: &[CallArgValue]) -> Option<EvalValue> {
+fn extrema_ifs_direct_array_value_error(args: &[FunctionArg]) -> Option<FunctionValue> {
     for (index, arg) in args.iter().enumerate() {
         let is_range_arg = index == 0 || index % 2 == 1;
         if is_range_arg {
@@ -255,23 +255,23 @@ fn extrema_ifs_direct_array_value_error(args: &[CallArgValue]) -> Option<EvalVal
     None
 }
 
-fn reference_like_from_arg(arg: &CallArgValue) -> Option<&ReferenceLike> {
+fn reference_like_from_arg(arg: &FunctionArg) -> Option<&ReferenceLike> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => Some(reference),
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => Some(reference),
         _ => None,
     }
 }
 
 fn try_anchor_reference_to_shape(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     desired_shape: FlatShape,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<FlatCells>, CriteriaEvalError> {
     let Some(reference) = reference_like_from_arg(arg) else {
         return Ok(None);
     };
-    let Some(parsed) = parse_a1_reference(&reference.target) else {
+    let Some(parsed) = parse_a1_reference(reference.target()) else {
         return Ok(None);
     };
 
@@ -305,7 +305,7 @@ fn try_anchor_reference_to_shape(
     let target = format_relative_target(&anchored)
         .ok_or(CriteriaEvalError::Domain(WorksheetErrorCode::Ref))?;
     flatten_arg(
-        &CallArgValue::Reference(ReferenceLike::new(
+        &FunctionArg::Reference(ReferenceLike::new(
             if desired_shape.rows == 1 && desired_shape.cols == 1 {
                 ReferenceKind::A1
             } else {
@@ -336,19 +336,19 @@ fn parse_operator_prefix(text: &str) -> (CompareOp, &str) {
     }
 }
 
-fn criteria_from_prepared(prepared: &PreparedArgValue) -> Result<CriteriaSpec, CriteriaEvalError> {
+fn criteria_from_prepared(prepared: &PreparedValue) -> Result<CriteriaSpec, CriteriaEvalError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(CriteriaSpec {
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(CriteriaSpec {
             op: CompareOp::Eq,
             operand: CriteriaOperand::Number(*n),
             wildcard_text: false,
         }),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(CriteriaSpec {
+        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(CriteriaSpec {
             op: CompareOp::Eq,
             operand: CriteriaOperand::Logical(*b),
             wildcard_text: false,
         }),
-        PreparedArgValue::Eval(EvalValue::Text(text)) => {
+        PreparedValue::Eval(FunctionValue::Text(text)) => {
             let raw = normalize_text(text);
             let (op, rhs) = parse_operator_prefix(&raw);
             let operand = if rhs.is_empty() {
@@ -367,13 +367,13 @@ fn criteria_from_prepared(prepared: &PreparedArgValue) -> Result<CriteriaSpec, C
                 operand,
             })
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CriteriaEvalError::Domain(*code)),
-        PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(CriteriaEvalError::Domain(*code)),
+        PreparedValue::Eval(FunctionValue::Array(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => {
             Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedArgValue::MissingArg => Err(CriteriaEvalError::Coercion(CoercionError::MissingArg)),
-        PreparedArgValue::EmptyCell => Ok(CriteriaSpec {
+        PreparedValue::MissingArg => Err(CriteriaEvalError::Coercion(CoercionError::MissingArg)),
+        PreparedValue::EmptyCell => Ok(CriteriaSpec {
             op: CompareOp::Eq,
             operand: CriteriaOperand::Blank,
             wildcard_text: false,
@@ -424,15 +424,15 @@ fn compare_texts(op: CompareOp, lhs: &str, rhs: &str, wildcard: bool) -> bool {
     }
 }
 
-fn cell_is_blank(cell: &ArrayCellValue) -> bool {
+fn cell_is_blank(cell: &FunctionArrayCell) -> bool {
     match cell {
-        ArrayCellValue::EmptyCell => true,
-        ArrayCellValue::Text(text) => normalize_text(text).is_empty(),
+        FunctionArrayCell::EmptyCell => true,
+        FunctionArrayCell::Text(text) => normalize_text(text).is_empty(),
         _ => false,
     }
 }
 
-fn criteria_matches_cell(criteria: &CriteriaSpec, cell: &ArrayCellValue) -> bool {
+fn criteria_matches_cell(criteria: &CriteriaSpec, cell: &FunctionArrayCell) -> bool {
     match &criteria.operand {
         CriteriaOperand::Blank => match criteria.op {
             CompareOp::Eq => cell_is_blank(cell),
@@ -440,19 +440,19 @@ fn criteria_matches_cell(criteria: &CriteriaSpec, cell: &ArrayCellValue) -> bool
             _ => false,
         },
         CriteriaOperand::Number(target) => match cell {
-            ArrayCellValue::Number(value) => compare_numbers(criteria.op, *value, *target),
-            ArrayCellValue::Text(text) => parse_excel_number(&normalize_text(text))
+            FunctionArrayCell::Number(value) => compare_numbers(criteria.op, *value, *target),
+            FunctionArrayCell::Text(text) => parse_excel_number(&normalize_text(text))
                 .is_some_and(|v| compare_numbers(criteria.op, v, *target)),
             _ => false,
         },
         CriteriaOperand::Logical(target) => match cell {
-            ArrayCellValue::Logical(value) => compare_bools(criteria.op, *value, *target),
-            ArrayCellValue::Text(text) => parse_logical_text(&normalize_text(text))
+            FunctionArrayCell::Logical(value) => compare_bools(criteria.op, *value, *target),
+            FunctionArrayCell::Text(text) => parse_logical_text(&normalize_text(text))
                 .is_some_and(|v| compare_bools(criteria.op, v, *target)),
             _ => false,
         },
         CriteriaOperand::Text(target) => match cell {
-            ArrayCellValue::Text(text) => compare_texts(
+            FunctionArrayCell::Text(text) => compare_texts(
                 criteria.op,
                 &normalize_text(text),
                 target,
@@ -475,7 +475,7 @@ fn ensure_same_shape(ranges: &[&FlatCells]) -> Result<(), CriteriaEvalError> {
 }
 
 fn parse_criteria_pairs(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<(FlatCells, CriteriaSpec)>, CriteriaEvalError> {
     if args.len() % 2 != 0 {
@@ -508,13 +508,13 @@ fn matching_mask(pairs: &[(FlatCells, CriteriaSpec)]) -> Result<Vec<bool>, Crite
     Ok(mask)
 }
 
-fn numeric_cell_for_aggregate(cell: &ArrayCellValue) -> Result<Option<f64>, CriteriaEvalError> {
+fn numeric_cell_for_aggregate(cell: &FunctionArrayCell) -> Result<Option<f64>, CriteriaEvalError> {
     match cell {
-        ArrayCellValue::Number(n) => Ok(Some(*n)),
-        ArrayCellValue::Error(code) => Err(CriteriaEvalError::Domain(*code)),
-        ArrayCellValue::Text(_) | ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
-            Ok(None)
-        }
+        FunctionArrayCell::Number(n) => Ok(Some(*n)),
+        FunctionArrayCell::Error(code) => Err(CriteriaEvalError::Domain(*code)),
+        FunctionArrayCell::Text(_)
+        | FunctionArrayCell::Logical(_)
+        | FunctionArrayCell::EmptyCell => Ok(None),
     }
 }
 
@@ -522,7 +522,10 @@ fn count_matches(mask: &[bool]) -> f64 {
     mask.iter().filter(|matched| **matched).count() as f64
 }
 
-fn eval_sum_filtered(target: &FlatCells, mask: &[bool]) -> Result<EvalValue, CriteriaEvalError> {
+fn eval_sum_filtered(
+    target: &FlatCells,
+    mask: &[bool],
+) -> Result<FunctionValue, CriteriaEvalError> {
     let mut sum = 0.0;
     for (idx, matched) in mask.iter().enumerate() {
         if *matched {
@@ -531,13 +534,13 @@ fn eval_sum_filtered(target: &FlatCells, mask: &[bool]) -> Result<EvalValue, Cri
             }
         }
     }
-    Ok(EvalValue::Number(sum))
+    Ok(FunctionValue::Number(sum))
 }
 
 fn eval_average_filtered(
     target: &FlatCells,
     mask: &[bool],
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     let mut sum = 0.0;
     let mut count = 0usize;
     for (idx, matched) in mask.iter().enumerate() {
@@ -549,9 +552,9 @@ fn eval_average_filtered(
         }
     }
     if count == 0 {
-        Ok(EvalValue::Error(WorksheetErrorCode::Div0))
+        Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
     } else {
-        Ok(EvalValue::Number(sum / count as f64))
+        Ok(FunctionValue::Number(sum / count as f64))
     }
 }
 
@@ -559,7 +562,7 @@ fn eval_extreme_filtered(
     target: &FlatCells,
     mask: &[bool],
     pick_max: bool,
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     let mut best: Option<f64> = None;
     for (idx, matched) in mask.iter().enumerate() {
         if *matched {
@@ -572,13 +575,13 @@ fn eval_extreme_filtered(
             }
         }
     }
-    Ok(EvalValue::Number(best.unwrap_or(0.0)))
+    Ok(FunctionValue::Number(best.unwrap_or(0.0)))
 }
 
 pub fn eval_countif_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !COUNTIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: COUNTIF_META.arity.min,
@@ -590,7 +593,7 @@ pub fn eval_countif_surface(
     let prepared =
         prepare_arg_values_only(&args[1], resolver).map_err(CriteriaEvalError::Coercion)?;
     let criteria = criteria_from_prepared(&prepared)?;
-    Ok(EvalValue::Number(
+    Ok(FunctionValue::Number(
         range
             .cells
             .iter()
@@ -600,9 +603,9 @@ pub fn eval_countif_surface(
 }
 
 pub fn eval_countifs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !COUNTIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: COUNTIFS_META.arity.min,
@@ -611,13 +614,15 @@ pub fn eval_countifs_surface(
         });
     }
     let pairs = parse_criteria_pairs(args, resolver)?;
-    Ok(EvalValue::Number(count_matches(&matching_mask(&pairs)?)))
+    Ok(FunctionValue::Number(count_matches(&matching_mask(
+        &pairs,
+    )?)))
 }
 
 pub fn eval_sumifs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !SUMIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: SUMIFS_META.arity.min,
@@ -638,9 +643,9 @@ pub fn eval_sumifs_surface(
 }
 
 pub fn eval_sumif_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !SUMIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: SUMIF_META.arity.min,
@@ -676,9 +681,9 @@ pub fn eval_sumif_surface(
 }
 
 pub fn eval_averageif_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !AVERAGEIF_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: AVERAGEIF_META.arity.min,
@@ -714,9 +719,9 @@ pub fn eval_averageif_surface(
 }
 
 pub fn eval_averageifs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !AVERAGEIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: AVERAGEIFS_META.arity.min,
@@ -737,9 +742,9 @@ pub fn eval_averageifs_surface(
 }
 
 pub fn eval_maxifs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !MAXIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: MAXIFS_META.arity.min,
@@ -763,9 +768,9 @@ pub fn eval_maxifs_surface(
 }
 
 pub fn eval_minifs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CriteriaEvalError> {
+) -> Result<FunctionValue, CriteriaEvalError> {
     if !MINIFS_META.arity.accepts(args.len()) {
         return Err(CriteriaEvalError::ArityMismatch {
             expected_min: MINIFS_META.arity.min,
@@ -802,7 +807,7 @@ pub fn map_criteria_error_to_ws(error: &CriteriaEvalError) -> WorksheetErrorCode
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{EvalArray, ReferenceLike};
+    use crate::value::{FunctionArray, ReferenceLike};
     use std::collections::HashMap;
 
     struct NoResolver;
@@ -813,18 +818,18 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
     struct MapResolver {
-        refs: HashMap<String, EvalValue>,
+        refs: HashMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MapResolver {
@@ -835,27 +840,29 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.refs.get(&reference.target).cloned().ok_or_else(|| {
+            self.refs.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 }
             })
         }
     }
 
-    fn text(s: &str) -> ArrayCellValue {
-        ArrayCellValue::Text(ExcelText::from_interop_assignment(s))
+    fn text(s: &str) -> FunctionArrayCell {
+        FunctionArrayCell::Text(ExcelText::from_interop_assignment(s))
     }
-    fn array(rows: Vec<Vec<ArrayCellValue>>) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
+    fn array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(rows).unwrap(),
+        ))
     }
-    fn scalar_text(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
+    fn scalar_text(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(s)))
     }
-    fn area_ref(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn area_ref(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     #[test]
@@ -863,16 +870,16 @@ mod tests {
         let got = eval_countif_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Number(3.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Number(3.0),
                     text("3"),
                 ]]),
                 scalar_text(">=2"),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
 
         let eq_text = eval_countif_surface(
             &[
@@ -881,53 +888,53 @@ mod tests {
             ],
             &NoResolver,
         );
-        assert_eq!(eq_text, Ok(EvalValue::Number(2.0)));
+        assert_eq!(eq_text, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn countif_uses_excel_near_equal_numeric_comparisons() {
-        let range = array(vec![vec![ArrayCellValue::Number(0.3)]]);
+        let range = array(vec![vec![FunctionArrayCell::Number(0.3)]]);
         assert_eq!(
             eval_countif_surface(
                 &[
                     range.clone(),
-                    CallArgValue::Eval(EvalValue::Number(0.1 + 0.2))
+                    FunctionArg::Eval(FunctionValue::Number(0.1 + 0.2))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
         assert_eq!(
             eval_countif_surface(
                 &[range.clone(), scalar_text("<>0.30000000000000004")],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(0.0))
+            Ok(FunctionValue::Number(0.0))
         );
         assert_eq!(
             eval_countif_surface(
                 &[range.clone(), scalar_text("<0.30000000000000004")],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(0.0))
+            Ok(FunctionValue::Number(0.0))
         );
         assert_eq!(
             eval_countif_surface(
                 &[range.clone(), scalar_text("<=0.30000000000000004")],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
         assert_eq!(
             eval_countif_surface(
                 &[range.clone(), scalar_text(">0.30000000000000004")],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(0.0))
+            Ok(FunctionValue::Number(0.0))
         );
         assert_eq!(
             eval_countif_surface(&[range, scalar_text(">=0.30000000000000004")], &NoResolver),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -939,28 +946,28 @@ mod tests {
             refs: HashMap::from([
                 (
                     "A1:B1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Number(boundary_stored),
-                            ArrayCellValue::Number(2.0),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Number(boundary_stored),
+                            FunctionArrayCell::Number(2.0),
                         ]])
                         .unwrap(),
                     ),
                 ),
                 (
                     "C1:D1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Number(10.0),
-                            ArrayCellValue::Number(20.0),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Number(10.0),
+                            FunctionArrayCell::Number(20.0),
                         ]])
                         .unwrap(),
                     ),
                 ),
                 (
                     "E1:F1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![text("Y"), text("Y")]]).unwrap(),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![text("Y"), text("Y")]]).unwrap(),
                     ),
                 ),
             ]),
@@ -973,65 +980,65 @@ mod tests {
             eval_countifs_surface(
                 &[
                     criteria_range.clone(),
-                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    FunctionArg::Eval(FunctionValue::Number(boundary_probe)),
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
         assert_eq!(
             eval_sumifs_surface(
                 &[
                     target_range.clone(),
                     criteria_range.clone(),
-                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    FunctionArg::Eval(FunctionValue::Number(boundary_probe)),
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(10.0))
+            Ok(FunctionValue::Number(10.0))
         );
         assert_eq!(
             eval_averageifs_surface(
                 &[
                     target_range.clone(),
                     criteria_range.clone(),
-                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    FunctionArg::Eval(FunctionValue::Number(boundary_probe)),
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(10.0))
+            Ok(FunctionValue::Number(10.0))
         );
         assert_eq!(
             eval_maxifs_surface(
                 &[
                     target_range.clone(),
                     criteria_range.clone(),
-                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    FunctionArg::Eval(FunctionValue::Number(boundary_probe)),
                     tag_range.clone(),
                     scalar_text("Y"),
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(10.0))
+            Ok(FunctionValue::Number(10.0))
         );
         assert_eq!(
             eval_minifs_surface(
                 &[
                     target_range,
                     criteria_range,
-                    CallArgValue::Eval(EvalValue::Number(boundary_probe)),
+                    FunctionArg::Eval(FunctionValue::Number(boundary_probe)),
                     tag_range,
                     scalar_text("Y"),
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(10.0))
+            Ok(FunctionValue::Number(10.0))
         );
     }
 
@@ -1049,16 +1056,20 @@ mod tests {
             ],
             &NoResolver,
         );
-        assert_eq!(wild, Ok(EvalValue::Number(3.0)));
+        assert_eq!(wild, Ok(FunctionValue::Number(3.0)));
 
         let blank = eval_countif_surface(
             &[
-                array(vec![vec![ArrayCellValue::EmptyCell, text(""), text("x")]]),
+                array(vec![vec![
+                    FunctionArrayCell::EmptyCell,
+                    text(""),
+                    text("x"),
+                ]]),
                 scalar_text(""),
             ],
             &NoResolver,
         );
-        assert_eq!(blank, Ok(EvalValue::Number(2.0)));
+        assert_eq!(blank, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
@@ -1068,26 +1079,26 @@ mod tests {
                 array(vec![vec![text("North"), text("South"), text("North")]]),
                 scalar_text("north"),
                 array(vec![vec![
-                    ArrayCellValue::Number(5.0),
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Number(8.0),
+                    FunctionArrayCell::Number(5.0),
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Number(8.0),
                 ]]),
                 scalar_text(">=6"),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
 
         let mismatch = eval_countifs_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
                 ]]),
                 scalar_text(">0"),
                 array(vec![
-                    vec![ArrayCellValue::Number(1.0)],
-                    vec![ArrayCellValue::Number(2.0)],
+                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![FunctionArrayCell::Number(2.0)],
                 ]),
                 scalar_text(">0"),
             ],
@@ -1104,22 +1115,22 @@ mod tests {
         let got = eval_sumifs_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(20.0),
-                    ArrayCellValue::Number(30.0),
+                    FunctionArrayCell::Number(10.0),
+                    FunctionArrayCell::Number(20.0),
+                    FunctionArrayCell::Number(30.0),
                 ]]),
                 array(vec![vec![text("A"), text("B"), text("A")]]),
                 scalar_text("A"),
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Number(3.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Number(3.0),
                 ]]),
                 scalar_text(">1"),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(30.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(30.0)));
     }
 
     #[test]
@@ -1127,37 +1138,37 @@ mod tests {
         let direct = eval_sumif_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Number(3.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Number(3.0),
                 ]]),
                 scalar_text(">1"),
             ],
             &NoResolver,
         );
-        assert_eq!(direct, Ok(EvalValue::Number(5.0)));
+        assert_eq!(direct, Ok(FunctionValue::Number(5.0)));
 
         let resolver = MapResolver {
             refs: HashMap::from([
                 (
                     "A1:A3".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(1.0)],
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(1.0)],
                         ])
                         .unwrap(),
                     ),
                 ),
-                ("B2".to_string(), EvalValue::Number(20.0)),
+                ("B2".to_string(), FunctionValue::Number(20.0)),
                 (
                     "B2:B4".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(20.0)],
-                            vec![ArrayCellValue::Number(30.0)],
-                            vec![ArrayCellValue::Number(40.0)],
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(20.0)],
+                            vec![FunctionArrayCell::Number(30.0)],
+                            vec![FunctionArrayCell::Number(40.0)],
                         ])
                         .unwrap(),
                     ),
@@ -1166,16 +1177,16 @@ mod tests {
         };
         let anchored = eval_sumif_surface(
             &[
-                CallArgValue::Reference(ReferenceLike::new(
+                FunctionArg::Reference(ReferenceLike::new(
                     ReferenceKind::Area,
                     "A1:A3".to_string(),
                 )),
                 scalar_text("1"),
-                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
+                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
             ],
             &resolver,
         );
-        assert_eq!(anchored, Ok(EvalValue::Number(90.0)));
+        assert_eq!(anchored, Ok(FunctionValue::Number(90.0)));
     }
 
     #[test]
@@ -1183,21 +1194,24 @@ mod tests {
         let direct = eval_averageif_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Number(3.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Number(3.0),
                 ]]),
                 scalar_text(">1"),
             ],
             &NoResolver,
         );
-        assert_eq!(direct, Ok(EvalValue::Number(2.5)));
+        assert_eq!(direct, Ok(FunctionValue::Number(2.5)));
 
         let no_numeric = eval_averageif_surface(
             &[array(vec![vec![text("x"), text("y")]]), scalar_text("*")],
             &NoResolver,
         );
-        assert_eq!(no_numeric, Ok(EvalValue::Error(WorksheetErrorCode::Div0)));
+        assert_eq!(
+            no_numeric,
+            Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
+        );
     }
 
     #[test]
@@ -1206,23 +1220,23 @@ mod tests {
             refs: HashMap::from([
                 (
                     "A1:A3".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(1.0)],
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(1.0)],
                         ])
                         .unwrap(),
                     ),
                 ),
-                ("B2".to_string(), EvalValue::Number(20.0)),
+                ("B2".to_string(), FunctionValue::Number(20.0)),
                 (
                     "B2:B4".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(20.0)],
-                            vec![ArrayCellValue::Number(30.0)],
-                            vec![ArrayCellValue::Number(40.0)],
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(20.0)],
+                            vec![FunctionArrayCell::Number(30.0)],
+                            vec![FunctionArrayCell::Number(40.0)],
                         ])
                         .unwrap(),
                     ),
@@ -1232,16 +1246,16 @@ mod tests {
 
         let got = eval_averageif_surface(
             &[
-                CallArgValue::Reference(ReferenceLike::new(
+                FunctionArg::Reference(ReferenceLike::new(
                     ReferenceKind::Area,
                     "A1:A3".to_string(),
                 )),
                 scalar_text("1"),
-                CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
+                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
             ],
             &resolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(30.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(30.0)));
     }
 
     #[test]
@@ -1249,27 +1263,27 @@ mod tests {
         let got = eval_averageifs_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(10.0),
+                    FunctionArrayCell::Number(10.0),
                     text("skip"),
-                    ArrayCellValue::Number(30.0),
+                    FunctionArrayCell::Number(30.0),
                 ]]),
                 array(vec![vec![text("A"), text("A"), text("B")]]),
                 scalar_text("A"),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(10.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(10.0)));
     }
 
     #[test]
     fn averageifs_requires_exact_shape_and_does_not_anchor_average_range() {
         let got = eval_averageifs_surface(
             &[
-                array(vec![vec![ArrayCellValue::Number(10.0)]]),
+                array(vec![vec![FunctionArrayCell::Number(10.0)]]),
                 array(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(1.0),
                 ]]),
                 scalar_text("1"),
             ],
@@ -1286,11 +1300,11 @@ mod tests {
         let max = eval_maxifs_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(20.0),
-                    ArrayCellValue::Number(30.0),
-                    ArrayCellValue::Number(40.0),
-                    ArrayCellValue::Number(50.0),
+                    FunctionArrayCell::Number(10.0),
+                    FunctionArrayCell::Number(20.0),
+                    FunctionArrayCell::Number(30.0),
+                    FunctionArrayCell::Number(40.0),
+                    FunctionArrayCell::Number(50.0),
                 ]]),
                 array(vec![vec![
                     text("a"),
@@ -1306,11 +1320,11 @@ mod tests {
         let min = eval_minifs_surface(
             &[
                 array(vec![vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(20.0),
-                    ArrayCellValue::Number(30.0),
-                    ArrayCellValue::Number(40.0),
-                    ArrayCellValue::Number(50.0),
+                    FunctionArrayCell::Number(10.0),
+                    FunctionArrayCell::Number(20.0),
+                    FunctionArrayCell::Number(30.0),
+                    FunctionArrayCell::Number(40.0),
+                    FunctionArrayCell::Number(50.0),
                 ]]),
                 array(vec![vec![
                     text("a"),
@@ -1323,13 +1337,13 @@ mod tests {
             ],
             &NoResolver,
         );
-        let expected = Ok(EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
+        let expected = Ok(FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
             ]])
             .unwrap(),
         ));
@@ -1343,32 +1357,36 @@ mod tests {
             refs: HashMap::from([
                 (
                     "A1:C1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Number(10.0),
-                            ArrayCellValue::Number(25.0),
-                            ArrayCellValue::Number(8.0),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Number(10.0),
+                            FunctionArrayCell::Number(25.0),
+                            FunctionArrayCell::Number(8.0),
                         ]])
                         .unwrap(),
                     ),
                 ),
                 (
                     "D1:F1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![text("A"), text("B"), text("A")]]).unwrap(),
-                    ),
-                ),
-                (
-                    "G1:H1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![text("x"), ArrayCellValue::EmptyCell]])
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![text("A"), text("B"), text("A")]])
                             .unwrap(),
                     ),
                 ),
                 (
+                    "G1:H1".to_string(),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            text("x"),
+                            FunctionArrayCell::EmptyCell,
+                        ]])
+                        .unwrap(),
+                    ),
+                ),
+                (
                     "I1:J1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![text("A"), text("A")]]).unwrap(),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![text("A"), text("A")]]).unwrap(),
                     ),
                 ),
             ]),
@@ -1377,19 +1395,19 @@ mod tests {
             &[area_ref("A1:C1"), area_ref("D1:F1"), scalar_text("A")],
             &resolver,
         );
-        assert_eq!(max, Ok(EvalValue::Number(10.0)));
+        assert_eq!(max, Ok(FunctionValue::Number(10.0)));
 
         let min = eval_minifs_surface(
             &[area_ref("A1:C1"), area_ref("D1:F1"), scalar_text("A")],
             &resolver,
         );
-        assert_eq!(min, Ok(EvalValue::Number(8.0)));
+        assert_eq!(min, Ok(FunctionValue::Number(8.0)));
 
         let no_match = eval_maxifs_surface(
             &[area_ref("G1:H1"), area_ref("I1:J1"), scalar_text("A")],
             &resolver,
         );
-        assert_eq!(no_match, Ok(EvalValue::Number(0.0)));
+        assert_eq!(no_match, Ok(FunctionValue::Number(0.0)));
     }
 
     #[test]
@@ -1398,17 +1416,18 @@ mod tests {
             refs: HashMap::from([
                 (
                     "A1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![ArrayCellValue::Number(20.0)]]).unwrap(),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(20.0)]])
+                            .unwrap(),
                     ),
                 ),
                 (
                     "B1:D1".to_string(),
-                    EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Number(1.0),
-                            ArrayCellValue::Number(1.0),
-                            ArrayCellValue::Number(1.0),
+                    FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Number(1.0),
+                            FunctionArrayCell::Number(1.0),
+                            FunctionArrayCell::Number(1.0),
                         ]])
                         .unwrap(),
                     ),

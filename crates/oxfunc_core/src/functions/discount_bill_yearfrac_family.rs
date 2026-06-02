@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const DISCOUNT_BILL_YEARFRAC_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DISCOUNT_BILL_YEARFRAC_BASE",
@@ -94,7 +94,7 @@ fn max_excel_serial() -> i64 {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, 9999, 12, 31).unwrap() as i64
 }
 
-fn number_arg(args: &[PreparedArgValue], idx: usize) -> Result<f64, DiscountBillYearfracEvalError> {
+fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, DiscountBillYearfracEvalError> {
     args.get(idx)
         .ok_or(DiscountBillYearfracEvalError::Domain(
             WorksheetErrorCode::Value,
@@ -488,27 +488,27 @@ pub fn tbilleq_kernel(
 }
 
 fn eval_numeric(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl Fn(&[PreparedArgValue]) -> Result<f64, DiscountBillYearfracEvalError>,
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+    kernel: impl Fn(&[PreparedValue]) -> Result<f64, DiscountBillYearfracEvalError>,
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
     run_values_only_prepared_lifted(
         args,
         resolver,
-        |prepared| kernel(prepared).map(EvalValue::Number),
+        |prepared| kernel(prepared).map(FunctionValue::Number),
         map_discount_bill_yearfrac_error_to_ws,
         DiscountBillYearfracEvalError::Coercion,
     )
 }
 
 pub fn eval_disc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &DISC_META, |prepared| {
         disc_kernel(
             number_arg(prepared, 0)?,
@@ -524,9 +524,9 @@ pub fn eval_disc_surface(
 }
 
 pub fn eval_intrate_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &INTRATE_META, |prepared| {
         intrate_kernel(
             number_arg(prepared, 0)?,
@@ -542,9 +542,9 @@ pub fn eval_intrate_surface(
 }
 
 pub fn eval_received_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &RECEIVED_META, |prepared| {
         received_kernel(
             number_arg(prepared, 0)?,
@@ -560,9 +560,9 @@ pub fn eval_received_surface(
 }
 
 pub fn eval_pricedisc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &PRICEDISC_META, |prepared| {
         pricedisc_kernel(
             number_arg(prepared, 0)?,
@@ -578,9 +578,9 @@ pub fn eval_pricedisc_surface(
 }
 
 pub fn eval_tbilleq_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLEQ_META, |prepared| {
         tbilleq_kernel(
             number_arg(prepared, 0)?,
@@ -591,9 +591,9 @@ pub fn eval_tbilleq_surface(
 }
 
 pub fn eval_tbillprice_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLPRICE_META, |prepared| {
         tbillprice_kernel(
             number_arg(prepared, 0)?,
@@ -604,9 +604,9 @@ pub fn eval_tbillprice_surface(
 }
 
 pub fn eval_tbillyield_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &TBILLYIELD_META, |prepared| {
         tbillyield_kernel(
             number_arg(prepared, 0)?,
@@ -617,9 +617,9 @@ pub fn eval_tbillyield_surface(
 }
 
 pub fn eval_yearfrac_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DiscountBillYearfracEvalError> {
+) -> Result<FunctionValue, DiscountBillYearfracEvalError> {
     eval_numeric(args, resolver, &YEARFRAC_META, |prepared| {
         yearfrac_kernel(
             number_arg(prepared, 0)?,

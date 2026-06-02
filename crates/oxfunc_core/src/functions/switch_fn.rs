@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const SWITCH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SWITCH",
@@ -38,38 +38,38 @@ pub enum SwitchEvalError {
 }
 
 fn prepared_equal(
-    left: &PreparedArgValue,
-    right: &PreparedArgValue,
+    left: &PreparedValue,
+    right: &PreparedValue,
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<bool, CoercionError> {
     match (left, right) {
         (
-            PreparedArgValue::Eval(EvalValue::Text(a)),
-            PreparedArgValue::Eval(EvalValue::Text(b)),
+            PreparedValue::Eval(FunctionValue::Text(a)),
+            PreparedValue::Eval(FunctionValue::Text(b)),
         ) => Ok(a
             .to_string_lossy()
             .eq_ignore_ascii_case(&b.to_string_lossy())),
         (
-            PreparedArgValue::Eval(EvalValue::Number(a)),
-            PreparedArgValue::Eval(EvalValue::Number(b)),
+            PreparedValue::Eval(FunctionValue::Number(a)),
+            PreparedValue::Eval(FunctionValue::Number(b)),
         ) => Ok(a == b),
         (
-            PreparedArgValue::Eval(EvalValue::Logical(a)),
-            PreparedArgValue::Eval(EvalValue::Logical(b)),
+            PreparedValue::Eval(FunctionValue::Logical(a)),
+            PreparedValue::Eval(FunctionValue::Logical(b)),
         ) => Ok(a == b),
         (
-            PreparedArgValue::Eval(EvalValue::Error(a)),
-            PreparedArgValue::Eval(EvalValue::Error(b)),
+            PreparedValue::Eval(FunctionValue::Error(a)),
+            PreparedValue::Eval(FunctionValue::Error(b)),
         ) => Ok(a == b),
-        (PreparedArgValue::MissingArg, PreparedArgValue::MissingArg)
-        | (PreparedArgValue::EmptyCell, PreparedArgValue::EmptyCell) => Ok(true),
+        (PreparedValue::MissingArg, PreparedValue::MissingArg)
+        | (PreparedValue::EmptyCell, PreparedValue::EmptyCell) => Ok(true),
         // Excel matches numeric text only as text, not against numbers.
-        (PreparedArgValue::Eval(EvalValue::Reference(_)), _)
-        | (_, PreparedArgValue::Eval(EvalValue::Reference(_))) => {
+        (PreparedValue::Eval(FunctionValue::Reference(_)), _)
+        | (_, PreparedValue::Eval(FunctionValue::Reference(_))) => {
             Err(CoercionError::UnsupportedValueKind("reference_like"))
         }
-        (PreparedArgValue::Eval(EvalValue::Array(_)), _)
-        | (_, PreparedArgValue::Eval(EvalValue::Array(_))) => {
+        (PreparedValue::Eval(FunctionValue::Array(_)), _)
+        | (_, PreparedValue::Eval(FunctionValue::Array(_))) => {
             Err(CoercionError::UnsupportedValueKind("array"))
         }
         _ => Ok(false),
@@ -77,9 +77,9 @@ fn prepared_equal(
 }
 
 pub fn eval_switch_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SwitchEvalError> {
+) -> Result<FunctionValue, SwitchEvalError> {
     if !SWITCH_META.arity.accepts(args.len()) {
         return Err(SwitchEvalError::ArityMismatch {
             expected_min: SWITCH_META.arity.min,
@@ -105,9 +105,9 @@ pub fn eval_switch_surface(
             let prepared = prepare_arg_values_only(&args[idx + 1], resolver)
                 .map_err(SwitchEvalError::ResultPreparation)?;
             return Ok(match prepared {
-                PreparedArgValue::Eval(v) => v,
-                PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::NA),
-                PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+                PreparedValue::Eval(v) => v,
+                PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::NA),
+                PreparedValue::EmptyCell => FunctionValue::Number(0.0),
             });
         }
         idx += 2;
@@ -116,9 +116,9 @@ pub fn eval_switch_surface(
         let prepared = prepare_arg_values_only(args.last().expect("default exists"), resolver)
             .map_err(SwitchEvalError::ResultPreparation)?;
         return Ok(match prepared {
-            PreparedArgValue::Eval(v) => v,
-            PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::NA),
-            PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+            PreparedValue::Eval(v) => v,
+            PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::NA),
+            PreparedValue::EmptyCell => FunctionValue::Number(0.0),
         });
     }
     Err(SwitchEvalError::NotAvailable)
@@ -149,11 +149,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -163,52 +163,52 @@ mod tests {
     fn switch_matches_case_insensitive_text_and_exact_types() {
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("A"))),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("A"))),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
 
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("2"))),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("2"))),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("2"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("2"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn switch_uses_default_or_na() {
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("c"))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("d"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("c"))),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("d"))),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("d")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment("d")))
         );
 
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
             ],
             &NoResolver,
         );
@@ -219,17 +219,17 @@ mod tests {
     fn switch_is_lazy_over_unmatched_pairs_and_results() {
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("a"))),
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("b"))),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
+                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("b"))),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("a")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment("a")))
         );
     }
 }

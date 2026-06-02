@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const HARMEAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.HARMEAN",
@@ -32,28 +32,30 @@ pub enum HarMeanEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_harmean_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, HarMeanEvalError> {
+fn eval_harmean_aggregate(
+    args: &[AggregatePreparedValue],
+) -> Result<FunctionValue, HarMeanEvalError> {
     let mut reciprocal_sum = 0.0;
     let mut count = 0usize;
     for arg in args {
         if let Some(value) = average_argument_value(arg).map_err(HarMeanEvalError::Coercion)? {
             if value <= 0.0 {
-                return Ok(EvalValue::Error(WorksheetErrorCode::Num));
+                return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
             }
             reciprocal_sum += 1.0 / value;
             count += 1;
         }
     }
     if count == 0 {
-        return Ok(EvalValue::Error(WorksheetErrorCode::NA));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::NA));
     }
-    Ok(EvalValue::Number(count as f64 / reciprocal_sum))
+    Ok(FunctionValue::Number(count as f64 / reciprocal_sum))
 }
 
 pub fn eval_harmean_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, HarMeanEvalError> {
+) -> Result<FunctionValue, HarMeanEvalError> {
     let argc = args.len();
     if !HARMEAN_META.arity.accepts(argc) {
         return Err(HarMeanEvalError::ArityMismatch {

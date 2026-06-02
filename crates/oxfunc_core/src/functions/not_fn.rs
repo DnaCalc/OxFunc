@@ -4,10 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 pub const NOT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NOT",
@@ -33,7 +35,7 @@ pub enum NotEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_not_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NotEvalError> {
+fn eval_not_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NotEvalError> {
     if !NOT_META.arity.accepts(args.len()) {
         return Err(NotEvalError::ArityMismatch {
             expected_min: NOT_META.arity.min,
@@ -42,33 +44,33 @@ fn eval_not_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NotEvalErro
         });
     }
     match &args[0] {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let cells = array.iter_row_major().map(not_cell).collect();
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells).expect("input array shape is valid"),
             ))
         }
         _ => {
             let value = coerce_prepared_to_number(&args[0]).map_err(NotEvalError::Coercion)?;
-            Ok(EvalValue::Logical(value == 0.0))
+            Ok(FunctionValue::Logical(value == 0.0))
         }
     }
 }
 
-fn not_cell(cell: &ArrayCellValue) -> ArrayCellValue {
+fn not_cell(cell: &FunctionArrayCell) -> FunctionArrayCell {
     match cell {
-        ArrayCellValue::Number(n) => ArrayCellValue::Logical(*n == 0.0),
-        ArrayCellValue::Logical(b) => ArrayCellValue::Logical(!b),
-        ArrayCellValue::Error(code) => ArrayCellValue::Error(*code),
-        ArrayCellValue::EmptyCell => ArrayCellValue::Logical(true),
-        ArrayCellValue::Text(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        FunctionArrayCell::Number(n) => FunctionArrayCell::Logical(*n == 0.0),
+        FunctionArrayCell::Logical(b) => FunctionArrayCell::Logical(!b),
+        FunctionArrayCell::Error(code) => FunctionArrayCell::Error(*code),
+        FunctionArrayCell::EmptyCell => FunctionArrayCell::Logical(true),
+        FunctionArrayCell::Text(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
 pub fn eval_not_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NotEvalError> {
+) -> Result<FunctionValue, NotEvalError> {
     run_values_only_prepared(args, resolver, eval_not_prepared, NotEvalError::Coercion)
 }
 
@@ -87,7 +89,7 @@ mod tests {
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -98,11 +100,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -112,37 +114,37 @@ mod tests {
     fn eval_not_basic_lanes() {
         assert_eq!(
             eval_not_surface(
-                &[CallArgValue::Eval(EvalValue::Logical(true))],
+                &[FunctionArg::Eval(FunctionValue::Logical(true))],
                 &MockResolver {
                     resolved_value: None
                 }
             ),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_not_surface(
-                &[CallArgValue::Eval(EvalValue::Number(0.0))],
+                &[FunctionArg::Eval(FunctionValue::Number(0.0))],
                 &MockResolver {
                     resolved_value: None
                 }
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_not_surface(
-                &[CallArgValue::Eval(EvalValue::Number(2.0))],
+                &[FunctionArg::Eval(FunctionValue::Number(2.0))],
                 &MockResolver {
                     resolved_value: None
                 }
             ),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
     }
 
     #[test]
     fn eval_not_direct_text_is_value_error() {
         let got = eval_not_surface(
-            &[CallArgValue::Eval(EvalValue::Text(
+            &[FunctionArg::Eval(FunctionValue::Text(
                 ExcelText::from_utf16_code_units("x".encode_utf16().collect()),
             ))],
             &MockResolver {
@@ -158,27 +160,27 @@ mod tests {
     #[test]
     fn eval_not_reference_uses_resolved_scalar() {
         let got = eval_not_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "A1".to_string(),
             ))],
             &MockResolver {
-                resolved_value: Some(EvalValue::Logical(true)),
+                resolved_value: Some(FunctionValue::Logical(true)),
             },
         );
-        assert_eq!(got, Ok(EvalValue::Logical(false)));
+        assert_eq!(got, Ok(FunctionValue::Logical(false)));
     }
 
     #[test]
     fn eval_not_array_lifts_elementwise() {
         let got = eval_not_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Logical(true),
-                    ArrayCellValue::Logical(false),
-                    ArrayCellValue::Number(0.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Logical(true),
+                    FunctionArrayCell::Logical(false),
+                    FunctionArrayCell::Number(0.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap(),
             ))],
@@ -188,13 +190,13 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Logical(false),
-                    ArrayCellValue::Logical(true),
-                    ArrayCellValue::Logical(true),
-                    ArrayCellValue::Logical(false),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Logical(false),
+                    FunctionArrayCell::Logical(true),
+                    FunctionArrayCell::Logical(true),
+                    FunctionArrayCell::Logical(false),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))

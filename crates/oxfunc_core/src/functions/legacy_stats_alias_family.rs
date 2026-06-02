@@ -13,7 +13,7 @@ use crate::functions::percentrank_inc_fn::{
 };
 use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_inc_error_to_ws};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const LEGACY_ALIAS_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LEGACY_STATS_ALIAS_BASE",
@@ -70,10 +70,7 @@ pub enum LegacyStatsAliasEvalError {
     Worksheet(WorksheetErrorCode),
 }
 
-fn guard_arity(
-    meta: &FunctionMeta,
-    args: &[CallArgValue],
-) -> Result<(), LegacyStatsAliasEvalError> {
+fn guard_arity(meta: &FunctionMeta, args: &[FunctionArg]) -> Result<(), LegacyStatsAliasEvalError> {
     if meta.arity.accepts(args.len()) {
         Ok(())
     } else {
@@ -86,54 +83,54 @@ fn guard_arity(
 }
 
 pub fn eval_covar_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&COVAR_META, args)?;
     eval_covariance_p_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_covariance_p_error_to_ws(&e)))
 }
 
 pub fn eval_mode_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&MODE_META, args)?;
     eval_mode_sngl_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_mode_sngl_error_to_ws(&e)))
 }
 
 pub fn eval_percentile_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTILE_META, args)?;
     eval_percentile_inc_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_percentile_inc_error_to_ws(&e)))
 }
 
 pub fn eval_percentrank_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&PERCENTRANK_META, args)?;
     eval_percentrank_inc_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_percentrank_inc_error_to_ws(&e)))
 }
 
 pub fn eval_quartile_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&QUARTILE_META, args)?;
     eval_quartile_inc_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_quartile_inc_error_to_ws(&e)))
 }
 
 pub fn eval_loginv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LegacyStatsAliasEvalError> {
+) -> Result<FunctionValue, LegacyStatsAliasEvalError> {
     guard_arity(&LOGINV_META, args)?;
     eval_lognorm_inv_surface(args, resolver)
         .map_err(|e| LegacyStatsAliasEvalError::Worksheet(map_normal_log_error_to_ws(&e)))
@@ -150,11 +147,11 @@ pub fn map_legacy_stats_alias_error_to_ws(error: &LegacyStatsAliasEvalError) -> 
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{ArrayCellValue, EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
     struct MockResolver {
-        cells: HashMap<String, EvalValue>,
+        cells: HashMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -165,28 +162,32 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.cells.get(&reference.target).cloned().ok_or_else(|| {
+            self.cells.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 }
             })
         }
     }
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
-    fn array(values: &[f64]) -> EvalValue {
-        EvalValue::Array(
-            EvalArray::from_rows(vec![
-                values.iter().copied().map(ArrayCellValue::Number).collect(),
+    fn array(values: &[f64]) -> FunctionValue {
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                values
+                    .iter()
+                    .copied()
+                    .map(FunctionArrayCell::Number)
+                    .collect(),
             ])
             .unwrap(),
         )

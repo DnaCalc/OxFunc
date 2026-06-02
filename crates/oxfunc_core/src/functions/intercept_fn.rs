@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, intercept_from_pairs};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const INTERCEPT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INTERCEPT",
@@ -33,9 +33,9 @@ pub enum InterceptEvalError {
 }
 
 pub fn eval_intercept_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, InterceptEvalError> {
+) -> Result<FunctionValue, InterceptEvalError> {
     let argc = args.len();
     if !INTERCEPT_META.arity.accepts(argc) {
         return Err(InterceptEvalError::ArityMismatch {
@@ -48,8 +48,8 @@ pub fn eval_intercept_surface(
     let xs = expand_aggregate_arg(&args[1], resolver).map_err(InterceptEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(InterceptEvalError::Coercion)?;
     match intercept_from_pairs(&pairs) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

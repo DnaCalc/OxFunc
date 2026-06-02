@@ -152,8 +152,8 @@ fn column_label(mut col: usize) -> Option<String> {
     Some(chars.into_iter().collect())
 }
 
-pub fn parse_a1_reference(target: &str) -> Option<A1Reference> {
-    let (prefix, body) = split_prefix(target);
+pub fn parse_a1_reference(target: impl AsRef<str>) -> Option<A1Reference> {
+    let (prefix, body) = split_prefix(target.as_ref());
     if body.is_empty() {
         return None;
     }

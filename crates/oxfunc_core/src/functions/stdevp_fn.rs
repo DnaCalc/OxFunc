@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::stdev_p_fn::{StdevPEvalError, eval_stdev_p_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const STDEVP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.STDEVP",
@@ -32,9 +32,9 @@ pub enum StdevPExtEvalError {
 }
 
 pub fn eval_stdevp_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StdevPExtEvalError> {
+) -> Result<FunctionValue, StdevPExtEvalError> {
     eval_stdev_p_surface(args, resolver).map_err(|err| match err {
         StdevPEvalError::ArityMismatch {
             expected_min,

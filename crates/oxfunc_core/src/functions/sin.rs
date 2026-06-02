@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, apply_unary_numeric_scalar_prepared, expand_arg_values_only,
+    PreparedValue, apply_unary_numeric_scalar_prepared, expand_arg_values_only,
     prepare_arg_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
 
 pub const SIN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SIN",
@@ -35,9 +35,9 @@ pub fn sin_kernel(n: f64) -> f64 {
 }
 
 pub fn eval_sin_surface(
-    args: &[crate::value::CallArgValue],
+    args: &[crate::value::FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SinEvalError> {
+) -> Result<FunctionValue, SinEvalError> {
     if !SIN_META.arity.accepts(args.len()) {
         return Err(SinEvalError::ArityMismatch {
             expected: SIN_META.arity.min,
@@ -47,23 +47,23 @@ pub fn eval_sin_surface(
 
     let prepared = prepare_arg_values_only(&args[0], resolver).map_err(SinEvalError::Coercion)?;
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let mapped = expand_arg_values_only(&args[0], resolver)
                 .map_err(SinEvalError::Coercion)?
                 .into_iter()
                 .map(
                     |item| match apply_unary_numeric_scalar_prepared(&item, sin_kernel) {
-                        Ok(n) => ArrayCellValue::Number(n),
-                        Err(CoercionError::WorksheetError(code)) => ArrayCellValue::Error(code),
-                        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+                        Ok(n) => FunctionArrayCell::Number(n),
+                        Err(CoercionError::WorksheetError(code)) => FunctionArrayCell::Error(code),
+                        Err(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
                     },
                 )
                 .collect::<Vec<_>>();
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), mapped).expect("shape preserved"),
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), mapped).expect("shape preserved"),
             ))
         }
-        other => Ok(EvalValue::Number(
+        other => Ok(FunctionValue::Number(
             apply_unary_numeric_scalar_prepared(&other, sin_kernel)
                 .map_err(SinEvalError::Coercion)?,
         )),
@@ -82,7 +82,7 @@ pub fn map_sin_error_to_ws(e: &SinEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{CallArgValue, ExcelText};
+    use crate::value::{ExcelText, FunctionArg};
 
     struct NoResolver;
 
@@ -94,11 +94,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -107,14 +107,14 @@ mod tests {
     #[test]
     fn eval_sin_accepts_numeric_text() {
         let got = eval_sin_surface(
-            &[CallArgValue::Eval(EvalValue::Text(
+            &[FunctionArg::Eval(FunctionValue::Text(
                 ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
             ))],
             &NoResolver,
         )
         .unwrap();
         match got {
-            EvalValue::Number(n) => assert!((n - 1f64.sin()).abs() < 1e-12),
+            FunctionValue::Number(n) => assert!((n - 1f64.sin()).abs() < 1e-12),
             other => panic!("unexpected {other:?}"),
         }
     }
@@ -122,10 +122,10 @@ mod tests {
     #[test]
     fn eval_sin_array_lifts_elementwise() {
         let got = eval_sin_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                         "asd".encode_utf16().collect(),
                     )),
                 ]])
@@ -136,10 +136,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             got,
-            EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(1f64.sin()),
-                    ArrayCellValue::Error(WorksheetErrorCode::Value),
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(1f64.sin()),
+                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
                 ]])
                 .unwrap()
             )

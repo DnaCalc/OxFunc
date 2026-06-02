@@ -10,7 +10,7 @@ use crate::functions::chi_f_t_family::{chisq_dist_rt_kernel, f_dist_rt_kernel};
 use crate::functions::special_math_common::regularized_beta;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{
-    ArrayCellValue, CallArgValue, CoreValue, EvalArray, EvalValue, WorksheetErrorCode,
+    CoreValue, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 const BASE_META: FunctionMeta = FunctionMeta {
@@ -78,41 +78,43 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> StatisticalTestsEvalError 
 }
 
 fn resolve_arg_eval(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     match arg {
-        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => {
+        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => {
             resolve_eval_value(resolver, r)
                 .map_err(CoercionError::RefResolution)
                 .map_err(StatisticalTestsEvalError::Coercion)
         }
-        CallArgValue::Eval(v) => Ok(v.clone()),
-        CallArgValue::MissingArg => Err(StatisticalTestsEvalError::Coercion(
+        FunctionArg::Eval(v) => Ok(v.clone()),
+        FunctionArg::MissingArg => Err(StatisticalTestsEvalError::Coercion(
             CoercionError::MissingArg,
         )),
-        CallArgValue::EmptyCell => {
-            Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
-        }
+        FunctionArg::EmptyCell => Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
-fn scalar_number_from_cell(cell: &ArrayCellValue) -> Result<f64, StatisticalTestsEvalError> {
+fn scalar_number_from_cell(cell: &FunctionArrayCell) -> Result<f64, StatisticalTestsEvalError> {
     match cell {
-        ArrayCellValue::Number(n) => Ok(*n),
-        ArrayCellValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
-        ArrayCellValue::Text(_) | ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
+        FunctionArrayCell::Number(n) => Ok(*n),
+        FunctionArrayCell::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
+        FunctionArrayCell::Text(_)
+        | FunctionArrayCell::Logical(_)
+        | FunctionArrayCell::EmptyCell => {
             Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
         }
     }
 }
 
-fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, StatisticalTestsEvalError> {
+fn scalar_number_from_eval(value: &FunctionValue) -> Result<f64, StatisticalTestsEvalError> {
     match value {
-        EvalValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
+        FunctionValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
             scalar_number_from_cell(array.get(0, 0).expect("single cell"))
         }
-        EvalValue::Array(_) => Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value)),
+        FunctionValue::Array(_) => {
+            Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
+        }
         other => {
             coerce_eval_to_number(other, &NoResolver).map_err(StatisticalTestsEvalError::Coercion)
         }
@@ -120,7 +122,7 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, StatisticalTestsEva
 }
 
 fn truncated_flag_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i32, StatisticalTestsEvalError> {
     let number = scalar_number_from_eval(&resolve_arg_eval(arg, resolver)?)?;
@@ -130,22 +132,24 @@ fn truncated_flag_arg(
     Ok(number.trunc() as i32)
 }
 
-fn eval_to_numeric_matrix(value: &EvalValue) -> Result<EvalArray, StatisticalTestsEvalError> {
+fn eval_to_numeric_matrix(
+    value: &FunctionValue,
+) -> Result<FunctionArray, StatisticalTestsEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(EvalArray::from_scalar(ArrayCellValue::Number(*n))),
-        EvalValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
-        EvalValue::Array(array) => {
+        FunctionValue::Number(n) => Ok(FunctionArray::from_scalar(FunctionArrayCell::Number(*n))),
+        FunctionValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
+        FunctionValue::Array(array) => {
             let mut rows = Vec::with_capacity(array.shape().rows);
             for row in 0..array.shape().rows {
                 let mut out = Vec::with_capacity(array.shape().cols);
                 for cell in array.row_slice(row).expect("row") {
-                    out.push(ArrayCellValue::Number(scalar_number_from_cell(cell)?));
+                    out.push(FunctionArrayCell::Number(scalar_number_from_cell(cell)?));
                 }
                 rows.push(out);
             }
-            Ok(EvalArray::from_rows(rows).expect("shape"))
+            Ok(FunctionArray::from_rows(rows).expect("shape"))
         }
-        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => {
             Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value)),
@@ -153,10 +157,10 @@ fn eval_to_numeric_matrix(value: &EvalValue) -> Result<EvalArray, StatisticalTes
 }
 
 fn numeric_matrices_from_args(
-    actual: &CallArgValue,
-    expected: &CallArgValue,
+    actual: &FunctionArg,
+    expected: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<(EvalArray, EvalArray), StatisticalTestsEvalError> {
+) -> Result<(FunctionArray, FunctionArray), StatisticalTestsEvalError> {
     let actual = eval_to_numeric_matrix(&resolve_arg_eval(actual, resolver)?)?;
     let expected = eval_to_numeric_matrix(&resolve_arg_eval(expected, resolver)?)?;
     let actual_cells = actual.shape().rows * actual.shape().cols;
@@ -168,7 +172,7 @@ fn numeric_matrices_from_args(
         return Ok((actual, expected));
     }
     let reshaped_expected =
-        EvalArray::new(actual.shape(), expected.iter_row_major().cloned().collect())
+        FunctionArray::new(actual.shape(), expected.iter_row_major().cloned().collect())
             .expect("equal cardinality reshape");
     Ok((actual, reshaped_expected))
 }
@@ -206,7 +210,7 @@ fn aggregate_item_number(
     }
 }
 fn collect_numeric_sample_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, StatisticalTestsEvalError> {
     let expanded =
@@ -221,8 +225,8 @@ fn collect_numeric_sample_arg(
 }
 
 fn collect_paired_numeric_samples(
-    x_arg: &CallArgValue,
-    y_arg: &CallArgValue,
+    x_arg: &FunctionArg,
+    y_arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<(f64, f64)>, StatisticalTestsEvalError> {
     let xs = expand_aggregate_arg(x_arg, resolver).map_err(StatisticalTestsEvalError::Coercion)?;
@@ -284,7 +288,10 @@ fn t_probability(abs_t: f64, df: f64, tails: i32) -> Result<f64, WorksheetErrorC
     }
 }
 
-fn chisq_test_kernel(actual: &EvalArray, expected: &EvalArray) -> Result<f64, WorksheetErrorCode> {
+fn chisq_test_kernel(
+    actual: &FunctionArray,
+    expected: &FunctionArray,
+) -> Result<f64, WorksheetErrorCode> {
     let shape = actual.shape();
     let df = if shape.rows > 1 && shape.cols > 1 {
         (shape.rows - 1) * (shape.cols - 1)
@@ -396,38 +403,38 @@ fn t_test_unequal_variance_kernel(
 }
 
 fn eval_chisq_test_prepared(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !CHISQ_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_TEST_META, args.len()));
     }
     let (actual, expected) = numeric_matrices_from_args(&args[0], &args[1], resolver)?;
     Ok(match chisq_test_kernel(&actual, &expected) {
-        Ok(v) => EvalValue::Number(v),
-        Err(code) => EvalValue::Error(code),
+        Ok(v) => FunctionValue::Number(v),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
 fn eval_f_test_prepared(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !F_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_TEST_META, args.len()));
     }
     let array1 = collect_numeric_sample_arg(&args[0], resolver)?;
     let array2 = collect_numeric_sample_arg(&args[1], resolver)?;
     Ok(match f_test_kernel(&array1, &array2) {
-        Ok(v) => EvalValue::Number(v),
-        Err(code) => EvalValue::Error(code),
+        Ok(v) => FunctionValue::Number(v),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
 fn eval_t_test_prepared(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !T_TEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_TEST_META, args.len()));
     }
@@ -451,21 +458,21 @@ fn eval_t_test_prepared(
         _ => Err(WorksheetErrorCode::Num),
     };
     Ok(match result {
-        Ok(v) => EvalValue::Number(v),
-        Err(code) => EvalValue::Error(code),
+        Ok(v) => FunctionValue::Number(v),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 pub fn eval_chisq_test_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     surface_domain(eval_chisq_test_prepared(args, resolver))
 }
 
 pub fn eval_chitest_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !CHITEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHITEST_META, args.len()));
     }
@@ -473,16 +480,16 @@ pub fn eval_chitest_surface(
 }
 
 pub fn eval_f_test_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     surface_domain(eval_f_test_prepared(args, resolver))
 }
 
 pub fn eval_ftest_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !FTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&FTEST_META, args.len()));
     }
@@ -490,16 +497,16 @@ pub fn eval_ftest_surface(
 }
 
 pub fn eval_t_test_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     surface_domain(eval_t_test_prepared(args, resolver))
 }
 
 pub fn eval_ttest_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     if !TTEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&TTEST_META, args.len()));
     }
@@ -507,10 +514,10 @@ pub fn eval_ttest_surface(
 }
 
 fn surface_domain(
-    result: Result<EvalValue, StatisticalTestsEvalError>,
-) -> Result<EvalValue, StatisticalTestsEvalError> {
+    result: Result<FunctionValue, StatisticalTestsEvalError>,
+) -> Result<FunctionValue, StatisticalTestsEvalError> {
     match result {
-        Err(StatisticalTestsEvalError::Domain(code)) => Ok(EvalValue::Error(code)),
+        Err(StatisticalTestsEvalError::Domain(code)) => Ok(FunctionValue::Error(code)),
         other => other,
     }
 }
@@ -539,10 +546,10 @@ impl ReferenceSystemProvider for NoResolver {
     fn dereference(
         &self,
         request: &crate::resolver::ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
         Err(
             crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                target: request.reference.target.clone(),
+                target: request.reference.target().to_string(),
             },
         )
     }
@@ -557,7 +564,7 @@ mod tests {
 
     #[derive(Default)]
     struct MockResolver {
-        values: HashMap<String, EvalValue>,
+        values: HashMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -567,38 +574,38 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.values.get(&reference.target).cloned().ok_or_else(|| {
+            self.values.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 }
             })
         }
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
-    fn txt(s: &str) -> ArrayCellValue {
-        ArrayCellValue::Text(ExcelText::from_interop_assignment(s))
+    fn txt(s: &str) -> FunctionArrayCell {
+        FunctionArrayCell::Text(ExcelText::from_interop_assignment(s))
     }
-    fn col(values: &[f64]) -> EvalValue {
-        EvalValue::Array(
-            EvalArray::from_rows(
+    fn col(values: &[f64]) -> FunctionValue {
+        FunctionValue::Array(
+            FunctionArray::from_rows(
                 values
                     .iter()
-                    .map(|n| vec![ArrayCellValue::Number(*n)])
+                    .map(|n| vec![FunctionArrayCell::Number(*n)])
                     .collect(),
             )
             .unwrap(),
         )
     }
-    fn array(rows: Vec<Vec<ArrayCellValue>>) -> EvalValue {
-        EvalValue::Array(EvalArray::from_rows(rows).unwrap())
+    fn array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionValue {
+        FunctionValue::Array(FunctionArray::from_rows(rows).unwrap())
     }
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     #[test]
@@ -620,23 +627,41 @@ mod tests {
                 (
                     "A2:B4".to_string(),
                     array(vec![
-                        vec![ArrayCellValue::Number(58.0), ArrayCellValue::Number(35.0)],
-                        vec![ArrayCellValue::Number(11.0), ArrayCellValue::Number(25.0)],
-                        vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(23.0)],
+                        vec![
+                            FunctionArrayCell::Number(58.0),
+                            FunctionArrayCell::Number(35.0),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(11.0),
+                            FunctionArrayCell::Number(25.0),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(10.0),
+                            FunctionArrayCell::Number(23.0),
+                        ],
                     ]),
                 ),
                 (
                     "A6:B8".to_string(),
                     array(vec![
-                        vec![ArrayCellValue::Number(45.35), ArrayCellValue::Number(47.65)],
-                        vec![ArrayCellValue::Number(17.56), ArrayCellValue::Number(18.44)],
-                        vec![ArrayCellValue::Number(16.09), ArrayCellValue::Number(16.91)],
+                        vec![
+                            FunctionArrayCell::Number(45.35),
+                            FunctionArrayCell::Number(47.65),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(17.56),
+                            FunctionArrayCell::Number(18.44),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(16.09),
+                            FunctionArrayCell::Number(16.91),
+                        ],
                     ]),
                 ),
             ]),
         };
         match eval_chisq_test_surface(&[ref_arg("A2:B4"), ref_arg("A6:B8")], &resolver).unwrap() {
-            EvalValue::Number(v) => assert!((v - 0.000_308_2).abs() < 1e-7),
+            FunctionValue::Number(v) => assert!((v - 0.000_308_2).abs() < 1e-7),
             other => panic!("unexpected result: {:?}", other),
         }
     }
@@ -645,7 +670,7 @@ mod tests {
     fn chisq_test_rejects_single_cell_shape() {
         assert_eq!(
             eval_chisq_test_surface(&[num(1.0), num(1.0)], &MockResolver::default()).unwrap(),
-            EvalValue::Error(WorksheetErrorCode::NA)
+            FunctionValue::Error(WorksheetErrorCode::NA)
         );
     }
 
@@ -656,26 +681,35 @@ mod tests {
                 (
                     "A2:B4".to_string(),
                     array(vec![
-                        vec![ArrayCellValue::Number(58.0), ArrayCellValue::Number(35.0)],
-                        vec![ArrayCellValue::Number(11.0), ArrayCellValue::Number(25.0)],
-                        vec![ArrayCellValue::Number(10.0), ArrayCellValue::Number(23.0)],
+                        vec![
+                            FunctionArrayCell::Number(58.0),
+                            FunctionArrayCell::Number(35.0),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(11.0),
+                            FunctionArrayCell::Number(25.0),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(10.0),
+                            FunctionArrayCell::Number(23.0),
+                        ],
                     ]),
                 ),
                 (
                     "C1:H1".to_string(),
                     array(vec![vec![
-                        ArrayCellValue::Number(45.35),
-                        ArrayCellValue::Number(47.65),
-                        ArrayCellValue::Number(17.56),
-                        ArrayCellValue::Number(18.44),
-                        ArrayCellValue::Number(16.09),
-                        ArrayCellValue::Number(16.91),
+                        FunctionArrayCell::Number(45.35),
+                        FunctionArrayCell::Number(47.65),
+                        FunctionArrayCell::Number(17.56),
+                        FunctionArrayCell::Number(18.44),
+                        FunctionArrayCell::Number(16.09),
+                        FunctionArrayCell::Number(16.91),
                     ]]),
                 ),
             ]),
         };
         match eval_chisq_test_surface(&[ref_arg("A2:B4"), ref_arg("C1:H1")], &resolver).unwrap() {
-            EvalValue::Number(v) => assert!((v - 0.000_308_192_017_008_309).abs() < 1e-15),
+            FunctionValue::Number(v) => assert!((v - 0.000_308_192_017_008_309).abs() < 1e-15),
             other => panic!("unexpected result: {:?}", other),
         }
     }
@@ -704,7 +738,7 @@ mod tests {
             ]),
         };
         match eval_f_test_surface(&[ref_arg("A2:A6"), ref_arg("B2:B6")], &resolver).unwrap() {
-            EvalValue::Number(v) => assert!((v - 0.648_317_85).abs() < 1e-8),
+            FunctionValue::Number(v) => assert!((v - 0.648_317_85).abs() < 1e-8),
             other => panic!("unexpected result: {:?}", other),
         }
     }
@@ -715,31 +749,31 @@ mod tests {
                 (
                     "A1:A7".to_string(),
                     array(vec![
-                        vec![ArrayCellValue::Number(6.0)],
+                        vec![FunctionArrayCell::Number(6.0)],
                         vec![txt("skip")],
-                        vec![ArrayCellValue::Logical(true)],
-                        vec![ArrayCellValue::Number(7.0)],
-                        vec![ArrayCellValue::EmptyCell],
-                        vec![ArrayCellValue::Number(9.0)],
-                        vec![ArrayCellValue::Number(15.0)],
+                        vec![FunctionArrayCell::Logical(true)],
+                        vec![FunctionArrayCell::Number(7.0)],
+                        vec![FunctionArrayCell::EmptyCell],
+                        vec![FunctionArrayCell::Number(9.0)],
+                        vec![FunctionArrayCell::Number(15.0)],
                     ]),
                 ),
                 (
                     "B1:B6".to_string(),
                     array(vec![
-                        vec![ArrayCellValue::Number(20.0)],
-                        vec![ArrayCellValue::Number(28.0)],
-                        vec![ArrayCellValue::Number(31.0)],
-                        vec![ArrayCellValue::Number(38.0)],
-                        vec![ArrayCellValue::Number(40.0)],
-                        vec![ArrayCellValue::EmptyCell],
+                        vec![FunctionArrayCell::Number(20.0)],
+                        vec![FunctionArrayCell::Number(28.0)],
+                        vec![FunctionArrayCell::Number(31.0)],
+                        vec![FunctionArrayCell::Number(38.0)],
+                        vec![FunctionArrayCell::Number(40.0)],
+                        vec![FunctionArrayCell::EmptyCell],
                     ]),
                 ),
             ]),
         };
         let clean = f_test_kernel(&[6.0, 7.0, 9.0, 15.0], &[20.0, 28.0, 31.0, 38.0, 40.0]).unwrap();
         match eval_f_test_surface(&[ref_arg("A1:A7"), ref_arg("B1:B6")], &resolver).unwrap() {
-            EvalValue::Number(v) => assert!((v - clean).abs() < 1e-12),
+            FunctionValue::Number(v) => assert!((v - clean).abs() < 1e-12),
             other => panic!("unexpected result: {:?}", other),
         }
     }
@@ -779,7 +813,7 @@ mod tests {
         )
         .unwrap()
         {
-            EvalValue::Number(v) => assert!((v - 0.196_016).abs() < 1e-6),
+            FunctionValue::Number(v) => assert!((v - 0.196_016).abs() < 1e-6),
             other => panic!("unexpected result: {:?}", other),
         }
     }
@@ -804,7 +838,7 @@ mod tests {
             )
             .unwrap();
             let (one, two) = match (one, two) {
-                (EvalValue::Number(a), EvalValue::Number(b)) => (a, b),
+                (FunctionValue::Number(a), FunctionValue::Number(b)) => (a, b),
                 _ => panic!("unexpected"),
             };
             assert!(one > 0.0 && one < 1.0);
@@ -827,7 +861,7 @@ mod tests {
                 &resolver
             )
             .unwrap(),
-            EvalValue::Error(WorksheetErrorCode::NA)
+            FunctionValue::Error(WorksheetErrorCode::NA)
         );
     }
 
@@ -845,7 +879,7 @@ mod tests {
                 &resolver
             )
             .unwrap(),
-            EvalValue::Error(WorksheetErrorCode::Num)
+            FunctionValue::Error(WorksheetErrorCode::Num)
         );
         assert_eq!(
             eval_t_test_surface(
@@ -853,7 +887,7 @@ mod tests {
                 &resolver
             )
             .unwrap(),
-            EvalValue::Error(WorksheetErrorCode::Num)
+            FunctionValue::Error(WorksheetErrorCode::Num)
         );
     }
 
@@ -903,17 +937,17 @@ mod tests {
         let resolver = MockResolver::default();
         assert_eq!(
             collect_numeric_sample_arg(
-                &CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("3"))),
+                &FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("3"))),
                 &resolver
             ),
             Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
         );
         assert_eq!(
             collect_numeric_sample_arg(
-                &CallArgValue::Eval(array(vec![
-                    vec![ArrayCellValue::Number(1.0)],
+                &FunctionArg::Eval(array(vec![
+                    vec![FunctionArrayCell::Number(1.0)],
                     vec![txt("skip")],
-                    vec![ArrayCellValue::Number(2.0)]
+                    vec![FunctionArrayCell::Number(2.0)]
                 ])),
                 &resolver
             )

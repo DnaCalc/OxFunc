@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const MEDIAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MEDIAN",
@@ -32,7 +32,9 @@ pub enum MedianEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, MedianEvalError> {
+fn eval_median_aggregate(
+    args: &[AggregatePreparedValue],
+) -> Result<FunctionValue, MedianEvalError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = median_argument_value(arg).map_err(MedianEvalError::Coercion)? {
@@ -40,7 +42,7 @@ fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, M
         }
     }
     if values.is_empty() {
-        return Ok(EvalValue::Error(WorksheetErrorCode::Num));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
     }
     values.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let len = values.len();
@@ -50,13 +52,13 @@ fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, M
     } else {
         (values[mid - 1] + values[mid]) / 2.0
     };
-    Ok(EvalValue::Number(result))
+    Ok(FunctionValue::Number(result))
 }
 
 pub fn eval_median_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MedianEvalError> {
+) -> Result<FunctionValue, MedianEvalError> {
     let argc = args.len();
     if !MEDIAN_META.arity.accepts(argc) {
         return Err(MedianEvalError::ArityMismatch {
@@ -85,10 +87,10 @@ pub fn map_median_error_to_ws(e: &MedianEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -99,11 +101,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -112,9 +114,9 @@ mod tests {
     #[test]
     fn eval_median_accumulates_direct_numbers() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::Eval(EvalValue::Number(4.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(4.0)),
         ];
         let got = eval_median_surface(
             &args,
@@ -122,14 +124,14 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
     }
 
     #[test]
     fn eval_median_even_count_averages_middle_pair() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
         ];
         let got = eval_median_surface(
             &args,
@@ -137,14 +139,14 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.5)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.5)));
     }
 
     #[test]
     fn eval_median_counts_direct_numeric_text_and_logical() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Logical(true)),
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArg::Eval(FunctionValue::Logical(true)),
+            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -154,29 +156,29 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.5)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.5)));
     }
 
     #[test]
     fn eval_median_ignored_reference_values_yield_num_when_empty() {
-        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+        let args = vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_median_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        ArrayCellValue::Logical(true),
+                        FunctionArrayCell::Logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Num)));
+        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Num)));
     }
 }

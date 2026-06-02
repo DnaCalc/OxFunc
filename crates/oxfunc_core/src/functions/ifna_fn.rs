@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const IFNA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IFNA",
@@ -28,18 +28,18 @@ pub enum IfNaEvalError {
     FallbackPreparation(CoercionError),
 }
 
-fn prepared_to_eval(arg: PreparedArgValue) -> EvalValue {
+fn prepared_to_eval(arg: PreparedValue) -> FunctionValue {
     match arg {
-        PreparedArgValue::Eval(v) => v,
-        PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::Value),
-        PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+        PreparedValue::Eval(v) => v,
+        PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::Value),
+        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
     }
 }
 
 pub fn eval_ifna_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, IfNaEvalError> {
+) -> Result<FunctionValue, IfNaEvalError> {
     if !IFNA_META.arity.accepts(args.len()) {
         return Err(IfNaEvalError::ArityMismatch {
             expected: IFNA_META.arity.min,
@@ -50,7 +50,7 @@ pub fn eval_ifna_surface(
     let primary =
         prepare_arg_values_only(&args[0], resolver).map_err(IfNaEvalError::PrimaryPreparation)?;
     match primary {
-        PreparedArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)) => {
+        PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::NA)) => {
             let fallback = prepare_arg_values_only(&args[1], resolver)
                 .map_err(IfNaEvalError::FallbackPreparation)?;
             Ok(prepared_to_eval(fallback))
@@ -84,11 +84,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -99,22 +99,22 @@ mod tests {
         assert_eq!(
             eval_ifna_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)),
-                    CallArgValue::Eval(EvalValue::Number(7.0)),
+                    FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::NA)),
+                    FunctionArg::Eval(FunctionValue::Number(7.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(7.0))
+            Ok(FunctionValue::Number(7.0))
         );
         assert_eq!(
             eval_ifna_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
-                    CallArgValue::Eval(EvalValue::Number(7.0)),
+                    FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                    FunctionArg::Eval(FunctionValue::Number(7.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Error(WorksheetErrorCode::Div0))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
         );
     }
 
@@ -123,14 +123,14 @@ mod tests {
         assert_eq!(
             eval_ifna_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                         "x".encode_utf16().collect(),
                     ))),
-                    CallArgValue::Eval(EvalValue::Number(7.0)),
+                    FunctionArg::Eval(FunctionValue::Number(7.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "x".encode_utf16().collect(),
             )))
         );

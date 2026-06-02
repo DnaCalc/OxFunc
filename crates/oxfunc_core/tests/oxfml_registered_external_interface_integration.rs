@@ -11,7 +11,7 @@ use oxfunc_core::functions::call_register_id_family::{
     RegisterIdRequest, RegisteredExternalDescriptor, RegisteredExternalOriginKind,
     RegisteredExternalProvider, RegisteredExternalProviderError, RegisteredProcedureSpec,
 };
-use oxfunc_core::value::{CallArgValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike};
+use oxfunc_core::value::{ExcelText, FunctionArg, FunctionValue, ReferenceKind, ReferenceLike};
 
 #[test]
 fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
@@ -27,7 +27,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
 
     assert_eq!(
         register_output.published_worksheet_value,
-        EvalValue::Number(4242.0)
+        FunctionValue::Number(4242.0)
     );
     assert_eq!(
         provider.last_resolve.borrow().as_ref(),
@@ -57,7 +57,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
 
     assert_eq!(
         call_output.published_worksheet_value,
-        EvalValue::Number(14.0)
+        FunctionValue::Number(14.0)
     );
     let request = provider
         .last_resolve
@@ -80,9 +80,9 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
     assert_eq!(
         invocation_args.as_slice(),
         [
-            CallArgValue::Eval(EvalValue::Number(6.0)),
-            CallArgValue::Eval(EvalValue::Number(7.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(6.0)),
+            FunctionArg::Eval(FunctionValue::Number(7.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
         ]
     );
 }
@@ -98,7 +98,7 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
 
     assert_eq!(
         by_id_output.published_worksheet_value,
-        EvalValue::Number(14.0)
+        FunctionValue::Number(14.0)
     );
     assert_eq!(provider.last_lookup.borrow().as_ref(), Some(&4242.0));
 
@@ -106,7 +106,7 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
         "formula:call-ref",
         "=CALL(\"Kernel32\",\"ProbeRef\",\"J\",A1)",
     );
-    ref_host.set_cell_value("A1", EvalValue::Number(7.0));
+    ref_host.set_cell_value("A1", FunctionValue::Number(7.0));
 
     let ref_output = ref_host
         .recalc_with_registered_external_provider(None, Some(&provider), None, None)
@@ -114,12 +114,12 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
 
     assert_eq!(
         ref_output.published_worksheet_value,
-        EvalValue::Number(99.0)
+        FunctionValue::Number(99.0)
     );
     let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
     assert_eq!(
         args,
-        vec![CallArgValue::Reference(ReferenceLike::new(
+        vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::A1,
             "A1".to_string()
         ))]
@@ -242,7 +242,7 @@ fn catalog_mutation_packets_preserve_registration_channel_hints_from_oxfunc_side
 struct RecordingRegisteredExternalProvider {
     last_resolve: RefCell<Option<RegisterIdRequest>>,
     last_lookup: RefCell<Option<f64>>,
-    last_invoke: RefCell<Option<(RegisteredExternalDescriptor, Vec<CallArgValue>)>>,
+    last_invoke: RefCell<Option<(RegisteredExternalDescriptor, Vec<FunctionArg>)>>,
 }
 
 impl RecordingRegisteredExternalProvider {
@@ -301,26 +301,26 @@ impl RegisteredExternalProvider for RecordingRegisteredExternalProvider {
     fn invoke_registered_external(
         &self,
         descriptor: &RegisteredExternalDescriptor,
-        args: &[CallArgValue],
-    ) -> Result<EvalValue, RegisteredExternalProviderError> {
+        args: &[FunctionArg],
+    ) -> Result<FunctionValue, RegisteredExternalProviderError> {
         self.last_invoke
             .replace(Some((descriptor.clone(), args.to_vec())));
         match &descriptor.procedure {
             RegisteredProcedureSpec::Name(name) if name.to_string_lossy() == "MulDiv" => match args
             {
                 [
-                    CallArgValue::Eval(EvalValue::Number(a)),
-                    CallArgValue::Eval(EvalValue::Number(b)),
-                    CallArgValue::Eval(EvalValue::Number(c)),
-                ] => Ok(EvalValue::Number((a * b) / c)),
+                    FunctionArg::Eval(FunctionValue::Number(a)),
+                    FunctionArg::Eval(FunctionValue::Number(b)),
+                    FunctionArg::Eval(FunctionValue::Number(c)),
+                ] => Ok(FunctionValue::Number((a * b) / c)),
                 _ => Err(RegisteredExternalProviderError::WorksheetError(
                     oxfunc_core::value::WorksheetErrorCode::Value,
                 )),
             },
             RegisteredProcedureSpec::Name(name) if name.to_string_lossy() == "ProbeRef" => {
-                Ok(EvalValue::Number(99.0))
+                Ok(FunctionValue::Number(99.0))
             }
-            _ => Ok(EvalValue::Number(descriptor.register_id)),
+            _ => Ok(FunctionValue::Number(descriptor.register_id)),
         }
     }
 }

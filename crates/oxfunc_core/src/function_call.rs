@@ -581,7 +581,7 @@ fn surface_fec_dependency_allows_hoist(
 mod tests {
     use super::*;
     use crate::function::{ArgPreparationProfile, HostInteractionClass, VolatilityClass};
-    use crate::functions::adapters::PreparedArgValue;
+    use crate::functions::adapters::PreparedValue;
     use crate::functions::call_register_id_family::{
         RegisterIdRequest, RegisteredExternalDescriptor, RegisteredExternalOriginKind,
         RegisteredExternalProviderError, RegisteredProcedureSpec,
@@ -601,8 +601,8 @@ mod tests {
         ReferenceSystemOperation,
     };
     use crate::value::{
-        ArrayCellValue, CalcArray, CallableArityShape, CallableValue, CoreValue, EvalArray,
-        EvalValue, ExcelText, OpaqueCallable, ReferenceKind, ReferenceLike,
+        CalcArray, CallableArityShape, CallableValue, CoreValue, ExcelText, FunctionArray,
+        FunctionArrayCell, FunctionValue, OpaqueCallable, ReferenceKind, ReferenceLike,
     };
     use std::rc::Rc;
 
@@ -635,11 +635,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -649,12 +649,12 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedArgValue],
-        ) -> Result<PreparedArgValue, CallableInvocationError> {
+            args: &[PreparedValue],
+        ) -> Result<PreparedValue, CallableInvocationError> {
             match callable.summary.as_str() {
                 "helper.add1" => match args.first() {
-                    Some(PreparedArgValue::Eval(EvalValue::Number(n))) => {
-                        Ok(PreparedArgValue::Eval(EvalValue::Number(n + 1.0)))
+                    Some(PreparedValue::Eval(FunctionValue::Number(n))) => {
+                        Ok(PreparedValue::Eval(FunctionValue::Number(n + 1.0)))
                     }
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
@@ -672,9 +672,9 @@ mod tests {
             &self,
             query: CellInfoQuery,
             _reference: Option<&ReferenceLike>,
-        ) -> Result<EvalValue, HostInfoError> {
+        ) -> Result<FunctionValue, HostInfoError> {
             match query {
-                CellInfoQuery::Filename => Ok(EvalValue::Text(text("Book1.xlsx"))),
+                CellInfoQuery::Filename => Ok(FunctionValue::Text(text("Book1.xlsx"))),
                 _ => Err(HostInfoError::UnsupportedCellInfoQuery(query)),
             }
         }
@@ -729,7 +729,7 @@ mod tests {
 
     impl RtdProvider for TestRtdProvider {
         fn resolve_rtd(&self, _request: &RtdRequest) -> RtdProviderResult {
-            RtdProviderResult::Value(EvalValue::Number(42.0))
+            RtdProviderResult::Value(FunctionValue::Number(42.0))
         }
     }
 
@@ -783,8 +783,10 @@ mod tests {
         })
     }
 
-    fn array_arg(rows: Vec<Vec<ArrayCellValue>>) -> CalcValue {
-        CalcValue::from(EvalValue::Array(EvalArray::from_rows(rows).unwrap()))
+    fn array_arg(rows: Vec<Vec<FunctionArrayCell>>) -> CalcValue {
+        CalcValue::from(FunctionValue::Array(
+            FunctionArray::from_rows(rows).unwrap(),
+        ))
     }
 
     fn assert_call_target_parity(
@@ -930,8 +932,8 @@ mod tests {
             FUNC_ID_OP_ADD,
             &[
                 array_arg(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
                 ]]),
                 num_arg(10.0),
             ],
@@ -943,8 +945,8 @@ mod tests {
             FUNC_ID_INDEX,
             &[
                 array_arg(vec![vec![
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Number(11.0),
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Number(11.0),
                 ]]),
                 num_arg(1.0),
                 num_arg(2.0),
@@ -993,8 +995,8 @@ mod tests {
             FUNC_ID_MAP,
             &[
                 array_arg(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
                 ]]),
                 lambda_arg("helper.add1", 1),
             ],

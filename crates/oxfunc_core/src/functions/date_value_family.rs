@@ -3,11 +3,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
+    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text,
     run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const DATE_VALUE_FAMILY_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE_VALUE_FAMILY_BASE",
@@ -461,21 +461,19 @@ fn prep_len_error(meta: &FunctionMeta, actual: usize) -> DateValueFamilyError {
     }
 }
 
-fn map_family_err_to_eval(err: DateValueFamilyError) -> EvalValue {
+fn map_family_err_to_eval(err: DateValueFamilyError) -> FunctionValue {
     match err {
         DateValueFamilyError::Value | DateValueFamilyError::Coercion => {
-            EvalValue::Error(WorksheetErrorCode::Value)
+            FunctionValue::Error(WorksheetErrorCode::Value)
         }
-        DateValueFamilyError::Num => EvalValue::Error(WorksheetErrorCode::Num),
-        DateValueFamilyError::Arity { .. } => EvalValue::Error(WorksheetErrorCode::Value),
+        DateValueFamilyError::Num => FunctionValue::Error(WorksheetErrorCode::Num),
+        DateValueFamilyError::Arity { .. } => FunctionValue::Error(WorksheetErrorCode::Value),
     }
 }
 
-fn coerce_prepared_to_date_serial(
-    prepared: &PreparedArgValue,
-) -> Result<f64, DateValueFamilyError> {
+fn coerce_prepared_to_date_serial(prepared: &PreparedValue) -> Result<f64, DateValueFamilyError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Text(text)) => {
+        PreparedValue::Eval(FunctionValue::Text(text)) => {
             let parsed = parse_date_time_text(&text.to_string_lossy())?;
             let Some((year, month, day)) = parsed.date else {
                 return Err(DateValueFamilyError::Value);
@@ -487,13 +485,13 @@ fn coerce_prepared_to_date_serial(
 }
 
 pub fn eval_datevalue_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DateValueFamilyError> {
+) -> Result<FunctionValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
-        |prepared: &[PreparedArgValue]| {
+        |prepared: &[PreparedValue]| {
             if !DATEVALUE_META.arity.accepts(prepared.len()) {
                 return Ok(map_family_err_to_eval(prep_len_error(
                     &DATEVALUE_META,
@@ -504,7 +502,7 @@ pub fn eval_datevalue_surface(
                 coerce_prepared_to_text(&prepared[0]).map_err(|_| DateValueFamilyError::Coercion);
             Ok(
                 match text.and_then(|t| datevalue_kernel(&t.to_string_lossy())) {
-                    Ok(value) => EvalValue::Number(value),
+                    Ok(value) => FunctionValue::Number(value),
                     Err(err) => map_family_err_to_eval(err),
                 },
             )
@@ -515,13 +513,13 @@ pub fn eval_datevalue_surface(
 }
 
 pub fn eval_timevalue_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DateValueFamilyError> {
+) -> Result<FunctionValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
-        |prepared: &[PreparedArgValue]| {
+        |prepared: &[PreparedValue]| {
             if !TIMEVALUE_META.arity.accepts(prepared.len()) {
                 return Ok(map_family_err_to_eval(prep_len_error(
                     &TIMEVALUE_META,
@@ -532,7 +530,7 @@ pub fn eval_timevalue_surface(
                 coerce_prepared_to_text(&prepared[0]).map_err(|_| DateValueFamilyError::Coercion);
             Ok(
                 match text.and_then(|t| timevalue_kernel(&t.to_string_lossy())) {
-                    Ok(value) => EvalValue::Number(value),
+                    Ok(value) => FunctionValue::Number(value),
                     Err(err) => map_family_err_to_eval(err),
                 },
             )
@@ -543,13 +541,13 @@ pub fn eval_timevalue_surface(
 }
 
 pub fn eval_days360_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DateValueFamilyError> {
+) -> Result<FunctionValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
-        |prepared: &[PreparedArgValue]| {
+        |prepared: &[PreparedValue]| {
             if !DAYS360_META.arity.accepts(prepared.len()) {
                 return Ok(map_family_err_to_eval(prep_len_error(
                     &DAYS360_META,
@@ -568,7 +566,7 @@ pub fn eval_days360_surface(
                 false
             };
             Ok(match days360_kernel(start, end, european) {
-                Ok(value) => EvalValue::Number(value),
+                Ok(value) => FunctionValue::Number(value),
                 Err(err) => map_family_err_to_eval(err),
             })
         },
@@ -578,13 +576,13 @@ pub fn eval_days360_surface(
 }
 
 pub fn eval_datedif_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DateValueFamilyError> {
+) -> Result<FunctionValue, DateValueFamilyError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
-        |prepared: &[PreparedArgValue]| {
+        |prepared: &[PreparedValue]| {
             if !DATEDIF_META.arity.accepts(prepared.len()) {
                 return Ok(map_family_err_to_eval(prep_len_error(
                     &DATEDIF_META,
@@ -597,7 +595,7 @@ pub fn eval_datedif_surface(
                 .map_err(|_| DateValueFamilyError::Coercion)?;
             let unit = parse_datedif_unit(&unit_text.to_string_lossy())?;
             Ok(match datedif_kernel(start, end, unit) {
-                Ok(value) => EvalValue::Number(value),
+                Ok(value) => FunctionValue::Number(value),
                 Err(err) => map_family_err_to_eval(err),
             })
         },
@@ -641,11 +639,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -775,47 +773,47 @@ mod tests {
     fn eval_datedif_surface_accepts_iso_date_text_args() {
         let got = eval_datedif_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("2020-01-15"),
                 )),
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("2024-03-20"),
                 )),
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("Y"),
                 )),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(4.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(4.0)));
     }
 
     #[test]
     fn eval_datedif_surface_keeps_direct_serial_control() {
         let got = eval_datedif_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(serial(2020, 1, 15))),
-                CallArgValue::Eval(EvalValue::Number(serial(2024, 3, 20))),
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Number(serial(2020, 1, 15))),
+                FunctionArg::Eval(FunctionValue::Number(serial(2024, 3, 20))),
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("Y"),
                 )),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(4.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(4.0)));
     }
 
     #[test]
     fn eval_datedif_surface_rejects_slash_date_text_args() {
         let got = eval_datedif_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("1/15/2020"),
                 )),
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("3/20/2024"),
                 )),
-                CallArgValue::Eval(EvalValue::Text(
+                FunctionArg::Eval(FunctionValue::Text(
                     crate::value::ExcelText::from_interop_assignment("Y"),
                 )),
             ],

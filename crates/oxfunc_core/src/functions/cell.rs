@@ -7,7 +7,7 @@ use crate::functions::a1_refs::{format_absolute_address, parse_a1_reference};
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
 use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{CallArgValue, EvalValue, ExcelText, ReferenceLike, WorksheetErrorCode};
+use crate::value::{ExcelText, FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
 
 pub const CELL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CELL",
@@ -52,7 +52,7 @@ pub enum CellEvalError {
 }
 
 fn parse_info_type(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CellInfoType, CellEvalError> {
     let prepared =
@@ -80,19 +80,19 @@ fn parse_info_type(
     }
 }
 
-fn parse_reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, CellEvalError> {
+fn parse_reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, CellEvalError> {
     match arg {
-        CallArgValue::Reference(r) => Ok(r.clone()),
-        CallArgValue::Eval(EvalValue::Reference(r)) => Ok(r.clone()),
+        FunctionArg::Reference(r) => Ok(r.clone()),
+        FunctionArg::Eval(FunctionValue::Reference(r)) => Ok(r.clone()),
         _ => Err(CellEvalError::RefArgRequired),
     }
 }
 
-fn classify_type(value: &EvalValue) -> &'static str {
+fn classify_type(value: &FunctionValue) -> &'static str {
     match value {
-        EvalValue::Text(_) => "l",
-        EvalValue::Number(_) | EvalValue::Logical(_) | EvalValue::Error(_) => "v",
-        EvalValue::Array(_) | EvalValue::Reference(_) => "v",
+        FunctionValue::Text(_) => "l",
+        FunctionValue::Number(_) | FunctionValue::Logical(_) | FunctionValue::Error(_) => "v",
+        FunctionValue::Array(_) | FunctionValue::Reference(_) => "v",
         _ => "v",
     }
 }
@@ -115,10 +115,10 @@ fn host_query_for_info_type(info_type: CellInfoType) -> Option<CellInfoQuery> {
 }
 
 pub fn eval_cell_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<EvalValue, CellEvalError> {
+) -> Result<FunctionValue, CellEvalError> {
     if !CELL_META.arity.accepts(args.len()) {
         return Err(CellEvalError::ArityMismatch {
             expected: CELL_META.arity.min,
@@ -145,24 +145,29 @@ pub fn eval_cell_surface(
 
     match info_type {
         CellInfoType::Address => {
-            let parsed = parse_a1_reference(&reference.target)
-                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
+                CellEvalError::InvalidReferenceText(reference.target().to_string())
+            })?;
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 format_absolute_address(&parsed)
-                    .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?
+                    .ok_or_else(|| {
+                        CellEvalError::InvalidReferenceText(reference.target().to_string())
+                    })?
                     .encode_utf16()
                     .collect(),
             )))
         }
         CellInfoType::Row => {
-            let parsed = parse_a1_reference(&reference.target)
-                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
-            Ok(EvalValue::Number(parsed.start_row as f64))
+            let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
+                CellEvalError::InvalidReferenceText(reference.target().to_string())
+            })?;
+            Ok(FunctionValue::Number(parsed.start_row as f64))
         }
         CellInfoType::Col => {
-            let parsed = parse_a1_reference(&reference.target)
-                .ok_or_else(|| CellEvalError::InvalidReferenceText(reference.target.clone()))?;
-            Ok(EvalValue::Number(parsed.start_col as f64))
+            let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
+                CellEvalError::InvalidReferenceText(reference.target().to_string())
+            })?;
+            Ok(FunctionValue::Number(parsed.start_col as f64))
         }
         CellInfoType::Contents => resolve_eval_value(resolver, &reference)
             .map_err(CoercionError::RefResolution)
@@ -171,7 +176,7 @@ pub fn eval_cell_surface(
             let value = resolve_eval_value(resolver, &reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CellEvalError::RefResolution)?;
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 classify_type(&value).encode_utf16().collect(),
             )))
         }
@@ -208,11 +213,11 @@ mod tests {
     use crate::resolver::ReferenceSystemCapabilities;
 
     struct MockResolver {
-        resolved: Option<EvalValue>,
+        resolved: Option<FunctionValue>,
     }
 
     struct MockHostInfoProvider {
-        result: EvalValue,
+        result: FunctionValue,
     }
 
     impl HostInfoProvider for MockHostInfoProvider {
@@ -220,7 +225,7 @@ mod tests {
             &self,
             query: CellInfoQuery,
             _reference: Option<&ReferenceLike>,
-        ) -> Result<EvalValue, HostInfoError> {
+        ) -> Result<FunctionValue, HostInfoError> {
             match query {
                 CellInfoQuery::Filename => Ok(self.result.clone()),
                 CellInfoQuery::Parentheses => Ok(self.result.clone()),
@@ -238,24 +243,24 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(text: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(text: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         )))
     }
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(
             crate::value::ReferenceKind::A1,
             target.to_string(),
         ))
@@ -270,7 +275,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "$B$3".encode_utf16().collect(),
             )))
         );
@@ -281,11 +286,11 @@ mod tests {
         let got = eval_cell_surface(
             &[text_arg("contents"), ref_arg("A1")],
             &MockResolver {
-                resolved: Some(EvalValue::Number(7.0)),
+                resolved: Some(FunctionValue::Number(7.0)),
             },
             None,
         );
-        assert_eq!(got, Ok(EvalValue::Number(7.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
     }
 
     #[test]
@@ -293,7 +298,7 @@ mod tests {
         let got = eval_cell_surface(
             &[text_arg("type"), ref_arg("A1")],
             &MockResolver {
-                resolved: Some(EvalValue::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
             },
@@ -301,7 +306,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "l".encode_utf16().collect(),
             )))
         );
@@ -313,14 +318,14 @@ mod tests {
             &[text_arg("filename"), ref_arg("A1")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: EvalValue::Text(ExcelText::from_utf16_code_units(
+                result: FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "[Book1]Sheet1".encode_utf16().collect(),
                 )),
             }),
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "[Book1]Sheet1".encode_utf16().collect(),
             )))
         );
@@ -332,10 +337,10 @@ mod tests {
             &[text_arg("parentheses"), ref_arg("A1")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: EvalValue::Number(1.0),
+                result: FunctionValue::Number(1.0),
             }),
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 
     #[test]
@@ -344,9 +349,9 @@ mod tests {
             &[text_arg("row")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: EvalValue::Number(7.0),
+                result: FunctionValue::Number(7.0),
             }),
         );
-        assert_eq!(got, Ok(EvalValue::Number(7.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
     }
 }

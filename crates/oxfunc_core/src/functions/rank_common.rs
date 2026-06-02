@@ -1,10 +1,10 @@
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{
-    AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
+    AggregatePreparedValue, PreparedValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RankOrder {
@@ -25,23 +25,23 @@ pub(crate) fn collect_rank_values(
 }
 
 pub fn prepare_rank_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<f64>, CoercionError> {
     let prepared = prepare_arg_values_only(arg, resolver)?;
     match prepared {
-        PreparedArgValue::Eval(crate::value::EvalValue::Number(n)) => Ok(Some(n)),
-        PreparedArgValue::Eval(crate::value::EvalValue::Error(code)) => {
+        PreparedValue::Eval(crate::value::FunctionValue::Number(n)) => Ok(Some(n)),
+        PreparedValue::Eval(crate::value::FunctionValue::Error(code)) => {
             Err(CoercionError::WorksheetError(code))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Text(_))
-        | PreparedArgValue::Eval(crate::value::EvalValue::Logical(_))
-        | PreparedArgValue::MissingArg
-        | PreparedArgValue::EmptyCell => Ok(None),
-        PreparedArgValue::Eval(crate::value::EvalValue::Array(_)) => {
+        PreparedValue::Eval(crate::value::FunctionValue::Text(_))
+        | PreparedValue::Eval(crate::value::FunctionValue::Logical(_))
+        | PreparedValue::MissingArg
+        | PreparedValue::EmptyCell => Ok(None),
+        PreparedValue::Eval(crate::value::FunctionValue::Array(_)) => {
             Err(CoercionError::UnsupportedValueKind("array"))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
+        PreparedValue::Eval(crate::value::FunctionValue::Reference(_)) => {
             Err(CoercionError::UnsupportedValueKind("reference_like"))
         }
         _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
@@ -49,7 +49,7 @@ pub fn prepare_rank_number(
 }
 
 pub fn prepare_rank_order(
-    arg: Option<&CallArgValue>,
+    arg: Option<&FunctionArg>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RankOrder, CoercionError> {
     let Some(arg) = arg else {

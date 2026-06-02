@@ -4,10 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 pub const LOG_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LOG",
@@ -49,20 +51,20 @@ pub fn log_kernel(number: f64, base: f64) -> Result<f64, WorksheetErrorCode> {
     })
 }
 
-fn log_array_cell(cell: &ArrayCellValue, base: f64) -> ArrayCellValue {
+fn log_array_cell(cell: &FunctionArrayCell, base: f64) -> FunctionArrayCell {
     match cell {
-        ArrayCellValue::Number(number) => match log_kernel(*number, base) {
-            Ok(value) => ArrayCellValue::Number(value),
-            Err(code) => ArrayCellValue::Error(code),
+        FunctionArrayCell::Number(number) => match log_kernel(*number, base) {
+            Ok(value) => FunctionArrayCell::Number(value),
+            Err(code) => FunctionArrayCell::Error(code),
         },
-        ArrayCellValue::Error(code) => ArrayCellValue::Error(*code),
-        ArrayCellValue::Text(_) | ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
-        }
+        FunctionArrayCell::Error(code) => FunctionArrayCell::Error(*code),
+        FunctionArrayCell::Text(_)
+        | FunctionArrayCell::Logical(_)
+        | FunctionArrayCell::EmptyCell => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
-fn eval_log_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, LogEvalError> {
+fn eval_log_prepared(args: &[PreparedValue]) -> Result<FunctionValue, LogEvalError> {
     if !LOG_META.arity.accepts(args.len()) {
         return Err(LogEvalError::ArityMismatch {
             expected_min: LOG_META.arity.min,
@@ -71,10 +73,10 @@ fn eval_log_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, LogEvalErro
         });
     }
     match &args[0] {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let base = if args.len() >= 2 {
                 match &args[1] {
-                    PreparedArgValue::Eval(EvalValue::Array(_)) => {
+                    PreparedValue::Eval(FunctionValue::Array(_)) => {
                         return Err(LogEvalError::Coercion(CoercionError::UnsupportedValueKind(
                             "array_base",
                         )));
@@ -88,8 +90,8 @@ fn eval_log_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, LogEvalErro
                 .iter_row_major()
                 .map(|cell| log_array_cell(cell, base))
                 .collect();
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells).expect("input array shape is valid"),
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells).expect("input array shape is valid"),
             ))
         }
         _ => {
@@ -100,17 +102,17 @@ fn eval_log_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, LogEvalErro
                 10.0
             };
             match log_kernel(number, base) {
-                Ok(value) => Ok(EvalValue::Number(value)),
-                Err(code) => Ok(EvalValue::Error(code)),
+                Ok(value) => Ok(FunctionValue::Number(value)),
+                Err(code) => Ok(FunctionValue::Error(code)),
             }
         }
     }
 }
 
 pub fn eval_log_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, LogEvalError> {
+) -> Result<FunctionValue, LogEvalError> {
     run_values_only_prepared(args, resolver, eval_log_prepared, LogEvalError::Coercion)
 }
 
@@ -137,11 +139,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -158,27 +160,27 @@ mod tests {
     fn ftc_0966_log_array_input_lifts_first_argument_against_scalar_base() {
         let got = eval_log_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(0.5),
-                        ArrayCellValue::Number(0.25),
-                        ArrayCellValue::Number(0.125),
-                        ArrayCellValue::Number(0.125),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(0.5),
+                        FunctionArrayCell::Number(0.25),
+                        FunctionArrayCell::Number(0.125),
+                        FunctionArrayCell::Number(0.125),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(-1.0),
-                    ArrayCellValue::Number(-2.0),
-                    ArrayCellValue::Number(-3.0),
-                    ArrayCellValue::Number(-3.0),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(-1.0),
+                    FunctionArrayCell::Number(-2.0),
+                    FunctionArrayCell::Number(-3.0),
+                    FunctionArrayCell::Number(-3.0),
                 ]])
                 .unwrap()
             ))

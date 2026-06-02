@@ -6,7 +6,7 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const DELTA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DELTA",
@@ -27,15 +27,15 @@ pub fn delta_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_delta_surface(
-    args: &[crate::value::CallArgValue],
+    args: &[crate::value::FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BinaryNumericSurfaceError> {
+) -> Result<FunctionValue, BinaryNumericSurfaceError> {
     let actual = args.len();
     if actual == 1 {
         return eval_binary_numeric_surface(
             &[
                 args[0].clone(),
-                crate::value::CallArgValue::Eval(EvalValue::Number(0.0)),
+                crate::value::FunctionArg::Eval(FunctionValue::Number(0.0)),
             ],
             resolver,
             delta_kernel,
@@ -63,11 +63,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -79,12 +79,12 @@ mod tests {
         assert_eq!(
             eval_delta_surface(
                 &[
-                    crate::value::CallArgValue::Eval(EvalValue::Number(0.1 + 0.2)),
-                    crate::value::CallArgValue::Eval(EvalValue::Number(0.3)),
+                    crate::value::FunctionArg::Eval(FunctionValue::Number(0.1 + 0.2)),
+                    crate::value::FunctionArg::Eval(FunctionValue::Number(0.3)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(0.0))
+            Ok(FunctionValue::Number(0.0))
         );
 
         let boundary_probe = ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25;

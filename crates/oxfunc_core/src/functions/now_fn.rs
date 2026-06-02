@@ -3,7 +3,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{
-    CalcValue, CallArgValue, CoreValue, EvalValue, NumberFormatHint, PresentationHint,
+    CalcValue, CoreValue, FunctionArg, FunctionValue, NumberFormatHint, PresentationHint,
     WorksheetErrorCode,
 };
 
@@ -32,9 +32,9 @@ pub enum NowEvalError {
 }
 
 pub fn eval_now_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     provider: &impl NowProvider,
-) -> Result<EvalValue, NowEvalError> {
+) -> Result<FunctionValue, NowEvalError> {
     if !NOW_META.arity.accepts(args.len()) {
         return Err(NowEvalError::ArityMismatch {
             expected: NOW_META.arity.min,
@@ -47,7 +47,7 @@ pub fn eval_now_surface(
         return Err(NowEvalError::ProviderNonFinite(serial));
     }
 
-    Ok(EvalValue::Number(serial))
+    Ok(FunctionValue::Number(serial))
 }
 
 pub fn eval_now_calc_surface(
@@ -73,10 +73,10 @@ pub fn eval_now_calc_surface(
 }
 
 pub fn eval_now_surface_rich(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     provider: &impl NowProvider,
 ) -> Result<CalcValue, NowEvalError> {
-    let EvalValue::Number(value) = eval_now_surface(args, provider)? else {
+    let FunctionValue::Number(value) = eval_now_surface(args, provider)? else {
         unreachable!("NOW surface returns number");
     };
     Ok(CalcValue::with_presentation(
@@ -110,7 +110,7 @@ mod tests {
     fn eval_now_uses_provider_serial_value() {
         let provider = FixedNowProvider { serial: 46000.25 };
         let got = eval_now_surface(&[], &provider);
-        assert_eq!(got, Ok(EvalValue::Number(46000.25)));
+        assert_eq!(got, Ok(FunctionValue::Number(46000.25)));
     }
 
     #[test]
@@ -129,7 +129,7 @@ mod tests {
     #[test]
     fn eval_now_rejects_args() {
         let provider = FixedNowProvider { serial: 46000.25 };
-        let got = eval_now_surface(&[CallArgValue::EmptyCell], &provider);
+        let got = eval_now_surface(&[FunctionArg::EmptyCell], &provider);
         assert_eq!(
             got,
             Err(NowEvalError::ArityMismatch {

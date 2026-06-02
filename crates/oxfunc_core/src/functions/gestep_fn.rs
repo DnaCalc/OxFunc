@@ -6,7 +6,7 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const GESTEP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GESTEP",
@@ -27,15 +27,15 @@ pub fn gestep_kernel(number: f64, step: f64) -> Result<f64, WorksheetErrorCode> 
 }
 
 pub fn eval_gestep_surface(
-    args: &[crate::value::CallArgValue],
+    args: &[crate::value::FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BinaryNumericSurfaceError> {
+) -> Result<FunctionValue, BinaryNumericSurfaceError> {
     let actual = args.len();
     if actual == 1 {
         return eval_binary_numeric_surface(
             &[
                 args[0].clone(),
-                crate::value::CallArgValue::Eval(EvalValue::Number(0.0)),
+                crate::value::FunctionArg::Eval(FunctionValue::Number(0.0)),
             ],
             resolver,
             gestep_kernel,

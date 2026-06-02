@@ -7,7 +7,7 @@ use crate::functions::binary_numeric::{
 };
 use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const POWER_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.POWER",
@@ -106,9 +106,9 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
 }
 
 pub fn eval_power_surface(
-    args: &[crate::value::CallArgValue],
+    args: &[crate::value::FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BinaryNumericSurfaceError> {
+) -> Result<FunctionValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, power_kernel)
 }
 

@@ -4,12 +4,14 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedGroup, PreparedArgValue, coerce_prepared_to_number,
+    BroadcastPreparedGroup, PreparedValue, coerce_prepared_to_number,
     expand_prepared_broadcast_grid, run_values_only_prepared,
 };
 use crate::functions::normal_dist_common::erf_approx;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 const SPECIAL_DIST_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SPECIAL_DIST_BASE",
@@ -334,11 +336,11 @@ pub fn weibull_kernel(
 /// GAMMA/GAMMALN family accepts logicals (e.g. `=GAMMALN.PRECISE(TRUE)` -> 0).
 /// Confirmed empirically against Excel `16.0` (BUG-FUNC scalar-swept sweep).
 fn coerce_operand_with_logical_policy(
-    arg: &PreparedArgValue,
+    arg: &PreparedValue,
     reject_logical: bool,
 ) -> Result<f64, CoercionError> {
     if reject_logical {
-        if let PreparedArgValue::Eval(EvalValue::Logical(_)) = arg {
+        if let PreparedValue::Eval(FunctionValue::Logical(_)) = arg {
             return Err(CoercionError::WorksheetError(WorksheetErrorCode::Value));
         }
     }
@@ -353,62 +355,62 @@ fn coercion_err_to_ws(error: &CoercionError) -> WorksheetErrorCode {
 }
 
 /// One array cell for ERF (1-2 operands, logical rejected per element).
-fn erf_cell(values: &[PreparedArgValue]) -> ArrayCellValue {
+fn erf_cell(values: &[PreparedValue]) -> FunctionArrayCell {
     let lower = match coerce_operand_with_logical_policy(&values[0], true) {
         Ok(x) => x,
-        Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+        Err(e) => return FunctionArrayCell::Error(coercion_err_to_ws(&e)),
     };
     let upper = if values.len() > 1 {
         match coerce_operand_with_logical_policy(&values[1], true) {
             Ok(x) => Some(x),
-            Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+            Err(e) => return FunctionArrayCell::Error(coercion_err_to_ws(&e)),
         }
     } else {
         None
     };
     match erf_kernel(lower, upper) {
-        Ok(v) => ArrayCellValue::Number(v),
-        Err(code) => ArrayCellValue::Error(code),
+        Ok(v) => FunctionArrayCell::Number(v),
+        Err(code) => FunctionArrayCell::Error(code),
     }
 }
 
 /// One array cell for a unary special-dist kernel (logical policy per element).
 fn unary_cell(
-    values: &[PreparedArgValue],
+    values: &[PreparedValue],
     reject_logical: bool,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
-) -> ArrayCellValue {
+) -> FunctionArrayCell {
     match coerce_operand_with_logical_policy(&values[0], reject_logical) {
         Ok(x) => match kernel(x) {
-            Ok(v) => ArrayCellValue::Number(v),
-            Err(code) => ArrayCellValue::Error(code),
+            Ok(v) => FunctionArrayCell::Number(v),
+            Err(code) => FunctionArrayCell::Error(code),
         },
-        Err(e) => ArrayCellValue::Error(coercion_err_to_ws(&e)),
+        Err(e) => FunctionArrayCell::Error(coercion_err_to_ws(&e)),
     }
 }
 
 /// Lift a per-cell mapper over a broadcast grid, if any argument is an array.
 /// Returns `None` when all arguments are scalar (caller takes the scalar path).
 fn lift_special_dist(
-    args: &[PreparedArgValue],
-    cell: impl Fn(&[PreparedArgValue]) -> ArrayCellValue,
-) -> Option<EvalValue> {
+    args: &[PreparedValue],
+    cell: impl Fn(&[PreparedValue]) -> FunctionArrayCell,
+) -> Option<FunctionValue> {
     let (shape, cells) = expand_prepared_broadcast_grid(args)?;
     let mapped = cells
         .into_iter()
         .map(|group| match group {
             BroadcastPreparedGroup::Values(values) => cell(&values),
             BroadcastPreparedGroup::MissingCoordinate => {
-                ArrayCellValue::Error(WorksheetErrorCode::NA)
+                FunctionArrayCell::Error(WorksheetErrorCode::NA)
             }
         })
         .collect();
-    Some(EvalValue::Array(
-        EvalArray::new(shape, mapped).expect("shape preserved"),
+    Some(FunctionValue::Array(
+        FunctionArray::new(shape, mapped).expect("shape preserved"),
     ))
 }
 
-fn eval_erf_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SpecialDistEvalError> {
+fn eval_erf_prepared(args: &[PreparedValue]) -> Result<FunctionValue, SpecialDistEvalError> {
     if !ERF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ERF_META, args.len()));
     }
@@ -428,17 +430,17 @@ fn eval_erf_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, SpecialDist
         None
     };
     Ok(match erf_kernel(lower, upper) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
 fn eval_unary_prepared(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     meta: &FunctionMeta,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
     reject_logical: bool,
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -450,33 +452,33 @@ fn eval_unary_prepared(
     let x = coerce_operand_with_logical_policy(&args[0], reject_logical)
         .map_err(SpecialDistEvalError::Coercion)?;
     Ok(match kernel(x) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
 fn weibull_cell(
-    values: &[PreparedArgValue],
+    values: &[PreparedValue],
     kernel: fn(f64, f64, f64, bool) -> Result<f64, WorksheetErrorCode>,
-) -> ArrayCellValue {
+) -> FunctionArrayCell {
     let mut nums = [0.0f64; 4];
     for (i, slot) in nums.iter_mut().enumerate() {
         match coerce_prepared_to_number(&values[i]) {
             Ok(n) => *slot = n,
-            Err(e) => return ArrayCellValue::Error(coercion_err_to_ws(&e)),
+            Err(e) => return FunctionArrayCell::Error(coercion_err_to_ws(&e)),
         }
     }
     match kernel(nums[0], nums[1], nums[2], bool_flag_from_number(nums[3])) {
-        Ok(v) => ArrayCellValue::Number(v),
-        Err(code) => ArrayCellValue::Error(code),
+        Ok(v) => FunctionArrayCell::Number(v),
+        Err(code) => FunctionArrayCell::Error(code),
     }
 }
 
 fn eval_weibull_prepared(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     meta: &FunctionMeta,
     kernel: fn(f64, f64, f64, bool) -> Result<f64, WorksheetErrorCode>,
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -489,16 +491,16 @@ fn eval_weibull_prepared(
     let cumulative = coerce_prepared_to_number(&args[3]).map_err(SpecialDistEvalError::Coercion)?;
     Ok(
         match kernel(x, alpha, beta, bool_flag_from_number(cumulative)) {
-            Ok(value) => EvalValue::Number(value),
-            Err(code) => EvalValue::Error(code),
+            Ok(value) => FunctionValue::Number(value),
+            Err(code) => FunctionValue::Error(code),
         },
     )
 }
 
 pub fn eval_erf_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -508,9 +510,9 @@ pub fn eval_erf_surface(
 }
 
 pub fn eval_erf_precise_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -520,9 +522,9 @@ pub fn eval_erf_precise_surface(
 }
 
 pub fn eval_erfc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -532,9 +534,9 @@ pub fn eval_erfc_surface(
 }
 
 pub fn eval_erfc_precise_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -544,9 +546,9 @@ pub fn eval_erfc_precise_surface(
 }
 
 pub fn eval_gamma_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -556,9 +558,9 @@ pub fn eval_gamma_surface(
 }
 
 pub fn eval_gammaln_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -568,9 +570,9 @@ pub fn eval_gammaln_surface(
 }
 
 pub fn eval_gammaln_precise_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -587,9 +589,9 @@ pub fn eval_gammaln_precise_surface(
 }
 
 pub fn eval_weibull_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -599,9 +601,9 @@ pub fn eval_weibull_surface(
 }
 
 pub fn eval_weibull_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpecialDistEvalError> {
+) -> Result<FunctionValue, SpecialDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -634,11 +636,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -671,17 +673,17 @@ mod tests {
     fn erf_family_lifts_arrays_elementwise() {
         let r = NoResolver;
         // BUG-FUNC-028: ERF over a column array spills erf(x) elementwise.
-        let arr = CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Number(2.0)],
-                vec![ArrayCellValue::Number(3.0)],
+        let arr = FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Number(2.0)],
+                vec![FunctionArrayCell::Number(3.0)],
             ])
             .unwrap(),
         ));
-        let expected = EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Number(erf_approx(2.0))],
-                vec![ArrayCellValue::Number(erf_approx(3.0))],
+        let expected = FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Number(erf_approx(2.0))],
+                vec![FunctionArrayCell::Number(erf_approx(3.0))],
             ])
             .unwrap(),
         );
@@ -689,17 +691,17 @@ mod tests {
 
         // A logical element in an ERF array errors only that cell (#VALUE!),
         // the numeric element still computes (Excel spills per-element errors).
-        let mixed = CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Logical(true)],
-                vec![ArrayCellValue::Number(2.0)],
+        let mixed = FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Logical(true)],
+                vec![FunctionArrayCell::Number(2.0)],
             ])
             .unwrap(),
         ));
-        let mixed_expected = EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Error(WorksheetErrorCode::Value)],
-                vec![ArrayCellValue::Number(erf_approx(2.0))],
+        let mixed_expected = FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Error(WorksheetErrorCode::Value)],
+                vec![FunctionArrayCell::Number(erf_approx(2.0))],
             ])
             .unwrap(),
         );
@@ -709,7 +711,7 @@ mod tests {
     #[test]
     fn erf_family_rejects_logical_but_gamma_family_accepts_it() {
         let r = NoResolver;
-        let lgl = || CallArgValue::Eval(EvalValue::Logical(true));
+        let lgl = || FunctionArg::Eval(FunctionValue::Logical(true));
         // ERF/ERFC family: logical operand -> #VALUE! (Excel behavior). The
         // coercion rejection surfaces on the Err channel, which dispatch maps
         // to #VALUE!.
@@ -728,18 +730,18 @@ mod tests {
         // GAMMALN.PRECISE(TRUE)=GAMMALN(1)≈0 (exact-0 vs near-0 numeric drift is
         // a separate finding; here we only assert the operand is accepted).
         match eval_gammaln_precise_surface(&[lgl()], &r) {
-            Ok(EvalValue::Number(n)) => {
+            Ok(FunctionValue::Number(n)) => {
                 assert!(n.abs() < 1.0e-9, "gammaln.precise(TRUE) ~ 0, got {n}")
             }
             other => panic!("expected gammaln.precise(TRUE) to accept logical, got {other:?}"),
         }
         // ERF still accepts numeric text (only logical is rejected).
-        let txt2 = CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+        let txt2 = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             "2".encode_utf16().collect(),
         )));
         assert_eq!(
             eval_erf_surface(&[txt2], &r),
-            Ok(EvalValue::Number(erf_approx(2.0)))
+            Ok(FunctionValue::Number(erf_approx(2.0)))
         );
     }
 
@@ -1023,35 +1025,35 @@ mod tests {
         let resolver = NoResolver;
         let weibull_cdf = eval_weibull_dist_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Number(4.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Number(4.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
             ],
             &resolver,
         );
         match weibull_cdf {
-            Ok(EvalValue::Number(value)) => assert_close(value, 0.11750309741540463, 1e-12),
+            Ok(FunctionValue::Number(value)) => assert_close(value, 0.11750309741540463, 1e-12),
             other => panic!("unexpected weibull cdf result: {other:?}"),
         }
 
         let weibull_pdf = eval_weibull_dist_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Number(4.0)),
-                CallArgValue::Eval(EvalValue::Number(0.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Number(4.0)),
+                FunctionArg::Eval(FunctionValue::Number(0.0)),
             ],
             &resolver,
         );
         match weibull_pdf {
-            Ok(EvalValue::Number(value)) => assert_close(value, 0.1654681692346117, 1e-12),
+            Ok(FunctionValue::Number(value)) => assert_close(value, 0.1654681692346117, 1e-12),
             other => panic!("unexpected weibull pdf result: {other:?}"),
         }
 
         assert_eq!(
-            eval_gamma_surface(&[CallArgValue::Eval(EvalValue::Number(-1.0))], &resolver),
-            Ok(EvalValue::Error(WorksheetErrorCode::Num))
+            eval_gamma_surface(&[FunctionArg::Eval(FunctionValue::Number(-1.0))], &resolver),
+            Ok(FunctionValue::Error(WorksheetErrorCode::Num))
         );
         assert_eq!(
             eval_erf_surface(&[], &resolver),

@@ -8,7 +8,7 @@ use crate::functions::adapters::{
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    CallArgValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, EvalValue, ExcelText, WorksheetErrorCode,
+    EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode,
 };
 
 pub const CONCAT_META: FunctionMeta = FunctionMeta {
@@ -55,14 +55,14 @@ fn push_text(out: &mut Vec<u16>, text: &ExcelText) -> Result<(), ConcatEvalError
     Ok(())
 }
 
-fn finalize_concat_text(out: Vec<u16>) -> EvalValue {
-    EvalValue::Text(ExcelText::from_utf16_code_units(out))
+fn finalize_concat_text(out: Vec<u16>) -> FunctionValue {
+    FunctionValue::Text(ExcelText::from_utf16_code_units(out))
 }
 
 pub fn eval_concat_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ConcatEvalError> {
+) -> Result<FunctionValue, ConcatEvalError> {
     if !CONCAT_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {
             expected_min: CONCAT_META.arity.min,
@@ -82,9 +82,9 @@ pub fn eval_concat_surface(
 }
 
 pub fn eval_concatenate_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ConcatEvalError> {
+) -> Result<FunctionValue, ConcatEvalError> {
     if !CONCATENATE_META.arity.accepts(args.len()) {
         return Err(ConcatEvalError::ArityMismatch {
             expected_min: CONCATENATE_META.arity.min,
@@ -115,10 +115,10 @@ pub fn map_concat_error_to_ws(e: &ConcatEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<EvalValue>,
+        resolved: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -129,18 +129,18 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn txt(s: &str) -> EvalValue {
-        EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    fn txt(s: &str) -> FunctionValue {
+        FunctionValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     #[test]
@@ -148,9 +148,9 @@ mod tests {
         assert_eq!(
             eval_concat_surface(
                 &[
-                    CallArgValue::Eval(txt("a")),
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
-                    CallArgValue::Eval(EvalValue::Logical(true)),
+                    FunctionArg::Eval(txt("a")),
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
                 ],
                 &MockResolver { resolved: None },
             ),
@@ -161,12 +161,12 @@ mod tests {
     #[test]
     fn concat_flattens_ranges_but_concatenate_rejects_multi_cell_ranges() {
         let range_arg =
-            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, "D1:D3".to_string()));
-        let resolved = Some(EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::EmptyCell,
-                ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
-                ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "D1:D3".to_string()));
+        let resolved = Some(FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::EmptyCell,
+                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 )),
             ]])
@@ -194,18 +194,9 @@ mod tests {
         assert_eq!(
             eval_concatenate_surface(
                 &[
-                    CallArgValue::Reference(ReferenceLike::new(
-                        ReferenceKind::A1,
-                        "D1".to_string()
-                    )),
-                    CallArgValue::Reference(ReferenceLike::new(
-                        ReferenceKind::A1,
-                        "D2".to_string()
-                    )),
-                    CallArgValue::Reference(ReferenceLike::new(
-                        ReferenceKind::A1,
-                        "D3".to_string()
-                    )),
+                    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "D1".to_string())),
+                    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "D2".to_string())),
+                    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "D3".to_string())),
                 ],
                 &MockResolver {
                     resolved: Some(txt("x")),

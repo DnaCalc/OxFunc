@@ -3,10 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
+use crate::functions::adapters::{PreparedValue, run_values_only_prepared};
 use crate::locale_format::LocaleFormatContext;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const FIXED_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.FIXED",
@@ -33,25 +33,25 @@ pub enum FixedEvalError {
 }
 
 fn coerce_number_arg(
-    arg: &PreparedArgValue,
+    arg: &PreparedValue,
     ctx: &LocaleFormatContext,
 ) -> Result<f64, FixedEvalError> {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(if *b { 1.0 } else { 0.0 }),
-        PreparedArgValue::Eval(EvalValue::Text(text)) => ctx
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(*n),
+        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(if *b { 1.0 } else { 0.0 }),
+        PreparedValue::Eval(FunctionValue::Text(text)) => ctx
             .parser
             .parse_value_text(&ctx.profile, ctx.date_system, &text.to_string_lossy())
             .map_err(|_| {
                 FixedEvalError::Coercion(CoercionError::NonNumericText(text.to_string_lossy()))
             }),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(FixedEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(FixedEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::EmptyCell => Ok(0.0),
-        PreparedArgValue::MissingArg => Err(FixedEvalError::Coercion(CoercionError::MissingArg)),
-        PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(FixedEvalError::Coercion(
+        PreparedValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg => Err(FixedEvalError::Coercion(CoercionError::MissingArg)),
+        PreparedValue::Eval(FunctionValue::Array(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => Err(FixedEvalError::Coercion(
             CoercionError::UnsupportedValueKind("fixed_arg_kind"),
         )),
         _ => Err(FixedEvalError::Coercion(
@@ -61,19 +61,19 @@ fn coerce_number_arg(
 }
 
 fn coerce_boolish_arg(
-    arg: &PreparedArgValue,
+    arg: &PreparedValue,
     ctx: &LocaleFormatContext,
 ) -> Result<bool, FixedEvalError> {
     Ok(match arg {
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => *b,
+        PreparedValue::Eval(FunctionValue::Logical(b)) => *b,
         other => coerce_number_arg(other, ctx)? != 0.0,
     })
 }
 
 pub fn eval_fixed_adapter_prepared(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     ctx: &LocaleFormatContext,
-) -> Result<EvalValue, FixedEvalError> {
+) -> Result<FunctionValue, FixedEvalError> {
     if !FIXED_META.arity.accepts(args.len()) {
         return Err(FixedEvalError::ArityMismatch {
             expected_min: FIXED_META.arity.min,
@@ -98,14 +98,14 @@ pub fn eval_fixed_adapter_prepared(
         .map_err(|_| {
             FixedEvalError::Coercion(CoercionError::UnsupportedValueKind("fixed_format"))
         })?;
-    Ok(EvalValue::Text(text))
+    Ok(FunctionValue::Text(text))
 }
 
 pub fn eval_fixed_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     ctx: &LocaleFormatContext,
-) -> Result<EvalValue, FixedEvalError> {
+) -> Result<FunctionValue, FixedEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -138,18 +138,18 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
@@ -160,69 +160,72 @@ mod tests {
         assert_eq!(
             eval_fixed_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1234.567)),
-                    CallArgValue::Eval(EvalValue::Number(2.0))
+                    FunctionArg::Eval(FunctionValue::Number(1234.567)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
                 ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "1 234.57".encode_utf16().collect()
             )))
         );
         assert_eq!(
             eval_fixed_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1234.567)),
-                    CallArgValue::Eval(EvalValue::Number(2.0)),
-                    CallArgValue::Eval(EvalValue::Logical(true))
+                    FunctionArg::Eval(FunctionValue::Number(1234.567)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0)),
+                    FunctionArg::Eval(FunctionValue::Logical(true))
                 ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "1234.57".encode_utf16().collect()
             )))
         );
         assert_eq!(
             eval_fixed_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(-1234.567)),
-                    CallArgValue::Eval(EvalValue::Number(2.0))
+                    FunctionArg::Eval(FunctionValue::Number(-1234.567)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
                 ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "-1 234.57".encode_utf16().collect()
             )))
         );
         assert_eq!(
             eval_fixed_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Logical(true)),
-                    CallArgValue::Eval(EvalValue::Number(2.0))
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
                 ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "1.00".encode_utf16().collect()
             )))
         );
         assert_eq!(
             eval_fixed_surface(
-                &[text_arg("123"), CallArgValue::Eval(EvalValue::Number(2.0))],
+                &[
+                    text_arg("123"),
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
+                ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "123.00".encode_utf16().collect()
             )))
         );
         assert!(matches!(
             eval_fixed_surface(
-                &[text_arg("x"), CallArgValue::Eval(EvalValue::Number(2.0))],
+                &[text_arg("x"), FunctionArg::Eval(FunctionValue::Number(2.0))],
                 &NoResolver,
                 &ctx
             ),
@@ -231,13 +234,13 @@ mod tests {
         assert_eq!(
             eval_fixed_surface(
                 &[
-                    CallArgValue::EmptyCell,
-                    CallArgValue::Eval(EvalValue::Number(2.0))
+                    FunctionArg::EmptyCell,
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
                 ],
                 &NoResolver,
                 &ctx
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "0.00".encode_utf16().collect()
             )))
         );

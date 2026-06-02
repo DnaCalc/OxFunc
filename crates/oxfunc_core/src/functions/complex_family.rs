@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, expand_arg_values_only, prepare_arg_values_only, prepare_args_values_only,
+    PreparedValue, expand_arg_values_only, prepare_arg_values_only, prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const TEXT_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IM_TEXT_BASE",
@@ -289,8 +289,8 @@ impl ParsedComplex {
     }
 }
 
-fn text_from_string(s: String) -> EvalValue {
-    EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+fn text_from_string(s: String) -> FunctionValue {
+    FunctionValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
 }
 fn normalize_zero(n: f64) -> f64 {
     if n == 0.0 { 0.0 } else { n }
@@ -421,63 +421,59 @@ fn parse_complex_text(raw: &str) -> Option<ParsedComplex> {
     parse_real_number(text).map(|re| ParsedComplex::new(re, 0.0, None))
 }
 fn prepared_scalar_to_complex(
-    arg: &PreparedArgValue,
+    arg: &PreparedValue,
 ) -> Result<ParsedComplex, ComplexFamilyEvalError> {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(ParsedComplex::new(*n, 0.0, None)),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => parse_complex_text(&t.to_string_lossy())
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(ParsedComplex::new(*n, 0.0, None)),
+        PreparedValue::Eval(FunctionValue::Text(t)) => parse_complex_text(&t.to_string_lossy())
             .ok_or(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Num)),
-        PreparedArgValue::Eval(EvalValue::Logical(_)) => {
+        PreparedValue::Eval(FunctionValue::Logical(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+        PreparedValue::Eval(FunctionValue::Array(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => {
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
             Ok(ParsedComplex::new(0.0, 0.0, None))
         }
         _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
-fn prepared_scalar_to_real_for_complex(
-    arg: &PreparedArgValue,
-) -> Result<f64, ComplexFamilyEvalError> {
+fn prepared_scalar_to_real_for_complex(arg: &PreparedValue) -> Result<f64, ComplexFamilyEvalError> {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => parse_real_number(&t.to_string_lossy())
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(*n),
+        PreparedValue::Eval(FunctionValue::Text(t)) => parse_real_number(&t.to_string_lossy())
             .ok_or(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
-        PreparedArgValue::Eval(EvalValue::Logical(_)) => {
+        PreparedValue::Eval(FunctionValue::Logical(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+        PreparedValue::Eval(FunctionValue::Array(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
-fn prepared_scalar_to_suffix(
-    arg: Option<&PreparedArgValue>,
-) -> Result<char, ComplexFamilyEvalError> {
+fn prepared_scalar_to_suffix(arg: Option<&PreparedValue>) -> Result<char, ComplexFamilyEvalError> {
     let Some(arg) = arg else {
         return Ok('i');
     };
     match arg {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok('i'),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => match t.to_string_lossy().trim() {
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok('i'),
+        PreparedValue::Eval(FunctionValue::Text(t)) => match t.to_string_lossy().trim() {
             "" | "i" => Ok('i'),
             "j" => Ok('j'),
             _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
         },
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(ComplexFamilyEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
         _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
@@ -498,9 +494,9 @@ fn suffix_from_operands(values: &[ParsedComplex]) -> Result<char, ComplexFamilyE
 }
 
 fn expand_complex_aggregate_args(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedArgValue>, ComplexFamilyEvalError> {
+) -> Result<Vec<PreparedValue>, ComplexFamilyEvalError> {
     let mut values = Vec::new();
     for arg in args {
         values.extend(
@@ -511,11 +507,11 @@ fn expand_complex_aggregate_args(
 }
 
 fn unary_text(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(ParsedComplex) -> Result<ParsedComplex, ComplexFamilyEvalError>,
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -533,11 +529,11 @@ fn unary_text(
     )))
 }
 fn unary_number(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: impl FnOnce(ParsedComplex) -> Result<f64, ComplexFamilyEvalError>,
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -547,15 +543,15 @@ fn unary_number(
     }
     let prepared =
         prepare_arg_values_only(&args[0], resolver).map_err(ComplexFamilyEvalError::Coercion)?;
-    Ok(EvalValue::Number(normalize_zero(kernel(
+    Ok(FunctionValue::Number(normalize_zero(kernel(
         prepared_scalar_to_complex(&prepared)?,
     )?)))
 }
 
 pub fn eval_complex_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !COMPLEX_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: COMPLEX_META.arity.min,
@@ -575,81 +571,81 @@ pub fn eval_complex_surface(
     )))
 }
 pub fn eval_imabs_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMABS_META, |z| Ok(z.abs()))
 }
 pub fn eval_imaginary_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMAGINARY_META, |z| Ok(z.im))
 }
 pub fn eval_imargument_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMARGUMENT_META, |z| z.argument())
 }
 pub fn eval_imreal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_number(args, resolver, &IMREAL_META, |z| Ok(z.re))
 }
 pub fn eval_imconjugate_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCONJUGATE_META, |z| Ok(z.conj()))
 }
 pub fn eval_imcos_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOS_META, |z| Ok(z.cos()))
 }
 pub fn eval_imcosh_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOSH_META, |z| Ok(z.cosh()))
 }
 pub fn eval_imcot_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCOT_META, |z| z.cot())
 }
 pub fn eval_imcsc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCSC_META, |z| z.csc())
 }
 pub fn eval_imcsch_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMCSCH_META, |z| z.csch())
 }
 pub fn eval_imexp_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMEXP_META, |z| Ok(z.exp()))
 }
 pub fn eval_imln_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLN_META, |z| z.ln())
 }
 pub fn eval_imlog10_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLOG10_META, |z| {
         let ln = z.ln()?;
         Ok(ParsedComplex::new(
@@ -660,9 +656,9 @@ pub fn eval_imlog10_surface(
     })
 }
 pub fn eval_imlog2_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMLOG2_META, |z| {
         let ln = z.ln()?;
         Ok(ParsedComplex::new(
@@ -673,46 +669,46 @@ pub fn eval_imlog2_surface(
     })
 }
 pub fn eval_imsec_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSEC_META, |z| z.sec())
 }
 pub fn eval_imsech_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSECH_META, |z| z.sech())
 }
 pub fn eval_imsin_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSIN_META, |z| Ok(z.sin()))
 }
 pub fn eval_imsinh_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSINH_META, |z| Ok(z.sinh()))
 }
 pub fn eval_imsqrt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMSQRT_META, |z| Ok(z.sqrt()))
 }
 pub fn eval_imtan_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     unary_text(args, resolver, &IMTAN_META, |z| z.tan())
 }
 
 pub fn eval_imdiv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !IMDIV_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: IMDIV_META.arity.min,
@@ -730,9 +726,9 @@ pub fn eval_imdiv_surface(
     )))
 }
 pub fn eval_impower_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !IMPOWER_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: IMPOWER_META.arity.min,
@@ -749,9 +745,9 @@ pub fn eval_impower_surface(
     )))
 }
 pub fn eval_imsub_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !IMSUB_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: IMSUB_META.arity.min,
@@ -769,9 +765,9 @@ pub fn eval_imsub_surface(
     )))
 }
 pub fn eval_imsum_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !IMSUM_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: IMSUM_META.arity.min,
@@ -796,9 +792,9 @@ pub fn eval_imsum_surface(
     )))
 }
 pub fn eval_improduct_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ComplexFamilyEvalError> {
+) -> Result<FunctionValue, ComplexFamilyEvalError> {
     if !IMPRODUCT_META.arity.accepts(args.len()) {
         return Err(ComplexFamilyEvalError::ArityMismatch {
             expected_min: IMPRODUCT_META.arity.min,
@@ -844,26 +840,26 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn txt(s: &str) -> CallArgValue {
-        CallArgValue::Eval(text_from_string(s.to_string()))
+    fn txt(s: &str) -> FunctionArg {
+        FunctionArg::Eval(text_from_string(s.to_string()))
     }
-    fn text_array_row(values: &[&str]) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Array(
-            crate::value::EvalArray::from_rows(vec![
+    fn text_array_row(values: &[&str]) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Array(
+            crate::value::FunctionArray::from_rows(vec![
                 values
                     .iter()
                     .map(|value| {
-                        crate::value::ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                        crate::value::FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                             value,
                         ))
                     })
@@ -872,22 +868,22 @@ mod tests {
             .unwrap(),
         ))
     }
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
-    fn bool_arg(b: bool) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Logical(b))
+    fn bool_arg(b: bool) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Logical(b))
     }
-    fn text_result(value: EvalValue) -> String {
+    fn text_result(value: FunctionValue) -> String {
         match value {
-            EvalValue::Text(t) => t.to_string_lossy(),
+            FunctionValue::Text(t) => t.to_string_lossy(),
             other => panic!("expected text result, got {other:?}"),
         }
     }
-    fn parsed_result(value: EvalValue) -> ParsedComplex {
+    fn parsed_result(value: FunctionValue) -> ParsedComplex {
         parse_complex_text(&text_result(value)).unwrap()
     }
-    fn assert_close(value: EvalValue, re: f64, im: f64, suffix: char) {
+    fn assert_close(value: FunctionValue, re: f64, im: f64, suffix: char) {
         let got = parsed_result(value);
         assert_eq!(got.suffix.unwrap_or('i'), suffix);
         assert!((got.re - re).abs() < 1.0e-10, "re {} vs {}", got.re, re);
@@ -957,15 +953,15 @@ mod tests {
         );
         assert_eq!(
             eval_imabs_surface(&[txt("3+4i")], &NoResolver),
-            Ok(EvalValue::Number(5.0))
+            Ok(FunctionValue::Number(5.0))
         );
         assert_eq!(
             eval_imreal_surface(&[txt("3+4i")], &NoResolver),
-            Ok(EvalValue::Number(3.0))
+            Ok(FunctionValue::Number(3.0))
         );
         assert_eq!(
             eval_imaginary_surface(&[txt("3+4i")], &NoResolver),
-            Ok(EvalValue::Number(4.0))
+            Ok(FunctionValue::Number(4.0))
         );
     }
 

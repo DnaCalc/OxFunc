@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const FALSE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.FALSE",
@@ -19,10 +19,10 @@ pub const FALSE_META: FunctionMeta = FunctionMeta {
 };
 
 pub fn eval_false_surface(
-    args: &[crate::value::CallArgValue],
-) -> Result<EvalValue, WorksheetErrorCode> {
+    args: &[crate::value::FunctionArg],
+) -> Result<FunctionValue, WorksheetErrorCode> {
     if !args.is_empty() {
         return Err(WorksheetErrorCode::Value);
     }
-    Ok(EvalValue::Logical(false))
+    Ok(FunctionValue::Logical(false))
 }

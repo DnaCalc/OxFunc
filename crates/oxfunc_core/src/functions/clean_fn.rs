@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_text, run_values_only_prepared_lifted,
+    PreparedValue, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const CLEAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CLEAN",
@@ -43,7 +43,9 @@ pub fn clean_kernel(text: &ExcelText) -> ExcelText {
     ExcelText::from_utf16_code_units(filtered)
 }
 
-pub fn eval_clean_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, CleanEvalError> {
+pub fn eval_clean_adapter_prepared(
+    args: &[PreparedValue],
+) -> Result<FunctionValue, CleanEvalError> {
     if !CLEAN_META.arity.accepts(args.len()) {
         return Err(CleanEvalError::ArityMismatch {
             expected: CLEAN_META.arity.min,
@@ -52,13 +54,13 @@ pub fn eval_clean_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
     }
 
     let text = coerce_prepared_to_text(&args[0]).map_err(CleanEvalError::Coercion)?;
-    Ok(EvalValue::Text(clean_kernel(&text)))
+    Ok(FunctionValue::Text(clean_kernel(&text)))
 }
 
 pub fn eval_clean_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CleanEvalError> {
+) -> Result<FunctionValue, CleanEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -91,11 +93,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -127,10 +129,13 @@ mod tests {
 
     #[test]
     fn eval_clean_coerces_logical_to_text() {
-        let got = eval_clean_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &NoResolver);
+        let got = eval_clean_surface(
+            &[FunctionArg::Eval(FunctionValue::Logical(true))],
+            &NoResolver,
+        );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "TRUE".encode_utf16().collect(),
             )))
         );

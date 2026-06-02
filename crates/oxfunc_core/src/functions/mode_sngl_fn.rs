@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CoreValue, FunctionArg, FunctionValue, WorksheetErrorCode};
 use std::collections::BTreeMap;
 
 pub const MODE_SNGL_META: FunctionMeta = FunctionMeta {
@@ -45,9 +45,9 @@ fn mode_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64>, Coe
 }
 
 pub fn eval_mode_sngl_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ModeSnglEvalError> {
+) -> Result<FunctionValue, ModeSnglEvalError> {
     let argc = args.len();
     if !MODE_SNGL_META.arity.accepts(argc) {
         return Err(ModeSnglEvalError::ArityMismatch {
@@ -84,8 +84,8 @@ pub fn eval_mode_sngl_surface(
     }
 
     match best {
-        Some((value, _)) => Ok(EvalValue::Number(value)),
-        None => Ok(EvalValue::Error(WorksheetErrorCode::NA)),
+        Some((value, _)) => Ok(FunctionValue::Number(value)),
+        None => Ok(FunctionValue::Error(WorksheetErrorCode::NA)),
     }
 }
 
@@ -101,10 +101,12 @@ pub fn map_mode_sngl_error_to_ws(e: &ModeSnglEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{ArrayCellValue, CallArgValue, EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{
+        FunctionArg, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike,
+    };
 
     struct MockResolver {
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -114,11 +116,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -127,11 +129,11 @@ mod tests {
     #[test]
     fn eval_mode_sngl_basic_and_tie_lanes() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::Eval(EvalValue::Number(4.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(4.0)),
         ];
         let got = eval_mode_sngl_surface(
             &args,
@@ -139,14 +141,14 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn eval_mode_sngl_returns_na_when_no_mode_survives() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Logical(true)),
-            CallArgValue::Eval(EvalValue::Text(
+            FunctionArg::Eval(FunctionValue::Logical(true)),
+            FunctionArg::Eval(FunctionValue::Text(
                 crate::value::ExcelText::from_utf16_code_units("2".encode_utf16().collect()),
             )),
         ];
@@ -156,27 +158,27 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::NA)));
+        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::NA)));
     }
 
     #[test]
     fn eval_mode_sngl_propagates_reference_error_lane() {
-        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+        let args = vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A3".to_string(),
         ))];
-        let array = EvalArray::from_rows(vec![vec![
-            ArrayCellValue::Text(crate::value::ExcelText::from_utf16_code_units(
+        let array = FunctionArray::from_rows(vec![vec![
+            FunctionArrayCell::Text(crate::value::ExcelText::from_utf16_code_units(
                 "x".encode_utf16().collect(),
             )),
-            ArrayCellValue::Logical(true),
-            ArrayCellValue::Error(WorksheetErrorCode::NA),
+            FunctionArrayCell::Logical(true),
+            FunctionArrayCell::Error(WorksheetErrorCode::NA),
         ]])
         .unwrap();
         let got = eval_mode_sngl_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(EvalValue::Array(array)),
+                resolved_value: Some(FunctionValue::Array(array)),
             },
         );
         assert_eq!(

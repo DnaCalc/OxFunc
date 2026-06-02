@@ -4,7 +4,7 @@ use crate::function::{
 };
 use crate::functions::a1_refs::{format_relative_target, parse_a1_reference};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
 pub const OP_SPILL_REF_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_SPILL_REF",
@@ -27,16 +27,17 @@ pub enum SpillRefEvalError {
     InvalidAnchorShape(String),
 }
 
-fn reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, SpillRefEvalError> {
+fn reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, SpillRefEvalError> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => Ok(reference.clone()),
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => Ok(reference.clone()),
         _ => Err(SpillRefEvalError::AnchorReferenceRequired),
     }
 }
 
 fn normalize_anchor_target(reference: &ReferenceLike) -> Result<String, SpillRefEvalError> {
-    let trimmed = reference.target.trim();
+    let target = reference.target();
+    let trimmed = target.trim();
     if trimmed.ends_with('#') {
         return Ok(trimmed.to_string());
     }
@@ -54,9 +55,9 @@ fn normalize_anchor_target(reference: &ReferenceLike) -> Result<String, SpillRef
 }
 
 pub fn eval_op_spill_ref_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SpillRefEvalError> {
+) -> Result<FunctionValue, SpillRefEvalError> {
     if args.len() != 1 {
         return Err(SpillRefEvalError::ArityMismatch {
             expected: 1,
@@ -66,7 +67,7 @@ pub fn eval_op_spill_ref_surface(
 
     let reference = reference_arg(&args[0])?;
     let target = normalize_anchor_target(&reference)?;
-    Ok(EvalValue::Reference(ReferenceLike::new(
+    Ok(FunctionValue::Reference(ReferenceLike::new(
         ReferenceKind::SpillAnchor,
         target,
     )))
@@ -95,11 +96,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -108,7 +109,7 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_a1_anchor_returns_spill_anchor_reference() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "Sheet1!B2".to_string(),
             ))],
@@ -116,7 +117,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::SpillAnchor,
                 "Sheet1!B2#".to_string()
             )))
@@ -126,7 +127,7 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_passes_through_existing_spill_anchor() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::SpillAnchor,
                 "B1#".to_string(),
             ))],
@@ -134,7 +135,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::SpillAnchor,
                 "B1#".to_string()
             )))
@@ -144,7 +145,7 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_rejects_multi_cell_a1_area() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A3".to_string(),
             ))],
@@ -159,7 +160,7 @@ mod tests {
     #[test]
     fn eval_op_spill_ref_accepts_named_anchor_text_verbatim() {
         let got = eval_op_spill_ref_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "SpillName".to_string(),
             ))],
@@ -167,7 +168,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::SpillAnchor,
                 "SpillName#".to_string()
             )))
@@ -176,8 +177,10 @@ mod tests {
 
     #[test]
     fn eval_op_spill_ref_requires_reference_operand() {
-        let got =
-            eval_op_spill_ref_surface(&[CallArgValue::Eval(EvalValue::Number(1.0))], &NoResolver);
+        let got = eval_op_spill_ref_surface(
+            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
+            &NoResolver,
+        );
         assert_eq!(got, Err(SpillRefEvalError::AnchorReferenceRequired));
     }
 }

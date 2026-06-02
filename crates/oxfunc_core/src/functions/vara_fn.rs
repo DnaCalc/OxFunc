@@ -8,7 +8,7 @@ use crate::functions::variance_common::{
     VarianceDivisor, VarianceInclusionPolicy, collect_variance_values, variance_from_values,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const VARA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.VARA",
@@ -35,9 +35,9 @@ pub enum VarAEvalError {
 }
 
 pub fn eval_vara_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, VarAEvalError> {
+) -> Result<FunctionValue, VarAEvalError> {
     let argc = args.len();
     if !VARA_META.arity.accepts(argc) {
         return Err(VarAEvalError::ArityMismatch {
@@ -54,8 +54,8 @@ pub fn eval_vara_surface(
     let values = collect_variance_values(&prepared, VarianceInclusionPolicy::AverageALike)
         .map_err(VarAEvalError::Coercion)?;
     match variance_from_values(&values, VarianceDivisor::Sample) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

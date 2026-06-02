@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_calc_values_only,
-    prepared_from_calc_value, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, prepare_calc_values_only, prepared_from_calc_value,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CalcValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    CalcValue, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 const DATE_PART_BASE_META: FunctionMeta = FunctionMeta {
@@ -103,9 +103,9 @@ fn civil_from_days(z: i64) -> (i64, i64, i64) {
     (year, m, d)
 }
 
-fn coerce_serial_arg(arg: &PreparedArgValue) -> Result<f64, DatePartsEvalError> {
+fn coerce_serial_arg(arg: &PreparedValue) -> Result<f64, DatePartsEvalError> {
     match arg {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         _ => coerce_prepared_to_number(arg).map_err(DatePartsEvalError::Coercion),
     }
 }
@@ -181,9 +181,9 @@ pub fn second_kernel(serial: f64) -> Result<f64, WorksheetErrorCode> {
     serial_fraction_to_hms(serial).map(|(_, _, second)| second)
 }
 
-fn truncate_time_component(arg: &PreparedArgValue) -> Result<f64, DatePartsEvalError> {
+fn truncate_time_component(arg: &PreparedValue) -> Result<f64, DatePartsEvalError> {
     match arg {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         _ => coerce_prepared_to_number(arg)
             .map(|n| n.trunc())
             .map_err(DatePartsEvalError::Coercion),
@@ -207,11 +207,11 @@ pub fn time_kernel(hour: f64, minute: f64, second: f64) -> Result<f64, Worksheet
 }
 
 fn eval_date_part_unary_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -221,10 +221,10 @@ fn eval_date_part_unary_surface(
 }
 
 fn eval_date_part_unary_prepared(
-    prepared: &[PreparedArgValue],
+    prepared: &[PreparedValue],
     meta: &FunctionMeta,
     kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     if !meta.arity.accepts(prepared.len()) {
         return Err(DatePartsEvalError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -233,42 +233,42 @@ fn eval_date_part_unary_prepared(
         });
     }
     match &prepared[0] {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let cells = array
                 .iter_row_major()
                 .map(|cell| {
                     let serial = match cell {
-                        ArrayCellValue::Number(n) => *n,
-                        ArrayCellValue::Text(text) => coerce_prepared_to_number(
-                            &PreparedArgValue::Eval(EvalValue::Text(text.clone())),
+                        FunctionArrayCell::Number(n) => *n,
+                        FunctionArrayCell::Text(text) => coerce_prepared_to_number(
+                            &PreparedValue::Eval(FunctionValue::Text(text.clone())),
                         )
                         .map_err(DatePartsEvalError::Coercion)?,
-                        ArrayCellValue::Logical(value) => {
+                        FunctionArrayCell::Logical(value) => {
                             if *value {
                                 1.0
                             } else {
                                 0.0
                             }
                         }
-                        ArrayCellValue::Error(code) => {
-                            return Ok(ArrayCellValue::Error(*code));
+                        FunctionArrayCell::Error(code) => {
+                            return Ok(FunctionArrayCell::Error(*code));
                         }
-                        ArrayCellValue::EmptyCell => 0.0,
+                        FunctionArrayCell::EmptyCell => 0.0,
                     };
                     kernel(serial)
-                        .map(ArrayCellValue::Number)
+                        .map(FunctionArrayCell::Number)
                         .map_err(DatePartsEvalError::Domain)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells)
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells)
                     .expect("date-part array lift preserves input shape"),
             ))
         }
         _ => {
             let serial = coerce_serial_arg(&prepared[0])?;
             kernel(serial)
-                .map(EvalValue::Number)
+                .map(FunctionValue::Number)
                 .map_err(DatePartsEvalError::Domain)
         }
     }
@@ -290,9 +290,9 @@ fn eval_date_part_unary_calc_surface(
 }
 
 pub fn eval_day_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &DAY_META, day_kernel)
 }
 
@@ -304,9 +304,9 @@ pub fn eval_day_calc_surface(
 }
 
 pub fn eval_month_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MONTH_META, month_kernel)
 }
 
@@ -318,9 +318,9 @@ pub fn eval_month_calc_surface(
 }
 
 pub fn eval_year_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &YEAR_META, year_kernel)
 }
 
@@ -332,9 +332,9 @@ pub fn eval_year_calc_surface(
 }
 
 pub fn eval_days_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -343,7 +343,7 @@ pub fn eval_days_surface(
     )
 }
 
-fn eval_days_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePartsEvalError> {
+fn eval_days_prepared(prepared: &[PreparedValue]) -> Result<FunctionValue, DatePartsEvalError> {
     if !DAYS_META.arity.accepts(prepared.len()) {
         return Err(DatePartsEvalError::ArityMismatch {
             expected_min: DAYS_META.arity.min,
@@ -354,7 +354,7 @@ fn eval_days_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePa
     let end_serial = coerce_serial_arg(&prepared[0])?;
     let start_serial = coerce_serial_arg(&prepared[1])?;
     days_kernel(end_serial, start_serial)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(DatePartsEvalError::Domain)
 }
 
@@ -372,9 +372,9 @@ pub fn eval_days_calc_surface(
 }
 
 pub fn eval_hour_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &HOUR_META, hour_kernel)
 }
 
@@ -386,9 +386,9 @@ pub fn eval_hour_calc_surface(
 }
 
 pub fn eval_minute_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MINUTE_META, minute_kernel)
 }
 
@@ -400,9 +400,9 @@ pub fn eval_minute_calc_surface(
 }
 
 pub fn eval_second_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &SECOND_META, second_kernel)
 }
 
@@ -414,9 +414,9 @@ pub fn eval_second_calc_surface(
 }
 
 pub fn eval_time_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DatePartsEvalError> {
+) -> Result<FunctionValue, DatePartsEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -425,7 +425,7 @@ pub fn eval_time_surface(
     )
 }
 
-fn eval_time_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePartsEvalError> {
+fn eval_time_prepared(prepared: &[PreparedValue]) -> Result<FunctionValue, DatePartsEvalError> {
     if !TIME_META.arity.accepts(prepared.len()) {
         return Err(DatePartsEvalError::ArityMismatch {
             expected_min: TIME_META.arity.min,
@@ -437,7 +437,7 @@ fn eval_time_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePa
     let minute = truncate_time_component(&prepared[1])?;
     let second = truncate_time_component(&prepared[2])?;
     time_kernel(hour, minute, second)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(DatePartsEvalError::Domain)
 }
 
@@ -467,7 +467,7 @@ pub fn map_date_parts_error_to_ws(e: &DatePartsEvalError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell};
 
     struct NoResolver;
 
@@ -483,11 +483,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -518,57 +518,60 @@ mod tests {
     #[test]
     fn blank_and_missing_inputs_coerce_to_zero_like_excel() {
         assert_eq!(
-            eval_day_surface(&[CallArgValue::EmptyCell], &NoResolver),
-            Ok(EvalValue::Number(0.0))
+            eval_day_surface(&[FunctionArg::EmptyCell], &NoResolver),
+            Ok(FunctionValue::Number(0.0))
         );
         assert_eq!(
             eval_days_surface(
                 &[
-                    CallArgValue::MissingArg,
-                    CallArgValue::Eval(EvalValue::Number(1.0))
+                    FunctionArg::MissingArg,
+                    FunctionArg::Eval(FunctionValue::Number(1.0))
                 ],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(-1.0))
+            Ok(FunctionValue::Number(-1.0))
         );
         assert_eq!(
             eval_days_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
-                    CallArgValue::EmptyCell
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
+                    FunctionArg::EmptyCell
                 ],
                 &NoResolver
             ),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
     #[test]
     fn logical_inputs_follow_numeric_coercion() {
         assert_eq!(
-            eval_day_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &NoResolver),
-            Ok(EvalValue::Number(1.0))
+            eval_day_surface(
+                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &NoResolver
+            ),
+            Ok(FunctionValue::Number(1.0))
         );
         assert_eq!(
             eval_days_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Logical(true)),
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(0.0))
+            Ok(FunctionValue::Number(0.0))
         );
     }
 
     #[test]
     fn month_surface_lifts_array_inputs_elementwise() {
         let got = eval_month_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(45291.0),
-                    ArrayCellValue::Number(45292.0),
-                    ArrayCellValue::Number(45322.0),
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(45291.0),
+                    FunctionArrayCell::Number(45292.0),
+                    FunctionArrayCell::Number(45322.0),
                 ]])
                 .unwrap(),
             ))],
@@ -576,11 +579,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(12.0),
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(1.0),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(12.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(1.0),
                 ]])
                 .unwrap()
             ))
@@ -614,35 +617,35 @@ mod tests {
         assert_eq!(
             eval_time_surface(
                 &[
-                    CallArgValue::MissingArg,
-                    CallArgValue::Eval(EvalValue::Number(2.0)),
-                    CallArgValue::Eval(EvalValue::Number(3.0)),
+                    FunctionArg::MissingArg,
+                    FunctionArg::Eval(FunctionValue::Number(2.0)),
+                    FunctionArg::Eval(FunctionValue::Number(3.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(0.0014236111111111112))
+            Ok(FunctionValue::Number(0.0014236111111111112))
         );
         assert_eq!(
             eval_time_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Logical(true)),
-                    CallArgValue::Eval(EvalValue::Number(2.0)),
-                    CallArgValue::Eval(EvalValue::Number(3.0)),
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0)),
+                    FunctionArg::Eval(FunctionValue::Number(3.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(0.043090277777777776))
+            Ok(FunctionValue::Number(0.043090277777777776))
         );
         assert_eq!(
             eval_time_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Text(txt("1"))),
-                    CallArgValue::Eval(EvalValue::Text(txt("2"))),
-                    CallArgValue::Eval(EvalValue::Text(txt("3"))),
+                    FunctionArg::Eval(FunctionValue::Text(txt("1"))),
+                    FunctionArg::Eval(FunctionValue::Text(txt("2"))),
+                    FunctionArg::Eval(FunctionValue::Text(txt("3"))),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(0.043090277777777776))
+            Ok(FunctionValue::Number(0.043090277777777776))
         );
     }
 }

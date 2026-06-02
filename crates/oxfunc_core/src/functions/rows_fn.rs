@@ -6,7 +6,7 @@ use crate::functions::a1_refs::parse_a1_reference;
 use crate::resolver::{
     ReferenceResolutionError, ReferenceSystemProvider, enumerate_reference_values,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const ROWS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ROWS",
@@ -33,7 +33,7 @@ pub enum RowsEvalError {
     RefResolution(ReferenceResolutionError),
 }
 
-pub fn eval_rows_surface(args: &[CallArgValue]) -> Result<EvalValue, RowsEvalError> {
+pub fn eval_rows_surface(args: &[FunctionArg]) -> Result<FunctionValue, RowsEvalError> {
     if !ROWS_META.arity.accepts(args.len()) {
         return Err(RowsEvalError::ArityMismatch {
             expected_min: ROWS_META.arity.min,
@@ -43,23 +43,24 @@ pub fn eval_rows_surface(args: &[CallArgValue]) -> Result<EvalValue, RowsEvalErr
     }
 
     let arg = &args[0];
-    if let CallArgValue::Eval(EvalValue::Array(arr)) = arg {
-        return Ok(EvalValue::Number(arr.shape().rows as f64));
+    if let FunctionArg::Eval(FunctionValue::Array(arr)) = arg {
+        return Ok(FunctionValue::Number(arr.shape().rows as f64));
     }
 
     let reference = match arg {
-        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => r,
         _ => return Err(RowsEvalError::InvalidReferenceArg),
     };
-    let parsed = parse_a1_reference(&reference.target).ok_or(RowsEvalError::InvalidReferenceArg)?;
+    let parsed =
+        parse_a1_reference(reference.target()).ok_or(RowsEvalError::InvalidReferenceArg)?;
     let count = parsed.end_row - parsed.start_row + 1;
-    Ok(EvalValue::Number(count as f64))
+    Ok(FunctionValue::Number(count as f64))
 }
 
 pub fn eval_rows_surface_with_resolver(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, RowsEvalError> {
+) -> Result<FunctionValue, RowsEvalError> {
     if !ROWS_META.arity.accepts(args.len()) {
         return Err(RowsEvalError::ArityMismatch {
             expected_min: ROWS_META.arity.min,
@@ -71,16 +72,16 @@ pub fn eval_rows_surface_with_resolver(
     let arg = &args[0];
 
     // Array argument: return row count directly.
-    if let CallArgValue::Eval(EvalValue::Array(arr)) = arg {
-        return Ok(EvalValue::Number(arr.shape().rows as f64));
+    if let FunctionArg::Eval(FunctionValue::Array(arr)) = arg {
+        return Ok(FunctionValue::Number(arr.shape().rows as f64));
     }
 
     // Reference argument: parse and compute row span.
     let reference = match arg {
-        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => r,
         _ => return Err(RowsEvalError::InvalidReferenceArg),
     };
-    let count = if let Some(parsed) = parse_a1_reference(&reference.target) {
+    let count = if let Some(parsed) = parse_a1_reference(reference.target()) {
         parsed.end_row - parsed.start_row + 1
     } else {
         enumerate_reference_values(resolver, reference)
@@ -88,7 +89,7 @@ pub fn eval_rows_surface_with_resolver(
             .map(|values| values.declared_extent.rows)
             .ok_or(RowsEvalError::InvalidReferenceArg)?
     };
-    Ok(EvalValue::Number(count as f64))
+    Ok(FunctionValue::Number(count as f64))
 }
 
 pub fn map_rows_error_to_ws(e: &RowsEvalError) -> WorksheetErrorCode {
@@ -105,10 +106,12 @@ mod tests {
     use crate::function::{
         ArgPreparationProfile, DeterminismClass, FecDependencyProfile, VolatilityClass,
     };
-    use crate::value::{ArrayCellValue, ArrayShape, EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{
+        ArrayShape, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike,
+    };
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     // --- Meta property tests ---
@@ -169,7 +172,7 @@ mod tests {
     fn rows_single_cell_returns_one() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("B2")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -177,7 +180,7 @@ mod tests {
     fn rows_area_reference_returns_row_count() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("A1:C5")]),
-            Ok(EvalValue::Number(5.0))
+            Ok(FunctionValue::Number(5.0))
         );
     }
 
@@ -185,7 +188,7 @@ mod tests {
     fn rows_single_row_area_returns_one() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("B2:D2")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -193,7 +196,7 @@ mod tests {
     fn rows_whole_column_returns_max_rows() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("A:A")]),
-            Ok(EvalValue::Number(1_048_576.0))
+            Ok(FunctionValue::Number(1_048_576.0))
         );
     }
 
@@ -201,7 +204,7 @@ mod tests {
     fn rows_whole_row_returns_one() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("1:1")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -209,7 +212,7 @@ mod tests {
     fn rows_multi_whole_row_returns_count() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("2:5")]),
-            Ok(EvalValue::Number(4.0))
+            Ok(FunctionValue::Number(4.0))
         );
     }
 
@@ -217,7 +220,7 @@ mod tests {
     fn rows_cross_sheet_reference() {
         assert_eq!(
             eval_rows_surface(&[ref_arg("Sheet1!A1:A10")]),
-            Ok(EvalValue::Number(10.0))
+            Ok(FunctionValue::Number(10.0))
         );
     }
 
@@ -225,44 +228,44 @@ mod tests {
 
     #[test]
     fn rows_array_arg_returns_row_count() {
-        let arr = EvalArray::new(
+        let arr = FunctionArray::new(
             ArrayShape { rows: 3, cols: 2 },
             vec![
-                ArrayCellValue::Number(1.0),
-                ArrayCellValue::Number(2.0),
-                ArrayCellValue::Number(3.0),
-                ArrayCellValue::Number(4.0),
-                ArrayCellValue::Number(5.0),
-                ArrayCellValue::Number(6.0),
+                FunctionArrayCell::Number(1.0),
+                FunctionArrayCell::Number(2.0),
+                FunctionArrayCell::Number(3.0),
+                FunctionArrayCell::Number(4.0),
+                FunctionArrayCell::Number(5.0),
+                FunctionArrayCell::Number(6.0),
             ],
         )
         .unwrap();
-        let got = eval_rows_surface(&[CallArgValue::Eval(EvalValue::Array(arr))]);
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        let got = eval_rows_surface(&[FunctionArg::Eval(FunctionValue::Array(arr))]);
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
     }
 
     #[test]
     fn rows_single_cell_array_returns_one() {
-        let arr = EvalArray::new(
+        let arr = FunctionArray::new(
             ArrayShape { rows: 1, cols: 1 },
-            vec![ArrayCellValue::Number(42.0)],
+            vec![FunctionArrayCell::Number(42.0)],
         )
         .unwrap();
-        let got = eval_rows_surface(&[CallArgValue::Eval(EvalValue::Array(arr))]);
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        let got = eval_rows_surface(&[FunctionArg::Eval(FunctionValue::Array(arr))]);
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 
     // --- Error tests ---
 
     #[test]
     fn rows_non_reference_non_array_returns_error() {
-        let got = eval_rows_surface(&[CallArgValue::Eval(EvalValue::Number(42.0))]);
+        let got = eval_rows_surface(&[FunctionArg::Eval(FunctionValue::Number(42.0))]);
         assert_eq!(got, Err(RowsEvalError::InvalidReferenceArg));
     }
 
     #[test]
     fn rows_text_arg_returns_error() {
-        let got = eval_rows_surface(&[CallArgValue::Eval(EvalValue::Text(
+        let got = eval_rows_surface(&[FunctionArg::Eval(FunctionValue::Text(
             crate::value::ExcelText::from_interop_assignment("hello"),
         ))]);
         assert_eq!(got, Err(RowsEvalError::InvalidReferenceArg));

@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const OPTIONAL_BASIS_ARITY: Arity = Arity { min: 6, max: 7 };
 const EPSILON: f64 = 1.0e-12;
@@ -68,7 +68,7 @@ fn max_excel_serial() -> i64 {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, 9999, 12, 31).unwrap() as i64
 }
 
-fn number_arg(args: &[PreparedArgValue], idx: usize) -> Result<f64, AmorDepreciationEvalError> {
+fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, AmorDepreciationEvalError> {
     args.get(idx)
         .ok_or(AmorDepreciationEvalError::Domain(WorksheetErrorCode::Value))
         .and_then(|value| {
@@ -77,14 +77,12 @@ fn number_arg(args: &[PreparedArgValue], idx: usize) -> Result<f64, AmorDeprecia
 }
 
 fn optional_number(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     idx: usize,
     default: f64,
 ) -> Result<f64, AmorDepreciationEvalError> {
     match args.get(idx) {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => {
-            Ok(default)
-        }
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(default),
         Some(value) => {
             coerce_prepared_to_number(value).map_err(AmorDepreciationEvalError::Coercion)
         }
@@ -365,8 +363,8 @@ pub fn amordegrc_kernel(
 }
 
 fn eval_amorlinc_prepared(
-    args: &[PreparedArgValue],
-) -> Result<EvalValue, AmorDepreciationEvalError> {
+    args: &[PreparedValue],
+) -> Result<FunctionValue, AmorDepreciationEvalError> {
     if !AMORLINC_META.arity.accepts(args.len()) {
         return Err(arity_error(&AMORLINC_META, args.len()));
     }
@@ -380,16 +378,16 @@ fn eval_amorlinc_prepared(
             number_arg(args, 5)?,
             Some(optional_number(args, 6, 0.0)?),
         ) {
-            Ok(value) => EvalValue::Number(value),
-            Err(AmorDepreciationEvalError::Domain(code)) => EvalValue::Error(code),
+            Ok(value) => FunctionValue::Number(value),
+            Err(AmorDepreciationEvalError::Domain(code)) => FunctionValue::Error(code),
             Err(other) => return Err(other),
         },
     )
 }
 
 fn eval_amordegrc_prepared(
-    args: &[PreparedArgValue],
-) -> Result<EvalValue, AmorDepreciationEvalError> {
+    args: &[PreparedValue],
+) -> Result<FunctionValue, AmorDepreciationEvalError> {
     if !AMORDEGRC_META.arity.accepts(args.len()) {
         return Err(arity_error(&AMORDEGRC_META, args.len()));
     }
@@ -403,17 +401,17 @@ fn eval_amordegrc_prepared(
             number_arg(args, 5)?,
             Some(optional_number(args, 6, 0.0)?),
         ) {
-            Ok(value) => EvalValue::Number(value),
-            Err(AmorDepreciationEvalError::Domain(code)) => EvalValue::Error(code),
+            Ok(value) => FunctionValue::Number(value),
+            Err(AmorDepreciationEvalError::Domain(code)) => FunctionValue::Error(code),
             Err(other) => return Err(other),
         },
     )
 }
 
 pub fn eval_amorlinc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, AmorDepreciationEvalError> {
+) -> Result<FunctionValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -423,9 +421,9 @@ pub fn eval_amorlinc_surface(
 }
 
 pub fn eval_amordegrc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, AmorDepreciationEvalError> {
+) -> Result<FunctionValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -462,22 +460,22 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
-    fn text(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
@@ -678,7 +676,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(132.0))
+            Ok(FunctionValue::Number(132.0))
         );
         assert_eq!(
             eval_amordegrc_surface(
@@ -693,7 +691,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(EvalValue::Number(776.0))
+            Ok(FunctionValue::Number(776.0))
         );
     }
 
@@ -717,10 +715,7 @@ mod tests {
         assert_eq!(
             eval_amorlinc_surface(
                 &[
-                    CallArgValue::Reference(ReferenceLike::new(
-                        ReferenceKind::A1,
-                        "A1".to_string()
-                    )),
+                    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
                     num(39679.0),
                     num(39813.0),
                     num(300.0),

@@ -1853,3 +1853,69 @@ Validation:
 8. OxCalc `rg -n "HOST_REF_" src/oxcalc-core/src -g "*.rs"`: passed with no matches.
 9. OxFml `cargo check`: passed.
 10. OxFml `rg -n "HOST_REF_|ReferenceResolver|ExtendedValue" crates -g "*.rs"`: passed with no matches.
+
+### W099-015 Legacy Type And Adapter Deletion Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `integrated`
+
+Planned scope:
+1. Delete the active OxFunc public legacy carrier names: `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, `LambdaValue`, `ExtendedValue`, `ReferenceResolver`, and `ReferenceTextResolver`.
+2. Remove the public `ReferenceLike.kind` / `ReferenceLike.target` compatibility mirrors and keep textual reference projection behind methods on typed `ReferenceLike`.
+3. Update OxFml callers that compile against OxFunc so the downstream integration no longer imports the deleted names.
+
+Evidence:
+1. Active OxFunc Rust code now uses `FunctionValue`, `FunctionArg`, `PreparedValue`, `FunctionArray`, and `FunctionArrayCell` for the remaining function-facing surface, with `CalcValue` / `CalcArray` still owning the modern value model.
+2. `FunctionValue::Lambda`, `FunctionLambda`, `CallableOriginKind`, and `CallableCaptureMode` were deleted from `oxfunc_value_types`; callable values remain `RichValue::Callable(CallableValue)`.
+3. `ReferenceLike` no longer exposes public `kind` or `target` fields; callers use `kind()` and `target()` derived from typed identity/display projection.
+4. OxFml source/tests were updated away from the deleted OxFunc imports and now compile against the new names and reference accessors.
+5. Active Rust scans over OxFunc and OxFml prove the deleted legacy names are absent; the only OxFunc scan false positives are `TextualReferenceIdentity.kind` and `RegisteredExternalCallRequest.target`, which are not the removed `ReferenceLike` mirrors.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead deletes value-carrier and adapter residue. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no function semantic slice was promoted. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - OxFunc value-type tests, OxFunc library tests, OxFunc check, and OxFml check passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover the touched value, reference, preparation, callable, and dispatcher surfaces. |
+| 5 | Evidence links complete and reproducible? | Yes - commands are recorded below. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel application/workbook compatibility behavior claim changed in this deletion bead. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no discrepancy is introduced or resolved by this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier deletion. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - OxFml consumer code was updated in the same sweep; no new handoff is needed for a completed paired rename/deletion. |
+| 10 | No known semantic gap remains in declared scope? | Yes for W099-015; W099-016 still owns final cross-repo validation. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-015 deletion, not final W099 workset closure. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - IP-25 now reflects W099 through W099-015 and points at W099-016. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.15` is closed after the recorded validation. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead targets terminal active-code deletion of the listed legacy names and old public reference mirrors.
+2. Gate criteria re-read: passed. Active OxFunc Rust scans have no listed deleted names; OxFml was updated to compile against the new public surface.
+3. Silent scope reduction check: passed. The remaining `Function*` / `PreparedValue` names are the current function-facing surface after deletion of the old public names, while the modern value model remains `CalcValue`.
+4. "Looks done but is not" pattern check: passed. W099 final closure is not claimed here; W099-016 remains the final cross-repo validation bead.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining follow-up tension.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: deleting the lambda variant made many downstream wildcard arms noisy; `FunctionValue` is now `#[non_exhaustive]`, which is appropriate for a cross-crate function-facing boundary.
+2. Issue found and corrected: removing `ReferenceLike.target` as a public field initially forced owned-string access through many tests; `ReferenceLike` now keeps a private projection cache and exposes borrowed `target()` access.
+3. Issue found and corrected: the broad `.kind`/`.target` accessor rewrite touched non-reference fields in OxFml and OxFunc tests; those were restored where the field was not a `ReferenceLike`.
+4. Issue checked: the scan hits for `pub kind:` and `pub target:` are `TextualReferenceIdentity.kind` and `RegisteredExternalCallRequest.target`, not deleted `ReferenceLike` mirrors.
+5. Issue checked: OxFml needed a paired update because OxFunc integration tests compile it; the paired OxFml check passes.
+
+Validation:
+1. OxFunc `cargo fmt`: passed.
+2. OxFunc `cargo check -p oxfunc_core`: passed.
+3. OxFunc `cargo test -p oxfunc_value_types`: passed, 23 tests.
+4. OxFunc `cargo test -p oxfunc_core --lib`: passed, 1352 tests passed and 1 ignored.
+5. OxFunc `rg -n "EvalValue|CallArgValue|PreparedArgValue|EvalArray|ArrayCellValue|LambdaValue|ExtendedValue|ReferenceResolver|ReferenceTextResolver|FunctionLambda|CallableOriginKind|CallableCaptureMode|FunctionValue::Lambda|migration-only|legacy Function|legacy call|legacy prepared|legacy mirror|compatibility projection|pub kind:|pub target:" crates -g "*.rs"`: only false positives `TextualReferenceIdentity.kind` and `RegisteredExternalCallRequest.target`.
+6. OxFml `cargo fmt`: passed.
+7. OxFml `cargo check`: passed.
+8. OxFml `rg -n "EvalValue|CallArgValue|PreparedArgValue|EvalArray|ArrayCellValue|LambdaValue|ExtendedValue|ReferenceResolver|ReferenceTextResolver" crates -g "*.rs"`: passed with no matches.

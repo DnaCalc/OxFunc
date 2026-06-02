@@ -4,11 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ArrayShape, ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue,
+    WorksheetErrorCode,
 };
 
 const ARRAY_TEXT_SPLIT_BASE_META: FunctionMeta = FunctionMeta {
@@ -76,29 +77,31 @@ fn worksheet_error_literal(code: WorksheetErrorCode) -> &'static str {
     }
 }
 
-fn scalar_cell_from_prepared(arg: &PreparedArgValue) -> ArrayCellValue {
+fn scalar_cell_from_prepared(arg: &PreparedValue) -> FunctionArrayCell {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => ArrayCellValue::Number(*n),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t.clone()),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(*b),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(*code),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionArrayCell::Number(*n),
+        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t.clone()),
+        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(*b),
+        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(*code),
+        PreparedValue::Eval(FunctionValue::Reference(_)) => {
+            FunctionArrayCell::Error(WorksheetErrorCode::Value)
         }
-        PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => ArrayCellValue::EmptyCell,
-        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        PreparedValue::Eval(FunctionValue::Array(_)) => unreachable!(),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => FunctionArrayCell::EmptyCell,
+        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
-fn eval_value_to_array_cell(value: &EvalValue) -> Result<ArrayCellValue, ArrayTextSplitEvalError> {
+fn eval_value_to_array_cell(
+    value: &FunctionValue,
+) -> Result<FunctionArrayCell, ArrayTextSplitEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(ArrayCellValue::Number(*n)),
-        EvalValue::Text(t) => Ok(ArrayCellValue::Text(t.clone())),
-        EvalValue::Logical(b) => Ok(ArrayCellValue::Logical(*b)),
-        EvalValue::Error(code) => Ok(ArrayCellValue::Error(*code)),
-        EvalValue::Array(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith("array")),
-        EvalValue::Reference(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith(
+        FunctionValue::Number(n) => Ok(FunctionArrayCell::Number(*n)),
+        FunctionValue::Text(t) => Ok(FunctionArrayCell::Text(t.clone())),
+        FunctionValue::Logical(b) => Ok(FunctionArrayCell::Logical(*b)),
+        FunctionValue::Error(code) => Ok(FunctionArrayCell::Error(*code)),
+        FunctionValue::Array(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith("array")),
+        FunctionValue::Reference(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith(
             "reference_like",
         )),
         _ => Err(ArrayTextSplitEvalError::UnsupportedPadWith(
@@ -107,15 +110,15 @@ fn eval_value_to_array_cell(value: &EvalValue) -> Result<ArrayCellValue, ArrayTe
     }
 }
 
-fn materialize_arraytotext_input(prepared: &PreparedArgValue) -> EvalArray {
+fn materialize_arraytotext_input(prepared: &PreparedValue) -> FunctionArray {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Array(array)) => array.clone(),
-        other => EvalArray::from_scalar(scalar_cell_from_prepared(other)),
+        PreparedValue::Eval(FunctionValue::Array(array)) => array.clone(),
+        other => FunctionArray::from_scalar(scalar_cell_from_prepared(other)),
     }
 }
 
 fn parse_truncated_flag(
-    prepared: &PreparedArgValue,
+    prepared: &PreparedValue,
     invalid: fn(f64) -> ArrayTextSplitEvalError,
 ) -> Result<bool, ArrayTextSplitEvalError> {
     let raw = coerce_prepared_to_number(prepared).map_err(ArrayTextSplitEvalError::Coercion)?;
@@ -130,10 +133,10 @@ fn parse_truncated_flag(
 }
 
 fn parse_arraytotext_format(
-    prepared: Option<&PreparedArgValue>,
+    prepared: Option<&PreparedValue>,
 ) -> Result<bool, ArrayTextSplitEvalError> {
     match prepared {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(false),
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(false),
         Some(arg) => {
             let raw = coerce_prepared_to_number(arg).map_err(ArrayTextSplitEvalError::Coercion)?;
             if !raw.is_finite() {
@@ -148,19 +151,19 @@ fn parse_arraytotext_format(
     }
 }
 
-fn array_cell_to_concise_fragment(cell: &ArrayCellValue) -> String {
+fn array_cell_to_concise_fragment(cell: &FunctionArrayCell) -> String {
     match cell {
-        ArrayCellValue::Number(n) => format!("{n}"),
-        ArrayCellValue::Text(t) => t.to_string_lossy(),
-        ArrayCellValue::Logical(b) => {
+        FunctionArrayCell::Number(n) => format!("{n}"),
+        FunctionArrayCell::Text(t) => t.to_string_lossy(),
+        FunctionArrayCell::Logical(b) => {
             if *b {
                 "TRUE".to_string()
             } else {
                 "FALSE".to_string()
             }
         }
-        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
-        ArrayCellValue::EmptyCell => String::new(),
+        FunctionArrayCell::Error(code) => worksheet_error_literal(*code).to_string(),
+        FunctionArrayCell::EmptyCell => String::new(),
     }
 }
 
@@ -168,23 +171,23 @@ fn escape_strict_text(text: &ExcelText) -> String {
     text.to_string_lossy().replace('"', "\"\"")
 }
 
-fn array_cell_to_strict_fragment(cell: &ArrayCellValue) -> String {
+fn array_cell_to_strict_fragment(cell: &FunctionArrayCell) -> String {
     match cell {
-        ArrayCellValue::Number(n) => format!("{n}"),
-        ArrayCellValue::Text(t) => format!("\"{}\"", escape_strict_text(t)),
-        ArrayCellValue::Logical(b) => {
+        FunctionArrayCell::Number(n) => format!("{n}"),
+        FunctionArrayCell::Text(t) => format!("\"{}\"", escape_strict_text(t)),
+        FunctionArrayCell::Logical(b) => {
             if *b {
                 "TRUE".to_string()
             } else {
                 "FALSE".to_string()
             }
         }
-        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
-        ArrayCellValue::EmptyCell => String::new(),
+        FunctionArrayCell::Error(code) => worksheet_error_literal(*code).to_string(),
+        FunctionArrayCell::EmptyCell => String::new(),
     }
 }
 
-fn arraytotext_concise(array: &EvalArray) -> ExcelText {
+fn arraytotext_concise(array: &FunctionArray) -> ExcelText {
     let joined = array
         .iter_row_major()
         .map(array_cell_to_concise_fragment)
@@ -193,7 +196,7 @@ fn arraytotext_concise(array: &EvalArray) -> ExcelText {
     ExcelText::from_utf16_code_units(joined.encode_utf16().collect())
 }
 
-fn arraytotext_strict(array: &EvalArray) -> ExcelText {
+fn arraytotext_strict(array: &FunctionArray) -> ExcelText {
     let mut rows = Vec::with_capacity(array.shape().rows);
     for row in 0..array.shape().rows {
         let row_text = array
@@ -210,9 +213,9 @@ fn arraytotext_strict(array: &EvalArray) -> ExcelText {
 }
 
 pub fn eval_arraytotext_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ArrayTextSplitEvalError> {
+) -> Result<FunctionValue, ArrayTextSplitEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(ArrayTextSplitEvalError::Coercion)?;
     if !ARRAYTOTEXT_META.arity.accepts(prepared.len()) {
@@ -225,7 +228,7 @@ pub fn eval_arraytotext_surface(
 
     let strict = parse_arraytotext_format(prepared.get(1))?;
     let array = materialize_arraytotext_input(&prepared[0]);
-    Ok(EvalValue::Text(if strict {
+    Ok(FunctionValue::Text(if strict {
         arraytotext_strict(&array)
     } else {
         arraytotext_concise(&array)
@@ -251,23 +254,23 @@ fn utf16_match(left: &[u16], right: &[u16], case_insensitive: bool) -> bool {
         })
 }
 
-fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
+fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
     match cell {
-        ArrayCellValue::Number(n) => PreparedArgValue::Eval(EvalValue::Number(*n)),
-        ArrayCellValue::Text(t) => PreparedArgValue::Eval(EvalValue::Text(t.clone())),
-        ArrayCellValue::Logical(b) => PreparedArgValue::Eval(EvalValue::Logical(*b)),
-        ArrayCellValue::Error(code) => PreparedArgValue::Eval(EvalValue::Error(*code)),
-        ArrayCellValue::EmptyCell => PreparedArgValue::EmptyCell,
+        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
+        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
+        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
+        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
+        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
     }
 }
 
 fn delimiter_list_from_prepared(
-    prepared: &PreparedArgValue,
+    prepared: &PreparedValue,
 ) -> Result<Option<Vec<ExcelText>>, ArrayTextSplitEvalError> {
     match prepared {
-        PreparedArgValue::MissingArg => Ok(None),
-        PreparedArgValue::EmptyCell => Ok(Some(vec![empty_text()])),
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::MissingArg => Ok(None),
+        PreparedValue::EmptyCell => Ok(Some(vec![empty_text()])),
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let mut out = Vec::with_capacity(array.shape().rows * array.shape().cols);
             for cell in array.iter_row_major() {
                 let prepared_cell = prepared_from_array_cell(cell);
@@ -350,21 +353,21 @@ fn split_text_by_delimiters(
 }
 
 fn parse_pad_with(
-    prepared: Option<&PreparedArgValue>,
-) -> Result<ArrayCellValue, ArrayTextSplitEvalError> {
+    prepared: Option<&PreparedValue>,
+) -> Result<FunctionArrayCell, ArrayTextSplitEvalError> {
     match prepared {
-        None | Some(PreparedArgValue::MissingArg) => {
-            Ok(ArrayCellValue::Error(WorksheetErrorCode::NA))
+        None | Some(PreparedValue::MissingArg) => {
+            Ok(FunctionArrayCell::Error(WorksheetErrorCode::NA))
         }
-        Some(PreparedArgValue::EmptyCell) => Ok(ArrayCellValue::Number(0.0)),
-        Some(PreparedArgValue::Eval(value)) => eval_value_to_array_cell(value),
+        Some(PreparedValue::EmptyCell) => Ok(FunctionArrayCell::Number(0.0)),
+        Some(PreparedValue::Eval(value)) => eval_value_to_array_cell(value),
     }
 }
 
 pub fn eval_textsplit_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ArrayTextSplitEvalError> {
+) -> Result<FunctionValue, ArrayTextSplitEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(ArrayTextSplitEvalError::Coercion)?;
     if !TEXTSPLIT_META.arity.accepts(prepared.len()) {
@@ -407,7 +410,7 @@ pub fn eval_textsplit_surface(
         row_parts.push(empty_text());
     }
 
-    let mut rows: Vec<Vec<ArrayCellValue>> = Vec::with_capacity(row_parts.len());
+    let mut rows: Vec<Vec<FunctionArrayCell>> = Vec::with_capacity(row_parts.len());
     for row_text in row_parts {
         let mut cols = if let Some(delimiters) = col_delimiters.as_ref() {
             split_text_by_delimiters(&row_text, delimiters, ignore_empty, case_insensitive)
@@ -417,7 +420,7 @@ pub fn eval_textsplit_surface(
         if cols.is_empty() {
             cols.push(empty_text());
         }
-        rows.push(cols.into_iter().map(ArrayCellValue::Text).collect());
+        rows.push(cols.into_iter().map(FunctionArrayCell::Text).collect());
     }
 
     let row_count = rows.len().max(1);
@@ -432,8 +435,8 @@ pub fn eval_textsplit_surface(
         }
     }
 
-    Ok(EvalValue::Array(
-        EvalArray::new(
+    Ok(FunctionValue::Array(
+        FunctionArray::new(
             ArrayShape {
                 rows: row_count,
                 cols: col_count,
@@ -472,37 +475,37 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(s)))
     }
 
-    fn number_arg(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn number_arg(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
     #[test]
     fn arraytotext_concise_formats_row_major_values() {
         let got = eval_arraytotext_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
                         vec![
-                            ArrayCellValue::Logical(true),
-                            ArrayCellValue::Error(WorksheetErrorCode::Value),
+                            FunctionArrayCell::Logical(true),
+                            FunctionArrayCell::Error(WorksheetErrorCode::Value),
                         ],
                         vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("Hello")),
-                            ArrayCellValue::Number(2.0),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("Hello")),
+                            FunctionArrayCell::Number(2.0),
                         ],
                     ])
                     .unwrap(),
@@ -513,7 +516,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "TRUE, #VALUE!, Hello, 2"
             )))
         );
@@ -523,15 +526,15 @@ mod tests {
     fn arraytotext_strict_quotes_text_and_preserves_shape_markers() {
         let got = eval_arraytotext_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
                         vec![
-                            ArrayCellValue::Logical(true),
-                            ArrayCellValue::Error(WorksheetErrorCode::Value),
+                            FunctionArrayCell::Logical(true),
+                            FunctionArrayCell::Error(WorksheetErrorCode::Value),
                         ],
                         vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("Hello")),
-                            ArrayCellValue::Number(2.0),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("Hello")),
+                            FunctionArrayCell::Number(2.0),
                         ],
                     ])
                     .unwrap(),
@@ -542,7 +545,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "{TRUE,#VALUE!;\"Hello\",2}"
             )))
         );
@@ -564,11 +567,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("Dakota")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("Lennon")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("Sanchez")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("Dakota")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("Lennon")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("Sanchez")),
                 ]])
                 .unwrap(),
             ))
@@ -583,17 +586,17 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("1")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("2")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("3")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("1")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("2")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("3")),
                     ],
                     vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("4")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("5")),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("4")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("5")),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap(),
@@ -606,27 +609,27 @@ mod tests {
         let got = eval_textsplit_surface(
             &[
                 text_arg("Do. Or do not. There is no try. -Anonymous"),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment(".")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("-")),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment(".")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("-")),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::MissingArg,
+                FunctionArg::MissingArg,
                 number_arg(1.0),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("Do")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment(" Or do not")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment(" There is no try")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment(" ")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("Anonymous")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("Do")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment(" Or do not")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment(" There is no try")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment(" ")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("Anonymous")),
                 ]])
                 .unwrap(),
             ))
@@ -639,7 +642,7 @@ mod tests {
             &[
                 text_arg("aXbxc"),
                 text_arg("x"),
-                CallArgValue::MissingArg,
+                FunctionArg::MissingArg,
                 number_arg(0.0),
                 number_arg(1.0),
                 text_arg("pad"),
@@ -648,11 +651,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
                 ]])
                 .unwrap(),
             ))

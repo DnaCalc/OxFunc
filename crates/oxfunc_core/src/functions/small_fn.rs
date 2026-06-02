@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregatePreparedValue, PreparedArgValue, coerce_prepared_to_number, expand_aggregate_arg,
+    AggregatePreparedValue, PreparedValue, coerce_prepared_to_number, expand_aggregate_arg,
     prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const SMALL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SMALL",
@@ -45,7 +45,7 @@ fn collect_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, SmallEval
     Ok(values)
 }
 
-fn coerce_k(prepared: &PreparedArgValue) -> Result<usize, SmallEvalError> {
+fn coerce_k(prepared: &PreparedValue) -> Result<usize, SmallEvalError> {
     let k = coerce_prepared_to_number(prepared)
         .map_err(SmallEvalError::Coercion)?
         .trunc();
@@ -58,9 +58,9 @@ fn coerce_k(prepared: &PreparedArgValue) -> Result<usize, SmallEvalError> {
 }
 
 pub fn eval_small_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SmallEvalError> {
+) -> Result<FunctionValue, SmallEvalError> {
     let argc = args.len();
     if !SMALL_META.arity.accepts(argc) {
         return Err(SmallEvalError::ArityMismatch {
@@ -75,10 +75,10 @@ pub fn eval_small_surface(
         prepare_arg_values_only(&args[1], resolver).map_err(SmallEvalError::Coercion)?;
     let k = coerce_k(&k_prepared)?;
     if values.len() < k {
-        return Ok(EvalValue::Error(WorksheetErrorCode::Num));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
     }
     values.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
-    Ok(EvalValue::Number(values[k - 1]))
+    Ok(FunctionValue::Number(values[k - 1]))
 }
 
 pub fn map_small_error_to_ws(e: &SmallEvalError) -> WorksheetErrorCode {

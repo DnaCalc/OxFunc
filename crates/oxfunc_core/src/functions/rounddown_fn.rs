@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const ROUNDDOWN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ROUNDDOWN",
@@ -58,9 +58,9 @@ pub fn rounddown_kernel(n: f64, digits: i32) -> f64 {
 }
 
 pub fn eval_rounddown_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, RoundDownEvalError> {
+) -> Result<FunctionValue, RoundDownEvalError> {
     eval_binary_numeric_surface(args, resolver, |value, digits| {
         Ok(rounddown_kernel(value, digits.trunc() as i32))
     })

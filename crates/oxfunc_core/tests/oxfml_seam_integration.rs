@@ -13,7 +13,9 @@ use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
 use oxfunc_core::functions::rand_fn::RandomProvider;
-use oxfunc_core::value::{ArrayCellValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode};
+use oxfunc_core::value::{
+    ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 use serde::Deserialize;
 
 // ---------------------------------------------------------------------------
@@ -119,8 +121,10 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
         }
 
         // Check return surface kind
-        let actual_surface_kind =
-            format!("{:?}", run.evaluation_artifact.returned_value_surface.kind);
+        let actual_surface_kind = format!(
+            "{:?}",
+            run.evaluation_artifact.returned_value_surface.kind()
+        );
         if actual_surface_kind != fixture.expected_returned_value_surface_kind {
             failures.push(format!(
                 "{} [{}] return surface mismatch: expected {}, got {}",
@@ -248,7 +252,7 @@ fn randarray_columns_formula_preserves_generated_width_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(3.0)
+        FunctionValue::Number(3.0)
     );
 }
 
@@ -265,7 +269,7 @@ fn ftc_0601_exact_formula_is_calc_locally_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Error(WorksheetErrorCode::Calc)
+        FunctionValue::Error(WorksheetErrorCode::Calc)
     );
 }
 
@@ -282,18 +286,18 @@ fn ftc_0601_map_non_scalar_helper_probe_matches_current_local_mask_through_adapt
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Logical(false)],
-                vec![ArrayCellValue::Error(WorksheetErrorCode::Calc)],
-                vec![ArrayCellValue::Error(WorksheetErrorCode::Calc)],
-                vec![ArrayCellValue::Logical(false)],
-                vec![ArrayCellValue::Logical(true)],
-                vec![ArrayCellValue::Logical(false)],
-                vec![ArrayCellValue::Logical(true)],
-                vec![ArrayCellValue::Logical(false)],
-                vec![ArrayCellValue::Logical(false)],
-                vec![ArrayCellValue::Logical(false)],
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Logical(false)],
+                vec![FunctionArrayCell::Error(WorksheetErrorCode::Calc)],
+                vec![FunctionArrayCell::Error(WorksheetErrorCode::Calc)],
+                vec![FunctionArrayCell::Logical(false)],
+                vec![FunctionArrayCell::Logical(true)],
+                vec![FunctionArrayCell::Logical(false)],
+                vec![FunctionArrayCell::Logical(true)],
+                vec![FunctionArrayCell::Logical(false)],
+                vec![FunctionArrayCell::Logical(false)],
+                vec![FunctionArrayCell::Logical(false)],
             ])
             .unwrap(),
         )
@@ -313,7 +317,7 @@ fn ftc_0910_exact_formula_matches_scalar_330_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(330.0)
+        FunctionValue::Number(330.0)
     );
 }
 
@@ -330,7 +334,7 @@ fn ftc_0702_day_of_date_1900_march_zero_matches_29_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(29.0)
+        FunctionValue::Number(29.0)
     );
 }
 
@@ -347,7 +351,7 @@ fn ftc_0640_len_emoji_matches_one_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(1.0)
+        FunctionValue::Number(1.0)
     );
 }
 
@@ -365,7 +369,7 @@ fn ftc_0696_text_serial_zero_date_format_matches_excel_compat_string_through_ada
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Text(ExcelText::from_interop_assignment("1900-01-00"))
+        FunctionValue::Text(ExcelText::from_interop_assignment("1900-01-00"))
     );
 }
 
@@ -383,7 +387,7 @@ fn ftc_0930_exact_formula_matches_value_error_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Error(WorksheetErrorCode::Value)
+        FunctionValue::Error(WorksheetErrorCode::Value)
     );
 }
 
@@ -400,7 +404,7 @@ fn ftc_1032_exact_formula_matches_scalar_zero_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(0.0)
+        FunctionValue::Number(0.0)
     );
 }
 
@@ -417,13 +421,13 @@ fn ftc_0353_countblank_let_array_matches_retained_excel_shaped_value_errors_thro
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
             ]])
             .unwrap(),
         )
@@ -525,11 +529,11 @@ fn ftc_0833_index_row_vector_selector_array_direct_call_matches_witness_through_
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Number(10.0)],
-                vec![ArrayCellValue::Number(20.0)],
-                vec![ArrayCellValue::Number(30.0)],
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Number(10.0)],
+                vec![FunctionArrayCell::Number(20.0)],
+                vec![FunctionArrayCell::Number(30.0)],
             ])
             .unwrap(),
         )
@@ -549,12 +553,12 @@ fn ftc_0836_sortby_row_vector_multi_key_direct_call_matches_witness_through_adap
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
             ]])
             .unwrap(),
         )
@@ -574,16 +578,16 @@ fn ftc_0917_sort_row_vector_default_axis_direct_call_matches_witness_through_ada
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Number(3.0),
-                ArrayCellValue::Number(1.0),
-                ArrayCellValue::Number(4.0),
-                ArrayCellValue::Number(1.0),
-                ArrayCellValue::Number(5.0),
-                ArrayCellValue::Number(9.0),
-                ArrayCellValue::Number(2.0),
-                ArrayCellValue::Number(6.0),
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Number(3.0),
+                FunctionArrayCell::Number(1.0),
+                FunctionArrayCell::Number(4.0),
+                FunctionArrayCell::Number(1.0),
+                FunctionArrayCell::Number(5.0),
+                FunctionArrayCell::Number(9.0),
+                FunctionArrayCell::Number(2.0),
+                FunctionArrayCell::Number(6.0),
             ]])
             .unwrap(),
         )
@@ -603,13 +607,13 @@ fn ftc_0941_and_ftc_0995_isna_xmatch_direct_call_matches_logical_mask_through_ad
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Logical(true),
-                ArrayCellValue::Logical(false),
-                ArrayCellValue::Logical(true),
-                ArrayCellValue::Logical(false),
-                ArrayCellValue::Logical(true),
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Logical(true),
+                FunctionArrayCell::Logical(false),
+                FunctionArrayCell::Logical(true),
+                FunctionArrayCell::Logical(false),
+                FunctionArrayCell::Logical(true),
             ]])
             .unwrap(),
         )
@@ -951,7 +955,7 @@ fn ftc_0635_exact_formula_matches_excel_bit_value_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(-1.9999999999999998)
+        FunctionValue::Number(-1.9999999999999998)
     );
 }
 
@@ -968,7 +972,7 @@ fn ftc_0667_upper_sharp_s_matches_local_excel_like_probe_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Text(ExcelText::from_interop_assignment("STRAßE"))
+        FunctionValue::Text(ExcelText::from_interop_assignment("STRAßE"))
     );
 }
 
@@ -985,7 +989,7 @@ fn ftc_1006_exact_formula_returns_201_locally_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(201.0)
+        FunctionValue::Number(201.0)
     );
 }
 
@@ -1002,7 +1006,7 @@ fn ftc_1007_exact_formula_returns_6_locally_through_adapter() {
 
     assert_eq!(
         run.evaluation_artifact.worksheet_value,
-        EvalValue::Number(6.0)
+        FunctionValue::Number(6.0)
     );
 }
 
@@ -1035,7 +1039,7 @@ fn worksheet_text_casing_family_matches_excel_observed_matrix_through_adapter() 
 
         assert_eq!(
             run.evaluation_artifact.worksheet_value,
-            EvalValue::Text(ExcelText::from_interop_assignment(expected)),
+            FunctionValue::Text(ExcelText::from_interop_assignment(expected)),
             "{name}"
         );
     }
@@ -1060,18 +1064,18 @@ fn fixture_dir() -> PathBuf {
         .join("fixtures")
 }
 
-fn parse_eval_value_summary(summary: &str) -> EvalValue {
+fn parse_eval_value_summary(summary: &str) -> FunctionValue {
     if let Some(number) = summary
         .strip_prefix("Number(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return EvalValue::Number(number.parse().expect("numeric summary should parse"));
+        return FunctionValue::Number(number.parse().expect("numeric summary should parse"));
     }
     if let Some(text) = summary
         .strip_prefix("Text(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return EvalValue::Text(ExcelText::from_utf16_code_units(
+        return FunctionValue::Text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         ));
     }
@@ -1079,7 +1083,7 @@ fn parse_eval_value_summary(summary: &str) -> EvalValue {
         .strip_prefix("Logical(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return EvalValue::Logical(matches!(logical, "TRUE" | "True" | "true"));
+        return FunctionValue::Logical(matches!(logical, "TRUE" | "True" | "true"));
     }
     if let Some(code) = summary
         .strip_prefix("Error(")
@@ -1097,23 +1101,23 @@ fn parse_eval_value_summary(summary: &str) -> EvalValue {
             "#SPILL!" => WorksheetErrorCode::Spill,
             other => panic!("unsupported error summary: {other}"),
         };
-        return EvalValue::Error(code);
+        return FunctionValue::Error(code);
     }
 
     panic!("unsupported cell summary: {summary}");
 }
 
-fn eval_value_summary(value: &EvalValue) -> String {
+fn eval_value_summary(value: &FunctionValue) -> String {
     match value {
-        EvalValue::Number(n) => format!("Number({n})"),
-        EvalValue::Text(t) => format!("Text({})", t.to_string_lossy()),
-        EvalValue::Logical(b) => format!("Logical({b})"),
-        EvalValue::Error(code) => format!("Error({})", worksheet_error_summary(*code)),
-        EvalValue::Array(array) => {
+        FunctionValue::Number(n) => format!("Number({n})"),
+        FunctionValue::Text(t) => format!("Text({})", t.to_string_lossy()),
+        FunctionValue::Logical(b) => format!("Logical({b})"),
+        FunctionValue::Error(code) => format!("Error({})", worksheet_error_summary(*code)),
+        FunctionValue::Array(array) => {
             let shape = array.shape();
             format!("Array({}x{})", shape.rows, shape.cols)
         }
-        EvalValue::Reference(reference) => format!("Reference({})", reference.target),
+        FunctionValue::Reference(reference) => format!("Reference({})", reference.target()),
         other => format!("Unsupported({other:?})"),
     }
 }
@@ -1137,9 +1141,9 @@ fn worksheet_error_summary(code: WorksheetErrorCode) -> &'static str {
     }
 }
 
-fn expect_number(value: &EvalValue) -> f64 {
+fn expect_number(value: &FunctionValue) -> f64 {
     match value {
-        EvalValue::Number(n) => *n,
+        FunctionValue::Number(n) => *n,
         other => panic!("expected numeric worksheet value, got {other:?}"),
     }
 }

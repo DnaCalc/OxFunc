@@ -5,7 +5,7 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const RTD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RTD",
@@ -30,7 +30,7 @@ pub struct RtdRequest {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum RtdProviderResult {
-    Value(EvalValue),
+    Value(FunctionValue),
     NoValueYet,
     CapabilityDenied,
     ConnectionFailed,
@@ -53,7 +53,7 @@ pub enum RtdEvalError {
 }
 
 pub fn parse_rtd_request(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RtdRequest, RtdEvalError> {
     if !RTD_META.arity.accepts(args.len()) {
@@ -81,18 +81,22 @@ pub fn parse_rtd_request(
 }
 
 pub fn eval_rtd_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RtdProvider>,
-) -> Result<EvalValue, RtdEvalError> {
+) -> Result<FunctionValue, RtdEvalError> {
     let request = parse_rtd_request(args, resolver)?;
     let provider = provider.ok_or(RtdEvalError::ProviderMissing)?;
     match provider.resolve_rtd(&request) {
         RtdProviderResult::Value(value) => Ok(value),
-        RtdProviderResult::NoValueYet => Ok(EvalValue::Error(WorksheetErrorCode::NA)),
-        RtdProviderResult::CapabilityDenied => Ok(EvalValue::Error(WorksheetErrorCode::Blocked)),
-        RtdProviderResult::ConnectionFailed => Ok(EvalValue::Error(WorksheetErrorCode::Connect)),
-        RtdProviderResult::ProviderError(code) => Ok(EvalValue::Error(code)),
+        RtdProviderResult::NoValueYet => Ok(FunctionValue::Error(WorksheetErrorCode::NA)),
+        RtdProviderResult::CapabilityDenied => {
+            Ok(FunctionValue::Error(WorksheetErrorCode::Blocked))
+        }
+        RtdProviderResult::ConnectionFailed => {
+            Ok(FunctionValue::Error(WorksheetErrorCode::Connect))
+        }
+        RtdProviderResult::ProviderError(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
@@ -109,7 +113,7 @@ pub fn map_rtd_error_to_ws(error: &RtdEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, ArrayShape, EvalArray};
+    use crate::value::{ArrayShape, FunctionArray, FunctionArrayCell};
 
     struct MockResolver;
 
@@ -121,11 +125,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -141,8 +145,8 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(text: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         )))
     }
@@ -178,10 +182,10 @@ mod tests {
         let request = parse_rtd_request(
             &[
                 text_arg("TimerRTD.RtdServer"),
-                CallArgValue::EmptyCell,
+                FunctionArg::EmptyCell,
                 text_arg("WAVE"),
-                CallArgValue::Eval(EvalValue::Number(2.5)),
-                CallArgValue::MissingArg,
+                FunctionArg::Eval(FunctionValue::Number(2.5)),
+                FunctionArg::MissingArg,
             ],
             &MockResolver,
         )
@@ -204,10 +208,10 @@ mod tests {
             &[text_arg("My.Server"), text_arg(""), text_arg("TOPIC")],
             &MockResolver,
             Some(&RecordingProvider {
-                expected: RtdProviderResult::Value(EvalValue::Number(42.0)),
+                expected: RtdProviderResult::Value(FunctionValue::Number(42.0)),
             }),
         );
-        assert_eq!(got, Ok(EvalValue::Number(42.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(42.0)));
     }
 
     #[test]
@@ -219,7 +223,7 @@ mod tests {
                 expected: RtdProviderResult::NoValueYet,
             }),
         );
-        assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::NA)));
+        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::NA)));
     }
 
     #[test]
@@ -231,7 +235,10 @@ mod tests {
                 expected: RtdProviderResult::CapabilityDenied,
             }),
         );
-        assert_eq!(blocked, Ok(EvalValue::Error(WorksheetErrorCode::Blocked)));
+        assert_eq!(
+            blocked,
+            Ok(FunctionValue::Error(WorksheetErrorCode::Blocked))
+        );
 
         let connect = eval_rtd_surface(
             &[text_arg("My.Server"), text_arg(""), text_arg("TOPIC")],
@@ -240,24 +247,30 @@ mod tests {
                 expected: RtdProviderResult::ConnectionFailed,
             }),
         );
-        assert_eq!(connect, Ok(EvalValue::Error(WorksheetErrorCode::Connect)));
+        assert_eq!(
+            connect,
+            Ok(FunctionValue::Error(WorksheetErrorCode::Connect))
+        );
     }
 
     #[test]
     fn eval_rtd_surface_supports_array_payload_projection() {
-        let array = EvalArray::new(
+        let array = FunctionArray::new(
             ArrayShape { rows: 1, cols: 2 },
-            vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
+            vec![
+                FunctionArrayCell::Number(1.0),
+                FunctionArrayCell::Number(2.0),
+            ],
         )
         .expect("array");
         let got = eval_rtd_surface(
             &[text_arg("My.Server"), text_arg(""), text_arg("TOPIC")],
             &MockResolver,
             Some(&RecordingProvider {
-                expected: RtdProviderResult::Value(EvalValue::Array(array.clone())),
+                expected: RtdProviderResult::Value(FunctionValue::Array(array.clone())),
             }),
         );
-        assert_eq!(got, Ok(EvalValue::Array(array)));
+        assert_eq!(got, Ok(FunctionValue::Array(array)));
     }
 
     #[test]

@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, correlation_from_pairs};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const PEARSON_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PEARSON",
@@ -33,9 +33,9 @@ pub enum PearsonEvalError {
 }
 
 pub fn eval_pearson_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, PearsonEvalError> {
+) -> Result<FunctionValue, PearsonEvalError> {
     let argc = args.len();
     if !PEARSON_META.arity.accepts(argc) {
         return Err(PearsonEvalError::ArityMismatch {
@@ -48,8 +48,8 @@ pub fn eval_pearson_surface(
     let ys = expand_aggregate_arg(&args[1], resolver).map_err(PearsonEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(PearsonEvalError::Coercion)?;
     match correlation_from_pairs(&pairs) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

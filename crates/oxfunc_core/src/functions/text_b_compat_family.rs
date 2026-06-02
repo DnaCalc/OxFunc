@@ -11,7 +11,7 @@ use crate::functions::text_slice_family::{
     TextSliceEvalError, eval_left_surface, eval_mid_surface, eval_right_surface,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const TEXT_B_COMPAT_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT_B_COMPAT_BASE",
@@ -69,23 +69,23 @@ pub enum TextBCompatEvalError {
 }
 
 pub fn eval_findb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_find_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }
 
 pub fn eval_leftb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_left_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_lenb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -101,37 +101,37 @@ pub fn eval_lenb_surface(
             }
             let text = coerce_prepared_to_text(&prepared[0])
                 .map_err(|e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)))?;
-            Ok(EvalValue::Number(text.len_utf16_code_units() as f64))
+            Ok(FunctionValue::Number(text.len_utf16_code_units() as f64))
         },
         |e| TextBCompatEvalError::Slice(TextSliceEvalError::Coercion(e)),
     )
 }
 
 pub fn eval_midb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_mid_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_replaceb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_replace_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }
 
 pub fn eval_rightb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_right_surface(args, resolver).map_err(TextBCompatEvalError::Slice)
 }
 
 pub fn eval_searchb_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextBCompatEvalError> {
+) -> Result<FunctionValue, TextBCompatEvalError> {
     eval_search_surface(args, resolver).map_err(TextBCompatEvalError::Search)
 }
 
@@ -171,24 +171,24 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn txt(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn txt(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
     #[test]
@@ -207,37 +207,37 @@ mod tests {
         let resolver = NoResolver;
         assert_eq!(
             eval_lenb_surface(&[txt("A😀B")], &resolver),
-            Ok(EvalValue::Number(4.0))
+            Ok(FunctionValue::Number(4.0))
         );
         assert_eq!(
             eval_leftb_surface(&[txt("abcdef"), num(3.0)], &resolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "abc".encode_utf16().collect(),
             )))
         );
         assert_eq!(
             eval_rightb_surface(&[txt("abcdef"), num(2.0)], &resolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "ef".encode_utf16().collect(),
             )))
         );
         assert_eq!(
             eval_midb_surface(&[txt("abcdef"), num(2.0), num(3.0)], &resolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "bcd".encode_utf16().collect(),
             )))
         );
         assert_eq!(
             eval_findb_surface(&[txt("cd"), txt("abcdef")], &resolver),
-            Ok(EvalValue::Number(3.0))
+            Ok(FunctionValue::Number(3.0))
         );
         assert_eq!(
             eval_searchb_surface(&[txt("CD"), txt("abcdef")], &resolver),
-            Ok(EvalValue::Number(3.0))
+            Ok(FunctionValue::Number(3.0))
         );
         assert_eq!(
             eval_replaceb_surface(&[txt("abcdef"), num(2.0), num(3.0), txt("ZZ")], &resolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "aZZef".encode_utf16().collect(),
             )))
         );

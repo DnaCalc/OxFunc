@@ -3,7 +3,9 @@ use oxfunc_core::resolver::{
     ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
     ReferenceSystemProvider,
 };
-use oxfunc_core::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use oxfunc_core::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 struct DummyResolver;
 
@@ -15,20 +17,22 @@ impl ReferenceSystemProvider for DummyResolver {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, ReferenceResolutionError> {
+    ) -> Result<FunctionValue, ReferenceResolutionError> {
         Err(ReferenceResolutionError::UnresolvedReference {
-            target: request.reference.target.clone(),
+            target: request.reference.target().to_string(),
         })
     }
 }
 
-fn array_arg(values: &[f64]) -> CallArgValue {
+fn array_arg(values: &[f64]) -> FunctionArg {
     let row = values
         .iter()
         .copied()
-        .map(ArrayCellValue::Number)
+        .map(FunctionArrayCell::Number)
         .collect::<Vec<_>>();
-    CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(vec![row]).unwrap()))
+    FunctionArg::Eval(FunctionValue::Array(
+        FunctionArray::from_rows(vec![row]).unwrap(),
+    ))
 }
 
 fn worksheet_error_text(code: WorksheetErrorCode) -> &'static str {
@@ -113,12 +117,12 @@ fn main() {
                 &[
                     value_arg.clone(),
                     date_arg.clone(),
-                    CallArgValue::Eval(EvalValue::Number(*guess)),
+                    FunctionArg::Eval(FunctionValue::Number(*guess)),
                 ],
                 &resolver,
             ) {
-                Ok(EvalValue::Number(v)) => print_num(case_id, *guess, v),
-                Ok(EvalValue::Error(code)) => print_ws_error(case_id, *guess, code),
+                Ok(FunctionValue::Number(v)) => print_num(case_id, *guess, v),
+                Ok(FunctionValue::Error(code)) => print_ws_error(case_id, *guess, code),
                 Err(err) => match err {
                     oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(
                         code,

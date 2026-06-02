@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionValue, WorksheetErrorCode};
 
 pub const TRUE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRUE",
@@ -19,10 +19,10 @@ pub const TRUE_META: FunctionMeta = FunctionMeta {
 };
 
 pub fn eval_true_surface(
-    args: &[crate::value::CallArgValue],
-) -> Result<EvalValue, WorksheetErrorCode> {
+    args: &[crate::value::FunctionArg],
+) -> Result<FunctionValue, WorksheetErrorCode> {
     if !args.is_empty() {
         return Err(WorksheetErrorCode::Value);
     }
-    Ok(EvalValue::Logical(true))
+    Ok(FunctionValue::Logical(true))
 }

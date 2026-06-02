@@ -4,13 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
+    PreparedValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::functions::chi_f_t_family::t_inv_2t_kernel;
 use crate::functions::normal_dist_common::erf_approx;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
 
 pub const CONFIDENCE_T_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CONFIDENCE.T",
@@ -52,13 +52,13 @@ pub enum ConfidenceTestEvalError {
 }
 
 fn scalar_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, ConfidenceTestEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(ConfidenceTestEvalError::Coercion)?;
     match prepared {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         other => coerce_prepared_to_number(&other).map_err(ConfidenceTestEvalError::Coercion),
     }
 }
@@ -68,47 +68,49 @@ fn standard_normal_cdf(x: f64) -> f64 {
 }
 
 fn collect_numeric_values_from_eval(
-    value: EvalValue,
+    value: FunctionValue,
     out: &mut Vec<f64>,
 ) -> Result<(), ConfidenceTestEvalError> {
     match value {
-        EvalValue::Array(array) => {
+        FunctionValue::Array(array) => {
             for cell in array.iter_row_major() {
                 match cell {
-                    ArrayCellValue::Number(n) => out.push(*n),
-                    ArrayCellValue::Error(code) => {
+                    FunctionArrayCell::Number(n) => out.push(*n),
+                    FunctionArrayCell::Error(code) => {
                         return Err(ConfidenceTestEvalError::Domain(*code));
                     }
-                    ArrayCellValue::Text(_)
-                    | ArrayCellValue::Logical(_)
-                    | ArrayCellValue::EmptyCell => {}
+                    FunctionArrayCell::Text(_)
+                    | FunctionArrayCell::Logical(_)
+                    | FunctionArrayCell::EmptyCell => {}
                 }
             }
             Ok(())
         }
-        EvalValue::Number(n) => {
+        FunctionValue::Number(n) => {
             out.push(n);
             Ok(())
         }
-        EvalValue::Text(_) | EvalValue::Logical(_) => Ok(()),
-        EvalValue::Error(code) => Err(ConfidenceTestEvalError::Domain(code)),
-        EvalValue::Reference(_) => Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value)),
+        FunctionValue::Text(_) | FunctionValue::Logical(_) => Ok(()),
+        FunctionValue::Error(code) => Err(ConfidenceTestEvalError::Domain(code)),
+        FunctionValue::Reference(_) => {
+            Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value))
+        }
         _ => Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
 fn collect_numeric_values(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, ConfidenceTestEvalError> {
     let eval = match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
             resolve_eval_value(resolver, reference)
                 .map_err(|e| ConfidenceTestEvalError::Coercion(CoercionError::RefResolution(e)))?
         }
-        CallArgValue::Eval(value) => value.clone(),
-        CallArgValue::MissingArg | CallArgValue::EmptyCell => EvalValue::Number(0.0),
+        FunctionArg::Eval(value) => value.clone(),
+        FunctionArg::MissingArg | FunctionArg::EmptyCell => FunctionValue::Number(0.0),
     };
     let mut out = Vec::new();
     collect_numeric_values_from_eval(eval, &mut out)?;
@@ -151,9 +153,9 @@ pub fn z_test_kernel(
 }
 
 pub fn eval_confidence_t_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ConfidenceTestEvalError> {
+) -> Result<FunctionValue, ConfidenceTestEvalError> {
     if !CONFIDENCE_T_META.arity.accepts(args.len()) {
         return Err(ConfidenceTestEvalError::ArityMismatch {
             expected_min: CONFIDENCE_T_META.arity.min,
@@ -166,14 +168,14 @@ pub fn eval_confidence_t_surface(
         scalar_number(&args[1], resolver)?,
         scalar_number(&args[2], resolver)?,
     )
-    .map(EvalValue::Number)
+    .map(FunctionValue::Number)
     .map_err(ConfidenceTestEvalError::Domain)
 }
 
 pub fn eval_z_test_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ConfidenceTestEvalError> {
+) -> Result<FunctionValue, ConfidenceTestEvalError> {
     if !Z_TEST_META.arity.accepts(args.len()) {
         return Err(ConfidenceTestEvalError::ArityMismatch {
             expected_min: Z_TEST_META.arity.min,
@@ -189,7 +191,7 @@ pub fn eval_z_test_surface(
             .map(|arg| scalar_number(arg, resolver))
             .transpose()?,
     )
-    .map(EvalValue::Number)
+    .map(FunctionValue::Number)
     .map_err(ConfidenceTestEvalError::Domain)
 }
 
@@ -205,7 +207,7 @@ pub fn map_confidence_test_error_to_ws(error: &ConfidenceTestEvalError) -> Works
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::value::{EvalArray, ExcelText, ReferenceLike};
+    use crate::value::{ExcelText, FunctionArray, ReferenceLike};
 
     struct NoResolver;
 
@@ -217,24 +219,24 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            assert_eq!(reference.target, "A1:A5");
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(3.0)],
-                    vec![ArrayCellValue::Number(6.0)],
-                    vec![ArrayCellValue::Number(7.0)],
-                    vec![ArrayCellValue::Number(8.0)],
-                    vec![ArrayCellValue::Number(6.0)],
+            assert_eq!(reference.target(), "A1:A5");
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(3.0)],
+                    vec![FunctionArrayCell::Number(6.0)],
+                    vec![FunctionArrayCell::Number(7.0)],
+                    vec![FunctionArrayCell::Number(8.0)],
+                    vec![FunctionArrayCell::Number(6.0)],
                 ])
                 .unwrap(),
             ))
         }
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
     #[test]
@@ -270,7 +272,7 @@ mod tests {
     fn z_test_surface_collects_numeric_reference_values() {
         let got = eval_z_test_surface(
             &[
-                CallArgValue::Reference(ReferenceLike::new(
+                FunctionArg::Reference(ReferenceLike::new(
                     crate::value::ReferenceKind::Area,
                     "A1:A5".to_string(),
                 )),
@@ -280,14 +282,16 @@ mod tests {
             &NoResolver,
         )
         .unwrap();
-        assert!(matches!(got, EvalValue::Number(n) if (n - 0.0014345563960383074).abs() < 1e-12));
+        assert!(
+            matches!(got, FunctionValue::Number(n) if (n - 0.0014345563960383074).abs() < 1e-12)
+        );
     }
 
     #[test]
     fn confidence_surface_accepts_numeric_text() {
         let got = eval_confidence_t_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "0.05".encode_utf16().collect(),
                 ))),
                 num(2.5),
@@ -296,6 +300,6 @@ mod tests {
             &NoResolver,
         )
         .unwrap();
-        assert!(matches!(got, EvalValue::Number(n) if (n - 0.7104921387393248).abs() < 1e-9));
+        assert!(matches!(got, FunctionValue::Number(n) if (n - 0.7104921387393248).abs() < 1e-9));
     }
 }

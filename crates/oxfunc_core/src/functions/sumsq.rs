@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::dual_policy_numeric_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const SUMSQ_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMSQ",
@@ -32,20 +32,20 @@ pub enum SumsqEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_sumsq_aggregate(args: &[AggregatePreparedValue]) -> Result<EvalValue, SumsqEvalError> {
+fn eval_sumsq_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue, SumsqEvalError> {
     let mut acc = 0.0;
     for arg in args {
         if let Some(value) = dual_policy_numeric_value(arg).map_err(SumsqEvalError::Coercion)? {
             acc += value * value;
         }
     }
-    Ok(EvalValue::Number(acc))
+    Ok(FunctionValue::Number(acc))
 }
 
 pub fn eval_sumsq_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SumsqEvalError> {
+) -> Result<FunctionValue, SumsqEvalError> {
     let argc = args.len();
     if !SUMSQ_META.arity.accepts(argc) {
         return Err(SumsqEvalError::ArityMismatch {
@@ -74,10 +74,10 @@ pub fn map_sumsq_error_to_ws(e: &SumsqEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -88,11 +88,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -101,9 +101,9 @@ mod tests {
     #[test]
     fn eval_sumsq_accumulates_direct_numbers() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::Eval(EvalValue::Number(4.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(4.0)),
         ];
         let got = eval_sumsq_surface(
             &args,
@@ -111,14 +111,14 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(29.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(29.0)));
     }
 
     #[test]
     fn eval_sumsq_counts_direct_numeric_text_and_logical() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Logical(true)),
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArg::Eval(FunctionValue::Logical(true)),
+            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -128,12 +128,12 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
     }
 
     #[test]
     fn eval_sumsq_rejects_direct_non_numeric_text() {
-        let args = vec![CallArgValue::Eval(EvalValue::Text(
+        let args = vec![FunctionArg::Eval(FunctionValue::Text(
             ExcelText::from_utf16_code_units("x".encode_utf16().collect()),
         ))];
         let got = eval_sumsq_surface(
@@ -147,40 +147,40 @@ mod tests {
 
     #[test]
     fn eval_sumsq_ignores_reference_derived_text_and_logical() {
-        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+        let args = vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_sumsq_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        ArrayCellValue::Logical(true),
+                        FunctionArrayCell::Logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
     }
 
     #[test]
     fn eval_sumsq_propagates_reference_derived_errors() {
-        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+        let args = vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_sumsq_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(2.0),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                resolved_value: Some(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(2.0),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
                     ]])
                     .unwrap(),
                 )),

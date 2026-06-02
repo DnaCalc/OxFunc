@@ -10,7 +10,9 @@ use oxfunc_core::resolver::{
     ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
     ReferenceSystemProvider,
 };
-use oxfunc_core::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use oxfunc_core::value::{
+    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
+};
 
 struct DummyResolver;
 
@@ -22,9 +24,9 @@ impl ReferenceSystemProvider for DummyResolver {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, ReferenceResolutionError> {
+    ) -> Result<FunctionValue, ReferenceResolutionError> {
         Err(ReferenceResolutionError::UnresolvedReference {
-            target: request.reference.target.clone(),
+            target: request.reference.target().to_string(),
         })
     }
 }
@@ -33,13 +35,15 @@ fn serial(y: i64, m: i64, d: i64) -> f64 {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap()
 }
 
-fn array_arg(values: &[f64]) -> CallArgValue {
+fn array_arg(values: &[f64]) -> FunctionArg {
     let row = values
         .iter()
         .copied()
-        .map(ArrayCellValue::Number)
+        .map(FunctionArrayCell::Number)
         .collect::<Vec<_>>();
-    CallArgValue::Eval(EvalValue::Array(EvalArray::from_rows(vec![row]).unwrap()))
+    FunctionArg::Eval(FunctionValue::Array(
+        FunctionArray::from_rows(vec![row]).unwrap(),
+    ))
 }
 
 fn print_num(case_id: &str, source: &str, value: f64) {
@@ -104,12 +108,14 @@ fn main() {
         &[
             xirr_values_1.clone(),
             xirr_dates_1.clone(),
-            CallArgValue::Eval(EvalValue::Number(-0.1)),
+            FunctionArg::Eval(FunctionValue::Number(-0.1)),
         ],
         &resolver,
     ) {
-        Ok(EvalValue::Number(v)) => print_num("xirr_negative_rate_case1_guess_neg", "oxfunc", v),
-        Ok(EvalValue::Error(code)) => {
+        Ok(FunctionValue::Number(v)) => {
+            print_num("xirr_negative_rate_case1_guess_neg", "oxfunc", v)
+        }
+        Ok(FunctionValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case1_guess_neg", "oxfunc", code)
         }
         Err(err) => match err {
@@ -127,12 +133,14 @@ fn main() {
         &[
             xirr_values_2.clone(),
             xirr_dates_2.clone(),
-            CallArgValue::Eval(EvalValue::Number(-0.1)),
+            FunctionArg::Eval(FunctionValue::Number(-0.1)),
         ],
         &resolver,
     ) {
-        Ok(EvalValue::Number(v)) => print_num("xirr_negative_rate_case2_guess_neg", "oxfunc", v),
-        Ok(EvalValue::Error(code)) => {
+        Ok(FunctionValue::Number(v)) => {
+            print_num("xirr_negative_rate_case2_guess_neg", "oxfunc", v)
+        }
+        Ok(FunctionValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case2_guess_neg", "oxfunc", code)
         }
         Err(err) => match err {
@@ -147,12 +155,14 @@ fn main() {
         &[
             xirr_values_2,
             xirr_dates_2,
-            CallArgValue::Eval(EvalValue::Number(0.1)),
+            FunctionArg::Eval(FunctionValue::Number(0.1)),
         ],
         &resolver,
     ) {
-        Ok(EvalValue::Number(v)) => print_num("xirr_negative_rate_case2_guess_pos", "oxfunc", v),
-        Ok(EvalValue::Error(code)) => {
+        Ok(FunctionValue::Number(v)) => {
+            print_num("xirr_negative_rate_case2_guess_pos", "oxfunc", v)
+        }
+        Ok(FunctionValue::Error(code)) => {
             print_ws_error("xirr_negative_rate_case2_guess_pos", "oxfunc", code)
         }
         Err(err) => match err {

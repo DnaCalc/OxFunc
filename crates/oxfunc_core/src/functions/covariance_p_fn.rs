@@ -8,7 +8,7 @@ use crate::functions::paired_stats_common::{
     CovarianceDivisor, collect_paired_values, covariance_from_pairs,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const COVARIANCE_P_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COVARIANCE.P",
@@ -35,9 +35,9 @@ pub enum CovariancePEvalError {
 }
 
 pub fn eval_covariance_p_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CovariancePEvalError> {
+) -> Result<FunctionValue, CovariancePEvalError> {
     let argc = args.len();
     if !COVARIANCE_P_META.arity.accepts(argc) {
         return Err(CovariancePEvalError::ArityMismatch {
@@ -50,8 +50,8 @@ pub fn eval_covariance_p_surface(
     let ys = expand_aggregate_arg(&args[1], resolver).map_err(CovariancePEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(CovariancePEvalError::Coercion)?;
     match covariance_from_pairs(&pairs, CovarianceDivisor::Population) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

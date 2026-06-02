@@ -1,5 +1,5 @@
 use crate::resolver::{ReferenceResolutionError, ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{CalcValue, CallArgValue, CoreValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AggregateScanPolicy {
@@ -31,19 +31,19 @@ fn parse_excel_number(text: &str) -> Option<f64> {
 }
 
 pub fn coerce_eval_to_number(
-    value: &EvalValue,
+    value: &FunctionValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, CoercionError> {
     match value {
-        EvalValue::Number(n) => Ok(*n),
-        EvalValue::Logical(b) => Ok(if *b { 1.0 } else { 0.0 }),
-        EvalValue::Text(t) => {
+        FunctionValue::Number(n) => Ok(*n),
+        FunctionValue::Logical(b) => Ok(if *b { 1.0 } else { 0.0 }),
+        FunctionValue::Text(t) => {
             let raw = t.to_string_lossy();
             parse_excel_number(&raw).ok_or(CoercionError::NonNumericText(raw))
         }
-        EvalValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
-        EvalValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
-        EvalValue::Reference(reference) => {
+        FunctionValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        FunctionValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        FunctionValue::Reference(reference) => {
             let resolved =
                 resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
             coerce_eval_to_number(&resolved, resolver)
@@ -69,14 +69,14 @@ pub fn coerce_calc_scalar_to_number(value: &CalcValue) -> Result<f64, CoercionEr
 }
 
 pub fn coerce_arg_to_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, CoercionError> {
     match arg {
-        CallArgValue::Eval(eval) => coerce_eval_to_number(eval, resolver),
-        CallArgValue::MissingArg => Err(CoercionError::MissingArg),
-        CallArgValue::EmptyCell => Err(CoercionError::EmptyCell),
-        CallArgValue::Reference(reference) => {
+        FunctionArg::Eval(eval) => coerce_eval_to_number(eval, resolver),
+        FunctionArg::MissingArg => Err(CoercionError::MissingArg),
+        FunctionArg::EmptyCell => Err(CoercionError::EmptyCell),
+        FunctionArg::Reference(reference) => {
             let resolved =
                 resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
             coerce_eval_to_number(&resolved, resolver)
@@ -85,7 +85,7 @@ pub fn coerce_arg_to_number(
 }
 
 pub fn coerce_direct_args_to_numbers(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, CoercionError> {
     args.iter()
@@ -94,7 +94,7 @@ pub fn coerce_direct_args_to_numbers(
 }
 
 pub fn aggregate_scan_sum(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     policy: AggregateScanPolicy,
 ) -> Result<f64, CoercionError> {
@@ -116,11 +116,11 @@ pub fn aggregate_scan_sum(
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{CalcValue, EvalValue, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcValue, ExcelText, FunctionValue, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -131,11 +131,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -150,7 +150,7 @@ mod tests {
 
     #[test]
     fn coerce_text_numeric_to_number() {
-        let value = EvalValue::Text(ExcelText::from_utf16_code_units(
+        let value = FunctionValue::Text(ExcelText::from_utf16_code_units(
             "1".encode_utf16().collect(),
         ));
         let got = coerce_eval_to_number(&value, &resolver());
@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     fn coerce_text_non_numeric_fails() {
-        let value = EvalValue::Text(ExcelText::from_utf16_code_units(
+        let value = FunctionValue::Text(ExcelText::from_utf16_code_units(
             "asd".encode_utf16().collect(),
         ));
         let got = coerce_eval_to_number(&value, &resolver());
@@ -205,13 +205,13 @@ mod tests {
 
     #[test]
     fn missing_arg_is_distinct_error() {
-        let got = coerce_arg_to_number(&CallArgValue::MissingArg, &resolver());
+        let got = coerce_arg_to_number(&FunctionArg::MissingArg, &resolver());
         assert_eq!(got, Err(CoercionError::MissingArg));
     }
 
     #[test]
     fn empty_cell_is_distinct_error() {
-        let got = coerce_arg_to_number(&CallArgValue::EmptyCell, &resolver());
+        let got = coerce_arg_to_number(&FunctionArg::EmptyCell, &resolver());
         assert_eq!(got, Err(CoercionError::EmptyCell));
     }
 
@@ -219,9 +219,9 @@ mod tests {
     fn reference_is_dereferenced_via_resolver() {
         let r = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved_value: Some(EvalValue::Number(2.5)),
+            resolved_value: Some(FunctionValue::Number(2.5)),
         };
-        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
+        let arg = FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
 
         let got = coerce_arg_to_number(&arg, &r);
         assert_eq!(got, Ok(2.5));
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn unresolved_reference_propagates_resolution_error() {
-        let arg = CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
+        let arg = FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
 
         let got = coerce_arg_to_number(&arg, &resolver());
         assert_eq!(
@@ -245,11 +245,11 @@ mod tests {
     #[test]
     fn aggregate_policy_contrast_direct_vs_scan() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(1.0)),
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "asd".encode_utf16().collect(),
             ))),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
         ];
 
         let strict = aggregate_scan_sum(&args, &resolver(), AggregateScanPolicy::StrictAllNumeric);

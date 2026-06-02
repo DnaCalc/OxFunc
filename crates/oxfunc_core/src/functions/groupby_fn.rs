@@ -5,7 +5,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+    PreparedValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
 };
 use crate::functions::callable_helpers::{
     CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
@@ -19,7 +19,7 @@ use crate::functions::group_pivot_common::{
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CalcValue, CallArgValue, CallableValue, EvalArray, EvalValue,
+    CalcValue, CallableValue, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue,
     WorksheetErrorCode,
 };
 
@@ -47,10 +47,10 @@ fn surface_arity_error(actual: usize) -> LambdaHelperEvalError {
 
 #[derive(Debug, Clone)]
 struct LeafGroup {
-    key_cells: Vec<ArrayCellValue>,
+    key_cells: Vec<FunctionArrayCell>,
     key: Vec<CellKey>,
     row_indices: Vec<usize>,
-    aggregates: Vec<ArrayCellValue>,
+    aggregates: Vec<FunctionArrayCell>,
 }
 
 fn header_mode_shows_output(
@@ -67,7 +67,7 @@ fn header_mode_shows_output(
 }
 
 fn parse_total_depth(
-    prepared: Option<&PreparedArgValue>,
+    prepared: Option<&PreparedValue>,
     relationship: FieldRelationship,
     row_cols: usize,
 ) -> Result<i32, LambdaHelperEvalError> {
@@ -90,10 +90,10 @@ fn parse_total_depth(
 }
 
 fn extract_filtered_rows(
-    row_fields: &EvalArray,
-    values: &EvalArray,
+    row_fields: &FunctionArray,
+    values: &FunctionArray,
     filter: Option<&[bool]>,
-) -> Result<(Vec<Vec<ArrayCellValue>>, Vec<Vec<ArrayCellValue>>), LambdaHelperEvalError> {
+) -> Result<(Vec<Vec<FunctionArrayCell>>, Vec<Vec<FunctionArrayCell>>), LambdaHelperEvalError> {
     if row_fields.shape().rows != values.shape().rows {
         return Err(LambdaHelperEvalError::Invocation(
             crate::functions::callable_helpers::CallableInvocationError::Worksheet(
@@ -113,28 +113,28 @@ fn extract_filtered_rows(
     Ok((key_rows, value_rows))
 }
 
-fn compare_cell(a: &ArrayCellValue, b: &ArrayCellValue) -> Ordering {
+fn compare_cell(a: &FunctionArrayCell, b: &FunctionArrayCell) -> Ordering {
     match (a, b) {
-        (ArrayCellValue::Number(x), ArrayCellValue::Number(y)) => {
+        (FunctionArrayCell::Number(x), FunctionArrayCell::Number(y)) => {
             x.partial_cmp(y).unwrap_or(Ordering::Equal)
         }
-        (ArrayCellValue::Text(x), ArrayCellValue::Text(y)) => {
+        (FunctionArrayCell::Text(x), FunctionArrayCell::Text(y)) => {
             x.to_string_lossy().cmp(&y.to_string_lossy())
         }
-        (ArrayCellValue::Logical(x), ArrayCellValue::Logical(y)) => x.cmp(y),
-        (ArrayCellValue::EmptyCell, ArrayCellValue::EmptyCell) => Ordering::Equal,
-        (ArrayCellValue::Error(x), ArrayCellValue::Error(y)) => (*x as u8).cmp(&(*y as u8)),
+        (FunctionArrayCell::Logical(x), FunctionArrayCell::Logical(y)) => x.cmp(y),
+        (FunctionArrayCell::EmptyCell, FunctionArrayCell::EmptyCell) => Ordering::Equal,
+        (FunctionArrayCell::Error(x), FunctionArrayCell::Error(y)) => (*x as u8).cmp(&(*y as u8)),
         _ => sort_rank(a).cmp(&sort_rank(b)),
     }
 }
 
-fn sort_rank(cell: &ArrayCellValue) -> u8 {
+fn sort_rank(cell: &FunctionArrayCell) -> u8 {
     match cell {
-        ArrayCellValue::Number(_) => 0,
-        ArrayCellValue::Text(_) => 1,
-        ArrayCellValue::Logical(_) => 2,
-        ArrayCellValue::Error(_) => 3,
-        ArrayCellValue::EmptyCell => 4,
+        FunctionArrayCell::Number(_) => 0,
+        FunctionArrayCell::Text(_) => 1,
+        FunctionArrayCell::Logical(_) => 2,
+        FunctionArrayCell::Error(_) => 3,
+        FunctionArrayCell::EmptyCell => 4,
     }
 }
 
@@ -167,8 +167,8 @@ fn apply_sort(groups: &mut [LeafGroup], sort_orders: &[i32], row_field_cols: usi
 }
 
 fn build_leaf_groups(
-    key_rows: &[Vec<ArrayCellValue>],
-    value_rows: &[Vec<ArrayCellValue>],
+    key_rows: &[Vec<FunctionArrayCell>],
+    value_rows: &[Vec<FunctionArrayCell>],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
 ) -> Result<Vec<LeafGroup>, LambdaHelperEvalError> {
@@ -206,11 +206,11 @@ fn build_leaf_groups(
 }
 
 fn subtotal_row(
-    prefix: &[ArrayCellValue],
+    prefix: &[FunctionArrayCell],
     total_cols: usize,
-    aggregates: Vec<ArrayCellValue>,
-) -> Vec<ArrayCellValue> {
-    let mut row = vec![ArrayCellValue::EmptyCell; total_cols];
+    aggregates: Vec<FunctionArrayCell>,
+) -> Vec<FunctionArrayCell> {
+    let mut row = vec![FunctionArrayCell::EmptyCell; total_cols];
     for (idx, cell) in prefix.iter().enumerate() {
         row[idx] = cell.clone();
     }
@@ -222,14 +222,16 @@ fn subtotal_row(
 
 fn build_output_rows(
     groups: &[LeafGroup],
-    value_rows: &[Vec<ArrayCellValue>],
+    value_rows: &[Vec<FunctionArrayCell>],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
     total_depth: i32,
     relationship: FieldRelationship,
-) -> Result<Vec<Vec<ArrayCellValue>>, LambdaHelperEvalError> {
+) -> Result<Vec<Vec<FunctionArrayCell>>, LambdaHelperEvalError> {
     if groups.is_empty() {
-        return Ok(vec![vec![ArrayCellValue::Error(WorksheetErrorCode::Calc)]]);
+        return Ok(vec![vec![FunctionArrayCell::Error(
+            WorksheetErrorCode::Calc,
+        )]]);
     }
 
     let row_field_cols = groups[0].key_cells.len();
@@ -272,7 +274,7 @@ fn build_output_rows(
             let prefix_cells = vec![groups[start].key_cells[0].clone()];
             let mut subtotal = subtotal_row(&prefix_cells, total_cols, subtotal_values);
             if row_field_cols > 1 {
-                subtotal[1] = ArrayCellValue::EmptyCell;
+                subtotal[1] = FunctionArrayCell::EmptyCell;
             }
             expanded.push(subtotal);
         }
@@ -298,7 +300,7 @@ fn build_output_rows(
         } else {
             "Total"
         };
-        let mut grand = vec![ArrayCellValue::EmptyCell; total_cols];
+        let mut grand = vec![FunctionArrayCell::EmptyCell; total_cols];
         grand[0] = text_cell(label);
         for (idx, cell) in grand_values.into_iter().enumerate() {
             grand[row_field_cols + idx] = cell;
@@ -313,7 +315,7 @@ pub fn eval_groupby_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<EvalValue, LambdaHelperEvalError> {
+) -> Result<FunctionValue, LambdaHelperEvalError> {
     if !GROUPBY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(args.len()));
     }
@@ -321,17 +323,16 @@ pub fn eval_groupby_calc_surface(
     let prepared_calc =
         prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_calc_callable(&prepared_calc[2])?;
-    let prepared: Vec<PreparedArgValue> =
-        prepared_calc.iter().map(prepared_from_calc_value).collect();
+    let prepared: Vec<PreparedValue> = prepared_calc.iter().map(prepared_from_calc_value).collect();
 
     eval_groupby_prepared(&prepared, &callable, invoker)
 }
 
 pub fn eval_groupby_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<EvalValue, LambdaHelperEvalError> {
+) -> Result<FunctionValue, LambdaHelperEvalError> {
     if !GROUPBY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(args.len()));
     }
@@ -344,10 +345,10 @@ pub fn eval_groupby_surface(
 }
 
 fn eval_groupby_prepared(
-    prepared: &[PreparedArgValue],
+    prepared: &[PreparedValue],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<EvalValue, LambdaHelperEvalError> {
+) -> Result<FunctionValue, LambdaHelperEvalError> {
     let field_headers_mode = parse_field_headers_mode(prepared.get(3))?;
     let relationship = parse_field_relationship(prepared.get(7))?;
 
@@ -401,16 +402,16 @@ fn eval_groupby_prepared(
         relationship,
     )?);
 
-    Ok(EvalValue::Array(
-        EvalArray::from_rows(rows).expect("groupby output is rectangular"),
+    Ok(FunctionValue::Array(
+        FunctionArray::from_rows(rows).expect("groupby output is rectangular"),
     ))
 }
 
 pub fn eval_groupby_surface_ws(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<EvalValue, WorksheetErrorCode> {
+) -> Result<FunctionValue, WorksheetErrorCode> {
     eval_groupby_surface(args, resolver, invoker).map_err(|err| map_lambda_helper_error_to_ws(&err))
 }
 
@@ -419,7 +420,7 @@ mod tests {
     use super::*;
     use std::rc::Rc;
 
-    use crate::functions::adapters::PreparedArgValue;
+    use crate::functions::adapters::PreparedValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{CallableArityShape, ExcelText, OpaqueCallable};
@@ -443,11 +444,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -457,27 +458,27 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedArgValue],
-        ) -> Result<PreparedArgValue, CallableInvocationError> {
+            args: &[PreparedValue],
+        ) -> Result<PreparedValue, CallableInvocationError> {
             match callable.summary.as_str() {
                 "helper.sum_array" => match &args[0] {
-                    PreparedArgValue::Eval(EvalValue::Array(array)) => {
+                    PreparedValue::Eval(FunctionValue::Array(array)) => {
                         let mut total = 0.0;
                         for cell in array.iter_row_major() {
                             match cell {
-                                ArrayCellValue::Number(n) => total += n,
-                                ArrayCellValue::Text(_) | ArrayCellValue::EmptyCell => {}
-                                ArrayCellValue::Logical(_) => {
+                                FunctionArrayCell::Number(n) => total += n,
+                                FunctionArrayCell::Text(_) | FunctionArrayCell::EmptyCell => {}
+                                FunctionArrayCell::Logical(_) => {
                                     return Err(CallableInvocationError::Worksheet(
                                         WorksheetErrorCode::Value,
                                     ));
                                 }
-                                ArrayCellValue::Error(code) => {
+                                FunctionArrayCell::Error(code) => {
                                     return Err(CallableInvocationError::Worksheet(*code));
                                 }
                             }
                         }
-                        Ok(PreparedArgValue::Eval(EvalValue::Number(total)))
+                        Ok(PreparedValue::Eval(FunctionValue::Number(total)))
                     }
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
@@ -502,8 +503,8 @@ mod tests {
         })
     }
 
-    fn text_cell_value(s: &str) -> ArrayCellValue {
-        ArrayCellValue::Text(text(s))
+    fn text_cell_value(s: &str) -> FunctionArrayCell {
+        FunctionArrayCell::Text(text(s))
     }
 
     #[test]
@@ -514,37 +515,37 @@ mod tests {
 
     #[test]
     fn groupby_default_lane_matches_empirical_single_axis_sum() {
-        let row_fields = EvalArray::from_rows(vec![
+        let row_fields = FunctionArray::from_rows(vec![
             vec![text_cell_value("2024")],
             vec![text_cell_value("2024")],
             vec![text_cell_value("2025")],
             vec![text_cell_value("2025")],
         ])
         .unwrap();
-        let values = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::Number(10.0)],
-            vec![ArrayCellValue::Number(20.0)],
-            vec![ArrayCellValue::Number(30.0)],
-            vec![ArrayCellValue::Number(40.0)],
+        let values = FunctionArray::from_rows(vec![
+            vec![FunctionArrayCell::Number(10.0)],
+            vec![FunctionArrayCell::Number(20.0)],
+            vec![FunctionArrayCell::Number(30.0)],
+            vec![FunctionArrayCell::Number(40.0)],
         ])
         .unwrap();
         let got = eval_groupby_calc_surface(
             &[
-                CalcValue::from(EvalValue::Array(row_fields)),
-                CalcValue::from(EvalValue::Array(values)),
+                CalcValue::from(FunctionValue::Array(row_fields)),
+                CalcValue::from(FunctionValue::Array(values)),
                 callable_arg(),
             ],
             &NoResolver,
             &TestInvoker,
         )
         .unwrap();
-        let EvalValue::Array(array) = got else {
+        let FunctionValue::Array(array) = got else {
             panic!("expected array");
         };
-        let expected = EvalArray::from_rows(vec![
-            vec![text_cell_value("2024"), ArrayCellValue::Number(30.0)],
-            vec![text_cell_value("2025"), ArrayCellValue::Number(70.0)],
-            vec![text_cell_value("Total"), ArrayCellValue::Number(100.0)],
+        let expected = FunctionArray::from_rows(vec![
+            vec![text_cell_value("2024"), FunctionArrayCell::Number(30.0)],
+            vec![text_cell_value("2025"), FunctionArrayCell::Number(70.0)],
+            vec![text_cell_value("Total"), FunctionArrayCell::Number(100.0)],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -552,7 +553,7 @@ mod tests {
 
     #[test]
     fn groupby_subtotals_match_empirical_two_level_hierarchical_lane() {
-        let row_fields = EvalArray::from_rows(vec![
+        let row_fields = FunctionArray::from_rows(vec![
             vec![text_cell_value("East"), text_cell_value("A")],
             vec![text_cell_value("East"), text_cell_value("B")],
             vec![text_cell_value("East"), text_cell_value("A")],
@@ -560,18 +561,18 @@ mod tests {
             vec![text_cell_value("West"), text_cell_value("B")],
         ])
         .unwrap();
-        let values = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::Number(10.0)],
-            vec![ArrayCellValue::Number(20.0)],
-            vec![ArrayCellValue::Number(30.0)],
-            vec![ArrayCellValue::Number(40.0)],
-            vec![ArrayCellValue::Number(50.0)],
+        let values = FunctionArray::from_rows(vec![
+            vec![FunctionArrayCell::Number(10.0)],
+            vec![FunctionArrayCell::Number(20.0)],
+            vec![FunctionArrayCell::Number(30.0)],
+            vec![FunctionArrayCell::Number(40.0)],
+            vec![FunctionArrayCell::Number(50.0)],
         ])
         .unwrap();
         let got = eval_groupby_calc_surface(
             &[
-                CalcValue::from(EvalValue::Array(row_fields)),
-                CalcValue::from(EvalValue::Array(values)),
+                CalcValue::from(FunctionValue::Array(row_fields)),
+                CalcValue::from(FunctionValue::Array(values)),
                 callable_arg(),
                 CalcValue::missing(),
                 CalcValue::number(2.0),
@@ -580,44 +581,44 @@ mod tests {
             &TestInvoker,
         )
         .unwrap();
-        let EvalValue::Array(array) = got else {
+        let FunctionValue::Array(array) = got else {
             panic!("expected array");
         };
-        let expected = EvalArray::from_rows(vec![
+        let expected = FunctionArray::from_rows(vec![
             vec![
                 text_cell_value("East"),
                 text_cell_value("A"),
-                ArrayCellValue::Number(40.0),
+                FunctionArrayCell::Number(40.0),
             ],
             vec![
                 text_cell_value("East"),
                 text_cell_value("B"),
-                ArrayCellValue::Number(20.0),
+                FunctionArrayCell::Number(20.0),
             ],
             vec![
                 text_cell_value("East"),
-                ArrayCellValue::EmptyCell,
-                ArrayCellValue::Number(60.0),
+                FunctionArrayCell::EmptyCell,
+                FunctionArrayCell::Number(60.0),
             ],
             vec![
                 text_cell_value("West"),
                 text_cell_value("A"),
-                ArrayCellValue::Number(40.0),
+                FunctionArrayCell::Number(40.0),
             ],
             vec![
                 text_cell_value("West"),
                 text_cell_value("B"),
-                ArrayCellValue::Number(50.0),
+                FunctionArrayCell::Number(50.0),
             ],
             vec![
                 text_cell_value("West"),
-                ArrayCellValue::EmptyCell,
-                ArrayCellValue::Number(90.0),
+                FunctionArrayCell::EmptyCell,
+                FunctionArrayCell::Number(90.0),
             ],
             vec![
                 text_cell_value("Grand Total"),
-                ArrayCellValue::EmptyCell,
-                ArrayCellValue::Number(150.0),
+                FunctionArrayCell::EmptyCell,
+                FunctionArrayCell::Number(150.0),
             ],
         ])
         .unwrap();
@@ -626,47 +627,47 @@ mod tests {
 
     #[test]
     fn groupby_supports_filter_and_descending_value_sort() {
-        let row_fields = EvalArray::from_rows(vec![
+        let row_fields = FunctionArray::from_rows(vec![
             vec![text_cell_value("A")],
             vec![text_cell_value("B")],
             vec![text_cell_value("A")],
             vec![text_cell_value("B")],
         ])
         .unwrap();
-        let values = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::Number(10.0)],
-            vec![ArrayCellValue::Number(20.0)],
-            vec![ArrayCellValue::Number(40.0)],
-            vec![ArrayCellValue::Number(50.0)],
+        let values = FunctionArray::from_rows(vec![
+            vec![FunctionArrayCell::Number(10.0)],
+            vec![FunctionArrayCell::Number(20.0)],
+            vec![FunctionArrayCell::Number(40.0)],
+            vec![FunctionArrayCell::Number(50.0)],
         ])
         .unwrap();
-        let filter = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::Logical(true)],
-            vec![ArrayCellValue::Logical(false)],
-            vec![ArrayCellValue::Logical(true)],
-            vec![ArrayCellValue::Logical(false)],
+        let filter = FunctionArray::from_rows(vec![
+            vec![FunctionArrayCell::Logical(true)],
+            vec![FunctionArrayCell::Logical(false)],
+            vec![FunctionArrayCell::Logical(true)],
+            vec![FunctionArrayCell::Logical(false)],
         ])
         .unwrap();
         let got = eval_groupby_calc_surface(
             &[
-                CalcValue::from(EvalValue::Array(row_fields)),
-                CalcValue::from(EvalValue::Array(values)),
+                CalcValue::from(FunctionValue::Array(row_fields)),
+                CalcValue::from(FunctionValue::Array(values)),
                 callable_arg(),
                 CalcValue::missing(),
                 CalcValue::missing(),
                 CalcValue::number(-2.0),
-                CalcValue::from(EvalValue::Array(filter)),
+                CalcValue::from(FunctionValue::Array(filter)),
             ],
             &NoResolver,
             &TestInvoker,
         )
         .unwrap();
-        let EvalValue::Array(array) = got else {
+        let FunctionValue::Array(array) = got else {
             panic!("expected array");
         };
-        let expected = EvalArray::from_rows(vec![
-            vec![text_cell_value("A"), ArrayCellValue::Number(50.0)],
-            vec![text_cell_value("Total"), ArrayCellValue::Number(50.0)],
+        let expected = FunctionArray::from_rows(vec![
+            vec![text_cell_value("A"), FunctionArrayCell::Number(50.0)],
+            vec![text_cell_value("Total"), FunctionArrayCell::Number(50.0)],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -674,22 +675,22 @@ mod tests {
 
     #[test]
     fn groupby_with_visible_headers_emits_header_row() {
-        let row_fields = EvalArray::from_rows(vec![
+        let row_fields = FunctionArray::from_rows(vec![
             vec![text_cell_value("Region"), text_cell_value("Product")],
             vec![text_cell_value("East"), text_cell_value("A")],
             vec![text_cell_value("East"), text_cell_value("B")],
         ])
         .unwrap();
-        let values = EvalArray::from_rows(vec![
+        let values = FunctionArray::from_rows(vec![
             vec![text_cell_value("Sales")],
-            vec![ArrayCellValue::Number(10.0)],
-            vec![ArrayCellValue::Number(20.0)],
+            vec![FunctionArrayCell::Number(10.0)],
+            vec![FunctionArrayCell::Number(20.0)],
         ])
         .unwrap();
         let got = eval_groupby_calc_surface(
             &[
-                CalcValue::from(EvalValue::Array(row_fields)),
-                CalcValue::from(EvalValue::Array(values)),
+                CalcValue::from(FunctionValue::Array(row_fields)),
+                CalcValue::from(FunctionValue::Array(values)),
                 callable_arg(),
                 CalcValue::number(3.0),
             ],
@@ -697,10 +698,10 @@ mod tests {
             &TestInvoker,
         )
         .unwrap();
-        let EvalValue::Array(array) = got else {
+        let FunctionValue::Array(array) = got else {
             panic!("expected array");
         };
-        let expected = EvalArray::from_rows(vec![
+        let expected = FunctionArray::from_rows(vec![
             vec![
                 text_cell_value("Region"),
                 text_cell_value("Product"),
@@ -709,17 +710,17 @@ mod tests {
             vec![
                 text_cell_value("East"),
                 text_cell_value("A"),
-                ArrayCellValue::Number(10.0),
+                FunctionArrayCell::Number(10.0),
             ],
             vec![
                 text_cell_value("East"),
                 text_cell_value("B"),
-                ArrayCellValue::Number(20.0),
+                FunctionArrayCell::Number(20.0),
             ],
             vec![
                 text_cell_value("Total"),
-                ArrayCellValue::EmptyCell,
-                ArrayCellValue::Number(30.0),
+                FunctionArrayCell::EmptyCell,
+                FunctionArrayCell::Number(30.0),
             ],
         ])
         .unwrap();
@@ -728,20 +729,20 @@ mod tests {
 
     #[test]
     fn groupby_tabular_rejects_subtotals() {
-        let row_fields = EvalArray::from_rows(vec![
+        let row_fields = FunctionArray::from_rows(vec![
             vec![text_cell_value("East"), text_cell_value("A")],
             vec![text_cell_value("East"), text_cell_value("B")],
         ])
         .unwrap();
-        let values = EvalArray::from_rows(vec![
-            vec![ArrayCellValue::Number(10.0)],
-            vec![ArrayCellValue::Number(20.0)],
+        let values = FunctionArray::from_rows(vec![
+            vec![FunctionArrayCell::Number(10.0)],
+            vec![FunctionArrayCell::Number(20.0)],
         ])
         .unwrap();
         let got = eval_groupby_calc_surface(
             &[
-                CalcValue::from(EvalValue::Array(row_fields)),
-                CalcValue::from(EvalValue::Array(values)),
+                CalcValue::from(FunctionValue::Array(row_fields)),
+                CalcValue::from(FunctionValue::Array(values)),
                 callable_arg(),
                 CalcValue::missing(),
                 CalcValue::number(2.0),

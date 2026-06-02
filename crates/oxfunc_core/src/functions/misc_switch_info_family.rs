@@ -3,12 +3,12 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
 use crate::functions::excel_numeric_compare::excel_numbers_equal;
 use crate::functions::xmatch::{XmatchEvalError, comparable_eq, prepared_lookup_comparable};
 use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
 
 pub const SWITCH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SWITCH",
@@ -50,11 +50,11 @@ pub enum MiscSwitchInfoEvalError {
     InvalidOperand,
 }
 
-fn prepared_to_eval(arg: PreparedArgValue) -> EvalValue {
+fn prepared_to_eval(arg: PreparedValue) -> FunctionValue {
     match arg {
-        PreparedArgValue::Eval(value) => value,
-        PreparedArgValue::MissingArg => EvalValue::Error(WorksheetErrorCode::NA),
-        PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+        PreparedValue::Eval(value) => value,
+        PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::NA),
+        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
     }
 }
 
@@ -76,21 +76,21 @@ fn map_xmatch_coercion(err: XmatchEvalError) -> MiscSwitchInfoEvalError {
 }
 
 fn eval_switch_expression(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<PreparedArgValue, MiscSwitchInfoEvalError> {
+) -> Result<PreparedValue, MiscSwitchInfoEvalError> {
     prepare_arg_values_only(arg, resolver).map_err(MiscSwitchInfoEvalError::Coercion)
 }
 
 fn switch_values_equal(
-    lhs: &PreparedArgValue,
-    rhs: &PreparedArgValue,
+    lhs: &PreparedValue,
+    rhs: &PreparedValue,
 ) -> Result<bool, MiscSwitchInfoEvalError> {
     match (lhs, rhs) {
-        (PreparedArgValue::EmptyCell, PreparedArgValue::EmptyCell) => Ok(true),
-        (PreparedArgValue::MissingArg, PreparedArgValue::MissingArg) => Ok(true),
-        (PreparedArgValue::EmptyCell, _) | (_, PreparedArgValue::EmptyCell) => Ok(false),
-        (PreparedArgValue::MissingArg, _) | (_, PreparedArgValue::MissingArg) => Ok(false),
+        (PreparedValue::EmptyCell, PreparedValue::EmptyCell) => Ok(true),
+        (PreparedValue::MissingArg, PreparedValue::MissingArg) => Ok(true),
+        (PreparedValue::EmptyCell, _) | (_, PreparedValue::EmptyCell) => Ok(false),
+        (PreparedValue::MissingArg, _) | (_, PreparedValue::MissingArg) => Ok(false),
         _ => {
             let lhs = prepared_lookup_comparable(lhs).map_err(map_xmatch_coercion)?;
             let rhs = prepared_lookup_comparable(rhs).map_err(map_xmatch_coercion)?;
@@ -106,9 +106,9 @@ fn switch_values_equal(
 }
 
 pub fn eval_switch_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MiscSwitchInfoEvalError> {
+) -> Result<FunctionValue, MiscSwitchInfoEvalError> {
     if !SWITCH_META.arity.accepts(args.len()) {
         return Err(MiscSwitchInfoEvalError::ArityMismatch {
             expected_min: SWITCH_META.arity.min,
@@ -139,21 +139,21 @@ pub fn eval_switch_surface(
         return Ok(prepared_to_eval(selected));
     }
 
-    Ok(EvalValue::Error(WorksheetErrorCode::NA))
+    Ok(FunctionValue::Error(WorksheetErrorCode::NA))
 }
 
-fn isformula_reference_from_arg(arg: &CallArgValue) -> Option<ReferenceLike> {
+fn isformula_reference_from_arg(arg: &FunctionArg) -> Option<ReferenceLike> {
     match arg {
-        CallArgValue::Reference(reference) => Some(reference.clone()),
-        CallArgValue::Eval(EvalValue::Reference(reference)) => Some(reference.clone()),
+        FunctionArg::Reference(reference) => Some(reference.clone()),
+        FunctionArg::Eval(FunctionValue::Reference(reference)) => Some(reference.clone()),
         _ => None,
     }
 }
 
 pub fn eval_isformula_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<EvalValue, MiscSwitchInfoEvalError> {
+) -> Result<FunctionValue, MiscSwitchInfoEvalError> {
     if !ISFORMULA_META.arity.accepts(args.len()) {
         return Err(MiscSwitchInfoEvalError::ArityMismatch {
             expected_min: ISFORMULA_META.arity.min,
@@ -211,11 +211,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -228,16 +228,16 @@ mod tests {
             &self,
             query: CellInfoQuery,
             reference: Option<&ReferenceLike>,
-        ) -> Result<EvalValue, HostInfoError> {
+        ) -> Result<FunctionValue, HostInfoError> {
             assert_eq!(query, CellInfoQuery::IsFormula);
-            let target = reference.expect("reference required").target.as_str();
-            Ok(EvalValue::Logical(matches!(target, "A1" | "A1:A2")))
+            let target = reference.expect("reference required").target();
+            Ok(FunctionValue::Logical(matches!(target, "A1" | "A1:A2")))
         }
 
         fn query_info(
             &self,
             query: crate::host_info::InfoQuery,
-        ) -> Result<EvalValue, HostInfoError> {
+        ) -> Result<FunctionValue, HostInfoError> {
             Err(HostInfoError::UnsupportedInfoQuery(query))
         }
     }
@@ -246,35 +246,35 @@ mod tests {
     fn switch_matches_case_insensitive_text_and_is_lazy() {
         let got = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "A".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 
     #[test]
     fn switch_returns_default_or_na() {
         let with_default = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "b".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "other".encode_utf16().collect(),
                 ))),
             ],
@@ -282,82 +282,82 @@ mod tests {
         );
         assert_eq!(
             with_default,
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "other".encode_utf16().collect(),
             )))
         );
 
         let no_default = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "b".encode_utf16().collect(),
                 ))),
             ],
             &NoResolver,
         );
-        assert_eq!(no_default, Ok(EvalValue::Error(WorksheetErrorCode::NA)));
+        assert_eq!(no_default, Ok(FunctionValue::Error(WorksheetErrorCode::NA)));
     }
 
     #[test]
     fn switch_uses_excel_near_equal_numeric_equality() {
         let near_equal = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(5.0 + 2.0e-15)),
-                CallArgValue::Eval(EvalValue::Number(5.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(5.0 + 2.0e-15)),
+                FunctionArg::Eval(FunctionValue::Number(5.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(near_equal, Ok(EvalValue::Number(1.0)));
+        assert_eq!(near_equal, Ok(FunctionValue::Number(1.0)));
 
         let far_equal = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(1.0 + 1.0e-14)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0 + 1.0e-14)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(far_equal, Ok(EvalValue::Number(2.0)));
+        assert_eq!(far_equal, Ok(FunctionValue::Number(2.0)));
 
         let boundary_equal = eval_switch_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(
+                FunctionArg::Eval(FunctionValue::Number(
                     ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25,
                 )),
-                CallArgValue::Eval(EvalValue::Number(
+                FunctionArg::Eval(FunctionValue::Number(
                     ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25,
                 )),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(boundary_equal, Ok(EvalValue::Number(1.0)));
+        assert_eq!(boundary_equal, Ok(FunctionValue::Number(1.0)));
     }
 
     #[test]
     fn isformula_uses_host_query_on_reference_only() {
         let provider = MockHostInfoProvider;
         let got = eval_isformula_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A2".to_string(),
             ))],
             Some(&provider),
         );
-        assert_eq!(got, Ok(EvalValue::Logical(true)));
+        assert_eq!(got, Ok(FunctionValue::Logical(true)));
 
         let scalar = eval_isformula_surface(
-            &[CallArgValue::Eval(EvalValue::Number(1.0))],
+            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
             Some(&provider),
         );
         assert_eq!(scalar, Err(MiscSwitchInfoEvalError::InvalidOperand));

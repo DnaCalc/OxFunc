@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, coerce_prepared_to_text,
+    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text,
     run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const DECIMAL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DECIMAL",
@@ -65,7 +65,7 @@ pub fn decimal_kernel(text: &str, radix: f64) -> Result<f64, WorksheetErrorCode>
     Ok(value as f64)
 }
 
-fn eval_decimal_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, DecimalEvalError> {
+fn eval_decimal_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DecimalEvalError> {
     if !DECIMAL_META.arity.accepts(args.len()) {
         return Err(DecimalEvalError::ArityMismatch {
             expected: DECIMAL_META.arity.min,
@@ -75,15 +75,15 @@ fn eval_decimal_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Decimal
     let text = coerce_prepared_to_text(&args[0]).map_err(DecimalEvalError::Coercion)?;
     let radix = coerce_prepared_to_number(&args[1]).map_err(DecimalEvalError::Coercion)?;
     match decimal_kernel(&text.to_string_lossy(), radix) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_decimal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DecimalEvalError> {
+) -> Result<FunctionValue, DecimalEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,

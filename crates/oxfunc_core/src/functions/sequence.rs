@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const SEQUENCE_META: FunctionMeta = FunctionMeta {
@@ -56,13 +56,13 @@ fn parse_dimension(raw: f64, arg_index: usize) -> Result<usize, SequenceEvalErro
 }
 
 fn parse_optional_dimension(
-    arg: Option<&PreparedArgValue>,
+    arg: Option<&PreparedValue>,
     arg_index: usize,
     default: usize,
 ) -> Result<usize, SequenceEvalError> {
     match arg {
         None => Ok(default),
-        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(default),
+        Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => Ok(default),
         Some(other) => parse_dimension(
             coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion)?,
             arg_index,
@@ -71,19 +71,19 @@ fn parse_optional_dimension(
 }
 
 fn parse_optional_scalar(
-    arg: Option<&PreparedArgValue>,
+    arg: Option<&PreparedValue>,
     default: f64,
 ) -> Result<f64, SequenceEvalError> {
     match arg {
         None => Ok(default),
-        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(default),
+        Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => Ok(default),
         Some(other) => coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion),
     }
 }
 
 pub fn eval_sequence_adapter_prepared(
-    args: &[PreparedArgValue],
-) -> Result<EvalValue, SequenceEvalError> {
+    args: &[PreparedValue],
+) -> Result<FunctionValue, SequenceEvalError> {
     let argc = args.len();
     if !SEQUENCE_META.arity.accepts(argc) {
         return Err(SequenceEvalError::ArityMismatch {
@@ -101,18 +101,18 @@ pub fn eval_sequence_adapter_prepared(
     let shape = ArrayShape { rows, cols };
     let mut cells = Vec::with_capacity(shape.cell_count());
     for idx in 0..shape.cell_count() {
-        cells.push(ArrayCellValue::Number(start + (idx as f64) * step));
+        cells.push(FunctionArrayCell::Number(start + (idx as f64) * step));
     }
 
-    Ok(EvalValue::Array(
-        EvalArray::new(shape, cells).expect("sequence dimensions validated"),
+    Ok(FunctionValue::Array(
+        FunctionArray::new(shape, cells).expect("sequence dimensions validated"),
     ))
 }
 
 pub fn eval_sequence_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, SequenceEvalError> {
+) -> Result<FunctionValue, SequenceEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -146,11 +146,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -158,15 +158,15 @@ mod tests {
 
     #[test]
     fn eval_sequence_rows_only_defaults_cols_to_one() {
-        let args = [CallArgValue::Eval(EvalValue::Number(3.0))];
+        let args = [FunctionArg::Eval(FunctionValue::Number(3.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(1.0)],
-                    vec![ArrayCellValue::Number(2.0)],
-                    vec![ArrayCellValue::Number(3.0)],
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![FunctionArrayCell::Number(2.0)],
+                    vec![FunctionArrayCell::Number(3.0)],
                 ])
                 .unwrap()
             ))
@@ -176,25 +176,25 @@ mod tests {
     #[test]
     fn eval_sequence_parses_full_arity() {
         let args = [
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::Eval(EvalValue::Number(10.0)),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::Eval(FunctionValue::Number(10.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Number(10.0),
-                        ArrayCellValue::Number(12.0),
-                        ArrayCellValue::Number(14.0),
+                        FunctionArrayCell::Number(10.0),
+                        FunctionArrayCell::Number(12.0),
+                        FunctionArrayCell::Number(14.0),
                     ],
                     vec![
-                        ArrayCellValue::Number(16.0),
-                        ArrayCellValue::Number(18.0),
-                        ArrayCellValue::Number(20.0),
+                        FunctionArrayCell::Number(16.0),
+                        FunctionArrayCell::Number(18.0),
+                        FunctionArrayCell::Number(20.0),
                     ],
                 ])
                 .unwrap()
@@ -204,18 +204,18 @@ mod tests {
 
     #[test]
     fn eval_sequence_numeric_text_dimension_is_allowed() {
-        let args = [CallArgValue::Eval(EvalValue::Text(
+        let args = [FunctionArg::Eval(FunctionValue::Text(
             ExcelText::from_utf16_code_units("4".encode_utf16().collect()),
         ))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(1.0)],
-                    vec![ArrayCellValue::Number(2.0)],
-                    vec![ArrayCellValue::Number(3.0)],
-                    vec![ArrayCellValue::Number(4.0)],
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![FunctionArrayCell::Number(2.0)],
+                    vec![FunctionArrayCell::Number(3.0)],
+                    vec![FunctionArrayCell::Number(4.0)],
                 ])
                 .unwrap()
             ))
@@ -224,7 +224,7 @@ mod tests {
 
     #[test]
     fn eval_sequence_rejects_zero_dimension() {
-        let args = [CallArgValue::Eval(EvalValue::Number(0.0))];
+        let args = [FunctionArg::Eval(FunctionValue::Number(0.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(got, Err(SequenceEvalError::ZeroDimension { arg_index: 1 }));
     }
@@ -240,17 +240,17 @@ mod tests {
     #[test]
     fn eval_sequence_missing_rows_defaults_to_one() {
         let args = [
-            CallArgValue::MissingArg,
-            CallArgValue::Eval(EvalValue::Number(3.0)),
+            FunctionArg::MissingArg,
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(2.0),
-                    ArrayCellValue::Number(3.0),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(2.0),
+                    FunctionArrayCell::Number(3.0),
                 ]])
                 .unwrap()
             ))
@@ -260,42 +260,42 @@ mod tests {
     #[test]
     fn eval_sequence_missing_middle_args_follow_excel_defaults() {
         let args = [
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::MissingArg,
-            CallArgValue::Eval(EvalValue::Number(10.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::MissingArg,
+            FunctionArg::Eval(FunctionValue::Number(10.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(10.0)],
-                    vec![ArrayCellValue::Number(11.0)],
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(10.0)],
+                    vec![FunctionArrayCell::Number(11.0)],
                 ])
                 .unwrap()
             ))
         );
 
         let args = [
-            CallArgValue::Eval(EvalValue::Number(2.0)),
-            CallArgValue::Eval(EvalValue::Number(3.0)),
-            CallArgValue::MissingArg,
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            FunctionArg::MissingArg,
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(3.0),
-                        ArrayCellValue::Number(5.0),
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(3.0),
+                        FunctionArrayCell::Number(5.0),
                     ],
                     vec![
-                        ArrayCellValue::Number(7.0),
-                        ArrayCellValue::Number(9.0),
-                        ArrayCellValue::Number(11.0),
+                        FunctionArrayCell::Number(7.0),
+                        FunctionArrayCell::Number(9.0),
+                        FunctionArrayCell::Number(11.0),
                     ],
                 ])
                 .unwrap()

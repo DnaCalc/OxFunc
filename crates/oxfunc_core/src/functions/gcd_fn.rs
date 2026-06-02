@@ -7,7 +7,7 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const GCD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GCD",
@@ -44,9 +44,9 @@ pub fn gcd_kernel(items: &[i64]) -> f64 {
 }
 
 pub fn eval_gcd_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, GcdEvalError> {
+) -> Result<FunctionValue, GcdEvalError> {
     let argc = args.len();
     if !GCD_META.arity.accepts(argc) {
         return Err(GcdEvalError::ArityMismatch {
@@ -62,7 +62,7 @@ pub fn eval_gcd_surface(
             items.push(coerce_calc_to_nonnegative_int(item.value())?);
         }
     }
-    Ok(EvalValue::Number(gcd_kernel(&items)))
+    Ok(FunctionValue::Number(gcd_kernel(&items)))
 }
 
 pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
@@ -78,7 +78,7 @@ pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{ArrayCellValue, EvalArray};
+    use crate::value::{FunctionArray, FunctionArrayCell};
 
     struct NoResolver;
 
@@ -90,11 +90,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -116,27 +116,27 @@ mod tests {
     fn ftc_0959_gcd_array_input_reduces_literal_vector_and_scalar_to_one() {
         let got = eval_gcd_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(2.0),
-                        ArrayCellValue::Number(3.0),
-                        ArrayCellValue::Number(4.0),
-                        ArrayCellValue::Number(5.0),
-                        ArrayCellValue::Number(6.0),
-                        ArrayCellValue::Number(7.0),
-                        ArrayCellValue::Number(8.0),
-                        ArrayCellValue::Number(9.0),
-                        ArrayCellValue::Number(10.0),
-                        ArrayCellValue::Number(11.0),
-                        ArrayCellValue::Number(12.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(2.0),
+                        FunctionArrayCell::Number(3.0),
+                        FunctionArrayCell::Number(4.0),
+                        FunctionArrayCell::Number(5.0),
+                        FunctionArrayCell::Number(6.0),
+                        FunctionArrayCell::Number(7.0),
+                        FunctionArrayCell::Number(8.0),
+                        FunctionArrayCell::Number(9.0),
+                        FunctionArrayCell::Number(10.0),
+                        FunctionArrayCell::Number(11.0),
+                        FunctionArrayCell::Number(12.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Number(12.0)),
+                FunctionArg::Eval(FunctionValue::Number(12.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 }

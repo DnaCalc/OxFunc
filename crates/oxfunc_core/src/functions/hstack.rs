@@ -3,10 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared};
+use crate::functions::adapters::{PreparedValue, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const HSTACK_META: FunctionMeta = FunctionMeta {
@@ -33,30 +33,30 @@ pub enum HstackEvalError {
     Preparation(CoercionError),
 }
 
-fn scalar_cell(arg: &PreparedArgValue) -> ArrayCellValue {
+fn scalar_cell(arg: &PreparedValue) -> FunctionArrayCell {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => ArrayCellValue::Number(*n),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t.clone()),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(*b),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(*code),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
+        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionArrayCell::Number(*n),
+        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t.clone()),
+        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(*b),
+        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(*code),
+        PreparedValue::Eval(FunctionValue::Reference(_)) => {
+            FunctionArrayCell::Error(WorksheetErrorCode::Value)
         }
-        PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => ArrayCellValue::EmptyCell,
-        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        PreparedValue::Eval(FunctionValue::Array(_)) => unreachable!(),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => FunctionArrayCell::EmptyCell,
+        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
 enum HstackArgSource<'a> {
-    Array(&'a EvalArray),
-    Scalar(ArrayCellValue),
+    Array(&'a FunctionArray),
+    Scalar(FunctionArrayCell),
 }
 
 impl<'a> HstackArgSource<'a> {
-    fn new(arg: &'a PreparedArgValue) -> Self {
+    fn new(arg: &'a PreparedValue) -> Self {
         match arg {
-            PreparedArgValue::Eval(EvalValue::Array(array)) => Self::Array(array),
+            PreparedValue::Eval(FunctionValue::Array(array)) => Self::Array(array),
             other => Self::Scalar(scalar_cell(other)),
         }
     }
@@ -68,7 +68,7 @@ impl<'a> HstackArgSource<'a> {
         }
     }
 
-    fn get(&self, row: usize, col: usize) -> Option<&ArrayCellValue> {
+    fn get(&self, row: usize, col: usize) -> Option<&FunctionArrayCell> {
         match self {
             Self::Array(array) => array.get(row, col),
             Self::Scalar(cell) if row == 0 && col == 0 => Some(cell),
@@ -78,8 +78,8 @@ impl<'a> HstackArgSource<'a> {
 }
 
 pub fn eval_hstack_adapter_prepared(
-    args: &[PreparedArgValue],
-) -> Result<EvalValue, HstackEvalError> {
+    args: &[PreparedValue],
+) -> Result<FunctionValue, HstackEvalError> {
     let argc = args.len();
     if !HSTACK_META.arity.accepts(argc) {
         return Err(HstackEvalError::ArityMismatch {
@@ -97,8 +97,8 @@ pub fn eval_hstack_adapter_prepared(
         .unwrap_or(1);
     let cols = sources.iter().map(|source| source.shape().cols).sum();
 
-    Ok(EvalValue::Array(
-        EvalArray::from_cells_iter(
+    Ok(FunctionValue::Array(
+        FunctionArray::from_cells_iter(
             ArrayShape { rows, cols },
             (0..rows).flat_map(|row| {
                 sources.iter().flat_map(move |source| {
@@ -106,7 +106,7 @@ pub fn eval_hstack_adapter_prepared(
                         source
                             .get(row, col)
                             .cloned()
-                            .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::NA))
+                            .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA))
                     })
                 })
             }),
@@ -116,9 +116,9 @@ pub fn eval_hstack_adapter_prepared(
 }
 
 pub fn eval_hstack_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, HstackEvalError> {
+) -> Result<FunctionValue, HstackEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -151,11 +151,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -165,30 +165,36 @@ mod tests {
     fn eval_hstack_combines_scalar_and_array_shapes() {
         let got = eval_hstack_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
-                        vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
-                        vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
+                        vec![
+                            FunctionArrayCell::Number(1.0),
+                            FunctionArrayCell::Number(2.0),
+                        ],
+                        vec![
+                            FunctionArrayCell::Number(3.0),
+                            FunctionArrayCell::Number(4.0),
+                        ],
                     ])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(2.0),
-                        ArrayCellValue::Number(1.0),
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(2.0),
+                        FunctionArrayCell::Number(1.0),
                     ],
                     vec![
-                        ArrayCellValue::Number(3.0),
-                        ArrayCellValue::Number(4.0),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::Number(3.0),
+                        FunctionArrayCell::Number(4.0),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()
@@ -200,8 +206,8 @@ mod tests {
     fn eval_hstack_preserves_empty_scalar_cells() {
         let got = eval_hstack_surface(
             &[
-                CallArgValue::EmptyCell,
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::EmptyCell,
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
             ],
@@ -209,10 +215,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::EmptyCell,
-                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::EmptyCell,
+                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                         "x".encode_utf16().collect(),
                     )),
                 ]])
@@ -225,30 +231,30 @@ mod tests {
     fn eval_hstack_pads_shorter_scalar_argument_with_na() {
         let got = eval_hstack_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
-                        vec![ArrayCellValue::Number(1.0)],
-                        vec![ArrayCellValue::Number(2.0)],
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
+                        vec![FunctionArrayCell::Number(1.0)],
+                        vec![FunctionArrayCell::Number(2.0)],
                     ])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Text(
-                    ExcelText::from_utf16_code_units(Vec::new()),
-                )),
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                    Vec::new(),
+                ))),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
                     ],
                     vec![
-                        ArrayCellValue::Number(2.0),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::Number(2.0),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()

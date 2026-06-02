@@ -6,7 +6,7 @@ use crate::resolver::{
     ReferenceComposeOperation, ReferenceComposeRequest, ReferenceSystemError,
     ReferenceSystemProvider, ReferenceTransformKind, ReferenceTransformRequest, ReferenceTrimMode,
 };
-use crate::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
 
 const OP_REFERENCE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_REFERENCE_BASE",
@@ -75,18 +75,18 @@ pub enum OperatorReferenceError {
     ReferenceSystem(ReferenceSystemError),
 }
 
-fn reference_arg(arg: &CallArgValue) -> Result<ReferenceLike, OperatorReferenceError> {
+fn reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, OperatorReferenceError> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => Ok(reference.clone()),
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => Ok(reference.clone()),
         _ => Err(OperatorReferenceError::ReferenceRequired),
     }
 }
 
 pub fn eval_op_range_ref_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 2,
@@ -101,14 +101,14 @@ pub fn eval_op_range_ref_surface(
             rhs,
             operation: ReferenceComposeOperation::Range,
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_intersection_ref_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 2,
@@ -123,7 +123,7 @@ pub fn eval_op_intersection_ref_surface(
             rhs,
             operation: ReferenceComposeOperation::Intersection,
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(|error| match error {
             ReferenceSystemError::ProviderFailure { detail } if detail == "null_intersection" => {
                 OperatorReferenceError::NullIntersection
@@ -133,9 +133,9 @@ pub fn eval_op_intersection_ref_surface(
 }
 
 pub fn eval_op_union_ref_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 2 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 2,
@@ -150,14 +150,14 @@ pub fn eval_op_union_ref_surface(
             rhs,
             operation: ReferenceComposeOperation::Union,
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_leading_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 1,
@@ -171,14 +171,14 @@ pub fn eval_op_trim_ref_leading_surface(
                 mode: ReferenceTrimMode::Leading,
             },
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_trailing_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 1,
@@ -192,14 +192,14 @@ pub fn eval_op_trim_ref_trailing_surface(
                 mode: ReferenceTrimMode::Trailing,
             },
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
 pub fn eval_op_trim_ref_both_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorReferenceError> {
+) -> Result<FunctionValue, OperatorReferenceError> {
     if args.len() != 1 {
         return Err(OperatorReferenceError::ArityMismatch {
             expected: 1,
@@ -213,7 +213,7 @@ pub fn eval_op_trim_ref_both_surface(
                 mode: ReferenceTrimMode::Both,
             },
         })
-        .map(EvalValue::Reference)
+        .map(FunctionValue::Reference)
         .map_err(OperatorReferenceError::ReferenceSystem)
 }
 
@@ -243,11 +243,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -256,7 +256,7 @@ mod tests {
             &self,
             request: &ReferenceTransformRequest,
         ) -> Result<ReferenceLike, ReferenceSystemError> {
-            match (&request.reference.target[..], request.transform.clone()) {
+            match (request.reference.target(), request.transform.clone()) {
                 ("  Sheet1!A1:A2  ", ReferenceTransformKind::Trim { mode }) => {
                     let target = match mode {
                         ReferenceTrimMode::Leading => "Sheet1!A1:A2  ",
@@ -276,8 +276,8 @@ mod tests {
             request: &ReferenceComposeRequest,
         ) -> Result<ReferenceLike, ReferenceSystemError> {
             match (
-                request.lhs.target.as_str(),
-                request.rhs.target.as_str(),
+                request.lhs.target(),
+                request.rhs.target(),
                 request.operation,
             ) {
                 ("B2", "A1", ReferenceComposeOperation::Range) => {
@@ -305,12 +305,12 @@ mod tests {
         }
     }
 
-    fn area(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn area(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn a1(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
+    fn a1(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
     #[test]
@@ -318,7 +318,7 @@ mod tests {
         let got = eval_op_range_ref_surface(&[a1("B2"), a1("A1")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:B2".to_string()
             )))
@@ -330,7 +330,7 @@ mod tests {
         let got = eval_op_intersection_ref_surface(&[area("A1:C3"), area("B2:D4")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "B2:C3".to_string()
             )))
@@ -345,7 +345,7 @@ mod tests {
         let got = eval_op_union_ref_surface(&[area("A1:A2"), area("G1:G2")], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(A1:A2,G1:G2)".to_string()
             )))
@@ -354,14 +354,14 @@ mod tests {
 
     #[test]
     fn union_operator_flattens_existing_multi_area_operands() {
-        let lhs = CallArgValue::Reference(
+        let lhs = FunctionArg::Reference(
             ReferenceLike::multi_area(vec!["A1:A2".to_string(), "G1:G2".to_string()]).unwrap(),
         );
         let rhs = area("J1:J2");
         let got = eval_op_union_ref_surface(&[lhs, rhs], &NoResolver);
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(A1:A2,G1:G2,J1:J2)".to_string()
             )))
@@ -370,27 +370,27 @@ mod tests {
 
     #[test]
     fn trim_ref_variants_trim_only_requested_edges() {
-        let input = CallArgValue::Reference(ReferenceLike::new(
+        let input = FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "  Sheet1!A1:A2  ".to_string(),
         ));
         assert_eq!(
             eval_op_trim_ref_leading_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "Sheet1!A1:A2  ".to_string()
             )))
         );
         assert_eq!(
             eval_op_trim_ref_trailing_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "  Sheet1!A1:A2".to_string()
             )))
         );
         assert_eq!(
             eval_op_trim_ref_both_surface(std::slice::from_ref(&input), &NoResolver),
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "Sheet1!A1:A2".to_string()
             )))

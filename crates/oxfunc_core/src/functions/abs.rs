@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, UnaryNumericCoercionLiftProfile, apply_unary_numeric_scalar_prepared,
+    PreparedValue, UnaryNumericCoercionLiftProfile, apply_unary_numeric_scalar_prepared,
     map_values_only_prepared, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue};
+use crate::value::{FunctionArg, FunctionValue};
 
 pub const ABS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ABS",
@@ -43,7 +43,7 @@ pub fn abs_kernel(n: f64) -> f64 {
     n.abs()
 }
 
-pub fn eval_abs_adapter_scalar_prepared(args: &[PreparedArgValue]) -> Result<f64, AbsEvalError> {
+pub fn eval_abs_adapter_scalar_prepared(args: &[PreparedValue]) -> Result<f64, AbsEvalError> {
     if !ABS_META.arity.accepts(args.len()) {
         return Err(AbsEvalError::ArityMismatch {
             expected: ABS_META.arity.min,
@@ -55,24 +55,24 @@ pub fn eval_abs_adapter_scalar_prepared(args: &[PreparedArgValue]) -> Result<f64
 }
 
 pub fn eval_abs_adapter_scalar_prepared_value(
-    args: &[PreparedArgValue],
-) -> Result<EvalValue, AbsEvalError> {
-    eval_abs_adapter_scalar_prepared(args).map(EvalValue::Number)
+    args: &[PreparedValue],
+) -> Result<FunctionValue, AbsEvalError> {
+    eval_abs_adapter_scalar_prepared(args).map(FunctionValue::Number)
 }
 
-pub fn eval_abs_adapter_arg_prepared(arg: &PreparedArgValue) -> AbsLiftOutcome {
+pub fn eval_abs_adapter_arg_prepared(arg: &PreparedValue) -> AbsLiftOutcome {
     match apply_unary_numeric_scalar_prepared(arg, abs_kernel) {
         Ok(n) => AbsLiftOutcome::Number(n),
         Err(e) => AbsLiftOutcome::Error(e),
     }
 }
 
-pub fn eval_abs_adapter_array_lift_prepared(args: &[PreparedArgValue]) -> Vec<AbsLiftOutcome> {
+pub fn eval_abs_adapter_array_lift_prepared(args: &[PreparedValue]) -> Vec<AbsLiftOutcome> {
     args.iter().map(eval_abs_adapter_arg_prepared).collect()
 }
 
 pub fn eval_abs_scalar(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, AbsEvalError> {
     run_values_only_prepared(
@@ -84,9 +84,9 @@ pub fn eval_abs_scalar(
 }
 
 pub fn eval_abs_scalar_value(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, AbsEvalError> {
+) -> Result<FunctionValue, AbsEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -96,7 +96,7 @@ pub fn eval_abs_scalar_value(
 }
 
 pub fn eval_abs_array_lift(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Vec<AbsLiftOutcome> {
     map_values_only_prepared(
@@ -113,15 +113,15 @@ mod tests {
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
-    fn text_prepared(s: &str) -> PreparedArgValue {
-        PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_prepared(s: &str) -> PreparedValue {
+        PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved_value: Option<EvalValue>,
+        resolved_value: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -132,11 +132,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -149,8 +149,8 @@ mod tests {
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
@@ -193,8 +193,8 @@ mod tests {
         );
 
         let args = [
-            PreparedArgValue::Eval(EvalValue::Number(1.0)),
-            PreparedArgValue::Eval(EvalValue::Number(2.0)),
+            PreparedValue::Eval(FunctionValue::Number(1.0)),
+            PreparedValue::Eval(FunctionValue::Number(2.0)),
         ];
         assert_eq!(
             eval_abs_adapter_scalar_prepared(&args),
@@ -207,7 +207,7 @@ mod tests {
 
     #[test]
     fn eval_abs_adapter_scalar_prepared_on_number() {
-        let args = [PreparedArgValue::Eval(EvalValue::Number(-2.5))];
+        let args = [PreparedValue::Eval(FunctionValue::Number(-2.5))];
         let got = eval_abs_adapter_scalar_prepared(&args);
         assert_eq!(got, Ok(2.5));
     }
@@ -233,7 +233,7 @@ mod tests {
 
     #[test]
     fn eval_abs_adapter_scalar_prepared_propagates_worksheet_error_via_coercion() {
-        let args = [PreparedArgValue::Eval(EvalValue::Error(
+        let args = [PreparedValue::Eval(FunctionValue::Error(
             WorksheetErrorCode::Div0,
         ))];
         let got = eval_abs_adapter_scalar_prepared(&args);
@@ -263,10 +263,10 @@ mod tests {
     #[test]
     fn eval_abs_adapter_array_lift_prepared_preserves_per_element_outcome() {
         let args = vec![
-            PreparedArgValue::Eval(EvalValue::Number(-1.0)),
+            PreparedValue::Eval(FunctionValue::Number(-1.0)),
             text_prepared("asd"),
-            PreparedArgValue::Eval(EvalValue::Logical(true)),
-            PreparedArgValue::Eval(EvalValue::Number(2.0)),
+            PreparedValue::Eval(FunctionValue::Logical(true)),
+            PreparedValue::Eval(FunctionValue::Number(2.0)),
         ];
 
         let got = eval_abs_adapter_array_lift_prepared(&args);
@@ -283,14 +283,14 @@ mod tests {
 
     #[test]
     fn eval_abs_adapter_scalar_prepared_value_wraps_scalar_result_as_eval_number() {
-        let args = [PreparedArgValue::Eval(EvalValue::Number(-3.0))];
+        let args = [PreparedValue::Eval(FunctionValue::Number(-3.0))];
         let got = eval_abs_adapter_scalar_prepared_value(&args);
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
     }
 
     #[test]
     fn eval_abs_adapter_scalar_prepared_is_values_only_and_needs_no_resolver() {
-        let args = [PreparedArgValue::Eval(EvalValue::Number(-9.0))];
+        let args = [PreparedValue::Eval(FunctionValue::Number(-9.0))];
         let got = eval_abs_adapter_scalar_prepared(&args);
         assert_eq!(got, Ok(9.0));
     }
@@ -298,8 +298,8 @@ mod tests {
     #[test]
     fn eval_abs_adapter_array_lift_prepared_maps_without_reference_seam() {
         let args = vec![
-            PreparedArgValue::Eval(EvalValue::Number(-4.0)),
-            PreparedArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+            PreparedValue::Eval(FunctionValue::Number(-4.0)),
+            PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "bad".encode_utf16().collect(),
             ))),
         ];
@@ -336,8 +336,8 @@ mod tests {
         );
 
         let args = [
-            CallArgValue::Eval(EvalValue::Number(1.0)),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
         ];
         assert_eq!(
             eval_abs_scalar(&args, &resolver()),
@@ -350,7 +350,7 @@ mod tests {
 
     #[test]
     fn eval_abs_scalar_on_number() {
-        let args = [CallArgValue::Eval(EvalValue::Number(-2.5))];
+        let args = [FunctionArg::Eval(FunctionValue::Number(-2.5))];
         let got = eval_abs_scalar(&args, &resolver());
         assert_eq!(got, Ok(2.5));
     }
@@ -378,9 +378,9 @@ mod tests {
     fn eval_abs_scalar_reference_uses_resolver() {
         let r = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved_value: Some(EvalValue::Number(-7.0)),
+            resolved_value: Some(FunctionValue::Number(-7.0)),
         };
-        let args = [CallArgValue::Reference(ReferenceLike::new(
+        let args = [FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::A1,
             "A1".to_string(),
         ))];
@@ -391,7 +391,7 @@ mod tests {
 
     #[test]
     fn eval_abs_scalar_propagates_worksheet_error_via_coercion() {
-        let args = [CallArgValue::Eval(EvalValue::Error(
+        let args = [FunctionArg::Eval(FunctionValue::Error(
             WorksheetErrorCode::Div0,
         ))];
         let got = eval_abs_scalar(&args, &resolver());
@@ -406,10 +406,10 @@ mod tests {
     #[test]
     fn eval_abs_array_lift_preserves_per_element_outcome() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(-1.0)),
+            FunctionArg::Eval(FunctionValue::Number(-1.0)),
             text_arg("asd"),
-            CallArgValue::Eval(EvalValue::Logical(true)),
-            CallArgValue::Eval(EvalValue::Number(2.0)),
+            FunctionArg::Eval(FunctionValue::Logical(true)),
+            FunctionArg::Eval(FunctionValue::Number(2.0)),
         ];
 
         let got = eval_abs_array_lift(&args, &resolver());
@@ -426,17 +426,17 @@ mod tests {
 
     #[test]
     fn eval_abs_scalar_value_wraps_scalar_result_as_eval_number() {
-        let args = [CallArgValue::Eval(EvalValue::Number(-3.0))];
+        let args = [FunctionArg::Eval(FunctionValue::Number(-3.0))];
         let got = eval_abs_scalar_value(&args, &resolver());
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
     }
 
     #[test]
     fn eval_abs_surface_scalar_matches_adapter_for_prepared_numeric_input() {
-        let args = [CallArgValue::Eval(EvalValue::Number(-5.0))];
+        let args = [FunctionArg::Eval(FunctionValue::Number(-5.0))];
         let surface = eval_abs_scalar(&args, &resolver());
         let adapter =
-            eval_abs_adapter_scalar_prepared(&[PreparedArgValue::Eval(EvalValue::Number(-5.0))]);
+            eval_abs_adapter_scalar_prepared(&[PreparedValue::Eval(FunctionValue::Number(-5.0))]);
         assert_eq!(surface, adapter);
     }
 }

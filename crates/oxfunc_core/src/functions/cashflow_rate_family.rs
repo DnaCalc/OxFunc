@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
 
 const ROOT_TOLERANCE: f64 = 1e-8;
 const ROOT_DERIVATIVE_EPS: f64 = 1e-12;
@@ -68,48 +68,50 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> CashflowRateEvalError {
 }
 
 fn resolve_arg_eval(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CashflowRateEvalError> {
+) -> Result<FunctionValue, CashflowRateEvalError> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
             resolve_eval_value(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CashflowRateEvalError::Coercion)
         }
-        CallArgValue::Eval(value) => Ok(value.clone()),
-        CallArgValue::MissingArg => Err(CashflowRateEvalError::Coercion(CoercionError::MissingArg)),
-        CallArgValue::EmptyCell => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
+        FunctionArg::Eval(value) => Ok(value.clone()),
+        FunctionArg::MissingArg => Err(CashflowRateEvalError::Coercion(CoercionError::MissingArg)),
+        FunctionArg::EmptyCell => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
 fn optional_arg_value(
-    arg: Option<&CallArgValue>,
+    arg: Option<&FunctionArg>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Option<EvalValue>, CashflowRateEvalError> {
+) -> Result<Option<FunctionValue>, CashflowRateEvalError> {
     match arg {
-        None | Some(CallArgValue::MissingArg) => Ok(None),
+        None | Some(FunctionArg::MissingArg) => Ok(None),
         Some(other) => Ok(Some(resolve_arg_eval(other, resolver)?)),
     }
 }
 
-fn numeric_from_cell(cell: &ArrayCellValue) -> Result<f64, CashflowRateEvalError> {
+fn numeric_from_cell(cell: &FunctionArrayCell) -> Result<f64, CashflowRateEvalError> {
     match cell {
-        ArrayCellValue::Number(n) => Ok(*n),
-        ArrayCellValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
-        ArrayCellValue::Text(_) | ArrayCellValue::Logical(_) | ArrayCellValue::EmptyCell => {
+        FunctionArrayCell::Number(n) => Ok(*n),
+        FunctionArrayCell::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
+        FunctionArrayCell::Text(_)
+        | FunctionArrayCell::Logical(_)
+        | FunctionArrayCell::EmptyCell => {
             Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
         }
     }
 }
 
-fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, CashflowRateEvalError> {
+fn scalar_number_from_eval(value: &FunctionValue) -> Result<f64, CashflowRateEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(*n),
-        EvalValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
-        EvalValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
-        EvalValue::Array(array) => {
+        FunctionValue::Number(n) => Ok(*n),
+        FunctionValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
+        FunctionValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
+        FunctionValue::Array(array) => {
             let shape = array.shape();
             if shape.rows == 1 && shape.cols == 1 {
                 numeric_from_cell(array.get(0, 0).expect("single cell"))
@@ -117,18 +119,20 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, CashflowRateEvalErr
                 Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
             }
         }
-        EvalValue::Text(_) | EvalValue::Reference(_) => {
+        FunctionValue::Text(_) | FunctionValue::Reference(_) => {
             Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
-fn collect_numeric_vector_from_eval(value: &EvalValue) -> Result<Vec<f64>, CashflowRateEvalError> {
+fn collect_numeric_vector_from_eval(
+    value: &FunctionValue,
+) -> Result<Vec<f64>, CashflowRateEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(vec![*n]),
-        EvalValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
-        EvalValue::Array(array) => {
+        FunctionValue::Number(n) => Ok(vec![*n]),
+        FunctionValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
+        FunctionValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Ref));
@@ -139,7 +143,7 @@ fn collect_numeric_vector_from_eval(value: &EvalValue) -> Result<Vec<f64>, Cashf
             }
             Ok(out)
         }
-        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => {
             Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
@@ -157,11 +161,13 @@ fn serial_from_number(value: f64) -> Result<i64, CashflowRateEvalError> {
     Ok(serial)
 }
 
-fn collect_serial_vector_from_eval(value: &EvalValue) -> Result<Vec<i64>, CashflowRateEvalError> {
+fn collect_serial_vector_from_eval(
+    value: &FunctionValue,
+) -> Result<Vec<i64>, CashflowRateEvalError> {
     match value {
-        EvalValue::Number(n) => Ok(vec![serial_from_number(*n)?]),
-        EvalValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
-        EvalValue::Array(array) => {
+        FunctionValue::Number(n) => Ok(vec![serial_from_number(*n)?]),
+        FunctionValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
+        FunctionValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Ref));
@@ -172,7 +178,7 @@ fn collect_serial_vector_from_eval(value: &EvalValue) -> Result<Vec<i64>, Cashfl
             }
             Ok(out)
         }
-        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => {
             Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
@@ -180,7 +186,7 @@ fn collect_serial_vector_from_eval(value: &EvalValue) -> Result<Vec<i64>, Cashfl
 }
 
 fn collect_numeric_vector_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, CashflowRateEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
@@ -188,7 +194,7 @@ fn collect_numeric_vector_arg(
 }
 
 fn collect_serial_vector_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<i64>, CashflowRateEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
@@ -661,9 +667,9 @@ fn xirr_kernel(
 }
 
 pub fn eval_irr_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CashflowRateEvalError> {
+) -> Result<FunctionValue, CashflowRateEvalError> {
     if !IRR_META.arity.accepts(args.len()) {
         return Err(arity_error(&IRR_META, args.len()));
     }
@@ -672,14 +678,14 @@ pub fn eval_irr_surface(
         .map(|value| scalar_number_from_eval(&value))
         .transpose()?;
     irr_kernel(&cashflows, guess)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(CashflowRateEvalError::Domain)
 }
 
 pub fn eval_xnpv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CashflowRateEvalError> {
+) -> Result<FunctionValue, CashflowRateEvalError> {
     if !XNPV_META.arity.accepts(args.len()) {
         return Err(arity_error(&XNPV_META, args.len()));
     }
@@ -687,14 +693,14 @@ pub fn eval_xnpv_surface(
     let values = collect_numeric_vector_arg(&args[1], resolver)?;
     let dates = collect_serial_vector_arg(&args[2], resolver)?;
     xnpv_kernel(rate, &values, &dates)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(CashflowRateEvalError::Domain)
 }
 
 pub fn eval_xirr_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CashflowRateEvalError> {
+) -> Result<FunctionValue, CashflowRateEvalError> {
     if !XIRR_META.arity.accepts(args.len()) {
         return Err(arity_error(&XIRR_META, args.len()));
     }
@@ -704,7 +710,7 @@ pub fn eval_xirr_surface(
         .map(|value| scalar_number_from_eval(&value))
         .transpose()?;
     xirr_kernel(&values, &dates, guess)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(CashflowRateEvalError::Domain)
 }
 
@@ -721,11 +727,11 @@ pub fn map_cashflow_rate_error_to_ws(error: &CashflowRateEvalError) -> Worksheet
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{FunctionArray, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        map: BTreeMap<String, EvalValue>,
+        map: BTreeMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -736,35 +742,35 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.map.get(&reference.target).cloned().ok_or_else(|| {
+            self.map.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 }
             })
         }
     }
 
-    fn col(values: &[f64]) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(
+    fn col(values: &[f64]) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(
                 values
                     .iter()
                     .copied()
-                    .map(|n| vec![ArrayCellValue::Number(n)])
+                    .map(|n| vec![FunctionArrayCell::Number(n)])
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     fn assert_close(left: f64, right: f64) {
@@ -1117,20 +1123,20 @@ mod tests {
         let mut map = BTreeMap::new();
         map.insert(
             "A1:A2".to_string(),
-            EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(-100.0)],
-                    vec![ArrayCellValue::Number(121.0)],
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(-100.0)],
+                    vec![FunctionArrayCell::Number(121.0)],
                 ])
                 .unwrap(),
             ),
         );
         map.insert(
             "B1:B2".to_string(),
-            EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(45000.0)],
-                    vec![ArrayCellValue::Number(45365.0)],
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(45000.0)],
+                    vec![FunctionArrayCell::Number(45365.0)],
                 ])
                 .unwrap(),
             ),
@@ -1138,20 +1144,23 @@ mod tests {
         let got = eval_xirr_surface(&[ref_arg("A1:A2"), ref_arg("B1:B2")], &MockResolver { map })
             .unwrap();
         match got {
-            EvalValue::Number(n) => assert_close(n, 0.21),
+            FunctionValue::Number(n) => assert_close(n, 0.21),
             other => panic!("expected scalar, got {other:?}"),
         }
     }
 
     #[test]
     fn matrix_input_is_explicitly_out_of_slice() {
-        let matrix = CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(vec![
+        let matrix = FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(vec![
                 vec![
-                    ArrayCellValue::Number(-100.0),
-                    ArrayCellValue::Number(121.0),
+                    FunctionArrayCell::Number(-100.0),
+                    FunctionArrayCell::Number(121.0),
                 ],
-                vec![ArrayCellValue::Number(5.0), ArrayCellValue::Number(6.0)],
+                vec![
+                    FunctionArrayCell::Number(5.0),
+                    FunctionArrayCell::Number(6.0),
+                ],
             ])
             .unwrap(),
         ));
@@ -1178,7 +1187,7 @@ mod tests {
         )
         .unwrap();
         match got {
-            EvalValue::Number(n) => assert_close(n, 0.21),
+            FunctionValue::Number(n) => assert_close(n, 0.21),
             other => panic!("expected scalar, got {other:?}"),
         }
     }

@@ -9,7 +9,7 @@ use crate::functions::adapters::{
 };
 use crate::functions::aggregate_common::counta_argument_included;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const COUNTA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COUNTA",
@@ -36,9 +36,9 @@ pub enum CountaEvalError {
 }
 
 pub fn eval_counta_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CountaEvalError> {
+) -> Result<FunctionValue, CountaEvalError> {
     let argc = args.len();
     if !COUNTA_META.arity.accepts(argc) {
         return Err(CountaEvalError::ArityMismatch {
@@ -68,7 +68,7 @@ pub fn eval_counta_surface(
         }
     }
 
-    Ok(EvalValue::Number(count))
+    Ok(FunctionValue::Number(count))
 }
 
 pub fn map_counta_error_to_ws(e: &CountaEvalError) -> WorksheetErrorCode {
@@ -86,11 +86,11 @@ mod tests {
         ReferenceResolutionError, ReferenceSystemCapabilities, ResolvedReferenceCell,
         ResolvedReferenceExtent, ResolvedReferenceValues,
     };
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
     use std::cell::Cell;
 
     struct MockResolver {
-        resolved: Option<EvalValue>,
+        resolved: Option<FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -101,11 +101,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -124,12 +124,12 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.dense_calls.set(self.dense_calls.get() + 1);
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -145,74 +145,74 @@ mod tests {
     #[test]
     fn eval_counta_counts_non_empty_values() {
         let args = vec![
-            CallArgValue::Eval(EvalValue::Number(1.0)),
-            CallArgValue::Eval(EvalValue::Text(
-                ExcelText::from_utf16_code_units(Vec::new()),
-            )),
-            CallArgValue::MissingArg,
-            CallArgValue::EmptyCell,
+            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                Vec::new(),
+            ))),
+            FunctionArg::MissingArg,
+            FunctionArg::EmptyCell,
         ];
         let got = eval_counta_surface(&args, &MockResolver { resolved: None });
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn eval_counta_counts_reference_derived_error_and_empty_string_but_not_empty_cells() {
-        let args = vec![CallArgValue::Reference(ReferenceLike::new(
+        let args = vec![FunctionArg::Reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A3".to_string(),
         ))];
         let got = eval_counta_surface(
             &args,
             &MockResolver {
-                resolved: Some(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
-                        ArrayCellValue::EmptyCell,
+                resolved: Some(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::EmptyCell,
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn eval_counta_admits_opaque_reference_value_through_generic_resolver() {
-        let args = vec![CallArgValue::Eval(EvalValue::Reference(
+        let args = vec![FunctionArg::Eval(FunctionValue::Reference(
             ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
         ))];
         let got = eval_counta_surface(
             &args,
             &MockResolver {
-                resolved: Some(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
-                        ArrayCellValue::EmptyCell,
+                resolved: Some(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::EmptyCell,
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn eval_counta_direct_array_counts_empty_string_and_error() {
         let got = eval_counta_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
-                    ArrayCellValue::EmptyCell,
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                    FunctionArrayCell::EmptyCell,
                 ]])
                 .unwrap(),
             ))],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
@@ -224,9 +224,13 @@ mod tests {
                     ResolvedReferenceCell::new(
                         1,
                         1,
-                        ArrayCellValue::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
                     ),
-                    ResolvedReferenceCell::new(2, 1, ArrayCellValue::Error(WorksheetErrorCode::NA)),
+                    ResolvedReferenceCell::new(
+                        2,
+                        1,
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                    ),
                 ],
                 Some("reader:counta-sparse".to_string()),
             ),
@@ -234,14 +238,14 @@ mod tests {
         };
 
         let got = eval_counta_surface(
-            &[CallArgValue::Reference(ReferenceLike::new(
+            &[FunctionArg::Reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A1000",
             ))],
             &resolver,
         );
 
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
         assert_eq!(resolver.dense_calls.get(), 0);
     }
 }

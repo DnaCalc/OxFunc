@@ -4,13 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_args_values_only,
+    PreparedValue, coerce_prepared_to_number, prepare_args_values_only,
 };
 use crate::functions::special_math_common::{
     bisect_inverse, ln_gamma, regularized_beta, regularized_gamma_p,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BETA_GAMMA_STATS_BASE",
@@ -78,9 +78,9 @@ pub enum BetaGammaStatsError {
     Domain(WorksheetErrorCode),
 }
 
-fn number_arg(args: &[PreparedArgValue], idx: usize) -> Result<f64, BetaGammaStatsError> {
+fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, BetaGammaStatsError> {
     match args.get(idx) {
-        Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) | None => Ok(0.0),
+        Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) | None => Ok(0.0),
         Some(value) => coerce_prepared_to_number(value).map_err(BetaGammaStatsError::Coercion),
     }
 }
@@ -259,11 +259,11 @@ fn gamma_inv_kernel(probability: f64, alpha: f64, beta: f64) -> Result<f64, Beta
 }
 
 fn eval_numeric(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BetaGammaStatsError>,
-) -> Result<EvalValue, BetaGammaStatsError> {
+    kernel: impl FnOnce(&[PreparedValue]) -> Result<f64, BetaGammaStatsError>,
+) -> Result<FunctionValue, BetaGammaStatsError> {
     if !meta.arity.accepts(args.len()) {
         return Err(BetaGammaStatsError::ArityMismatch {
             expected_min: meta.arity.min,
@@ -273,13 +273,13 @@ fn eval_numeric(
     }
     let prepared =
         prepare_args_values_only(args, resolver).map_err(BetaGammaStatsError::Coercion)?;
-    kernel(&prepared).map(EvalValue::Number)
+    kernel(&prepared).map(FunctionValue::Number)
 }
 
 pub fn eval_beta_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETA_DIST_META, |prepared| {
         beta_dist_kernel(
             number_arg(prepared, 0)?,
@@ -301,9 +301,9 @@ pub fn eval_beta_dist_surface(
 }
 
 pub fn eval_beta_inv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETA_INV_META, |prepared| {
         beta_inv_kernel(
             number_arg(prepared, 0)?,
@@ -324,9 +324,9 @@ pub fn eval_beta_inv_surface(
 }
 
 pub fn eval_betadist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETADIST_META, |prepared| {
         beta_dist_kernel(
             number_arg(prepared, 0)?,
@@ -348,9 +348,9 @@ pub fn eval_betadist_surface(
 }
 
 pub fn eval_betainv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &BETAINV_META, |prepared| {
         beta_inv_kernel(
             number_arg(prepared, 0)?,
@@ -371,9 +371,9 @@ pub fn eval_betainv_surface(
 }
 
 pub fn eval_gamma_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMA_DIST_META, |prepared| {
         gamma_dist_kernel(
             number_arg(prepared, 0)?,
@@ -385,9 +385,9 @@ pub fn eval_gamma_dist_surface(
 }
 
 pub fn eval_gamma_inv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMA_INV_META, |prepared| {
         gamma_inv_kernel(
             number_arg(prepared, 0)?,
@@ -398,9 +398,9 @@ pub fn eval_gamma_inv_surface(
 }
 
 pub fn eval_gammadist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_numeric(args, resolver, &GAMMADIST_META, |prepared| {
         gamma_dist_kernel(
             number_arg(prepared, 0)?,
@@ -412,9 +412,9 @@ pub fn eval_gammadist_surface(
 }
 
 pub fn eval_gammainv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BetaGammaStatsError> {
+) -> Result<FunctionValue, BetaGammaStatsError> {
     eval_gamma_inv_surface(args, resolver)
 }
 
@@ -440,36 +440,36 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
-    fn txt(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn txt(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
 
-    fn assert_close(value: EvalValue, expected: f64) {
+    fn assert_close(value: FunctionValue, expected: f64) {
         match value {
-            EvalValue::Number(n) => assert!((n - expected).abs() < 1e-9, "{n} vs {expected}"),
+            FunctionValue::Number(n) => assert!((n - expected).abs() < 1e-9, "{n} vs {expected}"),
             other => panic!("expected number, got {other:?}"),
         }
     }
 
-    fn assert_number_bits(value: &EvalValue, expected_bits: u64) {
+    fn assert_number_bits(value: &FunctionValue, expected_bits: u64) {
         match value {
-            EvalValue::Number(n) => assert_eq!(
+            FunctionValue::Number(n) => assert_eq!(
                 n.to_bits(),
                 expected_bits,
                 "{n} vs {}",
@@ -494,7 +494,7 @@ mod tests {
         let modern = eval_beta_inv_surface(&[num(0.6), num(2.0), num(3.0)], &NoResolver).unwrap();
         let legacy = eval_betainv_surface(&[num(0.6), num(2.0), num(3.0)], &NoResolver).unwrap();
         match (modern, legacy) {
-            (EvalValue::Number(a), EvalValue::Number(b)) => assert!((a - b).abs() < 1e-9),
+            (FunctionValue::Number(a), FunctionValue::Number(b)) => assert!((a - b).abs() < 1e-9),
             other => panic!("unexpected values {other:?}"),
         }
     }
@@ -507,7 +507,7 @@ mod tests {
         let legacy =
             eval_gammadist_surface(&[num(2.0), num(3.0), num(2.0), num(1.0)], &NoResolver).unwrap();
         match (modern, legacy) {
-            (EvalValue::Number(a), EvalValue::Number(b)) => {
+            (FunctionValue::Number(a), FunctionValue::Number(b)) => {
                 assert!((a - b).abs() < 1e-12);
                 assert!((a - 0.08030139707139416).abs() < 1e-9);
             }
@@ -520,7 +520,7 @@ mod tests {
         let modern = eval_gamma_inv_surface(&[num(0.5), num(3.0), num(2.0)], &NoResolver).unwrap();
         let legacy = eval_gammainv_surface(&[num(0.5), num(3.0), num(2.0)], &NoResolver).unwrap();
         match (modern, legacy) {
-            (EvalValue::Number(a), EvalValue::Number(b)) => assert!((a - b).abs() < 1e-9),
+            (FunctionValue::Number(a), FunctionValue::Number(b)) => assert!((a - b).abs() < 1e-9),
             other => panic!("unexpected values {other:?}"),
         }
     }

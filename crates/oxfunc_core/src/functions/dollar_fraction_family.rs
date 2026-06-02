@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, run_values_only_prepared_lifted};
+use crate::functions::adapters::{PreparedValue, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const DOLLARDE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DOLLARDE",
@@ -46,25 +46,25 @@ fn parse_numeric_text(text: &str) -> Option<f64> {
     }
 }
 
-fn coerce_arg_number(arg: &PreparedArgValue) -> Result<f64, DollarFractionEvalError> {
+fn coerce_arg_number(arg: &PreparedValue) -> Result<f64, DollarFractionEvalError> {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
-        PreparedArgValue::Eval(EvalValue::Text(text)) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(*n),
+        PreparedValue::Eval(FunctionValue::Text(text)) => {
             let raw = text.to_string_lossy();
             parse_numeric_text(&raw).ok_or_else(|| {
                 DollarFractionEvalError::Coercion(CoercionError::NonNumericText(raw))
             })
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(DollarFractionEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(DollarFractionEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::MissingArg => Err(DollarFractionEvalError::MissingArg),
-        PreparedArgValue::EmptyCell => Ok(0.0),
-        PreparedArgValue::Eval(EvalValue::Logical(_)) => Err(DollarFractionEvalError::Coercion(
+        PreparedValue::MissingArg => Err(DollarFractionEvalError::MissingArg),
+        PreparedValue::EmptyCell => Ok(0.0),
+        PreparedValue::Eval(FunctionValue::Logical(_)) => Err(DollarFractionEvalError::Coercion(
             CoercionError::UnsupportedValueKind("logical_not_admitted"),
         )),
-        PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+        PreparedValue::Eval(FunctionValue::Array(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => {
             Err(DollarFractionEvalError::Coercion(
                 CoercionError::UnsupportedValueKind("dollar_fraction_arg_kind"),
             ))
@@ -108,10 +108,10 @@ pub fn dollarfr_kernel(number: f64, fraction: f64) -> Result<f64, WorksheetError
 }
 
 fn eval_family_prepared(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     function_meta: &FunctionMeta,
     kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<EvalValue, DollarFractionEvalError> {
+) -> Result<FunctionValue, DollarFractionEvalError> {
     if !function_meta.arity.accepts(args.len()) {
         return Err(DollarFractionEvalError::ArityMismatch {
             expected: function_meta.arity.min,
@@ -120,22 +120,22 @@ fn eval_family_prepared(
     }
     if args
         .iter()
-        .any(|arg| matches!(arg, PreparedArgValue::MissingArg))
+        .any(|arg| matches!(arg, PreparedValue::MissingArg))
     {
-        return Ok(EvalValue::Error(WorksheetErrorCode::NA));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::NA));
     }
     let number = coerce_arg_number(&args[0])?;
     let fraction = coerce_arg_number(&args[1])?;
     match kernel(number, fraction) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_dollarde_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DollarFractionEvalError> {
+) -> Result<FunctionValue, DollarFractionEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -146,9 +146,9 @@ pub fn eval_dollarde_surface(
 }
 
 pub fn eval_dollarfr_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, DollarFractionEvalError> {
+) -> Result<FunctionValue, DollarFractionEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -183,18 +183,18 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
@@ -233,16 +233,16 @@ mod tests {
         let got = eval_dollarde_surface(
             &[
                 text_arg("1.02"),
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(1.125)));
+        assert_eq!(got, Ok(FunctionValue::Number(1.125)));
 
         let logical = eval_dollarde_surface(
             &[
-                CallArgValue::Eval(EvalValue::Logical(true)),
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::Eval(FunctionValue::Logical(true)),
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );
@@ -258,39 +258,42 @@ mod tests {
     fn surface_blank_cells_become_zero_and_missing_args_become_na() {
         let blank_number = eval_dollarde_surface(
             &[
-                CallArgValue::EmptyCell,
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::EmptyCell,
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(blank_number, Ok(EvalValue::Number(0.0)));
+        assert_eq!(blank_number, Ok(FunctionValue::Number(0.0)));
 
         let blank_denominator = eval_dollarfr_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(1.125)),
-                CallArgValue::EmptyCell,
+                FunctionArg::Eval(FunctionValue::Number(1.125)),
+                FunctionArg::EmptyCell,
             ],
             &NoResolver,
         );
         assert_eq!(
             blank_denominator,
-            Ok(EvalValue::Error(WorksheetErrorCode::Div0))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
         );
 
         let missing = eval_dollarde_surface(
             &[
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::MissingArg,
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(missing, Ok(EvalValue::Error(WorksheetErrorCode::NA)));
+        assert_eq!(missing, Ok(FunctionValue::Error(WorksheetErrorCode::NA)));
     }
 
     #[test]
     fn surface_propagates_non_numeric_text_and_worksheet_errors() {
         let text = eval_dollarfr_surface(
-            &[text_arg("x"), CallArgValue::Eval(EvalValue::Number(16.0))],
+            &[
+                text_arg("x"),
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
+            ],
             &NoResolver,
         );
         assert!(matches!(
@@ -302,8 +305,8 @@ mod tests {
 
         let ws_err = eval_dollarde_surface(
             &[
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Div0)),
-                CallArgValue::Eval(EvalValue::Number(16.0)),
+                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                FunctionArg::Eval(FunctionValue::Number(16.0)),
             ],
             &NoResolver,
         );

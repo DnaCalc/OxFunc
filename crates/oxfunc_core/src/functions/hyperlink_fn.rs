@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_text, prepare_args_values_only, prepare_calc_values_only,
+    PreparedValue, coerce_prepared_to_text, prepare_args_values_only, prepare_calc_values_only,
     prepared_from_calc_value,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    CalcValue, CallArgValue, CellStyleHint, CoreValue, EvalValue, ExcelText, PresentationHint,
+    CalcValue, CellStyleHint, CoreValue, ExcelText, FunctionArg, FunctionValue, PresentationHint,
     WorksheetErrorCode,
 };
 
@@ -44,7 +44,7 @@ pub enum HyperlinkEvalError {
 }
 
 pub fn parse_hyperlink_request(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(args.len()) {
@@ -60,7 +60,7 @@ pub fn parse_hyperlink_request(
 }
 
 fn parse_hyperlink_request_prepared(
-    prepared: &[PreparedArgValue],
+    prepared: &[PreparedValue],
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(prepared.len()) {
         return Err(HyperlinkEvalError::ArityMismatch {
@@ -96,11 +96,11 @@ pub fn parse_hyperlink_request_calc(
 }
 
 pub fn eval_hyperlink_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, HyperlinkEvalError> {
+) -> Result<FunctionValue, HyperlinkEvalError> {
     let request = parse_hyperlink_request(args, resolver)?;
-    Ok(EvalValue::Text(request.display_text))
+    Ok(FunctionValue::Text(request.display_text))
 }
 
 pub fn eval_hyperlink_calc_surface_rich(
@@ -115,10 +115,10 @@ pub fn eval_hyperlink_calc_surface_rich(
 }
 
 pub fn eval_hyperlink_surface_rich(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, HyperlinkEvalError> {
-    let EvalValue::Text(value) = eval_hyperlink_surface(args, resolver)? else {
+    let FunctionValue::Text(value) = eval_hyperlink_surface(args, resolver)? else {
         unreachable!("hyperlink surface returns text");
     };
     Ok(CalcValue::with_presentation(
@@ -150,25 +150,27 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn text_arg(text: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(text)))
+    fn text_arg(text: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
+            text,
+        )))
     }
 
     #[test]
     fn hyperlink_surface_returns_link_location_when_friendly_name_is_omitted() {
         assert_eq!(
             eval_hyperlink_surface(&[text_arg("https://example.com")], &MockResolver),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "https://example.com"
             )))
         );
@@ -191,7 +193,9 @@ mod tests {
                 &[text_arg("https://example.com"), text_arg("Go")],
                 &MockResolver
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment("Go")))
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                "Go"
+            )))
         );
     }
 

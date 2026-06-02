@@ -4,13 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedPair, PreparedArgValue, coerce_prepared_to_text, expand_binary_broadcast_grid,
+    BroadcastPreparedPair, PreparedValue, coerce_prepared_to_text, expand_binary_broadcast_grid,
     run_values_only_prepared,
 };
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 const OP_CONCAT_BASE_META: FunctionMeta = FunctionMeta {
@@ -108,22 +108,22 @@ pub enum OperatorCompareConcatError {
 }
 
 fn compare_value_from_prepared(
-    prepared: &PreparedArgValue,
+    prepared: &PreparedValue,
 ) -> Result<CompareValue, OperatorCompareConcatError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(CompareValue::Number(*n)),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => Ok(CompareValue::Text(t.to_string_lossy())),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => Ok(CompareValue::Logical(*b)),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(CompareValue::Number(*n)),
+        PreparedValue::Eval(FunctionValue::Text(t)) => Ok(CompareValue::Text(t.to_string_lossy())),
+        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(CompareValue::Logical(*b)),
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(
             OperatorCompareConcatError::Coercion(CoercionError::WorksheetError(*code)),
         ),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => Err(OperatorCompareConcatError::Coercion(
+        PreparedValue::Eval(FunctionValue::Array(_)) => Err(OperatorCompareConcatError::Coercion(
             CoercionError::UnsupportedValueKind("array"),
         )),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(
+        PreparedValue::Eval(FunctionValue::Reference(_)) => Err(
             OperatorCompareConcatError::Coercion(CoercionError::UnsupportedValueKind("reference")),
         ),
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(CompareValue::Blank),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(CompareValue::Blank),
         _ => Err(OperatorCompareConcatError::Coercion(
             CoercionError::UnsupportedValueKind("unsupported_value"),
         )),
@@ -192,57 +192,53 @@ fn compare_values(op: CompareOp, lhs: CompareValue, rhs: CompareValue) -> bool {
 }
 
 fn eval_compare_scalar_pair(
-    lhs: &PreparedArgValue,
-    rhs: &PreparedArgValue,
+    lhs: &PreparedValue,
+    rhs: &PreparedValue,
     op: CompareOp,
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     let lhs = compare_value_from_prepared(lhs)?;
     let rhs = compare_value_from_prepared(rhs)?;
-    Ok(EvalValue::Logical(compare_values(op, lhs, rhs)))
+    Ok(FunctionValue::Logical(compare_values(op, lhs, rhs)))
 }
 
-fn map_compare_item(
-    lhs: &PreparedArgValue,
-    rhs: &PreparedArgValue,
-    op: CompareOp,
-) -> ArrayCellValue {
+fn map_compare_item(lhs: &PreparedValue, rhs: &PreparedValue, op: CompareOp) -> FunctionArrayCell {
     match eval_compare_scalar_pair(lhs, rhs, op) {
-        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
-        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Ok(FunctionValue::Logical(value)) => FunctionArrayCell::Logical(value),
+        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
         Err(OperatorCompareConcatError::Coercion(CoercionError::WorksheetError(code))) => {
-            ArrayCellValue::Error(code)
+            FunctionArrayCell::Error(code)
         }
-        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
 fn eval_concat_scalar_pair(
-    lhs: &PreparedArgValue,
-    rhs: &PreparedArgValue,
-) -> Result<EvalValue, OperatorCompareConcatError> {
+    lhs: &PreparedValue,
+    rhs: &PreparedValue,
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     let lhs = coerce_prepared_to_text(lhs).map_err(OperatorCompareConcatError::Coercion)?;
     let rhs = coerce_prepared_to_text(rhs).map_err(OperatorCompareConcatError::Coercion)?;
     let mut out = lhs.utf16_code_units().to_vec();
     out.extend_from_slice(rhs.utf16_code_units());
-    Ok(EvalValue::Text(ExcelText::from_utf16_code_units(out)))
+    Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(out)))
 }
 
-fn map_concat_item(lhs: &PreparedArgValue, rhs: &PreparedArgValue) -> ArrayCellValue {
+fn map_concat_item(lhs: &PreparedValue, rhs: &PreparedValue) -> FunctionArrayCell {
     match eval_concat_scalar_pair(lhs, rhs) {
-        Ok(EvalValue::Text(value)) => ArrayCellValue::Text(value),
-        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Ok(FunctionValue::Text(value)) => FunctionArrayCell::Text(value),
+        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
         Err(OperatorCompareConcatError::Coercion(CoercionError::WorksheetError(code))) => {
-            ArrayCellValue::Error(code)
+            FunctionArrayCell::Error(code)
         }
-        Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        Err(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
 fn eval_operator_compare_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     op: CompareOp,
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -259,12 +255,12 @@ fn eval_operator_compare_surface(
                     .map(|cell| match cell {
                         BroadcastPreparedPair::Pair(lhs, rhs) => map_compare_item(&lhs, &rhs, op),
                         BroadcastPreparedPair::MissingCoordinate => {
-                            ArrayCellValue::Error(WorksheetErrorCode::NA)
+                            FunctionArrayCell::Error(WorksheetErrorCode::NA)
                         }
                     })
                     .collect();
-                Ok(EvalValue::Array(
-                    EvalArray::new(shape, mapped).expect("shape preserved"),
+                Ok(FunctionValue::Array(
+                    FunctionArray::new(shape, mapped).expect("shape preserved"),
                 ))
             } else {
                 eval_compare_scalar_pair(&prepared[0], &prepared[1], op)
@@ -275,9 +271,9 @@ fn eval_operator_compare_surface(
 }
 
 pub fn eval_op_concat_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -294,12 +290,12 @@ pub fn eval_op_concat_surface(
                     .map(|cell| match cell {
                         BroadcastPreparedPair::Pair(lhs, rhs) => map_concat_item(&lhs, &rhs),
                         BroadcastPreparedPair::MissingCoordinate => {
-                            ArrayCellValue::Error(WorksheetErrorCode::NA)
+                            FunctionArrayCell::Error(WorksheetErrorCode::NA)
                         }
                     })
                     .collect();
-                Ok(EvalValue::Array(
-                    EvalArray::new(shape, mapped).expect("shape preserved"),
+                Ok(FunctionValue::Array(
+                    FunctionArray::new(shape, mapped).expect("shape preserved"),
                 ))
             } else {
                 eval_concat_scalar_pair(&prepared[0], &prepared[1])
@@ -310,44 +306,44 @@ pub fn eval_op_concat_surface(
 }
 
 pub fn eval_op_equal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Eq)
 }
 
 pub fn eval_op_not_equal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ne)
 }
 
 pub fn eval_op_less_than_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Lt)
 }
 
 pub fn eval_op_less_equal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Le)
 }
 
 pub fn eval_op_greater_than_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Gt)
 }
 
 pub fn eval_op_greater_equal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, OperatorCompareConcatError> {
+) -> Result<FunctionValue, OperatorCompareConcatError> {
     eval_operator_compare_surface(args, resolver, CompareOp::Ge)
 }
 
@@ -365,7 +361,7 @@ pub fn map_operator_compare_concat_error_to_ws(
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::ArrayCellValue;
+    use crate::value::FunctionArrayCell;
 
     struct NoResolver;
 
@@ -377,22 +373,22 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn txt(s: &str) -> EvalValue {
-        EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    fn txt(s: &str) -> FunctionValue {
+        FunctionValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
-    fn text_cell(s: &str) -> ArrayCellValue {
-        ArrayCellValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    fn text_cell(s: &str) -> FunctionArrayCell {
+        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     #[test]
@@ -400,8 +396,8 @@ mod tests {
         assert_eq!(
             eval_op_concat_surface(
                 &[
-                    CallArgValue::Eval(txt("a")),
-                    CallArgValue::Eval(EvalValue::Number(1.0))
+                    FunctionArg::Eval(txt("a")),
+                    FunctionArg::Eval(FunctionValue::Number(1.0))
                 ],
                 &NoResolver,
             ),
@@ -410,8 +406,8 @@ mod tests {
         assert_eq!(
             eval_op_concat_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
-                    CallArgValue::Eval(EvalValue::Logical(true)),
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
                 ],
                 &NoResolver,
             ),
@@ -423,40 +419,40 @@ mod tests {
     fn comparisons_match_case_mixed_and_type_ordering_lanes() {
         assert_eq!(
             eval_op_equal_surface(
-                &[CallArgValue::Eval(txt("a")), CallArgValue::Eval(txt("A"))],
+                &[FunctionArg::Eval(txt("a")), FunctionArg::Eval(txt("A"))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_equal_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
-                    CallArgValue::Eval(txt("1"))
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
+                    FunctionArg::Eval(txt("1"))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_less_than_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Logical(false)),
-                    CallArgValue::Eval(EvalValue::Logical(true)),
+                    FunctionArg::Eval(FunctionValue::Logical(false)),
+                    FunctionArg::Eval(FunctionValue::Logical(true)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_greater_than_surface(
                 &[
-                    CallArgValue::Eval(txt("10")),
-                    CallArgValue::Eval(EvalValue::Number(2.0))
+                    FunctionArg::Eval(txt("10")),
+                    FunctionArg::Eval(FunctionValue::Number(2.0))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
     }
 
@@ -465,39 +461,39 @@ mod tests {
         assert_eq!(
             eval_op_equal_surface(
                 &[
-                    CallArgValue::EmptyCell,
-                    CallArgValue::Eval(EvalValue::Number(0.0))
+                    FunctionArg::EmptyCell,
+                    FunctionArg::Eval(FunctionValue::Number(0.0))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_equal_surface(
-                &[CallArgValue::EmptyCell, CallArgValue::Eval(txt(""))],
+                &[FunctionArg::EmptyCell, FunctionArg::Eval(txt(""))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_equal_surface(
                 &[
-                    CallArgValue::EmptyCell,
-                    CallArgValue::Eval(EvalValue::Logical(false))
+                    FunctionArg::EmptyCell,
+                    FunctionArg::Eval(FunctionValue::Logical(false))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_less_than_surface(
                 &[
-                    CallArgValue::EmptyCell,
-                    CallArgValue::Eval(EvalValue::Number(1.0))
+                    FunctionArg::EmptyCell,
+                    FunctionArg::Eval(FunctionValue::Number(1.0))
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
     }
 
@@ -505,8 +501,8 @@ mod tests {
     fn comparison_error_operand_propagates() {
         let got = eval_op_equal_surface(
             &[
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::NA)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
             ],
             &NoResolver,
         );
@@ -522,11 +518,12 @@ mod tests {
     fn concat_surface_broadcasts_arrays() {
         let got = eval_op_concat_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![text_cell("x")], vec![text_cell("y")]]).unwrap(),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![text_cell("x")], vec![text_cell("y")]])
+                        .unwrap(),
                 )),
             ],
             &NoResolver,
@@ -535,8 +532,8 @@ mod tests {
 
         assert_eq!(
             got,
-            EvalValue::Array(
-                EvalArray::from_rows(vec![
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![text_cell("ax"), text_cell("bx")],
                     vec![text_cell("ay"), text_cell("by")],
                 ])
@@ -549,11 +546,11 @@ mod tests {
     fn concat_surface_marks_missing_broadcast_coordinates_as_na() {
         let got = eval_op_concat_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![text_cell("a"), text_cell("b")]]).unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
                         text_cell("x"),
                         text_cell("y"),
                         text_cell("z"),
@@ -567,11 +564,11 @@ mod tests {
 
         assert_eq!(
             got,
-            EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
                     text_cell("ax"),
                     text_cell("by"),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             )
@@ -582,17 +579,17 @@ mod tests {
     fn compare_surface_broadcasts_arrays() {
         let got = eval_op_equal_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(2.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
-                        vec![ArrayCellValue::Number(1.0)],
-                        vec![ArrayCellValue::Number(2.0)],
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
+                        vec![FunctionArrayCell::Number(1.0)],
+                        vec![FunctionArrayCell::Number(2.0)],
                     ])
                     .unwrap(),
                 )),
@@ -603,15 +600,15 @@ mod tests {
 
         assert_eq!(
             got,
-            EvalValue::Array(
-                EvalArray::from_rows(vec![
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Logical(true),
-                        ArrayCellValue::Logical(false)
+                        FunctionArrayCell::Logical(true),
+                        FunctionArrayCell::Logical(false)
                     ],
                     vec![
-                        ArrayCellValue::Logical(false),
-                        ArrayCellValue::Logical(true)
+                        FunctionArrayCell::Logical(false),
+                        FunctionArrayCell::Logical(true)
                     ],
                 ])
                 .unwrap()
@@ -623,18 +620,18 @@ mod tests {
     fn compare_surface_marks_missing_broadcast_coordinates_as_na() {
         let got = eval_op_equal_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(2.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Number(2.0),
-                        ArrayCellValue::Number(3.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Number(2.0),
+                        FunctionArrayCell::Number(3.0),
                     ]])
                     .unwrap(),
                 )),
@@ -645,11 +642,11 @@ mod tests {
 
         assert_eq!(
             got,
-            EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Logical(true),
-                    ArrayCellValue::Logical(true),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Logical(true),
+                    FunctionArrayCell::Logical(true),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             )
@@ -658,75 +655,75 @@ mod tests {
 
     #[test]
     fn comparisons_use_excel_near_equal_numeric_ordering() {
-        let lhs = CallArgValue::Eval(EvalValue::Number(0.1 + 0.2));
-        let rhs = CallArgValue::Eval(EvalValue::Number(0.3));
+        let lhs = FunctionArg::Eval(FunctionValue::Number(0.1 + 0.2));
+        let rhs = FunctionArg::Eval(FunctionValue::Number(0.3));
         assert_eq!(
             eval_op_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_not_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_less_than_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_less_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_greater_than_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_greater_equal_surface(&[lhs, rhs], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_equal_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Number(1.0 + 1.0e-14)),
-                    CallArgValue::Eval(EvalValue::Number(1.0)),
+                    FunctionArg::Eval(FunctionValue::Number(1.0 + 1.0e-14)),
+                    FunctionArg::Eval(FunctionValue::Number(1.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
 
-        let boundary_lhs = CallArgValue::Eval(EvalValue::Number(
+        let boundary_lhs = FunctionArg::Eval(FunctionValue::Number(
             ((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25,
         ));
-        let boundary_rhs = CallArgValue::Eval(EvalValue::Number(
+        let boundary_rhs = FunctionArg::Eval(FunctionValue::Number(
             ((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25,
         ));
         assert_eq!(
             eval_op_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_not_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_less_than_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_less_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
         assert_eq!(
             eval_op_greater_than_surface(
                 &[boundary_lhs.clone(), boundary_rhs.clone()],
                 &NoResolver,
             ),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
         assert_eq!(
             eval_op_greater_equal_surface(&[boundary_lhs, boundary_rhs], &NoResolver),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
     }
 }

@@ -6,7 +6,7 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const MULTINOMIAL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MULTINOMIAL",
@@ -215,9 +215,9 @@ pub fn multinomial_kernel(items: &[i64]) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_multinomial_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MultinomialEvalError> {
+) -> Result<FunctionValue, MultinomialEvalError> {
     let argc = args.len();
     if !MULTINOMIAL_META.arity.accepts(argc) {
         return Err(MultinomialEvalError::ArityMismatch {
@@ -238,7 +238,7 @@ pub fn eval_multinomial_surface(
         }
     }
     multinomial_kernel(&items)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(MultinomialEvalError::Domain)
 }
 

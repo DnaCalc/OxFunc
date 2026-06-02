@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, prepare_arg_values_only,
+    PreparedValue, coerce_prepared_to_number, prepare_arg_values_only,
 };
 use crate::functions::power_fn::power_kernel;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{ArrayCellValue, CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
 use std::fmt;
 
 const EPSILON: f64 = 1e-12;
@@ -849,19 +849,19 @@ pub enum FinancialSurfaceEvalError {
 }
 
 fn scalar_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, FinancialSurfaceEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(FinancialSurfaceEvalError::Coercion)?;
     match prepared {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         other => coerce_prepared_to_number(&other).map_err(FinancialSurfaceEvalError::Coercion),
     }
 }
 
 fn payment_timing_arg(
-    arg: Option<&CallArgValue>,
+    arg: Option<&FunctionArg>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<PaymentTiming, FinancialSurfaceEvalError> {
     let value = match arg {
@@ -876,69 +876,69 @@ fn payment_timing_arg(
 }
 
 fn resolve_eval(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     match arg {
-        CallArgValue::Reference(reference)
-        | CallArgValue::Eval(EvalValue::Reference(reference)) => {
+        FunctionArg::Reference(reference)
+        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
             let resolved = resolve_eval_value(resolver, reference).map_err(|e| {
                 FinancialSurfaceEvalError::Coercion(CoercionError::RefResolution(e))
             })?;
-            resolve_eval(&CallArgValue::Eval(resolved), resolver)
+            resolve_eval(&FunctionArg::Eval(resolved), resolver)
         }
-        CallArgValue::Eval(value) => Ok(value.clone()),
-        CallArgValue::MissingArg | CallArgValue::EmptyCell => Ok(EvalValue::Number(0.0)),
+        FunctionArg::Eval(value) => Ok(value.clone()),
+        FunctionArg::MissingArg | FunctionArg::EmptyCell => Ok(FunctionValue::Number(0.0)),
     }
 }
 
 fn eval_to_numeric_sequence(
-    value: EvalValue,
+    value: FunctionValue,
     out: &mut Vec<f64>,
 ) -> Result<(), FinancialSurfaceEvalError> {
     match value {
-        EvalValue::Array(array) => {
+        FunctionValue::Array(array) => {
             for cell in array.iter_row_major() {
                 match cell {
-                    ArrayCellValue::Number(n) => out.push(*n),
-                    ArrayCellValue::Text(t) => {
-                        let prepared = PreparedArgValue::Eval(EvalValue::Text(t.clone()));
+                    FunctionArrayCell::Number(n) => out.push(*n),
+                    FunctionArrayCell::Text(t) => {
+                        let prepared = PreparedValue::Eval(FunctionValue::Text(t.clone()));
                         out.push(
                             coerce_prepared_to_number(&prepared)
                                 .map_err(FinancialSurfaceEvalError::Coercion)?,
                         );
                     }
-                    ArrayCellValue::Logical(b) => out.push(if *b { 1.0 } else { 0.0 }),
-                    ArrayCellValue::Error(code) => {
+                    FunctionArrayCell::Logical(b) => out.push(if *b { 1.0 } else { 0.0 }),
+                    FunctionArrayCell::Error(code) => {
                         return Err(FinancialSurfaceEvalError::Coercion(
                             CoercionError::WorksheetError(*code),
                         ));
                     }
-                    ArrayCellValue::EmptyCell => {}
+                    FunctionArrayCell::EmptyCell => {}
                 }
             }
             Ok(())
         }
-        EvalValue::Number(n) => {
+        FunctionValue::Number(n) => {
             out.push(n);
             Ok(())
         }
-        EvalValue::Text(t) => {
-            let prepared = PreparedArgValue::Eval(EvalValue::Text(t));
+        FunctionValue::Text(t) => {
+            let prepared = PreparedValue::Eval(FunctionValue::Text(t));
             out.push(
                 coerce_prepared_to_number(&prepared)
                     .map_err(FinancialSurfaceEvalError::Coercion)?,
             );
             Ok(())
         }
-        EvalValue::Logical(b) => {
+        FunctionValue::Logical(b) => {
             out.push(if b { 1.0 } else { 0.0 });
             Ok(())
         }
-        EvalValue::Error(code) => Err(FinancialSurfaceEvalError::Coercion(
+        FunctionValue::Error(code) => Err(FinancialSurfaceEvalError::Coercion(
             CoercionError::WorksheetError(code),
         )),
-        EvalValue::Reference(_) => Err(FinancialSurfaceEvalError::Coercion(
+        FunctionValue::Reference(_) => Err(FinancialSurfaceEvalError::Coercion(
             CoercionError::UnsupportedValueKind("reference_like"),
         )),
         _ => Err(FinancialSurfaceEvalError::Coercion(
@@ -948,7 +948,7 @@ fn eval_to_numeric_sequence(
 }
 
 fn numeric_sequence_from_args(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, FinancialSurfaceEvalError> {
     let mut out = Vec::new();
@@ -961,16 +961,16 @@ fn numeric_sequence_from_args(
 
 fn numeric_result(
     value: Result<f64, FinancialError>,
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     value
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(FinancialSurfaceEvalError::Kernel)
 }
 
 pub fn eval_pv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !PV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: PV_META.arity.min,
@@ -991,9 +991,9 @@ pub fn eval_pv_surface(
 }
 
 pub fn eval_fv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !FV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: FV_META.arity.min,
@@ -1014,9 +1014,9 @@ pub fn eval_fv_surface(
 }
 
 pub fn eval_pmt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !PMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: PMT_META.arity.min,
@@ -1037,9 +1037,9 @@ pub fn eval_pmt_surface(
 }
 
 pub fn eval_nper_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !NPER_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: NPER_META.arity.min,
@@ -1060,9 +1060,9 @@ pub fn eval_nper_surface(
 }
 
 pub fn eval_rate_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !RATE_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: RATE_META.arity.min,
@@ -1086,9 +1086,9 @@ pub fn eval_rate_surface(
 }
 
 pub fn eval_npv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !NPV_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: NPV_META.arity.min,
@@ -1102,9 +1102,9 @@ pub fn eval_npv_surface(
 }
 
 pub fn eval_ipmt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !IPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: IPMT_META.arity.min,
@@ -1126,9 +1126,9 @@ pub fn eval_ipmt_surface(
 }
 
 pub fn eval_ppmt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !PPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: PPMT_META.arity.min,
@@ -1150,9 +1150,9 @@ pub fn eval_ppmt_surface(
 }
 
 pub fn eval_ispmt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !ISPMT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: ISPMT_META.arity.min,
@@ -1169,9 +1169,9 @@ pub fn eval_ispmt_surface(
 }
 
 pub fn eval_mirr_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !MIRR_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: MIRR_META.arity.min,
@@ -1188,9 +1188,9 @@ pub fn eval_mirr_surface(
 }
 
 pub fn eval_fvschedule_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !FVSCHEDULE_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: FVSCHEDULE_META.arity.min,
@@ -1203,9 +1203,9 @@ pub fn eval_fvschedule_surface(
 }
 
 pub fn eval_pduration_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !PDURATION_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: PDURATION_META.arity.min,
@@ -1221,9 +1221,9 @@ pub fn eval_pduration_surface(
 }
 
 pub fn eval_rri_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !RRI_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: RRI_META.arity.min,
@@ -1239,9 +1239,9 @@ pub fn eval_rri_surface(
 }
 
 pub fn eval_nominal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !NOMINAL_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: NOMINAL_META.arity.min,
@@ -1256,9 +1256,9 @@ pub fn eval_nominal_surface(
 }
 
 pub fn eval_effect_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, FinancialSurfaceEvalError> {
+) -> Result<FunctionValue, FinancialSurfaceEvalError> {
     if !EFFECT_META.arity.accepts(args.len()) {
         return Err(FinancialSurfaceEvalError::ArityMismatch {
             expected_min: EFFECT_META.arity.min,

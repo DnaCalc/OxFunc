@@ -9,7 +9,7 @@ use crate::functions::adapters::{
 use crate::functions::excel_casing::{lower_text, upper_text};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const CHAR_META: FunctionMeta = FunctionMeta {
@@ -125,49 +125,49 @@ fn rept_text(text: &ExcelText, count: f64) -> Result<ExcelText, TextScalarEvalEr
     Ok(ExcelText::from_utf16_code_units(out))
 }
 
-fn prepared_from_array_cell(cell: &ArrayCellValue) -> crate::functions::adapters::PreparedArgValue {
+fn prepared_from_array_cell(cell: &FunctionArrayCell) -> crate::functions::adapters::PreparedValue {
     match cell {
-        ArrayCellValue::Number(n) => {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Number(*n))
+        FunctionArrayCell::Number(n) => {
+            crate::functions::adapters::PreparedValue::Eval(FunctionValue::Number(*n))
         }
-        ArrayCellValue::Text(t) => {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Text(t.clone()))
+        FunctionArrayCell::Text(t) => {
+            crate::functions::adapters::PreparedValue::Eval(FunctionValue::Text(t.clone()))
         }
-        ArrayCellValue::Logical(b) => {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Logical(*b))
+        FunctionArrayCell::Logical(b) => {
+            crate::functions::adapters::PreparedValue::Eval(FunctionValue::Logical(*b))
         }
-        ArrayCellValue::Error(code) => {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Error(*code))
+        FunctionArrayCell::Error(code) => {
+            crate::functions::adapters::PreparedValue::Eval(FunctionValue::Error(*code))
         }
-        ArrayCellValue::EmptyCell => crate::functions::adapters::PreparedArgValue::EmptyCell,
+        FunctionArrayCell::EmptyCell => crate::functions::adapters::PreparedValue::EmptyCell,
     }
 }
 
 fn text_scalar_result_to_array_cell(
-    result: Result<EvalValue, TextScalarEvalError>,
-) -> ArrayCellValue {
+    result: Result<FunctionValue, TextScalarEvalError>,
+) -> FunctionArrayCell {
     match result {
-        Ok(EvalValue::Number(n)) => ArrayCellValue::Number(n),
-        Ok(EvalValue::Text(text)) => ArrayCellValue::Text(text),
-        Ok(EvalValue::Logical(value)) => ArrayCellValue::Logical(value),
-        Ok(EvalValue::Error(code)) => ArrayCellValue::Error(code),
-        Ok(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
-        Err(err) => ArrayCellValue::Error(map_text_scalar_error_to_ws(&err)),
+        Ok(FunctionValue::Number(n)) => FunctionArrayCell::Number(n),
+        Ok(FunctionValue::Text(text)) => FunctionArrayCell::Text(text),
+        Ok(FunctionValue::Logical(value)) => FunctionArrayCell::Logical(value),
+        Ok(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
+        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        Err(err) => FunctionArrayCell::Error(map_text_scalar_error_to_ws(&err)),
     }
 }
 
 fn eval_text_scalar_with_single_array_lift(
-    prepared: &[crate::functions::adapters::PreparedArgValue],
+    prepared: &[crate::functions::adapters::PreparedValue],
     allowed_array_arg_indexes: &[usize],
     eval_scalar: impl Fn(
-        &[crate::functions::adapters::PreparedArgValue],
-    ) -> Result<EvalValue, TextScalarEvalError>,
-) -> Result<EvalValue, TextScalarEvalError> {
+        &[crate::functions::adapters::PreparedValue],
+    ) -> Result<FunctionValue, TextScalarEvalError>,
+) -> Result<FunctionValue, TextScalarEvalError> {
     let array_args = prepared
         .iter()
         .enumerate()
         .filter_map(|(idx, arg)| match arg {
-            crate::functions::adapters::PreparedArgValue::Eval(EvalValue::Array(array))
+            crate::functions::adapters::PreparedValue::Eval(FunctionValue::Array(array))
                 if allowed_array_arg_indexes.contains(&idx) =>
             {
                 Some((idx, array))
@@ -187,8 +187,8 @@ fn eval_text_scalar_with_single_array_lift(
                     text_scalar_result_to_array_cell(eval_scalar(&scalar_args))
                 })
                 .collect();
-            Ok(EvalValue::Array(
-                EvalArray::new(array.shape(), cells)
+            Ok(FunctionValue::Array(
+                FunctionArray::new(array.shape(), cells)
                     .expect("text-scalar lifted array shape remains valid"),
             ))
         }
@@ -197,8 +197,8 @@ fn eval_text_scalar_with_single_array_lift(
 }
 
 fn eval_char_prepared_value(
-    prepared: &[crate::functions::adapters::PreparedArgValue],
-) -> Result<EvalValue, TextScalarEvalError> {
+    prepared: &[crate::functions::adapters::PreparedValue],
+) -> Result<FunctionValue, TextScalarEvalError> {
     if !CHAR_META.arity.accepts(prepared.len()) {
         return Err(TextScalarEvalError::ArityMismatch {
             expected_min: CHAR_META.arity.min,
@@ -207,12 +207,12 @@ fn eval_char_prepared_value(
         });
     }
     let n = coerce_prepared_to_number(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-    Ok(EvalValue::Text(char_from_number(n)?))
+    Ok(FunctionValue::Text(char_from_number(n)?))
 }
 
 fn eval_code_prepared_value(
-    prepared: &[crate::functions::adapters::PreparedArgValue],
-) -> Result<EvalValue, TextScalarEvalError> {
+    prepared: &[crate::functions::adapters::PreparedValue],
+) -> Result<FunctionValue, TextScalarEvalError> {
     if !CODE_META.arity.accepts(prepared.len()) {
         return Err(TextScalarEvalError::ArityMismatch {
             expected_min: CODE_META.arity.min,
@@ -221,12 +221,12 @@ fn eval_code_prepared_value(
         });
     }
     let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-    Ok(EvalValue::Number(code_of_text(&text)?))
+    Ok(FunctionValue::Number(code_of_text(&text)?))
 }
 
 fn eval_rept_prepared_value(
-    prepared: &[crate::functions::adapters::PreparedArgValue],
-) -> Result<EvalValue, TextScalarEvalError> {
+    prepared: &[crate::functions::adapters::PreparedValue],
+) -> Result<FunctionValue, TextScalarEvalError> {
     if !REPT_META.arity.accepts(prepared.len()) {
         return Err(TextScalarEvalError::ArityMismatch {
             expected_min: REPT_META.arity.min,
@@ -236,33 +236,33 @@ fn eval_rept_prepared_value(
     }
     let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
     let count = coerce_prepared_to_number(&prepared[1]).map_err(TextScalarEvalError::Coercion)?;
-    Ok(EvalValue::Text(rept_text(&text, count)?))
+    Ok(FunctionValue::Text(rept_text(&text, count)?))
 }
 
 pub fn eval_char_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
     eval_text_scalar_with_single_array_lift(&prepared, &[0], eval_char_prepared_value)
 }
 
 pub fn eval_code_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
     eval_text_scalar_with_single_array_lift(&prepared, &[0], eval_code_prepared_value)
 }
 
 fn eval_text_unary_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(&ExcelText) -> ExcelText,
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
     eval_text_scalar_with_single_array_lift(&prepared, &[0], |prepared| {
@@ -274,35 +274,35 @@ fn eval_text_unary_surface(
             });
         }
         let text = coerce_prepared_to_text(&prepared[0]).map_err(TextScalarEvalError::Coercion)?;
-        Ok(EvalValue::Text(kernel(&text)))
+        Ok(FunctionValue::Text(kernel(&text)))
     })
 }
 
 pub fn eval_lower_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &LOWER_META, lower_text)
 }
 
 pub fn eval_upper_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &UPPER_META, upper_text)
 }
 
 pub fn eval_trim_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     eval_text_unary_surface(args, resolver, &TRIM_META, trim_ascii_spaces)
 }
 
 pub fn eval_rept_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, TextScalarEvalError> {
+) -> Result<FunctionValue, TextScalarEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextScalarEvalError::Coercion)?;
     eval_text_scalar_with_single_array_lift(&prepared, &[0, 1], eval_rept_prepared_value)
@@ -332,11 +332,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -345,13 +345,19 @@ mod tests {
     #[test]
     fn char_truncates_and_rejects_out_of_range() {
         assert_eq!(
-            eval_char_surface(&[CallArgValue::Eval(EvalValue::Number(65.9))], &NoResolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            eval_char_surface(
+                &[FunctionArg::Eval(FunctionValue::Number(65.9))],
+                &NoResolver
+            ),
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "A".encode_utf16().collect(),
             )))
         );
         assert_eq!(
-            eval_char_surface(&[CallArgValue::Eval(EvalValue::Number(0.0))], &NoResolver),
+            eval_char_surface(
+                &[FunctionArg::Eval(FunctionValue::Number(0.0))],
+                &NoResolver
+            ),
             Err(TextScalarEvalError::Domain(WorksheetErrorCode::Value))
         );
     }
@@ -360,16 +366,16 @@ mod tests {
     fn code_uses_first_character_and_rejects_empty() {
         assert_eq!(
             eval_code_surface(
-                &[CallArgValue::Eval(EvalValue::Text(
+                &[FunctionArg::Eval(FunctionValue::Text(
                     ExcelText::from_utf16_code_units("AB".encode_utf16().collect(),)
                 ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Number(65.0))
+            Ok(FunctionValue::Number(65.0))
         );
         assert_eq!(
             eval_code_surface(
-                &[CallArgValue::Eval(EvalValue::Text(
+                &[FunctionArg::Eval(FunctionValue::Text(
                     ExcelText::from_utf16_code_units(Vec::new(),)
                 ))],
                 &NoResolver,
@@ -381,14 +387,20 @@ mod tests {
     #[test]
     fn lower_and_upper_coerce_logicals_to_text() {
         assert_eq!(
-            eval_lower_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &NoResolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            eval_lower_surface(
+                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &NoResolver
+            ),
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "true".encode_utf16().collect(),
             )))
         );
         assert_eq!(
-            eval_upper_surface(&[CallArgValue::Eval(EvalValue::Logical(true))], &NoResolver),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            eval_upper_surface(
+                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &NoResolver
+            ),
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "TRUE".encode_utf16().collect(),
             )))
         );
@@ -398,12 +410,12 @@ mod tests {
     fn upper_preserves_german_sharp_s() {
         assert_eq!(
             eval_upper_surface(
-                &[CallArgValue::Eval(EvalValue::Text(
+                &[FunctionArg::Eval(FunctionValue::Text(
                     ExcelText::from_interop_assignment("straße")
                 ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                 "STRAßE"
             )))
         );
@@ -421,134 +433,140 @@ mod tests {
             (
                 "UPPER straße",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("straße"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "STRAßE",
                 ))),
             ),
             (
                 "LOWER STRAẞE",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("STRAẞE"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "straẞe",
                 ))),
             ),
             (
                 "UPPER weiß",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("weiß"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("WEIß"))),
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                    "WEIß",
+                ))),
             ),
             (
                 "UPPER İstanbul",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("İstanbul"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "İSTANBUL",
                 ))),
             ),
             (
                 "LOWER İSTANBUL",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("İSTANBUL"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "istanbul",
                 ))),
             ),
             (
                 "UPPER istanbul",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("istanbul"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "ISTANBUL",
                 ))),
             ),
             (
                 "LOWER I",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("I"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment("i"))),
             ),
             (
                 "LOWER İ",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("İ"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("i"))),
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment("i"))),
             ),
             (
                 "UPPER κόσμος",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("κόσμος"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "ΚΟΣΜΟΣ",
                 ))),
             ),
             (
                 "LOWER ΟΣ",
                 eval_lower_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("ΟΣ"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("ος"))),
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                    "ος",
+                ))),
             ),
             (
                 "UPPER café",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("café"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment("CAFÉ"))),
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+                    "CAFÉ",
+                ))),
             ),
             (
                 "UPPER Ångström",
                 eval_upper_surface(
-                    &[CallArgValue::Eval(EvalValue::Text(
+                    &[FunctionArg::Eval(FunctionValue::Text(
                         ExcelText::from_interop_assignment("Ångström"),
                     ))],
                     &NoResolver,
                 ),
-                Ok(EvalValue::Text(ExcelText::from_interop_assignment(
+                Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
                     "ÅNGSTRÖM",
                 ))),
             ),
@@ -578,24 +596,24 @@ mod tests {
         assert_eq!(
             eval_rept_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                         "ab".encode_utf16().collect(),
                     ))),
-                    CallArgValue::Eval(EvalValue::Number(2.9)),
+                    FunctionArg::Eval(FunctionValue::Number(2.9)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 "abab".encode_utf16().collect(),
             )))
         );
         assert_eq!(
             eval_rept_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                         "a".encode_utf16().collect(),
                     ))),
-                    CallArgValue::Eval(EvalValue::Number(32768.0)),
+                    FunctionArg::Eval(FunctionValue::Number(32768.0)),
                 ],
                 &NoResolver,
             ),
@@ -606,11 +624,11 @@ mod tests {
     #[test]
     fn char_spills_array_numbers() {
         let got = eval_char_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Number(65.0)],
-                    vec![ArrayCellValue::Number(66.0)],
-                    vec![ArrayCellValue::Number(67.0)],
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Number(65.0)],
+                    vec![FunctionArrayCell::Number(66.0)],
+                    vec![FunctionArrayCell::Number(67.0)],
                 ])
                 .unwrap(),
             ))],
@@ -618,15 +636,15 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "A"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "B"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "C"
                     ))],
                 ])
@@ -638,10 +656,10 @@ mod tests {
     #[test]
     fn code_spills_array_texts() {
         let got = eval_code_surface(
-            &[CallArgValue::Eval(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+            &[FunctionArg::Eval(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("A")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("B")),
                 ]])
                 .unwrap(),
             ))],
@@ -649,10 +667,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(65.0),
-                    ArrayCellValue::Number(66.0),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(65.0),
+                    FunctionArrayCell::Number(66.0),
                 ]])
                 .unwrap()
             ))
@@ -663,57 +681,57 @@ mod tests {
     fn lower_upper_and_trim_spill_array_texts() {
         assert_eq!(
             eval_lower_surface(
-                &[CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+                &[FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("A")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("B")),
                     ]])
                     .unwrap(),
                 ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
                 ]])
                 .unwrap()
             ))
         );
         assert_eq!(
             eval_upper_surface(
-                &[CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                &[FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
                     ]])
                     .unwrap(),
                 ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("A")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("B")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("A")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("B")),
                 ]])
                 .unwrap()
             ))
         );
         assert_eq!(
             eval_trim_surface(
-                &[CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("  a  ")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment(" b ")),
+                &[FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("  a  ")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment(" b ")),
                     ]])
                     .unwrap(),
                 ))],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
                 ]])
                 .unwrap()
             ))
@@ -725,27 +743,27 @@ mod tests {
         assert_eq!(
             eval_rept_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("x"))),
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![
-                            vec![ArrayCellValue::Number(1.0)],
-                            vec![ArrayCellValue::Number(2.0)],
-                            vec![ArrayCellValue::Number(3.0)],
+                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("x"))),
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![
+                            vec![FunctionArrayCell::Number(1.0)],
+                            vec![FunctionArrayCell::Number(2.0)],
+                            vec![FunctionArrayCell::Number(3.0)],
                         ])
                         .unwrap(),
                     )),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "x"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "xx"
                     ))],
-                    vec![ArrayCellValue::Text(ExcelText::from_interop_assignment(
+                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
                         "xxx"
                     ))],
                 ])
@@ -755,21 +773,21 @@ mod tests {
         assert_eq!(
             eval_rept_surface(
                 &[
-                    CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::from_rows(vec![vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                    FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::from_rows(vec![vec![
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
                         ]])
                         .unwrap(),
                     )),
-                    CallArgValue::Eval(EvalValue::Number(2.0)),
+                    FunctionArg::Eval(FunctionValue::Number(2.0)),
                 ],
                 &NoResolver,
             ),
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("aa")),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("bb")),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("aa")),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("bb")),
                 ]])
                 .unwrap()
             ))

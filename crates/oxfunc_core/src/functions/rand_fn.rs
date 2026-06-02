@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const RAND_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RAND",
@@ -29,9 +29,9 @@ pub enum RandEvalError {
 }
 
 pub fn eval_rand_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     provider: &(impl RandomProvider + ?Sized),
-) -> Result<EvalValue, RandEvalError> {
+) -> Result<FunctionValue, RandEvalError> {
     if !RAND_META.arity.accepts(args.len()) {
         return Err(RandEvalError::ArityMismatch {
             expected: RAND_META.arity.min,
@@ -44,7 +44,7 @@ pub fn eval_rand_surface(
         return Err(RandEvalError::ProviderOutOfRange(value));
     }
 
-    Ok(EvalValue::Number(value))
+    Ok(FunctionValue::Number(value))
 }
 
 pub fn map_rand_error_to_ws(e: &RandEvalError) -> WorksheetErrorCode {
@@ -71,7 +71,7 @@ mod tests {
     #[test]
     fn eval_rand_uses_provider_value() {
         let got = eval_rand_surface(&[], &FixedRandomProvider { value: 0.25 });
-        assert_eq!(got, Ok(EvalValue::Number(0.25)));
+        assert_eq!(got, Ok(FunctionValue::Number(0.25)));
     }
 
     #[test]

@@ -123,10 +123,8 @@ pub struct ReferenceLike {
     pub system: ReferenceSystemId,
     pub identity: ReferenceIdentity,
     pub display: Option<ReferenceDisplay>,
-    // W099 migration-only mirror for legacy call sites. New code should use
-    // `identity`/`display`; W099-009 and W099-015 own deleting these fields.
-    pub kind: ReferenceKind,
-    pub target: String,
+    kind_cache: ReferenceKind,
+    target_cache: String,
 }
 
 impl ReferenceLike {
@@ -141,8 +139,8 @@ impl ReferenceLike {
             display: Some(ReferenceDisplay {
                 text: ExcelText::from_interop_assignment(&target),
             }),
-            kind,
-            target,
+            kind_cache: kind,
+            target_cache: target,
         }
     }
 
@@ -151,13 +149,13 @@ impl ReferenceLike {
         identity: ReferenceIdentity,
         display: Option<ReferenceDisplay>,
     ) -> Self {
-        let (kind, target) = legacy_reference_mirror(&identity, display.as_ref());
+        let (kind_cache, target_cache) = reference_display_projection(&identity, display.as_ref());
         Self {
             system,
             identity,
             display,
-            kind,
-            target,
+            kind_cache,
+            target_cache,
         }
     }
 
@@ -203,27 +201,35 @@ impl ReferenceLike {
         ))
     }
 
+    pub fn kind(&self) -> ReferenceKind {
+        self.kind_cache
+    }
+
+    pub fn target(&self) -> &str {
+        self.target_cache.as_str()
+    }
+
     pub fn normalized(self) -> Self {
         if !matches!(self.identity, ReferenceIdentity::Textual(_)) {
             return self;
         }
 
-        match self.kind {
+        match self.kind() {
             ReferenceKind::MultiArea => {
                 if let Some(parts) = self.multi_area_targets() {
                     return Self::multi_area(parts).unwrap_or(self);
                 }
-                Self::new(self.kind, self.target.trim().to_string())
+                Self::new(self.kind(), self.target().trim().to_string())
             }
-            _ => Self::new(self.kind, self.target.trim().to_string()),
+            _ => Self::new(self.kind(), self.target().trim().to_string()),
         }
     }
 
     pub fn multi_area_targets(&self) -> Option<Vec<String>> {
-        if !matches!(self.kind, ReferenceKind::MultiArea) {
+        if !matches!(self.kind(), ReferenceKind::MultiArea) {
             return None;
         }
-        split_multi_area_target(&self.target)
+        split_multi_area_target(self.target())
     }
 
     pub fn area_count(&self) -> usize {
@@ -231,7 +237,7 @@ impl ReferenceLike {
     }
 }
 
-fn legacy_reference_mirror(
+fn reference_display_projection(
     identity: &ReferenceIdentity,
     display: Option<&ReferenceDisplay>,
 ) -> (ReferenceKind, String) {
@@ -250,7 +256,7 @@ fn legacy_reference_mirror(
                     composite
                         .members
                         .iter()
-                        .map(|member| member.target.as_str())
+                        .map(|member| member.target())
                         .collect::<Vec<_>>()
                         .join(",")
                 });
@@ -568,15 +574,15 @@ impl CalcValue {
         boundary.allows(self.tag())
     }
 
-    pub fn to_legacy_array_cell_lossy(&self) -> ArrayCellValue {
+    pub fn to_function_array_cell_lossy(&self) -> FunctionArrayCell {
         match &self.core {
-            CoreValue::Number(n) => ArrayCellValue::Number(*n),
-            CoreValue::Text(t) => ArrayCellValue::Text(t.clone()),
-            CoreValue::Logical(b) => ArrayCellValue::Logical(*b),
-            CoreValue::Error(code) => ArrayCellValue::Error(*code),
-            CoreValue::Empty => ArrayCellValue::EmptyCell,
+            CoreValue::Number(n) => FunctionArrayCell::Number(*n),
+            CoreValue::Text(t) => FunctionArrayCell::Text(t.clone()),
+            CoreValue::Logical(b) => FunctionArrayCell::Logical(*b),
+            CoreValue::Error(code) => FunctionArrayCell::Error(*code),
+            CoreValue::Empty => FunctionArrayCell::EmptyCell,
             CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => {
-                ArrayCellValue::Error(WorksheetErrorCode::Value)
+                FunctionArrayCell::Error(WorksheetErrorCode::Value)
             }
         }
     }
@@ -632,9 +638,9 @@ impl CalcArray {
         Self::new(shape, cells)
     }
 
-    pub fn from_legacy_cells_iter(
+    pub fn from_function_cells_iter(
         shape: ArrayShape,
-        cells: impl IntoIterator<Item = ArrayCellValue>,
+        cells: impl IntoIterator<Item = FunctionArrayCell>,
     ) -> Option<Self> {
         Self::from_cells_iter(shape, cells.into_iter().map(CalcValue::from))
     }
@@ -668,14 +674,14 @@ impl CalcArray {
         self.cells.get(start..end)
     }
 
-    pub fn to_legacy_eval_array_lossy(&self) -> EvalArray {
-        EvalArray::new(
+    pub fn to_function_array_lossy(&self) -> FunctionArray {
+        FunctionArray::new(
             self.shape,
             self.iter_row_major()
-                .map(CalcValue::to_legacy_array_cell_lossy)
+                .map(CalcValue::to_function_array_cell_lossy)
                 .collect(),
         )
-        .expect("CalcArray invariants convert into EvalArray")
+        .expect("CalcArray invariants convert into FunctionArray")
     }
 }
 
@@ -838,7 +844,7 @@ pub enum CellContentValue {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ArrayCellValue {
+pub enum FunctionArrayCell {
     Number(f64),
     Text(ExcelText),
     Logical(bool),
@@ -846,7 +852,7 @@ pub enum ArrayCellValue {
     EmptyCell,
 }
 
-impl ArrayCellValue {
+impl FunctionArrayCell {
     pub fn to_calc_value_lossy(&self) -> CalcValue {
         match self {
             Self::Number(n) => CalcValue::number(*n),
@@ -867,50 +873,50 @@ impl ArrayCellValue {
         }
     }
 
-    pub fn to_eval_value(&self) -> Option<EvalValue> {
+    pub fn to_eval_value(&self) -> Option<FunctionValue> {
         match self {
-            Self::Number(n) => Some(EvalValue::Number(*n)),
-            Self::Text(t) => Some(EvalValue::Text(t.clone())),
-            Self::Logical(b) => Some(EvalValue::Logical(*b)),
-            Self::Error(code) => Some(EvalValue::Error(*code)),
+            Self::Number(n) => Some(FunctionValue::Number(*n)),
+            Self::Text(t) => Some(FunctionValue::Text(t.clone())),
+            Self::Logical(b) => Some(FunctionValue::Logical(*b)),
+            Self::Error(code) => Some(FunctionValue::Error(*code)),
             Self::EmptyCell => None,
         }
     }
 }
 
-impl From<ArrayCellValue> for CalcValue {
-    fn from(value: ArrayCellValue) -> Self {
+impl From<FunctionArrayCell> for CalcValue {
+    fn from(value: FunctionArrayCell) -> Self {
         value.to_calc_value_lossy()
     }
 }
 
-pub const INLINE_EVAL_ARRAY_CELL_CAPACITY: usize = 8;
+pub const INLINE_FUNCTION_ARRAY_CELL_CAPACITY: usize = 8;
 
 #[derive(Debug, Clone)]
-pub struct EvalArray {
+pub struct FunctionArray {
     shape: ArrayShape,
-    storage: EvalArrayStorage,
+    storage: FunctionArrayStorage,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum EvalArrayStorage {
+enum FunctionArrayStorage {
     Inline {
         len: usize,
-        cells: [ArrayCellValue; INLINE_EVAL_ARRAY_CELL_CAPACITY],
+        cells: [FunctionArrayCell; INLINE_FUNCTION_ARRAY_CELL_CAPACITY],
     },
     Heap {
-        cells: Vec<ArrayCellValue>,
+        cells: Vec<FunctionArrayCell>,
     },
 }
 
-impl PartialEq for EvalArray {
+impl PartialEq for FunctionArray {
     fn eq(&self, other: &Self) -> bool {
         self.shape == other.shape && self.cells() == other.cells()
     }
 }
 
-impl EvalArray {
-    pub fn new(shape: ArrayShape, cells: Vec<ArrayCellValue>) -> Option<Self> {
+impl FunctionArray {
+    pub fn new(shape: ArrayShape, cells: Vec<FunctionArrayCell>) -> Option<Self> {
         if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
             return None;
         }
@@ -920,18 +926,18 @@ impl EvalArray {
         })
     }
 
-    pub fn from_scalar(value: ArrayCellValue) -> Self {
+    pub fn from_scalar(value: FunctionArrayCell) -> Self {
         let mut cells = Self::empty_inline_cells();
         cells[0] = value;
         Self {
             shape: ArrayShape { rows: 1, cols: 1 },
-            storage: EvalArrayStorage::Inline { len: 1, cells },
+            storage: FunctionArrayStorage::Inline { len: 1, cells },
         }
     }
 
     pub fn from_cells_iter(
         shape: ArrayShape,
-        cells: impl IntoIterator<Item = ArrayCellValue>,
+        cells: impl IntoIterator<Item = FunctionArrayCell>,
     ) -> Option<Self> {
         if shape.rows == 0 || shape.cols == 0 {
             return None;
@@ -940,17 +946,17 @@ impl EvalArray {
         let expected = shape.cell_count();
         let mut inline = Self::empty_inline_cells();
         let mut inline_len = 0;
-        let mut heap: Option<Vec<ArrayCellValue>> = None;
+        let mut heap: Option<Vec<FunctionArrayCell>> = None;
 
         for cell in cells {
             if let Some(heap_cells) = heap.as_mut() {
                 heap_cells.push(cell);
-            } else if inline_len < INLINE_EVAL_ARRAY_CELL_CAPACITY {
+            } else if inline_len < INLINE_FUNCTION_ARRAY_CELL_CAPACITY {
                 inline[inline_len] = cell;
                 inline_len += 1;
             } else {
                 let mut heap_cells =
-                    Vec::with_capacity(expected.max(INLINE_EVAL_ARRAY_CELL_CAPACITY + 1));
+                    Vec::with_capacity(expected.max(INLINE_FUNCTION_ARRAY_CELL_CAPACITY + 1));
                 heap_cells.extend(inline[..inline_len].iter().cloned());
                 heap_cells.push(cell);
                 heap = Some(heap_cells);
@@ -960,11 +966,11 @@ impl EvalArray {
         match heap {
             Some(cells) if cells.len() == expected => Some(Self {
                 shape,
-                storage: EvalArrayStorage::Heap { cells },
+                storage: FunctionArrayStorage::Heap { cells },
             }),
             None if inline_len == expected => Some(Self {
                 shape,
-                storage: EvalArrayStorage::Inline {
+                storage: FunctionArrayStorage::Inline {
                     len: inline_len,
                     cells: inline,
                 },
@@ -973,7 +979,7 @@ impl EvalArray {
         }
     }
 
-    pub fn from_rows(rows: Vec<Vec<ArrayCellValue>>) -> Option<Self> {
+    pub fn from_rows(rows: Vec<Vec<FunctionArrayCell>>) -> Option<Self> {
         let row_count = rows.len();
         let col_count = rows.first()?.len();
         if row_count == 0 || col_count == 0 || rows.iter().any(|row| row.len() != col_count) {
@@ -998,7 +1004,7 @@ impl EvalArray {
         self.shape
     }
 
-    pub fn get(&self, row: usize, col: usize) -> Option<&ArrayCellValue> {
+    pub fn get(&self, row: usize, col: usize) -> Option<&FunctionArrayCell> {
         if row >= self.shape.rows || col >= self.shape.cols {
             return None;
         }
@@ -1006,11 +1012,11 @@ impl EvalArray {
         self.cells().get(index)
     }
 
-    pub fn iter_row_major(&self) -> impl Iterator<Item = &ArrayCellValue> {
+    pub fn iter_row_major(&self) -> impl Iterator<Item = &FunctionArrayCell> {
         self.cells().iter()
     }
 
-    pub fn row_slice(&self, row: usize) -> Option<&[ArrayCellValue]> {
+    pub fn row_slice(&self, row: usize) -> Option<&[FunctionArrayCell]> {
         if row >= self.shape.rows {
             return None;
         }
@@ -1019,193 +1025,83 @@ impl EvalArray {
         self.cells().get(start..end)
     }
 
-    fn cells(&self) -> &[ArrayCellValue] {
+    fn cells(&self) -> &[FunctionArrayCell] {
         match &self.storage {
-            EvalArrayStorage::Inline { len, cells } => &cells[..*len],
-            EvalArrayStorage::Heap { cells } => cells,
+            FunctionArrayStorage::Inline { len, cells } => &cells[..*len],
+            FunctionArrayStorage::Heap { cells } => cells,
         }
     }
 
-    fn storage_from_vec(cells: Vec<ArrayCellValue>) -> EvalArrayStorage {
-        if cells.len() <= INLINE_EVAL_ARRAY_CELL_CAPACITY {
+    fn storage_from_vec(cells: Vec<FunctionArrayCell>) -> FunctionArrayStorage {
+        if cells.len() <= INLINE_FUNCTION_ARRAY_CELL_CAPACITY {
             let len = cells.len();
             let mut inline = Self::empty_inline_cells();
             for (index, cell) in cells.into_iter().enumerate() {
                 inline[index] = cell;
             }
-            EvalArrayStorage::Inline { len, cells: inline }
+            FunctionArrayStorage::Inline { len, cells: inline }
         } else {
-            EvalArrayStorage::Heap { cells }
+            FunctionArrayStorage::Heap { cells }
         }
     }
 
-    fn empty_inline_cells() -> [ArrayCellValue; INLINE_EVAL_ARRAY_CELL_CAPACITY] {
-        std::array::from_fn(|_| ArrayCellValue::EmptyCell)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CallableOriginKind {
-    HelperLambda,
-    DefinedNameCallable,
-    BuiltInCallable,
-    ExternalRegisteredCallable,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CallableCaptureMode {
-    NoCapture,
-    LexicalCapture,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct LambdaValue {
-    pub callable_token: String,
-    pub origin_kind: CallableOriginKind,
-    pub arity_shape: CallableArityShape,
-    pub capture_mode: CallableCaptureMode,
-    pub invocation_contract_ref: String,
-}
-
-impl LambdaValue {
-    pub fn new(
-        callable_token: impl Into<String>,
-        origin_kind: CallableOriginKind,
-        arity_shape: CallableArityShape,
-        capture_mode: CallableCaptureMode,
-        invocation_contract_ref: impl Into<String>,
-    ) -> Self {
-        Self {
-            callable_token: callable_token.into(),
-            origin_kind,
-            arity_shape,
-            capture_mode,
-            invocation_contract_ref: invocation_contract_ref.into(),
-        }
-    }
-
-    pub fn helper_lambda(
-        callable_token: impl Into<String>,
-        arity_shape: CallableArityShape,
-        capture_mode: CallableCaptureMode,
-        invocation_contract_ref: impl Into<String>,
-    ) -> Self {
-        Self::new(
-            callable_token,
-            CallableOriginKind::HelperLambda,
-            arity_shape,
-            capture_mode,
-            invocation_contract_ref,
-        )
-    }
-
-    pub fn defined_name_callable(
-        callable_token: impl Into<String>,
-        arity_shape: CallableArityShape,
-        capture_mode: CallableCaptureMode,
-        invocation_contract_ref: impl Into<String>,
-    ) -> Self {
-        Self::new(
-            callable_token,
-            CallableOriginKind::DefinedNameCallable,
-            arity_shape,
-            capture_mode,
-            invocation_contract_ref,
-        )
+    fn empty_inline_cells() -> [FunctionArrayCell; INLINE_FUNCTION_ARRAY_CELL_CAPACITY] {
+        std::array::from_fn(|_| FunctionArrayCell::EmptyCell)
     }
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum EvalValue {
+#[non_exhaustive]
+pub enum FunctionValue {
     Number(f64),
     Text(ExcelText),
     Logical(bool),
     Error(WorksheetErrorCode),
-    Array(EvalArray),
+    Array(FunctionArray),
     Reference(ReferenceLike),
-    Lambda(LambdaValue),
 }
 
-impl From<EvalValue> for CalcValue {
-    // W099 migration-only adapter for legacy EvalValue-producing call sites.
-    // W099-008/W099-012 own moving dispatch/kernel paths to native CalcValue,
-    // and W099-015 owns deleting this conversion with EvalValue.
-    fn from(value: EvalValue) -> Self {
+impl From<FunctionValue> for CalcValue {
+    fn from(value: FunctionValue) -> Self {
         match value {
-            EvalValue::Number(n) => Self::number(n),
-            EvalValue::Text(t) => Self::text(t),
-            EvalValue::Logical(b) => Self::logical(b),
-            EvalValue::Error(code) => Self::error(code),
-            EvalValue::Array(array) => {
+            FunctionValue::Number(n) => Self::number(n),
+            FunctionValue::Text(t) => Self::text(t),
+            FunctionValue::Logical(b) => Self::logical(b),
+            FunctionValue::Error(code) => Self::error(code),
+            FunctionValue::Array(array) => {
                 let cells = array
                     .iter_row_major()
-                    .map(ArrayCellValue::to_calc_value_lossy)
+                    .map(FunctionArrayCell::to_calc_value_lossy)
                     .collect();
                 Self::array(
                     CalcArray::new(array.shape(), cells)
-                        .expect("legacy EvalArray invariants convert into CalcArray"),
+                        .expect("FunctionArray invariants convert into CalcArray"),
                 )
             }
-            EvalValue::Reference(reference) => Self::reference(reference),
-            EvalValue::Lambda(lambda) => {
-                let callable = CallableValue {
-                    arity: lambda.arity_shape,
-                    summary: lambda.callable_token.clone(),
-                    handle: Rc::new(LegacyLambdaCallable {
-                        lambda: lambda.clone(),
-                    }),
-                };
-                Self::with_rich(
-                    CoreValue::Error(WorksheetErrorCode::Calc),
-                    RichValue::Callable(callable),
-                )
-            }
+            FunctionValue::Reference(reference) => Self::reference(reference),
         }
     }
 }
 
-#[derive(Debug)]
-struct LegacyLambdaCallable {
-    lambda: LambdaValue,
-}
-
-impl OpaqueCallable for LegacyLambdaCallable {
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
-}
-
 #[derive(Debug, Clone, PartialEq)]
-pub enum CallArgValue {
-    Eval(EvalValue),
+pub enum FunctionArg {
+    Eval(FunctionValue),
     MissingArg,
     EmptyCell,
     Reference(ReferenceLike),
 }
 
-impl CallArgValue {
+impl FunctionArg {
     pub fn value(value: CalcValue) -> Self {
-        // W099 migration-only adapter for legacy CallArgValue call boundaries.
-        // W099-005 owns replacing call-boundary construction with CalcValue
-        // directly, and W099-015 owns deleting this conversion.
-        if let Some(RichValue::Callable(callable)) = value.rich.as_deref() {
-            if let Some(legacy) = callable
-                .handle
-                .as_any()
-                .downcast_ref::<LegacyLambdaCallable>()
-            {
-                return Self::Eval(EvalValue::Lambda(legacy.lambda.clone()));
-            }
-        }
         match value.core {
-            CoreValue::Number(n) => Self::Eval(EvalValue::Number(n)),
-            CoreValue::Text(t) => Self::Eval(EvalValue::Text(t)),
-            CoreValue::Logical(b) => Self::Eval(EvalValue::Logical(b)),
-            CoreValue::Error(code) => Self::Eval(EvalValue::Error(code)),
+            CoreValue::Number(n) => Self::Eval(FunctionValue::Number(n)),
+            CoreValue::Text(t) => Self::Eval(FunctionValue::Text(t)),
+            CoreValue::Logical(b) => Self::Eval(FunctionValue::Logical(b)),
+            CoreValue::Error(code) => Self::Eval(FunctionValue::Error(code)),
             CoreValue::Empty => Self::EmptyCell,
             CoreValue::Missing => Self::MissingArg,
             CoreValue::Array(array) => {
-                Self::Eval(EvalValue::Array(array.to_legacy_eval_array_lossy()))
+                Self::Eval(FunctionValue::Array(array.to_function_array_lossy()))
             }
             CoreValue::Reference(reference) => Self::Reference(reference),
         }
@@ -1305,14 +1201,13 @@ impl ValueBoundary {
 #[cfg(test)]
 mod tests {
     use super::{
-        ArrayCellValue, ArrayShape, CalcArray, CalcValue, CallArgValue, CallableArityShape,
-        CallableCaptureMode, CellStyleHint, CompositeReferenceOperation, CoreValue,
-        ErrorMetadataValue, ErrorSurface, EvalArray, EvalValue, ExcelText, LambdaValue,
+        ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint,
+        CompositeReferenceOperation, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
+        ErrorMetadataValue, ErrorSurface, ExcelText, FunctionArray, FunctionArrayCell,
         NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
         ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
         RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
         RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
-        EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
     };
 
     #[test]
@@ -1493,27 +1388,7 @@ mod tests {
     }
 
     #[test]
-    fn legacy_lambda_adapter_round_trips_through_calcvalue_callable() {
-        let lambda = LambdaValue::helper_lambda(
-            "helper.lambda".to_string(),
-            CallableArityShape::exact(2),
-            CallableCaptureMode::NoCapture,
-            "test.lambda",
-        );
-        let value = CalcValue::from(EvalValue::Lambda(lambda.clone()));
-
-        assert_eq!(
-            value.callable_value().map(|callable| callable.arity),
-            Some(CallableArityShape::exact(2))
-        );
-        assert_eq!(
-            CallArgValue::value(value),
-            CallArgValue::Eval(EvalValue::Lambda(lambda))
-        );
-    }
-
-    #[test]
-    fn calc_array_legacy_projection_preserves_empty_and_error_cells() {
+    fn calc_array_function_projection_preserves_empty_and_error_cells() {
         let shape = ArrayShape { rows: 2, cols: 2 };
         let array = CalcArray::from_cells_iter(
             shape,
@@ -1528,12 +1403,12 @@ mod tests {
 
         assert_eq!(array.cell_count(), 4);
         assert_eq!(
-            array.to_legacy_eval_array_lossy(),
-            EvalArray::from_rows(vec![
-                vec![ArrayCellValue::Number(1.0), ArrayCellValue::EmptyCell],
+            array.to_function_array_lossy(),
+            FunctionArray::from_rows(vec![
+                vec![FunctionArrayCell::Number(1.0), FunctionArrayCell::EmptyCell],
                 vec![
-                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
-                    ArrayCellValue::Text(ExcelText::from_interop_assignment("x"))
+                    FunctionArrayCell::Error(WorksheetErrorCode::Div0),
+                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("x"))
                 ],
             ])
             .unwrap()
@@ -1541,30 +1416,30 @@ mod tests {
     }
 
     #[test]
-    fn calc_array_legacy_projection_maps_unrepresentable_cells_to_value_error() {
+    fn calc_array_function_projection_maps_unrepresentable_cells_to_value_error() {
         let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
         let reference = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
         let array = CalcArray::from_rows(vec![vec![nested, CalcValue::missing(), reference]])
             .expect("nested CalcArray cells are representable in CalcArray");
 
         assert_eq!(
-            array.to_legacy_eval_array_lossy(),
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
-                ArrayCellValue::Error(WorksheetErrorCode::Value),
+            array.to_function_array_lossy(),
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                FunctionArrayCell::Error(WorksheetErrorCode::Value),
             ]])
             .unwrap()
         );
     }
 
     #[test]
-    fn textual_reference_carries_typed_identity_and_legacy_mirror() {
+    fn textual_reference_carries_typed_identity_and_display_projection() {
         let reference = ReferenceLike::new(ReferenceKind::Area, " A1:B2 ").normalized();
 
         assert_eq!(reference.system, ReferenceSystemId::excel_grid_v1());
-        assert_eq!(reference.kind, ReferenceKind::Area);
-        assert_eq!(reference.target, "A1:B2");
+        assert_eq!(reference.kind(), ReferenceKind::Area);
+        assert_eq!(reference.target(), "A1:B2");
         match &reference.identity {
             ReferenceIdentity::Textual(TextualReferenceIdentity { kind, text }) => {
                 assert_eq!(*kind, ReferenceKind::Area);
@@ -1587,7 +1462,7 @@ mod tests {
         );
 
         assert_eq!(reference.system.0, "dna.treecalc.v1");
-        assert_eq!(reference.target, "Node A");
+        assert_eq!(reference.target(), "Node A");
         assert!(matches!(reference.identity, ReferenceIdentity::Opaque(_)));
         assert_eq!(
             reference
@@ -1611,8 +1486,8 @@ mod tests {
             }),
         );
 
-        assert_eq!(composite.kind, ReferenceKind::MultiArea);
-        assert_eq!(composite.target, "(A1:A2,C1:C2)");
+        assert_eq!(composite.kind(), ReferenceKind::MultiArea);
+        assert_eq!(composite.target(), "(A1:A2,C1:C2)");
         match &composite.identity {
             ReferenceIdentity::Composite(identity) => {
                 assert_eq!(identity.operation, CompositeReferenceOperation::Union);

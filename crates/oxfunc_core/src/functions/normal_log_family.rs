@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::functions::normal_dist_common::{erf_approx, phi_kernel};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const NORMAL_LOG_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMAL_LOG_BASE",
@@ -343,7 +343,7 @@ fn prepared_len_error(meta: &FunctionMeta, actual: usize) -> NormalLogEvalError 
     }
 }
 
-fn eval_confidence_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_confidence_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !CONFIDENCE_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&CONFIDENCE_META, args.len()));
     }
@@ -351,12 +351,12 @@ fn eval_confidence_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Norm
     let stdev = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
     let size = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
     Ok(match confidence_norm_kernel(alpha, stdev, size) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
-fn eval_norm_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_norm_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !NORM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_DIST_META, args.len()));
     }
@@ -366,13 +366,13 @@ fn eval_norm_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Norma
     let cumulative = coerce_prepared_to_number(&args[3]).map_err(NormalLogEvalError::Coercion)?;
     Ok(
         match norm_dist_kernel(x, mean, sigma, cumulative_flag(cumulative)) {
-            Ok(value) => EvalValue::Number(value),
-            Err(code) => EvalValue::Error(code),
+            Ok(value) => FunctionValue::Number(value),
+            Err(code) => FunctionValue::Error(code),
         },
     )
 }
 
-fn eval_norm_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_norm_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !NORM_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_INV_META, args.len()));
     }
@@ -380,35 +380,35 @@ fn eval_norm_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Normal
     let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
     let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
     Ok(match norm_inv_kernel(p, mean, sigma) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
-fn eval_norm_s_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_norm_s_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !NORM_S_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_S_DIST_META, args.len()));
     }
     let z = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
     let cumulative = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
     Ok(match norm_s_dist_kernel(z, cumulative_flag(cumulative)) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
-fn eval_norm_s_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_norm_s_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !NORM_S_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NORM_S_INV_META, args.len()));
     }
     let p = coerce_prepared_to_number(&args[0]).map_err(NormalLogEvalError::Coercion)?;
     Ok(match norm_s_inv_kernel(p) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
-fn eval_lognorm_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_lognorm_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !LOGNORM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&LOGNORM_DIST_META, args.len()));
     }
@@ -418,13 +418,13 @@ fn eval_lognorm_dist_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, No
     let cumulative = coerce_prepared_to_number(&args[3]).map_err(NormalLogEvalError::Coercion)?;
     Ok(
         match lognorm_dist_kernel(x, mean, sigma, cumulative_flag(cumulative)) {
-            Ok(value) => EvalValue::Number(value),
-            Err(code) => EvalValue::Error(code),
+            Ok(value) => FunctionValue::Number(value),
+            Err(code) => FunctionValue::Error(code),
         },
     )
 }
 
-fn eval_lognorm_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, NormalLogEvalError> {
+fn eval_lognorm_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, NormalLogEvalError> {
     if !LOGNORM_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&LOGNORM_INV_META, args.len()));
     }
@@ -432,15 +432,15 @@ fn eval_lognorm_inv_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Nor
     let mean = coerce_prepared_to_number(&args[1]).map_err(NormalLogEvalError::Coercion)?;
     let sigma = coerce_prepared_to_number(&args[2]).map_err(NormalLogEvalError::Coercion)?;
     Ok(match lognorm_inv_kernel(p, mean, sigma) {
-        Ok(value) => EvalValue::Number(value),
-        Err(code) => EvalValue::Error(code),
+        Ok(value) => FunctionValue::Number(value),
+        Err(code) => FunctionValue::Error(code),
     })
 }
 
 pub fn eval_confidence_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -450,16 +450,16 @@ pub fn eval_confidence_surface(
 }
 
 pub fn eval_confidence_norm_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     eval_confidence_surface(args, resolver)
 }
 
 pub fn eval_norm_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -469,9 +469,9 @@ pub fn eval_norm_dist_surface(
 }
 
 pub fn eval_norm_inv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -481,9 +481,9 @@ pub fn eval_norm_inv_surface(
 }
 
 pub fn eval_norm_s_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -493,9 +493,9 @@ pub fn eval_norm_s_dist_surface(
 }
 
 pub fn eval_norm_s_inv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -505,23 +505,23 @@ pub fn eval_norm_s_inv_surface(
 }
 
 pub fn eval_normdist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     eval_norm_dist_surface(args, resolver)
 }
 
 pub fn eval_norminv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     eval_norm_inv_surface(args, resolver)
 }
 
 pub fn eval_normsdist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -531,23 +531,23 @@ pub fn eval_normsdist_surface(
             }
             let z =
                 coerce_prepared_to_number(&prepared[0]).map_err(NormalLogEvalError::Coercion)?;
-            Ok(EvalValue::Number(norm_cdf(z)))
+            Ok(FunctionValue::Number(norm_cdf(z)))
         },
         NormalLogEvalError::Coercion,
     )
 }
 
 pub fn eval_normsinv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     eval_norm_s_inv_surface(args, resolver)
 }
 
 pub fn eval_lognorm_dist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -557,9 +557,9 @@ pub fn eval_lognorm_dist_surface(
 }
 
 pub fn eval_lognorm_inv_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -569,9 +569,9 @@ pub fn eval_lognorm_inv_surface(
 }
 
 pub fn eval_lognormdist_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, NormalLogEvalError> {
+) -> Result<FunctionValue, NormalLogEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -586,8 +586,8 @@ pub fn eval_lognormdist_surface(
             let sigma =
                 coerce_prepared_to_number(&prepared[2]).map_err(NormalLogEvalError::Coercion)?;
             Ok(match lognorm_dist_kernel(x, mean, sigma, true) {
-                Ok(value) => EvalValue::Number(value),
-                Err(code) => EvalValue::Error(code),
+                Ok(value) => FunctionValue::Number(value),
+                Err(code) => FunctionValue::Error(code),
             })
         },
         NormalLogEvalError::Coercion,

@@ -1,6 +1,6 @@
 use crate::value::{
-    ArrayCellValue, EvalArray, EvalValue, ReferenceIdentity, ReferenceKind, ReferenceLike,
-    ReferenceSystemId,
+    FunctionArray, FunctionArrayCell, FunctionValue, ReferenceIdentity, ReferenceKind,
+    ReferenceLike, ReferenceSystemId,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -163,8 +163,8 @@ pub struct ReferenceFacts {
     pub identity_class: ReferenceIdentityClass,
     pub textual_kind: Option<ReferenceKind>,
     pub display_text: Option<String>,
-    pub legacy_kind: ReferenceKind,
-    pub legacy_target: String,
+    pub textual_kind_for_compat: ReferenceKind,
+    pub display_text_for_compat: String,
 }
 
 pub trait ReferenceSystemProvider {
@@ -175,7 +175,7 @@ pub trait ReferenceSystemProvider {
     fn dereference(
         &self,
         _request: &ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
         Err(crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "unsupported_reference_system_operation:Dereference".to_string(),
         })
@@ -231,7 +231,7 @@ impl<T: ReferenceSystemProvider + ?Sized> ReferenceSystemProvider for &T {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
         (**self).dereference(request)
     }
 
@@ -285,7 +285,7 @@ impl ReferenceSystemProvider for NullReferenceSystemProvider {
     fn dereference(
         &self,
         _request: &ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
         Err(crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "unsupported_reference_system_operation:Dereference".to_string(),
         })
@@ -333,8 +333,8 @@ pub fn reference_facts(reference: &ReferenceLike) -> ReferenceFacts {
             .display
             .as_ref()
             .map(|display| display.text.to_string_lossy()),
-        legacy_kind: reference.kind,
-        legacy_target: reference.target.clone(),
+        textual_kind_for_compat: reference.kind(),
+        display_text_for_compat: reference.target().to_string(),
     }
 }
 
@@ -368,12 +368,12 @@ impl ResolvedReferenceExtent {
 pub struct ResolvedReferenceCell {
     pub row: usize,
     pub col: usize,
-    pub value: ArrayCellValue,
+    pub value: FunctionArrayCell,
 }
 
 impl ResolvedReferenceCell {
     #[must_use]
-    pub fn new(row: usize, col: usize, value: ArrayCellValue) -> Self {
+    pub fn new(row: usize, col: usize, value: FunctionArrayCell) -> Self {
         Self { row, col, value }
     }
 }
@@ -415,7 +415,7 @@ pub fn normalize_reference(reference: &ReferenceLike) -> ReferenceLike {
 pub fn resolve_eval_value(
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     reference: &ReferenceLike,
-) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
     let normalized = normalize_reference(reference);
     ensure_reference_resolution_allowed(&normalized, resolver.capabilities())?;
 
@@ -438,7 +438,7 @@ pub fn enumerate_reference_values(
 
 pub fn materialize_resolved_reference_values(
     values: &ResolvedReferenceValues,
-) -> Result<EvalArray, ReferenceResolutionError> {
+) -> Result<FunctionArray, ReferenceResolutionError> {
     let shape = crate::value::ArrayShape {
         rows: values.declared_extent.rows,
         cols: values.declared_extent.cols,
@@ -454,7 +454,7 @@ pub fn materialize_resolved_reference_values(
         }
     })?;
 
-    let mut cells = vec![ArrayCellValue::EmptyCell; cell_count];
+    let mut cells = vec![FunctionArrayCell::EmptyCell; cell_count];
     for cell in &values.defined_cells {
         if cell.row == 0
             || cell.col == 0
@@ -476,7 +476,7 @@ pub fn materialize_resolved_reference_values(
         cells[index] = cell.value.clone();
     }
 
-    EvalArray::new(shape, cells).ok_or_else(|| {
+    FunctionArray::new(shape, cells).ok_or_else(|| {
         crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "sparse_reference_shape_invalid".to_string(),
         }
@@ -491,11 +491,11 @@ fn ensure_reference_resolution_allowed(
         return Err(crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed);
     }
 
-    match normalized.kind {
+    match normalized.kind() {
         ReferenceKind::ThreeD if !caps.allow_three_d_refs => {
             return Err(
                 crate::resolver::ReferenceResolutionError::CapabilityDenied {
-                    kind: normalized.kind,
+                    kind: normalized.kind(),
                     capability: "allow_three_d_refs",
                 },
             );
@@ -504,7 +504,7 @@ fn ensure_reference_resolution_allowed(
         ReferenceKind::Structured if !caps.allow_structured_refs => {
             return Err(
                 crate::resolver::ReferenceResolutionError::CapabilityDenied {
-                    kind: normalized.kind,
+                    kind: normalized.kind(),
                     capability: "allow_structured_refs",
                 },
             );
@@ -512,7 +512,7 @@ fn ensure_reference_resolution_allowed(
         ReferenceKind::SpillAnchor if !caps.allow_spill_anchor_refs => {
             return Err(
                 crate::resolver::ReferenceResolutionError::CapabilityDenied {
-                    kind: normalized.kind,
+                    kind: normalized.kind(),
                     capability: "allow_spill_anchor_refs",
                 },
             );
@@ -521,12 +521,12 @@ fn ensure_reference_resolution_allowed(
     }
 
     if !caps.allow_external_refs
-        && !matches!(normalized.kind, ReferenceKind::Structured)
-        && normalized.target.contains('[')
+        && !matches!(normalized.kind(), ReferenceKind::Structured)
+        && normalized.target().contains('[')
     {
         Err(
             crate::resolver::ReferenceResolutionError::CapabilityDenied {
-                kind: normalized.kind,
+                kind: normalized.kind(),
                 capability: "allow_external_refs",
             },
         )
@@ -539,15 +539,15 @@ fn ensure_reference_resolution_allowed(
 mod tests {
     use super::*;
     use crate::value::{
-        ArrayCellValue, EvalArray, EvalValue, ExcelText, ReferenceDisplay, ReferenceHandle,
-        ReferenceHandleId, ReferenceKind, ReferenceLike, ReferenceSystemId,
+        ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceDisplay,
+        ReferenceHandle, ReferenceHandleId, ReferenceKind, ReferenceLike, ReferenceSystemId,
     };
     use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved: Option<EvalValue>,
-        by_target: BTreeMap<String, EvalValue>,
+        resolved: Option<FunctionValue>,
+        by_target: BTreeMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -558,16 +558,16 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            if let Some(value) = self.by_target.get(&reference.target) {
+            if let Some(value) = self.by_target.get(reference.target()) {
                 return Ok(value.clone());
             }
             match &self.resolved {
                 Some(v) => Ok(v.clone()),
                 None => Err(
                     crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                        target: reference.target.clone(),
+                        target: reference.target().to_string(),
                     },
                 ),
             }
@@ -578,7 +578,7 @@ mod tests {
     fn normalize_reference_trims_target() {
         let input = ReferenceLike::new(ReferenceKind::A1, "  Sheet1!A1  ".to_string());
         let got = normalize_reference(&input);
-        assert_eq!(got.target, "Sheet1!A1");
+        assert_eq!(got.target(), "Sheet1!A1");
     }
 
     #[test]
@@ -591,7 +591,7 @@ mod tests {
         assert_eq!(facts.identity_class, ReferenceIdentityClass::Textual);
         assert_eq!(facts.textual_kind, Some(ReferenceKind::Area));
         assert_eq!(facts.display_text, Some("Sheet1!A1:B2".to_string()));
-        assert_eq!(facts.legacy_target, "Sheet1!A1:B2");
+        assert_eq!(facts.display_text_for_compat, "Sheet1!A1:B2");
     }
 
     #[test]
@@ -612,7 +612,7 @@ mod tests {
         assert_eq!(facts.identity_class, ReferenceIdentityClass::Opaque);
         assert_eq!(facts.textual_kind, None);
         assert_eq!(facts.display_text, Some("visible label".to_string()));
-        assert_eq!(facts.legacy_target, "visible label");
+        assert_eq!(facts.display_text_for_compat, "visible label");
     }
 
     #[test]
@@ -664,7 +664,7 @@ mod tests {
                 allow_spill_anchor_refs: true,
                 allow_external_refs: false,
             },
-            resolved: Some(EvalValue::Number(1.0)),
+            resolved: Some(FunctionValue::Number(1.0)),
             by_target: BTreeMap::new(),
         };
 
@@ -686,7 +686,7 @@ mod tests {
     fn resolve_rejects_external_reference_when_disallowed() {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved: Some(EvalValue::Number(1.0)),
+            resolved: Some(FunctionValue::Number(1.0)),
             by_target: BTreeMap::new(),
         };
         let input = ReferenceLike::new(ReferenceKind::A1, "[External.xlsx]Sheet1!A1".to_string());
@@ -707,14 +707,14 @@ mod tests {
     fn resolve_passes_normalized_reference_to_provider() {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved: Some(EvalValue::Number(3.0)),
+            resolved: Some(FunctionValue::Number(3.0)),
             by_target: BTreeMap::new(),
         };
 
         let input = ReferenceLike::new(ReferenceKind::A1, "  A1 ".to_string());
 
         let got = resolve_eval_value(&resolver, &input);
-        assert_eq!(got, Ok(EvalValue::Number(3.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
     }
 
     #[test]
@@ -722,11 +722,11 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(A1:A2,C1)".to_string(),
-            EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Error(crate::value::WorksheetErrorCode::Div0),
-                    ArrayCellValue::Number(13.0),
+            FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Error(crate::value::WorksheetErrorCode::Div0),
+                    FunctionArrayCell::Number(13.0),
                 ]])
                 .unwrap(),
             ),
@@ -743,11 +743,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Error(crate::value::WorksheetErrorCode::Div0),
-                    ArrayCellValue::Number(13.0),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Error(crate::value::WorksheetErrorCode::Div0),
+                    FunctionArrayCell::Number(13.0),
                 ]])
                 .unwrap()
             ))

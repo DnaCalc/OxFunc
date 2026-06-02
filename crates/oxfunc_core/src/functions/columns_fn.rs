@@ -6,7 +6,7 @@ use crate::functions::a1_refs::parse_a1_reference;
 use crate::resolver::{
     ReferenceResolutionError, ReferenceSystemProvider, enumerate_reference_values,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const COLUMNS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COLUMNS",
@@ -33,7 +33,7 @@ pub enum ColumnsEvalError {
     RefResolution(ReferenceResolutionError),
 }
 
-pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsEvalError> {
+pub fn eval_columns_surface(args: &[FunctionArg]) -> Result<FunctionValue, ColumnsEvalError> {
     if !COLUMNS_META.arity.accepts(args.len()) {
         return Err(ColumnsEvalError::ArityMismatch {
             expected_min: COLUMNS_META.arity.min,
@@ -43,14 +43,14 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
     }
 
     let arg = &args[0];
-    if let CallArgValue::Eval(value) = arg {
-        return Ok(EvalValue::Number(match value {
-            EvalValue::Array(arr) => arr.shape().cols as f64,
-            EvalValue::Number(_)
-            | EvalValue::Text(_)
-            | EvalValue::Logical(_)
-            | EvalValue::Error(_) => 1.0,
-            EvalValue::Reference(_) => {
+    if let FunctionArg::Eval(value) = arg {
+        return Ok(FunctionValue::Number(match value {
+            FunctionValue::Array(arr) => arr.shape().cols as f64,
+            FunctionValue::Number(_)
+            | FunctionValue::Text(_)
+            | FunctionValue::Logical(_)
+            | FunctionValue::Error(_) => 1.0,
+            FunctionValue::Reference(_) => {
                 return Err(ColumnsEvalError::InvalidReferenceArg);
             }
             _ => return Err(ColumnsEvalError::InvalidReferenceArg),
@@ -58,19 +58,19 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
     }
 
     let reference = match arg {
-        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => r,
         _ => return Err(ColumnsEvalError::InvalidReferenceArg),
     };
     let parsed =
-        parse_a1_reference(&reference.target).ok_or(ColumnsEvalError::InvalidReferenceArg)?;
+        parse_a1_reference(reference.target()).ok_or(ColumnsEvalError::InvalidReferenceArg)?;
     let count = parsed.end_col - parsed.start_col + 1;
-    Ok(EvalValue::Number(count as f64))
+    Ok(FunctionValue::Number(count as f64))
 }
 
 pub fn eval_columns_surface_with_resolver(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ColumnsEvalError> {
+) -> Result<FunctionValue, ColumnsEvalError> {
     if !COLUMNS_META.arity.accepts(args.len()) {
         return Err(ColumnsEvalError::ArityMismatch {
             expected_min: COLUMNS_META.arity.min,
@@ -82,14 +82,14 @@ pub fn eval_columns_surface_with_resolver(
     let arg = &args[0];
 
     // Array and scalar value arguments behave like in-memory arrays.
-    if let CallArgValue::Eval(value) = arg {
-        return Ok(EvalValue::Number(match value {
-            EvalValue::Array(arr) => arr.shape().cols as f64,
-            EvalValue::Number(_)
-            | EvalValue::Text(_)
-            | EvalValue::Logical(_)
-            | EvalValue::Error(_) => 1.0,
-            EvalValue::Reference(_) => {
+    if let FunctionArg::Eval(value) = arg {
+        return Ok(FunctionValue::Number(match value {
+            FunctionValue::Array(arr) => arr.shape().cols as f64,
+            FunctionValue::Number(_)
+            | FunctionValue::Text(_)
+            | FunctionValue::Logical(_)
+            | FunctionValue::Error(_) => 1.0,
+            FunctionValue::Reference(_) => {
                 return Err(ColumnsEvalError::InvalidReferenceArg);
             }
             _ => return Err(ColumnsEvalError::InvalidReferenceArg),
@@ -98,10 +98,10 @@ pub fn eval_columns_surface_with_resolver(
 
     // Reference argument: parse and compute column span.
     let reference = match arg {
-        CallArgValue::Reference(r) | CallArgValue::Eval(EvalValue::Reference(r)) => r,
+        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => r,
         _ => return Err(ColumnsEvalError::InvalidReferenceArg),
     };
-    let count = if let Some(parsed) = parse_a1_reference(&reference.target) {
+    let count = if let Some(parsed) = parse_a1_reference(reference.target()) {
         parsed.end_col - parsed.start_col + 1
     } else {
         enumerate_reference_values(resolver, reference)
@@ -109,7 +109,7 @@ pub fn eval_columns_surface_with_resolver(
             .map(|values| values.declared_extent.cols)
             .ok_or(ColumnsEvalError::InvalidReferenceArg)?
     };
-    Ok(EvalValue::Number(count as f64))
+    Ok(FunctionValue::Number(count as f64))
 }
 
 pub fn map_columns_error_to_ws(e: &ColumnsEvalError) -> WorksheetErrorCode {
@@ -126,10 +126,12 @@ mod tests {
     use crate::function::{
         ArgPreparationProfile, DeterminismClass, FecDependencyProfile, VolatilityClass,
     };
-    use crate::value::{ArrayCellValue, ArrayShape, EvalArray, ReferenceKind, ReferenceLike};
+    use crate::value::{
+        ArrayShape, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike,
+    };
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     // --- Meta property tests ---
@@ -190,7 +192,7 @@ mod tests {
     fn columns_single_cell_returns_one() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("B2")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -198,7 +200,7 @@ mod tests {
     fn columns_area_reference_returns_col_count() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("A1:C5")]),
-            Ok(EvalValue::Number(3.0))
+            Ok(FunctionValue::Number(3.0))
         );
     }
 
@@ -206,7 +208,7 @@ mod tests {
     fn columns_single_column_area_returns_one() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("B2:B5")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -214,7 +216,7 @@ mod tests {
     fn columns_whole_row_returns_max_cols() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("1:1")]),
-            Ok(EvalValue::Number(16_384.0))
+            Ok(FunctionValue::Number(16_384.0))
         );
     }
 
@@ -222,7 +224,7 @@ mod tests {
     fn columns_whole_column_returns_one() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("A:A")]),
-            Ok(EvalValue::Number(1.0))
+            Ok(FunctionValue::Number(1.0))
         );
     }
 
@@ -230,7 +232,7 @@ mod tests {
     fn columns_multi_whole_column_returns_count() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("B:D")]),
-            Ok(EvalValue::Number(3.0))
+            Ok(FunctionValue::Number(3.0))
         );
     }
 
@@ -238,7 +240,7 @@ mod tests {
     fn columns_cross_sheet_reference() {
         assert_eq!(
             eval_columns_surface(&[ref_arg("Sheet1!A1:E1")]),
-            Ok(EvalValue::Number(5.0))
+            Ok(FunctionValue::Number(5.0))
         );
     }
 
@@ -246,39 +248,39 @@ mod tests {
 
     #[test]
     fn columns_array_arg_returns_col_count() {
-        let arr = EvalArray::new(
+        let arr = FunctionArray::new(
             ArrayShape { rows: 3, cols: 2 },
             vec![
-                ArrayCellValue::Number(1.0),
-                ArrayCellValue::Number(2.0),
-                ArrayCellValue::Number(3.0),
-                ArrayCellValue::Number(4.0),
-                ArrayCellValue::Number(5.0),
-                ArrayCellValue::Number(6.0),
+                FunctionArrayCell::Number(1.0),
+                FunctionArrayCell::Number(2.0),
+                FunctionArrayCell::Number(3.0),
+                FunctionArrayCell::Number(4.0),
+                FunctionArrayCell::Number(5.0),
+                FunctionArrayCell::Number(6.0),
             ],
         )
         .unwrap();
-        let got = eval_columns_surface(&[CallArgValue::Eval(EvalValue::Array(arr))]);
-        assert_eq!(got, Ok(EvalValue::Number(2.0)));
+        let got = eval_columns_surface(&[FunctionArg::Eval(FunctionValue::Array(arr))]);
+        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
     }
 
     #[test]
     fn columns_single_cell_array_returns_one() {
-        let arr = EvalArray::new(
+        let arr = FunctionArray::new(
             ArrayShape { rows: 1, cols: 1 },
-            vec![ArrayCellValue::Number(42.0)],
+            vec![FunctionArrayCell::Number(42.0)],
         )
         .unwrap();
-        let got = eval_columns_surface(&[CallArgValue::Eval(EvalValue::Array(arr))]);
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        let got = eval_columns_surface(&[FunctionArg::Eval(FunctionValue::Array(arr))]);
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 
     // --- Error tests ---
 
     #[test]
     fn columns_scalar_value_returns_one() {
-        let got = eval_columns_surface(&[CallArgValue::Eval(EvalValue::Number(42.0))]);
-        assert_eq!(got, Ok(EvalValue::Number(1.0)));
+        let got = eval_columns_surface(&[FunctionArg::Eval(FunctionValue::Number(42.0))]);
+        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
     }
 
     #[test]

@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
 };
 
 pub const VALUETOTEXT_META: FunctionMeta = FunctionMeta {
@@ -55,9 +55,9 @@ fn worksheet_error_literal(code: WorksheetErrorCode) -> &'static str {
     }
 }
 
-fn parse_format_flag(prepared: Option<&PreparedArgValue>) -> Result<bool, ValueToTextEvalError> {
+fn parse_format_flag(prepared: Option<&PreparedValue>) -> Result<bool, ValueToTextEvalError> {
     match prepared {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(false),
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(false),
         Some(arg) => {
             let raw = coerce_prepared_to_number(arg).map_err(ValueToTextEvalError::Coercion)?;
             if !raw.is_finite() {
@@ -72,67 +72,67 @@ fn parse_format_flag(prepared: Option<&PreparedArgValue>) -> Result<bool, ValueT
     }
 }
 
-fn cell_concise(cell: &ArrayCellValue) -> String {
+fn cell_concise(cell: &FunctionArrayCell) -> String {
     match cell {
-        ArrayCellValue::Number(n) => format!("{n}"),
-        ArrayCellValue::Text(t) => t.to_string_lossy(),
-        ArrayCellValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
-        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
-        ArrayCellValue::EmptyCell => String::new(),
+        FunctionArrayCell::Number(n) => format!("{n}"),
+        FunctionArrayCell::Text(t) => t.to_string_lossy(),
+        FunctionArrayCell::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        FunctionArrayCell::Error(code) => worksheet_error_literal(*code).to_string(),
+        FunctionArrayCell::EmptyCell => String::new(),
     }
 }
 
-fn cell_strict(cell: &ArrayCellValue) -> String {
+fn cell_strict(cell: &FunctionArrayCell) -> String {
     match cell {
-        ArrayCellValue::Number(n) => format!("{n}"),
-        ArrayCellValue::Text(t) => {
+        FunctionArrayCell::Number(n) => format!("{n}"),
+        FunctionArrayCell::Text(t) => {
             let escaped = t.to_string_lossy().replace('"', "\"\"");
             format!("\"{escaped}\"")
         }
-        ArrayCellValue::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
-        ArrayCellValue::Error(code) => worksheet_error_literal(*code).to_string(),
-        ArrayCellValue::EmptyCell => String::new(),
+        FunctionArrayCell::Logical(b) => if *b { "TRUE" } else { "FALSE" }.to_string(),
+        FunctionArrayCell::Error(code) => worksheet_error_literal(*code).to_string(),
+        FunctionArrayCell::EmptyCell => String::new(),
     }
 }
 
-fn value_concise(value: &PreparedArgValue) -> String {
+fn value_concise(value: &PreparedValue) -> String {
     match value {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => format!("{n}"),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => t.to_string_lossy(),
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => format!("{n}"),
+        PreparedValue::Eval(FunctionValue::Text(t)) => t.to_string_lossy(),
+        PreparedValue::Eval(FunctionValue::Logical(b)) => {
             if *b { "TRUE" } else { "FALSE" }.to_string()
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => {
+        PreparedValue::Eval(FunctionValue::Error(code)) => {
             worksheet_error_literal(*code).to_string()
         }
-        PreparedArgValue::EmptyCell | PreparedArgValue::MissingArg => String::new(),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => String::new(),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => String::new(),
+        PreparedValue::EmptyCell | PreparedValue::MissingArg => String::new(),
+        PreparedValue::Eval(FunctionValue::Array(_)) => String::new(),
+        PreparedValue::Eval(FunctionValue::Reference(_)) => String::new(),
         _ => String::new(),
     }
 }
 
-fn value_strict(value: &PreparedArgValue) -> String {
+fn value_strict(value: &PreparedValue) -> String {
     match value {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => format!("{n}"),
-        PreparedArgValue::Eval(EvalValue::Text(t)) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => format!("{n}"),
+        PreparedValue::Eval(FunctionValue::Text(t)) => {
             let escaped = t.to_string_lossy().replace('"', "\"\"");
             format!("\"{escaped}\"")
         }
-        PreparedArgValue::Eval(EvalValue::Logical(b)) => {
+        PreparedValue::Eval(FunctionValue::Logical(b)) => {
             if *b { "TRUE" } else { "FALSE" }.to_string()
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => {
+        PreparedValue::Eval(FunctionValue::Error(code)) => {
             worksheet_error_literal(*code).to_string()
         }
-        PreparedArgValue::EmptyCell | PreparedArgValue::MissingArg => String::new(),
-        PreparedArgValue::Eval(EvalValue::Array(_)) => String::new(),
-        PreparedArgValue::Eval(EvalValue::Reference(_)) => String::new(),
+        PreparedValue::EmptyCell | PreparedValue::MissingArg => String::new(),
+        PreparedValue::Eval(FunctionValue::Array(_)) => String::new(),
+        PreparedValue::Eval(FunctionValue::Reference(_)) => String::new(),
         _ => String::new(),
     }
 }
 
-fn render_array_value(array: &EvalArray, strict: bool) -> EvalValue {
+fn render_array_value(array: &FunctionArray, strict: bool) -> FunctionValue {
     let cells = array
         .iter_row_major()
         .map(|cell| {
@@ -141,18 +141,18 @@ fn render_array_value(array: &EvalArray, strict: bool) -> EvalValue {
             } else {
                 cell_concise(cell)
             };
-            ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                 rendered.encode_utf16().collect(),
             ))
         })
         .collect::<Vec<_>>();
-    EvalValue::Array(EvalArray::new(array.shape(), cells).expect("shape preserved"))
+    FunctionValue::Array(FunctionArray::new(array.shape(), cells).expect("shape preserved"))
 }
 
 pub fn eval_valuetotext_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, ValueToTextEvalError> {
+) -> Result<FunctionValue, ValueToTextEvalError> {
     if !VALUETOTEXT_META.arity.accepts(args.len()) {
         return Err(ValueToTextEvalError::ArityMismatch {
             expected_min: VALUETOTEXT_META.arity.min,
@@ -166,7 +166,7 @@ pub fn eval_valuetotext_surface(
         resolver,
         |prepared| {
             let strict = parse_format_flag(prepared.get(1))?;
-            if let PreparedArgValue::Eval(EvalValue::Array(array)) = &prepared[0] {
+            if let PreparedValue::Eval(FunctionValue::Array(array)) = &prepared[0] {
                 return Ok(render_array_value(array, strict));
             }
             let rendered = if strict {
@@ -174,7 +174,7 @@ pub fn eval_valuetotext_surface(
             } else {
                 value_concise(&prepared[0])
             };
-            Ok(EvalValue::Text(ExcelText::from_utf16_code_units(
+            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
                 rendered.encode_utf16().collect(),
             )))
         },
@@ -204,11 +204,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -217,16 +217,16 @@ mod tests {
         }
     }
 
-    fn num(v: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(v))
+    fn num(v: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(v))
     }
 
-    fn text(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(s)))
+    fn text(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(s)))
     }
 
-    fn text_val(s: &str) -> EvalValue {
-        EvalValue::Text(ExcelText::from_interop_assignment(s))
+    fn text_val(s: &str) -> FunctionValue {
+        FunctionValue::Text(ExcelText::from_interop_assignment(s))
     }
 
     // --- Meta tests ---
@@ -291,7 +291,7 @@ mod tests {
     #[test]
     fn valuetotext_logical_true_concise() {
         let got = eval_valuetotext_surface(
-            &[CallArgValue::Eval(EvalValue::Logical(true))],
+            &[FunctionArg::Eval(FunctionValue::Logical(true))],
             &MockResolver,
         );
         assert_eq!(got, Ok(text_val("TRUE")));
@@ -300,7 +300,7 @@ mod tests {
     #[test]
     fn valuetotext_logical_false_concise() {
         let got = eval_valuetotext_surface(
-            &[CallArgValue::Eval(EvalValue::Logical(false))],
+            &[FunctionArg::Eval(FunctionValue::Logical(false))],
             &MockResolver,
         );
         assert_eq!(got, Ok(text_val("FALSE")));
@@ -309,7 +309,9 @@ mod tests {
     #[test]
     fn valuetotext_error_concise() {
         let got = eval_valuetotext_surface(
-            &[CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::NA))],
+            &[FunctionArg::Eval(FunctionValue::Error(
+                WorksheetErrorCode::NA,
+            ))],
             &MockResolver,
         );
         assert_eq!(got, Ok(text_val("#N/A")));
@@ -344,7 +346,7 @@ mod tests {
     #[test]
     fn valuetotext_logical_strict() {
         let got = eval_valuetotext_surface(
-            &[CallArgValue::Eval(EvalValue::Logical(true)), num(1.0)],
+            &[FunctionArg::Eval(FunctionValue::Logical(true)), num(1.0)],
             &MockResolver,
         );
         assert_eq!(got, Ok(text_val("TRUE")));
@@ -354,7 +356,7 @@ mod tests {
     fn valuetotext_error_strict() {
         let got = eval_valuetotext_surface(
             &[
-                CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
+                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Value)),
                 num(1.0),
             ],
             &MockResolver,
@@ -366,15 +368,15 @@ mod tests {
     fn valuetotext_array_strict_returns_quoted_text_array() {
         let got = eval_valuetotext_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![
                         vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("a")),
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("b")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
                         ],
                         vec![
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("c")),
-                            ArrayCellValue::Text(ExcelText::from_interop_assignment("d")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                            FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
                         ],
                     ])
                     .unwrap(),
@@ -385,15 +387,15 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![
                     vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"a\"")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"b\"")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("\"a\"")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("\"b\"")),
                     ],
                     vec![
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"c\"")),
-                        ArrayCellValue::Text(ExcelText::from_interop_assignment("\"d\"")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("\"c\"")),
+                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("\"d\"")),
                     ],
                 ])
                 .unwrap()

@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BOND_CORE_BASE",
@@ -138,20 +138,20 @@ fn dim(y: i64, m: i64) -> i64 {
 fn act(s: i64, e: i64) -> f64 {
     (e - s) as f64
 }
-fn narg(a: &[PreparedArgValue], i: usize) -> Result<f64, BondCoreEvalError> {
+fn narg(a: &[PreparedValue], i: usize) -> Result<f64, BondCoreEvalError> {
     a.get(i)
         .ok_or(derr(WorksheetErrorCode::Value))
         .and_then(|v| coerce_prepared_to_number(v).map_err(BondCoreEvalError::Coercion))
 }
-fn oarg(a: &[PreparedArgValue], i: usize, d: f64) -> Result<f64, BondCoreEvalError> {
+fn oarg(a: &[PreparedValue], i: usize, d: f64) -> Result<f64, BondCoreEvalError> {
     match a.get(i) {
-        None | Some(PreparedArgValue::MissingArg) => Ok(d),
+        None | Some(PreparedValue::MissingArg) => Ok(d),
         Some(v) => coerce_prepared_to_number(v).map_err(BondCoreEvalError::Coercion),
     }
 }
-fn obool(a: &[PreparedArgValue], i: usize, d: bool) -> Result<bool, BondCoreEvalError> {
+fn obool(a: &[PreparedValue], i: usize, d: bool) -> Result<bool, BondCoreEvalError> {
     match a.get(i) {
-        None | Some(PreparedArgValue::MissingArg) => Ok(d),
+        None | Some(PreparedValue::MissingArg) => Ok(d),
         Some(v) => Ok(coerce_prepared_to_number(v)
             .map_err(BondCoreEvalError::Coercion)?
             .trunc()
@@ -663,11 +663,11 @@ pub fn accrint_kernel(
     Ok(total + coup * dd(prev, settlement, basis_)? / dc(prev, next, basis_, f)?)
 }
 fn evaln(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
     m: &FunctionMeta,
-    k: impl FnOnce(&[PreparedArgValue]) -> Result<f64, BondCoreEvalError>,
-) -> Result<EvalValue, BondCoreEvalError> {
+    k: impl FnOnce(&[PreparedValue]) -> Result<f64, BondCoreEvalError>,
+) -> Result<FunctionValue, BondCoreEvalError> {
     run_values_only_prepared(
         args,
         r,
@@ -675,15 +675,15 @@ fn evaln(
             if !m.arity.accepts(p.len()) {
                 return Err(arity(m, p.len()));
             }
-            Ok(EvalValue::Number(k(p)?))
+            Ok(FunctionValue::Number(k(p)?))
         },
         BondCoreEvalError::Coercion,
     )
 }
 pub fn eval_accrint_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINT_META, |p| {
         accrint_kernel(
             narg(p, 0)?,
@@ -698,9 +698,9 @@ pub fn eval_accrint_surface(
     })
 }
 pub fn eval_accrintm_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &ACCRINTM_META, |p| {
         accrintm_kernel(
             narg(p, 0)?,
@@ -712,9 +712,9 @@ pub fn eval_accrintm_surface(
     })
 }
 pub fn eval_duration_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &DURATION_META, |p| {
         duration_kernel(
             narg(p, 0)?,
@@ -727,9 +727,9 @@ pub fn eval_duration_surface(
     })
 }
 pub fn eval_mduration_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &MDURATION_META, |p| {
         mduration_kernel(
             narg(p, 0)?,
@@ -742,9 +742,9 @@ pub fn eval_mduration_surface(
     })
 }
 pub fn eval_price_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &PRICE_META, |p| {
         price_kernel(
             narg(p, 0)?,
@@ -758,9 +758,9 @@ pub fn eval_price_surface(
     })
 }
 pub fn eval_pricemat_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &PRICEMAT_META, |p| {
         pricemat_kernel(
             narg(p, 0)?,
@@ -773,9 +773,9 @@ pub fn eval_pricemat_surface(
     })
 }
 pub fn eval_yield_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &YIELD_META, |p| {
         yield_kernel(
             narg(p, 0)?,
@@ -789,9 +789,9 @@ pub fn eval_yield_surface(
     })
 }
 pub fn eval_yielddisc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &YIELDDISC_META, |p| {
         yielddisc_kernel(
             narg(p, 0)?,
@@ -803,9 +803,9 @@ pub fn eval_yielddisc_surface(
     })
 }
 pub fn eval_yieldmat_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     r: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, BondCoreEvalError> {
+) -> Result<FunctionValue, BondCoreEvalError> {
     evaln(args, r, &YIELDMAT_META, |p| {
         yieldmat_kernel(
             narg(p, 0)?,
@@ -830,12 +830,12 @@ pub fn map_bond_core_error_to_ws(e: &BondCoreEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{CallArgValue, EvalValue};
+    use crate::value::{FunctionArg, FunctionValue};
     fn serial(y: i64, m: i64, d: i64) -> f64 {
         excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap()
     }
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
     struct Dummy;
     impl ReferenceSystemProvider for Dummy {
@@ -845,11 +845,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -927,7 +927,7 @@ mod tests {
                 &r
             )
             .unwrap(),
-            EvalValue::Number(_)
+            FunctionValue::Number(_)
         ));
         assert_eq!(basis(9.0), Err(derr(WorksheetErrorCode::Num)));
         assert_eq!(

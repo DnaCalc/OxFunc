@@ -2,18 +2,18 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::rc::Rc;
 
 use crate::coercion::CoercionError;
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
+use crate::functions::adapters::{PreparedValue, coerce_prepared_to_number};
 use crate::value::{
-    ArrayCellValue, CallableArityShape, CallableValue, EvalValue, OpaqueCallable,
+    CallableArityShape, CallableValue, FunctionArrayCell, FunctionValue, OpaqueCallable,
     WorksheetErrorCode,
 };
 
 #[cfg(test)]
-use crate::value::EvalArray;
+use crate::value::FunctionArray;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Stage1Expr {
-    Prepared(PreparedArgValue),
+    Prepared(PreparedValue),
     Name(String),
     Add(Box<Stage1Expr>, Box<Stage1Expr>),
     Mul(Box<Stage1Expr>, Box<Stage1Expr>),
@@ -35,7 +35,7 @@ pub enum Stage1Expr {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Stage1Value {
-    Prepared(PreparedArgValue),
+    Prepared(PreparedValue),
     Lambda(Stage1LambdaClosure),
 }
 
@@ -122,16 +122,16 @@ fn prepared_to_number(value: &Stage1Value) -> Result<f64, Stage1EvalError> {
     }
 }
 
-fn sum_prepared(prepared: &PreparedArgValue) -> Result<f64, Stage1EvalError> {
+fn sum_prepared(prepared: &PreparedValue) -> Result<f64, Stage1EvalError> {
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(*n),
-        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(*n),
+        PreparedValue::Eval(FunctionValue::Array(array)) => {
             let mut total = 0.0;
             for cell in array.iter_row_major() {
                 match cell {
-                    ArrayCellValue::Number(n) => total += *n,
-                    ArrayCellValue::EmptyCell => {}
-                    ArrayCellValue::Error(code) => {
+                    FunctionArrayCell::Number(n) => total += *n,
+                    FunctionArrayCell::EmptyCell => {}
+                    FunctionArrayCell::Error(code) => {
                         return Err(Stage1EvalError::Coercion(CoercionError::WorksheetError(
                             *code,
                         )));
@@ -145,13 +145,13 @@ fn sum_prepared(prepared: &PreparedArgValue) -> Result<f64, Stage1EvalError> {
             }
             Ok(total)
         }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(Stage1EvalError::Coercion(
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(Stage1EvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::Eval(EvalValue::Text(_))
-        | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(
+        PreparedValue::Eval(FunctionValue::Text(_))
+        | PreparedValue::Eval(FunctionValue::Logical(_))
+        | PreparedValue::Eval(FunctionValue::Reference(_)) => Err(
             Stage1EvalError::UnsupportedValueKind("sum_unsupported_value"),
         ),
         _ => Err(Stage1EvalError::UnsupportedValueKind(
@@ -160,14 +160,14 @@ fn sum_prepared(prepared: &PreparedArgValue) -> Result<f64, Stage1EvalError> {
     }
 }
 
-fn publish_value(value: &Stage1Value) -> Result<EvalValue, Stage1EvalError> {
+fn publish_value(value: &Stage1Value) -> Result<FunctionValue, Stage1EvalError> {
     match value {
-        Stage1Value::Prepared(PreparedArgValue::Eval(v)) => Ok(v.clone()),
-        Stage1Value::Prepared(PreparedArgValue::MissingArg)
-        | Stage1Value::Prepared(PreparedArgValue::EmptyCell) => Ok(EvalValue::Text(
+        Stage1Value::Prepared(PreparedValue::Eval(v)) => Ok(v.clone()),
+        Stage1Value::Prepared(PreparedValue::MissingArg)
+        | Stage1Value::Prepared(PreparedValue::EmptyCell) => Ok(FunctionValue::Text(
             crate::value::ExcelText::from_utf16_code_units(Vec::new()),
         )),
-        Stage1Value::Lambda(_) => Ok(EvalValue::Error(WorksheetErrorCode::Calc)),
+        Stage1Value::Lambda(_) => Ok(FunctionValue::Error(WorksheetErrorCode::Calc)),
     }
 }
 
@@ -175,7 +175,7 @@ fn omitted_truth(inner: &Stage1Expr, env: &BTreeMap<String, Stage1Value>) -> boo
     match inner {
         Stage1Expr::Name(name) => matches!(
             env.get(name),
-            Some(Stage1Value::Prepared(PreparedArgValue::MissingArg))
+            Some(Stage1Value::Prepared(PreparedValue::MissingArg))
         ),
         _ => false,
     }
@@ -214,15 +214,15 @@ pub fn eval_expr(
         Stage1Expr::Add(left, right) => {
             let l = prepared_to_number(&eval_expr(left, env)?)?;
             let r = prepared_to_number(&eval_expr(right, env)?)?;
-            Ok(Stage1Value::Prepared(PreparedArgValue::Eval(
-                EvalValue::Number(l + r),
+            Ok(Stage1Value::Prepared(PreparedValue::Eval(
+                FunctionValue::Number(l + r),
             )))
         }
         Stage1Expr::Mul(left, right) => {
             let l = prepared_to_number(&eval_expr(left, env)?)?;
             let r = prepared_to_number(&eval_expr(right, env)?)?;
-            Ok(Stage1Value::Prepared(PreparedArgValue::Eval(
-                EvalValue::Number(l * r),
+            Ok(Stage1Value::Prepared(PreparedValue::Eval(
+                FunctionValue::Number(l * r),
             )))
         }
         Stage1Expr::Sum(inner) => {
@@ -233,8 +233,8 @@ pub fn eval_expr(
                     return Err(Stage1EvalError::UnsupportedValueKind("sum_lambda"));
                 }
             };
-            Ok(Stage1Value::Prepared(PreparedArgValue::Eval(
-                EvalValue::Number(total),
+            Ok(Stage1Value::Prepared(PreparedValue::Eval(
+                FunctionValue::Number(total),
             )))
         }
         Stage1Expr::Let { bindings, body } => {
@@ -269,13 +269,13 @@ pub fn eval_expr(
                 Stage1Value::Prepared(_) => Err(Stage1EvalError::NonCallable),
             }
         }
-        Stage1Expr::IsOmitted(inner) => Ok(Stage1Value::Prepared(PreparedArgValue::Eval(
-            EvalValue::Logical(omitted_truth(inner, env)),
+        Stage1Expr::IsOmitted(inner) => Ok(Stage1Value::Prepared(PreparedValue::Eval(
+            FunctionValue::Logical(omitted_truth(inner, env)),
         ))),
     }
 }
 
-pub fn evaluate_stage1_worksheet(expr: &Stage1Expr) -> Result<EvalValue, Stage1EvalError> {
+pub fn evaluate_stage1_worksheet(expr: &Stage1Expr) -> Result<FunctionValue, Stage1EvalError> {
     validate_expr(expr).map_err(Stage1EvalError::Formation)?;
     publish_value(&eval_expr(expr, &BTreeMap::new())?)
 }
@@ -286,17 +286,17 @@ mod tests {
     use crate::value::ExcelText;
 
     fn num(n: f64) -> Stage1Expr {
-        Stage1Expr::Prepared(PreparedArgValue::Eval(EvalValue::Number(n)))
+        Stage1Expr::Prepared(PreparedValue::Eval(FunctionValue::Number(n)))
     }
 
     fn row_array(nums: &[f64]) -> Stage1Expr {
         let cells = nums
             .iter()
             .copied()
-            .map(ArrayCellValue::Number)
+            .map(FunctionArrayCell::Number)
             .collect::<Vec<_>>();
-        let array = EvalArray::from_rows(vec![cells]).expect("row array");
-        Stage1Expr::Prepared(PreparedArgValue::Eval(EvalValue::Array(array)))
+        let array = FunctionArray::from_rows(vec![cells]).expect("row array");
+        Stage1Expr::Prepared(PreparedValue::Eval(FunctionValue::Array(array)))
     }
 
     #[test]
@@ -308,7 +308,10 @@ mod tests {
                 Box::new(num(3.0)),
             )),
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(5.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(5.0))
+        );
     }
 
     #[test]
@@ -320,7 +323,10 @@ mod tests {
                 Box::new(Stage1Expr::Name("b".to_string())),
             )),
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(3.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(3.0))
+        );
     }
 
     #[test]
@@ -329,7 +335,10 @@ mod tests {
             bindings: vec![("x".to_string(), row_array(&[1.0, 2.0]))],
             body: Box::new(Stage1Expr::Sum(Box::new(Stage1Expr::Name("x".to_string())))),
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(3.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(3.0))
+        );
     }
 
     #[test]
@@ -361,7 +370,10 @@ mod tests {
             }),
             args: vec![num(5.0)],
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(6.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(6.0))
+        );
     }
 
     #[test]
@@ -375,7 +387,7 @@ mod tests {
         };
         assert_eq!(
             evaluate_stage1_worksheet(&expr),
-            Ok(EvalValue::Error(WorksheetErrorCode::Calc))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Calc))
         );
     }
 
@@ -436,7 +448,10 @@ mod tests {
                 args: vec![num(3.0)],
             }),
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(5.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(5.0))
+        );
     }
 
     #[test]
@@ -454,7 +469,10 @@ mod tests {
             }),
             args: vec![num(3.0)],
         };
-        assert_eq!(evaluate_stage1_worksheet(&expr), Ok(EvalValue::Number(5.0)));
+        assert_eq!(
+            evaluate_stage1_worksheet(&expr),
+            Ok(FunctionValue::Number(5.0))
+        );
     }
 
     #[test]
@@ -470,7 +488,7 @@ mod tests {
         };
         assert_eq!(
             evaluate_stage1_worksheet(&expr),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
     }
 
@@ -483,11 +501,11 @@ mod tests {
                     "y".to_string(),
                 )))),
             }),
-            args: vec![num(1.0), Stage1Expr::Prepared(PreparedArgValue::MissingArg)],
+            args: vec![num(1.0), Stage1Expr::Prepared(PreparedValue::MissingArg)],
         };
         assert_eq!(
             evaluate_stage1_worksheet(&expr),
-            Ok(EvalValue::Logical(true))
+            Ok(FunctionValue::Logical(true))
         );
     }
 
@@ -496,7 +514,7 @@ mod tests {
         let expr = Stage1Expr::IsOmitted(Box::new(num(1.0)));
         assert_eq!(
             evaluate_stage1_worksheet(&expr),
-            Ok(EvalValue::Logical(false))
+            Ok(FunctionValue::Logical(false))
         );
     }
 
@@ -542,17 +560,17 @@ mod tests {
         assert_eq!(closure.meta.arity, CallableArityShape::exact(1));
         assert_eq!(
             publish_value(&Stage1Value::Lambda(closure)),
-            Ok(EvalValue::Error(WorksheetErrorCode::Calc))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Calc))
         );
     }
 
     #[test]
     fn publish_missing_arg_normalizes_to_empty_text() {
-        let value = publish_value(&Stage1Value::Prepared(PreparedArgValue::MissingArg))
+        let value = publish_value(&Stage1Value::Prepared(PreparedValue::MissingArg))
             .expect("published value");
         assert_eq!(
             value,
-            EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
+            FunctionValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
         );
     }
 }

@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const EPSILON: f64 = 1.0e-12;
 
@@ -69,7 +69,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> CumulativeFinanceEvalError
     }
 }
 
-fn number_arg(args: &[PreparedArgValue], idx: usize) -> Result<f64, CumulativeFinanceEvalError> {
+fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, CumulativeFinanceEvalError> {
     args.get(idx)
         .ok_or(CumulativeFinanceEvalError::Domain(
             WorksheetErrorCode::Value,
@@ -325,26 +325,26 @@ pub fn cumprinc_kernel(
 }
 
 fn eval_numeric(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl FnOnce(&[PreparedArgValue]) -> Result<f64, CumulativeFinanceEvalError>,
-) -> Result<EvalValue, CumulativeFinanceEvalError> {
+    kernel: impl FnOnce(&[PreparedValue]) -> Result<f64, CumulativeFinanceEvalError>,
+) -> Result<FunctionValue, CumulativeFinanceEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| kernel(prepared).map(EvalValue::Number),
+        |prepared| kernel(prepared).map(FunctionValue::Number),
         CumulativeFinanceEvalError::Coercion,
     )
 }
 
 pub fn eval_cumipmt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CumulativeFinanceEvalError> {
+) -> Result<FunctionValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMIPMT_META, |prepared| {
         cumipmt_kernel(
             number_arg(prepared, 0)?,
@@ -358,9 +358,9 @@ pub fn eval_cumipmt_surface(
 }
 
 pub fn eval_cumprinc_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, CumulativeFinanceEvalError> {
+) -> Result<FunctionValue, CumulativeFinanceEvalError> {
     eval_numeric(args, resolver, &CUMPRINC_META, |prepared| {
         cumprinc_kernel(
             number_arg(prepared, 0)?,

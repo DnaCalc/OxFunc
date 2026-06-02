@@ -3,10 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
+use crate::functions::adapters::{PreparedValue, coerce_prepared_to_number};
 use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const ATAN2_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ATAN2",
@@ -50,7 +50,9 @@ pub fn atan2_kernel(x_num: f64, y_num: f64) -> Result<f64, WorksheetErrorCode> {
     Ok(y_num.atan2(x_num))
 }
 
-pub fn eval_atan2_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValue, Atan2EvalError> {
+pub fn eval_atan2_adapter_prepared(
+    args: &[PreparedValue],
+) -> Result<FunctionValue, Atan2EvalError> {
     if !ATAN2_META.arity.accepts(args.len()) {
         return Err(Atan2EvalError::ArityMismatch {
             expected: ATAN2_META.arity.min,
@@ -60,14 +62,14 @@ pub fn eval_atan2_adapter_prepared(args: &[PreparedArgValue]) -> Result<EvalValu
     let x_num = coerce_prepared_to_number(&args[0]).map_err(Atan2EvalError::Coercion)?;
     let y_num = coerce_prepared_to_number(&args[1]).map_err(Atan2EvalError::Coercion)?;
     atan2_kernel(x_num, y_num)
-        .map(EvalValue::Number)
+        .map(FunctionValue::Number)
         .map_err(|_| Atan2EvalError::ZeroVector)
 }
 
 pub fn eval_atan2_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, Atan2EvalError> {
+) -> Result<FunctionValue, Atan2EvalError> {
     eval_binary_numeric_surface(args, resolver, atan2_kernel).map_err(Atan2EvalError::from)
 }
 
@@ -85,7 +87,7 @@ pub fn map_atan2_error_to_ws(e: &Atan2EvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell};
 
     struct NoResolver;
 
@@ -97,11 +99,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -122,31 +124,31 @@ mod tests {
     fn eval_atan2_surface_accepts_numeric_text() {
         let got = eval_atan2_surface(
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
                     "1".encode_utf16().collect(),
                 ))),
-                CallArgValue::Eval(EvalValue::Number(0.0)),
+                FunctionArg::Eval(FunctionValue::Number(0.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(EvalValue::Number(0.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
     }
 
     #[test]
     fn eval_atan2_spills_array_and_per_cell_errors() {
         let got = eval_atan2_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(0.0),
-                        ArrayCellValue::Number(1.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(0.0),
+                        FunctionArrayCell::Number(1.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
-                    EvalArray::from_rows(vec![vec![
-                        ArrayCellValue::Number(0.0),
-                        ArrayCellValue::Number(1.0),
+                FunctionArg::Eval(FunctionValue::Array(
+                    FunctionArray::from_rows(vec![vec![
+                        FunctionArrayCell::Number(0.0),
+                        FunctionArrayCell::Number(1.0),
                     ]])
                     .unwrap(),
                 )),
@@ -155,10 +157,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Array(
-                EvalArray::from_rows(vec![vec![
-                    ArrayCellValue::Error(WorksheetErrorCode::Div0),
-                    ArrayCellValue::Number(std::f64::consts::FRAC_PI_4),
+            Ok(FunctionValue::Array(
+                FunctionArray::from_rows(vec![vec![
+                    FunctionArrayCell::Error(WorksheetErrorCode::Div0),
+                    FunctionArrayCell::Number(std::f64::consts::FRAC_PI_4),
                 ]])
                 .unwrap()
             ))

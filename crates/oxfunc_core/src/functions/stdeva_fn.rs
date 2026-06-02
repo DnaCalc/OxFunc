@@ -8,7 +8,7 @@ use crate::functions::variance_common::{
     VarianceDivisor, VarianceInclusionPolicy, collect_variance_values, stdev_from_values,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const STDEVA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.STDEVA",
@@ -35,9 +35,9 @@ pub enum StdevAEvalError {
 }
 
 pub fn eval_stdeva_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, StdevAEvalError> {
+) -> Result<FunctionValue, StdevAEvalError> {
     let argc = args.len();
     if !STDEVA_META.arity.accepts(argc) {
         return Err(StdevAEvalError::ArityMismatch {
@@ -54,8 +54,8 @@ pub fn eval_stdeva_surface(
     let values = collect_variance_values(&prepared, VarianceInclusionPolicy::AverageALike)
         .map_err(StdevAEvalError::Coercion)?;
     match stdev_from_values(&values, VarianceDivisor::Sample) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 

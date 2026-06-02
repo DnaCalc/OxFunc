@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_arg_values_only};
+use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
 use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
@@ -33,7 +33,7 @@ use crate::resolver::{
     materialize_resolved_reference_values, resolve_eval_value,
 };
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, EvalArray, EvalValue, ReferenceLike,
+    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceLike,
     WorksheetErrorCode,
 };
 
@@ -124,35 +124,35 @@ impl ReferenceSystemProvider for PreparedOnlyResolver {
     fn dereference(
         &self,
         request: &crate::resolver::ReferenceDereferenceRequest,
-    ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
         Err(
             crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                target: request.reference.target.clone(),
+                target: request.reference.target().to_string(),
             },
         )
     }
 }
 
 fn coerce_scalar_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
     match prepared {
-        PreparedArgValue::Eval(EvalValue::Number(n)) => Ok(n),
-        PreparedArgValue::Eval(value) => {
+        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(n),
+        PreparedValue::Eval(value) => {
             crate::coercion::coerce_eval_to_number(&value, &PreparedOnlyResolver)
                 .map_err(SubtotalAggregateEvalError::Coercion)
         }
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Err(
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Err(
             SubtotalAggregateEvalError::Coercion(CoercionError::EmptyCell),
         ),
     }
 }
 
 fn coerce_whole_number(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i32, SubtotalAggregateEvalError> {
     let value = coerce_scalar_number(arg, resolver)?;
@@ -164,14 +164,14 @@ fn coerce_whole_number(
 }
 
 fn coerce_k_arg(
-    arg: &CallArgValue,
+    arg: &FunctionArg,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<CallArgValue, SubtotalAggregateEvalError> {
+) -> Result<FunctionArg, SubtotalAggregateEvalError> {
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(SubtotalAggregateEvalError::Coercion)?;
     match prepared {
-        PreparedArgValue::Eval(value) => Ok(CallArgValue::Eval(value)),
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => {
+        PreparedValue::Eval(value) => Ok(FunctionArg::Eval(value)),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
             Err(SubtotalAggregateEvalError::InvalidK)
         }
     }
@@ -295,17 +295,17 @@ fn aggregate_rules(
     Ok((operation, rules))
 }
 
-fn single_empty_array_arg() -> CallArgValue {
-    CallArgValue::Eval(EvalValue::Array(EvalArray::from_scalar(
-        ArrayCellValue::EmptyCell,
+fn single_empty_array_arg() -> FunctionArg {
+    FunctionArg::Eval(FunctionValue::Array(FunctionArray::from_scalar(
+        FunctionArrayCell::EmptyCell,
     )))
 }
 
 fn filter_reference_cells(
-    array: &EvalArray,
+    array: &FunctionArray,
     context: &AggregateReferenceContext,
     rules: AggregateFilterRules,
-) -> Result<CallArgValue, SubtotalAggregateEvalError> {
+) -> Result<FunctionArg, SubtotalAggregateEvalError> {
     if context.shape != array.shape() {
         return Err(SubtotalAggregateEvalError::AggregateContextShapeMismatch);
     }
@@ -327,7 +327,7 @@ fn filter_reference_cells(
             if rules.ignore_nested_aggregate && cell_ctx.nested_subtotal_or_aggregate {
                 continue;
             }
-            if rules.ignore_errors && matches!(cell, ArrayCellValue::Error(_)) {
+            if rules.ignore_errors && matches!(cell, FunctionArrayCell::Error(_)) {
                 continue;
             }
             kept.push(cell.clone());
@@ -338,7 +338,7 @@ fn filter_reference_cells(
         return Ok(single_empty_array_arg());
     }
 
-    let array = EvalArray::new(
+    let array = FunctionArray::new(
         ArrayShape {
             rows: kept.len(),
             cols: 1,
@@ -346,7 +346,7 @@ fn filter_reference_cells(
         kept,
     )
     .expect("non-empty filtered aggregate array");
-    Ok(CallArgValue::Eval(EvalValue::Array(array)))
+    Ok(FunctionArg::Eval(FunctionValue::Array(array)))
 }
 
 fn materialize_ref_filtered_arg(
@@ -354,12 +354,12 @@ fn materialize_ref_filtered_arg(
     rules: AggregateFilterRules,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: &dyn HostInfoProvider,
-) -> Result<CallArgValue, SubtotalAggregateEvalError> {
+) -> Result<FunctionArg, SubtotalAggregateEvalError> {
     let resolved = if let Some(values) = enumerate_reference_values(resolver, reference)
         .map_err(CoercionError::RefResolution)
         .map_err(SubtotalAggregateEvalError::Coercion)?
     {
-        EvalValue::Array(
+        FunctionValue::Array(
             materialize_resolved_reference_values(&values)
                 .map_err(CoercionError::RefResolution)
                 .map_err(SubtotalAggregateEvalError::Coercion)?,
@@ -374,28 +374,28 @@ fn materialize_ref_filtered_arg(
         .map_err(SubtotalAggregateEvalError::HostInfo)?;
 
     match resolved {
-        EvalValue::Array(array) => filter_reference_cells(&array, &context, rules),
-        EvalValue::Number(n) => filter_reference_cells(
-            &EvalArray::from_scalar(ArrayCellValue::Number(n)),
+        FunctionValue::Array(array) => filter_reference_cells(&array, &context, rules),
+        FunctionValue::Number(n) => filter_reference_cells(
+            &FunctionArray::from_scalar(FunctionArrayCell::Number(n)),
             &context,
             rules,
         ),
-        EvalValue::Text(t) => filter_reference_cells(
-            &EvalArray::from_scalar(ArrayCellValue::Text(t)),
+        FunctionValue::Text(t) => filter_reference_cells(
+            &FunctionArray::from_scalar(FunctionArrayCell::Text(t)),
             &context,
             rules,
         ),
-        EvalValue::Logical(b) => filter_reference_cells(
-            &EvalArray::from_scalar(ArrayCellValue::Logical(b)),
+        FunctionValue::Logical(b) => filter_reference_cells(
+            &FunctionArray::from_scalar(FunctionArrayCell::Logical(b)),
             &context,
             rules,
         ),
-        EvalValue::Error(code) => filter_reference_cells(
-            &EvalArray::from_scalar(ArrayCellValue::Error(code)),
+        FunctionValue::Error(code) => filter_reference_cells(
+            &FunctionArray::from_scalar(FunctionArrayCell::Error(code)),
             &context,
             rules,
         ),
-        EvalValue::Reference(_) => Err(SubtotalAggregateEvalError::Coercion(
+        FunctionValue::Reference(_) => Err(SubtotalAggregateEvalError::Coercion(
             CoercionError::UnsupportedValueKind("reference_like"),
         )),
         _ => Err(SubtotalAggregateEvalError::Coercion(
@@ -405,37 +405,37 @@ fn materialize_ref_filtered_arg(
 }
 
 fn prepare_reference_form_args(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     rules: AggregateFilterRules,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: &dyn HostInfoProvider,
-) -> Result<Vec<CallArgValue>, SubtotalAggregateEvalError> {
+) -> Result<Vec<FunctionArg>, SubtotalAggregateEvalError> {
     let mut prepared = Vec::new();
     for arg in args {
         match arg {
-            CallArgValue::Reference(reference) => {
+            FunctionArg::Reference(reference) => {
                 prepared.push(materialize_ref_filtered_arg(
                     reference, rules, resolver, host_info,
                 )?);
             }
-            CallArgValue::Eval(EvalValue::Reference(reference)) => {
+            FunctionArg::Eval(FunctionValue::Reference(reference)) => {
                 prepared.push(materialize_ref_filtered_arg(
                     reference, rules, resolver, host_info,
                 )?);
             }
-            CallArgValue::Eval(EvalValue::Array(array)) => {
+            FunctionArg::Eval(FunctionValue::Array(array)) => {
                 let cells = array
                     .iter_row_major()
                     .filter(|cell| {
-                        !(rules.ignore_errors && matches!(cell, ArrayCellValue::Error(_)))
+                        !(rules.ignore_errors && matches!(cell, FunctionArrayCell::Error(_)))
                     })
                     .cloned()
                     .collect::<Vec<_>>();
                 if cells.is_empty() {
                     prepared.push(single_empty_array_arg());
                 } else {
-                    prepared.push(CallArgValue::Eval(EvalValue::Array(
-                        EvalArray::new(
+                    prepared.push(FunctionArg::Eval(FunctionValue::Array(
+                        FunctionArray::new(
                             ArrayShape {
                                 rows: cells.len(),
                                 cols: 1,
@@ -446,12 +446,12 @@ fn prepare_reference_form_args(
                     )));
                 }
             }
-            CallArgValue::EmptyCell => prepared.push(CallArgValue::EmptyCell),
-            CallArgValue::MissingArg => prepared.push(CallArgValue::MissingArg),
-            CallArgValue::Eval(EvalValue::Number(_))
-            | CallArgValue::Eval(EvalValue::Text(_))
-            | CallArgValue::Eval(EvalValue::Logical(_))
-            | CallArgValue::Eval(EvalValue::Error(_)) => prepared.push(arg.clone()),
+            FunctionArg::EmptyCell => prepared.push(FunctionArg::EmptyCell),
+            FunctionArg::MissingArg => prepared.push(FunctionArg::MissingArg),
+            FunctionArg::Eval(FunctionValue::Number(_))
+            | FunctionArg::Eval(FunctionValue::Text(_))
+            | FunctionArg::Eval(FunctionValue::Logical(_))
+            | FunctionArg::Eval(FunctionValue::Error(_)) => prepared.push(arg.clone()),
             _ => prepared.push(arg.clone()),
         }
     }
@@ -460,8 +460,8 @@ fn prepare_reference_form_args(
 
 fn dispatch_reference_form(
     operation: AggregateOperation,
-    args: &[CallArgValue],
-) -> Result<EvalValue, SubtotalAggregateEvalError> {
+    args: &[FunctionArg],
+) -> Result<FunctionValue, SubtotalAggregateEvalError> {
     match operation {
         AggregateOperation::Average => {
             eval_average_surface(args, &PreparedOnlyResolver).map_err(|e| {
@@ -528,9 +528,9 @@ fn dispatch_reference_form(
 
 fn dispatch_array_form(
     operation: AggregateOperation,
-    data_arg: CallArgValue,
-    k_arg: CallArgValue,
-) -> Result<EvalValue, SubtotalAggregateEvalError> {
+    data_arg: FunctionArg,
+    k_arg: FunctionArg,
+) -> Result<FunctionValue, SubtotalAggregateEvalError> {
     let args = [data_arg, k_arg];
     match operation {
         AggregateOperation::Large => {
@@ -570,10 +570,10 @@ fn dispatch_array_form(
 }
 
 pub fn eval_subtotal_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<EvalValue, SubtotalAggregateEvalError> {
+) -> Result<FunctionValue, SubtotalAggregateEvalError> {
     if !SUBTOTAL_META.arity.accepts(args.len()) {
         return Err(SubtotalAggregateEvalError::ArityMismatch {
             expected_min: SUBTOTAL_META.arity.min,
@@ -591,10 +591,10 @@ pub fn eval_subtotal_surface(
 }
 
 pub fn eval_aggregate_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<EvalValue, SubtotalAggregateEvalError> {
+) -> Result<FunctionValue, SubtotalAggregateEvalError> {
     if !AGGREGATE_META.arity.accepts(args.len()) {
         return Err(SubtotalAggregateEvalError::ArityMismatch {
             expected_min: AGGREGATE_META.arity.min,
@@ -662,7 +662,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        values: BTreeMap<String, EvalValue>,
+        values: BTreeMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -673,11 +673,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.values.get(&reference.target).cloned().ok_or(
+            self.values.get(reference.target()).cloned().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -693,19 +693,19 @@ mod tests {
             reference: &ReferenceLike,
         ) -> Result<AggregateReferenceContext, HostInfoError> {
             self.contexts
-                .get(&reference.target)
+                .get(reference.target())
                 .cloned()
                 .ok_or(HostInfoError::UnsupportedAggregateReferenceContextQuery)
         }
     }
 
-    fn area_ref(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn area_ref(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn vertical_array(values: Vec<ArrayCellValue>) -> EvalValue {
-        EvalValue::Array(
-            EvalArray::new(
+    fn vertical_array(values: Vec<FunctionArrayCell>) -> FunctionValue {
+        FunctionValue::Array(
+            FunctionArray::new(
                 ArrayShape {
                     rows: values.len(),
                     cols: 1,
@@ -733,10 +733,10 @@ mod tests {
             values: BTreeMap::from([(
                 "A2:A5".to_string(),
                 vertical_array(vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(20.0),
-                    ArrayCellValue::Number(30.0),
-                    ArrayCellValue::Number(40.0),
+                    FunctionArrayCell::Number(10.0),
+                    FunctionArrayCell::Number(20.0),
+                    FunctionArrayCell::Number(30.0),
+                    FunctionArrayCell::Number(40.0),
                 ]),
             )]),
         };
@@ -769,13 +769,13 @@ mod tests {
         };
         let got = eval_subtotal_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(109.0)),
+                FunctionArg::Eval(FunctionValue::Number(109.0)),
                 area_ref("A2:A5"),
             ],
             &resolver,
             Some(&host),
         );
-        assert_eq!(got, Ok(EvalValue::Number(50.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(50.0)));
     }
 
     #[test]
@@ -784,12 +784,12 @@ mod tests {
             values: BTreeMap::from([(
                 "A2:A8".to_string(),
                 vertical_array(vec![
-                    ArrayCellValue::Number(10.0),
-                    ArrayCellValue::Number(20.0),
-                    ArrayCellValue::Number(30.0),
-                    ArrayCellValue::Number(40.0),
-                    ArrayCellValue::Number(50.0),
-                    ArrayCellValue::Error(WorksheetErrorCode::NA),
+                    FunctionArrayCell::Number(10.0),
+                    FunctionArrayCell::Number(20.0),
+                    FunctionArrayCell::Number(30.0),
+                    FunctionArrayCell::Number(40.0),
+                    FunctionArrayCell::Number(50.0),
+                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
                 ]),
             )]),
         };
@@ -833,8 +833,8 @@ mod tests {
 
         let opt0 = eval_aggregate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(9.0)),
-                CallArgValue::Eval(EvalValue::Number(0.0)),
+                FunctionArg::Eval(FunctionValue::Number(9.0)),
+                FunctionArg::Eval(FunctionValue::Number(0.0)),
                 area_ref("A2:A8"),
             ],
             &resolver,
@@ -849,8 +849,8 @@ mod tests {
 
         let opt1 = eval_aggregate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(9.0)),
-                CallArgValue::Eval(EvalValue::Number(1.0)),
+                FunctionArg::Eval(FunctionValue::Number(9.0)),
+                FunctionArg::Eval(FunctionValue::Number(1.0)),
                 area_ref("A2:A8"),
             ],
             &resolver,
@@ -865,25 +865,25 @@ mod tests {
 
         let opt3 = eval_aggregate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(9.0)),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
+                FunctionArg::Eval(FunctionValue::Number(9.0)),
+                FunctionArg::Eval(FunctionValue::Number(3.0)),
                 area_ref("A2:A8"),
             ],
             &resolver,
             Some(&host),
         );
-        assert_eq!(opt3, Ok(EvalValue::Number(50.0)));
+        assert_eq!(opt3, Ok(FunctionValue::Number(50.0)));
 
         let opt6 = eval_aggregate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(9.0)),
-                CallArgValue::Eval(EvalValue::Number(6.0)),
+                FunctionArg::Eval(FunctionValue::Number(9.0)),
+                FunctionArg::Eval(FunctionValue::Number(6.0)),
                 area_ref("A2:A8"),
             ],
             &resolver,
             Some(&host),
         );
-        assert_eq!(opt6, Ok(EvalValue::Number(150.0)));
+        assert_eq!(opt6, Ok(FunctionValue::Number(150.0)));
     }
 
     #[test]
@@ -892,11 +892,11 @@ mod tests {
             values: BTreeMap::from([(
                 "A1:A5".to_string(),
                 vertical_array(vec![
-                    ArrayCellValue::Number(1.0),
-                    ArrayCellValue::Number(9.0),
-                    ArrayCellValue::Number(3.0),
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Number(5.0),
+                    FunctionArrayCell::Number(1.0),
+                    FunctionArrayCell::Number(9.0),
+                    FunctionArrayCell::Number(3.0),
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Number(5.0),
                 ]),
             )]),
         };
@@ -934,15 +934,15 @@ mod tests {
         };
         let got = eval_aggregate_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(14.0)),
-                CallArgValue::Eval(EvalValue::Number(5.0)),
+                FunctionArg::Eval(FunctionValue::Number(14.0)),
+                FunctionArg::Eval(FunctionValue::Number(5.0)),
                 area_ref("A1:A5"),
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                FunctionArg::Eval(FunctionValue::Number(2.0)),
             ],
             &resolver,
             Some(&host),
         );
-        assert_eq!(got, Ok(EvalValue::Number(5.0)));
+        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
     }
 
     #[test]
@@ -952,7 +952,7 @@ mod tests {
         };
         let got = eval_subtotal_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(9.0)),
+                FunctionArg::Eval(FunctionValue::Number(9.0)),
                 area_ref("A1:A2"),
             ],
             &resolver,

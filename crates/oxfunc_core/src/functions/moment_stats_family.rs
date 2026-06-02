@@ -7,7 +7,7 @@ use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::functions::paired_stats_common::collect_paired_values;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 const MOMENT_STATS_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MOMENT_STATS_BASE",
@@ -226,7 +226,7 @@ fn trimmean_kernel(values: &mut [f64], percent: f64) -> Result<f64, WorksheetErr
     Ok(kept.iter().sum::<f64>() / kept.len() as f64)
 }
 
-fn guard_arity(meta: &FunctionMeta, args: &[CallArgValue]) -> Result<(), MomentStatsEvalError> {
+fn guard_arity(meta: &FunctionMeta, args: &[FunctionArg]) -> Result<(), MomentStatsEvalError> {
     if meta.arity.accepts(args.len()) {
         Ok(())
     } else {
@@ -239,9 +239,9 @@ fn guard_arity(meta: &FunctionMeta, args: &[CallArgValue]) -> Result<(), MomentS
 }
 
 pub fn eval_kurt_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MomentStatsEvalError> {
+) -> Result<FunctionValue, MomentStatsEvalError> {
     guard_arity(&KURT_META, args)?;
     let mut prepared = Vec::new();
     for arg in args {
@@ -250,15 +250,15 @@ pub fn eval_kurt_surface(
     }
     let values = collect_moment_values(&prepared).map_err(MomentStatsEvalError::Coercion)?;
     match kurt_kernel(&values) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_skew_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MomentStatsEvalError> {
+) -> Result<FunctionValue, MomentStatsEvalError> {
     guard_arity(&SKEW_META, args)?;
     let mut prepared = Vec::new();
     for arg in args {
@@ -267,15 +267,15 @@ pub fn eval_skew_surface(
     }
     let values = collect_moment_values(&prepared).map_err(MomentStatsEvalError::Coercion)?;
     match skew_kernel(&values) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_skew_p_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MomentStatsEvalError> {
+) -> Result<FunctionValue, MomentStatsEvalError> {
     guard_arity(&SKEW_P_META, args)?;
     let mut prepared = Vec::new();
     for arg in args {
@@ -284,29 +284,29 @@ pub fn eval_skew_p_surface(
     }
     let values = collect_moment_values(&prepared).map_err(MomentStatsEvalError::Coercion)?;
     match skew_p_kernel(&values) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_steyx_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MomentStatsEvalError> {
+) -> Result<FunctionValue, MomentStatsEvalError> {
     guard_arity(&STEYX_META, args)?;
     let ys = expand_aggregate_arg(&args[0], resolver).map_err(MomentStatsEvalError::Coercion)?;
     let xs = expand_aggregate_arg(&args[1], resolver).map_err(MomentStatsEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(MomentStatsEvalError::Coercion)?;
     match steyx_kernel(&pairs) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
 pub fn eval_trimmean_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, MomentStatsEvalError> {
+) -> Result<FunctionValue, MomentStatsEvalError> {
     guard_arity(&TRIMMEAN_META, args)?;
     let prepared =
         expand_aggregate_arg(&args[0], resolver).map_err(MomentStatsEvalError::Coercion)?;
@@ -318,11 +318,11 @@ pub fn eval_trimmean_surface(
         _ => None,
     };
     let Some(percent) = percent else {
-        return Ok(EvalValue::Error(WorksheetErrorCode::Value));
+        return Ok(FunctionValue::Error(WorksheetErrorCode::Value));
     };
     match trimmean_kernel(&mut values, percent) {
-        Ok(value) => Ok(EvalValue::Number(value)),
-        Err(code) => Ok(EvalValue::Error(code)),
+        Ok(value) => Ok(FunctionValue::Number(value)),
+        Err(code) => Ok(FunctionValue::Error(code)),
     }
 }
 
@@ -338,11 +338,11 @@ pub fn map_moment_stats_error_to_ws(error: &MomentStatsEvalError) -> WorksheetEr
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ArrayCellValue, EvalArray, ExcelText, ReferenceKind, ReferenceLike};
+    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
     struct MockResolver {
-        cells: HashMap<String, EvalValue>,
+        cells: HashMap<String, FunctionValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -353,53 +353,57 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            self.cells.get(&reference.target).cloned().ok_or_else(|| {
+            self.cells.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 }
             })
         }
     }
 
-    fn ref_arg(target: &str) -> CallArgValue {
-        CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> FunctionArg {
+        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn num(n: f64) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Number(n))
+    fn num(n: f64) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Number(n))
     }
 
-    fn text(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
 
-    fn array_row(cells: Vec<ArrayCellValue>) -> EvalValue {
-        EvalValue::Array(EvalArray::from_rows(vec![cells]).unwrap())
+    fn array_row(cells: Vec<FunctionArrayCell>) -> FunctionValue {
+        FunctionValue::Array(FunctionArray::from_rows(vec![cells]).unwrap())
     }
 
-    fn number_row(values: &[f64]) -> EvalValue {
-        EvalValue::Array(
-            EvalArray::from_rows(vec![
-                values.iter().copied().map(ArrayCellValue::Number).collect(),
+    fn number_row(values: &[f64]) -> FunctionValue {
+        FunctionValue::Array(
+            FunctionArray::from_rows(vec![
+                values
+                    .iter()
+                    .copied()
+                    .map(FunctionArrayCell::Number)
+                    .collect(),
             ])
             .unwrap(),
         )
     }
 
-    fn assert_close(value: EvalValue, expected: f64) {
+    fn assert_close(value: FunctionValue, expected: f64) {
         match value {
-            EvalValue::Number(n) => assert!((n - expected).abs() < 1.0e-9, "{n} vs {expected}"),
+            FunctionValue::Number(n) => assert!((n - expected).abs() < 1.0e-9, "{n} vs {expected}"),
             other => panic!("expected number, got {other:?}"),
         }
     }
 
-    fn assert_number_bits(value: EvalValue, expected: f64) {
+    fn assert_number_bits(value: FunctionValue, expected: f64) {
         match value {
-            EvalValue::Number(n) => {
+            FunctionValue::Number(n) => {
                 assert_eq!(n.to_bits(), expected.to_bits(), "{n} vs {expected}")
             }
             other => panic!("expected number, got {other:?}"),
@@ -452,7 +456,7 @@ mod tests {
 
         assert_number_bits(
             eval_skew_surface(
-                &[CallArgValue::Eval(number_row(&[1.0, 2.0, 2.0, 3.0, 5.0]))],
+                &[FunctionArg::Eval(number_row(&[1.0, 2.0, 2.0, 3.0, 5.0]))],
                 &resolver,
             )
             .unwrap(),
@@ -460,7 +464,7 @@ mod tests {
         );
         assert_number_bits(
             eval_kurt_surface(
-                &[CallArgValue::Eval(number_row(&[1.0, 2.0, 3.0, 4.0, 5.0]))],
+                &[FunctionArg::Eval(number_row(&[1.0, 2.0, 3.0, 4.0, 5.0]))],
                 &resolver,
             )
             .unwrap(),
@@ -512,12 +516,12 @@ mod tests {
             cells: HashMap::from([(
                 "A1:A4".to_string(),
                 array_row(vec![
-                    ArrayCellValue::Text(ExcelText::from_utf16_code_units(
+                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
                         "5".encode_utf16().collect(),
                     )),
-                    ArrayCellValue::Number(7.0),
-                    ArrayCellValue::Number(9.0),
-                    ArrayCellValue::Number(11.0),
+                    FunctionArrayCell::Number(7.0),
+                    FunctionArrayCell::Number(9.0),
+                    FunctionArrayCell::Number(11.0),
                 ]),
             )]),
         };
@@ -544,24 +548,24 @@ mod tests {
                 (
                     "ERR1:ERR3".to_string(),
                     array_row(vec![
-                        ArrayCellValue::Number(1.0),
-                        ArrayCellValue::Error(WorksheetErrorCode::NA),
-                        ArrayCellValue::Number(3.0),
+                        FunctionArrayCell::Number(1.0),
+                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        FunctionArrayCell::Number(3.0),
                     ]),
                 ),
             ]),
         };
         assert_eq!(
             eval_kurt_surface(&[ref_arg("CONST1:CONST4")], &resolver),
-            Ok(EvalValue::Error(WorksheetErrorCode::Div0))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
         );
         assert_eq!(
             eval_steyx_surface(&[ref_arg("Y1:Y2"), ref_arg("X1:X2")], &resolver),
-            Ok(EvalValue::Error(WorksheetErrorCode::Div0))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
         );
         assert_eq!(
             eval_trimmean_surface(&[ref_arg("CONST1:CONST4"), num(1.0)], &resolver),
-            Ok(EvalValue::Error(WorksheetErrorCode::Num))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Num))
         );
         assert_eq!(
             eval_skew_surface(&[ref_arg("ERR1:ERR3")], &resolver),
@@ -576,16 +580,16 @@ mod tests {
         let resolver = MockResolver {
             cells: HashMap::from([("A1:A5".to_string(), number_row(&[1.0, 2.0, 3.0, 4.0, 5.0]))]),
         };
-        let percent = CallArgValue::Eval(EvalValue::Array(
-            EvalArray::from_rows(vec![vec![
-                ArrayCellValue::Number(0.2),
-                ArrayCellValue::Number(0.4),
+        let percent = FunctionArg::Eval(FunctionValue::Array(
+            FunctionArray::from_rows(vec![vec![
+                FunctionArrayCell::Number(0.2),
+                FunctionArrayCell::Number(0.4),
             ]])
             .unwrap(),
         ));
         assert_eq!(
             eval_trimmean_surface(&[ref_arg("A1:A5"), percent], &resolver),
-            Ok(EvalValue::Error(WorksheetErrorCode::Value))
+            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
         );
     }
 

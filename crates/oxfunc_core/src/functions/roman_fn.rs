@@ -4,10 +4,10 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, ExcelText, WorksheetErrorCode};
+use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const ROMAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ROMAN",
@@ -188,18 +188,18 @@ fn roman_by_form(number: u32, form: i32) -> String {
     format!("{thousands}{tail}")
 }
 
-fn coerce_number_arg(arg: &PreparedArgValue) -> Result<f64, CoercionError> {
+fn coerce_number_arg(arg: &PreparedValue) -> Result<f64, CoercionError> {
     match arg {
-        PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
         _ => coerce_prepared_to_number(arg),
     }
 }
 
-fn coerce_form_arg(arg: Option<&PreparedArgValue>) -> Result<i32, CoercionError> {
+fn coerce_form_arg(arg: Option<&PreparedValue>) -> Result<i32, CoercionError> {
     match arg {
-        None | Some(PreparedArgValue::MissingArg) | Some(PreparedArgValue::EmptyCell) => Ok(0),
-        Some(PreparedArgValue::Eval(EvalValue::Logical(true))) => Ok(0),
-        Some(PreparedArgValue::Eval(EvalValue::Logical(false))) => Ok(4),
+        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(0),
+        Some(PreparedValue::Eval(FunctionValue::Logical(true))) => Ok(0),
+        Some(PreparedValue::Eval(FunctionValue::Logical(false))) => Ok(4),
         Some(other) => Ok(coerce_prepared_to_number(other)?.trunc() as i32),
     }
 }
@@ -217,9 +217,9 @@ pub fn roman_kernel(number: f64, form: i32) -> Result<ExcelText, WorksheetErrorC
 }
 
 pub fn eval_roman_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<EvalValue, RomanEvalError> {
+) -> Result<FunctionValue, RomanEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -235,8 +235,8 @@ pub fn eval_roman_surface(
             let number = coerce_number_arg(&prepared[0]).map_err(RomanEvalError::Coercion)?;
             let form = coerce_form_arg(prepared.get(1)).map_err(RomanEvalError::Coercion)?;
             match roman_kernel(number, form) {
-                Ok(text) => Ok(EvalValue::Text(text)),
-                Err(code) => Ok(EvalValue::Error(code)),
+                Ok(text) => Ok(FunctionValue::Text(text)),
+                Err(code) => Ok(FunctionValue::Error(code)),
             }
         },
         map_roman_error_to_ws,
@@ -267,18 +267,18 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
     }
 
-    fn txt(s: &str) -> EvalValue {
-        EvalValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    fn txt(s: &str) -> FunctionValue {
+        FunctionValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn as_string(text: &ExcelText) -> String {
@@ -342,22 +342,22 @@ mod tests {
     fn eval_roman_surface_matches_blank_and_boolean_excel_lanes() {
         let resolver = NoReferenceSystemProvider;
 
-        let blank_number = eval_roman_surface(&[CallArgValue::EmptyCell], &resolver).unwrap();
+        let blank_number = eval_roman_surface(&[FunctionArg::EmptyCell], &resolver).unwrap();
         assert_eq!(
             blank_number,
-            EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
+            FunctionValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
         );
 
-        let missing_number = eval_roman_surface(&[CallArgValue::MissingArg], &resolver).unwrap();
+        let missing_number = eval_roman_surface(&[FunctionArg::MissingArg], &resolver).unwrap();
         assert_eq!(
             missing_number,
-            EvalValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
+            FunctionValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
         );
 
         let classic = eval_roman_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(499.0)),
-                CallArgValue::Eval(EvalValue::Logical(true)),
+                FunctionArg::Eval(FunctionValue::Number(499.0)),
+                FunctionArg::Eval(FunctionValue::Logical(true)),
             ],
             &resolver,
         )
@@ -366,8 +366,8 @@ mod tests {
 
         let simplified = eval_roman_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(499.0)),
-                CallArgValue::Eval(EvalValue::Logical(false)),
+                FunctionArg::Eval(FunctionValue::Number(499.0)),
+                FunctionArg::Eval(FunctionValue::Logical(false)),
             ],
             &resolver,
         )
@@ -381,8 +381,8 @@ mod tests {
 
         let blank_form = eval_roman_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(499.0)),
-                CallArgValue::EmptyCell,
+                FunctionArg::Eval(FunctionValue::Number(499.0)),
+                FunctionArg::EmptyCell,
             ],
             &resolver,
         )
@@ -390,7 +390,7 @@ mod tests {
         assert_eq!(blank_form, txt("CDXCIX"));
 
         let text_form = eval_roman_surface(
-            &[CallArgValue::Eval(txt("499")), CallArgValue::Eval(txt("1"))],
+            &[FunctionArg::Eval(txt("499")), FunctionArg::Eval(txt("1"))],
             &resolver,
         )
         .unwrap();
@@ -398,8 +398,8 @@ mod tests {
 
         let invalid_text_form = eval_roman_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(499.0)),
-                CallArgValue::Eval(txt("TRUE")),
+                FunctionArg::Eval(FunctionValue::Number(499.0)),
+                FunctionArg::Eval(txt("TRUE")),
             ],
             &resolver,
         );
@@ -408,7 +408,7 @@ mod tests {
             Err(RomanEvalError::Coercion(CoercionError::NonNumericText(_)))
         ));
 
-        let empty_text_number = eval_roman_surface(&[CallArgValue::Eval(txt(""))], &resolver);
+        let empty_text_number = eval_roman_surface(&[FunctionArg::Eval(txt(""))], &resolver);
         assert!(matches!(
             empty_text_number,
             Err(RomanEvalError::Coercion(CoercionError::NonNumericText(_)))
@@ -419,17 +419,17 @@ mod tests {
     fn eval_roman_surface_returns_value_error_for_out_of_range_lanes() {
         let resolver = NoReferenceSystemProvider;
         let cases = [
-            vec![CallArgValue::Eval(EvalValue::Number(-1.0))],
-            vec![CallArgValue::Eval(EvalValue::Number(4000.0))],
+            vec![FunctionArg::Eval(FunctionValue::Number(-1.0))],
+            vec![FunctionArg::Eval(FunctionValue::Number(4000.0))],
             vec![
-                CallArgValue::Eval(EvalValue::Number(499.0)),
-                CallArgValue::Eval(EvalValue::Number(5.0)),
+                FunctionArg::Eval(FunctionValue::Number(499.0)),
+                FunctionArg::Eval(FunctionValue::Number(5.0)),
             ],
         ];
 
         for args in cases {
             let got = eval_roman_surface(&args, &resolver);
-            assert_eq!(got, Ok(EvalValue::Error(WorksheetErrorCode::Value)));
+            assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Value)));
         }
     }
 }

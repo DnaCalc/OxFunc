@@ -5,13 +5,13 @@ use crate::function::{
 };
 use crate::function_call::FunctionExecutionContext;
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
 };
 use crate::resolver::{
     CallerContext, ReferenceSystemError, ReferenceSystemProvider, ReferenceTextResolutionMode,
     ReferenceTextResolveRequest,
 };
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
 
 pub const INDIRECT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INDIRECT",
@@ -39,10 +39,10 @@ pub enum IndirectEvalError {
     ReferenceSystem(ReferenceSystemError),
 }
 
-fn parse_a1_flag(arg: Option<&PreparedArgValue>) -> Result<bool, IndirectEvalError> {
+fn parse_a1_flag(arg: Option<&PreparedValue>) -> Result<bool, IndirectEvalError> {
     match arg {
         None => Ok(true),
-        Some(PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell) => Ok(false),
+        Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => Ok(false),
         Some(p) => {
             let n = coerce_prepared_to_number(p).map_err(IndirectEvalError::Coercion)?;
             Ok(n != 0.0)
@@ -50,27 +50,27 @@ fn parse_a1_flag(arg: Option<&PreparedArgValue>) -> Result<bool, IndirectEvalErr
     }
 }
 
-fn parse_ref_text(arg: &PreparedArgValue) -> Result<String, IndirectEvalError> {
+fn parse_ref_text(arg: &PreparedValue) -> Result<String, IndirectEvalError> {
     match arg {
-        PreparedArgValue::Eval(EvalValue::Text(t)) => {
+        PreparedValue::Eval(FunctionValue::Text(t)) => {
             let s = t.to_string_lossy().trim().to_string();
             if s.is_empty() {
                 return Err(IndirectEvalError::InvalidReferenceText(String::new()));
             }
             Ok(s)
         }
-        PreparedArgValue::Eval(EvalValue::Error(code)) => Err(IndirectEvalError::Coercion(
+        PreparedValue::Eval(FunctionValue::Error(code)) => Err(IndirectEvalError::Coercion(
             CoercionError::WorksheetError(*code),
         )),
-        PreparedArgValue::MissingArg => Err(IndirectEvalError::Coercion(CoercionError::MissingArg)),
-        PreparedArgValue::EmptyCell => Err(IndirectEvalError::Coercion(CoercionError::EmptyCell)),
-        PreparedArgValue::Eval(other) => {
+        PreparedValue::MissingArg => Err(IndirectEvalError::Coercion(CoercionError::MissingArg)),
+        PreparedValue::EmptyCell => Err(IndirectEvalError::Coercion(CoercionError::EmptyCell)),
+        PreparedValue::Eval(other) => {
             let kind = match other {
-                EvalValue::Number(_) => "number",
-                EvalValue::Logical(_) => "logical",
-                EvalValue::Array(_) => "array",
-                EvalValue::Reference(_) => "reference_like",
-                EvalValue::Text(_) | EvalValue::Error(_) => unreachable!(),
+                FunctionValue::Number(_) => "number",
+                FunctionValue::Logical(_) => "logical",
+                FunctionValue::Array(_) => "array",
+                FunctionValue::Reference(_) => "reference_like",
+                FunctionValue::Text(_) | FunctionValue::Error(_) => unreachable!(),
                 _ => "unsupported_value",
             };
             Err(IndirectEvalError::InvalidReferenceText(kind.to_string()))
@@ -79,9 +79,9 @@ fn parse_ref_text(arg: &PreparedArgValue) -> Result<String, IndirectEvalError> {
 }
 
 pub fn eval_indirect_surface(
-    args: &[CallArgValue],
+    args: &[FunctionArg],
     fec: &dyn FunctionExecutionContext,
-) -> Result<EvalValue, IndirectEvalError> {
+) -> Result<FunctionValue, IndirectEvalError> {
     let caller_context = fec.caller_context();
     run_values_only_prepared(
         args,
@@ -98,10 +98,10 @@ pub fn eval_indirect_surface(
 }
 
 fn eval_indirect_with_reference_system_provider(
-    args: &[PreparedArgValue],
+    args: &[PreparedValue],
     caller_context: Option<CallerContext>,
     reference_system_provider: &dyn ReferenceSystemProvider,
-) -> Result<EvalValue, IndirectEvalError> {
+) -> Result<FunctionValue, IndirectEvalError> {
     let argc = args.len();
     if !INDIRECT_META.arity.accepts(argc) {
         return Err(IndirectEvalError::ArityMismatch {
@@ -121,7 +121,7 @@ fn eval_indirect_with_reference_system_provider(
             caller_context,
         })
         .map_err(IndirectEvalError::ReferenceSystem)?;
-    Ok(EvalValue::Reference(reference))
+    Ok(FunctionValue::Reference(reference))
 }
 
 pub fn map_indirect_error_to_ws(e: &IndirectEvalError) -> WorksheetErrorCode {
@@ -154,11 +154,11 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<EvalValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
-                    target: reference.target.clone(),
+                    target: reference.target().to_string(),
                 },
             )
         }
@@ -168,17 +168,17 @@ mod tests {
         }
     }
 
-    fn text_arg(s: &str) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(s: &str) -> FunctionArg {
+        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
             s.encode_utf16().collect(),
         )))
     }
 
     fn eval_with_mock(
-        args: &[CallArgValue],
+        args: &[FunctionArg],
         caller: Option<CallerContext>,
         reference_system_provider: Option<&dyn ReferenceSystemProvider>,
-    ) -> Result<EvalValue, IndirectEvalError> {
+    ) -> Result<FunctionValue, IndirectEvalError> {
         let resolver = MockResolver { caller };
         let fec = crate::function_call::FunctionExecutionContextRef::new(&resolver)
             .with_reference_system_provider(reference_system_provider);
@@ -201,7 +201,7 @@ mod tests {
     #[test]
     fn eval_indirect_rejects_non_text_reference_expression() {
         let got = eval_with_mock(
-            &[CallArgValue::Eval(EvalValue::Number(1.0))],
+            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
             None,
             Some(&MockReferenceSystemProvider),
         );
@@ -233,7 +233,7 @@ mod tests {
         }
 
         let got = eval_with_mock(
-            &[text_arg("R1C2"), CallArgValue::MissingArg],
+            &[text_arg("R1C2"), FunctionArg::MissingArg],
             Some(CallerContext {
                 prefix: Some("Sheet1".to_string()),
                 row: 3,
@@ -243,7 +243,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "hostref:R1C2".to_string()
             )))
@@ -286,7 +286,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(EvalValue::Reference(ReferenceLike::new(
+            Ok(FunctionValue::Reference(ReferenceLike::new(
                 ReferenceKind::Structured,
                 "hostref:Tree.Node".to_string()
             )))
