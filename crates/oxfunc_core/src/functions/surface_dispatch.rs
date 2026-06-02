@@ -214,15 +214,13 @@ use crate::functions::groupby_fn::{eval_groupby_calc_surface, eval_groupby_surfa
 use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::hyperlink_fn::{
-    eval_hyperlink_calc_surface_rich, eval_hyperlink_surface, eval_hyperlink_surface_rich,
-    map_hyperlink_error_to_ws,
+    eval_hyperlink_calc_surface_rich, eval_hyperlink_surface, map_hyperlink_error_to_ws,
 };
 use crate::functions::if_fn::{eval_if_surface, map_if_error_to_ws};
 use crate::functions::iferror::{eval_iferror_surface, map_iferror_error_to_ws};
 use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
 use crate::functions::image_fn::{
-    eval_image_calc_surface_rich, eval_image_surface, eval_image_surface_rich,
-    map_image_error_to_ws,
+    eval_image_calc_surface_rich, eval_image_surface, map_image_error_to_ws,
 };
 use crate::functions::index::{eval_index_calc_surface, eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
@@ -285,8 +283,7 @@ use crate::functions::normal_log_family::{
 };
 use crate::functions::not_fn::{eval_not_surface, map_not_error_to_ws};
 use crate::functions::now_fn::{
-    NowProvider, eval_now_calc_surface, eval_now_surface, eval_now_surface_rich,
-    map_now_error_to_ws,
+    NowProvider, eval_now_calc_surface, eval_now_surface, map_now_error_to_ws,
 };
 use crate::functions::number_regex_translate_family::{
     eval_numbervalue_surface, eval_regexextract_surface, eval_regexreplace_surface,
@@ -439,8 +436,7 @@ use crate::functions::text_unicode_fn::{
 };
 use crate::functions::textjoin::{eval_textjoin_surface, map_textjoin_error_to_ws};
 use crate::functions::today_fn::{
-    TodayProvider, eval_today_calc_surface, eval_today_surface, eval_today_surface_rich,
-    map_today_error_to_ws,
+    TodayProvider, eval_today_calc_surface, eval_today_surface, map_today_error_to_ws,
 };
 use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error_to_ws};
 use crate::functions::true_fn::eval_true_surface;
@@ -2645,48 +2641,6 @@ pub fn eval_surface_value_call(
         None,
         None,
     )
-}
-
-pub fn eval_surface_rich_value_call(
-    function_id: &str,
-    args: &[CallArgValue],
-    resolver: &(impl ReferenceSystemProvider + ?Sized),
-    now_serial: Option<f64>,
-    random_provider: Option<&dyn RandomProvider>,
-    locale_ctx: Option<&LocaleFormatContext>,
-    host_info: Option<&dyn HostInfoProvider>,
-) -> Result<CalcValue, WorksheetErrorCode> {
-    match function_id {
-        FUNC_ID_HYPERLINK => {
-            eval_hyperlink_surface_rich(args, resolver).map_err(|e| map_hyperlink_error_to_ws(&e))
-        }
-        FUNC_ID_IMAGE => eval_image_surface_rich(args, resolver, host_info)
-            .map_err(|e| map_image_error_to_ws(&e)),
-        FUNC_ID_NOW => {
-            let provider = FixedNowProvider {
-                serial: now_serial.unwrap_or(0.0),
-            };
-            eval_now_surface_rich(args, &provider).map_err(|e| map_now_error_to_ws(&e))
-        }
-        FUNC_ID_TODAY => {
-            let provider = FixedNowProvider {
-                serial: now_serial.unwrap_or(0.0),
-            };
-            eval_today_surface_rich(args, &provider).map_err(|e| map_today_error_to_ws(&e))
-        }
-        _ => {
-            let calc_args = calc_values_from_legacy_call_args(args);
-            eval_surface_value_call(
-                function_id,
-                &calc_args,
-                resolver,
-                now_serial,
-                random_provider,
-                locale_ctx,
-                host_info,
-            )
-        }
-    }
 }
 
 fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
@@ -7993,8 +7947,8 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_rich_value_call_wraps_now_with_number_format_hint() {
-        let got = eval_surface_rich_value_call(
+    fn eval_surface_value_call_wraps_now_with_number_format_hint() {
+        let got = eval_surface_value_call(
             FUNC_ID_NOW,
             &[],
             &NoReferenceSystemProvider,
@@ -8013,8 +7967,8 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_rich_value_call_wraps_today_with_number_format_hint() {
-        let got = eval_surface_rich_value_call(
+    fn eval_surface_value_call_wraps_today_with_number_format_hint() {
+        let got = eval_surface_value_call(
             FUNC_ID_TODAY,
             &[],
             &NoReferenceSystemProvider,
@@ -8033,14 +7987,12 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_rich_value_call_wraps_hyperlink_with_style_hint() {
-        let got = eval_surface_rich_value_call(
+    fn eval_surface_value_call_wraps_hyperlink_with_style_hint() {
+        let got = eval_surface_value_call(
             FUNC_ID_HYPERLINK,
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                    "https://example.com",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment("Go"))),
+                CalcValue::text(ExcelText::from_interop_assignment("https://example.com")),
+                CalcValue::text(ExcelText::from_interop_assignment("Go")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -8058,16 +8010,14 @@ mod tests {
     }
 
     #[test]
-    fn eval_surface_rich_value_call_wraps_image_with_rich_value() {
-        let got = eval_surface_rich_value_call(
+    fn eval_surface_value_call_wraps_image_with_rich_value() {
+        let got = eval_surface_value_call(
             FUNC_ID_IMAGE,
             &[
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
+                CalcValue::text(ExcelText::from_interop_assignment(
                     "https://example.com/image.png",
-                ))),
-                CallArgValue::Eval(EvalValue::Text(ExcelText::from_interop_assignment(
-                    "Sphere",
-                ))),
+                )),
+                CalcValue::text(ExcelText::from_interop_assignment("Sphere")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
