@@ -1,18 +1,19 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
-use crate::coercion::CoercionError;
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     PreparedArgValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
-    run_values_only_prepared,
+    prepare_calc_value_values_only, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CalcArray, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcArray, CalcValue, CallArgValue, CoreValue, EvalArray,
+    EvalValue, WorksheetErrorCode,
 };
 
 macro_rules! reshape_meta {
@@ -94,6 +95,29 @@ fn materialize_array_arg(arg: &PreparedArgValue) -> EvalArray {
     }
 }
 
+fn scalar_calc_value(value: &CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
+        CoreValue::Missing | CoreValue::Empty => CalcValue::empty(),
+        _ => value.clone(),
+    }
+}
+
+fn materialize_calc_array_arg(
+    arg: &CalcValue,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcArray, DynamicArrayReshapeEvalError> {
+    let prepared = prepare_calc_value_values_only(arg, resolver)
+        .map_err(DynamicArrayReshapeEvalError::Preparation)?;
+    Ok(match prepared.core() {
+        CoreValue::Array(array) => array.clone(),
+        _ => CalcArray::from_scalar(scalar_calc_value(&prepared))
+            .expect("scalar materialization produces a non-empty 1x1 array"),
+    })
+}
+
 enum StackArgSource<'a> {
     Array(&'a EvalArray),
     Scalar(ArrayCellValue),
@@ -136,6 +160,19 @@ fn prepared_from_array_cell(cell: &ArrayCellValue) -> PreparedArgValue {
 fn parse_integer(prepared: &PreparedArgValue) -> Result<isize, DynamicArrayReshapeEvalError> {
     let raw =
         coerce_prepared_to_number(prepared).map_err(DynamicArrayReshapeEvalError::Preparation)?;
+    if !raw.is_finite() {
+        return Err(DynamicArrayReshapeEvalError::InvalidCount);
+    }
+    let truncated = raw.trunc();
+    if (truncated - raw).abs() > f64::EPSILON {
+        return Err(DynamicArrayReshapeEvalError::InvalidCount);
+    }
+    Ok(truncated as isize)
+}
+
+fn parse_integer_calc(value: &CalcValue) -> Result<isize, DynamicArrayReshapeEvalError> {
+    let raw =
+        coerce_calc_scalar_to_number(value).map_err(DynamicArrayReshapeEvalError::Preparation)?;
     if !raw.is_finite() {
         return Err(DynamicArrayReshapeEvalError::InvalidCount);
     }
@@ -196,6 +233,16 @@ fn build_array(
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
     CalcArray::from_legacy_cells_iter(ArrayShape { rows, cols }, cells)
         .map(|array| EvalValue::Array(array.to_legacy_eval_array_lossy()))
+        .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
+}
+
+fn build_calc_array(
+    rows: usize,
+    cols: usize,
+    cells: Vec<CalcValue>,
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    CalcArray::from_cells_iter(ArrayShape { rows, cols }, cells)
+        .map(CalcValue::array)
         .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
@@ -291,6 +338,48 @@ pub fn eval_choosecols_prepared(
     build_array(array.shape().rows, cols.len(), cells)
 }
 
+fn expand_calc_selector_values(
+    arg: &CalcValue,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<Vec<CalcValue>, DynamicArrayReshapeEvalError> {
+    let prepared = prepare_calc_value_values_only(arg, resolver)
+        .map_err(DynamicArrayReshapeEvalError::Preparation)?;
+    Ok(match prepared.core() {
+        CoreValue::Array(array) => array.iter_row_major().cloned().collect(),
+        _ => vec![prepared],
+    })
+}
+
+pub fn eval_choosecols_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    if !CHOOSECOLS_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&CHOOSECOLS_META, args.len()));
+    }
+    let array = materialize_calc_array_arg(&args[0], resolver)?;
+    let selectors = args[1..]
+        .iter()
+        .map(|arg| expand_calc_selector_values(arg, resolver))
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
+    let cols: Vec<usize> = selectors
+        .iter()
+        .map(parse_integer_calc)
+        .map(|result| result.and_then(|idx| resolve_selector(idx, array.shape().cols)))
+        .collect::<Result<_, _>>()?;
+
+    let mut cells = Vec::with_capacity(array.shape().rows * cols.len());
+    for row in 0..array.shape().rows {
+        for col in &cols {
+            cells.push(array.get(row, *col).expect("validated selector").clone());
+        }
+    }
+    build_calc_array(array.shape().rows, cols.len(), cells)
+}
+
 pub fn eval_chooserows_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -312,6 +401,40 @@ pub fn eval_chooserows_prepared(
         );
     }
     build_array(rows.len(), array.shape().cols, cells)
+}
+
+pub fn eval_chooserows_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    if !CHOOSEROWS_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&CHOOSEROWS_META, args.len()));
+    }
+    let array = materialize_calc_array_arg(&args[0], resolver)?;
+    let selectors = args[1..]
+        .iter()
+        .map(|arg| expand_calc_selector_values(arg, resolver))
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>();
+    let rows: Vec<usize> = selectors
+        .iter()
+        .map(parse_integer_calc)
+        .map(|result| result.and_then(|idx| resolve_selector(idx, array.shape().rows)))
+        .collect::<Result<_, _>>()?;
+
+    let mut cells = Vec::with_capacity(rows.len() * array.shape().cols);
+    for row in &rows {
+        cells.extend(
+            array
+                .row_slice(*row)
+                .expect("validated selector")
+                .iter()
+                .cloned(),
+        );
+    }
+    build_calc_array(rows.len(), array.shape().cols, cells)
 }
 
 fn take_span(len: usize, count: isize) -> Result<(usize, usize), DynamicArrayReshapeEvalError> {
@@ -372,6 +495,39 @@ pub fn eval_take_prepared(
     build_array(rows, cols, cells)
 }
 
+pub fn eval_take_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    if !TAKE_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&TAKE_META, args.len()));
+    }
+    let array = materialize_calc_array_arg(&args[0], resolver)?;
+    let row_count = match args.get(1) {
+        Some(value) if matches!(value.core(), CoreValue::Missing) && args.get(2).is_some() => {
+            array.shape().rows as isize
+        }
+        Some(value) => parse_integer_calc(value)?,
+        None => return Err(surface_arity_error(&TAKE_META, args.len())),
+    };
+    let col_count = if let Some(value) = args.get(2) {
+        parse_integer_calc(value)?
+    } else {
+        array.shape().cols as isize
+    };
+    let (row_start, row_end) = take_span(array.shape().rows, row_count)?;
+    let (col_start, col_end) = take_span(array.shape().cols, col_count)?;
+    let rows = row_end - row_start;
+    let cols = col_end - col_start;
+    let mut cells = Vec::with_capacity(rows * cols);
+    for row in row_start..row_end {
+        for col in col_start..col_end {
+            cells.push(array.get(row, col).expect("validated slice").clone());
+        }
+    }
+    build_calc_array(rows, cols, cells)
+}
+
 pub fn eval_drop_prepared(
     args: &[PreparedArgValue],
 ) -> Result<EvalValue, DynamicArrayReshapeEvalError> {
@@ -403,6 +559,37 @@ pub fn eval_drop_prepared(
         }
     }
     build_array(rows, cols, cells)
+}
+
+pub fn eval_drop_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    if !DROP_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&DROP_META, args.len()));
+    }
+    let array = materialize_calc_array_arg(&args[0], resolver)?;
+    let row_count = match args.get(1) {
+        Some(value) if matches!(value.core(), CoreValue::Missing) && args.get(2).is_some() => 0,
+        Some(value) => parse_integer_calc(value)?,
+        None => return Err(surface_arity_error(&DROP_META, args.len())),
+    };
+    let col_count = if let Some(value) = args.get(2) {
+        parse_integer_calc(value)?
+    } else {
+        0
+    };
+    let (row_start, row_end) = drop_span(array.shape().rows, row_count)?;
+    let (col_start, col_end) = drop_span(array.shape().cols, col_count)?;
+    let rows = row_end - row_start;
+    let cols = col_end - col_start;
+    let mut cells = Vec::with_capacity(rows * cols);
+    for row in row_start..row_end {
+        for col in col_start..col_end {
+            cells.push(array.get(row, col).expect("validated slice").clone());
+        }
+    }
+    build_calc_array(rows, cols, cells)
 }
 
 pub fn eval_expand_prepared(

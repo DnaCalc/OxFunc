@@ -168,11 +168,12 @@ use crate::functions::dollar_fraction_family::{
 use crate::functions::dynamic_array_reshape_family::{
     CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
     TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
-    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
-    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
-    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
-    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
-    map_dynamic_array_reshape_error_to_ws,
+    WRAPROWS_META, eval_choosecols_calc_surface, eval_choosecols_surface,
+    eval_chooserows_calc_surface, eval_chooserows_surface, eval_drop_calc_surface,
+    eval_drop_surface, eval_expand_surface, eval_filter_surface, eval_sort_surface,
+    eval_sortby_surface, eval_take_calc_surface, eval_take_surface, eval_tocol_surface,
+    eval_torow_surface, eval_transpose_surface, eval_unique_surface, eval_vstack_surface,
+    eval_wrapcols_surface, eval_wraprows_surface, map_dynamic_array_reshape_error_to_ws,
 };
 use crate::functions::engineering_radix_family::{
     eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
@@ -1183,6 +1184,22 @@ fn eval_shared_unary_numeric_calc_dispatch(
     Some(result.map_err(|error| map_unary_numeric_error_to_ws(&error)))
 }
 
+fn eval_dynamic_array_reshape_calc_dispatch(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let result = match function_id {
+        FUNC_ID_CHOOSECOLS => eval_choosecols_calc_surface(args, resolver),
+        FUNC_ID_CHOOSEROWS => eval_chooserows_calc_surface(args, resolver),
+        FUNC_ID_DROP => eval_drop_calc_surface(args, resolver),
+        FUNC_ID_TAKE => eval_take_calc_surface(args, resolver),
+        _ => return None,
+    };
+
+    Some(result.map_err(|error| map_dynamic_array_reshape_error_to_ws(&error)))
+}
+
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
@@ -1239,6 +1256,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
                 .map_err(|error| map_lambda_helper_error_to_ws(&error));
         }
         _ => {
+            if let Some(result) =
+                eval_dynamic_array_reshape_calc_dispatch(dispatch_key.function_id, args, resolver)
+            {
+                return result;
+            }
             if let Some(result) =
                 eval_shared_unary_numeric_calc_dispatch(dispatch_key.function_id, args, resolver)
             {
@@ -7992,6 +8014,158 @@ mod tests {
                     CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_choosecols_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_CHOOSECOLS,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(1.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
+                        ],
+                        vec![
+                            CalcValue::number(4.0),
+                            CalcValue::number(5.0),
+                            CalcValue::number(6.0),
+                        ],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                    ]])
+                    .expect("selector array"),
+                ),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0), CalcValue::number(1.0)],
+                    vec![CalcValue::number(6.0), CalcValue::number(4.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_chooserows_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_CHOOSEROWS,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(3.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_take_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TAKE,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(-2.0),
+                CalcValue::number(1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(5.0)],
+                ])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_drop_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DROP,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![
+                            CalcValue::number(1.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
+                        ],
+                        vec![
+                            CalcValue::number(4.0),
+                            CalcValue::number(5.0),
+                            CalcValue::number(6.0),
+                        ],
+                    ])
+                    .expect("array"),
+                ),
+                CalcValue::number(1.0),
+                CalcValue::number(-1.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(4.0), CalcValue::number(5.0)]])
+                    .expect("array")
             ))
         );
     }
