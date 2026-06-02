@@ -1629,3 +1629,86 @@ Validation:
 8. `cargo test -p oxfml_core --test evaluator_tests evaluator_preserves_hyperlink_publication_intent`: passed, 1 test.
 9. `cargo test -p oxfml_core --test evaluator_tests evaluator_preserves_today_presentation_hint_through_generic_extended_path`: passed, 1 test.
 10. `cargo test -p oxfml_core --test w049_oxfunc_adapter_tests adapter_preserves_hyperlink_publication_intent`: passed, 1 test.
+
+### W099-013 OxFml Callable And CalcValue Follow-Through Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. OxFml still carries worksheet-fallback `EvalValue` fields and private callable text transport for legacy prepared/array paths; W099-015 owns terminal carrier deletion.
+2. The full `cargo test -p oxfml_core` package run still has unrelated evaluator/reference and replay-fixture failures, including current reference-provider/materialization lanes and legacy `_xlfn.SINGLE` fixture lanes.
+3. Broader OxFunc/OxFml `CallArgValue`/`PreparedArgValue` deletion remains W099-015 work after remaining dispatcher/kernel and prepared-call consumers move to native `CalcValue`.
+
+Planned scope:
+1. Confirm OxFml no longer has an active native `EvalValue::Lambda` callable path.
+2. Align callable publication and fixture vocabulary with `Callable(...)` / `RichValue::Callable` rather than legacy `Lambda(...)` result carriers.
+3. Keep private callable text transport only as legacy bridge residue for array/prepared paths, with helper names reflecting transport rather than a native lambda value.
+
+Evidence:
+1. Active OxFml Rust source/tests have zero `EvalValue::Lambda` or `LambdaValue` hits.
+2. Private callable bridge helpers in `eval/mod.rs` were renamed from `*_carrier_eval_value`, `call_arg_callable_value`, and `prepared_arg_contains_lambda` to `*_transport_*` / `prepared_arg_contains_callable`.
+3. The no-op callable array transport encoder was removed; prepared-call projection now directly preserves the existing `EvalValue` fallback carrier.
+4. `prepared_result_from_eval_value(...)` now reports callable transport payloads as `Callable(...)`; evaluator expectations, callable transport fixtures, prepared-call replay fixtures, and adapter expectations were aligned.
+5. Existing portable callable tests prove top-level callable results project through `EvaluationOutput::calc_value()` / `published_calc_value()` as `RichValue::Callable`, and the opaque handle downcasts to `OxFmlCallableBinding`.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrates callable carrier/publication follow-through. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused callable, transport, adapter, and evaluator tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - callable transport fixtures, portable callable result tests, and evaluator tests exercise publication, re-supply, and invocation. |
+| 5 | Evidence links complete and reproducible? | Yes - commands are recorded below. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this OxFml callable carrier follow-through. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - this is the OxFml follow-through bead for OxFunc W099; no new downstream seam clause is introduced. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the W099-013 callable follow-through slice; remaining legacy carriers and unrelated reference/evaluator failures are listed as open lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-013 callable follow-through, not W099 terminal carrier deletion or full OxFml package health. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.13` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead targets OxFml callable carrier/publication/re-supply follow-through.
+2. Gate criteria re-read: passed. Callable suites pass, active OxFml source/tests have no `EvalValue::Lambda`/`LambdaValue` hits, and callable publication/re-supply preserves `CalcValue` / `RichValue::Callable`.
+3. Silent scope reduction check: passed. Private text transport and broader legacy carriers remain explicit W099-015 residue rather than being treated as final architecture.
+4. "Looks done but is not" pattern check: passed. The failed full `oxfml_core` package run is recorded as broader evaluator/reference residue, not hidden behind the focused callable passes.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: a focused evaluator test still expected `Lambda(...)` for the closed callable summary; it now expects `Callable(...)`.
+2. Issue found and corrected: lexical-capture callable transport still stamped `Lambda(...)` in `prepared_result_from_eval_value(...)`; that branch now reports `Callable(...)`.
+3. Issue found and corrected: callable transport/prepared-call fixtures and adapter expectations still carried `Lambda(...)` payload summaries; they now match the current callable carrier vocabulary.
+4. Issue checked: remaining private text transport uses `EvalValue::Text` as a legacy bridge, not `EvalValue::Lambda`; W099-015 owns deletion after prepared/array paths move fully to `CalcValue`.
+5. Issue checked: full `cargo test -p oxfml_core` still fails outside this callable bead on reference/materialization, recursion boundary, and replay-fixture lanes; those failures are not introduced by the helper rename and remain open.
+
+Validation:
+1. `cargo fmt -p oxfml_core`: passed.
+2. `cargo check -p oxfml_core`: passed.
+3. `rg -n "EvalValue::Lambda|\bLambdaValue\b" C:\Work\DnaCalc\OxFml\crates\oxfml_core\src C:\Work\DnaCalc\OxFml\crates\oxfml_core\tests -g "*.rs"`: passed with no active-source/test matches.
+4. `rg -n "payload_summary.*Lambda\(|\"Lambda\(arity" C:\Work\DnaCalc\OxFml\crates\oxfml_core\tests C:\Work\DnaCalc\OxFml\crates\oxfml_core\src -g "*.rs" -g "*.json"`: passed with no matches.
+5. `cargo test -p oxfml_core --test callable_portable_result_tests`: passed, 17 tests.
+6. `cargo test -p oxfml_core --test callable_transport_tests`: passed, 1 test.
+7. `cargo test -p oxfml_core --test callable_calls_callable_tests`: passed, 1 test.
+8. `cargo test -p oxfml_core --test higher_order_callable_tests`: passed, 1 test.
+9. `cargo test -p oxfml_core --test ftc_0999_lambda_array_publication_tests`: passed, 3 tests.
+10. `cargo test -p oxfml_core --test ftc_0999_callable_parameter_map_tests`: passed, 3 tests.
+11. `cargo test -p oxfml_core --test ftc_builtin_callable_collision_boundary_tests`: passed, 3 tests.
+12. `cargo test -p oxfml_core --test evaluator_tests evaluator_returns_lambda_value_summary`: passed, 2 tests.
+13. `cargo test -p oxfml_core --test evaluator_tests evaluator_preserves_defined_name_callable_as_first_class_value`: passed, 1 test.
+14. `cargo test -p oxfml_core --test evaluator_tests evaluator_executes_map_with_local_lambda_callable`: passed, 1 test.
+15. `cargo test -p oxfml_core --test evaluator_tests evaluator_executes_map_with_defined_name_callable`: passed, 1 test.
+16. `cargo test -p oxfml_core --test evaluator_tests evaluator_executes_helper_bound_returned_lambda_invocation`: passed, 1 test.
+17. `cargo test -p oxfml_core --test evaluator_tests evaluator_surfaces_callable_metadata_from_helper_bound_returned_callable`: passed, 1 test.
+18. `cargo test -p oxfml_core --test w049_oxfunc_adapter_tests adapter_preserves_internal_lambda_but_publishes_calc_for_bare_lambda`: passed, 1 test.
+19. `cargo test -p oxfml_core --test w049_oxfunc_adapter_tests adapter_preserves_internal_lambda_but_publishes_calc_for_helper_bound_returned_lambda`: passed, 1 test.
+20. `cargo test -p oxfml_core`: failed outside the callable slice; failures include evaluator reference/materialization lanes, `_xlfn.SINGLE`, recursion boundary expectations, and replay-fixture reference/semantic-plan rows.
