@@ -4,10 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, prepare_calc_values_only,
+    prepared_from_calc_value, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CallArgValue, EvalValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CallArgValue, EvalValue, WorksheetErrorCode};
 
 pub const DATE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE",
@@ -119,6 +120,19 @@ pub fn eval_date_surface(
         eval_date_adapter_prepared,
         DateEvalError::Coercion,
     )
+}
+
+pub fn eval_date_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DateEvalError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(DateEvalError::Coercion)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    eval_date_adapter_prepared(&prepared).map(CalcValue::from)
 }
 
 pub fn map_date_error_to_ws(e: &DateEvalError) -> WorksheetErrorCode {

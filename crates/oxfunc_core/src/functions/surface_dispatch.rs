@@ -130,10 +130,12 @@ use crate::functions::database_family::{
     eval_dstdevp_surface, eval_dsum_surface, eval_dvar_surface, eval_dvarp_surface,
     map_database_error_to_ws,
 };
-use crate::functions::date_fn::{eval_date_surface, map_date_error_to_ws};
+use crate::functions::date_fn::{eval_date_calc_surface, eval_date_surface, map_date_error_to_ws};
 use crate::functions::date_parts_family::{
-    eval_day_surface, eval_days_surface, eval_hour_surface, eval_minute_surface,
-    eval_month_surface, eval_second_surface, eval_time_surface, eval_year_surface,
+    eval_day_calc_surface, eval_day_surface, eval_days_calc_surface, eval_days_surface,
+    eval_hour_calc_surface, eval_hour_surface, eval_minute_calc_surface, eval_minute_surface,
+    eval_month_calc_surface, eval_month_surface, eval_second_calc_surface, eval_second_surface,
+    eval_time_calc_surface, eval_time_surface, eval_year_calc_surface, eval_year_surface,
     map_date_parts_error_to_ws,
 };
 use crate::functions::date_value_family::{
@@ -1252,6 +1254,31 @@ fn eval_binary_arithmetic_calc_dispatch(
     Some(result.map_err(|error| map_binary_numeric_error_to_ws(&error)))
 }
 
+fn eval_date_time_calc_dispatch(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let result = match function_id {
+        FUNC_ID_DATE => {
+            return Some(
+                eval_date_calc_surface(args, resolver).map_err(|e| map_date_error_to_ws(&e)),
+            );
+        }
+        FUNC_ID_DAY => eval_day_calc_surface(args, resolver),
+        FUNC_ID_DAYS => eval_days_calc_surface(args, resolver),
+        FUNC_ID_HOUR => eval_hour_calc_surface(args, resolver),
+        FUNC_ID_MINUTE => eval_minute_calc_surface(args, resolver),
+        FUNC_ID_MONTH => eval_month_calc_surface(args, resolver),
+        FUNC_ID_SECOND => eval_second_calc_surface(args, resolver),
+        FUNC_ID_TIME => eval_time_calc_surface(args, resolver),
+        FUNC_ID_YEAR => eval_year_calc_surface(args, resolver),
+        _ => return None,
+    };
+
+    Some(result.map_err(|error| map_date_parts_error_to_ws(&error)))
+}
+
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
@@ -1325,6 +1352,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
             }
             if let Some(result) =
                 eval_binary_arithmetic_calc_dispatch(dispatch_key.function_id, args, resolver)
+            {
+                return result;
+            }
+            if let Some(result) =
+                eval_date_time_calc_dispatch(dispatch_key.function_id, args, resolver)
             {
                 return result;
             }
@@ -8185,6 +8217,87 @@ mod tests {
                 .expect("array")
             ))
         );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_date_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DATE,
+            &[
+                CalcValue::number(1900.0),
+                CalcValue::number(2.0),
+                CalcValue::number(29.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(60.0)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_day_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DAY,
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(60.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array"),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(29.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_maps_days_domain_errors_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_DAYS,
+            &[CalcValue::number(1.0), CalcValue::number(-1.0)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_time_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_TIME,
+            &[
+                CalcValue::number(1.0),
+                CalcValue::number(30.0),
+                CalcValue::number(0.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(1.5 / 24.0)));
     }
 
     #[test]

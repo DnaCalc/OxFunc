@@ -1417,3 +1417,73 @@ Validation:
 6. `cargo test -p oxfunc_core binary_numeric --lib`: passed, 7 tests.
 7. `cargo check -p oxfunc_core`: passed.
 8. `cargo test -p oxfunc_core --lib`: passed, 1344 passed, 1 ignored.
+
+### W099-012.4 Date/Time Kernel Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. Financial kernels remain on their existing prepared/evaluator routes and are assigned to W099-012/W099-015 residue.
+2. Statistical and aggregate kernels remain on their existing aggregate prepared routes and are assigned to W099-012/W099-015 residue.
+3. Provider-bound date/time functions such as `NOW` and `TODAY` keep their existing rich/provider surfaces; provider-bound migration remains `oxf-im4m.12.5`.
+4. The migrated date/time calc surfaces still project internally through crate-local W099 migration-only `PreparedArgValue`; terminal prepared-carrier deletion remains W099-015 work.
+
+Planned scope:
+1. Move a coherent low-risk date/time slice to native `CalcValue` dispatch before the generated legacy table.
+2. Preserve existing date/time coercion, array-lift, and scalar worksheet-error behavior by factoring the existing prepared evaluators.
+3. Keep financial, statistical, and provider-bound functions out of this pass because their aggregation/provider semantics need separate risk grouping.
+
+Evidence:
+1. `DATE` now has `eval_date_calc_surface(...)`, preparing native `CalcValue` arguments before delegating to the existing date adapter.
+2. `DAY`, `MONTH`, `YEAR`, `HOUR`, `MINUTE`, `SECOND`, `DAYS`, and `TIME` now have calc surfaces built over factored prepared evaluators.
+3. `eval_date_time_calc_dispatch(...)` routes `DATE`, date-part, and `TIME` calls before `legacy_kernel_args_from_calc_values(...)`.
+4. Focused dispatcher tests cover `DATE`, lifted `DAY`, scalar `DAYS` domain-error propagation, and `TIME` through `CalcValue` inputs.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrated carrier paths for existing date/time semantics. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused date/time route tests, date module tests, `cargo check`, and full `oxfunc_core` library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover native CalcValue dispatch for scalar, array, and domain-error lanes. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and migrated function ids are recorded here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no new discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier migration. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new OxFml clause is introduced; this remains inside the OxFunc dispatcher/kernel carrier path. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the date/time slice; financial/statistical/provider-bound and final prepared-carrier deletion are listed as open lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-012.4 date/time carrier migration, not full financial/statistical migration or W099 terminal deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.12.4` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The child bead targets financial/date/time/statistical migration; this pass closes a coherent date/time route subset and records financial/statistical/provider-bound lanes as open.
+2. Gate criteria re-read: passed. Selected files route native `CalcValue` calls before legacy dispatch and focused tests pass.
+3. Silent scope reduction check: passed. Financial kernels, statistical kernels, provider-bound functions, and terminal prepared-carrier deletion are listed as open lanes.
+4. "Looks done but is not" pattern check: passed. The generated legacy table and prepared adapter remain explicitly assigned to later W099 work.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue checked: `NOW` and `TODAY` were intentionally not routed through the date/time branch because their provider/rich-value behavior is already handled on separate surfaces.
+2. Issue checked: financial and statistical functions were not folded into the date/time branch because their aggregation and optional-argument semantics need separate risk grouping.
+3. Issue checked: scalar domain errors still surface as `Err(code)`, while lifted array errors remain carried inside arrays where the existing prepared evaluator does so.
+4. Issue checked: the date/time dispatch branch sits after existing callable/dynamic-array/lookup/unary/arithmetic native branches and before generated legacy dispatch, so it does not preempt reference-specific or provider-bound paths.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo test -p oxfunc_core eval_surface_value_call_routes_date_on_calc_values --lib`: passed, 1 test.
+3. `cargo test -p oxfunc_core eval_surface_value_call_lifts_day_on_calc_arrays --lib`: passed, 1 test.
+4. `cargo test -p oxfunc_core eval_surface_value_call_ --lib`: passed, 85 tests.
+5. `cargo test -p oxfunc_core date_fn --lib`: passed, 8 tests.
+6. `cargo test -p oxfunc_core date_parts_family --lib`: passed, 8 tests.
+7. `cargo check -p oxfunc_core`: passed.
+8. `cargo test -p oxfunc_core --lib`: passed, 1348 passed, 1 ignored.

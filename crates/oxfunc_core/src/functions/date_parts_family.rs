@@ -4,10 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, coerce_prepared_to_number, run_values_only_prepared,
+    PreparedArgValue, coerce_prepared_to_number, prepare_calc_values_only,
+    prepared_from_calc_value, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CalcValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 const DATE_PART_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE_PART_BASE",
@@ -212,57 +215,78 @@ fn eval_date_part_unary_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| {
-            if !meta.arity.accepts(prepared.len()) {
-                return Err(DatePartsEvalError::ArityMismatch {
-                    expected_min: meta.arity.min,
-                    expected_max: meta.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            match &prepared[0] {
-                PreparedArgValue::Eval(EvalValue::Array(array)) => {
-                    let cells = array
-                        .iter_row_major()
-                        .map(|cell| {
-                            let serial = match cell {
-                                ArrayCellValue::Number(n) => *n,
-                                ArrayCellValue::Text(text) => coerce_prepared_to_number(
-                                    &PreparedArgValue::Eval(EvalValue::Text(text.clone())),
-                                )
-                                .map_err(DatePartsEvalError::Coercion)?,
-                                ArrayCellValue::Logical(value) => {
-                                    if *value {
-                                        1.0
-                                    } else {
-                                        0.0
-                                    }
-                                }
-                                ArrayCellValue::Error(code) => {
-                                    return Ok(ArrayCellValue::Error(*code));
-                                }
-                                ArrayCellValue::EmptyCell => 0.0,
-                            };
-                            kernel(serial)
-                                .map(ArrayCellValue::Number)
-                                .map_err(DatePartsEvalError::Domain)
-                        })
-                        .collect::<Result<Vec<_>, _>>()?;
-                    Ok(EvalValue::Array(
-                        EvalArray::new(array.shape(), cells)
-                            .expect("date-part array lift preserves input shape"),
-                    ))
-                }
-                _ => {
-                    let serial = coerce_serial_arg(&prepared[0])?;
-                    kernel(serial)
-                        .map(EvalValue::Number)
-                        .map_err(DatePartsEvalError::Domain)
-                }
-            }
-        },
+        |prepared| eval_date_part_unary_prepared(prepared, meta, kernel),
         DatePartsEvalError::Coercion,
     )
+}
+
+fn eval_date_part_unary_prepared(
+    prepared: &[PreparedArgValue],
+    meta: &FunctionMeta,
+    kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
+) -> Result<EvalValue, DatePartsEvalError> {
+    if !meta.arity.accepts(prepared.len()) {
+        return Err(DatePartsEvalError::ArityMismatch {
+            expected_min: meta.arity.min,
+            expected_max: meta.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    match &prepared[0] {
+        PreparedArgValue::Eval(EvalValue::Array(array)) => {
+            let cells = array
+                .iter_row_major()
+                .map(|cell| {
+                    let serial = match cell {
+                        ArrayCellValue::Number(n) => *n,
+                        ArrayCellValue::Text(text) => coerce_prepared_to_number(
+                            &PreparedArgValue::Eval(EvalValue::Text(text.clone())),
+                        )
+                        .map_err(DatePartsEvalError::Coercion)?,
+                        ArrayCellValue::Logical(value) => {
+                            if *value {
+                                1.0
+                            } else {
+                                0.0
+                            }
+                        }
+                        ArrayCellValue::Error(code) => {
+                            return Ok(ArrayCellValue::Error(*code));
+                        }
+                        ArrayCellValue::EmptyCell => 0.0,
+                    };
+                    kernel(serial)
+                        .map(ArrayCellValue::Number)
+                        .map_err(DatePartsEvalError::Domain)
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(EvalValue::Array(
+                EvalArray::new(array.shape(), cells)
+                    .expect("date-part array lift preserves input shape"),
+            ))
+        }
+        _ => {
+            let serial = coerce_serial_arg(&prepared[0])?;
+            kernel(serial)
+                .map(EvalValue::Number)
+                .map_err(DatePartsEvalError::Domain)
+        }
+    }
+}
+
+fn eval_date_part_unary_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    meta: &FunctionMeta,
+    kernel: fn(f64) -> Result<f64, WorksheetErrorCode>,
+) -> Result<CalcValue, DatePartsEvalError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(DatePartsEvalError::Coercion)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    eval_date_part_unary_prepared(&prepared, meta, kernel).map(CalcValue::from)
 }
 
 pub fn eval_day_surface(
@@ -272,11 +296,25 @@ pub fn eval_day_surface(
     eval_date_part_unary_surface(args, resolver, &DAY_META, day_kernel)
 }
 
+pub fn eval_day_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &DAY_META, day_kernel)
+}
+
 pub fn eval_month_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MONTH_META, month_kernel)
+}
+
+pub fn eval_month_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &MONTH_META, month_kernel)
 }
 
 pub fn eval_year_surface(
@@ -286,6 +324,13 @@ pub fn eval_year_surface(
     eval_date_part_unary_surface(args, resolver, &YEAR_META, year_kernel)
 }
 
+pub fn eval_year_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &YEAR_META, year_kernel)
+}
+
 pub fn eval_days_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -293,22 +338,37 @@ pub fn eval_days_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| {
-            if !DAYS_META.arity.accepts(prepared.len()) {
-                return Err(DatePartsEvalError::ArityMismatch {
-                    expected_min: DAYS_META.arity.min,
-                    expected_max: DAYS_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let end_serial = coerce_serial_arg(&prepared[0])?;
-            let start_serial = coerce_serial_arg(&prepared[1])?;
-            days_kernel(end_serial, start_serial)
-                .map(EvalValue::Number)
-                .map_err(DatePartsEvalError::Domain)
-        },
+        eval_days_prepared,
         DatePartsEvalError::Coercion,
     )
+}
+
+fn eval_days_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePartsEvalError> {
+    if !DAYS_META.arity.accepts(prepared.len()) {
+        return Err(DatePartsEvalError::ArityMismatch {
+            expected_min: DAYS_META.arity.min,
+            expected_max: DAYS_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    let end_serial = coerce_serial_arg(&prepared[0])?;
+    let start_serial = coerce_serial_arg(&prepared[1])?;
+    days_kernel(end_serial, start_serial)
+        .map(EvalValue::Number)
+        .map_err(DatePartsEvalError::Domain)
+}
+
+pub fn eval_days_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(DatePartsEvalError::Coercion)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    eval_days_prepared(&prepared).map(CalcValue::from)
 }
 
 pub fn eval_hour_surface(
@@ -318,11 +378,25 @@ pub fn eval_hour_surface(
     eval_date_part_unary_surface(args, resolver, &HOUR_META, hour_kernel)
 }
 
+pub fn eval_hour_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &HOUR_META, hour_kernel)
+}
+
 pub fn eval_minute_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<EvalValue, DatePartsEvalError> {
     eval_date_part_unary_surface(args, resolver, &MINUTE_META, minute_kernel)
+}
+
+pub fn eval_minute_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &MINUTE_META, minute_kernel)
 }
 
 pub fn eval_second_surface(
@@ -332,6 +406,13 @@ pub fn eval_second_surface(
     eval_date_part_unary_surface(args, resolver, &SECOND_META, second_kernel)
 }
 
+pub fn eval_second_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    eval_date_part_unary_calc_surface(args, resolver, &SECOND_META, second_kernel)
+}
+
 pub fn eval_time_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -339,23 +420,38 @@ pub fn eval_time_surface(
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| {
-            if !TIME_META.arity.accepts(prepared.len()) {
-                return Err(DatePartsEvalError::ArityMismatch {
-                    expected_min: TIME_META.arity.min,
-                    expected_max: TIME_META.arity.max,
-                    actual: prepared.len(),
-                });
-            }
-            let hour = truncate_time_component(&prepared[0])?;
-            let minute = truncate_time_component(&prepared[1])?;
-            let second = truncate_time_component(&prepared[2])?;
-            time_kernel(hour, minute, second)
-                .map(EvalValue::Number)
-                .map_err(DatePartsEvalError::Domain)
-        },
+        eval_time_prepared,
         DatePartsEvalError::Coercion,
     )
+}
+
+fn eval_time_prepared(prepared: &[PreparedArgValue]) -> Result<EvalValue, DatePartsEvalError> {
+    if !TIME_META.arity.accepts(prepared.len()) {
+        return Err(DatePartsEvalError::ArityMismatch {
+            expected_min: TIME_META.arity.min,
+            expected_max: TIME_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
+    let hour = truncate_time_component(&prepared[0])?;
+    let minute = truncate_time_component(&prepared[1])?;
+    let second = truncate_time_component(&prepared[2])?;
+    time_kernel(hour, minute, second)
+        .map(EvalValue::Number)
+        .map_err(DatePartsEvalError::Domain)
+}
+
+pub fn eval_time_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, DatePartsEvalError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(DatePartsEvalError::Coercion)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    eval_time_prepared(&prepared).map(CalcValue::from)
 }
 
 pub fn map_date_parts_error_to_ws(e: &DatePartsEvalError) -> WorksheetErrorCode {
