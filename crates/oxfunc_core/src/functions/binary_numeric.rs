@@ -1,10 +1,13 @@
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{
     BroadcastPreparedPair, PreparedArgValue, coerce_prepared_to_number,
-    expand_binary_broadcast_grid, prepare_args_values_only,
+    expand_binary_broadcast_grid, prepare_args_values_only, prepare_calc_values_only,
+    prepared_from_calc_value,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CalcValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum BinaryNumericSurfaceError {
@@ -21,6 +24,20 @@ pub fn eval_binary_numeric_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(BinaryNumericSurfaceError::Coercion)?;
     eval_binary_numeric_prepared(&prepared, kernel)
+}
+
+pub fn eval_binary_numeric_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    kernel: impl Fn(f64, f64) -> Result<f64, WorksheetErrorCode> + Copy,
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(BinaryNumericSurfaceError::Coercion)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    eval_binary_numeric_prepared(&prepared, kernel).map(CalcValue::from)
 }
 
 pub fn eval_binary_numeric_prepared(

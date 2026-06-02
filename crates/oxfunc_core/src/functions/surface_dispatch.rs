@@ -32,6 +32,9 @@ use crate::functions::beta_gamma_stats_family::{
     eval_gamma_dist_surface, eval_gamma_inv_surface, eval_gammadist_surface, eval_gammainv_surface,
     map_beta_gamma_stats_error_to_ws,
 };
+use crate::functions::binary_numeric::{
+    eval_binary_numeric_calc_surface, map_binary_numeric_error_to_ws,
+};
 use crate::functions::bitand_fn::{bitand_kernel, eval_bitand_surface, map_bitand_error_to_ws};
 use crate::functions::bitlshift_fn::{
     bitlshift_kernel, eval_bitlshift_surface, map_bitlshift_error_to_ws,
@@ -1137,6 +1140,7 @@ fn eval_shared_unary_numeric_calc_dispatch(
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Option<Result<CalcValue, WorksheetErrorCode>> {
     let result = match function_id {
+        FUNC_ID_ABS => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(abs_kernel(n))),
         FUNC_ID_ACOS => eval_unary_numeric_calc_surface(args, resolver, acos_kernel),
         FUNC_ID_ACOT => eval_unary_numeric_calc_surface(args, resolver, acot_kernel),
         FUNC_ID_ACOSH => eval_unary_numeric_calc_surface(args, resolver, acosh_kernel),
@@ -1226,6 +1230,28 @@ fn eval_lookup_reference_adjacent_calc_dispatch(
     Some(eval_index_calc_surface(args).map_err(|error| map_index_error_to_ws(&error)))
 }
 
+fn eval_binary_arithmetic_calc_dispatch(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let result = match function_id {
+        FUNC_ID_MOD => eval_binary_numeric_calc_surface(args, resolver, mod_kernel),
+        FUNC_ID_OP_ADD => {
+            eval_binary_numeric_calc_surface(args, resolver, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
+        }
+        FUNC_ID_OP_DIVIDE => eval_binary_numeric_calc_surface(args, resolver, op_divide_kernel),
+        FUNC_ID_OP_MULTIPLY => eval_binary_numeric_calc_surface(args, resolver, op_multiply_kernel),
+        FUNC_ID_OP_POWER | FUNC_ID_POWER => {
+            eval_binary_numeric_calc_surface(args, resolver, power_kernel)
+        }
+        FUNC_ID_OP_SUBTRACT => eval_binary_numeric_calc_surface(args, resolver, op_subtract_kernel),
+        _ => return None,
+    };
+
+    Some(result.map_err(|error| map_binary_numeric_error_to_ws(&error)))
+}
+
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
@@ -1294,6 +1320,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
             }
             if let Some(result) =
                 eval_shared_unary_numeric_calc_dispatch(dispatch_key.function_id, args, resolver)
+            {
+                return result;
+            }
+            if let Some(result) =
+                eval_binary_arithmetic_calc_dispatch(dispatch_key.function_id, args, resolver)
             {
                 return result;
             }
@@ -8043,6 +8074,113 @@ mod tests {
                     CalcValue::number(0.05),
                     CalcValue::error(WorksheetErrorCode::Value),
                     CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_abs_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ABS,
+            &[CalcValue::number(-3.5)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.5)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_abs_on_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_ABS,
+            &[CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(-5.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array"),
+            )],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(5.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                ]])
+                .expect("array")
+            ))
+        );
+    }
+
+    #[test]
+    fn eval_surface_value_call_routes_binary_arithmetic_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_ADD,
+            &[CalcValue::number(2.0), CalcValue::number(3.5)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Ok(CalcValue::number(5.5)));
+    }
+
+    #[test]
+    fn eval_surface_value_call_maps_binary_arithmetic_domain_errors_on_calc_values() {
+        let got = eval_surface_value_call(
+            FUNC_ID_OP_DIVIDE,
+            &[CalcValue::number(4.0), CalcValue::number(0.0)],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(got, Err(WorksheetErrorCode::Div0));
+    }
+
+    #[test]
+    fn eval_surface_value_call_lifts_binary_arithmetic_calc_arrays() {
+        let got = eval_surface_value_call(
+            FUNC_ID_POWER,
+            &[
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                    ]])
+                    .expect("array"),
+                ),
+                CalcValue::number(2.0),
+            ],
+            &NoReferenceSystemProvider,
+            Some(46000.0),
+            Some(&TEST_RANDOM_PROVIDER),
+            None,
+            None,
+        );
+        assert_eq!(
+            got,
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(4.0),
+                    CalcValue::number(9.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
                 ]])
                 .expect("array")
             ))

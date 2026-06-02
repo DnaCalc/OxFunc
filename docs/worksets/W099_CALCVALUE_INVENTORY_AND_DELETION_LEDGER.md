@@ -1347,3 +1347,73 @@ Validation:
 3. `cargo test -p oxfunc_core eval_surface_value_call_routes_index --lib`: passed, 2 tests.
 4. `cargo test -p oxfunc_core index --lib`: passed, 31 tests.
 5. `cargo test -p oxfunc_core --lib`: passed, 1339 passed, 1 ignored.
+
+### W099-012.3 Arithmetic Kernel Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. Comparison operators still use their existing prepared/legacy route and remain W099-012/W099-015 residue.
+2. Text-oriented functions still use their existing text/prepared route and remain W099-012/W099-015 residue.
+3. Non-arithmetic binary numeric functions, bitwise functions, and mixed-domain numeric functions were intentionally not absorbed into this arithmetic slice.
+4. The shared binary calc surface still projects through the crate-local W099 migration-only `PreparedArgValue` adapter internally; terminal prepared-carrier deletion remains W099-015 work.
+
+Planned scope:
+1. Move remaining low-risk arithmetic routes that were still falling through to `legacy_kernel_args_from_calc_values(...)`.
+2. Preserve existing arithmetic coercion, broadcast, and scalar worksheet-error behavior by reusing the existing binary numeric prepared evaluator behind a `CalcValue` boundary.
+3. Keep comparison and text migration out of this pass because their coercion and textification rules are not the same as numeric arithmetic.
+
+Evidence:
+1. `ABS` now participates in the native shared unary numeric `CalcValue` dispatcher rather than falling through to the generated legacy table.
+2. `eval_binary_numeric_calc_surface(...)` prepares `CalcValue` arguments through `prepare_calc_values_only(...)`, then delegates to the existing binary numeric evaluator.
+3. `MOD`, `OP_ADD`, `OP_DIVIDE`, `OP_MULTIPLY`, `OP_POWER`, `POWER`, and `OP_SUBTRACT` now route through `eval_binary_arithmetic_calc_dispatch(...)` before `legacy_kernel_args_from_calc_values(...)`.
+4. Focused dispatcher tests cover scalar `ABS`, lifted `ABS`, scalar binary arithmetic, scalar domain-error propagation, and lifted binary arithmetic arrays.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrated carrier paths for existing arithmetic semantics. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused route tests, binary helper tests, `cargo check`, and full `oxfunc_core` library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover native CalcValue dispatch for scalar, array, and domain-error lanes. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and migrated function ids are recorded here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no new discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier migration. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new OxFml clause is introduced; this remains inside the OxFunc dispatcher/kernel carrier path. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the arithmetic slice; comparison/text and final prepared-carrier deletion are listed as open lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-012.3 arithmetic carrier migration, not full comparison/text migration or W099 terminal deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.12.3` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The child bead targets arithmetic/comparison/text migration; this pass closes a coherent arithmetic route subset and records comparison/text as open lanes.
+2. Gate criteria re-read: passed. Selected files route native `CalcValue` calls before legacy dispatch and focused tests pass.
+3. Silent scope reduction check: passed. Comparison operators, text-oriented functions, and terminal prepared-carrier deletion are listed as open lanes.
+4. "Looks done but is not" pattern check: passed. The generated legacy table and prepared adapter remain explicitly assigned to later W099 work.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue checked: adding `ABS` to the shared unary dispatcher is a route omission fix; it uses the same numeric coercion/lift helper as the other unary numeric functions.
+2. Issue checked: binary arithmetic branch ordering is after dynamic-array/lookup/unary native branches and before generated legacy dispatch, so it does not preempt reference-specific `INDEX` or callable helper paths.
+3. Issue found and corrected while editing: scalar domain errors at `eval_surface_value_call(...)` are returned as `Err(code)`, while per-cell array errors remain carried inside arrays; the focused test expectation was corrected.
+4. Issue checked: comparison and text functions were not folded into the numeric branch because their coercion and textification semantics differ from arithmetic numeric kernels.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo test -p oxfunc_core eval_surface_value_call_routes_abs_on_calc_values --lib`: passed, 1 test.
+3. `cargo test -p oxfunc_core eval_surface_value_call_lifts_abs_on_calc_arrays --lib`: passed, 1 test.
+4. `cargo test -p oxfunc_core eval_surface_value_call_routes_binary_arithmetic_on_calc_values --lib`: passed, 1 test.
+5. `cargo test -p oxfunc_core eval_surface_value_call_ --lib`: passed, 81 tests.
+6. `cargo test -p oxfunc_core binary_numeric --lib`: passed, 7 tests.
+7. `cargo check -p oxfunc_core`: passed.
+8. `cargo test -p oxfunc_core --lib`: passed, 1344 passed, 1 ignored.
