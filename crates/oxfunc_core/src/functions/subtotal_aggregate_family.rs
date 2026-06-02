@@ -398,8 +398,8 @@ fn materialize_ref_filtered_arg(
         EvalValue::Reference(_) => Err(SubtotalAggregateEvalError::Coercion(
             CoercionError::UnsupportedValueKind("reference_like"),
         )),
-        EvalValue::Lambda(_) => Err(SubtotalAggregateEvalError::Coercion(
-            CoercionError::UnsupportedValueKind("lambda_value"),
+        _ => Err(SubtotalAggregateEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("unsupported_value"),
         )),
     }
 }
@@ -451,8 +451,8 @@ fn prepare_reference_form_args(
             CallArgValue::Eval(EvalValue::Number(_))
             | CallArgValue::Eval(EvalValue::Text(_))
             | CallArgValue::Eval(EvalValue::Logical(_))
-            | CallArgValue::Eval(EvalValue::Error(_))
-            | CallArgValue::Eval(EvalValue::Lambda(_)) => prepared.push(arg.clone()),
+            | CallArgValue::Eval(EvalValue::Error(_)) => prepared.push(arg.clone()),
+            _ => prepared.push(arg.clone()),
         }
     }
     Ok(prepared)

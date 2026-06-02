@@ -7,7 +7,8 @@ use crate::functions::callable_helpers::{
     CallableInvocationError, CallableInvoker, LambdaHelperEvalError, invoke_callable_prepared,
 };
 use crate::value::{
-    ArrayCellValue, CallableValue, EvalArray, EvalValue, ExcelText, WorksheetErrorCode,
+    ArrayCellValue, CalcValue, CallableValue, CoreValue, EvalArray, EvalValue, ExcelText,
+    WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -58,6 +59,21 @@ pub(crate) fn require_callable(
     }
 }
 
+pub(crate) fn require_calc_callable(
+    value: &CalcValue,
+) -> Result<CallableValue, LambdaHelperEvalError> {
+    match value.core() {
+        CoreValue::Error(code) if value.callable_value().is_none() => Err(
+            LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(*code)),
+        ),
+        _ => value.callable_value().cloned().ok_or_else(|| {
+            LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(
+                WorksheetErrorCode::Value,
+            ))
+        }),
+    }
+}
+
 pub(crate) fn scalar_cell_from_prepared(
     prepared: &PreparedArgValue,
 ) -> Result<ArrayCellValue, LambdaHelperEvalError> {
@@ -70,8 +86,10 @@ pub(crate) fn scalar_cell_from_prepared(
         PreparedArgValue::Eval(EvalValue::Array(_)) => {
             Err(LambdaHelperEvalError::NonScalarHelperResult)
         }
-        PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(LambdaHelperEvalError::Invocation(
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(LambdaHelperEvalError::Invocation(
+            CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
+        )),
+        _ => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
         )),
     }
@@ -95,10 +113,10 @@ pub(crate) fn prepared_to_array(prepared: &PreparedArgValue) -> EvalArray {
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => {
             EvalArray::from_scalar(ArrayCellValue::EmptyCell)
         }
-        PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             EvalArray::from_scalar(ArrayCellValue::Error(WorksheetErrorCode::Value))
         }
+        _ => EvalArray::from_scalar(ArrayCellValue::Error(WorksheetErrorCode::Value)),
     }
 }
 

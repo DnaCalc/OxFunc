@@ -6,22 +6,25 @@ use oxfunc_core::functions::odd_bond_family::{
     oddfyield_kernel, oddlprice_kernel, oddlyield_kernel,
 };
 use oxfunc_core::locale_format::{WorkbookDateSystem, excel_serial_from_ymd};
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
+use oxfunc_core::resolver::{
+    ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
+};
 use oxfunc_core::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, WorksheetErrorCode};
 
 struct DummyResolver;
 
-impl ReferenceResolver for DummyResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for DummyResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        _reference: &oxfunc_core::value::ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: "w29_dummy".to_string(),
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<EvalValue, ReferenceResolutionError> {
+        Err(ReferenceResolutionError::UnresolvedReference {
+            target: request.reference.target.clone(),
         })
     }
 }

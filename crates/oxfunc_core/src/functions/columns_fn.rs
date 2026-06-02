@@ -50,9 +50,10 @@ pub fn eval_columns_surface(args: &[CallArgValue]) -> Result<EvalValue, ColumnsE
             | EvalValue::Text(_)
             | EvalValue::Logical(_)
             | EvalValue::Error(_) => 1.0,
-            EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+            EvalValue::Reference(_) => {
                 return Err(ColumnsEvalError::InvalidReferenceArg);
             }
+            _ => return Err(ColumnsEvalError::InvalidReferenceArg),
         }));
     }
 
@@ -88,9 +89,10 @@ pub fn eval_columns_surface_with_resolver(
             | EvalValue::Text(_)
             | EvalValue::Logical(_)
             | EvalValue::Error(_) => 1.0,
-            EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+            EvalValue::Reference(_) => {
                 return Err(ColumnsEvalError::InvalidReferenceArg);
             }
+            _ => return Err(ColumnsEvalError::InvalidReferenceArg),
         }));
     }
 

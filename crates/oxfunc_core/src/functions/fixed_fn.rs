@@ -51,8 +51,10 @@ fn coerce_number_arg(
         PreparedArgValue::EmptyCell => Ok(0.0),
         PreparedArgValue::MissingArg => Err(FixedEvalError::Coercion(CoercionError::MissingArg)),
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(FixedEvalError::Coercion(
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(FixedEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("fixed_arg_kind"),
+        )),
+        _ => Err(FixedEvalError::Coercion(
             CoercionError::UnsupportedValueKind("fixed_arg_kind"),
         )),
     }

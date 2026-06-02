@@ -252,9 +252,8 @@ fn materialized_eval_value_to_array_cell(value: EvalValue) -> ArrayCellValue {
         EvalValue::Logical(b) => ArrayCellValue::Logical(b),
         EvalValue::Error(code) => ArrayCellValue::Error(code),
         EvalValue::Array(array) => top_left_array_cell(&array),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
-        }
+        EvalValue::Reference(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
     }
 }
 

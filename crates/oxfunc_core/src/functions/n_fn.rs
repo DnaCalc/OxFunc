@@ -52,8 +52,8 @@ fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
         PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             EvalValue::Error(WorksheetErrorCode::Value)
         }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => EvalValue::Error(WorksheetErrorCode::Value),
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => EvalValue::Number(0.0),
+        _ => EvalValue::Error(WorksheetErrorCode::Value),
     }
 }
 

@@ -55,9 +55,9 @@ fn map_prepared(prepared: PreparedArgValue) -> EvalValue {
         }
         PreparedArgValue::Eval(EvalValue::Number(_))
         | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_))
         | PreparedArgValue::MissingArg
         | PreparedArgValue::EmptyCell => EvalValue::Text(empty_text()),
+        _ => EvalValue::Text(empty_text()),
     }
 }
 

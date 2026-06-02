@@ -101,10 +101,10 @@ fn matrix_from_value(value: &EvalValue) -> Result<Vec<Vec<f64>>, WorksheetErrorC
             }
             Ok(rows)
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(WorksheetErrorCode::Value),
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+            Err(WorksheetErrorCode::Value)
+        }
+        _ => Err(WorksheetErrorCode::Value),
     }
 }
 

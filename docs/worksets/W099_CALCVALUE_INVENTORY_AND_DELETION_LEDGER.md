@@ -1035,3 +1035,43 @@ Validation:
 7. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_image_return_carrier_integration`: passed, 1 test.
 8. `cargo check` in `C:\Work\DnaCalc\OxFml\crates\oxfml_core`: passed.
 9. `rg "callable: &.*LambdaValue|fn require_callable\([^\)]*\) -> Result<&LambdaValue|callable\.arity_shape|callable\.callable_token|EvalValue::Lambda\(callable\).*Ok\(callable\)" crates\oxfunc_core\src -n`: passed with no matches.
+
+### W099-011 Reopened Boundary Addendum
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. `LambdaValue` and `EvalValue::Lambda` remain in `oxfunc_value_types` as migration-only compatibility carriers until W099-015 deletes the legacy value model.
+2. `PreparedArgValue` remains a temporary higher-order invocation argument/result carrier until W099-012/W099-015 finish the kernel/prepared-carrier migration.
+3. OxFml adapter formulas that still pass callable carrier text through the non-registry-aware call-target path remain cross-repo integration work; OxFunc does not decode OxFml textual callable carriers.
+
+Reopened scope:
+1. Remove active OxFunc `EvalValue::Lambda` / `LambdaValue` construction and matching from callable boundary tests and helper surfaces.
+2. Route MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY/GROUPBY/PIVOTBY dispatch through CalcValue-native callable surfaces before the generated legacy argument table.
+3. Convert GROUPBY/PIVOTBY and callable helper surface tests to pass `CalcValue::callable(CallableValue { ... })` directly.
+4. Convert the stage-1 callable scaffold metadata from `LambdaValue` to `CallableValue`.
+
+Evidence:
+1. `eval_surface_value_call_with_dispatch_key` now handles the higher-order callable function set through CalcValue-native branches before `legacy_kernel_args_from_calc_values`.
+2. `callable_helpers` exposes CalcValue-native surface entrypoints for MAP, REDUCE, SCAN, BYROW, BYCOL, and MAKEARRAY; legacy `CallArgValue` entrypoints remain as compatibility wrappers only.
+3. `groupby_fn` and `pivotby_fn` expose CalcValue-native surface entrypoints and factor their prepared bodies behind native callable extraction.
+4. Active OxFunc source/test scan has no `EvalValue::Lambda`, `LambdaValue`, `CallableCaptureMode`, `helper_lambda`, legacy callable arg helper, or old legacy dispatch entrypoint matches.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo check -p oxfunc_core`: passed.
+3. `cargo test -p oxfunc_core callable_helpers --lib`: passed, 29 tests.
+4. `cargo test -p oxfunc_core groupby --lib`: passed, 6 tests.
+5. `cargo test -p oxfunc_core pivotby --lib`: passed, 5 tests.
+6. `cargo test -p oxfunc_core function_call --lib`: passed, 12 tests.
+7. `cargo test -p oxfunc_core callable_stage1_prepared --lib`: passed, 16 tests.
+8. `cargo test -p oxfunc_core --lib`: passed, 1331 passed, 1 ignored.
+9. `cargo check -p oxfunc_core --examples`: passed.
+10. `cargo test -p oxfunc_core --test oxfml_registered_external_interface_integration`: passed, 3 tests.
+11. `cargo test -p oxfunc_core`: partial. Library, bin, and direct-call integration tests passed; `oxfml_grouped_aggregation_adapter_integration` still fails for GROUPBY/PIVOTBY bare `SUM` callables because OxFml's non-scratch call-target path uses plain `calc_values_from_call_args` instead of its registry-aware callable-carrier conversion. No OxFunc textual-carrier decoder was added.

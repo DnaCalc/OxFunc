@@ -116,13 +116,14 @@ fn scalarize_eval_value(
     caller: Option<&CallerContext>,
 ) -> Result<EvalValue, ImplicitIntersectionError> {
     match value {
-        EvalValue::Number(_)
-        | EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Error(_)
-        | EvalValue::Lambda(_) => Ok(value),
+        EvalValue::Number(_) | EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Error(_) => {
+            Ok(value)
+        }
         EvalValue::Array(array) => top_left_array_value(&array),
         EvalValue::Reference(reference) => scalarize_reference(reference, resolver, caller),
+        _ => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
+            "unsupported_value",
+        )),
     }
 }
 

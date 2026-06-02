@@ -938,8 +938,11 @@ fn eval_to_numeric_sequence(
         EvalValue::Error(code) => Err(FinancialSurfaceEvalError::Coercion(
             CoercionError::WorksheetError(code),
         )),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => Err(FinancialSurfaceEvalError::Coercion(
+        EvalValue::Reference(_) => Err(FinancialSurfaceEvalError::Coercion(
             CoercionError::UnsupportedValueKind("reference_like"),
+        )),
+        _ => Err(FinancialSurfaceEvalError::Coercion(
+            CoercionError::UnsupportedValueKind("unsupported_value"),
         )),
     }
 }

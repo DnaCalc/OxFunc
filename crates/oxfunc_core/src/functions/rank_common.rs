@@ -44,9 +44,7 @@ pub fn prepare_rank_number(
         PreparedArgValue::Eval(crate::value::EvalValue::Reference(_)) => {
             Err(CoercionError::UnsupportedValueKind("reference_like"))
         }
-        PreparedArgValue::Eval(crate::value::EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
+        _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
     }
 }
 

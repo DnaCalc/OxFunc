@@ -3,12 +3,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedArgValue, prepare_args_values_only, prepared_arg_to_calc_value_lossy,
+    PreparedArgValue, prepare_args_values_only, prepare_calc_values_only,
+    prepared_arg_to_calc_value_lossy,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, ArrayShape, CallArgValue, CallableValue, EvalArray, EvalValue,
-    WorksheetErrorCode,
+    ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CallableValue, CoreValue, EvalArray,
+    EvalValue, WorksheetErrorCode,
 };
 
 const FUNCTIONAL_LAMBDA_BASE_META: FunctionMeta = FunctionMeta {
@@ -568,9 +569,9 @@ fn scalar_cell_from_prepared(
         PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(
             CallableInvocationError::UnsupportedResultKind("reference_like"),
         ),
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(
-            CallableInvocationError::UnsupportedResultKind("lambda_value"),
-        ),
+        _ => Err(CallableInvocationError::UnsupportedResultKind(
+            "unsupported_value",
+        )),
     }
 }
 
@@ -833,6 +834,48 @@ fn require_callable(prepared: &PreparedArgValue) -> Result<CallableValue, Lambda
     }
 }
 
+fn require_calc_callable(value: &CalcValue) -> Result<CallableValue, LambdaHelperEvalError> {
+    match value.core() {
+        CoreValue::Error(code) if value.callable_value().is_none() => Err(
+            LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(*code)),
+        ),
+        _ => value.callable_value().cloned().ok_or_else(|| {
+            LambdaHelperEvalError::Invocation(CallableInvocationError::Worksheet(
+                WorksheetErrorCode::Value,
+            ))
+        }),
+    }
+}
+
+fn prepared_from_calc_non_callable(
+    value: CalcValue,
+) -> Result<PreparedArgValue, LambdaHelperEvalError> {
+    match value.core {
+        CoreValue::Number(n) => Ok(PreparedArgValue::Eval(EvalValue::Number(n))),
+        CoreValue::Text(t) => Ok(PreparedArgValue::Eval(EvalValue::Text(t))),
+        CoreValue::Logical(b) => Ok(PreparedArgValue::Eval(EvalValue::Logical(b))),
+        CoreValue::Error(code) => Ok(PreparedArgValue::Eval(EvalValue::Error(code))),
+        CoreValue::Array(array) => Ok(PreparedArgValue::Eval(EvalValue::Array(
+            array.to_legacy_eval_array_lossy(),
+        ))),
+        CoreValue::Reference(reference) => {
+            Ok(PreparedArgValue::Eval(EvalValue::Reference(reference)))
+        }
+        CoreValue::Missing => Ok(PreparedArgValue::MissingArg),
+        CoreValue::Empty => Ok(PreparedArgValue::EmptyCell),
+    }
+}
+
+fn prepared_from_calc_slice(
+    values: &[CalcValue],
+) -> Result<Vec<PreparedArgValue>, LambdaHelperEvalError> {
+    values
+        .iter()
+        .cloned()
+        .map(prepared_from_calc_non_callable)
+        .collect()
+}
+
 fn surface_arity_error(meta: &FunctionMeta, actual: usize) -> LambdaHelperEvalError {
     LambdaHelperEvalError::ArityMismatch {
         expected_min: meta.arity.min,
@@ -854,6 +897,22 @@ fn parse_positive_dimension(prepared: &PreparedArgValue) -> Result<usize, Lambda
     Ok(truncated as usize)
 }
 
+pub fn eval_map_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !MAP_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&MAP_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let (input_args, callable_arg) = prepared.split_at(prepared.len() - 1);
+    let callable = require_calc_callable(&callable_arg[0])?;
+    let input_prepared = prepared_from_calc_slice(input_args)?;
+    eval_map_prepared(&input_prepared, &callable, invoker)
+}
+
 pub fn eval_map_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -867,6 +926,22 @@ pub fn eval_map_surface(
     let (input_args, callable_arg) = prepared.split_at(prepared.len() - 1);
     let callable = require_callable(&callable_arg[0])?;
     eval_map_prepared(input_args, &callable, invoker)
+}
+
+pub fn eval_reduce_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<PreparedArgValue, LambdaHelperEvalError> {
+    if !REDUCE_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&REDUCE_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared[2])?;
+    let initial = prepared_from_calc_non_callable(prepared[0].clone())?;
+    let iterable = prepared_from_calc_non_callable(prepared[1].clone())?;
+    eval_reduce_prepared(&initial, &iterable, &callable, invoker)
 }
 
 pub fn eval_reduce_surface(
@@ -883,6 +958,22 @@ pub fn eval_reduce_surface(
     eval_reduce_prepared(&prepared[0], &prepared[1], &callable, invoker)
 }
 
+pub fn eval_scan_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !SCAN_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&SCAN_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared[2])?;
+    let initial = prepared_from_calc_non_callable(prepared[0].clone())?;
+    let iterable = prepared_from_calc_non_callable(prepared[1].clone())?;
+    eval_scan_prepared(&initial, &iterable, &callable, invoker)
+}
+
 pub fn eval_scan_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -895,6 +986,21 @@ pub fn eval_scan_surface(
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[2])?;
     eval_scan_prepared(&prepared[0], &prepared[1], &callable, invoker)
+}
+
+pub fn eval_byrow_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !BYROW_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&BYROW_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared[1])?;
+    let source = prepared_from_calc_non_callable(prepared[0].clone())?;
+    eval_byrow_prepared(&source, &callable, invoker)
 }
 
 pub fn eval_byrow_surface(
@@ -911,6 +1017,21 @@ pub fn eval_byrow_surface(
     eval_byrow_prepared(&prepared[0], &callable, invoker)
 }
 
+pub fn eval_bycol_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !BYCOL_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&BYCOL_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared[1])?;
+    let source = prepared_from_calc_non_callable(prepared[0].clone())?;
+    eval_bycol_prepared(&source, &callable, invoker)
+}
+
 pub fn eval_bycol_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -923,6 +1044,24 @@ pub fn eval_bycol_surface(
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[1])?;
     eval_bycol_prepared(&prepared[0], &callable, invoker)
+}
+
+pub fn eval_makearray_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !MAKEARRAY_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(&MAKEARRAY_META, args.len()));
+    }
+    let prepared =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let row_count = prepared_from_calc_non_callable(prepared[0].clone())?;
+    let col_count = prepared_from_calc_non_callable(prepared[1].clone())?;
+    let rows = parse_positive_dimension(&row_count)?;
+    let cols = parse_positive_dimension(&col_count)?;
+    let callable = require_calc_callable(&prepared[2])?;
+    eval_makearray_prepared(rows, cols, &callable, invoker)
 }
 
 pub fn eval_makearray_surface(
@@ -977,12 +1116,20 @@ mod tests {
     use super::*;
     use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{
-        CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue,
-    };
+    use crate::value::{CallableArityShape, EvalArray, ExcelText, OpaqueCallable};
     use std::cell::Cell;
+    use std::rc::Rc;
 
     struct MockCallableInvoker;
+
+    #[derive(Debug)]
+    struct TestCallableHandle;
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
 
     impl CallableInvoker for MockCallableInvoker {
         fn invoke(
@@ -1167,45 +1314,28 @@ mod tests {
         }
     }
 
-    fn helper_lambda(callable_token: &str, arity: usize) -> LambdaValue {
-        LambdaValue::helper_lambda(
-            callable_token.to_string(),
-            CallableArityShape::exact(arity),
-            CallableCaptureMode::LexicalCapture,
-            "helper.invoke.v1",
-        )
-    }
-
-    fn defined_name_lambda(callable_token: &str, arity: usize) -> LambdaValue {
-        LambdaValue::defined_name_callable(
-            callable_token.to_string(),
-            CallableArityShape::exact(arity),
-            CallableCaptureMode::LexicalCapture,
-            "name.invoke.v1",
-        )
-    }
-
-    fn callable_from_lambda(lambda: LambdaValue) -> CallableValue {
-        crate::value::CalcValue::from(EvalValue::Lambda(lambda))
-            .callable_value()
-            .cloned()
-            .expect("lambda conversion produces callable")
+    fn test_callable(callable_token: &str, arity: usize) -> CallableValue {
+        CallableValue {
+            arity: CallableArityShape::exact(arity),
+            summary: callable_token.to_string(),
+            handle: Rc::new(TestCallableHandle),
+        }
     }
 
     fn helper(callable_token: &str, arity: usize) -> CallableValue {
-        callable_from_lambda(helper_lambda(callable_token, arity))
+        test_callable(callable_token, arity)
     }
 
     fn defined_name(callable_token: &str, arity: usize) -> CallableValue {
-        callable_from_lambda(defined_name_lambda(callable_token, arity))
+        test_callable(callable_token, arity)
     }
 
     fn num(n: f64) -> PreparedArgValue {
         PreparedArgValue::Eval(EvalValue::Number(n))
     }
 
-    fn callable_arg(callable: LambdaValue) -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Lambda(callable))
+    fn callable_arg(callable: CallableValue) -> CalcValue {
+        CalcValue::callable(callable)
     }
 
     #[test]
@@ -1616,16 +1746,16 @@ mod tests {
 
     #[test]
     fn eval_map_surface_matches_seeded_bare_spill_lane() {
-        let got = eval_map_surface(
+        let got = eval_map_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
                         ArrayCellValue::Number(1.0),
                         ArrayCellValue::Number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.add1", 1)),
+                callable_arg(helper("helper.add1", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1644,19 +1774,19 @@ mod tests {
 
     #[test]
     fn eval_map_surface_matches_seeded_mismatch_lane() {
-        let got = eval_map_surface(
+        let got = eval_map_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
                         ArrayCellValue::Number(1.0),
                         ArrayCellValue::Number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![ArrayCellValue::Number(10.0)]]).unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.sum2", 2)),
+                callable_arg(helper("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1691,16 +1821,16 @@ mod tests {
 
     #[test]
     fn eval_map_surface_maps_non_scalar_result_to_calc() {
-        let err = eval_map_surface(
+        let err = eval_map_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
                         ArrayCellValue::Number(1.0),
                         ArrayCellValue::Number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.scalar_to_pair", 1)),
+                callable_arg(helper("helper.scalar_to_pair", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1714,10 +1844,10 @@ mod tests {
 
     #[test]
     fn eval_reduce_surface_matches_seeded_sum_lane() {
-        let got = eval_reduce_surface(
+        let got = eval_reduce_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(0.0)),
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::number(0.0),
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
                         ArrayCellValue::Number(1.0),
                         ArrayCellValue::Number(2.0),
@@ -1725,7 +1855,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.sum2", 2)),
+                callable_arg(helper("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1735,10 +1865,10 @@ mod tests {
 
     #[test]
     fn eval_scan_surface_matches_seeded_spill_lane() {
-        let got = eval_scan_surface(
+        let got = eval_scan_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(0.0)),
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::number(0.0),
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![vec![
                         ArrayCellValue::Number(1.0),
                         ArrayCellValue::Number(2.0),
@@ -1746,7 +1876,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.sum2", 2)),
+                callable_arg(helper("helper.sum2", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1766,16 +1896,16 @@ mod tests {
 
     #[test]
     fn eval_byrow_surface_matches_seeded_scalar_lane() {
-        let got = eval_byrow_surface(
+        let got = eval_byrow_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![
                         vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
                         vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.sum_array", 1)),
+                callable_arg(helper("helper.sum_array", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1794,16 +1924,16 @@ mod tests {
 
     #[test]
     fn eval_byrow_surface_maps_non_scalar_result_to_calc() {
-        let err = eval_byrow_surface(
+        let err = eval_byrow_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![
                         vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
                         vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.nonscalar_plus1", 1)),
+                callable_arg(helper("helper.nonscalar_plus1", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1817,16 +1947,16 @@ mod tests {
 
     #[test]
     fn eval_bycol_surface_matches_seeded_scalar_lane() {
-        let got = eval_bycol_surface(
+        let got = eval_bycol_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(
+                CalcValue::from(EvalValue::Array(
                     EvalArray::from_rows(vec![
                         vec![ArrayCellValue::Number(1.0), ArrayCellValue::Number(2.0)],
                         vec![ArrayCellValue::Number(3.0), ArrayCellValue::Number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                callable_arg(helper_lambda("helper.sum_array", 1)),
+                callable_arg(helper("helper.sum_array", 1)),
             ],
             &NoResolver,
             &MockCallableInvoker,
@@ -1845,11 +1975,11 @@ mod tests {
 
     #[test]
     fn eval_makearray_surface_matches_seeded_basic_lane() {
-        let got = eval_makearray_surface(
+        let got = eval_makearray_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
-                callable_arg(helper_lambda("helper.makearray_coords", 2)),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
+                callable_arg(helper("helper.makearray_coords", 2)),
             ],
             &NoResolver,
             &MockCallableInvoker,

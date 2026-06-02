@@ -41,7 +41,6 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
         register_output.typed_query_bundle_spec,
         TypedContextQueryBundleSpec {
             families: vec![
-                TypedContextQueryFamily::ReferenceSystemProvider,
                 TypedContextQueryFamily::RegisteredExternal,
                 TypedContextQueryFamily::NowSerial,
             ],

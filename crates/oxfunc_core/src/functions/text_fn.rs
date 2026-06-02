@@ -72,8 +72,12 @@ fn render_scalar_text_value(
             return Err(TextEvalError::Coercion(CoercionError::MissingArg));
         }
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            return Err(TextEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("text_arg_kind"),
+            ));
+        }
+        _ => {
             return Err(TextEvalError::Coercion(
                 CoercionError::UnsupportedValueKind("text_arg_kind"),
             ));

@@ -108,7 +108,7 @@ fn value_concise(value: &PreparedArgValue) -> String {
         PreparedArgValue::EmptyCell | PreparedArgValue::MissingArg => String::new(),
         PreparedArgValue::Eval(EvalValue::Array(_)) => String::new(),
         PreparedArgValue::Eval(EvalValue::Reference(_)) => String::new(),
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => String::new(),
+        _ => String::new(),
     }
 }
 
@@ -128,7 +128,7 @@ fn value_strict(value: &PreparedArgValue) -> String {
         PreparedArgValue::EmptyCell | PreparedArgValue::MissingArg => String::new(),
         PreparedArgValue::Eval(EvalValue::Array(_)) => String::new(),
         PreparedArgValue::Eval(EvalValue::Reference(_)) => String::new(),
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => String::new(),
+        _ => String::new(),
     }
 }
 

@@ -64,8 +64,12 @@ fn coerce_arg_number(arg: &PreparedArgValue) -> Result<f64, DollarFractionEvalEr
             CoercionError::UnsupportedValueKind("logical_not_admitted"),
         )),
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(DollarFractionEvalError::Coercion(
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
+            Err(DollarFractionEvalError::Coercion(
+                CoercionError::UnsupportedValueKind("dollar_fraction_arg_kind"),
+            ))
+        }
+        _ => Err(DollarFractionEvalError::Coercion(
             CoercionError::UnsupportedValueKind("dollar_fraction_arg_kind"),
         )),
     }

@@ -91,10 +91,10 @@ fn scalar_text_number(value: &EvalValue) -> Result<f64, SumproductEvalError> {
             .ok()
             .ok_or(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
         EvalValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
-        EvalValue::Logical(_)
-        | EvalValue::Array(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Logical(_) | EvalValue::Array(_) | EvalValue::Reference(_) => {
+            Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -150,9 +150,8 @@ fn to_sumproduct_rect(
             values: vec![0.0],
         }),
         EvalValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
-        }
+        EvalValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -191,9 +190,8 @@ fn to_optional_numeric_rect(
             values: vec![None],
         }),
         EvalValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
-        }
+        EvalValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -282,10 +280,10 @@ fn strict_coefficients(
         }
         EvalValue::Number(n) => Ok(vec![n]),
         EvalValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+            Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 

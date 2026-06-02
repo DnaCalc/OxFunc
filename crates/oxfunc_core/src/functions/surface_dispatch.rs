@@ -5,6 +5,7 @@ use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
 use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
 use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
 use crate::functions::acoth::{eval_acoth_surface, map_acoth_error_to_ws};
+use crate::functions::adapters::prepared_arg_to_calc_value_lossy;
 use crate::functions::amor_depreciation_family::{
     eval_amordegrc_surface, eval_amorlinc_surface, map_amor_depreciation_error_to_ws,
 };
@@ -51,9 +52,11 @@ use crate::functions::call_register_id_family::{
 };
 use crate::functions::callable_helpers::{
     BYCOL_META, BYROW_META, CallableInvocationError, CallableInvoker, ISOMITTED_META,
-    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_surface, eval_byrow_surface,
-    eval_isomitted_surface, eval_makearray_surface, eval_map_surface, eval_reduce_surface,
-    eval_scan_surface, map_lambda_helper_error_to_ws,
+    MAKEARRAY_META, MAP_META, REDUCE_META, SCAN_META, eval_bycol_calc_surface, eval_bycol_surface,
+    eval_byrow_calc_surface, eval_byrow_surface, eval_isomitted_surface,
+    eval_makearray_calc_surface, eval_makearray_surface, eval_map_calc_surface, eval_map_surface,
+    eval_reduce_calc_surface, eval_reduce_surface, eval_scan_calc_surface, eval_scan_surface,
+    map_lambda_helper_error_to_ws,
 };
 use crate::functions::cashflow_rate_family::{
     eval_irr_surface, eval_xirr_surface, eval_xnpv_surface, map_cashflow_rate_error_to_ws,
@@ -199,7 +202,7 @@ use crate::functions::gauss_fn::{eval_gauss_surface, map_gauss_error_to_ws};
 use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
 use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
 use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
-use crate::functions::groupby_fn::eval_groupby_surface;
+use crate::functions::groupby_fn::{eval_groupby_calc_surface, eval_groupby_surface};
 use crate::functions::harmean_fn::{eval_harmean_surface, map_harmean_error_to_ws};
 use crate::functions::hstack::{eval_hstack_surface, map_hstack_error_to_ws};
 use crate::functions::hyperlink_fn::{
@@ -329,7 +332,7 @@ use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
 use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
 use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws};
 use crate::functions::pi::eval_pi;
-use crate::functions::pivotby_fn::eval_pivotby_surface;
+use crate::functions::pivotby_fn::{eval_pivotby_calc_surface, eval_pivotby_surface};
 use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
 use crate::functions::product::{eval_product_surface, map_product_error_to_ws};
 use crate::functions::quartile_exc_fn::{eval_quartile_exc_surface, map_quartile_exc_error_to_ws};
@@ -1134,10 +1137,54 @@ pub fn eval_surface_value_call_with_dispatch_key(
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Result<CalcValue, WorksheetErrorCode> {
-    let dispatch_args = legacy_kernel_args_from_calc_values(args);
-    let args = dispatch_args.as_slice();
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
+    match dispatch_key.function_id {
+        FUNC_ID_MAP => {
+            return eval_map_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_REDUCE => {
+            return eval_reduce_calc_surface(args, resolver, callable_invoker)
+                .map(|value| prepared_arg_to_calc_value_lossy(&value))
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_SCAN => {
+            return eval_scan_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_BYROW => {
+            return eval_byrow_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_BYCOL => {
+            return eval_bycol_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_MAKEARRAY => {
+            return eval_makearray_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_GROUPBY => {
+            return eval_groupby_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        FUNC_ID_PIVOTBY => {
+            return eval_pivotby_calc_surface(args, resolver, callable_invoker)
+                .map(CalcValue::from)
+                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+        }
+        _ => {}
+    }
+
+    let dispatch_args = legacy_kernel_args_from_calc_values(args);
+    let args = dispatch_args.as_slice();
     let result = include!("surface_dispatch_by_index_generated.rs");
 
     let lifted_result = || {
@@ -2519,9 +2566,8 @@ fn scalar_output_cell(value: EvalValue) -> ArrayCellValue {
             .get(0, 0)
             .cloned()
             .unwrap_or(ArrayCellValue::Error(WorksheetErrorCode::Calc)),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
-        }
+        EvalValue::Reference(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
     }
 }
 
@@ -2739,14 +2785,16 @@ mod tests {
     use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
-        ArrayCellValue, CallableArityShape, CallableCaptureMode, CallableValue, CellStyleHint,
-        EvalArray, ExcelText, LambdaValue, NumberFormatHint, PresentationHint, ReferenceKind,
-        ReferenceLike, RichValue, RichValueData,
+        ArrayCellValue, CallableArityShape, CallableValue, CellStyleHint, EvalArray, ExcelText,
+        NumberFormatHint, OpaqueCallable, PresentationHint, ReferenceKind, ReferenceLike,
+        RichValue, RichValueData,
     };
 
     struct NoReferenceSystemProvider;
 
     struct TestCallableInvoker;
+    #[derive(Debug)]
+    struct TestCallableHandle;
     struct TestRandomProvider;
     struct SequenceRandomProvider {
         next: Cell<u32>,
@@ -2756,6 +2804,20 @@ mod tests {
     impl RandomProvider for TestRandomProvider {
         fn random_unit(&self) -> f64 {
             0.5
+        }
+    }
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
+
+    fn test_callable_value(token: &str, arity: usize) -> CallableValue {
+        CallableValue {
+            arity: CallableArityShape::exact(arity),
+            summary: token.to_string(),
+            handle: Rc::new(TestCallableHandle),
         }
     }
 
@@ -2784,19 +2846,14 @@ mod tests {
             }
         }
 
-        fn register<F>(&self, token: &str, arity: usize, f: F) -> LambdaValue
+        fn register<F>(&self, token: &str, arity: usize, f: F) -> CallableValue
         where
             F: Fn(&[PreparedArgValue]) -> Result<PreparedArgValue, CallableInvocationError> + 'a,
         {
             self.closures
                 .borrow_mut()
                 .insert(token.to_string(), Rc::new(f));
-            LambdaValue::helper_lambda(
-                token.to_string(),
-                CallableArityShape::exact(arity),
-                CallableCaptureMode::LexicalCapture,
-                "test.closure.invoke.v1",
-            )
+            test_callable_value(token, arity)
         }
     }
 
@@ -2867,34 +2924,6 @@ mod tests {
             random_provider,
             locale_ctx,
             host_info,
-        )
-        .map(super::eval_value_from_calc_value)
-    }
-
-    fn eval_test_surface_value_call_with_callable(
-        function_id: &str,
-        args: &[CallArgValue],
-        resolver: &(impl ReferenceSystemProvider + ?Sized),
-        now_serial: Option<f64>,
-        random_provider: Option<&dyn RandomProvider>,
-        locale_ctx: Option<&LocaleFormatContext>,
-        host_info: Option<&dyn HostInfoProvider>,
-        callable_invoker: Option<&dyn CallableInvoker>,
-        rtd_provider: Option<&dyn RtdProvider>,
-        registered_external_provider: Option<&dyn RegisteredExternalProvider>,
-    ) -> Result<EvalValue, WorksheetErrorCode> {
-        let calc_args = super::calc_values_from_legacy_call_args(args);
-        super::eval_surface_value_call_with_callable(
-            function_id,
-            &calc_args,
-            resolver,
-            now_serial,
-            random_provider,
-            locale_ctx,
-            host_info,
-            callable_invoker,
-            rtd_provider,
-            registered_external_provider,
         )
         .map(super::eval_value_from_calc_value)
     }
@@ -3201,12 +3230,12 @@ mod tests {
         );
     }
 
-    fn eval_test_surface_value_with_callable(
+    fn eval_test_calc_surface_value_with_callable(
         function_id: &str,
-        args: &[CallArgValue],
+        args: &[CalcValue],
         invoker: &dyn CallableInvoker,
     ) -> Result<EvalValue, CallableInvocationError> {
-        eval_test_surface_value_call_with_callable(
+        super::eval_surface_value_call_with_callable(
             function_id,
             args,
             &NoReferenceSystemProvider,
@@ -3218,6 +3247,7 @@ mod tests {
             None,
             None,
         )
+        .map(super::eval_value_from_calc_value)
         .map_err(CallableInvocationError::Worksheet)
     }
 
@@ -4166,26 +4196,14 @@ mod tests {
             ArrayCellValue::Number(2.0),
         ]])
         .expect("row vector");
-        let callable = LambdaValue::helper_lambda(
-            "helper.add1",
-            CallableArityShape::exact(1),
-            CallableCaptureMode::NoCapture,
-            "lambda.map.add1",
-        );
-        let got = eval_test_surface_value_call_with_callable(
+        let callable = test_callable_value("helper.add1", 1);
+        let got = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(EvalValue::Array(array)),
-                CallArgValue::Eval(EvalValue::Lambda(callable)),
+                CalcValue::from(EvalValue::Array(array)),
+                CalcValue::callable(callable),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         );
         let expected = EvalArray::from_rows(vec![vec![
             ArrayCellValue::Number(2.0),
@@ -5590,25 +5608,13 @@ mod tests {
             None,
         )
         .expect("dates");
-        let day_texts = eval_test_surface_value_call_with_callable(
+        let day_texts = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(dates),
-                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-                    "helper.feb2024_day_or_two_spaces",
-                    CallableArityShape::exact(1),
-                    CallableCaptureMode::NoCapture,
-                    "lambda.map.feb2024.daystr",
-                ))),
+                CalcValue::from(dates),
+                CalcValue::callable(test_callable_value("helper.feb2024_day_or_two_spaces", 1)),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         )
         .expect("map result");
         let got = eval_test_surface_value_call(
@@ -5843,25 +5849,13 @@ mod tests {
             None,
         )
         .expect("dates");
-        let day_strs = eval_test_surface_value_call_with_callable(
+        let day_strs = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(dates),
-                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-                    "helper.jan2024_day_or_two_spaces",
-                    CallableArityShape::exact(1),
-                    CallableCaptureMode::NoCapture,
-                    "lambda.map.jan2024.daystr",
-                ))),
+                CalcValue::from(dates),
+                CalcValue::callable(test_callable_value("helper.jan2024_day_or_two_spaces", 1)),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         )
         .expect("map result");
         let month_name = eval_test_surface_value_call(
@@ -6099,25 +6093,13 @@ mod tests {
             None,
         )
         .expect("week1");
-        let day_nums = eval_test_surface_value_call_with_callable(
+        let day_nums = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(week1),
-                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-                    "helper.jan2024_day_or_zero",
-                    CallableArityShape::exact(1),
-                    CallableCaptureMode::NoCapture,
-                    "lambda.map.jan2024.dayzero",
-                ))),
+                CalcValue::from(week1),
+                CalcValue::callable(test_callable_value("helper.jan2024_day_or_zero", 1)),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         )
         .expect("map result");
         let got = eval_test_surface_value_call(
@@ -6725,46 +6707,22 @@ mod tests {
             vec![ArrayCellValue::Number(3.0)],
         ])
         .unwrap();
-        let step1 = eval_test_surface_value_call_with_callable(
+        let step1 = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(EvalValue::Array(data)),
-                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-                    "helper.mul10",
-                    CallableArityShape::exact(1),
-                    CallableCaptureMode::LexicalCapture,
-                    "helper.invoke.v1",
-                ))),
+                CalcValue::from(EvalValue::Array(data)),
+                CalcValue::callable(test_callable_value("helper.mul10", 1)),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         )
         .expect("first map result");
-        let step2 = eval_test_surface_value_call_with_callable(
+        let step2 = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(step1),
-                CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-                    "helper.add1",
-                    CallableArityShape::exact(1),
-                    CallableCaptureMode::LexicalCapture,
-                    "helper.invoke.v1",
-                ))),
+                CalcValue::from(step1),
+                CalcValue::callable(test_callable_value("helper.add1", 1)),
             ],
-            &NoReferenceSystemProvider,
-            Some(46000.0),
-            Some(&TEST_RANDOM_PROVIDER),
-            None,
-            None,
-            Some(&TestCallableInvoker),
-            None,
-            None,
+            &TestCallableInvoker,
         )
         .expect("second map result");
         let got = eval_test_surface_value_call(
@@ -6782,21 +6740,11 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_0443_recursive_gcd_returns_twelve() {
         let invoker = ClosureCallableInvoker::new();
-        let gcd = LambdaValue::helper_lambda(
-            "closure.ftc0443.gcd",
-            CallableArityShape::exact(3),
-            CallableCaptureMode::LexicalCapture,
-            "test.closure.invoke.v1",
-        );
+        let gcd_callable = test_callable_value("closure.ftc0443.gcd", 2);
         let recursive_invoker = invoker.clone();
-        let gcd_callable = CalcValue::from(EvalValue::Lambda(gcd.clone()))
-            .callable_value()
-            .cloned()
-            .expect("lambda conversion produces callable");
         let gcd_self_callable = gcd_callable.clone();
-        invoker.register(&gcd.callable_token.clone(), 3, move |args| match args {
+        invoker.register("closure.ftc0443.gcd", 2, move |args| match args {
             [
-                PreparedArgValue::Eval(EvalValue::Lambda(self_lambda)),
                 PreparedArgValue::Eval(EvalValue::Number(a)),
                 PreparedArgValue::Eval(EvalValue::Number(b)),
             ] => {
@@ -6813,7 +6761,6 @@ mod tests {
                     recursive_invoker.invoke(
                         &gcd_self_callable,
                         &[
-                            PreparedArgValue::Eval(EvalValue::Lambda(self_lambda.clone())),
                             PreparedArgValue::Eval(EvalValue::Number(*b)),
                             PreparedArgValue::Eval(remainder),
                         ],
@@ -6828,7 +6775,6 @@ mod tests {
         let got = invoker.invoke(
             &gcd_callable,
             &[
-                PreparedArgValue::Eval(EvalValue::Lambda(gcd.clone())),
                 PreparedArgValue::Eval(EvalValue::Number(48.0)),
                 PreparedArgValue::Eval(EvalValue::Number(36.0)),
             ],
@@ -6926,39 +6872,27 @@ mod tests {
         let br_lambda = register_dft("closure.ftc1013.br", b.clone(), FUNC_ID_COS, 1.0);
         let bi_lambda = register_dft("closure.ftc1013.bi", b.clone(), FUNC_ID_SIN, -1.0);
 
-        let ar = eval_test_surface_value_with_callable(
+        let ar = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
-            &[
-                CallArgValue::Eval(ks.clone()),
-                CallArgValue::Eval(EvalValue::Lambda(ar_lambda)),
-            ],
+            &[CalcValue::from(ks.clone()), CalcValue::callable(ar_lambda)],
             &invoker,
         )
         .expect("Ar");
-        let ai = eval_test_surface_value_with_callable(
+        let ai = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
-            &[
-                CallArgValue::Eval(ks.clone()),
-                CallArgValue::Eval(EvalValue::Lambda(ai_lambda)),
-            ],
+            &[CalcValue::from(ks.clone()), CalcValue::callable(ai_lambda)],
             &invoker,
         )
         .expect("Ai");
-        let br = eval_test_surface_value_with_callable(
+        let br = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
-            &[
-                CallArgValue::Eval(ks.clone()),
-                CallArgValue::Eval(EvalValue::Lambda(br_lambda)),
-            ],
+            &[CalcValue::from(ks.clone()), CalcValue::callable(br_lambda)],
             &invoker,
         )
         .expect("Br");
-        let bi = eval_test_surface_value_with_callable(
+        let bi = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
-            &[
-                CallArgValue::Eval(ks.clone()),
-                CallArgValue::Eval(EvalValue::Lambda(bi_lambda)),
-            ],
+            &[CalcValue::from(ks.clone()), CalcValue::callable(bi_lambda)],
             &invoker,
         )
         .expect("Bi");
@@ -7102,11 +7036,11 @@ mod tests {
             })
         };
 
-        let conv = eval_test_surface_value_with_callable(
+        let conv = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CallArgValue::Eval(ks.clone()),
-                CallArgValue::Eval(EvalValue::Lambda(conv_lambda)),
+                CalcValue::from(ks.clone()),
+                CalcValue::callable(conv_lambda),
             ],
             &invoker,
         )

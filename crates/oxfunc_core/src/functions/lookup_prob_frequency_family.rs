@@ -124,9 +124,12 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, LookupProbFrequency
                 ))
             }
         }
-        EvalValue::Text(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => Err(
-            LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        EvalValue::Text(_) | EvalValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
+        _ => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
     }
 }
 
@@ -196,9 +199,12 @@ fn collect_numeric_vector(
             }
             Ok(out)
         }
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => Err(
-            LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        EvalValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
+        _ => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
     }
 }
 
@@ -263,10 +269,10 @@ fn extract_lookup_vector(value: &EvalValue) -> Result<ScalarVector, LookupProbFr
             }
         }
         EvalValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(LookupProbFrequencyEvalError::Domain(
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => Err(
+            LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
+        ),
+        _ => Err(LookupProbFrequencyEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
     }
@@ -324,9 +330,12 @@ fn extract_result_vector(
                 ))
             }
         }
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => Err(
-            LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        EvalValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
+        _ => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
     }
 }
 

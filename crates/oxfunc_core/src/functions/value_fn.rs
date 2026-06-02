@@ -81,9 +81,11 @@ pub fn eval_value_adapter_prepared(
         PreparedArgValue::Eval(EvalValue::Error(code)) => Ok(EvalValue::Error(*code)),
         PreparedArgValue::Eval(EvalValue::Logical(_))
         | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_))
         | PreparedArgValue::MissingArg
         | PreparedArgValue::EmptyCell => Err(ValueEvalError::Parse(ParseFailure::UnsupportedText(
+            String::new(),
+        ))),
+        _ => Err(ValueEvalError::Parse(ParseFailure::UnsupportedText(
             String::new(),
         ))),
     }

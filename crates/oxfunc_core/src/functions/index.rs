@@ -127,7 +127,8 @@ fn scalar_array_from_eval_value(value: &EvalValue) -> Option<EvalArray> {
         EvalValue::Text(t) => ArrayCellValue::Text(t.clone()),
         EvalValue::Logical(b) => ArrayCellValue::Logical(*b),
         EvalValue::Error(code) => ArrayCellValue::Error(*code),
-        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => return None,
+        EvalValue::Array(_) | EvalValue::Reference(_) => return None,
+        _ => return None,
     };
     Some(EvalArray::from_scalar(cell))
 }

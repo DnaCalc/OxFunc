@@ -172,9 +172,10 @@ fn scalar_to_cell(value: EvalValue) -> Result<ArrayCellValue, CriteriaEvalError>
         EvalValue::Text(t) => Ok(ArrayCellValue::Text(t)),
         EvalValue::Logical(b) => Ok(ArrayCellValue::Logical(b)),
         EvalValue::Error(code) => Ok(ArrayCellValue::Error(code)),
-        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+        EvalValue::Array(_) | EvalValue::Reference(_) => {
             Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value))
         }
+        _ => Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -368,8 +369,7 @@ fn criteria_from_prepared(prepared: &PreparedArgValue) -> Result<CriteriaSpec, C
         }
         PreparedArgValue::Eval(EvalValue::Error(code)) => Err(CriteriaEvalError::Domain(*code)),
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value))
         }
         PreparedArgValue::MissingArg => Err(CriteriaEvalError::Coercion(CoercionError::MissingArg)),
@@ -378,6 +378,7 @@ fn criteria_from_prepared(prepared: &PreparedArgValue) -> Result<CriteriaSpec, C
             operand: CriteriaOperand::Blank,
             wildcard_text: false,
         }),
+        _ => Err(CriteriaEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 

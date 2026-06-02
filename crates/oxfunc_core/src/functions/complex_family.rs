@@ -434,13 +434,13 @@ fn prepared_scalar_to_complex(
             CoercionError::WorksheetError(*code),
         )),
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => {
             Ok(ParsedComplex::new(0.0, 0.0, None))
         }
+        _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 fn prepared_scalar_to_real_for_complex(
@@ -457,11 +457,11 @@ fn prepared_scalar_to_real_for_complex(
             CoercionError::WorksheetError(*code),
         )),
         PreparedArgValue::Eval(EvalValue::Array(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value))
         }
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(0.0),
+        _ => Err(ComplexFamilyEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 fn prepared_scalar_to_suffix(

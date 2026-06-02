@@ -72,10 +72,6 @@ fn prepared_equal(
         | (_, PreparedArgValue::Eval(EvalValue::Array(_))) => {
             Err(CoercionError::UnsupportedValueKind("array"))
         }
-        (PreparedArgValue::Eval(EvalValue::Lambda(_)), _)
-        | (_, PreparedArgValue::Eval(EvalValue::Lambda(_))) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
         _ => Ok(false),
     }
 }

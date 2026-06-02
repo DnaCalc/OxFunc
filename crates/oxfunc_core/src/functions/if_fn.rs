@@ -58,9 +58,10 @@ fn scalar_cell_from_eval_value(value: &EvalValue) -> Result<ArrayCellValue, Coer
         EvalValue::Text(t) => Ok(ArrayCellValue::Text(t.clone())),
         EvalValue::Logical(b) => Ok(ArrayCellValue::Logical(*b)),
         EvalValue::Error(code) => Ok(ArrayCellValue::Error(*code)),
-        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+        EvalValue::Array(_) | EvalValue::Reference(_) => {
             Err(CoercionError::UnsupportedValueKind("if_branch_scalar"))
         }
+        _ => Err(CoercionError::UnsupportedValueKind("if_branch_scalar")),
     }
 }
 

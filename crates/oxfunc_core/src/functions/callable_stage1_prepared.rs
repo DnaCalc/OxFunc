@@ -1,9 +1,10 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::rc::Rc;
 
 use crate::coercion::CoercionError;
 use crate::functions::adapters::{PreparedArgValue, coerce_prepared_to_number};
 use crate::value::{
-    ArrayCellValue, CallableArityShape, CallableCaptureMode, EvalValue, LambdaValue,
+    ArrayCellValue, CallableArityShape, CallableValue, EvalValue, OpaqueCallable,
     WorksheetErrorCode,
 };
 
@@ -38,9 +39,18 @@ pub enum Stage1Value {
     Lambda(Stage1LambdaClosure),
 }
 
+#[derive(Debug)]
+struct Stage1CallableHandle;
+
+impl OpaqueCallable for Stage1CallableHandle {
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Stage1LambdaClosure {
-    pub meta: LambdaValue,
+    pub meta: CallableValue,
     pub params: Vec<String>,
     pub body: Box<Stage1Expr>,
     pub captures: BTreeMap<String, Stage1Value>,
@@ -141,10 +151,12 @@ fn sum_prepared(prepared: &PreparedArgValue) -> Result<f64, Stage1EvalError> {
         )),
         PreparedArgValue::Eval(EvalValue::Text(_))
         | PreparedArgValue::Eval(EvalValue::Logical(_))
-        | PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(
+        | PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(
             Stage1EvalError::UnsupportedValueKind("sum_unsupported_value"),
         ),
+        _ => Err(Stage1EvalError::UnsupportedValueKind(
+            "sum_unsupported_value",
+        )),
     }
 }
 
@@ -174,10 +186,10 @@ fn invoke_closure(
     args: &[Stage1Value],
 ) -> Result<Stage1Value, Stage1EvalError> {
     let argc = args.len();
-    if !closure.meta.arity_shape.accepts(argc) {
+    if !closure.meta.arity.accepts(argc) {
         return Err(Stage1EvalError::ArityMismatch {
-            expected_min: closure.meta.arity_shape.min,
-            expected_max: closure.meta.arity_shape.max,
+            expected_min: closure.meta.arity.min,
+            expected_max: closure.meta.arity.max,
             actual: argc,
         });
     }
@@ -234,16 +246,11 @@ pub fn eval_expr(
             eval_expr(body, &next_env)
         }
         Stage1Expr::Lambda { params, body } => {
-            let meta = LambdaValue::helper_lambda(
-                format!("stage1.lambda.{}", params.len()),
-                CallableArityShape::exact(params.len()),
-                if env.is_empty() {
-                    CallableCaptureMode::NoCapture
-                } else {
-                    CallableCaptureMode::LexicalCapture
-                },
-                "stage1.direct_lambda",
-            );
+            let meta = CallableValue {
+                arity: CallableArityShape::exact(params.len()),
+                summary: format!("stage1.lambda.{}", params.len()),
+                handle: Rc::new(Stage1CallableHandle),
+            };
             Ok(Stage1Value::Lambda(Stage1LambdaClosure {
                 meta,
                 params: params.clone(),
@@ -515,7 +522,7 @@ mod tests {
     }
 
     #[test]
-    fn lambda_capture_metadata_marks_lexical_capture() {
+    fn lambda_metadata_uses_native_callable_shape() {
         let expr = Stage1Expr::Let {
             bindings: vec![("x".to_string(), num(2.0))],
             body: Box::new(Stage1Expr::Lambda {
@@ -531,10 +538,8 @@ mod tests {
             Stage1Value::Lambda(closure) => closure,
             other => panic!("expected lambda, got {other:?}"),
         };
-        assert_eq!(
-            closure.meta.capture_mode,
-            CallableCaptureMode::LexicalCapture
-        );
+        assert_eq!(closure.meta.summary, "stage1.lambda.1");
+        assert_eq!(closure.meta.arity, CallableArityShape::exact(1));
         assert_eq!(
             publish_value(&Stage1Value::Lambda(closure)),
             Ok(EvalValue::Error(WorksheetErrorCode::Calc))

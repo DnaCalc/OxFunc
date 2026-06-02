@@ -609,17 +609,25 @@ mod tests {
         ReferenceSystemOperation,
     };
     use crate::value::{
-        ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableCaptureMode,
-        CallableValue, CoreValue, EvalArray, EvalValue, ExcelText, LambdaValue, ReferenceKind,
-        ReferenceLike,
+        ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableValue, CoreValue,
+        EvalArray, EvalValue, ExcelText, OpaqueCallable, ReferenceKind, ReferenceLike,
     };
+    use std::rc::Rc;
 
     struct NoReferenceSystemProvider;
+    #[derive(Debug)]
+    struct TestCallableHandle;
     struct TestCallableInvoker;
     struct TestHostInfoProvider;
     struct TestRtdProvider;
     struct TestRegisteredExternalProvider;
     struct TestRandomProvider;
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
 
     impl RandomProvider for TestRandomProvider {
         fn random_unit(&self) -> f64 {
@@ -776,12 +784,11 @@ mod tests {
     }
 
     fn lambda_arg(token: &str, arity: usize) -> CalcValue {
-        CalcValue::from(EvalValue::Lambda(LambdaValue::helper_lambda(
-            token.to_string(),
-            CallableArityShape::exact(arity),
-            CallableCaptureMode::NoCapture,
-            "surface.call.test",
-        )))
+        CalcValue::callable(CallableValue {
+            arity: CallableArityShape::exact(arity),
+            summary: token.to_string(),
+            handle: Rc::new(TestCallableHandle),
+        })
     }
 
     fn array_arg(rows: Vec<Vec<ArrayCellValue>>) -> CalcValue {

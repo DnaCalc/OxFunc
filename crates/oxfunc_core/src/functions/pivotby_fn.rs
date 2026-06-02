@@ -4,7 +4,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{
+    PreparedArgValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+};
 use crate::functions::callable_helpers::{
     CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
 };
@@ -12,11 +14,13 @@ use crate::functions::group_pivot_common::{
     CellKey, FieldHeadersMode, default_column_field_headers, default_row_field_headers,
     default_value_headers, group_indices_by_key, invoke_group_aggregate, key_from_cells,
     parse_field_headers_mode, parse_filter_vector, parse_sort_orders, prepared_to_array,
-    require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
+    require_calc_callable, require_callable, row_as_cells, split_header_row, take_header_row,
+    text_cell,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, CallableValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayCellValue, CalcValue, CallArgValue, CallableValue, EvalArray, EvalValue,
+    WorksheetErrorCode,
 };
 
 pub const PIVOTBY_META: FunctionMeta = FunctionMeta {
@@ -237,6 +241,24 @@ fn find_intersection_rows(row_group: &AxisGroup, col_group: &AxisGroup) -> Vec<u
     out
 }
 
+pub fn eval_pivotby_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !PIVOTBY_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(args.len()));
+    }
+
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared_calc[3])?;
+    let prepared: Vec<PreparedArgValue> =
+        prepared_calc.iter().map(prepared_from_calc_value).collect();
+
+    eval_pivotby_prepared(&prepared, &callable, invoker)
+}
+
 pub fn eval_pivotby_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -249,6 +271,15 @@ pub fn eval_pivotby_surface(
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[3])?;
+
+    eval_pivotby_prepared(&prepared, &callable, invoker)
+}
+
+fn eval_pivotby_prepared(
+    prepared: &[PreparedArgValue],
+    callable: &CallableValue,
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
     if prepared.get(10).is_some_and(|arg| {
         !matches!(
             arg,
@@ -297,8 +328,8 @@ pub fn eval_pivotby_surface(
 
     let mut row_groups = build_axis_groups(&row_rows);
     let mut col_groups = build_axis_groups(&col_rows);
-    let row_totals = aggregate_totals_for_groups(&row_groups, &value_rows, &callable, invoker)?;
-    let col_totals = aggregate_totals_for_groups(&col_groups, &value_rows, &callable, invoker)?;
+    let row_totals = aggregate_totals_for_groups(&row_groups, &value_rows, callable, invoker)?;
+    let col_totals = aggregate_totals_for_groups(&col_groups, &value_rows, callable, invoker)?;
     apply_axis_sort(
         &mut row_groups,
         &row_totals,
@@ -380,7 +411,7 @@ pub fn eval_pivotby_surface(
                     .iter()
                     .map(|row_index| value_rows[*row_index][value_col].clone())
                     .collect::<Vec<_>>();
-                row.push(invoke_group_aggregate(&callable, &members, invoker)?);
+                row.push(invoke_group_aggregate(callable, &members, invoker)?);
             }
         }
         if row_total_depth != 0 {
@@ -389,7 +420,7 @@ pub fn eval_pivotby_surface(
                 .iter()
                 .map(|row_index| value_rows[*row_index][0].clone())
                 .collect::<Vec<_>>();
-            row.push(invoke_group_aggregate(&callable, &members, invoker)?);
+            row.push(invoke_group_aggregate(callable, &members, invoker)?);
         }
         rows.push(row);
     }
@@ -404,7 +435,7 @@ pub fn eval_pivotby_surface(
                     .iter()
                     .map(|row_index| value_rows[*row_index][value_col].clone())
                     .collect::<Vec<_>>();
-                total_row.push(invoke_group_aggregate(&callable, &members, invoker)?);
+                total_row.push(invoke_group_aggregate(callable, &members, invoker)?);
             }
         }
         if col_total_depth != 0 || row_total_depth != 0 {
@@ -412,7 +443,7 @@ pub fn eval_pivotby_surface(
                 .iter()
                 .map(|row| row[0].clone())
                 .collect::<Vec<_>>();
-            total_row.push(invoke_group_aggregate(&callable, &members, invoker)?);
+            total_row.push(invoke_group_aggregate(callable, &members, invoker)?);
         }
         rows.push(total_row);
     }
@@ -433,13 +464,23 @@ pub fn eval_pivotby_surface_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::rc::Rc;
+
     use crate::functions::adapters::PreparedArgValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue};
+    use crate::value::{CallableArityShape, ExcelText, OpaqueCallable};
 
     struct NoResolver;
     struct TestInvoker;
+    #[derive(Debug)]
+    struct TestCallableHandle;
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
 
     impl ReferenceSystemProvider for NoResolver {
         fn capabilities(&self) -> ReferenceSystemCapabilities {
@@ -496,13 +537,12 @@ mod tests {
         ArrayCellValue::Text(text(s))
     }
 
-    fn callable() -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-            "helper.sum_array",
-            CallableArityShape::exact(1),
-            CallableCaptureMode::NoCapture,
-            "helper.sum_array.v1",
-        )))
+    fn callable_arg() -> CalcValue {
+        CalcValue::callable(CallableValue {
+            arity: CallableArityShape::exact(1),
+            summary: "helper.sum_array".to_string(),
+            handle: Rc::new(TestCallableHandle),
+        })
     }
 
     #[test]
@@ -530,12 +570,12 @@ mod tests {
             vec![ArrayCellValue::Number(50.0)],
         ])
         .unwrap();
-        let got = eval_pivotby_surface(
+        let got = eval_pivotby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(col_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(col_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
             ],
             &NoResolver,
             &TestInvoker,
@@ -595,18 +635,18 @@ mod tests {
             vec![ArrayCellValue::Logical(false)],
         ])
         .unwrap();
-        let got = eval_pivotby_surface(
+        let got = eval_pivotby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(col_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(0.0)),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(0.0)),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Array(filter)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(col_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::missing(),
+                CalcValue::number(0.0),
+                CalcValue::missing(),
+                CalcValue::number(0.0),
+                CalcValue::missing(),
+                CalcValue::from(EvalValue::Array(filter)),
             ],
             &NoResolver,
             &TestInvoker,
@@ -643,17 +683,17 @@ mod tests {
             vec![ArrayCellValue::Number(50.0)],
         ])
         .unwrap();
-        let got = eval_pivotby_surface(
+        let got = eval_pivotby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(col_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::MissingArg,
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(-2.0)),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(-2.0)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(col_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::missing(),
+                CalcValue::missing(),
+                CalcValue::number(-2.0),
+                CalcValue::missing(),
+                CalcValue::number(-2.0),
             ],
             &NoResolver,
             &TestInvoker,
@@ -700,13 +740,13 @@ mod tests {
             vec![ArrayCellValue::Number(50.0)],
         ])
         .unwrap();
-        let got = eval_pivotby_surface(
+        let got = eval_pivotby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(col_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(col_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::number(3.0),
             ],
             &NoResolver,
             &TestInvoker,

@@ -132,11 +132,9 @@ pub(crate) fn prepared_lookup_comparable(
         PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
         }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("lambda_value"))
-        }
         PreparedArgValue::MissingArg => Err(XmatchEvalError::MissingArg),
         PreparedArgValue::EmptyCell => Err(XmatchEvalError::EmptyCell),
+        _ => Err(XmatchEvalError::UnsupportedValueKind("unsupported_value")),
     }
 }
 
@@ -171,9 +169,7 @@ pub(crate) fn prepared_lookup_candidate_comparable(
         PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
         }
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("lambda_value"))
-        }
+        _ => Err(XmatchEvalError::UnsupportedValueKind("unsupported_value")),
     }
 }
 

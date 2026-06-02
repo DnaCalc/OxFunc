@@ -70,8 +70,8 @@ fn parse_ref_text(arg: &PreparedArgValue) -> Result<String, IndirectEvalError> {
                 EvalValue::Logical(_) => "logical",
                 EvalValue::Array(_) => "array",
                 EvalValue::Reference(_) => "reference_like",
-                EvalValue::Lambda(_) => "lambda_value",
                 EvalValue::Text(_) | EvalValue::Error(_) => unreachable!(),
+                _ => "unsupported_value",
             };
             Err(IndirectEvalError::InvalidReferenceText(kind.to_string()))
         }

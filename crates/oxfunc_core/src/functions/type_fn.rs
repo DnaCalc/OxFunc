@@ -35,8 +35,8 @@ fn type_code(prepared: PreparedArgValue) -> f64 {
         PreparedArgValue::Eval(EvalValue::Error(_)) => 16.0,
         PreparedArgValue::Eval(EvalValue::Array(_)) => 64.0,
         PreparedArgValue::Eval(EvalValue::Reference(_)) => 16.0,
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => 64.0,
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => 1.0,
+        _ => 64.0,
     }
 }
 

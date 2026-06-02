@@ -43,12 +43,12 @@ pub fn coerce_eval_to_number(
         }
         EvalValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         EvalValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
-        EvalValue::Lambda(_) => Err(CoercionError::UnsupportedValueKind("lambda_value")),
         EvalValue::Reference(reference) => {
             let resolved =
                 resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
             coerce_eval_to_number(&resolved, resolver)
         }
+        _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
     }
 }
 

@@ -92,7 +92,8 @@ fn classify_type(value: &EvalValue) -> &'static str {
     match value {
         EvalValue::Text(_) => "l",
         EvalValue::Number(_) | EvalValue::Logical(_) | EvalValue::Error(_) => "v",
-        EvalValue::Array(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => "v",
+        EvalValue::Array(_) | EvalValue::Reference(_) => "v",
+        _ => "v",
     }
 }
 

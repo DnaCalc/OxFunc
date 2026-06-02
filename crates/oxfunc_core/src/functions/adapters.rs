@@ -115,7 +115,7 @@ fn calc_value_from_prepared(value: PreparedArgValue) -> CalcValue {
     }
 }
 
-fn prepared_from_calc_value(value: &CalcValue) -> PreparedArgValue {
+pub(crate) fn prepared_from_calc_value(value: &CalcValue) -> PreparedArgValue {
     match CallArgValue::value(value.clone()) {
         CallArgValue::Eval(value) => PreparedArgValue::Eval(value),
         CallArgValue::MissingArg => PreparedArgValue::MissingArg,
@@ -671,11 +671,9 @@ pub fn coerce_prepared_to_text(
         PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(CoercionError::RefResolution(
             crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed,
         )),
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
-            Err(CoercionError::UnsupportedValueKind("lambda_value"))
-        }
         PreparedArgValue::MissingArg => Ok(ExcelText::from_utf16_code_units(Vec::new())),
         PreparedArgValue::EmptyCell => Ok(ExcelText::from_utf16_code_units(Vec::new())),
+        _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
     }
 }
 
@@ -701,15 +699,24 @@ mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
-        CallableArityShape, CallableCaptureMode, EvalArray, ExcelText, LambdaValue, ReferenceKind,
+        CallableArityShape, CallableValue, EvalArray, ExcelText, OpaqueCallable, ReferenceKind,
         ReferenceLike, WorksheetErrorCode,
     };
     use std::collections::BTreeMap;
+    use std::rc::Rc;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
         resolved_value: Option<EvalValue>,
         by_target: BTreeMap<String, EvalValue>,
+    }
+    #[derive(Debug)]
+    struct TestCallableHandle;
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -868,21 +875,17 @@ mod tests {
     }
 
     #[test]
-    fn legacy_prepared_projection_preserves_callable_payload_after_calc_preparation() {
-        let lambda = LambdaValue::helper_lambda(
-            "helper.lambda".to_string(),
-            CallableArityShape::exact(1),
-            CallableCaptureMode::NoCapture,
-            "adapter.test",
-        );
-        let arg = CallArgValue::Eval(EvalValue::Lambda(lambda.clone()));
+    fn calc_preparation_preserves_native_callable_payload() {
+        let arg = CalcValue::callable(CallableValue {
+            arity: CallableArityShape::exact(1),
+            summary: "helper.lambda".to_string(),
+            handle: Rc::new(TestCallableHandle),
+        });
 
-        let prepared = prepare_arg_values_only(&arg, &resolver_with(EvalValue::Number(0.0)));
+        let prepared =
+            prepare_calc_values_only(&[arg.clone()], &resolver_with(EvalValue::Number(0.0)));
 
-        assert_eq!(
-            prepared,
-            Ok(PreparedArgValue::Eval(EvalValue::Lambda(lambda)))
-        );
+        assert_eq!(prepared, Ok(vec![arg]));
     }
 
     #[test]

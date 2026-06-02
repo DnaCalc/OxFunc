@@ -145,10 +145,10 @@ fn eval_to_numeric_matrix(value: &EvalValue) -> Result<EvalArray, StatisticalTes
             }
             Ok(EvalArray::from_rows(rows).expect("shape"))
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+            Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 

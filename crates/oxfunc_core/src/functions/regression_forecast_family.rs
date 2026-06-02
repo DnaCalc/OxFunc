@@ -167,9 +167,12 @@ fn numeric_scalar_from_eval(value: &EvalValue) -> Result<f64, RegressionForecast
                 ))
             }
         }
-        EvalValue::Text(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => Err(
-            RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        EvalValue::Text(_) | EvalValue::Reference(_) => Err(RegressionForecastEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
+        _ => Err(RegressionForecastEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
     }
 }
 
@@ -214,10 +217,10 @@ fn collect_numeric_vector_from_eval(
                 shape: vector_shape,
             })
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(RegressionForecastEvalError::Domain(
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => Err(
+            RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
+        ),
+        _ => Err(RegressionForecastEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
     }
@@ -278,10 +281,10 @@ fn collect_numeric_matrix_from_eval(
                 values,
             })
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(RegressionForecastEvalError::Domain(
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => Err(
+            RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
+        ),
+        _ => Err(RegressionForecastEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
     }

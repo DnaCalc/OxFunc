@@ -39,12 +39,12 @@ fn scalar_cell(arg: &PreparedArgValue) -> ArrayCellValue {
         PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t.clone()),
         PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(*b),
         PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(*code),
-        PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             ArrayCellValue::Error(WorksheetErrorCode::Value)
         }
         PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => ArrayCellValue::EmptyCell,
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
     }
 }
 

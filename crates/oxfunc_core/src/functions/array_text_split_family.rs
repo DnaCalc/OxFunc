@@ -82,12 +82,12 @@ fn scalar_cell_from_prepared(arg: &PreparedArgValue) -> ArrayCellValue {
         PreparedArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t.clone()),
         PreparedArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(*b),
         PreparedArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(*code),
-        PreparedArgValue::Eval(EvalValue::Reference(_))
-        | PreparedArgValue::Eval(EvalValue::Lambda(_)) => {
+        PreparedArgValue::Eval(EvalValue::Reference(_)) => {
             ArrayCellValue::Error(WorksheetErrorCode::Value)
         }
         PreparedArgValue::Eval(EvalValue::Array(_)) => unreachable!(),
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => ArrayCellValue::EmptyCell,
+        _ => ArrayCellValue::Error(WorksheetErrorCode::Value),
     }
 }
 
@@ -101,7 +101,9 @@ fn eval_value_to_array_cell(value: &EvalValue) -> Result<ArrayCellValue, ArrayTe
         EvalValue::Reference(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith(
             "reference_like",
         )),
-        EvalValue::Lambda(_) => Err(ArrayTextSplitEvalError::UnsupportedPadWith("lambda_value")),
+        _ => Err(ArrayTextSplitEvalError::UnsupportedPadWith(
+            "unsupported_value",
+        )),
     }
 }
 

@@ -117,9 +117,10 @@ fn scalar_number_from_eval(value: &EvalValue) -> Result<f64, CashflowRateEvalErr
                 Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
             }
         }
-        EvalValue::Text(_) | EvalValue::Reference(_) | EvalValue::Lambda(_) => {
+        EvalValue::Text(_) | EvalValue::Reference(_) => {
             Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
         }
+        _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -138,10 +139,10 @@ fn collect_numeric_vector_from_eval(value: &EvalValue) -> Result<Vec<f64>, Cashf
             }
             Ok(out)
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+            Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
@@ -171,10 +172,10 @@ fn collect_serial_vector_from_eval(value: &EvalValue) -> Result<Vec<i64>, Cashfl
             }
             Ok(out)
         }
-        EvalValue::Text(_)
-        | EvalValue::Logical(_)
-        | EvalValue::Reference(_)
-        | EvalValue::Lambda(_) => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
+        EvalValue::Text(_) | EvalValue::Logical(_) | EvalValue::Reference(_) => {
+            Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 

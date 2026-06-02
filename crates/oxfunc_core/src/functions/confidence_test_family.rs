@@ -92,9 +92,8 @@ fn collect_numeric_values_from_eval(
         }
         EvalValue::Text(_) | EvalValue::Logical(_) => Ok(()),
         EvalValue::Error(code) => Err(ConfidenceTestEvalError::Domain(code)),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value))
-        }
+        EvalValue::Reference(_) => Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value)),
+        _ => Err(ConfidenceTestEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 

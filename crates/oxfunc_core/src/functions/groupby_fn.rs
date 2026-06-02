@@ -4,7 +4,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{
+    PreparedArgValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+};
 use crate::functions::callable_helpers::{
     CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
 };
@@ -12,11 +14,13 @@ use crate::functions::group_pivot_common::{
     CellKey, FieldHeadersMode, FieldRelationship, default_row_field_headers, default_value_headers,
     group_indices_by_key, invoke_group_aggregate, key_from_cells, parse_field_headers_mode,
     parse_field_relationship, parse_filter_vector, parse_sort_orders, prepared_to_array,
-    require_callable, row_as_cells, split_header_row, take_header_row, text_cell,
+    require_calc_callable, require_callable, row_as_cells, split_header_row, take_header_row,
+    text_cell,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    ArrayCellValue, CallArgValue, CallableValue, EvalArray, EvalValue, WorksheetErrorCode,
+    ArrayCellValue, CalcValue, CallArgValue, CallableValue, EvalArray, EvalValue,
+    WorksheetErrorCode,
 };
 
 pub const GROUPBY_META: FunctionMeta = FunctionMeta {
@@ -305,6 +309,24 @@ fn build_output_rows(
     Ok(rows)
 }
 
+pub fn eval_groupby_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
+    if !GROUPBY_META.arity.accepts(args.len()) {
+        return Err(surface_arity_error(args.len()));
+    }
+
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
+    let callable = require_calc_callable(&prepared_calc[2])?;
+    let prepared: Vec<PreparedArgValue> =
+        prepared_calc.iter().map(prepared_from_calc_value).collect();
+
+    eval_groupby_prepared(&prepared, &callable, invoker)
+}
+
 pub fn eval_groupby_surface(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -318,6 +340,14 @@ pub fn eval_groupby_surface(
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_callable(&prepared[2])?;
 
+    eval_groupby_prepared(&prepared, &callable, invoker)
+}
+
+fn eval_groupby_prepared(
+    prepared: &[PreparedArgValue],
+    callable: &CallableValue,
+    invoker: &(impl CallableInvoker + ?Sized),
+) -> Result<EvalValue, LambdaHelperEvalError> {
     let field_headers_mode = parse_field_headers_mode(prepared.get(3))?;
     let relationship = parse_field_relationship(prepared.get(7))?;
 
@@ -335,7 +365,7 @@ pub fn eval_groupby_surface(
 
     let (key_rows, value_rows) =
         extract_filtered_rows(&split_rows.array, &split_values.array, filter.as_deref())?;
-    let mut groups = build_leaf_groups(&key_rows, &value_rows, &callable, invoker)?;
+    let mut groups = build_leaf_groups(&key_rows, &value_rows, callable, invoker)?;
     apply_sort(&mut groups, &sort_orders, split_rows.array.shape().cols);
 
     let mut rows = Vec::new();
@@ -387,13 +417,23 @@ pub fn eval_groupby_surface_ws(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::rc::Rc;
+
     use crate::functions::adapters::PreparedArgValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{CallableArityShape, CallableCaptureMode, ExcelText, LambdaValue};
+    use crate::value::{CallableArityShape, ExcelText, OpaqueCallable};
 
     struct NoResolver;
     struct TestInvoker;
+    #[derive(Debug)]
+    struct TestCallableHandle;
+
+    impl OpaqueCallable for TestCallableHandle {
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
 
     impl ReferenceSystemProvider for NoResolver {
         fn capabilities(&self) -> ReferenceSystemCapabilities {
@@ -454,13 +494,12 @@ mod tests {
         ExcelText::from_utf16_code_units(s.encode_utf16().collect())
     }
 
-    fn callable() -> CallArgValue {
-        CallArgValue::Eval(EvalValue::Lambda(LambdaValue::helper_lambda(
-            "helper.sum_array",
-            CallableArityShape::exact(1),
-            CallableCaptureMode::NoCapture,
-            "helper.sum_array.v1",
-        )))
+    fn callable_arg() -> CalcValue {
+        CalcValue::callable(CallableValue {
+            arity: CallableArityShape::exact(1),
+            summary: "helper.sum_array".to_string(),
+            handle: Rc::new(TestCallableHandle),
+        })
     }
 
     fn text_cell_value(s: &str) -> ArrayCellValue {
@@ -489,11 +528,11 @@ mod tests {
             vec![ArrayCellValue::Number(40.0)],
         ])
         .unwrap();
-        let got = eval_groupby_surface(
+        let got = eval_groupby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
             ],
             &NoResolver,
             &TestInvoker,
@@ -529,13 +568,13 @@ mod tests {
             vec![ArrayCellValue::Number(50.0)],
         ])
         .unwrap();
-        let got = eval_groupby_surface(
+        let got = eval_groupby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(2.0)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::missing(),
+                CalcValue::number(2.0),
             ],
             &NoResolver,
             &TestInvoker,
@@ -608,15 +647,15 @@ mod tests {
             vec![ArrayCellValue::Logical(false)],
         ])
         .unwrap();
-        let got = eval_groupby_surface(
+        let got = eval_groupby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::MissingArg,
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(-2.0)),
-                CallArgValue::Eval(EvalValue::Array(filter)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::missing(),
+                CalcValue::missing(),
+                CalcValue::number(-2.0),
+                CalcValue::from(EvalValue::Array(filter)),
             ],
             &NoResolver,
             &TestInvoker,
@@ -647,12 +686,12 @@ mod tests {
             vec![ArrayCellValue::Number(20.0)],
         ])
         .unwrap();
-        let got = eval_groupby_surface(
+        let got = eval_groupby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::Eval(EvalValue::Number(3.0)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::number(3.0),
             ],
             &NoResolver,
             &TestInvoker,
@@ -699,20 +738,21 @@ mod tests {
             vec![ArrayCellValue::Number(20.0)],
         ])
         .unwrap();
-        let got = eval_groupby_surface_ws(
+        let got = eval_groupby_calc_surface(
             &[
-                CallArgValue::Eval(EvalValue::Array(row_fields)),
-                CallArgValue::Eval(EvalValue::Array(values)),
-                callable(),
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(2.0)),
-                CallArgValue::MissingArg,
-                CallArgValue::MissingArg,
-                CallArgValue::Eval(EvalValue::Number(1.0)),
+                CalcValue::from(EvalValue::Array(row_fields)),
+                CalcValue::from(EvalValue::Array(values)),
+                callable_arg(),
+                CalcValue::missing(),
+                CalcValue::number(2.0),
+                CalcValue::missing(),
+                CalcValue::missing(),
+                CalcValue::number(1.0),
             ],
             &NoResolver,
             &TestInvoker,
-        );
+        )
+        .map_err(|err| map_lambda_helper_error_to_ws(&err));
         assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 }

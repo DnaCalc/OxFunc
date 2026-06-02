@@ -123,10 +123,10 @@ fn compare_value_from_prepared(
         PreparedArgValue::Eval(EvalValue::Reference(_)) => Err(
             OperatorCompareConcatError::Coercion(CoercionError::UnsupportedValueKind("reference")),
         ),
-        PreparedArgValue::Eval(EvalValue::Lambda(_)) => Err(OperatorCompareConcatError::Coercion(
-            CoercionError::UnsupportedValueKind("lambda_value"),
-        )),
         PreparedArgValue::MissingArg | PreparedArgValue::EmptyCell => Ok(CompareValue::Blank),
+        _ => Err(OperatorCompareConcatError::Coercion(
+            CoercionError::UnsupportedValueKind("unsupported_value"),
+        )),
     }
 }
 
