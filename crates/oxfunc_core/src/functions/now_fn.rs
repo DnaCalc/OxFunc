@@ -50,6 +50,28 @@ pub fn eval_now_surface(
     Ok(EvalValue::Number(serial))
 }
 
+pub fn eval_now_calc_surface(
+    args: &[CalcValue],
+    provider: &impl NowProvider,
+) -> Result<CalcValue, NowEvalError> {
+    if !NOW_META.arity.accepts(args.len()) {
+        return Err(NowEvalError::ArityMismatch {
+            expected: NOW_META.arity.min,
+            actual: args.len(),
+        });
+    }
+
+    let serial = provider.now_serial();
+    if !serial.is_finite() {
+        return Err(NowEvalError::ProviderNonFinite(serial));
+    }
+
+    Ok(CalcValue::with_presentation(
+        CoreValue::Number(serial),
+        PresentationHint::number_format(NumberFormatHint::DateLike),
+    ))
+}
+
 pub fn eval_now_surface_rich(
     args: &[CallArgValue],
     provider: &impl NowProvider,

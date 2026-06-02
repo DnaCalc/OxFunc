@@ -50,6 +50,28 @@ pub fn eval_today_surface(
     Ok(EvalValue::Number(serial.floor()))
 }
 
+pub fn eval_today_calc_surface(
+    args: &[CalcValue],
+    provider: &impl TodayProvider,
+) -> Result<CalcValue, TodayEvalError> {
+    if !TODAY_META.arity.accepts(args.len()) {
+        return Err(TodayEvalError::ArityMismatch {
+            expected: TODAY_META.arity.min,
+            actual: args.len(),
+        });
+    }
+
+    let serial = provider.today_serial();
+    if !serial.is_finite() {
+        return Err(TodayEvalError::ProviderNonFinite(serial));
+    }
+
+    Ok(CalcValue::with_presentation(
+        CoreValue::Number(serial.floor()),
+        PresentationHint::number_format(NumberFormatHint::DateLike),
+    ))
+}
+
 pub fn eval_today_surface_rich(
     args: &[CallArgValue],
     provider: &impl TodayProvider,

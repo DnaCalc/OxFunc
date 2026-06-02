@@ -4,7 +4,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedArgValue, prepare_args_values_only};
+use crate::functions::adapters::{
+    PreparedArgValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+};
 use crate::host_info::{
     HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ImageSizingMode,
     ResolvedWebImage,
@@ -155,6 +157,19 @@ pub fn parse_image_request(
     }
 
     let prepared = prepare_args_values_only(args, resolver).map_err(ImageEvalError::Preparation)?;
+    parse_image_request_prepared(&prepared)
+}
+
+fn parse_image_request_prepared(
+    prepared: &[PreparedArgValue],
+) -> Result<ImageRequest, ImageEvalError> {
+    if !IMAGE_META.arity.accepts(prepared.len()) {
+        return Err(ImageEvalError::ArityMismatch {
+            expected_min: IMAGE_META.arity.min,
+            expected_max: IMAGE_META.arity.max,
+            actual: prepared.len(),
+        });
+    }
     let request = ImageRequest {
         source: required_text_arg(&prepared, 0)?,
         alt_text: optional_text_arg(&prepared, 1)?,
@@ -164,6 +179,19 @@ pub fn parse_image_request(
     };
     validate_image_request(&request)?;
     Ok(request)
+}
+
+pub fn parse_image_request_calc(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<ImageRequest, ImageEvalError> {
+    let prepared_calc =
+        prepare_calc_values_only(args, resolver).map_err(ImageEvalError::Preparation)?;
+    let prepared = prepared_calc
+        .iter()
+        .map(prepared_from_calc_value)
+        .collect::<Vec<_>>();
+    parse_image_request_prepared(&prepared)
 }
 
 fn build_web_image_rich_value(request: &ImageRequest, resolved: &ResolvedWebImage) -> RichValue {
@@ -258,6 +286,44 @@ pub fn eval_image_surface_rich(
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<CalcValue, ImageEvalError> {
     eval_image_surface_rich_with_capabilities(args, resolver, host_info).map(|result| result.value)
+}
+
+pub fn eval_image_calc_surface_rich(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<CalcValue, ImageEvalError> {
+    eval_image_calc_surface_rich_with_capabilities(args, resolver, host_info)
+        .map(|result| result.value)
+}
+
+pub fn eval_image_calc_surface_rich_with_capabilities(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    host_info: Option<&dyn HostInfoProvider>,
+) -> Result<ImageRichResult, ImageEvalError> {
+    let request = parse_image_request_calc(args, resolver)?;
+    let provider = host_info.ok_or(ImageEvalError::HostInfoProviderMissing("image_provider"))?;
+    let result = provider
+        .query_image(&request)
+        .map_err(ImageEvalError::HostInfo)?;
+    let producer_capability_set_keys = webimage_producer_capability_set_keys();
+    Ok(match result {
+        ImageProviderResult::Image(image) => {
+            let fallback = image.published_fallback.clone();
+            let rich = build_web_image_rich_value(&request, &image);
+            ImageRichResult {
+                value: CalcValue::with_rich(CoreValue::Text(fallback), rich),
+                exercised_capability_keys: producer_capability_set_keys.clone(),
+                producer_capability_set_keys,
+            }
+        }
+        other => ImageRichResult {
+            value: CalcValue::from(image_provider_error_value(&other)),
+            producer_capability_set_keys: Vec::new(),
+            exercised_capability_keys: Vec::new(),
+        },
+    })
 }
 
 pub fn eval_image_surface_rich_with_capabilities(

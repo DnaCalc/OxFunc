@@ -1487,3 +1487,75 @@ Validation:
 6. `cargo test -p oxfunc_core date_parts_family --lib`: passed, 8 tests.
 7. `cargo check -p oxfunc_core`: passed.
 8. `cargo test -p oxfunc_core --lib`: passed, 1348 passed, 1 ignored.
+
+### W099-012.5 Provider-Bound Kernel Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. `CELL`, `INFO`, `RTD`, `CALL`, and `REGISTER.ID` remain on their existing provider-bound prepared routes and are assigned to W099-015 or downstream provider integration work.
+2. `RAND`/`RANDARRAY` random-provider paths remain on their existing routes and are assigned to W099-015/provider follow-up work.
+3. The migrated rich/provider calc surfaces still project internally through crate-local W099 migration-only `PreparedArgValue` for argument preparation; terminal prepared-carrier deletion remains W099-015 work.
+4. `eval_surface_rich_value_call(...)` still accepts `CallArgValue` as a compatibility entry point until W099-015 removes the remaining old carrier boundary.
+
+Planned scope:
+1. Move a coherent low-risk provider/rich slice to native `CalcValue` dispatch before the generated legacy table.
+2. Preserve provider failure behavior for missing image providers and non-finite time providers.
+3. Let the main `CalcValue` surface carry presentation/rich metadata for provider/rich functions where the rich surface was already available.
+
+Evidence:
+1. `NOW` and `TODAY` now have calc-native surfaces that return date-like presentation hints directly from `CalcValue`.
+2. `HYPERLINK` now has calc-native request parsing and a rich calc surface that preserves hyperlink style.
+3. `IMAGE` now has calc-native request parsing and rich calc surfaces, including capability result preservation.
+4. `eval_provider_bound_calc_dispatch(...)` routes `HYPERLINK`, `IMAGE`, `NOW`, and `TODAY` before `legacy_kernel_args_from_calc_values(...)`.
+5. Focused dispatcher tests cover `NOW`, `TODAY`, `HYPERLINK`, and missing-provider `IMAGE` behavior through the main `CalcValue` surface.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrated carrier paths for existing provider/rich semantics. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused provider route tests, touched module tests, `cargo check`, and full `oxfunc_core` library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover rich/presentation results and missing-provider failure. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and migrated function ids are recorded here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no new discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier migration. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new OxFml clause is introduced; this remains inside the OxFunc dispatcher/kernel carrier path. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the provider/rich slice; remaining provider-bound functions and final prepared-carrier deletion are listed as open lanes. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-012.5 provider/rich carrier migration, not full provider-bound or W099 terminal deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.12.5` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The child bead targets provider-bound migration; this pass closes a coherent rich/provider route subset and records other provider-bound lanes as open.
+2. Gate criteria re-read: passed. Selected files route native `CalcValue` calls before legacy dispatch and focused provider tests pass.
+3. Silent scope reduction check: passed. `CELL`, `INFO`, `RTD`, `CALL`, `REGISTER.ID`, random-provider paths, and terminal prepared-carrier deletion are listed as open lanes.
+4. "Looks done but is not" pattern check: passed. The generated legacy table, rich compatibility entry point, and prepared adapter remain explicitly assigned to later W099 work.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue checked: preserving rich/presentation hints on the main `CalcValue` surface is intentional for W099 and keeps the scalar core values unchanged.
+2. Issue checked: missing `IMAGE` provider still maps to `#VALUE!`, matching the previous provider failure boundary.
+3. Issue checked: `NOW` and `TODAY` still reject unexpected arguments and non-finite provider payloads through their existing error maps.
+4. Issue checked: external registered-call and host-info functions were not folded into this pass because their provider semantics and invocation boundaries need separate follow-up.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo test -p oxfunc_core eval_surface_value_call_routes_now_with_number_format_hint --lib`: passed, 1 test.
+3. `cargo test -p oxfunc_core eval_surface_value_call_ --lib`: passed, 89 tests.
+4. `cargo test -p oxfunc_core now_fn --lib`: passed, 4 tests.
+5. `cargo test -p oxfunc_core today_fn --lib`: passed, 3 tests.
+6. `cargo test -p oxfunc_core hyperlink_fn --lib`: passed, 3 tests.
+7. `cargo test -p oxfunc_core image_fn --lib`: passed, 10 tests.
+8. `cargo check -p oxfunc_core`: passed.
+9. `cargo test -p oxfunc_core --lib`: passed, 1352 passed, 1 ignored.
