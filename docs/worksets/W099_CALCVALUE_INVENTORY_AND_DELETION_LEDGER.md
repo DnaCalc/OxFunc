@@ -1075,3 +1075,78 @@ Validation:
 9. `cargo check -p oxfunc_core --examples`: passed.
 10. `cargo test -p oxfunc_core --test oxfml_registered_external_interface_integration`: passed, 3 tests.
 11. `cargo test -p oxfunc_core`: partial. Library, bin, and direct-call integration tests passed; `oxfml_grouped_aggregation_adapter_integration` still fails for GROUPBY/PIVOTBY bare `SUM` callables because OxFml's non-scratch call-target path uses plain `calc_values_from_call_args` instead of its registry-aware callable-carrier conversion. No OxFunc textual-carrier decoder was added.
+
+## 20. W099-012 Kernel Batch Migration Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_partial`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. Remaining arithmetic/comparison/text kernel migration is split into `oxf-im4m.12.3`.
+2. Lookup/reference-adjacent kernel migration is split into `oxf-im4m.12.2`.
+3. Dynamic-array shaping kernel migration is split into `oxf-im4m.12.1`.
+4. Financial/date/time/statistical kernel migration is split into `oxf-im4m.12.4`.
+5. Provider-bound kernel migration is split into `oxf-im4m.12.5`.
+6. `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, and `ArrayCellValue` remain as final deletion residue for W099-015 after the remaining child batches and downstream integration lanes settle.
+
+Planned scope:
+1. Migrate typed kernels by substrate/risk group from `EvalValue` matches to `CalcValue.core`.
+2. Keep behavior changes isolated and evidenced.
+3. Refresh focused tests per batch.
+4. Split remaining large substrate groups into explicit child beads rather than hiding them as unowned residue.
+
+Evidence:
+1. `eval_unary_numeric_calc_surface(...)` now evaluates the shared unary numeric substrate directly over `CalcValue` inputs and `CalcArray` cells.
+2. `eval_surface_value_call_with_dispatch_key(...)` now routes 37 shared unary numeric functions/operators through `eval_shared_unary_numeric_calc_dispatch(...)` before `legacy_kernel_args_from_calc_values(...)`.
+3. Migrated native-dispatch function ids: `ACOS`, `ACOT`, `ACOSH`, `ACOTH`, `ASINH`, `ATAN`, `ATANH`, `COS`, `COSH`, `COT`, `COTH`, `CSC`, `CSCH`, `DEGREES`, `EVEN`, `EXP`, `FACT`, `FACTDOUBLE`, `FISHER`, `FISHERINV`, `GAUSS`, `INT`, `LN`, `LOG10`, `ODD`, `OP_NEGATE`, `OP_PERCENT`, `PHI`, `RADIANS`, `SEC`, `SECH`, `SIGN`, `SINH`, `SQRT`, `SQRTPI`, `TAN`, and `TANH`.
+4. Focused native tests now exercise scalar and array CalcValue dispatch without entering the legacy test helper.
+5. Remaining broad kernel groups are represented by child beads `oxf-im4m.12.1` through `oxf-im4m.12.5`.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead migrated a carrier path for existing unary numeric semantics. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new function semantic claim is made; existing unary numeric semantics were routed through a native carrier path. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused unary/dispatch tests and full `oxfunc_core` library tests passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover scalar and array CalcValue dispatch for the migrated substrate. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and migrated function ids are recorded here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior is changed by this carrier migration. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - no new discrepancy is introduced or resolved in this bead. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier migration. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new OxFml clause is introduced; OxFml follow-through remains W099-013. |
+| 10 | No known semantic gap remains in declared scope? | Yes for the migrated unary numeric native-dispatch subset; remaining substrate groups are child beads. |
+| 11 | Completion language audit passed? | Yes - this record claims W099-012 split-and-first-batch closure, not W099 terminal carrier deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required for this bead. |
+| 13 | Execution-state blocker surface updated? | Yes - bead `oxf-im4m.12` is closed with explicit child beads for remaining groups. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The bead allows substrate batches to be migrated or split; this pass migrated the shared unary numeric substrate and split the remaining groups explicitly.
+2. Gate criteria re-read: passed. Focused parity tests pass, and no unrelated formatting churn is mixed into the semantic migration.
+3. Silent scope reduction check: passed. Remaining kernel groups are not silently dropped; they are represented as child beads.
+4. "Looks done but is not" pattern check: passed. The record keeps legacy carrier deletion in W099-015 and does not claim full catalog kernel deletion.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: the initial focused test command passed two Cargo filters in one invocation; it was rerun as separate single-filter commands.
+2. Issue found and corrected: the new test module initially missed `CalcArray` in its local imports; the import was added and the focused test rerun.
+3. Issue found and corrected: parallel child-bead creation produced a raced status print for one id; `issues.jsonl` was checked, only three children had persisted, and the missing children were created sequentially.
+4. Issue checked: the migrated branch runs before `legacy_kernel_args_from_calc_values(...)`, so the selected unary numeric family no longer round-trips through the legacy argument bridge in the native CalcValue surface.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo check -p oxfunc_core`: passed.
+3. `cargo test -p oxfunc_core unary_numeric --lib`: passed, 6 tests.
+4. `cargo test -p oxfunc_core eval_surface_value_call_routes_shared_unary_numeric_on_calc_values --lib`: passed, 1 test.
+5. `cargo test -p oxfunc_core eval_surface_value_call_lifts_shared_unary_numeric_calc_arrays --lib`: passed, 1 test.
+6. `cargo test -p oxfunc_core --lib`: passed, 1333 passed, 1 ignored.
+7. `cargo check -p oxfunc_core --examples`: passed.
+8. `cargo test -p oxfunc_core --test oxfml_grouped_aggregation_adapter_integration`: passed, 4 tests.
+9. `cargo test -p oxfunc_core`: partial. Library, bin, direct-call integration, grouped aggregation adapter, image carrier, and registered external interface tests passed; `tests/oxfml_seam_integration.rs` has two failures under the current dirty OxFml tree, both in W050/OxFml adapter reference/materialization scenarios outside the migrated unary numeric dispatch branch.

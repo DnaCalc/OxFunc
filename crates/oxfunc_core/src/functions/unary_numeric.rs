@@ -1,10 +1,12 @@
-use crate::coercion::CoercionError;
+use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::functions::adapters::{
     PreparedArgValue, apply_unary_numeric_scalar_prepared, expand_arg_values_only,
-    prepare_arg_values_only,
+    prepare_arg_values_only, prepare_calc_value_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ArrayCellValue, EvalArray, EvalValue, WorksheetErrorCode};
+use crate::value::{
+    ArrayCellValue, CalcArray, CalcValue, CoreValue, EvalArray, EvalValue, WorksheetErrorCode,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum UnaryNumericSurfaceError {
@@ -48,6 +50,39 @@ pub fn eval_unary_numeric_surface(
     }
 }
 
+pub fn eval_unary_numeric_calc_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
+    if args.len() != 1 {
+        return Err(UnaryNumericSurfaceError::ArityMismatch {
+            expected: 1,
+            actual: args.len(),
+        });
+    }
+
+    let prepared = prepare_calc_value_values_only(&args[0], resolver)
+        .map_err(UnaryNumericSurfaceError::Coercion)?;
+    match prepared.core() {
+        CoreValue::Array(array) => {
+            let cells = array
+                .iter_row_major()
+                .map(|item| map_unary_numeric_calc_item(item, kernel))
+                .collect::<Vec<_>>();
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), cells).expect("shape preserved"),
+            ))
+        }
+        _ => match coerce_calc_scalar_to_number(&prepared) {
+            Ok(n) => kernel(n)
+                .map(CalcValue::number)
+                .map_err(UnaryNumericSurfaceError::Domain),
+            Err(err) => Err(UnaryNumericSurfaceError::Coercion(err)),
+        },
+    }
+}
+
 fn map_unary_numeric_item(
     item: &PreparedArgValue,
     kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
@@ -59,6 +94,20 @@ fn map_unary_numeric_item(
         },
         Err(CoercionError::WorksheetError(code)) => ArrayCellValue::Error(code),
         Err(_) => ArrayCellValue::Error(WorksheetErrorCode::Value),
+    }
+}
+
+fn map_unary_numeric_calc_item(
+    item: &CalcValue,
+    kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
+) -> CalcValue {
+    match coerce_calc_scalar_to_number(item) {
+        Ok(n) => match kernel(n) {
+            Ok(v) => CalcValue::number(v),
+            Err(code) => CalcValue::error(code),
+        },
+        Err(CoercionError::WorksheetError(code)) => CalcValue::error(code),
+        Err(_) => CalcValue::error(WorksheetErrorCode::Value),
     }
 }
 
