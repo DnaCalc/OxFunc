@@ -346,14 +346,6 @@ impl FunctionCallTarget {
     }
 }
 
-#[cfg(test)]
-fn legacy_call_args_for_dispatch(args: &[CalcValue]) -> Vec<crate::value::CallArgValue> {
-    args.iter()
-        .cloned()
-        .map(crate::value::CallArgValue::value)
-        .collect()
-}
-
 pub struct FunctionExecutionContextBundle<'a, R: ReferenceSystemProvider> {
     pub reference_system_base: &'a R,
     pub reference_system_provider: Option<&'a dyn ReferenceSystemProvider>,
@@ -609,8 +601,8 @@ mod tests {
         ReferenceSystemOperation,
     };
     use crate::value::{
-        ArrayCellValue, CalcArray, CallArgValue, CallableArityShape, CallableValue, CoreValue,
-        EvalArray, EvalValue, ExcelText, OpaqueCallable, ReferenceKind, ReferenceLike,
+        ArrayCellValue, CalcArray, CallableArityShape, CallableValue, CoreValue, EvalArray,
+        EvalValue, ExcelText, OpaqueCallable, ReferenceKind, ReferenceLike,
     };
     use std::rc::Rc;
 
@@ -1088,15 +1080,9 @@ mod tests {
         assert!(scratch.call_args()[1].is_empty());
         assert_eq!(scratch.call_args()[2].as_reference(), Some(&reference));
 
-        let dispatch_args = legacy_call_args_for_dispatch(scratch.call_args());
-        assert_eq!(
-            dispatch_args,
-            vec![
-                CallArgValue::MissingArg,
-                CallArgValue::EmptyCell,
-                CallArgValue::Reference(reference)
-            ]
-        );
+        assert!(matches!(scratch.call_args()[0].core(), CoreValue::Missing));
+        assert!(matches!(scratch.call_args()[1].core(), CoreValue::Empty));
+        assert_eq!(scratch.call_args()[2].as_reference(), Some(&reference));
     }
 
     #[test]
@@ -1108,17 +1094,9 @@ mod tests {
         let reference = ReferenceLike::new(ReferenceKind::Area, "A1:B1");
         let reference_visible = CalcValue::reference(reference.clone());
 
-        let dispatch_args =
-            legacy_call_args_for_dispatch(&[direct_array.clone(), reference_visible.clone()]);
-
-        assert!(matches!(
-            dispatch_args.first(),
-            Some(CallArgValue::Eval(EvalValue::Array(_)))
-        ));
-        assert_eq!(
-            dispatch_args.get(1),
-            Some(&CallArgValue::Reference(reference))
-        );
+        let call_args = [direct_array.clone(), reference_visible.clone()];
+        assert!(matches!(call_args[0].core(), CoreValue::Array(_)));
+        assert_eq!(call_args[1].as_reference(), Some(&reference));
         assert!(direct_array.as_array().is_some());
         assert!(reference_visible.as_reference().is_some());
     }

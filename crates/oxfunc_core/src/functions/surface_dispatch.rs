@@ -1409,7 +1409,7 @@ pub fn eval_surface_value_call_with_dispatch_key(
         }
     }
 
-    let dispatch_args = legacy_kernel_args_from_calc_values(args);
+    let dispatch_args = generated_table_args_from_calc_values(args);
     let args = dispatch_args.as_slice();
     let result = include!("surface_dispatch_by_index_generated.rs");
 
@@ -1444,11 +1444,11 @@ pub fn eval_surface_value_call_with_dispatch_key(
     }
 }
 
-fn legacy_kernel_args_from_calc_values(args: &[CalcValue]) -> Vec<CallArgValue> {
+fn generated_table_args_from_calc_values(args: &[CalcValue]) -> Vec<CallArgValue> {
     args.iter().cloned().map(CallArgValue::value).collect()
 }
 
-fn calc_values_from_legacy_call_args(args: &[CallArgValue]) -> Vec<CalcValue> {
+fn calc_values_from_surface_call_args(args: &[CallArgValue]) -> Vec<CalcValue> {
     args.iter().cloned().map(calc_value_from_call_arg).collect()
 }
 
@@ -2814,7 +2814,7 @@ fn try_observed_scalar_array_lift(
                 continue;
             }
 
-            let cell_calc_args = calc_values_from_legacy_call_args(&cell_args);
+            let cell_calc_args = calc_values_from_surface_call_args(&cell_args);
             let cell = match eval_surface_value_call_with_callable(
                 function_id,
                 &cell_calc_args,
@@ -3099,7 +3099,7 @@ mod tests {
         locale_ctx: Option<&LocaleFormatContext>,
         host_info: Option<&dyn HostInfoProvider>,
     ) -> Result<EvalValue, WorksheetErrorCode> {
-        let calc_args = super::calc_values_from_legacy_call_args(args);
+        let calc_args = super::calc_values_from_surface_call_args(args);
         super::eval_surface_value_call(
             function_id,
             &calc_args,

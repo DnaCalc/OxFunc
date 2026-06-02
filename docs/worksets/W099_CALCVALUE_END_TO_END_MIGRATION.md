@@ -612,6 +612,20 @@ Acceptance:
 2. no native `EvalValue::Lambda` callable path remains;
 3. publication/re-supply preserves callable `CalcValue`.
 
+### W099-013A Small Adapter Cleanup Before OxCalc Integration (`oxf-im4m.18`)
+
+Scope:
+
+1. remove or rename already-obsolete active-code adapter residue exposed by W099-013;
+2. keep the cleanup below W099-015's broad legacy type and adapter deletion scope;
+3. confirm the remaining generated-table projection is still explicit and assigned to W099-015.
+
+Acceptance:
+
+1. misleading test-only legacy call-argument helper names are absent;
+2. generated-table projection helper names no longer read as an alternate legacy dispatch path;
+3. focused OxFunc checks pass before OxCalc W060 integration starts.
+
 ### W099-014 OxCalc W060 Integration (`oxf-im4m.14`)
 
 Scope:
