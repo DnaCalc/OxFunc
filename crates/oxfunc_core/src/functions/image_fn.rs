@@ -39,7 +39,7 @@ const HEIGHT_KEY: &str = "Height";
 const WIDTH_KEY: &str = "Width";
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ExtendedImageResult {
+pub struct ImageRichResult {
     pub value: CalcValue,
     pub producer_capability_set_keys: Vec<String>,
     pub exercised_capability_keys: Vec<String>,
@@ -264,7 +264,7 @@ pub fn eval_image_surface_rich_with_capabilities(
     args: &[CallArgValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<ExtendedImageResult, ImageEvalError> {
+) -> Result<ImageRichResult, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
     let provider = host_info.ok_or(ImageEvalError::HostInfoProviderMissing("image_provider"))?;
     let result = provider
@@ -275,13 +275,13 @@ pub fn eval_image_surface_rich_with_capabilities(
         ImageProviderResult::Image(image) => {
             let fallback = image.published_fallback.clone();
             let rich = build_web_image_rich_value(&request, &image);
-            ExtendedImageResult {
+            ImageRichResult {
                 value: CalcValue::with_rich(CoreValue::Text(fallback), rich),
                 exercised_capability_keys: producer_capability_set_keys.clone(),
                 producer_capability_set_keys,
             }
         }
-        other => ExtendedImageResult {
+        other => ImageRichResult {
             value: CalcValue::from(image_provider_error_value(&other)),
             producer_capability_set_keys: Vec::new(),
             exercised_capability_keys: Vec::new(),

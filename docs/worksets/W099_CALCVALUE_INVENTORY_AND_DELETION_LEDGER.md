@@ -960,6 +960,69 @@ Validation:
 7. `rg "\bExtendedValue\b|pub enum ExtendedValue" crates C:\Work\DnaCalc\OxFml\crates -n`: passed with no matches.
 8. `rg "eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|extended_surface" crates\oxfunc_core\src crates\oxfunc_core\tests crates\oxfunc_value_types\src\lib.rs -n`: passed with no active-code matches.
 
+### W099-010.1 Rich Return Vocabulary Cleanup Record
+
+execution_state: `complete`
+
+scope_completeness: `scope_complete`
+
+target_completeness: `target_complete`
+
+integration_completeness: `partial`
+
+open_lanes:
+1. Historical function-lane documents and frozen snapshot CSV rows still describe the pre-W099 extended-value model; they remain historical inputs rather than active OxFunc carrier code.
+2. W099-011 through W099-015 still own callable, kernel, downstream, and final legacy-carrier cleanup outside this W099-010 vocabulary slice.
+
+Planned scope:
+1. Remove residual active W099-010 `Extended*` vocabulary from rich IMAGE capability result code.
+2. Rename active registry seed presentation runtime-boundary labels away from `extended_value_*` wording.
+3. Preserve historical documentation references that describe the pre-W099 model or frozen V1 snapshots.
+
+Evidence:
+1. `ExtendedImageResult` was renamed to `ImageRichResult`; `eval_image_surface_rich_with_capabilities(...)` now returns the rich-named result carrier.
+2. HYPERLINK, NOW, and TODAY registry seed `runtime_boundary_kind` values now use `calc_value_with_presentation_hint`.
+3. Active source scans no longer find `ExtendedImageResult`, `extended_value_with_presentation_hint`, or extended-surface function names in OxFunc source/test paths.
+
+Pre-Closure Verification Checklist:
+
+| # | Check | Result |
+|---|-------|--------|
+| 1 | Function contract rows complete and promoted for all in-scope functions? | Yes - no function contract promotion was in scope; this bead cleaned active carrier vocabulary. |
+| 2 | Lean obligations for each slice class satisfied or explicitly aligned per formalization strategy? | Yes - no new semantic slice claim is made. |
+| 3 | Rust implementation and required tests pass for all in-scope functions? | Yes - focused rich IMAGE and registry checks passed. |
+| 4 | At least one deterministic replay artifact exists per in-scope function behavior? | Yes - deterministic Rust tests cover the rich IMAGE capability result and registry metadata export. |
+| 5 | Evidence links complete and reproducible? | Yes - validation commands and source scans are listed here. |
+| 6 | Version scope explicit on both axes? | Yes - no Excel version behavior claim is changed by vocabulary cleanup. |
+| 7 | Public-doc vs empirical discrepancies recorded and resolved in favor of empirical Excel behavior? | Yes - not applicable to this carrier-name cleanup. |
+| 8 | XLL verification-seam limitations documented where material? | Yes - not material to this internal carrier vocabulary cleanup. |
+| 9 | Cross-repo impact assessed and handoff filed if boundary/evaluator-facing clauses affected? | Yes - no new shared interface clause is introduced; historical OxFml-facing vocabulary remains in historical docs. |
+| 10 | No known semantic gap remains in declared scope? | Yes - active W099-010 extended-value vocabulary residue found in this sweep was cleaned. |
+| 11 | Completion language audit passed? | Yes - this record claims only W099-010.1 vocabulary cleanup, not W099 terminal deletion. |
+| 12 | `docs/IN_PROGRESS_FEATURE_WORKLIST.md` updated? | Yes - W099 remains represented by `IP-25`; no new feature-map row was required. |
+| 13 | Execution-state blocker surface updated? | Yes - child bead `oxf-im4m.10.1` is closed with this evidence. |
+
+Completion Claim Self-Audit:
+
+1. Scope re-read: passed. The child bead is limited to residual active rich/extended vocabulary after W099-010.
+2. Gate criteria re-read: passed. Active rich result code and active registry seed labels now use CalcValue/rich wording.
+3. Silent scope reduction check: passed. Historical docs and frozen snapshots are listed as open lanes rather than silently rewritten.
+4. "Looks done but is not" pattern check: passed. Later W099 beads still own non-W099-010 carrier cleanup.
+5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining lanes.
+
+Fresh-eyes review:
+
+1. Issue found and corrected: the bead was initially absent from `.beads`; it was created explicitly as `oxf-im4m.10.1` before code edits.
+2. Issue checked: `br create` does not accept a manual `--id` argument in this install; the supported parent-child create path produced the intended `oxf-im4m.10.1` id.
+3. Issue checked: historical docs still contain `ExtendedValue` and `extended_value_with_presentation_hint`; these are not active Rust carriers and are recorded as historical-open vocabulary, not changed in this cleanup.
+
+Validation:
+1. `cargo fmt -p oxfunc_core`: passed.
+2. `cargo check -p oxfunc_core`: passed.
+3. `cargo test -p oxfunc_core image_rich --lib`: passed.
+4. `cargo test -p oxfunc_core registry_metadata_csv_exports_version_and_capability_columns --lib`: passed.
+5. `rg -n "ExtendedImageResult|extended_value_with_presentation_hint|eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|extended_surface" crates/oxfunc_core/src crates/oxfunc_core/tests crates/oxfunc_value_types/src/lib.rs`: passed with no active-code matches.
+
 ## 19. W099-011 OxFunc Callable Migration Record
 
 execution_state: `complete`
