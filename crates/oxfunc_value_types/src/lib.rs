@@ -1220,20 +1220,6 @@ impl CallArgValue {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum ExtendedValue {
-    Core(EvalValue),
-    RichValue(Box<RichValue>),
-    ValueWithPresentation {
-        value: EvalValue,
-        hint: PresentationHint,
-    },
-    ErrorWithMetadata {
-        code: WorksheetErrorCode,
-        surface: ErrorSurface,
-    },
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ValueBoundary {
     CellContent,

@@ -139,7 +139,7 @@ Largest hit clusters from the first scan:
 | `PreparedArgValue` | `CalcValue` plus transient local preparation facts | W099-007 removes it as a value carrier. Any retained preparation fact must be non-value metadata scoped to preparation. |
 | `EvalArray` | `CalcArray` | W099-006 ports array storage, row-major iteration, spill helpers, and dynamic-array helpers; W099-015 deletes the type. |
 | `ArrayCellValue` | `CalcValue` cells inside `CalcArray` | W099-006 ports empty/error-cell policy to `CalcValue.core`; W099-015 deletes the type. |
-| `ExtendedValue` | `CalcValue { core, rich }` | W099-010 folds object, presentation, and error metadata into `RichValue`; W099-015 deletes the type. |
+| `ExtendedValue` | `CalcValue { core, rich }` | W099-010 folds object, presentation, and error metadata into `RichValue`; the type was deleted immediately after OxFml removed its final imports. |
 | `LambdaValue` | `RichValue::Callable(CallableValue)` | W099-011 removes OxFunc kernel dependence; W099-013 removes OxFml native `EvalValue::Lambda`; W099-015 deletes the type. |
 | `ReferenceLike { kind, target }` | typed `ReferenceLike { system, identity, display }` | W099-002 replaces the native payload; compatibility textual constructors get explicit deletion owners. |
 | `ReferenceKind` | textual-reference compatibility/fact vocabulary only | W099-002 moves it out of native identity. W099-009 deletes function-kernel reliance on it where provider facts should be used. |
@@ -896,10 +896,9 @@ target_completeness: `target_complete`
 integration_completeness: `partial`
 
 open_lanes:
-1. The staging `ExtendedValue` type still exists in `oxfunc_value_types` for older downstream returned-surface adapters; W099-015 owns final type deletion.
-2. OxFml still has legacy returned-surface constructors for non-rich output wrapping; W099-013/W099-015 own full downstream CalcValue follow-through and deletion.
-3. `RichValue::ErrorMetadata` is represented in the value model and registry vocabulary, but no in-scope producer was migrated in this bead because the current IMAGE/HYPERLINK/NOW/TODAY slice produces rich objects or presentation hints.
-4. Fixture strings still use returned-surface labels such as `ValueWithPresentation`; those are interface fixture labels, not active OxFunc extended-value producers.
+1. OxFml returned-surface kind labels such as `ValueWithPresentation` remain interface vocabulary, not OxFunc value carriers.
+2. `RichValue::ErrorMetadata` is represented in the value model and registry vocabulary, but no in-scope producer was migrated in this bead because the current IMAGE/HYPERLINK/NOW/TODAY slice produces rich objects or presentation hints.
+3. W099-011 through W099-015 still own callable, kernel, downstream, and remaining legacy carrier cleanup.
 
 Planned scope:
 1. Fold IMAGE, HYPERLINK, NOW, and TODAY extended-surface producers into `CalcValue { core, rich }`.
@@ -915,6 +914,7 @@ Evidence:
 4. `RegistryFunctionMeta.rich_value_usage` and `RichValueUsage` publish `rich_blind`, `produces_presentation`, `produces_rich_object`, and `produces_error_metadata` vocabulary.
 5. Registry CSV export includes a `rich_value_usage` column; row-level tests pin SUM as rich-blind and IMAGE as rich-object-producing.
 6. The OxFml dev-dependency adapter used by OxFunc integration tests now has `ReturnedValueSurface::from_calc_value*` constructors for the rich return path.
+7. `ExtendedValue` was deleted from `oxfunc_value_types` after OxFml removed its final imports.
 
 Pre-Closure Verification Checklist:
 
@@ -938,8 +938,8 @@ Completion Claim Self-Audit:
 
 1. Scope re-read: passed. The bead asks for rich/extended value folding for structured rich objects and presentation/error metadata vocabulary.
 2. Gate criteria re-read: passed. IMAGE uses `RichValue::Object`; HYPERLINK/NOW/TODAY use `RichValue::Presentation`; registry metadata and exports are updated.
-3. Silent scope reduction check: passed. The remaining `ExtendedValue` type is explicitly left to W099-015 as staging residue rather than being hidden as done.
-4. "Looks done but is not" pattern check: passed. OxFml returned-surface compatibility constructors remain visible and assigned to downstream W099 lanes.
+3. Silent scope reduction check: passed. `ExtendedValue` now has zero source hits across OxFunc and OxFml; remaining returned-surface kind labels are not value carriers.
+4. "Looks done but is not" pattern check: passed. Later W099 lanes still own callable, kernel, downstream, and remaining legacy carrier cleanup.
 5. Included result: passed. This section records checklist, self-audit, evidence, validation, fresh-eyes review, and remaining integration lanes for W099-010.
 
 Fresh-eyes review:
@@ -947,7 +947,7 @@ Fresh-eyes review:
 1. Issue found and corrected: OxFml dev-dependency tests initially failed because the returned-surface adapter still called removed extended-surface function names. The adapter now consumes `CalcValue` for IMAGE/HYPERLINK/NOW/TODAY rich paths.
 2. Issue found and corrected: two test names still said `extended` after the code moved to rich carriers. They were renamed to `rich`.
 3. Issue found and corrected: the first registry CSV rich-usage assertions were too broad and could pass if a token appeared in the wrong row. They now assert row-level placement.
-4. Issue checked: active OxFunc source no longer calls `eval_*_surface_extended` or `eval_surface_extended_call`; remaining `ExtendedValue` hits are the staging enum and fixture/interface labels.
+4. Issue checked and reworked after OxFml unblock: the staging `ExtendedValue` enum no longer has any active downstream imports and was deleted.
 
 Validation:
 
@@ -957,4 +957,5 @@ Validation:
 4. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml eval_surface_rich_value_call --lib`: passed, 4 tests.
 5. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --lib`: passed, 1331 passed, 1 ignored.
 6. `cargo test --manifest-path crates\oxfunc_core\Cargo.toml --test oxfml_image_return_carrier_integration`: passed, 1 test.
-7. `rg "eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|ExtendedValue|ValueWithPresentation|ErrorWithMetadata|extended_surface" crates\oxfunc_core\src crates\oxfunc_core\tests crates\oxfunc_value_types\src\lib.rs -n`: passed with only the staging `ExtendedValue` enum and returned-surface fixture labels remaining.
+7. `rg "\bExtendedValue\b|pub enum ExtendedValue" crates C:\Work\DnaCalc\OxFml\crates -n`: passed with no matches.
+8. `rg "eval_.*_surface_extended|eval_surface_extended_call|eval_.*extended|extended_surface" crates\oxfunc_core\src crates\oxfunc_core\tests crates\oxfunc_value_types\src\lib.rs -n`: passed with no active-code matches.
