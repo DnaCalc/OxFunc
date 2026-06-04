@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::sum_argument_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum MaxEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_max_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MaxEvalError> {
+fn eval_max_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, MaxEvalError> {
     let mut acc: Option<f64> = None;
     for arg in args {
         if let Some(value) = sum_argument_value(arg).map_err(MaxEvalError::Coercion)? {

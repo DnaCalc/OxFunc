@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::dual_policy_numeric_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum SumsqEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_sumsq_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, SumsqEvalError> {
+fn eval_sumsq_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, SumsqEvalError> {
     let mut acc = 0.0;
     for arg in args {
         if let Some(value) = dual_policy_numeric_value(arg).map_err(SumsqEvalError::Coercion)? {

@@ -60,7 +60,7 @@ pub fn eval_gcd_surface(
     for arg in args {
         let expanded = expand_aggregate_arg(arg, resolver).map_err(GcdEvalError::Coercion)?;
         for item in expanded {
-            items.push(coerce_calc_to_nonnegative_int(item.value())?);
+            items.push(coerce_calc_to_nonnegative_int(&item.0)?);
         }
     }
     Ok(CalcValue::number(gcd_kernel(&items)))

@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::{CoreValue, WorksheetErrorCode};
@@ -33,8 +33,8 @@ pub enum ModeSnglEvalError {
     Coercion(CoercionError),
 }
 
-fn mode_argument_value(item: &AggregatePreparedValue) -> Result<Option<f64>, CoercionError> {
-    match item.value().core() {
+fn mode_argument_value(item: &AggregatePreparedItem) -> Result<Option<f64>, CoercionError> {
+    match item.0.core() {
         CoreValue::Number(n) => Ok(Some(*n)),
         CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {

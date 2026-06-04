@@ -235,7 +235,7 @@ pub fn eval_multinomial_surface(
         let expanded =
             expand_aggregate_arg(arg, resolver).map_err(MultinomialEvalError::Coercion)?;
         for item in expanded {
-            items.push(coerce_calc_to_nonnegative_int(item.value())?);
+            items.push(coerce_calc_to_nonnegative_int(&item.0)?);
         }
     }
     multinomial_kernel(&items)

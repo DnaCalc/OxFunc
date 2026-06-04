@@ -4,8 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregatePreparedValue, coerce_prepared_to_number, expand_aggregate_arg,
-    prepare_arg_values_only,
+    AggregatePreparedItem, coerce_prepared_to_number, expand_aggregate_arg, prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
@@ -36,7 +35,7 @@ pub enum LargeEvalError {
     Coercion(CoercionError),
 }
 
-fn collect_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, LargeEvalError> {
+fn collect_values(args: &[AggregatePreparedItem]) -> Result<Vec<f64>, LargeEvalError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = median_argument_value(arg).map_err(LargeEvalError::Coercion)? {

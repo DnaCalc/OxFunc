@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::dual_policy_numeric_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum ProductEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_product_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, ProductEvalError> {
+fn eval_product_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, ProductEvalError> {
     let mut acc = 1.0;
     let mut saw_numeric = false;
     for arg in args {

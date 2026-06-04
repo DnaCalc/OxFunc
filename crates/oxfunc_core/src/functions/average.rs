@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum AverageEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_average_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, AverageEvalError> {
+fn eval_average_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, AverageEvalError> {
     let mut acc = 0.0;
     let mut count = 0usize;
     for arg in args {

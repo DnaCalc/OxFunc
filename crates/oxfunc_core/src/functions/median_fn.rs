@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum MedianEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MedianEvalError> {
+fn eval_median_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, MedianEvalError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = median_argument_value(arg).map_err(MedianEvalError::Coercion)? {

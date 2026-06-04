@@ -1,5 +1,5 @@
 use crate::coercion::CoercionError;
-use crate::functions::adapters::AggregatePreparedValue;
+use crate::functions::adapters::AggregatePreparedItem;
 use crate::value::{CoreValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -8,8 +8,8 @@ pub enum CovarianceDivisor {
     Sample,
 }
 
-fn paired_numeric_value(item: &AggregatePreparedValue) -> Result<Option<f64>, CoercionError> {
-    match item.value().core() {
+fn paired_numeric_value(item: &AggregatePreparedItem) -> Result<Option<f64>, CoercionError> {
+    match item.0.core() {
         CoreValue::Number(n) => Ok(Some(*n)),
         CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
@@ -21,8 +21,8 @@ fn paired_numeric_value(item: &AggregatePreparedValue) -> Result<Option<f64>, Co
 }
 
 pub(crate) fn collect_paired_values(
-    xs: &[AggregatePreparedValue],
-    ys: &[AggregatePreparedValue],
+    xs: &[AggregatePreparedItem],
+    ys: &[AggregatePreparedItem],
 ) -> Result<Vec<(f64, f64)>, CoercionError> {
     if xs.len() != ys.len() {
         return Err(CoercionError::WorksheetError(WorksheetErrorCode::NA));
@@ -129,7 +129,7 @@ pub fn rsq_from_pairs(pairs: &[(f64, f64)]) -> Result<f64, WorksheetErrorCode> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::functions::adapters::AggregateArrayProvenance;
+    use crate::functions::adapters::{AggregateArgOrigin, AggregateArrayProvenance};
     use crate::value::{CalcValue, ExcelText};
 
     fn assert_bits(actual: f64, expected: f64) {
@@ -143,25 +143,25 @@ mod tests {
     #[test]
     fn pairwise_filter_keeps_only_numeric_pairs() {
         let xs = vec![
-            AggregatePreparedValue::array_like(
+            (
                 CalcValue::number(1.0),
-                AggregateArrayProvenance::ReferenceDerived,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
             ),
-            AggregatePreparedValue::array_like(
+            (
                 CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 )),
-                AggregateArrayProvenance::ReferenceDerived,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
             ),
         ];
         let ys = vec![
-            AggregatePreparedValue::array_like(
+            (
                 CalcValue::number(2.0),
-                AggregateArrayProvenance::ReferenceDerived,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
             ),
-            AggregatePreparedValue::array_like(
+            (
                 CalcValue::number(3.0),
-                AggregateArrayProvenance::ReferenceDerived,
+                AggregateArgOrigin::ArrayLike(AggregateArrayProvenance::ReferenceDerived),
             ),
         ];
 

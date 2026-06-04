@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::functions::paired_stats_common::collect_paired_values;
 use crate::resolver::ReferenceSystemProvider;
@@ -72,7 +72,7 @@ pub enum MomentStatsEvalError {
     Coercion(CoercionError),
 }
 
-fn collect_moment_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, CoercionError> {
+fn collect_moment_values(args: &[AggregatePreparedItem]) -> Result<Vec<f64>, CoercionError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = average_argument_value(arg)? {

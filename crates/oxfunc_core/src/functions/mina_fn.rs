@@ -3,7 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
+use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::extrema_a_argument_value;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +33,7 @@ pub enum MinAEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_mina_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MinAEvalError> {
+fn eval_mina_aggregate(args: &[AggregatePreparedItem]) -> Result<CalcValue, MinAEvalError> {
     let mut acc: Option<f64> = None;
     for arg in args {
         if let Some(value) = extrema_a_argument_value(arg).map_err(MinAEvalError::Coercion)? {

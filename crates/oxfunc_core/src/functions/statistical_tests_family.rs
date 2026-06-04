@@ -3,9 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedValue, expand_aggregate_arg,
-};
+use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::chi_f_t_family::{chisq_dist_rt_kernel, f_dist_rt_kernel};
 use crate::functions::special_math_common::regularized_beta;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
@@ -173,10 +171,10 @@ fn numeric_matrices_from_args(
 }
 
 fn aggregate_item_number(
-    item: &AggregatePreparedValue,
+    item: &AggregatePreparedItem,
 ) -> Result<Option<f64>, StatisticalTestsEvalError> {
-    match item.origin() {
-        AggregateArgOrigin::DirectScalar => match item.value().core() {
+    match item.1 {
+        AggregateArgOrigin::DirectScalar => match item.0.core() {
             CoreValue::Number(n) => Ok(Some(*n)),
             CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
             CoreValue::Array(_) => Err(StatisticalTestsEvalError::Coercion(
@@ -189,7 +187,7 @@ fn aggregate_item_number(
                 Err(StatisticalTestsEvalError::Domain(WorksheetErrorCode::Value))
             }
         },
-        AggregateArgOrigin::ArrayLike(_) => match item.value().core() {
+        AggregateArgOrigin::ArrayLike(_) => match item.0.core() {
             CoreValue::Number(n) => Ok(Some(*n)),
             CoreValue::Error(code) => Err(StatisticalTestsEvalError::Domain(*code)),
             CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {

@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedValue, expand_aggregate_arg,
+    AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg,
     expand_sparse_reference_values_with_provenance, sparse_reference_values_for_aggregate_arg,
 };
 use crate::resolver::ReferenceSystemProvider;
@@ -59,16 +59,16 @@ fn accumulate_range_like(arg: &CalcValue) -> Result<f64, CoercionError> {
 }
 
 pub(crate) fn eval_sum_prepared_aggregate(
-    args: &[AggregatePreparedValue],
+    args: &[AggregatePreparedItem],
 ) -> Result<CalcValue, SumEvalError> {
     let mut values = Vec::with_capacity(args.len());
     for item in args {
-        let value = match item.origin() {
+        let value = match item.1 {
             AggregateArgOrigin::DirectScalar => {
-                accumulate_direct_scalar(item.value()).map_err(SumEvalError::Coercion)?
+                accumulate_direct_scalar(&item.0).map_err(SumEvalError::Coercion)?
             }
             AggregateArgOrigin::ArrayLike(_) => {
-                accumulate_range_like(item.value()).map_err(SumEvalError::Coercion)?
+                accumulate_range_like(&item.0).map_err(SumEvalError::Coercion)?
             }
         };
         values.push(value);
@@ -437,9 +437,9 @@ mod tests {
     #[test]
     fn eval_sum_exercises_sequential_left_fold_reduction_policy() {
         let prepared = vec![
-            AggregatePreparedValue::direct_scalar(CalcValue::number(1.0e16)),
-            AggregatePreparedValue::direct_scalar(CalcValue::number(1.0)),
-            AggregatePreparedValue::direct_scalar(CalcValue::number(-1.0e16)),
+            (CalcValue::number(1.0e16), AggregateArgOrigin::DirectScalar),
+            (CalcValue::number(1.0), AggregateArgOrigin::DirectScalar),
+            (CalcValue::number(-1.0e16), AggregateArgOrigin::DirectScalar),
         ];
 
         let got = eval_sum_prepared_aggregate(&prepared);

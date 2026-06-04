@@ -1,5 +1,5 @@
 use crate::coercion::CoercionError;
-use crate::functions::adapters::AggregatePreparedValue;
+use crate::functions::adapters::AggregatePreparedItem;
 use crate::functions::aggregate_common::{average_argument_value, averagea_argument_value};
 use crate::value::WorksheetErrorCode;
 
@@ -16,7 +16,7 @@ pub enum VarianceDivisor {
 }
 
 pub(crate) fn collect_variance_values(
-    args: &[AggregatePreparedValue],
+    args: &[AggregatePreparedItem],
     policy: VarianceInclusionPolicy,
 ) -> Result<Vec<f64>, CoercionError> {
     let mut values = Vec::new();
