@@ -138,6 +138,10 @@ fn coerce_array_index_selector(
 }
 
 fn cell_to_eval_value(cell: &CalcValue) -> CalcValue {
+    if cell.rich().is_some() {
+        return cell.clone();
+    }
+
     match cell.core() {
         CoreValue::Number(n) => CalcValue::number(*n),
         CoreValue::Text(t) => CalcValue::text(t.clone()),

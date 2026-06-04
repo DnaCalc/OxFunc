@@ -558,6 +558,10 @@ fn map_batch_scalar_error(error: CallableInvocationError) -> LambdaHelperEvalErr
 }
 
 fn scalar_cell_from_prepared(prepared: &CalcValue) -> Result<CalcValue, CallableInvocationError> {
+    if prepared.rich().is_some() {
+        return Ok(prepared.clone());
+    }
+
     match prepared.core() {
         CoreValue::Number(n) => Ok(CalcValue::number(*n)),
         CoreValue::Text(t) => Ok(CalcValue::text(t.clone())),

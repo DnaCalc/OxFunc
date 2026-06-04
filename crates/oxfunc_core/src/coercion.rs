@@ -34,6 +34,10 @@ pub fn coerce_eval_to_number(
     value: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, CoercionError> {
+    if value.callable_value().is_some() {
+        return Err(CoercionError::UnsupportedValueKind("callable"));
+    }
+
     match value.core() {
         CoreValue::Number(n) => Ok(*n),
         CoreValue::Logical(b) => Ok(if *b { 1.0 } else { 0.0 }),
@@ -53,6 +57,10 @@ pub fn coerce_eval_to_number(
 }
 
 pub fn coerce_calc_scalar_to_number(value: &CalcValue) -> Result<f64, CoercionError> {
+    if value.callable_value().is_some() {
+        return Err(CoercionError::UnsupportedValueKind("callable"));
+    }
+
     match value.core() {
         CoreValue::Number(n) => Ok(*n),
         CoreValue::Logical(b) => Ok(if *b { 1.0 } else { 0.0 }),
