@@ -140,9 +140,8 @@ mod tests {
     #[test]
     fn value_current_host_seed_rows() {
         let ctx = test_current_excel_host_context();
-        let mk = |s: &str| {
-            (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
-        };
+        let mk =
+            |s: &str| CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()));
         assert_eq!(
             eval_value_surface(&[mk("1 234.5")], &NoResolver, &ctx),
             Ok(CalcValue::number(1234.5))

@@ -900,9 +900,9 @@ mod tests {
     }
 
     fn field_text(name: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(
+        CalcValue::text(ExcelText::from_utf16_code_units(
             name.encode_utf16().collect(),
-        )))
+        ))
     }
 
     fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {

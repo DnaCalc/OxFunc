@@ -577,7 +577,7 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
     fn txt(s: &str) -> CalcValue {
         CalcValue::text(ExcelText::from_interop_assignment(s))

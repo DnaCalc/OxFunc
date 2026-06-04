@@ -947,15 +947,15 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn bool_arg(flag: bool) -> CalcValue {
-        (CalcValue::logical(flag))
+        CalcValue::logical(flag)
     }
 
     fn col(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 values
                     .iter()
@@ -964,27 +964,27 @@ mod tests {
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn row(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(vec![
                 values.iter().copied().map(CalcValue::number).collect(),
             ])
             .unwrap(),
-        ))
+        )
     }
 
     fn matrix(rows: &[&[f64]]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 rows.iter()
                     .map(|row| row.iter().copied().map(CalcValue::number).collect())
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn ref_arg(target: &str) -> CalcValue {

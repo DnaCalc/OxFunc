@@ -611,19 +611,19 @@ mod tests {
     }
 
     fn text_arg(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn text_prepared(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn number_arg(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn number_prepared(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn text_cell(s: &str) -> CalcValue {
@@ -631,25 +631,25 @@ mod tests {
     }
 
     fn text_array_arg(rows: Vec<Vec<&str>>) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 rows.into_iter()
                     .map(|row| row.into_iter().map(text_cell).collect())
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn number_array_arg(rows: Vec<Vec<f64>>) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 rows.into_iter()
                     .map(|row| row.into_iter().map(CalcValue::number).collect())
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn expected_array(rows: Vec<Vec<CalcValue>>) -> CalcValue {

@@ -550,7 +550,7 @@ mod tests {
 
     #[test]
     fn nonsquare_inputs_map_to_value() {
-        let nonsquare = (CalcValue::array(
+        let nonsquare = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![
                     CalcValue::number(1.0),
@@ -564,7 +564,7 @@ mod tests {
                 ],
             ])
             .unwrap(),
-        ));
+        );
         assert_eq!(
             eval_mdeterm_surface(&[nonsquare.clone()], &NoResolver),
             Err(MatrixEvalError::Domain(WorksheetErrorCode::Value))

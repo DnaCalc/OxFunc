@@ -561,15 +561,15 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn txt(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn prepared_text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn ref_arg(target: &str) -> CalcValue {
@@ -581,7 +581,7 @@ mod tests {
     }
 
     fn number_column(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 values
                     .iter()
@@ -589,7 +589,7 @@ mod tests {
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn expected_number_column(values: &[f64]) -> CalcValue {

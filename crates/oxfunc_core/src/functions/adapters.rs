@@ -671,7 +671,7 @@ mod tests {
     fn prepare_values_only_dereferences_reference_arg() {
         let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         let prepared = prepare_arg_values_only(&arg, &resolver_with(CalcValue::number(3.0)));
-        assert_eq!(prepared, Ok((CalcValue::number(3.0))));
+        assert_eq!(prepared, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -728,14 +728,14 @@ mod tests {
         let prepared = prepare_arg_values_only(&arg, &resolver);
         assert_eq!(
             prepared,
-            Ok((CalcValue::array(
+            Ok(CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(7.0),
                     CalcValue::number(11.0),
                     CalcValue::number(13.0),
                 ]])
                 .unwrap()
-            )))
+            ))
         );
     }
 
@@ -838,12 +838,12 @@ mod tests {
 
     #[test]
     fn prepared_coercion_numeric_text_and_error_paths() {
-        let text = (CalcValue::text(ExcelText::from_utf16_code_units(
+        let text = CalcValue::text(ExcelText::from_utf16_code_units(
             "2".encode_utf16().collect(),
-        )));
+        ));
         assert_eq!(coerce_prepared_to_number(&text), Ok(2.0));
 
-        let err = (CalcValue::error(WorksheetErrorCode::Value));
+        let err = CalcValue::error(WorksheetErrorCode::Value);
         assert_eq!(
             coerce_prepared_to_number(&err),
             Err(CoercionError::WorksheetError(WorksheetErrorCode::Value))
@@ -852,7 +852,7 @@ mod tests {
 
     #[test]
     fn prepared_text_coercion_formats_scalars_and_blanks() {
-        let number = (CalcValue::number(2.5));
+        let number = CalcValue::number(2.5);
         assert_eq!(
             coerce_prepared_to_text(&number),
             Ok(ExcelText::from_utf16_code_units(
@@ -870,7 +870,7 @@ mod tests {
     #[test]
     fn prepared_coercion_rejects_reference_if_invariant_broken() {
         let prepared =
-            (CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())));
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         let got = coerce_prepared_to_number(&prepared);
         assert_eq!(
             got,
@@ -942,7 +942,7 @@ mod tests {
 
     #[test]
     fn expand_arg_values_only_flattens_array_payloads() {
-        let arg = (CalcValue::array(
+        let arg = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::empty()],
                 vec![
@@ -953,7 +953,7 @@ mod tests {
                 ],
             ])
             .unwrap(),
-        ));
+        );
         let got = expand_arg_values_only(&arg, &resolver_with(CalcValue::number(0.0))).unwrap();
         assert_eq!(
             got,
@@ -992,10 +992,10 @@ mod tests {
 
     #[test]
     fn expand_aggregate_arg_admits_opaque_reference_values_as_reference_derived() {
-        let arg = (CalcValue::reference(ReferenceLike::new(
+        let arg = CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "NameBackedRange".to_string(),
-        )));
+        ));
         let got = expand_aggregate_arg(
             &arg,
             &resolver_with(CalcValue::array(
@@ -1055,13 +1055,13 @@ mod tests {
 
     #[test]
     fn expand_lookup_vector_arg_rejects_two_dimensional_array() {
-        let arg = (CalcValue::array(
+        let arg = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = expand_lookup_vector_arg(&arg, &resolver_with(CalcValue::number(0.0)));
         assert_eq!(
             got,

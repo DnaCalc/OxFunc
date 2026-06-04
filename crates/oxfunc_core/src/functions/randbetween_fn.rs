@@ -139,7 +139,7 @@ mod tests {
     }
 
     fn num(v: f64) -> CalcValue {
-        (CalcValue::number(v))
+        CalcValue::number(v)
     }
 
     // --- Meta tests ---

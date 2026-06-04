@@ -114,7 +114,7 @@ mod tests {
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 
     fn text_prepared(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     struct MockResolver {
@@ -148,7 +148,7 @@ mod tests {
     }
 
     fn text_arg(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     #[test]

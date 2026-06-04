@@ -565,11 +565,11 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn col(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 values
                     .iter()
@@ -578,16 +578,16 @@ mod tests {
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn row(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(vec![
                 values.iter().copied().map(CalcValue::number).collect(),
             ])
             .unwrap(),
-        ))
+        )
     }
 
     fn ref_arg(target: &str) -> CalcValue {
@@ -632,14 +632,14 @@ mod tests {
 
     #[test]
     fn lookup_array_form_uses_first_column_and_last_column_when_tall() {
-        let array = (CalcValue::array(
+        let array = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(10.0)],
                 vec![CalcValue::number(2.0), CalcValue::number(20.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(30.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_lookup_surface(
             &[num(2.9), array],
             &MockResolver {
@@ -652,7 +652,7 @@ mod tests {
 
     #[test]
     fn lookup_can_return_text_from_result_vector() {
-        let result = (CalcValue::array(
+        let result = CalcValue::array(
             CalcArray::from_rows(vec![vec![
                 CalcValue::text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
@@ -665,7 +665,7 @@ mod tests {
                 )),
             ]])
             .unwrap(),
-        ));
+        );
         let got = eval_lookup_surface(
             &[num(2.2), row(&[1.0, 2.0, 3.0]), result],
             &MockResolver {
@@ -821,14 +821,14 @@ mod tests {
 
     #[test]
     fn matrix_lookup_vector_with_matching_result_vector_uses_bounded_heuristic() {
-        let matrix = (CalcValue::array(
+        let matrix = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 vec![CalcValue::number(5.0), CalcValue::number(6.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_lookup_surface(
             &[num(2.0), matrix, row(&[10.0, 20.0, 30.0])],
             &MockResolver {

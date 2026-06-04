@@ -462,17 +462,17 @@ mod tests {
     }
 
     fn number_arg(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn text_arg(text: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(
+        CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
-        )))
+        ))
     }
 
     fn bool_arg(value: bool) -> CalcValue {
-        (CalcValue::logical(value))
+        CalcValue::logical(value)
     }
 
     fn ref_arg(target: &str) -> CalcValue {

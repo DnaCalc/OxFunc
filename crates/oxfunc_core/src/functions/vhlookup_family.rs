@@ -317,30 +317,30 @@ mod tests {
     }
 
     fn scalar_num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn scalar_bool(b: bool) -> CalcValue {
-        (CalcValue::logical(b))
+        CalcValue::logical(b)
     }
 
     fn scalar_text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn vtable() -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(10.0)],
                 vec![CalcValue::number(2.0), CalcValue::number(20.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(30.0)],
             ])
             .unwrap(),
-        ))
+        )
     }
 
     fn htable() -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![
                     CalcValue::number(1.0),
@@ -354,7 +354,7 @@ mod tests {
                 ],
             ])
             .unwrap(),
-        ))
+        )
     }
 
     #[test]
@@ -543,20 +543,20 @@ mod tests {
 
     #[test]
     fn lookup_exact_supports_wildcards() {
-        let vtable = (CalcValue::array(
+        let vtable = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![txt("abc"), CalcValue::number(10.0)],
                 vec![txt("bcd"), CalcValue::number(20.0)],
             ])
             .unwrap(),
-        ));
-        let htable = (CalcValue::array(
+        );
+        let htable = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![txt("abc"), txt("bcd")],
                 vec![CalcValue::number(10.0), CalcValue::number(20.0)],
             ])
             .unwrap(),
-        ));
+        );
         assert_eq!(
             eval_vlookup_surface(
                 &[
@@ -585,13 +585,13 @@ mod tests {
 
     #[test]
     fn vlookup_exact_matches_logicals() {
-        let table = (CalcValue::array(
+        let table = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::logical(true), CalcValue::number(1.0)],
                 vec![CalcValue::logical(false), CalcValue::number(2.0)],
             ])
             .unwrap(),
-        ));
+        );
         assert_eq!(
             eval_vlookup_surface(
                 &[

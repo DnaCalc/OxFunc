@@ -715,15 +715,15 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(s)))
+        CalcValue::text(ExcelText::from_interop_assignment(s))
     }
 
     fn bool_arg(b: bool) -> CalcValue {
-        (CalcValue::logical(b))
+        CalcValue::logical(b)
     }
 
     fn assert_ok_number_close(got: Result<CalcValue, DiscreteDistEvalError>, expected: f64) {

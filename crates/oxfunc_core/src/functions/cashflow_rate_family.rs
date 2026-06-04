@@ -749,7 +749,7 @@ mod tests {
     }
 
     fn col(values: &[f64]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             CalcArray::from_rows(
                 values
                     .iter()
@@ -758,11 +758,11 @@ mod tests {
                     .collect(),
             )
             .unwrap(),
-        ))
+        )
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn ref_arg(target: &str) -> CalcValue {
@@ -1147,13 +1147,13 @@ mod tests {
 
     #[test]
     fn matrix_input_is_explicitly_out_of_slice() {
-        let matrix = (CalcValue::array(
+        let matrix = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(-100.0), CalcValue::number(121.0)],
                 vec![CalcValue::number(5.0), CalcValue::number(6.0)],
             ])
             .unwrap(),
-        ));
+        );
         let error = eval_irr_surface(
             &[matrix],
             &MockResolver {

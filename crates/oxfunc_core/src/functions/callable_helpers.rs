@@ -1198,13 +1198,13 @@ mod tests {
                     let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok((CalcValue::array(
+                    Ok(CalcValue::array(
                         CalcArray::from_rows(vec![
                             vec![CalcValue::number(n)],
                             vec![CalcValue::number(n + 1.0)],
                         ])
                         .expect("pair array"),
-                    )))
+                    ))
                 }
                 "helper.makearray_coords" => {
                     let r = coerce_prepared_to_number(&args[0]).map_err(|_| {
@@ -1213,7 +1213,7 @@ mod tests {
                     let c = coerce_prepared_to_number(&args[1]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok((CalcValue::number(r * 10.0 + c)))
+                    Ok(CalcValue::number(r * 10.0 + c))
                 }
                 other => Err(CallableInvocationError::UnsupportedCallableToken(
                     other.to_string(),
@@ -1335,10 +1335,10 @@ mod tests {
 
     #[test]
     fn eval_map_prepared_supports_helper_callable_token() {
-        let input = (CalcValue::array(
+        let input = CalcValue::array(
             CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
                 .unwrap(),
-        ));
+        );
         let got = eval_map_prepared(&[input], &helper("helper.add1", 1), &MockCallableInvoker);
         assert_eq!(
             got,
@@ -1351,10 +1351,10 @@ mod tests {
 
     #[test]
     fn eval_map_prepared_supports_defined_name_callable_token() {
-        let input = (CalcValue::array(
+        let input = CalcValue::array(
             CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
                 .unwrap(),
-        ));
+        );
         let got = eval_map_prepared(
             &[input],
             &defined_name("name.capadd", 1),
@@ -1371,12 +1371,12 @@ mod tests {
 
     #[test]
     fn eval_map_prepared_pads_missing_partner_with_na() {
-        let a = (CalcValue::array(
+        let a = CalcValue::array(
             CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
                 .unwrap(),
-        ));
+        );
         let b =
-            (CalcValue::array(CalcArray::from_rows(vec![vec![CalcValue::number(10.0)]]).unwrap()));
+            CalcValue::array(CalcArray::from_rows(vec![vec![CalcValue::number(10.0)]]).unwrap());
         let got = eval_map_prepared(&[a, b], &helper("helper.sum2", 2), &MockCallableInvoker);
         assert_eq!(
             got,
@@ -1392,14 +1392,14 @@ mod tests {
 
     #[test]
     fn eval_reduce_prepared_folds_over_iterable() {
-        let iterable = (CalcValue::array(
+        let iterable = CalcValue::array(
             CalcArray::from_rows(vec![vec![
                 CalcValue::number(1.0),
                 CalcValue::number(2.0),
                 CalcValue::number(3.0),
             ]])
             .unwrap(),
-        ));
+        );
         let got = eval_reduce_prepared(
             &num(0.0),
             &iterable,
@@ -1411,14 +1411,14 @@ mod tests {
 
     #[test]
     fn eval_reduce_prepared_uses_sequential_batch_invoker() {
-        let iterable = (CalcValue::array(
+        let iterable = CalcValue::array(
             CalcArray::from_rows(vec![vec![
                 CalcValue::number(1.0),
                 CalcValue::number(2.0),
                 CalcValue::number(3.0),
             ]])
             .unwrap(),
-        ));
+        );
         let invoker = BatchCountingInvoker::new();
         let got = eval_reduce_prepared(&num(0.0), &iterable, &helper("helper.sum2", 2), &invoker);
         assert_eq!(got, Ok(num(6.0)));
@@ -1432,14 +1432,14 @@ mod tests {
 
     #[test]
     fn eval_scan_prepared_spills_intermediate_accumulations() {
-        let iterable = (CalcValue::array(
+        let iterable = CalcValue::array(
             CalcArray::from_rows(vec![vec![
                 CalcValue::number(1.0),
                 CalcValue::number(2.0),
                 CalcValue::number(3.0),
             ]])
             .unwrap(),
-        ));
+        );
         let got = eval_scan_prepared(
             &num(0.0),
             &iterable,
@@ -1461,14 +1461,14 @@ mod tests {
 
     #[test]
     fn eval_scan_prepared_uses_sequential_batch_invoker() {
-        let iterable = (CalcValue::array(
+        let iterable = CalcValue::array(
             CalcArray::from_rows(vec![vec![
                 CalcValue::number(1.0),
                 CalcValue::number(2.0),
                 CalcValue::number(3.0),
             ]])
             .unwrap(),
-        ));
+        );
         let invoker = BatchCountingInvoker::new();
         let got = eval_scan_prepared(&num(0.0), &iterable, &helper("helper.sum2", 2), &invoker);
         assert_eq!(
@@ -1492,10 +1492,10 @@ mod tests {
 
     #[test]
     fn map_byrow_bycol_and_makearray_use_independent_batch_invoker() {
-        let map_input = (CalcValue::array(
+        let map_input = CalcValue::array(
             CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
                 .unwrap(),
-        ));
+        );
         let map_invoker = BatchCountingInvoker::new();
         assert_eq!(
             eval_map_prepared(&[map_input], &helper("helper.add1", 1), &map_invoker),
@@ -1511,13 +1511,13 @@ mod tests {
             Some(CallableBatchMode::Independent)
         );
 
-        let source = (CalcValue::array(
+        let source = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let byrow_invoker = BatchCountingInvoker::new();
         assert_eq!(
             eval_byrow_prepared(&source, &helper("helper.sum_array", 1), &byrow_invoker),
@@ -1577,13 +1577,13 @@ mod tests {
 
     #[test]
     fn eval_byrow_prepared_returns_one_scalar_result_per_row() {
-        let source = (CalcValue::array(
+        let source = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_byrow_prepared(
             &source,
             &helper("helper.sum_array", 1),
@@ -1603,13 +1603,13 @@ mod tests {
 
     #[test]
     fn eval_bycol_prepared_returns_one_scalar_result_per_column() {
-        let source = (CalcValue::array(
+        let source = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_bycol_prepared(
             &source,
             &helper("helper.sum_array", 1),
@@ -1626,13 +1626,13 @@ mod tests {
 
     #[test]
     fn eval_byrow_prepared_rejects_non_scalar_lambda_result() {
-        let source = (CalcValue::array(
+        let source = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_byrow_prepared(
             &source,
             &helper("helper.nonscalar_plus1", 1),
@@ -1643,13 +1643,13 @@ mod tests {
 
     #[test]
     fn eval_bycol_prepared_rejects_non_scalar_lambda_result() {
-        let source = (CalcValue::array(
+        let source = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
-        ));
+        );
         let got = eval_bycol_prepared(
             &source,
             &helper("helper.nonscalar_plus1", 1),
@@ -1983,9 +1983,9 @@ mod tests {
                 _args: &[CalcValue],
             ) -> Result<CalcValue, CallableInvocationError> {
                 if callable.summary == "helper.text" {
-                    return Ok((CalcValue::text(ExcelText::from_utf16_code_units(
+                    return Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                         "ok".encode_utf16().collect(),
-                    ))));
+                    )));
                 }
                 Err(CallableInvocationError::UnsupportedCallableToken(
                     callable.summary.clone(),
@@ -1996,9 +1996,9 @@ mod tests {
         let got = invoke_callable_prepared(&helper("helper.text", 0), &[], &TextInvoker);
         assert_eq!(
             got,
-            Ok((CalcValue::text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "ok".encode_utf16().collect()
-            ))))
+            )))
         );
     }
 }

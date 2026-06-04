@@ -3104,19 +3104,19 @@ mod tests {
     }
 
     fn array_arg(rows: Vec<Vec<CalcValue>>) -> CalcValue {
-        (CalcValue::array(CalcArray::from_rows(rows).unwrap()))
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
     }
 
     fn number_arg(value: f64) -> CalcValue {
-        (CalcValue::number(value))
+        CalcValue::number(value)
     }
 
     fn logical_arg(value: bool) -> CalcValue {
-        (CalcValue::logical(value))
+        CalcValue::logical(value)
     }
 
     fn text_arg(value: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(value)))
+        CalcValue::text(ExcelText::from_interop_assignment(value))
     }
 
     fn text_cell(value: &str) -> CalcValue {
@@ -3627,9 +3627,9 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_abs_accepts_text_numeric() {
-        let arg = (CalcValue::text(ExcelText::from_utf16_code_units(
+        let arg = CalcValue::text(ExcelText::from_utf16_code_units(
             " -2 ".encode_utf16().collect(),
-        )));
+        ));
         let got = eval_test_surface_value_call(
             FUNC_ID_ABS,
             &[arg],
@@ -4250,7 +4250,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_rejects_unknown_id() {
-        let arg = (CalcValue::number(1.0));
+        let arg = CalcValue::number(1.0);
         let got = eval_test_surface_value_call(
             "FUNC.UNKNOWN",
             &[arg],
@@ -4546,9 +4546,9 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_ftc_0703_0705_datedif_cluster_matches_expected_values() {
-        let start_y = (CalcValue::text(ExcelText::from_interop_assignment("2020-01-15")));
-        let end_y = (CalcValue::text(ExcelText::from_interop_assignment("2024-03-20")));
-        let unit_y = (CalcValue::text(ExcelText::from_interop_assignment("Y")));
+        let start_y = CalcValue::text(ExcelText::from_interop_assignment("2020-01-15"));
+        let end_y = CalcValue::text(ExcelText::from_interop_assignment("2024-03-20"));
+        let unit_y = CalcValue::text(ExcelText::from_interop_assignment("Y"));
         let got_y = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[start_y, end_y, unit_y],
@@ -4560,8 +4560,8 @@ mod tests {
         );
         assert_eq!(got_y, Ok(CalcValue::number(4.0)));
 
-        let start_m = (CalcValue::text(ExcelText::from_interop_assignment("2024-01-15")));
-        let end_m = (CalcValue::text(ExcelText::from_interop_assignment("2024-04-10")));
+        let start_m = CalcValue::text(ExcelText::from_interop_assignment("2024-01-15"));
+        let end_m = CalcValue::text(ExcelText::from_interop_assignment("2024-04-10"));
         let got_m = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[

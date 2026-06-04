@@ -840,10 +840,10 @@ mod tests {
     }
 
     fn txt(s: &str) -> CalcValue {
-        (text_from_string(s.to_string()))
+        text_from_string(s.to_string())
     }
     fn text_array_row(values: &[&str]) -> CalcValue {
-        (CalcValue::array(
+        CalcValue::array(
             crate::value::CalcArray::from_rows(vec![
                 values
                     .iter()
@@ -853,13 +853,13 @@ mod tests {
                     .collect(),
             ])
             .unwrap(),
-        ))
+        )
     }
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
     fn bool_arg(b: bool) -> CalcValue {
-        (CalcValue::logical(b))
+        CalcValue::logical(b)
     }
     fn text_result(value: CalcValue) -> String {
         match value.core {

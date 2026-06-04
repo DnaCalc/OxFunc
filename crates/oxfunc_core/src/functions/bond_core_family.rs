@@ -835,7 +835,7 @@ mod tests {
         excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap()
     }
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
     struct Dummy;
     impl ReferenceSystemProvider for Dummy {

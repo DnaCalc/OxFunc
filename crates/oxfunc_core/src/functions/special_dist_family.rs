@@ -669,13 +669,13 @@ mod tests {
     fn erf_family_lifts_arrays_elementwise() {
         let r = NoResolver;
         // BUG-FUNC-028: ERF over a column array spills erf(x) elementwise.
-        let arr = (CalcValue::array(
+        let arr = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(2.0)],
                 vec![CalcValue::number(3.0)],
             ])
             .unwrap(),
-        ));
+        );
         let expected = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::number(erf_approx(2.0))],
@@ -687,13 +687,13 @@ mod tests {
 
         // A logical element in an ERF array errors only that cell (#VALUE!),
         // the numeric element still computes (Excel spills per-element errors).
-        let mixed = (CalcValue::array(
+        let mixed = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::logical(true)],
                 vec![CalcValue::number(2.0)],
             ])
             .unwrap(),
-        ));
+        );
         let mixed_expected = CalcValue::array(
             CalcArray::from_rows(vec![
                 vec![CalcValue::error(WorksheetErrorCode::Value)],
@@ -707,7 +707,7 @@ mod tests {
     #[test]
     fn erf_family_rejects_logical_but_gamma_family_accepts_it() {
         let r = NoResolver;
-        let lgl = || (CalcValue::logical(true));
+        let lgl = || CalcValue::logical(true);
         // ERF/ERFC family: logical operand -> #VALUE! (Excel behavior). The
         // coercion rejection surfaces on the Err channel, which dispatch maps
         // to #VALUE!.
@@ -735,9 +735,9 @@ mod tests {
             other => panic!("expected gammaln.precise(TRUE) to accept logical, got {other:?}"),
         }
         // ERF still accepts numeric text (only logical is rejected).
-        let txt2 = (CalcValue::text(ExcelText::from_utf16_code_units(
+        let txt2 = CalcValue::text(ExcelText::from_utf16_code_units(
             "2".encode_utf16().collect(),
-        )));
+        ));
         assert_eq!(
             eval_erf_surface(&[txt2], &r),
             Ok(CalcValue::number(erf_approx(2.0)))

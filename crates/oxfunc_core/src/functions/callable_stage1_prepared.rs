@@ -276,7 +276,7 @@ mod tests {
     use crate::value::ExcelText;
 
     fn num(n: f64) -> Stage1Expr {
-        Stage1Expr::Prepared((CalcValue::number(n)))
+        Stage1Expr::Prepared(CalcValue::number(n))
     }
 
     fn row_array(nums: &[f64]) -> Stage1Expr {
@@ -286,7 +286,7 @@ mod tests {
             .map(CalcValue::number)
             .collect::<Vec<_>>();
         let array = CalcArray::from_rows(vec![cells]).expect("row array");
-        Stage1Expr::Prepared((CalcValue::array(array)))
+        Stage1Expr::Prepared(CalcValue::array(array))
     }
 
     #[test]

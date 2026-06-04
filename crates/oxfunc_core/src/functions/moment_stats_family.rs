@@ -369,11 +369,11 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     fn array_row(cells: Vec<CalcValue>) -> CalcValue {
@@ -569,10 +569,10 @@ mod tests {
         let resolver = MockResolver {
             cells: HashMap::from([("A1:A5".to_string(), number_row(&[1.0, 2.0, 3.0, 4.0, 5.0]))]),
         };
-        let percent = (CalcValue::array(
+        let percent = CalcValue::array(
             CalcArray::from_rows(vec![vec![CalcValue::number(0.2), CalcValue::number(0.4)]])
                 .unwrap(),
-        ));
+        );
         assert_eq!(
             eval_trimmean_surface(&[ref_arg("A1:A5"), percent], &resolver),
             Ok(CalcValue::error(WorksheetErrorCode::Value))

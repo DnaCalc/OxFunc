@@ -178,7 +178,7 @@ mod tests {
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn array(values: &[f64]) -> CalcValue {

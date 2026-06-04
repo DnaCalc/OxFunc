@@ -157,7 +157,7 @@ mod tests {
     }
 
     fn text_arg(text: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(text)))
+        CalcValue::text(ExcelText::from_interop_assignment(text))
     }
 
     #[test]

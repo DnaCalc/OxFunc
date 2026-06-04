@@ -434,7 +434,7 @@ mod tests {
     }
 
     fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
-        (CalcValue::array(crate::value::CalcArray::from_rows(rows).unwrap()))
+        CalcValue::array(crate::value::CalcArray::from_rows(rows).unwrap())
     }
 
     fn eval_array(rows: Vec<Vec<CalcValue>>) -> CalcValue {

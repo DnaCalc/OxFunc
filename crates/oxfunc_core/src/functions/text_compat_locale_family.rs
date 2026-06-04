@@ -473,11 +473,11 @@ mod tests {
     }
 
     fn text_arg(s: &str) -> CalcValue {
-        (CalcValue::text(txt(s)))
+        CalcValue::text(txt(s))
     }
 
     fn number_arg(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     #[test]

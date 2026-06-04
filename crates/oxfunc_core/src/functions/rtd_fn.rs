@@ -143,9 +143,9 @@ mod tests {
     }
 
     fn text_arg(text: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(
+        CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
-        )))
+        ))
     }
 
     #[test]

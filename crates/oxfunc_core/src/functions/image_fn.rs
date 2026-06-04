@@ -422,11 +422,11 @@ mod tests {
     }
 
     fn text_arg(text: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(text)))
+        CalcValue::text(ExcelText::from_interop_assignment(text))
     }
 
     fn number_arg(value: f64) -> CalcValue {
-        (CalcValue::number(value))
+        CalcValue::number(value)
     }
 
     #[test]

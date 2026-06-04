@@ -1349,11 +1349,11 @@ mod tests {
     }
 
     fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
-        (CalcValue::array(CalcArray::from_rows(rows).unwrap()))
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
     }
 
     fn num(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     #[test]

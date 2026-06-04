@@ -206,11 +206,11 @@ mod tests {
     }
 
     fn num(v: f64) -> CalcValue {
-        (CalcValue::number(v))
+        CalcValue::number(v)
     }
 
     fn text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(s)))
+        CalcValue::text(ExcelText::from_interop_assignment(s))
     }
 
     fn text_val(s: &str) -> CalcValue {

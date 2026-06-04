@@ -159,11 +159,11 @@ mod tests {
     }
 
     fn text_value(units: Vec<u16>) -> CalcValue {
-        (CalcValue::text(ExcelText::from_utf16_code_units(units)))
+        CalcValue::text(ExcelText::from_utf16_code_units(units))
     }
 
     fn number_value(n: f64) -> CalcValue {
-        (CalcValue::number(n))
+        CalcValue::number(n)
     }
 
     fn txt(s: &str) -> ExcelText {

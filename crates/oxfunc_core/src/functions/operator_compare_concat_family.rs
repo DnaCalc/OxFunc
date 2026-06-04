@@ -598,8 +598,8 @@ mod tests {
 
     #[test]
     fn comparisons_use_excel_near_equal_numeric_ordering() {
-        let lhs = (CalcValue::number(0.1 + 0.2));
-        let rhs = (CalcValue::number(0.3));
+        let lhs = CalcValue::number(0.1 + 0.2);
+        let rhs = CalcValue::number(0.3);
         assert_eq!(
             eval_op_equal_surface(&[lhs.clone(), rhs.clone()], &NoResolver),
             Ok(CalcValue::logical(true))
@@ -632,8 +632,8 @@ mod tests {
             Ok(CalcValue::logical(false))
         );
 
-        let boundary_lhs = (CalcValue::number(((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25));
-        let boundary_rhs = (CalcValue::number(((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25));
+        let boundary_lhs = CalcValue::number(((123_456_789_012_345_f64 * 10.0) + 5.0) / 1.0e25);
+        let boundary_rhs = CalcValue::number(((123_456_789_012_345_f64 * 10.0) + 4.0) / 1.0e25);
         assert_eq!(
             eval_op_equal_surface(&[boundary_lhs.clone(), boundary_rhs.clone()], &NoResolver),
             Ok(CalcValue::logical(true))

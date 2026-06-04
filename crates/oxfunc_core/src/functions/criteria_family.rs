@@ -848,10 +848,10 @@ mod tests {
         CalcValue::text(ExcelText::from_interop_assignment(s))
     }
     fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
-        (CalcValue::array(CalcArray::from_rows(rows).unwrap()))
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
     }
     fn scalar_text(s: &str) -> CalcValue {
-        (CalcValue::text(ExcelText::from_interop_assignment(s)))
+        CalcValue::text(ExcelText::from_interop_assignment(s))
     }
     fn area_ref(target: &str) -> CalcValue {
         CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
