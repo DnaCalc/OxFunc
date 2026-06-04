@@ -4,7 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{FunctionArg, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
+use crate::value::WorksheetErrorCode;
+use crate::value::{CalcValue, CoreValue};
 use std::collections::BTreeMap;
 
 const PROB_SUM_TOLERANCE: f64 = 1e-7;
@@ -67,7 +68,7 @@ enum VectorOrientation {
 #[derive(Debug, Clone, PartialEq)]
 struct ScalarVector {
     lookup_keys: Vec<f64>,
-    result_values: Vec<FunctionValue>,
+    result_values: Vec<CalcValue>,
 }
 
 fn arity_error(meta: &FunctionMeta, actual: usize) -> LookupProbFrequencyEvalError {
@@ -79,42 +80,40 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> LookupProbFrequencyEvalErr
 }
 
 fn resolve_arg_eval(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LookupProbFrequencyEvalError> {
-    match arg {
-        FunctionArg::Reference(reference)
-        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
-            resolve_eval_value(resolver, reference)
-                .map_err(CoercionError::RefResolution)
-                .map_err(LookupProbFrequencyEvalError::Coercion)
-        }
-        FunctionArg::Eval(value) => Ok(value.clone()),
-        FunctionArg::MissingArg => Err(LookupProbFrequencyEvalError::Coercion(
+) -> Result<CalcValue, LookupProbFrequencyEvalError> {
+    match arg.core() {
+        CoreValue::Reference(reference) => resolve_eval_value(resolver, reference)
+            .map_err(CoercionError::RefResolution)
+            .map_err(LookupProbFrequencyEvalError::Coercion),
+        CoreValue::Missing => Err(LookupProbFrequencyEvalError::Coercion(
             CoercionError::MissingArg,
         )),
-        FunctionArg::EmptyCell => Err(LookupProbFrequencyEvalError::Domain(
+        CoreValue::Empty => Err(LookupProbFrequencyEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
+        _ => Ok(arg.clone()),
     }
 }
 
 fn optional_arg_value(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Option<FunctionValue>, LookupProbFrequencyEvalError> {
+) -> Result<Option<CalcValue>, LookupProbFrequencyEvalError> {
     match arg {
-        None | Some(FunctionArg::MissingArg) => Ok(None),
+        None => Ok(None),
+        Some(value) if matches!(value.core(), CoreValue::Missing) => Ok(None),
         Some(other) => Ok(Some(resolve_arg_eval(other, resolver)?)),
     }
 }
 
-fn scalar_number_from_eval(value: &FunctionValue) -> Result<f64, LookupProbFrequencyEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(*n),
-        FunctionValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
-        FunctionValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        FunctionValue::Array(array) => {
+fn scalar_number_from_eval(value: &CalcValue) -> Result<f64, LookupProbFrequencyEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
+        CoreValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows == 1 && shape.cols == 1 {
                 number_from_cell(array.get(0, 0).expect("single cell"), false)
@@ -124,9 +123,9 @@ fn scalar_number_from_eval(value: &FunctionValue) -> Result<f64, LookupProbFrequ
                 ))
             }
         }
-        FunctionValue::Text(_) | FunctionValue::Reference(_) => Err(
-            LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        CoreValue::Text(_) | CoreValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
         _ => Err(LookupProbFrequencyEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
@@ -134,15 +133,18 @@ fn scalar_number_from_eval(value: &FunctionValue) -> Result<f64, LookupProbFrequ
 }
 
 fn number_from_cell(
-    cell: &FunctionArrayCell,
+    cell: &CalcValue,
     ignore_non_numeric: bool,
 ) -> Result<f64, LookupProbFrequencyEvalError> {
-    match cell {
-        FunctionArrayCell::Number(n) => Ok(*n),
-        FunctionArrayCell::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_)
-        | FunctionArrayCell::EmptyCell => {
+    match cell.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
+        CoreValue::Text(_)
+        | CoreValue::Logical(_)
+        | CoreValue::Empty
+        | CoreValue::Missing
+        | CoreValue::Array(_)
+        | CoreValue::Reference(_) => {
             if ignore_non_numeric {
                 Err(LookupProbFrequencyEvalError::Coercion(
                     CoercionError::UnsupportedValueKind("ignored_non_numeric"),
@@ -156,23 +158,24 @@ fn number_from_cell(
     }
 }
 
-fn eval_from_cell(cell: &FunctionArrayCell) -> FunctionValue {
-    match cell {
-        FunctionArrayCell::Number(n) => FunctionValue::Number(*n),
-        FunctionArrayCell::Text(t) => FunctionValue::Text(t.clone()),
-        FunctionArrayCell::Logical(b) => FunctionValue::Logical(*b),
-        FunctionArrayCell::Error(code) => FunctionValue::Error(*code),
-        FunctionArrayCell::EmptyCell => FunctionValue::Number(0.0),
+fn eval_from_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::number(0.0),
+        CoreValue::Array(_) | CoreValue::Reference(_) => cell.clone(),
     }
 }
 
 fn collect_numeric_vector(
-    value: &FunctionValue,
+    value: &CalcValue,
     ignore_non_numeric: bool,
 ) -> Result<Vec<f64>, LookupProbFrequencyEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(vec![*n]),
-        FunctionValue::Logical(_) | FunctionValue::Text(_) => {
+    match value.core() {
+        CoreValue::Number(n) => Ok(vec![*n]),
+        CoreValue::Logical(_) | CoreValue::Text(_) => {
             if ignore_non_numeric {
                 Ok(Vec::new())
             } else {
@@ -181,8 +184,8 @@ fn collect_numeric_vector(
                 ))
             }
         }
-        FunctionValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        FunctionValue::Array(array) => {
+        CoreValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(LookupProbFrequencyEvalError::Domain(
@@ -201,7 +204,7 @@ fn collect_numeric_vector(
             }
             Ok(out)
         }
-        FunctionValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+        CoreValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
         _ => Err(LookupProbFrequencyEvalError::Domain(
@@ -211,7 +214,7 @@ fn collect_numeric_vector(
 }
 
 fn collect_numeric_vector_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     ignore_non_numeric: bool,
 ) -> Result<Vec<f64>, LookupProbFrequencyEvalError> {
@@ -219,15 +222,13 @@ fn collect_numeric_vector_arg(
     collect_numeric_vector(&eval, ignore_non_numeric)
 }
 
-fn extract_lookup_vector(
-    value: &FunctionValue,
-) -> Result<ScalarVector, LookupProbFrequencyEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(ScalarVector {
+fn extract_lookup_vector(value: &CalcValue) -> Result<ScalarVector, LookupProbFrequencyEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(ScalarVector {
             lookup_keys: vec![*n],
-            result_values: vec![FunctionValue::Number(*n)],
+            result_values: vec![CalcValue::number(*n)],
         }),
-        FunctionValue::Array(array) => {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows == 1 || shape.cols == 1 {
                 let mut keys = Vec::with_capacity(shape.rows * shape.cols);
@@ -272,8 +273,8 @@ fn extract_lookup_vector(
                 })
             }
         }
-        FunctionValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => Err(
+        CoreValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => Err(
             LookupProbFrequencyEvalError::Domain(WorksheetErrorCode::Value),
         ),
         _ => Err(LookupProbFrequencyEvalError::Domain(
@@ -283,20 +284,20 @@ fn extract_lookup_vector(
 }
 
 fn extract_result_vector(
-    value: &FunctionValue,
+    value: &CalcValue,
     expected_len: usize,
-) -> Result<Vec<FunctionValue>, LookupProbFrequencyEvalError> {
-    match value {
-        FunctionValue::Number(n) => {
+) -> Result<Vec<CalcValue>, LookupProbFrequencyEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => {
             if expected_len == 1 {
-                Ok(vec![FunctionValue::Number(*n)])
+                Ok(vec![CalcValue::number(*n)])
             } else {
                 Err(LookupProbFrequencyEvalError::Domain(
                     WorksheetErrorCode::Ref,
                 ))
             }
         }
-        FunctionValue::Array(array) => {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(LookupProbFrequencyEvalError::Domain(
@@ -315,26 +316,26 @@ fn extract_result_vector(
                 ))
             }
         }
-        FunctionValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
-        FunctionValue::Text(t) => {
+        CoreValue::Error(code) => Err(LookupProbFrequencyEvalError::Domain(*code)),
+        CoreValue::Text(t) => {
             if expected_len == 1 {
-                Ok(vec![FunctionValue::Text(t.clone())])
+                Ok(vec![CalcValue::text(t.clone())])
             } else {
                 Err(LookupProbFrequencyEvalError::Domain(
                     WorksheetErrorCode::Ref,
                 ))
             }
         }
-        FunctionValue::Logical(b) => {
+        CoreValue::Logical(b) => {
             if expected_len == 1 {
-                Ok(vec![FunctionValue::Logical(*b)])
+                Ok(vec![CalcValue::logical(*b)])
             } else {
                 Err(LookupProbFrequencyEvalError::Domain(
                     WorksheetErrorCode::Ref,
                 ))
             }
         }
-        FunctionValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
+        CoreValue::Reference(_) => Err(LookupProbFrequencyEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
         _ => Err(LookupProbFrequencyEvalError::Domain(
@@ -350,8 +351,8 @@ fn sorted_non_decreasing(values: &[f64]) -> bool {
 fn lookup_kernel(
     lookup_value: f64,
     lookup_vector: &[f64],
-    result_vector: &[FunctionValue],
-) -> Result<FunctionValue, WorksheetErrorCode> {
+    result_vector: &[CalcValue],
+) -> Result<CalcValue, WorksheetErrorCode> {
     if lookup_vector.is_empty()
         || result_vector.is_empty()
         || lookup_vector.len() != result_vector.len()
@@ -373,20 +374,20 @@ fn lookup_kernel(
         .ok_or(WorksheetErrorCode::NA)
 }
 
-fn vertical_number_array(values: &[f64]) -> FunctionValue {
-    FunctionValue::Array(
-        crate::value::FunctionArray::from_rows(
+fn vertical_number_array(values: &[f64]) -> CalcValue {
+    CalcValue::array(
+        crate::value::CalcArray::from_rows(
             values
                 .iter()
                 .copied()
-                .map(|n| vec![FunctionArrayCell::Number(n)])
+                .map(|n| vec![CalcValue::number(n)])
                 .collect(),
         )
         .expect("non-empty vertical array"),
     )
 }
 
-fn frequency_kernel(data: &[f64], bins: &[f64]) -> Result<FunctionValue, WorksheetErrorCode> {
+fn frequency_kernel(data: &[f64], bins: &[f64]) -> Result<CalcValue, WorksheetErrorCode> {
     if !sorted_non_decreasing(bins) {
         return Err(WorksheetErrorCode::Num);
     }
@@ -439,7 +440,7 @@ fn prob_kernel(
     Ok(total)
 }
 
-fn mode_mult_kernel(values: &[f64]) -> Result<FunctionValue, WorksheetErrorCode> {
+fn mode_mult_kernel(values: &[f64]) -> Result<CalcValue, WorksheetErrorCode> {
     let mut counts: BTreeMap<u64, (f64, usize)> = BTreeMap::new();
     for value in values {
         let entry = counts.entry(value.to_bits()).or_insert((*value, 0));
@@ -459,9 +460,9 @@ fn mode_mult_kernel(values: &[f64]) -> Result<FunctionValue, WorksheetErrorCode>
 }
 
 pub fn eval_lookup_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LookupProbFrequencyEvalError> {
+) -> Result<CalcValue, LookupProbFrequencyEvalError> {
     if !LOOKUP_META.arity.accepts(args.len()) {
         return Err(arity_error(&LOOKUP_META, args.len()));
     }
@@ -480,9 +481,9 @@ pub fn eval_lookup_surface(
 }
 
 pub fn eval_frequency_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LookupProbFrequencyEvalError> {
+) -> Result<CalcValue, LookupProbFrequencyEvalError> {
     if !FREQUENCY_META.arity.accepts(args.len()) {
         return Err(arity_error(&FREQUENCY_META, args.len()));
     }
@@ -492,9 +493,9 @@ pub fn eval_frequency_surface(
 }
 
 pub fn eval_prob_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LookupProbFrequencyEvalError> {
+) -> Result<CalcValue, LookupProbFrequencyEvalError> {
     if !PROB_META.arity.accepts(args.len()) {
         return Err(arity_error(&PROB_META, args.len()));
     }
@@ -505,14 +506,14 @@ pub fn eval_prob_surface(
         .map(|value| scalar_number_from_eval(&value))
         .transpose()?;
     prob_kernel(&x_values, &probabilities, lower, upper)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(LookupProbFrequencyEvalError::Domain)
 }
 
 pub fn eval_mode_mult_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LookupProbFrequencyEvalError> {
+) -> Result<CalcValue, LookupProbFrequencyEvalError> {
     if !MODE_MULT_META.arity.accepts(args.len()) {
         return Err(arity_error(&MODE_MULT_META, args.len()));
     }
@@ -538,11 +539,11 @@ pub fn map_lookup_prob_frequency_error_to_ws(
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        map: BTreeMap<String, FunctionValue>,
+        map: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -553,7 +554,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.map.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -563,46 +564,42 @@ mod tests {
         }
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn col(values: &[f64]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn col(values: &[f64]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
                     .copied()
-                    .map(|n| vec![FunctionArrayCell::Number(n)])
+                    .map(|n| vec![CalcValue::number(n)])
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn row(values: &[f64]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                values
-                    .iter()
-                    .copied()
-                    .map(FunctionArrayCell::Number)
-                    .collect(),
+    fn row(values: &[f64]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(vec![
+                values.iter().copied().map(CalcValue::number).collect(),
             ])
             .unwrap(),
         ))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn expect_vertical_numbers(value: FunctionValue) -> Vec<f64> {
-        match value {
-            FunctionValue::Array(array) => array
+    fn expect_vertical_numbers(value: CalcValue) -> Vec<f64> {
+        match value.core() {
+            CoreValue::Array(array) => array
                 .iter_row_major()
-                .map(|cell| match cell {
-                    FunctionArrayCell::Number(n) => *n,
+                .map(|cell| match cell.core() {
+                    CoreValue::Number(n) => *n,
                     other => panic!("unexpected cell: {other:?}"),
                 })
                 .collect(),
@@ -630,25 +627,16 @@ mod tests {
             },
         )
         .unwrap();
-        assert_eq!(got, FunctionValue::Number(20.0));
+        assert_eq!(got, CalcValue::number(20.0));
     }
 
     #[test]
     fn lookup_array_form_uses_first_column_and_last_column_when_tall() {
-        let array = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(10.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(20.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(30.0),
-                ],
+        let array = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                vec![CalcValue::number(2.0), CalcValue::number(20.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(30.0)],
             ])
             .unwrap(),
         ));
@@ -659,20 +647,20 @@ mod tests {
             },
         )
         .unwrap();
-        assert_eq!(got, FunctionValue::Number(20.0));
+        assert_eq!(got, CalcValue::number(20.0));
     }
 
     #[test]
     fn lookup_can_return_text_from_result_vector() {
-        let result = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+        let result = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
                 )),
-                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "b".encode_utf16().collect(),
                 )),
-                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "c".encode_utf16().collect(),
                 )),
             ]])
@@ -685,8 +673,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Text(t) => assert_eq!(t.to_string_lossy(), "b"),
+        match got.core() {
+            CoreValue::Text(t) => assert_eq!(t.to_string_lossy(), "b"),
             other => panic!("expected text, got {other:?}"),
         }
     }
@@ -712,7 +700,7 @@ mod tests {
             },
         )
         .unwrap();
-        assert_eq!(point, FunctionValue::Number(0.3));
+        assert_eq!(point, CalcValue::number(0.3));
 
         let interval = eval_prob_surface(
             &[
@@ -726,7 +714,7 @@ mod tests {
             },
         )
         .unwrap();
-        assert_eq!(interval, FunctionValue::Number(0.8));
+        assert_eq!(interval, CalcValue::number(0.8));
     }
 
     #[test]
@@ -776,22 +764,22 @@ mod tests {
         let mut map = BTreeMap::new();
         map.insert(
             "A1:A3".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(0.0)],
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(0.0)],
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
                 ])
                 .unwrap(),
             ),
         );
         map.insert(
             "B1:B3".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(0.2)],
-                    vec![FunctionArrayCell::Number(0.3)],
-                    vec![FunctionArrayCell::Number(0.5)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(0.2)],
+                    vec![CalcValue::number(0.3)],
+                    vec![CalcValue::number(0.5)],
                 ])
                 .unwrap(),
             ),
@@ -801,7 +789,7 @@ mod tests {
             &MockResolver { map },
         )
         .unwrap();
-        assert_eq!(got, FunctionValue::Number(0.8));
+        assert_eq!(got, CalcValue::number(0.8));
     }
 
     #[test]
@@ -833,20 +821,11 @@ mod tests {
 
     #[test]
     fn matrix_lookup_vector_with_matching_result_vector_uses_bounded_heuristic() {
-        let matrix = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(6.0),
-                ],
+        let matrix = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                vec![CalcValue::number(5.0), CalcValue::number(6.0)],
             ])
             .unwrap(),
         ));
@@ -857,6 +836,6 @@ mod tests {
             },
         )
         .unwrap();
-        assert_eq!(got, FunctionValue::Number(10.0));
+        assert_eq!(got, CalcValue::number(10.0));
     }
 }

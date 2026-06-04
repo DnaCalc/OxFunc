@@ -8,7 +8,8 @@ use crate::functions::rank_common::{
     collect_rank_values, prepare_rank_number, prepare_rank_order, rank_avg,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const RANK_AVG_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RANK.AVG",
@@ -35,9 +36,9 @@ pub enum RankAvgEvalError {
 }
 
 pub fn eval_rank_avg_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RankAvgEvalError> {
+) -> Result<CalcValue, RankAvgEvalError> {
     let argc = args.len();
     if !RANK_AVG_META.arity.accepts(argc) {
         return Err(RankAvgEvalError::ArityMismatch {
@@ -50,14 +51,14 @@ pub fn eval_rank_avg_surface(
     let Some(number) =
         prepare_rank_number(&args[0], resolver).map_err(RankAvgEvalError::Coercion)?
     else {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::NA));
+        return Ok(CalcValue::error(WorksheetErrorCode::NA));
     };
     let expanded = expand_aggregate_arg(&args[1], resolver).map_err(RankAvgEvalError::Coercion)?;
     let values = collect_rank_values(&expanded).map_err(RankAvgEvalError::Coercion)?;
     let order = prepare_rank_order(args.get(2), resolver).map_err(RankAvgEvalError::Coercion)?;
     match rank_avg(number, &values, order) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

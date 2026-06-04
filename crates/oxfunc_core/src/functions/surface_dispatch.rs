@@ -471,10 +471,8 @@ use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
 use crate::resolver::ReferenceResolutionError;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, CalcValue, CoreValue, EvalError, FunctionArg, FunctionArray, FunctionArrayCell,
-    FunctionValue, Value, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{ArrayShape, CalcArray, CoreValue, EvalError, WorksheetErrorCode};
 
 pub const FUNC_ID_ACOS: &str = "FUNC.ACOS";
 pub const FUNC_ID_ACOT: &str = "FUNC.ACOT";
@@ -1083,8 +1081,8 @@ impl CallableInvoker for RejectingCallableInvoker {
     fn invoke(
         &self,
         callable: &crate::value::CallableValue,
-        _args: &[crate::functions::adapters::PreparedValue],
-    ) -> Result<crate::functions::adapters::PreparedValue, CallableInvocationError> {
+        _args: &[crate::functions::adapters::CalcValue],
+    ) -> Result<crate::functions::adapters::CalcValue, CallableInvocationError> {
         Err(CallableInvocationError::UnsupportedCallableToken(
             callable.summary.clone(),
         ))
@@ -1432,48 +1430,50 @@ pub fn eval_surface_value_call_with_dispatch_key(
         Err(code) => lifted_result()
             .map(|result| result.map(CalcValue::from))
             .unwrap_or(Err(code)),
-        Ok(FunctionValue::Error(code))
-            if code == WorksheetErrorCode::Value
-                || observed_error_result_array_lift(dispatch_key.function_id) =>
+        Ok(value)
+            if matches!(
+                value.core(),
+                CoreValue::Error(code)
+                    if *code == WorksheetErrorCode::Value
+                        || observed_error_result_array_lift(dispatch_key.function_id)
+            ) =>
         {
+            let CoreValue::Error(code) = value.core() else {
+                unreachable!("guarded error")
+            };
             lifted_result()
                 .map(|result| result.map(CalcValue::from))
-                .unwrap_or(Ok(CalcValue::error(code)))
+                .unwrap_or(Ok(CalcValue::error(*code)))
         }
         other => other.map(CalcValue::from),
     }
 }
 
-fn generated_table_args_from_calc_values(args: &[CalcValue]) -> Vec<FunctionArg> {
-    args.iter().cloned().map(FunctionArg::value).collect()
+fn generated_table_args_from_calc_values(args: &[CalcValue]) -> Vec<CalcValue> {
+    args.to_vec()
 }
 
-fn calc_values_from_surface_call_args(args: &[FunctionArg]) -> Vec<CalcValue> {
+fn calc_values_from_surface_call_args(args: &[CalcValue]) -> Vec<CalcValue> {
     args.iter().cloned().map(calc_value_from_call_arg).collect()
 }
 
-fn calc_value_from_call_arg(arg: FunctionArg) -> CalcValue {
-    match arg {
-        FunctionArg::Eval(value) => CalcValue::from(value),
-        FunctionArg::MissingArg => CalcValue::missing(),
-        FunctionArg::EmptyCell => CalcValue::empty(),
-        FunctionArg::Reference(reference) => CalcValue::reference(reference),
+fn calc_value_from_call_arg(arg: CalcValue) -> CalcValue {
+    arg
+}
+
+fn eval_value_from_calc_value(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Array(array) => CalcValue::array(array.clone()),
+        CoreValue::Reference(reference) => CalcValue::reference(reference.clone()),
     }
 }
 
-fn eval_value_from_calc_value(value: CalcValue) -> FunctionValue {
-    match value.core {
-        CoreValue::Number(n) => FunctionValue::Number(n),
-        CoreValue::Text(t) => FunctionValue::Text(t),
-        CoreValue::Logical(b) => FunctionValue::Logical(b),
-        CoreValue::Error(code) => FunctionValue::Error(code),
-        CoreValue::Empty | CoreValue::Missing => FunctionValue::Error(WorksheetErrorCode::Value),
-        CoreValue::Array(array) => FunctionValue::Array(array.to_function_array_lossy()),
-        CoreValue::Reference(reference) => FunctionValue::Reference(reference),
-    }
-}
-
-fn singleton_arg_slice(arg: &FunctionArg) -> Vec<FunctionArg> {
+fn singleton_arg_slice(arg: &CalcValue) -> Vec<CalcValue> {
     // Core value model does not yet carry full array payloads in prepared call-args.
     // Keep singleton passthrough until array payload/value expansion is implemented.
     vec![arg.clone()]
@@ -2677,22 +2677,20 @@ fn observed_error_result_array_lift(function_id: &str) -> bool {
     matches!(function_id, FUNC_ID_DOLLARFR)
 }
 
-fn prepared_array_shape(value: &crate::functions::adapters::PreparedValue) -> ArrayShape {
-    match value {
-        crate::functions::adapters::PreparedValue::Eval(FunctionValue::Array(array)) => {
-            array.shape()
-        }
+fn prepared_array_shape(value: &crate::functions::adapters::CalcValue) -> ArrayShape {
+    match value.core() {
+        CoreValue::Array(array) => array.shape(),
         _ => ArrayShape { rows: 1, cols: 1 },
     }
 }
 
 fn prepared_broadcast_at(
-    value: &crate::functions::adapters::PreparedValue,
+    value: &crate::functions::adapters::CalcValue,
     row: usize,
     col: usize,
-) -> Option<crate::functions::adapters::PreparedValue> {
-    match value {
-        crate::functions::adapters::PreparedValue::Eval(FunctionValue::Array(array)) => {
+) -> Option<crate::functions::adapters::CalcValue> {
+    match value.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let source_row = if shape.rows == 1 {
                 0
@@ -2708,54 +2706,48 @@ fn prepared_broadcast_at(
             } else {
                 return None;
             };
-            array.get(source_row, source_col).map(|cell| match cell {
-                FunctionArrayCell::Number(n) => {
-                    crate::functions::adapters::PreparedValue::Eval(FunctionValue::Number(*n))
-                }
-                FunctionArrayCell::Text(t) => {
-                    crate::functions::adapters::PreparedValue::Eval(FunctionValue::Text(t.clone()))
-                }
-                FunctionArrayCell::Logical(b) => {
-                    crate::functions::adapters::PreparedValue::Eval(FunctionValue::Logical(*b))
-                }
-                FunctionArrayCell::Error(code) => {
-                    crate::functions::adapters::PreparedValue::Eval(FunctionValue::Error(*code))
-                }
-                FunctionArrayCell::EmptyCell => {
-                    crate::functions::adapters::PreparedValue::EmptyCell
-                }
-            })
+            array
+                .get(source_row, source_col)
+                .map(|cell| match cell.core() {
+                    CoreValue::Number(n) => CalcValue::number(*n),
+                    CoreValue::Text(t) => CalcValue::text(t.clone()),
+                    CoreValue::Logical(b) => CalcValue::logical(*b),
+                    CoreValue::Error(code) => CalcValue::error(*code),
+                    CoreValue::Empty | CoreValue::Missing => {
+                        crate::functions::adapters::CalcValue::empty()
+                    }
+                    CoreValue::Array(_) | CoreValue::Reference(_) => {
+                        CalcValue::error(WorksheetErrorCode::Value)
+                    }
+                })
         }
-        scalar => Some(scalar.clone()),
+        _ => Some(value.clone()),
     }
 }
 
-fn call_arg_from_prepared(prepared: &crate::functions::adapters::PreparedValue) -> FunctionArg {
-    match prepared {
-        crate::functions::adapters::PreparedValue::Eval(value) => FunctionArg::Eval(value.clone()),
-        crate::functions::adapters::PreparedValue::MissingArg => FunctionArg::MissingArg,
-        crate::functions::adapters::PreparedValue::EmptyCell => FunctionArg::EmptyCell,
-    }
+fn call_arg_from_prepared(prepared: &crate::functions::adapters::CalcValue) -> CalcValue {
+    prepared.clone()
 }
 
-fn scalar_output_cell(value: FunctionValue) -> FunctionArrayCell {
-    match value {
-        FunctionValue::Number(n) => FunctionArrayCell::Number(n),
-        FunctionValue::Text(t) => FunctionArrayCell::Text(t),
-        FunctionValue::Logical(b) => FunctionArrayCell::Logical(b),
-        FunctionValue::Error(code) => FunctionArrayCell::Error(code),
-        FunctionValue::Array(array) => array
+fn scalar_output_cell(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Array(array) => array
             .get(0, 0)
             .cloned()
-            .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::Calc)),
-        FunctionValue::Reference(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+            .unwrap_or(CalcValue::error(WorksheetErrorCode::Calc)),
+        CoreValue::Reference(_) | CoreValue::Empty | CoreValue::Missing => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
     }
 }
 
 fn try_observed_scalar_array_lift(
     function_id: &str,
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     now_serial: Option<f64>,
     random_provider: Option<&dyn RandomProvider>,
@@ -2764,7 +2756,7 @@ fn try_observed_scalar_array_lift(
     callable_invoker: &dyn CallableInvoker,
     rtd_provider: Option<&dyn RtdProvider>,
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
-) -> Option<Result<FunctionValue, WorksheetErrorCode>> {
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
     let lift_positions = observed_scalar_array_lift_positions(function_id)?;
     let prepared = crate::functions::adapters::prepare_args_values_only(args, resolver).ok()?;
     let mut has_lift_array = false;
@@ -2808,7 +2800,7 @@ fn try_observed_scalar_array_lift(
             }
 
             if missing_coordinate {
-                cells.push(FunctionArrayCell::Error(WorksheetErrorCode::NA));
+                cells.push(CalcValue::error(WorksheetErrorCode::NA));
                 continue;
             }
 
@@ -2826,15 +2818,15 @@ fn try_observed_scalar_array_lift(
                 registered_external_provider,
             ) {
                 Ok(value) => scalar_output_cell(eval_value_from_calc_value(value)),
-                Err(code) => FunctionArrayCell::Error(code),
+                Err(code) => CalcValue::error(code),
             };
             cells.push(cell);
         }
     }
 
     Some(
-        FunctionArray::new(shape, cells)
-            .map(FunctionValue::Array)
+        CalcArray::new(shape, cells)
+            .map(CalcValue::array)
             .ok_or(WorksheetErrorCode::Calc),
     )
 }
@@ -2943,8 +2935,10 @@ pub fn eval_surface_q_binary_number(
 pub fn eval_surface_q_nullary_number(function_id: &str) -> Result<f64, WorksheetErrorCode> {
     match function_id {
         FUNC_ID_PI => match eval_pi(&[]) {
-            Ok(Value::Number(n)) => Ok(n),
-            Ok(_) => Err(WorksheetErrorCode::Value),
+            Ok(value) => match value.core() {
+                CoreValue::Number(n) => Ok(*n),
+                _ => Err(WorksheetErrorCode::Value),
+            },
             Err(e) => Err(map_eval_error_to_ws(&e)),
         },
         _ => Err(WorksheetErrorCode::Value),
@@ -2960,16 +2954,15 @@ mod tests {
         rc::Rc,
     };
 
-    use crate::functions::adapters::PreparedValue;
+    use crate::functions::adapters::CalcValue;
     use crate::host_info::{
         HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ResolvedWebImage,
     };
     use crate::locale_format::test_current_excel_host_context;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
-        CalcArray, CallableArityShape, CallableValue, CellStyleHint, ExcelText, FunctionArray,
-        FunctionArrayCell, NumberFormatHint, OpaqueCallable, PresentationHint, ReferenceKind,
-        ReferenceLike, RichValue, RichValueData,
+        CalcArray, CallableArityShape, CallableValue, CellStyleHint, ExcelText, NumberFormatHint,
+        OpaqueCallable, PresentationHint, ReferenceKind, ReferenceLike, RichValue, RichValueData,
     };
 
     struct NoReferenceSystemProvider;
@@ -3012,7 +3005,7 @@ mod tests {
     }
 
     type RegisteredCallable<'a> =
-        Rc<dyn Fn(&[PreparedValue]) -> Result<PreparedValue, CallableInvocationError> + 'a>;
+        Rc<dyn Fn(&[CalcValue]) -> Result<CalcValue, CallableInvocationError> + 'a>;
 
     #[derive(Clone)]
     struct ClosureCallableInvoker<'a> {
@@ -3030,7 +3023,7 @@ mod tests {
 
         fn register<F>(&self, token: &str, arity: usize, f: F) -> CallableValue
         where
-            F: Fn(&[PreparedValue]) -> Result<PreparedValue, CallableInvocationError> + 'a,
+            F: Fn(&[CalcValue]) -> Result<CalcValue, CallableInvocationError> + 'a,
         {
             self.closures
                 .borrow_mut()
@@ -3047,7 +3040,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -3061,8 +3054,8 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedValue],
-        ) -> Result<PreparedValue, CallableInvocationError> {
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
             if let Some(handler) = self.closures.borrow().get(&callable.summary).cloned() {
                 return handler(args);
             }
@@ -3074,8 +3067,8 @@ mod tests {
 
     fn eval_test_surface_value(
         function_id: &str,
-        args: &[FunctionArg],
-    ) -> Result<FunctionValue, CallableInvocationError> {
+        args: &[CalcValue],
+    ) -> Result<CalcValue, CallableInvocationError> {
         eval_test_surface_value_call(
             function_id,
             args,
@@ -3090,13 +3083,13 @@ mod tests {
 
     fn eval_test_surface_value_call(
         function_id: &str,
-        args: &[FunctionArg],
+        args: &[CalcValue],
         resolver: &(impl ReferenceSystemProvider + ?Sized),
         now_serial: Option<f64>,
         random_provider: Option<&dyn RandomProvider>,
         locale_ctx: Option<&LocaleFormatContext>,
         host_info: Option<&dyn HostInfoProvider>,
-    ) -> Result<FunctionValue, WorksheetErrorCode> {
+    ) -> Result<CalcValue, WorksheetErrorCode> {
         let calc_args = super::calc_values_from_surface_call_args(args);
         super::eval_surface_value_call(
             function_id,
@@ -3110,28 +3103,24 @@ mod tests {
         .map(super::eval_value_from_calc_value)
     }
 
-    fn array_arg(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(rows).unwrap(),
-        ))
+    fn array_arg(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        (CalcValue::array(CalcArray::from_rows(rows).unwrap()))
     }
 
-    fn number_arg(value: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(value))
+    fn number_arg(value: f64) -> CalcValue {
+        (CalcValue::number(value))
     }
 
-    fn logical_arg(value: bool) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Logical(value))
+    fn logical_arg(value: bool) -> CalcValue {
+        (CalcValue::logical(value))
     }
 
-    fn text_arg(value: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            value,
-        )))
+    fn text_arg(value: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(value)))
     }
 
-    fn text_cell(value: &str) -> FunctionArrayCell {
-        FunctionArrayCell::Text(ExcelText::from_interop_assignment(value))
+    fn text_cell(value: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_interop_assignment(value))
     }
 
     #[test]
@@ -3140,33 +3129,27 @@ mod tests {
             FUNC_ID_TRIMMEAN,
             &[
                 array_arg(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(6.0),
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Number(8.0),
-                    FunctionArrayCell::Number(9.0),
-                    FunctionArrayCell::Number(100.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(5.0),
+                    CalcValue::number(6.0),
+                    CalcValue::number(7.0),
+                    CalcValue::number(8.0),
+                    CalcValue::number(9.0),
+                    CalcValue::number(100.0),
                 ]]),
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(0.2),
-                    FunctionArrayCell::Number(0.2),
-                ]]),
+                array_arg(vec![vec![CalcValue::number(0.2), CalcValue::number(0.2)]]),
             ],
         )
         .unwrap();
 
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(5.5),
-                    FunctionArrayCell::Number(5.5),
-                ]])
-                .unwrap()
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(5.5), CalcValue::number(5.5),]])
+                    .unwrap()
             )
         );
     }
@@ -3176,20 +3159,20 @@ mod tests {
         let got = eval_test_surface_value(
             FUNC_ID_ABS,
             &[array_arg(vec![vec![
-                FunctionArrayCell::Number(-1.0),
-                FunctionArrayCell::Text(ExcelText::from_interop_assignment("bad")),
-                FunctionArrayCell::Number(2.0),
+                CalcValue::number(-1.0),
+                CalcValue::text(ExcelText::from_interop_assignment("bad")),
+                CalcValue::number(2.0),
             ]])],
         )
         .unwrap();
 
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                    FunctionArrayCell::Number(2.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::number(2.0),
                 ]])
                 .unwrap()
             )
@@ -3205,18 +3188,18 @@ mod tests {
                 number_arg(4.0),
                 number_arg(0.25),
                 array_arg(vec![vec![
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(false),
+                    CalcValue::logical(false),
+                    CalcValue::logical(false),
                 ]]),
             ],
         )
         .unwrap();
         assert_eq!(
             binomdist,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(f64::from_bits(0x3fcb000000000001)),
-                    FunctionArrayCell::Number(f64::from_bits(0x3fcb000000000001)),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(f64::from_bits(0x3fcb000000000001)),
+                    CalcValue::number(f64::from_bits(0x3fcb000000000001)),
                 ]])
                 .unwrap()
             )
@@ -3229,18 +3212,18 @@ mod tests {
                 number_arg(40.0),
                 number_arg(1.5),
                 array_arg(vec![vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(true),
+                    CalcValue::logical(true),
+                    CalcValue::logical(true),
                 ]]),
             ],
         )
         .unwrap();
         assert_eq!(
             normdist,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(f64::from_bits(0x3fed14cc3547f8da)),
-                    FunctionArrayCell::Number(f64::from_bits(0x3fed14cc3547f8da)),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(f64::from_bits(0x3fed14cc3547f8da)),
+                    CalcValue::number(f64::from_bits(0x3fed14cc3547f8da)),
                 ]])
                 .unwrap()
             )
@@ -3257,28 +3240,25 @@ mod tests {
         .unwrap();
         assert_eq!(
             complex,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![text_cell("3+4j"), text_cell("3+4j")]]).unwrap()
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![text_cell("3+4j"), text_cell("3+4j")]]).unwrap()
             )
         );
 
         let dollarfr = eval_test_surface_value(
             FUNC_ID_DOLLARFR,
             &[
-                FunctionArg::MissingArg,
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(16.0),
-                    FunctionArrayCell::Number(16.0),
-                ]]),
+                CalcValue::missing(),
+                array_arg(vec![vec![CalcValue::number(16.0), CalcValue::number(16.0)]]),
             ],
         )
         .unwrap();
         assert_eq!(
             dollarfr,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             )
@@ -3290,10 +3270,7 @@ mod tests {
                 number_arg(2.0),
                 number_arg(1.0),
                 text_arg("a"),
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
+                array_arg(vec![vec![CalcValue::number(2.0), CalcValue::number(2.0)]]),
                 text_arg("b"),
                 text_arg("other"),
             ],
@@ -3301,8 +3278,8 @@ mod tests {
         .unwrap();
         assert_eq!(
             switch,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![text_cell("b"), text_cell("b")]]).unwrap()
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![text_cell("b"), text_cell("b")]]).unwrap()
             )
         );
 
@@ -3312,20 +3289,17 @@ mod tests {
                 number_arg(3.0),
                 number_arg(1.0),
                 text_arg("a"),
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
+                array_arg(vec![vec![CalcValue::number(2.0), CalcValue::number(2.0)]]),
                 text_arg("b"),
             ],
         )
         .unwrap();
         assert_eq!(
             switch_no_default,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             )
@@ -3341,10 +3315,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             ifs,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::error(WorksheetErrorCode::Value),
                 ]])
                 .unwrap()
             )
@@ -3354,10 +3328,7 @@ mod tests {
             FUNC_ID_IFS,
             &[
                 logical_arg(false),
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(1.0),
-                ]]),
+                array_arg(vec![vec![CalcValue::number(1.0), CalcValue::number(1.0)]]),
                 number_arg(0.0),
                 number_arg(2.0),
             ],
@@ -3365,7 +3336,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             ifs_unselected_array_result,
-            FunctionValue::Error(WorksheetErrorCode::NA)
+            CalcValue::error(WorksheetErrorCode::NA)
         );
 
         let address_abs_num = eval_test_surface_value(
@@ -3373,10 +3344,7 @@ mod tests {
             &[
                 number_arg(3.0),
                 number_arg(2.0),
-                array_arg(vec![vec![
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                array_arg(vec![vec![CalcValue::number(4.0), CalcValue::number(4.0)]]),
                 logical_arg(false),
                 text_arg("Alpha"),
             ],
@@ -3384,8 +3352,8 @@ mod tests {
         .unwrap();
         assert_eq!(
             address_abs_num,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
                     text_cell("Alpha!R[3]C[2]"),
                     text_cell("Alpha!R[3]C[2]"),
                 ]])
@@ -3406,8 +3374,8 @@ mod tests {
         .unwrap();
         assert_eq!(
             address_sheet_text,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
                     text_cell("'Quarter 1'!$B$3"),
                     text_cell("'Quarter 1'!$B$3"),
                 ]])
@@ -3420,7 +3388,7 @@ mod tests {
         function_id: &str,
         args: &[CalcValue],
         invoker: &dyn CallableInvoker,
-    ) -> Result<FunctionValue, CallableInvocationError> {
+    ) -> Result<CalcValue, CallableInvocationError> {
         super::eval_surface_value_call_with_callable(
             function_id,
             args,
@@ -3437,21 +3405,21 @@ mod tests {
         .map_err(CallableInvocationError::Worksheet)
     }
 
-    fn call_arg_from_prepared(prepared: &PreparedValue) -> FunctionArg {
-        match prepared {
-            PreparedValue::Eval(value) => FunctionArg::Eval(value.clone()),
-            PreparedValue::MissingArg => FunctionArg::MissingArg,
-            PreparedValue::EmptyCell => FunctionArg::EmptyCell,
+    fn call_arg_from_prepared(prepared: &CalcValue) -> CalcValue {
+        match prepared.core() {
+            CoreValue::Missing => CalcValue::missing(),
+            CoreValue::Empty => CalcValue::empty(),
+            _ => prepared.clone(),
         }
     }
 
-    fn number_column(values: &[f64]) -> FunctionValue {
-        FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn number_column(values: &[f64]) -> CalcValue {
+        CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
                     .copied()
-                    .map(|value| vec![FunctionArrayCell::Number(value)])
+                    .map(|value| vec![CalcValue::number(value)])
                     .collect(),
             )
             .expect("column vector"),
@@ -3462,27 +3430,38 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedValue],
-        ) -> Result<PreparedValue, CallableInvocationError> {
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
             match callable.summary.as_str() {
                 "helper.mul10" => match args {
-                    [PreparedValue::Eval(FunctionValue::Number(n))] => {
-                        Ok(PreparedValue::Eval(FunctionValue::Number(*n * 10.0)))
-                    }
+                    [value] => match value.core() {
+                        CoreValue::Number(n) => Ok(CalcValue::number(*n * 10.0)),
+                        _ => Err(CallableInvocationError::Worksheet(
+                            WorksheetErrorCode::Value,
+                        )),
+                    },
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
                     )),
                 },
                 "helper.add1" => match args {
-                    [PreparedValue::Eval(FunctionValue::Number(n))] => {
-                        Ok(PreparedValue::Eval(FunctionValue::Number(*n + 1.0)))
-                    }
+                    [value] => match value.core() {
+                        CoreValue::Number(n) => Ok(CalcValue::number(*n + 1.0)),
+                        _ => Err(CallableInvocationError::Worksheet(
+                            WorksheetErrorCode::Value,
+                        )),
+                    },
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
                     )),
                 },
                 "helper.feb2024_day_or_two_spaces" => match args {
-                    [PreparedValue::Eval(FunctionValue::Number(n))] => {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
                         let first_day = crate::locale_format::excel_serial_from_ymd(
                             crate::locale_format::WorkbookDateSystem::System1900,
                             2024,
@@ -3500,7 +3479,7 @@ mod tests {
                         if *n >= first_day && *n <= last_day {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
-                                &[FunctionArg::Eval(FunctionValue::Number(*n))],
+                                &[(CalcValue::number(*n))],
                                 &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
@@ -3512,10 +3491,8 @@ mod tests {
                             let text = eval_test_surface_value_call(
                                 FUNC_ID_TEXT,
                                 &[
-                                    FunctionArg::Eval(day),
-                                    FunctionArg::Eval(FunctionValue::Text(
-                                        ExcelText::from_interop_assignment("00"),
-                                    )),
+                                    (day),
+                                    (CalcValue::text(ExcelText::from_interop_assignment("00"))),
                                 ],
                                 &NoReferenceSystemProvider,
                                 Some(46000.0),
@@ -3524,11 +3501,9 @@ mod tests {
                                 None,
                             )
                             .map_err(CallableInvocationError::Worksheet)?;
-                            Ok(PreparedValue::Eval(text))
+                            Ok(text)
                         } else {
-                            Ok(PreparedValue::Eval(FunctionValue::Text(
-                                ExcelText::from_interop_assignment("  "),
-                            )))
+                            Ok(CalcValue::text(ExcelText::from_interop_assignment("  ")))
                         }
                     }
                     _ => Err(CallableInvocationError::Worksheet(
@@ -3536,7 +3511,12 @@ mod tests {
                     )),
                 },
                 "helper.jan2024_day_or_two_spaces" => match args {
-                    [PreparedValue::Eval(FunctionValue::Number(n))] => {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
                         let first_day = crate::locale_format::excel_serial_from_ymd(
                             crate::locale_format::WorkbookDateSystem::System1900,
                             2024,
@@ -3554,7 +3534,7 @@ mod tests {
                         if *n >= first_day && *n <= last_day {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
-                                &[FunctionArg::Eval(FunctionValue::Number(*n))],
+                                &[(CalcValue::number(*n))],
                                 &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
@@ -3566,10 +3546,8 @@ mod tests {
                             let text = eval_test_surface_value_call(
                                 FUNC_ID_TEXT,
                                 &[
-                                    FunctionArg::Eval(day),
-                                    FunctionArg::Eval(FunctionValue::Text(
-                                        ExcelText::from_interop_assignment("00"),
-                                    )),
+                                    (day),
+                                    (CalcValue::text(ExcelText::from_interop_assignment("00"))),
                                 ],
                                 &NoReferenceSystemProvider,
                                 Some(46000.0),
@@ -3578,11 +3556,9 @@ mod tests {
                                 None,
                             )
                             .map_err(CallableInvocationError::Worksheet)?;
-                            Ok(PreparedValue::Eval(text))
+                            Ok(text)
                         } else {
-                            Ok(PreparedValue::Eval(FunctionValue::Text(
-                                ExcelText::from_interop_assignment("  "),
-                            )))
+                            Ok(CalcValue::text(ExcelText::from_interop_assignment("  ")))
                         }
                     }
                     _ => Err(CallableInvocationError::Worksheet(
@@ -3590,7 +3566,12 @@ mod tests {
                     )),
                 },
                 "helper.jan2024_day_or_zero" => match args {
-                    [PreparedValue::Eval(FunctionValue::Number(n))] => {
+                    [value] => {
+                        let CoreValue::Number(n) = value.core() else {
+                            return Err(CallableInvocationError::Worksheet(
+                                WorksheetErrorCode::Value,
+                            ));
+                        };
                         let first_day = crate::locale_format::excel_serial_from_ymd(
                             crate::locale_format::WorkbookDateSystem::System1900,
                             2024,
@@ -3608,7 +3589,7 @@ mod tests {
                         if *n >= first_day && *n <= last_day {
                             let day = eval_test_surface_value_call(
                                 FUNC_ID_DAY,
-                                &[FunctionArg::Eval(FunctionValue::Number(*n))],
+                                &[(CalcValue::number(*n))],
                                 &NoReferenceSystemProvider,
                                 Some(46000.0),
                                 Some(&TEST_RANDOM_PROVIDER),
@@ -3616,9 +3597,9 @@ mod tests {
                                 None,
                             )
                             .map_err(CallableInvocationError::Worksheet)?;
-                            Ok(PreparedValue::Eval(day))
+                            Ok(day)
                         } else {
-                            Ok(PreparedValue::Eval(FunctionValue::Number(0.0)))
+                            Ok(CalcValue::number(0.0))
                         }
                     }
                     _ => Err(CallableInvocationError::Worksheet(
@@ -3646,7 +3627,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_abs_accepts_text_numeric() {
-        let arg = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+        let arg = (CalcValue::text(ExcelText::from_utf16_code_units(
             " -2 ".encode_utf16().collect(),
         )));
         let got = eval_test_surface_value_call(
@@ -3658,7 +3639,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
@@ -3666,10 +3647,7 @@ mod tests {
         for function_id in [FUNC_ID_OP_POWER, FUNC_ID_POWER] {
             let got = eval_test_surface_value_call(
                 function_id,
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(0.0)),
-                    FunctionArg::Eval(FunctionValue::Number(0.0)),
-                ],
+                &[(CalcValue::number(0.0)), (CalcValue::number(0.0))],
                 &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
@@ -3685,29 +3663,17 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(10.0),
-                            FunctionArrayCell::Number(20.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(30.0),
-                            FunctionArrayCell::Number(40.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0), CalcValue::number(40.0)],
                     ])
                     .unwrap(),
                 )),
@@ -3720,16 +3686,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(22.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(33.0),
-                        FunctionArrayCell::Number(44.0)
-                    ],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(11.0), CalcValue::number(22.0)],
+                    vec![CalcValue::number(33.0), CalcValue::number(44.0)],
                 ])
                 .unwrap()
             ))
@@ -3741,17 +3701,17 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
                     ])
                     .unwrap(),
                 )),
@@ -3764,16 +3724,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0)
-                    ],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(3.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap()
             ))
@@ -3785,17 +3739,17 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_EQUAL,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
                     ])
                     .unwrap(),
                 )),
@@ -3808,16 +3762,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Logical(true),
-                        FunctionArrayCell::Logical(false)
-                    ],
-                    vec![
-                        FunctionArrayCell::Logical(false),
-                        FunctionArrayCell::Logical(true)
-                    ],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::logical(true), CalcValue::logical(false)],
+                    vec![CalcValue::logical(false), CalcValue::logical(true)],
                 ])
                 .unwrap()
             ))
@@ -3829,18 +3777,18 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_CONCAT,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("y")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("z")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("y")),
+                        CalcValue::text(ExcelText::from_interop_assignment("z")),
                     ]])
                     .unwrap(),
                 )),
@@ -3853,11 +3801,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("ax")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("by")),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("ax")),
+                    CalcValue::text(ExcelText::from_interop_assignment("by")),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))
@@ -3869,8 +3817,8 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_RANGE_REF,
             &[
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "B2".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -3886,14 +3834,8 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_OP_UNION_REF,
             &[
-                FunctionArg::Reference(ReferenceLike::new(
-                    ReferenceKind::Area,
-                    "A1:A2".to_string(),
-                )),
-                FunctionArg::Reference(ReferenceLike::new(
-                    ReferenceKind::Area,
-                    "G1:G2".to_string(),
-                )),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:A2".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "G1:G2".to_string())),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -3909,37 +3851,25 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_VLOOKUP,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(2.0),
-                            FunctionArrayCell::Number(20.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(4.0),
-                            FunctionArrayCell::Number(40.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(6.0),
-                            FunctionArrayCell::Number(60.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(8.0),
-                            FunctionArrayCell::Number(80.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(2.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(4.0), CalcValue::number(40.0)],
+                        vec![CalcValue::number(6.0), CalcValue::number(60.0)],
+                        vec![CalcValue::number(8.0), CalcValue::number(80.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
+                (CalcValue::number(2.0)),
+                (CalcValue::logical(false)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -3949,11 +3879,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(20.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))
@@ -3965,33 +3895,33 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_HLOOKUP,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
                         vec![
-                            FunctionArrayCell::Number(2.0),
-                            FunctionArrayCell::Number(4.0),
-                            FunctionArrayCell::Number(6.0),
-                            FunctionArrayCell::Number(8.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(4.0),
+                            CalcValue::number(6.0),
+                            CalcValue::number(8.0),
                         ],
                         vec![
-                            FunctionArrayCell::Number(20.0),
-                            FunctionArrayCell::Number(40.0),
-                            FunctionArrayCell::Number(60.0),
-                            FunctionArrayCell::Number(80.0),
+                            CalcValue::number(20.0),
+                            CalcValue::number(40.0),
+                            CalcValue::number(60.0),
+                            CalcValue::number(80.0),
                         ],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
+                (CalcValue::number(2.0)),
+                (CalcValue::logical(false)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4001,11 +3931,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(20.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))
@@ -4017,14 +3947,12 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_LEFT,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MISSISSIPPI",
-                ))),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -4037,17 +3965,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "M"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "MI"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "MIS"
-                    ))],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("M"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("MI"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("MIS"))],
                 ])
                 .unwrap()
             ))
@@ -4059,14 +3981,12 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_RIGHT,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MISSISSIPPI",
-                ))),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -4079,17 +3999,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "I"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "PI"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "PPI"
-                    ))],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("PI"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("PPI"))],
                 ])
                 .unwrap()
             ))
@@ -4101,26 +4015,24 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_MID,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MISSISSIPPI",
-                ))),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
-                        vec![FunctionArrayCell::Number(4.0)],
-                        vec![FunctionArrayCell::Number(5.0)],
-                        vec![FunctionArrayCell::Number(6.0)],
-                        vec![FunctionArrayCell::Number(7.0)],
-                        vec![FunctionArrayCell::Number(8.0)],
-                        vec![FunctionArrayCell::Number(9.0)],
-                        vec![FunctionArrayCell::Number(10.0)],
-                        vec![FunctionArrayCell::Number(11.0)],
+                (CalcValue::text(ExcelText::from_interop_assignment("MISSISSIPPI"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                        vec![CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::number(6.0)],
+                        vec![CalcValue::number(7.0)],
+                        vec![CalcValue::number(8.0)],
+                        vec![CalcValue::number(9.0)],
+                        vec![CalcValue::number(10.0)],
+                        vec![CalcValue::number(11.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4130,41 +4042,19 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "M"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "I"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "S"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "S"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "I"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "S"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "S"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "I"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "P"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "P"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "I"
-                    ))],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("M"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("S"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("P"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("P"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("I"))],
                 ])
                 .unwrap()
             ))
@@ -4175,11 +4065,11 @@ mod tests {
     fn eval_surface_value_call_char_spills_array_numbers() {
         let got = eval_test_surface_value_call(
             FUNC_ID_CHAR,
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(65.0)],
-                    vec![FunctionArrayCell::Number(66.0)],
-                    vec![FunctionArrayCell::Number(67.0)],
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(65.0)],
+                    vec![CalcValue::number(66.0)],
+                    vec![CalcValue::number(67.0)],
                 ])
                 .unwrap(),
             ))],
@@ -4191,17 +4081,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "A"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "B"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "C"
-                    ))],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("A"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("B"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("C"))],
                 ])
                 .unwrap()
             ))
@@ -4213,12 +4097,12 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_REPT,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("x"))),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::text(ExcelText::from_interop_assignment("x"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -4231,17 +4115,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "x"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "xx"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "xxx"
-                    ))],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("x"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("xx"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("xxx"))],
                 ])
                 .unwrap()
             ))
@@ -4253,15 +4131,13 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXTAFTER,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "a-b-c",
-                ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("-"))),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::text(ExcelText::from_interop_assignment("a-b-c"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("-"))),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -4274,15 +4150,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "b-c"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "c"
-                    ))],
-                    vec![FunctionArrayCell::Error(WorksheetErrorCode::NA)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("b-c"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("c"))],
+                    vec![CalcValue::error(WorksheetErrorCode::NA)],
                 ])
                 .unwrap()
             ))
@@ -4294,14 +4166,14 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXTBEFORE,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a-b")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c-d")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a-b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c-d")),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("-"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("-"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4311,10 +4183,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("a")),
+                    CalcValue::text(ExcelText::from_interop_assignment("c")),
                 ]])
                 .unwrap()
             ))
@@ -4325,7 +4197,7 @@ mod tests {
     fn eval_surface_value_call_areas_counts_multi_area_reference() {
         let got = eval_test_surface_value_call(
             FUNC_ID_AREAS,
-            &[FunctionArg::Reference(
+            &[CalcValue::reference(
                 ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
             )],
             &NoReferenceSystemProvider,
@@ -4334,14 +4206,14 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_surface_value_call_areas_rejects_legacy_parenthesized_area_carrier() {
         let got = eval_test_surface_value_call(
             FUNC_ID_AREAS,
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "(A1,B2:B3)".to_string(),
             ))],
@@ -4359,13 +4231,13 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
-                FunctionArg::Reference(ReferenceLike::new(
+                CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::Area,
                     "(A1:A2,G1:G2)".to_string(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4378,7 +4250,7 @@ mod tests {
 
     #[test]
     fn eval_surface_value_call_rejects_unknown_id() {
-        let arg = FunctionArg::Eval(FunctionValue::Number(1.0));
+        let arg = (CalcValue::number(1.0));
         let got = eval_test_surface_value_call(
             "FUNC.UNKNOWN",
             &[arg],
@@ -4395,10 +4267,7 @@ mod tests {
     fn eval_surface_value_call_roman_returns_text_result() {
         let got = eval_test_surface_value_call(
             FUNC_ID_ROMAN,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(499.0)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-            ],
+            &[(CalcValue::number(499.0)), (CalcValue::logical(false))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4407,56 +4276,52 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                "ID".encode_utf16().collect(),
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
+                "ID".encode_utf16().collect()
             )))
         );
     }
 
     #[test]
     fn eval_surface_value_call_with_callable_supports_map_helper_surface() {
-        let array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-        ]])
-        .expect("row vector");
+        let array =
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .expect("row vector");
         let callable = test_callable_value("helper.add1", 1);
         let got = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CalcValue::from(FunctionValue::Array(array)),
+                CalcValue::from(CalcValue::array(array)),
                 CalcValue::callable(callable),
             ],
             &TestCallableInvoker,
         );
-        let expected = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
-        ]])
-        .expect("row vector");
-        assert_eq!(got, Ok(FunctionValue::Array(expected)));
+        let expected =
+            CalcArray::from_rows(vec![vec![CalcValue::number(2.0), CalcValue::number(3.0)]])
+                .expect("row vector");
+        assert_eq!(got, Ok(CalcValue::array(expected)));
     }
 
     #[test]
     fn eval_surface_value_call_xmatch_spills_array_lookup_value_results() {
-        let lookup_values = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
         ]])
         .expect("row vector");
-        let lookup_array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(6.0),
-            FunctionArrayCell::Number(8.0),
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
         ]])
         .expect("row vector");
         let got = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Array(lookup_values)),
-                FunctionArg::Eval(FunctionValue::Array(lookup_array)),
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4464,37 +4329,37 @@ mod tests {
             None,
             None,
         );
-        let expected = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
         ]])
         .expect("row vector");
-        assert_eq!(got, Ok(FunctionValue::Array(expected)));
+        assert_eq!(got, Ok(CalcValue::array(expected)));
     }
 
     #[test]
     fn eval_surface_value_call_xmatch_exact_witness_spills_array_lookup_value_results() {
-        let lookup_values = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(5.0),
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
         ]])
         .expect("row vector");
-        let lookup_array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(6.0),
-            FunctionArrayCell::Number(8.0),
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
         ]])
         .expect("row vector");
         let got = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Array(lookup_values)),
-                FunctionArg::Eval(FunctionValue::Array(lookup_array)),
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4502,48 +4367,48 @@ mod tests {
             None,
             None,
         );
-        let expected = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(2.0),
+            CalcValue::error(WorksheetErrorCode::NA),
         ]])
         .expect("row vector");
-        assert_eq!(got, Ok(FunctionValue::Array(expected)));
+        assert_eq!(got, Ok(CalcValue::array(expected)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0940_corpus_formula_returns_six() {
-        let lookup_values = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(5.0),
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
         ]])
         .expect("row vector");
-        let lookup_array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(6.0),
-            FunctionArrayCell::Number(8.0),
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
         ]])
         .expect("row vector");
-        let source = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(5.0),
+        let source = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
+            CalcValue::number(4.0),
+            CalcValue::number(5.0),
         ]])
         .expect("row vector");
 
         let xmatch = eval_test_surface_value_call(
             FUNC_ID_XMATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Array(lookup_values)),
-                FunctionArg::Eval(FunctionValue::Array(lookup_array)),
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4555,7 +4420,7 @@ mod tests {
 
         let isnumber = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
-            &[FunctionArg::Eval(xmatch)],
+            &[(xmatch)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4566,10 +4431,7 @@ mod tests {
 
         let filtered = eval_test_surface_value_call(
             FUNC_ID_FILTER,
-            &[
-                FunctionArg::Eval(FunctionValue::Array(source)),
-                FunctionArg::Eval(isnumber),
-            ],
+            &[(CalcValue::array(source)), (isnumber)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4580,7 +4442,7 @@ mod tests {
 
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(filtered)],
+            &[(filtered)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4588,27 +4450,27 @@ mod tests {
             None,
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(6.0)));
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0779_dictionary_keys_composition_returns_two() {
-        let keys = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Text(ExcelText::from_interop_assignment("name")),
-            FunctionArrayCell::Text(ExcelText::from_interop_assignment("age")),
-            FunctionArrayCell::Text(ExcelText::from_interop_assignment("city")),
+        let keys = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_interop_assignment("name")),
+            CalcValue::text(ExcelText::from_interop_assignment("age")),
+            CalcValue::text(ExcelText::from_interop_assignment("city")),
         ]])
         .expect("row vector");
-        let mapped = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Text(ExcelText::from_interop_assignment("Alice")),
-            FunctionArrayCell::Number(30.0),
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
+        let mapped = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_interop_assignment("Alice")),
+            CalcValue::number(30.0),
+            CalcValue::error(WorksheetErrorCode::NA),
         ]])
         .expect("row vector");
 
         let iserror = eval_test_surface_value_call(
             FUNC_ID_ISERROR,
-            &[FunctionArg::Eval(FunctionValue::Array(mapped))],
+            &[(CalcValue::array(mapped))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4619,7 +4481,7 @@ mod tests {
 
         let keep = eval_test_surface_value_call(
             FUNC_ID_NOT,
-            &[FunctionArg::Eval(iserror)],
+            &[(iserror)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4630,10 +4492,7 @@ mod tests {
 
         let filtered = eval_test_surface_value_call(
             FUNC_ID_FILTER,
-            &[
-                FunctionArg::Eval(FunctionValue::Array(keys)),
-                FunctionArg::Eval(keep),
-            ],
+            &[(CalcValue::array(keys)), (keep)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4644,7 +4503,7 @@ mod tests {
 
         let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
-            &[FunctionArg::Eval(filtered)],
+            &[(filtered)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4652,7 +4511,7 @@ mod tests {
             None,
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
@@ -4660,9 +4519,9 @@ mod tests {
         let serial = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4674,7 +4533,7 @@ mod tests {
 
         let got = eval_test_surface_value_call(
             FUNC_ID_DAY,
-            &[FunctionArg::Eval(serial)],
+            &[(serial)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -4682,19 +4541,14 @@ mod tests {
             None,
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(29.0)));
+        assert_eq!(got, Ok(CalcValue::number(29.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0703_0705_datedif_cluster_matches_expected_values() {
-        let start_y = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            "2020-01-15",
-        )));
-        let end_y = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            "2024-03-20",
-        )));
-        let unit_y =
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("Y")));
+        let start_y = (CalcValue::text(ExcelText::from_interop_assignment("2020-01-15")));
+        let end_y = (CalcValue::text(ExcelText::from_interop_assignment("2024-03-20")));
+        let unit_y = (CalcValue::text(ExcelText::from_interop_assignment("Y")));
         let got_y = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[start_y, end_y, unit_y],
@@ -4704,20 +4558,16 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got_y, Ok(FunctionValue::Number(4.0)));
+        assert_eq!(got_y, Ok(CalcValue::number(4.0)));
 
-        let start_m = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            "2024-01-15",
-        )));
-        let end_m = FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            "2024-04-10",
-        )));
+        let start_m = (CalcValue::text(ExcelText::from_interop_assignment("2024-01-15")));
+        let end_m = (CalcValue::text(ExcelText::from_interop_assignment("2024-04-10")));
         let got_m = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[
                 start_m.clone(),
                 end_m.clone(),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("M"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("M"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4725,16 +4575,14 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got_m, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got_m, Ok(CalcValue::number(2.0)));
 
         let got_md = eval_test_surface_value_call(
             FUNC_ID_DATEDIF,
             &[
                 start_m,
                 end_m,
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MD",
-                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("MD"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4742,7 +4590,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got_md, Ok(FunctionValue::Number(26.0)));
+        assert_eq!(got_md, Ok(CalcValue::number(26.0)));
     }
 
     #[test]
@@ -4750,9 +4598,9 @@ mod tests {
         let jan1 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4763,35 +4611,32 @@ mod tests {
         .expect("DATE(2024,1,1)");
         let got_0706 = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
-            &[FunctionArg::Eval(jan1.clone())],
+            &[(jan1.clone())],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0706, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got_0706, Ok(CalcValue::number(2.0)));
 
         let got_0707 = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
-            &[
-                FunctionArg::Eval(jan1),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &[(jan1), (CalcValue::number(2.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0707, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got_0707, Ok(CalcValue::number(1.0)));
 
         let dec30 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(12.0)),
-                FunctionArg::Eval(FunctionValue::Number(30.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(12.0)),
+                (CalcValue::number(30.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4802,14 +4647,14 @@ mod tests {
         .expect("DATE(2024,12,30)");
         let got_0708 = eval_test_surface_value_call(
             FUNC_ID_ISOWEEKNUM,
-            &[FunctionArg::Eval(dec30)],
+            &[(dec30)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0708, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got_0708, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
@@ -4817,9 +4662,9 @@ mod tests {
         let jan15 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(15.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(15.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4830,35 +4675,30 @@ mod tests {
         .expect("DATE(2024,1,15)");
         let got_0709 = eval_test_surface_value_call(
             FUNC_ID_DAY,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_EOMONTH,
-                    &[
-                        FunctionArg::Eval(jan15),
-                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                    ],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("EOMONTH(...,1)"),
-            )],
+            &[eval_test_surface_value_call(
+                FUNC_ID_EOMONTH,
+                &[(jan15), (CalcValue::number(1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EOMONTH(...,1)")],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0709, Ok(FunctionValue::Number(29.0)));
+        assert_eq!(got_0709, Ok(CalcValue::number(29.0)));
 
         let mar15 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(15.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(15.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4869,35 +4709,30 @@ mod tests {
         .expect("DATE(2024,3,15)");
         let got_0710 = eval_test_surface_value_call(
             FUNC_ID_MONTH,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_EOMONTH,
-                    &[
-                        FunctionArg::Eval(mar15),
-                        FunctionArg::Eval(FunctionValue::Number(-1.0)),
-                    ],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("EOMONTH(...,-1)"),
-            )],
+            &[eval_test_surface_value_call(
+                FUNC_ID_EOMONTH,
+                &[(mar15), (CalcValue::number(-1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EOMONTH(...,-1)")],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0710, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got_0710, Ok(CalcValue::number(2.0)));
 
         let jan31 = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(31.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(31.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4908,28 +4743,23 @@ mod tests {
         .expect("DATE(2024,1,31)");
         let got_0711 = eval_test_surface_value_call(
             FUNC_ID_DAY,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_EDATE,
-                    &[
-                        FunctionArg::Eval(jan31),
-                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                    ],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("EDATE(...,1)"),
-            )],
+            &[eval_test_surface_value_call(
+                FUNC_ID_EDATE,
+                &[(jan31), (CalcValue::number(1.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("EDATE(...,1)")],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0711, Ok(FunctionValue::Number(29.0)));
+        assert_eq!(got_0711, Ok(CalcValue::number(29.0)));
     }
 
     #[test]
@@ -4937,37 +4767,33 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_ROUND,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[
-                            FunctionArg::Eval(
-                                eval_test_surface_value_call(
-                                    FUNC_ID_TIME,
-                                    &[
-                                        FunctionArg::Eval(FunctionValue::Number(0.0)),
-                                        FunctionArg::Eval(FunctionValue::Number(0.0)),
-                                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                                    ],
-                                    &NoReferenceSystemProvider,
-                                    Some(46000.0),
-                                    Some(&TEST_RANDOM_PROVIDER),
-                                    None,
-                                    None,
-                                )
-                                .expect("TIME(0,0,1)"),
-                            ),
-                            FunctionArg::Eval(FunctionValue::Number(86400.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("TIME*86400"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[
+                        eval_test_surface_value_call(
+                            FUNC_ID_TIME,
+                            &[
+                                (CalcValue::number(0.0)),
+                                (CalcValue::number(0.0)),
+                                (CalcValue::number(1.0)),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("TIME(0,0,1)"),
+                        (CalcValue::number(86400.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("TIME*86400")),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -4975,7 +4801,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
@@ -4983,15 +4809,15 @@ mod tests {
         let filtered_err = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
+                (CalcValue::logical(false)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5002,7 +4828,7 @@ mod tests {
         .expect_err("FILTER({1,2,3},FALSE) should error locally");
         let sum_err = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(FunctionValue::Error(filtered_err))],
+            &[(CalcValue::error(filtered_err))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5013,10 +4839,8 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_IFERROR,
             &[
-                FunctionArg::Eval(FunctionValue::Error(sum_err)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "empty",
-                ))),
+                (CalcValue::error(sum_err)),
+                (CalcValue::text(ExcelText::from_interop_assignment("empty"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5026,9 +4850,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "empty"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("empty")))
         );
     }
 
@@ -5037,21 +4859,21 @@ mod tests {
         let sorted = eval_test_surface_value_call(
             FUNC_ID_SORT,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(9.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(6.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(9.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(6.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
+                CalcValue::missing(),
+                (CalcValue::number(-1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5062,17 +4884,14 @@ mod tests {
         .expect("sort result");
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(sorted),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(sorted), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -5080,21 +4899,21 @@ mod tests {
         let sorted = eval_test_surface_value_call(
             FUNC_ID_SORTBY,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::text(ExcelText::from_interop_assignment("d")),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(1.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(4.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
                     ]])
                     .expect("row vector"),
                 )),
@@ -5108,10 +4927,7 @@ mod tests {
         .expect("sortby result");
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(sorted),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(sorted), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5120,7 +4936,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment("d")))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("d")))
         );
     }
 
@@ -5129,17 +4945,17 @@ mod tests {
         let drop_err = eval_test_surface_value_call(
             FUNC_ID_DROP,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(5.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(-2.0)),
+                (CalcValue::number(-2.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5150,7 +4966,7 @@ mod tests {
         .expect_err("DROP should stay on the row axis and empty out the array locally");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(FunctionValue::Error(drop_err))],
+            &[(CalcValue::error(drop_err))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5165,21 +4981,21 @@ mod tests {
         let chosen = eval_test_surface_value_call(
             FUNC_ID_CHOOSECOLS,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(20.0),
-                        FunctionArrayCell::Number(30.0),
-                        FunctionArrayCell::Number(40.0),
-                        FunctionArrayCell::Number(50.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(50.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(5.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(5.0),
                     ]])
                     .expect("selector row vector"),
                 )),
@@ -5193,32 +5009,32 @@ mod tests {
         .expect("choosecols result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(chosen)],
+            &[(chosen)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(90.0)));
+        assert_eq!(got, Ok(CalcValue::number(90.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0846_to_ftc_0850_match_and_choose_cluster_matches_expected() {
-        let row_vector = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(100.0),
-            FunctionArrayCell::Number(200.0),
-            FunctionArrayCell::Number(300.0),
-            FunctionArrayCell::Number(400.0),
-            FunctionArrayCell::Number(500.0),
+        let row_vector = CalcArray::from_rows(vec![vec![
+            CalcValue::number(100.0),
+            CalcValue::number(200.0),
+            CalcValue::number(300.0),
+            CalcValue::number(400.0),
+            CalcValue::number(500.0),
         ]])
         .expect("row vector");
         let matched = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Number(300.0)),
-                FunctionArg::Eval(FunctionValue::Array(row_vector.clone())),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(300.0)),
+                (CalcValue::array(row_vector.clone())),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5229,31 +5045,28 @@ mod tests {
         .expect("match result");
         let got_0846 = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(FunctionValue::Array(row_vector)),
-                FunctionArg::Eval(matched),
-            ],
+            &[(CalcValue::array(row_vector)), (matched)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got_0846, Ok(FunctionValue::Number(300.0)));
+        assert_eq!(got_0846, Ok(CalcValue::number(300.0)));
 
         let got_0848 = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Number(99.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(20.0),
-                        FunctionArrayCell::Number(30.0),
+                (CalcValue::number(99.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5266,11 +5079,11 @@ mod tests {
         let got_0849 = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("b"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("c"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("d"))),
+                (CalcValue::number(3.0)),
+                (CalcValue::text(ExcelText::from_interop_assignment("a"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("b"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("c"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("d"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5280,16 +5093,16 @@ mod tests {
         );
         assert_eq!(
             got_0849,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment("c")))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("c")))
         );
 
         let got_0850 = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("a"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("b"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("c"))),
+                (CalcValue::number(5.0)),
+                (CalcValue::text(ExcelText::from_interop_assignment("a"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("b"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("c"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5297,10 +5110,7 @@ mod tests {
             None,
             None,
         );
-        assert_eq!(
-            got_0850,
-            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
-        );
+        assert_eq!(got_0850, Ok(CalcValue::error(WorksheetErrorCode::Value)));
     }
 
     #[test]
@@ -5308,26 +5118,24 @@ mod tests {
         let got_0851 = eval_test_surface_value_call(
             FUNC_ID_XLOOKUP,
             &[
-                FunctionArg::Eval(FunctionValue::Number(99.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::number(99.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "missing",
-                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("missing"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5337,7 +5145,7 @@ mod tests {
         );
         assert_eq!(
             got_0851,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
                 "missing"
             )))
         );
@@ -5345,24 +5153,24 @@ mod tests {
         let got_0858 = eval_test_surface_value_call(
             FUNC_ID_LOOKUP,
             &[
-                FunctionArg::Eval(FunctionValue::Number(25.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(20.0),
-                        FunctionArrayCell::Number(30.0),
-                        FunctionArrayCell::Number(40.0),
-                        FunctionArrayCell::Number(50.0),
+                (CalcValue::number(25.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(10.0),
+                        CalcValue::number(20.0),
+                        CalcValue::number(30.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(50.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("e")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::text(ExcelText::from_interop_assignment("d")),
+                        CalcValue::text(ExcelText::from_interop_assignment("e")),
                     ]])
                     .expect("row vector"),
                 )),
@@ -5375,7 +5183,7 @@ mod tests {
         );
         assert_eq!(
             got_0858,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment("b")))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("b")))
         );
     }
 
@@ -5384,35 +5192,33 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_XLOOKUP,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(6.0),
-                        FunctionArrayCell::Number(8.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(2.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(8.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(20.0),
-                        FunctionArrayCell::Number(40.0),
-                        FunctionArrayCell::Number(60.0),
-                        FunctionArrayCell::Number(80.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(20.0),
+                        CalcValue::number(40.0),
+                        CalcValue::number(60.0),
+                        CalcValue::number(80.0),
                     ]])
                     .expect("row vector"),
                 )),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "NF",
-                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("NF"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5422,11 +5228,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("NF")),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("NF")),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("NF")),
+                    CalcValue::number(20.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("NF")),
                 ]])
                 .expect("row vector")
             ))
@@ -5437,10 +5243,7 @@ mod tests {
     fn eval_surface_value_call_ftc_1027_choose_sequence_multicolumn_returns_charlie() {
         let cols = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(4.0)),
-            ],
+            &[(CalcValue::number(1.0)), (CalcValue::number(4.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5451,19 +5254,11 @@ mod tests {
         let result = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
-                FunctionArg::Eval(cols),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "Alpha",
-                ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "Bravo",
-                ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "Charlie",
-                ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "Delta",
-                ))),
+                (cols),
+                (CalcValue::text(ExcelText::from_interop_assignment("Alpha"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Bravo"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Charlie"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Delta"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5475,11 +5270,7 @@ mod tests {
 
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(result),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-            ],
+            &[(result), (CalcValue::number(1.0)), (CalcValue::number(3.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5489,7 +5280,7 @@ mod tests {
 
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
                 "Charlie"
             )))
         );
@@ -5500,42 +5291,37 @@ mod tests {
         let data = eval_test_surface_value_call(
             FUNC_ID_CHOOSE,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_SEQUENCE,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                            FunctionArg::Eval(FunctionValue::Number(3.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("sequence result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[(CalcValue::number(1.0)), (CalcValue::number(3.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(10.0)],
-                        vec![FunctionArrayCell::Number(20.0)],
-                        vec![FunctionArrayCell::Number(30.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0)],
+                        vec![CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(100.0)],
-                        vec![FunctionArrayCell::Number(200.0)],
-                        vec![FunctionArrayCell::Number(300.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(100.0)],
+                        vec![CalcValue::number(200.0)],
+                        vec![CalcValue::number(300.0)],
                     ])
                     .unwrap(),
                 )),
@@ -5549,7 +5335,7 @@ mod tests {
         .expect("choose result");
         let result = eval_test_surface_value_call(
             FUNC_ID_TRANSPOSE,
-            &[FunctionArg::Eval(data)],
+            &[(data)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5560,11 +5346,7 @@ mod tests {
 
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(result),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &[(result), (CalcValue::number(1.0)), (CalcValue::number(2.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5572,16 +5354,16 @@ mod tests {
             None,
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_1021_conditional_text_date_format_returns_fifteen() {
         let ctx = test_current_excel_host_context();
-        let concat = |lhs: FunctionValue, rhs: FunctionValue| {
+        let concat = |lhs: CalcValue, rhs: CalcValue| {
             eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
-                &[FunctionArg::Eval(lhs), FunctionArg::Eval(rhs)],
+                &[(lhs), (rhs)],
                 &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
@@ -5593,9 +5375,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5606,10 +5388,7 @@ mod tests {
         .expect("first day");
         let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(0.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5620,9 +5399,9 @@ mod tests {
         let test_date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(15.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(15.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5635,18 +5414,18 @@ mod tests {
             concat(
                 concat(
                     concat(
-                        FunctionValue::Text(ExcelText::from_interop_assignment("[<")),
+                        CalcValue::text(ExcelText::from_interop_assignment("[<")),
                         first_day,
                     ),
-                    FunctionValue::Text(ExcelText::from_interop_assignment("] ;[>")),
+                    CalcValue::text(ExcelText::from_interop_assignment("] ;[>")),
                 ),
                 last_day,
             ),
-            FunctionValue::Text(ExcelText::from_interop_assignment("] ;dd")),
+            CalcValue::text(ExcelText::from_interop_assignment("] ;dd")),
         );
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
-            &[FunctionArg::Eval(test_date), FunctionArg::Eval(format_code)],
+            &[(test_date), (format_code)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5655,19 +5434,17 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "15"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("15")))
         );
     }
 
     #[test]
     fn eval_surface_value_call_ftc_1022_conditional_text_out_of_range_trims_to_zero() {
         let ctx = test_current_excel_host_context();
-        let concat = |lhs: FunctionValue, rhs: FunctionValue| {
+        let concat = |lhs: CalcValue, rhs: CalcValue| {
             eval_test_surface_value_call(
                 FUNC_ID_OP_CONCAT,
-                &[FunctionArg::Eval(lhs), FunctionArg::Eval(rhs)],
+                &[(lhs), (rhs)],
                 &NoReferenceSystemProvider,
                 Some(46000.0),
                 Some(&TEST_RANDOM_PROVIDER),
@@ -5679,9 +5456,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5692,10 +5469,7 @@ mod tests {
         .expect("first day");
         let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(0.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5706,9 +5480,9 @@ mod tests {
         let test_date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(28.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(28.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5721,18 +5495,18 @@ mod tests {
             concat(
                 concat(
                     concat(
-                        FunctionValue::Text(ExcelText::from_interop_assignment("[<")),
+                        CalcValue::text(ExcelText::from_interop_assignment("[<")),
                         first_day,
                     ),
-                    FunctionValue::Text(ExcelText::from_interop_assignment("] ;[>")),
+                    CalcValue::text(ExcelText::from_interop_assignment("] ;[>")),
                 ),
                 last_day,
             ),
-            FunctionValue::Text(ExcelText::from_interop_assignment("] ;dd")),
+            CalcValue::text(ExcelText::from_interop_assignment("] ;dd")),
         );
         let rendered = eval_test_surface_value_call(
             FUNC_ID_TEXT,
-            &[FunctionArg::Eval(test_date), FunctionArg::Eval(format_code)],
+            &[(test_date), (format_code)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5742,7 +5516,7 @@ mod tests {
         .expect("text result");
         let trimmed = eval_test_surface_value_call(
             FUNC_ID_TRIM,
-            &[FunctionArg::Eval(rendered)],
+            &[(rendered)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5752,14 +5526,14 @@ mod tests {
         .expect("trim result");
         let got = eval_test_surface_value_call(
             FUNC_ID_LEN,
-            &[FunctionArg::Eval(trimmed)],
+            &[(trimmed)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
@@ -5767,9 +5541,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5780,10 +5554,7 @@ mod tests {
         .expect("first day");
         let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -5794,22 +5565,17 @@ mod tests {
         let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_SUBTRACT,
-                        &[
-                            FunctionArg::Eval(first_day.clone()),
-                            FunctionArg::Eval(weekday),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("subtract result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day.clone()), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5821,23 +5587,21 @@ mod tests {
         let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(grid_start),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_SEQUENCE,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(7.0)),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Number(0.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("sequence result"),
-                ),
+                (grid_start),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(7.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5858,9 +5622,9 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXTJOIN,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(","))),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(day_texts),
+                (CalcValue::text(ExcelText::from_interop_assignment(","))),
+                (CalcValue::logical(false)),
+                (day_texts),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5870,8 +5634,8 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "  ,  ,  ,  ,01,02,03",
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "  ,  ,  ,  ,01,02,03"
             )))
         );
     }
@@ -5882,9 +5646,9 @@ mod tests {
         let base_sun = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(7.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(7.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5896,52 +5660,41 @@ mod tests {
         let headers = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_SUBTRACT,
-                        &[
-                            FunctionArg::Eval(
-                                eval_test_surface_value_call(
-                                    FUNC_ID_OP_ADD,
-                                    &[
-                                        FunctionArg::Eval(base_sun),
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value_call(
-                                                FUNC_ID_SEQUENCE,
-                                                &[
-                                                    FunctionArg::Eval(FunctionValue::Number(1.0)),
-                                                    FunctionArg::Eval(FunctionValue::Number(7.0)),
-                                                ],
-                                                &NoReferenceSystemProvider,
-                                                Some(46000.0),
-                                                Some(&TEST_RANDOM_PROVIDER),
-                                                None,
-                                                None,
-                                            )
-                                            .expect("sequence result"),
-                                        ),
-                                    ],
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (base_sun),
+                                (eval_test_surface_value_call(
+                                    FUNC_ID_SEQUENCE,
+                                    &[(CalcValue::number(1.0)), (CalcValue::number(7.0))],
                                     &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
-                                .expect("add result"),
-                            ),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("subtract result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "DDD",
-                ))),
+                                .expect("sequence result")),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("add result")),
+                        (CalcValue::number(1.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::text(ExcelText::from_interop_assignment("DDD"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5953,9 +5706,9 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
-                FunctionArg::Eval(headers),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (headers),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5965,9 +5718,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "Sun"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("Sun")))
         );
     }
 
@@ -5977,9 +5728,9 @@ mod tests {
         let date = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(7.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(7.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -5991,10 +5742,8 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                FunctionArg::Eval(date),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MMMM",
-                ))),
+                (date),
+                (CalcValue::text(ExcelText::from_interop_assignment("MMMM"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6004,9 +5753,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "July"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("July")))
         );
     }
 
@@ -6016,9 +5763,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6029,10 +5776,7 @@ mod tests {
         .expect("first day");
         let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6043,22 +5787,17 @@ mod tests {
         let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_SUBTRACT,
-                        &[
-                            FunctionArg::Eval(first_day.clone()),
-                            FunctionArg::Eval(weekday),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("subtract result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day.clone()), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6070,23 +5809,21 @@ mod tests {
         let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(grid_start),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_SEQUENCE,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(42.0)),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Number(0.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("sequence result"),
-                ),
+                (grid_start),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(42.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6107,10 +5844,8 @@ mod tests {
         let month_name = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                FunctionArg::Eval(first_day),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "MMMM",
-                ))),
+                (first_day),
+                (CalcValue::text(ExcelText::from_interop_assignment("MMMM"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6122,114 +5857,79 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXTJOIN,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("|"))),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(month_name),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 1"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(2.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 2"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(3.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 3"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(4.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 4"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(5.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 5"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(6.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 6"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(day_strs),
-                            FunctionArg::Eval(FunctionValue::Number(7.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("index 7"),
-                ),
+                (CalcValue::text(ExcelText::from_interop_assignment("|"))),
+                (CalcValue::logical(false)),
+                (month_name),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(1.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 1")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 2")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(3.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 3")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(4.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 4")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(5.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 5")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs.clone()), (CalcValue::number(6.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 6")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_INDEX,
+                    &[(day_strs), (CalcValue::number(7.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("index 7")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6239,8 +5939,8 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "January|  |01|02|03|04|05|06",
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "January|  |01|02|03|04|05|06"
             )))
         );
     }
@@ -6250,9 +5950,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6263,10 +5963,7 @@ mod tests {
         .expect("first day");
         let weekday = eval_test_surface_value_call(
             FUNC_ID_WEEKDAY,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6277,19 +5974,17 @@ mod tests {
         let grid_start = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_SUBTRACT,
-                        &[FunctionArg::Eval(first_day), FunctionArg::Eval(weekday)],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("subtract result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(first_day), (weekday)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("subtract result")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6301,38 +5996,34 @@ mod tests {
         let week1 = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_ADD,
-                        &[
-                            FunctionArg::Eval(grid_start),
-                            FunctionArg::Eval(
-                                eval_test_surface_value_call(
-                                    FUNC_ID_SEQUENCE,
-                                    &[
-                                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                                        FunctionArg::Eval(FunctionValue::Number(7.0)),
-                                        FunctionArg::MissingArg,
-                                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                                    ],
-                                    &NoReferenceSystemProvider,
-                                    Some(46000.0),
-                                    Some(&TEST_RANDOM_PROVIDER),
-                                    None,
-                                    None,
-                                )
-                                .expect("sequence"),
-                            ),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("add result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_ADD,
+                    &[
+                        (grid_start),
+                        (eval_test_surface_value_call(
+                            FUNC_ID_SEQUENCE,
+                            &[
+                                (CalcValue::number(1.0)),
+                                (CalcValue::number(7.0)),
+                                CalcValue::missing(),
+                                (CalcValue::number(1.0)),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("sequence")),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("add result")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6352,14 +6043,14 @@ mod tests {
         .expect("map result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(day_nums)],
+            &[(day_nums)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(21.0)));
+        assert_eq!(got, Ok(CalcValue::number(21.0)));
     }
 
     #[test]
@@ -6367,9 +6058,9 @@ mod tests {
         let first_day = eval_test_surface_value_call(
             FUNC_ID_DATE,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6380,10 +6071,7 @@ mod tests {
         .expect("first day");
         let last_day = eval_test_surface_value_call(
             FUNC_ID_EOMONTH,
-            &[
-                FunctionArg::Eval(first_day.clone()),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(first_day.clone()), (CalcValue::number(0.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6393,7 +6081,7 @@ mod tests {
         .expect("last day");
         let days_in_month = eval_test_surface_value_call(
             FUNC_ID_DAY,
-            &[FunctionArg::Eval(last_day)],
+            &[(last_day)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6404,22 +6092,17 @@ mod tests {
         let offset = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_WEEKDAY,
-                        &[
-                            FunctionArg::Eval(first_day),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("weekday"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_WEEKDAY,
+                    &[(first_day), (CalcValue::number(1.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("weekday")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6430,7 +6113,7 @@ mod tests {
         .expect("offset");
         let grid = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
-            &[FunctionArg::Eval(FunctionValue::Number(42.0))],
+            &[(CalcValue::number(42.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6441,76 +6124,60 @@ mod tests {
         let day_vals = eval_test_surface_value_call(
             FUNC_ID_IF,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_AND,
-                        &[
-                            FunctionArg::Eval(
-                                eval_test_surface_value_call(
-                                    FUNC_ID_OP_GREATER_THAN,
-                                    &[
-                                        FunctionArg::Eval(grid.clone()),
-                                        FunctionArg::Eval(offset.clone()),
-                                    ],
+                (eval_test_surface_value_call(
+                    FUNC_ID_AND,
+                    &[
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_GREATER_THAN,
+                            &[(grid.clone()), (offset.clone())],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("gt result")),
+                        (eval_test_surface_value_call(
+                            FUNC_ID_OP_LESS_EQUAL,
+                            &[
+                                (grid.clone()),
+                                (eval_test_surface_value_call(
+                                    FUNC_ID_OP_ADD,
+                                    &[(offset.clone()), (days_in_month)],
                                     &NoReferenceSystemProvider,
                                     Some(46000.0),
                                     Some(&TEST_RANDOM_PROVIDER),
                                     None,
                                     None,
                                 )
-                                .expect("gt result"),
-                            ),
-                            FunctionArg::Eval(
-                                eval_test_surface_value_call(
-                                    FUNC_ID_OP_LESS_EQUAL,
-                                    &[
-                                        FunctionArg::Eval(grid.clone()),
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value_call(
-                                                FUNC_ID_OP_ADD,
-                                                &[
-                                                    FunctionArg::Eval(offset.clone()),
-                                                    FunctionArg::Eval(days_in_month),
-                                                ],
-                                                &NoReferenceSystemProvider,
-                                                Some(46000.0),
-                                                Some(&TEST_RANDOM_PROVIDER),
-                                                None,
-                                                None,
-                                            )
-                                            .expect("offset+days"),
-                                        ),
-                                    ],
-                                    &NoReferenceSystemProvider,
-                                    Some(46000.0),
-                                    Some(&TEST_RANDOM_PROVIDER),
-                                    None,
-                                    None,
-                                )
-                                .expect("le result"),
-                            ),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("and result"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_SUBTRACT,
-                        &[FunctionArg::Eval(grid), FunctionArg::Eval(offset)],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("grid-offset"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                                .expect("offset+days")),
+                            ],
+                            &NoReferenceSystemProvider,
+                            Some(46000.0),
+                            Some(&TEST_RANDOM_PROVIDER),
+                            None,
+                            None,
+                        )
+                        .expect("le result")),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("and result")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_SUBTRACT,
+                    &[(grid), (offset)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("grid-offset")),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6521,10 +6188,7 @@ mod tests {
         .expect("day vals");
         let weekly = eval_test_surface_value_call(
             FUNC_ID_WRAPROWS,
-            &[
-                FunctionArg::Eval(day_vals),
-                FunctionArg::Eval(FunctionValue::Number(7.0)),
-            ],
+            &[(day_vals), (CalcValue::number(7.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6534,36 +6198,30 @@ mod tests {
         .expect("weekly");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_INDEX,
-                    &[
-                        FunctionArg::Eval(weekly),
-                        FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        FunctionArg::Eval(FunctionValue::Number(0.0)),
-                    ],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("index first row"),
-            )],
+            &[(eval_test_surface_value_call(
+                FUNC_ID_INDEX,
+                &[(weekly), (CalcValue::number(1.0)), (CalcValue::number(0.0))],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("index first row"))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0798_scalar_seed_index_lane_returns_zero() {
         let cols = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
-            &[FunctionArg::Eval(FunctionValue::Number(0.0))],
+            &[(CalcValue::number(0.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6573,36 +6231,33 @@ mod tests {
         .expect("columns result");
         let got = eval_test_surface_value_call(
             FUNC_ID_INDEX,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(cols),
-            ],
+            &[(CalcValue::number(0.0)), (cols)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0450_population_stddev_let_composition() {
-        let data = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(5.0),
-            FunctionArrayCell::Number(3.0),
-            FunctionArrayCell::Number(8.0),
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(9.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(7.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(6.0),
+        let data = CalcArray::from_rows(vec![vec![
+            CalcValue::number(5.0),
+            CalcValue::number(3.0),
+            CalcValue::number(8.0),
+            CalcValue::number(1.0),
+            CalcValue::number(9.0),
+            CalcValue::number(2.0),
+            CalcValue::number(7.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
         ]])
         .unwrap();
         let n = eval_test_surface_value_call(
             FUNC_ID_COUNTA,
-            &[FunctionArg::Eval(FunctionValue::Array(data.clone()))],
+            &[(CalcValue::array(data.clone()))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6612,7 +6267,7 @@ mod tests {
         .expect("counta result");
         let mean = eval_test_surface_value_call(
             FUNC_ID_AVERAGE,
-            &[FunctionArg::Eval(FunctionValue::Array(data.clone()))],
+            &[(CalcValue::array(data.clone()))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6622,10 +6277,7 @@ mod tests {
         .expect("average result");
         let centered = eval_test_surface_value_call(
             FUNC_ID_OP_SUBTRACT,
-            &[
-                FunctionArg::Eval(FunctionValue::Array(data)),
-                FunctionArg::Eval(mean.clone()),
-            ],
+            &[(CalcValue::array(data)), (mean.clone())],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6635,10 +6287,7 @@ mod tests {
         .expect("subtract result");
         let squares = eval_test_surface_value_call(
             FUNC_ID_OP_POWER,
-            &[
-                FunctionArg::Eval(centered),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &[(centered), (CalcValue::number(2.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6649,19 +6298,17 @@ mod tests {
         let variance = eval_test_surface_value_call(
             FUNC_ID_OP_DIVIDE,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_SUMPRODUCT,
-                        &[FunctionArg::Eval(squares)],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("sumproduct result"),
-                ),
-                FunctionArg::Eval(n),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SUMPRODUCT,
+                    &[(squares)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sumproduct result")),
+                (n),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6672,14 +6319,14 @@ mod tests {
         .expect("variance result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SQRT,
-            &[FunctionArg::Eval(variance)],
+            &[(variance)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.581988897471611)));
+        assert_eq!(got, Ok(CalcValue::number(2.581988897471611)));
     }
 
     #[test]
@@ -6687,15 +6334,15 @@ mod tests {
         let include = eval_test_surface_value_call(
             FUNC_ID_OP_GREATER_THAN,
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6706,18 +6353,16 @@ mod tests {
         .expect("comparison result");
         let coerced = eval_test_surface_value_call(
             FUNC_ID_OP_NEGATE,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_OP_NEGATE,
-                    &[FunctionArg::Eval(include)],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("first negate"),
-            )],
+            &[(eval_test_surface_value_call(
+                FUNC_ID_OP_NEGATE,
+                &[(include)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("first negate"))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6727,14 +6372,14 @@ mod tests {
         .expect("double-negated result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUMPRODUCT,
-            &[FunctionArg::Eval(coerced)],
+            &[(coerced)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
@@ -6743,10 +6388,8 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_TEXT,
             &[
-                FunctionArg::Eval(FunctionValue::Number(1234567.89)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "#,##0.00",
-                ))),
+                (CalcValue::number(1234567.89)),
+                (CalcValue::text(ExcelText::from_interop_assignment("#,##0.00"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6756,8 +6399,8 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "1,234,567.89",
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
+                "1,234,567.89"
             )))
         );
     }
@@ -6766,10 +6409,7 @@ mod tests {
     fn eval_surface_value_call_ftc_0505_columns_of_randarray_returns_three() {
         let generated = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-            ],
+            &[(CalcValue::number(5.0)), (CalcValue::number(3.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6779,14 +6419,14 @@ mod tests {
         .expect("randarray result");
         let got = eval_test_surface_value_call(
             FUNC_ID_COLUMNS,
-            &[FunctionArg::Eval(generated)],
+            &[(generated)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -6794,10 +6434,7 @@ mod tests {
         let provider = SequenceRandomProvider { next: Cell::new(1) };
         let got = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-            ],
+            &[(CalcValue::number(5.0)), (CalcValue::number(5.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&provider),
@@ -6806,14 +6443,14 @@ mod tests {
         )
         .expect("RANDARRAY result");
 
-        let FunctionValue::Array(array) = got else {
+        let CoreValue::Array(array) = got.core else {
             panic!("expected array result");
         };
         assert_eq!(array.shape(), ArrayShape { rows: 5, cols: 5 });
         let values = array.iter_row_major().cloned().collect::<Vec<_>>();
-        assert_eq!(values.first(), Some(&FunctionArrayCell::Number(0.01)));
-        assert_eq!(values.get(12), Some(&FunctionArrayCell::Number(0.13)));
-        assert_eq!(values.last(), Some(&FunctionArrayCell::Number(0.25)));
+        assert_eq!(values.first(), Some(&CalcValue::number(0.01)));
+        assert_eq!(values.get(12), Some(&CalcValue::number(0.13)));
+        assert_eq!(values.last(), Some(&CalcValue::number(0.25)));
         assert_eq!(provider.next.get(), 26);
     }
 
@@ -6821,10 +6458,7 @@ mod tests {
     fn eval_surface_value_call_randarray_requires_random_provider() {
         let got = eval_test_surface_value_call(
             FUNC_ID_RANDARRAY,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-                FunctionArg::Eval(FunctionValue::Number(5.0)),
-            ],
+            &[(CalcValue::number(5.0)), (CalcValue::number(5.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             None,
@@ -6837,10 +6471,10 @@ mod tests {
     #[test]
     fn eval_surface_value_call_ftc_0600_extract_digits_from_string_returns_123() {
         let ctx = test_current_excel_host_context();
-        let text = FunctionValue::Text(ExcelText::from_interop_assignment("Hello World 123"));
+        let text = CalcValue::text(ExcelText::from_interop_assignment("Hello World 123"));
         let length = eval_test_surface_value_call(
             FUNC_ID_LEN,
-            &[FunctionArg::Eval(text.clone())],
+            &[(text.clone())],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6850,7 +6484,7 @@ mod tests {
         .expect("len result");
         let positions = eval_test_surface_value_call(
             FUNC_ID_SEQUENCE,
-            &[FunctionArg::Eval(length)],
+            &[(length)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6860,11 +6494,7 @@ mod tests {
         .expect("sequence result");
         let chars = eval_test_surface_value_call(
             FUNC_ID_MID,
-            &[
-                FunctionArg::Eval(text),
-                FunctionArg::Eval(positions),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(text), (positions), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6874,10 +6504,7 @@ mod tests {
         .expect("mid result");
         let multiplied = eval_test_surface_value_call(
             FUNC_ID_OP_MULTIPLY,
-            &[
-                FunctionArg::Eval(chars.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(chars.clone()), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6888,8 +6515,8 @@ mod tests {
         let recovered = eval_test_surface_value_call(
             FUNC_ID_IFERROR,
             &[
-                FunctionArg::Eval(multiplied),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(""))),
+                (multiplied),
+                (CalcValue::text(ExcelText::from_interop_assignment(""))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6900,7 +6527,7 @@ mod tests {
         .expect("iferror result");
         let numeric_text = eval_test_surface_value_call(
             FUNC_ID_VALUE,
-            &[FunctionArg::Eval(recovered)],
+            &[(recovered)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6910,7 +6537,7 @@ mod tests {
         .expect("value result");
         let is_digit = eval_test_surface_value_call(
             FUNC_ID_ISNUMBER,
-            &[FunctionArg::Eval(numeric_text)],
+            &[(numeric_text)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6921,9 +6548,9 @@ mod tests {
         let digits = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
-                FunctionArg::Eval(chars),
-                FunctionArg::Eval(is_digit),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(""))),
+                (chars),
+                (is_digit),
+                (CalcValue::text(ExcelText::from_interop_assignment(""))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -6934,7 +6561,7 @@ mod tests {
         .expect("filter result");
         let got = eval_test_surface_value_call(
             FUNC_ID_CONCAT,
-            &[FunctionArg::Eval(digits)],
+            &[(digits)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -6943,24 +6570,22 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "123"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("123")))
         );
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0470_map_chain_sum_returns_sixty_three() {
-        let data = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Number(1.0)],
-            vec![FunctionArrayCell::Number(2.0)],
-            vec![FunctionArrayCell::Number(3.0)],
+        let data = CalcArray::from_rows(vec![
+            vec![CalcValue::number(1.0)],
+            vec![CalcValue::number(2.0)],
+            vec![CalcValue::number(3.0)],
         ])
         .unwrap();
         let step1 = eval_test_calc_surface_value_with_callable(
             FUNC_ID_MAP,
             &[
-                CalcValue::from(FunctionValue::Array(data)),
+                CalcValue::from(CalcValue::array(data)),
                 CalcValue::callable(test_callable_value("helper.mul10", 1)),
             ],
             &TestCallableInvoker,
@@ -6977,14 +6602,14 @@ mod tests {
         .expect("second map result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(step2)],
+            &[(step2)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(63.0)));
+        assert_eq!(got, Ok(CalcValue::number(63.0)));
     }
 
     #[test]
@@ -6994,29 +6619,23 @@ mod tests {
         let recursive_invoker = invoker.clone();
         let gcd_self_callable = gcd_callable.clone();
         invoker.register("closure.ftc0443.gcd", 2, move |args| match args {
-            [
-                PreparedValue::Eval(FunctionValue::Number(a)),
-                PreparedValue::Eval(FunctionValue::Number(b)),
-            ] => {
-                if *b == 0.0 {
-                    Ok(PreparedValue::Eval(FunctionValue::Number(*a)))
-                } else {
-                    let remainder = eval_test_surface_value(
-                        FUNC_ID_MOD,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(*a)),
-                            FunctionArg::Eval(FunctionValue::Number(*b)),
-                        ],
-                    )?;
-                    recursive_invoker.invoke(
-                        &gcd_self_callable,
-                        &[
-                            PreparedValue::Eval(FunctionValue::Number(*b)),
-                            PreparedValue::Eval(remainder),
-                        ],
-                    )
+            [a, b] => match (a.core(), b.core()) {
+                (CoreValue::Number(a), CoreValue::Number(b)) => {
+                    if *b == 0.0 {
+                        Ok(CalcValue::number(*a))
+                    } else {
+                        let remainder = eval_test_surface_value(
+                            FUNC_ID_MOD,
+                            &[CalcValue::number(*a), CalcValue::number(*b)],
+                        )?;
+                        recursive_invoker
+                            .invoke(&gcd_self_callable, &[CalcValue::number(*b), remainder])
+                    }
                 }
-            }
+                _ => Err(CallableInvocationError::Worksheet(
+                    WorksheetErrorCode::Value,
+                )),
+            },
             _ => Err(CallableInvocationError::Worksheet(
                 WorksheetErrorCode::Value,
             )),
@@ -7024,12 +6643,9 @@ mod tests {
 
         let got = invoker.invoke(
             &gcd_callable,
-            &[
-                PreparedValue::Eval(FunctionValue::Number(48.0)),
-                PreparedValue::Eval(FunctionValue::Number(36.0)),
-            ],
+            &[CalcValue::number(48.0), CalcValue::number(36.0)],
         );
-        assert_eq!(got, Ok(PreparedValue::Eval(FunctionValue::Number(12.0))));
+        assert_eq!(got, Ok(CalcValue::number(12.0)));
     }
 
     #[test]
@@ -7037,26 +6653,22 @@ mod tests {
         let invoker = ClosureCallableInvoker::new();
         let a = number_column(&[1.0, 1.0, 1.0, 0.0]);
         let b = number_column(&[1.0, 1.0, 0.0, 0.0]);
-        let n = FunctionValue::Number(4.0);
+        let n = CalcValue::number(4.0);
         let ks = eval_test_surface_value(
             FUNC_ID_SEQUENCE,
-            &[
-                FunctionArg::Eval(n.clone()),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(n.clone()), CalcValue::missing(), (CalcValue::number(0.0))],
         )
         .expect("ks");
         let two_pi = eval_test_surface_value(
             FUNC_ID_OP_MULTIPLY,
             &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(eval_test_surface_value(FUNC_ID_PI, &[]).expect("pi")),
+                (CalcValue::number(2.0)),
+                (eval_test_surface_value(FUNC_ID_PI, &[]).expect("pi")),
             ],
         )
         .expect("two_pi");
 
-        let register_dft = |token: &str, signal: FunctionValue, trig_function: &str, sign: f64| {
+        let register_dft = |token: &str, signal: CalcValue, trig_function: &str, sign: f64| {
             let signal = signal.clone();
             let ks = ks.clone();
             let n = n.clone();
@@ -7065,55 +6677,40 @@ mod tests {
             invoker.register(token, 1, move |args| {
                 let wave = eval_test_surface_value(
                     trig_function.as_str(),
-                    &[FunctionArg::Eval(
-                        eval_test_surface_value(
-                            FUNC_ID_OP_DIVIDE,
-                            &[
-                                FunctionArg::Eval(
+                    &[eval_test_surface_value(
+                        FUNC_ID_OP_DIVIDE,
+                        &[
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    two_pi.clone(),
                                     eval_test_surface_value(
                                         FUNC_ID_OP_MULTIPLY,
-                                        &[
-                                            FunctionArg::Eval(two_pi.clone()),
-                                            FunctionArg::Eval(
-                                                eval_test_surface_value(
-                                                    FUNC_ID_OP_MULTIPLY,
-                                                    &[
-                                                        call_arg_from_prepared(&args[0]),
-                                                        FunctionArg::Eval(ks.clone()),
-                                                    ],
-                                                )
-                                                .expect("k*ks"),
-                                            ),
-                                        ],
+                                        &[call_arg_from_prepared(&args[0]), ks.clone()],
                                     )
-                                    .expect("2pi*k*ks"),
-                                ),
-                                FunctionArg::Eval(n.clone()),
-                            ],
-                        )
-                        .expect("angle"),
-                    )],
+                                    .expect("k*ks"),
+                                ],
+                            )
+                            .expect("2pi*k*ks"),
+                            n.clone(),
+                        ],
+                    )
+                    .expect("angle")],
                 )?;
                 let mut total = eval_test_surface_value(
                     FUNC_ID_SUM,
-                    &[FunctionArg::Eval(
-                        eval_test_surface_value(
-                            FUNC_ID_OP_MULTIPLY,
-                            &[FunctionArg::Eval(signal.clone()), FunctionArg::Eval(wave)],
-                        )
-                        .expect("signal*wave"),
-                    )],
+                    &[
+                        eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[signal.clone(), wave])
+                            .expect("signal*wave"),
+                    ],
                 )?;
                 if sign < 0.0 {
                     total = eval_test_surface_value(
                         FUNC_ID_OP_MULTIPLY,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(sign)),
-                            FunctionArg::Eval(total),
-                        ],
+                        &[CalcValue::number(sign), total],
                     )?;
                 }
-                Ok(PreparedValue::Eval(total))
+                Ok(total)
             })
         };
 
@@ -7150,40 +6747,20 @@ mod tests {
         let cr = eval_test_surface_value(
             FUNC_ID_OP_SUBTRACT,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[FunctionArg::Eval(ar.clone()), FunctionArg::Eval(br.clone())],
-                    )
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ar.clone(), br.clone()])
                     .expect("Ar*Br"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[FunctionArg::Eval(ai.clone()), FunctionArg::Eval(bi.clone())],
-                    )
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ai.clone(), bi.clone()])
                     .expect("Ai*Bi"),
-                ),
             ],
         )
         .expect("Cr");
         let ci = eval_test_surface_value(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[FunctionArg::Eval(ar.clone()), FunctionArg::Eval(bi.clone())],
-                    )
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ar.clone(), bi.clone()])
                     .expect("Ar*Bi"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[FunctionArg::Eval(ai.clone()), FunctionArg::Eval(br.clone())],
-                    )
+                eval_test_surface_value(FUNC_ID_OP_MULTIPLY, &[ai.clone(), br.clone()])
                     .expect("Ai*Br"),
-                ),
             ],
         )
         .expect("Ci");
@@ -7198,79 +6775,53 @@ mod tests {
                 let angle = eval_test_surface_value(
                     FUNC_ID_OP_DIVIDE,
                     &[
-                        FunctionArg::Eval(
-                            eval_test_surface_value(
-                                FUNC_ID_OP_MULTIPLY,
-                                &[
-                                    FunctionArg::Eval(two_pi.clone()),
-                                    FunctionArg::Eval(
-                                        eval_test_surface_value(
-                                            FUNC_ID_OP_MULTIPLY,
-                                            &[
-                                                call_arg_from_prepared(&args[0]),
-                                                FunctionArg::Eval(ks.clone()),
-                                            ],
-                                        )
-                                        .expect("n*ks"),
-                                    ),
-                                ],
-                            )
-                            .expect("2pi*n*ks"),
-                        ),
-                        FunctionArg::Eval(n.clone()),
+                        eval_test_surface_value(
+                            FUNC_ID_OP_MULTIPLY,
+                            &[
+                                two_pi.clone(),
+                                eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[call_arg_from_prepared(&args[0]), ks.clone()],
+                                )
+                                .expect("n*ks"),
+                            ],
+                        )
+                        .expect("2pi*n*ks"),
+                        n.clone(),
                     ],
                 )
                 .expect("angle");
                 let total = eval_test_surface_value(
                     FUNC_ID_SUM,
-                    &[FunctionArg::Eval(
-                        eval_test_surface_value(
-                            FUNC_ID_OP_ADD,
-                            &[
-                                FunctionArg::Eval(
-                                    eval_test_surface_value(
-                                        FUNC_ID_OP_MULTIPLY,
-                                        &[
-                                            FunctionArg::Eval(cr.clone()),
-                                            FunctionArg::Eval(
-                                                eval_test_surface_value(
-                                                    FUNC_ID_COS,
-                                                    &[FunctionArg::Eval(angle.clone())],
-                                                )
-                                                .expect("cos(angle)"),
-                                            ),
-                                        ],
-                                    )
-                                    .expect("Cr*cos"),
-                                ),
-                                FunctionArg::Eval(
-                                    eval_test_surface_value(
-                                        FUNC_ID_OP_MULTIPLY,
-                                        &[
-                                            FunctionArg::Eval(ci.clone()),
-                                            FunctionArg::Eval(
-                                                eval_test_surface_value(
-                                                    FUNC_ID_SIN,
-                                                    &[FunctionArg::Eval(angle)],
-                                                )
-                                                .expect("sin(angle)"),
-                                            ),
-                                        ],
-                                    )
-                                    .expect("Ci*sin"),
-                                ),
-                            ],
-                        )
-                        .expect("sum terms"),
-                    )],
-                )?;
-                Ok(PreparedValue::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_DIVIDE,
-                        &[FunctionArg::Eval(total), FunctionArg::Eval(n.clone())],
+                    &[eval_test_surface_value(
+                        FUNC_ID_OP_ADD,
+                        &[
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    cr.clone(),
+                                    eval_test_surface_value(FUNC_ID_COS, &[angle.clone()])
+                                        .expect("cos(angle)"),
+                                ],
+                            )
+                            .expect("Cr*cos"),
+                            eval_test_surface_value(
+                                FUNC_ID_OP_MULTIPLY,
+                                &[
+                                    ci.clone(),
+                                    eval_test_surface_value(FUNC_ID_SIN, &[angle])
+                                        .expect("sin(angle)"),
+                                ],
+                            )
+                            .expect("Ci*sin"),
+                        ],
                     )
-                    .expect("divide by N"),
-                ))
+                    .expect("sum terms")],
+                )?;
+                Ok(
+                    eval_test_surface_value(FUNC_ID_OP_DIVIDE, &[total, n.clone()])
+                        .expect("divide by N"),
+                )
             })
         };
 
@@ -7292,127 +6843,84 @@ mod tests {
         let got = eval_test_surface_value(
             FUNC_ID_ROUND,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_ADD,
-                        &[
-                            FunctionArg::Eval(
-                                eval_test_surface_value(
-                                    FUNC_ID_OP_ADD,
+                (eval_test_surface_value(
+                    FUNC_ID_OP_ADD,
+                    &[
+                        (eval_test_surface_value(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (eval_test_surface_value(
+                                    FUNC_ID_INDEX,
+                                    &[(conv.clone()), (CalcValue::number(1.0))],
+                                )
+                                .expect("conv1")),
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
                                     &[
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value(
-                                                FUNC_ID_INDEX,
-                                                &[
-                                                    FunctionArg::Eval(conv.clone()),
-                                                    FunctionArg::Eval(FunctionValue::Number(1.0)),
-                                                ],
-                                            )
-                                            .expect("conv1"),
-                                        ),
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value(
-                                                FUNC_ID_OP_MULTIPLY,
-                                                &[
-                                                    FunctionArg::Eval(FunctionValue::Number(10.0)),
-                                                    FunctionArg::Eval(
-                                                        eval_test_surface_value(
-                                                            FUNC_ID_INDEX,
-                                                            &[
-                                                                FunctionArg::Eval(conv.clone()),
-                                                                FunctionArg::Eval(
-                                                                    FunctionValue::Number(2.0),
-                                                                ),
-                                                            ],
-                                                        )
-                                                        .expect("conv2"),
-                                                    ),
-                                                ],
-                                            )
-                                            .expect("10*conv2"),
-                                        ),
+                                        (CalcValue::number(10.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv.clone()), CalcValue::number(2.0)],
+                                        )
+                                        .expect("conv2")),
                                     ],
                                 )
-                                .expect("low digits"),
-                            ),
-                            FunctionArg::Eval(
-                                eval_test_surface_value(
-                                    FUNC_ID_OP_ADD,
+                                .expect("10*conv2")),
+                            ],
+                        )
+                        .expect("low digits")),
+                        (eval_test_surface_value(
+                            FUNC_ID_OP_ADD,
+                            &[
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
                                     &[
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value(
-                                                FUNC_ID_OP_MULTIPLY,
-                                                &[
-                                                    FunctionArg::Eval(FunctionValue::Number(100.0)),
-                                                    FunctionArg::Eval(
-                                                        eval_test_surface_value(
-                                                            FUNC_ID_INDEX,
-                                                            &[
-                                                                FunctionArg::Eval(conv.clone()),
-                                                                FunctionArg::Eval(
-                                                                    FunctionValue::Number(3.0),
-                                                                ),
-                                                            ],
-                                                        )
-                                                        .expect("conv3"),
-                                                    ),
-                                                ],
-                                            )
-                                            .expect("100*conv3"),
-                                        ),
-                                        FunctionArg::Eval(
-                                            eval_test_surface_value(
-                                                FUNC_ID_OP_MULTIPLY,
-                                                &[
-                                                    FunctionArg::Eval(FunctionValue::Number(
-                                                        1000.0,
-                                                    )),
-                                                    FunctionArg::Eval(
-                                                        eval_test_surface_value(
-                                                            FUNC_ID_INDEX,
-                                                            &[
-                                                                FunctionArg::Eval(conv),
-                                                                FunctionArg::Eval(
-                                                                    FunctionValue::Number(4.0),
-                                                                ),
-                                                            ],
-                                                        )
-                                                        .expect("conv4"),
-                                                    ),
-                                                ],
-                                            )
-                                            .expect("1000*conv4"),
-                                        ),
+                                        (CalcValue::number(100.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv.clone()), CalcValue::number(3.0)],
+                                        )
+                                        .expect("conv3")),
                                     ],
                                 )
-                                .expect("high digits"),
-                            ),
-                        ],
-                    )
-                    .expect("packed"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                                .expect("100*conv3")),
+                                (eval_test_surface_value(
+                                    FUNC_ID_OP_MULTIPLY,
+                                    &[
+                                        (CalcValue::number(1000.0)),
+                                        (eval_test_surface_value(
+                                            FUNC_ID_INDEX,
+                                            &[(conv), CalcValue::number(4.0)],
+                                        )
+                                        .expect("conv4")),
+                                    ],
+                                )
+                                .expect("1000*conv4")),
+                            ],
+                        )
+                        .expect("high digits")),
+                    ],
+                )
+                .expect("packed")),
+                (CalcValue::number(0.0)),
             ],
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2211.0)));
+        assert_eq!(got, Ok(CalcValue::number(2211.0)));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_0477_filter_if_empty_returns_none() {
-        let data = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Number(1.0)],
-            vec![FunctionArrayCell::Number(2.0)],
-            vec![FunctionArrayCell::Number(3.0)],
-            vec![FunctionArrayCell::Number(4.0)],
-            vec![FunctionArrayCell::Number(5.0)],
+        let data = CalcArray::from_rows(vec![
+            vec![CalcValue::number(1.0)],
+            vec![CalcValue::number(2.0)],
+            vec![CalcValue::number(3.0)],
+            vec![CalcValue::number(4.0)],
+            vec![CalcValue::number(5.0)],
         ])
         .unwrap();
         let include = eval_test_surface_value_call(
             FUNC_ID_OP_GREATER_THAN,
-            &[
-                FunctionArg::Eval(FunctionValue::Array(data.clone())),
-                FunctionArg::Eval(FunctionValue::Number(10.0)),
-            ],
+            &[(CalcValue::array(data.clone())), (CalcValue::number(10.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7423,11 +6931,9 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_FILTER,
             &[
-                FunctionArg::Eval(FunctionValue::Array(data)),
-                FunctionArg::Eval(include),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "none",
-                ))),
+                (CalcValue::array(data)),
+                (include),
+                (CalcValue::text(ExcelText::from_interop_assignment("none"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -7437,9 +6943,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "none"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("none")))
         );
     }
 
@@ -7449,131 +6953,99 @@ mod tests {
         let wrapped = eval_test_surface_value(
             FUNC_ID_WRAPCOLS,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_TOCOL,
-                        &[
-                            FunctionArg::Eval(data.clone()),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Logical(true)),
-                        ],
-                    )
-                    .expect("TOCOL(data,,TRUE)"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (data.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(data,,TRUE)"),
+                (CalcValue::number(2.0)),
             ],
         )
         .expect("Wrap(data,2)");
-        let x0 = eval_test_surface_value(
-            FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(wrapped.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
-        )
-        .expect("TAKE(w,1)");
+        let x0 =
+            eval_test_surface_value(FUNC_ID_TAKE, &[(wrapped.clone()), (CalcValue::number(1.0))])
+                .expect("TAKE(w,1)");
         let x1 = eval_test_surface_value(
             FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(wrapped.clone()),
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
-            ],
+            &[(wrapped.clone()), (CalcValue::number(-1.0))],
         )
         .expect("TAKE(w,-1)");
         let y0 = eval_test_surface_value(
             FUNC_ID_WRAPCOLS,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_TOCOL,
-                        &[
-                            FunctionArg::Eval(x0.clone()),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Logical(true)),
-                        ],
-                    )
-                    .expect("TOCOL(x0,,TRUE)"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (x0.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(x0,,TRUE)"),
+                (CalcValue::number(2.0)),
             ],
         )
         .expect("Wrap(x0,2)");
         let y1 = eval_test_surface_value(
             FUNC_ID_WRAPCOLS,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_TOCOL,
-                        &[
-                            FunctionArg::Eval(x1.clone()),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Logical(true)),
-                        ],
-                    )
-                    .expect("TOCOL(x1,,TRUE)"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                eval_test_surface_value(
+                    FUNC_ID_TOCOL,
+                    &[
+                        (x1.clone()),
+                        CalcValue::missing(),
+                        (CalcValue::logical(true)),
+                    ],
+                )
+                .expect("TOCOL(x1,,TRUE)"),
+                (CalcValue::number(2.0)),
             ],
         )
         .expect("Wrap(x1,2)");
-        let result = eval_test_surface_value(
-            FUNC_ID_VSTACK,
-            &[FunctionArg::Eval(y0.clone()), FunctionArg::Eval(y1.clone())],
-        )
-        .expect("VSTACK(y0,y1)");
-        let flat = eval_test_surface_value(FUNC_ID_TOCOL, &[FunctionArg::Eval(result.clone())])
-            .expect("TOCOL(result)");
+        let result = eval_test_surface_value(FUNC_ID_VSTACK, &[(y0.clone()), (y1.clone())])
+            .expect("VSTACK(y0,y1)");
+        let flat =
+            eval_test_surface_value(FUNC_ID_TOCOL, &[(result.clone())]).expect("TOCOL(result)");
         let packed = eval_test_surface_value(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(flat.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                    )
+                eval_test_surface_value(FUNC_ID_INDEX, &[(flat.clone()), (CalcValue::number(1.0))])
                     .expect("INDEX(flat,1)"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(100.0)),
-                            FunctionArg::Eval(
-                                eval_test_surface_value(
-                                    FUNC_ID_INDEX,
-                                    &[
-                                        FunctionArg::Eval(flat.clone()),
-                                        FunctionArg::Eval(FunctionValue::Number(5.0)),
-                                    ],
-                                )
-                                .expect("INDEX(flat,5)"),
-                            ),
-                        ],
-                    )
-                    .expect("100*index5"),
-                ),
+                (eval_test_surface_value(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[
+                        (CalcValue::number(100.0)),
+                        eval_test_surface_value(
+                            FUNC_ID_INDEX,
+                            &[(flat.clone()), (CalcValue::number(5.0))],
+                        )
+                        .expect("INDEX(flat,5)"),
+                    ],
+                )
+                .expect("100*index5")),
             ],
         )
         .expect("packed");
 
         assert_eq!(
             wrapped,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(7.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(7.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(6.0),
-                        FunctionArrayCell::Number(8.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(8.0),
                     ],
                 ])
                 .unwrap()
@@ -7581,53 +7053,41 @@ mod tests {
         );
         assert_eq!(
             y0,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(5.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(7.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(5.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(7.0)],
                 ])
                 .unwrap()
             )
         );
         assert_eq!(
             y1,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(6.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(8.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(6.0)],
+                    vec![CalcValue::number(4.0), CalcValue::number(8.0)],
                 ])
                 .unwrap()
             )
         );
         assert_eq!(
             flat,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(5.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(6.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
-                    vec![FunctionArrayCell::Number(8.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(5.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(6.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(8.0)],
                 ])
                 .unwrap()
             )
         );
-        assert_eq!(packed, FunctionValue::Number(201.0));
+        assert_eq!(packed, CalcValue::number(201.0));
     }
 
     #[test]
@@ -7635,117 +7095,84 @@ mod tests {
         let x = eval_test_surface_value(
             FUNC_ID_HSTACK,
             &[
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(0.0)),
             ],
         )
         .expect("HSTACK");
-        let x0 = eval_test_surface_value(
-            FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(x.clone()),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
-        )
-        .expect("TAKE(x,1)");
-        let x1 = eval_test_surface_value(
-            FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(x.clone()),
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
-            ],
-        )
-        .expect("TAKE(x,-1)");
+        let x0 = eval_test_surface_value(FUNC_ID_TAKE, &[(x.clone()), (CalcValue::number(1.0))])
+            .expect("TAKE(x,1)");
+        let x1 = eval_test_surface_value(FUNC_ID_TAKE, &[(x.clone()), (CalcValue::number(-1.0))])
+            .expect("TAKE(x,-1)");
         let re_x0 = eval_test_surface_value(
             FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(x0.clone()),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &[(x0.clone()), CalcValue::missing(), (CalcValue::number(2.0))],
         )
         .expect("Re(x0)");
         let re_x1 = eval_test_surface_value(
             FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(x1.clone()),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &[(x1.clone()), CalcValue::missing(), (CalcValue::number(2.0))],
         )
         .expect("Re(x1)");
         let y0 = eval_test_surface_value(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(re_x0.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                    )
-                    .expect("INDEX(re_x0,1,1)"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(re_x1.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                    )
-                    .expect("INDEX(re_x1,1,1)"),
-                ),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x0.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x0,1,1)"),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x1.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x1,1,1)"),
             ],
         )
         .expect("y0");
         let y1 = eval_test_surface_value(
             FUNC_ID_OP_SUBTRACT,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(re_x0.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                    )
-                    .expect("INDEX(re_x0,1,1)"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_INDEX,
-                        &[
-                            FunctionArg::Eval(re_x1.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                            FunctionArg::Eval(FunctionValue::Number(1.0)),
-                        ],
-                    )
-                    .expect("INDEX(re_x1,1,1)"),
-                ),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x0.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x0,1,1)"),
+                eval_test_surface_value(
+                    FUNC_ID_INDEX,
+                    &[
+                        (re_x1.clone()),
+                        (CalcValue::number(1.0)),
+                        (CalcValue::number(1.0)),
+                    ],
+                )
+                .expect("INDEX(re_x1,1,1)"),
             ],
         )
         .expect("y1");
         let packed = eval_test_surface_value(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(y0.clone()),
-                FunctionArg::Eval(
-                    eval_test_surface_value(
-                        FUNC_ID_OP_MULTIPLY,
-                        &[
-                            FunctionArg::Eval(y1.clone()),
-                            FunctionArg::Eval(FunctionValue::Number(100.0)),
-                        ],
-                    )
-                    .expect("y1*100"),
-                ),
+                (y0.clone()),
+                (eval_test_surface_value(
+                    FUNC_ID_OP_MULTIPLY,
+                    &[(y1.clone()), (CalcValue::number(100.0))],
+                )
+                .expect("y1*100")),
             ],
         )
         .expect("packed");
@@ -7754,28 +7181,22 @@ mod tests {
         assert_eq!(x1, x);
         assert_eq!(
             re_x0,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(0.0),
-                ]])
-                .unwrap()
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(3.0), CalcValue::number(0.0),]])
+                    .unwrap()
             )
         );
         assert_eq!(re_x1, re_x0);
-        assert_eq!(y0, FunctionValue::Number(6.0));
-        assert_eq!(y1, FunctionValue::Number(0.0));
-        assert_eq!(packed, FunctionValue::Number(6.0));
+        assert_eq!(y0, CalcValue::number(6.0));
+        assert_eq!(y1, CalcValue::number(0.0));
+        assert_eq!(packed, CalcValue::number(6.0));
     }
 
     #[test]
     fn eval_surface_value_call_ftc_1008_complex_magnitude_returns_five() {
         let z = eval_test_surface_value_call(
             FUNC_ID_HSTACK,
-            &[
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(4.0)),
-            ],
+            &[(CalcValue::number(3.0)), (CalcValue::number(4.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7785,11 +7206,7 @@ mod tests {
         .expect("hstack result");
         let re = eval_test_surface_value_call(
             FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(z.clone()),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-            ],
+            &[(z.clone()), CalcValue::missing(), (CalcValue::number(1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7799,11 +7216,7 @@ mod tests {
         .expect("real part");
         let im = eval_test_surface_value_call(
             FUNC_ID_TAKE,
-            &[
-                FunctionArg::Eval(z),
-                FunctionArg::MissingArg,
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
-            ],
+            &[(z), CalcValue::missing(), (CalcValue::number(-1.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7814,36 +7227,26 @@ mod tests {
         let sumsq = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_POWER,
-                        &[
-                            FunctionArg::Eval(re),
-                            FunctionArg::Eval(FunctionValue::Number(2.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("re squared"),
-                ),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_OP_POWER,
-                        &[
-                            FunctionArg::Eval(im),
-                            FunctionArg::Eval(FunctionValue::Number(2.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("im squared"),
-                ),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_POWER,
+                    &[(re), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("re squared")),
+                (eval_test_surface_value_call(
+                    FUNC_ID_OP_POWER,
+                    &[(im), (CalcValue::number(2.0))],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("im squared")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -7854,7 +7257,7 @@ mod tests {
         .expect("sumsq result");
         let magnitude = eval_test_surface_value_call(
             FUNC_ID_SQRT,
-            &[FunctionArg::Eval(sumsq)],
+            &[(sumsq)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7865,9 +7268,9 @@ mod tests {
         let indexed = eval_test_surface_value_call(
             FUNC_ID_INDEX,
             &[
-                FunctionArg::Eval(magnitude),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (magnitude),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -7878,17 +7281,14 @@ mod tests {
         .expect("index result");
         let got = eval_test_surface_value_call(
             FUNC_ID_ROUND,
-            &[
-                FunctionArg::Eval(indexed),
-                FunctionArg::Eval(FunctionValue::Number(6.0)),
-            ],
+            &[(indexed), (CalcValue::number(6.0))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
@@ -7896,23 +7296,21 @@ mod tests {
         let dates = eval_test_surface_value_call(
             FUNC_ID_OP_ADD,
             &[
-                FunctionArg::Eval(FunctionValue::Number(45291.0)),
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_SEQUENCE,
-                        &[
-                            FunctionArg::Eval(FunctionValue::Number(42.0)),
-                            FunctionArg::MissingArg,
-                            FunctionArg::Eval(FunctionValue::Number(0.0)),
-                        ],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("sequence result"),
-                ),
+                (CalcValue::number(45291.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_SEQUENCE,
+                    &[
+                        (CalcValue::number(42.0)),
+                        CalcValue::missing(),
+                        (CalcValue::number(0.0)),
+                    ],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("sequence result")),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -7924,19 +7322,17 @@ mod tests {
         let in_month = eval_test_surface_value_call(
             FUNC_ID_OP_EQUAL,
             &[
-                FunctionArg::Eval(
-                    eval_test_surface_value_call(
-                        FUNC_ID_MONTH,
-                        &[FunctionArg::Eval(dates)],
-                        &NoReferenceSystemProvider,
-                        Some(46000.0),
-                        Some(&TEST_RANDOM_PROVIDER),
-                        None,
-                        None,
-                    )
-                    .expect("month result"),
-                ),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (eval_test_surface_value_call(
+                    FUNC_ID_MONTH,
+                    &[(dates)],
+                    &NoReferenceSystemProvider,
+                    Some(46000.0),
+                    Some(&TEST_RANDOM_PROVIDER),
+                    None,
+                    None,
+                )
+                .expect("month result")),
+                (CalcValue::number(1.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -7947,18 +7343,16 @@ mod tests {
         .expect("equal result");
         let coerced = eval_test_surface_value_call(
             FUNC_ID_OP_NEGATE,
-            &[FunctionArg::Eval(
-                eval_test_surface_value_call(
-                    FUNC_ID_OP_NEGATE,
-                    &[FunctionArg::Eval(in_month)],
-                    &NoReferenceSystemProvider,
-                    Some(46000.0),
-                    Some(&TEST_RANDOM_PROVIDER),
-                    None,
-                    None,
-                )
-                .expect("first negate"),
-            )],
+            &[(eval_test_surface_value_call(
+                FUNC_ID_OP_NEGATE,
+                &[(in_month)],
+                &NoReferenceSystemProvider,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+            .expect("first negate"))],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
@@ -7968,37 +7362,37 @@ mod tests {
         .expect("double-negated result");
         let got = eval_test_surface_value_call(
             FUNC_ID_SUM,
-            &[FunctionArg::Eval(coerced)],
+            &[(coerced)],
             &NoReferenceSystemProvider,
             Some(46000.0),
             Some(&TEST_RANDOM_PROVIDER),
             None,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(31.0)));
+        assert_eq!(got, Ok(CalcValue::number(31.0)));
     }
 
     #[test]
     fn eval_surface_value_call_match_spills_array_lookup_value_results() {
-        let lookup_values = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(3.0),
+        let lookup_values = CalcArray::from_rows(vec![vec![
+            CalcValue::number(1.0),
+            CalcValue::number(2.0),
+            CalcValue::number(3.0),
         ]])
         .expect("row vector");
-        let lookup_array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Number(2.0),
-            FunctionArrayCell::Number(4.0),
-            FunctionArrayCell::Number(6.0),
-            FunctionArrayCell::Number(8.0),
+        let lookup_array = CalcArray::from_rows(vec![vec![
+            CalcValue::number(2.0),
+            CalcValue::number(4.0),
+            CalcValue::number(6.0),
+            CalcValue::number(8.0),
         ]])
         .expect("row vector");
         let got = eval_test_surface_value_call(
             FUNC_ID_MATCH,
             &[
-                FunctionArg::Eval(FunctionValue::Array(lookup_values)),
-                FunctionArg::Eval(FunctionValue::Array(lookup_array)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::array(lookup_values)),
+                (CalcValue::array(lookup_array)),
+                (CalcValue::number(0.0)),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -8006,13 +7400,13 @@ mod tests {
             None,
             None,
         );
-        let expected = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
-            FunctionArrayCell::Number(1.0),
-            FunctionArrayCell::Error(WorksheetErrorCode::NA),
+        let expected = CalcArray::from_rows(vec![vec![
+            CalcValue::error(WorksheetErrorCode::NA),
+            CalcValue::number(1.0),
+            CalcValue::error(WorksheetErrorCode::NA),
         ]])
         .expect("row vector");
-        assert_eq!(got, Ok(FunctionValue::Array(expected)));
+        assert_eq!(got, Ok(CalcValue::array(expected)));
     }
 
     #[test]
@@ -8030,7 +7424,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Number(46000.25),
-                PresentationHint::number_format(NumberFormatHint::DateLike),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
             ))
         );
     }
@@ -8050,7 +7444,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Number(46000.0),
-                PresentationHint::number_format(NumberFormatHint::DateLike),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
             ))
         );
     }
@@ -8073,7 +7467,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Text(ExcelText::from_interop_assignment("Go")),
-                PresentationHint::style(CellStyleHint::Hyperlink),
+                PresentationHint::style(CellStyleHint::Hyperlink)
             ))
         );
     }
@@ -8115,12 +7509,10 @@ mod tests {
         let got = eval_test_surface_value_call(
             FUNC_ID_IMAGE,
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
+                (CalcValue::text(ExcelText::from_interop_assignment(
                     "https://example.com/image.png",
                 ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "Sphere",
-                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("Sphere"))),
             ],
             &NoReferenceSystemProvider,
             Some(46000.0),
@@ -8130,7 +7522,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
                 "-2146826273"
             )))
         );
@@ -8151,7 +7543,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Number(46000.25),
-                PresentationHint::number_format(NumberFormatHint::DateLike),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
             ))
         );
     }
@@ -8171,7 +7563,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Number(46000.0),
-                PresentationHint::number_format(NumberFormatHint::DateLike),
+                PresentationHint::number_format(NumberFormatHint::DateLike)
             ))
         );
     }
@@ -8194,7 +7586,7 @@ mod tests {
             got,
             Ok(CalcValue::with_presentation(
                 CoreValue::Text(ExcelText::from_interop_assignment("Go")),
-                PresentationHint::style(CellStyleHint::Hyperlink),
+                PresentationHint::style(CellStyleHint::Hyperlink)
             ))
         );
     }

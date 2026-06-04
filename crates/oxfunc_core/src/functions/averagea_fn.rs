@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::averagea_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const AVERAGEA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.AVERAGEA",
@@ -34,7 +35,7 @@ pub enum AverageAEvalError {
 
 fn eval_averagea_aggregate(
     args: &[AggregatePreparedValue],
-) -> Result<FunctionValue, AverageAEvalError> {
+) -> Result<CalcValue, AverageAEvalError> {
     let mut acc = 0.0;
     let mut count = 0usize;
     for arg in args {
@@ -45,16 +46,16 @@ fn eval_averagea_aggregate(
     }
 
     if count == 0 {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Div0));
+        return Ok(CalcValue::error(WorksheetErrorCode::Div0));
     }
 
-    Ok(FunctionValue::Number(acc / count as f64))
+    Ok(CalcValue::number(acc / count as f64))
 }
 
 pub fn eval_averagea_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, AverageAEvalError> {
+) -> Result<CalcValue, AverageAEvalError> {
     let argc = args.len();
     if !AVERAGEA_META.arity.accepts(argc) {
         return Err(AverageAEvalError::ArityMismatch {
@@ -83,10 +84,10 @@ pub fn map_averagea_error_to_ws(e: &AverageAEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<FunctionValue>,
+        resolved_value: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -97,7 +98,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -110,8 +111,8 @@ mod tests {
     #[test]
     fn eval_averagea_counts_direct_numeric_text_and_logical() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -121,46 +122,46 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.5)));
+        assert_eq!(got, Ok(CalcValue::number(1.5)));
     }
 
     #[test]
     fn eval_averagea_counts_reference_derived_text_as_zero_and_logical_as_one() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_averagea_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.5)));
+        assert_eq!(got, Ok(CalcValue::number(0.5)));
     }
 
     #[test]
     fn eval_averagea_ignores_empty_cells() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_averagea_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Div0)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Div0)));
     }
 }

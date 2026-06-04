@@ -6,7 +6,8 @@ use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const COS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COS",
@@ -27,9 +28,9 @@ pub fn cos_kernel(n: f64) -> f64 {
 }
 
 pub fn eval_cos_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, |n| Ok(cos_kernel(n)))
 }
 

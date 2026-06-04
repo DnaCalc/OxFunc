@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const MEDIAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MEDIAN",
@@ -32,9 +33,7 @@ pub enum MedianEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_median_aggregate(
-    args: &[AggregatePreparedValue],
-) -> Result<FunctionValue, MedianEvalError> {
+fn eval_median_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MedianEvalError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = median_argument_value(arg).map_err(MedianEvalError::Coercion)? {
@@ -42,7 +41,7 @@ fn eval_median_aggregate(
         }
     }
     if values.is_empty() {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
+        return Ok(CalcValue::error(WorksheetErrorCode::Num));
     }
     values.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let len = values.len();
@@ -52,13 +51,13 @@ fn eval_median_aggregate(
     } else {
         (values[mid - 1] + values[mid]) / 2.0
     };
-    Ok(FunctionValue::Number(result))
+    Ok(CalcValue::number(result))
 }
 
 pub fn eval_median_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MedianEvalError> {
+) -> Result<CalcValue, MedianEvalError> {
     let argc = args.len();
     if !MEDIAN_META.arity.accepts(argc) {
         return Err(MedianEvalError::ArityMismatch {
@@ -87,10 +86,10 @@ pub fn map_median_error_to_ws(e: &MedianEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<FunctionValue>,
+        resolved_value: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -101,7 +100,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -114,9 +113,9 @@ mod tests {
     #[test]
     fn eval_median_accumulates_direct_numbers() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-            FunctionArg::Eval(FunctionValue::Number(4.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(3.0)),
+            (CalcValue::number(4.0)),
         ];
         let got = eval_median_surface(
             &args,
@@ -124,29 +123,26 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
     fn eval_median_even_count_averages_middle_pair() {
-        let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-        ];
+        let args = vec![(CalcValue::number(2.0)), (CalcValue::number(3.0))];
         let got = eval_median_surface(
             &args,
             &MockResolver {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.5)));
+        assert_eq!(got, Ok(CalcValue::number(2.5)));
     }
 
     #[test]
     fn eval_median_counts_direct_numeric_text_and_logical() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -156,29 +152,29 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.5)));
+        assert_eq!(got, Ok(CalcValue::number(1.5)));
     }
 
     #[test]
     fn eval_median_ignored_reference_values_yield_num_when_empty() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_median_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Num)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Num)));
     }
 }

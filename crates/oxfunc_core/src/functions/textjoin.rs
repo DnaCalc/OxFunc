@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, expand_arg_values_only,
+    coerce_prepared_to_number, coerce_prepared_to_text, expand_arg_values_only,
     prepare_arg_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode,
+    CalcValue, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, WorksheetErrorCode,
 };
 
 pub const TEXTJOIN_META: FunctionMeta = FunctionMeta {
@@ -39,15 +39,15 @@ pub enum TextJoinEvalError {
     },
 }
 
-fn parse_ignore_empty(arg: &PreparedValue) -> Result<bool, TextJoinEvalError> {
+fn parse_ignore_empty(arg: &CalcValue) -> Result<bool, TextJoinEvalError> {
     let n = coerce_prepared_to_number(arg).map_err(TextJoinEvalError::Coercion)?;
     Ok(n != 0.0)
 }
 
 pub fn eval_textjoin_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextJoinEvalError> {
+) -> Result<CalcValue, TextJoinEvalError> {
     let argc = args.len();
     if !TEXTJOIN_META.arity.accepts(argc) {
         return Err(TextJoinEvalError::ArityMismatch {
@@ -71,11 +71,11 @@ pub fn eval_textjoin_surface(
         for prepared in
             expand_arg_values_only(arg, resolver).map_err(TextJoinEvalError::Coercion)?
         {
-            match prepared {
-                PreparedValue::MissingArg | PreparedValue::EmptyCell if ignore_empty => {}
-                ref other => {
+            match prepared.core() {
+                CoreValue::Missing | CoreValue::Empty if ignore_empty => {}
+                _ => {
                     let text =
-                        coerce_prepared_to_text(other).map_err(TextJoinEvalError::Coercion)?;
+                        coerce_prepared_to_text(&prepared).map_err(TextJoinEvalError::Coercion)?;
                     if ignore_empty && text.utf16_code_units().is_empty() {
                         continue;
                     }
@@ -106,7 +106,7 @@ pub fn eval_textjoin_surface(
         out.extend_from_slice(part.utf16_code_units());
     }
 
-    Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(out)))
+    Ok(CalcValue::text(ExcelText::from_utf16_code_units(out)))
 }
 
 pub fn map_textjoin_error_to_ws(e: &TextJoinEvalError) -> WorksheetErrorCode {
@@ -122,7 +122,7 @@ pub fn map_textjoin_error_to_ws(e: &TextJoinEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionArray, FunctionArrayCell};
+    use crate::value::CalcArray;
 
     struct NoResolver;
 
@@ -134,7 +134,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -148,18 +148,18 @@ mod tests {
     fn eval_textjoin_joins_text_and_numbers() {
         let got = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     ",".encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::logical(true)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "1,2".encode_utf16().collect(),
             )))
         );
@@ -169,21 +169,18 @@ mod tests {
     fn eval_textjoin_flattens_arrays_row_major() {
         let got = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "|".encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
+                (CalcValue::number(0.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                         vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                            CalcValue::text(ExcelText::from_utf16_code_units(
                                 "x".encode_utf16().collect(),
                             )),
-                            FunctionArrayCell::EmptyCell,
+                            CalcValue::empty(),
                         ],
                     ])
                     .unwrap(),
@@ -193,7 +190,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "1|2|x|".encode_utf16().collect(),
             )))
         );
@@ -203,12 +200,12 @@ mod tests {
     fn eval_textjoin_skips_empty_values_when_requested() {
         let got = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "|".encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::EmptyCell,
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::number(1.0)),
+                CalcValue::empty(),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
             ],
@@ -216,7 +213,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "x".encode_utf16().collect(),
             )))
         );
@@ -226,32 +223,32 @@ mod tests {
     fn eval_textjoin_numeric_and_logical_delimiters_are_textified() {
         let numeric = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::logical(false)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(3.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             numeric,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "213".encode_utf16().collect(),
             )))
         );
 
         let logical = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::logical(true)),
+                (CalcValue::logical(false)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             logical,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "1TRUE2".encode_utf16().collect(),
             )))
         );
@@ -265,14 +262,12 @@ mod tests {
 
         let exact_limit = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                    Vec::new(),
-                ))),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))),
+                (CalcValue::logical(false)),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     base.encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     exact.encode_utf16().collect(),
                 ))),
             ],
@@ -280,7 +275,7 @@ mod tests {
         );
         assert_eq!(
             exact_limit,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "x".repeat(EXCEL_TEXT_MAX_UTF16_CODE_UNITS)
                     .encode_utf16()
                     .collect(),
@@ -289,14 +284,12 @@ mod tests {
 
         let too_long = eval_textjoin_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                    Vec::new(),
-                ))),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))),
+                (CalcValue::logical(false)),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     base.encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     overflow.encode_utf16().collect(),
                 ))),
             ],

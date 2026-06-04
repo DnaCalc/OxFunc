@@ -4,12 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    AggregatePreparedValue, PreparedValue, coerce_prepared_to_number, expand_aggregate_arg,
+    AggregatePreparedValue, coerce_prepared_to_number, expand_aggregate_arg,
     prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::median_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const LARGE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LARGE",
@@ -45,7 +46,7 @@ fn collect_values(args: &[AggregatePreparedValue]) -> Result<Vec<f64>, LargeEval
     Ok(values)
 }
 
-fn coerce_k(prepared: &PreparedValue) -> Result<usize, LargeEvalError> {
+fn coerce_k(prepared: &CalcValue) -> Result<usize, LargeEvalError> {
     let k = coerce_prepared_to_number(prepared)
         .map_err(LargeEvalError::Coercion)?
         .trunc();
@@ -58,9 +59,9 @@ fn coerce_k(prepared: &PreparedValue) -> Result<usize, LargeEvalError> {
 }
 
 pub fn eval_large_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LargeEvalError> {
+) -> Result<CalcValue, LargeEvalError> {
     let argc = args.len();
     if !LARGE_META.arity.accepts(argc) {
         return Err(LargeEvalError::ArityMismatch {
@@ -75,10 +76,10 @@ pub fn eval_large_surface(
         prepare_arg_values_only(&args[1], resolver).map_err(LargeEvalError::Coercion)?;
     let k = coerce_k(&k_prepared)?;
     if values.len() < k {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
+        return Ok(CalcValue::error(WorksheetErrorCode::Num));
     }
     values.sort_by(|a, b| b.partial_cmp(a).unwrap_or(std::cmp::Ordering::Equal));
-    Ok(FunctionValue::Number(values[k - 1]))
+    Ok(CalcValue::number(values[k - 1]))
 }
 
 pub fn map_large_error_to_ws(e: &LargeEvalError) -> WorksheetErrorCode {

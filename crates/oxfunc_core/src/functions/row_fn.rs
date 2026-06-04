@@ -4,10 +4,7 @@ use crate::function::{
 };
 use crate::functions::a1_refs::parse_a1_reference;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceLike,
-    WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, CalcValue, ReferenceLike, WorksheetErrorCode};
 
 pub const ROW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ROW",
@@ -35,13 +32,11 @@ pub enum RowEvalError {
 }
 
 fn row_reference_from_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
 ) -> Result<crate::functions::a1_refs::A1Reference, RowEvalError> {
-    let reference = match arg {
-        FunctionArg::Reference(r) => r,
-        FunctionArg::Eval(FunctionValue::Reference(r)) => r,
-        _ => return Err(RowEvalError::InvalidReferenceArg),
-    };
+    let reference = arg
+        .as_reference()
+        .ok_or(RowEvalError::InvalidReferenceArg)?;
     parse_reference(reference)
 }
 
@@ -51,15 +46,15 @@ fn parse_reference(
     parse_a1_reference(reference.target()).ok_or(RowEvalError::InvalidReferenceArg)
 }
 
-fn row_result(start_row: usize, end_row: usize) -> FunctionValue {
+fn row_result(start_row: usize, end_row: usize) -> CalcValue {
     if start_row == end_row {
-        FunctionValue::Number(start_row as f64)
+        CalcValue::number(start_row as f64)
     } else {
         let cells = (start_row..=end_row)
-            .map(|row| FunctionArrayCell::Number(row as f64))
+            .map(|row| CalcValue::number(row as f64))
             .collect::<Vec<_>>();
-        FunctionValue::Array(
-            FunctionArray::new(
+        CalcValue::array(
+            CalcArray::new(
                 ArrayShape {
                     rows: end_row - start_row + 1,
                     cols: 1,
@@ -72,9 +67,9 @@ fn row_result(start_row: usize, end_row: usize) -> FunctionValue {
 }
 
 pub fn eval_row_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RowEvalError> {
+) -> Result<CalcValue, RowEvalError> {
     if !ROW_META.arity.accepts(args.len()) {
         return Err(RowEvalError::ArityMismatch {
             expected_min: ROW_META.arity.min,
@@ -83,11 +78,11 @@ pub fn eval_row_surface(
         });
     }
 
-    if args.is_empty() || matches!(args[0], FunctionArg::MissingArg) {
+    if args.is_empty() || args[0].is_missing() {
         let caller = resolver
             .caller_context()
             .ok_or(RowEvalError::MissingCallerContext)?;
-        return Ok(FunctionValue::Number(caller.row as f64));
+        return Ok(CalcValue::number(caller.row as f64));
     }
 
     let reference = row_reference_from_arg(&args[0])?;
@@ -120,7 +115,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -146,25 +141,25 @@ mod tests {
                 }),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
+        assert_eq!(got, Ok(CalcValue::number(7.0)));
     }
 
     #[test]
     fn eval_row_single_cell_reference_returns_scalar() {
         let got = eval_row_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "B2".to_string(),
             ))],
             &MockResolver { caller: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_row_area_reference_spills_vertically() {
         let got = eval_row_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "B2:C3".to_string(),
             ))],
@@ -173,10 +168,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
                 ])
                 .unwrap()
             )
@@ -186,14 +181,14 @@ mod tests {
     #[test]
     fn eval_row_whole_column_reference_builds_full_height_vector() {
         let got = eval_row_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A:A".to_string(),
             ))],
             &MockResolver { caller: None },
         )
         .unwrap();
-        let FunctionValue::Array(array) = got else {
+        let crate::value::CoreValue::Array(array) = got.core else {
             panic!("expected array");
         };
         assert_eq!(
@@ -203,10 +198,10 @@ mod tests {
                 cols: 1
             }
         );
-        assert_eq!(array.get(0, 0), Some(&FunctionArrayCell::Number(1.0)));
+        assert_eq!(array.get(0, 0), Some(&CalcValue::number(1.0)));
         assert_eq!(
             array.get(1_048_575, 0),
-            Some(&FunctionArrayCell::Number(1_048_576.0))
+            Some(&CalcValue::number(1_048_576.0))
         );
     }
 }

@@ -8,7 +8,8 @@ use crate::functions::adapters::{
 };
 use crate::functions::percentile_common::{collect_percentile_values, percentile_exc_kernel};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const PERCENTILE_EXC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PERCENTILE.EXC",
@@ -31,9 +32,9 @@ pub enum PercentileExcEvalError {
 }
 
 pub fn eval_percentile_exc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, PercentileExcEvalError> {
+) -> Result<CalcValue, PercentileExcEvalError> {
     if !PERCENTILE_EXC_META.arity.accepts(args.len()) {
         return Err(PercentileExcEvalError::ArityMismatch {
             expected: PERCENTILE_EXC_META.arity.min,
@@ -49,8 +50,8 @@ pub fn eval_percentile_exc_surface(
     )
     .map_err(PercentileExcEvalError::Coercion)?;
     match percentile_exc_kernel(&mut values, k) {
-        Ok(v) => Ok(FunctionValue::Number(v)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(v) => Ok(CalcValue::number(v)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

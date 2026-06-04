@@ -3,13 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, prepare_arg_values_only,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const CHOOSE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CHOOSE",
@@ -46,11 +43,11 @@ pub enum ChooseIfsEvalError {
     SelectedPreparation(CoercionError),
 }
 
-fn materialize_selected(prepared: PreparedValue) -> FunctionValue {
-    match prepared {
-        PreparedValue::Eval(value) => value,
-        PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::Value),
-        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
+fn materialize_selected(prepared: CalcValue) -> CalcValue {
+    match prepared.core() {
+        CoreValue::Missing => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Empty => CalcValue::number(0.0),
+        _ => prepared,
     }
 }
 
@@ -70,42 +67,43 @@ fn choose_index_from_number(
     Ok(truncated as usize - 1)
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
-    }
-}
-
-fn scalar_cell(prepared: &PreparedValue) -> FunctionArrayCell {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionArrayCell::Number(*n),
-        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t.clone()),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(*b),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(*code),
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionArrayCell::Error(WorksheetErrorCode::Value)
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
         }
-        PreparedValue::Eval(FunctionValue::Array(_)) => unreachable!(),
-        PreparedValue::MissingArg => FunctionArrayCell::Error(WorksheetErrorCode::Value),
-        PreparedValue::EmptyCell => FunctionArrayCell::Number(0.0),
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
     }
 }
 
-fn materialize_choice_array(prepared: PreparedValue) -> FunctionArray {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array,
-        other => FunctionArray::from_scalar(scalar_cell(&other)),
+fn scalar_cell(prepared: &CalcValue) -> CalcValue {
+    match prepared.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Reference(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Array(_) => unreachable!(),
+        CoreValue::Missing => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Empty => CalcValue::number(0.0),
+    }
+}
+
+fn materialize_choice_array(prepared: CalcValue) -> CalcArray {
+    match prepared.core() {
+        CoreValue::Array(array) => array.clone(),
+        _ => CalcArray::from_scalar(scalar_cell(&prepared))
+            .expect("scalar choice array has valid dimensions"),
     }
 }
 
 fn choose_index_from_cell(
     choice_count: usize,
-    cell: &FunctionArrayCell,
+    cell: &CalcValue,
 ) -> Result<usize, WorksheetErrorCode> {
     match coerce_prepared_to_number(&prepared_from_array_cell(cell)) {
         Ok(index_num) => choose_index_from_number(choice_count, index_num),
@@ -115,10 +113,10 @@ fn choose_index_from_cell(
 }
 
 fn choose_array_surface(
-    index_array: &FunctionArray,
-    args: &[FunctionArg],
+    index_array: &CalcArray,
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChooseIfsEvalError> {
+) -> Result<CalcValue, ChooseIfsEvalError> {
     let mut choice_arrays = Vec::with_capacity(args.len().saturating_sub(1));
     for arg in &args[1..] {
         let prepared = prepare_arg_values_only(arg, resolver)
@@ -154,13 +152,13 @@ fn choose_array_surface(
                                 selected
                                     .get(block_row, block_col)
                                     .cloned()
-                                    .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA)),
+                                    .unwrap_or(CalcValue::error(WorksheetErrorCode::NA)),
                             );
                         }
                     }
                     Err(code) => {
                         for _ in 0..block_cols {
-                            cells.push(FunctionArrayCell::Error(code));
+                            cells.push(CalcValue::error(code));
                         }
                     }
                 }
@@ -168,8 +166,8 @@ fn choose_array_surface(
         }
     }
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(
+    Ok(CalcValue::array(
+        CalcArray::new(
             ArrayShape {
                 rows: index_shape.rows * block_rows,
                 cols: index_shape.cols * block_cols,
@@ -180,25 +178,21 @@ fn choose_array_surface(
     ))
 }
 
-fn prepared_condition_truthy(prepared: &PreparedValue) -> Result<bool, CoercionError> {
-    match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(false),
-        PreparedValue::Eval(FunctionValue::Logical(value)) => Ok(*value),
-        PreparedValue::Eval(FunctionValue::Number(value)) => Ok(*value != 0.0),
-        PreparedValue::Eval(FunctionValue::Text(text)) => {
-            Err(CoercionError::NonNumericText(text.to_string_lossy()))
-        }
-        PreparedValue::Eval(FunctionValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
-        }
+fn prepared_condition_truthy(prepared: &CalcValue) -> Result<bool, CoercionError> {
+    match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(false),
+        CoreValue::Logical(value) => Ok(*value),
+        CoreValue::Number(value) => Ok(*value != 0.0),
+        CoreValue::Text(text) => Err(CoercionError::NonNumericText(text.to_string_lossy())),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
         _ => Ok(coerce_prepared_to_number(prepared)? != 0.0),
     }
 }
 
 pub fn eval_choose_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChooseIfsEvalError> {
+) -> Result<CalcValue, ChooseIfsEvalError> {
     if !CHOOSE_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {
             expected_min: CHOOSE_META.arity.min,
@@ -209,14 +203,14 @@ pub fn eval_choose_surface(
 
     let prepared_index =
         prepare_arg_values_only(&args[0], resolver).map_err(ChooseIfsEvalError::IndexCoercion)?;
-    if let PreparedValue::Eval(FunctionValue::Array(index_array)) = &prepared_index {
+    if let CoreValue::Array(index_array) = prepared_index.core() {
         return choose_array_surface(index_array, args, resolver);
     }
     let index_num =
         coerce_prepared_to_number(&prepared_index).map_err(ChooseIfsEvalError::IndexCoercion)?;
     let selected_index = match choose_index_from_number(args.len() - 1, index_num) {
         Ok(index) => index,
-        Err(code) => return Ok(FunctionValue::Error(code)),
+        Err(code) => return Ok(CalcValue::error(code)),
     };
 
     let selected = prepare_arg_values_only(&args[selected_index + 1], resolver)
@@ -225,9 +219,9 @@ pub fn eval_choose_surface(
 }
 
 pub fn eval_ifs_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChooseIfsEvalError> {
+) -> Result<CalcValue, ChooseIfsEvalError> {
     if !IFS_META.arity.accepts(args.len()) {
         return Err(ChooseIfsEvalError::ArityMismatch {
             expected_min: IFS_META.arity.min,
@@ -251,7 +245,7 @@ pub fn eval_ifs_surface(
         }
     }
 
-    Ok(FunctionValue::Error(WorksheetErrorCode::NA))
+    Ok(CalcValue::error(WorksheetErrorCode::NA))
 }
 
 pub fn map_choose_ifs_error_to_ws(error: &ChooseIfsEvalError) -> WorksheetErrorCode {
@@ -283,13 +277,12 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             match reference.target() {
-                "BLANK" => Ok(FunctionValue::Array(
-                    crate::value::FunctionArray::from_scalar(
-                        crate::value::FunctionArrayCell::EmptyCell,
-                    ),
+                "BLANK" => Ok(CalcValue::array(
+                    crate::value::CalcArray::from_scalar(crate::value::CalcValue::empty())
+                        .expect("scalar array"),
                 )),
                 "POISON" => Err(
                     crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -305,14 +298,12 @@ mod tests {
         }
     }
 
-    fn text_arg(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text_arg(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
-    fn number_arg(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_arg(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     #[test]
@@ -320,15 +311,15 @@ mod tests {
         let got = eval_choose_surface(
             &[
                 number_arg(2.9),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
                 text_arg("picked"),
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                (CalcValue::error(WorksheetErrorCode::Div0)),
             ],
             &MockResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "picked".encode_utf16().collect(),
             )))
         );
@@ -341,7 +332,7 @@ mod tests {
                 &[number_arg(0.9), number_arg(10.0), number_arg(20.0)],
                 &MockResolver
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
         );
         assert_eq!(
             eval_choose_surface(
@@ -353,7 +344,7 @@ mod tests {
                 ],
                 &MockResolver
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
         );
     }
 
@@ -362,24 +353,24 @@ mod tests {
         let got = eval_choose_surface(
             &[
                 number_arg(1.0),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "BLANK".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "BLANK".to_string())),
                 number_arg(7.0),
             ],
             &MockResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn choose_array_index_materializes_scalar_choices_as_row_vector() {
         let got = eval_choose_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![vec![
-                        crate::value::FunctionArrayCell::Number(1.0),
-                        crate::value::FunctionArrayCell::Number(2.0),
-                        crate::value::FunctionArrayCell::Number(3.0),
-                        crate::value::FunctionArrayCell::Number(4.0),
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![vec![
+                        crate::value::CalcValue::number(1.0),
+                        crate::value::CalcValue::number(2.0),
+                        crate::value::CalcValue::number(3.0),
+                        crate::value::CalcValue::number(4.0),
                     ]])
                     .unwrap(),
                 )),
@@ -392,18 +383,18 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                crate::value::FunctionArray::from_rows(vec![vec![
-                    crate::value::FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::array(
+                crate::value::CalcArray::from_rows(vec![vec![
+                    crate::value::CalcValue::text(ExcelText::from_utf16_code_units(
                         "Alpha".encode_utf16().collect(),
                     )),
-                    crate::value::FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    crate::value::CalcValue::text(ExcelText::from_utf16_code_units(
                         "Bravo".encode_utf16().collect(),
                     )),
-                    crate::value::FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    crate::value::CalcValue::text(ExcelText::from_utf16_code_units(
                         "Charlie".encode_utf16().collect(),
                     )),
-                    crate::value::FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    crate::value::CalcValue::text(ExcelText::from_utf16_code_units(
                         "Delta".encode_utf16().collect(),
                     )),
                 ]])
@@ -416,35 +407,35 @@ mod tests {
     fn choose_array_index_concatenates_column_arrays_by_selected_position() {
         let got = eval_choose_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![vec![
-                        crate::value::FunctionArrayCell::Number(1.0),
-                        crate::value::FunctionArrayCell::Number(2.0),
-                        crate::value::FunctionArrayCell::Number(3.0),
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![vec![
+                        crate::value::CalcValue::number(1.0),
+                        crate::value::CalcValue::number(2.0),
+                        crate::value::CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![
-                        vec![crate::value::FunctionArrayCell::Number(1.0)],
-                        vec![crate::value::FunctionArrayCell::Number(2.0)],
-                        vec![crate::value::FunctionArrayCell::Number(3.0)],
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![
+                        vec![crate::value::CalcValue::number(1.0)],
+                        vec![crate::value::CalcValue::number(2.0)],
+                        vec![crate::value::CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![
-                        vec![crate::value::FunctionArrayCell::Number(10.0)],
-                        vec![crate::value::FunctionArrayCell::Number(20.0)],
-                        vec![crate::value::FunctionArrayCell::Number(30.0)],
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![
+                        vec![crate::value::CalcValue::number(10.0)],
+                        vec![crate::value::CalcValue::number(20.0)],
+                        vec![crate::value::CalcValue::number(30.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![
-                        vec![crate::value::FunctionArrayCell::Number(100.0)],
-                        vec![crate::value::FunctionArrayCell::Number(200.0)],
-                        vec![crate::value::FunctionArrayCell::Number(300.0)],
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![
+                        vec![crate::value::CalcValue::number(100.0)],
+                        vec![crate::value::CalcValue::number(200.0)],
+                        vec![crate::value::CalcValue::number(300.0)],
                     ])
                     .unwrap(),
                 )),
@@ -453,22 +444,22 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                crate::value::FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                crate::value::CalcArray::from_rows(vec![
                     vec![
-                        crate::value::FunctionArrayCell::Number(1.0),
-                        crate::value::FunctionArrayCell::Number(10.0),
-                        crate::value::FunctionArrayCell::Number(100.0),
+                        crate::value::CalcValue::number(1.0),
+                        crate::value::CalcValue::number(10.0),
+                        crate::value::CalcValue::number(100.0),
                     ],
                     vec![
-                        crate::value::FunctionArrayCell::Number(2.0),
-                        crate::value::FunctionArrayCell::Number(20.0),
-                        crate::value::FunctionArrayCell::Number(200.0),
+                        crate::value::CalcValue::number(2.0),
+                        crate::value::CalcValue::number(20.0),
+                        crate::value::CalcValue::number(200.0),
                     ],
                     vec![
-                        crate::value::FunctionArrayCell::Number(3.0),
-                        crate::value::FunctionArrayCell::Number(30.0),
-                        crate::value::FunctionArrayCell::Number(300.0),
+                        crate::value::CalcValue::number(3.0),
+                        crate::value::CalcValue::number(30.0),
+                        crate::value::CalcValue::number(300.0),
                     ],
                 ])
                 .unwrap()
@@ -480,18 +471,18 @@ mod tests {
     fn ifs_scans_pairs_left_to_right_and_short_circuits() {
         let got = eval_ifs_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
+                (CalcValue::logical(false)),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
                 number_arg(2.0),
                 text_arg("hit"),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "POISON".to_string())),
                 number_arg(99.0),
             ],
             &MockResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "hit".encode_utf16().collect(),
             )))
         );
@@ -501,16 +492,16 @@ mod tests {
     fn ifs_returns_na_when_no_condition_matches() {
         let got = eval_ifs_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(false)),
+                (CalcValue::logical(false)),
                 number_arg(1.0),
                 number_arg(0.0),
                 number_arg(2.0),
-                FunctionArg::EmptyCell,
+                CalcValue::empty(),
                 number_arg(3.0),
             ],
             &MockResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::NA)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::NA)));
     }
 
     #[test]
@@ -526,9 +517,9 @@ mod tests {
 
         let condition_error = eval_ifs_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                (CalcValue::error(WorksheetErrorCode::Div0)),
                 number_arg(1.0),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
+                (CalcValue::logical(true)),
                 number_arg(2.0),
             ],
             &MockResolver,

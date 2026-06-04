@@ -3,10 +3,10 @@ use oxfml_core::seam::{Locus, RejectCode};
 use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
-use oxfunc_core::value::{ExcelText, FunctionArray, FunctionArrayCell, FunctionValue};
+use oxfunc_core::value::{CalcArray, CalcValue, ExcelText};
 
-fn text_cell(value: &str) -> FunctionArrayCell {
-    FunctionArrayCell::Text(ExcelText::from_interop_assignment(value))
+fn text_cell(value: &str) -> CalcValue {
+    CalcValue::text(ExcelText::from_interop_assignment(value))
 }
 
 fn locus(row: u32, col: u32) -> Locus {
@@ -28,16 +28,16 @@ fn groupby_builtin_sum_callable_lane_passes_from_oxfunc_side() {
     ))
     .expect("groupby builtin callable adapter run");
 
-    let expected = FunctionArray::from_rows(vec![
-        vec![text_cell("2024"), FunctionArrayCell::Number(30.0)],
-        vec![text_cell("2025"), FunctionArrayCell::Number(70.0)],
-        vec![text_cell("Total"), FunctionArrayCell::Number(100.0)],
+    let expected = CalcArray::from_rows(vec![
+        vec![text_cell("2024"), CalcValue::number(30.0)],
+        vec![text_cell("2025"), CalcValue::number(70.0)],
+        vec![text_cell("Total"), CalcValue::number(100.0)],
     ])
     .expect("expected array");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(expected)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(expected)
     );
 }
 
@@ -52,15 +52,15 @@ fn pivotby_builtin_sum_visible_headers_lane_passes_from_oxfunc_side() {
     ))
     .expect("pivotby builtin visible headers adapter run");
 
-    let expected = FunctionArray::from_rows(vec![
+    let expected = CalcArray::from_rows(vec![
         vec![
-            FunctionArrayCell::EmptyCell,
+            CalcValue::empty(),
             text_cell("Product"),
-            FunctionArrayCell::EmptyCell,
-            FunctionArrayCell::EmptyCell,
+            CalcValue::empty(),
+            CalcValue::empty(),
         ],
         vec![
-            FunctionArrayCell::EmptyCell,
+            CalcValue::empty(),
             text_cell("A"),
             text_cell("B"),
             text_cell("Total"),
@@ -73,28 +73,28 @@ fn pivotby_builtin_sum_visible_headers_lane_passes_from_oxfunc_side() {
         ],
         vec![
             text_cell("East"),
-            FunctionArrayCell::Number(40.0),
-            FunctionArrayCell::Number(0.0),
-            FunctionArrayCell::Number(40.0),
+            CalcValue::number(40.0),
+            CalcValue::number(0.0),
+            CalcValue::number(40.0),
         ],
         vec![
             text_cell("West"),
-            FunctionArrayCell::Number(0.0),
-            FunctionArrayCell::Number(50.0),
-            FunctionArrayCell::Number(50.0),
+            CalcValue::number(0.0),
+            CalcValue::number(50.0),
+            CalcValue::number(50.0),
         ],
         vec![
             text_cell("Total"),
-            FunctionArrayCell::Number(40.0),
-            FunctionArrayCell::Number(50.0),
-            FunctionArrayCell::Number(90.0),
+            CalcValue::number(40.0),
+            CalcValue::number(50.0),
+            CalcValue::number(90.0),
         ],
     ])
     .expect("expected array");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(expected)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(expected)
     );
 }
 

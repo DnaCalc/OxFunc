@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const IF_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IF",
@@ -34,79 +33,82 @@ pub enum IfEvalError {
     BranchPreparation(CoercionError),
 }
 
-fn prepared_to_eval_value(prepared: PreparedValue) -> FunctionValue {
-    match prepared {
-        PreparedValue::Eval(v) => v,
-        PreparedValue::MissingArg => FunctionValue::Logical(false),
-        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
+fn prepared_to_eval_value(prepared: CalcValue) -> CalcValue {
+    match prepared.core() {
+        CoreValue::Missing => CalcValue::logical(false),
+        CoreValue::Empty => CalcValue::number(0.0),
+        _ => prepared,
     }
 }
 
-fn eval_condition_cell(cell: &FunctionArrayCell) -> Result<bool, CoercionError> {
-    match cell {
-        FunctionArrayCell::Logical(b) => Ok(*b),
-        FunctionArrayCell::Number(n) => Ok(*n != 0.0),
-        FunctionArrayCell::Error(code) => Err(CoercionError::WorksheetError(*code)),
-        FunctionArrayCell::Text(text) => Err(CoercionError::NonNumericText(text.to_string_lossy())),
-        FunctionArrayCell::EmptyCell => Ok(false),
+fn eval_condition_cell(cell: &CalcValue) -> Result<bool, CoercionError> {
+    match cell.core() {
+        CoreValue::Logical(b) => Ok(*b),
+        CoreValue::Number(n) => Ok(*n != 0.0),
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Text(text) => Err(CoercionError::NonNumericText(text.to_string_lossy())),
+        CoreValue::Empty | CoreValue::Missing => Ok(false),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            Err(CoercionError::UnsupportedValueKind("if_condition_cell"))
+        }
     }
 }
 
-fn scalar_cell_from_eval_value(value: &FunctionValue) -> Result<FunctionArrayCell, CoercionError> {
-    match value {
-        FunctionValue::Number(n) => Ok(FunctionArrayCell::Number(*n)),
-        FunctionValue::Text(t) => Ok(FunctionArrayCell::Text(t.clone())),
-        FunctionValue::Logical(b) => Ok(FunctionArrayCell::Logical(*b)),
-        FunctionValue::Error(code) => Ok(FunctionArrayCell::Error(*code)),
-        FunctionValue::Array(_) | FunctionValue::Reference(_) => {
+fn scalar_cell_from_eval_value(value: &CalcValue) -> Result<CalcValue, CoercionError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(CalcValue::number(*n)),
+        CoreValue::Text(t) => Ok(CalcValue::text(t.clone())),
+        CoreValue::Logical(b) => Ok(CalcValue::logical(*b)),
+        CoreValue::Error(code) => Ok(CalcValue::error(*code)),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
             Err(CoercionError::UnsupportedValueKind("if_branch_scalar"))
         }
-        _ => Err(CoercionError::UnsupportedValueKind("if_branch_scalar")),
+        CoreValue::Empty | CoreValue::Missing => {
+            Err(CoercionError::UnsupportedValueKind("if_branch_scalar"))
+        }
     }
 }
 
 fn materialize_branch_for_shape(
-    value: &FunctionValue,
+    value: &CalcValue,
     shape: ArrayShape,
-) -> Result<FunctionArray, CoercionError> {
-    match value {
-        FunctionValue::Array(array) if array.shape() == shape => Ok(array.clone()),
-        FunctionValue::Array(_) => Err(CoercionError::UnsupportedValueKind("if_branch_shape")),
-        other => {
-            let cell = scalar_cell_from_eval_value(other)?;
-            FunctionArray::new(shape, vec![cell; shape.rows * shape.cols])
+) -> Result<CalcArray, CoercionError> {
+    match value.core() {
+        CoreValue::Array(array) if array.shape() == shape => Ok(array.clone()),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("if_branch_shape")),
+        _ => {
+            let cell = scalar_cell_from_eval_value(value)?;
+            CalcArray::new(shape, vec![cell; shape.rows * shape.cols])
                 .ok_or(CoercionError::UnsupportedValueKind("if_branch_shape"))
         }
     }
 }
 
 fn eval_condition_bool(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<bool, CoercionError> {
-    match arg {
-        FunctionArg::MissingArg | FunctionArg::EmptyCell => Ok(false),
-        FunctionArg::Eval(v) => match v {
-            FunctionValue::Logical(b) => Ok(*b),
-            FunctionValue::Number(n) => Ok(*n != 0.0),
-            _ => {
-                let n = coerce_eval_to_number(v, resolver)?;
-                Ok(n != 0.0)
-            }
-        },
-        FunctionArg::Reference(r) => {
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(false),
+        CoreValue::Reference(r) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            eval_condition_bool(&FunctionArg::Eval(resolved), resolver)
+            eval_condition_bool(&(resolved), resolver)
+        }
+        CoreValue::Logical(b) => Ok(*b),
+        CoreValue::Number(n) => Ok(*n != 0.0),
+        _ => {
+            let n = coerce_eval_to_number(arg, resolver)?;
+            Ok(n != 0.0)
         }
     }
 }
 
 fn eval_if_elementwise_surface(
-    condition: &FunctionArray,
-    true_arg: &FunctionArg,
-    false_arg: Option<&FunctionArg>,
+    condition: &CalcArray,
+    true_arg: &CalcValue,
+    false_arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, IfEvalError> {
+) -> Result<CalcValue, IfEvalError> {
     let true_value = prepared_to_eval_value(
         prepare_arg_values_only(true_arg, resolver).map_err(IfEvalError::BranchPreparation)?,
     );
@@ -114,7 +116,7 @@ fn eval_if_elementwise_surface(
         Some(arg) => prepared_to_eval_value(
             prepare_arg_values_only(arg, resolver).map_err(IfEvalError::BranchPreparation)?,
         ),
-        None => FunctionValue::Logical(false),
+        None => CalcValue::logical(false),
     };
     let true_array = materialize_branch_for_shape(&true_value, condition.shape())
         .map_err(IfEvalError::BranchPreparation)?;
@@ -139,15 +141,15 @@ fn eval_if_elementwise_surface(
         }
     }
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(condition.shape(), cells).expect("validated IF result shape"),
+    Ok(CalcValue::array(
+        CalcArray::new(condition.shape(), cells).expect("validated IF result shape"),
     ))
 }
 
 pub fn eval_if_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, IfEvalError> {
+) -> Result<CalcValue, IfEvalError> {
     let argc = args.len();
     if !IF_META.arity.accepts(argc) {
         return Err(IfEvalError::ArityMismatch {
@@ -157,7 +159,7 @@ pub fn eval_if_surface(
         });
     }
 
-    if let FunctionArg::Eval(FunctionValue::Array(condition)) = &args[0] {
+    if let CoreValue::Array(condition) = args[0].core() {
         return eval_if_elementwise_surface(condition, &args[1], args.get(2), resolver);
     }
 
@@ -168,7 +170,7 @@ pub fn eval_if_surface(
     } else if argc >= 3 {
         &args[2]
     } else {
-        return Ok(FunctionValue::Logical(false));
+        return Ok(CalcValue::logical(false));
     };
 
     let prepared =
@@ -189,7 +191,7 @@ pub fn map_if_error_to_ws(e: &IfEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionArray, FunctionArrayCell};
+    use crate::value::CalcArray;
 
     struct NoResolver;
     impl ReferenceSystemProvider for NoResolver {
@@ -199,7 +201,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -212,43 +214,38 @@ mod tests {
     #[test]
     fn eval_if_true_branch_only() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+            (CalcValue::logical(true)),
+            (CalcValue::number(1.0)),
+            (CalcValue::error(WorksheetErrorCode::Div0)),
         ];
         let got = eval_if_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
     fn eval_if_false_branch_only() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(false)),
-            FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::logical(false)),
+            (CalcValue::error(WorksheetErrorCode::Div0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_if_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_if_missing_false_branch_defaults_false() {
-        let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(false)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-        ];
+        let args = vec![(CalcValue::logical(false)), (CalcValue::number(1.0))];
         let got = eval_if_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_if_empty_text_condition_returns_value_error() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Text(
-                crate::value::ExcelText::from_interop_assignment(""),
-            )),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::text(crate::value::ExcelText::from_interop_assignment(""))),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_if_surface(&args, &NoResolver);
         assert_eq!(
@@ -262,32 +259,32 @@ mod tests {
     #[test]
     fn eval_if_lifts_array_condition_elementwise() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(true),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::logical(false),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(0.0)),
+            (CalcValue::number(0.0)),
         ];
         let got = eval_if_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(0.0),
-                    FunctionArrayCell::Number(3.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(0.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap()
             ))

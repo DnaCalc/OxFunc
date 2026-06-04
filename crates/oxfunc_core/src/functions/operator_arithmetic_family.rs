@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, expand_arg_values_only, prepare_arg_values_only};
+use crate::functions::adapters::{expand_arg_values_only, prepare_arg_values_only};
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
@@ -12,9 +12,7 @@ use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 
 const OP_UNARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_UNARY_NUMERIC_BASE",
@@ -115,9 +113,9 @@ pub fn op_divide_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 /// Excel `16.0` across number/text/logical/error/array/blank operands
 /// (BUG-FUNC-029; run `unary-plus-operand-001`).
 pub fn eval_op_unary_plus_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     if args.len() != 1 {
         return Err(UnaryNumericSurfaceError::ArityMismatch {
             expected: 1,
@@ -126,34 +124,26 @@ pub fn eval_op_unary_plus_surface(
     }
     let prepared =
         prepare_arg_values_only(&args[0], resolver).map_err(UnaryNumericSurfaceError::Coercion)?;
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
-            let cells = expand_arg_values_only(&args[0], resolver)
-                .map_err(UnaryNumericSurfaceError::Coercion)?
-                .into_iter()
-                .map(unary_plus_identity_cell)
-                .collect::<Vec<_>>();
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), cells).expect("shape preserved"),
-            ))
-        }
-        other => unary_plus_identity_scalar(other),
+    if let CoreValue::Array(array) = prepared.core() {
+        let cells = expand_arg_values_only(&args[0], resolver)
+            .map_err(UnaryNumericSurfaceError::Coercion)?
+            .into_iter()
+            .map(unary_plus_identity_cell)
+            .collect::<Vec<_>>();
+        Ok(CalcValue::array(
+            CalcArray::new(array.shape(), cells).expect("shape preserved"),
+        ))
+    } else {
+        unary_plus_identity_scalar(prepared)
     }
 }
 
 /// Identity map for a scalar unary-plus operand (blank -> 0, number -> underflow-normalized).
-fn unary_plus_identity_scalar(
-    prepared: PreparedValue,
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => {
-            Ok(FunctionValue::Number(excel_underflow_to_zero(n)))
-        }
-        PreparedValue::Eval(value @ (FunctionValue::Text(_) | FunctionValue::Logical(_))) => {
-            Ok(value)
-        }
-        PreparedValue::Eval(FunctionValue::Error(code)) => Ok(FunctionValue::Error(code)),
-        PreparedValue::EmptyCell => Ok(FunctionValue::Number(0.0)),
+fn unary_plus_identity_scalar(prepared: CalcValue) -> Result<CalcValue, UnaryNumericSurfaceError> {
+    match prepared.core() {
+        CoreValue::Number(n) => Ok(CalcValue::number(excel_underflow_to_zero(*n))),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => Ok(prepared),
+        CoreValue::Empty => Ok(CalcValue::number(0.0)),
         // Reference / Lambda / Array(unreachable here) / MissingArg are not
         // valid scalar unary-plus operands -> #VALUE!.
         _ => Err(UnaryNumericSurfaceError::Domain(WorksheetErrorCode::Value)),
@@ -161,58 +151,54 @@ fn unary_plus_identity_scalar(
 }
 
 /// Identity map for one array cell under unary plus.
-fn unary_plus_identity_cell(item: PreparedValue) -> FunctionArrayCell {
-    match item {
-        PreparedValue::Eval(FunctionValue::Number(n)) => {
-            FunctionArrayCell::Number(excel_underflow_to_zero(n))
-        }
-        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(b),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
-        PreparedValue::EmptyCell => FunctionArrayCell::Number(0.0),
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+fn unary_plus_identity_cell(item: CalcValue) -> CalcValue {
+    match item.core() {
+        CoreValue::Number(n) => CalcValue::number(excel_underflow_to_zero(*n)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => item,
+        CoreValue::Empty => CalcValue::number(0.0),
+        _ => CalcValue::error(WorksheetErrorCode::Value),
     }
 }
 
 pub fn eval_op_negate_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_negate_kernel)
 }
 
 pub fn eval_op_percent_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, op_percent_kernel)
 }
 
 pub fn eval_op_subtract_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_subtract_kernel)
 }
 
 pub fn eval_op_multiply_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_multiply_kernel)
 }
 
 pub fn eval_op_divide_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, op_divide_kernel)
 }
 
 pub fn eval_op_power_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, power_kernel)
 }
 
@@ -228,7 +214,7 @@ pub fn map_operator_binary_error_to_ws(e: &BinaryNumericSurfaceError) -> Workshe
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell};
+    use crate::value::{CalcArray, ExcelText};
 
     struct NoResolver;
 
@@ -240,7 +226,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -250,23 +236,20 @@ mod tests {
         }
     }
 
-    fn txt(s: &str) -> FunctionValue {
-        FunctionValue::Text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
+    fn txt(s: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect()))
     }
 
     #[test]
     fn negate_follows_numeric_coercion() {
         // Unary minus DOES coerce (unlike unary plus).
         assert_eq!(
-            eval_op_negate_surface(&[FunctionArg::Eval(txt("2"))], &NoResolver),
-            Ok(FunctionValue::Number(-2.0))
+            eval_op_negate_surface(&[(txt("2"))], &NoResolver),
+            Ok(CalcValue::number(-2.0))
         );
         assert_eq!(
-            eval_op_negate_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(-1.0))
+            eval_op_negate_surface(&[(CalcValue::logical(true))], &NoResolver),
+            Ok(CalcValue::number(-1.0))
         );
     }
 
@@ -275,61 +258,50 @@ mod tests {
         // BUG-FUNC-029: +x preserves type (text stays text, logical stays logical),
         // matching Excel; it must NOT coerce to number.
         assert_eq!(
-            eval_op_unary_plus_surface(&[FunctionArg::Eval(txt("2"))], &NoResolver),
+            eval_op_unary_plus_surface(&[(txt("2"))], &NoResolver),
             Ok(txt("2"))
         );
         assert_eq!(
-            eval_op_unary_plus_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Logical(true))
+            eval_op_unary_plus_surface(&[(CalcValue::logical(true))], &NoResolver),
+            Ok(CalcValue::logical(true))
         );
         // number is unchanged; error propagates; blank -> 0.
         assert_eq!(
-            eval_op_unary_plus_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(2.0))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(2.0))
+            eval_op_unary_plus_surface(&[(CalcValue::number(2.0))], &NoResolver),
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
-            eval_op_unary_plus_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::NA
-                ))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::NA))
+            eval_op_unary_plus_surface(&[(CalcValue::error(WorksheetErrorCode::NA))], &NoResolver),
+            Ok(CalcValue::error(WorksheetErrorCode::NA))
         );
         assert_eq!(
-            eval_op_unary_plus_surface(&[FunctionArg::EmptyCell], &NoResolver),
-            Ok(FunctionValue::Number(0.0))
+            eval_op_unary_plus_surface(&[CalcValue::empty()], &NoResolver),
+            Ok(CalcValue::number(0.0))
         );
     }
 
     #[test]
     fn unary_plus_maps_arrays_elementwise_preserving_type() {
         let got = eval_op_unary_plus_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "a".encode_utf16().collect(),
                     )),
-                    FunctionArrayCell::Logical(true),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap(),
             ))],
             &NoResolver,
         );
-        let expected = FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+        let expected = CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(1.0),
+                CalcValue::text(ExcelText::from_utf16_code_units(
                     "a".encode_utf16().collect(),
                 )),
-                FunctionArrayCell::Logical(true),
+                CalcValue::logical(true),
             ]])
             .unwrap(),
         );
@@ -339,22 +311,18 @@ mod tests {
     #[test]
     fn percent_lifts_arrays_elementwise() {
         let got = eval_op_percent_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(25.0),
-                ]])
-                .unwrap(),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(5.0), CalcValue::number(25.0)]])
+                    .unwrap(),
             ))],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(0.05),
-                    FunctionArrayCell::Number(0.25),
-                ]])
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(0.05), CalcValue::number(0.25),]
+                ])
                 .unwrap()
             ))
         );
@@ -364,53 +332,38 @@ mod tests {
     fn subtract_multiply_divide_and_power_cover_seed_numeric_lanes() {
         assert_eq!(
             eval_op_subtract_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(5.0)),
-                    FunctionArg::Eval(FunctionValue::Number(2.0)),
-                ],
+                &[(CalcValue::number(5.0)), (CalcValue::number(2.0)),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
         assert_eq!(
             eval_op_multiply_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(5.0)),
-                    FunctionArg::Eval(FunctionValue::Number(2.0)),
-                ],
+                &[(CalcValue::number(5.0)), (CalcValue::number(2.0)),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(10.0))
+            Ok(CalcValue::number(10.0))
         );
         assert_eq!(
             eval_op_divide_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(5.0)),
-                    FunctionArg::Eval(FunctionValue::Number(2.0)),
-                ],
+                &[(CalcValue::number(5.0)), (CalcValue::number(2.0)),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(2.5))
+            Ok(CalcValue::number(2.5))
         );
         assert_eq!(
             eval_op_power_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(2.0)),
-                    FunctionArg::Eval(FunctionValue::Number(3.0)),
-                ],
+                &[(CalcValue::number(2.0)), (CalcValue::number(3.0)),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(8.0))
+            Ok(CalcValue::number(8.0))
         );
     }
 
     #[test]
     fn divide_by_zero_maps_domain_error() {
         let got = eval_op_divide_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(CalcValue::number(1.0)), (CalcValue::number(0.0))],
             &NoResolver,
         );
         assert_eq!(
@@ -434,39 +387,39 @@ mod tests {
     fn binary_operator_surfaces_cover_handoff_array_lift_cases() {
         let multiply = eval_op_multiply_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
                         vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                            FunctionArrayCell::Number(3.0),
+                            CalcValue::number(1.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
                         ],
                         vec![
-                            FunctionArrayCell::Number(2.0),
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
+                            CalcValue::number(2.0),
+                            CalcValue::number(3.0),
+                            CalcValue::number(4.0),
                         ],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
+                (CalcValue::number(-1.0)),
             ],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             multiply,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(-1.0),
-                        FunctionArrayCell::Number(-2.0),
-                        FunctionArrayCell::Number(-3.0),
+                        CalcValue::number(-1.0),
+                        CalcValue::number(-2.0),
+                        CalcValue::number(-3.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(-2.0),
-                        FunctionArrayCell::Number(-3.0),
-                        FunctionArrayCell::Number(-4.0),
+                        CalcValue::number(-2.0),
+                        CalcValue::number(-3.0),
+                        CalcValue::number(-4.0),
                     ],
                 ])
                 .unwrap()
@@ -475,29 +428,17 @@ mod tests {
 
         let add = eval_op_subtract_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(11.0),
-                            FunctionArrayCell::Number(22.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(33.0),
-                            FunctionArrayCell::Number(44.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(11.0), CalcValue::number(22.0)],
+                        vec![CalcValue::number(33.0), CalcValue::number(44.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(10.0),
-                            FunctionArrayCell::Number(20.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(30.0),
-                            FunctionArrayCell::Number(40.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                        vec![CalcValue::number(30.0), CalcValue::number(40.0)],
                     ])
                     .unwrap(),
                 )),
@@ -507,16 +448,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             add,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap()
             )
@@ -524,29 +459,17 @@ mod tests {
 
         let divide = eval_op_divide_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(6.0),
-                            FunctionArrayCell::Number(8.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(6.0), CalcValue::number(8.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(0.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(0.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(2.0)],
                     ])
                     .unwrap(),
                 )),
@@ -556,16 +479,13 @@ mod tests {
         .unwrap();
         assert_eq!(
             divide,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::Div0)
+                        CalcValue::number(1.0),
+                        CalcValue::error(WorksheetErrorCode::Div0)
                     ],
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(4.0)
-                    ],
+                    vec![CalcValue::number(2.0), CalcValue::number(4.0)],
                 ])
                 .unwrap()
             )
@@ -575,10 +495,7 @@ mod tests {
     #[test]
     fn power_preserves_excel_domain_errors() {
         let got = eval_op_power_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.5)),
-            ],
+            &[(CalcValue::number(-1.0)), (CalcValue::number(0.5))],
             &NoResolver,
         );
         assert_eq!(
@@ -587,10 +504,7 @@ mod tests {
         );
 
         let zero_zero = eval_op_power_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(CalcValue::number(0.0)), (CalcValue::number(0.0))],
             &NoResolver,
         );
         assert_eq!(

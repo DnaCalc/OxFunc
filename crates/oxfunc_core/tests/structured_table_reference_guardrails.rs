@@ -28,8 +28,7 @@ use oxfunc_core::resolver::{
     ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
 };
 use oxfunc_core::value::{
-    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceKind,
-    ReferenceLike, WorksheetErrorCode,
+    CalcArray, CalcValue, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
 };
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -38,26 +37,26 @@ fn text(value: &str) -> ExcelText {
     ExcelText::from_utf16_code_units(value.encode_utf16().collect())
 }
 
-fn structured_arg(target: &str) -> FunctionArg {
-    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Structured, target))
+fn structured_arg(target: &str) -> CalcValue {
+    CalcValue::reference(ReferenceLike::new(ReferenceKind::Structured, target))
 }
 
-fn scalar_number(n: f64) -> FunctionArg {
-    FunctionArg::Eval(FunctionValue::Number(n))
+fn scalar_number(n: f64) -> CalcValue {
+    CalcValue::number(n)
 }
 
-fn scalar_text(value: &str) -> FunctionArg {
-    FunctionArg::Eval(FunctionValue::Text(text(value)))
+fn scalar_text(value: &str) -> CalcValue {
+    CalcValue::text(text(value))
 }
 
-fn scalar_logical(value: bool) -> FunctionArg {
-    FunctionArg::Eval(FunctionValue::Logical(value))
+fn scalar_logical(value: bool) -> CalcValue {
+    CalcValue::logical(value)
 }
 
 fn sparse_values(
     rows: usize,
     cols: usize,
-    cells: Vec<(usize, usize, FunctionArrayCell)>,
+    cells: Vec<(usize, usize, CalcValue)>,
 ) -> ResolvedReferenceValues {
     ResolvedReferenceValues::new(
         ResolvedReferenceExtent::new(rows, cols),
@@ -104,7 +103,7 @@ impl ReferenceSystemProvider for StructuredSparseResolver {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, ReferenceResolutionError> {
+    ) -> Result<CalcValue, ReferenceResolutionError> {
         let reference = &request.reference;
         self.dense_calls.borrow_mut().push(reference.clone());
         Err(ReferenceResolutionError::UnresolvedReference {
@@ -148,24 +147,21 @@ struct StructuredHostInfo {
 }
 
 impl HostInfoProvider for StructuredHostInfo {
-    fn query_formula_text(
-        &self,
-        reference: &ReferenceLike,
-    ) -> Result<FunctionValue, HostInfoError> {
+    fn query_formula_text(&self, reference: &ReferenceLike) -> Result<CalcValue, HostInfoError> {
         self.formula_text_calls.borrow_mut().push(reference.clone());
-        Ok(FunctionValue::Text(text("=SUM(Table[Amount])")))
+        Ok(CalcValue::text(text("=SUM(Table[Amount])")))
     }
 
     fn query_cell_info(
         &self,
         query: CellInfoQuery,
         reference: Option<&ReferenceLike>,
-    ) -> Result<FunctionValue, HostInfoError> {
+    ) -> Result<CalcValue, HostInfoError> {
         if let Some(reference) = reference {
             self.cell_info_calls.borrow_mut().push(reference.clone());
         }
         match query {
-            CellInfoQuery::Filename => Ok(FunctionValue::Text(text("Book.xlsx"))),
+            CellInfoQuery::Filename => Ok(CalcValue::text(text("Book.xlsx"))),
             other => Err(HostInfoError::UnsupportedCellInfoQuery(other)),
         }
     }
@@ -195,10 +191,10 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(4, 1),
             vec![
-                ResolvedReferenceCell::new(1, 1, FunctionArrayCell::Number(2.0)),
-                ResolvedReferenceCell::new(2, 1, FunctionArrayCell::Text(text("ignored"))),
-                ResolvedReferenceCell::new(3, 1, FunctionArrayCell::Logical(true)),
-                ResolvedReferenceCell::new(4, 1, FunctionArrayCell::Number(3.0)),
+                ResolvedReferenceCell::new(1, 1, CalcValue::number(2.0)),
+                ResolvedReferenceCell::new(2, 1, CalcValue::text(text("ignored"))),
+                ResolvedReferenceCell::new(3, 1, CalcValue::logical(true)),
+                ResolvedReferenceCell::new(4, 1, CalcValue::number(3.0)),
             ],
             Some("reader:treecalc-table:Revenue:data-column:Amount".to_string()),
         ),
@@ -208,9 +204,9 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(2, 2),
             vec![
-                ResolvedReferenceCell::new(1, 1, FunctionArrayCell::Number(9.0)),
-                ResolvedReferenceCell::new(1, 2, FunctionArrayCell::Text(text("label"))),
-                ResolvedReferenceCell::new(2, 1, FunctionArrayCell::Logical(true)),
+                ResolvedReferenceCell::new(1, 1, CalcValue::number(9.0)),
+                ResolvedReferenceCell::new(1, 2, CalcValue::text(text("label"))),
+                ResolvedReferenceCell::new(2, 1, CalcValue::logical(true)),
             ],
             Some("reader:treecalc-table:Revenue:data-body".to_string()),
         ),
@@ -220,8 +216,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 2),
             vec![
-                ResolvedReferenceCell::new(1, 1, FunctionArrayCell::Text(text("Amount"))),
-                ResolvedReferenceCell::new(1, 2, FunctionArrayCell::Text(text("Region"))),
+                ResolvedReferenceCell::new(1, 1, CalcValue::text(text("Amount"))),
+                ResolvedReferenceCell::new(1, 2, CalcValue::text(text("Region"))),
             ],
             Some("reader:treecalc-table:Revenue:headers".to_string()),
         ),
@@ -231,8 +227,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 3),
             vec![
-                ResolvedReferenceCell::new(1, 1, FunctionArrayCell::Text(text(""))),
-                ResolvedReferenceCell::new(1, 3, FunctionArrayCell::Number(14.0)),
+                ResolvedReferenceCell::new(1, 1, CalcValue::text(text(""))),
+                ResolvedReferenceCell::new(1, 3, CalcValue::number(14.0)),
             ],
             Some("reader:treecalc-table:Revenue:totals".to_string()),
         ),
@@ -241,11 +237,7 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         current_row.to_string(),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 1),
-            vec![ResolvedReferenceCell::new(
-                1,
-                1,
-                FunctionArrayCell::Number(11.0),
-            )],
+            vec![ResolvedReferenceCell::new(1, 1, CalcValue::number(11.0))],
             Some("reader:treecalc-table:Revenue:this-row:Amount".to_string()),
         ),
     );
@@ -254,23 +246,23 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
 
     assert_eq!(
         eval_sum_surface(&[structured_arg(data_column)], &resolver),
-        Ok(FunctionValue::Number(5.0))
+        Ok(CalcValue::number(5.0))
     );
     assert_eq!(
         eval_count_surface(&[structured_arg(whole_data)], &resolver),
-        Ok(FunctionValue::Number(1.0))
+        Ok(CalcValue::number(1.0))
     );
     assert_eq!(
         eval_counta_surface(&[structured_arg(headers)], &resolver),
-        Ok(FunctionValue::Number(2.0))
+        Ok(CalcValue::number(2.0))
     );
     assert_eq!(
         eval_countblank_surface(&[structured_arg(totals)], &resolver),
-        Ok(FunctionValue::Number(2.0))
+        Ok(CalcValue::number(2.0))
     );
     assert_eq!(
         eval_sum_surface(&[structured_arg(current_row)], &resolver),
-        Ok(FunctionValue::Number(11.0))
+        Ok(CalcValue::number(11.0))
     );
 
     assert!(resolver.dense_calls.borrow().is_empty());
@@ -325,51 +317,42 @@ fn direct_scalar_and_array_paths_are_unchanged_by_structured_reference_guardrail
 
     assert_eq!(
         eval_sum_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Text(text("2"))),
-            ],
+            &[(CalcValue::logical(true)), (CalcValue::text(text("2"))),],
             &resolver,
         ),
-        Ok(FunctionValue::Number(3.0))
+        Ok(CalcValue::number(3.0))
     );
     assert_eq!(
         eval_count_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Text(text("2"))),
-                FunctionArg::Eval(FunctionValue::Text(text("not numeric"))),
+                (CalcValue::number(1.0)),
+                (CalcValue::logical(true)),
+                (CalcValue::text(text("2"))),
+                (CalcValue::text(text("not numeric"))),
             ],
             &resolver,
         ),
-        Ok(FunctionValue::Number(3.0))
+        Ok(CalcValue::number(3.0))
     );
     assert_eq!(
         eval_counta_surface(
-            &[
-                FunctionArg::EmptyCell,
-                FunctionArg::Eval(FunctionValue::Text(text("")))
-            ],
+            &[CalcValue::empty(), (CalcValue::text(text("")))],
             &resolver
         ),
-        Ok(FunctionValue::Number(1.0))
+        Ok(CalcValue::number(1.0))
     );
 
-    let countblank_array = FunctionArray::from_rows(vec![vec![
-        FunctionArrayCell::Text(text("a")),
-        FunctionArrayCell::Text(text("")),
+    let countblank_array = CalcArray::from_rows(vec![vec![
+        CalcValue::text(text("a")),
+        CalcValue::text(text("")),
     ]])
     .unwrap();
     assert_eq!(
-        eval_countblank_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(countblank_array))],
-            &resolver
-        ),
-        Ok(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        eval_countblank_surface(&[(CalcValue::array(countblank_array))], &resolver),
+        Ok(CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::error(WorksheetErrorCode::Value),
+                CalcValue::error(WorksheetErrorCode::Value),
             ]])
             .unwrap()
         ))
@@ -391,9 +374,9 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             3,
             1,
             vec![
-                (1, 1, FunctionArrayCell::Number(2.0)),
-                (2, 1, FunctionArrayCell::Text(text("ignored"))),
-                (3, 1, FunctionArrayCell::Number(4.0)),
+                (1, 1, CalcValue::number(2.0)),
+                (2, 1, CalcValue::text(text("ignored"))),
+                (3, 1, CalcValue::number(4.0)),
             ],
         ),
     );
@@ -403,8 +386,8 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             2,
             1,
             vec![
-                (1, 1, FunctionArrayCell::Logical(true)),
-                (2, 1, FunctionArrayCell::Logical(true)),
+                (1, 1, CalcValue::logical(true)),
+                (2, 1, CalcValue::logical(true)),
             ],
         ),
     );
@@ -414,8 +397,8 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             1,
             3,
             vec![
-                (1, 1, FunctionArrayCell::Text(text("North"))),
-                (1, 3, FunctionArrayCell::Text(text("West"))),
+                (1, 1, CalcValue::text(text("North"))),
+                (1, 3, CalcValue::text(text("West"))),
             ],
         ),
     );
@@ -423,15 +406,15 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
 
     assert_eq!(
         eval_average_surface(&[structured_arg(amounts)], &resolver),
-        Ok(FunctionValue::Number(3.0))
+        Ok(CalcValue::number(3.0))
     );
     assert_eq!(
         eval_max_surface(&[structured_arg(amounts)], &resolver),
-        Ok(FunctionValue::Number(4.0))
+        Ok(CalcValue::number(4.0))
     );
     assert_eq!(
         eval_and_surface(&[structured_arg(flags)], &resolver),
-        Ok(FunctionValue::Logical(true))
+        Ok(CalcValue::logical(true))
     );
     assert_eq!(
         eval_textjoin_surface(
@@ -442,7 +425,7 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             ],
             &resolver,
         ),
-        Ok(FunctionValue::Text(text("North|West")))
+        Ok(CalcValue::text(text("North|West")))
     );
 
     assert!(resolver.dense_calls.borrow().is_empty());
@@ -461,9 +444,9 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             1,
             3,
             vec![
-                (1, 1, FunctionArrayCell::Text(text("North"))),
-                (1, 2, FunctionArrayCell::Text(text("South"))),
-                (1, 3, FunctionArrayCell::Text(text("North"))),
+                (1, 1, CalcValue::text(text("North"))),
+                (1, 2, CalcValue::text(text("South"))),
+                (1, 3, CalcValue::text(text("North"))),
             ],
         ),
     );
@@ -473,9 +456,9 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             1,
             3,
             vec![
-                (1, 1, FunctionArrayCell::Number(10.0)),
-                (1, 2, FunctionArrayCell::Number(20.0)),
-                (1, 3, FunctionArrayCell::Number(30.0)),
+                (1, 1, CalcValue::number(10.0)),
+                (1, 2, CalcValue::number(20.0)),
+                (1, 3, CalcValue::number(30.0)),
             ],
         ),
     );
@@ -485,9 +468,9 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             1,
             3,
             vec![
-                (1, 1, FunctionArrayCell::Number(100.0)),
-                (1, 2, FunctionArrayCell::Number(200.0)),
-                (1, 3, FunctionArrayCell::Number(300.0)),
+                (1, 1, CalcValue::number(100.0)),
+                (1, 2, CalcValue::number(200.0)),
+                (1, 3, CalcValue::number(300.0)),
             ],
         ),
     );
@@ -500,7 +483,7 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             Some(&scalar_number(0.0)),
             &resolver
         ),
-        Ok(FunctionValue::Number(2.0))
+        Ok(CalcValue::number(2.0))
     );
     assert_eq!(
         eval_xlookup_surface(
@@ -512,11 +495,11 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             None,
             &resolver,
         ),
-        Ok(FunctionValue::Number(200.0))
+        Ok(CalcValue::number(200.0))
     );
     assert_eq!(
         eval_countif_surface(&[structured_arg(regions), scalar_text("North")], &resolver),
-        Ok(FunctionValue::Number(2.0))
+        Ok(CalcValue::number(2.0))
     );
     assert_eq!(
         eval_sumifs_surface(
@@ -527,7 +510,7 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             ],
             &resolver,
         ),
-        Ok(FunctionValue::Number(40.0))
+        Ok(CalcValue::number(40.0))
     );
 
     assert!(resolver.dense_calls.borrow().is_empty());
@@ -542,11 +525,11 @@ fn rows_columns_and_index_use_sparse_extent_without_selector_parsing() {
 
     assert_eq!(
         eval_rows_surface_with_resolver(&[structured_arg(table)], &resolver),
-        Ok(FunctionValue::Number(7.0))
+        Ok(CalcValue::number(7.0))
     );
     assert_eq!(
         eval_columns_surface_with_resolver(&[structured_arg(table)], &resolver),
-        Ok(FunctionValue::Number(3.0))
+        Ok(CalcValue::number(3.0))
     );
     assert_eq!(
         eval_index_surface(
@@ -557,7 +540,7 @@ fn rows_columns_and_index_use_sparse_extent_without_selector_parsing() {
             ],
             &resolver,
         ),
-        Ok(FunctionValue::Reference(ReferenceLike::new(
+        Ok(CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Structured,
             format!("{table}#INDEX(2,3)"),
         )))
@@ -592,10 +575,10 @@ fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
             4,
             1,
             vec![
-                (1, 1, FunctionArrayCell::Number(10.0)),
-                (2, 1, FunctionArrayCell::Number(20.0)),
-                (3, 1, FunctionArrayCell::Number(30.0)),
-                (4, 1, FunctionArrayCell::Number(40.0)),
+                (1, 1, CalcValue::number(10.0)),
+                (2, 1, CalcValue::number(20.0)),
+                (3, 1, CalcValue::number(30.0)),
+                (4, 1, CalcValue::number(40.0)),
             ],
         ),
     );
@@ -637,7 +620,7 @@ fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
             &resolver,
             Some(&host)
         ),
-        Ok(FunctionValue::Number(10.0))
+        Ok(CalcValue::number(10.0))
     );
     assert_eq!(
         eval_aggregate_surface(
@@ -649,7 +632,7 @@ fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
             &resolver,
             Some(&host),
         ),
-        Ok(FunctionValue::Number(10.0))
+        Ok(CalcValue::number(10.0))
     );
 
     assert!(resolver.dense_calls.borrow().is_empty());
@@ -663,11 +646,11 @@ fn metadata_lanes_pass_structured_references_to_host_or_count_opaque_areas() {
 
     assert_eq!(
         eval_areas_surface(&[structured_arg(formula_cell)]),
-        Ok(FunctionValue::Number(1.0))
+        Ok(CalcValue::number(1.0))
     );
     assert_eq!(
         eval_formulatext_surface(&[structured_arg(formula_cell)], Some(&host)),
-        Ok(FunctionValue::Text(text("=SUM(Table[Amount])")))
+        Ok(CalcValue::text(text("=SUM(Table[Amount])")))
     );
     assert_eq!(
         eval_cell_surface(
@@ -675,7 +658,7 @@ fn metadata_lanes_pass_structured_references_to_host_or_count_opaque_areas() {
             &resolver,
             Some(&host),
         ),
-        Ok(FunctionValue::Text(text("Book.xlsx")))
+        Ok(CalcValue::text(text("Book.xlsx")))
     );
 
     assert_eq!(

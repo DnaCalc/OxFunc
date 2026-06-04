@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const TYPE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TYPE",
@@ -27,23 +27,22 @@ pub enum TypeEvalError {
     Coercion(CoercionError),
 }
 
-fn type_code(prepared: PreparedValue) -> f64 {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(_)) => 1.0,
-        PreparedValue::Eval(FunctionValue::Text(_)) => 2.0,
-        PreparedValue::Eval(FunctionValue::Logical(_)) => 4.0,
-        PreparedValue::Eval(FunctionValue::Error(_)) => 16.0,
-        PreparedValue::Eval(FunctionValue::Array(_)) => 64.0,
-        PreparedValue::Eval(FunctionValue::Reference(_)) => 16.0,
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => 1.0,
-        _ => 64.0,
+fn type_code(prepared: CalcValue) -> f64 {
+    match prepared.core() {
+        CoreValue::Number(_) => 1.0,
+        CoreValue::Text(_) => 2.0,
+        CoreValue::Logical(_) => 4.0,
+        CoreValue::Error(_) => 16.0,
+        CoreValue::Array(_) => 64.0,
+        CoreValue::Reference(_) => 16.0,
+        CoreValue::Missing | CoreValue::Empty => 1.0,
     }
 }
 
 pub fn eval_type_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TypeEvalError> {
+) -> Result<CalcValue, TypeEvalError> {
     if !TYPE_META.arity.accepts(args.len()) {
         return Err(TypeEvalError::ArityMismatch {
             expected: TYPE_META.arity.min,
@@ -51,7 +50,7 @@ pub fn eval_type_surface(
         });
     }
     let prepared = prepare_arg_values_only(&args[0], resolver).map_err(TypeEvalError::Coercion)?;
-    Ok(FunctionValue::Number(type_code(prepared)))
+    Ok(CalcValue::number(type_code(prepared)))
 }
 
 pub fn map_type_error_to_ws(e: &TypeEvalError) -> WorksheetErrorCode {
@@ -66,7 +65,7 @@ pub fn map_type_error_to_ws(e: &TypeEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArg};
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
@@ -78,7 +77,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -91,20 +90,17 @@ mod tests {
     #[test]
     fn eval_type_returns_expected_codes() {
         assert_eq!(
-            eval_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(1.0))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(1.0))
+            eval_type_surface(&[(CalcValue::number(1.0))], &NoResolver),
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(
-                    ExcelText::from_utf16_code_units("x".encode_utf16().collect(),)
-                ))],
+                &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                    "x".encode_utf16().collect(),
+                )))],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
     }
 }

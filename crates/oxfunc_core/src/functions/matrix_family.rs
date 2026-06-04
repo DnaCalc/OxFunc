@@ -3,13 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, prepare_arg_values_only,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 const MATRIX_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MATRIX_BASE",
@@ -59,28 +56,27 @@ pub enum MatrixEvalError {
 }
 
 fn resolve_arg_eval(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MatrixEvalError> {
-    match arg {
-        FunctionArg::Eval(FunctionValue::Reference(reference))
-        | FunctionArg::Reference(reference) => {
+) -> Result<CalcValue, MatrixEvalError> {
+    match arg.core() {
+        CoreValue::Reference(reference) => {
             let resolved = resolve_eval_value(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(MatrixEvalError::Coercion)?;
-            resolve_arg_eval(&FunctionArg::Eval(resolved), resolver)
+            resolve_arg_eval(&(resolved), resolver)
         }
-        FunctionArg::Eval(value) => Ok(value.clone()),
-        FunctionArg::MissingArg => Err(MatrixEvalError::Coercion(CoercionError::MissingArg)),
-        FunctionArg::EmptyCell => Err(MatrixEvalError::Domain(WorksheetErrorCode::Value)),
+        CoreValue::Missing => Err(MatrixEvalError::Coercion(CoercionError::MissingArg)),
+        CoreValue::Empty => Err(MatrixEvalError::Domain(WorksheetErrorCode::Value)),
+        _ => Ok(arg.clone()),
     }
 }
 
-fn matrix_from_value(value: &FunctionValue) -> Result<Vec<Vec<f64>>, WorksheetErrorCode> {
-    match value {
-        FunctionValue::Number(n) => Ok(vec![vec![*n]]),
-        FunctionValue::Error(code) => Err(*code),
-        FunctionValue::Array(array) => {
+fn matrix_from_value(value: &CalcValue) -> Result<Vec<Vec<f64>>, WorksheetErrorCode> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(vec![vec![*n]]),
+        CoreValue::Error(code) => Err(*code),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let mut rows = Vec::with_capacity(shape.rows);
             for row_idx in 0..shape.rows {
@@ -89,35 +85,38 @@ fn matrix_from_value(value: &FunctionValue) -> Result<Vec<Vec<f64>>, WorksheetEr
                     .row_slice(row_idx)
                     .expect("row index bounded by shape rows")
                 {
-                    match cell {
-                        FunctionArrayCell::Number(n) => row.push(*n),
-                        FunctionArrayCell::Error(code) => return Err(*code),
-                        FunctionArrayCell::Text(_)
-                        | FunctionArrayCell::Logical(_)
-                        | FunctionArrayCell::EmptyCell => return Err(WorksheetErrorCode::Value),
+                    match cell.core() {
+                        CoreValue::Number(n) => row.push(*n),
+                        CoreValue::Error(code) => return Err(*code),
+                        CoreValue::Text(_)
+                        | CoreValue::Logical(_)
+                        | CoreValue::Empty
+                        | CoreValue::Missing
+                        | CoreValue::Array(_)
+                        | CoreValue::Reference(_) => return Err(WorksheetErrorCode::Value),
                     }
                 }
                 rows.push(row);
             }
             Ok(rows)
         }
-        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => {
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => {
             Err(WorksheetErrorCode::Value)
         }
         _ => Err(WorksheetErrorCode::Value),
     }
 }
 
-fn value_from_matrix(matrix: &[Vec<f64>]) -> Result<FunctionValue, WorksheetErrorCode> {
+fn value_from_matrix(matrix: &[Vec<f64>]) -> Result<CalcValue, WorksheetErrorCode> {
     let rows = matrix.len();
     let cols = matrix.first().map_or(0, Vec::len);
 
     let cells = matrix
         .iter()
-        .flat_map(|row| row.iter().copied().map(FunctionArrayCell::Number))
+        .flat_map(|row| row.iter().copied().map(CalcValue::number))
         .collect::<Vec<_>>();
-    FunctionArray::new(ArrayShape { rows, cols }, cells)
-        .map(FunctionValue::Array)
+    CalcArray::new(ArrayShape { rows, cols }, cells)
+        .map(CalcValue::array)
         .ok_or(WorksheetErrorCode::Value)
 }
 
@@ -262,7 +261,7 @@ fn mmult_kernel(
     Ok(result)
 }
 
-fn munit_size_from_prepared(arg: &PreparedValue) -> Result<usize, MatrixEvalError> {
+fn munit_size_from_prepared(arg: &CalcValue) -> Result<usize, MatrixEvalError> {
     let n = coerce_prepared_to_number(arg).map_err(MatrixEvalError::Coercion)?;
     if !n.is_finite() {
         return Err(MatrixEvalError::Domain(WorksheetErrorCode::Value));
@@ -290,9 +289,9 @@ fn identity_matrix(size: usize) -> Vec<Vec<f64>> {
 }
 
 pub fn eval_mdeterm_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MatrixEvalError> {
+) -> Result<CalcValue, MatrixEvalError> {
     if !MDETERM_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
             expected_min: MDETERM_META.arity.min,
@@ -303,14 +302,14 @@ pub fn eval_mdeterm_surface(
     let matrix = matrix_from_value(&resolve_arg_eval(&args[0], resolver)?)
         .map_err(MatrixEvalError::Domain)?;
     determinant_kernel(&matrix)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(MatrixEvalError::Domain)
 }
 
 pub fn eval_minverse_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MatrixEvalError> {
+) -> Result<CalcValue, MatrixEvalError> {
     if !MINVERSE_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
             expected_min: MINVERSE_META.arity.min,
@@ -326,9 +325,9 @@ pub fn eval_minverse_surface(
 }
 
 pub fn eval_mmult_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MatrixEvalError> {
+) -> Result<CalcValue, MatrixEvalError> {
     if !MMULT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
             expected_min: MMULT_META.arity.min,
@@ -346,9 +345,9 @@ pub fn eval_mmult_surface(
 }
 
 pub fn eval_munit_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MatrixEvalError> {
+) -> Result<CalcValue, MatrixEvalError> {
     if !MUNIT_META.arity.accepts(args.len()) {
         return Err(MatrixEvalError::ArityMismatch {
             expected_min: MUNIT_META.arity.min,
@@ -387,7 +386,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -400,37 +399,25 @@ mod tests {
     #[test]
     fn mdeterm_matches_excel_seed_rows() {
         let got = eval_mdeterm_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             ))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(-2.0)));
+        assert_eq!(got, Ok(CalcValue::number(-2.0)));
     }
 
     #[test]
     fn minverse_spills_excel_seed_matrix() {
         let got = eval_minverse_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             ))],
@@ -438,14 +425,14 @@ mod tests {
         )
         .unwrap();
 
-        let FunctionValue::Array(array) = got else {
+        let CoreValue::Array(array) = got.core else {
             panic!("MINVERSE should return an array");
         };
         let expected = [[-2.0_f64, 1.0_f64], [1.5_f64, -0.5_f64]];
         for row in 0..2 {
             for col in 0..2 {
-                match array.get(row, col) {
-                    Some(FunctionArrayCell::Number(n)) => {
+                match array.get(row, col).map(CalcValue::core) {
+                    Some(CoreValue::Number(n)) => {
                         assert!((*n - expected[row][col]).abs() < 1e-12);
                     }
                     other => panic!("unexpected inverse cell: {:?}", other),
@@ -458,23 +445,17 @@ mod tests {
     fn mmult_matches_excel_seed_rows() {
         let got = eval_mmult_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(5.0)],
-                        vec![FunctionArrayCell::Number(6.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::number(6.0)],
                     ])
                     .unwrap(),
                 )),
@@ -483,10 +464,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(17.0)],
-                    vec![FunctionArrayCell::Number(39.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(17.0)],
+                    vec![CalcValue::number(39.0)],
                 ])
                 .unwrap(),
             ))
@@ -495,28 +476,25 @@ mod tests {
 
     #[test]
     fn munit_matches_excel_seed_rows() {
-        let got = eval_munit_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(3.0))],
-            &NoResolver,
-        );
+        let got = eval_munit_surface(&[(CalcValue::number(3.0))], &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(0.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(0.0),
+                        CalcValue::number(0.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(0.0),
+                        CalcValue::number(0.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(0.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(1.0),
+                        CalcValue::number(0.0),
+                        CalcValue::number(0.0),
+                        CalcValue::number(1.0),
                     ],
                 ])
                 .unwrap(),
@@ -526,14 +504,11 @@ mod tests {
 
     #[test]
     fn munit_one_preserves_array_value() {
-        let got = eval_munit_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
-            &NoResolver,
-        );
+        let got = eval_munit_surface(&[(CalcValue::number(1.0))], &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(1.0)]],).unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(1.0)]],).unwrap()
             ))
         );
     }
@@ -541,23 +516,17 @@ mod tests {
     #[test]
     fn munit_truncates_and_coerces_text_numeric() {
         let got = eval_munit_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("2.9".encode_utf16().collect()),
-            ))],
+            &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                "2.9".encode_utf16().collect(),
+            )))],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(0.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(1.0)
-                    ],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(0.0)],
+                    vec![CalcValue::number(0.0), CalcValue::number(1.0)],
                 ])
                 .unwrap(),
             ))
@@ -567,16 +536,10 @@ mod tests {
     #[test]
     fn singular_inverse_maps_to_num() {
         let got = eval_minverse_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(2.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             ))],
@@ -587,17 +550,17 @@ mod tests {
 
     #[test]
     fn nonsquare_inputs_map_to_value() {
-        let nonsquare = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
+        let nonsquare = (CalcValue::array(
+            CalcArray::from_rows(vec![
                 vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ],
                 vec![
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(6.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(5.0),
+                    CalcValue::number(6.0),
                 ],
             ])
             .unwrap(),
@@ -616,20 +579,14 @@ mod tests {
     fn matrix_inputs_reject_non_numeric_cells() {
         let got = eval_mmult_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Logical(true),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::logical(true), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoResolver,
         );
@@ -639,31 +596,22 @@ mod tests {
     #[test]
     fn scalar_numeric_inputs_preserve_one_by_one_matrix_results_as_arrays() {
         assert_eq!(
-            eval_mdeterm_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(5.0))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(5.0))
+            eval_mdeterm_surface(&[(CalcValue::number(5.0))], &NoResolver),
+            Ok(CalcValue::number(5.0))
         );
         assert_eq!(
-            eval_minverse_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(5.0))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(0.2)]],).unwrap()
+            eval_minverse_surface(&[(CalcValue::number(5.0))], &NoResolver),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(0.2)]],).unwrap()
             ))
         );
         assert_eq!(
             eval_mmult_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(5.0)),
-                    FunctionArg::Eval(FunctionValue::Number(2.0)),
-                ],
+                &[(CalcValue::number(5.0)), (CalcValue::number(2.0)),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(10.0)]],).unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(10.0)]],).unwrap()
             ))
         );
     }

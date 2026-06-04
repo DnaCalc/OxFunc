@@ -3,7 +3,7 @@ use oxfml_core::seam::Locus;
 use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
-use oxfunc_core::value::{FunctionArray, FunctionArrayCell, FunctionValue};
+use oxfunc_core::value::{CalcArray, CalcValue};
 
 fn locus(row: u32, col: u32) -> Locus {
     Locus {
@@ -25,8 +25,8 @@ fn ftc_0959_gcd_array_literal_direct_call_matches_scalar_one_through_adapter() {
     .expect("ftc-0959 gcd array literal adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(1.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(1.0)
     );
 }
 
@@ -42,8 +42,8 @@ fn ftc_0959_gcd_sequence_direct_call_matches_scalar_one_through_adapter() {
     .expect("ftc-0959 gcd sequence adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(1.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(1.0)
     );
 }
 
@@ -59,8 +59,8 @@ fn ftc_1032_and_array_literal_direct_call_scalarizes_to_false_through_adapter() 
     .expect("ftc-1032 and array literal adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Logical(false)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::logical(false)
     );
 }
 
@@ -76,8 +76,8 @@ fn ftc_1032_and_sequence_bounds_direct_call_scalarizes_to_false_through_adapter(
     .expect("ftc-1032 and sequence bounds adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Logical(false)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::logical(false)
     );
 }
 
@@ -93,8 +93,8 @@ fn ftc_1032_wraprows_scalar_input_returns_scalar_zero_through_adapter() {
     .expect("ftc-1032 wraprows scalar adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(0.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(0.0)
     );
 }
 
@@ -110,8 +110,8 @@ fn ftc_1032_index_of_wraprows_scalar_input_returns_scalar_zero_through_adapter()
     .expect("ftc-1032 index wraprows scalar adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(0.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(0.0)
     );
 }
 
@@ -127,8 +127,8 @@ fn ftc_1032_sum_of_indexed_wraprows_scalar_input_returns_scalar_zero_through_ada
     .expect("ftc-1032 sum index wraprows scalar adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(0.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(0.0)
     );
 }
 
@@ -144,8 +144,8 @@ fn ftc_1032_if_scalar_false_continuation_returns_scalar_zero_through_adapter() {
     .expect("ftc-1032 if scalar false adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(0.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(0.0)
     );
 }
 
@@ -161,8 +161,8 @@ fn ftc_0907_and_single_true_array_scalarizes_to_true_through_adapter() {
     .expect("ftc-0907 and single true array adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Logical(true)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::logical(true)
     );
 }
 
@@ -178,8 +178,8 @@ fn ftc_0907_and_single_mixed_array_scalarizes_to_false_through_adapter() {
     .expect("ftc-0907 and single mixed array adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Logical(false)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::logical(false)
     );
 }
 
@@ -195,8 +195,8 @@ fn ftc_0907_and_map_true_array_scalarizes_to_true_through_adapter() {
     .expect("ftc-0907 and map true array adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Logical(true)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::logical(true)
     );
 }
 
@@ -213,14 +213,14 @@ fn ftc_0910_index_row_vector_omitted_row_selector_array_returns_first_five_value
     .expect("ftc-0910 first five adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Number(10.0)],
-                vec![FunctionArrayCell::Number(20.0)],
-                vec![FunctionArrayCell::Number(30.0)],
-                vec![FunctionArrayCell::Number(40.0)],
-                vec![FunctionArrayCell::Number(50.0)],
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(10.0)],
+                vec![CalcValue::number(20.0)],
+                vec![CalcValue::number(30.0)],
+                vec![CalcValue::number(40.0)],
+                vec![CalcValue::number(50.0)],
             ])
             .unwrap(),
         )
@@ -239,14 +239,14 @@ fn ftc_0910_index_row_vector_omitted_row_selector_array_returns_last_five_values
     .expect("ftc-0910 last five adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Number(60.0)],
-                vec![FunctionArrayCell::Number(70.0)],
-                vec![FunctionArrayCell::Number(80.0)],
-                vec![FunctionArrayCell::Number(90.0)],
-                vec![FunctionArrayCell::Number(100.0)],
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(60.0)],
+                vec![CalcValue::number(70.0)],
+                vec![CalcValue::number(80.0)],
+                vec![CalcValue::number(90.0)],
+                vec![CalcValue::number(100.0)],
             ])
             .unwrap(),
         )
@@ -265,8 +265,8 @@ fn ftc_0930_index_over_value_error_result_propagates_value_through_adapter() {
     .expect("ftc-0930 index over error adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Error(oxfunc_core::value::WorksheetErrorCode::Value)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value)
     );
 }
 
@@ -282,24 +282,24 @@ fn ftc_0670_valuetotext_strict_array_returns_quoted_text_grid_through_adapter() 
     .expect("ftc-0670 valuetotext adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![
                 vec![
-                    FunctionArrayCell::Text(
-                        oxfunc_core::value::ExcelText::from_interop_assignment("\"a\"")
-                    ),
-                    FunctionArrayCell::Text(
-                        oxfunc_core::value::ExcelText::from_interop_assignment("\"b\"")
-                    ),
+                    CalcValue::text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"a\""
+                    )),
+                    CalcValue::text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"b\""
+                    )),
                 ],
                 vec![
-                    FunctionArrayCell::Text(
-                        oxfunc_core::value::ExcelText::from_interop_assignment("\"c\"")
-                    ),
-                    FunctionArrayCell::Text(
-                        oxfunc_core::value::ExcelText::from_interop_assignment("\"d\"")
-                    ),
+                    CalcValue::text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"c\""
+                    )),
+                    CalcValue::text(oxfunc_core::value::ExcelText::from_interop_assignment(
+                        "\"d\""
+                    )),
                 ],
             ])
             .unwrap(),
@@ -319,14 +319,14 @@ fn ftc_0692_maxifs_direct_array_ranges_return_shaped_value_error_row_through_ada
     .expect("ftc-0692 maxifs adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
             ]])
             .unwrap(),
         )
@@ -345,14 +345,14 @@ fn ftc_0693_minifs_direct_array_ranges_return_shaped_value_error_row_through_ada
     .expect("ftc-0693 minifs adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(oxfunc_core::value::WorksheetErrorCode::Value),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
+                CalcValue::error(oxfunc_core::value::WorksheetErrorCode::Value),
             ]])
             .unwrap(),
         )
@@ -371,13 +371,13 @@ fn ftc_0966_log_array_direct_call_matches_elementwise_row_through_adapter() {
     .expect("ftc-0966 log array adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(-1.0),
-                FunctionArrayCell::Number(-2.0),
-                FunctionArrayCell::Number(-3.0),
-                FunctionArrayCell::Number(-3.0),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(-1.0),
+                CalcValue::number(-2.0),
+                CalcValue::number(-3.0),
+                CalcValue::number(-3.0),
             ]])
             .unwrap(),
         )

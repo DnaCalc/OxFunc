@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::and_argument_truth;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const XOR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.XOR",
@@ -33,9 +34,9 @@ pub enum XorEvalError {
 }
 
 pub fn eval_xor_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, XorEvalError> {
+) -> Result<CalcValue, XorEvalError> {
     let argc = args.len();
     if !XOR_META.arity.accepts(argc) {
         return Err(XorEvalError::ArityMismatch {
@@ -62,10 +63,10 @@ pub fn eval_xor_surface(
     }
 
     if !saw_value {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Value));
+        return Ok(CalcValue::error(WorksheetErrorCode::Value));
     }
 
-    Ok(FunctionValue::Logical(parity))
+    Ok(CalcValue::logical(parity))
 }
 
 pub fn map_xor_error_to_ws(e: &XorEvalError) -> WorksheetErrorCode {
@@ -80,10 +81,10 @@ pub fn map_xor_error_to_ws(e: &XorEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -94,7 +95,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -108,45 +109,45 @@ mod tests {
     fn eval_xor_returns_parity_of_true_values() {
         let got = eval_xor_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
+                (CalcValue::logical(true)),
+                (CalcValue::logical(false)),
+                (CalcValue::logical(true)),
             ],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_xor_ignores_reference_text_and_empty_cells() {
         let got = eval_xor_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A4".to_string(),
             ))],
             &MockResolver {
-                resolved: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::EmptyCell,
-                        FunctionArrayCell::Logical(true),
-                        FunctionArrayCell::Number(0.0),
+                        CalcValue::empty(),
+                        CalcValue::logical(true),
+                        CalcValue::number(0.0),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn eval_xor_direct_text_is_value_error() {
         let got = eval_xor_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("x".encode_utf16().collect()),
-            ))],
+            &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                "x".encode_utf16().collect(),
+            )))],
             &MockResolver { resolved: None },
         );
         assert!(matches!(
@@ -158,22 +159,22 @@ mod tests {
     #[test]
     fn eval_xor_returns_value_when_all_inputs_are_ignored() {
         let got = eval_xor_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A2".to_string(),
             ))],
             &MockResolver {
-                resolved: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::EmptyCell,
+                        CalcValue::empty(),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Value)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
     }
 }

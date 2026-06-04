@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const DISCRETE_DIST_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DISCRETE_DIST_BASE",
@@ -119,7 +118,7 @@ fn prepared_len_error(meta: &FunctionMeta, actual: usize) -> DiscreteDistEvalErr
     }
 }
 
-fn number(prepared: &PreparedValue) -> Result<f64, DiscreteDistEvalError> {
+fn number(prepared: &CalcValue) -> Result<f64, DiscreteDistEvalError> {
     coerce_prepared_to_number(prepared).map_err(DiscreteDistEvalError::Coercion)
 }
 
@@ -378,9 +377,7 @@ pub fn expon_dist_kernel(x: f64, lambda: f64, cumulative: bool) -> Result<f64, W
     }
 }
 
-fn eval_binom_dist_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_binom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !BINOM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&BINOM_DIST_META, args.len()));
     }
@@ -390,15 +387,13 @@ fn eval_binom_dist_prepared(
     let cumulative = number(&args[3])?;
     Ok(
         match binom_dist_kernel(number_s, trials, probability_s, cumulative_flag(cumulative)) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
-fn eval_binom_dist_range_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_binom_dist_range_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !BINOM_DIST_RANGE_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&BINOM_DIST_RANGE_META, args.len()));
     }
@@ -412,13 +407,13 @@ fn eval_binom_dist_range_prepared(
     };
     Ok(
         match binom_dist_range_kernel(trials, probability_s, number_s, number_s2) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
-fn eval_binom_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_binom_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !BINOM_INV_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&BINOM_INV_META, args.len()));
     }
@@ -426,14 +421,12 @@ fn eval_binom_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Disc
     let probability_s = number(&args[1])?;
     let alpha = number(&args[2])?;
     Ok(match binom_inv_kernel(trials, probability_s, alpha) {
-        Ok(value) => FunctionValue::Number(value),
-        Err(code) => FunctionValue::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     })
 }
 
-fn eval_poisson_dist_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_poisson_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !POISSON_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&POISSON_DIST_META, args.len()));
     }
@@ -442,15 +435,13 @@ fn eval_poisson_dist_prepared(
     let cumulative = number(&args[2])?;
     Ok(
         match poisson_dist_kernel(x, mean, cumulative_flag(cumulative)) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
-fn eval_hypgeom_dist_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_hypgeom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !HYPGEOM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&HYPGEOM_DIST_META, args.len()));
     }
@@ -467,15 +458,13 @@ fn eval_hypgeom_dist_prepared(
             number_pop,
             cumulative_flag(cumulative),
         ) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
-fn eval_negbinom_dist_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_negbinom_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !NEGBINOM_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&NEGBINOM_DIST_META, args.len()));
     }
@@ -490,15 +479,13 @@ fn eval_negbinom_dist_prepared(
             probability_s,
             cumulative_flag(cumulative),
         ) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
-fn eval_expon_dist_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+fn eval_expon_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, DiscreteDistEvalError> {
     if !EXPON_DIST_META.arity.accepts(args.len()) {
         return Err(prepared_len_error(&EXPON_DIST_META, args.len()));
     }
@@ -507,16 +494,16 @@ fn eval_expon_dist_prepared(
     let cumulative = number(&args[2])?;
     Ok(
         match expon_dist_kernel(x, lambda, cumulative_flag(cumulative)) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
 pub fn eval_binom_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -526,9 +513,9 @@ pub fn eval_binom_dist_surface(
 }
 
 pub fn eval_binom_dist_range_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -538,9 +525,9 @@ pub fn eval_binom_dist_range_surface(
 }
 
 pub fn eval_binom_inv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -550,23 +537,23 @@ pub fn eval_binom_inv_surface(
 }
 
 pub fn eval_binomdist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     eval_binom_dist_surface(args, resolver)
 }
 
 pub fn eval_critbinom_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     eval_binom_inv_surface(args, resolver)
 }
 
 pub fn eval_poisson_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -576,16 +563,16 @@ pub fn eval_poisson_surface(
 }
 
 pub fn eval_poisson_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     eval_poisson_surface(args, resolver)
 }
 
 pub fn eval_hypgeom_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -595,9 +582,9 @@ pub fn eval_hypgeom_dist_surface(
 }
 
 pub fn eval_hypgeomdist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -617,8 +604,8 @@ pub fn eval_hypgeomdist_surface(
                     number_pop,
                     false,
                 ) {
-                    Ok(value) => FunctionValue::Number(value),
-                    Err(code) => FunctionValue::Error(code),
+                    Ok(value) => CalcValue::number(value),
+                    Err(code) => CalcValue::error(code),
                 },
             )
         },
@@ -627,9 +614,9 @@ pub fn eval_hypgeomdist_surface(
 }
 
 pub fn eval_negbinom_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -639,9 +626,9 @@ pub fn eval_negbinom_dist_surface(
 }
 
 pub fn eval_negbinomdist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -654,8 +641,8 @@ pub fn eval_negbinomdist_surface(
             let probability_s = number(&prepared[2])?;
             Ok(
                 match negbinom_dist_kernel(number_f, number_s, probability_s, false) {
-                    Ok(value) => FunctionValue::Number(value),
-                    Err(code) => FunctionValue::Error(code),
+                    Ok(value) => CalcValue::number(value),
+                    Err(code) => CalcValue::error(code),
                 },
             )
         },
@@ -664,9 +651,9 @@ pub fn eval_negbinomdist_surface(
 }
 
 pub fn eval_expon_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -676,9 +663,9 @@ pub fn eval_expon_dist_surface(
 }
 
 pub fn eval_expondist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DiscreteDistEvalError> {
+) -> Result<CalcValue, DiscreteDistEvalError> {
     eval_expon_dist_surface(args, resolver)
 }
 
@@ -694,11 +681,11 @@ pub fn map_discrete_dist_error_to_ws(err: &DiscreteDistEvalError) -> WorksheetEr
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::ExcelText;
+    use crate::value::{CoreValue, ExcelText};
     use std::collections::HashMap;
 
     struct MockResolver {
-        resolved_values: HashMap<String, FunctionValue>,
+        resolved_values: HashMap<String, CalcValue>,
     }
 
     impl MockResolver {
@@ -717,7 +704,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_values.get(reference.target()).cloned().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -727,21 +714,24 @@ mod tests {
         }
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(s)))
+    fn text(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(s)))
     }
 
-    fn bool_arg(b: bool) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Logical(b))
+    fn bool_arg(b: bool) -> CalcValue {
+        (CalcValue::logical(b))
     }
 
-    fn assert_ok_number_close(got: Result<FunctionValue, DiscreteDistEvalError>, expected: f64) {
+    fn assert_ok_number_close(got: Result<CalcValue, DiscreteDistEvalError>, expected: f64) {
         match got {
-            Ok(FunctionValue::Number(value)) => assert!((value - expected).abs() < 1e-12),
+            Ok(value) => match value.core() {
+                CoreValue::Number(value) => assert!((*value - expected).abs() < 1e-12),
+                other => panic!("expected numeric result, got {other:?}"),
+            },
             other => panic!("expected numeric result, got {other:?}"),
         }
     }
@@ -848,7 +838,7 @@ mod tests {
         );
         assert_eq!(
             eval_critbinom_surface(&[num(6.0), num(0.5), num(0.7)], &resolver),
-            Ok(FunctionValue::Number(4.0))
+            Ok(CalcValue::number(4.0))
         );
         assert_ok_number_close(
             eval_poisson_surface(&[num(3.0), num(2.0), bool_arg(false)], &resolver),
@@ -884,7 +874,7 @@ mod tests {
         let resolver = MockResolver::empty();
         assert_eq!(
             eval_binom_inv_surface(&[text("6"), num(0.5), text("0.7")], &resolver),
-            Ok(FunctionValue::Number(4.0))
+            Ok(CalcValue::number(4.0))
         );
         assert_ok_number_close(
             eval_poisson_dist_surface(&[num(3.0), text("2"), bool_arg(true)], &resolver),

@@ -7,7 +7,8 @@ use crate::functions::binary_numeric::{
 };
 use crate::functions::bit_common::coerce_bit_operand;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const BITXOR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BITXOR",
@@ -28,9 +29,9 @@ pub fn bitxor_kernel(lhs: f64, rhs: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_bitxor_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, bitxor_kernel)
 }
 

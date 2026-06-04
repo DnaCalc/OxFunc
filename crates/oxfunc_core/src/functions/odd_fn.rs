@@ -6,7 +6,8 @@ use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const ODD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ODD",
@@ -40,9 +41,9 @@ pub fn odd_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_odd_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     eval_unary_numeric_surface(args, resolver, odd_kernel)
 }
 

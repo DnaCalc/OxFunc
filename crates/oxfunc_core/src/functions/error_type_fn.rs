@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, run_values_only_prepared};
+use crate::functions::adapters::run_values_only_prepared;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const ERROR_TYPE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ERROR.TYPE",
@@ -46,9 +46,9 @@ fn error_type_number(code: WorksheetErrorCode) -> Option<f64> {
 }
 
 pub fn eval_error_type_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ErrorTypeEvalError> {
+) -> Result<CalcValue, ErrorTypeEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -60,12 +60,12 @@ pub fn eval_error_type_surface(
                     actual: prepared.len(),
                 });
             }
-            match &prepared[0] {
-                PreparedValue::Eval(FunctionValue::Error(code)) => match error_type_number(*code) {
-                    Some(n) => Ok(FunctionValue::Number(n)),
-                    None => Ok(FunctionValue::Error(WorksheetErrorCode::NA)),
+            match prepared[0].core() {
+                CoreValue::Error(code) => match error_type_number(*code) {
+                    Some(n) => Ok(CalcValue::number(n)),
+                    None => Ok(CalcValue::error(WorksheetErrorCode::NA)),
                 },
-                _ => Ok(FunctionValue::Error(WorksheetErrorCode::NA)),
+                _ => Ok(CalcValue::error(WorksheetErrorCode::NA)),
             }
         },
         ErrorTypeEvalError::Preparation,
@@ -84,10 +84,10 @@ pub fn map_error_type_error_to_ws(e: &ErrorTypeEvalError) -> WorksheetErrorCode 
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -98,7 +98,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -112,21 +112,17 @@ mod tests {
     fn error_type_maps_excel_error_numbers() {
         assert_eq!(
             eval_error_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::NA
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::NA))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Number(7.0))
+            Ok(CalcValue::number(7.0))
         );
         assert_eq!(
             eval_error_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::Div0
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::Div0))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
     }
 
@@ -134,33 +130,31 @@ mod tests {
     fn error_type_returns_na_for_non_error_and_blank_reference() {
         assert_eq!(
             eval_error_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(1.0))],
+                &[(CalcValue::number(1.0))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::NA))
+            Ok(CalcValue::error(WorksheetErrorCode::NA))
         );
         assert_eq!(
             eval_error_type_surface(
-                &[FunctionArg::Reference(ReferenceLike::new(
+                &[CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::A1,
                     "D1".to_string()
                 ))],
                 &MockResolver {
-                    resolved: Some(FunctionValue::Array(
-                        FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+                    resolved: Some(CalcValue::array(
+                        CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
                     )),
                 },
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::NA))
+            Ok(CalcValue::error(WorksheetErrorCode::NA))
         );
         assert_eq!(
             eval_error_type_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(
-                    ExcelText::from_utf16_code_units(Vec::new(),)
-                ))],
+                &[(CalcValue::text(ExcelText::from_utf16_code_units(Vec::new(),)))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::NA))
+            Ok(CalcValue::error(WorksheetErrorCode::NA))
         );
     }
 }

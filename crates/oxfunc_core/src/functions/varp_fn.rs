@@ -5,7 +5,8 @@ use crate::function::{
 };
 use crate::functions::var_p_fn::{VarPEvalError, eval_var_p_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const VARP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.VARP",
@@ -32,9 +33,9 @@ pub enum VarpEvalError {
 }
 
 pub fn eval_varp_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, VarpEvalError> {
+) -> Result<CalcValue, VarpEvalError> {
     eval_var_p_surface(args, resolver).map_err(|err| match err {
         VarPEvalError::ArityMismatch {
             expected_min,

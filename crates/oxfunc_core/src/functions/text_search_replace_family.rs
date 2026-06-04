@@ -4,13 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::functions::excel_casing::proper_text;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 use std::collections::HashMap;
 
 const TEXT_SEARCH_REPLACE_BASE_META: FunctionMeta = FunctionMeta {
@@ -121,10 +120,11 @@ fn positive_instance_from_number(n: f64) -> Result<usize, TextSearchReplaceEvalE
 }
 
 fn parse_optional_start_arg(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<usize, TextSearchReplaceEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) => Ok(1),
+        None => Ok(1),
+        Some(value) if matches!(value.core(), CoreValue::Missing) => Ok(1),
         Some(arg) => {
             let start =
                 coerce_prepared_to_number(arg).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -134,10 +134,11 @@ fn parse_optional_start_arg(
 }
 
 fn parse_optional_instance_arg(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<Option<usize>, TextSearchReplaceEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) => Ok(None),
+        None => Ok(None),
+        Some(value) if matches!(value.core(), CoreValue::Missing) => Ok(None),
         Some(arg) => {
             let instance =
                 coerce_prepared_to_number(arg).map_err(TextSearchReplaceEvalError::Coercion)?;
@@ -146,41 +147,44 @@ fn parse_optional_instance_arg(
     }
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
     }
 }
 
 fn text_search_replace_result_to_array_cell(
-    result: Result<FunctionValue, TextSearchReplaceEvalError>,
-) -> FunctionArrayCell {
+    result: Result<CalcValue, TextSearchReplaceEvalError>,
+) -> CalcValue {
     match result {
-        Ok(FunctionValue::Number(n)) => FunctionArrayCell::Number(n),
-        Ok(FunctionValue::Text(text)) => FunctionArrayCell::Text(text),
-        Ok(FunctionValue::Logical(value)) => FunctionArrayCell::Logical(value),
-        Ok(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
-        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
-        Err(err) => FunctionArrayCell::Error(map_text_search_replace_error_to_ws(&err)),
+        Ok(value) => match value.core() {
+            CoreValue::Number(n) => CalcValue::number(*n),
+            CoreValue::Text(text) => CalcValue::text(text.clone()),
+            CoreValue::Logical(value) => CalcValue::logical(*value),
+            CoreValue::Error(code) => CalcValue::error(*code),
+            _ => CalcValue::error(WorksheetErrorCode::Value),
+        },
+        Err(err) => CalcValue::error(map_text_search_replace_error_to_ws(&err)),
     }
 }
 
 fn eval_text_search_replace_with_single_array_lift(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     allowed_array_arg_indexes: &[usize],
-    eval_scalar: impl Fn(&[PreparedValue]) -> Result<FunctionValue, TextSearchReplaceEvalError>,
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    eval_scalar: impl Fn(&[CalcValue]) -> Result<CalcValue, TextSearchReplaceEvalError>,
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let array_args = prepared
         .iter()
         .enumerate()
-        .filter_map(|(idx, arg)| match arg {
-            PreparedValue::Eval(FunctionValue::Array(array))
-                if allowed_array_arg_indexes.contains(&idx) =>
-            {
+        .filter_map(|(idx, arg)| match arg.core() {
+            CoreValue::Array(array) if allowed_array_arg_indexes.contains(&idx) => {
                 Some((idx, array))
             }
             _ => None,
@@ -198,8 +202,8 @@ fn eval_text_search_replace_with_single_array_lift(
                     text_search_replace_result_to_array_cell(eval_scalar(&scalar_args))
                 })
                 .collect();
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), cells)
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), cells)
                     .expect("text search/replace lifted array shape remains valid"),
             ))
         }
@@ -398,8 +402,8 @@ pub fn search_kernel(
 }
 
 pub fn eval_proper_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     if !PROPER_META.arity.accepts(args.len()) {
         return Err(TextSearchReplaceEvalError::ArityMismatch {
             expected_min: PROPER_META.arity.min,
@@ -409,12 +413,12 @@ pub fn eval_proper_adapter_prepared(
     }
 
     let text = coerce_prepared_to_text(&args[0]).map_err(TextSearchReplaceEvalError::Coercion)?;
-    Ok(FunctionValue::Text(proper_kernel(&text)))
+    Ok(CalcValue::text(proper_kernel(&text)))
 }
 
 pub fn eval_substitute_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     if !SUBSTITUTE_META.arity.accepts(args.len()) {
         return Err(TextSearchReplaceEvalError::ArityMismatch {
             expected_min: SUBSTITUTE_META.arity.min,
@@ -429,7 +433,7 @@ pub fn eval_substitute_adapter_prepared(
     let new_text =
         coerce_prepared_to_text(&args[2]).map_err(TextSearchReplaceEvalError::Coercion)?;
     let instance_num = parse_optional_instance_arg(args.get(3))?;
-    Ok(FunctionValue::Text(substitute_kernel(
+    Ok(CalcValue::text(substitute_kernel(
         &text,
         &old_text,
         &new_text,
@@ -438,8 +442,8 @@ pub fn eval_substitute_adapter_prepared(
 }
 
 pub fn eval_replace_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     if !REPLACE_META.arity.accepts(args.len()) {
         return Err(TextSearchReplaceEvalError::ArityMismatch {
             expected_min: REPLACE_META.arity.min,
@@ -458,14 +462,14 @@ pub fn eval_replace_adapter_prepared(
         .and_then(nonnegative_count_from_number)?;
     let new_text =
         coerce_prepared_to_text(&args[3]).map_err(TextSearchReplaceEvalError::Coercion)?;
-    Ok(FunctionValue::Text(replace_kernel(
+    Ok(CalcValue::text(replace_kernel(
         &old_text, start_num, num_chars, &new_text,
     )?))
 }
 
 pub fn eval_find_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     if !FIND_META.arity.accepts(args.len()) {
         return Err(TextSearchReplaceEvalError::ArityMismatch {
             expected_min: FIND_META.arity.min,
@@ -479,7 +483,7 @@ pub fn eval_find_adapter_prepared(
     let within_text =
         coerce_prepared_to_text(&args[1]).map_err(TextSearchReplaceEvalError::Coercion)?;
     let start_num = parse_optional_start_arg(args.get(2))?;
-    Ok(FunctionValue::Number(find_kernel(
+    Ok(CalcValue::number(find_kernel(
         &find_text,
         &within_text,
         start_num,
@@ -487,8 +491,8 @@ pub fn eval_find_adapter_prepared(
 }
 
 pub fn eval_search_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     if !SEARCH_META.arity.accepts(args.len()) {
         return Err(TextSearchReplaceEvalError::ArityMismatch {
             expected_min: SEARCH_META.arity.min,
@@ -502,7 +506,7 @@ pub fn eval_search_adapter_prepared(
     let within_text =
         coerce_prepared_to_text(&args[1]).map_err(TextSearchReplaceEvalError::Coercion)?;
     let start_num = parse_optional_start_arg(args.get(2))?;
-    Ok(FunctionValue::Number(search_kernel(
+    Ok(CalcValue::number(search_kernel(
         &find_text,
         &within_text,
         start_num,
@@ -510,18 +514,18 @@ pub fn eval_search_adapter_prepared(
 }
 
 pub fn eval_proper_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
     eval_text_search_replace_with_single_array_lift(&prepared, &[0], eval_proper_adapter_prepared)
 }
 
 pub fn eval_substitute_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
     eval_text_search_replace_with_single_array_lift(
@@ -532,9 +536,9 @@ pub fn eval_substitute_surface(
 }
 
 pub fn eval_replace_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
     eval_text_search_replace_with_single_array_lift(
@@ -545,9 +549,9 @@ pub fn eval_replace_surface(
 }
 
 pub fn eval_find_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
     eval_text_search_replace_with_single_array_lift(
@@ -558,9 +562,9 @@ pub fn eval_find_surface(
 }
 
 pub fn eval_search_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSearchReplaceEvalError> {
+) -> Result<CalcValue, TextSearchReplaceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSearchReplaceEvalError::Coercion)?;
     eval_text_search_replace_with_single_array_lift(
@@ -596,7 +600,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -606,33 +610,29 @@ mod tests {
         }
     }
 
-    fn text_arg(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text_arg(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
-    fn text_prepared(s: &str) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text_prepared(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
-    fn number_arg(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_arg(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn number_prepared(n: f64) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Number(n))
+    fn number_prepared(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text_cell(s: &str) -> FunctionArrayCell {
-        FunctionArrayCell::Text(ExcelText::from_interop_assignment(s))
+    fn text_cell(s: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_interop_assignment(s))
     }
 
-    fn text_array_arg(rows: Vec<Vec<&str>>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn text_array_arg(rows: Vec<Vec<&str>>) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 rows.into_iter()
                     .map(|row| row.into_iter().map(text_cell).collect())
                     .collect(),
@@ -641,38 +641,34 @@ mod tests {
         ))
     }
 
-    fn number_array_arg(rows: Vec<Vec<f64>>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn number_array_arg(rows: Vec<Vec<f64>>) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 rows.into_iter()
-                    .map(|row| row.into_iter().map(FunctionArrayCell::Number).collect())
+                    .map(|row| row.into_iter().map(CalcValue::number).collect())
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn expected_array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionValue {
-        FunctionValue::Array(FunctionArray::from_rows(rows).unwrap())
+    fn expected_array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
     }
 
     #[test]
     fn proper_matches_basic_native_rows() {
         assert_eq!(
             eval_proper_surface(&[text_arg("hello world")], &NoResolver),
-            Ok(FunctionValue::Text(text_from_string(
-                "Hello World".to_string()
-            )))
+            Ok(CalcValue::text(text_from_string("Hello World".to_string())))
         );
         assert_eq!(
             eval_proper_surface(&[text_arg("o'brien")], &NoResolver),
-            Ok(FunctionValue::Text(text_from_string("O'Brien".to_string())))
+            Ok(CalcValue::text(text_from_string("O'Brien".to_string())))
         );
         assert_eq!(
             eval_proper_surface(&[text_arg("abc123def")], &NoResolver),
-            Ok(FunctionValue::Text(text_from_string(
-                "Abc123Def".to_string()
-            )))
+            Ok(CalcValue::text(text_from_string("Abc123Def".to_string())))
         );
     }
 
@@ -684,36 +680,32 @@ mod tests {
             (
                 "PROPER straße",
                 eval_proper_surface(&[text_arg("straße")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string("Straße".to_string()))),
+                Ok(CalcValue::text(text_from_string("Straße".to_string()))),
             ),
             (
                 "PROPER weiß",
                 eval_proper_surface(&[text_arg("weiß")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string("Weiß".to_string()))),
+                Ok(CalcValue::text(text_from_string("Weiß".to_string()))),
             ),
             (
                 "PROPER İstanbul",
                 eval_proper_surface(&[text_arg("İstanbul")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string(
-                    "İstanbul".to_string(),
-                ))),
+                Ok(CalcValue::text(text_from_string("İstanbul".to_string()))),
             ),
             (
                 "PROPER κόσμος",
                 eval_proper_surface(&[text_arg("κόσμος")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string("Κόσμος".to_string()))),
+                Ok(CalcValue::text(text_from_string("Κόσμος".to_string()))),
             ),
             (
                 "PROPER café",
                 eval_proper_surface(&[text_arg("café")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string("Café".to_string()))),
+                Ok(CalcValue::text(text_from_string("Café".to_string()))),
             ),
             (
                 "PROPER Ångström",
                 eval_proper_surface(&[text_arg("Ångström")], &NoResolver),
-                Ok(FunctionValue::Text(text_from_string(
-                    "Ångström".to_string(),
-                ))),
+                Ok(CalcValue::text(text_from_string("Ångström".to_string()))),
             ),
         ];
 
@@ -729,7 +721,7 @@ mod tests {
                 &[text_arg("abab"), text_arg("a"), text_arg("x")],
                 &NoResolver
             ),
-            Ok(FunctionValue::Text(text_from_string("xbxb".to_string())))
+            Ok(CalcValue::text(text_from_string("xbxb".to_string())))
         );
         assert_eq!(
             eval_substitute_surface(
@@ -741,7 +733,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(text_from_string("abxb".to_string())))
+            Ok(CalcValue::text(text_from_string("abxb".to_string())))
         );
         assert_eq!(
             eval_substitute_surface(
@@ -759,7 +751,7 @@ mod tests {
         );
         assert_eq!(
             eval_substitute_surface(&[text_arg("abc"), text_arg(""), text_arg("x")], &NoResolver),
-            Ok(FunctionValue::Text(text_from_string("abc".to_string())))
+            Ok(CalcValue::text(text_from_string("abc".to_string())))
         );
     }
 
@@ -775,7 +767,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(text_from_string("aZZef".to_string())))
+            Ok(CalcValue::text(text_from_string("aZZef".to_string())))
         );
         assert_eq!(
             eval_replace_surface(
@@ -787,12 +779,12 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(text_from_string("abcdefZ".to_string())))
+            Ok(CalcValue::text(text_from_string("abcdefZ".to_string())))
         );
         assert_eq!(
             eval_replace_surface(
                 &[
-                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+                    (CalcValue::text(ExcelText::from_utf16_code_units(vec![
                         0xD83D,
                         0xDE00,
                         b'a' as u16
@@ -803,7 +795,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
                 0xD83D,
                 b'Z' as u16,
                 b'a' as u16,
@@ -843,7 +835,7 @@ mod tests {
     fn find_is_case_sensitive_and_defaults_start_to_one() {
         assert_eq!(
             eval_find_surface(&[text_arg("b"), text_arg("abc")], &NoResolver),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
             eval_find_surface(&[text_arg("B"), text_arg("abc")], &NoResolver),
@@ -855,15 +847,15 @@ mod tests {
             eval_find_adapter_prepared(&[
                 text_prepared("b"),
                 text_prepared("abc"),
-                PreparedValue::MissingArg,
+                CalcValue::missing(),
             ]),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
             eval_find_surface(
                 &[
                     text_arg("a"),
-                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+                    (CalcValue::text(ExcelText::from_utf16_code_units(vec![
                         0xD83D,
                         0xDE00,
                         b'a' as u16,
@@ -871,14 +863,14 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
         assert_eq!(
             eval_find_surface(
                 &[text_arg(""), text_arg("abc"), number_arg(4.0)],
                 &NoResolver
             ),
-            Ok(FunctionValue::Number(4.0))
+            Ok(CalcValue::number(4.0))
         );
     }
 
@@ -886,29 +878,29 @@ mod tests {
     fn search_is_case_insensitive_and_honors_wildcards() {
         assert_eq!(
             eval_search_surface(&[text_arg("b"), text_arg("ABC")], &NoResolver),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
             eval_search_surface(
                 &[text_arg("a?c"), text_arg("axc"), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_search_surface(
                 &[text_arg("a*c"), text_arg("abbbbbc"), number_arg(1.0)],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_search_surface(&[text_arg("a~*c"), text_arg("a*c")], &NoResolver),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_search_surface(&[text_arg("a~?c"), text_arg("a?c")], &NoResolver),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
     }
 
@@ -918,15 +910,15 @@ mod tests {
             eval_search_adapter_prepared(&[
                 text_prepared("b"),
                 text_prepared("abc"),
-                PreparedValue::MissingArg,
+                CalcValue::missing(),
             ]),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
             eval_search_surface(
                 &[
                     text_arg("a"),
-                    FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+                    (CalcValue::text(ExcelText::from_utf16_code_units(vec![
                         0xD83D,
                         0xDE00,
                         b'a' as u16,
@@ -934,7 +926,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
         assert_eq!(
             eval_search_surface(
@@ -964,8 +956,8 @@ mod tests {
                 &NoResolver,
             ),
             Ok(expected_array(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
             ]]))
         );
         assert_eq!(
@@ -974,8 +966,8 @@ mod tests {
                 &NoResolver,
             ),
             Ok(expected_array(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(3.0),
+                CalcValue::number(1.0),
+                CalcValue::number(3.0),
             ]]))
         );
         assert_eq!(
@@ -988,9 +980,9 @@ mod tests {
                 &NoResolver,
             ),
             Ok(expected_array(vec![
-                vec![FunctionArrayCell::Number(1.0)],
-                vec![FunctionArrayCell::Error(WorksheetErrorCode::Value)],
-                vec![FunctionArrayCell::Error(WorksheetErrorCode::Value)],
+                vec![CalcValue::number(1.0)],
+                vec![CalcValue::error(WorksheetErrorCode::Value)],
+                vec![CalcValue::error(WorksheetErrorCode::Value)],
             ]))
         );
         assert_eq!(
@@ -999,8 +991,8 @@ mod tests {
                 &NoResolver,
             ),
             Ok(expected_array(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
             ]]))
         );
         assert_eq!(
@@ -1009,8 +1001,8 @@ mod tests {
                 &NoResolver,
             ),
             Ok(expected_array(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(3.0),
+                CalcValue::number(1.0),
+                CalcValue::number(3.0),
             ]]))
         );
     }
@@ -1188,9 +1180,9 @@ mod tests {
                 text_prepared("abab"),
                 text_prepared("a"),
                 text_prepared("x"),
-                PreparedValue::MissingArg,
+                CalcValue::missing(),
             ]),
-            Ok(FunctionValue::Text(text_from_string("xbxb".to_string())))
+            Ok(CalcValue::text(text_from_string("xbxb".to_string())))
         );
         assert_eq!(
             eval_substitute_adapter_prepared(&[
@@ -1199,7 +1191,7 @@ mod tests {
                 text_prepared("x"),
                 number_prepared(2.9),
             ]),
-            Ok(FunctionValue::Text(text_from_string("abxb".to_string())))
+            Ok(CalcValue::text(text_from_string("abxb".to_string())))
         );
     }
 }

@@ -8,10 +8,8 @@ use crate::functions::a1_refs::{
 use crate::resolver::{
     CallerContext, ReferenceResolutionError, ReferenceSystemProvider, resolve_eval_value,
 };
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceKind, ReferenceLike,
-    WorksheetErrorCode,
-};
+use crate::value::{CalcArray, ReferenceKind, ReferenceLike, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const OP_IMPLICIT_INTERSECTION_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_IMPLICIT_INTERSECTION",
@@ -39,19 +37,19 @@ pub enum ImplicitIntersectionError {
     RefResolution(ReferenceResolutionError),
 }
 
-fn scalar_from_array_value(
-    value: &FunctionArrayCell,
-) -> Result<FunctionValue, ImplicitIntersectionError> {
-    match value {
-        FunctionArrayCell::Number(n) => Ok(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => Ok(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => Ok(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => Ok(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => Err(ImplicitIntersectionError::EmptyCellTopLeft),
+fn scalar_from_array_value(value: &CalcValue) -> Result<CalcValue, ImplicitIntersectionError> {
+    match value.core() {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            Ok(value.clone())
+        }
+        CoreValue::Empty | CoreValue::Missing => Err(ImplicitIntersectionError::EmptyCellTopLeft),
+        CoreValue::Array(_) | CoreValue::Reference(_) => Err(
+            ImplicitIntersectionError::UnsupportedReferenceSource("unsupported_array_cell"),
+        ),
     }
 }
 
-fn top_left_array_value(array: &FunctionArray) -> Result<FunctionValue, ImplicitIntersectionError> {
+fn top_left_array_value(array: &CalcArray) -> Result<CalcValue, ImplicitIntersectionError> {
     let cell = array
         .get(0, 0)
         .ok_or(ImplicitIntersectionError::EmptyArray)?;
@@ -113,17 +111,16 @@ fn select_reference_cell(
 }
 
 fn scalarize_eval_value(
-    value: FunctionValue,
+    value: CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     caller: Option<&CallerContext>,
-) -> Result<FunctionValue, ImplicitIntersectionError> {
-    match value {
-        FunctionValue::Number(_)
-        | FunctionValue::Text(_)
-        | FunctionValue::Logical(_)
-        | FunctionValue::Error(_) => Ok(value),
-        FunctionValue::Array(array) => top_left_array_value(&array),
-        FunctionValue::Reference(reference) => scalarize_reference(reference, resolver, caller),
+) -> Result<CalcValue, ImplicitIntersectionError> {
+    match value.core() {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            Ok(value)
+        }
+        CoreValue::Array(array) => top_left_array_value(array),
+        CoreValue::Reference(reference) => scalarize_reference(reference.clone(), resolver, caller),
         _ => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
             "unsupported_value",
         )),
@@ -134,7 +131,7 @@ fn scalarize_reference(
     reference: ReferenceLike,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     caller: Option<&CallerContext>,
-) -> Result<FunctionValue, ImplicitIntersectionError> {
+) -> Result<CalcValue, ImplicitIntersectionError> {
     match reference.kind() {
         ReferenceKind::A1 | ReferenceKind::Area => {
             let parsed = parse_a1_reference(reference.target()).ok_or(
@@ -163,9 +160,9 @@ fn scalarize_reference(
 }
 
 pub fn eval_op_implicit_intersection_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ImplicitIntersectionError> {
+) -> Result<CalcValue, ImplicitIntersectionError> {
     if args.len() != 1 {
         return Err(ImplicitIntersectionError::ArityMismatch {
             expected: 1,
@@ -174,14 +171,14 @@ pub fn eval_op_implicit_intersection_surface(
     }
 
     let caller = resolver.caller_context();
-    match &args[0] {
-        FunctionArg::Eval(value) => scalarize_eval_value(value.clone(), resolver, caller.as_ref()),
-        FunctionArg::Reference(reference) => {
+    match args[0].core() {
+        CoreValue::Reference(reference) => {
             scalarize_reference(reference.clone(), resolver, caller.as_ref())
         }
-        FunctionArg::MissingArg | FunctionArg::EmptyCell => Err(
+        CoreValue::Missing | CoreValue::Empty => Err(
             ImplicitIntersectionError::UnsupportedReferenceSource("non_scalarized_call_arg"),
         ),
+        _ => scalarize_eval_value(args[0].clone(), resolver, caller.as_ref()),
     }
 }
 
@@ -209,7 +206,7 @@ mod tests {
 
     struct TestResolver {
         caller: Option<CallerContext>,
-        resolved: BTreeMap<String, FunctionValue>,
+        resolved: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for TestResolver {
@@ -220,7 +217,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.get(reference.target()).cloned().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -234,8 +231,8 @@ mod tests {
         }
     }
 
-    fn reference(kind: ReferenceKind, target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(kind, target.to_string()))
+    fn reference(kind: ReferenceKind, target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(kind, target.to_string()))
     }
 
     #[test]
@@ -244,11 +241,8 @@ mod tests {
             caller: None,
             resolved: BTreeMap::new(),
         };
-        let got = eval_op_implicit_intersection_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(12.0))],
-            &resolver,
-        );
-        assert_eq!(got, Ok(FunctionValue::Number(12.0)));
+        let got = eval_op_implicit_intersection_surface(&[(CalcValue::number(12.0))], &resolver);
+        assert_eq!(got, Ok(CalcValue::number(12.0)));
     }
 
     #[test]
@@ -257,22 +251,13 @@ mod tests {
             caller: None,
             resolved: BTreeMap::new(),
         };
-        let array = FunctionArray::from_rows(vec![
-            vec![
-                FunctionArrayCell::Number(10.0),
-                FunctionArrayCell::Number(20.0),
-            ],
-            vec![
-                FunctionArrayCell::Number(30.0),
-                FunctionArrayCell::Number(40.0),
-            ],
+        let array = CalcArray::from_rows(vec![
+            vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+            vec![CalcValue::number(30.0), CalcValue::number(40.0)],
         ])
         .unwrap();
-        let got = eval_op_implicit_intersection_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(array))],
-            &resolver,
-        );
-        assert_eq!(got, Ok(FunctionValue::Number(10.0)));
+        let got = eval_op_implicit_intersection_surface(&[(CalcValue::array(array))], &resolver);
+        assert_eq!(got, Ok(CalcValue::number(10.0)));
     }
 
     #[test]
@@ -283,13 +268,13 @@ mod tests {
                 row: 2,
                 col: 2,
             }),
-            resolved: BTreeMap::from([("A2".to_string(), FunctionValue::Number(20.0))]),
+            resolved: BTreeMap::from([("A2".to_string(), CalcValue::number(20.0))]),
         };
         let got = eval_op_implicit_intersection_surface(
             &[reference(ReferenceKind::Area, "A1:A3")],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(20.0)));
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
@@ -300,13 +285,13 @@ mod tests {
                 row: 2,
                 col: 2,
             }),
-            resolved: BTreeMap::from([("B1".to_string(), FunctionValue::Number(20.0))]),
+            resolved: BTreeMap::from([("B1".to_string(), CalcValue::number(20.0))]),
         };
         let got = eval_op_implicit_intersection_surface(
             &[reference(ReferenceKind::Area, "A1:C1")],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(20.0)));
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
@@ -319,10 +304,10 @@ mod tests {
             }),
             resolved: BTreeMap::from([(
                 "B1#".to_string(),
-                FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 ),
@@ -332,7 +317,7 @@ mod tests {
             &[reference(ReferenceKind::SpillAnchor, "B1#")],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
@@ -343,15 +328,17 @@ mod tests {
                 row: 2,
                 col: 3,
             }),
-            resolved: BTreeMap::from([("A2".to_string(), FunctionValue::Number(20.0))]),
+            resolved: BTreeMap::from([("A2".to_string(), CalcValue::number(20.0))]),
         };
-        let got = eval_op_implicit_intersection_surface(
-            &[FunctionArg::Eval(FunctionValue::Reference(
-                ReferenceLike::new(ReferenceKind::Area, "A1:A3".to_string()),
-            ))],
-            &resolver,
-        );
-        assert_eq!(got, Ok(FunctionValue::Number(20.0)));
+        let got =
+            eval_op_implicit_intersection_surface(
+                &[(CalcValue::reference(ReferenceLike::new(
+                    ReferenceKind::Area,
+                    "A1:A3".to_string(),
+                )))],
+                &resolver,
+            );
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
@@ -384,16 +371,12 @@ mod tests {
             resolved: BTreeMap::new(),
         };
         let got = eval_op_implicit_intersection_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_interop_assignment("hello"),
-            ))],
+            &[(CalcValue::text(ExcelText::from_interop_assignment("hello")))],
             &resolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "hello"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("hello")))
         );
     }
 }

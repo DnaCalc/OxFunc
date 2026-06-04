@@ -4,9 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 const REGRESSION_FORECAST_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.REGRESSION_FORECAST_BASE",
@@ -114,54 +113,55 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> RegressionForecastEvalErro
 }
 
 fn resolve_arg_eval(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
-    match arg {
-        FunctionArg::Reference(reference)
-        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
-            resolve_eval_value(resolver, reference)
-                .map_err(CoercionError::RefResolution)
-                .map_err(RegressionForecastEvalError::Coercion)
-        }
-        FunctionArg::Eval(value) => Ok(value.clone()),
-        FunctionArg::MissingArg => Err(RegressionForecastEvalError::Coercion(
+) -> Result<CalcValue, RegressionForecastEvalError> {
+    match arg.core() {
+        CoreValue::Reference(reference) => resolve_eval_value(resolver, reference)
+            .map_err(CoercionError::RefResolution)
+            .map_err(RegressionForecastEvalError::Coercion),
+        CoreValue::Missing => Err(RegressionForecastEvalError::Coercion(
             CoercionError::MissingArg,
         )),
-        FunctionArg::EmptyCell => Err(RegressionForecastEvalError::Domain(
+        CoreValue::Empty => Err(RegressionForecastEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
+        _ => Ok(arg.clone()),
     }
 }
 
 fn optional_arg_value(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Option<FunctionValue>, RegressionForecastEvalError> {
+) -> Result<Option<CalcValue>, RegressionForecastEvalError> {
     match arg {
-        None | Some(FunctionArg::MissingArg) => Ok(None),
+        None => Ok(None),
+        Some(value) if matches!(value.core(), CoreValue::Missing) => Ok(None),
         Some(other) => Ok(Some(resolve_arg_eval(other, resolver)?)),
     }
 }
 
-fn numeric_from_cell(cell: &FunctionArrayCell) -> Result<f64, RegressionForecastEvalError> {
-    match cell {
-        FunctionArrayCell::Number(n) => Ok(*n),
-        FunctionArrayCell::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
-        FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_)
-        | FunctionArrayCell::EmptyCell => Err(RegressionForecastEvalError::Domain(
+fn numeric_from_cell(cell: &CalcValue) -> Result<f64, RegressionForecastEvalError> {
+    match cell.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
+        CoreValue::Text(_)
+        | CoreValue::Logical(_)
+        | CoreValue::Empty
+        | CoreValue::Missing
+        | CoreValue::Array(_)
+        | CoreValue::Reference(_) => Err(RegressionForecastEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
     }
 }
 
-fn numeric_scalar_from_eval(value: &FunctionValue) -> Result<f64, RegressionForecastEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(*n),
-        FunctionValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
-        FunctionValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
-        FunctionValue::Array(array) => {
+fn numeric_scalar_from_eval(value: &CalcValue) -> Result<f64, RegressionForecastEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Logical(flag) => Ok(if *flag { 1.0 } else { 0.0 }),
+        CoreValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows == 1 && shape.cols == 1 {
                 numeric_from_cell(array.get(0, 0).expect("single-cell array"))
@@ -171,9 +171,9 @@ fn numeric_scalar_from_eval(value: &FunctionValue) -> Result<f64, RegressionFore
                 ))
             }
         }
-        FunctionValue::Text(_) | FunctionValue::Reference(_) => Err(
-            RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
-        ),
+        CoreValue::Text(_) | CoreValue::Reference(_) => Err(RegressionForecastEvalError::Domain(
+            WorksheetErrorCode::Value,
+        )),
         _ => Err(RegressionForecastEvalError::Domain(
             WorksheetErrorCode::Value,
         )),
@@ -181,26 +181,29 @@ fn numeric_scalar_from_eval(value: &FunctionValue) -> Result<f64, RegressionFore
 }
 
 fn bool_flag_from_eval_or_default(
-    value: Option<FunctionValue>,
+    value: Option<CalcValue>,
     default: bool,
 ) -> Result<bool, RegressionForecastEvalError> {
     match value {
         None => Ok(default),
-        Some(FunctionValue::Logical(flag)) => Ok(flag),
+        Some(value) if matches!(value.core(), CoreValue::Logical(_)) => match value.core() {
+            CoreValue::Logical(flag) => Ok(*flag),
+            _ => unreachable!("guarded logical"),
+        },
         Some(other) => Ok(numeric_scalar_from_eval(&other)? != 0.0),
     }
 }
 
 fn collect_numeric_vector_from_eval(
-    value: &FunctionValue,
+    value: &CalcValue,
 ) -> Result<NumericVector, RegressionForecastEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(NumericVector {
+    match value.core() {
+        CoreValue::Number(n) => Ok(NumericVector {
             values: vec![*n],
             shape: VectorShape::Scalar,
         }),
-        FunctionValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
-        FunctionValue::Array(array) => {
+        CoreValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(RegressionForecastEvalError::Domain(WorksheetErrorCode::Ref));
@@ -221,7 +224,7 @@ fn collect_numeric_vector_from_eval(
                 shape: vector_shape,
             })
         }
-        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => Err(
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => Err(
             RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
         ),
         _ => Err(RegressionForecastEvalError::Domain(
@@ -231,7 +234,7 @@ fn collect_numeric_vector_from_eval(
 }
 
 fn collect_numeric_vector_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<NumericVector, RegressionForecastEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
@@ -264,16 +267,16 @@ impl NumericMatrix {
 }
 
 fn collect_numeric_matrix_from_eval(
-    value: &FunctionValue,
+    value: &CalcValue,
 ) -> Result<NumericMatrix, RegressionForecastEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(NumericMatrix {
+    match value.core() {
+        CoreValue::Number(n) => Ok(NumericMatrix {
             rows: 1,
             cols: 1,
             values: vec![*n],
         }),
-        FunctionValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
-        FunctionValue::Array(array) => {
+        CoreValue::Error(code) => Err(RegressionForecastEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let mut values = Vec::with_capacity(shape.rows * shape.cols);
             for cell in array.iter_row_major() {
@@ -285,7 +288,7 @@ fn collect_numeric_matrix_from_eval(
                 values,
             })
         }
-        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => Err(
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => Err(
             RegressionForecastEvalError::Domain(WorksheetErrorCode::Value),
         ),
         _ => Err(RegressionForecastEvalError::Domain(
@@ -295,7 +298,7 @@ fn collect_numeric_matrix_from_eval(
 }
 
 fn collect_numeric_matrix_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<NumericMatrix, RegressionForecastEvalError> {
     let eval = resolve_arg_eval(arg, resolver)?;
@@ -632,56 +635,46 @@ fn exponential_model_from_data(
 fn eval_value_from_output_shape(
     values: &[f64],
     shape: OutputShape,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     match shape {
-        OutputShape::Scalar => Ok(FunctionValue::Number(values[0])),
-        OutputShape::Row(cols) => FunctionArray::from_rows(vec![
+        OutputShape::Scalar => Ok(CalcValue::number(values[0])),
+        OutputShape::Row(cols) => CalcArray::from_rows(vec![
             values
                 .iter()
                 .copied()
                 .take(cols)
-                .map(FunctionArrayCell::Number)
+                .map(CalcValue::number)
                 .collect::<Vec<_>>(),
         ])
-        .map(FunctionValue::Array)
+        .map(CalcValue::array)
         .ok_or(WorksheetErrorCode::Value),
-        OutputShape::Column(rows) => FunctionArray::from_rows(
+        OutputShape::Column(rows) => CalcArray::from_rows(
             values
                 .iter()
                 .copied()
                 .take(rows)
-                .map(|value| vec![FunctionArrayCell::Number(value)])
+                .map(|value| vec![CalcValue::number(value)])
                 .collect::<Vec<_>>(),
         )
-        .map(FunctionValue::Array)
+        .map(CalcValue::array)
         .ok_or(WorksheetErrorCode::Value),
         OutputShape::Matrix { rows, cols } => {
             let row_major = values
                 .chunks(cols)
                 .take(rows)
-                .map(|chunk| {
-                    chunk
-                        .iter()
-                        .copied()
-                        .map(FunctionArrayCell::Number)
-                        .collect()
-                })
-                .collect::<Vec<Vec<FunctionArrayCell>>>();
-            FunctionArray::from_rows(row_major)
-                .map(FunctionValue::Array)
+                .map(|chunk| chunk.iter().copied().map(CalcValue::number).collect())
+                .collect::<Vec<Vec<CalcValue>>>();
+            CalcArray::from_rows(row_major)
+                .map(CalcValue::array)
                 .ok_or(WorksheetErrorCode::Value)
         }
     }
 }
 
-fn row_array(values: &[f64]) -> FunctionValue {
-    FunctionValue::Array(
-        FunctionArray::from_rows(vec![
-            values
-                .iter()
-                .copied()
-                .map(FunctionArrayCell::Number)
-                .collect(),
+fn row_array(values: &[f64]) -> CalcValue {
+    CalcValue::array(
+        CalcArray::from_rows(vec![
+            values.iter().copied().map(CalcValue::number).collect(),
         ])
         .expect("non-empty coefficient row"),
     )
@@ -692,7 +685,7 @@ fn trend_kernel(
     known_x: &PreparedPredictorInput,
     new_x: &PreparedPredictorInput,
     use_const: bool,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     let model = linear_model_from_data(known_y, known_x, use_const)?;
     if new_x.predictors.cols != model.coefficients.len() {
         return Err(WorksheetErrorCode::Ref);
@@ -717,7 +710,7 @@ fn growth_kernel(
     known_x: &PreparedPredictorInput,
     new_x: &PreparedPredictorInput,
     use_const: bool,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     let (factors, base) = exponential_model_from_data(known_y, known_x, use_const)?;
     if new_x.predictors.cols != factors.len() {
         return Err(WorksheetErrorCode::Ref);
@@ -739,7 +732,7 @@ fn linest_kernel(
     known_x: &PreparedPredictorInput,
     use_const: bool,
     stats: bool,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     if stats {
         return Err(WorksheetErrorCode::Ref);
     }
@@ -754,7 +747,7 @@ fn logest_kernel(
     known_x: &PreparedPredictorInput,
     use_const: bool,
     stats: bool,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     if stats {
         return Err(WorksheetErrorCode::Ref);
     }
@@ -768,7 +761,7 @@ fn forecast_pair_kernel(
     x: f64,
     known_y: &NumericVector,
     known_x: &NumericVector,
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     if known_x.values.len() != known_y.values.len() {
         return Err(WorksheetErrorCode::NA);
     }
@@ -793,22 +786,22 @@ fn forecast_pair_kernel(
 }
 
 pub fn eval_trend_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !TREND_META.arity.accepts(args.len()) {
         return Err(arity_error(&TREND_META, args.len()));
     }
     let known_y = collect_numeric_vector_arg(&args[0], resolver)?;
     let known_x_raw = args
         .get(1)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let known_x = predictor_input_from_optional(known_x_raw, &known_y)?;
     let new_x_raw = args
         .get(2)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let new_x = prediction_input_from_optional(new_x_raw, &known_y, &known_x)?;
@@ -818,22 +811,22 @@ pub fn eval_trend_surface(
 }
 
 pub fn eval_growth_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !GROWTH_META.arity.accepts(args.len()) {
         return Err(arity_error(&GROWTH_META, args.len()));
     }
     let known_y = collect_numeric_vector_arg(&args[0], resolver)?;
     let known_x_raw = args
         .get(1)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let known_x = predictor_input_from_optional(known_x_raw, &known_y)?;
     let new_x_raw = args
         .get(2)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let new_x = prediction_input_from_optional(new_x_raw, &known_y, &known_x)?;
@@ -844,9 +837,9 @@ pub fn eval_growth_surface(
 }
 
 pub fn eval_forecast_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !FORECAST_META.arity.accepts(args.len()) {
         return Err(arity_error(&FORECAST_META, args.len()));
     }
@@ -857,9 +850,9 @@ pub fn eval_forecast_surface(
 }
 
 pub fn eval_forecast_linear_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !FORECAST_LINEAR_META.arity.accepts(args.len()) {
         return Err(arity_error(&FORECAST_LINEAR_META, args.len()));
     }
@@ -870,16 +863,16 @@ pub fn eval_forecast_linear_surface(
 }
 
 pub fn eval_linest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !LINEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&LINEST_META, args.len()));
     }
     let known_y = collect_numeric_vector_arg(&args[0], resolver)?;
     let known_x_raw = args
         .get(1)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let known_x = predictor_input_from_optional(known_x_raw, &known_y)?;
@@ -890,16 +883,16 @@ pub fn eval_linest_surface(
 }
 
 pub fn eval_logest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RegressionForecastEvalError> {
+) -> Result<CalcValue, RegressionForecastEvalError> {
     if !LOGEST_META.arity.accepts(args.len()) {
         return Err(arity_error(&LOGEST_META, args.len()));
     }
     let known_y = collect_numeric_vector_arg(&args[0], resolver)?;
     let known_x_raw = args
         .get(1)
-        .filter(|arg| !matches!(arg, FunctionArg::MissingArg))
+        .filter(|arg| !matches!(arg.core(), CoreValue::Missing))
         .map(|arg| collect_numeric_matrix_arg(arg, resolver))
         .transpose()?;
     let known_x = predictor_input_from_optional(known_x_raw, &known_y)?;
@@ -928,7 +921,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        map: BTreeMap<String, FunctionValue>,
+        map: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -939,7 +932,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.map.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -953,69 +946,65 @@ mod tests {
         }
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn bool_arg(flag: bool) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Logical(flag))
+    fn bool_arg(flag: bool) -> CalcValue {
+        (CalcValue::logical(flag))
     }
 
-    fn col(values: &[f64]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn col(values: &[f64]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
                     .copied()
-                    .map(|n| vec![FunctionArrayCell::Number(n)])
+                    .map(|n| vec![CalcValue::number(n)])
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn row(values: &[f64]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                values
-                    .iter()
-                    .copied()
-                    .map(FunctionArrayCell::Number)
-                    .collect(),
+    fn row(values: &[f64]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(vec![
+                values.iter().copied().map(CalcValue::number).collect(),
             ])
             .unwrap(),
         ))
     }
 
-    fn matrix(rows: &[&[f64]]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn matrix(rows: &[&[f64]]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 rows.iter()
-                    .map(|row| row.iter().copied().map(FunctionArrayCell::Number).collect())
+                    .map(|row| row.iter().copied().map(CalcValue::number).collect())
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     fn assert_close(left: f64, right: f64) {
         assert!((left - right).abs() < 1e-9, "left={left}, right={right}");
     }
 
-    fn expect_number(value: FunctionValue) -> f64 {
-        match value {
-            FunctionValue::Number(n) => n,
+    fn expect_number(value: CalcValue) -> f64 {
+        match value.core {
+            CoreValue::Number(n) => n,
             other => panic!("expected scalar, got {other:?}"),
         }
     }
 
-    fn expect_row_array(value: FunctionValue) -> Vec<f64> {
-        match value {
-            FunctionValue::Array(array) => {
+    fn expect_row_array(value: CalcValue) -> Vec<f64> {
+        match value.core {
+            CoreValue::Array(array) => {
                 assert_eq!(
                     array.shape(),
                     ArrayShape {
@@ -1025,8 +1014,8 @@ mod tests {
                 );
                 array
                     .iter_row_major()
-                    .map(|cell| match cell {
-                        FunctionArrayCell::Number(n) => *n,
+                    .map(|cell| match cell.core() {
+                        CoreValue::Number(n) => *n,
                         other => panic!("unexpected cell: {other:?}"),
                     })
                     .collect()
@@ -1078,8 +1067,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Array(array) => {
+        match got.core {
+            CoreValue::Array(array) => {
                 assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 1 });
                 assert_close(numeric_from_cell(array.get(0, 0).unwrap()).unwrap(), 8.0);
                 assert_close(numeric_from_cell(array.get(1, 0).unwrap()).unwrap(), 10.0);
@@ -1093,7 +1082,7 @@ mod tests {
         let got = eval_growth_surface(
             &[
                 col(&[2.0, 4.0, 8.0]),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
                 col(&[4.0, 5.0]),
             ],
             &MockResolver {
@@ -1101,8 +1090,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Array(array) => {
+        match got.core {
+            CoreValue::Array(array) => {
                 assert_close(numeric_from_cell(array.get(0, 0).unwrap()).unwrap(), 16.0);
                 assert_close(numeric_from_cell(array.get(1, 0).unwrap()).unwrap(), 32.0);
             }
@@ -1144,8 +1133,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Array(array) => {
+        match got.core {
+            CoreValue::Array(array) => {
                 assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 1 });
                 assert_close(numeric_from_cell(array.get(0, 0).unwrap()).unwrap(), 48.0);
                 assert_close(
@@ -1349,22 +1338,22 @@ mod tests {
         let mut map = BTreeMap::new();
         map.insert(
             "A1:A3".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
                 ])
                 .unwrap(),
             ),
         );
         map.insert(
             "B1:B3".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
-                    vec![FunctionArrayCell::Number(6.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(6.0)],
                 ])
                 .unwrap(),
             ),
@@ -1415,8 +1404,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Array(array) => {
+        match got.core {
+            CoreValue::Array(array) => {
                 assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 2 });
                 assert_close(numeric_from_cell(array.get(0, 0).unwrap()).unwrap(), 2.0);
                 assert_close(numeric_from_cell(array.get(0, 1).unwrap()).unwrap(), 4.0);
@@ -1446,8 +1435,8 @@ mod tests {
             },
         )
         .unwrap();
-        match got {
-            FunctionValue::Array(array) => {
+        match got.core {
+            CoreValue::Array(array) => {
                 assert_eq!(array.shape(), ArrayShape { rows: 2, cols: 1 });
                 assert_close(numeric_from_cell(array.get(0, 0).unwrap()).unwrap(), 12.0);
                 assert_close(numeric_from_cell(array.get(1, 0).unwrap()).unwrap(), 15.0);

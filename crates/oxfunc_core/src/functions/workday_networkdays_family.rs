@@ -4,14 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedGroup, PreparedValue, expand_aggregate_arg, expand_prepared_broadcast_grid,
+    BroadcastPreparedGroup, expand_aggregate_arg, expand_prepared_broadcast_grid,
     prepare_arg_values_only,
 };
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, CoreValue, WorksheetErrorCode};
 use std::collections::BTreeSet;
 
 const MAX_EXCEL_1900_SERIAL: i64 = 2_958_465;
@@ -136,10 +135,7 @@ fn weekday_sunday_one_based(serial: i64) -> i64 {
     (serial - 1).rem_euclid(7) + 1
 }
 
-fn guard_arity(
-    meta: &FunctionMeta,
-    args: &[FunctionArg],
-) -> Result<(), WorkdayNetworkdaysEvalError> {
+fn guard_arity(meta: &FunctionMeta, args: &[CalcValue]) -> Result<(), WorkdayNetworkdaysEvalError> {
     if meta.arity.accepts(args.len()) {
         Ok(())
     } else {
@@ -152,10 +148,10 @@ fn guard_arity(
 }
 
 fn optional_prepared_arg(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     index: usize,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Option<PreparedValue>, WorkdayNetworkdaysEvalError> {
+) -> Result<Option<CalcValue>, WorkdayNetworkdaysEvalError> {
     args.get(index)
         .map(|arg| {
             prepare_arg_values_only(arg, resolver).map_err(WorkdayNetworkdaysEvalError::Coercion)
@@ -164,19 +160,19 @@ fn optional_prepared_arg(
 }
 
 struct DatePairPreparedArg {
-    prepared: PreparedValue,
+    prepared: CalcValue,
     direct_array_lift_allowed: bool,
 }
 
 fn optional_date_pair_arg(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     index: usize,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<DatePairPreparedArg>, WorkdayNetworkdaysEvalError> {
     let Some(arg) = args.get(index) else {
         return Ok(None);
     };
-    let direct_array_lift_allowed = matches!(arg, FunctionArg::Eval(FunctionValue::Array(_)));
+    let direct_array_lift_allowed = matches!(arg.core(), CoreValue::Array(_));
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(WorkdayNetworkdaysEvalError::Coercion)?;
     Ok(Some(DatePairPreparedArg {
@@ -196,27 +192,27 @@ fn serial_from_number(value: f64) -> Result<i64, WorksheetErrorCode> {
     Ok(serial)
 }
 
-fn scalar_serial_arg(prepared: &PreparedValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
-    let value = match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
+fn scalar_serial_arg(prepared: &CalcValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
+    let value = match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => {
             return Err(WorkdayNetworkdaysEvalError::Domain(
                 WorksheetErrorCode::Value,
             ));
         }
-        other => crate::functions::adapters::coerce_prepared_to_number(other)
+        _ => crate::functions::adapters::coerce_prepared_to_number(prepared)
             .map_err(WorkdayNetworkdaysEvalError::Coercion)?,
     };
     serial_from_number(value).map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
-fn scalar_truncated_i64_arg(prepared: &PreparedValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
-    let value = match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
+fn scalar_truncated_i64_arg(prepared: &CalcValue) -> Result<i64, WorkdayNetworkdaysEvalError> {
+    let value = match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => {
             return Err(WorkdayNetworkdaysEvalError::Domain(
                 WorksheetErrorCode::Value,
             ));
         }
-        other => crate::functions::adapters::coerce_prepared_to_number(other)
+        _ => crate::functions::adapters::coerce_prepared_to_number(prepared)
             .map_err(WorkdayNetworkdaysEvalError::Coercion)?,
     };
     if !value.is_finite() {
@@ -226,15 +222,15 @@ fn scalar_truncated_i64_arg(prepared: &PreparedValue) -> Result<i64, WorkdayNetw
 }
 
 fn parse_weekend_arg(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
     mode: WeekendParseMode,
 ) -> Result<WeekendMask, WorkdayNetworkdaysEvalError> {
     let Some(prepared) = prepared else {
         return Ok(WeekendMask::saturday_sunday());
     };
-    match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(WeekendMask::saturday_sunday()),
-        PreparedValue::Eval(FunctionValue::Text(text)) => {
+    match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(WeekendMask::saturday_sunday()),
+        CoreValue::Text(text) => {
             let raw = text.to_string_lossy();
             if raw.len() == 7 && raw.chars().all(|ch| ch == '0' || ch == '1') {
                 let mask = WeekendMask::from_mask_text(&raw)
@@ -259,7 +255,7 @@ fn parse_weekend_arg(
 }
 
 fn collect_holiday_serials(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<BTreeSet<i64>, WorkdayNetworkdaysEvalError> {
     let Some(arg) = arg else {
@@ -366,13 +362,12 @@ pub fn networkdays_kernel(
 fn lift_date_pair(
     start_arg: &DatePairPreparedArg,
     second_arg: &DatePairPreparedArg,
-    coerce_second: impl Fn(&PreparedValue) -> Result<i64, WorkdayNetworkdaysEvalError>,
+    coerce_second: impl Fn(&CalcValue) -> Result<i64, WorkdayNetworkdaysEvalError>,
     kernel: impl Fn(f64, f64) -> Result<f64, WorkdayNetworkdaysEvalError>,
-) -> Option<FunctionValue> {
+) -> Option<CalcValue> {
     let pair = [start_arg.prepared.clone(), second_arg.prepared.clone()];
     let range_derived_array_present = [&start_arg, &second_arg].iter().any(|arg| {
-        matches!(arg.prepared, PreparedValue::Eval(FunctionValue::Array(_)))
-            && !arg.direct_array_lift_allowed
+        matches!(arg.prepared.core(), CoreValue::Array(_)) && !arg.direct_array_lift_allowed
     });
     if range_derived_array_present {
         return None;
@@ -385,36 +380,32 @@ fn lift_date_pair(
                 let start = match scalar_serial_arg(&values[0]) {
                     Ok(s) => s,
                     Err(e) => {
-                        return FunctionArrayCell::Error(map_workday_networkdays_error_to_ws(&e));
+                        return CalcValue::error(map_workday_networkdays_error_to_ws(&e));
                     }
                 };
                 let second = match coerce_second(&values[1]) {
                     Ok(s) => s,
                     Err(e) => {
-                        return FunctionArrayCell::Error(map_workday_networkdays_error_to_ws(&e));
+                        return CalcValue::error(map_workday_networkdays_error_to_ws(&e));
                     }
                 };
                 match kernel(start as f64, second as f64) {
-                    Ok(v) => FunctionArrayCell::Number(v),
-                    Err(error) => {
-                        FunctionArrayCell::Error(map_workday_networkdays_error_to_ws(&error))
-                    }
+                    Ok(v) => CalcValue::number(v),
+                    Err(error) => CalcValue::error(map_workday_networkdays_error_to_ws(&error)),
                 }
             }
-            BroadcastPreparedGroup::MissingCoordinate => {
-                FunctionArrayCell::Error(WorksheetErrorCode::NA)
-            }
+            BroadcastPreparedGroup::MissingCoordinate => CalcValue::error(WorksheetErrorCode::NA),
         })
         .collect();
-    Some(FunctionValue::Array(
-        FunctionArray::new(shape, cells).expect("broadcast shape preserved"),
+    Some(CalcValue::array(
+        CalcArray::new(shape, cells).expect("broadcast shape preserved"),
     ))
 }
 
 pub fn eval_workday_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WorkdayNetworkdaysEvalError> {
+) -> Result<CalcValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
     let days_prepared = optional_date_pair_arg(args, 1, resolver)?;
@@ -432,14 +423,14 @@ pub fn eval_workday_surface(
     let start = scalar_serial_arg(&start_p.prepared)?;
     let days = scalar_truncated_i64_arg(&days_p.prepared)?;
     workday_kernel(start as f64, days as f64, &holidays)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
 pub fn eval_workday_intl_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WorkdayNetworkdaysEvalError> {
+) -> Result<CalcValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&WORKDAY_INTL_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
     let days_prepared = optional_date_pair_arg(args, 1, resolver)?;
@@ -463,14 +454,14 @@ pub fn eval_workday_intl_surface(
     let start = scalar_serial_arg(&start_p.prepared)?;
     let days = scalar_truncated_i64_arg(&days_p.prepared)?;
     workday_intl_kernel(start as f64, days as f64, weekend, &holidays)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
 pub fn eval_networkdays_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WorkdayNetworkdaysEvalError> {
+) -> Result<CalcValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
     let end_prepared = optional_date_pair_arg(args, 1, resolver)?;
@@ -488,14 +479,14 @@ pub fn eval_networkdays_surface(
     let start = scalar_serial_arg(&start_p.prepared)?;
     let end = scalar_serial_arg(&end_p.prepared)?;
     networkdays_kernel(start as f64, end as f64, &holidays)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
 pub fn eval_networkdays_intl_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WorkdayNetworkdaysEvalError> {
+) -> Result<CalcValue, WorkdayNetworkdaysEvalError> {
     guard_arity(&NETWORKDAYS_INTL_META, args)?;
     let start_prepared = optional_date_pair_arg(args, 0, resolver)?;
     let end_prepared = optional_date_pair_arg(args, 1, resolver)?;
@@ -520,7 +511,7 @@ pub fn eval_networkdays_intl_surface(
     let start = scalar_serial_arg(&start_p.prepared)?;
     let end = scalar_serial_arg(&end_p.prepared)?;
     networkdays_intl_kernel(start as f64, end as f64, weekend, &holidays)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(WorkdayNetworkdaysEvalError::Domain)
 }
 
@@ -540,11 +531,11 @@ mod tests {
     use super::*;
     use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd};
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        cells: BTreeMap<String, FunctionValue>,
+        cells: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -555,7 +546,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.cells.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -569,62 +560,53 @@ mod tests {
         excel_serial_from_ymd(WorkbookDateSystem::System1900, year, month, day).unwrap()
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn txt(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn txt(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
-    fn prepared_text(s: &str) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn prepared_text(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn mixed_row(cells: Vec<FunctionArrayCell>) -> FunctionValue {
-        FunctionValue::Array(FunctionArray::from_rows(vec![cells]).unwrap())
+    fn mixed_row(cells: Vec<CalcValue>) -> CalcValue {
+        CalcValue::array(CalcArray::from_rows(vec![cells]).unwrap())
     }
 
-    fn number_column(values: &[f64]) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn number_column(values: &[f64]) -> CalcValue {
+        (CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
-                    .map(|value| vec![FunctionArrayCell::Number(*value)])
+                    .map(|value| vec![CalcValue::number(*value)])
                     .collect(),
             )
             .unwrap(),
         ))
     }
 
-    fn expected_number_column(values: &[f64]) -> FunctionValue {
-        FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn expected_number_column(values: &[f64]) -> CalcValue {
+        CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
-                    .map(|value| vec![FunctionArrayCell::Number(*value)])
+                    .map(|value| vec![CalcValue::number(*value)])
                     .collect(),
             )
             .unwrap(),
         )
     }
 
-    fn expected_error_column(code: WorksheetErrorCode, len: usize) -> FunctionValue {
-        FunctionValue::Array(
-            FunctionArray::from_rows(
-                (0..len)
-                    .map(|_| vec![FunctionArrayCell::Error(code)])
-                    .collect(),
-            )
-            .unwrap(),
+    fn expected_error_column(code: WorksheetErrorCode, len: usize) -> CalcValue {
+        CalcValue::array(
+            CalcArray::from_rows((0..len).map(|_| vec![CalcValue::error(code)]).collect()).unwrap(),
         )
     }
 
@@ -798,20 +780,20 @@ mod tests {
             cells: BTreeMap::from([
                 (
                     "A1:A2".to_string(),
-                    FunctionValue::Array(
-                        FunctionArray::from_rows(vec![
-                            vec![FunctionArrayCell::Number(45292.0)],
-                            vec![FunctionArrayCell::Number(45293.0)],
+                    CalcValue::array(
+                        CalcArray::from_rows(vec![
+                            vec![CalcValue::number(45292.0)],
+                            vec![CalcValue::number(45293.0)],
                         ])
                         .unwrap(),
                     ),
                 ),
                 (
                     "B1:B2".to_string(),
-                    FunctionValue::Array(
-                        FunctionArray::from_rows(vec![
-                            vec![FunctionArrayCell::Number(1.0)],
-                            vec![FunctionArrayCell::Number(2.0)],
+                    CalcValue::array(
+                        CalcArray::from_rows(vec![
+                            vec![CalcValue::number(1.0)],
+                            vec![CalcValue::number(2.0)],
                         ])
                         .unwrap(),
                     ),
@@ -886,12 +868,12 @@ mod tests {
             cells: BTreeMap::from([(
                 "H1:H4".to_string(),
                 mixed_row(vec![
-                    FunctionArrayCell::Number(serial(2024, 1, 1)),
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    CalcValue::number(serial(2024, 1, 1)),
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "x".encode_utf16().collect(),
                     )),
-                    FunctionArrayCell::Number(serial(2024, 1, 15)),
-                    FunctionArrayCell::Logical(true),
+                    CalcValue::number(serial(2024, 1, 15)),
+                    CalcValue::logical(true),
                 ]),
             )]),
         };
@@ -904,7 +886,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(10.0))
+            Ok(CalcValue::number(10.0))
         );
         assert_eq!(
             eval_networkdays_surface(
@@ -928,7 +910,7 @@ mod tests {
         };
         assert_eq!(
             eval_workday_intl_surface(&[num(serial(2024, 1, 1)), num(1.0), txt("2")], &resolver,),
-            Ok(FunctionValue::Number(serial(2024, 1, 2)))
+            Ok(CalcValue::number(serial(2024, 1, 2)))
         );
         assert_eq!(
             eval_workday_intl_surface(&[num(serial(2024, 1, 1)), num(1.0), num(99.0)], &resolver,),
@@ -943,7 +925,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(5.0))
+            Ok(CalcValue::number(5.0))
         );
     }
 

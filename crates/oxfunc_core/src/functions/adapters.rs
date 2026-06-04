@@ -3,10 +3,8 @@ use crate::resolver::{
     ReferenceSystemCapabilities, ReferenceSystemProvider, ResolvedReferenceValues,
     enumerate_reference_values, materialize_resolved_reference_values, resolve_eval_value,
 };
-use crate::value::{
-    ArrayShape, CalcValue, CoreValue, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue,
-    WorksheetErrorCode,
-};
+pub use crate::value::CalcValue;
+use crate::value::{ArrayShape, CalcArray, CoreValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UnaryNumericCoercionLiftProfile {
@@ -14,16 +12,12 @@ pub enum UnaryNumericCoercionLiftProfile {
     ScalarOrArrayElementwise,
 }
 
-fn normalize_prepared_eval(value: FunctionValue) -> PreparedValue {
-    match value {
-        FunctionValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
-            match array.get(0, 0) {
-                Some(FunctionArrayCell::EmptyCell) => PreparedValue::EmptyCell,
-                Some(cell) => prepared_from_array_cell(cell),
-                None => PreparedValue::Eval(FunctionValue::Array(array)),
-            }
+fn normalize_prepared_eval(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Array(array) if array.shape().rows == 1 && array.shape().cols == 1 => {
+            array.get(0, 0).cloned().unwrap_or_else(CalcValue::empty)
         }
-        other => PreparedValue::Eval(other),
+        _ => value,
     }
 }
 
@@ -36,21 +30,8 @@ fn normalize_prepared_calc_value(value: CalcValue) -> CalcValue {
     }
 }
 
-/// Prepared values used by kernels that still operate on the function-facing
-/// scalar/array/reference surface rather than native `CalcValue` arguments.
-#[derive(Debug, Clone, PartialEq)]
-pub enum PreparedValue {
-    Eval(FunctionValue),
-    MissingArg,
-    EmptyCell,
-}
-
-pub(crate) fn prepared_arg_to_calc_value_lossy(prepared: &PreparedValue) -> CalcValue {
-    match prepared {
-        PreparedValue::Eval(value) => CalcValue::from(value.clone()),
-        PreparedValue::MissingArg => CalcValue::missing(),
-        PreparedValue::EmptyCell => CalcValue::empty(),
-    }
+pub(crate) fn prepared_arg_to_calc_value_lossy(prepared: &CalcValue) -> CalcValue {
+    prepared.clone()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -96,63 +77,46 @@ impl AggregatePreparedValue {
     }
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
-    }
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    cell.clone()
 }
 
-fn calc_value_from_prepared(value: PreparedValue) -> CalcValue {
-    match value {
-        PreparedValue::Eval(value) => CalcValue::from(value),
-        PreparedValue::MissingArg => CalcValue::missing(),
-        PreparedValue::EmptyCell => CalcValue::empty(),
-    }
+fn calc_value_from_prepared(value: CalcValue) -> CalcValue {
+    value
 }
 
-pub(crate) fn prepared_from_calc_value(value: &CalcValue) -> PreparedValue {
-    match FunctionArg::value(value.clone()) {
-        FunctionArg::Eval(value) => PreparedValue::Eval(value),
-        FunctionArg::MissingArg => PreparedValue::MissingArg,
-        FunctionArg::EmptyCell => PreparedValue::EmptyCell,
-        FunctionArg::Reference(reference) => {
-            PreparedValue::Eval(FunctionValue::Reference(reference))
-        }
-    }
+pub(crate) fn prepared_from_calc_value(value: &CalcValue) -> CalcValue {
+    value.clone()
 }
 
-fn prepared_vec_from_calc_values(values: &[CalcValue]) -> Vec<PreparedValue> {
+fn prepared_vec_from_calc_values(values: &[CalcValue]) -> Vec<CalcValue> {
     values.iter().map(prepared_from_calc_value).collect()
 }
 
 pub(crate) fn expand_aggregate_array_with_provenance(
-    array: &FunctionArray,
+    array: &CalcArray,
     provenance: AggregateArrayProvenance,
 ) -> Vec<AggregatePreparedValue> {
     array
         .iter_row_major()
-        .map(FunctionArrayCell::to_calc_value_lossy)
+        .cloned()
         .map(|value| AggregatePreparedValue::array_like(value, provenance))
         .collect()
 }
 
-fn expand_resolved_eval_value(value: &FunctionValue) -> Vec<PreparedValue> {
-    match value {
-        FunctionValue::Array(array) => array
+fn expand_resolved_eval_value(value: &CalcValue) -> Vec<CalcValue> {
+    match value.core() {
+        CoreValue::Array(array) => array
             .iter_row_major()
             .map(prepared_from_array_cell)
             .collect(),
-        _ => vec![PreparedValue::Eval(value.clone())],
+        _ => vec![value.clone()],
     }
 }
 
 fn expand_resolved_reference_values(
     values: ResolvedReferenceValues,
-) -> Result<Vec<PreparedValue>, CoercionError> {
+) -> Result<Vec<CalcValue>, CoercionError> {
     let array =
         materialize_resolved_reference_values(&values).map_err(CoercionError::RefResolution)?;
     Ok(array
@@ -168,26 +132,26 @@ pub(crate) fn expand_sparse_reference_values_with_provenance(
     values
         .defined_cells
         .into_iter()
-        .map(|cell| cell.value.to_calc_value_lossy())
+        .map(|cell| cell.value)
         .map(|value| AggregatePreparedValue::array_like(value, provenance))
         .collect()
 }
 
 pub fn sparse_reference_values_for_aggregate_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<ResolvedReferenceValues>, CoercionError> {
-    match arg {
-        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => {
+    match arg.core() {
+        CoreValue::Reference(r) => {
             enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)
         }
         _ => Ok(None),
     }
 }
 
-fn expand_lookup_eval_value(value: &FunctionValue) -> Result<Vec<PreparedValue>, CoercionError> {
-    match value {
-        FunctionValue::Array(array) => {
+fn expand_lookup_eval_value(value: &CalcValue) -> Result<Vec<CalcValue>, CoercionError> {
+    match value.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             if shape.rows > 1 && shape.cols > 1 {
                 return Err(CoercionError::UnsupportedValueKind("two_dimensional_array"));
@@ -197,16 +161,16 @@ fn expand_lookup_eval_value(value: &FunctionValue) -> Result<Vec<PreparedValue>,
                 .map(prepared_from_array_cell)
                 .collect())
         }
-        _ => Ok(vec![PreparedValue::Eval(value.clone())]),
+        _ => Ok(vec![value.clone()]),
     }
 }
 
 fn resolve_eval_references(
-    value: &FunctionValue,
+    value: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CoercionError> {
-    match value {
-        FunctionValue::Reference(r) => {
+) -> Result<CalcValue, CoercionError> {
+    match value.core() {
+        CoreValue::Reference(r) => {
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             resolve_eval_references(&resolved, resolver)
         }
@@ -222,19 +186,14 @@ fn resolve_calc_references(
         CoreValue::Reference(reference) => {
             let resolved =
                 resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
-            resolve_calc_references(&CalcValue::from(resolved), resolver)
+            resolve_calc_references(&resolved, resolver)
         }
         _ => Ok(value.clone()),
     }
 }
 
-fn calc_value_from_call_arg(arg: &FunctionArg) -> CalcValue {
-    match arg {
-        FunctionArg::Eval(value) => CalcValue::from(value.clone()),
-        FunctionArg::MissingArg => CalcValue::missing(),
-        FunctionArg::EmptyCell => CalcValue::empty(),
-        FunctionArg::Reference(reference) => CalcValue::reference(reference.clone()),
-    }
+fn calc_value_from_call_arg(arg: &CalcValue) -> CalcValue {
+    arg.clone()
 }
 
 pub fn prepare_calc_value_values_only(
@@ -256,14 +215,14 @@ pub fn prepare_calc_values_only(
 }
 
 pub fn prepare_call_arg_as_calc_value_values_only(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, CoercionError> {
     prepare_calc_value_values_only(&calc_value_from_call_arg(arg), resolver)
 }
 
 pub fn prepare_call_args_as_calc_values_only(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<CalcValue>, CoercionError> {
     args.iter()
@@ -272,32 +231,29 @@ pub fn prepare_call_args_as_calc_values_only(
 }
 
 pub fn prepare_arg_values_only(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<PreparedValue, CoercionError> {
+) -> Result<CalcValue, CoercionError> {
     prepare_call_arg_as_calc_value_values_only(arg, resolver).map(|value| {
         let prepared = prepared_from_calc_value(&value);
-        match prepared {
-            PreparedValue::Eval(value) => normalize_prepared_eval(value),
-            other => other,
-        }
+        normalize_prepared_eval(prepared)
     })
 }
 
 pub fn prepare_args_values_only(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedValue>, CoercionError> {
+) -> Result<Vec<CalcValue>, CoercionError> {
     prepare_call_args_as_calc_values_only(args, resolver)
         .map(|values| prepared_vec_from_calc_values(&values))
 }
 
 pub fn expand_arg_values_only(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedValue>, CoercionError> {
-    match arg {
-        FunctionArg::Eval(FunctionValue::Reference(r)) => {
+) -> Result<Vec<CalcValue>, CoercionError> {
+    match arg.core() {
+        CoreValue::Reference(r) => {
             if let Some(values) =
                 enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
@@ -308,64 +264,38 @@ pub fn expand_arg_values_only(
                 &resolved, resolver,
             )?))
         }
-        FunctionArg::Eval(v) => Ok(expand_resolved_eval_value(&resolve_eval_references(
-            v, resolver,
+        _ => Ok(expand_resolved_eval_value(&resolve_eval_references(
+            arg, resolver,
         )?)),
-        FunctionArg::MissingArg => Ok(vec![PreparedValue::MissingArg]),
-        FunctionArg::EmptyCell => Ok(vec![PreparedValue::EmptyCell]),
-        FunctionArg::Reference(r) => {
-            if let Some(values) =
-                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
-            {
-                return expand_resolved_reference_values(values);
-            }
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            Ok(expand_resolved_eval_value(&resolve_eval_references(
-                &resolved, resolver,
-            )?))
-        }
     }
 }
 
 pub fn expand_lookup_vector_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedValue>, CoercionError> {
-    match arg {
-        FunctionArg::Eval(FunctionValue::Reference(r)) => {
+) -> Result<Vec<CalcValue>, CoercionError> {
+    match arg.core() {
+        CoreValue::Reference(r) => {
             if let Some(values) =
                 enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
             {
                 let array = materialize_resolved_reference_values(&values)
                     .map_err(CoercionError::RefResolution)?;
-                return expand_lookup_eval_value(&FunctionValue::Array(array));
+                return expand_lookup_eval_value(&CalcValue::array(array));
             }
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
             expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
         }
-        FunctionArg::Eval(v) => expand_lookup_eval_value(&resolve_eval_references(v, resolver)?),
-        FunctionArg::MissingArg => Ok(vec![PreparedValue::MissingArg]),
-        FunctionArg::EmptyCell => Ok(vec![PreparedValue::EmptyCell]),
-        FunctionArg::Reference(r) => {
-            if let Some(values) =
-                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
-            {
-                let array = materialize_resolved_reference_values(&values)
-                    .map_err(CoercionError::RefResolution)?;
-                return expand_lookup_eval_value(&FunctionValue::Array(array));
-            }
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
-        }
+        _ => expand_lookup_eval_value(&resolve_eval_references(arg, resolver)?),
     }
 }
 
 pub(crate) fn expand_aggregate_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<AggregatePreparedValue>, CoercionError> {
-    match arg {
-        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => {
+    match arg.core() {
+        CoreValue::Reference(r) => {
             if let Some(values) = sparse_reference_values_for_aggregate_arg(arg, resolver)? {
                 return Ok(expand_sparse_reference_values_with_provenance(
                     values,
@@ -373,24 +303,23 @@ pub(crate) fn expand_aggregate_arg(
                 ));
             }
             let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
-            match resolve_eval_references(&resolved, resolver)? {
-                FunctionValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
+            let resolved = resolve_eval_references(&resolved, resolver)?;
+            match resolved.core() {
+                CoreValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
                     &array,
                     AggregateArrayProvenance::ReferenceDerived,
                 )),
-                value => Ok(vec![AggregatePreparedValue::array_like(
-                    CalcValue::from(value),
+                _ => Ok(vec![AggregatePreparedValue::array_like(
+                    resolved,
                     AggregateArrayProvenance::ReferenceDerived,
                 )]),
             }
         }
-        FunctionArg::Eval(FunctionValue::Array(array)) => {
-            Ok(expand_aggregate_array_with_provenance(
-                array,
-                AggregateArrayProvenance::OpaqueArrayValue,
-            ))
-        }
-        other => Ok(expand_arg_values_only(other, resolver)?
+        CoreValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
+            array,
+            AggregateArrayProvenance::OpaqueArrayValue,
+        )),
+        _ => Ok(expand_arg_values_only(arg, resolver)?
             .into_iter()
             .map(|value| AggregatePreparedValue::direct_scalar(calc_value_from_prepared(value)))
             .collect()),
@@ -398,9 +327,9 @@ pub(crate) fn expand_aggregate_arg(
 }
 
 pub fn run_values_only_prepared<Out, E>(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-    on_prepared: impl FnOnce(&[PreparedValue]) -> Result<Out, E>,
+    on_prepared: impl FnOnce(&[CalcValue]) -> Result<Out, E>,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
 ) -> Result<Out, E> {
     let prepared_calc =
@@ -419,31 +348,30 @@ pub fn run_calc_values_only_prepared<Out, E>(
     on_prepared(&prepared)
 }
 
-/// Convert a scalar `FunctionValue` into an array cell (for elementwise lift).
+/// Convert a scalar `CalcValue` into an array cell (for elementwise lift).
 /// A scalar per-cell kernel should never yield array/reference/lambda.
-fn scalar_eval_to_cell(value: FunctionValue) -> FunctionArrayCell {
-    match value {
-        FunctionValue::Number(n) => FunctionArrayCell::Number(n),
-        FunctionValue::Text(t) => FunctionArrayCell::Text(t),
-        FunctionValue::Logical(b) => FunctionArrayCell::Logical(b),
-        FunctionValue::Error(code) => FunctionArrayCell::Error(code),
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+fn scalar_eval_to_cell(value: CalcValue) -> CalcValue {
+    match value.core() {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            value
+        }
+        _ => CalcValue::error(WorksheetErrorCode::Value),
     }
 }
 
 /// Like [`run_values_only_prepared`], but lifts the scalar per-cell evaluator
 /// elementwise over array arguments (Excel spill), broadcasting scalar args to
 /// the common shape. When no argument is an array it behaves exactly like the
-/// scalar path. The per-cell evaluator returns a *scalar* `FunctionValue`; on a
+/// scalar path. The per-cell evaluator returns a *scalar* `CalcValue`; on a
 /// per-cell `Err`, `map_err_to_ws` decides the cell's worksheet error so the
 /// array can carry per-element errors the way Excel does.
 pub fn run_values_only_prepared_lifted<E>(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-    on_cell: impl Fn(&[PreparedValue]) -> Result<FunctionValue, E>,
+    on_cell: impl Fn(&[CalcValue]) -> Result<CalcValue, E>,
     map_err_to_ws: impl Fn(&E) -> WorksheetErrorCode,
     map_preparation_error: impl FnOnce(CoercionError) -> E,
-) -> Result<FunctionValue, E> {
+) -> Result<CalcValue, E> {
     let prepared = prepare_args_values_only(args, resolver).map_err(map_preparation_error)?;
     if let Some((shape, groups)) = expand_prepared_broadcast_grid(&prepared) {
         let cells = groups
@@ -451,24 +379,24 @@ pub fn run_values_only_prepared_lifted<E>(
             .map(|group| match group {
                 BroadcastPreparedGroup::Values(values) => match on_cell(&values) {
                     Ok(value) => scalar_eval_to_cell(value),
-                    Err(error) => FunctionArrayCell::Error(map_err_to_ws(&error)),
+                    Err(error) => CalcValue::error(map_err_to_ws(&error)),
                 },
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                    CalcValue::error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(FunctionValue::Array(
-            FunctionArray::new(shape, cells).expect("broadcast shape preserved"),
+        return Ok(CalcValue::array(
+            CalcArray::new(shape, cells).expect("broadcast shape preserved"),
         ));
     }
     on_cell(&prepared)
 }
 
 pub fn map_values_only_prepared<Out>(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-    on_prepared_arg: impl Fn(&PreparedValue) -> Out,
+    on_prepared_arg: impl Fn(&CalcValue) -> Out,
     on_preparation_error: impl Fn(CoercionError) -> Out,
 ) -> Vec<Out> {
     args.iter()
@@ -495,30 +423,26 @@ pub fn map_calc_values_only_prepared<Out>(
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum BroadcastPreparedPair {
-    Pair(PreparedValue, PreparedValue),
+    Pair(CalcValue, CalcValue),
     MissingCoordinate,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum BroadcastPreparedGroup {
-    Values(Vec<PreparedValue>),
+    Values(Vec<CalcValue>),
     MissingCoordinate,
 }
 
-fn prepared_shape(value: &PreparedValue) -> ArrayShape {
-    match value {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array.shape(),
+fn prepared_shape(value: &CalcValue) -> ArrayShape {
+    match value.core() {
+        CoreValue::Array(array) => array.shape(),
         _ => ArrayShape { rows: 1, cols: 1 },
     }
 }
 
-fn prepared_broadcast_value_at(
-    value: &PreparedValue,
-    row: usize,
-    col: usize,
-) -> Option<PreparedValue> {
-    match value {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
+fn prepared_broadcast_value_at(value: &CalcValue, row: usize, col: usize) -> Option<CalcValue> {
+    match value.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let source_row = if shape.rows == 1 {
                 0
@@ -538,13 +462,13 @@ fn prepared_broadcast_value_at(
                 .get(source_row, source_col)
                 .map(prepared_from_array_cell)
         }
-        scalar => Some(scalar.clone()),
+        _ => Some(value.clone()),
     }
 }
 
 pub fn expand_binary_broadcast_grid(
-    lhs: &PreparedValue,
-    rhs: &PreparedValue,
+    lhs: &CalcValue,
+    rhs: &CalcValue,
 ) -> Option<(ArrayShape, Vec<BroadcastPreparedPair>)> {
     let lhs_shape = prepared_shape(lhs);
     let rhs_shape = prepared_shape(rhs);
@@ -577,7 +501,7 @@ pub fn expand_binary_broadcast_grid(
 }
 
 pub fn expand_prepared_broadcast_grid(
-    args: &[PreparedValue],
+    args: &[CalcValue],
 ) -> Option<(ArrayShape, Vec<BroadcastPreparedGroup>)> {
     let mut shape = ArrayShape { rows: 1, cols: 1 };
     let mut has_array = false;
@@ -634,7 +558,7 @@ impl ReferenceSystemProvider for NoReferenceSystemProvider {
     fn dereference(
         &self,
         _request: &crate::resolver::ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
         Err(
             crate::resolver::ReferenceResolutionError::CapabilityDenied {
                 kind: crate::value::ReferenceKind::A1,
@@ -644,44 +568,36 @@ impl ReferenceSystemProvider for NoReferenceSystemProvider {
     }
 }
 
-pub fn coerce_prepared_to_number(arg: &PreparedValue) -> Result<f64, CoercionError> {
-    match arg {
-        PreparedValue::Eval(v) => coerce_eval_to_number(v, &NoReferenceSystemProvider),
-        PreparedValue::MissingArg => Err(CoercionError::MissingArg),
-        PreparedValue::EmptyCell => Err(CoercionError::EmptyCell),
+pub fn coerce_prepared_to_number(arg: &CalcValue) -> Result<f64, CoercionError> {
+    match arg.core() {
+        CoreValue::Missing => Err(CoercionError::MissingArg),
+        CoreValue::Empty => Err(CoercionError::EmptyCell),
+        _ => coerce_eval_to_number(arg, &NoReferenceSystemProvider),
     }
 }
 
-pub fn coerce_prepared_to_text(
-    arg: &PreparedValue,
-) -> Result<crate::value::ExcelText, CoercionError> {
+pub fn coerce_prepared_to_text(arg: &CalcValue) -> Result<crate::value::ExcelText, CoercionError> {
     use crate::value::ExcelText;
 
-    match arg {
-        PreparedValue::Eval(FunctionValue::Text(t)) => Ok(t.clone()),
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(ExcelText::from_utf16_code_units(
+    match arg.core() {
+        CoreValue::Text(t) => Ok(t.clone()),
+        CoreValue::Number(n) => Ok(ExcelText::from_utf16_code_units(
             format!("{n}").encode_utf16().collect(),
         )),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(ExcelText::from_utf16_code_units(
+        CoreValue::Logical(b) => Ok(ExcelText::from_utf16_code_units(
             if *b { "TRUE" } else { "FALSE" }.encode_utf16().collect(),
         )),
-        PreparedValue::Eval(FunctionValue::Error(code)) => {
-            Err(CoercionError::WorksheetError(*code))
-        }
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            Err(CoercionError::UnsupportedValueKind("array"))
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => Err(CoercionError::RefResolution(
+        CoreValue::Error(code) => Err(CoercionError::WorksheetError(*code)),
+        CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(CoercionError::RefResolution(
             crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed,
         )),
-        PreparedValue::MissingArg => Ok(ExcelText::from_utf16_code_units(Vec::new())),
-        PreparedValue::EmptyCell => Ok(ExcelText::from_utf16_code_units(Vec::new())),
-        _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
+        CoreValue::Missing | CoreValue::Empty => Ok(ExcelText::from_utf16_code_units(Vec::new())),
     }
 }
 
 pub fn apply_unary_numeric_scalar_prepared(
-    arg: &PreparedValue,
+    arg: &CalcValue,
     kernel: fn(f64) -> f64,
 ) -> Result<f64, CoercionError> {
     let n = coerce_prepared_to_number(arg)?;
@@ -689,7 +605,7 @@ pub fn apply_unary_numeric_scalar_prepared(
 }
 
 pub fn apply_unary_numeric_array_map_prepared(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64) -> f64,
 ) -> Vec<Result<f64, CoercionError>> {
     args.iter()
@@ -702,7 +618,7 @@ mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{
-        CallableArityShape, CallableValue, ExcelText, FunctionArray, OpaqueCallable, ReferenceKind,
+        CalcArray, CallableArityShape, CallableValue, ExcelText, OpaqueCallable, ReferenceKind,
         ReferenceLike, WorksheetErrorCode,
     };
     use std::collections::BTreeMap;
@@ -710,8 +626,8 @@ mod tests {
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved_value: Option<FunctionValue>,
-        by_target: BTreeMap<String, FunctionValue>,
+        resolved_value: Option<CalcValue>,
+        by_target: BTreeMap<String, CalcValue>,
     }
     #[derive(Debug)]
     struct TestCallableHandle;
@@ -730,7 +646,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             if let Some(value) = self.by_target.get(reference.target()) {
                 return Ok(value.clone());
@@ -743,7 +659,7 @@ mod tests {
         }
     }
 
-    fn resolver_with(value: FunctionValue) -> MockResolver {
+    fn resolver_with(value: CalcValue) -> MockResolver {
         MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(value),
@@ -753,41 +669,35 @@ mod tests {
 
     #[test]
     fn prepare_values_only_dereferences_reference_arg() {
-        let arg = FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
-        let prepared = prepare_arg_values_only(&arg, &resolver_with(FunctionValue::Number(3.0)));
-        assert_eq!(
-            prepared,
-            Ok(PreparedValue::Eval(FunctionValue::Number(3.0)))
-        );
+        let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
+        let prepared = prepare_arg_values_only(&arg, &resolver_with(CalcValue::number(3.0)));
+        assert_eq!(prepared, Ok((CalcValue::number(3.0))));
     }
 
     #[test]
     fn prepare_values_only_normalizes_single_blank_area_to_empty_cell() {
-        let arg = FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
+        let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string()));
         let prepared = prepare_arg_values_only(
             &arg,
-            &resolver_with(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+            &resolver_with(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
             )),
         );
-        assert_eq!(prepared, Ok(PreparedValue::EmptyCell));
+        assert_eq!(prepared, Ok(CalcValue::empty()));
     }
 
     #[test]
     fn prepare_values_only_preserves_missing_and_empty() {
         assert_eq!(
             prepare_arg_values_only(
-                &FunctionArg::MissingArg,
-                &resolver_with(FunctionValue::Number(1.0))
+                &CalcValue::missing(),
+                &resolver_with(CalcValue::number(1.0))
             ),
-            Ok(PreparedValue::MissingArg)
+            Ok(CalcValue::missing())
         );
         assert_eq!(
-            prepare_arg_values_only(
-                &FunctionArg::EmptyCell,
-                &resolver_with(FunctionValue::Number(1.0))
-            ),
-            Ok(PreparedValue::EmptyCell)
+            prepare_arg_values_only(&CalcValue::empty(), &resolver_with(CalcValue::number(1.0))),
+            Ok(CalcValue::empty())
         );
     }
 
@@ -796,11 +706,11 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(Alpha!A1:A2,Alpha!B2)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Number(11.0),
-                    FunctionArrayCell::Number(13.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::number(11.0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap(),
             ),
@@ -810,7 +720,7 @@ mod tests {
             resolved_value: None,
             by_target,
         };
-        let arg = FunctionArg::Reference(ReferenceLike::new(
+        let arg = CalcValue::reference(ReferenceLike::new(
             ReferenceKind::MultiArea,
             "(Alpha!A1:A2,Alpha!B2)",
         ));
@@ -818,11 +728,11 @@ mod tests {
         let prepared = prepare_arg_values_only(&arg, &resolver);
         assert_eq!(
             prepared,
-            Ok(PreparedValue::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Number(11.0),
-                    FunctionArrayCell::Number(13.0),
+            Ok((CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::number(11.0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap()
             )))
@@ -844,18 +754,18 @@ mod tests {
             ),
         ];
 
-        let prepared = prepare_calc_values_only(&args, &resolver_with(FunctionValue::Number(0.0)));
+        let prepared = prepare_calc_values_only(&args, &resolver_with(CalcValue::number(0.0)));
 
         assert_eq!(prepared, Ok(args));
     }
 
     #[test]
     fn prepare_call_arg_as_calc_value_values_only_normalizes_single_blank_area() {
-        let arg = FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
+        let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
         let prepared = prepare_call_arg_as_calc_value_values_only(
             &arg,
-            &resolver_with(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+            &resolver_with(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
             )),
         );
 
@@ -872,7 +782,7 @@ mod tests {
         ];
         let got = run_calc_values_only_prepared(
             &args,
-            &resolver_with(FunctionValue::Number(0.0)),
+            &resolver_with(CalcValue::number(0.0)),
             |prepared| Ok::<_, CoercionError>(prepared.to_vec()),
             |e| e,
         );
@@ -889,7 +799,7 @@ mod tests {
         });
 
         let prepared =
-            prepare_calc_values_only(&[arg.clone()], &resolver_with(FunctionValue::Number(0.0)));
+            prepare_calc_values_only(&[arg.clone()], &resolver_with(CalcValue::number(0.0)));
 
         assert_eq!(prepared, Ok(vec![arg]));
     }
@@ -899,11 +809,11 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(A1:A2,C1)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap(),
             ),
@@ -913,28 +823,27 @@ mod tests {
             resolved_value: None,
             by_target,
         };
-        let arg =
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)"));
+        let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)"));
 
         let prepared = expand_lookup_vector_arg(&arg, &resolver);
         assert_eq!(
             prepared,
             Ok(vec![
-                PreparedValue::Eval(FunctionValue::Number(1.0)),
-                PreparedValue::Eval(FunctionValue::Number(2.0)),
-                PreparedValue::Eval(FunctionValue::Number(3.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(3.0)),
             ])
         );
     }
 
     #[test]
     fn prepared_coercion_numeric_text_and_error_paths() {
-        let text = PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+        let text = (CalcValue::text(ExcelText::from_utf16_code_units(
             "2".encode_utf16().collect(),
         )));
         assert_eq!(coerce_prepared_to_number(&text), Ok(2.0));
 
-        let err = PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::Value));
+        let err = (CalcValue::error(WorksheetErrorCode::Value));
         assert_eq!(
             coerce_prepared_to_number(&err),
             Err(CoercionError::WorksheetError(WorksheetErrorCode::Value))
@@ -943,7 +852,7 @@ mod tests {
 
     #[test]
     fn prepared_text_coercion_formats_scalars_and_blanks() {
-        let number = PreparedValue::Eval(FunctionValue::Number(2.5));
+        let number = (CalcValue::number(2.5));
         assert_eq!(
             coerce_prepared_to_text(&number),
             Ok(ExcelText::from_utf16_code_units(
@@ -951,7 +860,7 @@ mod tests {
             ))
         );
 
-        let blank = PreparedValue::EmptyCell;
+        let blank = CalcValue::empty();
         assert_eq!(
             coerce_prepared_to_text(&blank),
             Ok(ExcelText::from_utf16_code_units(Vec::new()))
@@ -960,10 +869,8 @@ mod tests {
 
     #[test]
     fn prepared_coercion_rejects_reference_if_invariant_broken() {
-        let prepared = PreparedValue::Eval(FunctionValue::Reference(ReferenceLike::new(
-            ReferenceKind::A1,
-            "A1".to_string(),
-        )));
+        let prepared =
+            (CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())));
         let got = coerce_prepared_to_number(&prepared);
         assert_eq!(
             got,
@@ -976,11 +883,11 @@ mod tests {
     #[test]
     fn unary_numeric_array_map_prepared_preserves_per_element_results() {
         let args = vec![
-            PreparedValue::Eval(FunctionValue::Number(-2.0)),
-            PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::number(-2.0)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "asd".encode_utf16().collect(),
             ))),
-            PreparedValue::Eval(FunctionValue::Logical(true)),
+            (CalcValue::logical(true)),
         ];
         let got = apply_unary_numeric_array_map_prepared(&args, f64::abs);
         assert_eq!(got.len(), 3);
@@ -994,10 +901,10 @@ mod tests {
 
     #[test]
     fn run_values_only_prepared_passes_prepared_args_to_adapter() {
-        let args = [FunctionArg::Eval(FunctionValue::Number(2.0))];
+        let args = [(CalcValue::number(2.0))];
         let got = run_values_only_prepared(
             &args,
-            &resolver_with(FunctionValue::Number(0.0)),
+            &resolver_with(CalcValue::number(0.0)),
             |prepared| Ok::<f64, CoercionError>(coerce_prepared_to_number(&prepared[0])?),
             |e| e,
         );
@@ -1007,8 +914,8 @@ mod tests {
     #[test]
     fn map_values_only_prepared_maps_preparation_errors_per_arg() {
         let args = vec![
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+            (CalcValue::number(2.0)),
         ];
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities {
@@ -1035,28 +942,28 @@ mod tests {
 
     #[test]
     fn expand_arg_values_only_flattens_array_payloads() {
-        let arg = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Number(1.0), FunctionArrayCell::EmptyCell],
+        let arg = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::empty()],
                 vec![
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "x".encode_utf16().collect(),
                     )),
-                    FunctionArrayCell::Logical(true),
+                    CalcValue::logical(true),
                 ],
             ])
             .unwrap(),
         ));
-        let got = expand_arg_values_only(&arg, &resolver_with(FunctionValue::Number(0.0))).unwrap();
+        let got = expand_arg_values_only(&arg, &resolver_with(CalcValue::number(0.0))).unwrap();
         assert_eq!(
             got,
             vec![
-                PreparedValue::Eval(FunctionValue::Number(1.0)),
-                PreparedValue::EmptyCell,
-                PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::number(1.0)),
+                CalcValue::empty(),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
-                PreparedValue::Eval(FunctionValue::Logical(true)),
+                (CalcValue::logical(true)),
             ]
         );
     }
@@ -1064,13 +971,13 @@ mod tests {
     #[test]
     fn expand_aggregate_arg_marks_reference_derived_values() {
         let arg =
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:A2".to_string()));
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:A2".to_string()));
         let got = expand_aggregate_arg(
             &arg,
-            &resolver_with(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            &resolver_with(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "2".encode_utf16().collect(),
                     ))],
                 ])
@@ -1085,16 +992,16 @@ mod tests {
 
     #[test]
     fn expand_aggregate_arg_admits_opaque_reference_values_as_reference_derived() {
-        let arg = FunctionArg::Eval(FunctionValue::Reference(ReferenceLike::new(
+        let arg = (CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "NameBackedRange".to_string(),
         )));
         let got = expand_aggregate_arg(
             &arg,
-            &resolver_with(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
+            &resolver_with(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
                 ])
                 .unwrap(),
             )),
@@ -1109,16 +1016,16 @@ mod tests {
     #[test]
     fn expand_aggregate_arg_marks_eval_arrays_as_opaque_array_values() {
         let got = expand_aggregate_arg(
-            &FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            &(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "2".encode_utf16().collect(),
                     )),
-                    FunctionArrayCell::Logical(true),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap(),
             )),
-            &resolver_with(FunctionValue::Number(0.0)),
+            &resolver_with(CalcValue::number(0.0)),
         )
         .unwrap();
         assert_eq!(got.len(), 2);
@@ -1128,11 +1035,11 @@ mod tests {
 
     #[test]
     fn expand_aggregate_array_with_provenance_marks_direct_array_literal() {
-        let array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+        let array = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             )),
-            FunctionArrayCell::Logical(true),
+            CalcValue::logical(true),
         ]])
         .unwrap();
 
@@ -1148,20 +1055,14 @@ mod tests {
 
     #[test]
     fn expand_lookup_vector_arg_rejects_two_dimensional_array() {
-        let arg = FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let arg = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
-        let got = expand_lookup_vector_arg(&arg, &resolver_with(FunctionValue::Number(0.0)));
+        let got = expand_lookup_vector_arg(&arg, &resolver_with(CalcValue::number(0.0)));
         assert_eq!(
             got,
             Err(CoercionError::UnsupportedValueKind("two_dimensional_array"))

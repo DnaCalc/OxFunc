@@ -10,9 +10,7 @@ use oxfunc_core::resolver::{
     ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
     ReferenceSystemProvider,
 };
-use oxfunc_core::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use oxfunc_core::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 
 struct DummyResolver;
 
@@ -24,7 +22,7 @@ impl ReferenceSystemProvider for DummyResolver {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, ReferenceResolutionError> {
+    ) -> Result<CalcValue, ReferenceResolutionError> {
         Err(ReferenceResolutionError::UnresolvedReference {
             target: request.reference.target().to_string(),
         })
@@ -35,15 +33,32 @@ fn serial(y: i64, m: i64, d: i64) -> f64 {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, y, m, d).unwrap()
 }
 
-fn array_arg(values: &[f64]) -> FunctionArg {
+fn array_arg(values: &[f64]) -> CalcValue {
     let row = values
         .iter()
         .copied()
-        .map(FunctionArrayCell::Number)
+        .map(CalcValue::number)
         .collect::<Vec<_>>();
-    FunctionArg::Eval(FunctionValue::Array(
-        FunctionArray::from_rows(vec![row]).unwrap(),
-    ))
+    CalcValue::array(CalcArray::from_rows(vec![row]).unwrap())
+}
+
+fn print_xirr_result(
+    case_id: &str,
+    result: Result<CalcValue, oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError>,
+) {
+    match result {
+        Ok(value) => match value.core() {
+            CoreValue::Number(v) => print_num(case_id, "oxfunc", *v),
+            CoreValue::Error(code) => print_ws_error(case_id, "oxfunc", *code),
+            _ => println!("{case_id},oxfunc,ERR:unexpected"),
+        },
+        Err(err) => match err {
+            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
+                print_ws_error(case_id, "oxfunc", code)
+            }
+            _ => println!("{case_id},oxfunc,ERR:{err:?}"),
+        },
+    }
 }
 
 fn print_num(case_id: &str, source: &str, value: f64) {
@@ -104,75 +119,38 @@ fn main() {
     let resolver = DummyResolver;
     let xirr_values_1 = array_arg(&xnpv_values_1);
     let xirr_dates_1 = array_arg(&[serial(2000, 2, 29), serial(2000, 3, 31)]);
-    match eval_xirr_surface(
-        &[
-            xirr_values_1.clone(),
-            xirr_dates_1.clone(),
-            FunctionArg::Eval(FunctionValue::Number(-0.1)),
-        ],
-        &resolver,
-    ) {
-        Ok(FunctionValue::Number(v)) => {
-            print_num("xirr_negative_rate_case1_guess_neg", "oxfunc", v)
-        }
-        Ok(FunctionValue::Error(code)) => {
-            print_ws_error("xirr_negative_rate_case1_guess_neg", "oxfunc", code)
-        }
-        Err(err) => match err {
-            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
-                print_ws_error("xirr_negative_rate_case1_guess_neg", "oxfunc", code)
-            }
-            _ => println!("xirr_negative_rate_case1_guess_neg,oxfunc,ERR:{err:?}"),
-        },
-        _ => println!("xirr_negative_rate_case1_guess_neg,oxfunc,ERR:unexpected"),
-    }
+    print_xirr_result(
+        "xirr_negative_rate_case1_guess_neg",
+        eval_xirr_surface(
+            &[
+                xirr_values_1.clone(),
+                xirr_dates_1.clone(),
+                CalcValue::number(-0.1),
+            ],
+            &resolver,
+        ),
+    );
 
     let xirr_values_2 = array_arg(&[15_108_163.384_092_3, -75_382_259.662_842_4]);
     let xirr_dates_2 = array_arg(&[serial(2000, 2, 29), serial(2000, 3, 31)]);
-    match eval_xirr_surface(
-        &[
-            xirr_values_2.clone(),
-            xirr_dates_2.clone(),
-            FunctionArg::Eval(FunctionValue::Number(-0.1)),
-        ],
-        &resolver,
-    ) {
-        Ok(FunctionValue::Number(v)) => {
-            print_num("xirr_negative_rate_case2_guess_neg", "oxfunc", v)
-        }
-        Ok(FunctionValue::Error(code)) => {
-            print_ws_error("xirr_negative_rate_case2_guess_neg", "oxfunc", code)
-        }
-        Err(err) => match err {
-            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
-                print_ws_error("xirr_negative_rate_case2_guess_neg", "oxfunc", code)
-            }
-            _ => println!("xirr_negative_rate_case2_guess_neg,oxfunc,ERR:{err:?}"),
-        },
-        _ => println!("xirr_negative_rate_case2_guess_neg,oxfunc,ERR:unexpected"),
-    }
-    match eval_xirr_surface(
-        &[
-            xirr_values_2,
-            xirr_dates_2,
-            FunctionArg::Eval(FunctionValue::Number(0.1)),
-        ],
-        &resolver,
-    ) {
-        Ok(FunctionValue::Number(v)) => {
-            print_num("xirr_negative_rate_case2_guess_pos", "oxfunc", v)
-        }
-        Ok(FunctionValue::Error(code)) => {
-            print_ws_error("xirr_negative_rate_case2_guess_pos", "oxfunc", code)
-        }
-        Err(err) => match err {
-            oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(code) => {
-                print_ws_error("xirr_negative_rate_case2_guess_pos", "oxfunc", code)
-            }
-            _ => println!("xirr_negative_rate_case2_guess_pos,oxfunc,ERR:{err:?}"),
-        },
-        _ => println!("xirr_negative_rate_case2_guess_pos,oxfunc,ERR:unexpected"),
-    }
+    print_xirr_result(
+        "xirr_negative_rate_case2_guess_neg",
+        eval_xirr_surface(
+            &[
+                xirr_values_2.clone(),
+                xirr_dates_2.clone(),
+                CalcValue::number(-0.1),
+            ],
+            &resolver,
+        ),
+    );
+    print_xirr_result(
+        "xirr_negative_rate_case2_guess_pos",
+        eval_xirr_surface(
+            &[xirr_values_2, xirr_dates_2, CalcValue::number(0.1)],
+            &resolver,
+        ),
+    );
 
     let rate_payment = pmt(0.01, 48.0, 8000.0, 0.0, PaymentTiming::EndOfPeriod).unwrap();
     match rate(

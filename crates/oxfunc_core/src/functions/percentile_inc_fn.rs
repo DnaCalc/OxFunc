@@ -8,7 +8,8 @@ use crate::functions::adapters::{
 };
 use crate::functions::percentile_common::{collect_percentile_values, percentile_inc_kernel};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const PERCENTILE_INC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PERCENTILE.INC",
@@ -31,9 +32,9 @@ pub enum PercentileIncEvalError {
 }
 
 pub fn eval_percentile_inc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, PercentileIncEvalError> {
+) -> Result<CalcValue, PercentileIncEvalError> {
     if !PERCENTILE_INC_META.arity.accepts(args.len()) {
         return Err(PercentileIncEvalError::ArityMismatch {
             expected: PERCENTILE_INC_META.arity.min,
@@ -49,8 +50,8 @@ pub fn eval_percentile_inc_surface(
     )
     .map_err(PercentileIncEvalError::Coercion)?;
     match percentile_inc_kernel(&mut values, k) {
-        Ok(v) => Ok(FunctionValue::Number(v)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(v) => Ok(CalcValue::number(v)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

@@ -1,7 +1,6 @@
 use crate::coercion::CoercionError;
-use crate::functions::adapters::{
-    AggregatePreparedValue, PreparedValue, coerce_prepared_to_number,
-};
+use crate::functions::adapters::{AggregatePreparedValue, coerce_prepared_to_number};
+use crate::value::CalcValue;
 use crate::value::{CoreValue, WorksheetErrorCode};
 
 pub(crate) fn percentile_argument_value(
@@ -75,7 +74,7 @@ fn interpolate_sorted(values: &[f64], rank: f64) -> Result<f64, WorksheetErrorCo
     Ok(lower + (rank - lower_index as f64) * (upper - lower))
 }
 
-pub fn quartile_k(prepared: &PreparedValue) -> Result<i64, CoercionError> {
+pub fn quartile_k(prepared: &CalcValue) -> Result<i64, CoercionError> {
     Ok(coerce_prepared_to_number(prepared)?.trunc() as i64)
 }
 

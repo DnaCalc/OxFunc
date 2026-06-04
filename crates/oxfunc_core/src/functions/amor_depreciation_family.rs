@@ -3,12 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 const OPTIONAL_BASIS_ARITY: Arity = Arity { min: 6, max: 7 };
 const EPSILON: f64 = 1.0e-12;
@@ -68,7 +66,7 @@ fn max_excel_serial() -> i64 {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, 9999, 12, 31).unwrap() as i64
 }
 
-fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, AmorDepreciationEvalError> {
+fn number_arg(args: &[CalcValue], idx: usize) -> Result<f64, AmorDepreciationEvalError> {
     args.get(idx)
         .ok_or(AmorDepreciationEvalError::Domain(WorksheetErrorCode::Value))
         .and_then(|value| {
@@ -77,12 +75,13 @@ fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, AmorDepreciatio
 }
 
 fn optional_number(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     idx: usize,
     default: f64,
 ) -> Result<f64, AmorDepreciationEvalError> {
     match args.get(idx) {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(default),
+        None => Ok(default),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => Ok(default),
         Some(value) => {
             coerce_prepared_to_number(value).map_err(AmorDepreciationEvalError::Coercion)
         }
@@ -362,9 +361,7 @@ pub fn amordegrc_kernel(
     Ok(0.0)
 }
 
-fn eval_amorlinc_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, AmorDepreciationEvalError> {
+fn eval_amorlinc_prepared(args: &[CalcValue]) -> Result<CalcValue, AmorDepreciationEvalError> {
     if !AMORLINC_META.arity.accepts(args.len()) {
         return Err(arity_error(&AMORLINC_META, args.len()));
     }
@@ -378,16 +375,14 @@ fn eval_amorlinc_prepared(
             number_arg(args, 5)?,
             Some(optional_number(args, 6, 0.0)?),
         ) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(AmorDepreciationEvalError::Domain(code)) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(AmorDepreciationEvalError::Domain(code)) => CalcValue::error(code),
             Err(other) => return Err(other),
         },
     )
 }
 
-fn eval_amordegrc_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, AmorDepreciationEvalError> {
+fn eval_amordegrc_prepared(args: &[CalcValue]) -> Result<CalcValue, AmorDepreciationEvalError> {
     if !AMORDEGRC_META.arity.accepts(args.len()) {
         return Err(arity_error(&AMORDEGRC_META, args.len()));
     }
@@ -401,17 +396,17 @@ fn eval_amordegrc_prepared(
             number_arg(args, 5)?,
             Some(optional_number(args, 6, 0.0)?),
         ) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(AmorDepreciationEvalError::Domain(code)) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(AmorDepreciationEvalError::Domain(code)) => CalcValue::error(code),
             Err(other) => return Err(other),
         },
     )
 }
 
 pub fn eval_amorlinc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, AmorDepreciationEvalError> {
+) -> Result<CalcValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -421,9 +416,9 @@ pub fn eval_amorlinc_surface(
 }
 
 pub fn eval_amordegrc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, AmorDepreciationEvalError> {
+) -> Result<CalcValue, AmorDepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -460,7 +455,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -470,14 +465,12 @@ mod tests {
         }
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
     fn serial(year: i64, month: i64, day: i64) -> f64 {
@@ -676,7 +669,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(132.0))
+            Ok(CalcValue::number(132.0))
         );
         assert_eq!(
             eval_amordegrc_surface(
@@ -691,7 +684,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(776.0))
+            Ok(CalcValue::number(776.0))
         );
     }
 
@@ -715,7 +708,7 @@ mod tests {
         assert_eq!(
             eval_amorlinc_surface(
                 &[
-                    FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+                    CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
                     num(39679.0),
                     num(39813.0),
                     num(300.0),

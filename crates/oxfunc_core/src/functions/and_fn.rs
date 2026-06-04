@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::and_argument_truth;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const AND_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.AND",
@@ -33,9 +34,9 @@ pub enum AndEvalError {
 }
 
 pub fn eval_and_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, AndEvalError> {
+) -> Result<CalcValue, AndEvalError> {
     let argc = args.len();
     if !AND_META.arity.accepts(argc) {
         return Err(AndEvalError::ArityMismatch {
@@ -49,7 +50,7 @@ pub fn eval_and_surface(
     for arg in args {
         for item in expand_aggregate_arg(arg, resolver).map_err(AndEvalError::Coercion)? {
             match and_argument_truth(&item).map_err(AndEvalError::Coercion)? {
-                Some(false) => return Ok(FunctionValue::Logical(false)),
+                Some(false) => return Ok(CalcValue::logical(false)),
                 Some(true) => saw_value = true,
                 None => {}
             }
@@ -57,10 +58,10 @@ pub fn eval_and_surface(
     }
 
     if !saw_value {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Value));
+        return Ok(CalcValue::error(WorksheetErrorCode::Value));
     }
 
-    Ok(FunctionValue::Logical(true))
+    Ok(CalcValue::logical(true))
 }
 
 pub fn map_and_error_to_ws(e: &AndEvalError) -> WorksheetErrorCode {
@@ -75,10 +76,10 @@ pub fn map_and_error_to_ws(e: &AndEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -89,7 +90,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -102,44 +103,41 @@ mod tests {
     #[test]
     fn eval_and_returns_false_when_any_arg_is_zero() {
         let got = eval_and_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-            ],
+            &[(CalcValue::logical(true)), (CalcValue::number(0.0))],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_and_ignores_reference_text_and_empty_cells() {
         let got = eval_and_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A3".to_string(),
             ))],
             &MockResolver {
-                resolved: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::EmptyCell,
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::empty(),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn eval_and_direct_text_is_value_error() {
         let got = eval_and_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
-            ))],
+            &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                "1".encode_utf16().collect(),
+            )))],
             &MockResolver { resolved: None },
         );
         assert!(matches!(
@@ -151,80 +149,80 @@ mod tests {
     #[test]
     fn eval_and_returns_value_when_all_inputs_are_ignored() {
         let got = eval_and_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A1:A2".to_string(),
             ))],
             &MockResolver {
-                resolved: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::EmptyCell,
+                        CalcValue::empty(),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Value)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
     }
 
     #[test]
     fn ftc_0907_single_direct_true_array_scalarizes_to_true() {
         let got = eval_and_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(true),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::logical(true),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap(),
             ))],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn ftc_0907_single_direct_mixed_array_scalarizes_to_false() {
         let got = eval_and_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(true),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::logical(false),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap(),
             ))],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn ftc_1032_multi_arg_direct_arrays_scalarize_to_false() {
         let got = eval_and_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Logical(false),
-                        FunctionArrayCell::Logical(true),
-                        FunctionArrayCell::Logical(true),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::logical(false),
+                        CalcValue::logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Logical(true),
-                        FunctionArrayCell::Logical(true),
-                        FunctionArrayCell::Logical(true),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::logical(true),
+                        CalcValue::logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             ],
             &MockResolver { resolved: None },
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 }

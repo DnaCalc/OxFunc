@@ -7,7 +7,8 @@ use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::functions::gcd_lcm_common::gcd_int;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcValue, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const GCD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GCD",
@@ -44,9 +45,9 @@ pub fn gcd_kernel(items: &[i64]) -> f64 {
 }
 
 pub fn eval_gcd_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, GcdEvalError> {
+) -> Result<CalcValue, GcdEvalError> {
     let argc = args.len();
     if !GCD_META.arity.accepts(argc) {
         return Err(GcdEvalError::ArityMismatch {
@@ -62,7 +63,7 @@ pub fn eval_gcd_surface(
             items.push(coerce_calc_to_nonnegative_int(item.value())?);
         }
     }
-    Ok(FunctionValue::Number(gcd_kernel(&items)))
+    Ok(CalcValue::number(gcd_kernel(&items)))
 }
 
 pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
@@ -78,7 +79,7 @@ pub fn map_gcd_error_to_ws(e: &GcdEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{FunctionArray, FunctionArrayCell};
+    use crate::value::CalcArray;
 
     struct NoResolver;
 
@@ -90,7 +91,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -116,27 +117,27 @@ mod tests {
     fn ftc_0959_gcd_array_input_reduces_literal_vector_and_scalar_to_one() {
         let got = eval_gcd_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0),
-                        FunctionArrayCell::Number(7.0),
-                        FunctionArrayCell::Number(8.0),
-                        FunctionArrayCell::Number(9.0),
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(12.0),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(7.0),
+                        CalcValue::number(8.0),
+                        CalcValue::number(9.0),
+                        CalcValue::number(10.0),
+                        CalcValue::number(11.0),
+                        CalcValue::number(12.0),
                     ]])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(12.0)),
+                (CalcValue::number(12.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 }

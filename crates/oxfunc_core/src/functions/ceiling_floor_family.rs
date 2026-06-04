@@ -4,13 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedGroup, PreparedValue, coerce_prepared_to_number,
-    expand_prepared_broadcast_grid, run_values_only_prepared,
+    BroadcastPreparedGroup, coerce_prepared_to_number, expand_prepared_broadcast_grid,
+    run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, WorksheetErrorCode};
 
 const OPTIONAL_ARITY_2: Arity = Arity { min: 1, max: 2 };
 const OPTIONAL_ARITY_3: Arity = Arity { min: 1, max: 3 };
@@ -162,9 +161,9 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> CeilingFloorEvalError {
 
 fn eval_prepared_exact2(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -174,28 +173,28 @@ fn eval_prepared_exact2(
             .map(|cell| match cell {
                 BroadcastPreparedGroup::Values(values) => map_exact2_item(&values, kernel),
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                    CalcValue::error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(FunctionValue::Array(
-            FunctionArray::new(shape, mapped).expect("shape preserved"),
+        return Ok(CalcValue::array(
+            CalcArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
     let significance =
         coerce_prepared_to_number(&args[1]).map_err(CeilingFloorEvalError::Coercion)?;
     match kernel(number, significance) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 
 fn eval_prepared_optional2(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -205,12 +204,12 @@ fn eval_prepared_optional2(
             .map(|cell| match cell {
                 BroadcastPreparedGroup::Values(values) => map_optional2_item(&values, kernel),
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                    CalcValue::error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(FunctionValue::Array(
-            FunctionArray::new(shape, mapped).expect("shape preserved"),
+        return Ok(CalcValue::array(
+            CalcArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
@@ -220,16 +219,16 @@ fn eval_prepared_optional2(
         1.0
     };
     match kernel(number, significance) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 
 fn eval_prepared_optional3(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -239,12 +238,12 @@ fn eval_prepared_optional3(
             .map(|cell| match cell {
                 BroadcastPreparedGroup::Values(values) => map_optional3_item(&values, kernel),
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                    CalcValue::error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(FunctionValue::Array(
-            FunctionArray::new(shape, mapped).expect("shape preserved"),
+        return Ok(CalcValue::array(
+            CalcArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
     let number = coerce_prepared_to_number(&args[0]).map_err(CeilingFloorEvalError::Coercion)?;
@@ -259,29 +258,29 @@ fn eval_prepared_optional3(
         0.0
     };
     match kernel(number, significance, mode) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 
-fn coerce_number_cell(arg: &PreparedValue) -> Result<f64, FunctionArrayCell> {
+fn coerce_number_cell(arg: &CalcValue) -> Result<f64, CalcValue> {
     coerce_prepared_to_number(arg).map_err(|error| match error {
-        CoercionError::WorksheetError(code) => FunctionArrayCell::Error(code),
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        CoercionError::WorksheetError(code) => CalcValue::error(code),
+        _ => CalcValue::error(WorksheetErrorCode::Value),
     })
 }
 
-fn kernel_result_cell(result: Result<f64, WorksheetErrorCode>) -> FunctionArrayCell {
+fn kernel_result_cell(result: Result<f64, WorksheetErrorCode>) -> CalcValue {
     match result {
-        Ok(value) => FunctionArrayCell::Number(value),
-        Err(code) => FunctionArrayCell::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     }
 }
 
 fn map_exact2_item(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> FunctionArrayCell {
+) -> CalcValue {
     let number = match coerce_number_cell(&args[0]) {
         Ok(value) => value,
         Err(cell) => return cell,
@@ -294,9 +293,9 @@ fn map_exact2_item(
 }
 
 fn map_optional2_item(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> FunctionArrayCell {
+) -> CalcValue {
     let number = match coerce_number_cell(&args[0]) {
         Ok(value) => value,
         Err(cell) => return cell,
@@ -313,9 +312,9 @@ fn map_optional2_item(
 }
 
 fn map_optional3_item(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, f64, f64) -> Result<f64, WorksheetErrorCode>,
-) -> FunctionArrayCell {
+) -> CalcValue {
     let number = match coerce_number_cell(&args[0]) {
         Ok(value) => value,
         Err(cell) => return cell,
@@ -340,9 +339,9 @@ fn map_optional3_item(
 }
 
 pub fn eval_ceiling_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -352,9 +351,9 @@ pub fn eval_ceiling_surface(
 }
 
 pub fn eval_floor_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -364,9 +363,9 @@ pub fn eval_floor_surface(
 }
 
 pub fn eval_ceiling_math_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -376,9 +375,9 @@ pub fn eval_ceiling_math_surface(
 }
 
 pub fn eval_floor_math_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -388,9 +387,9 @@ pub fn eval_floor_math_surface(
 }
 
 pub fn eval_ceiling_precise_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -400,9 +399,9 @@ pub fn eval_ceiling_precise_surface(
 }
 
 pub fn eval_floor_precise_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -412,9 +411,9 @@ pub fn eval_floor_precise_surface(
 }
 
 pub fn eval_iso_ceiling_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CeilingFloorEvalError> {
+) -> Result<CalcValue, CeilingFloorEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -446,7 +445,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -493,12 +492,12 @@ mod tests {
     fn eval_ceiling_math_spills_optional_array_argument() {
         let got = eval_ceiling_math_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(-1.2)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(0.0),
-                        FunctionArrayCell::Number(1.0),
+                (CalcValue::number(-1.2)),
+                (CalcValue::number(1.0)),
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(0.0),
+                        CalcValue::number(1.0),
                     ]])
                     .unwrap(),
                 )),
@@ -507,11 +506,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(-1.0),
-                    FunctionArrayCell::Number(-2.0),
-                ]])
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(-1.0), CalcValue::number(-2.0),]
+                ])
                 .unwrap()
             ))
         );

@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, slope_from_pairs};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const SLOPE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SLOPE",
@@ -33,9 +34,9 @@ pub enum SlopeEvalError {
 }
 
 pub fn eval_slope_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SlopeEvalError> {
+) -> Result<CalcValue, SlopeEvalError> {
     let argc = args.len();
     if !SLOPE_META.arity.accepts(argc) {
         return Err(SlopeEvalError::ArityMismatch {
@@ -48,8 +49,8 @@ pub fn eval_slope_surface(
     let xs = expand_aggregate_arg(&args[1], resolver).map_err(SlopeEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(SlopeEvalError::Coercion)?;
     match slope_from_pairs(&pairs) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

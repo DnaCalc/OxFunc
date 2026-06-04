@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_text, prepare_args_values_only,
-};
+use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{CoreValue, ExcelText, WorksheetErrorCode};
 
 pub const CALL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CALL",
@@ -76,7 +75,7 @@ pub enum RegisteredExternalTarget {
 #[derive(Debug, Clone, PartialEq)]
 pub struct RegisteredExternalCallRequest {
     pub target: RegisteredExternalTarget,
-    pub invocation_args: Vec<FunctionArg>,
+    pub invocation_args: Vec<CalcValue>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -107,8 +106,8 @@ pub trait RegisteredExternalProvider {
     fn invoke_registered_external(
         &self,
         _descriptor: &RegisteredExternalDescriptor,
-        _args: &[FunctionArg],
-    ) -> Result<FunctionValue, RegisteredExternalProviderError> {
+        _args: &[CalcValue],
+    ) -> Result<CalcValue, RegisteredExternalProviderError> {
         Err(RegisteredExternalProviderError::UnsupportedRegisteredExternalInvocation)
     }
 }
@@ -128,13 +127,11 @@ pub enum CallRegisterIdEvalError {
 }
 
 fn coerce_prepared_to_procedure_spec(
-    arg: &PreparedValue,
+    arg: &CalcValue,
 ) -> Result<RegisteredProcedureSpec, CallRegisterIdEvalError> {
-    match arg {
-        PreparedValue::Eval(FunctionValue::Text(text)) => {
-            Ok(RegisteredProcedureSpec::Name(text.clone()))
-        }
-        PreparedValue::Eval(FunctionValue::Number(n))
+    match arg.core() {
+        CoreValue::Text(text) => Ok(RegisteredProcedureSpec::Name(text.clone())),
+        CoreValue::Number(n)
             if n.is_finite()
                 && *n >= i32::MIN as f64
                 && *n <= i32::MAX as f64
@@ -142,15 +139,13 @@ fn coerce_prepared_to_procedure_spec(
         {
             Ok(RegisteredProcedureSpec::Ordinal(*n as i32))
         }
-        PreparedValue::Eval(FunctionValue::Number(n)) => {
-            Err(CallRegisterIdEvalError::NonIntegralProcedureOrdinal(*n))
-        }
+        CoreValue::Number(n) => Err(CallRegisterIdEvalError::NonIntegralProcedureOrdinal(*n)),
         _ => Err(CallRegisterIdEvalError::UnsupportedProcedureValueKind),
     }
 }
 
 pub fn parse_register_id_request(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RegisterIdRequest, CallRegisterIdEvalError> {
     if !REGISTER_ID_META.arity.accepts(args.len()) {
@@ -180,7 +175,7 @@ pub fn parse_register_id_request(
 }
 
 pub fn parse_call_request(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<RegisteredExternalCallRequest, CallRegisterIdEvalError> {
     if !CALL_META.arity.accepts(args.len()) {
@@ -193,7 +188,7 @@ pub fn parse_call_request(
 
     let first = prepare_args_values_only(&args[..1], resolver)
         .map_err(CallRegisterIdEvalError::Preparation)?;
-    if let PreparedValue::Eval(FunctionValue::Number(register_id)) = &first[0] {
+    if let CoreValue::Number(register_id) = first[0].core() {
         return Ok(RegisteredExternalCallRequest {
             target: RegisteredExternalTarget::RegisterId(*register_id),
             invocation_args: args[1..].to_vec(),
@@ -235,23 +230,23 @@ pub fn parse_call_request(
 }
 
 pub fn eval_register_id_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
-) -> Result<FunctionValue, CallRegisterIdEvalError> {
+) -> Result<CalcValue, CallRegisterIdEvalError> {
     let request = parse_register_id_request(args, resolver)?;
     let provider = provider.ok_or(CallRegisterIdEvalError::ProviderMissing)?;
     let descriptor = provider
         .resolve_register_id(&request)
         .map_err(CallRegisterIdEvalError::Provider)?;
-    Ok(FunctionValue::Number(descriptor.register_id))
+    Ok(CalcValue::number(descriptor.register_id))
 }
 
 pub fn eval_call_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: Option<&dyn RegisteredExternalProvider>,
-) -> Result<FunctionValue, CallRegisterIdEvalError> {
+) -> Result<CalcValue, CallRegisterIdEvalError> {
     let request = parse_call_request(args, resolver)?;
     let provider = provider.ok_or(CallRegisterIdEvalError::ProviderMissing)?;
     let descriptor = match &request.target {
@@ -299,7 +294,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -313,7 +308,7 @@ mod tests {
     struct RecordingProvider {
         last_resolve: std::cell::RefCell<Option<RegisterIdRequest>>,
         last_lookup: std::cell::RefCell<Option<f64>>,
-        last_invoke: std::cell::RefCell<Option<(RegisteredExternalDescriptor, Vec<FunctionArg>)>>,
+        last_invoke: std::cell::RefCell<Option<(RegisteredExternalDescriptor, Vec<CalcValue>)>>,
     }
 
     impl RecordingProvider {
@@ -352,22 +347,20 @@ mod tests {
         fn invoke_registered_external(
             &self,
             descriptor: &RegisteredExternalDescriptor,
-            args: &[FunctionArg],
-        ) -> Result<FunctionValue, RegisteredExternalProviderError> {
+            args: &[CalcValue],
+        ) -> Result<CalcValue, RegisteredExternalProviderError> {
             self.last_invoke
                 .replace(Some((descriptor.clone(), args.to_vec())));
-            Ok(FunctionValue::Number(123.0))
+            Ok(CalcValue::number(123.0))
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            text,
-        )))
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(text)))
     }
 
-    fn number_arg(number: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(number))
+    fn number_arg(number: f64) -> CalcValue {
+        (CalcValue::number(number))
     }
 
     #[test]
@@ -420,7 +413,7 @@ mod tests {
             &MockResolver,
             Some(&provider),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(-1439170560.0)));
+        assert_eq!(got, Ok(CalcValue::number(-1439170560.0)));
         assert_eq!(
             provider
                 .last_resolve
@@ -442,7 +435,7 @@ mod tests {
             Some(&provider),
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(123.0)));
+        assert_eq!(got, Ok(CalcValue::number(123.0)));
         assert_eq!(*provider.last_lookup.borrow(), Some(-1439170560.0));
         let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
         assert_eq!(args, vec![number_arg(1.0)]);
@@ -456,19 +449,19 @@ mod tests {
                 text_arg("Kernel32"),
                 text_arg("GetTickCount"),
                 text_arg("J!"),
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
             ],
             &MockResolver,
             Some(&provider),
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(123.0)));
+        assert_eq!(got, Ok(CalcValue::number(123.0)));
         let request = provider.last_resolve.borrow().clone().expect("request");
         assert_eq!(request.library_name.to_string_lossy(), "Kernel32");
         let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
         assert_eq!(
             args,
-            vec![FunctionArg::Reference(ReferenceLike::new(
+            vec![CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "A1".to_string()
             ))]

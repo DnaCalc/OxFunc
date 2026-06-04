@@ -4,16 +4,13 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, expand_aggregate_arg,
+    coerce_prepared_to_number, coerce_prepared_to_text, expand_aggregate_arg,
     run_values_only_prepared,
 };
 use crate::functions::aggregate_common::sum_argument_value;
 use crate::functions::rand_fn::RandomProvider;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue,
-    WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
 
 const MISC_CONVERSION_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MISC_CONVERSION_BASE",
@@ -544,7 +541,7 @@ pub fn randarray_kernel(
     min: f64,
     max: f64,
     whole_number: bool,
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     if rows == 0 || cols == 0 || !min.is_finite() || !max.is_finite() {
         return Err(MiscConversionError::Domain(WorksheetErrorCode::Value));
     }
@@ -572,10 +569,10 @@ pub fn randarray_kernel(
                 min + unit * (max - min)
             }
         };
-        cells.push(FunctionArrayCell::Number(number));
+        cells.push(CalcValue::number(number));
     }
-    Ok(FunctionValue::Array(
-        FunctionArray::new(ArrayShape { rows, cols }, cells)
+    Ok(CalcValue::array(
+        CalcArray::new(ArrayShape { rows, cols }, cells)
             .expect("RANDARRAY dimensions were validated"),
     ))
 }
@@ -588,15 +585,15 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> MiscConversionError {
     }
 }
 
-fn coerce_boolish_arg(arg: &PreparedValue) -> Result<bool, MiscConversionError> {
-    Ok(match arg {
-        PreparedValue::Eval(FunctionValue::Logical(b)) => *b,
-        other => coerce_prepared_to_number(other).map_err(MiscConversionError::Coercion)? != 0.0,
+fn coerce_boolish_arg(arg: &CalcValue) -> Result<bool, MiscConversionError> {
+    Ok(match arg.core() {
+        CoreValue::Logical(b) => *b,
+        _ => coerce_prepared_to_number(arg).map_err(MiscConversionError::Coercion)? != 0.0,
     })
 }
 
 fn sum_surface_arg(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, MiscConversionError> {
     let prepared = expand_aggregate_arg(arg, resolver).map_err(MiscConversionError::Coercion)?;
@@ -611,9 +608,9 @@ fn sum_surface_arg(
 }
 
 pub fn eval_bahttext_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -623,7 +620,7 @@ pub fn eval_bahttext_surface(
             }
             let value =
                 coerce_prepared_to_number(&prepared[0]).map_err(MiscConversionError::Coercion)?;
-            Ok(FunctionValue::Text(
+            Ok(CalcValue::text(
                 bahttext_kernel(value).map_err(MiscConversionError::Domain)?,
             ))
         },
@@ -632,9 +629,9 @@ pub fn eval_bahttext_surface(
 }
 
 pub fn eval_convert_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -648,7 +645,7 @@ pub fn eval_convert_surface(
                 coerce_prepared_to_text(&prepared[1]).map_err(MiscConversionError::Coercion)?;
             let to =
                 coerce_prepared_to_text(&prepared[2]).map_err(MiscConversionError::Coercion)?;
-            Ok(FunctionValue::Number(
+            Ok(CalcValue::number(
                 convert_kernel(number, &from.to_string_lossy(), &to.to_string_lossy())
                     .map_err(MiscConversionError::Domain)?,
             ))
@@ -658,9 +655,9 @@ pub fn eval_convert_surface(
 }
 
 pub fn eval_euroconvert_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -679,7 +676,7 @@ pub fn eval_euroconvert_surface(
                 .get(4)
                 .map(|arg| coerce_prepared_to_number(arg).map_err(MiscConversionError::Coercion))
                 .transpose()?;
-            Ok(FunctionValue::Number(
+            Ok(CalcValue::number(
                 euroconvert_kernel(
                     number,
                     &source.to_string_lossy(),
@@ -695,24 +692,24 @@ pub fn eval_euroconvert_surface(
 }
 
 pub fn eval_percentof_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     if !PERCENTOF_META.arity.accepts(args.len()) {
         return Err(arity_error(&PERCENTOF_META, args.len()));
     }
     let subset_sum = sum_surface_arg(&args[0], resolver)?;
     let total_sum = sum_surface_arg(&args[1], resolver)?;
-    Ok(FunctionValue::Number(
+    Ok(CalcValue::number(
         percentof_kernel(subset_sum, total_sum).map_err(MiscConversionError::Domain)?,
     ))
 }
 
 pub fn eval_randarray_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: &(impl RandomProvider + ?Sized),
-) -> Result<FunctionValue, MiscConversionError> {
+) -> Result<CalcValue, MiscConversionError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -889,9 +886,7 @@ mod tests {
         };
         assert_eq!(
             randarray_kernel(&scalar_provider, 1, 1, 0.0, 1.0, false).unwrap(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(0.25)]]).unwrap()
-            )
+            CalcValue::array(CalcArray::from_rows(vec![vec![CalcValue::number(0.25)]]).unwrap())
         );
 
         let grid_provider = QueueRandomProvider {
@@ -899,16 +894,10 @@ mod tests {
         };
         assert_eq!(
             randarray_kernel(&grid_provider, 2, 2, 10.0, 12.0, true).unwrap(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(11.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(12.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0), CalcValue::number(11.0)],
+                    vec![CalcValue::number(11.0), CalcValue::number(12.0)],
                 ])
                 .unwrap()
             )

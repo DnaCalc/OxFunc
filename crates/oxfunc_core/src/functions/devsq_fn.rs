@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const DEVSQ_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DEVSQ",
@@ -32,7 +33,7 @@ pub enum DevSqEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue, DevSqEvalError> {
+fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, DevSqEvalError> {
     let mut values = Vec::new();
     for arg in args {
         if let Some(value) = average_argument_value(arg).map_err(DevSqEvalError::Coercion)? {
@@ -41,7 +42,7 @@ fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue
     }
 
     if values.is_empty() {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
+        return Ok(CalcValue::error(WorksheetErrorCode::Num));
     }
 
     let mean = values.iter().sum::<f64>() / values.len() as f64;
@@ -52,13 +53,13 @@ fn eval_devsq_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue
             delta * delta
         })
         .sum::<f64>();
-    Ok(FunctionValue::Number(devsq))
+    Ok(CalcValue::number(devsq))
 }
 
 pub fn eval_devsq_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DevSqEvalError> {
+) -> Result<CalcValue, DevSqEvalError> {
     let argc = args.len();
     if !DEVSQ_META.arity.accepts(argc) {
         return Err(DevSqEvalError::ArityMismatch {
@@ -87,10 +88,10 @@ pub fn map_devsq_error_to_ws(e: &DevSqEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<FunctionValue>,
+        resolved_value: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -101,7 +102,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -114,8 +115,8 @@ mod tests {
     #[test]
     fn eval_devsq_accumulates_direct_numeric_text_and_logical() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -125,29 +126,29 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.5)));
+        assert_eq!(got, Ok(CalcValue::number(0.5)));
     }
 
     #[test]
     fn eval_devsq_ignores_reference_derived_text_and_logical() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_devsq_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Num)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Num)));
     }
 }

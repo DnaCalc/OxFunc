@@ -2,10 +2,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{
-    CalcValue, CoreValue, FunctionArg, FunctionValue, NumberFormatHint, PresentationHint,
-    WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CoreValue, NumberFormatHint, PresentationHint, WorksheetErrorCode};
 
 pub const NOW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NOW",
@@ -32,9 +30,9 @@ pub enum NowEvalError {
 }
 
 pub fn eval_now_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     provider: &impl NowProvider,
-) -> Result<FunctionValue, NowEvalError> {
+) -> Result<CalcValue, NowEvalError> {
     if !NOW_META.arity.accepts(args.len()) {
         return Err(NowEvalError::ArityMismatch {
             expected: NOW_META.arity.min,
@@ -47,7 +45,7 @@ pub fn eval_now_surface(
         return Err(NowEvalError::ProviderNonFinite(serial));
     }
 
-    Ok(FunctionValue::Number(serial))
+    Ok(CalcValue::number(serial))
 }
 
 pub fn eval_now_calc_surface(
@@ -73,16 +71,10 @@ pub fn eval_now_calc_surface(
 }
 
 pub fn eval_now_surface_rich(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     provider: &impl NowProvider,
 ) -> Result<CalcValue, NowEvalError> {
-    let FunctionValue::Number(value) = eval_now_surface(args, provider)? else {
-        unreachable!("NOW surface returns number");
-    };
-    Ok(CalcValue::with_presentation(
-        CoreValue::Number(value),
-        PresentationHint::number_format(NumberFormatHint::DateLike),
-    ))
+    eval_now_calc_surface(args, provider)
 }
 
 pub fn map_now_error_to_ws(e: &NowEvalError) -> WorksheetErrorCode {
@@ -110,7 +102,7 @@ mod tests {
     fn eval_now_uses_provider_serial_value() {
         let provider = FixedNowProvider { serial: 46000.25 };
         let got = eval_now_surface(&[], &provider);
-        assert_eq!(got, Ok(FunctionValue::Number(46000.25)));
+        assert_eq!(got, Ok(CalcValue::number(46000.25)));
     }
 
     #[test]
@@ -129,7 +121,7 @@ mod tests {
     #[test]
     fn eval_now_rejects_args() {
         let provider = FixedNowProvider { serial: 46000.25 };
-        let got = eval_now_surface(&[FunctionArg::EmptyCell], &provider);
+        let got = eval_now_surface(&[CalcValue::empty()], &provider);
         assert_eq!(
             got,
             Err(NowEvalError::ArityMismatch {

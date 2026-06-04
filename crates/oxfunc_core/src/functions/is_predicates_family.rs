@@ -4,13 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-    run_values_only_prepared_lifted,
+    coerce_prepared_to_number, run_values_only_prepared, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 const INFORMATION_PREDICATE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INFORMATION_PREDICATE_BASE",
@@ -93,33 +91,23 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> InformationPredicateEvalEr
     }
 }
 
-fn is_error_cell(cell: &FunctionArrayCell) -> FunctionArrayCell {
-    match cell {
-        FunctionArrayCell::Error(_) => FunctionArrayCell::Logical(true),
-        FunctionArrayCell::Number(_)
-        | FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_)
-        | FunctionArrayCell::EmptyCell => FunctionArrayCell::Logical(false),
-    }
+fn is_error_cell(cell: &CalcValue) -> CalcValue {
+    CalcValue::logical(matches!(cell.core(), CoreValue::Error(_)))
 }
 
-fn is_na_cell(cell: &FunctionArrayCell) -> FunctionArrayCell {
-    match cell {
-        FunctionArrayCell::Error(WorksheetErrorCode::NA) => FunctionArrayCell::Logical(true),
-        FunctionArrayCell::Error(_)
-        | FunctionArrayCell::Number(_)
-        | FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_)
-        | FunctionArrayCell::EmptyCell => FunctionArrayCell::Logical(false),
-    }
+fn is_na_cell(cell: &CalcValue) -> CalcValue {
+    CalcValue::logical(matches!(
+        cell.core(),
+        CoreValue::Error(WorksheetErrorCode::NA)
+    ))
 }
 
 fn eval_boolean_predicate_surface(
     meta: &FunctionMeta,
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-    predicate: impl Fn(&PreparedValue) -> bool,
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+    predicate: impl Fn(&CalcValue) -> bool,
+) -> Result<CalcValue, InformationPredicateEvalError> {
     // Type predicates classify each element (Excel spills over an array
     // argument), so lift the per-cell classifier elementwise.
     run_values_only_prepared_lifted(
@@ -129,19 +117,17 @@ fn eval_boolean_predicate_surface(
             if !meta.arity.accepts(prepared.len()) {
                 return Err(arity_error(meta, prepared.len()));
             }
-            Ok(FunctionValue::Logical(predicate(&prepared[0])))
+            Ok(CalcValue::logical(predicate(&prepared[0])))
         },
         map_information_predicate_error_to_ws,
         InformationPredicateEvalError::Preparation,
     )
 }
 
-fn coerce_isodd_number(arg: &PreparedValue) -> Result<f64, CoercionError> {
-    match arg {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
-        PreparedValue::Eval(FunctionValue::Logical(_)) => {
-            Err(CoercionError::UnsupportedValueKind("logical"))
-        }
+fn coerce_isodd_number(arg: &CalcValue) -> Result<f64, CoercionError> {
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(0.0),
+        CoreValue::Logical(_) => Err(CoercionError::UnsupportedValueKind("logical")),
         _ => coerce_prepared_to_number(arg),
     }
 }
@@ -151,30 +137,30 @@ pub fn isodd_kernel(n: f64) -> bool {
 }
 
 pub fn eval_isblank_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISBLANK_META, args, resolver, |arg| {
-        matches!(arg, PreparedValue::EmptyCell)
+        matches!(arg.core(), CoreValue::Empty)
     })
 }
 
 pub fn eval_iserr_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISERR_META, args, resolver, |arg| {
         matches!(
-            arg,
-            PreparedValue::Eval(FunctionValue::Error(code)) if *code != WorksheetErrorCode::NA
+            arg.core(),
+            CoreValue::Error(code) if *code != WorksheetErrorCode::NA
         )
     })
 }
 
 pub fn eval_iserror_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -182,17 +168,16 @@ pub fn eval_iserror_surface(
             if !ISERROR_META.arity.accepts(prepared.len()) {
                 return Err(arity_error(&ISERROR_META, prepared.len()));
             }
-            match &prepared[0] {
-                PreparedValue::Eval(FunctionValue::Array(array)) => {
+            match prepared[0].core() {
+                CoreValue::Array(array) => {
                     let cells = array.iter_row_major().map(is_error_cell).collect();
-                    Ok(FunctionValue::Array(
-                        FunctionArray::new(array.shape(), cells)
-                            .expect("input array shape is valid"),
+                    Ok(CalcValue::array(
+                        CalcArray::new(array.shape(), cells).expect("input array shape is valid"),
                     ))
                 }
-                _ => Ok(FunctionValue::Logical(matches!(
-                    prepared[0],
-                    PreparedValue::Eval(FunctionValue::Error(_))
+                _ => Ok(CalcValue::logical(matches!(
+                    prepared[0].core(),
+                    CoreValue::Error(_)
                 ))),
             }
         },
@@ -201,18 +186,18 @@ pub fn eval_iserror_surface(
 }
 
 pub fn eval_islogical_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISLOGICAL_META, args, resolver, |arg| {
-        matches!(arg, PreparedValue::Eval(FunctionValue::Logical(_)))
+        matches!(arg.core(), CoreValue::Logical(_))
     })
 }
 
 pub fn eval_isna_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -220,17 +205,16 @@ pub fn eval_isna_surface(
             if !ISNA_META.arity.accepts(prepared.len()) {
                 return Err(arity_error(&ISNA_META, prepared.len()));
             }
-            match &prepared[0] {
-                PreparedValue::Eval(FunctionValue::Array(array)) => {
+            match prepared[0].core() {
+                CoreValue::Array(array) => {
                     let cells = array.iter_row_major().map(is_na_cell).collect();
-                    Ok(FunctionValue::Array(
-                        FunctionArray::new(array.shape(), cells)
-                            .expect("input array shape is valid"),
+                    Ok(CalcValue::array(
+                        CalcArray::new(array.shape(), cells).expect("input array shape is valid"),
                     ))
                 }
-                _ => Ok(FunctionValue::Logical(matches!(
-                    prepared[0],
-                    PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::NA))
+                _ => Ok(CalcValue::logical(matches!(
+                    prepared[0].core(),
+                    CoreValue::Error(WorksheetErrorCode::NA)
                 ))),
             }
         },
@@ -239,27 +223,27 @@ pub fn eval_isna_surface(
 }
 
 pub fn eval_isnontext_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISNONTEXT_META, args, resolver, |arg| {
-        !matches!(arg, PreparedValue::Eval(FunctionValue::Text(_)))
+        !matches!(arg.core(), CoreValue::Text(_))
     })
 }
 
 pub fn eval_istext_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     eval_boolean_predicate_surface(&ISTEXT_META, args, resolver, |arg| {
-        matches!(arg, PreparedValue::Eval(FunctionValue::Text(_)))
+        matches!(arg.core(), CoreValue::Text(_))
     })
 }
 
 pub fn eval_isodd_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -267,7 +251,7 @@ pub fn eval_isodd_surface(
             if !ISODD_META.arity.accepts(prepared.len()) {
                 return Err(arity_error(&ISODD_META, prepared.len()));
             }
-            Ok(FunctionValue::Logical(isodd_kernel(
+            Ok(CalcValue::logical(isodd_kernel(
                 coerce_isodd_number(&prepared[0])
                     .map_err(InformationPredicateEvalError::Preparation)?,
             )))
@@ -278,15 +262,15 @@ pub fn eval_isodd_surface(
 }
 
 pub fn eval_isref_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, InformationPredicateEvalError> {
+) -> Result<CalcValue, InformationPredicateEvalError> {
     if !ISREF_META.arity.accepts(args.len()) {
         return Err(arity_error(&ISREF_META, args.len()));
     }
-    Ok(FunctionValue::Logical(matches!(
-        &args[0],
-        FunctionArg::Reference(_) | FunctionArg::Eval(FunctionValue::Reference(_))
+    Ok(CalcValue::logical(matches!(
+        args[0].core(),
+        CoreValue::Reference(_)
     )))
 }
 
@@ -304,10 +288,10 @@ pub fn map_information_predicate_error_to_ws(
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -318,7 +302,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -335,22 +319,22 @@ mod tests {
     #[test]
     fn isblank_distinguishes_empty_cell_from_empty_string() {
         let blank_ref =
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "B1".to_string()));
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "B1".to_string()));
         let blank_resolver = MockResolver {
-            resolved: Some(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+            resolved: Some(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
             )),
         };
         assert_eq!(
             eval_isblank_surface(&[blank_ref], &blank_resolver),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isblank_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("")))],
+                &[(CalcValue::text(txt("")))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(false))
+            Ok(CalcValue::logical(false))
         );
     }
 
@@ -358,51 +342,43 @@ mod tests {
     fn error_predicates_follow_excel_split() {
         assert_eq!(
             eval_iserr_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::Div0
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::Div0))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_iserr_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::NA
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::NA))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(false))
+            Ok(CalcValue::logical(false))
         );
         assert_eq!(
             eval_iserror_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::NA
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::NA))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isna_surface(
-                &[FunctionArg::Eval(FunctionValue::Error(
-                    WorksheetErrorCode::NA
-                ))],
+                &[(CalcValue::error(WorksheetErrorCode::NA))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
     }
 
     #[test]
     fn iserror_array_lifts_elementwise() {
         let got = eval_iserror_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(txt("Alice")),
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::EmptyCell,
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(txt("Alice")),
+                    CalcValue::number(30.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::empty(),
                 ]])
                 .unwrap(),
             ))],
@@ -410,12 +386,12 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(false),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(false),
+                    CalcValue::logical(false),
+                    CalcValue::logical(true),
+                    CalcValue::logical(false),
                 ]])
                 .unwrap()
             ))
@@ -425,13 +401,13 @@ mod tests {
     #[test]
     fn ftc_0941_and_ftc_0995_isna_array_lifts_xmatch_reduction_mask() {
         let got = eval_isna_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(2.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap(),
             ))],
@@ -439,13 +415,13 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Logical(false),
-                    FunctionArrayCell::Logical(true),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::logical(true),
+                    CalcValue::logical(false),
+                    CalcValue::logical(true),
+                    CalcValue::logical(false),
+                    CalcValue::logical(true),
                 ]])
                 .unwrap()
             ))
@@ -456,31 +432,31 @@ mod tests {
     fn type_predicates_match_text_and_logical_rules() {
         assert_eq!(
             eval_islogical_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &[(CalcValue::logical(true))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_istext_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("x")))],
+                &[(CalcValue::text(txt("x")))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isnontext_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(1.0))],
+                &[(CalcValue::number(1.0))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isnontext_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("x")))],
+                &[(CalcValue::text(txt("x")))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(false))
+            Ok(CalcValue::logical(false))
         );
     }
 
@@ -488,28 +464,28 @@ mod tests {
     fn isodd_matches_seed_coercion_lanes() {
         assert_eq!(
             eval_isodd_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("3")))],
+                &[(CalcValue::text(txt("3")))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isodd_surface(
-                &[FunctionArg::Reference(ReferenceLike::new(
+                &[CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::A1,
                     "B1".to_string()
                 ))],
                 &MockResolver {
-                    resolved: Some(FunctionValue::Array(
-                        FunctionArray::from_rows(vec![vec![FunctionArrayCell::EmptyCell]]).unwrap(),
+                    resolved: Some(CalcValue::array(
+                        CalcArray::from_rows(vec![vec![CalcValue::empty()]]).unwrap(),
                     )),
                 },
             ),
-            Ok(FunctionValue::Logical(false))
+            Ok(CalcValue::logical(false))
         );
         assert!(matches!(
             eval_isodd_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &[(CalcValue::logical(true))],
                 &MockResolver { resolved: None },
             ),
             Err(InformationPredicateEvalError::Preparation(
@@ -522,31 +498,29 @@ mod tests {
     fn isref_sees_reference_like_args_without_dereferencing() {
         assert_eq!(
             eval_isref_surface(
-                &[FunctionArg::Reference(ReferenceLike::new(
+                &[CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::Area,
                     "A1:A2".to_string()
                 ))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isref_surface(
-                &[FunctionArg::Eval(FunctionValue::Reference(
-                    ReferenceLike::new(ReferenceKind::A1, "A1".to_string())
-                ))],
+                &[(CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_isref_surface(
-                &[FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(1.0)]]).unwrap(),
+                &[(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![CalcValue::number(1.0)]]).unwrap(),
                 ))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(false))
+            Ok(CalcValue::logical(false))
         );
     }
 }

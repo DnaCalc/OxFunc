@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::sum_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const MAX_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MAX",
@@ -32,7 +33,7 @@ pub enum MaxEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_max_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue, MaxEvalError> {
+fn eval_max_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MaxEvalError> {
     let mut acc: Option<f64> = None;
     for arg in args {
         if let Some(value) = sum_argument_value(arg).map_err(MaxEvalError::Coercion)? {
@@ -42,13 +43,13 @@ fn eval_max_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue, 
             });
         }
     }
-    Ok(FunctionValue::Number(acc.unwrap_or(0.0)))
+    Ok(CalcValue::number(acc.unwrap_or(0.0)))
 }
 
 pub fn eval_max_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MaxEvalError> {
+) -> Result<CalcValue, MaxEvalError> {
     let argc = args.len();
     if !MAX_META.arity.accepts(argc) {
         return Err(MaxEvalError::ArityMismatch {
@@ -77,10 +78,10 @@ pub fn map_max_error_to_ws(e: &MaxEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved_value: Option<FunctionValue>,
+        resolved_value: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -91,7 +92,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_value.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -104,9 +105,9 @@ mod tests {
     #[test]
     fn eval_max_accumulates_direct_numbers() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-            FunctionArg::Eval(FunctionValue::Number(4.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(3.0)),
+            (CalcValue::number(4.0)),
         ];
         let got = eval_max_surface(
             &args,
@@ -114,14 +115,14 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(4.0)));
+        assert_eq!(got, Ok(CalcValue::number(4.0)));
     }
 
     #[test]
     fn eval_max_counts_direct_numeric_text_and_logical() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -131,45 +132,45 @@ mod tests {
                 resolved_value: None,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_max_ignores_reference_derived_text_and_logical() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A2".to_string(),
         ))];
         let got = eval_max_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "x".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_max_propagates_reference_derived_errors() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A3".to_string(),
         ))];
         let got = eval_max_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(3.0),
+                        CalcValue::error(WorksheetErrorCode::NA),
                     ]])
                     .unwrap(),
                 )),

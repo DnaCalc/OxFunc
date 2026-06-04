@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 
+use oxfml_core::eval::FunctionValue;
 use oxfml_core::format::oxfml_current_excel_host_locale_context;
 use oxfml_core::interface::TypedContextQueryBundle;
 use oxfml_core::seam::Locus;
@@ -13,9 +14,7 @@ use oxfml_core::test_support::oxfunc_adapter::{
     OxFuncAdapterRequest, run_oxfunc_preparation_adapter,
 };
 use oxfunc_core::functions::rand_fn::RandomProvider;
-use oxfunc_core::value::{
-    ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use oxfunc_core::value::{CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
 use serde::Deserialize;
 
 // ---------------------------------------------------------------------------
@@ -91,7 +90,7 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
         for (target, summary) in &fixture.cell_fixture {
             request
                 .cell_fixture
-                .insert(target.clone(), parse_eval_value_summary(summary));
+                .insert(target.clone(), parse_cell_fixture_summary(summary));
         }
 
         let run = match run_oxfunc_preparation_adapter(request) {
@@ -107,7 +106,7 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
 
         // Check worksheet value
         let actual_value_summary = canonicalize_value_summary(&eval_value_summary(
-            &run.evaluation_artifact.worksheet_value,
+            &CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
         ));
         let expected_value_summary = canonicalize_value_summary(&fixture.expected_value_summary);
         if actual_value_summary != expected_value_summary {
@@ -121,10 +120,8 @@ fn run_fixture_corpus(fixtures: &[FixtureCase]) -> Vec<String> {
         }
 
         // Check return surface kind
-        let actual_surface_kind = format!(
-            "{:?}",
-            run.evaluation_artifact.returned_value_surface.kind()
-        );
+        let actual_surface_kind =
+            format!("{:?}", run.evaluation_artifact.returned_value_surface.kind);
         if actual_surface_kind != fixture.expected_returned_value_surface_kind {
             failures.push(format!(
                 "{} [{}] return surface mismatch: expected {}, got {}",
@@ -251,8 +248,8 @@ fn randarray_columns_formula_preserves_generated_width_through_adapter() {
     .expect("randarray columns adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(3.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(3.0)
     );
 }
 
@@ -268,8 +265,8 @@ fn ftc_0601_exact_formula_is_calc_locally_through_adapter() {
     .expect("ftc-0601 exact adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Error(WorksheetErrorCode::Calc)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::error(WorksheetErrorCode::Calc)
     );
 }
 
@@ -285,19 +282,19 @@ fn ftc_0601_map_non_scalar_helper_probe_matches_current_local_mask_through_adapt
     .expect("ftc-0601 map probe adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Logical(false)],
-                vec![FunctionArrayCell::Error(WorksheetErrorCode::Calc)],
-                vec![FunctionArrayCell::Error(WorksheetErrorCode::Calc)],
-                vec![FunctionArrayCell::Logical(false)],
-                vec![FunctionArrayCell::Logical(true)],
-                vec![FunctionArrayCell::Logical(false)],
-                vec![FunctionArrayCell::Logical(true)],
-                vec![FunctionArrayCell::Logical(false)],
-                vec![FunctionArrayCell::Logical(false)],
-                vec![FunctionArrayCell::Logical(false)],
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::logical(false)],
+                vec![CalcValue::error(WorksheetErrorCode::Calc)],
+                vec![CalcValue::error(WorksheetErrorCode::Calc)],
+                vec![CalcValue::logical(false)],
+                vec![CalcValue::logical(true)],
+                vec![CalcValue::logical(false)],
+                vec![CalcValue::logical(true)],
+                vec![CalcValue::logical(false)],
+                vec![CalcValue::logical(false)],
+                vec![CalcValue::logical(false)],
             ])
             .unwrap(),
         )
@@ -316,8 +313,8 @@ fn ftc_0910_exact_formula_matches_scalar_330_through_adapter() {
     .expect("ftc-0910 exact adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(330.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(330.0)
     );
 }
 
@@ -333,8 +330,8 @@ fn ftc_0702_day_of_date_1900_march_zero_matches_29_through_adapter() {
     .expect("ftc-0702 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(29.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(29.0)
     );
 }
 
@@ -350,8 +347,8 @@ fn ftc_0640_len_emoji_matches_one_through_adapter() {
     .expect("ftc-0640 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(1.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(1.0)
     );
 }
 
@@ -368,8 +365,8 @@ fn ftc_0696_text_serial_zero_date_format_matches_excel_compat_string_through_ada
     .expect("ftc-0696 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Text(ExcelText::from_interop_assignment("1900-01-00"))
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::text(ExcelText::from_interop_assignment("1900-01-00"))
     );
 }
 
@@ -386,8 +383,8 @@ fn ftc_0930_exact_formula_matches_value_error_through_adapter() {
     .expect("ftc-0930 exact adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Error(WorksheetErrorCode::Value)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::error(WorksheetErrorCode::Value)
     );
 }
 
@@ -403,8 +400,8 @@ fn ftc_1032_exact_formula_matches_scalar_zero_through_adapter() {
     .expect("ftc-1032 exact adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(0.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(0.0)
     );
 }
 
@@ -420,14 +417,14 @@ fn ftc_0353_countblank_let_array_matches_retained_excel_shaped_value_errors_thro
     .expect("ftc-0353 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::error(WorksheetErrorCode::Value),
+                CalcValue::error(WorksheetErrorCode::Value),
+                CalcValue::error(WorksheetErrorCode::Value),
+                CalcValue::error(WorksheetErrorCode::Value),
+                CalcValue::error(WorksheetErrorCode::Value),
             ]])
             .unwrap(),
         )
@@ -482,7 +479,9 @@ fn multinomial_widened_empirical_machine_witnesses_match_excel_targets_through_a
         ))
         .expect("multinomial widened empirical adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        let actual = expect_number(&CalcValue::from(
+            run.evaluation_artifact.worksheet_value.clone(),
+        ));
         assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
     }
 }
@@ -511,7 +510,9 @@ fn combinatorial_adjacent_exact_controls_remain_exact_through_adapter() {
         ))
         .expect("combinatorial exact control adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        let actual = expect_number(&CalcValue::from(
+            run.evaluation_artifact.worksheet_value.clone(),
+        ));
         assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
     }
 }
@@ -528,12 +529,12 @@ fn ftc_0833_index_row_vector_selector_array_direct_call_matches_witness_through_
     .expect("ftc-0833 index adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Number(10.0)],
-                vec![FunctionArrayCell::Number(20.0)],
-                vec![FunctionArrayCell::Number(30.0)],
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(10.0)],
+                vec![CalcValue::number(20.0)],
+                vec![CalcValue::number(30.0)],
             ])
             .unwrap(),
         )
@@ -552,13 +553,13 @@ fn ftc_0836_sortby_row_vector_multi_key_direct_call_matches_witness_through_adap
     .expect("ftc-0836 sortby adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
-                FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::text(ExcelText::from_interop_assignment("b")),
+                CalcValue::text(ExcelText::from_interop_assignment("d")),
+                CalcValue::text(ExcelText::from_interop_assignment("a")),
+                CalcValue::text(ExcelText::from_interop_assignment("c")),
             ]])
             .unwrap(),
         )
@@ -577,17 +578,17 @@ fn ftc_0917_sort_row_vector_default_axis_direct_call_matches_witness_through_ada
     .expect("ftc-0917 sort adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(3.0),
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(4.0),
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(5.0),
-                FunctionArrayCell::Number(9.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(6.0),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(3.0),
+                CalcValue::number(1.0),
+                CalcValue::number(4.0),
+                CalcValue::number(1.0),
+                CalcValue::number(5.0),
+                CalcValue::number(9.0),
+                CalcValue::number(2.0),
+                CalcValue::number(6.0),
             ]])
             .unwrap(),
         )
@@ -606,14 +607,14 @@ fn ftc_0941_and_ftc_0995_isna_xmatch_direct_call_matches_logical_mask_through_ad
     .expect("ftc-0941-0995 isna adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Logical(true),
-                FunctionArrayCell::Logical(false),
-                FunctionArrayCell::Logical(true),
-                FunctionArrayCell::Logical(false),
-                FunctionArrayCell::Logical(true),
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::logical(true),
+                CalcValue::logical(false),
+                CalcValue::logical(true),
+                CalcValue::logical(false),
+                CalcValue::logical(true),
             ]])
             .unwrap(),
         )
@@ -631,7 +632,9 @@ fn ftc_0399_disc_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("disc adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = f64::from_bits(0x3f9eb851eb851eb8);
     let excel_target = f64::from_bits(0x3f9eb851eb851ec0);
 
@@ -650,7 +653,9 @@ fn ftc_0391_ppmt_exactness_witness_pins_current_local_bits_and_excel_gap_through
     ))
     .expect("ppmt adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let current_local = f64::from_bits(0xc06e09eace0506e4);
     let excel_target = f64::from_bits(0xc06e09eace050723);
 
@@ -669,7 +674,9 @@ fn ftc_0395_effect_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("effect adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = f64::from_bits(0x3faa31e46c681b80);
     let excel_target = f64::from_bits(0x3faa31e46c681bc0);
 
@@ -710,7 +717,9 @@ fn effect_widened_publication_family_rows_pin_current_local_bits_through_adapter
         ))
         .expect("effect widened family adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        let actual = expect_number(&CalcValue::from(
+            run.evaluation_artifact.worksheet_value.clone(),
+        ));
         assert_eq!(actual.to_bits(), expected.to_bits(), "{formula}");
     }
 }
@@ -738,7 +747,9 @@ fn nominal_of_effect_stays_just_below_nominal_input_for_widened_rows_through_ada
         ))
         .expect("effect nominal roundtrip adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        let actual = expect_number(&CalcValue::from(
+            run.evaluation_artifact.worksheet_value.clone(),
+        ));
         assert!(actual < 0.05, "{formula}: {actual}");
     }
 }
@@ -766,7 +777,9 @@ fn ftc_0393_and_ftc_0394_exactness_witness_rows_match_excel_targets_through_adap
         ))
         .expect("cumulative_finance exactness adapter run");
 
-        let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+        let actual = expect_number(&CalcValue::from(
+            run.evaluation_artifact.worksheet_value.clone(),
+        ));
         assert_eq!(actual.to_bits(), excel_target.to_bits(), "{formula}");
     }
 }
@@ -782,7 +795,9 @@ fn ftc_0365_correl_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0365 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = 1.0_f64;
     let excel_target = 0.9999999999999998_f64;
 
@@ -801,7 +816,9 @@ fn ftc_0366_correl_negative_exactness_witness_matches_excel_target_through_adapt
     ))
     .expect("ftc-0366 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = -1.0_f64;
     let excel_target = -0.9999999999999998_f64;
 
@@ -820,7 +837,9 @@ fn ftc_0369_rsq_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0369 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = 1.0_f64;
     let excel_target = 0.9999999999999996_f64;
 
@@ -839,7 +858,9 @@ fn ftc_0374_skew_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0374 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = 1.1180799331493771_f64;
     let excel_target = 1.1180799331493774_f64;
 
@@ -858,7 +879,9 @@ fn ftc_0375_kurt_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0375 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = -1.200000000000002_f64;
     let excel_target = -1.1999999999999984_f64;
 
@@ -877,7 +900,9 @@ fn ftc_0377_pmt_exactness_witness_pins_current_local_value_and_excel_gap() {
     ))
     .expect("ftc-0377 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let current_local = -1073.6432460242763_f64;
     let excel_target = -1073.643246024278_f64;
 
@@ -896,7 +921,9 @@ fn ftc_0381_rate_exactness_witness_pins_current_local_value_and_excel_gap_throug
     ))
     .expect("ftc-0381 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let current_local = 0.0041666445363460975_f64;
     let excel_target = 0.004166644536345589_f64;
 
@@ -915,7 +942,9 @@ fn ftc_0382_npv_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0382 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = 1188.4434123352216_f64;
     let excel_target = 1188.4434123352207_f64;
 
@@ -934,7 +963,9 @@ fn ftc_0383_irr_exactness_witness_matches_excel_target_through_adapter() {
     ))
     .expect("ftc-0383 adapter run");
 
-    let actual = expect_number(&run.evaluation_artifact.worksheet_value);
+    let actual = expect_number(&CalcValue::from(
+        run.evaluation_artifact.worksheet_value.clone(),
+    ));
     let prior_local = 0.1634056006889894_f64;
     let excel_target = 0.16340560068898924_f64;
 
@@ -954,8 +985,8 @@ fn ftc_0635_exact_formula_matches_excel_bit_value_through_adapter() {
     .expect("ftc-0635 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(-1.9999999999999998)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(-1.9999999999999998)
     );
 }
 
@@ -971,8 +1002,8 @@ fn ftc_0667_upper_sharp_s_matches_local_excel_like_probe_through_adapter() {
     .expect("ftc-0667 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Text(ExcelText::from_interop_assignment("STRAßE"))
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::text(ExcelText::from_interop_assignment("STRAßE"))
     );
 }
 
@@ -988,8 +1019,8 @@ fn ftc_1006_exact_formula_returns_201_locally_through_adapter() {
     .expect("ftc-1006 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(201.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(201.0)
     );
 }
 
@@ -1005,8 +1036,8 @@ fn ftc_1007_exact_formula_returns_6_locally_through_adapter() {
     .expect("ftc-1007 adapter run");
 
     assert_eq!(
-        run.evaluation_artifact.worksheet_value,
-        FunctionValue::Number(6.0)
+        CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+        CalcValue::number(6.0)
     );
 }
 
@@ -1038,8 +1069,8 @@ fn worksheet_text_casing_family_matches_excel_observed_matrix_through_adapter() 
         .unwrap_or_else(|_| panic!("worksheet text casing adapter run should succeed: {name}"));
 
         assert_eq!(
-            run.evaluation_artifact.worksheet_value,
-            FunctionValue::Text(ExcelText::from_interop_assignment(expected)),
+            CalcValue::from(run.evaluation_artifact.worksheet_value.clone()),
+            CalcValue::text(ExcelText::from_interop_assignment(expected)),
             "{name}"
         );
     }
@@ -1064,7 +1095,7 @@ fn fixture_dir() -> PathBuf {
         .join("fixtures")
 }
 
-fn parse_eval_value_summary(summary: &str) -> FunctionValue {
+fn parse_cell_fixture_summary(summary: &str) -> FunctionValue {
     if let Some(number) = summary
         .strip_prefix("Number(")
         .and_then(|rest| rest.strip_suffix(')'))
@@ -1107,18 +1138,19 @@ fn parse_eval_value_summary(summary: &str) -> FunctionValue {
     panic!("unsupported cell summary: {summary}");
 }
 
-fn eval_value_summary(value: &FunctionValue) -> String {
-    match value {
-        FunctionValue::Number(n) => format!("Number({n})"),
-        FunctionValue::Text(t) => format!("Text({})", t.to_string_lossy()),
-        FunctionValue::Logical(b) => format!("Logical({b})"),
-        FunctionValue::Error(code) => format!("Error({})", worksheet_error_summary(*code)),
-        FunctionValue::Array(array) => {
+fn eval_value_summary(value: &CalcValue) -> String {
+    match value.core() {
+        CoreValue::Number(n) => format!("Number({n})"),
+        CoreValue::Text(t) => format!("Text({})", t.to_string_lossy()),
+        CoreValue::Logical(b) => format!("Logical({b})"),
+        CoreValue::Error(code) => format!("Error({})", worksheet_error_summary(*code)),
+        CoreValue::Array(array) => {
             let shape = array.shape();
             format!("Array({}x{})", shape.rows, shape.cols)
         }
-        FunctionValue::Reference(reference) => format!("Reference({})", reference.target()),
-        other => format!("Unsupported({other:?})"),
+        CoreValue::Reference(reference) => format!("Reference({})", reference.target()),
+        CoreValue::Empty => "Empty".to_string(),
+        CoreValue::Missing => "Missing".to_string(),
     }
 }
 
@@ -1141,9 +1173,9 @@ fn worksheet_error_summary(code: WorksheetErrorCode) -> &'static str {
     }
 }
 
-fn expect_number(value: &FunctionValue) -> f64 {
-    match value {
-        FunctionValue::Number(n) => *n,
+fn expect_number(value: &CalcValue) -> f64 {
+    match value.core() {
+        CoreValue::Number(n) => *n,
         other => panic!("expected numeric worksheet value, got {other:?}"),
     }
 }

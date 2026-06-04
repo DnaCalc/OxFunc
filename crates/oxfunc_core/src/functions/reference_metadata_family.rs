@@ -8,7 +8,7 @@ use crate::functions::adapters::{
 };
 use crate::host_info::{HostInfoError, HostInfoProvider, SheetCountSpec, SheetIdentitySpec};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
 pub const ADDRESS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ADDRESS",
@@ -95,16 +95,14 @@ pub enum ReferenceMetadataEvalError {
     HostInfo(HostInfoError),
 }
 
-fn parse_reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, ReferenceMetadataEvalError> {
-    match arg {
-        FunctionArg::Reference(r) => Ok(r.clone()),
-        FunctionArg::Eval(FunctionValue::Reference(r)) => Ok(r.clone()),
-        _ => Err(ReferenceMetadataEvalError::InvalidReferenceArg),
-    }
+fn parse_reference_arg(arg: &CalcValue) -> Result<ReferenceLike, ReferenceMetadataEvalError> {
+    arg.as_reference()
+        .cloned()
+        .ok_or(ReferenceMetadataEvalError::InvalidReferenceArg)
 }
 
 fn coerce_required_positive_index(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, ReferenceMetadataEvalError> {
     let prepared =
@@ -119,11 +117,11 @@ fn coerce_required_positive_index(
 }
 
 fn coerce_optional_abs_num(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(1) };
-    if matches!(arg, FunctionArg::MissingArg | FunctionArg::EmptyCell) {
+    if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(1);
     }
     let prepared =
@@ -138,19 +136,19 @@ fn coerce_optional_abs_num(
 }
 
 fn coerce_optional_a1_flag(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<bool, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(true) };
-    match arg {
-        FunctionArg::MissingArg | FunctionArg::EmptyCell => return Ok(true),
-        FunctionArg::Eval(FunctionValue::Logical(b)) => return Ok(*b),
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => return Ok(true),
+        CoreValue::Logical(b) => return Ok(*b),
         _ => {}
     }
     let prepared =
         prepare_arg_values_only(arg, resolver).map_err(ReferenceMetadataEvalError::Coercion)?;
-    match &prepared {
-        crate::functions::adapters::PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(*b),
+    match prepared.core() {
+        CoreValue::Logical(b) => Ok(*b),
         _ => {
             if let Ok(number) = coerce_prepared_to_number(&prepared) {
                 return Ok(number != 0.0);
@@ -172,11 +170,11 @@ fn coerce_optional_a1_flag(
 }
 
 fn coerce_optional_sheet_text(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<String>, ReferenceMetadataEvalError> {
     let Some(arg) = arg else { return Ok(None) };
-    if matches!(arg, FunctionArg::MissingArg) {
+    if arg.is_missing() {
         return Ok(None);
     }
     let prepared =
@@ -265,9 +263,9 @@ fn count_reference_areas(reference: &ReferenceLike) -> Result<usize, ReferenceMe
 }
 
 pub fn eval_address_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ReferenceMetadataEvalError> {
+) -> Result<CalcValue, ReferenceMetadataEvalError> {
     if !ADDRESS_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
             expected_min: ADDRESS_META.arity.min,
@@ -285,14 +283,12 @@ pub fn eval_address_surface(
     if let Some(sheet_text) = sheet_text {
         address = format!("{}!{}", quote_sheet_text_if_needed(&sheet_text), address);
     }
-    Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+    Ok(CalcValue::text(ExcelText::from_utf16_code_units(
         address.encode_utf16().collect(),
     )))
 }
 
-pub fn eval_areas_surface(
-    args: &[FunctionArg],
-) -> Result<FunctionValue, ReferenceMetadataEvalError> {
+pub fn eval_areas_surface(args: &[CalcValue]) -> Result<CalcValue, ReferenceMetadataEvalError> {
     if !AREAS_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
             expected_min: AREAS_META.arity.min,
@@ -301,15 +297,13 @@ pub fn eval_areas_surface(
         });
     }
     let reference = parse_reference_arg(&args[0])?;
-    Ok(FunctionValue::Number(
-        count_reference_areas(&reference)? as f64
-    ))
+    Ok(CalcValue::number(count_reference_areas(&reference)? as f64))
 }
 
 pub fn eval_formulatext_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, ReferenceMetadataEvalError> {
+) -> Result<CalcValue, ReferenceMetadataEvalError> {
     if !FORMULATEXT_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
             expected_min: FORMULATEXT_META.arity.min,
@@ -327,10 +321,10 @@ pub fn eval_formulatext_surface(
 }
 
 pub fn eval_sheet_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, ReferenceMetadataEvalError> {
+) -> Result<CalcValue, ReferenceMetadataEvalError> {
     if !SHEET_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
             expected_min: SHEET_META.arity.min,
@@ -341,7 +335,7 @@ pub fn eval_sheet_surface(
     let provider = host_info.ok_or(ReferenceMetadataEvalError::HostInfoProviderMissing(
         "sheet_index",
     ))?;
-    let spec = if args.is_empty() || matches!(args[0], FunctionArg::MissingArg) {
+    let spec = if args.is_empty() || args[0].is_missing() {
         SheetIdentitySpec::CurrentSheet
     } else if let Ok(reference) = parse_reference_arg(&args[0]) {
         SheetIdentitySpec::Reference(reference)
@@ -359,9 +353,9 @@ pub fn eval_sheet_surface(
 }
 
 pub fn eval_sheets_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, ReferenceMetadataEvalError> {
+) -> Result<CalcValue, ReferenceMetadataEvalError> {
     if !SHEETS_META.arity.accepts(args.len()) {
         return Err(ReferenceMetadataEvalError::ArityMismatch {
             expected_min: SHEETS_META.arity.min,
@@ -372,7 +366,7 @@ pub fn eval_sheets_surface(
     let provider = host_info.ok_or(ReferenceMetadataEvalError::HostInfoProviderMissing(
         "sheet_count",
     ))?;
-    let spec = if args.is_empty() || matches!(args[0], FunctionArg::MissingArg) {
+    let spec = if args.is_empty() || args[0].is_missing() {
         SheetCountSpec::Workbook
     } else {
         SheetCountSpec::Reference(parse_reference_arg(&args[0])?)
@@ -411,7 +405,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -427,43 +421,38 @@ mod tests {
         fn query_formula_text(
             &self,
             reference: &ReferenceLike,
-        ) -> Result<FunctionValue, HostInfoError> {
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+        ) -> Result<CalcValue, HostInfoError> {
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 format!("={}", reference.target()).encode_utf16().collect(),
             )))
         }
 
-        fn query_sheet_index(
-            &self,
-            spec: &SheetIdentitySpec,
-        ) -> Result<FunctionValue, HostInfoError> {
+        fn query_sheet_index(&self, spec: &SheetIdentitySpec) -> Result<CalcValue, HostInfoError> {
             match spec {
-                SheetIdentitySpec::CurrentSheet => Ok(FunctionValue::Number(3.0)),
+                SheetIdentitySpec::CurrentSheet => Ok(CalcValue::number(3.0)),
                 SheetIdentitySpec::Reference(reference) if reference.target() == "Beta!A1" => {
-                    Ok(FunctionValue::Number(2.0))
+                    Ok(CalcValue::number(2.0))
                 }
                 SheetIdentitySpec::SheetNameText(name) if name == "Alpha" => {
-                    Ok(FunctionValue::Number(3.0))
+                    Ok(CalcValue::number(3.0))
                 }
-                SheetIdentitySpec::SheetNameText(_) => {
-                    Ok(FunctionValue::Error(WorksheetErrorCode::NA))
-                }
+                SheetIdentitySpec::SheetNameText(_) => Ok(CalcValue::error(WorksheetErrorCode::NA)),
                 _ => Err(HostInfoError::ProviderFailure {
                     detail: "unexpected sheet spec".to_string(),
                 }),
             }
         }
 
-        fn query_sheet_count(&self, spec: &SheetCountSpec) -> Result<FunctionValue, HostInfoError> {
+        fn query_sheet_count(&self, spec: &SheetCountSpec) -> Result<CalcValue, HostInfoError> {
             match spec {
-                SheetCountSpec::Workbook => Ok(FunctionValue::Number(3.0)),
+                SheetCountSpec::Workbook => Ok(CalcValue::number(3.0)),
                 SheetCountSpec::Reference(reference)
                     if reference.target() == "'Quarter 1':Alpha!A1" =>
                 {
-                    Ok(FunctionValue::Number(3.0))
+                    Ok(CalcValue::number(3.0))
                 }
                 SheetCountSpec::Reference(reference) if reference.target() == "Beta!A1" => {
-                    Ok(FunctionValue::Number(1.0))
+                    Ok(CalcValue::number(1.0))
                 }
                 _ => Err(HostInfoError::ProviderFailure {
                     detail: "unexpected sheet count spec".to_string(),
@@ -472,22 +461,22 @@ mod tests {
         }
     }
 
-    fn number_arg(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_arg(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         )))
     }
 
-    fn bool_arg(value: bool) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Logical(value))
+    fn bool_arg(value: bool) -> CalcValue {
+        (CalcValue::logical(value))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, target.to_string()))
     }
 
     #[test]
@@ -495,7 +484,7 @@ mod tests {
         let got = eval_address_surface(&[number_arg(3.0), number_arg(2.0)], &MockResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "$B$3".encode_utf16().collect(),
             )))
         );
@@ -515,7 +504,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "'Quarter 1'!R[3]C[2]".encode_utf16().collect(),
             )))
         );
@@ -529,10 +518,10 @@ mod tests {
 
     #[test]
     fn areas_counts_first_class_multi_area_members() {
-        let got = eval_areas_surface(&[FunctionArg::Reference(
+        let got = eval_areas_surface(&[CalcValue::reference(
             ReferenceLike::multi_area(vec!["A1".to_string(), "B2:B3".to_string()]).unwrap(),
         )]);
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
@@ -540,7 +529,7 @@ mod tests {
         let got = eval_formulatext_surface(&[ref_arg("A1")], Some(&MockProvider));
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "=A1".encode_utf16().collect(),
             )))
         );
@@ -550,15 +539,15 @@ mod tests {
     fn sheet_supports_current_reference_and_text_spec() {
         assert_eq!(
             eval_sheet_surface(&[], &MockResolver, Some(&MockProvider)),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
         assert_eq!(
             eval_sheet_surface(&[ref_arg("Beta!A1")], &MockResolver, Some(&MockProvider)),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert_eq!(
             eval_sheet_surface(&[text_arg("Alpha")], &MockResolver, Some(&MockProvider)),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
     }
 
@@ -566,11 +555,11 @@ mod tests {
     fn sheets_supports_workbook_and_reference_specs() {
         assert_eq!(
             eval_sheets_surface(&[], Some(&MockProvider)),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
         assert_eq!(
             eval_sheets_surface(&[ref_arg("'Quarter 1':Alpha!A1")], Some(&MockProvider)),
-            Ok(FunctionValue::Number(3.0))
+            Ok(CalcValue::number(3.0))
         );
     }
 }

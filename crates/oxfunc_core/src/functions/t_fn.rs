@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const T_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.T",
@@ -33,40 +32,40 @@ fn empty_text() -> ExcelText {
     ExcelText::from_utf16_code_units(Vec::new())
 }
 
-fn map_array(array: &FunctionArray) -> FunctionArray {
+fn map_array(array: &CalcArray) -> CalcArray {
     let cells = array
         .iter_row_major()
-        .map(|cell| match cell {
-            FunctionArrayCell::Text(t) => FunctionArrayCell::Text(t.clone()),
-            FunctionArrayCell::Error(code) => FunctionArrayCell::Error(*code),
-            FunctionArrayCell::Number(_)
-            | FunctionArrayCell::Logical(_)
-            | FunctionArrayCell::EmptyCell => FunctionArrayCell::Text(empty_text()),
+        .map(|cell| match cell.core() {
+            CoreValue::Text(t) => CalcValue::text(t.clone()),
+            CoreValue::Error(code) => CalcValue::error(*code),
+            CoreValue::Number(_)
+            | CoreValue::Logical(_)
+            | CoreValue::Empty
+            | CoreValue::Missing => CalcValue::text(empty_text()),
+            CoreValue::Array(_) | CoreValue::Reference(_) => {
+                CalcValue::error(WorksheetErrorCode::Value)
+            }
         })
         .collect();
-    FunctionArray::new(array.shape(), cells).expect("shape preserved")
+    CalcArray::new(array.shape(), cells).expect("shape preserved")
 }
 
-fn map_prepared(prepared: PreparedValue) -> FunctionValue {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionValue::Text(t),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionValue::Error(code),
-        PreparedValue::Eval(FunctionValue::Array(array)) => FunctionValue::Array(map_array(&array)),
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionValue::Error(WorksheetErrorCode::Value)
+fn map_prepared(prepared: CalcValue) -> CalcValue {
+    match prepared.core() {
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Array(array) => CalcValue::array(map_array(array)),
+        CoreValue::Reference(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Number(_) | CoreValue::Logical(_) | CoreValue::Missing | CoreValue::Empty => {
+            CalcValue::text(empty_text())
         }
-        PreparedValue::Eval(FunctionValue::Number(_))
-        | PreparedValue::Eval(FunctionValue::Logical(_))
-        | PreparedValue::MissingArg
-        | PreparedValue::EmptyCell => FunctionValue::Text(empty_text()),
-        _ => FunctionValue::Text(empty_text()),
     }
 }
 
 pub fn eval_t_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TEvalError> {
+) -> Result<CalcValue, TEvalError> {
     if !T_META.arity.accepts(args.len()) {
         return Err(TEvalError::ArityMismatch {
             expected: T_META.arity.min,
@@ -89,7 +88,7 @@ pub fn map_t_error_to_ws(e: &TEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::FunctionArg;
+    use crate::value::CalcValue;
 
     struct NoResolver;
 
@@ -101,7 +100,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -114,11 +113,8 @@ mod tests {
     #[test]
     fn eval_t_maps_number_to_empty_string() {
         assert_eq!(
-            eval_t_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(42.0))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Text(empty_text()))
+            eval_t_surface(&[(CalcValue::number(42.0))], &NoResolver),
+            Ok(CalcValue::text(empty_text()))
         );
     }
 }

@@ -1,4 +1,4 @@
-use crate::value::{ArrayShape, ExcelText, FunctionValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{ArrayShape, CalcValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CellInfoQuery {
@@ -154,26 +154,23 @@ pub trait HostInfoProvider {
         &self,
         query: CellInfoQuery,
         _reference: Option<&ReferenceLike>,
-    ) -> Result<FunctionValue, HostInfoError> {
+    ) -> Result<CalcValue, HostInfoError> {
         Err(HostInfoError::UnsupportedCellInfoQuery(query))
     }
 
-    fn query_info(&self, query: InfoQuery) -> Result<FunctionValue, HostInfoError> {
+    fn query_info(&self, query: InfoQuery) -> Result<CalcValue, HostInfoError> {
         Err(HostInfoError::UnsupportedInfoQuery(query))
     }
 
-    fn query_formula_text(
-        &self,
-        _reference: &ReferenceLike,
-    ) -> Result<FunctionValue, HostInfoError> {
+    fn query_formula_text(&self, _reference: &ReferenceLike) -> Result<CalcValue, HostInfoError> {
         Err(HostInfoError::UnsupportedFormulaTextQuery)
     }
 
-    fn query_sheet_index(&self, _spec: &SheetIdentitySpec) -> Result<FunctionValue, HostInfoError> {
+    fn query_sheet_index(&self, _spec: &SheetIdentitySpec) -> Result<CalcValue, HostInfoError> {
         Err(HostInfoError::UnsupportedSheetIndexQuery)
     }
 
-    fn query_sheet_count(&self, _spec: &SheetCountSpec) -> Result<FunctionValue, HostInfoError> {
+    fn query_sheet_count(&self, _spec: &SheetCountSpec) -> Result<CalcValue, HostInfoError> {
         Err(HostInfoError::UnsupportedSheetCountQuery)
     }
 

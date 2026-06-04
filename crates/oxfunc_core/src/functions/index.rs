@@ -7,10 +7,8 @@ use crate::resolver::{
     ReferenceSystemError, ReferenceSystemProvider, ReferenceTransformKind,
     ReferenceTransformRequest, enumerate_reference_values,
 };
-use crate::value::{
-    ArrayShape, CalcArray, CalcValue, CoreValue, ExcelText, FunctionArg, FunctionArray,
-    FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{ArrayShape, CalcArray, CoreValue, ExcelText, WorksheetErrorCode};
 
 pub const INDEX_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INDEX",
@@ -50,11 +48,11 @@ pub enum IndexEvalError {
 #[derive(Debug, Clone, PartialEq)]
 enum ArrayIndexSelector {
     Scalar(usize),
-    SelectorArray(FunctionArray),
+    SelectorArray(CalcArray),
 }
 
 fn coerce_index_number(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     let n = coerce_arg_to_number(arg, resolver).map_err(IndexEvalError::Coercion)?;
@@ -65,14 +63,16 @@ fn coerce_index_number(
 }
 
 fn coerce_optional_index_number(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<usize, IndexEvalError> {
     match arg {
         None => Ok(omitted_default),
-        Some(FunctionArg::MissingArg | FunctionArg::EmptyCell) => Ok(blank_default),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => {
+            Ok(blank_default)
+        }
         Some(other) => coerce_index_number(other, resolver),
     }
 }
@@ -100,12 +100,12 @@ fn coerce_optional_calc_index_number(
 }
 
 fn coerce_area_number(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<usize, IndexEvalError> {
     match arg {
         None => Ok(1),
-        Some(FunctionArg::MissingArg | FunctionArg::EmptyCell) => Ok(1),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => Ok(1),
         Some(other) => {
             let n = coerce_arg_to_number(other, resolver).map_err(IndexEvalError::Coercion)?;
             if !n.is_finite() || n < 1.0 || n.fract() != 0.0 {
@@ -117,32 +117,36 @@ fn coerce_area_number(
 }
 
 fn coerce_array_index_selector(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     omitted_default: usize,
     blank_default: usize,
 ) -> Result<ArrayIndexSelector, IndexEvalError> {
     match arg {
         None => Ok(ArrayIndexSelector::Scalar(omitted_default)),
-        Some(FunctionArg::MissingArg | FunctionArg::EmptyCell) => {
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => {
             Ok(ArrayIndexSelector::Scalar(blank_default))
         }
-        Some(FunctionArg::Eval(FunctionValue::Array(array))) => {
+        Some(value) if matches!(value.core(), CoreValue::Array(_)) => {
+            let CoreValue::Array(array) = value.core() else {
+                unreachable!("guarded array")
+            };
             Ok(ArrayIndexSelector::SelectorArray(array.clone()))
         }
         Some(other) => coerce_index_number(other, resolver).map(ArrayIndexSelector::Scalar),
     }
 }
 
-fn cell_to_eval_value(cell: &FunctionArrayCell) -> FunctionValue {
-    match cell {
-        FunctionArrayCell::Number(n) => FunctionValue::Number(*n),
-        FunctionArrayCell::Text(t) => FunctionValue::Text(t.clone()),
-        FunctionArrayCell::Logical(b) => FunctionValue::Logical(*b),
-        FunctionArrayCell::Error(code) => FunctionValue::Error(*code),
-        FunctionArrayCell::EmptyCell => {
-            FunctionValue::Text(ExcelText::from_utf16_code_units(Vec::new()))
+fn cell_to_eval_value(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => {
+            CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))
         }
+        CoreValue::Array(_) | CoreValue::Reference(_) => cell.clone(),
     }
 }
 
@@ -164,23 +168,19 @@ fn scalar_calc_array_from_value(value: &CalcValue) -> Option<CalcArray> {
     }
 }
 
-fn scalar_array_from_eval_value(value: &FunctionValue) -> Option<FunctionArray> {
-    let cell = match value {
-        FunctionValue::Number(n) => FunctionArrayCell::Number(*n),
-        FunctionValue::Text(t) => FunctionArrayCell::Text(t.clone()),
-        FunctionValue::Logical(b) => FunctionArrayCell::Logical(*b),
-        FunctionValue::Error(code) => FunctionArrayCell::Error(*code),
-        FunctionValue::Array(_) | FunctionValue::Reference(_) => return None,
+fn scalar_array_from_eval_value(value: &CalcValue) -> Option<CalcArray> {
+    let cell = match value.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Array(_) | CoreValue::Reference(_) => return None,
         _ => return None,
     };
-    Some(FunctionArray::from_scalar(cell))
+    CalcArray::from_scalar(cell)
 }
 
-fn slice_array(
-    array: &FunctionArray,
-    row: usize,
-    col: usize,
-) -> Result<FunctionValue, IndexEvalError> {
+fn slice_array(array: &CalcArray, row: usize, col: usize) -> Result<CalcValue, IndexEvalError> {
     let shape = array.shape();
     if row > shape.rows || col > shape.cols {
         return Err(IndexEvalError::OutOfBounds {
@@ -192,7 +192,7 @@ fn slice_array(
     }
 
     match (row, col) {
-        (0, 0) => Ok(FunctionValue::Array(array.clone())),
+        (0, 0) => Ok(CalcValue::array(array.clone())),
         (0, c) => {
             let mut cells = Vec::with_capacity(shape.rows);
             for r in 0..shape.rows {
@@ -203,8 +203,8 @@ fn slice_array(
                         .expect("column bounds validated"),
                 );
             }
-            Ok(FunctionValue::Array(
-                FunctionArray::new(
+            Ok(CalcValue::array(
+                CalcArray::new(
                     ArrayShape {
                         rows: shape.rows,
                         cols: 1,
@@ -214,8 +214,8 @@ fn slice_array(
                 .expect("slice dimensions validated"),
             ))
         }
-        (r, 0) => Ok(FunctionValue::Array(
-            FunctionArray::new(
+        (r, 0) => Ok(CalcValue::array(
+            CalcArray::new(
                 ArrayShape {
                     rows: 1,
                     cols: shape.cols,
@@ -292,15 +292,15 @@ fn slice_calc_array(
 }
 
 fn normalize_array_indices_for_vector_position(
-    array: &FunctionArray,
+    array: &CalcArray,
     row: usize,
     col: usize,
-    col_arg: Option<&FunctionArg>,
+    col_arg: Option<&CalcValue>,
 ) -> (usize, usize) {
     let shape = array.shape();
     let col_omitted = matches!(
-        col_arg,
-        None | Some(FunctionArg::MissingArg | FunctionArg::EmptyCell)
+        col_arg.map(CalcValue::core),
+        None | Some(CoreValue::Missing | CoreValue::Empty)
     );
 
     if !col_omitted || row == 0 {
@@ -337,17 +337,25 @@ fn normalize_calc_array_indices_for_vector_position(
     (row, col)
 }
 
-fn coerce_selector_cell_to_index(cell: &FunctionArrayCell) -> Result<usize, IndexEvalError> {
+fn coerce_selector_cell_to_index(cell: &CalcValue) -> Result<usize, IndexEvalError> {
     match cell {
-        FunctionArrayCell::Number(n) => {
+        value if matches!(value.core(), CoreValue::Number(_)) => {
+            let CoreValue::Number(n) = value.core() else {
+                unreachable!("guarded number")
+            };
             if !n.is_finite() || *n < 1.0 || n.fract() != 0.0 {
                 return Err(IndexEvalError::InvalidIndexNumber(*n));
             }
             Ok(*n as usize)
         }
-        FunctionArrayCell::Error(code) => Err(IndexEvalError::Coercion(
-            CoercionError::WorksheetError(*code),
-        )),
+        value if matches!(value.core(), CoreValue::Error(_)) => {
+            let CoreValue::Error(code) = value.core() else {
+                unreachable!("guarded error")
+            };
+            Err(IndexEvalError::Coercion(CoercionError::WorksheetError(
+                *code,
+            )))
+        }
         _ => Err(IndexEvalError::Coercion(
             CoercionError::UnsupportedValueKind("array_index_selector"),
         )),
@@ -355,9 +363,9 @@ fn coerce_selector_cell_to_index(cell: &FunctionArrayCell) -> Result<usize, Inde
 }
 
 fn vector_cell_at_position(
-    array: &FunctionArray,
+    array: &CalcArray,
     position: usize,
-) -> Result<FunctionArrayCell, IndexEvalError> {
+) -> Result<CalcValue, IndexEvalError> {
     let shape = array.shape();
     if shape.rows == 1 {
         if position == 0 || position > shape.cols {
@@ -388,35 +396,35 @@ fn vector_cell_at_position(
 }
 
 fn select_vector_positions(
-    array: &FunctionArray,
-    selector: &FunctionArray,
-) -> Result<FunctionValue, IndexEvalError> {
+    array: &CalcArray,
+    selector: &CalcArray,
+) -> Result<CalcValue, IndexEvalError> {
     let cells = selector
         .iter_row_major()
         .map(|cell| {
             coerce_selector_cell_to_index(cell).and_then(|idx| vector_cell_at_position(array, idx))
         })
         .collect::<Result<Vec<_>, _>>()?;
-    Ok(FunctionValue::Array(
-        FunctionArray::new(selector.shape(), cells).expect("selector shape preserved"),
+    Ok(CalcValue::array(
+        CalcArray::new(selector.shape(), cells).expect("selector shape preserved"),
     ))
 }
 
 fn try_slice_vector_with_selector_array(
-    array: &FunctionArray,
+    array: &CalcArray,
     row_selector: &ArrayIndexSelector,
     col_selector: &ArrayIndexSelector,
-    row_arg: Option<&FunctionArg>,
-    col_arg: Option<&FunctionArg>,
-) -> Result<Option<FunctionValue>, IndexEvalError> {
+    row_arg: Option<&CalcValue>,
+    col_arg: Option<&CalcValue>,
+) -> Result<Option<CalcValue>, IndexEvalError> {
     let shape = array.shape();
     let row_omitted = matches!(
-        row_arg,
-        None | Some(FunctionArg::MissingArg | FunctionArg::EmptyCell)
+        row_arg.map(CalcValue::core),
+        None | Some(CoreValue::Missing | CoreValue::Empty)
     );
     let col_omitted = matches!(
-        col_arg,
-        None | Some(FunctionArg::MissingArg | FunctionArg::EmptyCell)
+        col_arg.map(CalcValue::core),
+        None | Some(CoreValue::Missing | CoreValue::Empty)
     );
 
     if ((shape.rows == 1 && shape.cols >= 1) || (shape.cols == 1 && shape.rows >= 1)) && col_omitted
@@ -436,9 +444,9 @@ fn try_slice_vector_with_selector_array(
 }
 
 pub fn eval_index_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, IndexEvalError> {
+) -> Result<CalcValue, IndexEvalError> {
     let argc = args.len();
     if !INDEX_META.arity.accepts(argc) {
         return Err(IndexEvalError::ArityMismatch {
@@ -448,8 +456,8 @@ pub fn eval_index_surface(
         });
     }
 
-    match &args[0] {
-        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => {
+    match args[0].core() {
+        CoreValue::Reference(r) => {
             let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
             let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
             let area = coerce_area_number(args.get(3), resolver)?;
@@ -475,10 +483,10 @@ pub fn eval_index_surface(
                     reference: r.clone(),
                     transform: ReferenceTransformKind::Index { row, col, area },
                 })
-                .map(FunctionValue::Reference)
+                .map(CalcValue::reference)
                 .map_err(IndexEvalError::ReferenceSystem)
         }
-        FunctionArg::Eval(FunctionValue::Array(array)) => {
+        CoreValue::Array(array) => {
             let row_selector = coerce_array_index_selector(args.get(1), resolver, 0, 0)?;
             let col_selector = coerce_array_index_selector(args.get(2), resolver, 1, 0)?;
             if let Some(selected) = try_slice_vector_with_selector_array(
@@ -500,16 +508,17 @@ pub fn eval_index_surface(
                 normalize_array_indices_for_vector_position(array, row, col, args.get(2));
             slice_array(array, row, col)
         }
-        FunctionArg::Eval(value) => {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            let value = &args[0];
             let row = coerce_optional_index_number(args.get(1), resolver, 0, 0)?;
             let col = coerce_optional_index_number(args.get(2), resolver, 1, 0)?;
-            if let FunctionValue::Error(code) = value {
-                return Ok(FunctionValue::Error(*code));
+            if let CoreValue::Error(code) = value.core() {
+                return Ok(CalcValue::error(*code));
             }
             if row == 1
                 && col == 0
                 && scalar_array_from_eval_value(value).is_some()
-                && matches!(args.get(2), Some(arg) if !matches!(arg, FunctionArg::MissingArg | FunctionArg::EmptyCell))
+                && matches!(args.get(2), Some(arg) if !matches!(arg.core(), CoreValue::Missing | CoreValue::Empty))
             {
                 return Ok(value.clone());
             }
@@ -520,8 +529,8 @@ pub fn eval_index_surface(
                 normalize_array_indices_for_vector_position(&array, row, col, args.get(2));
             slice_array(&array, row, col)
         }
-        FunctionArg::MissingArg => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
-        FunctionArg::EmptyCell => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
+        CoreValue::Missing => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
+        CoreValue::Empty => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
     }
 }
 
@@ -599,7 +608,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -632,14 +641,14 @@ mod tests {
     #[test]
     fn eval_index_reference_projection_projects_actual_a1_target() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(1.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "A2".to_string()
             )))
@@ -649,113 +658,101 @@ mod tests {
     #[test]
     fn eval_index_array_position_returns_payload_value() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0),
-                    ],
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
+                    vec![CalcValue::number(5.0), CalcValue::number(6.0)],
                 ])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(1.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
     fn eval_index_row_vector_single_position_uses_vector_semantics() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Number(30.0),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(30.0),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(20.0)));
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
     fn eval_index_column_vector_single_position_uses_vector_semantics() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(10.0)],
-                    vec![FunctionArrayCell::Number(20.0)],
-                    vec![FunctionArrayCell::Number(30.0)],
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0)],
                 ])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(20.0)));
+        assert_eq!(got, Ok(CalcValue::number(20.0)));
     }
 
     #[test]
     fn eval_index_scalar_source_treated_as_single_cell_array() {
-        let args = [
-            FunctionArg::Eval(FunctionValue::Number(42.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-        ];
+        let args = [(CalcValue::number(42.0)), (CalcValue::number(1.0))];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(42.0)));
+        assert_eq!(got, Ok(CalcValue::number(42.0)));
     }
 
     #[test]
     fn ftc_1032_index_scalar_source_with_explicit_zero_column_returns_scalar() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Number(0.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(0.0)),
+            (CalcValue::number(0.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(0.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn ftc_0930_index_error_source_propagates_value_error() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Value)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            (CalcValue::error(WorksheetErrorCode::Value)),
+            (CalcValue::number(3.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Value)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Value)));
     }
 
     #[test]
     fn ftc_0833_index_row_vector_selector_array_direct_call_returns_first_three_values() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Number(40.0),
-                    FunctionArrayCell::Number(50.0),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(30.0),
+                    CalcValue::number(40.0),
+                    CalcValue::number(50.0),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
                 ])
                 .unwrap(),
             )),
@@ -763,11 +760,11 @@ mod tests {
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(10.0)],
-                    vec![FunctionArrayCell::Number(20.0)],
-                    vec![FunctionArrayCell::Number(30.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0)],
                 ])
                 .unwrap()
             ))
@@ -777,29 +774,29 @@ mod tests {
     #[test]
     fn ftc_0910_index_row_vector_omitted_row_vector_column_selector_returns_first_five_values() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Number(40.0),
-                    FunctionArrayCell::Number(50.0),
-                    FunctionArrayCell::Number(60.0),
-                    FunctionArrayCell::Number(70.0),
-                    FunctionArrayCell::Number(80.0),
-                    FunctionArrayCell::Number(90.0),
-                    FunctionArrayCell::Number(100.0),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(30.0),
+                    CalcValue::number(40.0),
+                    CalcValue::number(50.0),
+                    CalcValue::number(60.0),
+                    CalcValue::number(70.0),
+                    CalcValue::number(80.0),
+                    CalcValue::number(90.0),
+                    CalcValue::number(100.0),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
-                    vec![FunctionArrayCell::Number(5.0)],
+            CalcValue::missing(),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(5.0)],
                 ])
                 .unwrap(),
             )),
@@ -807,13 +804,13 @@ mod tests {
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(10.0)],
-                    vec![FunctionArrayCell::Number(20.0)],
-                    vec![FunctionArrayCell::Number(30.0)],
-                    vec![FunctionArrayCell::Number(40.0)],
-                    vec![FunctionArrayCell::Number(50.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0)],
+                    vec![CalcValue::number(40.0)],
+                    vec![CalcValue::number(50.0)],
                 ])
                 .unwrap()
             ))
@@ -823,29 +820,29 @@ mod tests {
     #[test]
     fn ftc_0910_index_row_vector_omitted_row_vector_column_selector_returns_last_five_values() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Number(40.0),
-                    FunctionArrayCell::Number(50.0),
-                    FunctionArrayCell::Number(60.0),
-                    FunctionArrayCell::Number(70.0),
-                    FunctionArrayCell::Number(80.0),
-                    FunctionArrayCell::Number(90.0),
-                    FunctionArrayCell::Number(100.0),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(30.0),
+                    CalcValue::number(40.0),
+                    CalcValue::number(50.0),
+                    CalcValue::number(60.0),
+                    CalcValue::number(70.0),
+                    CalcValue::number(80.0),
+                    CalcValue::number(90.0),
+                    CalcValue::number(100.0),
                 ]])
                 .unwrap(),
             )),
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(6.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
-                    vec![FunctionArrayCell::Number(8.0)],
-                    vec![FunctionArrayCell::Number(9.0)],
-                    vec![FunctionArrayCell::Number(10.0)],
+            CalcValue::missing(),
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(6.0)],
+                    vec![CalcValue::number(7.0)],
+                    vec![CalcValue::number(8.0)],
+                    vec![CalcValue::number(9.0)],
+                    vec![CalcValue::number(10.0)],
                 ])
                 .unwrap(),
             )),
@@ -853,13 +850,13 @@ mod tests {
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(60.0)],
-                    vec![FunctionArrayCell::Number(70.0)],
-                    vec![FunctionArrayCell::Number(80.0)],
-                    vec![FunctionArrayCell::Number(90.0)],
-                    vec![FunctionArrayCell::Number(100.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(60.0)],
+                    vec![CalcValue::number(70.0)],
+                    vec![CalcValue::number(80.0)],
+                    vec![CalcValue::number(90.0)],
+                    vec![CalcValue::number(100.0)],
                 ])
                 .unwrap()
             ))
@@ -869,21 +866,15 @@ mod tests {
     #[test]
     fn eval_index_array_bounds_checked() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            (CalcValue::number(3.0)),
+            (CalcValue::number(1.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
@@ -900,29 +891,23 @@ mod tests {
     #[test]
     fn eval_index_array_zero_row_returns_column_array() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(0.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(0.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(4.0)],
                 ])
                 .unwrap()
             ))
@@ -932,10 +917,10 @@ mod tests {
     #[test]
     fn eval_index_invalid_area_num_rejected() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:C3".to_string())),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Err(IndexEvalError::InvalidAreaNumber(2.0)));
@@ -944,28 +929,28 @@ mod tests {
     #[test]
     fn eval_index_missing_row_and_col_follow_excel_defaults() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
+            CalcValue::missing(),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "C1:C2".to_string()
             )))
         );
 
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::MissingArg,
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "B1:C2".to_string())),
+            (CalcValue::number(2.0)),
+            CalcValue::missing(),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "B2:C2".to_string()
             )))
@@ -975,18 +960,18 @@ mod tests {
     #[test]
     fn eval_index_multi_area_reference_selects_area_num() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(
+            CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(A1:A2,G1:G2)".to_string(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "G2".to_string()
             )))
@@ -996,12 +981,12 @@ mod tests {
     #[test]
     fn eval_index_multi_area_transform_failure_is_reported_from_provider() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(
+            CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(Sheet1!A1:A2,Sheet2!G1:G2)".to_string(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(1.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(
@@ -1017,13 +1002,13 @@ mod tests {
     #[test]
     fn eval_index_rejects_legacy_parenthesized_area_carrier() {
         let args = [
-            FunctionArg::Reference(ReferenceLike::new(
+            CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "(A1:A2,G1:G2)".to_string(),
             )),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_index_surface(&args, &NoResolver);
         assert_eq!(got, Err(IndexEvalError::InvalidAreaNumber(2.0)));

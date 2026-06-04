@@ -3,11 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, run_values_only_prepared};
+use crate::functions::adapters::run_values_only_prepared;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const HSTACK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.HSTACK",
@@ -33,31 +31,27 @@ pub enum HstackEvalError {
     Preparation(CoercionError),
 }
 
-fn scalar_cell(arg: &PreparedValue) -> FunctionArrayCell {
-    match arg {
-        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionArrayCell::Number(*n),
-        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t.clone()),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(*b),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(*code),
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionArrayCell::Error(WorksheetErrorCode::Value)
+fn scalar_cell(arg: &CalcValue) -> CalcValue {
+    match arg.core() {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            arg.clone()
         }
-        PreparedValue::Eval(FunctionValue::Array(_)) => unreachable!(),
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => FunctionArrayCell::EmptyCell,
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        CoreValue::Reference(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Array(_) => unreachable!(),
+        CoreValue::Missing | CoreValue::Empty => CalcValue::empty(),
     }
 }
 
 enum HstackArgSource<'a> {
-    Array(&'a FunctionArray),
-    Scalar(FunctionArrayCell),
+    Array(&'a CalcArray),
+    Scalar(CalcValue),
 }
 
 impl<'a> HstackArgSource<'a> {
-    fn new(arg: &'a PreparedValue) -> Self {
-        match arg {
-            PreparedValue::Eval(FunctionValue::Array(array)) => Self::Array(array),
-            other => Self::Scalar(scalar_cell(other)),
+    fn new(arg: &'a CalcValue) -> Self {
+        match arg.core() {
+            CoreValue::Array(array) => Self::Array(array),
+            _ => Self::Scalar(scalar_cell(arg)),
         }
     }
 
@@ -68,7 +62,7 @@ impl<'a> HstackArgSource<'a> {
         }
     }
 
-    fn get(&self, row: usize, col: usize) -> Option<&FunctionArrayCell> {
+    fn get(&self, row: usize, col: usize) -> Option<&CalcValue> {
         match self {
             Self::Array(array) => array.get(row, col),
             Self::Scalar(cell) if row == 0 && col == 0 => Some(cell),
@@ -77,9 +71,7 @@ impl<'a> HstackArgSource<'a> {
     }
 }
 
-pub fn eval_hstack_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, HstackEvalError> {
+pub fn eval_hstack_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, HstackEvalError> {
     let argc = args.len();
     if !HSTACK_META.arity.accepts(argc) {
         return Err(HstackEvalError::ArityMismatch {
@@ -97,8 +89,8 @@ pub fn eval_hstack_adapter_prepared(
         .unwrap_or(1);
     let cols = sources.iter().map(|source| source.shape().cols).sum();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::from_cells_iter(
+    Ok(CalcValue::array(
+        CalcArray::from_cells_iter(
             ArrayShape { rows, cols },
             (0..rows).flat_map(|row| {
                 sources.iter().flat_map(move |source| {
@@ -106,7 +98,7 @@ pub fn eval_hstack_adapter_prepared(
                         source
                             .get(row, col)
                             .cloned()
-                            .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA))
+                            .unwrap_or(CalcValue::error(WorksheetErrorCode::NA))
                     })
                 })
             }),
@@ -116,9 +108,9 @@ pub fn eval_hstack_adapter_prepared(
 }
 
 pub fn eval_hstack_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, HstackEvalError> {
+) -> Result<CalcValue, HstackEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -151,7 +143,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -165,36 +157,30 @@ mod tests {
     fn eval_hstack_combines_scalar_and_array_shapes() {
         let got = eval_hstack_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(1.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(1.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        CalcValue::number(3.0),
+                        CalcValue::number(4.0),
+                        CalcValue::error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()
@@ -206,8 +192,8 @@ mod tests {
     fn eval_hstack_preserves_empty_scalar_cells() {
         let got = eval_hstack_surface(
             &[
-                FunctionArg::EmptyCell,
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                CalcValue::empty(),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
             ],
@@ -215,10 +201,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::EmptyCell,
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::empty(),
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "x".encode_utf16().collect(),
                     )),
                 ]])
@@ -231,30 +217,28 @@ mod tests {
     fn eval_hstack_pads_shorter_scalar_argument_with_na() {
         let got = eval_hstack_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                    Vec::new(),
-                ))),
+                (CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(Vec::new())),
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_utf16_code_units(Vec::new())),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        CalcValue::number(2.0),
+                        CalcValue::error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()

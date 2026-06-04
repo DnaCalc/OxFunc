@@ -4,7 +4,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{FunctionArg, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
+use crate::value::WorksheetErrorCode;
+use crate::value::{CalcValue, CoreValue};
 
 const SUMPRODUCT_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMPRODUCT_BASE",
@@ -81,17 +82,17 @@ struct OptionalNumericRect {
     values: Vec<Option<f64>>,
 }
 
-fn scalar_text_number(value: &FunctionValue) -> Result<f64, SumproductEvalError> {
-    match value {
-        FunctionValue::Number(n) => Ok(*n),
-        FunctionValue::Text(t) => t
+fn scalar_text_number(value: &CalcValue) -> Result<f64, SumproductEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(*n),
+        CoreValue::Text(t) => t
             .to_string_lossy()
             .trim()
             .parse::<f64>()
             .ok()
             .ok_or(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
-        FunctionValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
-        FunctionValue::Logical(_) | FunctionValue::Array(_) | FunctionValue::Reference(_) => {
+        CoreValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
+        CoreValue::Logical(_) | CoreValue::Array(_) | CoreValue::Reference(_) => {
             Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
@@ -99,40 +100,42 @@ fn scalar_text_number(value: &FunctionValue) -> Result<f64, SumproductEvalError>
 }
 
 fn resolve_eval(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
-    match arg {
-        FunctionArg::Reference(r) | FunctionArg::Eval(FunctionValue::Reference(r)) => {
+) -> Result<CalcValue, SumproductEvalError> {
+    match arg.core() {
+        CoreValue::Reference(r) => {
             let resolved = resolve_eval_value(resolver, r)
                 .map_err(|e| SumproductEvalError::Coercion(CoercionError::RefResolution(e)))?;
-            resolve_eval(&FunctionArg::Eval(resolved), resolver)
+            resolve_eval(&(resolved), resolver)
         }
-        FunctionArg::Eval(v) => Ok(v.clone()),
-        FunctionArg::MissingArg | FunctionArg::EmptyCell => {
+        CoreValue::Missing | CoreValue::Empty => {
             Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
         }
+        _ => Ok(arg.clone()),
     }
 }
 
 fn to_sumproduct_rect(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<NumericRect, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
-    match eval {
-        FunctionValue::Array(array) => {
+    match eval.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let mut values = Vec::with_capacity(shape.rows * shape.cols);
             for cell in array.iter_row_major() {
-                values.push(match cell {
-                    FunctionArrayCell::Number(n) => *n,
-                    FunctionArrayCell::Error(code) => {
+                values.push(match cell.core() {
+                    CoreValue::Number(n) => *n,
+                    CoreValue::Error(code) => {
                         return Err(SumproductEvalError::Domain(*code));
                     }
-                    FunctionArrayCell::Text(_)
-                    | FunctionArrayCell::Logical(_)
-                    | FunctionArrayCell::EmptyCell => 0.0,
+                    CoreValue::Text(_)
+                    | CoreValue::Logical(_)
+                    | CoreValue::Empty
+                    | CoreValue::Missing => 0.0,
+                    CoreValue::Array(_) | CoreValue::Reference(_) => 0.0,
                 });
             }
             Ok(NumericRect {
@@ -143,38 +146,40 @@ fn to_sumproduct_rect(
                 values,
             })
         }
-        FunctionValue::Number(n) => Ok(NumericRect {
+        CoreValue::Number(n) => Ok(NumericRect {
             shape: RectShape { rows: 1, cols: 1 },
-            values: vec![n],
+            values: vec![*n],
         }),
-        FunctionValue::Text(_) | FunctionValue::Logical(_) => Ok(NumericRect {
+        CoreValue::Text(_) | CoreValue::Logical(_) => Ok(NumericRect {
             shape: RectShape { rows: 1, cols: 1 },
             values: vec![0.0],
         }),
-        FunctionValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        FunctionValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        CoreValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
+        CoreValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
         _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
 fn to_optional_numeric_rect(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<OptionalNumericRect, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
-    match eval {
-        FunctionValue::Array(array) => {
+    match eval.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let mut values = Vec::with_capacity(shape.rows * shape.cols);
             for cell in array.iter_row_major() {
-                values.push(match cell {
-                    FunctionArrayCell::Number(n) => Some(*n),
-                    FunctionArrayCell::Error(code) => {
+                values.push(match cell.core() {
+                    CoreValue::Number(n) => Some(*n),
+                    CoreValue::Error(code) => {
                         return Err(SumproductEvalError::Domain(*code));
                     }
-                    FunctionArrayCell::Text(_)
-                    | FunctionArrayCell::Logical(_)
-                    | FunctionArrayCell::EmptyCell => None,
+                    CoreValue::Text(_)
+                    | CoreValue::Logical(_)
+                    | CoreValue::Empty
+                    | CoreValue::Missing => None,
+                    CoreValue::Array(_) | CoreValue::Reference(_) => None,
                 });
             }
             Ok(OptionalNumericRect {
@@ -185,16 +190,16 @@ fn to_optional_numeric_rect(
                 values,
             })
         }
-        FunctionValue::Number(n) => Ok(OptionalNumericRect {
+        CoreValue::Number(n) => Ok(OptionalNumericRect {
             shape: RectShape { rows: 1, cols: 1 },
-            values: vec![Some(n)],
+            values: vec![Some(*n)],
         }),
-        FunctionValue::Text(_) | FunctionValue::Logical(_) => Ok(OptionalNumericRect {
+        CoreValue::Text(_) | CoreValue::Logical(_) => Ok(OptionalNumericRect {
             shape: RectShape { rows: 1, cols: 1 },
             values: vec![None],
         }),
-        FunctionValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        FunctionValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
+        CoreValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
+        CoreValue::Reference(_) => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
         _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
@@ -208,9 +213,9 @@ fn shapes_match<T>(rects: &[T], shape_of: impl Fn(&T) -> RectShape) -> bool {
 }
 
 fn eval_sumproduct(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     if !SUMPRODUCT_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
             expected_min: SUMPRODUCT_META.arity.min,
@@ -234,14 +239,14 @@ fn eval_sumproduct(
         }
         sum += product;
     }
-    Ok(FunctionValue::Number(sum))
+    Ok(CalcValue::number(sum))
 }
 
 fn eval_sumx_pairwise(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     kernel: impl Fn(f64, f64) -> f64,
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     let left = to_optional_numeric_rect(&args[0], resolver)?;
     let right = to_optional_numeric_rect(&args[1], resolver)?;
     if left.shape != right.shape {
@@ -258,35 +263,38 @@ fn eval_sumx_pairwise(
     if !seen {
         return Err(SumproductEvalError::Domain(WorksheetErrorCode::Div0));
     }
-    Ok(FunctionValue::Number(sum))
+    Ok(CalcValue::number(sum))
 }
 
 fn strict_coefficients(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Vec<f64>, SumproductEvalError> {
     let eval = resolve_eval(arg, resolver)?;
-    match eval {
-        FunctionValue::Array(array) => {
+    match eval.core() {
+        CoreValue::Array(array) => {
             let mut values = Vec::with_capacity(array.shape().rows * array.shape().cols);
             for cell in array.iter_row_major() {
-                values.push(match cell {
-                    FunctionArrayCell::Number(n) => *n,
-                    FunctionArrayCell::Error(code) => {
+                values.push(match cell.core() {
+                    CoreValue::Number(n) => *n,
+                    CoreValue::Error(code) => {
                         return Err(SumproductEvalError::Domain(*code));
                     }
-                    FunctionArrayCell::Text(_)
-                    | FunctionArrayCell::Logical(_)
-                    | FunctionArrayCell::EmptyCell => {
+                    CoreValue::Text(_)
+                    | CoreValue::Logical(_)
+                    | CoreValue::Empty
+                    | CoreValue::Missing
+                    | CoreValue::Array(_)
+                    | CoreValue::Reference(_) => {
                         return Err(SumproductEvalError::Domain(WorksheetErrorCode::Value));
                     }
                 });
             }
             Ok(values)
         }
-        FunctionValue::Number(n) => Ok(vec![n]),
-        FunctionValue::Error(code) => Err(SumproductEvalError::Domain(code)),
-        FunctionValue::Text(_) | FunctionValue::Logical(_) | FunctionValue::Reference(_) => {
+        CoreValue::Number(n) => Ok(vec![*n]),
+        CoreValue::Error(code) => Err(SumproductEvalError::Domain(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => {
             Err(SumproductEvalError::Domain(WorksheetErrorCode::Value))
         }
         _ => Err(SumproductEvalError::Domain(WorksheetErrorCode::Value)),
@@ -294,16 +302,16 @@ fn strict_coefficients(
 }
 
 pub fn eval_sumproduct_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     eval_sumproduct(args, resolver)
 }
 
 pub fn eval_sumx2my2_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     if !SUMX2MY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
             expected_min: 2,
@@ -315,9 +323,9 @@ pub fn eval_sumx2my2_surface(
 }
 
 pub fn eval_sumx2py2_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     if !SUMX2PY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
             expected_min: 2,
@@ -329,9 +337,9 @@ pub fn eval_sumx2py2_surface(
 }
 
 pub fn eval_sumxmy2_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     if !SUMXMY2_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
             expected_min: 2,
@@ -343,9 +351,9 @@ pub fn eval_sumxmy2_surface(
 }
 
 pub fn eval_seriessum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumproductEvalError> {
+) -> Result<CalcValue, SumproductEvalError> {
     if !SERIESSUM_META.arity.accepts(args.len()) {
         return Err(SumproductEvalError::ArityMismatch {
             expected_min: 4,
@@ -361,7 +369,7 @@ pub fn eval_seriessum_surface(
     for (idx, coefficient) in coeffs.into_iter().enumerate() {
         sum += coefficient * x.powf(n + (idx as f64) * m);
     }
-    Ok(FunctionValue::Number(sum))
+    Ok(CalcValue::number(sum))
 }
 
 pub fn map_sumproduct_error_to_ws(err: &SumproductEvalError) -> WorksheetErrorCode {
@@ -381,7 +389,7 @@ mod tests {
     use std::collections::HashMap;
 
     struct MockResolver {
-        resolved_values: HashMap<String, FunctionValue>,
+        resolved_values: HashMap<String, CalcValue>,
     }
 
     impl MockResolver {
@@ -391,13 +399,13 @@ mod tests {
             }
         }
 
-        fn with_binding(target: &str, value: FunctionValue) -> Self {
+        fn with_binding(target: &str, value: CalcValue) -> Self {
             let mut resolved_values = HashMap::new();
             resolved_values.insert(target.to_string(), value);
             Self { resolved_values }
         }
 
-        fn with_bindings(bindings: Vec<(&str, FunctionValue)>) -> Self {
+        fn with_bindings(bindings: Vec<(&str, CalcValue)>) -> Self {
             Self {
                 resolved_values: bindings
                     .into_iter()
@@ -415,7 +423,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved_values.get(reference.target()).cloned().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -425,54 +433,40 @@ mod tests {
         }
     }
 
-    fn array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            crate::value::FunctionArray::from_rows(rows).unwrap(),
-        ))
+    fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        (CalcValue::array(crate::value::CalcArray::from_rows(rows).unwrap()))
     }
 
-    fn eval_array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionValue {
-        FunctionValue::Array(crate::value::FunctionArray::from_rows(rows).unwrap())
+    fn eval_array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        CalcValue::array(crate::value::CalcArray::from_rows(rows).unwrap())
     }
 
-    fn reference(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn reference(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
     #[test]
     fn sumproduct_matches_excel_seed_rows() {
         let got = eval_sumproduct_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
-                array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
+                array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(11.0)));
+        assert_eq!(got, Ok(CalcValue::number(11.0)));
     }
 
     #[test]
     fn sumproduct_coerces_non_numeric_array_cells_to_zero() {
         let got = eval_sumproduct_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Logical(true),
-                ]]),
-                array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::logical(true)]]),
+                array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -481,35 +475,29 @@ mod tests {
             (
                 "A1:A2",
                 eval_array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                    CalcValue::number(1.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("x")),
                 ]]),
             ),
             (
                 "B1:B2",
-                eval_array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                eval_array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ),
         ]);
         let got = eval_sumproduct_surface(&[reference("A1:A2"), reference("B1:B2")], &resolver);
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
 
         let resolver = MockResolver::with_bindings(vec![
             (
                 "A1:A2",
                 eval_array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]]),
             ),
             (
                 "B1:B2",
-                eval_array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                eval_array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ),
         ]);
         let got = eval_sumproduct_surface(&[reference("A1:A2"), reference("B1:B2")], &resolver);
@@ -523,11 +511,8 @@ mod tests {
     fn sumproduct_rejects_shape_mismatch() {
         let got = eval_sumproduct_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
+                (CalcValue::number(3.0)),
             ],
             &MockResolver::empty(),
         );
@@ -541,58 +526,43 @@ mod tests {
     fn sumproduct_single_array_argument_sums_elements() {
         let got = eval_sumproduct_surface(
             &[array(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(4.0),
-                FunctionArrayCell::Number(9.0),
+                CalcValue::number(1.0),
+                CalcValue::number(4.0),
+                CalcValue::number(9.0),
             ]])],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(14.0)));
+        assert_eq!(got, Ok(CalcValue::number(14.0)));
     }
 
     #[test]
     fn sumx_family_matches_excel_seed_rows() {
         assert_eq!(
             eval_sumx2my2_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Number(5.0)),
-                    FunctionArg::Eval(FunctionValue::Number(6.0))
-                ],
+                &[(CalcValue::number(5.0)), (CalcValue::number(6.0))],
                 &MockResolver::empty()
             ),
-            Ok(FunctionValue::Number(-11.0))
+            Ok(CalcValue::number(-11.0))
         );
         assert_eq!(
             eval_sumx2py2_surface(
                 &[
-                    array(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
-                    ]]),
-                    array(vec![vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0)
-                    ]]),
+                    array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
+                    array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
                 ],
                 &MockResolver::empty()
             ),
-            Ok(FunctionValue::Number(30.0))
+            Ok(CalcValue::number(30.0))
         );
         assert_eq!(
             eval_sumxmy2_surface(
                 &[
-                    array(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
-                    ]]),
-                    array(vec![vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0)
-                    ]]),
+                    array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
+                    array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
                 ],
                 &MockResolver::empty()
             ),
-            Ok(FunctionValue::Number(8.0))
+            Ok(CalcValue::number(8.0))
         );
     }
 
@@ -601,45 +571,30 @@ mod tests {
         let resolver = MockResolver::with_bindings(vec![
             (
                 "A1:A2",
-                eval_array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Logical(true),
-                ]]),
+                eval_array(vec![vec![CalcValue::number(1.0), CalcValue::logical(true)]]),
             ),
             (
                 "B1:B2",
-                eval_array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                eval_array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ),
         ]);
         let got = eval_sumx2my2_surface(&[reference("A1:A2"), reference("B1:B2")], &resolver);
-        assert_eq!(got, Ok(FunctionValue::Number(-8.0)));
+        assert_eq!(got, Ok(CalcValue::number(-8.0)));
     }
 
     #[test]
     fn sumx_family_ignores_non_numeric_pairs_and_div0_when_none_survive() {
         let got = eval_sumx2my2_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Logical(true),
-                ]]),
-                array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]]),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::logical(true)]]),
+                array(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0)]]),
             ],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(-8.0)));
+        assert_eq!(got, Ok(CalcValue::number(-8.0)));
 
         let got = eval_sumx2my2_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Number(6.0)),
-            ],
+            &[(CalcValue::logical(true)), (CalcValue::number(6.0))],
             &MockResolver::empty(),
         );
         assert_eq!(
@@ -652,11 +607,8 @@ mod tests {
     fn sumx_family_reports_shape_mismatch_as_na() {
         let got = eval_sumx2my2_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
+                (CalcValue::number(3.0)),
             ],
             &MockResolver::empty(),
         );
@@ -670,39 +622,39 @@ mod tests {
     fn seriessum_matches_excel_seed_rows() {
         let got = eval_seriessum_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
                 array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]]),
             ],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(114.0)));
+        assert_eq!(got, Ok(CalcValue::number(114.0)));
     }
 
     #[test]
     fn seriessum_allows_numeric_text_scalars_but_not_logicals() {
         let got = eval_seriessum_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("2"))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("1"))),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                (CalcValue::text(ExcelText::from_interop_assignment("2"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("1"))),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(3.0)),
             ],
             &MockResolver::empty(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(6.0)));
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
 
         let got = eval_seriessum_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                (CalcValue::logical(true)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(3.0)),
             ],
             &MockResolver::empty(),
         );
@@ -717,38 +669,32 @@ mod tests {
         let resolver = MockResolver::with_binding(
             "A1:B2",
             eval_array(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ]),
         );
         let got = eval_seriessum_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
                 reference("A1:B2"),
             ],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(49.0)));
+        assert_eq!(got, Ok(CalcValue::number(49.0)));
     }
 
     #[test]
     fn seriessum_rejects_non_numeric_coefficients() {
         let got = eval_seriessum_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
                 array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("2")),
+                    CalcValue::number(1.0),
+                    CalcValue::text(ExcelText::from_interop_assignment("2")),
                 ]]),
             ],
             &MockResolver::empty(),

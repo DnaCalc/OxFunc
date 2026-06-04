@@ -5,7 +5,8 @@ use crate::function::{
 };
 use crate::functions::rank_eq_fn::{RankEqEvalError, eval_rank_eq_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const RANK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RANK",
@@ -32,9 +33,9 @@ pub enum RankEvalError {
 }
 
 pub fn eval_rank_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RankEvalError> {
+) -> Result<CalcValue, RankEvalError> {
     eval_rank_eq_surface(args, resolver).map_err(|err| match err {
         RankEqEvalError::ArityMismatch {
             expected_min,

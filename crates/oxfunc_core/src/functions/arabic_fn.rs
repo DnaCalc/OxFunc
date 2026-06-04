@@ -5,7 +5,8 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{ExcelText, WorksheetErrorCode};
 
 pub const ARABIC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ARABIC",
@@ -61,9 +62,9 @@ pub fn arabic_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_arabic_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ArabicEvalError> {
+) -> Result<CalcValue, ArabicEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -76,7 +77,7 @@ pub fn eval_arabic_surface(
             }
             let text = coerce_prepared_to_text(&prepared[0]).map_err(ArabicEvalError::Coercion)?;
             arabic_kernel(&text)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(ArabicEvalError::Domain)
         },
         map_arabic_error_to_ws,

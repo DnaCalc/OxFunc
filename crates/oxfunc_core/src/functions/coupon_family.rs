@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const COUPON_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COUPON_BASE",
@@ -399,11 +400,11 @@ pub fn couppcd_kernel(
 }
 
 fn eval_coupon_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
     kernel: fn(f64, f64, f64, Option<f64>) -> Result<f64, WorksheetErrorCode>,
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -427,7 +428,7 @@ fn eval_coupon_surface(
                 None
             };
             kernel(settlement, maturity, frequency, basis)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(CouponEvalError::Domain)
         },
         CouponEvalError::Coercion,
@@ -435,44 +436,44 @@ fn eval_coupon_surface(
 }
 
 pub fn eval_coupdaybs_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYBS_META, coupdaybs_kernel)
 }
 
 pub fn eval_coupdays_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYS_META, coupdays_kernel)
 }
 
 pub fn eval_coupdaysnc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPDAYSNC_META, coupdaysnc_kernel)
 }
 
 pub fn eval_coupncd_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNCD_META, coupncd_kernel)
 }
 
 pub fn eval_coupnum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPNUM_META, coupnum_kernel)
 }
 
 pub fn eval_couppcd_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, CouponEvalError> {
+) -> Result<CalcValue, CouponEvalError> {
     eval_coupon_surface(args, resolver, &COUPPCD_META, couppcd_kernel)
 }
 
@@ -500,7 +501,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -514,8 +515,8 @@ mod tests {
         excel_serial_from_ymd(WorkbookDateSystem::System1900, year, month, day).unwrap()
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     #[test]
@@ -612,7 +613,7 @@ mod tests {
             ],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(181.0)));
+        assert_eq!(got, Ok(CalcValue::number(181.0)));
         assert_eq!(
             map_coupon_error_to_ws(&CouponEvalError::ArityMismatch {
                 expected_min: 4,

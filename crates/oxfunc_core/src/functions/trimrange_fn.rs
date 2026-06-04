@@ -3,13 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const TRIMRANGE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRIMRANGE",
@@ -48,9 +45,10 @@ pub enum TrimRangeEvalError {
     EmptyResult,
 }
 
-fn parse_trim_type(prepared: Option<&PreparedValue>) -> Result<TrimType, TrimRangeEvalError> {
+fn parse_trim_type(prepared: Option<&CalcValue>) -> Result<TrimType, TrimRangeEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => {
+        None => Ok(TrimType::Trailing),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => {
             Ok(TrimType::Trailing)
         }
         Some(arg) => {
@@ -69,9 +67,10 @@ fn parse_trim_type(prepared: Option<&PreparedValue>) -> Result<TrimType, TrimRan
     }
 }
 
-fn parse_headers_count(prepared: Option<&PreparedValue>) -> Result<usize, TrimRangeEvalError> {
+fn parse_headers_count(prepared: Option<&CalcValue>) -> Result<usize, TrimRangeEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(0),
+        None => Ok(0),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => Ok(0),
         Some(arg) => {
             let raw = coerce_prepared_to_number(arg).map_err(TrimRangeEvalError::Coercion)?;
             if !raw.is_finite() || raw < 0.0 {
@@ -82,45 +81,45 @@ fn parse_headers_count(prepared: Option<&PreparedValue>) -> Result<usize, TrimRa
     }
 }
 
-fn is_blank_cell(cell: &FunctionArrayCell) -> bool {
-    matches!(cell, FunctionArrayCell::EmptyCell)
+fn is_blank_cell(cell: &CalcValue) -> bool {
+    matches!(cell.core(), CoreValue::Empty | CoreValue::Missing)
 }
 
-fn is_row_blank(array: &FunctionArray, row: usize) -> bool {
+fn is_row_blank(array: &CalcArray, row: usize) -> bool {
     let cols = array.shape().cols;
     (0..cols).all(|col| array.get(row, col).map_or(true, is_blank_cell))
 }
 
-fn is_col_blank(array: &FunctionArray, col: usize) -> bool {
+fn is_col_blank(array: &CalcArray, col: usize) -> bool {
     let rows = array.shape().rows;
     (0..rows).all(|row| array.get(row, col).map_or(true, is_blank_cell))
 }
 
-fn materialize_input(prepared: &PreparedValue) -> FunctionArray {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(arr)) => arr.clone(),
-        PreparedValue::Eval(v) => {
-            let cell = match v {
-                FunctionValue::Number(n) => FunctionArrayCell::Number(*n),
-                FunctionValue::Text(t) => FunctionArrayCell::Text(t.clone()),
-                FunctionValue::Logical(b) => FunctionArrayCell::Logical(*b),
-                FunctionValue::Error(code) => FunctionArrayCell::Error(*code),
-                _ => FunctionArrayCell::EmptyCell,
+fn materialize_input(prepared: &CalcValue) -> CalcArray {
+    match prepared.core() {
+        CoreValue::Array(arr) => arr.clone(),
+        CoreValue::Empty | CoreValue::Missing => CalcArray::from_scalar(CalcValue::empty())
+            .expect("scalar empty array has valid dimensions"),
+        _ => {
+            let cell = match prepared.core() {
+                CoreValue::Number(n) => CalcValue::number(*n),
+                CoreValue::Text(t) => CalcValue::text(t.clone()),
+                CoreValue::Logical(b) => CalcValue::logical(*b),
+                CoreValue::Error(code) => CalcValue::error(*code),
+                CoreValue::Reference(_) => CalcValue::empty(),
+                CoreValue::Array(_) | CoreValue::Empty | CoreValue::Missing => unreachable!(),
             };
-            FunctionArray::from_scalar(cell)
-        }
-        PreparedValue::EmptyCell | PreparedValue::MissingArg => {
-            FunctionArray::from_scalar(FunctionArrayCell::EmptyCell)
+            CalcArray::from_scalar(cell).expect("scalar trimrange input array has valid dimensions")
         }
     }
 }
 
 pub(crate) fn trimrange_kernel(
-    array: &FunctionArray,
+    array: &CalcArray,
     trim_rows: TrimType,
     trim_cols: TrimType,
     headers_count: usize,
-) -> Result<FunctionValue, TrimRangeEvalError> {
+) -> Result<CalcValue, TrimRangeEvalError> {
     let total_rows = array.shape().rows;
     let total_cols = array.shape().cols;
 
@@ -212,17 +211,12 @@ pub(crate) fn trimrange_kernel(
     let mut cells = Vec::with_capacity(out_rows * out_cols);
     for &r in &kept_rows {
         for &c in &kept_cols {
-            cells.push(
-                array
-                    .get(r, c)
-                    .cloned()
-                    .unwrap_or(FunctionArrayCell::EmptyCell),
-            );
+            cells.push(array.get(r, c).cloned().unwrap_or(CalcValue::empty()));
         }
     }
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(
+    Ok(CalcValue::array(
+        CalcArray::new(
             ArrayShape {
                 rows: out_rows,
                 cols: out_cols,
@@ -234,9 +228,9 @@ pub(crate) fn trimrange_kernel(
 }
 
 pub fn eval_trimrange_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TrimRangeEvalError> {
+) -> Result<CalcValue, TrimRangeEvalError> {
     if !TRIMRANGE_META.arity.accepts(args.len()) {
         return Err(TrimRangeEvalError::ArityMismatch {
             expected_min: TRIMRANGE_META.arity.min,
@@ -282,7 +276,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -295,16 +289,16 @@ mod tests {
         }
     }
 
-    fn make_array(rows: usize, cols: usize, cells: Vec<FunctionArrayCell>) -> FunctionArray {
-        FunctionArray::new(ArrayShape { rows, cols }, cells).unwrap()
+    fn make_array(rows: usize, cols: usize, cells: Vec<CalcValue>) -> CalcArray {
+        CalcArray::new(ArrayShape { rows, cols }, cells).unwrap()
     }
 
-    fn n(v: f64) -> FunctionArrayCell {
-        FunctionArrayCell::Number(v)
+    fn n(v: f64) -> CalcValue {
+        CalcValue::number(v)
     }
 
-    fn e() -> FunctionArrayCell {
-        FunctionArrayCell::EmptyCell
+    fn e() -> CalcValue {
+        CalcValue::empty()
     }
 
     // --- Meta tests ---
@@ -339,7 +333,7 @@ mod tests {
             vec![n(1.0), n(2.0), e(), n(3.0), n(4.0), e(), e(), e(), e()],
         );
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
-        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -349,7 +343,7 @@ mod tests {
     fn trimrange_trims_leading_blank_rows() {
         let arr = make_array(3, 2, vec![e(), e(), n(1.0), n(2.0), n(3.0), n(4.0)]);
         let got = trimrange_kernel(&arr, TrimType::Leading, TrimType::None, 0).unwrap();
-        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -380,7 +374,7 @@ mod tests {
             ],
         );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::Both, 0).unwrap();
-        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -390,7 +384,7 @@ mod tests {
     fn trimrange_no_trim_preserves_all() {
         let arr = make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]);
         let got = trimrange_kernel(&arr, TrimType::None, TrimType::None, 0).unwrap();
-        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![n(1.0), e(), e(), n(2.0)]));
         assert_eq!(got, expected);
     }
 
@@ -413,7 +407,7 @@ mod tests {
         );
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::None, 1).unwrap();
         // Header row kept + data row kept, trailing blank trimmed.
-        let expected = FunctionValue::Array(make_array(2, 2, vec![e(), e(), n(1.0), n(2.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![e(), e(), n(1.0), n(2.0)]));
         assert_eq!(got, expected);
     }
 
@@ -432,7 +426,7 @@ mod tests {
     fn trimrange_already_trimmed_returns_same() {
         let arr = make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]);
         let got = trimrange_kernel(&arr, TrimType::Both, TrimType::Both, 0).unwrap();
-        let expected = FunctionValue::Array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
+        let expected = CalcValue::array(make_array(2, 2, vec![n(1.0), n(2.0), n(3.0), n(4.0)]));
         assert_eq!(got, expected);
     }
 
@@ -442,14 +436,14 @@ mod tests {
     fn trimrange_single_cell_result_preserves_array_value() {
         let arr = make_array(2, 2, vec![n(42.0), e(), e(), e()]);
         let got = trimrange_kernel(&arr, TrimType::Trailing, TrimType::Trailing, 0).unwrap();
-        assert_eq!(got, FunctionValue::Array(make_array(1, 1, vec![n(42.0)])));
+        assert_eq!(got, CalcValue::array(make_array(1, 1, vec![n(42.0)])));
     }
 
     // --- Invalid trim type ---
 
     #[test]
     fn trimrange_invalid_trim_type() {
-        let got = parse_trim_type(Some(&PreparedValue::Eval(FunctionValue::Number(5.0))));
+        let got = parse_trim_type(Some(&(CalcValue::number(5.0))));
         assert!(matches!(got, Err(TrimRangeEvalError::InvalidTrimType(_))));
     }
 

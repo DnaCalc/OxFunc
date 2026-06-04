@@ -573,19 +573,6 @@ impl CalcValue {
     pub fn allowed_at(&self, boundary: ValueBoundary) -> bool {
         boundary.allows(self.tag())
     }
-
-    pub fn to_function_array_cell_lossy(&self) -> FunctionArrayCell {
-        match &self.core {
-            CoreValue::Number(n) => FunctionArrayCell::Number(*n),
-            CoreValue::Text(t) => FunctionArrayCell::Text(t.clone()),
-            CoreValue::Logical(b) => FunctionArrayCell::Logical(*b),
-            CoreValue::Error(code) => FunctionArrayCell::Error(*code),
-            CoreValue::Empty => FunctionArrayCell::EmptyCell,
-            CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => {
-                FunctionArrayCell::Error(WorksheetErrorCode::Value)
-            }
-        }
-    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -638,13 +625,6 @@ impl CalcArray {
         Self::new(shape, cells)
     }
 
-    pub fn from_function_cells_iter(
-        shape: ArrayShape,
-        cells: impl IntoIterator<Item = FunctionArrayCell>,
-    ) -> Option<Self> {
-        Self::from_cells_iter(shape, cells.into_iter().map(CalcValue::from))
-    }
-
     pub const fn shape(&self) -> ArrayShape {
         self.shape
     }
@@ -672,16 +652,6 @@ impl CalcArray {
         let start = row.checked_mul(self.shape.cols)?;
         let end = start.checked_add(self.shape.cols)?;
         self.cells.get(start..end)
-    }
-
-    pub fn to_function_array_lossy(&self) -> FunctionArray {
-        FunctionArray::new(
-            self.shape,
-            self.iter_row_major()
-                .map(CalcValue::to_function_array_cell_lossy)
-                .collect(),
-        )
-        .expect("CalcArray invariants convert into FunctionArray")
     }
 }
 
@@ -843,279 +813,6 @@ pub enum CellContentValue {
     Empty,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum FunctionArrayCell {
-    Number(f64),
-    Text(ExcelText),
-    Logical(bool),
-    Error(WorksheetErrorCode),
-    EmptyCell,
-}
-
-impl FunctionArrayCell {
-    pub fn to_calc_value_lossy(&self) -> CalcValue {
-        match self {
-            Self::Number(n) => CalcValue::number(*n),
-            Self::Text(t) => CalcValue::text(t.clone()),
-            Self::Logical(b) => CalcValue::logical(*b),
-            Self::Error(code) => CalcValue::error(*code),
-            Self::EmptyCell => CalcValue::empty(),
-        }
-    }
-
-    pub fn to_calc_value(&self) -> Option<CalcValue> {
-        match self {
-            Self::Number(n) => Some(CalcValue::number(*n)),
-            Self::Text(t) => Some(CalcValue::text(t.clone())),
-            Self::Logical(b) => Some(CalcValue::logical(*b)),
-            Self::Error(code) => Some(CalcValue::error(*code)),
-            Self::EmptyCell => None,
-        }
-    }
-
-    pub fn to_eval_value(&self) -> Option<FunctionValue> {
-        match self {
-            Self::Number(n) => Some(FunctionValue::Number(*n)),
-            Self::Text(t) => Some(FunctionValue::Text(t.clone())),
-            Self::Logical(b) => Some(FunctionValue::Logical(*b)),
-            Self::Error(code) => Some(FunctionValue::Error(*code)),
-            Self::EmptyCell => None,
-        }
-    }
-}
-
-impl From<FunctionArrayCell> for CalcValue {
-    fn from(value: FunctionArrayCell) -> Self {
-        value.to_calc_value_lossy()
-    }
-}
-
-pub const INLINE_FUNCTION_ARRAY_CELL_CAPACITY: usize = 8;
-
-#[derive(Debug, Clone)]
-pub struct FunctionArray {
-    shape: ArrayShape,
-    storage: FunctionArrayStorage,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-enum FunctionArrayStorage {
-    Inline {
-        len: usize,
-        cells: [FunctionArrayCell; INLINE_FUNCTION_ARRAY_CELL_CAPACITY],
-    },
-    Heap {
-        cells: Vec<FunctionArrayCell>,
-    },
-}
-
-impl PartialEq for FunctionArray {
-    fn eq(&self, other: &Self) -> bool {
-        self.shape == other.shape && self.cells() == other.cells()
-    }
-}
-
-impl FunctionArray {
-    pub fn new(shape: ArrayShape, cells: Vec<FunctionArrayCell>) -> Option<Self> {
-        if shape.rows == 0 || shape.cols == 0 || cells.len() != shape.cell_count() {
-            return None;
-        }
-        Some(Self {
-            shape,
-            storage: Self::storage_from_vec(cells),
-        })
-    }
-
-    pub fn from_scalar(value: FunctionArrayCell) -> Self {
-        let mut cells = Self::empty_inline_cells();
-        cells[0] = value;
-        Self {
-            shape: ArrayShape { rows: 1, cols: 1 },
-            storage: FunctionArrayStorage::Inline { len: 1, cells },
-        }
-    }
-
-    pub fn from_cells_iter(
-        shape: ArrayShape,
-        cells: impl IntoIterator<Item = FunctionArrayCell>,
-    ) -> Option<Self> {
-        if shape.rows == 0 || shape.cols == 0 {
-            return None;
-        }
-
-        let expected = shape.cell_count();
-        let mut inline = Self::empty_inline_cells();
-        let mut inline_len = 0;
-        let mut heap: Option<Vec<FunctionArrayCell>> = None;
-
-        for cell in cells {
-            if let Some(heap_cells) = heap.as_mut() {
-                heap_cells.push(cell);
-            } else if inline_len < INLINE_FUNCTION_ARRAY_CELL_CAPACITY {
-                inline[inline_len] = cell;
-                inline_len += 1;
-            } else {
-                let mut heap_cells =
-                    Vec::with_capacity(expected.max(INLINE_FUNCTION_ARRAY_CELL_CAPACITY + 1));
-                heap_cells.extend(inline[..inline_len].iter().cloned());
-                heap_cells.push(cell);
-                heap = Some(heap_cells);
-            }
-        }
-
-        match heap {
-            Some(cells) if cells.len() == expected => Some(Self {
-                shape,
-                storage: FunctionArrayStorage::Heap { cells },
-            }),
-            None if inline_len == expected => Some(Self {
-                shape,
-                storage: FunctionArrayStorage::Inline {
-                    len: inline_len,
-                    cells: inline,
-                },
-            }),
-            _ => None,
-        }
-    }
-
-    pub fn from_rows(rows: Vec<Vec<FunctionArrayCell>>) -> Option<Self> {
-        let row_count = rows.len();
-        let col_count = rows.first()?.len();
-        if row_count == 0 || col_count == 0 || rows.iter().any(|row| row.len() != col_count) {
-            return None;
-        }
-
-        let mut cells = Vec::with_capacity(row_count * col_count);
-        for row in rows {
-            cells.extend(row);
-        }
-
-        Self::new(
-            ArrayShape {
-                rows: row_count,
-                cols: col_count,
-            },
-            cells,
-        )
-    }
-
-    pub const fn shape(&self) -> ArrayShape {
-        self.shape
-    }
-
-    pub fn get(&self, row: usize, col: usize) -> Option<&FunctionArrayCell> {
-        if row >= self.shape.rows || col >= self.shape.cols {
-            return None;
-        }
-        let index = row.checked_mul(self.shape.cols)?.checked_add(col)?;
-        self.cells().get(index)
-    }
-
-    pub fn iter_row_major(&self) -> impl Iterator<Item = &FunctionArrayCell> {
-        self.cells().iter()
-    }
-
-    pub fn row_slice(&self, row: usize) -> Option<&[FunctionArrayCell]> {
-        if row >= self.shape.rows {
-            return None;
-        }
-        let start = row.checked_mul(self.shape.cols)?;
-        let end = start.checked_add(self.shape.cols)?;
-        self.cells().get(start..end)
-    }
-
-    fn cells(&self) -> &[FunctionArrayCell] {
-        match &self.storage {
-            FunctionArrayStorage::Inline { len, cells } => &cells[..*len],
-            FunctionArrayStorage::Heap { cells } => cells,
-        }
-    }
-
-    fn storage_from_vec(cells: Vec<FunctionArrayCell>) -> FunctionArrayStorage {
-        if cells.len() <= INLINE_FUNCTION_ARRAY_CELL_CAPACITY {
-            let len = cells.len();
-            let mut inline = Self::empty_inline_cells();
-            for (index, cell) in cells.into_iter().enumerate() {
-                inline[index] = cell;
-            }
-            FunctionArrayStorage::Inline { len, cells: inline }
-        } else {
-            FunctionArrayStorage::Heap { cells }
-        }
-    }
-
-    fn empty_inline_cells() -> [FunctionArrayCell; INLINE_FUNCTION_ARRAY_CELL_CAPACITY] {
-        std::array::from_fn(|_| FunctionArrayCell::EmptyCell)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-#[non_exhaustive]
-pub enum FunctionValue {
-    Number(f64),
-    Text(ExcelText),
-    Logical(bool),
-    Error(WorksheetErrorCode),
-    Array(FunctionArray),
-    Reference(ReferenceLike),
-}
-
-impl From<FunctionValue> for CalcValue {
-    fn from(value: FunctionValue) -> Self {
-        match value {
-            FunctionValue::Number(n) => Self::number(n),
-            FunctionValue::Text(t) => Self::text(t),
-            FunctionValue::Logical(b) => Self::logical(b),
-            FunctionValue::Error(code) => Self::error(code),
-            FunctionValue::Array(array) => {
-                let cells = array
-                    .iter_row_major()
-                    .map(FunctionArrayCell::to_calc_value_lossy)
-                    .collect();
-                Self::array(
-                    CalcArray::new(array.shape(), cells)
-                        .expect("FunctionArray invariants convert into CalcArray"),
-                )
-            }
-            FunctionValue::Reference(reference) => Self::reference(reference),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum FunctionArg {
-    Eval(FunctionValue),
-    MissingArg,
-    EmptyCell,
-    Reference(ReferenceLike),
-}
-
-impl FunctionArg {
-    pub fn value(value: CalcValue) -> Self {
-        match value.core {
-            CoreValue::Number(n) => Self::Eval(FunctionValue::Number(n)),
-            CoreValue::Text(t) => Self::Eval(FunctionValue::Text(t)),
-            CoreValue::Logical(b) => Self::Eval(FunctionValue::Logical(b)),
-            CoreValue::Error(code) => Self::Eval(FunctionValue::Error(code)),
-            CoreValue::Empty => Self::EmptyCell,
-            CoreValue::Missing => Self::MissingArg,
-            CoreValue::Array(array) => {
-                Self::Eval(FunctionValue::Array(array.to_function_array_lossy()))
-            }
-            CoreValue::Reference(reference) => Self::Reference(reference),
-        }
-    }
-
-    pub fn missing() -> Self {
-        Self::MissingArg
-    }
-
-    pub fn empty() -> Self {
-        Self::EmptyCell
-    }
-}
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ValueBoundary {
     CellContent,
@@ -1203,11 +900,11 @@ mod tests {
     use super::{
         ArrayShape, CalcArray, CalcValue, CallableArityShape, CellStyleHint,
         CompositeReferenceOperation, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS,
-        ErrorMetadataValue, ErrorSurface, ExcelText, FunctionArray, FunctionArrayCell,
-        NumberFormatHint, PresentationHint, PresentationValue, ReferenceDisplay, ReferenceHandle,
-        ReferenceHandleId, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
-        RichObjectData, RichObjectKeyValue, RichObjectType, RichObjectValue, RichValue,
-        RichValueKeyFlag, TextualReferenceIdentity, ValueBoundary, ValueTag, WorksheetErrorCode,
+        ErrorMetadataValue, ErrorSurface, ExcelText, NumberFormatHint, PresentationHint,
+        PresentationValue, ReferenceDisplay, ReferenceHandle, ReferenceHandleId, ReferenceIdentity,
+        ReferenceKind, ReferenceLike, ReferenceSystemId, RichObjectData, RichObjectKeyValue,
+        RichObjectType, RichObjectValue, RichValue, RichValueKeyFlag, TextualReferenceIdentity,
+        ValueBoundary, ValueTag, WorksheetErrorCode,
     };
 
     #[test]
@@ -1384,52 +1081,6 @@ mod tests {
         assert_eq!(
             value.callable_value().map(|callable| callable.arity),
             Some(CallableArityShape::exact(1))
-        );
-    }
-
-    #[test]
-    fn calc_array_function_projection_preserves_empty_and_error_cells() {
-        let shape = ArrayShape { rows: 2, cols: 2 };
-        let array = CalcArray::from_cells_iter(
-            shape,
-            [
-                CalcValue::number(1.0),
-                CalcValue::empty(),
-                CalcValue::error(WorksheetErrorCode::Div0),
-                CalcValue::text(ExcelText::from_interop_assignment("x")),
-            ],
-        )
-        .unwrap();
-
-        assert_eq!(array.cell_count(), 4);
-        assert_eq!(
-            array.to_function_array_lossy(),
-            FunctionArray::from_rows(vec![
-                vec![FunctionArrayCell::Number(1.0), FunctionArrayCell::EmptyCell],
-                vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::Div0),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("x"))
-                ],
-            ])
-            .unwrap()
-        );
-    }
-
-    #[test]
-    fn calc_array_function_projection_maps_unrepresentable_cells_to_value_error() {
-        let nested = CalcValue::array(CalcArray::from_scalar(CalcValue::number(1.0)).unwrap());
-        let reference = CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1"));
-        let array = CalcArray::from_rows(vec![vec![nested, CalcValue::missing(), reference]])
-            .expect("nested CalcArray cells are representable in CalcArray");
-
-        assert_eq!(
-            array.to_function_array_lossy(),
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-                FunctionArrayCell::Error(WorksheetErrorCode::Value),
-            ]])
-            .unwrap()
         );
     }
 

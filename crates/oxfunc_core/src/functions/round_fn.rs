@@ -3,10 +3,11 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, coerce_prepared_to_number};
+use crate::functions::adapters::coerce_prepared_to_number;
 use crate::functions::binary_numeric::{BinaryNumericSurfaceError, eval_binary_numeric_surface};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const ROUND_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ROUND",
@@ -41,7 +42,7 @@ impl From<BinaryNumericSurfaceError> for RoundEvalError {
     }
 }
 
-fn parse_digits(arg: &PreparedValue) -> Result<i32, RoundEvalError> {
+fn parse_digits(arg: &CalcValue) -> Result<i32, RoundEvalError> {
     let digits = coerce_prepared_to_number(arg).map_err(RoundEvalError::Coercion)?;
     Ok(digits.trunc() as i32)
 }
@@ -63,9 +64,7 @@ pub fn round_kernel(n: f64, digits: i32) -> f64 {
     }
 }
 
-pub fn eval_round_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, RoundEvalError> {
+pub fn eval_round_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, RoundEvalError> {
     if !ROUND_META.arity.accepts(args.len()) {
         return Err(RoundEvalError::ArityMismatch {
             expected: ROUND_META.arity.min,
@@ -75,13 +74,13 @@ pub fn eval_round_adapter_prepared(
 
     let value = coerce_prepared_to_number(&args[0]).map_err(RoundEvalError::Coercion)?;
     let digits = parse_digits(&args[1])?;
-    Ok(FunctionValue::Number(round_kernel(value, digits)))
+    Ok(CalcValue::number(round_kernel(value, digits)))
 }
 
 pub fn eval_round_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RoundEvalError> {
+) -> Result<CalcValue, RoundEvalError> {
     eval_binary_numeric_surface(args, resolver, |value, digits| {
         Ok(round_kernel(value, digits.trunc() as i32))
     })
@@ -101,7 +100,7 @@ pub fn map_round_error_to_ws(e: &RoundEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionArray, FunctionArrayCell};
+    use crate::value::CalcArray;
 
     struct NoResolver;
 
@@ -113,7 +112,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -132,42 +131,36 @@ mod tests {
     #[test]
     fn eval_round_supports_negative_digits() {
         let got = eval_round_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(123.0)),
-                FunctionArg::Eval(FunctionValue::Number(-1.0)),
-            ],
+            &[(CalcValue::number(123.0)), (CalcValue::number(-1.0))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(120.0)));
+        assert_eq!(got, Ok(CalcValue::number(120.0)));
     }
 
     #[test]
     fn eval_round_truncates_digits_toward_zero() {
         let got = eval_round_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(1.5)),
-                FunctionArg::Eval(FunctionValue::Number(0.9)),
-            ],
+            &[(CalcValue::number(1.5)), (CalcValue::number(0.9))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_round_spills_array_arguments() {
         let got = eval_round_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.234)],
-                        vec![FunctionArrayCell::Number(2.345)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.234)],
+                        vec![CalcValue::number(2.345)],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(0.0)],
-                        vec![FunctionArrayCell::Number(1.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(0.0)],
+                        vec![CalcValue::number(1.0)],
                     ])
                     .unwrap(),
                 )),
@@ -176,10 +169,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.3)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.3)],
                 ])
                 .unwrap()
             ))

@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::average_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const GEOMEAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GEOMEAN",
@@ -32,30 +33,28 @@ pub enum GeoMeanEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_geomean_aggregate(
-    args: &[AggregatePreparedValue],
-) -> Result<FunctionValue, GeoMeanEvalError> {
+fn eval_geomean_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, GeoMeanEvalError> {
     let mut acc_ln = 0.0;
     let mut count = 0usize;
     for arg in args {
         if let Some(value) = average_argument_value(arg).map_err(GeoMeanEvalError::Coercion)? {
             if value <= 0.0 {
-                return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
+                return Ok(CalcValue::error(WorksheetErrorCode::Num));
             }
             acc_ln += value.ln();
             count += 1;
         }
     }
     if count == 0 {
-        return Ok(FunctionValue::Error(WorksheetErrorCode::Num));
+        return Ok(CalcValue::error(WorksheetErrorCode::Num));
     }
-    Ok(FunctionValue::Number((acc_ln / count as f64).exp()))
+    Ok(CalcValue::number((acc_ln / count as f64).exp()))
 }
 
 pub fn eval_geomean_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, GeoMeanEvalError> {
+) -> Result<CalcValue, GeoMeanEvalError> {
     let argc = args.len();
     if !GEOMEAN_META.arity.accepts(argc) {
         return Err(GeoMeanEvalError::ArityMismatch {

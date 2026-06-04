@@ -8,7 +8,8 @@ use crate::functions::binary_numeric::{
 };
 use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const OP_ADD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OP_ADD",
@@ -31,15 +32,15 @@ pub fn op_add_kernel(lhs: f64, rhs: f64) -> f64 {
 }
 
 pub fn eval_op_add_adapter_prepared(
-    args: &[crate::functions::adapters::PreparedValue],
-) -> Result<FunctionValue, OpAddEvalError> {
+    args: &[crate::functions::adapters::CalcValue],
+) -> Result<CalcValue, OpAddEvalError> {
     eval_binary_numeric_prepared(args, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
 }
 
 pub fn eval_op_add_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OpAddEvalError> {
+) -> Result<CalcValue, OpAddEvalError> {
     eval_binary_numeric_surface(args, resolver, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
 }
 
@@ -61,7 +62,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -73,43 +74,37 @@ mod tests {
 
     #[test]
     fn eval_op_add_two_numbers() {
-        let args = [
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-        ];
+        let args = [(CalcValue::number(2.0)), (CalcValue::number(3.0))];
         let got = eval_op_add_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
     fn eval_op_add_flushes_excel_denormalized_results() {
-        let args = [
-            FunctionArg::Eval(FunctionValue::Number(1.0e-308)),
-            FunctionArg::Eval(FunctionValue::Number(1.0e-308)),
-        ];
+        let args = [(CalcValue::number(1.0e-308)), (CalcValue::number(1.0e-308))];
         let got = eval_op_add_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_op_add_numeric_text_and_logical() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
-            FunctionArg::Eval(FunctionValue::Logical(true)),
+            (CalcValue::logical(true)),
         ];
         let got = eval_op_add_surface(&args, &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
     fn eval_op_add_non_numeric_text_fails() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "bad".encode_utf16().collect(),
             ))),
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
+            (CalcValue::number(1.0)),
         ];
         let got = eval_op_add_surface(&args, &NoResolver);
         assert!(matches!(got, Err(OpAddEvalError::Coercion(_))));
@@ -119,11 +114,11 @@ mod tests {
     fn eval_op_add_lifts_array_involved_calls() {
         let scalar_array = eval_op_add_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(10.0)),
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![vec![
-                        crate::value::FunctionArrayCell::Number(1.0),
-                        crate::value::FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::number(10.0)),
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![vec![
+                        crate::value::CalcValue::number(1.0),
+                        crate::value::CalcValue::text(ExcelText::from_utf16_code_units(
                             "2".encode_utf16().collect(),
                         )),
                     ]])
@@ -135,10 +130,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             scalar_array,
-            FunctionValue::Array(
-                crate::value::FunctionArray::from_rows(vec![vec![
-                    crate::value::FunctionArrayCell::Number(11.0),
-                    crate::value::FunctionArrayCell::Number(12.0),
+            CalcValue::array(
+                crate::value::CalcArray::from_rows(vec![vec![
+                    crate::value::CalcValue::number(11.0),
+                    crate::value::CalcValue::number(12.0),
                 ]])
                 .unwrap()
             )
@@ -146,28 +141,28 @@ mod tests {
 
         let array_array = eval_op_add_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![
                         vec![
-                            crate::value::FunctionArrayCell::Number(1.0),
-                            crate::value::FunctionArrayCell::Number(2.0),
+                            crate::value::CalcValue::number(1.0),
+                            crate::value::CalcValue::number(2.0),
                         ],
                         vec![
-                            crate::value::FunctionArrayCell::Number(3.0),
-                            crate::value::FunctionArrayCell::Number(4.0),
+                            crate::value::CalcValue::number(3.0),
+                            crate::value::CalcValue::number(4.0),
                         ],
                     ])
                     .unwrap(),
                 )),
-                FunctionArg::Eval(FunctionValue::Array(
-                    crate::value::FunctionArray::from_rows(vec![
+                (CalcValue::array(
+                    crate::value::CalcArray::from_rows(vec![
                         vec![
-                            crate::value::FunctionArrayCell::Number(10.0),
-                            crate::value::FunctionArrayCell::Number(20.0),
+                            crate::value::CalcValue::number(10.0),
+                            crate::value::CalcValue::number(20.0),
                         ],
                         vec![
-                            crate::value::FunctionArrayCell::Number(30.0),
-                            crate::value::FunctionArrayCell::Number(40.0),
+                            crate::value::CalcValue::number(30.0),
+                            crate::value::CalcValue::number(40.0),
                         ],
                     ])
                     .unwrap(),
@@ -178,15 +173,15 @@ mod tests {
         .unwrap();
         assert_eq!(
             array_array,
-            FunctionValue::Array(
-                crate::value::FunctionArray::from_rows(vec![
+            CalcValue::array(
+                crate::value::CalcArray::from_rows(vec![
                     vec![
-                        crate::value::FunctionArrayCell::Number(11.0),
-                        crate::value::FunctionArrayCell::Number(22.0),
+                        crate::value::CalcValue::number(11.0),
+                        crate::value::CalcValue::number(22.0),
                     ],
                     vec![
-                        crate::value::FunctionArrayCell::Number(33.0),
-                        crate::value::FunctionArrayCell::Number(44.0),
+                        crate::value::CalcValue::number(33.0),
+                        crate::value::CalcValue::number(44.0),
                     ],
                 ])
                 .unwrap()

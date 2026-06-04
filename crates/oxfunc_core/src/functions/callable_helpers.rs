@@ -3,14 +3,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, prepare_args_values_only, prepare_calc_values_only,
-    prepared_arg_to_calc_value_lossy,
+    prepare_args_values_only, prepare_calc_values_only, prepared_arg_to_calc_value_lossy,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, CalcValue, CallableValue, CoreValue, FunctionArg, FunctionArray, FunctionArrayCell,
-    FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{ArrayShape, CalcArray, CallableValue, CoreValue, WorksheetErrorCode};
 
 const FUNCTIONAL_LAMBDA_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.FUNCTIONAL_LAMBDA_BASE",
@@ -114,16 +111,16 @@ pub enum CallableBatchMode {
 /// `invoke`, and accepting the result before moving to the next slice.
 pub trait CallableInvocationBatch {
     fn mode(&self) -> CallableBatchMode;
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool;
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError>;
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool;
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError>;
 }
 
 pub trait CallableInvoker {
     fn invoke(
         &self,
         callable: &CallableValue,
-        args: &[PreparedValue],
-    ) -> Result<PreparedValue, CallableInvocationError>;
+        args: &[CalcValue],
+    ) -> Result<CalcValue, CallableInvocationError>;
 
     fn invoke_many(
         &self,
@@ -153,9 +150,9 @@ pub trait CallableInvoker {
 
 pub fn invoke_callable_prepared(
     callable: &CallableValue,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<PreparedValue, CallableInvocationError> {
+) -> Result<CalcValue, CallableInvocationError> {
     let argc = args.len();
     if !callable.arity.accepts(argc) {
         return Err(CallableInvocationError::ArityMismatch {
@@ -167,13 +164,16 @@ pub fn invoke_callable_prepared(
     invoker.invoke(callable, args)
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
     }
 }
 
@@ -182,22 +182,17 @@ struct PreparedIterableSource<'a> {
 }
 
 enum PreparedIterableSourceKind<'a> {
-    Array {
-        array: &'a FunctionArray,
-        index: usize,
-    },
-    Single {
-        value: Option<&'a PreparedValue>,
-    },
+    Array { array: &'a CalcArray, index: usize },
+    Single { value: Option<&'a CalcValue> },
 }
 
 impl<'a> PreparedIterableSource<'a> {
-    fn new(prepared: &'a PreparedValue) -> Self {
-        let source = match prepared {
-            PreparedValue::Eval(FunctionValue::Array(array)) => {
-                PreparedIterableSourceKind::Array { array, index: 0 }
-            }
-            other => PreparedIterableSourceKind::Single { value: Some(other) },
+    fn new(prepared: &'a CalcValue) -> Self {
+        let source = match prepared.core() {
+            CoreValue::Array(array) => PreparedIterableSourceKind::Array { array, index: 0 },
+            _ => PreparedIterableSourceKind::Single {
+                value: Some(prepared),
+            },
         };
         Self { source }
     }
@@ -216,7 +211,7 @@ impl<'a> PreparedIterableSource<'a> {
         }
     }
 
-    fn next_prepared(&mut self) -> Option<PreparedValue> {
+    fn next_prepared(&mut self) -> Option<CalcValue> {
         match &mut self.source {
             PreparedIterableSourceKind::Array { array, index } => {
                 let shape = array.shape();
@@ -234,19 +229,19 @@ impl<'a> PreparedIterableSource<'a> {
 }
 
 struct ReduceInvocationBatch<'a> {
-    accumulator: PreparedValue,
+    accumulator: CalcValue,
     source: PreparedIterableSource<'a>,
 }
 
 impl<'a> ReduceInvocationBatch<'a> {
-    fn new(accumulator: PreparedValue, source: PreparedIterableSource<'a>) -> Self {
+    fn new(accumulator: CalcValue, source: PreparedIterableSource<'a>) -> Self {
         Self {
             accumulator,
             source,
         }
     }
 
-    fn into_accumulator(self) -> PreparedValue {
+    fn into_accumulator(self) -> CalcValue {
         self.accumulator
     }
 }
@@ -256,32 +251,32 @@ impl CallableInvocationBatch for ReduceInvocationBatch<'_> {
         CallableBatchMode::SequentialStateful
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         let Some(item) = self.source.next_prepared() else {
             return false;
         };
         args.push(std::mem::replace(
             &mut self.accumulator,
-            PreparedValue::MissingArg,
+            CalcValue::missing(),
         ));
         args.push(item);
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.accumulator = result;
         Ok(())
     }
 }
 
 struct NumericArrayReduceInvocationBatch<'a> {
-    accumulator: PreparedValue,
-    array: &'a FunctionArray,
+    accumulator: CalcValue,
+    array: &'a CalcArray,
     index: usize,
 }
 
 impl<'a> NumericArrayReduceInvocationBatch<'a> {
-    fn new(accumulator: PreparedValue, array: &'a FunctionArray) -> Self {
+    fn new(accumulator: CalcValue, array: &'a CalcArray) -> Self {
         Self {
             accumulator,
             array,
@@ -289,7 +284,7 @@ impl<'a> NumericArrayReduceInvocationBatch<'a> {
         }
     }
 
-    fn into_accumulator(self) -> PreparedValue {
+    fn into_accumulator(self) -> CalcValue {
         self.accumulator
     }
 }
@@ -299,7 +294,7 @@ impl CallableInvocationBatch for NumericArrayReduceInvocationBatch<'_> {
         CallableBatchMode::SequentialStateful
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         let shape = self.array.shape();
         if self.index >= shape.cell_count() {
             return false;
@@ -307,32 +302,35 @@ impl CallableInvocationBatch for NumericArrayReduceInvocationBatch<'_> {
         let row = self.index / shape.cols;
         let col = self.index % shape.cols;
         self.index += 1;
-        let Some(FunctionArrayCell::Number(n)) = self.array.get(row, col) else {
+        let Some(cell) = self.array.get(row, col) else {
+            return false;
+        };
+        let CoreValue::Number(n) = cell.core() else {
             return false;
         };
         args.push(std::mem::replace(
             &mut self.accumulator,
-            PreparedValue::MissingArg,
+            CalcValue::missing(),
         ));
-        args.push(PreparedValue::Eval(FunctionValue::Number(*n)));
+        args.push(CalcValue::number(*n));
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.accumulator = result;
         Ok(())
     }
 }
 
 struct ScanInvocationBatch<'a> {
-    accumulator: PreparedValue,
+    accumulator: CalcValue,
     source: PreparedIterableSource<'a>,
-    cells: Vec<FunctionArrayCell>,
+    cells: Vec<CalcValue>,
 }
 
 impl<'a> ScanInvocationBatch<'a> {
     fn new(
-        accumulator: PreparedValue,
+        accumulator: CalcValue,
         source: PreparedIterableSource<'a>,
         cell_capacity: usize,
     ) -> Self {
@@ -343,7 +341,7 @@ impl<'a> ScanInvocationBatch<'a> {
         }
     }
 
-    fn into_cells(self) -> Vec<FunctionArrayCell> {
+    fn into_cells(self) -> Vec<CalcValue> {
         self.cells
     }
 }
@@ -353,19 +351,19 @@ impl CallableInvocationBatch for ScanInvocationBatch<'_> {
         CallableBatchMode::SequentialStateful
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         let Some(item) = self.source.next_prepared() else {
             return false;
         };
         args.push(std::mem::replace(
             &mut self.accumulator,
-            PreparedValue::MissingArg,
+            CalcValue::missing(),
         ));
         args.push(item);
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.accumulator = result;
         self.cells
             .push(scalar_cell_from_prepared(&self.accumulator)?);
@@ -377,7 +375,7 @@ struct MapInvocationBatch<'a> {
     sources: Vec<PreparedIterableSource<'a>>,
     cell_count: usize,
     index: usize,
-    cells: Vec<FunctionArrayCell>,
+    cells: Vec<CalcValue>,
 }
 
 impl<'a> MapInvocationBatch<'a> {
@@ -390,7 +388,7 @@ impl<'a> MapInvocationBatch<'a> {
         }
     }
 
-    fn into_cells(self) -> Vec<FunctionArrayCell> {
+    fn into_cells(self) -> Vec<CalcValue> {
         self.cells
     }
 }
@@ -400,33 +398,33 @@ impl CallableInvocationBatch for MapInvocationBatch<'_> {
         CallableBatchMode::Independent
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         if self.index >= self.cell_count {
             return false;
         }
         self.index += 1;
         args.extend(self.sources.iter_mut().map(|source| {
-            source.next_prepared().unwrap_or_else(|| {
-                PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::NA))
-            })
+            source
+                .next_prepared()
+                .unwrap_or_else(|| CalcValue::error(WorksheetErrorCode::NA))
         }));
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.cells.push(scalar_cell_from_prepared(&result)?);
         Ok(())
     }
 }
 
 struct RowInvocationBatch<'a> {
-    source_array: &'a FunctionArray,
+    source_array: &'a CalcArray,
     row: usize,
-    cells: Vec<FunctionArrayCell>,
+    cells: Vec<CalcValue>,
 }
 
 impl<'a> RowInvocationBatch<'a> {
-    fn new(source_array: &'a FunctionArray) -> Self {
+    fn new(source_array: &'a CalcArray) -> Self {
         Self {
             source_array,
             row: 0,
@@ -434,7 +432,7 @@ impl<'a> RowInvocationBatch<'a> {
         }
     }
 
-    fn into_cells(self) -> Vec<FunctionArrayCell> {
+    fn into_cells(self) -> Vec<CalcValue> {
         self.cells
     }
 }
@@ -444,7 +442,7 @@ impl CallableInvocationBatch for RowInvocationBatch<'_> {
         CallableBatchMode::Independent
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         if self.row >= self.source_array.shape().rows {
             return false;
         }
@@ -458,20 +456,20 @@ impl CallableInvocationBatch for RowInvocationBatch<'_> {
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.cells.push(scalar_cell_from_prepared(&result)?);
         Ok(())
     }
 }
 
 struct ColumnInvocationBatch<'a> {
-    source_array: &'a FunctionArray,
+    source_array: &'a CalcArray,
     col: usize,
-    cells: Vec<FunctionArrayCell>,
+    cells: Vec<CalcValue>,
 }
 
 impl<'a> ColumnInvocationBatch<'a> {
-    fn new(source_array: &'a FunctionArray) -> Self {
+    fn new(source_array: &'a CalcArray) -> Self {
         Self {
             source_array,
             col: 0,
@@ -479,7 +477,7 @@ impl<'a> ColumnInvocationBatch<'a> {
         }
     }
 
-    fn into_cells(self) -> Vec<FunctionArrayCell> {
+    fn into_cells(self) -> Vec<CalcValue> {
         self.cells
     }
 }
@@ -489,7 +487,7 @@ impl CallableInvocationBatch for ColumnInvocationBatch<'_> {
         CallableBatchMode::Independent
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         if self.col >= self.source_array.shape().cols {
             return false;
         }
@@ -499,7 +497,7 @@ impl CallableInvocationBatch for ColumnInvocationBatch<'_> {
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.cells.push(scalar_cell_from_prepared(&result)?);
         Ok(())
     }
@@ -509,7 +507,7 @@ struct MakeArrayInvocationBatch {
     rows: usize,
     cols: usize,
     index: usize,
-    cells: Vec<FunctionArrayCell>,
+    cells: Vec<CalcValue>,
 }
 
 impl MakeArrayInvocationBatch {
@@ -522,7 +520,7 @@ impl MakeArrayInvocationBatch {
         }
     }
 
-    fn into_cells(self) -> Vec<FunctionArrayCell> {
+    fn into_cells(self) -> Vec<CalcValue> {
         self.cells
     }
 }
@@ -532,19 +530,19 @@ impl CallableInvocationBatch for MakeArrayInvocationBatch {
         CallableBatchMode::Independent
     }
 
-    fn prepare_next_args(&mut self, args: &mut Vec<PreparedValue>) -> bool {
+    fn prepare_next_args(&mut self, args: &mut Vec<CalcValue>) -> bool {
         if self.index >= self.rows * self.cols {
             return false;
         }
         let row = self.index / self.cols;
         let col = self.index % self.cols;
         self.index += 1;
-        args.push(PreparedValue::Eval(FunctionValue::Number((row + 1) as f64)));
-        args.push(PreparedValue::Eval(FunctionValue::Number((col + 1) as f64)));
+        args.push(CalcValue::number((row + 1) as f64));
+        args.push(CalcValue::number((col + 1) as f64));
         true
     }
 
-    fn accept_result(&mut self, result: PreparedValue) -> Result<(), CallableInvocationError> {
+    fn accept_result(&mut self, result: CalcValue) -> Result<(), CallableInvocationError> {
         self.cells.push(scalar_cell_from_prepared(&result)?);
         Ok(())
     }
@@ -559,30 +557,23 @@ fn map_batch_scalar_error(error: CallableInvocationError) -> LambdaHelperEvalErr
     }
 }
 
-fn scalar_cell_from_prepared(
-    prepared: &PreparedValue,
-) -> Result<FunctionArrayCell, CallableInvocationError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(FunctionArrayCell::Number(*n)),
-        PreparedValue::Eval(FunctionValue::Text(t)) => Ok(FunctionArrayCell::Text(t.clone())),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(FunctionArrayCell::Logical(*b)),
-        PreparedValue::Eval(FunctionValue::Error(code)) => Ok(FunctionArrayCell::Error(*code)),
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(FunctionArrayCell::EmptyCell),
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            Err(CallableInvocationError::UnsupportedResultKind("array"))
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => Err(
-            CallableInvocationError::UnsupportedResultKind("reference_like"),
-        ),
-        _ => Err(CallableInvocationError::UnsupportedResultKind(
-            "unsupported_value",
+fn scalar_cell_from_prepared(prepared: &CalcValue) -> Result<CalcValue, CallableInvocationError> {
+    match prepared.core() {
+        CoreValue::Number(n) => Ok(CalcValue::number(*n)),
+        CoreValue::Text(t) => Ok(CalcValue::text(t.clone())),
+        CoreValue::Logical(b) => Ok(CalcValue::logical(*b)),
+        CoreValue::Error(code) => Ok(CalcValue::error(*code)),
+        CoreValue::Missing | CoreValue::Empty => Ok(CalcValue::empty()),
+        CoreValue::Array(_) => Err(CallableInvocationError::UnsupportedResultKind("array")),
+        CoreValue::Reference(_) => Err(CallableInvocationError::UnsupportedResultKind(
+            "reference_like",
         )),
     }
 }
 
-fn row_vector_from_slice(row: &[FunctionArrayCell]) -> PreparedValue {
-    PreparedValue::Eval(FunctionValue::Array(
-        FunctionArray::from_cells_iter(
+fn row_vector_from_slice(row: &[CalcValue]) -> CalcValue {
+    CalcValue::array(
+        CalcArray::from_cells_iter(
             ArrayShape {
                 rows: 1,
                 cols: row.len(),
@@ -590,12 +581,12 @@ fn row_vector_from_slice(row: &[FunctionArrayCell]) -> PreparedValue {
             row.iter().cloned(),
         )
         .expect("row slice is non-empty"),
-    ))
+    )
 }
 
-fn column_vector_from_array(array: &FunctionArray, col: usize) -> PreparedValue {
-    PreparedValue::Eval(FunctionValue::Array(
-        FunctionArray::from_cells_iter(
+fn column_vector_from_array(array: &CalcArray, col: usize) -> CalcValue {
+    CalcValue::array(
+        CalcArray::from_cells_iter(
             ArrayShape {
                 rows: array.shape().rows,
                 cols: 1,
@@ -608,15 +599,15 @@ fn column_vector_from_array(array: &FunctionArray, col: usize) -> PreparedValue 
             }),
         )
         .expect("column slice dimensions are valid"),
-    ))
+    )
 }
 
 fn inferred_map_output_shape(
-    inputs: &[PreparedValue],
+    inputs: &[CalcValue],
     cell_count: usize,
 ) -> Result<ArrayShape, CallableInvocationError> {
-    if let Some(shape) = inputs.iter().find_map(|arg| match arg {
-        PreparedValue::Eval(FunctionValue::Array(array)) => Some(array.shape()),
+    if let Some(shape) = inputs.iter().find_map(|arg| match arg.core() {
+        CoreValue::Array(array) => Some(array.shape()),
         _ => None,
     }) {
         if shape.cell_count() == cell_count {
@@ -640,10 +631,10 @@ fn inferred_map_output_shape(
 }
 
 pub fn eval_map_prepared(
-    inputs: &[PreparedValue],
+    inputs: &[CalcValue],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if inputs.is_empty() {
         return Err(LambdaHelperEvalError::MissingCallable);
     }
@@ -666,21 +657,21 @@ pub fn eval_map_prepared(
         .map_err(map_batch_scalar_error)?;
     let cells = batch.into_cells();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(output_shape, cells).expect("map output shape is validated"),
+    Ok(CalcValue::array(
+        CalcArray::new(output_shape, cells).expect("map output shape is validated"),
     ))
 }
 
 pub fn eval_reduce_prepared(
-    initial: &PreparedValue,
-    iterable: &PreparedValue,
+    initial: &CalcValue,
+    iterable: &CalcValue,
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<PreparedValue, LambdaHelperEvalError> {
-    if let PreparedValue::Eval(FunctionValue::Array(array)) = iterable {
+) -> Result<CalcValue, LambdaHelperEvalError> {
+    if let CoreValue::Array(array) = iterable.core() {
         if array
             .iter_row_major()
-            .all(|cell| matches!(cell, FunctionArrayCell::Number(_)))
+            .all(|cell| matches!(cell.core(), CoreValue::Number(_)))
         {
             let mut batch = NumericArrayReduceInvocationBatch::new(initial.clone(), array);
             invoker
@@ -699,11 +690,11 @@ pub fn eval_reduce_prepared(
 }
 
 pub fn eval_scan_prepared(
-    initial: &PreparedValue,
-    iterable: &PreparedValue,
+    initial: &CalcValue,
+    iterable: &CalcValue,
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     let source = PreparedIterableSource::new(iterable);
     let len_hint = source.len_hint();
     let shape = source.shape_hint().unwrap_or(ArrayShape {
@@ -717,23 +708,24 @@ pub fn eval_scan_prepared(
         .map_err(LambdaHelperEvalError::Invocation)?;
     let cells = batch.into_cells();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(shape, cells).expect("scan output shape is validated"),
+    Ok(CalcValue::array(
+        CalcArray::new(shape, cells).expect("scan output shape is validated"),
     ))
 }
 
 pub fn eval_byrow_prepared(
-    source: &PreparedValue,
+    source: &CalcValue,
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     let scalar_source_array;
-    let source_array = match source {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array,
-        other => {
-            scalar_source_array = FunctionArray::from_scalar(
-                scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
-            );
+    let source_array = match source.core() {
+        CoreValue::Array(array) => array,
+        _ => {
+            scalar_source_array = CalcArray::from_scalar(
+                scalar_cell_from_prepared(source).map_err(LambdaHelperEvalError::Invocation)?,
+            )
+            .expect("scalar byrow source has one cell");
             &scalar_source_array
         }
     };
@@ -744,8 +736,8 @@ pub fn eval_byrow_prepared(
         .map_err(map_batch_scalar_error)?;
     let cells = batch.into_cells();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(
+    Ok(CalcValue::array(
+        CalcArray::new(
             ArrayShape {
                 rows: source_array.shape().rows,
                 cols: 1,
@@ -757,17 +749,18 @@ pub fn eval_byrow_prepared(
 }
 
 pub fn eval_bycol_prepared(
-    source: &PreparedValue,
+    source: &CalcValue,
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     let scalar_source_array;
-    let source_array = match source {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array,
-        other => {
-            scalar_source_array = FunctionArray::from_scalar(
-                scalar_cell_from_prepared(other).map_err(LambdaHelperEvalError::Invocation)?,
-            );
+    let source_array = match source.core() {
+        CoreValue::Array(array) => array,
+        _ => {
+            scalar_source_array = CalcArray::from_scalar(
+                scalar_cell_from_prepared(source).map_err(LambdaHelperEvalError::Invocation)?,
+            )
+            .expect("scalar bycol source has one cell");
             &scalar_source_array
         }
     };
@@ -778,8 +771,8 @@ pub fn eval_bycol_prepared(
         .map_err(map_batch_scalar_error)?;
     let cells = batch.into_cells();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(
+    Ok(CalcValue::array(
+        CalcArray::new(
             ArrayShape {
                 rows: 1,
                 cols: source_array.shape().cols,
@@ -795,7 +788,7 @@ pub fn eval_makearray_prepared(
     cols: usize,
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if rows == 0 || cols == 0 {
         return Err(LambdaHelperEvalError::InvalidGeneratedDimensions);
     }
@@ -806,27 +799,26 @@ pub fn eval_makearray_prepared(
         .map_err(LambdaHelperEvalError::Invocation)?;
     let cells = batch.into_cells();
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(ArrayShape { rows, cols }, cells)
-            .expect("makearray output shape is valid"),
+    Ok(CalcValue::array(
+        CalcArray::new(ArrayShape { rows, cols }, cells).expect("makearray output shape is valid"),
     ))
 }
 
 pub fn prepare_and_invoke_callable(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     callable: &CallableValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<PreparedValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     invoke_callable_prepared(callable, &prepared, invoker)
         .map_err(LambdaHelperEvalError::Invocation)
 }
 
-fn require_callable(prepared: &PreparedValue) -> Result<CallableValue, LambdaHelperEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Error(code)) => Err(LambdaHelperEvalError::Invocation(
+fn require_callable(prepared: &CalcValue) -> Result<CallableValue, LambdaHelperEvalError> {
+    match prepared.core() {
+        CoreValue::Error(code) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(*code),
         )),
         _ => prepared_arg_to_calc_value_lossy(prepared)
@@ -853,28 +845,11 @@ fn require_calc_callable(value: &CalcValue) -> Result<CallableValue, LambdaHelpe
     }
 }
 
-fn prepared_from_calc_non_callable(
-    value: CalcValue,
-) -> Result<PreparedValue, LambdaHelperEvalError> {
-    match value.core {
-        CoreValue::Number(n) => Ok(PreparedValue::Eval(FunctionValue::Number(n))),
-        CoreValue::Text(t) => Ok(PreparedValue::Eval(FunctionValue::Text(t))),
-        CoreValue::Logical(b) => Ok(PreparedValue::Eval(FunctionValue::Logical(b))),
-        CoreValue::Error(code) => Ok(PreparedValue::Eval(FunctionValue::Error(code))),
-        CoreValue::Array(array) => Ok(PreparedValue::Eval(FunctionValue::Array(
-            array.to_function_array_lossy(),
-        ))),
-        CoreValue::Reference(reference) => {
-            Ok(PreparedValue::Eval(FunctionValue::Reference(reference)))
-        }
-        CoreValue::Missing => Ok(PreparedValue::MissingArg),
-        CoreValue::Empty => Ok(PreparedValue::EmptyCell),
-    }
+fn prepared_from_calc_non_callable(value: CalcValue) -> Result<CalcValue, LambdaHelperEvalError> {
+    Ok(value)
 }
 
-fn prepared_from_calc_slice(
-    values: &[CalcValue],
-) -> Result<Vec<PreparedValue>, LambdaHelperEvalError> {
+fn prepared_from_calc_slice(values: &[CalcValue]) -> Result<Vec<CalcValue>, LambdaHelperEvalError> {
     values
         .iter()
         .cloned()
@@ -890,7 +865,7 @@ fn surface_arity_error(meta: &FunctionMeta, actual: usize) -> LambdaHelperEvalEr
     }
 }
 
-fn parse_positive_dimension(prepared: &PreparedValue) -> Result<usize, LambdaHelperEvalError> {
+fn parse_positive_dimension(prepared: &CalcValue) -> Result<usize, LambdaHelperEvalError> {
     let raw = crate::functions::adapters::coerce_prepared_to_number(prepared)
         .map_err(LambdaHelperEvalError::Preparation)?;
     if !raw.is_finite() || raw < 1.0 {
@@ -907,7 +882,7 @@ pub fn eval_map_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !MAP_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&MAP_META, args.len()));
     }
@@ -920,10 +895,10 @@ pub fn eval_map_calc_surface(
 }
 
 pub fn eval_map_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !MAP_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&MAP_META, args.len()));
     }
@@ -938,7 +913,7 @@ pub fn eval_reduce_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<PreparedValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !REDUCE_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&REDUCE_META, args.len()));
     }
@@ -951,10 +926,10 @@ pub fn eval_reduce_calc_surface(
 }
 
 pub fn eval_reduce_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<PreparedValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !REDUCE_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&REDUCE_META, args.len()));
     }
@@ -968,7 +943,7 @@ pub fn eval_scan_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !SCAN_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&SCAN_META, args.len()));
     }
@@ -981,10 +956,10 @@ pub fn eval_scan_calc_surface(
 }
 
 pub fn eval_scan_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !SCAN_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&SCAN_META, args.len()));
     }
@@ -998,7 +973,7 @@ pub fn eval_byrow_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !BYROW_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&BYROW_META, args.len()));
     }
@@ -1010,10 +985,10 @@ pub fn eval_byrow_calc_surface(
 }
 
 pub fn eval_byrow_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !BYROW_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&BYROW_META, args.len()));
     }
@@ -1027,7 +1002,7 @@ pub fn eval_bycol_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !BYCOL_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&BYCOL_META, args.len()));
     }
@@ -1039,10 +1014,10 @@ pub fn eval_bycol_calc_surface(
 }
 
 pub fn eval_bycol_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !BYCOL_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&BYCOL_META, args.len()));
     }
@@ -1056,7 +1031,7 @@ pub fn eval_makearray_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !MAKEARRAY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&MAKEARRAY_META, args.len()));
     }
@@ -1071,10 +1046,10 @@ pub fn eval_makearray_calc_surface(
 }
 
 pub fn eval_makearray_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !MAKEARRAY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&MAKEARRAY_META, args.len()));
     }
@@ -1103,26 +1078,26 @@ pub fn map_lambda_helper_error_to_ws(error: &LambdaHelperEvalError) -> Worksheet
 }
 
 pub fn eval_isomitted_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !ISOMITTED_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(&ISOMITTED_META, args.len()));
     }
     let prepared =
         prepare_args_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
-    Ok(FunctionValue::Logical(matches!(
-        prepared.first(),
-        Some(PreparedValue::MissingArg)
+    Ok(CalcValue::logical(matches!(
+        prepared.first().map(CalcValue::core),
+        Some(CoreValue::Missing)
     )))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::functions::adapters::{PreparedValue, coerce_prepared_to_number};
+    use crate::functions::adapters::coerce_prepared_to_number;
     use crate::resolver::{ReferenceSystemCapabilities, ReferenceSystemProvider};
-    use crate::value::{CallableArityShape, ExcelText, FunctionArray, OpaqueCallable};
+    use crate::value::{CalcArray, CallableArityShape, ExcelText, OpaqueCallable};
     use std::cell::Cell;
     use std::rc::Rc;
 
@@ -1141,13 +1116,13 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedValue],
-        ) -> Result<PreparedValue, CallableInvocationError> {
-            if let Some(code) = args.iter().find_map(|arg| match arg {
-                PreparedValue::Eval(FunctionValue::Error(code)) => Some(*code),
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
+            if let Some(code) = args.iter().find_map(|arg| match arg.core() {
+                CoreValue::Error(code) => Some(*code),
                 _ => None,
             }) {
-                return Ok(PreparedValue::Eval(FunctionValue::Error(code)));
+                return Ok(CalcValue::error(code));
             }
 
             match callable.summary.as_str() {
@@ -1155,7 +1130,7 @@ mod tests {
                     let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Number(n + 1.0)))
+                    Ok(CalcValue::number(n + 1.0))
                 }
                 "helper.sum2" => {
                     let a = coerce_prepared_to_number(&args[0]).map_err(|_| {
@@ -1164,7 +1139,7 @@ mod tests {
                     let b = coerce_prepared_to_number(&args[1]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Number(a + b)))
+                    Ok(CalcValue::number(a + b))
                 }
                 "helper.mul2" => {
                     let a = coerce_prepared_to_number(&args[0]).map_err(|_| {
@@ -1173,21 +1148,21 @@ mod tests {
                     let b = coerce_prepared_to_number(&args[1]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Number(a * b)))
+                    Ok(CalcValue::number(a * b))
                 }
                 "name.capadd" => {
                     let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Number(n + 2.0)))
+                    Ok(CalcValue::number(n + 2.0))
                 }
-                "helper.sum_array" => match &args[0] {
-                    PreparedValue::Eval(FunctionValue::Array(array)) => {
+                "helper.sum_array" => match args[0].core() {
+                    CoreValue::Array(array) => {
                         let total = array
                             .iter_row_major()
-                            .map(|cell| match cell {
-                                FunctionArrayCell::Number(n) => Ok(*n),
-                                FunctionArrayCell::Error(code) => {
+                            .map(|cell| match cell.core() {
+                                CoreValue::Number(n) => Ok(*n),
+                                CoreValue::Error(code) => {
                                     Err(CallableInvocationError::Worksheet(*code))
                                 }
                                 _ => Err(CallableInvocationError::Worksheet(
@@ -1195,25 +1170,25 @@ mod tests {
                                 )),
                             })
                             .sum::<Result<f64, _>>()?;
-                        Ok(PreparedValue::Eval(FunctionValue::Number(total)))
+                        Ok(CalcValue::number(total))
                     }
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
                     )),
                 },
-                "helper.nonscalar_plus1" => match &args[0] {
-                    PreparedValue::Eval(FunctionValue::Array(array)) => {
+                "helper.nonscalar_plus1" => match args[0].core() {
+                    CoreValue::Array(array) => {
                         let cells = array
                             .iter_row_major()
-                            .map(|cell| match cell {
-                                FunctionArrayCell::Number(n) => FunctionArrayCell::Number(n + 1.0),
-                                FunctionArrayCell::Error(code) => FunctionArrayCell::Error(*code),
-                                _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+                            .map(|cell| match cell.core() {
+                                CoreValue::Number(n) => CalcValue::number(n + 1.0),
+                                CoreValue::Error(code) => CalcValue::error(*code),
+                                _ => CalcValue::error(WorksheetErrorCode::Value),
                             })
                             .collect::<Vec<_>>();
-                        Ok(PreparedValue::Eval(FunctionValue::Array(
-                            FunctionArray::new(array.shape(), cells).expect("shape preserved"),
-                        )))
+                        Ok(CalcValue::array(
+                            CalcArray::new(array.shape(), cells).expect("shape preserved"),
+                        ))
                     }
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
@@ -1223,10 +1198,10 @@ mod tests {
                     let n = coerce_prepared_to_number(&args[0]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Array(
-                        FunctionArray::from_rows(vec![
-                            vec![FunctionArrayCell::Number(n)],
-                            vec![FunctionArrayCell::Number(n + 1.0)],
+                    Ok((CalcValue::array(
+                        CalcArray::from_rows(vec![
+                            vec![CalcValue::number(n)],
+                            vec![CalcValue::number(n + 1.0)],
                         ])
                         .expect("pair array"),
                     )))
@@ -1238,7 +1213,7 @@ mod tests {
                     let c = coerce_prepared_to_number(&args[1]).map_err(|_| {
                         CallableInvocationError::Worksheet(WorksheetErrorCode::Value)
                     })?;
-                    Ok(PreparedValue::Eval(FunctionValue::Number(r * 10.0 + c)))
+                    Ok((CalcValue::number(r * 10.0 + c)))
                 }
                 other => Err(CallableInvocationError::UnsupportedCallableToken(
                     other.to_string(),
@@ -1267,8 +1242,8 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedValue],
-        ) -> Result<PreparedValue, CallableInvocationError> {
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
             self.invoke_calls.set(self.invoke_calls.get() + 1);
             MockCallableInvoker.invoke(callable, args)
         }
@@ -1310,7 +1285,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -1336,8 +1311,8 @@ mod tests {
         test_callable(callable_token, arity)
     }
 
-    fn num(n: f64) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        CalcValue::number(n)
     }
 
     fn callable_arg(callable: CallableValue) -> CalcValue {
@@ -1360,34 +1335,25 @@ mod tests {
 
     #[test]
     fn eval_map_prepared_supports_helper_callable_token() {
-        let input = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-            ]])
-            .unwrap(),
+        let input = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .unwrap(),
         ));
         let got = eval_map_prepared(&[input], &helper("helper.add1", 1), &MockCallableInvoker);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(2.0), CalcValue::number(3.0),]])
+                    .unwrap()
             ))
         );
     }
 
     #[test]
     fn eval_map_prepared_supports_defined_name_callable_token() {
-        let input = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-            ]])
-            .unwrap(),
+        let input = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .unwrap(),
         ));
         let got = eval_map_prepared(
             &[input],
@@ -1396,35 +1362,28 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(3.0), CalcValue::number(4.0),]])
+                    .unwrap()
             ))
         );
     }
 
     #[test]
     fn eval_map_prepared_pads_missing_partner_with_na() {
-        let a = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-            ]])
-            .unwrap(),
+        let a = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .unwrap(),
         ));
-        let b = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(10.0)]]).unwrap(),
-        ));
+        let b =
+            (CalcValue::array(CalcArray::from_rows(vec![vec![CalcValue::number(10.0)]]).unwrap()));
         let got = eval_map_prepared(&[a, b], &helper("helper.sum2", 2), &MockCallableInvoker);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(11.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(11.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))
@@ -1433,11 +1392,11 @@ mod tests {
 
     #[test]
     fn eval_reduce_prepared_folds_over_iterable() {
-        let iterable = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(3.0),
+        let iterable = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
             ]])
             .unwrap(),
         ));
@@ -1452,11 +1411,11 @@ mod tests {
 
     #[test]
     fn eval_reduce_prepared_uses_sequential_batch_invoker() {
-        let iterable = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(3.0),
+        let iterable = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
             ]])
             .unwrap(),
         ));
@@ -1473,11 +1432,11 @@ mod tests {
 
     #[test]
     fn eval_scan_prepared_spills_intermediate_accumulations() {
-        let iterable = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(3.0),
+        let iterable = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
             ]])
             .unwrap(),
         ));
@@ -1489,11 +1448,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(6.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(6.0),
                 ]])
                 .unwrap()
             ))
@@ -1502,11 +1461,11 @@ mod tests {
 
     #[test]
     fn eval_scan_prepared_uses_sequential_batch_invoker() {
-        let iterable = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(3.0),
+        let iterable = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
             ]])
             .unwrap(),
         ));
@@ -1514,11 +1473,11 @@ mod tests {
         let got = eval_scan_prepared(&num(0.0), &iterable, &helper("helper.sum2", 2), &invoker);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(6.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(6.0),
                 ]])
                 .unwrap()
             ))
@@ -1533,22 +1492,16 @@ mod tests {
 
     #[test]
     fn map_byrow_bycol_and_makearray_use_independent_batch_invoker() {
-        let map_input = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-            ]])
-            .unwrap(),
+        let map_input = (CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                .unwrap(),
         ));
         let map_invoker = BatchCountingInvoker::new();
         assert_eq!(
             eval_map_prepared(&[map_input], &helper("helper.add1", 1), &map_invoker),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(2.0), CalcValue::number(3.0),]])
+                    .unwrap()
             ))
         );
         assert_eq!(map_invoker.batch_calls.get(), 1);
@@ -1558,26 +1511,20 @@ mod tests {
             Some(CallableBatchMode::Independent)
         );
 
-        let source = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let source = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
         let byrow_invoker = BatchCountingInvoker::new();
         assert_eq!(
             eval_byrow_prepared(&source, &helper("helper.sum_array", 1), &byrow_invoker),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
                 ])
                 .unwrap()
             ))
@@ -1592,12 +1539,9 @@ mod tests {
         let bycol_invoker = BatchCountingInvoker::new();
         assert_eq!(
             eval_bycol_prepared(&source, &helper("helper.sum_array", 1), &bycol_invoker),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(6.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(4.0), CalcValue::number(6.0),]])
+                    .unwrap()
             ))
         );
         assert_eq!(bycol_invoker.batch_calls.get(), 1);
@@ -1615,16 +1559,10 @@ mod tests {
                 &helper("helper.makearray_coords", 2),
                 &makearray_invoker
             ),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(12.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(21.0),
-                        FunctionArrayCell::Number(22.0)
-                    ],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(11.0), CalcValue::number(12.0)],
+                    vec![CalcValue::number(21.0), CalcValue::number(22.0)],
                 ])
                 .unwrap()
             ))
@@ -1639,16 +1577,10 @@ mod tests {
 
     #[test]
     fn eval_byrow_prepared_returns_one_scalar_result_per_row() {
-        let source = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let source = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
@@ -1659,10 +1591,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
                 ])
                 .unwrap()
             ))
@@ -1671,16 +1603,10 @@ mod tests {
 
     #[test]
     fn eval_bycol_prepared_returns_one_scalar_result_per_column() {
-        let source = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let source = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
@@ -1691,28 +1617,19 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(6.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(4.0), CalcValue::number(6.0),]])
+                    .unwrap()
             ))
         );
     }
 
     #[test]
     fn eval_byrow_prepared_rejects_non_scalar_lambda_result() {
-        let source = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let source = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
@@ -1726,16 +1643,10 @@ mod tests {
 
     #[test]
     fn eval_bycol_prepared_rejects_non_scalar_lambda_result() {
-        let source = PreparedValue::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ],
-                vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                ],
+        let source = (CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(4.0)],
             ])
             .unwrap(),
         ));
@@ -1757,17 +1668,17 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(12.0),
-                        FunctionArrayCell::Number(13.0),
+                        CalcValue::number(11.0),
+                        CalcValue::number(12.0),
+                        CalcValue::number(13.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(21.0),
-                        FunctionArrayCell::Number(22.0),
-                        FunctionArrayCell::Number(23.0),
+                        CalcValue::number(21.0),
+                        CalcValue::number(22.0),
+                        CalcValue::number(23.0),
                     ],
                 ])
                 .unwrap()
@@ -1790,10 +1701,10 @@ mod tests {
     fn eval_map_surface_matches_seeded_bare_spill_lane() {
         let got = eval_map_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 )),
@@ -1804,12 +1715,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(2.0), CalcValue::number(3.0),]])
+                    .unwrap()
             ))
         );
     }
@@ -1818,15 +1726,15 @@ mod tests {
     fn eval_map_surface_matches_seeded_mismatch_lane() {
         let got = eval_map_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 )),
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(10.0)]]).unwrap(),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![CalcValue::number(10.0)]]).unwrap(),
                 )),
                 callable_arg(helper("helper.sum2", 2)),
             ],
@@ -1835,10 +1743,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(11.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(11.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap()
             ))
@@ -1848,12 +1756,9 @@ mod tests {
     #[test]
     fn eval_map_prepared_rejects_non_scalar_lambda_result() {
         let got = eval_map_prepared(
-            &[PreparedValue::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ]])
-                .unwrap(),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]])
+                    .unwrap(),
             ))],
             &helper("helper.scalar_to_pair", 1),
             &MockCallableInvoker,
@@ -1865,10 +1770,10 @@ mod tests {
     fn eval_map_surface_maps_non_scalar_result_to_calc() {
         let err = eval_map_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
                     ]])
                     .unwrap(),
                 )),
@@ -1889,11 +1794,11 @@ mod tests {
         let got = eval_reduce_calc_surface(
             &[
                 CalcValue::number(0.0),
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
@@ -1910,11 +1815,11 @@ mod tests {
         let got = eval_scan_calc_surface(
             &[
                 CalcValue::number(0.0),
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ]])
                     .unwrap(),
                 )),
@@ -1925,11 +1830,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(6.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(6.0),
                 ]])
                 .unwrap()
             ))
@@ -1940,16 +1845,10 @@ mod tests {
     fn eval_byrow_surface_matches_seeded_scalar_lane() {
         let got = eval_byrow_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
@@ -1960,10 +1859,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
                 ])
                 .unwrap()
             ))
@@ -1974,16 +1873,10 @@ mod tests {
     fn eval_byrow_surface_maps_non_scalar_result_to_calc() {
         let err = eval_byrow_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
@@ -2003,16 +1896,10 @@ mod tests {
     fn eval_bycol_surface_matches_seeded_scalar_lane() {
         let got = eval_bycol_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![
-                            FunctionArrayCell::Number(1.0),
-                            FunctionArrayCell::Number(2.0),
-                        ],
-                        vec![
-                            FunctionArrayCell::Number(3.0),
-                            FunctionArrayCell::Number(4.0),
-                        ],
+                CalcValue::from(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     ])
                     .unwrap(),
                 )),
@@ -2023,12 +1910,9 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(6.0),
-                ]])
-                .unwrap()
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(4.0), CalcValue::number(6.0),]])
+                    .unwrap()
             ))
         );
     }
@@ -2046,17 +1930,17 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(11.0),
-                        FunctionArrayCell::Number(12.0),
-                        FunctionArrayCell::Number(13.0),
+                        CalcValue::number(11.0),
+                        CalcValue::number(12.0),
+                        CalcValue::number(13.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(21.0),
-                        FunctionArrayCell::Number(22.0),
-                        FunctionArrayCell::Number(23.0),
+                        CalcValue::number(21.0),
+                        CalcValue::number(22.0),
+                        CalcValue::number(23.0),
                     ],
                 ])
                 .unwrap()
@@ -2066,24 +1950,21 @@ mod tests {
 
     #[test]
     fn eval_isomitted_surface_returns_false_for_present_arg() {
-        let got = eval_isomitted_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
-            &NoResolver,
-        );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        let got = eval_isomitted_surface(&[(CalcValue::number(1.0))], &NoResolver);
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_isomitted_surface_returns_true_for_missing_arg() {
-        let got = eval_isomitted_surface(&[FunctionArg::MissingArg], &NoResolver);
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        let got = eval_isomitted_surface(&[CalcValue::missing()], &NoResolver);
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn prepare_and_invoke_callable_handles_direct_invocation_lane() {
         let callable = defined_name("name.capadd", 1);
         let got = prepare_and_invoke_callable(
-            &[FunctionArg::Eval(FunctionValue::Number(3.0))],
+            &[(CalcValue::number(3.0))],
             &callable,
             &NoResolver,
             &MockCallableInvoker,
@@ -2099,12 +1980,12 @@ mod tests {
             fn invoke(
                 &self,
                 callable: &CallableValue,
-                _args: &[PreparedValue],
-            ) -> Result<PreparedValue, CallableInvocationError> {
+                _args: &[CalcValue],
+            ) -> Result<CalcValue, CallableInvocationError> {
                 if callable.summary == "helper.text" {
-                    return Ok(PreparedValue::Eval(FunctionValue::Text(
-                        ExcelText::from_utf16_code_units("ok".encode_utf16().collect()),
-                    )));
+                    return Ok((CalcValue::text(ExcelText::from_utf16_code_units(
+                        "ok".encode_utf16().collect(),
+                    ))));
                 }
                 Err(CallableInvocationError::UnsupportedCallableToken(
                     callable.summary.clone(),
@@ -2115,9 +1996,9 @@ mod tests {
         let got = invoke_callable_prepared(&helper("helper.text", 0), &[], &TextInvoker);
         assert_eq!(
             got,
-            Ok(PreparedValue::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("ok".encode_utf16().collect())
-            )))
+            Ok((CalcValue::text(ExcelText::from_utf16_code_units(
+                "ok".encode_utf16().collect()
+            ))))
         );
     }
 }

@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::paired_stats_common::{collect_paired_values, rsq_from_pairs};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const RSQ_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RSQ",
@@ -33,9 +34,9 @@ pub enum RsqEvalError {
 }
 
 pub fn eval_rsq_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, RsqEvalError> {
+) -> Result<CalcValue, RsqEvalError> {
     let argc = args.len();
     if !RSQ_META.arity.accepts(argc) {
         return Err(RsqEvalError::ArityMismatch {
@@ -48,8 +49,8 @@ pub fn eval_rsq_surface(
     let ys = expand_aggregate_arg(&args[1], resolver).map_err(RsqEvalError::Coercion)?;
     let pairs = collect_paired_values(&xs, &ys).map_err(RsqEvalError::Coercion)?;
     match rsq_from_pairs(&pairs) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

@@ -3,9 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const IFERROR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IFERROR",
@@ -28,18 +28,18 @@ pub enum IfErrorEvalError {
     FallbackPreparation(CoercionError),
 }
 
-fn prepared_to_eval(arg: PreparedValue) -> FunctionValue {
-    match arg {
-        PreparedValue::Eval(v) => v,
-        PreparedValue::MissingArg => FunctionValue::Error(WorksheetErrorCode::Value),
-        PreparedValue::EmptyCell => FunctionValue::Number(0.0),
+fn prepared_to_eval(arg: CalcValue) -> CalcValue {
+    match arg.core() {
+        CoreValue::Missing => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Empty => CalcValue::number(0.0),
+        _ => arg,
     }
 }
 
 pub fn eval_iferror_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, IfErrorEvalError> {
+) -> Result<CalcValue, IfErrorEvalError> {
     if !IFERROR_META.arity.accepts(args.len()) {
         return Err(IfErrorEvalError::ArityMismatch {
             expected: IFERROR_META.arity.min,
@@ -49,13 +49,13 @@ pub fn eval_iferror_surface(
 
     let primary = prepare_arg_values_only(&args[0], resolver)
         .map_err(IfErrorEvalError::PrimaryPreparation)?;
-    match primary {
-        PreparedValue::Eval(FunctionValue::Error(_)) => {
+    match primary.core() {
+        CoreValue::Error(_) => {
             let fallback = prepare_arg_values_only(&args[1], resolver)
                 .map_err(IfErrorEvalError::FallbackPreparation)?;
             Ok(prepared_to_eval(fallback))
         }
-        other => Ok(prepared_to_eval(other)),
+        _ => Ok(prepared_to_eval(primary)),
     }
 }
 
@@ -84,7 +84,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -97,21 +97,18 @@ mod tests {
     #[test]
     fn eval_iferror_returns_primary_when_not_error() {
         let got = eval_iferror_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(4.0)),
-            ],
+            &[(CalcValue::number(2.0)), (CalcValue::number(4.0))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(2.0)));
+        assert_eq!(got, Ok(CalcValue::number(2.0)));
     }
 
     #[test]
     fn eval_iferror_returns_fallback_for_error_primary() {
         let got = eval_iferror_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::error(WorksheetErrorCode::Div0)),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "alt".encode_utf16().collect(),
                 ))),
             ],
@@ -119,7 +116,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "alt".encode_utf16().collect(),
             )))
         );
@@ -129,38 +126,38 @@ mod tests {
     fn eval_iferror_does_not_touch_fallback_when_primary_is_not_error() {
         let got = eval_iferror_surface(
             &[
-                FunctionArg::EmptyCell,
-                FunctionArg::Reference(ReferenceLike::new(
+                CalcValue::empty(),
+                CalcValue::reference(ReferenceLike::new(
                     crate::value::ReferenceKind::A1,
                     "Z99".to_string(),
                 )),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_iferror_blank_fallback_becomes_zero_and_missing_fallback_is_value_error() {
         let blank_fallback = eval_iferror_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::NA)),
-                FunctionArg::EmptyCell,
+                (CalcValue::error(WorksheetErrorCode::NA)),
+                CalcValue::empty(),
             ],
             &NoResolver,
         );
-        assert_eq!(blank_fallback, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(blank_fallback, Ok(CalcValue::number(0.0)));
 
         let missing_fallback = eval_iferror_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::NA)),
-                FunctionArg::MissingArg,
+                (CalcValue::error(WorksheetErrorCode::NA)),
+                CalcValue::missing(),
             ],
             &NoResolver,
         );
         assert_eq!(
             missing_fallback,
-            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
         );
     }
 }

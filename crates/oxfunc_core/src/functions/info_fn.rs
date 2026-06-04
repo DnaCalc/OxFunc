@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
 use crate::host_info::{HostInfoError, HostInfoProvider, InfoQuery};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const INFO_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.INFO",
@@ -32,7 +33,7 @@ pub enum InfoEvalError {
 }
 
 fn parse_info_query(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<InfoQuery, InfoEvalError> {
     let prepared =
@@ -59,10 +60,10 @@ fn parse_info_query(
 }
 
 pub fn eval_info_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, InfoEvalError> {
+) -> Result<CalcValue, InfoEvalError> {
     if !INFO_META.arity.accepts(args.len()) {
         return Err(InfoEvalError::ArityMismatch {
             expected: INFO_META.arity.min,
@@ -102,7 +103,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -113,11 +114,11 @@ mod tests {
     }
 
     struct MockProvider {
-        result: FunctionValue,
+        result: CalcValue,
     }
 
     impl HostInfoProvider for MockProvider {
-        fn query_info(&self, query: InfoQuery) -> Result<FunctionValue, HostInfoError> {
+        fn query_info(&self, query: InfoQuery) -> Result<CalcValue, HostInfoError> {
             match query {
                 InfoQuery::Release => Ok(self.result.clone()),
                 other => Err(HostInfoError::UnsupportedInfoQuery(other)),
@@ -125,8 +126,8 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         )))
     }
@@ -137,14 +138,14 @@ mod tests {
             &[text_arg("release")],
             &MockResolver,
             Some(&MockProvider {
-                result: FunctionValue::Text(ExcelText::from_utf16_code_units(
+                result: CalcValue::text(ExcelText::from_utf16_code_units(
                     "16.0".encode_utf16().collect(),
                 )),
             }),
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "16.0".encode_utf16().collect(),
             )))
         );

@@ -4,11 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, apply_unary_numeric_scalar_prepared, expand_arg_values_only,
-    prepare_arg_values_only,
+    apply_unary_numeric_scalar_prepared, expand_arg_values_only, prepare_arg_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, CoreValue, WorksheetErrorCode};
 
 pub const ASIN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ASIN",
@@ -39,9 +39,9 @@ pub fn asin_kernel(n: f64) -> Result<f64, AsinEvalError> {
 }
 
 pub fn eval_asin_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, AsinEvalError> {
+) -> Result<CalcValue, AsinEvalError> {
     if !ASIN_META.arity.accepts(args.len()) {
         return Err(AsinEvalError::ArityMismatch {
             expected: ASIN_META.arity.min,
@@ -50,8 +50,8 @@ pub fn eval_asin_surface(
     }
 
     let prepared = prepare_arg_values_only(&args[0], resolver).map_err(AsinEvalError::Coercion)?;
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
+    match prepared.core() {
+        CoreValue::Array(array) => {
             let mapped = expand_arg_values_only(&args[0], resolver)
                 .map_err(AsinEvalError::Coercion)?
                 .into_iter()
@@ -60,30 +60,30 @@ pub fn eval_asin_surface(
                         .map_err(AsinEvalError::Coercion);
                     match n {
                         Ok(n) => match asin_kernel(n) {
-                            Ok(v) => Ok(FunctionArrayCell::Number(v)),
+                            Ok(v) => Ok(CalcValue::number(v)),
                             Err(AsinEvalError::Domain) => {
-                                Ok(FunctionArrayCell::Error(WorksheetErrorCode::Num))
+                                Ok(CalcValue::error(WorksheetErrorCode::Num))
                             }
                             Err(other) => Err(other),
                         },
                         Err(AsinEvalError::Coercion(CoercionError::WorksheetError(code))) => {
-                            Ok(FunctionArrayCell::Error(code))
+                            Ok(CalcValue::error(code))
                         }
                         Err(AsinEvalError::Coercion(_)) => {
-                            Ok(FunctionArrayCell::Error(WorksheetErrorCode::Value))
+                            Ok(CalcValue::error(WorksheetErrorCode::Value))
                         }
                         Err(other) => Err(other),
                     }
                 })
                 .collect::<Result<Vec<_>, _>>()?;
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), mapped).expect("shape preserved"),
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), mapped).expect("shape preserved"),
             ))
         }
-        other => {
-            let n = apply_unary_numeric_scalar_prepared(&other, |x| x)
+        _ => {
+            let n = apply_unary_numeric_scalar_prepared(&prepared, |x| x)
                 .map_err(AsinEvalError::Coercion)?;
-            Ok(FunctionValue::Number(asin_kernel(n)?))
+            Ok(CalcValue::number(asin_kernel(n)?))
         }
     }
 }
@@ -101,7 +101,7 @@ pub fn map_asin_error_to_ws(e: &AsinEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArg};
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
@@ -113,7 +113,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -125,10 +125,7 @@ mod tests {
 
     #[test]
     fn eval_asin_domain_error_is_num() {
-        let got = eval_asin_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(2.0))],
-            &NoResolver,
-        );
+        let got = eval_asin_surface(&[(CalcValue::number(2.0))], &NoResolver);
         assert_eq!(
             map_asin_error_to_ws(&got.unwrap_err()),
             WorksheetErrorCode::Num
@@ -138,33 +135,30 @@ mod tests {
     #[test]
     fn eval_asin_accepts_numeric_text() {
         let got = eval_asin_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
-            ))],
+            &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                "1".encode_utf16().collect(),
+            )))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(std::f64::consts::FRAC_PI_2)));
+        assert_eq!(got, Ok(CalcValue::number(std::f64::consts::FRAC_PI_2)));
     }
 
     #[test]
     fn eval_asin_array_lifts_with_element_errors() {
         let got = eval_asin_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(0.0),
-                    FunctionArrayCell::Number(2.0),
-                ]])
-                .unwrap(),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![CalcValue::number(0.0), CalcValue::number(2.0)]])
+                    .unwrap(),
             ))],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(0.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::Num),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(0.0),
+                    CalcValue::error(WorksheetErrorCode::Num),
                 ]])
                 .unwrap()
             )

@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const BESSEL_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BESSEL_BASE",
@@ -70,7 +69,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> BesselConvertEvalError {
     }
 }
 
-fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, BesselConvertEvalError> {
+fn number_arg(args: &[CalcValue], idx: usize) -> Result<f64, BesselConvertEvalError> {
     args.get(idx)
         .ok_or(BesselConvertEvalError::Domain(WorksheetErrorCode::Value))
         .and_then(|value| {
@@ -612,53 +611,53 @@ pub fn bessely_kernel(x: f64, order: f64) -> Result<f64, BesselConvertEvalError>
 }
 
 fn eval_numeric(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl FnOnce(&[PreparedValue]) -> Result<f64, BesselConvertEvalError>,
-) -> Result<FunctionValue, BesselConvertEvalError> {
+    kernel: impl FnOnce(&[CalcValue]) -> Result<f64, BesselConvertEvalError>,
+) -> Result<CalcValue, BesselConvertEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| kernel(prepared).map(FunctionValue::Number),
+        |prepared| kernel(prepared).map(CalcValue::number),
         BesselConvertEvalError::Coercion,
     )
 }
 
 pub fn eval_besseli_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BesselConvertEvalError> {
+) -> Result<CalcValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELI_META, |prepared| {
         besseli_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
     })
 }
 
 pub fn eval_besselj_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BesselConvertEvalError> {
+) -> Result<CalcValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELJ_META, |prepared| {
         besselj_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
     })
 }
 
 pub fn eval_besselk_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BesselConvertEvalError> {
+) -> Result<CalcValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELK_META, |prepared| {
         besselk_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
     })
 }
 
 pub fn eval_bessely_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BesselConvertEvalError> {
+) -> Result<CalcValue, BesselConvertEvalError> {
     eval_numeric(args, resolver, &BESSELY_META, |prepared| {
         bessely_kernel(number_arg(prepared, 0)?, number_arg(prepared, 1)?)
     })

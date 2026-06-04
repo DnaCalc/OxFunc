@@ -5,16 +5,17 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+    prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
 };
 use crate::host_info::{
     HostInfoError, HostInfoProvider, ImageProviderResult, ImageRequest, ImageSizingMode,
     ResolvedWebImage,
 };
 use crate::resolver::ReferenceSystemProvider;
+use crate::value::CalcValue;
 use crate::value::{
-    CalcValue, CoreValue, ExcelText, FunctionArg, FunctionValue, RichValue, RichValueData,
-    RichValueKeyFlag, RichValueKeyValue, RichValueType, WorksheetErrorCode,
+    CoreValue, ExcelText, RichValue, RichValueData, RichValueKeyFlag, RichValueKeyValue,
+    RichValueType, WorksheetErrorCode,
 };
 
 pub const IMAGE_META: FunctionMeta = FunctionMeta {
@@ -60,42 +61,46 @@ pub enum ImageEvalError {
     HostInfo(HostInfoError),
 }
 
-fn required_text_arg(
-    prepared: &[PreparedValue],
-    index: usize,
-) -> Result<ExcelText, ImageEvalError> {
+fn required_text_arg(prepared: &[CalcValue], index: usize) -> Result<ExcelText, ImageEvalError> {
     match prepared.get(index) {
-        Some(PreparedValue::Eval(FunctionValue::Text(text))) => Ok(text.clone()),
+        Some(value) => match value.core() {
+            CoreValue::Text(text) => Ok(text.clone()),
+            _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
+        },
         _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
 
 fn optional_text_arg(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     index: usize,
 ) -> Result<Option<ExcelText>, ImageEvalError> {
     match prepared.get(index) {
-        None | Some(PreparedValue::MissingArg) => Ok(None),
-        Some(PreparedValue::Eval(FunctionValue::Text(text))) => Ok(Some(text.clone())),
-        _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
+        None => Ok(None),
+        Some(value) if value.is_missing() => Ok(None),
+        Some(value) => match value.core() {
+            CoreValue::Text(text) => Ok(Some(text.clone())),
+            _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
+        },
     }
 }
 
 fn optional_number_arg(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     index: usize,
 ) -> Result<Option<f64>, ImageEvalError> {
     match prepared.get(index) {
-        None | Some(PreparedValue::MissingArg) => Ok(None),
-        Some(PreparedValue::Eval(FunctionValue::Number(number))) if number.is_finite() => {
-            Ok(Some(*number))
-        }
-        _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
+        None => Ok(None),
+        Some(value) if value.is_missing() => Ok(None),
+        Some(value) => match value.core() {
+            CoreValue::Number(number) if number.is_finite() => Ok(Some(*number)),
+            _ => Err(ImageEvalError::Domain(WorksheetErrorCode::Value)),
+        },
     }
 }
 
 fn parse_sizing_mode(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     index: usize,
 ) -> Result<ImageSizingMode, ImageEvalError> {
     match optional_number_arg(prepared, index)? {
@@ -145,7 +150,7 @@ fn validate_image_request(request: &ImageRequest) -> Result<(), ImageEvalError> 
 }
 
 pub fn parse_image_request(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<ImageRequest, ImageEvalError> {
     if !IMAGE_META.arity.accepts(args.len()) {
@@ -160,9 +165,7 @@ pub fn parse_image_request(
     parse_image_request_prepared(&prepared)
 }
 
-fn parse_image_request_prepared(
-    prepared: &[PreparedValue],
-) -> Result<ImageRequest, ImageEvalError> {
+fn parse_image_request_prepared(prepared: &[CalcValue]) -> Result<ImageRequest, ImageEvalError> {
     if !IMAGE_META.arity.accepts(prepared.len()) {
         return Err(ImageEvalError::ArityMismatch {
             expected_min: IMAGE_META.arity.min,
@@ -255,33 +258,33 @@ fn build_web_image_rich_value(request: &ImageRequest, resolved: &ResolvedWebImag
     })
 }
 
-fn image_provider_error_value(result: &ImageProviderResult) -> FunctionValue {
+fn image_provider_error_value(result: &ImageProviderResult) -> CalcValue {
     match result {
-        ImageProviderResult::ConnectionFailed => FunctionValue::Error(WorksheetErrorCode::Connect),
-        ImageProviderResult::CapabilityDenied => FunctionValue::Error(WorksheetErrorCode::Blocked),
-        ImageProviderResult::ProviderError(code) => FunctionValue::Error(*code),
+        ImageProviderResult::ConnectionFailed => CalcValue::error(WorksheetErrorCode::Connect),
+        ImageProviderResult::CapabilityDenied => CalcValue::error(WorksheetErrorCode::Blocked),
+        ImageProviderResult::ProviderError(code) => CalcValue::error(*code),
         ImageProviderResult::Image(_) => unreachable!("success handled separately"),
     }
 }
 
 pub fn eval_image_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, ImageEvalError> {
+) -> Result<CalcValue, ImageEvalError> {
     let request = parse_image_request(args, resolver)?;
     let provider = host_info.ok_or(ImageEvalError::HostInfoProviderMissing("image_provider"))?;
     let result = provider
         .query_image(&request)
         .map_err(ImageEvalError::HostInfo)?;
     Ok(match result {
-        ImageProviderResult::Image(image) => FunctionValue::Text(image.published_fallback),
+        ImageProviderResult::Image(image) => CalcValue::text(image.published_fallback),
         other => image_provider_error_value(&other),
     })
 }
 
 pub fn eval_image_surface_rich(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<CalcValue, ImageEvalError> {
@@ -327,7 +330,7 @@ pub fn eval_image_calc_surface_rich_with_capabilities(
 }
 
 pub fn eval_image_surface_rich_with_capabilities(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
 ) -> Result<ImageRichResult, ImageEvalError> {
@@ -394,7 +397,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -418,14 +421,12 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            text,
-        )))
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(text)))
     }
 
-    fn number_arg(value: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(value))
+    fn number_arg(value: f64) -> CalcValue {
+        (CalcValue::number(value))
     }
 
     #[test]
@@ -457,7 +458,7 @@ mod tests {
         let request = parse_image_request(
             &[
                 text_arg("https://example.com/image.png"),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
                 number_arg(3.0),
                 number_arg(100.0),
             ],
@@ -491,7 +492,7 @@ mod tests {
         let non_custom_with_height = parse_image_request(
             &[
                 text_arg("https://example.com/image.png"),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
                 number_arg(0.0),
                 number_arg(100.0),
             ],
@@ -505,7 +506,7 @@ mod tests {
         let custom_without_dimensions = parse_image_request(
             &[
                 text_arg("https://example.com/image.png"),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
                 number_arg(3.0),
             ],
             &MockResolver,
@@ -534,7 +535,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
                 "-2146826273"
             )))
         );
@@ -547,7 +548,7 @@ mod tests {
             &MockResolver,
             Some(&blocked),
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Blocked)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Blocked)));
     }
 
     #[test]

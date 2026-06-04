@@ -3,14 +3,13 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::special_math_common::{
     bisect_inverse, gamma, regularized_beta, regularized_gamma_p, regularized_gamma_q,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 macro_rules! dist_meta {
     ($id:literal, $min:expr, $max:expr) => {
@@ -289,14 +288,14 @@ pub fn t_inv_2t_kernel(probability: f64, deg_freedom: f64) -> Result<f64, Worksh
     t_inv_kernel(1.0 - p / 2.0, deg_freedom)
 }
 
-fn map_domain(value: Result<f64, WorksheetErrorCode>) -> FunctionValue {
+fn map_domain(value: Result<f64, WorksheetErrorCode>) -> CalcValue {
     match value {
-        Ok(number) => FunctionValue::Number(number),
-        Err(code) => FunctionValue::Error(code),
+        Ok(number) => CalcValue::number(number),
+        Err(code) => CalcValue::error(code),
     }
 }
 
-fn eval_chisq_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_chisq_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !CHISQ_DIST_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_DIST_META, args.len()));
     }
@@ -310,7 +309,7 @@ fn eval_chisq_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Chi
     )))
 }
 
-fn eval_chisq_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_chisq_dist_rt_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !CHISQ_DIST_RT_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_DIST_RT_META, args.len()));
     }
@@ -319,7 +318,7 @@ fn eval_chisq_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, 
     Ok(map_domain(chisq_dist_rt_kernel(x, df)))
 }
 
-fn eval_chisq_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_chisq_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !CHISQ_INV_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_INV_META, args.len()));
     }
@@ -328,7 +327,7 @@ fn eval_chisq_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiF
     Ok(map_domain(chisq_inv_kernel(p, df)))
 }
 
-fn eval_chisq_inv_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_chisq_inv_rt_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !CHISQ_INV_RT_META.arity.accepts(args.len()) {
         return Err(arity_error(&CHISQ_INV_RT_META, args.len()));
     }
@@ -337,7 +336,7 @@ fn eval_chisq_inv_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, C
     Ok(map_domain(chisq_inv_rt_kernel(p, df)))
 }
 
-fn eval_f_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_f_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !F_DIST_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_DIST_META, args.len()));
     }
@@ -353,7 +352,7 @@ fn eval_f_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEv
     )))
 }
 
-fn eval_f_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_f_dist_rt_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !F_DIST_RT_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_DIST_RT_META, args.len()));
     }
@@ -363,7 +362,7 @@ fn eval_f_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiF
     Ok(map_domain(f_dist_rt_kernel(x, d1, d2)))
 }
 
-fn eval_f_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_f_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !F_INV_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_INV_META, args.len()));
     }
@@ -373,7 +372,7 @@ fn eval_f_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEva
     Ok(map_domain(f_inv_kernel(p, d1, d2)))
 }
 
-fn eval_f_inv_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_f_inv_rt_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !F_INV_RT_META.arity.accepts(args.len()) {
         return Err(arity_error(&F_INV_RT_META, args.len()));
     }
@@ -383,7 +382,7 @@ fn eval_f_inv_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFT
     Ok(map_domain(f_inv_rt_kernel(p, d1, d2)))
 }
 
-fn eval_t_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_t_dist_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !T_DIST_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_DIST_META, args.len()));
     }
@@ -393,7 +392,7 @@ fn eval_t_dist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEv
     Ok(map_domain(t_dist_kernel(x, df, density_flag(cumulative))))
 }
 
-fn eval_t_dist_2t_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_t_dist_2t_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !T_DIST_2T_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_DIST_2T_META, args.len()));
     }
@@ -402,7 +401,7 @@ fn eval_t_dist_2t_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiF
     Ok(map_domain(t_dist_2t_kernel(x, df)))
 }
 
-fn eval_t_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_t_dist_rt_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !T_DIST_RT_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_DIST_RT_META, args.len()));
     }
@@ -411,7 +410,7 @@ fn eval_t_dist_rt_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiF
     Ok(map_domain(t_dist_rt_kernel(x, df)))
 }
 
-fn eval_t_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_t_inv_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !T_INV_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_INV_META, args.len()));
     }
@@ -420,7 +419,7 @@ fn eval_t_inv_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEva
     Ok(map_domain(t_inv_kernel(p, df)))
 }
 
-fn eval_t_inv_2t_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_t_inv_2t_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !T_INV_2T_META.arity.accepts(args.len()) {
         return Err(arity_error(&T_INV_2T_META, args.len()));
     }
@@ -429,7 +428,7 @@ fn eval_t_inv_2t_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFT
     Ok(map_domain(t_inv_2t_kernel(p, df)))
 }
 
-fn eval_tdist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEvalError> {
+fn eval_tdist_prepared(args: &[CalcValue]) -> Result<CalcValue, ChiFTEvalError> {
     if !TDIST_META.arity.accepts(args.len()) {
         return Err(arity_error(&TDIST_META, args.len()));
     }
@@ -446,9 +445,9 @@ fn eval_tdist_prepared(args: &[PreparedValue]) -> Result<FunctionValue, ChiFTEva
 }
 
 pub fn eval_chisq_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -458,9 +457,9 @@ pub fn eval_chisq_dist_surface(
 }
 
 pub fn eval_chisq_dist_rt_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -470,9 +469,9 @@ pub fn eval_chisq_dist_rt_surface(
 }
 
 pub fn eval_chisq_inv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -482,9 +481,9 @@ pub fn eval_chisq_inv_surface(
 }
 
 pub fn eval_chisq_inv_rt_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -494,9 +493,9 @@ pub fn eval_chisq_inv_rt_surface(
 }
 
 pub fn eval_chidist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -506,9 +505,9 @@ pub fn eval_chidist_surface(
 }
 
 pub fn eval_chiinv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -518,9 +517,9 @@ pub fn eval_chiinv_surface(
 }
 
 pub fn eval_f_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -530,9 +529,9 @@ pub fn eval_f_dist_surface(
 }
 
 pub fn eval_f_dist_rt_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -542,9 +541,9 @@ pub fn eval_f_dist_rt_surface(
 }
 
 pub fn eval_f_inv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -554,9 +553,9 @@ pub fn eval_f_inv_surface(
 }
 
 pub fn eval_f_inv_rt_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -566,9 +565,9 @@ pub fn eval_f_inv_rt_surface(
 }
 
 pub fn eval_fdist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -578,9 +577,9 @@ pub fn eval_fdist_surface(
 }
 
 pub fn eval_finv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -590,9 +589,9 @@ pub fn eval_finv_surface(
 }
 
 pub fn eval_t_dist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -602,9 +601,9 @@ pub fn eval_t_dist_surface(
 }
 
 pub fn eval_t_dist_2t_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -614,9 +613,9 @@ pub fn eval_t_dist_2t_surface(
 }
 
 pub fn eval_t_dist_rt_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -626,9 +625,9 @@ pub fn eval_t_dist_rt_surface(
 }
 
 pub fn eval_t_inv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -638,9 +637,9 @@ pub fn eval_t_inv_surface(
 }
 
 pub fn eval_t_inv_2t_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -650,9 +649,9 @@ pub fn eval_t_inv_2t_surface(
 }
 
 pub fn eval_tdist_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -662,9 +661,9 @@ pub fn eval_tdist_surface(
 }
 
 pub fn eval_tinv_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ChiFTEvalError> {
+) -> Result<CalcValue, ChiFTEvalError> {
     run_values_only_prepared(
         args,
         resolver,

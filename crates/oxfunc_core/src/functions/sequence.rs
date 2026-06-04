@@ -3,13 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const SEQUENCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SEQUENCE",
@@ -56,13 +52,13 @@ fn parse_dimension(raw: f64, arg_index: usize) -> Result<usize, SequenceEvalErro
 }
 
 fn parse_optional_dimension(
-    arg: Option<&PreparedValue>,
+    arg: Option<&CalcValue>,
     arg_index: usize,
     default: usize,
 ) -> Result<usize, SequenceEvalError> {
     match arg {
         None => Ok(default),
-        Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => Ok(default),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => Ok(default),
         Some(other) => parse_dimension(
             coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion)?,
             arg_index,
@@ -70,20 +66,15 @@ fn parse_optional_dimension(
     }
 }
 
-fn parse_optional_scalar(
-    arg: Option<&PreparedValue>,
-    default: f64,
-) -> Result<f64, SequenceEvalError> {
+fn parse_optional_scalar(arg: Option<&CalcValue>, default: f64) -> Result<f64, SequenceEvalError> {
     match arg {
         None => Ok(default),
-        Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => Ok(default),
+        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => Ok(default),
         Some(other) => coerce_prepared_to_number(other).map_err(SequenceEvalError::Coercion),
     }
 }
 
-pub fn eval_sequence_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, SequenceEvalError> {
+pub fn eval_sequence_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, SequenceEvalError> {
     let argc = args.len();
     if !SEQUENCE_META.arity.accepts(argc) {
         return Err(SequenceEvalError::ArityMismatch {
@@ -101,18 +92,18 @@ pub fn eval_sequence_adapter_prepared(
     let shape = ArrayShape { rows, cols };
     let mut cells = Vec::with_capacity(shape.cell_count());
     for idx in 0..shape.cell_count() {
-        cells.push(FunctionArrayCell::Number(start + (idx as f64) * step));
+        cells.push(CalcValue::number(start + (idx as f64) * step));
     }
 
-    Ok(FunctionValue::Array(
-        FunctionArray::new(shape, cells).expect("sequence dimensions validated"),
+    Ok(CalcValue::array(
+        CalcArray::new(shape, cells).expect("sequence dimensions validated"),
     ))
 }
 
 pub fn eval_sequence_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SequenceEvalError> {
+) -> Result<CalcValue, SequenceEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -146,7 +137,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -158,15 +149,15 @@ mod tests {
 
     #[test]
     fn eval_sequence_rows_only_defaults_cols_to_one() {
-        let args = [FunctionArg::Eval(FunctionValue::Number(3.0))];
+        let args = [(CalcValue::number(3.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
                 ])
                 .unwrap()
             ))
@@ -176,25 +167,25 @@ mod tests {
     #[test]
     fn eval_sequence_parses_full_arity() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-            FunctionArg::Eval(FunctionValue::Number(10.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(3.0)),
+            (CalcValue::number(10.0)),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(10.0),
-                        FunctionArrayCell::Number(12.0),
-                        FunctionArrayCell::Number(14.0),
+                        CalcValue::number(10.0),
+                        CalcValue::number(12.0),
+                        CalcValue::number(14.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(16.0),
-                        FunctionArrayCell::Number(18.0),
-                        FunctionArrayCell::Number(20.0),
+                        CalcValue::number(16.0),
+                        CalcValue::number(18.0),
+                        CalcValue::number(20.0),
                     ],
                 ])
                 .unwrap()
@@ -204,18 +195,18 @@ mod tests {
 
     #[test]
     fn eval_sequence_numeric_text_dimension_is_allowed() {
-        let args = [FunctionArg::Eval(FunctionValue::Text(
-            ExcelText::from_utf16_code_units("4".encode_utf16().collect()),
-        ))];
+        let args = [(CalcValue::text(ExcelText::from_utf16_code_units(
+            "4".encode_utf16().collect(),
+        )))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(4.0)],
                 ])
                 .unwrap()
             ))
@@ -224,7 +215,7 @@ mod tests {
 
     #[test]
     fn eval_sequence_rejects_zero_dimension() {
-        let args = [FunctionArg::Eval(FunctionValue::Number(0.0))];
+        let args = [(CalcValue::number(0.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(got, Err(SequenceEvalError::ZeroDimension { arg_index: 1 }));
     }
@@ -239,18 +230,15 @@ mod tests {
 
     #[test]
     fn eval_sequence_missing_rows_defaults_to_one() {
-        let args = [
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-        ];
+        let args = [CalcValue::missing(), (CalcValue::number(3.0))];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap()
             ))
@@ -260,42 +248,42 @@ mod tests {
     #[test]
     fn eval_sequence_missing_middle_args_follow_excel_defaults() {
         let args = [
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Number(10.0)),
+            (CalcValue::number(2.0)),
+            CalcValue::missing(),
+            (CalcValue::number(10.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(10.0)],
-                    vec![FunctionArrayCell::Number(11.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(11.0)],
                 ])
                 .unwrap()
             ))
         );
 
         let args = [
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
-            FunctionArg::MissingArg,
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(3.0)),
+            CalcValue::missing(),
+            (CalcValue::number(2.0)),
         ];
         let got = eval_sequence_surface(&args, &NoResolver);
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(5.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(5.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(7.0),
-                        FunctionArrayCell::Number(9.0),
-                        FunctionArrayCell::Number(11.0),
+                        CalcValue::number(7.0),
+                        CalcValue::number(9.0),
+                        CalcValue::number(11.0),
                     ],
                 ])
                 .unwrap()

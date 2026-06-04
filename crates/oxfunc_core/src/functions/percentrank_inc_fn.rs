@@ -9,7 +9,8 @@ use crate::functions::adapters::{
 use crate::functions::percentile_common::collect_percentile_values;
 use crate::functions::percentrank_common::{PercentRankMode, percentrank};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const PERCENTRANK_INC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PERCENTRANK.INC",
@@ -36,9 +37,9 @@ pub enum PercentRankIncEvalError {
 }
 
 pub fn eval_percentrank_inc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, PercentRankIncEvalError> {
+) -> Result<CalcValue, PercentRankIncEvalError> {
     if !PERCENTRANK_INC_META.arity.accepts(args.len()) {
         return Err(PercentRankIncEvalError::ArityMismatch {
             expected_min: PERCENTRANK_INC_META.arity.min,
@@ -65,8 +66,8 @@ pub fn eval_percentrank_inc_surface(
         3
     };
     match percentrank(&mut values, x, significance, PercentRankMode::Inclusive) {
-        Ok(v) => Ok(FunctionValue::Number(v)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(v) => Ok(CalcValue::number(v)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 

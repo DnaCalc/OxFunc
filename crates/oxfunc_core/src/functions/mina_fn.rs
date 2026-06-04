@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{AggregatePreparedValue, expand_aggregate_arg};
 use crate::functions::aggregate_common::extrema_a_argument_value;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const MINA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MINA",
@@ -32,7 +33,7 @@ pub enum MinAEvalError {
     Coercion(CoercionError),
 }
 
-fn eval_mina_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue, MinAEvalError> {
+fn eval_mina_aggregate(args: &[AggregatePreparedValue]) -> Result<CalcValue, MinAEvalError> {
     let mut acc: Option<f64> = None;
     for arg in args {
         if let Some(value) = extrema_a_argument_value(arg).map_err(MinAEvalError::Coercion)? {
@@ -42,13 +43,13 @@ fn eval_mina_aggregate(args: &[AggregatePreparedValue]) -> Result<FunctionValue,
             });
         }
     }
-    Ok(FunctionValue::Number(acc.unwrap_or(0.0)))
+    Ok(CalcValue::number(acc.unwrap_or(0.0)))
 }
 
 pub fn eval_mina_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, MinAEvalError> {
+) -> Result<CalcValue, MinAEvalError> {
     let argc = args.len();
     if !MINA_META.arity.accepts(argc) {
         return Err(MinAEvalError::ArityMismatch {

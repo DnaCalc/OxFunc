@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const STANDARDIZE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.STANDARDIZE",
@@ -36,9 +35,7 @@ pub fn standardize_kernel(x: f64, mean: f64, stdev: f64) -> Result<f64, Workshee
     Ok((x - mean) / stdev)
 }
 
-fn eval_standardize_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, StandardizeEvalError> {
+fn eval_standardize_prepared(args: &[CalcValue]) -> Result<CalcValue, StandardizeEvalError> {
     if args.len() != 3 {
         return Err(StandardizeEvalError::ArityMismatch {
             expected: 3,
@@ -49,15 +46,15 @@ fn eval_standardize_prepared(
     let mean = coerce_prepared_to_number(&args[1]).map_err(StandardizeEvalError::Coercion)?;
     let stdev = coerce_prepared_to_number(&args[2]).map_err(StandardizeEvalError::Coercion)?;
     match standardize_kernel(x, mean, stdev) {
-        Ok(value) => Ok(FunctionValue::Number(value)),
-        Err(code) => Ok(FunctionValue::Error(code)),
+        Ok(value) => Ok(CalcValue::number(value)),
+        Err(code) => Ok(CalcValue::error(code)),
     }
 }
 
 pub fn eval_standardize_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, StandardizeEvalError> {
+) -> Result<CalcValue, StandardizeEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,

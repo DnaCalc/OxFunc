@@ -6,7 +6,8 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const QUOTIENT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.QUOTIENT",
@@ -30,9 +31,9 @@ pub fn quotient_kernel(numerator: f64, denominator: f64) -> Result<f64, Workshee
 }
 
 pub fn eval_quotient_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, quotient_kernel)
 }
 

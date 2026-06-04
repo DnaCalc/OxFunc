@@ -4,13 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    BroadcastPreparedGroup, PreparedValue, coerce_prepared_to_number,
-    expand_prepared_broadcast_grid, prepare_args_values_only,
+    BroadcastPreparedGroup, coerce_prepared_to_number, expand_prepared_broadcast_grid,
+    prepare_args_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, WorksheetErrorCode};
 
 pub const TRUNC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRUNC",
@@ -46,9 +45,7 @@ pub fn trunc_kernel(number: f64, digits: i32) -> f64 {
     }
 }
 
-pub fn eval_trunc_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, TruncEvalError> {
+pub fn eval_trunc_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, TruncEvalError> {
     if !TRUNC_META.arity.accepts(args.len()) {
         return Err(TruncEvalError::ArityMismatch {
             expected_min: TRUNC_META.arity.min,
@@ -63,12 +60,12 @@ pub fn eval_trunc_adapter_prepared(
             .map(|cell| match cell {
                 BroadcastPreparedGroup::Values(values) => map_trunc_item(&values),
                 BroadcastPreparedGroup::MissingCoordinate => {
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                    CalcValue::error(WorksheetErrorCode::NA)
                 }
             })
             .collect();
-        return Ok(FunctionValue::Array(
-            FunctionArray::new(shape, mapped).expect("shape preserved"),
+        return Ok(CalcValue::array(
+            CalcArray::new(shape, mapped).expect("shape preserved"),
         ));
     }
 
@@ -80,31 +77,31 @@ pub fn eval_trunc_adapter_prepared(
             .map_err(TruncEvalError::Coercion)?
             .trunc() as i32
     };
-    Ok(FunctionValue::Number(trunc_kernel(number, digits)))
+    Ok(CalcValue::number(trunc_kernel(number, digits)))
 }
 
-fn map_trunc_item(args: &[PreparedValue]) -> FunctionArrayCell {
+fn map_trunc_item(args: &[CalcValue]) -> CalcValue {
     let number = match coerce_prepared_to_number(&args[0]) {
         Ok(value) => value,
-        Err(CoercionError::WorksheetError(code)) => return FunctionArrayCell::Error(code),
-        Err(_) => return FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
+        Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
     };
     let digits = if args.len() == 1 {
         0
     } else {
         match coerce_prepared_to_number(&args[1]) {
             Ok(value) => value.trunc() as i32,
-            Err(CoercionError::WorksheetError(code)) => return FunctionArrayCell::Error(code),
-            Err(_) => return FunctionArrayCell::Error(WorksheetErrorCode::Value),
+            Err(CoercionError::WorksheetError(code)) => return CalcValue::error(code),
+            Err(_) => return CalcValue::error(WorksheetErrorCode::Value),
         }
     };
-    FunctionArrayCell::Number(trunc_kernel(number, digits))
+    CalcValue::number(trunc_kernel(number, digits))
 }
 
 pub fn eval_trunc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TruncEvalError> {
+) -> Result<CalcValue, TruncEvalError> {
     let prepared = prepare_args_values_only(args, resolver).map_err(TruncEvalError::Coercion)?;
     eval_trunc_adapter_prepared(&prepared)
 }
@@ -121,7 +118,7 @@ pub fn map_trunc_error_to_ws(e: &TruncEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionArray, FunctionArrayCell};
+    use crate::value::CalcArray;
 
     struct NoResolver;
 
@@ -133,7 +130,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -146,10 +143,10 @@ mod tests {
     #[test]
     fn eval_trunc_spills_array_with_omitted_digits() {
         let got = eval_trunc_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.234)],
-                    vec![FunctionArrayCell::Number(2.345)],
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.234)],
+                    vec![CalcValue::number(2.345)],
                 ])
                 .unwrap(),
             ))],
@@ -157,10 +154,10 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
                 ])
                 .unwrap()
             ))

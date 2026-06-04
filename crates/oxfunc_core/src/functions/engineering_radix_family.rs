@@ -4,12 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text,
-    run_values_only_prepared_lifted,
+    coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
 use crate::functions::base_fn::base_kernel;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{ExcelText, WorksheetErrorCode};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct RadixSpec {
@@ -78,16 +78,16 @@ pub enum EngineeringRadixEvalError {
     Coercion(CoercionError),
 }
 
-fn map_domain_result(result: Result<FunctionValue, WorksheetErrorCode>) -> FunctionValue {
+fn map_domain_result(result: Result<CalcValue, WorksheetErrorCode>) -> CalcValue {
     match result {
         Ok(value) => value,
-        Err(code) => FunctionValue::Error(code),
+        Err(code) => CalcValue::error(code),
     }
 }
 
 fn validate_arity(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
 ) -> Result<(), EngineeringRadixEvalError> {
     if meta.arity.accepts(args.len()) {
         Ok(())
@@ -100,15 +100,12 @@ fn validate_arity(
     }
 }
 
-fn prepared_number_arg(
-    args: &[PreparedValue],
-    index: usize,
-) -> Result<f64, EngineeringRadixEvalError> {
+fn prepared_number_arg(args: &[CalcValue], index: usize) -> Result<f64, EngineeringRadixEvalError> {
     coerce_prepared_to_number(&args[index]).map_err(EngineeringRadixEvalError::Coercion)
 }
 
 fn prepared_text_arg(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     index: usize,
 ) -> Result<String, EngineeringRadixEvalError> {
     Ok(coerce_prepared_to_text(&args[index])
@@ -117,7 +114,7 @@ fn prepared_text_arg(
 }
 
 fn prepared_optional_places_arg(
-    args: &[PreparedValue],
+    args: &[CalcValue],
 ) -> Result<Option<f64>, EngineeringRadixEvalError> {
     if args.len() > 1 {
         prepared_number_arg(args, 1).map(Some)
@@ -301,46 +298,44 @@ pub fn oct2hex_kernel(number: &str, places: Option<f64>) -> Result<ExcelText, Wo
 
 fn eval_dec_to_target_prepared(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(f64, Option<f64>) -> Result<ExcelText, WorksheetErrorCode>,
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     validate_arity(meta, args)?;
     let number = prepared_number_arg(args, 0)?;
     let places = prepared_optional_places_arg(args)?;
     Ok(map_domain_result(
-        kernel(number, places).map(FunctionValue::Text),
+        kernel(number, places).map(CalcValue::text),
     ))
 }
 
 fn eval_source_to_decimal_prepared(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(&str) -> Result<f64, WorksheetErrorCode>,
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     validate_arity(meta, args)?;
     let number = prepared_text_arg(args, 0)?;
-    Ok(map_domain_result(
-        kernel(&number).map(FunctionValue::Number),
-    ))
+    Ok(map_domain_result(kernel(&number).map(CalcValue::number)))
 }
 
 fn eval_source_to_target_prepared(
     meta: &FunctionMeta,
-    args: &[PreparedValue],
+    args: &[CalcValue],
     kernel: fn(&str, Option<f64>) -> Result<ExcelText, WorksheetErrorCode>,
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     validate_arity(meta, args)?;
     let number = prepared_text_arg(args, 0)?;
     let places = prepared_optional_places_arg(args)?;
     Ok(map_domain_result(
-        kernel(&number, places).map(FunctionValue::Text),
+        kernel(&number, places).map(CalcValue::text),
     ))
 }
 
 pub fn eval_dec2bin_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -351,9 +346,9 @@ pub fn eval_dec2bin_surface(
 }
 
 pub fn eval_dec2hex_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -364,9 +359,9 @@ pub fn eval_dec2hex_surface(
 }
 
 pub fn eval_dec2oct_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -377,9 +372,9 @@ pub fn eval_dec2oct_surface(
 }
 
 pub fn eval_bin2dec_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -390,9 +385,9 @@ pub fn eval_bin2dec_surface(
 }
 
 pub fn eval_bin2hex_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -403,9 +398,9 @@ pub fn eval_bin2hex_surface(
 }
 
 pub fn eval_bin2oct_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -416,9 +411,9 @@ pub fn eval_bin2oct_surface(
 }
 
 pub fn eval_hex2bin_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -429,9 +424,9 @@ pub fn eval_hex2bin_surface(
 }
 
 pub fn eval_hex2dec_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -442,9 +437,9 @@ pub fn eval_hex2dec_surface(
 }
 
 pub fn eval_hex2oct_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -455,9 +450,9 @@ pub fn eval_hex2oct_surface(
 }
 
 pub fn eval_oct2bin_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -468,9 +463,9 @@ pub fn eval_oct2bin_surface(
 }
 
 pub fn eval_oct2dec_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -481,9 +476,9 @@ pub fn eval_oct2dec_surface(
 }
 
 pub fn eval_oct2hex_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, EngineeringRadixEvalError> {
+) -> Result<CalcValue, EngineeringRadixEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,

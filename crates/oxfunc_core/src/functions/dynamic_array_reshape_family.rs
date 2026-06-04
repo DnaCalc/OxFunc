@@ -1,3 +1,4 @@
+use crate::value::CalcValue;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
@@ -7,14 +8,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
+    coerce_prepared_to_number, expand_arg_values_only, prepare_arg_values_only,
     prepare_calc_value_values_only, run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ArrayShape, CalcArray, CalcValue, CoreValue, FunctionArg, FunctionArray, FunctionArrayCell,
-    FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{ArrayShape, CalcArray, CoreValue, WorksheetErrorCode};
 
 macro_rules! reshape_meta {
     ($id:literal, $min:expr, $max:expr) => {
@@ -71,27 +69,23 @@ pub enum DynamicArrayReshapeEvalError {
     InvalidIncludeShape,
 }
 
-fn scalar_cell(arg: &PreparedValue) -> FunctionArrayCell {
-    match arg {
-        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionArrayCell::Number(*n),
-        PreparedValue::Eval(FunctionValue::Text(t)) => FunctionArrayCell::Text(t.clone()),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => FunctionArrayCell::Logical(*b),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionArrayCell::Error(*code),
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionArrayCell::Error(WorksheetErrorCode::Value)
-        }
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            FunctionArrayCell::Error(WorksheetErrorCode::Value)
-        }
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => FunctionArrayCell::EmptyCell,
-        _ => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+fn scalar_cell(arg: &CalcValue) -> CalcValue {
+    match arg.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Reference(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Array(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Missing | CoreValue::Empty => CalcValue::empty(),
     }
 }
 
-fn materialize_array_arg(arg: &PreparedValue) -> FunctionArray {
-    match arg {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array.clone(),
-        other => FunctionArray::from_scalar(scalar_cell(other)),
+fn materialize_array_arg(arg: &CalcValue) -> CalcArray {
+    match arg.core() {
+        CoreValue::Array(array) => array.clone(),
+        _ => CalcArray::from_scalar(scalar_cell(arg))
+            .expect("scalar materialization always has one cell"),
     }
 }
 
@@ -119,15 +113,15 @@ fn materialize_calc_array_arg(
 }
 
 enum StackArgSource<'a> {
-    Array(&'a FunctionArray),
-    Scalar(FunctionArrayCell),
+    Array(&'a CalcArray),
+    Scalar(CalcValue),
 }
 
 impl<'a> StackArgSource<'a> {
-    fn new(arg: &'a PreparedValue) -> Self {
-        match arg {
-            PreparedValue::Eval(FunctionValue::Array(array)) => Self::Array(array),
-            other => Self::Scalar(scalar_cell(other)),
+    fn new(arg: &'a CalcValue) -> Self {
+        match arg.core() {
+            CoreValue::Array(array) => Self::Array(array),
+            _ => Self::Scalar(scalar_cell(arg)),
         }
     }
 
@@ -138,7 +132,7 @@ impl<'a> StackArgSource<'a> {
         }
     }
 
-    fn get(&self, row: usize, col: usize) -> Option<&FunctionArrayCell> {
+    fn get(&self, row: usize, col: usize) -> Option<&CalcValue> {
         match self {
             Self::Array(array) => array.get(row, col),
             Self::Scalar(cell) if row == 0 && col == 0 => Some(cell),
@@ -147,17 +141,20 @@ impl<'a> StackArgSource<'a> {
     }
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
     }
 }
 
-fn parse_integer(prepared: &PreparedValue) -> Result<isize, DynamicArrayReshapeEvalError> {
+fn parse_integer(prepared: &CalcValue) -> Result<isize, DynamicArrayReshapeEvalError> {
     let raw =
         coerce_prepared_to_number(prepared).map_err(DynamicArrayReshapeEvalError::Preparation)?;
     if !raw.is_finite() {
@@ -183,7 +180,7 @@ fn parse_integer_calc(value: &CalcValue) -> Result<isize, DynamicArrayReshapeEva
     Ok(truncated as isize)
 }
 
-fn parse_positive_integer(prepared: &PreparedValue) -> Result<usize, DynamicArrayReshapeEvalError> {
+fn parse_positive_integer(prepared: &CalcValue) -> Result<usize, DynamicArrayReshapeEvalError> {
     let value = parse_integer(prepared)?;
     if value < 1 {
         return Err(DynamicArrayReshapeEvalError::InvalidCount);
@@ -191,14 +188,14 @@ fn parse_positive_integer(prepared: &PreparedValue) -> Result<usize, DynamicArra
     Ok(value as usize)
 }
 
-fn parse_bool_like(prepared: &PreparedValue) -> Result<bool, DynamicArrayReshapeEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(*b),
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(*n != 0.0),
-        PreparedValue::EmptyCell | PreparedValue::MissingArg => Ok(false),
-        PreparedValue::Eval(FunctionValue::Error(code)) => Err(
-            DynamicArrayReshapeEvalError::Preparation(CoercionError::WorksheetError(*code)),
-        ),
+fn parse_bool_like(prepared: &CalcValue) -> Result<bool, DynamicArrayReshapeEvalError> {
+    match prepared.core() {
+        CoreValue::Logical(b) => Ok(*b),
+        CoreValue::Number(n) => Ok(*n != 0.0),
+        CoreValue::Empty | CoreValue::Missing => Ok(false),
+        CoreValue::Error(code) => Err(DynamicArrayReshapeEvalError::Preparation(
+            CoercionError::WorksheetError(*code),
+        )),
         _ => Err(DynamicArrayReshapeEvalError::Preparation(
             CoercionError::UnsupportedValueKind("boolean_like"),
         )),
@@ -227,10 +224,10 @@ fn resolve_selector(index: isize, len: usize) -> Result<usize, DynamicArrayResha
 fn build_array(
     rows: usize,
     cols: usize,
-    cells: Vec<FunctionArrayCell>,
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
-    CalcArray::from_function_cells_iter(ArrayShape { rows, cols }, cells)
-        .map(|array| FunctionValue::Array(array.to_function_array_lossy()))
+    cells: Vec<CalcValue>,
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
+    CalcArray::from_cells_iter(ArrayShape { rows, cols }, cells)
+        .map(CalcValue::array)
         .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
@@ -244,36 +241,38 @@ fn build_calc_array(
         .ok_or(DynamicArrayReshapeEvalError::EmptyArrayResult)
 }
 
-fn value_from_if_empty_arg(arg: &PreparedValue) -> FunctionValue {
-    match arg {
-        PreparedValue::Eval(value) => value.clone(),
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
-            FunctionValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
+fn value_from_if_empty_arg(arg: &CalcValue) -> CalcValue {
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => {
+            CalcValue::text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
         }
+        _ => arg.clone(),
     }
 }
 
-fn row_signature(array: &FunctionArray, row: usize) -> Vec<FunctionArrayCell> {
+fn row_signature(array: &CalcArray, row: usize) -> Vec<CalcValue> {
     array.row_slice(row).expect("validated row").to_vec()
 }
 
-fn column_signature(array: &FunctionArray, col: usize) -> Vec<FunctionArrayCell> {
+fn column_signature(array: &CalcArray, col: usize) -> Vec<CalcValue> {
     (0..array.shape().rows)
         .map(|row| array.get(row, col).expect("validated col").clone())
         .collect()
 }
 
-fn cell_signature(cell: &FunctionArrayCell) -> String {
-    match cell {
-        FunctionArrayCell::Number(n) => format!("n:{n:?}"),
-        FunctionArrayCell::Text(t) => format!("t:{}", t.to_string_lossy()),
-        FunctionArrayCell::Logical(b) => format!("b:{b}"),
-        FunctionArrayCell::Error(code) => format!("e:{code:?}"),
-        FunctionArrayCell::EmptyCell => "m:".to_string(),
+fn cell_signature(cell: &CalcValue) -> String {
+    match cell.core() {
+        CoreValue::Number(n) => format!("n:{n:?}"),
+        CoreValue::Text(t) => format!("t:{}", t.to_string_lossy()),
+        CoreValue::Logical(b) => format!("b:{b}"),
+        CoreValue::Error(code) => format!("e:{code:?}"),
+        CoreValue::Empty | CoreValue::Missing => "m:".to_string(),
+        CoreValue::Array(_) => "a:".to_string(),
+        CoreValue::Reference(_) => "r:".to_string(),
     }
 }
 
-fn signature_key(cells: &[FunctionArrayCell]) -> String {
+fn signature_key(cells: &[CalcValue]) -> String {
     cells
         .iter()
         .map(cell_signature)
@@ -281,7 +280,7 @@ fn signature_key(cells: &[FunctionArrayCell]) -> String {
         .join("\u{001f}")
 }
 
-fn flatten_cells(array: &FunctionArray, by_col: bool) -> Vec<FunctionArrayCell> {
+fn flatten_cells(array: &CalcArray, by_col: bool) -> Vec<CalcValue> {
     if !by_col {
         return array.iter_row_major().cloned().collect();
     }
@@ -295,31 +294,32 @@ fn flatten_cells(array: &FunctionArray, by_col: bool) -> Vec<FunctionArrayCell> 
     cells
 }
 
-fn compare_cell_values(lhs: &FunctionArrayCell, rhs: &FunctionArrayCell) -> Ordering {
-    match (lhs, rhs) {
-        (FunctionArrayCell::Number(a), FunctionArrayCell::Number(b)) => {
-            a.partial_cmp(b).unwrap_or(Ordering::Equal)
+fn compare_cell_values(lhs: &CalcValue, rhs: &CalcValue) -> Ordering {
+    match (lhs.core(), rhs.core()) {
+        (CoreValue::Number(a), CoreValue::Number(b)) => a.partial_cmp(b).unwrap_or(Ordering::Equal),
+        (CoreValue::Text(a), CoreValue::Text(b)) => a.to_string_lossy().cmp(&b.to_string_lossy()),
+        (CoreValue::Logical(a), CoreValue::Logical(b)) => a.cmp(b),
+        (CoreValue::Empty | CoreValue::Missing, CoreValue::Empty | CoreValue::Missing) => {
+            Ordering::Equal
         }
-        (FunctionArrayCell::Text(a), FunctionArrayCell::Text(b)) => {
-            a.to_string_lossy().cmp(&b.to_string_lossy())
-        }
-        (FunctionArrayCell::Logical(a), FunctionArrayCell::Logical(b)) => a.cmp(b),
-        (FunctionArrayCell::EmptyCell, FunctionArrayCell::EmptyCell) => Ordering::Equal,
-        (FunctionArrayCell::Error(a), FunctionArrayCell::Error(b)) => (*a as u8).cmp(&(*b as u8)),
-        (FunctionArrayCell::EmptyCell, _) => Ordering::Less,
-        (_, FunctionArrayCell::EmptyCell) => Ordering::Greater,
-        (FunctionArrayCell::Number(_), _) => Ordering::Less,
-        (_, FunctionArrayCell::Number(_)) => Ordering::Greater,
-        (FunctionArrayCell::Text(_), _) => Ordering::Less,
-        (_, FunctionArrayCell::Text(_)) => Ordering::Greater,
-        (FunctionArrayCell::Logical(_), _) => Ordering::Less,
-        (_, FunctionArrayCell::Logical(_)) => Ordering::Greater,
+        (CoreValue::Error(a), CoreValue::Error(b)) => (*a as u8).cmp(&(*b as u8)),
+        (CoreValue::Empty | CoreValue::Missing, _) => Ordering::Less,
+        (_, CoreValue::Empty | CoreValue::Missing) => Ordering::Greater,
+        (CoreValue::Number(_), _) => Ordering::Less,
+        (_, CoreValue::Number(_)) => Ordering::Greater,
+        (CoreValue::Text(_), _) => Ordering::Less,
+        (_, CoreValue::Text(_)) => Ordering::Greater,
+        (CoreValue::Logical(_), _) => Ordering::Less,
+        (_, CoreValue::Logical(_)) => Ordering::Greater,
+        (CoreValue::Error(_), _) => Ordering::Less,
+        (_, CoreValue::Error(_)) => Ordering::Greater,
+        _ => Ordering::Equal,
     }
 }
 
 pub fn eval_choosecols_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let cols: Vec<usize> = args[1..]
         .iter()
@@ -379,8 +379,8 @@ pub fn eval_choosecols_calc_surface(
 }
 
 pub fn eval_chooserows_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let rows: Vec<usize> = args[1..]
         .iter()
@@ -460,12 +460,12 @@ fn drop_span(len: usize, count: isize) -> Result<(usize, usize), DynamicArrayRes
     Ok((start, end))
 }
 
-pub fn eval_take_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_take_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let row_count = match args.get(1) {
-        Some(PreparedValue::MissingArg) if args.get(2).is_some() => array.shape().rows as isize,
+        Some(arg) if matches!(arg.core(), CoreValue::Missing) && args.get(2).is_some() => {
+            array.shape().rows as isize
+        }
         Some(arg) => parse_integer(arg)?,
         None => {
             return Err(DynamicArrayReshapeEvalError::ArityMismatch {
@@ -526,12 +526,10 @@ pub fn eval_take_calc_surface(
     build_calc_array(rows, cols, cells)
 }
 
-pub fn eval_drop_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_drop_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let row_count = match args.get(1) {
-        Some(PreparedValue::MissingArg) if args.get(2).is_some() => 0,
+        Some(arg) if matches!(arg.core(), CoreValue::Missing) && args.get(2).is_some() => 0,
         Some(arg) => parse_integer(arg)?,
         None => {
             return Err(DynamicArrayReshapeEvalError::ArityMismatch {
@@ -590,9 +588,7 @@ pub fn eval_drop_calc_surface(
     build_calc_array(rows, cols, cells)
 }
 
-pub fn eval_expand_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_expand_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let target_rows = parse_positive_integer(&args[1])?;
     let target_cols = if let Some(arg) = args.get(2) {
@@ -605,14 +601,14 @@ pub fn eval_expand_prepared(
     }
 
     let pad_cell = if let Some(arg) = args.get(3) {
-        if matches!(arg, PreparedValue::Eval(FunctionValue::Array(_))) {
+        if matches!(arg.core(), CoreValue::Array(_)) {
             return Err(DynamicArrayReshapeEvalError::Preparation(
                 CoercionError::UnsupportedValueKind("scalar_pad"),
             ));
         }
         scalar_cell(arg)
     } else {
-        FunctionArrayCell::Error(WorksheetErrorCode::NA)
+        CalcValue::error(WorksheetErrorCode::NA)
     };
     let mut cells = Vec::with_capacity(target_rows * target_cols);
     for row in 0..target_rows {
@@ -627,24 +623,24 @@ pub fn eval_expand_prepared(
     build_array(target_rows, target_cols, cells)
 }
 
-fn should_ignore_cell(cell: &FunctionArrayCell, ignore_mode: usize) -> bool {
+fn should_ignore_cell(cell: &CalcValue, ignore_mode: usize) -> bool {
     match ignore_mode {
         0 => false,
-        1 => matches!(cell, FunctionArrayCell::EmptyCell),
-        2 => matches!(cell, FunctionArrayCell::Error(_)),
+        1 => matches!(cell.core(), CoreValue::Empty | CoreValue::Missing),
+        2 => matches!(cell.core(), CoreValue::Error(_)),
         3 => matches!(
-            cell,
-            FunctionArrayCell::EmptyCell | FunctionArrayCell::Error(_)
+            cell.core(),
+            CoreValue::Empty | CoreValue::Missing | CoreValue::Error(_)
         ),
         _ => false,
     }
 }
 
-fn parse_ignore_mode(arg: Option<&PreparedValue>) -> Result<usize, DynamicArrayReshapeEvalError> {
+fn parse_ignore_mode(arg: Option<&CalcValue>) -> Result<usize, DynamicArrayReshapeEvalError> {
     let Some(arg) = arg else {
         return Ok(0);
     };
-    if matches!(arg, PreparedValue::MissingArg | PreparedValue::EmptyCell) {
+    if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(0);
     }
     let mode = parse_integer(arg)?;
@@ -654,9 +650,7 @@ fn parse_ignore_mode(arg: Option<&PreparedValue>) -> Result<usize, DynamicArrayR
     Ok(mode as usize)
 }
 
-pub fn eval_tocol_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_tocol_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let ignore_mode = parse_ignore_mode(args.get(1))?;
     let by_col = args
@@ -664,7 +658,7 @@ pub fn eval_tocol_prepared(
         .map(parse_bool_like)
         .transpose()?
         .unwrap_or(false);
-    let cells: Vec<FunctionArrayCell> = flatten_cells(&array, by_col)
+    let cells: Vec<CalcValue> = flatten_cells(&array, by_col)
         .into_iter()
         .filter(|cell| !should_ignore_cell(cell, ignore_mode))
         .collect();
@@ -674,9 +668,7 @@ pub fn eval_tocol_prepared(
     build_array(cells.len(), 1, cells)
 }
 
-pub fn eval_torow_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_torow_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let ignore_mode = parse_ignore_mode(args.get(1))?;
     let by_col = args
@@ -684,7 +676,7 @@ pub fn eval_torow_prepared(
         .map(parse_bool_like)
         .transpose()?
         .unwrap_or(false);
-    let cells: Vec<FunctionArrayCell> = flatten_cells(&array, by_col)
+    let cells: Vec<CalcValue> = flatten_cells(&array, by_col)
         .into_iter()
         .filter(|cell| !should_ignore_cell(cell, ignore_mode))
         .collect();
@@ -695,8 +687,8 @@ pub fn eval_torow_prepared(
 }
 
 pub fn eval_transpose_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let mut cells = Vec::with_capacity(array.shape().rows * array.shape().cols);
     for row in 0..array.shape().cols {
@@ -707,9 +699,7 @@ pub fn eval_transpose_prepared(
     build_array(array.shape().cols, array.shape().rows, cells)
 }
 
-pub fn eval_vstack_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_vstack_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let sources: Vec<StackArgSource<'_>> = args.iter().map(StackArgSource::new).collect();
     let rows: usize = sources.iter().map(|source| source.shape().rows).sum();
     let cols = sources
@@ -724,7 +714,7 @@ pub fn eval_vstack_prepared(
                 source
                     .get(row, col)
                     .cloned()
-                    .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA))
+                    .unwrap_or(CalcValue::error(WorksheetErrorCode::NA))
             })
         })
     });
@@ -732,25 +722,21 @@ pub fn eval_vstack_prepared(
 }
 
 pub fn eval_wraprows_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let wrap_count = parse_positive_integer(&args[1])?;
-    if let PreparedValue::Eval(value) = &args[0] {
-        match value {
-            FunctionValue::Number(_)
-            | FunctionValue::Text(_)
-            | FunctionValue::Logical(_)
-            | FunctionValue::Error(_) => return Ok(value.clone()),
-            FunctionValue::Array(_) | FunctionValue::Reference(_) => {}
-            _ => {}
+    match args[0].core() {
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Error(_) => {
+            return Ok(args[0].clone());
         }
+        CoreValue::Array(_) | CoreValue::Reference(_) | CoreValue::Missing | CoreValue::Empty => {}
     }
 
     let source = materialize_array_arg(&args[0]);
     let pad_cell = args
         .get(2)
         .map(scalar_cell)
-        .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA));
+        .unwrap_or(CalcValue::error(WorksheetErrorCode::NA));
     let flat = flatten_cells(&source, false);
     let rows = flat.len().div_ceil(wrap_count);
     let cols = wrap_count;
@@ -765,14 +751,14 @@ pub fn eval_wraprows_prepared(
 }
 
 pub fn eval_wrapcols_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    args: &[CalcValue],
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let source = materialize_array_arg(&args[0]);
     let wrap_count = parse_positive_integer(&args[1])?;
     let pad_cell = args
         .get(2)
         .map(scalar_cell)
-        .unwrap_or(FunctionArrayCell::Error(WorksheetErrorCode::NA));
+        .unwrap_or(CalcValue::error(WorksheetErrorCode::NA));
     let flat = flatten_cells(&source, false);
     let rows = wrap_count;
     let cols = flat.len().div_ceil(wrap_count);
@@ -786,23 +772,23 @@ pub fn eval_wrapcols_prepared(
 }
 
 fn build_filter_mask(
-    include: &FunctionArray,
+    include: &CalcArray,
     target_shape: ArrayShape,
 ) -> Result<(bool, Vec<bool>), DynamicArrayReshapeEvalError> {
     if include.shape().cols == 1 && include.shape().rows == target_shape.rows {
         let mask = (0..include.shape().rows)
             .map(|row| {
-                include.get(row, 0).map_or(Ok(false), |cell| match cell {
-                    FunctionArrayCell::Logical(b) => Ok(*b),
-                    FunctionArrayCell::Number(n) => Ok(*n != 0.0),
-                    FunctionArrayCell::EmptyCell => Ok(false),
-                    FunctionArrayCell::Error(code) => {
-                        Err(DynamicArrayReshapeEvalError::Preparation(
+                include
+                    .get(row, 0)
+                    .map_or(Ok(false), |cell| match cell.core() {
+                        CoreValue::Logical(b) => Ok(*b),
+                        CoreValue::Number(n) => Ok(*n != 0.0),
+                        CoreValue::Empty | CoreValue::Missing => Ok(false),
+                        CoreValue::Error(code) => Err(DynamicArrayReshapeEvalError::Preparation(
                             CoercionError::WorksheetError(*code),
-                        ))
-                    }
-                    _ => Err(DynamicArrayReshapeEvalError::InvalidIncludeShape),
-                })
+                        )),
+                        _ => Err(DynamicArrayReshapeEvalError::InvalidIncludeShape),
+                    })
             })
             .collect::<Result<Vec<_>, _>>()?;
         return Ok((false, mask));
@@ -810,17 +796,17 @@ fn build_filter_mask(
     if include.shape().rows == 1 && include.shape().cols == target_shape.cols {
         let mask = (0..include.shape().cols)
             .map(|col| {
-                include.get(0, col).map_or(Ok(false), |cell| match cell {
-                    FunctionArrayCell::Logical(b) => Ok(*b),
-                    FunctionArrayCell::Number(n) => Ok(*n != 0.0),
-                    FunctionArrayCell::EmptyCell => Ok(false),
-                    FunctionArrayCell::Error(code) => {
-                        Err(DynamicArrayReshapeEvalError::Preparation(
+                include
+                    .get(0, col)
+                    .map_or(Ok(false), |cell| match cell.core() {
+                        CoreValue::Logical(b) => Ok(*b),
+                        CoreValue::Number(n) => Ok(*n != 0.0),
+                        CoreValue::Empty | CoreValue::Missing => Ok(false),
+                        CoreValue::Error(code) => Err(DynamicArrayReshapeEvalError::Preparation(
                             CoercionError::WorksheetError(*code),
-                        ))
-                    }
-                    _ => Err(DynamicArrayReshapeEvalError::InvalidIncludeShape),
-                })
+                        )),
+                        _ => Err(DynamicArrayReshapeEvalError::InvalidIncludeShape),
+                    })
             })
             .collect::<Result<Vec<_>, _>>()?;
         return Ok((true, mask));
@@ -828,9 +814,7 @@ fn build_filter_mask(
     Err(DynamicArrayReshapeEvalError::InvalidIncludeShape)
 }
 
-pub fn eval_filter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_filter_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let include = materialize_array_arg(&args[1]);
     let (filter_cols, mask) = build_filter_mask(&include, array.shape())?;
@@ -843,11 +827,9 @@ pub fn eval_filter_prepared(
             .collect();
         if selected_rows.is_empty() {
             return if let Some(if_empty) = args.get(2) {
-                Ok(match if_empty {
-                    PreparedValue::Eval(FunctionValue::Array(array)) => {
-                        FunctionValue::Array(array.clone())
-                    }
-                    other => value_from_if_empty_arg(other),
+                Ok(match if_empty.core() {
+                    CoreValue::Array(array) => CalcValue::array(array.clone()),
+                    _ => value_from_if_empty_arg(if_empty),
                 })
             } else {
                 Err(DynamicArrayReshapeEvalError::EmptyArrayResult)
@@ -867,11 +849,9 @@ pub fn eval_filter_prepared(
         .collect();
     if selected_cols.is_empty() {
         return if let Some(if_empty) = args.get(2) {
-            Ok(match if_empty {
-                PreparedValue::Eval(FunctionValue::Array(array)) => {
-                    FunctionValue::Array(array.clone())
-                }
-                other => value_from_if_empty_arg(other),
+            Ok(match if_empty.core() {
+                CoreValue::Array(array) => CalcValue::array(array.clone()),
+                _ => value_from_if_empty_arg(if_empty),
             })
         } else {
             Err(DynamicArrayReshapeEvalError::EmptyArrayResult)
@@ -886,11 +866,11 @@ pub fn eval_filter_prepared(
     build_array(array.shape().rows, selected_cols.len(), cells)
 }
 
-fn parse_sort_order(arg: Option<&PreparedValue>) -> Result<bool, DynamicArrayReshapeEvalError> {
+fn parse_sort_order(arg: Option<&CalcValue>) -> Result<bool, DynamicArrayReshapeEvalError> {
     let Some(arg) = arg else {
         return Ok(false);
     };
-    if matches!(arg, PreparedValue::MissingArg | PreparedValue::EmptyCell) {
+    if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(false);
     }
     match parse_integer(arg)? {
@@ -901,24 +881,24 @@ fn parse_sort_order(arg: Option<&PreparedValue>) -> Result<bool, DynamicArrayRes
 }
 
 fn parse_sort_index(
-    arg: Option<&PreparedValue>,
+    arg: Option<&CalcValue>,
     len: usize,
 ) -> Result<usize, DynamicArrayReshapeEvalError> {
     let Some(arg) = arg else {
         return Ok(0);
     };
     let scalarized;
-    let arg = match arg {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
+    let arg = match arg.core() {
+        CoreValue::Array(array) => {
             scalarized = array
                 .get(0, 0)
                 .map(prepared_from_array_cell)
                 .ok_or(DynamicArrayReshapeEvalError::InvalidSortIndex)?;
             &scalarized
         }
-        other => other,
+        _ => arg,
     };
-    if matches!(arg, PreparedValue::MissingArg | PreparedValue::EmptyCell) {
+    if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(0);
     }
     let idx = parse_integer(arg)?;
@@ -928,9 +908,7 @@ fn parse_sort_index(
     Ok(idx as usize - 1)
 }
 
-pub fn eval_sort_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_sort_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let by_col = args
         .get(3)
@@ -975,12 +953,12 @@ pub fn eval_sort_prepared(
 
 #[derive(Debug, Clone)]
 struct SortbyKeySpec {
-    keys: FunctionArray,
+    keys: CalcArray,
     descending: bool,
 }
 
 fn parse_sortby_key_specs(
-    args: &[PreparedValue],
+    args: &[CalcValue],
 ) -> Result<Vec<SortbyKeySpec>, DynamicArrayReshapeEvalError> {
     let mut specs = Vec::new();
     let mut idx = 1usize;
@@ -989,8 +967,8 @@ fn parse_sortby_key_specs(
         idx += 1;
         let descending = match args.get(idx) {
             None => false,
-            Some(PreparedValue::Eval(FunctionValue::Array(_))) => false,
-            Some(PreparedValue::MissingArg | PreparedValue::EmptyCell) => {
+            Some(arg) if matches!(arg.core(), CoreValue::Array(_)) => false,
+            Some(arg) if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) => {
                 idx += 1;
                 false
             }
@@ -1006,9 +984,9 @@ fn parse_sortby_key_specs(
 }
 
 fn sortby_column_keys(
-    by_array: &FunctionArray,
+    by_array: &CalcArray,
     len: usize,
-) -> Result<Vec<FunctionArrayCell>, DynamicArrayReshapeEvalError> {
+) -> Result<Vec<CalcValue>, DynamicArrayReshapeEvalError> {
     if by_array.shape().rows == 1 && by_array.shape().cols == len {
         return Ok((0..by_array.shape().cols)
             .map(|col| by_array.get(0, col).expect("validated key").clone())
@@ -1023,9 +1001,9 @@ fn sortby_column_keys(
 }
 
 fn sortby_row_keys(
-    by_array: &FunctionArray,
+    by_array: &CalcArray,
     len: usize,
-) -> Result<Vec<FunctionArrayCell>, DynamicArrayReshapeEvalError> {
+) -> Result<Vec<CalcValue>, DynamicArrayReshapeEvalError> {
     if by_array.shape().cols == 1 && by_array.shape().rows == len {
         return Ok((0..by_array.shape().rows)
             .map(|row| by_array.get(row, 0).expect("validated key").clone())
@@ -1039,9 +1017,7 @@ fn sortby_row_keys(
     Err(DynamicArrayReshapeEvalError::InvalidIncludeShape)
 }
 
-pub fn eval_sortby_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_sortby_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let specs = parse_sortby_key_specs(args)?;
 
@@ -1097,9 +1073,7 @@ pub fn eval_sortby_prepared(
     build_array(array.shape().rows, array.shape().cols, cells)
 }
 
-pub fn eval_unique_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+pub fn eval_unique_prepared(args: &[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     let array = materialize_array_arg(&args[0]);
     let by_col = args
         .get(1)
@@ -1186,11 +1160,11 @@ fn surface_arity_error(meta: &FunctionMeta, actual: usize) -> DynamicArrayReshap
 }
 
 fn eval_surface_common(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    eval: impl FnOnce(&[PreparedValue]) -> Result<FunctionValue, DynamicArrayReshapeEvalError>,
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    eval: impl FnOnce(&[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError>,
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(surface_arity_error(meta, args.len()));
     }
@@ -1203,11 +1177,11 @@ fn eval_surface_common(
 }
 
 fn eval_choose_axes_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    eval: impl FnOnce(&[PreparedValue]) -> Result<FunctionValue, DynamicArrayReshapeEvalError>,
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+    eval: impl FnOnce(&[CalcValue]) -> Result<CalcValue, DynamicArrayReshapeEvalError>,
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(surface_arity_error(meta, args.len()));
     }
@@ -1227,107 +1201,107 @@ fn eval_choose_axes_surface(
 }
 
 pub fn eval_choosecols_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSECOLS_META, eval_choosecols_prepared)
 }
 
 pub fn eval_chooserows_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_choose_axes_surface(args, resolver, &CHOOSEROWS_META, eval_chooserows_prepared)
 }
 
 pub fn eval_drop_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &DROP_META, eval_drop_prepared)
 }
 
 pub fn eval_expand_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &EXPAND_META, eval_expand_prepared)
 }
 
 pub fn eval_filter_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &FILTER_META, eval_filter_prepared)
 }
 
 pub fn eval_sort_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORT_META, eval_sort_prepared)
 }
 
 pub fn eval_sortby_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &SORTBY_META, eval_sortby_prepared)
 }
 
 pub fn eval_take_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TAKE_META, eval_take_prepared)
 }
 
 pub fn eval_tocol_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOCOL_META, eval_tocol_prepared)
 }
 
 pub fn eval_torow_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TOROW_META, eval_torow_prepared)
 }
 
 pub fn eval_transpose_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &TRANSPOSE_META, eval_transpose_prepared)
 }
 
 pub fn eval_unique_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &UNIQUE_META, eval_unique_prepared)
 }
 
 pub fn eval_vstack_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &VSTACK_META, eval_vstack_prepared)
 }
 
 pub fn eval_wrapcols_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPCOLS_META, eval_wrapcols_prepared)
 }
 
 pub fn eval_wraprows_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DynamicArrayReshapeEvalError> {
+) -> Result<CalcValue, DynamicArrayReshapeEvalError> {
     eval_surface_common(args, resolver, &WRAPROWS_META, eval_wraprows_prepared)
 }
 
@@ -1364,7 +1338,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -1374,14 +1348,12 @@ mod tests {
         }
     }
 
-    fn array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(rows).unwrap(),
-        ))
+    fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        (CalcValue::array(CalcArray::from_rows(rows).unwrap()))
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     #[test]
@@ -1389,20 +1361,14 @@ mod tests {
         let err = eval_expand_surface(
             &[
                 array(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ]),
                 num(3.0),
                 num(4.0),
                 array(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                    CalcValue::text(ExcelText::from_interop_assignment("x")),
+                    CalcValue::text(ExcelText::from_interop_assignment("x")),
                 ]]),
             ],
             &NoResolver,
@@ -1421,22 +1387,19 @@ mod tests {
             &[
                 array(vec![
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::number(2.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
                     ],
                 ]),
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(1.0),
-                ]]),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::number(1.0)]]),
                 num(1.0),
             ],
             &NoResolver,
@@ -1445,19 +1408,19 @@ mod tests {
 
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::number(2.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
                     ],
                 ])
                 .unwrap()
@@ -1471,14 +1434,14 @@ mod tests {
             &[
                 array(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(6.0),
                     ],
                 ]),
                 num(3.0),
@@ -1490,17 +1453,17 @@ mod tests {
         .unwrap();
         assert_eq!(
             cols,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(3.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(3.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(6.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(6.0),
+                        CalcValue::number(6.0),
+                        CalcValue::number(4.0),
+                        CalcValue::number(6.0),
                     ],
                 ])
                 .unwrap()
@@ -1510,9 +1473,9 @@ mod tests {
         let rows = eval_chooserows_surface(
             &[
                 array(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
                 ]),
                 num(-1.0),
                 num(1.0),
@@ -1522,10 +1485,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             rows,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(1.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(1.0)],
                 ])
                 .unwrap()
             )
@@ -1537,16 +1500,16 @@ mod tests {
         let cols = eval_choosecols_surface(
             &[
                 array(vec![vec![
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(20.0),
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Number(40.0),
-                    FunctionArrayCell::Number(50.0),
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(30.0),
+                    CalcValue::number(40.0),
+                    CalcValue::number(50.0),
                 ]]),
                 array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(5.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(5.0),
                 ]]),
             ],
             &NoResolver,
@@ -1554,11 +1517,11 @@ mod tests {
         .unwrap();
         assert_eq!(
             cols,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(30.0),
-                    FunctionArrayCell::Number(10.0),
-                    FunctionArrayCell::Number(50.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(30.0),
+                    CalcValue::number(10.0),
+                    CalcValue::number(50.0),
                 ]])
                 .unwrap()
             )
@@ -1567,19 +1530,13 @@ mod tests {
         let rows = eval_chooserows_surface(
             &[
                 array(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "a",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "b",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "c",
-                    ))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("a"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("b"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("c"))],
                 ]),
                 array(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(1.0)],
                 ]),
             ],
             &NoResolver,
@@ -1587,14 +1544,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             rows,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "c"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "a"
-                    ))],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("c"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("a"))],
                 ])
                 .unwrap()
             )
@@ -1605,34 +1558,28 @@ mod tests {
     fn take_drop_and_expand_match_seeded_slices() {
         let source = array(vec![
             vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-                FunctionArrayCell::Number(3.0),
+                CalcValue::number(1.0),
+                CalcValue::number(2.0),
+                CalcValue::number(3.0),
             ],
             vec![
-                FunctionArrayCell::Number(4.0),
-                FunctionArrayCell::Number(5.0),
-                FunctionArrayCell::Number(6.0),
+                CalcValue::number(4.0),
+                CalcValue::number(5.0),
+                CalcValue::number(6.0),
             ],
             vec![
-                FunctionArrayCell::Number(7.0),
-                FunctionArrayCell::Number(8.0),
-                FunctionArrayCell::Number(9.0),
+                CalcValue::number(7.0),
+                CalcValue::number(8.0),
+                CalcValue::number(9.0),
             ],
         ]);
         let take = eval_take_surface(&[source.clone(), num(2.0), num(-2.0)], &NoResolver).unwrap();
         assert_eq!(
             take,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(3.0)],
+                    vec![CalcValue::number(5.0), CalcValue::number(6.0)],
                 ])
                 .unwrap()
             )
@@ -1641,102 +1588,78 @@ mod tests {
         let drop = eval_drop_surface(&[source.clone(), num(1.0), num(-1.0)], &NoResolver).unwrap();
         assert_eq!(
             drop,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(7.0),
-                        FunctionArrayCell::Number(8.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(4.0), CalcValue::number(5.0)],
+                    vec![CalcValue::number(7.0), CalcValue::number(8.0)],
                 ])
                 .unwrap()
             )
         );
 
         let take_omitted_rows = eval_take_surface(
-            &[source.clone(), FunctionArg::MissingArg, num(1.0)],
+            &[source.clone(), CalcValue::missing(), num(1.0)],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             take_omitted_rows,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(7.0)],
                 ])
                 .unwrap()
             )
         );
 
         let take_omitted_rows_negative = eval_take_surface(
-            &[source.clone(), FunctionArg::MissingArg, num(-1.0)],
+            &[source.clone(), CalcValue::missing(), num(-1.0)],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             take_omitted_rows_negative,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(6.0)],
-                    vec![FunctionArrayCell::Number(9.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(6.0)],
+                    vec![CalcValue::number(9.0)],
                 ])
                 .unwrap()
             )
         );
 
         let drop_omitted_rows = eval_drop_surface(
-            &[source.clone(), FunctionArg::MissingArg, num(1.0)],
+            &[source.clone(), CalcValue::missing(), num(1.0)],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             drop_omitted_rows,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(8.0),
-                        FunctionArrayCell::Number(9.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(2.0), CalcValue::number(3.0)],
+                    vec![CalcValue::number(5.0), CalcValue::number(6.0)],
+                    vec![CalcValue::number(8.0), CalcValue::number(9.0)],
                 ])
                 .unwrap()
             )
         );
 
         let drop_omitted_rows_negative = eval_drop_surface(
-            &[source.clone(), FunctionArg::MissingArg, num(-1.0)],
+            &[source.clone(), CalcValue::missing(), num(-1.0)],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             drop_omitted_rows_negative,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(7.0),
-                        FunctionArrayCell::Number(8.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(4.0), CalcValue::number(5.0)],
+                    vec![CalcValue::number(7.0), CalcValue::number(8.0)],
                 ])
                 .unwrap()
             )
@@ -1747,38 +1670,38 @@ mod tests {
                 source,
                 num(4.0),
                 num(4.0),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment("x"))),
+                (CalcValue::text(ExcelText::from_interop_assignment("x"))),
             ],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             expand,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::number(1.0),
+                        CalcValue::number(2.0),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Number(6.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::number(4.0),
+                        CalcValue::number(5.0),
+                        CalcValue::number(6.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(7.0),
-                        FunctionArrayCell::Number(8.0),
-                        FunctionArrayCell::Number(9.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::number(7.0),
+                        CalcValue::number(8.0),
+                        CalcValue::number(9.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
                     ],
                     vec![
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
+                        CalcValue::text(ExcelText::from_interop_assignment("x")),
                     ],
                 ])
                 .unwrap()
@@ -1789,50 +1712,40 @@ mod tests {
     #[test]
     fn take_one_by_one_slice_preserves_array_value() {
         let source = array(vec![
-            vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Number(2.0),
-            ],
-            vec![
-                FunctionArrayCell::Number(3.0),
-                FunctionArrayCell::Number(4.0),
-            ],
+            vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+            vec![CalcValue::number(3.0), CalcValue::number(4.0)],
         ]);
 
         let got = eval_take_surface(&[source, num(1.0), num(1.0)], &NoResolver).unwrap();
 
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![FunctionArrayCell::Number(1.0)]],).unwrap()
-            )
+            CalcValue::array(CalcArray::from_rows(vec![vec![CalcValue::number(1.0)]],).unwrap())
         );
     }
 
     #[test]
     fn filter_if_empty_scalar_text_returns_scalar_text() {
         let source = array(vec![
-            vec![FunctionArrayCell::Number(1.0)],
-            vec![FunctionArrayCell::Number(2.0)],
+            vec![CalcValue::number(1.0)],
+            vec![CalcValue::number(2.0)],
         ]);
         let include = array(vec![
-            vec![FunctionArrayCell::Logical(false)],
-            vec![FunctionArrayCell::Logical(false)],
+            vec![CalcValue::logical(false)],
+            vec![CalcValue::logical(false)],
         ]);
         let got = eval_filter_surface(
             &[
                 source,
                 include,
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-                    "none",
-                ))),
+                (CalcValue::text(ExcelText::from_interop_assignment("none"))),
             ],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             got,
-            FunctionValue::Text(ExcelText::from_interop_assignment("none"))
+            CalcValue::text(ExcelText::from_interop_assignment("none"))
         );
     }
 
@@ -1840,57 +1753,49 @@ mod tests {
     fn tocol_torow_wraprows_wrapcols_and_transpose_match_seeded_shapes() {
         let source = array(vec![
             vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::EmptyCell,
-                FunctionArrayCell::Number(3.0),
+                CalcValue::number(1.0),
+                CalcValue::empty(),
+                CalcValue::number(3.0),
             ],
             vec![
-                FunctionArrayCell::Number(4.0),
-                FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                FunctionArrayCell::Number(6.0),
+                CalcValue::number(4.0),
+                CalcValue::error(WorksheetErrorCode::NA),
+                CalcValue::number(6.0),
             ],
         ]);
         let tocol = eval_tocol_surface(
-            &[
-                source.clone(),
-                num(3.0),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-            ],
+            &[source.clone(), num(3.0), (CalcValue::logical(false))],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             tocol,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
-                    vec![FunctionArrayCell::Number(6.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(4.0)],
+                    vec![CalcValue::number(6.0)],
                 ])
                 .unwrap()
             )
         );
 
         let torow = eval_torow_surface(
-            &[
-                source.clone(),
-                num(0.0),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-            ],
+            &[source.clone(), num(0.0), (CalcValue::logical(true))],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             torow,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::EmptyCell,
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(6.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(4.0),
+                    CalcValue::empty(),
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(3.0),
+                    CalcValue::number(6.0),
                 ]])
                 .unwrap()
             )
@@ -1899,11 +1804,11 @@ mod tests {
         let wraprows = eval_wraprows_surface(
             &[
                 array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(5.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(5.0),
                 ]]),
                 num(2.0),
             ],
@@ -1912,19 +1817,13 @@ mod tests {
         .unwrap();
         assert_eq!(
             wraprows,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        CalcValue::number(5.0),
+                        CalcValue::error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()
@@ -1932,16 +1831,16 @@ mod tests {
         );
 
         let wraprows_scalar = eval_wraprows_surface(&[num(0.0), num(7.0)], &NoResolver).unwrap();
-        assert_eq!(wraprows_scalar, FunctionValue::Number(0.0));
+        assert_eq!(wraprows_scalar, CalcValue::number(0.0));
 
         let wrapcols = eval_wrapcols_surface(
             &[
                 array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(5.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(5.0),
                 ]]),
                 num(2.0),
             ],
@@ -1950,17 +1849,17 @@ mod tests {
         .unwrap();
         assert_eq!(
             wrapcols,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(5.0),
+                        CalcValue::number(1.0),
+                        CalcValue::number(3.0),
+                        CalcValue::number(5.0),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA),
+                        CalcValue::number(2.0),
+                        CalcValue::number(4.0),
+                        CalcValue::error(WorksheetErrorCode::NA),
                     ],
                 ])
                 .unwrap()
@@ -1970,20 +1869,11 @@ mod tests {
         let transpose = eval_transpose_surface(&[source], &NoResolver).unwrap();
         assert_eq!(
             transpose,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(4.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::EmptyCell,
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(6.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(4.0)],
+                    vec![CalcValue::empty(), CalcValue::error(WorksheetErrorCode::NA)],
+                    vec![CalcValue::number(3.0), CalcValue::number(6.0)],
                 ])
                 .unwrap()
             )
@@ -1995,14 +1885,14 @@ mod tests {
         let sort_0917 = eval_sort_surface(
             &[
                 array(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(9.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(6.0),
+                    CalcValue::number(3.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(5.0),
+                    CalcValue::number(9.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(6.0),
                 ]]),
                 num(1.0),
                 num(1.0),
@@ -2012,16 +1902,16 @@ mod tests {
         .unwrap();
         assert_eq!(
             sort_0917,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(3.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(5.0),
-                    FunctionArrayCell::Number(9.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(6.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(3.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(5.0),
+                    CalcValue::number(9.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(6.0),
                 ]])
                 .unwrap()
             )
@@ -2033,22 +1923,22 @@ mod tests {
         let got = eval_sortby_surface(
             &[
                 array(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
+                    CalcValue::text(ExcelText::from_interop_assignment("a")),
+                    CalcValue::text(ExcelText::from_interop_assignment("b")),
+                    CalcValue::text(ExcelText::from_interop_assignment("c")),
+                    CalcValue::text(ExcelText::from_interop_assignment("d")),
                 ]]),
                 array(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(1.0),
                 ]]),
                 array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
                 ]]),
             ],
             &NoResolver,
@@ -2056,12 +1946,12 @@ mod tests {
         .unwrap();
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("d")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
-                    FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::text(ExcelText::from_interop_assignment("b")),
+                    CalcValue::text(ExcelText::from_interop_assignment("d")),
+                    CalcValue::text(ExcelText::from_interop_assignment("a")),
+                    CalcValue::text(ExcelText::from_interop_assignment("c")),
                 ]])
                 .unwrap()
             )
@@ -2073,23 +1963,14 @@ mod tests {
         let filter = eval_filter_surface(
             &[
                 array(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(10.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(20.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(30.0),
-                    ],
+                    vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                    vec![CalcValue::number(2.0), CalcValue::number(20.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(30.0)],
                 ]),
                 array(vec![
-                    vec![FunctionArrayCell::Logical(true)],
-                    vec![FunctionArrayCell::Logical(false)],
-                    vec![FunctionArrayCell::Logical(true)],
+                    vec![CalcValue::logical(true)],
+                    vec![CalcValue::logical(false)],
+                    vec![CalcValue::logical(true)],
                 ]),
             ],
             &NoResolver,
@@ -2097,16 +1978,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             filter,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(10.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(30.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(30.0)],
                 ])
                 .unwrap()
             )
@@ -2116,16 +1991,16 @@ mod tests {
             &[
                 array(vec![
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::number(2.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
                     ],
                 ]),
                 num(1.0),
@@ -2136,19 +2011,19 @@ mod tests {
         .unwrap();
         assert_eq!(
             sort,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("a")),
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("a")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("b")),
+                        CalcValue::number(2.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("b")),
                     ],
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Text(ExcelText::from_interop_assignment("c")),
+                        CalcValue::number(3.0),
+                        CalcValue::text(ExcelText::from_interop_assignment("c")),
                     ],
                 ])
                 .unwrap()
@@ -2158,12 +2033,12 @@ mod tests {
         let sort_missing_index = eval_sort_surface(
             &[
                 array(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(7.0)],
-                    vec![FunctionArrayCell::Number(5.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(7.0)],
+                    vec![CalcValue::number(5.0)],
                 ]),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
                 num(-1.0),
             ],
             &NoResolver,
@@ -2171,12 +2046,12 @@ mod tests {
         .unwrap();
         assert_eq!(
             sort_missing_index,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(7.0)],
-                    vec![FunctionArrayCell::Number(5.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(7.0)],
+                    vec![CalcValue::number(5.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(2.0)],
                 ])
                 .unwrap()
             )
@@ -2185,20 +2060,14 @@ mod tests {
         let sortby = eval_sortby_surface(
             &[
                 array(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "alpha",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "beta",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "gamma",
-                    ))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("alpha"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("beta"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("gamma"))],
                 ]),
                 array(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(1.0)],
                 ]),
                 num(1.0),
             ],
@@ -2207,17 +2076,11 @@ mod tests {
         .unwrap();
         assert_eq!(
             sortby,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "gamma"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "alpha"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "beta"
-                    ))],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("gamma"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("alpha"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("beta"))],
                 ])
                 .unwrap()
             )
@@ -2226,39 +2089,27 @@ mod tests {
         let sortby_missing_order = eval_sortby_surface(
             &[
                 array(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "alpha",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "beta",
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "gamma",
-                    ))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("alpha"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("beta"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("gamma"))],
                 ]),
                 array(vec![
-                    vec![FunctionArrayCell::Number(2.0)],
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(1.0)],
+                    vec![CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(1.0)],
                 ]),
-                FunctionArg::MissingArg,
+                CalcValue::missing(),
             ],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             sortby_missing_order,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "gamma"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "alpha"
-                    ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_interop_assignment(
-                        "beta"
-                    ))],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("gamma"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("alpha"))],
+                    vec![CalcValue::text(ExcelText::from_interop_assignment("beta"))],
                 ])
                 .unwrap()
             )
@@ -2267,37 +2118,22 @@ mod tests {
         let unique = eval_unique_surface(
             &[
                 array(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(10.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(10.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(20.0),
-                    ],
+                    vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                    vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                    vec![CalcValue::number(2.0), CalcValue::number(20.0)],
                 ]),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Logical(false)),
+                (CalcValue::logical(false)),
+                (CalcValue::logical(false)),
             ],
             &NoResolver,
         )
         .unwrap();
         assert_eq!(
             unique,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(10.0)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(2.0),
-                        FunctionArrayCell::Number(20.0)
-                    ],
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                    vec![CalcValue::number(2.0), CalcValue::number(20.0)],
                 ])
                 .unwrap()
             )
@@ -2305,13 +2141,10 @@ mod tests {
 
         let vstack = eval_vstack_surface(
             &[
-                array(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                ]]),
+                array(vec![vec![CalcValue::number(1.0), CalcValue::number(2.0)]]),
                 array(vec![
-                    vec![FunctionArrayCell::Number(3.0)],
-                    vec![FunctionArrayCell::Number(4.0)],
+                    vec![CalcValue::number(3.0)],
+                    vec![CalcValue::number(4.0)],
                 ]),
             ],
             &NoResolver,
@@ -2319,19 +2152,16 @@ mod tests {
         .unwrap();
         assert_eq!(
             vstack,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
                     vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0)
+                        CalcValue::number(3.0),
+                        CalcValue::error(WorksheetErrorCode::NA)
                     ],
                     vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA)
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(4.0),
-                        FunctionArrayCell::Error(WorksheetErrorCode::NA)
+                        CalcValue::number(4.0),
+                        CalcValue::error(WorksheetErrorCode::NA)
                     ],
                 ])
                 .unwrap()

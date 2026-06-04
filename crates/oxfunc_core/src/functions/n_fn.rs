@@ -3,9 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcArray, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 pub const N_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.N",
@@ -27,42 +28,38 @@ pub enum NEvalError {
     Coercion(CoercionError),
 }
 
-fn map_array(array: &FunctionArray) -> FunctionArray {
+fn map_array(array: &CalcArray) -> CalcArray {
     let cells = array
         .iter_row_major()
-        .map(|cell| match cell {
-            FunctionArrayCell::Number(n) => FunctionArrayCell::Number(*n),
-            FunctionArrayCell::Logical(b) => FunctionArrayCell::Number(if *b { 1.0 } else { 0.0 }),
-            FunctionArrayCell::Text(_) | FunctionArrayCell::EmptyCell => {
-                FunctionArrayCell::Number(0.0)
+        .map(|cell| match cell.core() {
+            CoreValue::Number(n) => CalcValue::number(*n),
+            CoreValue::Logical(b) => CalcValue::number(if *b { 1.0 } else { 0.0 }),
+            CoreValue::Text(_) | CoreValue::Empty | CoreValue::Missing => CalcValue::number(0.0),
+            CoreValue::Error(code) => CalcValue::error(*code),
+            CoreValue::Array(_) | CoreValue::Reference(_) => {
+                CalcValue::error(WorksheetErrorCode::Value)
             }
-            FunctionArrayCell::Error(code) => FunctionArrayCell::Error(*code),
         })
         .collect();
-    FunctionArray::new(array.shape(), cells).expect("shape preserved")
+    CalcArray::new(array.shape(), cells).expect("shape preserved")
 }
 
-fn map_prepared(prepared: PreparedValue) -> FunctionValue {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => FunctionValue::Number(n),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => {
-            FunctionValue::Number(if b { 1.0 } else { 0.0 })
-        }
-        PreparedValue::Eval(FunctionValue::Text(_)) => FunctionValue::Number(0.0),
-        PreparedValue::Eval(FunctionValue::Error(code)) => FunctionValue::Error(code),
-        PreparedValue::Eval(FunctionValue::Array(array)) => FunctionValue::Array(map_array(&array)),
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionValue::Error(WorksheetErrorCode::Value)
-        }
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => FunctionValue::Number(0.0),
-        _ => FunctionValue::Error(WorksheetErrorCode::Value),
+fn map_prepared(prepared: CalcValue) -> CalcValue {
+    match prepared.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Logical(b) => CalcValue::number(if *b { 1.0 } else { 0.0 }),
+        CoreValue::Text(_) => CalcValue::number(0.0),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Array(array) => CalcValue::array(map_array(array)),
+        CoreValue::Reference(_) => CalcValue::error(WorksheetErrorCode::Value),
+        CoreValue::Missing | CoreValue::Empty => CalcValue::number(0.0),
     }
 }
 
 pub fn eval_n_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, NEvalError> {
+) -> Result<CalcValue, NEvalError> {
     if !N_META.arity.accepts(args.len()) {
         return Err(NEvalError::ArityMismatch {
             expected: N_META.arity.min,
@@ -85,7 +82,7 @@ pub fn map_n_error_to_ws(e: &NEvalError) -> WorksheetErrorCode {
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArg};
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
@@ -97,7 +94,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -111,19 +108,16 @@ mod tests {
     fn eval_n_maps_text_to_zero_and_logical_to_number() {
         assert_eq!(
             eval_n_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(
-                    ExcelText::from_utf16_code_units("x".encode_utf16().collect(),)
-                ))],
+                &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                    "x".encode_utf16().collect(),
+                )))],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Number(0.0))
+            Ok(CalcValue::number(0.0))
         );
         assert_eq!(
-            eval_n_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(1.0))
+            eval_n_surface(&[(CalcValue::logical(true))], &NoResolver),
+            Ok(CalcValue::number(1.0))
         );
     }
 }

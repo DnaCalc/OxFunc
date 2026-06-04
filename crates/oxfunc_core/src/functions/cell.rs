@@ -7,7 +7,7 @@ use crate::functions::a1_refs::{format_absolute_address, parse_a1_reference};
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_arg_values_only};
 use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{ExcelText, FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
 pub const CELL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CELL",
@@ -52,7 +52,7 @@ pub enum CellEvalError {
 }
 
 fn parse_info_type(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CellInfoType, CellEvalError> {
     let prepared =
@@ -80,20 +80,22 @@ fn parse_info_type(
     }
 }
 
-fn parse_reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, CellEvalError> {
-    match arg {
-        FunctionArg::Reference(r) => Ok(r.clone()),
-        FunctionArg::Eval(FunctionValue::Reference(r)) => Ok(r.clone()),
-        _ => Err(CellEvalError::RefArgRequired),
-    }
+fn parse_reference_arg(arg: &CalcValue) -> Result<ReferenceLike, CellEvalError> {
+    arg.as_reference()
+        .cloned()
+        .ok_or(CellEvalError::RefArgRequired)
 }
 
-fn classify_type(value: &FunctionValue) -> &'static str {
-    match value {
-        FunctionValue::Text(_) => "l",
-        FunctionValue::Number(_) | FunctionValue::Logical(_) | FunctionValue::Error(_) => "v",
-        FunctionValue::Array(_) | FunctionValue::Reference(_) => "v",
-        _ => "v",
+fn classify_type(value: &CalcValue) -> &'static str {
+    match value.core() {
+        CoreValue::Text(_) => "l",
+        CoreValue::Number(_)
+        | CoreValue::Logical(_)
+        | CoreValue::Error(_)
+        | CoreValue::Array(_)
+        | CoreValue::Reference(_)
+        | CoreValue::Missing
+        | CoreValue::Empty => "v",
     }
 }
 
@@ -115,10 +117,10 @@ fn host_query_for_info_type(info_type: CellInfoType) -> Option<CellInfoQuery> {
 }
 
 pub fn eval_cell_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, CellEvalError> {
+) -> Result<CalcValue, CellEvalError> {
     if !CELL_META.arity.accepts(args.len()) {
         return Err(CellEvalError::ArityMismatch {
             expected: CELL_META.arity.min,
@@ -148,7 +150,7 @@ pub fn eval_cell_surface(
             let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
                 CellEvalError::InvalidReferenceText(reference.target().to_string())
             })?;
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 format_absolute_address(&parsed)
                     .ok_or_else(|| {
                         CellEvalError::InvalidReferenceText(reference.target().to_string())
@@ -161,13 +163,13 @@ pub fn eval_cell_surface(
             let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
                 CellEvalError::InvalidReferenceText(reference.target().to_string())
             })?;
-            Ok(FunctionValue::Number(parsed.start_row as f64))
+            Ok(CalcValue::number(parsed.start_row as f64))
         }
         CellInfoType::Col => {
             let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
                 CellEvalError::InvalidReferenceText(reference.target().to_string())
             })?;
-            Ok(FunctionValue::Number(parsed.start_col as f64))
+            Ok(CalcValue::number(parsed.start_col as f64))
         }
         CellInfoType::Contents => resolve_eval_value(resolver, &reference)
             .map_err(CoercionError::RefResolution)
@@ -176,7 +178,7 @@ pub fn eval_cell_surface(
             let value = resolve_eval_value(resolver, &reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(CellEvalError::RefResolution)?;
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 classify_type(&value).encode_utf16().collect(),
             )))
         }
@@ -213,11 +215,11 @@ mod tests {
     use crate::resolver::ReferenceSystemCapabilities;
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     struct MockHostInfoProvider {
-        result: FunctionValue,
+        result: CalcValue,
     }
 
     impl HostInfoProvider for MockHostInfoProvider {
@@ -225,7 +227,7 @@ mod tests {
             &self,
             query: CellInfoQuery,
             _reference: Option<&ReferenceLike>,
-        ) -> Result<FunctionValue, HostInfoError> {
+        ) -> Result<CalcValue, HostInfoError> {
             match query {
                 CellInfoQuery::Filename => Ok(self.result.clone()),
                 CellInfoQuery::Parentheses => Ok(self.result.clone()),
@@ -243,7 +245,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -253,14 +255,14 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         )))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(
             crate::value::ReferenceKind::A1,
             target.to_string(),
         ))
@@ -275,7 +277,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "$B$3".encode_utf16().collect(),
             )))
         );
@@ -286,11 +288,11 @@ mod tests {
         let got = eval_cell_surface(
             &[text_arg("contents"), ref_arg("A1")],
             &MockResolver {
-                resolved: Some(FunctionValue::Number(7.0)),
+                resolved: Some(CalcValue::number(7.0)),
             },
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
+        assert_eq!(got, Ok(CalcValue::number(7.0)));
     }
 
     #[test]
@@ -298,7 +300,7 @@ mod tests {
         let got = eval_cell_surface(
             &[text_arg("type"), ref_arg("A1")],
             &MockResolver {
-                resolved: Some(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                resolved: Some(CalcValue::text(ExcelText::from_utf16_code_units(
                     "x".encode_utf16().collect(),
                 ))),
             },
@@ -306,7 +308,7 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "l".encode_utf16().collect(),
             )))
         );
@@ -318,14 +320,14 @@ mod tests {
             &[text_arg("filename"), ref_arg("A1")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: FunctionValue::Text(ExcelText::from_utf16_code_units(
+                result: CalcValue::text(ExcelText::from_utf16_code_units(
                     "[Book1]Sheet1".encode_utf16().collect(),
                 )),
             }),
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "[Book1]Sheet1".encode_utf16().collect(),
             )))
         );
@@ -337,10 +339,10 @@ mod tests {
             &[text_arg("parentheses"), ref_arg("A1")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: FunctionValue::Number(1.0),
+                result: CalcValue::number(1.0),
             }),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
@@ -349,9 +351,9 @@ mod tests {
             &[text_arg("row")],
             &MockResolver { resolved: None },
             Some(&MockHostInfoProvider {
-                result: FunctionValue::Number(7.0),
+                result: CalcValue::number(7.0),
             }),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
+        assert_eq!(got, Ok(CalcValue::number(7.0)));
     }
 }

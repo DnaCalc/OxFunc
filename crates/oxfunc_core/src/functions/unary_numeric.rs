@@ -1,13 +1,11 @@
 use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::functions::adapters::{
-    PreparedValue, apply_unary_numeric_scalar_prepared, expand_arg_values_only,
-    prepare_arg_values_only, prepare_calc_value_values_only,
+    apply_unary_numeric_scalar_prepared, expand_arg_values_only, prepare_arg_values_only,
+    prepare_calc_value_values_only,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    CalcArray, CalcValue, CoreValue, FunctionArray, FunctionArrayCell, FunctionValue,
-    WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, CoreValue, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum UnaryNumericSurfaceError {
@@ -17,10 +15,10 @@ pub enum UnaryNumericSurfaceError {
 }
 
 pub fn eval_unary_numeric_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
-) -> Result<FunctionValue, UnaryNumericSurfaceError> {
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
     if args.len() != 1 {
         return Err(UnaryNumericSurfaceError::ArityMismatch {
             expected: 1,
@@ -31,20 +29,20 @@ pub fn eval_unary_numeric_surface(
     let prepared =
         prepare_arg_values_only(&args[0], resolver).map_err(UnaryNumericSurfaceError::Coercion)?;
 
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
+    match prepared.core() {
+        CoreValue::Array(array) => {
             let mapped = expand_arg_values_only(&args[0], resolver)
                 .map_err(UnaryNumericSurfaceError::Coercion)?
                 .into_iter()
                 .map(|item| map_unary_numeric_item(&item, kernel))
                 .collect::<Vec<_>>();
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), mapped).expect("shape preserved"),
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), mapped).expect("shape preserved"),
             ))
         }
-        other => match apply_unary_numeric_scalar_prepared(&other, |n| n) {
+        _ => match apply_unary_numeric_scalar_prepared(&prepared, |n| n) {
             Ok(n) => kernel(n)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(UnaryNumericSurfaceError::Domain),
             Err(err) => Err(UnaryNumericSurfaceError::Coercion(err)),
         },
@@ -85,16 +83,16 @@ pub fn eval_unary_numeric_calc_surface(
 }
 
 fn map_unary_numeric_item(
-    item: &PreparedValue,
+    item: &CalcValue,
     kernel: impl Fn(f64) -> Result<f64, WorksheetErrorCode> + Copy,
-) -> FunctionArrayCell {
+) -> CalcValue {
     match apply_unary_numeric_scalar_prepared(item, |n| n) {
         Ok(n) => match kernel(n) {
-            Ok(v) => FunctionArrayCell::Number(v),
-            Err(code) => FunctionArrayCell::Error(code),
+            Ok(v) => CalcValue::number(v),
+            Err(code) => CalcValue::error(code),
         },
-        Err(CoercionError::WorksheetError(code)) => FunctionArrayCell::Error(code),
-        Err(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
+        Err(CoercionError::WorksheetError(code)) => CalcValue::error(code),
+        Err(_) => CalcValue::error(WorksheetErrorCode::Value),
     }
 }
 
@@ -125,7 +123,7 @@ pub fn map_unary_numeric_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetE
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{ExcelText, FunctionArg};
+    use crate::value::ExcelText;
 
     struct NoResolver;
 
@@ -137,7 +135,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -150,23 +148,23 @@ mod tests {
     #[test]
     fn unary_numeric_surface_accepts_numeric_text() {
         let got = eval_unary_numeric_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(
-                ExcelText::from_utf16_code_units("1".encode_utf16().collect()),
-            ))],
+            &[(CalcValue::text(ExcelText::from_utf16_code_units(
+                "1".encode_utf16().collect(),
+            )))],
             &NoResolver,
             |n| Ok(n + 1.0),
         )
         .unwrap();
-        assert_eq!(got, FunctionValue::Number(2.0));
+        assert_eq!(got, CalcValue::number(2.0));
     }
 
     #[test]
     fn unary_numeric_surface_lifts_arrays_elementwise() {
         let got = eval_unary_numeric_surface(
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::text(ExcelText::from_utf16_code_units(
                         "bad".encode_utf16().collect(),
                     )),
                 ]])
@@ -178,10 +176,10 @@ mod tests {
         .unwrap();
         assert_eq!(
             got,
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::Value),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(2.0),
+                    CalcValue::error(WorksheetErrorCode::Value),
                 ]])
                 .unwrap()
             )
@@ -190,11 +188,9 @@ mod tests {
 
     #[test]
     fn unary_numeric_surface_maps_domain_errors() {
-        let got = eval_unary_numeric_surface(
-            &[FunctionArg::Eval(FunctionValue::Number(-1.0))],
-            &NoResolver,
-            |_| Err(WorksheetErrorCode::Num),
-        );
+        let got = eval_unary_numeric_surface(&[(CalcValue::number(-1.0))], &NoResolver, |_| {
+            Err(WorksheetErrorCode::Num)
+        });
         assert_eq!(
             got,
             Err(UnaryNumericSurfaceError::Domain(WorksheetErrorCode::Num))

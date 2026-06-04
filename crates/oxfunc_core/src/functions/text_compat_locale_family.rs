@@ -8,7 +8,8 @@ use crate::host_info::{
     HostInfoError, HostInfoProvider, WidthConversionFunction, WidthConversionMode,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{ExcelText, WorksheetErrorCode};
 
 const TEXT_COMPAT_LOCALE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT_COMPAT_LOCALE_BASE",
@@ -302,22 +303,22 @@ fn jis_kernel(text: &ExcelText) -> ExcelText {
     ExcelText::from_utf16_code_units(out)
 }
 
-fn render_text_for_mode(text: &ExcelText, mode: WidthConversionMode) -> FunctionValue {
+fn render_text_for_mode(text: &ExcelText, mode: WidthConversionMode) -> CalcValue {
     match mode {
-        WidthConversionMode::PassThrough => FunctionValue::Text(text.clone()),
-        WidthConversionMode::NarrowBasicWidthAndKana => FunctionValue::Text(asc_kernel(text)),
-        WidthConversionMode::WidenBasicWidthAndKana => FunctionValue::Text(jis_kernel(text)),
-        WidthConversionMode::Unavailable => FunctionValue::Error(WorksheetErrorCode::Name),
+        WidthConversionMode::PassThrough => CalcValue::text(text.clone()),
+        WidthConversionMode::NarrowBasicWidthAndKana => CalcValue::text(asc_kernel(text)),
+        WidthConversionMode::WidenBasicWidthAndKana => CalcValue::text(jis_kernel(text)),
+        WidthConversionMode::Unavailable => CalcValue::error(WorksheetErrorCode::Name),
     }
 }
 
 fn eval_width_conversion_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
     function: WidthConversionFunction,
     meta: &FunctionMeta,
-) -> Result<FunctionValue, TextCompatLocaleEvalError> {
+) -> Result<CalcValue, TextCompatLocaleEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -344,10 +345,10 @@ fn eval_width_conversion_surface(
 }
 
 pub fn eval_asc_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, TextCompatLocaleEvalError> {
+) -> Result<CalcValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(
         args,
         resolver,
@@ -358,10 +359,10 @@ pub fn eval_asc_surface(
 }
 
 pub fn eval_dbcs_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, TextCompatLocaleEvalError> {
+) -> Result<CalcValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(
         args,
         resolver,
@@ -372,10 +373,10 @@ pub fn eval_dbcs_surface(
 }
 
 pub fn eval_jis_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, TextCompatLocaleEvalError> {
+) -> Result<CalcValue, TextCompatLocaleEvalError> {
     eval_width_conversion_surface(
         args,
         resolver,
@@ -426,7 +427,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -471,12 +472,12 @@ mod tests {
         ExcelText::from_utf16_code_units(s.encode_utf16().collect())
     }
 
-    fn text_arg(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(txt(s)))
+    fn text_arg(s: &str) -> CalcValue {
+        (CalcValue::text(txt(s)))
     }
 
-    fn number_arg(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_arg(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     #[test]
@@ -519,11 +520,11 @@ mod tests {
         let args = [text_arg("ABC ｶﾞ")];
         assert_eq!(
             eval_dbcs_surface(&args, &resolver, Some(&MockWidthConversionProvider)),
-            Ok(FunctionValue::Text(txt("ABC ｶﾞ")))
+            Ok(CalcValue::text(txt("ABC ｶﾞ")))
         );
         assert_eq!(
             eval_jis_surface(&args, &resolver, Some(&MockWidthConversionProvider)),
-            Ok(FunctionValue::Error(WorksheetErrorCode::Name))
+            Ok(CalcValue::error(WorksheetErrorCode::Name))
         );
     }
 
@@ -536,23 +537,23 @@ mod tests {
                 &resolver,
                 Some(&ConvertingWidthProvider)
             ),
-            Ok(FunctionValue::Text(txt("123")))
+            Ok(CalcValue::text(txt("123")))
         );
         assert_eq!(
             eval_jis_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &[(CalcValue::logical(true))],
                 &resolver,
                 Some(&ConvertingWidthProvider)
             ),
-            Ok(FunctionValue::Text(txt("ＴＲＵＥ")))
+            Ok(CalcValue::text(txt("ＴＲＵＥ")))
         );
         assert_eq!(
             eval_dbcs_surface(
-                &[FunctionArg::EmptyCell],
+                &[CalcValue::empty()],
                 &resolver,
                 Some(&ConvertingWidthProvider)
             ),
-            Ok(FunctionValue::Text(txt("")))
+            Ok(CalcValue::text(txt("")))
         );
     }
 

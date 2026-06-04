@@ -1,3 +1,4 @@
+use crate::value::{CalcValue, CoreValue};
 use std::cmp::Ordering;
 
 use crate::function::{
@@ -5,7 +6,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
+    prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
 };
 use crate::functions::callable_helpers::{
     CallableInvoker, LambdaHelperEvalError, map_lambda_helper_error_to_ws,
@@ -18,10 +19,7 @@ use crate::functions::group_pivot_common::{
     text_cell,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    CalcValue, CallableValue, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue,
-    WorksheetErrorCode,
-};
+use crate::value::{CalcArray, CallableValue, WorksheetErrorCode};
 
 pub const PIVOTBY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PIVOTBY",
@@ -47,7 +45,7 @@ fn surface_arity_error(actual: usize) -> LambdaHelperEvalError {
 
 #[derive(Debug, Clone)]
 struct AxisGroup {
-    key_cells: Vec<FunctionArrayCell>,
+    key_cells: Vec<CalcValue>,
     key: Vec<CellKey>,
     row_indices: Vec<usize>,
 }
@@ -60,7 +58,7 @@ fn header_mode_shows_output(mode: FieldHeadersMode, had_headers: bool) -> bool {
     }
 }
 
-fn parse_total_depth(prepared: Option<&PreparedValue>) -> Result<i32, LambdaHelperEvalError> {
+fn parse_total_depth(prepared: Option<&CalcValue>) -> Result<i32, LambdaHelperEvalError> {
     let depth = crate::functions::group_pivot_common::coerce_optional_i32(prepared)?.unwrap_or(1);
     if depth == 0 || depth == 1 {
         return Ok(depth);
@@ -72,34 +70,34 @@ fn parse_total_depth(prepared: Option<&PreparedValue>) -> Result<i32, LambdaHelp
     ))
 }
 
-fn compare_cell(a: &FunctionArrayCell, b: &FunctionArrayCell) -> Ordering {
-    match (a, b) {
-        (FunctionArrayCell::Number(x), FunctionArrayCell::Number(y)) => {
-            x.partial_cmp(y).unwrap_or(Ordering::Equal)
+fn compare_cell(a: &CalcValue, b: &CalcValue) -> Ordering {
+    match (a.core(), b.core()) {
+        (CoreValue::Number(x), CoreValue::Number(y)) => x.partial_cmp(y).unwrap_or(Ordering::Equal),
+        (CoreValue::Text(x), CoreValue::Text(y)) => x.to_string_lossy().cmp(&y.to_string_lossy()),
+        (CoreValue::Logical(x), CoreValue::Logical(y)) => x.cmp(y),
+        (CoreValue::Empty, CoreValue::Empty) | (CoreValue::Missing, CoreValue::Missing) => {
+            Ordering::Equal
         }
-        (FunctionArrayCell::Text(x), FunctionArrayCell::Text(y)) => {
-            x.to_string_lossy().cmp(&y.to_string_lossy())
-        }
-        (FunctionArrayCell::Logical(x), FunctionArrayCell::Logical(y)) => x.cmp(y),
-        (FunctionArrayCell::EmptyCell, FunctionArrayCell::EmptyCell) => Ordering::Equal,
-        (FunctionArrayCell::Error(x), FunctionArrayCell::Error(y)) => (*x as u8).cmp(&(*y as u8)),
+        (CoreValue::Error(x), CoreValue::Error(y)) => (*x as u8).cmp(&(*y as u8)),
         _ => sort_rank(a).cmp(&sort_rank(b)),
     }
 }
 
-fn sort_rank(cell: &FunctionArrayCell) -> u8 {
-    match cell {
-        FunctionArrayCell::Number(_) => 0,
-        FunctionArrayCell::Text(_) => 1,
-        FunctionArrayCell::Logical(_) => 2,
-        FunctionArrayCell::Error(_) => 3,
-        FunctionArrayCell::EmptyCell => 4,
+fn sort_rank(cell: &CalcValue) -> u8 {
+    match cell.core() {
+        CoreValue::Number(_) => 0,
+        CoreValue::Text(_) => 1,
+        CoreValue::Logical(_) => 2,
+        CoreValue::Error(_) => 3,
+        CoreValue::Empty | CoreValue::Missing => 4,
+        CoreValue::Array(_) => 5,
+        CoreValue::Reference(_) => 6,
     }
 }
 
 fn apply_axis_sort(
     groups: &mut [AxisGroup],
-    totals: &[(Vec<CellKey>, Vec<FunctionArrayCell>)],
+    totals: &[(Vec<CellKey>, Vec<CalcValue>)],
     sort_orders: &[i32],
     field_cols: usize,
 ) {
@@ -143,10 +141,10 @@ fn apply_axis_sort(
 
 fn aggregate_totals_for_groups(
     groups: &[AxisGroup],
-    value_rows: &[Vec<FunctionArrayCell>],
+    value_rows: &[Vec<CalcValue>],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<Vec<(Vec<CellKey>, Vec<FunctionArrayCell>)>, LambdaHelperEvalError> {
+) -> Result<Vec<(Vec<CellKey>, Vec<CalcValue>)>, LambdaHelperEvalError> {
     let value_cols = value_rows.first().map_or(1, Vec::len);
     groups
         .iter()
@@ -166,7 +164,7 @@ fn aggregate_totals_for_groups(
         .collect()
 }
 
-fn build_axis_groups(rows: &[Vec<FunctionArrayCell>]) -> Vec<AxisGroup> {
+fn build_axis_groups(rows: &[Vec<CalcValue>]) -> Vec<AxisGroup> {
     let keys = rows
         .iter()
         .map(|row| key_from_cells(row))
@@ -185,15 +183,15 @@ fn build_axis_groups(rows: &[Vec<FunctionArrayCell>]) -> Vec<AxisGroup> {
 }
 
 fn extract_filtered_rows(
-    row_fields: &FunctionArray,
-    col_fields: &FunctionArray,
-    values: &FunctionArray,
+    row_fields: &CalcArray,
+    col_fields: &CalcArray,
+    values: &CalcArray,
     filter: Option<&[bool]>,
 ) -> Result<
     (
-        Vec<Vec<FunctionArrayCell>>,
-        Vec<Vec<FunctionArrayCell>>,
-        Vec<Vec<FunctionArrayCell>>,
+        Vec<Vec<CalcValue>>,
+        Vec<Vec<CalcValue>>,
+        Vec<Vec<CalcValue>>,
     ),
     LambdaHelperEvalError,
 > {
@@ -245,7 +243,7 @@ pub fn eval_pivotby_calc_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !PIVOTBY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(args.len()));
     }
@@ -253,16 +251,16 @@ pub fn eval_pivotby_calc_surface(
     let prepared_calc =
         prepare_calc_values_only(args, resolver).map_err(LambdaHelperEvalError::Preparation)?;
     let callable = require_calc_callable(&prepared_calc[3])?;
-    let prepared: Vec<PreparedValue> = prepared_calc.iter().map(prepared_from_calc_value).collect();
+    let prepared: Vec<CalcValue> = prepared_calc.iter().map(prepared_from_calc_value).collect();
 
     eval_pivotby_prepared(&prepared, &callable, invoker)
 }
 
 pub fn eval_pivotby_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if !PIVOTBY_META.arity.accepts(args.len()) {
         return Err(surface_arity_error(args.len()));
     }
@@ -275,13 +273,13 @@ pub fn eval_pivotby_surface(
 }
 
 fn eval_pivotby_prepared(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     callable: &CallableValue,
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     if prepared
         .get(10)
-        .is_some_and(|arg| !matches!(arg, PreparedValue::MissingArg | PreparedValue::EmptyCell))
+        .is_some_and(|arg| !matches!(arg.core(), CoreValue::Missing | CoreValue::Empty))
     {
         return Err(LambdaHelperEvalError::Invocation(
             crate::functions::callable_helpers::CallableInvocationError::Worksheet(
@@ -317,11 +315,9 @@ fn eval_pivotby_prepared(
     )?;
 
     if row_rows.is_empty() {
-        return Ok(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![FunctionArrayCell::Error(
-                WorksheetErrorCode::Calc,
-            )]])
-            .expect("scalar calc error"),
+        return Ok(CalcValue::array(
+            CalcArray::from_rows(vec![vec![CalcValue::error(WorksheetErrorCode::Calc)]])
+                .expect("scalar calc error"),
         ));
     }
 
@@ -369,15 +365,15 @@ fn eval_pivotby_prepared(
         };
 
         if split_cols.array.shape().cols == 1 && split_rows.array.shape().cols == 1 {
-            let mut row0 = vec![FunctionArrayCell::EmptyCell];
+            let mut row0 = vec![CalcValue::empty()];
             row0.push(top_label[0].clone());
-            row0.extend((1..col_groups.len()).map(|_| FunctionArrayCell::EmptyCell));
+            row0.extend((1..col_groups.len()).map(|_| CalcValue::empty()));
             if col_total_depth != 0 {
-                row0.push(FunctionArrayCell::EmptyCell);
+                row0.push(CalcValue::empty());
             }
             rows.push(row0);
 
-            let mut row1 = vec![FunctionArrayCell::EmptyCell];
+            let mut row1 = vec![CalcValue::empty()];
             row1.extend(col_groups.iter().map(|group| group.key_cells[0].clone()));
             if col_total_depth != 0 {
                 row1.push(text_cell("Total"));
@@ -392,7 +388,7 @@ fn eval_pivotby_prepared(
             rows.push(row2);
         }
     } else {
-        let mut header = vec![FunctionArrayCell::EmptyCell; split_rows.array.shape().cols];
+        let mut header = vec![CalcValue::empty(); split_rows.array.shape().cols];
         header.extend(col_groups.iter().map(|group| group.key_cells[0].clone()));
         if col_total_depth != 0 {
             header.push(text_cell("Total"));
@@ -425,7 +421,7 @@ fn eval_pivotby_prepared(
     }
 
     if row_total_depth != 0 {
-        let mut total_row = vec![FunctionArrayCell::EmptyCell; split_rows.array.shape().cols];
+        let mut total_row = vec![CalcValue::empty(); split_rows.array.shape().cols];
         total_row[0] = text_cell("Total");
         for col_group in &col_groups {
             for value_col in 0..value_cols {
@@ -447,16 +443,16 @@ fn eval_pivotby_prepared(
         rows.push(total_row);
     }
 
-    Ok(FunctionValue::Array(
-        FunctionArray::from_rows(rows).expect("pivotby output is rectangular"),
+    Ok(CalcValue::array(
+        CalcArray::from_rows(rows).expect("pivotby output is rectangular"),
     ))
 }
 
 pub fn eval_pivotby_surface_ws(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionValue, WorksheetErrorCode> {
+) -> Result<CalcValue, WorksheetErrorCode> {
     eval_pivotby_surface(args, resolver, invoker).map_err(|err| map_lambda_helper_error_to_ws(&err))
 }
 
@@ -465,7 +461,7 @@ mod tests {
     use super::*;
     use std::rc::Rc;
 
-    use crate::functions::adapters::PreparedValue;
+    use crate::functions::adapters::CalcValue;
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{CallableArityShape, ExcelText, OpaqueCallable};
@@ -489,7 +485,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -503,19 +499,19 @@ mod tests {
         fn invoke(
             &self,
             callable: &CallableValue,
-            args: &[PreparedValue],
-        ) -> Result<PreparedValue, CallableInvocationError> {
+            args: &[CalcValue],
+        ) -> Result<CalcValue, CallableInvocationError> {
             match callable.summary.as_str() {
-                "helper.sum_array" => match &args[0] {
-                    PreparedValue::Eval(FunctionValue::Array(array)) => {
+                "helper.sum_array" => match args[0].core() {
+                    CoreValue::Array(array) => {
                         let total = array
                             .iter_row_major()
-                            .filter_map(|cell| match cell {
-                                FunctionArrayCell::Number(n) => Some(*n),
+                            .filter_map(|cell| match cell.core() {
+                                CoreValue::Number(n) => Some(*n),
                                 _ => None,
                             })
                             .sum::<f64>();
-                        Ok(PreparedValue::Eval(FunctionValue::Number(total)))
+                        Ok(CalcValue::number(total))
                     }
                     _ => Err(CallableInvocationError::Worksheet(
                         WorksheetErrorCode::Value,
@@ -532,8 +528,8 @@ mod tests {
         ExcelText::from_utf16_code_units(s.encode_utf16().collect())
     }
 
-    fn t(s: &str) -> FunctionArrayCell {
-        FunctionArrayCell::Text(text(s))
+    fn t(s: &str) -> CalcValue {
+        CalcValue::text(text(s))
     }
 
     fn callable_arg() -> CalcValue {
@@ -544,6 +540,13 @@ mod tests {
         })
     }
 
+    fn expect_array(value: CalcValue) -> CalcArray {
+        match value.core {
+            CoreValue::Array(array) => array,
+            other => panic!("expected array, got {other:?}"),
+        }
+    }
+
     #[test]
     fn pivotby_meta_arity() {
         assert_eq!(PIVOTBY_META.arity.min, 4);
@@ -552,7 +555,7 @@ mod tests {
 
     #[test]
     fn pivotby_default_lane_matches_empirical_matrix() {
-        let row_fields = FunctionArray::from_rows(vec![
+        let row_fields = CalcArray::from_rows(vec![
             vec![t("East")],
             vec![t("East")],
             vec![t("West")],
@@ -560,48 +563,46 @@ mod tests {
         ])
         .unwrap();
         let col_fields =
-            FunctionArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+            CalcArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
                 .unwrap();
-        let values = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Number(10.0)],
-            vec![FunctionArrayCell::Number(20.0)],
-            vec![FunctionArrayCell::Number(40.0)],
-            vec![FunctionArrayCell::Number(50.0)],
+        let values = CalcArray::from_rows(vec![
+            vec![CalcValue::number(10.0)],
+            vec![CalcValue::number(20.0)],
+            vec![CalcValue::number(40.0)],
+            vec![CalcValue::number(50.0)],
         ])
         .unwrap();
         let got = eval_pivotby_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(row_fields)),
-                CalcValue::from(FunctionValue::Array(col_fields)),
-                CalcValue::from(FunctionValue::Array(values)),
+                CalcValue::from(CalcValue::array(row_fields)),
+                CalcValue::from(CalcValue::array(col_fields)),
+                CalcValue::from(CalcValue::array(values)),
                 callable_arg(),
             ],
             &NoResolver,
             &TestInvoker,
         )
         .unwrap();
-        let FunctionValue::Array(array) = got else {
-            panic!("expected array");
-        };
-        let expected = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::EmptyCell, t("A"), t("B"), t("Total")],
+        let array = expect_array(got);
+        let expected = CalcArray::from_rows(vec![
+            vec![CalcValue::empty(), t("A"), t("B"), t("Total")],
             vec![
                 t("East"),
-                FunctionArrayCell::Number(10.0),
-                FunctionArrayCell::Number(20.0),
-                FunctionArrayCell::Number(30.0),
+                CalcValue::number(10.0),
+                CalcValue::number(20.0),
+                CalcValue::number(30.0),
             ],
             vec![
                 t("West"),
-                FunctionArrayCell::Number(40.0),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(90.0),
+                CalcValue::number(40.0),
+                CalcValue::number(50.0),
+                CalcValue::number(90.0),
             ],
             vec![
                 t("Total"),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(70.0),
-                FunctionArrayCell::Number(120.0),
+                CalcValue::number(50.0),
+                CalcValue::number(70.0),
+                CalcValue::number(120.0),
             ],
         ])
         .unwrap();
@@ -610,7 +611,7 @@ mod tests {
 
     #[test]
     fn pivotby_supports_zero_totals_and_filter() {
-        let row_fields = FunctionArray::from_rows(vec![
+        let row_fields = CalcArray::from_rows(vec![
             vec![t("East")],
             vec![t("East")],
             vec![t("West")],
@@ -618,46 +619,44 @@ mod tests {
         ])
         .unwrap();
         let col_fields =
-            FunctionArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+            CalcArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
                 .unwrap();
-        let values = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Number(10.0)],
-            vec![FunctionArrayCell::Number(20.0)],
-            vec![FunctionArrayCell::Number(40.0)],
-            vec![FunctionArrayCell::Number(50.0)],
+        let values = CalcArray::from_rows(vec![
+            vec![CalcValue::number(10.0)],
+            vec![CalcValue::number(20.0)],
+            vec![CalcValue::number(40.0)],
+            vec![CalcValue::number(50.0)],
         ])
         .unwrap();
-        let filter = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Logical(true)],
-            vec![FunctionArrayCell::Logical(false)],
-            vec![FunctionArrayCell::Logical(true)],
-            vec![FunctionArrayCell::Logical(false)],
+        let filter = CalcArray::from_rows(vec![
+            vec![CalcValue::logical(true)],
+            vec![CalcValue::logical(false)],
+            vec![CalcValue::logical(true)],
+            vec![CalcValue::logical(false)],
         ])
         .unwrap();
         let got = eval_pivotby_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(row_fields)),
-                CalcValue::from(FunctionValue::Array(col_fields)),
-                CalcValue::from(FunctionValue::Array(values)),
+                CalcValue::from(CalcValue::array(row_fields)),
+                CalcValue::from(CalcValue::array(col_fields)),
+                CalcValue::from(CalcValue::array(values)),
                 callable_arg(),
                 CalcValue::missing(),
                 CalcValue::number(0.0),
                 CalcValue::missing(),
                 CalcValue::number(0.0),
                 CalcValue::missing(),
-                CalcValue::from(FunctionValue::Array(filter)),
+                CalcValue::from(CalcValue::array(filter)),
             ],
             &NoResolver,
             &TestInvoker,
         )
         .unwrap();
-        let FunctionValue::Array(array) = got else {
-            panic!("expected array");
-        };
-        let expected = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::EmptyCell, t("A")],
-            vec![t("East"), FunctionArrayCell::Number(10.0)],
-            vec![t("West"), FunctionArrayCell::Number(40.0)],
+        let array = expect_array(got);
+        let expected = CalcArray::from_rows(vec![
+            vec![CalcValue::empty(), t("A")],
+            vec![t("East"), CalcValue::number(10.0)],
+            vec![t("West"), CalcValue::number(40.0)],
         ])
         .unwrap();
         assert_eq!(array, expected);
@@ -665,7 +664,7 @@ mod tests {
 
     #[test]
     fn pivotby_supports_row_and_column_total_sort() {
-        let row_fields = FunctionArray::from_rows(vec![
+        let row_fields = CalcArray::from_rows(vec![
             vec![t("East")],
             vec![t("East")],
             vec![t("West")],
@@ -673,20 +672,20 @@ mod tests {
         ])
         .unwrap();
         let col_fields =
-            FunctionArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
+            CalcArray::from_rows(vec![vec![t("A")], vec![t("B")], vec![t("A")], vec![t("B")]])
                 .unwrap();
-        let values = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::Number(10.0)],
-            vec![FunctionArrayCell::Number(20.0)],
-            vec![FunctionArrayCell::Number(40.0)],
-            vec![FunctionArrayCell::Number(50.0)],
+        let values = CalcArray::from_rows(vec![
+            vec![CalcValue::number(10.0)],
+            vec![CalcValue::number(20.0)],
+            vec![CalcValue::number(40.0)],
+            vec![CalcValue::number(50.0)],
         ])
         .unwrap();
         let got = eval_pivotby_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(row_fields)),
-                CalcValue::from(FunctionValue::Array(col_fields)),
-                CalcValue::from(FunctionValue::Array(values)),
+                CalcValue::from(CalcValue::array(row_fields)),
+                CalcValue::from(CalcValue::array(col_fields)),
+                CalcValue::from(CalcValue::array(values)),
                 callable_arg(),
                 CalcValue::missing(),
                 CalcValue::missing(),
@@ -698,28 +697,26 @@ mod tests {
             &TestInvoker,
         )
         .unwrap();
-        let FunctionValue::Array(array) = got else {
-            panic!("expected array");
-        };
-        let expected = FunctionArray::from_rows(vec![
-            vec![FunctionArrayCell::EmptyCell, t("B"), t("A"), t("Total")],
+        let array = expect_array(got);
+        let expected = CalcArray::from_rows(vec![
+            vec![CalcValue::empty(), t("B"), t("A"), t("Total")],
             vec![
                 t("West"),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(40.0),
-                FunctionArrayCell::Number(90.0),
+                CalcValue::number(50.0),
+                CalcValue::number(40.0),
+                CalcValue::number(90.0),
             ],
             vec![
                 t("East"),
-                FunctionArrayCell::Number(20.0),
-                FunctionArrayCell::Number(10.0),
-                FunctionArrayCell::Number(30.0),
+                CalcValue::number(20.0),
+                CalcValue::number(10.0),
+                CalcValue::number(30.0),
             ],
             vec![
                 t("Total"),
-                FunctionArrayCell::Number(70.0),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(120.0),
+                CalcValue::number(70.0),
+                CalcValue::number(50.0),
+                CalcValue::number(120.0),
             ],
         ])
         .unwrap();
@@ -729,21 +726,21 @@ mod tests {
     #[test]
     fn pivotby_visible_headers_emit_empirical_header_bands() {
         let row_fields =
-            FunctionArray::from_rows(vec![vec![t("Region")], vec![t("East")], vec![t("West")]])
+            CalcArray::from_rows(vec![vec![t("Region")], vec![t("East")], vec![t("West")]])
                 .unwrap();
         let col_fields =
-            FunctionArray::from_rows(vec![vec![t("Product")], vec![t("A")], vec![t("B")]]).unwrap();
-        let values = FunctionArray::from_rows(vec![
+            CalcArray::from_rows(vec![vec![t("Product")], vec![t("A")], vec![t("B")]]).unwrap();
+        let values = CalcArray::from_rows(vec![
             vec![t("Sales")],
-            vec![FunctionArrayCell::Number(40.0)],
-            vec![FunctionArrayCell::Number(50.0)],
+            vec![CalcValue::number(40.0)],
+            vec![CalcValue::number(50.0)],
         ])
         .unwrap();
         let got = eval_pivotby_calc_surface(
             &[
-                CalcValue::from(FunctionValue::Array(row_fields)),
-                CalcValue::from(FunctionValue::Array(col_fields)),
-                CalcValue::from(FunctionValue::Array(values)),
+                CalcValue::from(CalcValue::array(row_fields)),
+                CalcValue::from(CalcValue::array(col_fields)),
+                CalcValue::from(CalcValue::array(values)),
                 callable_arg(),
                 CalcValue::number(3.0),
             ],
@@ -751,35 +748,33 @@ mod tests {
             &TestInvoker,
         )
         .unwrap();
-        let FunctionValue::Array(array) = got else {
-            panic!("expected array");
-        };
-        let expected = FunctionArray::from_rows(vec![
+        let array = expect_array(got);
+        let expected = CalcArray::from_rows(vec![
             vec![
-                FunctionArrayCell::EmptyCell,
+                CalcValue::empty(),
                 t("Product"),
-                FunctionArrayCell::EmptyCell,
-                FunctionArrayCell::EmptyCell,
+                CalcValue::empty(),
+                CalcValue::empty(),
             ],
-            vec![FunctionArrayCell::EmptyCell, t("A"), t("B"), t("Total")],
+            vec![CalcValue::empty(), t("A"), t("B"), t("Total")],
             vec![t("Region"), t("Sales"), t("Sales"), t("Sales")],
             vec![
                 t("East"),
-                FunctionArrayCell::Number(40.0),
-                FunctionArrayCell::Number(0.0),
-                FunctionArrayCell::Number(40.0),
+                CalcValue::number(40.0),
+                CalcValue::number(0.0),
+                CalcValue::number(40.0),
             ],
             vec![
                 t("West"),
-                FunctionArrayCell::Number(0.0),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(50.0),
+                CalcValue::number(0.0),
+                CalcValue::number(50.0),
+                CalcValue::number(50.0),
             ],
             vec![
                 t("Total"),
-                FunctionArrayCell::Number(40.0),
-                FunctionArrayCell::Number(50.0),
-                FunctionArrayCell::Number(90.0),
+                CalcValue::number(40.0),
+                CalcValue::number(50.0),
+                CalcValue::number(90.0),
             ],
         ])
         .unwrap();

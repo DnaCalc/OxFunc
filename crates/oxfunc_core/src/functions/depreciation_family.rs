@@ -3,11 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 const OPTIONAL_ARITY_5: Arity = Arity { min: 4, max: 5 };
 const OPTIONAL_ARITY_7: Arity = Arity { min: 5, max: 7 };
@@ -71,17 +69,18 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> DepreciationEvalError {
     }
 }
 
-fn required_number(arg: &PreparedValue) -> Result<f64, DepreciationEvalError> {
+fn required_number(arg: &CalcValue) -> Result<f64, DepreciationEvalError> {
     coerce_prepared_to_number(arg).map_err(DepreciationEvalError::Coercion)
 }
 
 fn optional_number(
-    args: &[PreparedValue],
+    args: &[CalcValue],
     idx: usize,
     default: f64,
 ) -> Result<f64, DepreciationEvalError> {
     match args.get(idx) {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(default),
+        None => Ok(default),
+        Some(arg) if matches!(arg.core(), CoreValue::Missing | CoreValue::Empty) => Ok(default),
         Some(arg) => required_number(arg),
     }
 }
@@ -278,7 +277,7 @@ pub fn vdb_kernel(
     )
 }
 
-fn eval_sln_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DepreciationEvalError> {
+fn eval_sln_prepared(args: &[CalcValue]) -> Result<CalcValue, DepreciationEvalError> {
     if !SLN_META.arity.accepts(args.len()) {
         return Err(arity_error(&SLN_META, args.len()));
     }
@@ -286,12 +285,12 @@ fn eval_sln_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Depreciati
     let salvage = required_number(&args[1])?;
     let life = required_number(&args[2])?;
     Ok(match sln_kernel(cost, salvage, life) {
-        Ok(value) => FunctionValue::Number(value),
-        Err(code) => FunctionValue::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     })
 }
 
-fn eval_syd_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DepreciationEvalError> {
+fn eval_syd_prepared(args: &[CalcValue]) -> Result<CalcValue, DepreciationEvalError> {
     if !SYD_META.arity.accepts(args.len()) {
         return Err(arity_error(&SYD_META, args.len()));
     }
@@ -300,12 +299,12 @@ fn eval_syd_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Depreciati
     let life = required_number(&args[2])?;
     let per = required_number(&args[3])?;
     Ok(match syd_kernel(cost, salvage, life, per) {
-        Ok(value) => FunctionValue::Number(value),
-        Err(code) => FunctionValue::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     })
 }
 
-fn eval_db_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DepreciationEvalError> {
+fn eval_db_prepared(args: &[CalcValue]) -> Result<CalcValue, DepreciationEvalError> {
     if !DB_META.arity.accepts(args.len()) {
         return Err(arity_error(&DB_META, args.len()));
     }
@@ -315,12 +314,12 @@ fn eval_db_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Depreciatio
     let period = required_number(&args[3])?;
     let month = optional_number(args, 4, 12.0)?;
     Ok(match db_kernel(cost, salvage, life, period, month) {
-        Ok(value) => FunctionValue::Number(value),
-        Err(code) => FunctionValue::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     })
 }
 
-fn eval_ddb_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DepreciationEvalError> {
+fn eval_ddb_prepared(args: &[CalcValue]) -> Result<CalcValue, DepreciationEvalError> {
     if !DDB_META.arity.accepts(args.len()) {
         return Err(arity_error(&DDB_META, args.len()));
     }
@@ -330,12 +329,12 @@ fn eval_ddb_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Depreciati
     let period = required_number(&args[3])?;
     let factor = optional_number(args, 4, 2.0)?;
     Ok(match ddb_kernel(cost, salvage, life, period, factor) {
-        Ok(value) => FunctionValue::Number(value),
-        Err(code) => FunctionValue::Error(code),
+        Ok(value) => CalcValue::number(value),
+        Err(code) => CalcValue::error(code),
     })
 }
 
-fn eval_vdb_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DepreciationEvalError> {
+fn eval_vdb_prepared(args: &[CalcValue]) -> Result<CalcValue, DepreciationEvalError> {
     if !VDB_META.arity.accepts(args.len()) {
         return Err(arity_error(&VDB_META, args.len()));
     }
@@ -356,16 +355,16 @@ fn eval_vdb_prepared(args: &[PreparedValue]) -> Result<FunctionValue, Depreciati
             factor,
             no_switch,
         ) {
-            Ok(value) => FunctionValue::Number(value),
-            Err(code) => FunctionValue::Error(code),
+            Ok(value) => CalcValue::number(value),
+            Err(code) => CalcValue::error(code),
         },
     )
 }
 
 pub fn eval_sln_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DepreciationEvalError> {
+) -> Result<CalcValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -375,9 +374,9 @@ pub fn eval_sln_surface(
 }
 
 pub fn eval_syd_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DepreciationEvalError> {
+) -> Result<CalcValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -387,9 +386,9 @@ pub fn eval_syd_surface(
 }
 
 pub fn eval_db_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DepreciationEvalError> {
+) -> Result<CalcValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -399,9 +398,9 @@ pub fn eval_db_surface(
 }
 
 pub fn eval_ddb_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DepreciationEvalError> {
+) -> Result<CalcValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -411,9 +410,9 @@ pub fn eval_ddb_surface(
 }
 
 pub fn eval_vdb_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DepreciationEvalError> {
+) -> Result<CalcValue, DepreciationEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -446,7 +445,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -456,14 +455,12 @@ mod tests {
         }
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
     #[test]
@@ -539,11 +536,11 @@ mod tests {
         let resolver = NoRefResolver;
         assert_eq!(
             eval_sln_surface(&[num(30000.0), num(7500.0), num(10.0)], &resolver),
-            Ok(FunctionValue::Number(2250.0))
+            Ok(CalcValue::number(2250.0))
         );
         assert_eq!(
             eval_ddb_surface(&[num(2400.0), num(300.0), num(10.0), num(1.0)], &resolver),
-            Ok(FunctionValue::Number(480.0))
+            Ok(CalcValue::number(480.0))
         );
         let got = eval_vdb_surface(
             &[
@@ -557,8 +554,8 @@ mod tests {
             &resolver,
         )
         .unwrap();
-        match got {
-            FunctionValue::Number(n) => assert!((n - 315.0).abs() < 1.0e-12),
+        match got.core() {
+            CoreValue::Number(n) => assert!((*n - 315.0).abs() < 1.0e-12),
             other => panic!("expected number, got {other:?}"),
         }
         assert_eq!(
@@ -572,7 +569,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(186083.33333333334))
+            Ok(CalcValue::number(186083.33333333334))
         );
     }
 
@@ -625,7 +622,7 @@ mod tests {
         let resolver = NoRefResolver;
         let got = eval_sln_surface(
             &[
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
                 num(0.0),
                 num(10.0),
             ],

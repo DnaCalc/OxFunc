@@ -3,14 +3,13 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, prepare_arg_values_only};
+use crate::functions::adapters::prepare_arg_values_only;
 use crate::functions::excel_numeric_compare::compare_excel_numbers;
 use crate::functions::variance_common::{VarianceDivisor, stdev_from_values, variance_from_values};
 use crate::functions::xmatch::wildcard_match;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
-use crate::value::{
-    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue};
 
 const DATABASE_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATABASE_BASE",
@@ -115,13 +114,13 @@ struct CriteriaSpec {
 #[derive(Debug, Clone, PartialEq)]
 struct DatabaseTable {
     headers: Vec<String>,
-    rows: Vec<Vec<FunctionArrayCell>>,
+    rows: Vec<Vec<CalcValue>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 struct CriteriaTable {
     headers: Vec<Option<String>>,
-    rows: Vec<Vec<FunctionArrayCell>>,
+    rows: Vec<Vec<CalcValue>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -158,39 +157,42 @@ fn normalize_text(text: &ExcelText) -> String {
     text.to_string_lossy()
 }
 
-fn header_label(cell: &FunctionArrayCell) -> Result<Option<String>, DatabaseEvalError> {
-    match cell {
-        FunctionArrayCell::Text(text) => Ok(Some(normalize_text(text))),
-        FunctionArrayCell::Number(n) => Ok(Some(format!("{n}"))),
-        FunctionArrayCell::Logical(b) => Ok(Some(if *b { "TRUE" } else { "FALSE" }.to_string())),
-        FunctionArrayCell::EmptyCell => Ok(None),
-        FunctionArrayCell::Error(code) => Err(DatabaseEvalError::Domain(*code)),
+fn header_label(cell: &CalcValue) -> Result<Option<String>, DatabaseEvalError> {
+    match cell.core() {
+        CoreValue::Text(text) => Ok(Some(normalize_text(text))),
+        CoreValue::Number(n) => Ok(Some(format!("{n}"))),
+        CoreValue::Logical(b) => Ok(Some(if *b { "TRUE" } else { "FALSE" }.to_string())),
+        CoreValue::Empty | CoreValue::Missing => Ok(None),
+        CoreValue::Error(code) => Err(DatabaseEvalError::Domain(*code)),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            Err(DatabaseEvalError::Domain(WorksheetErrorCode::Value))
+        }
     }
 }
 
 fn resolve_eval(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
-    match arg {
-        FunctionArg::Reference(reference)
-        | FunctionArg::Eval(FunctionValue::Reference(reference)) => {
+) -> Result<CalcValue, DatabaseEvalError> {
+    match arg.core() {
+        CoreValue::Reference(reference) => {
             let resolved = resolve_eval_value(resolver, reference)
                 .map_err(CoercionError::RefResolution)
                 .map_err(DatabaseEvalError::Coercion)?;
-            resolve_eval(&FunctionArg::Eval(resolved), resolver)
+            resolve_eval(&(resolved), resolver)
         }
-        FunctionArg::Eval(value) => Ok(value.clone()),
-        FunctionArg::EmptyCell => Ok(FunctionValue::Array(FunctionArray::from_scalar(
-            FunctionArrayCell::EmptyCell,
-        ))),
-        FunctionArg::MissingArg => Err(DatabaseEvalError::Coercion(CoercionError::MissingArg)),
+        CoreValue::Empty => Ok(CalcValue::array(
+            CalcArray::from_scalar(CalcValue::empty())
+                .expect("scalar empty array has valid dimensions"),
+        )),
+        CoreValue::Missing => Err(DatabaseEvalError::Coercion(CoercionError::MissingArg)),
+        _ => Ok(arg.clone()),
     }
 }
 
-fn eval_to_grid(value: FunctionValue) -> Result<Vec<Vec<FunctionArrayCell>>, DatabaseEvalError> {
-    match value {
-        FunctionValue::Array(array) => {
+fn eval_to_grid(value: CalcValue) -> Result<Vec<Vec<CalcValue>>, DatabaseEvalError> {
+    match value.core() {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let mut rows = Vec::with_capacity(shape.rows);
             for row_idx in 0..shape.rows {
@@ -212,7 +214,7 @@ fn eval_to_grid(value: FunctionValue) -> Result<Vec<Vec<FunctionArrayCell>>, Dat
 }
 
 fn parse_database_table(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<DatabaseTable, DatabaseEvalError> {
     let rows = eval_to_grid(resolve_eval(arg, resolver)?)?;
@@ -233,7 +235,7 @@ fn parse_database_table(
 }
 
 fn parse_criteria_table(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CriteriaTable, DatabaseEvalError> {
     let rows = eval_to_grid(resolve_eval(arg, resolver)?)?;
@@ -301,23 +303,23 @@ fn parse_operator_prefix(text: &str) -> (bool, CompareOp, &str) {
     }
 }
 
-fn criteria_from_cell(cell: &FunctionArrayCell) -> Result<Option<CriteriaSpec>, DatabaseEvalError> {
-    match cell {
-        FunctionArrayCell::EmptyCell => Ok(None),
-        FunctionArrayCell::Number(n) => Ok(Some(CriteriaSpec {
+fn criteria_from_cell(cell: &CalcValue) -> Result<Option<CriteriaSpec>, DatabaseEvalError> {
+    match cell.core() {
+        CoreValue::Empty | CoreValue::Missing => Ok(None),
+        CoreValue::Number(n) => Ok(Some(CriteriaSpec {
             op: CompareOp::Eq,
             operand: CriteriaOperand::Number(*n),
             wildcard_text: false,
             prefix_text: false,
         })),
-        FunctionArrayCell::Logical(b) => Ok(Some(CriteriaSpec {
+        CoreValue::Logical(b) => Ok(Some(CriteriaSpec {
             op: CompareOp::Eq,
             operand: CriteriaOperand::Logical(*b),
             wildcard_text: false,
             prefix_text: false,
         })),
-        FunctionArrayCell::Error(code) => Err(DatabaseEvalError::Domain(*code)),
-        FunctionArrayCell::Text(text) => {
+        CoreValue::Error(code) => Err(DatabaseEvalError::Domain(*code)),
+        CoreValue::Text(text) => {
             let raw = normalize_text(text);
             if raw.is_empty() {
                 return Ok(None);
@@ -339,6 +341,9 @@ fn criteria_from_cell(cell: &FunctionArrayCell) -> Result<Option<CriteriaSpec>, 
                 prefix_text: !explicit && matches!(operand, CriteriaOperand::Text(_)),
                 operand,
             }))
+        }
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            Err(DatabaseEvalError::Domain(WorksheetErrorCode::Value))
         }
     }
 }
@@ -392,35 +397,35 @@ fn compare_text(op: CompareOp, lhs: &str, rhs: &str, wildcard: bool, prefix: boo
     }
 }
 
-fn cell_is_blank(cell: &FunctionArrayCell) -> bool {
-    match cell {
-        FunctionArrayCell::EmptyCell => true,
-        FunctionArrayCell::Text(text) => normalize_text(text).is_empty(),
+fn cell_is_blank(cell: &CalcValue) -> bool {
+    match cell.core() {
+        CoreValue::Empty | CoreValue::Missing => true,
+        CoreValue::Text(text) => normalize_text(text).is_empty(),
         _ => false,
     }
 }
 
-fn criteria_matches_cell(criteria: &CriteriaSpec, cell: &FunctionArrayCell) -> bool {
+fn criteria_matches_cell(criteria: &CriteriaSpec, cell: &CalcValue) -> bool {
     match &criteria.operand {
         CriteriaOperand::Blank => match criteria.op {
             CompareOp::Eq => cell_is_blank(cell),
             CompareOp::Ne => !cell_is_blank(cell),
             _ => false,
         },
-        CriteriaOperand::Number(target) => match cell {
-            FunctionArrayCell::Number(value) => compare_numbers(criteria.op, *value, *target),
-            FunctionArrayCell::Text(text) => parse_excel_number(&normalize_text(text))
+        CriteriaOperand::Number(target) => match cell.core() {
+            CoreValue::Number(value) => compare_numbers(criteria.op, *value, *target),
+            CoreValue::Text(text) => parse_excel_number(&normalize_text(text))
                 .is_some_and(|value| compare_numbers(criteria.op, value, *target)),
             _ => false,
         },
-        CriteriaOperand::Logical(target) => match cell {
-            FunctionArrayCell::Logical(value) => compare_bools(criteria.op, *value, *target),
-            FunctionArrayCell::Text(text) => parse_logical_text(&normalize_text(text))
+        CriteriaOperand::Logical(target) => match cell.core() {
+            CoreValue::Logical(value) => compare_bools(criteria.op, *value, *target),
+            CoreValue::Text(text) => parse_logical_text(&normalize_text(text))
                 .is_some_and(|value| compare_bools(criteria.op, value, *target)),
             _ => false,
         },
-        CriteriaOperand::Text(target) => match cell {
-            FunctionArrayCell::Text(text) => compare_text(
+        CriteriaOperand::Text(target) => match cell.core() {
+            CoreValue::Text(text) => compare_text(
                 criteria.op,
                 &normalize_text(text),
                 target,
@@ -440,15 +445,15 @@ fn field_index_from_text(headers: &[String], label: &str) -> Option<usize> {
 
 fn resolve_field_index(
     database: &DatabaseTable,
-    field_arg: &FunctionArg,
+    field_arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     allow_omitted: bool,
 ) -> Result<Option<usize>, DatabaseEvalError> {
     let prepared =
         prepare_arg_values_only(field_arg, resolver).map_err(DatabaseEvalError::Coercion)?;
-    match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell if allow_omitted => Ok(None),
-        PreparedValue::Eval(FunctionValue::Text(text)) => {
+    match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty if allow_omitted => Ok(None),
+        CoreValue::Text(text) => {
             let label = normalize_text(&text);
             if allow_omitted && label.is_empty() {
                 return Ok(None);
@@ -457,18 +462,18 @@ fn resolve_field_index(
                 .map(Some)
                 .ok_or(DatabaseEvalError::Domain(WorksheetErrorCode::Value))
         }
-        PreparedValue::Eval(FunctionValue::Number(number)) => {
-            if !number.is_finite() || number.fract() != 0.0 || number < 1.0 {
+        CoreValue::Number(number) => {
+            if !number.is_finite() || number.fract() != 0.0 || *number < 1.0 {
                 return Err(DatabaseEvalError::Domain(WorksheetErrorCode::Value));
             }
-            let idx = number as usize - 1;
+            let idx = *number as usize - 1;
             if idx < database.headers.len() {
                 Ok(Some(idx))
             } else {
                 Err(DatabaseEvalError::Domain(WorksheetErrorCode::Value))
             }
         }
-        PreparedValue::Eval(FunctionValue::Error(code)) => Err(DatabaseEvalError::Domain(code)),
+        CoreValue::Error(code) => Err(DatabaseEvalError::Domain(*code)),
         _ => Err(DatabaseEvalError::Domain(WorksheetErrorCode::Value)),
     }
 }
@@ -520,33 +525,34 @@ fn matching_row_indices(
     Ok(matched)
 }
 
-fn numeric_cell(cell: &FunctionArrayCell) -> Result<Option<f64>, DatabaseEvalError> {
-    match cell {
-        FunctionArrayCell::Number(n) => Ok(Some(*n)),
-        FunctionArrayCell::Error(code) => Err(DatabaseEvalError::Domain(*code)),
-        FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_)
-        | FunctionArrayCell::EmptyCell => Ok(None),
+fn numeric_cell(cell: &CalcValue) -> Result<Option<f64>, DatabaseEvalError> {
+    match cell.core() {
+        CoreValue::Number(n) => Ok(Some(*n)),
+        CoreValue::Error(code) => Err(DatabaseEvalError::Domain(*code)),
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Empty | CoreValue::Missing => {
+            Ok(None)
+        }
+        CoreValue::Array(_) | CoreValue::Reference(_) => Ok(None),
     }
 }
 
-fn counta_included(cell: &FunctionArrayCell) -> Result<bool, DatabaseEvalError> {
-    match cell {
-        FunctionArrayCell::EmptyCell => Ok(false),
-        FunctionArrayCell::Error(code) => Err(DatabaseEvalError::Domain(*code)),
-        FunctionArrayCell::Number(_)
-        | FunctionArrayCell::Text(_)
-        | FunctionArrayCell::Logical(_) => Ok(true),
+fn counta_included(cell: &CalcValue) -> Result<bool, DatabaseEvalError> {
+    match cell.core() {
+        CoreValue::Empty | CoreValue::Missing => Ok(false),
+        CoreValue::Error(code) => Err(DatabaseEvalError::Domain(*code)),
+        CoreValue::Number(_) | CoreValue::Text(_) | CoreValue::Logical(_) => Ok(true),
+        CoreValue::Array(_) | CoreValue::Reference(_) => Ok(true),
     }
 }
 
-fn scalar_from_cell(cell: &FunctionArrayCell) -> FunctionValue {
-    match cell {
-        FunctionArrayCell::Number(n) => FunctionValue::Number(*n),
-        FunctionArrayCell::Text(text) => FunctionValue::Text(text.clone()),
-        FunctionArrayCell::Logical(b) => FunctionValue::Logical(*b),
-        FunctionArrayCell::Error(code) => FunctionValue::Error(*code),
-        FunctionArrayCell::EmptyCell => FunctionValue::Number(0.0),
+fn scalar_from_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(text) => CalcValue::text(text.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::number(0.0),
+        CoreValue::Array(_) | CoreValue::Reference(_) => cell.clone(),
     }
 }
 
@@ -554,14 +560,14 @@ fn selected_field_cells<'a>(
     database: &'a DatabaseTable,
     row_indices: &[usize],
     field_index: usize,
-) -> Vec<&'a FunctionArrayCell> {
+) -> Vec<&'a CalcValue> {
     row_indices
         .iter()
         .map(|idx| &database.rows[*idx][field_index])
         .collect()
 }
 
-fn aggregate_numeric_values(cells: &[&FunctionArrayCell]) -> Result<Vec<f64>, DatabaseEvalError> {
+fn aggregate_numeric_values(cells: &[&CalcValue]) -> Result<Vec<f64>, DatabaseEvalError> {
     let mut values = Vec::new();
     for cell in cells {
         if let Some(value) = numeric_cell(cell)? {
@@ -576,23 +582,23 @@ fn evaluate_database_aggregate(
     database: &DatabaseTable,
     row_indices: &[usize],
     field_index: Option<usize>,
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     match kind {
         DatabaseAggregateKind::Count if field_index.is_none() => {
-            Ok(FunctionValue::Number(row_indices.len() as f64))
+            Ok(CalcValue::number(row_indices.len() as f64))
         }
         DatabaseAggregateKind::CountA if field_index.is_none() => {
-            Ok(FunctionValue::Number(row_indices.len() as f64))
+            Ok(CalcValue::number(row_indices.len() as f64))
         }
         DatabaseAggregateKind::Get => {
             let field_index =
                 field_index.ok_or(DatabaseEvalError::Domain(WorksheetErrorCode::Value))?;
             match row_indices.len() {
-                0 => Ok(FunctionValue::Error(WorksheetErrorCode::Value)),
+                0 => Ok(CalcValue::error(WorksheetErrorCode::Value)),
                 1 => Ok(scalar_from_cell(
                     &database.rows[row_indices[0]][field_index],
                 )),
-                _ => Ok(FunctionValue::Error(WorksheetErrorCode::Num)),
+                _ => Ok(CalcValue::error(WorksheetErrorCode::Num)),
             }
         }
         _ => {
@@ -603,14 +609,14 @@ fn evaluate_database_aggregate(
                 DatabaseAggregateKind::Average => {
                     let values = aggregate_numeric_values(&cells)?;
                     if values.is_empty() {
-                        Ok(FunctionValue::Error(WorksheetErrorCode::Div0))
+                        Ok(CalcValue::error(WorksheetErrorCode::Div0))
                     } else {
-                        Ok(FunctionValue::Number(
+                        Ok(CalcValue::number(
                             values.iter().sum::<f64>() / values.len() as f64,
                         ))
                     }
                 }
-                DatabaseAggregateKind::Count => Ok(FunctionValue::Number(
+                DatabaseAggregateKind::Count => Ok(CalcValue::number(
                     aggregate_numeric_values(&cells)?.len() as f64,
                 )),
                 DatabaseAggregateKind::CountA => {
@@ -620,53 +626,53 @@ fn evaluate_database_aggregate(
                             count += 1.0;
                         }
                     }
-                    Ok(FunctionValue::Number(count))
+                    Ok(CalcValue::number(count))
                 }
                 DatabaseAggregateKind::Max => {
                     let values = aggregate_numeric_values(&cells)?;
-                    Ok(FunctionValue::Number(
+                    Ok(CalcValue::number(
                         values.into_iter().reduce(f64::max).unwrap_or(0.0),
                     ))
                 }
                 DatabaseAggregateKind::Min => {
                     let values = aggregate_numeric_values(&cells)?;
-                    Ok(FunctionValue::Number(
+                    Ok(CalcValue::number(
                         values.into_iter().reduce(f64::min).unwrap_or(0.0),
                     ))
                 }
                 DatabaseAggregateKind::Product => {
                     let values = aggregate_numeric_values(&cells)?;
                     if values.is_empty() {
-                        Ok(FunctionValue::Number(0.0))
+                        Ok(CalcValue::number(0.0))
                     } else {
-                        Ok(FunctionValue::Number(values.into_iter().product()))
+                        Ok(CalcValue::number(values.into_iter().product()))
                     }
                 }
                 DatabaseAggregateKind::Stdev => {
                     let values = aggregate_numeric_values(&cells)?;
                     Ok(match stdev_from_values(&values, VarianceDivisor::Sample) {
-                        Ok(value) => FunctionValue::Number(value),
-                        Err(code) => FunctionValue::Error(code),
+                        Ok(value) => CalcValue::number(value),
+                        Err(code) => CalcValue::error(code),
                     })
                 }
                 DatabaseAggregateKind::StdevP => {
                     let values = aggregate_numeric_values(&cells)?;
                     Ok(
                         match stdev_from_values(&values, VarianceDivisor::Population) {
-                            Ok(value) => FunctionValue::Number(value),
-                            Err(code) => FunctionValue::Error(code),
+                            Ok(value) => CalcValue::number(value),
+                            Err(code) => CalcValue::error(code),
                         },
                     )
                 }
-                DatabaseAggregateKind::Sum => Ok(FunctionValue::Number(
+                DatabaseAggregateKind::Sum => Ok(CalcValue::number(
                     aggregate_numeric_values(&cells)?.into_iter().sum(),
                 )),
                 DatabaseAggregateKind::Var => {
                     let values = aggregate_numeric_values(&cells)?;
                     Ok(
                         match variance_from_values(&values, VarianceDivisor::Sample) {
-                            Ok(value) => FunctionValue::Number(value),
-                            Err(code) => FunctionValue::Error(code),
+                            Ok(value) => CalcValue::number(value),
+                            Err(code) => CalcValue::error(code),
                         },
                     )
                 }
@@ -674,8 +680,8 @@ fn evaluate_database_aggregate(
                     let values = aggregate_numeric_values(&cells)?;
                     Ok(
                         match variance_from_values(&values, VarianceDivisor::Population) {
-                            Ok(value) => FunctionValue::Number(value),
-                            Err(code) => FunctionValue::Error(code),
+                            Ok(value) => CalcValue::number(value),
+                            Err(code) => CalcValue::error(code),
                         },
                     )
                 }
@@ -688,10 +694,10 @@ fn evaluate_database_aggregate(
 fn eval_database_surface(
     meta: &FunctionMeta,
     kind: DatabaseAggregateKind,
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     allow_omitted_field: bool,
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
@@ -703,9 +709,9 @@ fn eval_database_surface(
 }
 
 pub fn eval_daverage_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DAVERAGE_META,
         DatabaseAggregateKind::Average,
@@ -715,9 +721,9 @@ pub fn eval_daverage_surface(
     )
 }
 pub fn eval_dcount_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DCOUNT_META,
         DatabaseAggregateKind::Count,
@@ -727,9 +733,9 @@ pub fn eval_dcount_surface(
     )
 }
 pub fn eval_dcounta_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DCOUNTA_META,
         DatabaseAggregateKind::CountA,
@@ -739,9 +745,9 @@ pub fn eval_dcounta_surface(
     )
 }
 pub fn eval_dget_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DGET_META,
         DatabaseAggregateKind::Get,
@@ -751,9 +757,9 @@ pub fn eval_dget_surface(
     )
 }
 pub fn eval_dmax_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DMAX_META,
         DatabaseAggregateKind::Max,
@@ -763,9 +769,9 @@ pub fn eval_dmax_surface(
     )
 }
 pub fn eval_dmin_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DMIN_META,
         DatabaseAggregateKind::Min,
@@ -775,9 +781,9 @@ pub fn eval_dmin_surface(
     )
 }
 pub fn eval_dproduct_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DPRODUCT_META,
         DatabaseAggregateKind::Product,
@@ -787,9 +793,9 @@ pub fn eval_dproduct_surface(
     )
 }
 pub fn eval_dstdev_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DSTDEV_META,
         DatabaseAggregateKind::Stdev,
@@ -799,9 +805,9 @@ pub fn eval_dstdev_surface(
     )
 }
 pub fn eval_dstdevp_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DSTDEVP_META,
         DatabaseAggregateKind::StdevP,
@@ -811,9 +817,9 @@ pub fn eval_dstdevp_surface(
     )
 }
 pub fn eval_dsum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DSUM_META,
         DatabaseAggregateKind::Sum,
@@ -823,9 +829,9 @@ pub fn eval_dsum_surface(
     )
 }
 pub fn eval_dvar_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DVAR_META,
         DatabaseAggregateKind::Var,
@@ -835,9 +841,9 @@ pub fn eval_dvar_surface(
     )
 }
 pub fn eval_dvarp_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DatabaseEvalError> {
+) -> Result<CalcValue, DatabaseEvalError> {
     eval_database_surface(
         &DVARP_META,
         DatabaseAggregateKind::VarP,
@@ -863,7 +869,7 @@ mod tests {
     use std::collections::HashMap;
 
     struct MockResolver {
-        cells: HashMap<String, FunctionValue>,
+        cells: HashMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -873,7 +879,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.cells.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -883,24 +889,24 @@ mod tests {
         }
     }
 
-    fn text(value: &str) -> FunctionArrayCell {
-        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+    fn text(value: &str) -> CalcValue {
+        CalcValue::text(ExcelText::from_utf16_code_units(
             value.encode_utf16().collect(),
         ))
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn field_text(name: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+    fn field_text(name: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(
             name.encode_utf16().collect(),
         )))
     }
 
-    fn array(rows: Vec<Vec<FunctionArrayCell>>) -> FunctionValue {
-        FunctionValue::Array(FunctionArray::from_rows(rows).unwrap())
+    fn array(rows: Vec<Vec<CalcValue>>) -> CalcValue {
+        CalcValue::array(CalcArray::from_rows(rows).unwrap())
     }
 
     fn build_resolver() -> MockResolver {
@@ -918,32 +924,32 @@ mod tests {
                         vec![
                             text("Meat"),
                             text("Davolio"),
-                            FunctionArrayCell::Number(450.0),
-                            FunctionArrayCell::Number(8.0),
+                            CalcValue::number(450.0),
+                            CalcValue::number(8.0),
                         ],
                         vec![
                             text("Produce"),
                             text("Buchanan"),
-                            FunctionArrayCell::Number(6328.0),
-                            FunctionArrayCell::Number(10.0),
+                            CalcValue::number(6328.0),
+                            CalcValue::number(10.0),
                         ],
                         vec![
                             text("Produce"),
                             text("Davolio"),
-                            FunctionArrayCell::Number(6544.0),
-                            FunctionArrayCell::EmptyCell,
+                            CalcValue::number(6544.0),
+                            CalcValue::empty(),
                         ],
                         vec![
                             text("Dairy"),
                             text("David"),
-                            FunctionArrayCell::Number(834.0),
-                            FunctionArrayCell::Number(7.0),
+                            CalcValue::number(834.0),
+                            CalcValue::number(7.0),
                         ],
                         vec![
                             text("Produce"),
                             text("Davis"),
-                            FunctionArrayCell::Number(3000.0),
-                            FunctionArrayCell::Number(5.0),
+                            CalcValue::number(3000.0),
+                            CalcValue::number(5.0),
                         ],
                     ]),
                 ),
@@ -968,7 +974,7 @@ mod tests {
                     array(vec![
                         vec![text("Sales"), text("Sales")],
                         vec![text(">6000"), text("<6500")],
-                        vec![text("<500"), FunctionArrayCell::EmptyCell],
+                        vec![text("<500"), CalcValue::empty()],
                     ]),
                 ),
                 (
@@ -997,39 +1003,35 @@ mod tests {
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_DAV")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(10828.0))
+            Ok(CalcValue::number(10828.0))
         );
         assert_eq!(
             eval_daverage_surface(
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_DAV")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(2707.0))
+            Ok(CalcValue::number(2707.0))
         );
         assert_eq!(
             eval_dcount_surface(
-                &[ref_arg("DB"), FunctionArg::MissingArg, ref_arg("CRIT_DAV")],
+                &[ref_arg("DB"), CalcValue::missing(), ref_arg("CRIT_DAV")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(4.0))
+            Ok(CalcValue::number(4.0))
         );
         assert_eq!(
             eval_dcount_surface(
-                &[
-                    ref_arg("DB"),
-                    FunctionArg::Eval(FunctionValue::Number(3.0)),
-                    ref_arg("CRIT_DAV")
-                ],
+                &[ref_arg("DB"), (CalcValue::number(3.0)), ref_arg("CRIT_DAV")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(4.0))
+            Ok(CalcValue::number(4.0))
         );
         assert_eq!(
             eval_dcounta_surface(
                 &[ref_arg("DB"), field_text("Units"), ref_arg("CRIT_PRODUCE")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
     }
 
@@ -1041,10 +1043,7 @@ mod tests {
                     "DB_FLOAT".to_string(),
                     array(vec![
                         vec![text("V"), text("Flag")],
-                        vec![
-                            FunctionArrayCell::Number(0.3),
-                            FunctionArrayCell::Number(1.0),
-                        ],
+                        vec![CalcValue::number(0.3), CalcValue::number(1.0)],
                     ]),
                 ),
                 (
@@ -1059,14 +1058,14 @@ mod tests {
                 &[ref_arg("DB_FLOAT"), field_text("V"), ref_arg("CRIT_FLOAT")],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_dsum_surface(
                 &[ref_arg("DB_FLOAT"), field_text("V"), ref_arg("CRIT_FLOAT")],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(0.3))
+            Ok(CalcValue::number(0.3))
         );
     }
 
@@ -1080,17 +1079,14 @@ mod tests {
                     "DB_FLOAT_BOUNDARY".to_string(),
                     array(vec![
                         vec![text("V"), text("Flag")],
-                        vec![
-                            FunctionArrayCell::Number(boundary_stored),
-                            FunctionArrayCell::Number(1.0),
-                        ],
+                        vec![CalcValue::number(boundary_stored), CalcValue::number(1.0)],
                     ]),
                 ),
                 (
                     "CRIT_FLOAT_BOUNDARY".to_string(),
                     array(vec![
                         vec![text("V")],
-                        vec![FunctionArrayCell::Number(boundary_probe)],
+                        vec![CalcValue::number(boundary_probe)],
                     ]),
                 ),
             ]),
@@ -1105,7 +1101,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_dsum_surface(
@@ -1116,7 +1112,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(boundary_stored))
+            Ok(CalcValue::number(boundary_stored))
         );
         assert_eq!(
             eval_daverage_surface(
@@ -1127,7 +1123,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(boundary_stored))
+            Ok(CalcValue::number(boundary_stored))
         );
         assert_eq!(
             eval_dget_surface(
@@ -1138,7 +1134,7 @@ mod tests {
                 ],
                 &resolver,
             ),
-            Ok(FunctionValue::Number(boundary_stored))
+            Ok(CalcValue::number(boundary_stored))
         );
     }
 
@@ -1150,21 +1146,21 @@ mod tests {
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_PRODUCE")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(6544.0))
+            Ok(CalcValue::number(6544.0))
         );
         assert_eq!(
             eval_dmin_surface(
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_PRODUCE")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(3000.0))
+            Ok(CalcValue::number(3000.0))
         );
         assert_eq!(
             eval_dproduct_surface(
                 &[ref_arg("DB"), field_text("Units"), ref_arg("CRIT_PRODUCE")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(50.0))
+            Ok(CalcValue::number(50.0))
         );
         let dstdev = eval_dstdev_surface(
             &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_PRODUCE")],
@@ -1186,20 +1182,20 @@ mod tests {
             &resolver,
         )
         .unwrap();
-        match dstdev {
-            FunctionValue::Number(n) => assert!((n - 1986.7131985602082).abs() < 1e-9),
+        match dstdev.core() {
+            CoreValue::Number(n) => assert!((*n - 1986.7131985602082).abs() < 1e-9),
             other => panic!("unexpected {other:?}"),
         }
-        match dstdevp {
-            FunctionValue::Number(n) => assert!((n - 1622.1445339083964).abs() < 1e-9),
+        match dstdevp.core() {
+            CoreValue::Number(n) => assert!((*n - 1622.1445339083964).abs() < 1e-9),
             other => panic!("unexpected {other:?}"),
         }
-        match dvar {
-            FunctionValue::Number(n) => assert!((n - 3947029.333333333).abs() < 1e-6),
+        match dvar.core() {
+            CoreValue::Number(n) => assert!((*n - 3947029.333333333).abs() < 1e-6),
             other => panic!("unexpected {other:?}"),
         }
-        match dvarp {
-            FunctionValue::Number(n) => assert!((n - 2631352.8888888885).abs() < 1e-6),
+        match dvarp.core() {
+            CoreValue::Number(n) => assert!((*n - 2631352.8888888885).abs() < 1e-6),
             other => panic!("unexpected {other:?}"),
         }
     }
@@ -1212,32 +1208,32 @@ mod tests {
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_UNIQUE")],
                 &resolver
             ),
-            Ok(FunctionValue::Number(6328.0))
+            Ok(CalcValue::number(6328.0))
         );
         assert_eq!(
             eval_dget_surface(
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_DAV")],
                 &resolver
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::Num))
+            Ok(CalcValue::error(WorksheetErrorCode::Num))
         );
         assert_eq!(
             eval_dget_surface(
                 &[ref_arg("DB"), field_text("Sales"), ref_arg("CRIT_NONE")],
                 &resolver
             ),
-            Ok(FunctionValue::Error(WorksheetErrorCode::Value))
+            Ok(CalcValue::error(WorksheetErrorCode::Value))
         );
         assert_eq!(
             eval_dcount_surface(
                 &[
                     ref_arg("DB"),
-                    FunctionArg::MissingArg,
+                    CalcValue::missing(),
                     ref_arg("CRIT_RANGE_OR")
                 ],
                 &resolver
             ),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
     }
 

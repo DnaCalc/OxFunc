@@ -3,12 +3,11 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const ODD_BOND_META_BASE: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ODD_BOND_BASE",
@@ -73,7 +72,7 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> OddBondEvalError {
     }
 }
 
-fn number_arg(args: &[PreparedValue], idx: usize) -> Result<f64, OddBondEvalError> {
+fn number_arg(args: &[CalcValue], idx: usize) -> Result<f64, OddBondEvalError> {
     args.get(idx)
         .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Value))
         .and_then(|value| coerce_prepared_to_number(value).map_err(OddBondEvalError::Coercion))
@@ -597,26 +596,26 @@ pub fn oddlyield_kernel(
 }
 
 fn eval_numeric(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     meta: &FunctionMeta,
-    kernel: impl FnOnce(&[PreparedValue]) -> Result<f64, OddBondEvalError>,
-) -> Result<FunctionValue, OddBondEvalError> {
+    kernel: impl FnOnce(&[CalcValue]) -> Result<f64, OddBondEvalError>,
+) -> Result<CalcValue, OddBondEvalError> {
     if !meta.arity.accepts(args.len()) {
         return Err(arity_error(meta, args.len()));
     }
     run_values_only_prepared(
         args,
         resolver,
-        |prepared| kernel(prepared).map(FunctionValue::Number),
+        |prepared| kernel(prepared).map(CalcValue::number),
         OddBondEvalError::Coercion,
     )
 }
 
 pub fn eval_oddfprice_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OddBondEvalError> {
+) -> Result<CalcValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDFPRICE_META, |prepared| {
         oddfprice_kernel(
             number_arg(prepared, 0)?,
@@ -636,9 +635,9 @@ pub fn eval_oddfprice_surface(
 }
 
 pub fn eval_oddfyield_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OddBondEvalError> {
+) -> Result<CalcValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDFYIELD_META, |prepared| {
         oddfyield_kernel(
             number_arg(prepared, 0)?,
@@ -658,9 +657,9 @@ pub fn eval_oddfyield_surface(
 }
 
 pub fn eval_oddlprice_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OddBondEvalError> {
+) -> Result<CalcValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDLPRICE_META, |prepared| {
         oddlprice_kernel(
             number_arg(prepared, 0)?,
@@ -679,9 +678,9 @@ pub fn eval_oddlprice_surface(
 }
 
 pub fn eval_oddlyield_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OddBondEvalError> {
+) -> Result<CalcValue, OddBondEvalError> {
     eval_numeric(args, resolver, &ODDLYIELD_META, |prepared| {
         oddlyield_kernel(
             number_arg(prepared, 0)?,

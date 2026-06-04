@@ -5,9 +5,8 @@ use crate::function::{
 };
 use crate::functions::adapters::{coerce_prepared_to_text, prepare_args_values_only};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, ExcelText, WorksheetErrorCode};
 use sxd_document::parser;
 use sxd_xpath::{Context, Factory, Value};
 
@@ -81,13 +80,13 @@ fn parse_logical_text(text: &str) -> Option<bool> {
     }
 }
 
-fn scalar_from_xpath_string(text: &str) -> FunctionArrayCell {
+fn scalar_from_xpath_string(text: &str) -> CalcValue {
     if let Some(number) = parse_excel_number(text) {
-        FunctionArrayCell::Number(number)
+        CalcValue::number(number)
     } else if let Some(logical) = parse_logical_text(text) {
-        FunctionArrayCell::Logical(logical)
+        CalcValue::logical(logical)
     } else {
-        FunctionArrayCell::Text(ExcelText::from_interop_assignment(text))
+        CalcValue::text(ExcelText::from_interop_assignment(text))
     }
 }
 
@@ -114,24 +113,24 @@ pub fn encodeurl_kernel(text: &str) -> String {
 }
 
 pub fn eval_encodeurl_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WebTextXmlEvalError> {
+) -> Result<CalcValue, WebTextXmlEvalError> {
     if !ENCODEURL_META.arity.accepts(args.len()) {
         return Err(arity_error(&ENCODEURL_META, args.len()));
     }
     let prepared =
         prepare_args_values_only(args, resolver).map_err(WebTextXmlEvalError::Coercion)?;
     let text = coerce_prepared_to_text(&prepared[0]).map_err(WebTextXmlEvalError::Coercion)?;
-    Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+    Ok(CalcValue::text(ExcelText::from_interop_assignment(
         &encodeurl_kernel(&text.to_string_lossy()),
     )))
 }
 
 pub fn eval_filterxml_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, WebTextXmlEvalError> {
+) -> Result<CalcValue, WebTextXmlEvalError> {
     if !FILTERXML_META.arity.accepts(args.len()) {
         return Err(arity_error(&FILTERXML_META, args.len()));
     }
@@ -162,12 +161,10 @@ pub fn eval_filterxml_surface(
                 .map(|node| scalar_from_xpath_string(&node.string_value()))
                 .collect::<Vec<_>>();
             if cells.len() == 1 {
-                Ok(cells[0]
-                    .to_eval_value()
-                    .unwrap_or_else(|| FunctionValue::Text(ExcelText::from_interop_assignment(""))))
+                Ok(cells[0].clone())
             } else {
-                Ok(FunctionValue::Array(
-                    FunctionArray::from_rows(cells.into_iter().map(|cell| vec![cell]).collect())
+                Ok(CalcValue::array(
+                    CalcArray::from_rows(cells.into_iter().map(|cell| vec![cell]).collect())
                         .expect("vertical FILTERXML result array"),
                 ))
             }
@@ -193,7 +190,7 @@ pub fn map_web_text_xml_error_to_ws(error: &WebTextXmlEvalError) -> WorksheetErr
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::FunctionArg;
+    use crate::value::CalcValue;
 
     struct MockResolver;
 
@@ -205,7 +202,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -215,10 +212,8 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            text,
-        )))
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(text)))
     }
 
     #[test]
@@ -233,22 +228,12 @@ mod tests {
     #[test]
     fn eval_encodeurl_surface_coerces_scalar_inputs_to_text() {
         assert_eq!(
-            eval_encodeurl_surface(
-                &[FunctionArg::Eval(FunctionValue::Number(123.0))],
-                &MockResolver
-            ),
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "123"
-            )))
+            eval_encodeurl_surface(&[(CalcValue::number(123.0))], &MockResolver),
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("123")))
         );
         assert_eq!(
-            eval_encodeurl_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &MockResolver
-            ),
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "TRUE"
-            )))
+            eval_encodeurl_surface(&[(CalcValue::logical(true))], &MockResolver),
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("TRUE")))
         );
     }
 
@@ -259,10 +244,10 @@ mod tests {
                 &[text_arg("<root><a>1</a><a>2</a></root>"), text_arg("//a")],
                 &MockResolver
             ),
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Number(1.0)],
-                    vec![FunctionArrayCell::Number(2.0)],
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0)],
+                    vec![CalcValue::number(2.0)],
                 ])
                 .unwrap()
             ))
@@ -272,9 +257,7 @@ mod tests {
                 &[text_arg("<root><a>hello</a></root>"), text_arg("//a")],
                 &MockResolver
             ),
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "hello"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("hello")))
         );
     }
 

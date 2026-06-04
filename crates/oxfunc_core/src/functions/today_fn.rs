@@ -2,10 +2,8 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{
-    CalcValue, CoreValue, FunctionArg, FunctionValue, NumberFormatHint, PresentationHint,
-    WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CoreValue, NumberFormatHint, PresentationHint, WorksheetErrorCode};
 
 pub const TODAY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TODAY",
@@ -32,9 +30,9 @@ pub enum TodayEvalError {
 }
 
 pub fn eval_today_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     provider: &impl TodayProvider,
-) -> Result<FunctionValue, TodayEvalError> {
+) -> Result<CalcValue, TodayEvalError> {
     if !TODAY_META.arity.accepts(args.len()) {
         return Err(TodayEvalError::ArityMismatch {
             expected: TODAY_META.arity.min,
@@ -47,7 +45,7 @@ pub fn eval_today_surface(
         return Err(TodayEvalError::ProviderNonFinite(serial));
     }
 
-    Ok(FunctionValue::Number(serial.floor()))
+    Ok(CalcValue::number(serial.floor()))
 }
 
 pub fn eval_today_calc_surface(
@@ -73,16 +71,10 @@ pub fn eval_today_calc_surface(
 }
 
 pub fn eval_today_surface_rich(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     provider: &impl TodayProvider,
 ) -> Result<CalcValue, TodayEvalError> {
-    let FunctionValue::Number(value) = eval_today_surface(args, provider)? else {
-        unreachable!("TODAY surface returns number");
-    };
-    Ok(CalcValue::with_presentation(
-        CoreValue::Number(value),
-        PresentationHint::number_format(NumberFormatHint::DateLike),
-    ))
+    eval_today_calc_surface(args, provider)
 }
 
 pub fn map_today_error_to_ws(e: &TodayEvalError) -> WorksheetErrorCode {
@@ -109,7 +101,7 @@ mod tests {
     #[test]
     fn eval_today_floors_provider_serial() {
         let got = eval_today_surface(&[], &FixedTodayProvider { serial: 46000.75 });
-        assert_eq!(got, Ok(FunctionValue::Number(46000.0)));
+        assert_eq!(got, Ok(CalcValue::number(46000.0)));
     }
 
     #[test]
@@ -127,7 +119,7 @@ mod tests {
     #[test]
     fn eval_today_rejects_args() {
         let got = eval_today_surface(
-            &[FunctionArg::EmptyCell],
+            &[CalcValue::empty()],
             &FixedTodayProvider { serial: 46000.0 },
         );
         assert_eq!(

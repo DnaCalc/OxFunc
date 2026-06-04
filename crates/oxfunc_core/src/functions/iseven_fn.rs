@@ -3,11 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, run_values_only_prepared_lifted,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
 pub const ISEVEN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ISEVEN",
@@ -33,12 +31,10 @@ pub enum IsEvenEvalError {
     Coercion(CoercionError),
 }
 
-fn coerce_iseven_number(arg: &PreparedValue) -> Result<f64, CoercionError> {
-    match arg {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(0.0),
-        PreparedValue::Eval(FunctionValue::Logical(_)) => {
-            Err(CoercionError::UnsupportedValueKind("logical"))
-        }
+fn coerce_iseven_number(arg: &CalcValue) -> Result<f64, CoercionError> {
+    match arg.core() {
+        CoreValue::Missing | CoreValue::Empty => Ok(0.0),
+        CoreValue::Logical(_) => Err(CoercionError::UnsupportedValueKind("logical")),
         _ => coerce_prepared_to_number(arg),
     }
 }
@@ -48,9 +44,9 @@ pub fn iseven_kernel(n: f64) -> bool {
 }
 
 pub fn eval_iseven_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, IsEvenEvalError> {
+) -> Result<CalcValue, IsEvenEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -62,7 +58,7 @@ pub fn eval_iseven_surface(
                     actual: prepared.len(),
                 });
             }
-            Ok(FunctionValue::Logical(iseven_kernel(
+            Ok(CalcValue::logical(iseven_kernel(
                 coerce_iseven_number(&prepared[0]).map_err(IsEvenEvalError::Coercion)?,
             )))
         },
@@ -86,7 +82,7 @@ mod tests {
     use crate::value::{ExcelText, ReferenceKind, ReferenceLike};
 
     struct MockResolver {
-        resolved: Option<FunctionValue>,
+        resolved: Option<CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -97,7 +93,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.resolved.clone().ok_or(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -122,27 +118,27 @@ mod tests {
     fn eval_iseven_accepts_numeric_text_and_blank_reference() {
         assert_eq!(
             eval_iseven_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("2")))],
+                &[(CalcValue::text(txt("2")))],
                 &MockResolver { resolved: None },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
         assert_eq!(
             eval_iseven_surface(
-                &[FunctionArg::Reference(ReferenceLike::new(
+                &[CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::A1,
                     "D1".to_string()
                 ))],
                 &MockResolver {
-                    resolved: Some(FunctionValue::Array(
-                        crate::value::FunctionArray::from_rows(vec![vec![
-                            crate::value::FunctionArrayCell::EmptyCell,
+                    resolved: Some(CalcValue::array(
+                        crate::value::CalcArray::from_rows(vec![vec![
+                            crate::value::CalcValue::empty(),
                         ]])
                         .unwrap(),
                     )),
                 },
             ),
-            Ok(FunctionValue::Logical(true))
+            Ok(CalcValue::logical(true))
         );
     }
 
@@ -150,7 +146,7 @@ mod tests {
     fn eval_iseven_rejects_logicals_and_non_numeric_text() {
         assert!(matches!(
             eval_iseven_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
+                &[(CalcValue::logical(true))],
                 &MockResolver { resolved: None },
             ),
             Err(IsEvenEvalError::Coercion(
@@ -159,7 +155,7 @@ mod tests {
         ));
         assert!(matches!(
             eval_iseven_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(txt("x")))],
+                &[(CalcValue::text(txt("x")))],
                 &MockResolver { resolved: None },
             ),
             Err(IsEvenEvalError::Coercion(CoercionError::NonNumericText(_)))

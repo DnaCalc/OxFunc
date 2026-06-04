@@ -7,7 +7,7 @@ use crate::resolver::{
     ReferenceSystemError, ReferenceSystemProvider, ReferenceTransformKind,
     ReferenceTransformRequest, resolve_eval_value,
 };
-use crate::value::{FunctionArg, FunctionValue, ReferenceLike, WorksheetErrorCode};
+use crate::value::{CalcValue, CoreValue, ReferenceLike, WorksheetErrorCode};
 
 pub const OFFSET_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.OFFSET",
@@ -37,23 +37,23 @@ pub enum OffsetEvalError {
 }
 
 fn parse_offset_number(
-    arg: &FunctionArg,
+    arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<i64, OffsetEvalError> {
-    let number = match arg {
-        FunctionArg::Eval(v) => coerce_eval_to_number(v, resolver),
-        FunctionArg::Reference(r) => resolve_eval_value(resolver, r)
+    let number = match arg.core() {
+        CoreValue::Reference(r) => resolve_eval_value(resolver, r)
             .map_err(CoercionError::RefResolution)
             .and_then(|v| coerce_eval_to_number(&v, resolver)),
-        FunctionArg::MissingArg => Err(CoercionError::MissingArg),
-        FunctionArg::EmptyCell => Err(CoercionError::EmptyCell),
+        CoreValue::Missing => Err(CoercionError::MissingArg),
+        CoreValue::Empty => Err(CoercionError::EmptyCell),
+        _ => coerce_eval_to_number(arg, resolver),
     }
     .map_err(OffsetEvalError::Coercion)?;
     Ok(number.trunc() as i64)
 }
 
 fn parse_optional_positive_dimension(
-    arg: Option<&FunctionArg>,
+    arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<Option<usize>, OffsetEvalError> {
     let Some(arg) = arg else {
@@ -69,18 +69,16 @@ fn parse_optional_positive_dimension(
         .map_err(|_| OffsetEvalError::InvalidDimension)
 }
 
-fn parse_reference_arg(arg: &FunctionArg) -> Result<ReferenceLike, OffsetEvalError> {
-    match arg {
-        FunctionArg::Reference(r) => Ok(r.clone()),
-        FunctionArg::Eval(FunctionValue::Reference(r)) => Ok(r.clone()),
-        _ => Err(OffsetEvalError::RefArgRequired),
-    }
+fn parse_reference_arg(arg: &CalcValue) -> Result<ReferenceLike, OffsetEvalError> {
+    arg.as_reference()
+        .cloned()
+        .ok_or(OffsetEvalError::RefArgRequired)
 }
 
 pub fn eval_offset_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, OffsetEvalError> {
+) -> Result<CalcValue, OffsetEvalError> {
     let argc = args.len();
     if !OFFSET_META.arity.accepts(argc) {
         return Err(OffsetEvalError::ArityMismatch {
@@ -105,7 +103,7 @@ pub fn eval_offset_surface(
                 width,
             },
         })
-        .map(FunctionValue::Reference)
+        .map(CalcValue::reference)
         .map_err(OffsetEvalError::ReferenceSystem)
 }
 
@@ -136,7 +134,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -186,15 +184,15 @@ mod tests {
     fn eval_offset_shifts_single_cell_reference() {
         let got = eval_offset_surface(
             &[
-                FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "C2".to_string()
             )))
@@ -205,20 +203,17 @@ mod tests {
     fn eval_offset_resizes_reference_area() {
         let got = eval_offset_surface(
             &[
-                FunctionArg::Reference(ReferenceLike::new(
-                    ReferenceKind::Area,
-                    "A1:B2".to_string(),
-                )),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:B2".to_string())),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(3.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "B1:D1".to_string()
             )))
@@ -229,18 +224,15 @@ mod tests {
     fn eval_offset_defaults_height_and_width_to_base_shape() {
         let got = eval_offset_surface(
             &[
-                FunctionArg::Reference(ReferenceLike::new(
-                    ReferenceKind::Area,
-                    "B2:C3".to_string(),
-                )),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "B2:C3".to_string())),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "C3:D4".to_string()
             )))
@@ -251,18 +243,18 @@ mod tests {
     fn eval_offset_preserves_sheet_prefix() {
         let got = eval_offset_surface(
             &[
-                FunctionArg::Reference(ReferenceLike::new(
+                CalcValue::reference(ReferenceLike::new(
                     ReferenceKind::A1,
                     "Sheet1!B2".to_string(),
                 )),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.0)),
             ],
             &NoResolver,
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Reference(ReferenceLike::new(
+            Ok(CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::A1,
                 "Sheet1!D3".to_string()
             )))

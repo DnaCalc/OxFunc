@@ -3,9 +3,7 @@ use oxfunc_core::resolver::{
     ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
     ReferenceSystemProvider,
 };
-use oxfunc_core::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use oxfunc_core::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 
 struct DummyResolver;
 
@@ -17,22 +15,20 @@ impl ReferenceSystemProvider for DummyResolver {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, ReferenceResolutionError> {
+    ) -> Result<CalcValue, ReferenceResolutionError> {
         Err(ReferenceResolutionError::UnresolvedReference {
             target: request.reference.target().to_string(),
         })
     }
 }
 
-fn array_arg(values: &[f64]) -> FunctionArg {
+fn array_arg(values: &[f64]) -> CalcValue {
     let row = values
         .iter()
         .copied()
-        .map(FunctionArrayCell::Number)
+        .map(CalcValue::number)
         .collect::<Vec<_>>();
-    FunctionArg::Eval(FunctionValue::Array(
-        FunctionArray::from_rows(vec![row]).unwrap(),
-    ))
+    CalcValue::array(CalcArray::from_rows(vec![row]).unwrap())
 }
 
 fn print_num(case_id: &str, guess: f64, value: f64) {
@@ -88,22 +84,20 @@ fn main() {
 
     for (case_id, guess) in cases {
         match eval_xirr_surface(
-            &[
-                values.clone(),
-                dates.clone(),
-                FunctionArg::Eval(FunctionValue::Number(guess)),
-            ],
+            &[values.clone(), dates.clone(), CalcValue::number(guess)],
             &resolver,
         ) {
-            Ok(FunctionValue::Number(v)) => print_num(case_id, guess, v),
-            Ok(FunctionValue::Error(code)) => print_ws_error(case_id, guess, code),
+            Ok(value) => match value.core() {
+                CoreValue::Number(v) => print_num(case_id, guess, *v),
+                CoreValue::Error(code) => print_ws_error(case_id, guess, *code),
+                _ => println!("{case_id},{guess:.10},oxfunc,ERR:unexpected"),
+            },
             Err(err) => match err {
                 oxfunc_core::functions::cashflow_rate_family::CashflowRateEvalError::Domain(
                     code,
                 ) => print_ws_error(case_id, guess, code),
                 _ => println!("{case_id},{guess:.10},oxfunc,ERR:{err:?}"),
             },
-            _ => println!("{case_id},{guess:.10},oxfunc,ERR:unexpected"),
         }
     }
 }

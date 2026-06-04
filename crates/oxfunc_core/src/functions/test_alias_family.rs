@@ -6,7 +6,8 @@ use crate::functions::confidence_test_family::{
     eval_z_test_surface, map_confidence_test_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const TEST_ALIAS_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEST_ALIAS_BASE",
@@ -75,7 +76,7 @@ pub enum TestAliasEvalError {
     MissingModernTarget(&'static str),
 }
 
-fn guard_arity(meta: &FunctionMeta, args: &[FunctionArg]) -> Result<(), TestAliasEvalError> {
+fn guard_arity(meta: &FunctionMeta, args: &[CalcValue]) -> Result<(), TestAliasEvalError> {
     if meta.arity.accepts(args.len()) {
         Ok(())
     } else {
@@ -87,62 +88,62 @@ fn guard_arity(meta: &FunctionMeta, args: &[FunctionArg]) -> Result<(), TestAlia
     }
 }
 
-fn missing_target(function_id: &'static str) -> Result<FunctionValue, TestAliasEvalError> {
+fn missing_target(function_id: &'static str) -> Result<CalcValue, TestAliasEvalError> {
     Err(TestAliasEvalError::MissingModernTarget(function_id))
 }
 
 pub fn eval_chisq_test_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&CHISQ_TEST_META, args)?;
     missing_target(CHISQ_TEST_META.function_id)
 }
 
 pub fn eval_chitest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&CHITEST_META, args)?;
     eval_chisq_test_surface(args, resolver)
 }
 
 pub fn eval_f_test_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&F_TEST_META, args)?;
     missing_target(F_TEST_META.function_id)
 }
 
 pub fn eval_ftest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&FTEST_META, args)?;
     eval_f_test_surface(args, resolver)
 }
 
 pub fn eval_t_test_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     _resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&T_TEST_META, args)?;
     missing_target(T_TEST_META.function_id)
 }
 
 pub fn eval_ttest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&TTEST_META, args)?;
     eval_t_test_surface(args, resolver)
 }
 
 pub fn eval_ztest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TestAliasEvalError> {
+) -> Result<CalcValue, TestAliasEvalError> {
     guard_arity(&ZTEST_META, args)?;
     eval_z_test_surface(args, resolver)
         .map_err(|e| TestAliasEvalError::Worksheet(map_confidence_test_error_to_ws(&e)))
@@ -160,11 +161,11 @@ pub fn map_test_alias_error_to_ws(error: &TestAliasEvalError) -> WorksheetErrorC
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ReferenceKind, ReferenceLike};
     use std::collections::HashMap;
 
     struct MockResolver {
-        cells: HashMap<String, FunctionValue>,
+        cells: HashMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -175,7 +176,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.cells.get(reference.target()).cloned().ok_or_else(|| {
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -185,21 +186,21 @@ mod tests {
         }
     }
 
-    fn ref_arg(target: &str) -> FunctionArg {
-        FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
+    fn ref_arg(target: &str) -> CalcValue {
+        CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target.to_string()))
     }
 
-    fn num(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn col(values: &[f64]) -> FunctionValue {
-        FunctionValue::Array(
-            FunctionArray::from_rows(
+    fn col(values: &[f64]) -> CalcValue {
+        CalcValue::array(
+            CalcArray::from_rows(
                 values
                     .iter()
                     .copied()
-                    .map(|n| vec![FunctionArrayCell::Number(n)])
+                    .map(|n| vec![CalcValue::number(n)])
                     .collect(),
             )
             .unwrap(),

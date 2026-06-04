@@ -1086,12 +1086,7 @@ match dispatch_key.catalog_index {
                 if !args.is_empty() {
                     return Err(WorksheetErrorCode::Value);
                 }
-                let pi_args: Vec<Value> = Vec::new();
-                match eval_pi(&pi_args) {
-                    Ok(Value::Number(n)) => Ok(FunctionValue::Number(n)),
-                    Ok(Value::Error(_)) => Err(WorksheetErrorCode::Value),
-                    Err(e) => Err(map_eval_error_to_ws(&e)),
-                }
+                eval_pi(&[]).map_err(|e| map_eval_error_to_ws(&e))
             }
             372 => eval_pivotby_surface(args, resolver, callable_invoker)
                 .map_err(|e| map_lambda_helper_error_to_ws(&e)),
@@ -1180,17 +1175,6 @@ match dispatch_key.catalog_index {
                     .map_err(|e| map_misc_conversion_error_to_ws(&e))
             }
             396 => eval_reduce_surface(args, resolver, callable_invoker)
-                .map(|value| match value {
-                    crate::functions::adapters::PreparedValue::Eval(v) => v,
-                    crate::functions::adapters::PreparedValue::MissingArg => {
-                        FunctionValue::Text(crate::value::ExcelText::from_utf16_code_units(Vec::new()))
-                    }
-                    crate::functions::adapters::PreparedValue::EmptyCell => {
-                        FunctionValue::Array(crate::value::FunctionArray::from_scalar(
-                            crate::value::FunctionArrayCell::EmptyCell,
-                        ))
-                    }
-                })
                 .map_err(|e| map_lambda_helper_error_to_ws(&e)),
     // FUNC.REGISTER.ID
     397 => {

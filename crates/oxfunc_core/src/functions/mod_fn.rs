@@ -6,7 +6,8 @@ use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const MOD_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MOD",
@@ -30,9 +31,9 @@ pub fn mod_kernel(number: f64, divisor: f64) -> Result<f64, WorksheetErrorCode> 
 }
 
 pub fn eval_mod_surface(
-    args: &[crate::value::FunctionArg],
+    args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, BinaryNumericSurfaceError> {
+) -> Result<CalcValue, BinaryNumericSurfaceError> {
     eval_binary_numeric_surface(args, resolver, mod_kernel)
 }
 

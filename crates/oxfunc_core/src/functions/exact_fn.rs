@@ -3,11 +3,10 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_text, run_values_only_prepared,
-};
+use crate::functions::adapters::{coerce_prepared_to_text, run_values_only_prepared};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const EXACT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.EXACT",
@@ -33,9 +32,7 @@ pub fn exact_kernel(lhs: &crate::value::ExcelText, rhs: &crate::value::ExcelText
     lhs.utf16_code_units() == rhs.utf16_code_units()
 }
 
-pub fn eval_exact_adapter_prepared(
-    args: &[PreparedValue],
-) -> Result<FunctionValue, ExactEvalError> {
+pub fn eval_exact_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, ExactEvalError> {
     if !EXACT_META.arity.accepts(args.len()) {
         return Err(ExactEvalError::ArityMismatch {
             expected: EXACT_META.arity.min,
@@ -45,13 +42,13 @@ pub fn eval_exact_adapter_prepared(
 
     let lhs = coerce_prepared_to_text(&args[0]).map_err(ExactEvalError::Coercion)?;
     let rhs = coerce_prepared_to_text(&args[1]).map_err(ExactEvalError::Coercion)?;
-    Ok(FunctionValue::Logical(exact_kernel(&lhs, &rhs)))
+    Ok(CalcValue::logical(exact_kernel(&lhs, &rhs)))
 }
 
 pub fn eval_exact_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, ExactEvalError> {
+) -> Result<CalcValue, ExactEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -84,7 +81,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -98,83 +95,74 @@ mod tests {
     fn eval_exact_is_case_sensitive() {
         let got = eval_exact_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "Abc".encode_utf16().collect(),
                 ))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "abc".encode_utf16().collect(),
                 ))),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_exact_coerces_numbers_to_text() {
         let got = eval_exact_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::number(1.0)),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "1".encode_utf16().collect(),
                 ))),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn eval_exact_coerces_logical_to_text() {
         let got = eval_exact_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+                (CalcValue::logical(true)),
+                (CalcValue::text(ExcelText::from_utf16_code_units(
                     "TRUE".encode_utf16().collect(),
                 ))),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn eval_exact_treats_blank_as_empty_text() {
         let got = eval_exact_adapter_prepared(&[
-            PreparedValue::EmptyCell,
-            PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                Vec::new(),
-            ))),
+            CalcValue::empty(),
+            (CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))),
         ]);
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
     fn eval_exact_distinguishes_precomposed_and_combining_unicode() {
         let got = eval_exact_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
-                    233,
-                ]))),
-                FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
-                    101, 769,
-                ]))),
+                (CalcValue::text(ExcelText::from_utf16_code_units(vec![233]))),
+                (CalcValue::text(ExcelText::from_utf16_code_units(vec![101, 769]))),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(false)));
+        assert_eq!(got, Ok(CalcValue::logical(false)));
     }
 
     #[test]
     fn eval_exact_matches_identical_surrogate_pair_text() {
         let emoji = ExcelText::from_utf16_code_units(vec![0xD83D, 0xDE00]);
         let got = eval_exact_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Text(emoji.clone())),
-                FunctionArg::Eval(FunctionValue::Text(emoji)),
-            ],
+            &[(CalcValue::text(emoji.clone())), (CalcValue::text(emoji))],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 }

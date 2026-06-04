@@ -4,13 +4,11 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
     run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    ExcelText, FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
 
 const TEXT_SLICE_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TEXT_SLICE_BASE",
@@ -127,36 +125,27 @@ fn len_character_count(text: &ExcelText) -> usize {
     std::char::decode_utf16(text.utf16_code_units().iter().copied()).count()
 }
 
-fn prepared_from_array_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
-    }
+fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    cell.clone()
 }
 
-fn text_slice_result_to_array_cell(
-    result: Result<FunctionValue, TextSliceEvalError>,
-) -> FunctionArrayCell {
+fn text_slice_result_to_array_cell(result: Result<CalcValue, TextSliceEvalError>) -> CalcValue {
     match result {
-        Ok(FunctionValue::Text(text)) => FunctionArrayCell::Text(text),
-        Ok(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
-        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
-        Err(err) => FunctionArrayCell::Error(map_text_slice_error_to_ws(&err)),
+        Ok(value) if matches!(value.core(), CoreValue::Text(_) | CoreValue::Error(_)) => value,
+        Ok(_) => CalcValue::error(WorksheetErrorCode::Value),
+        Err(err) => CalcValue::error(map_text_slice_error_to_ws(&err)),
     }
 }
 
 fn eval_text_slice_with_single_array_lift(
-    prepared: &[PreparedValue],
-    eval_scalar: impl Fn(&[PreparedValue]) -> Result<FunctionValue, TextSliceEvalError>,
-) -> Result<FunctionValue, TextSliceEvalError> {
+    prepared: &[CalcValue],
+    eval_scalar: impl Fn(&[CalcValue]) -> Result<CalcValue, TextSliceEvalError>,
+) -> Result<CalcValue, TextSliceEvalError> {
     let array_args = prepared
         .iter()
         .enumerate()
-        .filter_map(|(idx, arg)| match arg {
-            PreparedValue::Eval(FunctionValue::Array(array)) => Some((idx, array)),
+        .filter_map(|(idx, arg)| match arg.core() {
+            CoreValue::Array(array) => Some((idx, array)),
             _ => None,
         })
         .collect::<Vec<_>>();
@@ -172,8 +161,8 @@ fn eval_text_slice_with_single_array_lift(
                     text_slice_result_to_array_cell(eval_scalar(&scalar_args))
                 })
                 .collect();
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), cells)
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), cells)
                     .expect("text-slice lifted array shape remains valid"),
             ))
         }
@@ -181,9 +170,7 @@ fn eval_text_slice_with_single_array_lift(
     }
 }
 
-fn eval_left_prepared_value(
-    prepared: &[PreparedValue],
-) -> Result<FunctionValue, TextSliceEvalError> {
+fn eval_left_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSliceEvalError> {
     if !LEFT_META.arity.accepts(prepared.len()) {
         return Err(TextSliceEvalError::ArityMismatch {
             expected_min: LEFT_META.arity.min,
@@ -194,12 +181,10 @@ fn eval_left_prepared_value(
 
     let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
     let count = resolve_optional_count(prepared)?;
-    Ok(FunctionValue::Text(take_left_units(&text, count)))
+    Ok(CalcValue::text(take_left_units(&text, count)))
 }
 
-fn eval_right_prepared_value(
-    prepared: &[PreparedValue],
-) -> Result<FunctionValue, TextSliceEvalError> {
+fn eval_right_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSliceEvalError> {
     if !RIGHT_META.arity.accepts(prepared.len()) {
         return Err(TextSliceEvalError::ArityMismatch {
             expected_min: RIGHT_META.arity.min,
@@ -210,12 +195,10 @@ fn eval_right_prepared_value(
 
     let text = coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
     let count = resolve_optional_count(prepared)?;
-    Ok(FunctionValue::Text(take_right_units(&text, count)))
+    Ok(CalcValue::text(take_right_units(&text, count)))
 }
 
-fn eval_mid_prepared_value(
-    prepared: &[PreparedValue],
-) -> Result<FunctionValue, TextSliceEvalError> {
+fn eval_mid_prepared_value(prepared: &[CalcValue]) -> Result<CalcValue, TextSliceEvalError> {
     if !MID_META.arity.accepts(prepared.len()) {
         return Err(TextSliceEvalError::ArityMismatch {
             expected_min: MID_META.arity.min,
@@ -229,13 +212,13 @@ fn eval_mid_prepared_value(
     let count = coerce_prepared_to_number(&prepared[2]).map_err(TextSliceEvalError::Coercion)?;
     let start = one_based_start_from_number(start)?;
     let count = nonnegative_count_from_number(count)?;
-    Ok(FunctionValue::Text(take_mid_units(&text, start, count)))
+    Ok(CalcValue::text(take_mid_units(&text, start, count)))
 }
 
 pub fn eval_len_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSliceEvalError> {
+) -> Result<CalcValue, TextSliceEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -250,13 +233,13 @@ pub fn eval_len_surface(
 
             let text =
                 coerce_prepared_to_text(&prepared[0]).map_err(TextSliceEvalError::Coercion)?;
-            Ok(FunctionValue::Number(len_character_count(&text) as f64))
+            Ok(CalcValue::number(len_character_count(&text) as f64))
         },
         TextSliceEvalError::Coercion,
     )
 }
 
-fn resolve_optional_count(prepared: &[PreparedValue]) -> Result<usize, TextSliceEvalError> {
+fn resolve_optional_count(prepared: &[CalcValue]) -> Result<usize, TextSliceEvalError> {
     if prepared.len() == 1 {
         return Ok(1);
     }
@@ -266,27 +249,27 @@ fn resolve_optional_count(prepared: &[PreparedValue]) -> Result<usize, TextSlice
 }
 
 pub fn eval_left_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSliceEvalError> {
+) -> Result<CalcValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
     eval_text_slice_with_single_array_lift(&prepared, eval_left_prepared_value)
 }
 
 pub fn eval_right_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSliceEvalError> {
+) -> Result<CalcValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
     eval_text_slice_with_single_array_lift(&prepared, eval_right_prepared_value)
 }
 
 pub fn eval_mid_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextSliceEvalError> {
+) -> Result<CalcValue, TextSliceEvalError> {
     let prepared =
         prepare_args_values_only(args, resolver).map_err(TextSliceEvalError::Coercion)?;
     eval_text_slice_with_single_array_lift(&prepared, eval_mid_prepared_value)
@@ -316,7 +299,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -326,12 +309,12 @@ mod tests {
         }
     }
 
-    fn text_value(units: Vec<u16>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(units)))
+    fn text_value(units: Vec<u16>) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(units)))
     }
 
-    fn number_value(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_value(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     #[test]
@@ -342,21 +325,16 @@ mod tests {
 
         assert_eq!(
             eval_len_surface(&[emoji], &NoResolver),
-            Ok(FunctionValue::Number(1.0))
+            Ok(CalcValue::number(1.0))
         );
         assert_eq!(
             eval_len_surface(&[combining], &NoResolver),
-            Ok(FunctionValue::Number(2.0))
+            Ok(CalcValue::number(2.0))
         );
         assert!(dangling_tail.has_dangling_high_surrogate_tail());
         assert_eq!(
-            eval_len_surface(
-                &[FunctionArg::Eval(FunctionValue::Text(
-                    dangling_tail.clone()
-                ))],
-                &NoResolver,
-            ),
-            Ok(FunctionValue::Number(16_384.0))
+            eval_len_surface(&[(CalcValue::text(dangling_tail.clone()))], &NoResolver,),
+            Ok(CalcValue::number(16_384.0))
         );
     }
 
@@ -364,7 +342,7 @@ mod tests {
     fn left_defaults_to_one_and_slices_utf16_code_units() {
         assert_eq!(
             eval_left_surface(&[text_value("ABC".encode_utf16().collect())], &NoResolver),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "A".encode_utf16().collect(),
             )))
         );
@@ -373,19 +351,16 @@ mod tests {
                 &[text_value(vec![0xD83D, 0xDE00]), number_value(1.0)],
                 &NoResolver
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
                 0xD83D
             ])))
         );
         assert_eq!(
             eval_left_surface(
-                &[
-                    FunctionArg::Eval(FunctionValue::Logical(true)),
-                    number_value(2.0),
-                ],
+                &[(CalcValue::logical(true)), number_value(2.0),],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "TR".encode_utf16().collect(),
             )))
         );
@@ -395,7 +370,7 @@ mod tests {
     fn right_defaults_to_one_and_slices_utf16_code_units() {
         assert_eq!(
             eval_right_surface(&[text_value("ABC".encode_utf16().collect())], &NoResolver),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "C".encode_utf16().collect(),
             )))
         );
@@ -404,7 +379,7 @@ mod tests {
                 &[text_value(vec![0xD83D, 0xDE00]), number_value(1.0)],
                 &NoResolver
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
                 0xDE00
             ])))
         );
@@ -413,7 +388,7 @@ mod tests {
                 &[text_value("AB".encode_utf16().collect()), number_value(9.0)],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "AB".encode_utf16().collect(),
             )))
         );
@@ -430,7 +405,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "B".encode_utf16().collect(),
             )))
         );
@@ -443,9 +418,9 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                Vec::new()
-            )))
+            Ok(CalcValue::text(
+                ExcelText::from_utf16_code_units(Vec::new())
+            ))
         );
         assert_eq!(
             eval_mid_surface(
@@ -456,7 +431,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![
                 0xDE00
             ])))
         );
@@ -518,7 +493,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "A".encode_utf16().collect(),
             )))
         );
@@ -530,7 +505,7 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(
                 "D".encode_utf16().collect(),
             )))
         );
@@ -542,9 +517,9 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                Vec::new()
-            )))
+            Ok(CalcValue::text(
+                ExcelText::from_utf16_code_units(Vec::new())
+            ))
         );
         assert_eq!(
             eval_right_surface(
@@ -554,9 +529,9 @@ mod tests {
                 ],
                 &NoResolver,
             ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(
-                Vec::new()
-            )))
+            Ok(CalcValue::text(
+                ExcelText::from_utf16_code_units(Vec::new())
+            ))
         );
     }
 
@@ -565,11 +540,11 @@ mod tests {
         let got = eval_left_surface(
             &[
                 text_value("MISSISSIPPI".encode_utf16().collect()),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -578,15 +553,15 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "M".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "MI".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "MIS".encode_utf16().collect(),
                     ))],
                 ])
@@ -600,11 +575,11 @@ mod tests {
         let got = eval_right_surface(
             &[
                 text_value("MISSISSIPPI".encode_utf16().collect()),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
                     ])
                     .unwrap(),
                 )),
@@ -613,15 +588,15 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "I".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "PI".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "PPI".encode_utf16().collect(),
                     ))],
                 ])
@@ -635,19 +610,19 @@ mod tests {
         let got = eval_mid_surface(
             &[
                 text_value("MISSISSIPPI".encode_utf16().collect()),
-                FunctionArg::Eval(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(1.0)],
-                        vec![FunctionArrayCell::Number(2.0)],
-                        vec![FunctionArrayCell::Number(3.0)],
-                        vec![FunctionArrayCell::Number(4.0)],
-                        vec![FunctionArrayCell::Number(5.0)],
-                        vec![FunctionArrayCell::Number(6.0)],
-                        vec![FunctionArrayCell::Number(7.0)],
-                        vec![FunctionArrayCell::Number(8.0)],
-                        vec![FunctionArrayCell::Number(9.0)],
-                        vec![FunctionArrayCell::Number(10.0)],
-                        vec![FunctionArrayCell::Number(11.0)],
+                (CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(1.0)],
+                        vec![CalcValue::number(2.0)],
+                        vec![CalcValue::number(3.0)],
+                        vec![CalcValue::number(4.0)],
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::number(6.0)],
+                        vec![CalcValue::number(7.0)],
+                        vec![CalcValue::number(8.0)],
+                        vec![CalcValue::number(9.0)],
+                        vec![CalcValue::number(10.0)],
+                        vec![CalcValue::number(11.0)],
                     ])
                     .unwrap(),
                 )),
@@ -657,39 +632,39 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "M".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "I".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "S".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "S".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "I".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "S".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "S".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "I".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "P".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "P".encode_utf16().collect(),
                     ))],
-                    vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                    vec![CalcValue::text(ExcelText::from_utf16_code_units(
                         "I".encode_utf16().collect(),
                     ))],
                 ])
@@ -701,8 +676,8 @@ mod tests {
     #[test]
     fn len_treats_empty_cell_as_empty_text() {
         assert_eq!(
-            eval_len_surface(&[FunctionArg::EmptyCell], &NoResolver),
-            Ok(FunctionValue::Number(0.0))
+            eval_len_surface(&[CalcValue::empty()], &NoResolver),
+            Ok(CalcValue::number(0.0))
         );
     }
 }

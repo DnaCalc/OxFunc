@@ -4,7 +4,7 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
+    coerce_prepared_to_number, coerce_prepared_to_text, prepare_args_values_only,
 };
 use crate::host_info::{
     HostInfoError, HostInfoProvider, TranslateProviderResult, TranslateRequest,
@@ -12,7 +12,7 @@ use crate::host_info::{
 use crate::locale_format::LocaleFormatContext;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{
-    EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode,
+    CalcValue, CoreValue, EXCEL_TEXT_MAX_UTF16_CODE_UNITS, ExcelText, WorksheetErrorCode,
 };
 
 const NUMBER_REGEX_TRANSLATE_BASE_META: FunctionMeta = FunctionMeta {
@@ -155,25 +155,26 @@ fn guard_arity(meta: &FunctionMeta, argc: usize) -> Result<(), NumberRegexTransl
 
 fn prepare_and_guard(
     meta: &FunctionMeta,
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedValue>, NumberRegexTranslateEvalError> {
+) -> Result<Vec<CalcValue>, NumberRegexTranslateEvalError> {
     guard_arity(meta, args.len())?;
     prepare_args_values_only(args, resolver).map_err(NumberRegexTranslateEvalError::Coercion)
 }
 
 fn required_text_arg(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
     index: usize,
 ) -> Result<ExcelText, NumberRegexTranslateEvalError> {
     coerce_prepared_to_text(&prepared[index]).map_err(NumberRegexTranslateEvalError::Coercion)
 }
 
 fn optional_text_arg(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<Option<ExcelText>, NumberRegexTranslateEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(None),
+        None => Ok(None),
+        Some(arg) if is_optional_blank(arg) => Ok(None),
         Some(arg) => Ok(Some(
             coerce_prepared_to_text(arg).map_err(NumberRegexTranslateEvalError::Coercion)?,
         )),
@@ -181,27 +182,29 @@ fn optional_text_arg(
 }
 
 fn optional_number_arg(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<Option<f64>, NumberRegexTranslateEvalError> {
     match prepared {
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell) => Ok(None),
+        None => Ok(None),
+        Some(arg) if is_optional_blank(arg) => Ok(None),
         Some(arg) => Ok(Some(
             coerce_prepared_to_number(arg).map_err(NumberRegexTranslateEvalError::Coercion)?,
         )),
     }
 }
 
+fn is_optional_blank(prepared: &CalcValue) -> bool {
+    matches!(prepared.core(), CoreValue::Missing | CoreValue::Empty)
+}
+
 fn parse_optional_separator(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
     default: Option<char>,
 ) -> Result<Option<char>, NumberRegexTranslateEvalError> {
     let Some(prepared) = prepared else {
         return Ok(default);
     };
-    if matches!(
-        prepared,
-        PreparedValue::MissingArg | PreparedValue::EmptyCell
-    ) {
+    if is_optional_blank(prepared) {
         return Ok(default);
     }
     let text =
@@ -314,7 +317,7 @@ pub fn numbervalue_kernel(
 }
 
 fn parse_case_sensitive(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<bool, NumberRegexTranslateEvalError> {
     let Some(value) = optional_number_arg(prepared)? else {
         return Ok(true);
@@ -329,9 +332,7 @@ fn parse_case_sensitive(
     }
 }
 
-fn parse_return_mode(
-    prepared: Option<&PreparedValue>,
-) -> Result<i64, NumberRegexTranslateEvalError> {
+fn parse_return_mode(prepared: Option<&CalcValue>) -> Result<i64, NumberRegexTranslateEvalError> {
     let Some(value) = optional_number_arg(prepared)? else {
         return Ok(0);
     };
@@ -341,9 +342,7 @@ fn parse_return_mode(
     Ok(value.trunc() as i64)
 }
 
-fn parse_occurrence(
-    prepared: Option<&PreparedValue>,
-) -> Result<i64, NumberRegexTranslateEvalError> {
+fn parse_occurrence(prepared: Option<&CalcValue>) -> Result<i64, NumberRegexTranslateEvalError> {
     let Some(value) = optional_number_arg(prepared)? else {
         return Ok(0);
     };
@@ -785,86 +784,80 @@ pub fn translate_kernel(
 }
 
 pub fn eval_numbervalue_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     locale_ctx: Option<&LocaleFormatContext>,
-) -> Result<FunctionValue, NumberRegexTranslateEvalError> {
+) -> Result<CalcValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&NUMBERVALUE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
-    let decimal_separator = if matches!(
-        prepared.get(1),
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell)
-    ) {
+    let decimal_separator = if prepared.get(1).is_none_or(is_optional_blank) {
         let ctx = locale_ctx.ok_or(NumberRegexTranslateEvalError::LocaleContextMissing)?;
         parse_locale_default_separator(ctx, true)?
     } else {
         parse_optional_separator(prepared.get(1), None)?
     };
-    let group_separator = if matches!(
-        prepared.get(2),
-        None | Some(PreparedValue::MissingArg) | Some(PreparedValue::EmptyCell)
-    ) {
+    let group_separator = if prepared.get(2).is_none_or(is_optional_blank) {
         let ctx = locale_ctx.ok_or(NumberRegexTranslateEvalError::LocaleContextMissing)?;
         parse_locale_default_separator(ctx, false)?
     } else {
         parse_optional_separator(prepared.get(2), None)?
     };
-    Ok(FunctionValue::Number(
+    Ok(CalcValue::number(
         numbervalue_kernel(&text, decimal_separator, group_separator)
             .map_err(NumberRegexTranslateEvalError::Domain)?,
     ))
 }
 
 pub fn eval_regexextract_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, NumberRegexTranslateEvalError> {
+) -> Result<CalcValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXEXTRACT_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
     let pattern = required_text_arg(&prepared, 1)?;
     let return_mode = parse_return_mode(prepared.get(2))?;
     let case_sensitive = parse_case_sensitive(prepared.get(3))?;
-    Ok(FunctionValue::Text(
+    Ok(CalcValue::text(
         regexextract_kernel(&text, &pattern, return_mode, case_sensitive)
             .map_err(NumberRegexTranslateEvalError::Domain)?,
     ))
 }
 
 pub fn eval_regexreplace_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, NumberRegexTranslateEvalError> {
+) -> Result<CalcValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXREPLACE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
     let pattern = required_text_arg(&prepared, 1)?;
     let replacement = required_text_arg(&prepared, 2)?;
     let occurrence = parse_occurrence(prepared.get(3))?;
     let case_sensitive = parse_case_sensitive(prepared.get(4))?;
-    Ok(FunctionValue::Text(
+    Ok(CalcValue::text(
         regexreplace_kernel(&text, &pattern, &replacement, occurrence, case_sensitive)
             .map_err(NumberRegexTranslateEvalError::Domain)?,
     ))
 }
 
 pub fn eval_regextest_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, NumberRegexTranslateEvalError> {
+) -> Result<CalcValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&REGEXTEST_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
     let pattern = required_text_arg(&prepared, 1)?;
     let case_sensitive = parse_case_sensitive(prepared.get(2))?;
-    Ok(FunctionValue::Logical(
+    Ok(CalcValue::logical(
         regextest_kernel(&text, &pattern, case_sensitive)
             .map_err(NumberRegexTranslateEvalError::Domain)?,
     ))
 }
 
 pub fn eval_translate_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     host_info: Option<&dyn HostInfoProvider>,
-) -> Result<FunctionValue, NumberRegexTranslateEvalError> {
+) -> Result<CalcValue, NumberRegexTranslateEvalError> {
     let prepared = prepare_and_guard(&TRANSLATE_META, args, resolver)?;
     let text = required_text_arg(&prepared, 0)?;
     let source = optional_text_arg(prepared.get(1))?;
@@ -877,7 +870,7 @@ pub fn eval_translate_surface(
                 && normalize_language_tag(src) == normalize_language_tag(dst)
         })
     {
-        return Ok(FunctionValue::Text(text));
+        return Ok(CalcValue::text(text));
     }
     let provider = host_info.ok_or(NumberRegexTranslateEvalError::HostInfoProviderMissing(
         "translate_provider",
@@ -891,12 +884,12 @@ pub fn eval_translate_surface(
         .query_translate(&request)
         .map_err(NumberRegexTranslateEvalError::HostInfo)?
     {
-        TranslateProviderResult::Text(text) => Ok(FunctionValue::Text(text)),
-        TranslateProviderResult::Busy => Ok(FunctionValue::Error(WorksheetErrorCode::Busy)),
+        TranslateProviderResult::Text(text) => Ok(CalcValue::text(text)),
+        TranslateProviderResult::Busy => Ok(CalcValue::error(WorksheetErrorCode::Busy)),
         TranslateProviderResult::CapabilityDenied => {
-            Ok(FunctionValue::Error(WorksheetErrorCode::Blocked))
+            Ok(CalcValue::error(WorksheetErrorCode::Blocked))
         }
-        TranslateProviderResult::ProviderError(code) => Ok(FunctionValue::Error(code)),
+        TranslateProviderResult::ProviderError(code) => Ok(CalcValue::error(code)),
     }
 }
 
@@ -933,7 +926,7 @@ mod tests {
     use crate::host_info::{HostInfoProvider, TranslateProviderResult, TranslateRequest};
     use crate::locale_format::{test_current_excel_host_context, test_en_us_context};
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{FunctionValue, ReferenceKind, ReferenceLike};
+    use crate::value::{ReferenceKind, ReferenceLike};
 
     fn txt(input: &str) -> ExcelText {
         ExcelText::from_interop_assignment(input)
@@ -949,7 +942,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -1035,14 +1028,14 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_translate_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("plain text"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("es"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("es"))),
+                (CalcValue::text(txt("plain text"))),
+                (CalcValue::text(txt("es"))),
+                (CalcValue::text(txt("es"))),
             ],
             &resolver,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Text(txt("plain text"))));
+        assert_eq!(got, Ok(CalcValue::text(txt("plain text"))));
     }
 
     #[test]
@@ -1051,7 +1044,7 @@ mod tests {
         let current_host = test_current_excel_host_context();
         let en_us = test_en_us_context();
         let host_default = eval_numbervalue_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(txt("1,234.5%")))],
+            &[(CalcValue::text(txt("1,234.5%")))],
             &resolver,
             Some(&current_host),
         );
@@ -1062,21 +1055,17 @@ mod tests {
             ))
         );
         let en_us_default = eval_numbervalue_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(txt("1,234.5%")))],
+            &[(CalcValue::text(txt("1,234.5%")))],
             &resolver,
             Some(&en_us),
         );
-        assert_eq!(en_us_default, Ok(FunctionValue::Number(12.345)));
+        assert_eq!(en_us_default, Ok(CalcValue::number(12.345)));
     }
 
     #[test]
     fn numbervalue_omitted_defaults_require_locale_context() {
         let resolver = DummyResolver;
-        let got = eval_numbervalue_surface(
-            &[FunctionArg::Eval(FunctionValue::Text(txt("1,234.5%")))],
-            &resolver,
-            None,
-        );
+        let got = eval_numbervalue_surface(&[(CalcValue::text(txt("1,234.5%")))], &resolver, None);
         assert_eq!(
             got,
             Err(NumberRegexTranslateEvalError::LocaleContextMissing)
@@ -1088,16 +1077,16 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_translate_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("hello"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("en"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("es"))),
+                (CalcValue::text(txt("hello"))),
+                (CalcValue::text(txt("en"))),
+                (CalcValue::text(txt("es"))),
             ],
             &resolver,
             Some(&MockTranslateProvider {
                 result: TranslateProviderResult::Busy,
             }),
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Busy)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Busy)));
     }
 
     #[test]
@@ -1105,14 +1094,14 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_numbervalue_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("1.234,5"))),
-                FunctionArg::Eval(FunctionValue::Text(txt(","))),
-                FunctionArg::Eval(FunctionValue::Text(txt("."))),
+                (CalcValue::text(txt("1.234,5"))),
+                (CalcValue::text(txt(","))),
+                (CalcValue::text(txt("."))),
             ],
             &resolver,
             None,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1234.5)));
+        assert_eq!(got, Ok(CalcValue::number(1234.5)));
     }
 
     #[test]
@@ -1120,12 +1109,12 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_regexextract_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("Code-42"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("[A-Z][a-z]+-\\d+"))),
+                (CalcValue::text(txt("Code-42"))),
+                (CalcValue::text(txt("[A-Z][a-z]+-\\d+"))),
             ],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Text(txt("Code-42"))));
+        assert_eq!(got, Ok(CalcValue::text(txt("Code-42"))));
     }
 
     #[test]
@@ -1133,12 +1122,12 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_regextest_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("abc123"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("\\d+"))),
+                (CalcValue::text(txt("abc123"))),
+                (CalcValue::text(txt("\\d+"))),
             ],
             &resolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Logical(true)));
+        assert_eq!(got, Ok(CalcValue::logical(true)));
     }
 
     #[test]
@@ -1146,16 +1135,16 @@ mod tests {
         let resolver = DummyResolver;
         let got = eval_translate_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Text(txt("hello"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("en"))),
-                FunctionArg::Eval(FunctionValue::Text(txt("es"))),
+                (CalcValue::text(txt("hello"))),
+                (CalcValue::text(txt("en"))),
+                (CalcValue::text(txt("es"))),
             ],
             &resolver,
             Some(&MockTranslateProvider {
                 result: TranslateProviderResult::CapabilityDenied,
             }),
         );
-        assert_eq!(got, Ok(FunctionValue::Error(WorksheetErrorCode::Blocked)));
+        assert_eq!(got, Ok(CalcValue::error(WorksheetErrorCode::Blocked)));
     }
 
     #[test]

@@ -1,6 +1,5 @@
 use crate::value::{
-    FunctionArray, FunctionArrayCell, FunctionValue, ReferenceIdentity, ReferenceKind,
-    ReferenceLike, ReferenceSystemId,
+    CalcArray, CalcValue, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -175,7 +174,7 @@ pub trait ReferenceSystemProvider {
     fn dereference(
         &self,
         _request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
         Err(crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "unsupported_reference_system_operation:Dereference".to_string(),
         })
@@ -231,7 +230,7 @@ impl<T: ReferenceSystemProvider + ?Sized> ReferenceSystemProvider for &T {
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
         (**self).dereference(request)
     }
 
@@ -285,7 +284,7 @@ impl ReferenceSystemProvider for NullReferenceSystemProvider {
     fn dereference(
         &self,
         _request: &ReferenceDereferenceRequest,
-    ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+    ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
         Err(crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "unsupported_reference_system_operation:Dereference".to_string(),
         })
@@ -368,12 +367,12 @@ impl ResolvedReferenceExtent {
 pub struct ResolvedReferenceCell {
     pub row: usize,
     pub col: usize,
-    pub value: FunctionArrayCell,
+    pub value: CalcValue,
 }
 
 impl ResolvedReferenceCell {
     #[must_use]
-    pub fn new(row: usize, col: usize, value: FunctionArrayCell) -> Self {
+    pub fn new(row: usize, col: usize, value: CalcValue) -> Self {
         Self { row, col, value }
     }
 }
@@ -415,7 +414,7 @@ pub fn normalize_reference(reference: &ReferenceLike) -> ReferenceLike {
 pub fn resolve_eval_value(
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     reference: &ReferenceLike,
-) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
     let normalized = normalize_reference(reference);
     ensure_reference_resolution_allowed(&normalized, resolver.capabilities())?;
 
@@ -438,7 +437,7 @@ pub fn enumerate_reference_values(
 
 pub fn materialize_resolved_reference_values(
     values: &ResolvedReferenceValues,
-) -> Result<FunctionArray, ReferenceResolutionError> {
+) -> Result<CalcArray, ReferenceResolutionError> {
     let shape = crate::value::ArrayShape {
         rows: values.declared_extent.rows,
         cols: values.declared_extent.cols,
@@ -454,7 +453,7 @@ pub fn materialize_resolved_reference_values(
         }
     })?;
 
-    let mut cells = vec![FunctionArrayCell::EmptyCell; cell_count];
+    let mut cells = vec![CalcValue::empty(); cell_count];
     for cell in &values.defined_cells {
         if cell.row == 0
             || cell.col == 0
@@ -476,7 +475,7 @@ pub fn materialize_resolved_reference_values(
         cells[index] = cell.value.clone();
     }
 
-    FunctionArray::new(shape, cells).ok_or_else(|| {
+    CalcArray::new(shape, cells).ok_or_else(|| {
         crate::resolver::ReferenceResolutionError::ProviderFailure {
             detail: "sparse_reference_shape_invalid".to_string(),
         }
@@ -539,15 +538,15 @@ fn ensure_reference_resolution_allowed(
 mod tests {
     use super::*;
     use crate::value::{
-        ExcelText, FunctionArray, FunctionArrayCell, FunctionValue, ReferenceDisplay,
-        ReferenceHandle, ReferenceHandleId, ReferenceKind, ReferenceLike, ReferenceSystemId,
+        CalcArray, CalcValue, ExcelText, ReferenceDisplay, ReferenceHandle, ReferenceHandleId,
+        ReferenceKind, ReferenceLike, ReferenceSystemId,
     };
     use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved: Option<FunctionValue>,
-        by_target: BTreeMap<String, FunctionValue>,
+        resolved: Option<CalcValue>,
+        by_target: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -558,7 +557,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             if let Some(value) = self.by_target.get(reference.target()) {
                 return Ok(value.clone());
@@ -664,7 +663,7 @@ mod tests {
                 allow_spill_anchor_refs: true,
                 allow_external_refs: false,
             },
-            resolved: Some(FunctionValue::Number(1.0)),
+            resolved: Some(CalcValue::number(1.0)),
             by_target: BTreeMap::new(),
         };
 
@@ -686,7 +685,7 @@ mod tests {
     fn resolve_rejects_external_reference_when_disallowed() {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved: Some(FunctionValue::Number(1.0)),
+            resolved: Some(CalcValue::number(1.0)),
             by_target: BTreeMap::new(),
         };
         let input = ReferenceLike::new(ReferenceKind::A1, "[External.xlsx]Sheet1!A1".to_string());
@@ -707,14 +706,14 @@ mod tests {
     fn resolve_passes_normalized_reference_to_provider() {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved: Some(FunctionValue::Number(3.0)),
+            resolved: Some(CalcValue::number(3.0)),
             by_target: BTreeMap::new(),
         };
 
         let input = ReferenceLike::new(ReferenceKind::A1, "  A1 ".to_string());
 
         let got = resolve_eval_value(&resolver, &input);
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -722,11 +721,11 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(A1:A2,C1)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Error(crate::value::WorksheetErrorCode::Div0),
-                    FunctionArrayCell::Number(13.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::error(crate::value::WorksheetErrorCode::Div0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap(),
             ),
@@ -743,11 +742,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Error(crate::value::WorksheetErrorCode::Div0),
-                    FunctionArrayCell::Number(13.0),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::error(crate::value::WorksheetErrorCode::Div0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap()
             ))

@@ -1,3 +1,4 @@
+use oxfml_core::eval::FunctionValue;
 use oxfml_core::seam::AcceptDecision;
 use oxfml_core::test_support::host::SingleFormulaHost;
 use oxfml_core::{ReturnedValueSurfaceKind, ValuePayload};
@@ -9,7 +10,7 @@ use oxfunc_core::locale_format::{
     FormatCodeEngine, FormatFailure, LocaleFormatContext, LocaleProfileId, LocaleValueParser,
     ParseFailure, WorkbookDateSystem, format_profile,
 };
-use oxfunc_core::value::{ExcelText, FunctionValue};
+use oxfunc_core::value::ExcelText;
 
 struct TestImageProvider;
 struct TestLocaleValueParser;
@@ -107,7 +108,7 @@ fn image_formula_preserves_webimage_rich_value_carrier_from_oxfunc_side() {
         FunctionValue::Text(ExcelText::from_interop_assignment("-2146826273"))
     );
     assert_eq!(
-        run.returned_value_surface.kind(),
+        run.returned_value_surface.kind,
         ReturnedValueSurfaceKind::RichValue
     );
     assert_eq!(
@@ -119,14 +120,14 @@ fn image_formula_preserves_webimage_rich_value_carrier_from_oxfunc_side() {
         Some("_webimage")
     );
     assert_eq!(
-        run.candidate_result.returned_value_surface.kind(),
+        run.candidate_result.returned_value_surface.kind,
         ReturnedValueSurfaceKind::RichValue
     );
 
     match &run.commit_decision {
         AcceptDecision::Accepted(bundle) => {
             assert_eq!(
-                bundle.returned_value_surface.kind(),
+                bundle.returned_value_surface.kind,
                 ReturnedValueSurfaceKind::RichValue
             );
             assert_eq!(

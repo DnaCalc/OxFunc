@@ -1,15 +1,10 @@
 use std::collections::HashMap;
 
-use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, prepared_arg_to_calc_value_lossy,
-};
+use crate::functions::adapters::{coerce_prepared_to_number, prepared_arg_to_calc_value_lossy};
 use crate::functions::callable_helpers::{
     CallableInvocationError, CallableInvoker, LambdaHelperEvalError, invoke_callable_prepared,
 };
-use crate::value::{
-    CalcValue, CallableValue, CoreValue, ExcelText, FunctionArray, FunctionArrayCell,
-    FunctionValue, WorksheetErrorCode,
-};
+use crate::value::{CalcArray, CalcValue, CallableValue, CoreValue, ExcelText, WorksheetErrorCode};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub(crate) enum CellKey {
@@ -37,15 +32,15 @@ pub(crate) enum FieldRelationship {
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct MatrixArg {
-    pub array: FunctionArray,
+    pub array: CalcArray,
     pub had_headers: bool,
 }
 
 pub(crate) fn require_callable(
-    prepared: &PreparedValue,
+    prepared: &CalcValue,
 ) -> Result<CallableValue, LambdaHelperEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Error(code)) => Err(LambdaHelperEvalError::Invocation(
+    match prepared.core() {
+        CoreValue::Error(code) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(*code),
         )),
         _ => prepared_arg_to_calc_value_lossy(prepared)
@@ -75,61 +70,48 @@ pub(crate) fn require_calc_callable(
 }
 
 pub(crate) fn scalar_cell_from_prepared(
-    prepared: &PreparedValue,
-) -> Result<FunctionArrayCell, LambdaHelperEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(FunctionArrayCell::Number(*n)),
-        PreparedValue::Eval(FunctionValue::Text(t)) => Ok(FunctionArrayCell::Text(t.clone())),
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(FunctionArrayCell::Logical(*b)),
-        PreparedValue::Eval(FunctionValue::Error(code)) => Ok(FunctionArrayCell::Error(*code)),
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => Ok(FunctionArrayCell::EmptyCell),
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            Err(LambdaHelperEvalError::NonScalarHelperResult)
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => Err(LambdaHelperEvalError::Invocation(
-            CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
-        )),
-        _ => Err(LambdaHelperEvalError::Invocation(
+    prepared: &CalcValue,
+) -> Result<CalcValue, LambdaHelperEvalError> {
+    match prepared.core() {
+        CoreValue::Number(n) => Ok(CalcValue::number(*n)),
+        CoreValue::Text(t) => Ok(CalcValue::text(t.clone())),
+        CoreValue::Logical(b) => Ok(CalcValue::logical(*b)),
+        CoreValue::Error(code) => Ok(CalcValue::error(*code)),
+        CoreValue::Missing | CoreValue::Empty => Ok(CalcValue::empty()),
+        CoreValue::Array(_) => Err(LambdaHelperEvalError::NonScalarHelperResult),
+        CoreValue::Reference(_) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
         )),
     }
 }
 
-pub(crate) fn prepared_to_array(prepared: &PreparedValue) -> FunctionArray {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Array(array)) => array.clone(),
-        PreparedValue::Eval(FunctionValue::Number(n)) => {
-            FunctionArray::from_scalar(FunctionArrayCell::Number(*n))
+pub(crate) fn prepared_to_array(prepared: &CalcValue) -> CalcArray {
+    match prepared.core() {
+        CoreValue::Array(array) => array.clone(),
+        CoreValue::Number(n) => CalcArray::from_scalar(CalcValue::number(*n))
+            .expect("scalar number array has valid dimensions"),
+        CoreValue::Text(t) => CalcArray::from_scalar(CalcValue::text(t.clone()))
+            .expect("scalar text array has valid dimensions"),
+        CoreValue::Logical(b) => CalcArray::from_scalar(CalcValue::logical(*b))
+            .expect("scalar logical array has valid dimensions"),
+        CoreValue::Error(code) => CalcArray::from_scalar(CalcValue::error(*code))
+            .expect("scalar error array has valid dimensions"),
+        CoreValue::Missing | CoreValue::Empty => CalcArray::from_scalar(CalcValue::empty())
+            .expect("scalar empty array has valid dimensions"),
+        CoreValue::Reference(_) => {
+            CalcArray::from_scalar(CalcValue::error(WorksheetErrorCode::Value))
+                .expect("scalar error array has valid dimensions")
         }
-        PreparedValue::Eval(FunctionValue::Text(t)) => {
-            FunctionArray::from_scalar(FunctionArrayCell::Text(t.clone()))
-        }
-        PreparedValue::Eval(FunctionValue::Logical(b)) => {
-            FunctionArray::from_scalar(FunctionArrayCell::Logical(*b))
-        }
-        PreparedValue::Eval(FunctionValue::Error(code)) => {
-            FunctionArray::from_scalar(FunctionArrayCell::Error(*code))
-        }
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => {
-            FunctionArray::from_scalar(FunctionArrayCell::EmptyCell)
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            FunctionArray::from_scalar(FunctionArrayCell::Error(WorksheetErrorCode::Value))
-        }
-        _ => FunctionArray::from_scalar(FunctionArrayCell::Error(WorksheetErrorCode::Value)),
     }
 }
 
 pub(crate) fn coerce_optional_i32(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<Option<i32>, LambdaHelperEvalError> {
     let Some(prepared) = prepared else {
         return Ok(None);
     };
-    if matches!(
-        prepared,
-        PreparedValue::MissingArg | PreparedValue::EmptyCell
-    ) {
+    if matches!(prepared.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(None);
     }
     let raw = coerce_prepared_to_number(prepared).map_err(LambdaHelperEvalError::Preparation)?;
@@ -142,7 +124,7 @@ pub(crate) fn coerce_optional_i32(
 }
 
 pub(crate) fn parse_field_headers_mode(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<FieldHeadersMode, LambdaHelperEvalError> {
     match coerce_optional_i32(prepared)? {
         None => Ok(FieldHeadersMode::Auto),
@@ -157,7 +139,7 @@ pub(crate) fn parse_field_headers_mode(
 }
 
 pub(crate) fn parse_field_relationship(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<FieldRelationship, LambdaHelperEvalError> {
     match coerce_optional_i32(prepared)? {
         None | Some(0) => Ok(FieldRelationship::Hierarchical),
@@ -168,15 +150,15 @@ pub(crate) fn parse_field_relationship(
     }
 }
 
-fn cell_looks_numeric(cell: &FunctionArrayCell) -> bool {
-    matches!(cell, FunctionArrayCell::Number(_))
+fn cell_looks_numeric(cell: &CalcValue) -> bool {
+    matches!(cell.core(), CoreValue::Number(_))
 }
 
-fn cell_looks_text(cell: &FunctionArrayCell) -> bool {
-    matches!(cell, FunctionArrayCell::Text(_))
+fn cell_looks_text(cell: &CalcValue) -> bool {
+    matches!(cell.core(), CoreValue::Text(_))
 }
 
-pub(crate) fn detect_headers(values: &FunctionArray) -> bool {
+pub(crate) fn detect_headers(values: &CalcArray) -> bool {
     if values.shape().rows < 2 || values.shape().cols == 0 {
         return false;
     }
@@ -190,7 +172,7 @@ pub(crate) fn detect_headers(values: &FunctionArray) -> bool {
 }
 
 pub(crate) fn split_header_row(
-    array: &FunctionArray,
+    array: &CalcArray,
     mode: FieldHeadersMode,
 ) -> Result<MatrixArg, LambdaHelperEvalError> {
     let inferred_headers = detect_headers(array);
@@ -213,8 +195,7 @@ pub(crate) fn split_header_row(
                     .collect::<Vec<_>>()
             })
             .collect::<Vec<_>>();
-        let array =
-            FunctionArray::from_rows(rows).expect("header split preserves rectangular shape");
+        let array = CalcArray::from_rows(rows).expect("header split preserves rectangular shape");
         Ok(MatrixArg {
             array,
             had_headers: true,
@@ -227,71 +208,69 @@ pub(crate) fn split_header_row(
     }
 }
 
-pub(crate) fn row_as_cells(array: &FunctionArray, row: usize) -> Vec<FunctionArrayCell> {
+pub(crate) fn row_as_cells(array: &CalcArray, row: usize) -> Vec<CalcValue> {
     (0..array.shape().cols)
         .map(|col| array.get(row, col).cloned().expect("validated row cell"))
         .collect()
 }
 
-pub(crate) fn key_from_cells(cells: &[FunctionArrayCell]) -> Vec<CellKey> {
+pub(crate) fn key_from_cells(cells: &[CalcValue]) -> Vec<CellKey> {
     cells.iter().map(cell_key).collect()
 }
 
-pub(crate) fn cell_key(cell: &FunctionArrayCell) -> CellKey {
-    match cell {
-        FunctionArrayCell::Number(n) => CellKey::Number(n.to_bits()),
-        FunctionArrayCell::Text(t) => CellKey::Text(t.utf16_code_units().to_vec()),
-        FunctionArrayCell::Logical(b) => CellKey::Logical(*b),
-        FunctionArrayCell::Error(code) => CellKey::Error(*code as u8),
-        FunctionArrayCell::EmptyCell => CellKey::EmptyCell,
+pub(crate) fn cell_key(cell: &CalcValue) -> CellKey {
+    match cell.core() {
+        CoreValue::Number(n) => CellKey::Number(n.to_bits()),
+        CoreValue::Text(t) => CellKey::Text(t.utf16_code_units().to_vec()),
+        CoreValue::Logical(b) => CellKey::Logical(*b),
+        CoreValue::Error(code) => CellKey::Error(*code as u8),
+        CoreValue::Empty | CoreValue::Missing => CellKey::EmptyCell,
+        CoreValue::Array(_) | CoreValue::Reference(_) => CellKey::EmptyCell,
     }
 }
 
-pub(crate) fn default_row_field_headers(cols: usize) -> Vec<FunctionArrayCell> {
+pub(crate) fn default_row_field_headers(cols: usize) -> Vec<CalcValue> {
     (1..=cols)
         .map(|i| {
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 format!("Row Field {i}").encode_utf16().collect(),
             ))
         })
         .collect()
 }
 
-pub(crate) fn default_column_field_headers(cols: usize) -> Vec<FunctionArrayCell> {
+pub(crate) fn default_column_field_headers(cols: usize) -> Vec<CalcValue> {
     (1..=cols)
         .map(|i| {
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 format!("Column Field {i}").encode_utf16().collect(),
             ))
         })
         .collect()
 }
 
-pub(crate) fn default_value_headers(cols: usize) -> Vec<FunctionArrayCell> {
+pub(crate) fn default_value_headers(cols: usize) -> Vec<CalcValue> {
     (1..=cols)
         .map(|i| {
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 format!("Value {i}").encode_utf16().collect(),
             ))
         })
         .collect()
 }
 
-pub(crate) fn take_header_row(array: &FunctionArray) -> Vec<FunctionArrayCell> {
+pub(crate) fn take_header_row(array: &CalcArray) -> Vec<CalcValue> {
     row_as_cells(array, 0)
 }
 
 pub(crate) fn parse_filter_vector(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
     expected_rows: usize,
 ) -> Result<Option<Vec<bool>>, LambdaHelperEvalError> {
     let Some(prepared) = prepared else {
         return Ok(None);
     };
-    if matches!(
-        prepared,
-        PreparedValue::MissingArg | PreparedValue::EmptyCell
-    ) {
+    if matches!(prepared.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(None);
     }
     let array = prepared_to_array(prepared);
@@ -313,30 +292,29 @@ pub(crate) fn parse_filter_vector(
     Ok(Some(items))
 }
 
-fn coerce_cell_to_bool(cell: &FunctionArrayCell) -> Result<bool, LambdaHelperEvalError> {
-    match cell {
-        FunctionArrayCell::Logical(b) => Ok(*b),
-        FunctionArrayCell::Number(n) => Ok(*n != 0.0),
-        FunctionArrayCell::EmptyCell => Ok(false),
-        FunctionArrayCell::Error(code) => Err(LambdaHelperEvalError::Invocation(
+fn coerce_cell_to_bool(cell: &CalcValue) -> Result<bool, LambdaHelperEvalError> {
+    match cell.core() {
+        CoreValue::Logical(b) => Ok(*b),
+        CoreValue::Number(n) => Ok(*n != 0.0),
+        CoreValue::Empty | CoreValue::Missing => Ok(false),
+        CoreValue::Error(code) => Err(LambdaHelperEvalError::Invocation(
             CallableInvocationError::Worksheet(*code),
         )),
-        FunctionArrayCell::Text(_) => Err(LambdaHelperEvalError::Invocation(
-            CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
-        )),
+        CoreValue::Text(_) | CoreValue::Array(_) | CoreValue::Reference(_) => {
+            Err(LambdaHelperEvalError::Invocation(
+                CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
+            ))
+        }
     }
 }
 
 pub(crate) fn parse_sort_orders(
-    prepared: Option<&PreparedValue>,
+    prepared: Option<&CalcValue>,
 ) -> Result<Vec<i32>, LambdaHelperEvalError> {
     let Some(prepared) = prepared else {
         return Ok(Vec::new());
     };
-    if matches!(
-        prepared,
-        PreparedValue::MissingArg | PreparedValue::EmptyCell
-    ) {
+    if matches!(prepared.core(), CoreValue::Missing | CoreValue::Empty) {
         return Ok(Vec::new());
     }
     let array = prepared_to_array(prepared);
@@ -348,10 +326,8 @@ pub(crate) fn parse_sort_orders(
     }
     array
         .iter_row_major()
-        .map(|cell| match cell {
-            FunctionArrayCell::Number(n) if n.is_finite() && n.fract() == 0.0 && *n != 0.0 => {
-                Ok(*n as i32)
-            }
+        .map(|cell| match cell.core() {
+            CoreValue::Number(n) if n.is_finite() && n.fract() == 0.0 && *n != 0.0 => Ok(*n as i32),
             _ => Err(LambdaHelperEvalError::Invocation(
                 CallableInvocationError::Worksheet(WorksheetErrorCode::Value),
             )),
@@ -361,11 +337,11 @@ pub(crate) fn parse_sort_orders(
 
 pub(crate) fn invoke_group_aggregate(
     callable: &CallableValue,
-    values: &[FunctionArrayCell],
+    values: &[CalcValue],
     invoker: &(impl CallableInvoker + ?Sized),
-) -> Result<FunctionArrayCell, LambdaHelperEvalError> {
+) -> Result<CalcValue, LambdaHelperEvalError> {
     let column = if values.is_empty() {
-        vec![vec![FunctionArrayCell::EmptyCell]]
+        vec![vec![CalcValue::empty()]]
     } else {
         values
             .iter()
@@ -373,16 +349,14 @@ pub(crate) fn invoke_group_aggregate(
             .map(|cell| vec![cell])
             .collect::<Vec<_>>()
     };
-    let arg = PreparedValue::Eval(FunctionValue::Array(
-        FunctionArray::from_rows(column).expect("column vector shape is valid"),
-    ));
+    let arg = CalcValue::array(CalcArray::from_rows(column).expect("column vector shape is valid"));
     let prepared = invoke_callable_prepared(callable, &[arg], invoker)
         .map_err(LambdaHelperEvalError::Invocation)?;
     scalar_cell_from_prepared(&prepared)
 }
 
-pub(crate) fn text_cell(text: &str) -> FunctionArrayCell {
-    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+pub(crate) fn text_cell(text: &str) -> CalcValue {
+    CalcValue::text(ExcelText::from_utf16_code_units(
         text.encode_utf16().collect(),
     ))
 }

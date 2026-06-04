@@ -1856,13 +1856,15 @@ Validation:
 
 ### W099-015 Legacy Type And Adapter Deletion Record
 
-execution_state: `complete`
+execution_state: `reopened_corrective`
 
-scope_completeness: `scope_complete`
+scope_completeness: `scope_partial`
 
-target_completeness: `target_complete`
+target_completeness: `target_partial`
 
-integration_completeness: `integrated`
+integration_completeness: `partial`
+
+Correction note, 2026-06-04: the first W099-015 pass was not a valid terminal deletion. It removed the old `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, and `ArrayCellValue` names from active Rust, but it left public value-like wrappers under new names: `FunctionValue`, `FunctionArg`, `PreparedValue`, `FunctionArray`, and `FunctionArrayCell`. That is a rename, not deletion, and does not satisfy the W099-015 acceptance criteria. W099-015 remains open until the remaining public wrapper family is removed from active code or reduced to non-value domain facts with native `CalcValue` / `CalcArray` payloads.
 
 Planned scope:
 1. Delete the active OxFunc public legacy carrier names: `EvalValue`, `CallArgValue`, `PreparedArgValue`, `EvalArray`, `ArrayCellValue`, `LambdaValue`, `ExtendedValue`, `ReferenceResolver`, and `ReferenceTextResolver`.

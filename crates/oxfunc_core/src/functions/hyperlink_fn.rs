@@ -4,14 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_text, prepare_args_values_only, prepare_calc_values_only,
+    coerce_prepared_to_text, prepare_args_values_only, prepare_calc_values_only,
     prepared_from_calc_value,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    CalcValue, CellStyleHint, CoreValue, ExcelText, FunctionArg, FunctionValue, PresentationHint,
-    WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CellStyleHint, CoreValue, ExcelText, PresentationHint, WorksheetErrorCode};
 
 pub const HYPERLINK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.HYPERLINK",
@@ -44,7 +42,7 @@ pub enum HyperlinkEvalError {
 }
 
 pub fn parse_hyperlink_request(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(args.len()) {
@@ -60,7 +58,7 @@ pub fn parse_hyperlink_request(
 }
 
 fn parse_hyperlink_request_prepared(
-    prepared: &[PreparedValue],
+    prepared: &[CalcValue],
 ) -> Result<HyperlinkRequest, HyperlinkEvalError> {
     if !HYPERLINK_META.arity.accepts(prepared.len()) {
         return Err(HyperlinkEvalError::ArityMismatch {
@@ -96,11 +94,11 @@ pub fn parse_hyperlink_request_calc(
 }
 
 pub fn eval_hyperlink_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, HyperlinkEvalError> {
+) -> Result<CalcValue, HyperlinkEvalError> {
     let request = parse_hyperlink_request(args, resolver)?;
-    Ok(FunctionValue::Text(request.display_text))
+    Ok(CalcValue::text(request.display_text))
 }
 
 pub fn eval_hyperlink_calc_surface_rich(
@@ -115,14 +113,12 @@ pub fn eval_hyperlink_calc_surface_rich(
 }
 
 pub fn eval_hyperlink_surface_rich(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, HyperlinkEvalError> {
-    let FunctionValue::Text(value) = eval_hyperlink_surface(args, resolver)? else {
-        unreachable!("hyperlink surface returns text");
-    };
+    let request = parse_hyperlink_request(args, resolver)?;
     Ok(CalcValue::with_presentation(
-        CoreValue::Text(value),
+        CoreValue::Text(request.display_text),
         PresentationHint::style(CellStyleHint::Hyperlink),
     ))
 }
@@ -150,7 +146,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -160,17 +156,15 @@ mod tests {
         }
     }
 
-    fn text_arg(text: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_interop_assignment(
-            text,
-        )))
+    fn text_arg(text: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_interop_assignment(text)))
     }
 
     #[test]
     fn hyperlink_surface_returns_link_location_when_friendly_name_is_omitted() {
         assert_eq!(
             eval_hyperlink_surface(&[text_arg("https://example.com")], &MockResolver),
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(
                 "https://example.com"
             )))
         );
@@ -193,9 +187,7 @@ mod tests {
                 &[text_arg("https://example.com"), text_arg("Go")],
                 &MockResolver
             ),
-            Ok(FunctionValue::Text(ExcelText::from_interop_assignment(
-                "Go"
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment("Go")))
         );
     }
 

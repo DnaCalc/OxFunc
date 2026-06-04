@@ -1,19 +1,16 @@
-use crate::functions::adapters::{
-    PreparedValue, expand_lookup_vector_arg, prepare_arg_values_only,
-};
+use crate::functions::adapters::{expand_lookup_vector_arg, prepare_arg_values_only};
 use crate::functions::xmatch::{
     XmatchEvalError, eval_xmatch_adapter_prepared, eval_xmatch_adapter_prepared_value,
     validate_xmatch_surface_arity,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{
-    FunctionArg, FunctionArray, FunctionArrayCell, FunctionValue, WorksheetErrorCode,
-};
+use crate::value::CalcValue;
+use crate::value::{CalcArray, CoreValue, WorksheetErrorCode};
 
 fn prepare_lookup_vector(
-    lookup_array: &[FunctionArg],
+    lookup_array: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<Vec<PreparedValue>, XmatchEvalError> {
+) -> Result<Vec<CalcValue>, XmatchEvalError> {
     let mut prepared = Vec::new();
     for arg in lookup_array {
         prepared
@@ -22,13 +19,16 @@ fn prepare_lookup_vector(
     Ok(prepared)
 }
 
-fn prepared_from_lookup_value_cell(cell: &FunctionArrayCell) -> PreparedValue {
-    match cell {
-        FunctionArrayCell::Number(n) => PreparedValue::Eval(FunctionValue::Number(*n)),
-        FunctionArrayCell::Text(t) => PreparedValue::Eval(FunctionValue::Text(t.clone())),
-        FunctionArrayCell::Logical(b) => PreparedValue::Eval(FunctionValue::Logical(*b)),
-        FunctionArrayCell::Error(code) => PreparedValue::Eval(FunctionValue::Error(*code)),
-        FunctionArrayCell::EmptyCell => PreparedValue::EmptyCell,
+fn prepared_from_lookup_value_cell(cell: &CalcValue) -> CalcValue {
+    match cell.core() {
+        CoreValue::Number(n) => CalcValue::number(*n),
+        CoreValue::Text(t) => CalcValue::text(t.clone()),
+        CoreValue::Logical(b) => CalcValue::logical(*b),
+        CoreValue::Error(code) => CalcValue::error(*code),
+        CoreValue::Empty | CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Array(_) | CoreValue::Reference(_) => {
+            CalcValue::error(WorksheetErrorCode::Value)
+        }
     }
 }
 
@@ -50,25 +50,23 @@ fn map_xmatch_error_to_ws(e: &XmatchEvalError) -> WorksheetErrorCode {
     }
 }
 
-fn xmatch_result_to_array_cell(
-    result: Result<FunctionValue, XmatchEvalError>,
-) -> FunctionArrayCell {
+fn xmatch_result_to_array_cell(result: Result<CalcValue, XmatchEvalError>) -> CalcValue {
     match result {
-        Ok(FunctionValue::Number(n)) => FunctionArrayCell::Number(n),
-        Ok(FunctionValue::Error(code)) => FunctionArrayCell::Error(code),
-        Ok(_) => FunctionArrayCell::Error(WorksheetErrorCode::Value),
-        Err(err) => FunctionArrayCell::Error(map_xmatch_error_to_ws(&err)),
+        Ok(value) if matches!(value.core(), CoreValue::Number(_)) => value,
+        Ok(value) if matches!(value.core(), CoreValue::Error(_)) => value,
+        Ok(_) => CalcValue::error(WorksheetErrorCode::Value),
+        Err(err) => CalcValue::error(map_xmatch_error_to_ws(&err)),
     }
 }
 
 fn eval_xmatch_surface_prepared_value(
-    lookup_value: &PreparedValue,
-    lookup_array: &[PreparedValue],
-    match_mode: Option<&PreparedValue>,
-    search_mode: Option<&PreparedValue>,
-) -> Result<FunctionValue, XmatchEvalError> {
-    match lookup_value {
-        PreparedValue::Eval(FunctionValue::Array(array)) => {
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
+) -> Result<CalcValue, XmatchEvalError> {
+    match lookup_value.core() {
+        CoreValue::Array(array) => {
             let cells = array
                 .iter_row_major()
                 .map(prepared_from_lookup_value_cell)
@@ -81,9 +79,8 @@ fn eval_xmatch_surface_prepared_value(
                     ))
                 })
                 .collect();
-            Ok(FunctionValue::Array(
-                FunctionArray::new(array.shape(), cells)
-                    .expect("lookup-value array shape is valid"),
+            Ok(CalcValue::array(
+                CalcArray::new(array.shape(), cells).expect("lookup-value array shape is valid"),
             ))
         }
         _ => {
@@ -93,10 +90,10 @@ fn eval_xmatch_surface_prepared_value(
 }
 
 pub fn eval_xmatch_surface(
-    lookup_value: &FunctionArg,
-    lookup_array: &[FunctionArg],
-    match_mode: Option<&FunctionArg>,
-    search_mode: Option<&FunctionArg>,
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<f64, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
@@ -123,12 +120,12 @@ pub fn eval_xmatch_surface(
 }
 
 pub fn eval_xmatch_surface_value(
-    lookup_value: &FunctionArg,
-    lookup_array: &[FunctionArg],
-    match_mode: Option<&FunctionArg>,
-    search_mode: Option<&FunctionArg>,
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, XmatchEvalError> {
+) -> Result<CalcValue, XmatchEvalError> {
     let argc = 2 + usize::from(match_mode.is_some()) + usize::from(search_mode.is_some());
     validate_xmatch_surface_arity(argc)?;
 
@@ -158,16 +155,13 @@ mod tests {
     use crate::coercion::CoercionError;
     use crate::function::Arity;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::{
-        ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike,
-        WorksheetErrorCode,
-    };
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
     use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
-        resolved_value: Option<FunctionValue>,
-        by_target: BTreeMap<String, FunctionValue>,
+        resolved_value: Option<CalcValue>,
+        by_target: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -178,7 +172,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             if let Some(value) = self.by_target.get(reference.target()) {
                 return Ok(value.clone());
@@ -199,26 +193,21 @@ mod tests {
         }
     }
 
-    fn text_arg(s: &str) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text_arg(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
     #[test]
     fn eval_xmatch_surface_uses_reference_preparation_for_lookup_value() {
         let r = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            resolved_value: Some(FunctionValue::Number(2.0)),
+            resolved_value: Some(CalcValue::number(2.0)),
             by_target: BTreeMap::new(),
         };
 
         let got = eval_xmatch_surface(
-            &FunctionArg::Reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
-            &[
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
+            &CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "A1".to_string())),
+            &[(CalcValue::number(1.0)), (CalcValue::number(2.0))],
             None,
             None,
             &r,
@@ -229,12 +218,12 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_flattens_lookup_array_argument() {
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(2.0)),
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            &(CalcValue::number(2.0)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap(),
             ))],
@@ -248,17 +237,11 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_rejects_two_dimensional_lookup_array() {
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(3.0)),
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![
-                    vec![
-                        FunctionArrayCell::Number(1.0),
-                        FunctionArrayCell::Number(2.0),
-                    ],
-                    vec![
-                        FunctionArrayCell::Number(3.0),
-                        FunctionArrayCell::Number(4.0),
-                    ],
+            &(CalcValue::number(3.0)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(1.0), CalcValue::number(2.0)],
+                    vec![CalcValue::number(3.0), CalcValue::number(4.0)],
                 ])
                 .unwrap(),
             ))],
@@ -277,32 +260,32 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_value_wraps_index_as_eval_number() {
         let got = eval_xmatch_surface_value(
-            &FunctionArg::Eval(FunctionValue::Number(3.0)),
-            &[FunctionArg::Eval(FunctionValue::Number(3.0))],
+            &(CalcValue::number(3.0)),
+            &[(CalcValue::number(3.0))],
             None,
             None,
             &resolver(),
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
     fn eval_xmatch_surface_value_spills_array_lookup_value_results() {
         let got = eval_xmatch_surface_value(
-            &FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            &(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap(),
             )),
-            &[FunctionArg::Eval(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(4.0),
-                    FunctionArrayCell::Number(6.0),
-                    FunctionArrayCell::Number(8.0),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(2.0),
+                    CalcValue::number(4.0),
+                    CalcValue::number(6.0),
+                    CalcValue::number(8.0),
                 ]])
                 .unwrap(),
             ))],
@@ -312,11 +295,11 @@ mod tests {
         );
         assert_eq!(
             got,
-            Ok(FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::NA),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::error(WorksheetErrorCode::NA),
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::NA),
                 ]])
                 .unwrap(),
             ))
@@ -326,13 +309,10 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_search_mode_uses_prepared_coercion() {
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(2.0)),
-            &[
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-            ],
-            Some(&FunctionArg::Eval(FunctionValue::Number(0.0))),
-            Some(&FunctionArg::Eval(FunctionValue::Number(-1.0))),
+            &(CalcValue::number(2.0)),
+            &[(CalcValue::number(2.0)), (CalcValue::number(2.0))],
+            Some(&(CalcValue::number(0.0))),
+            Some(&(CalcValue::number(-1.0))),
             &resolver(),
         );
         assert_eq!(got, Ok(2.0));
@@ -343,11 +323,11 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(A1:A2,C1)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Number(2.0),
-                    FunctionArrayCell::Number(3.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
                 ]])
                 .unwrap(),
             ),
@@ -359,8 +339,8 @@ mod tests {
         };
 
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(3.0)),
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &(CalcValue::number(3.0)),
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(A1:A2,C1)",
             ))],
@@ -374,10 +354,10 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_lookup_array_error_is_skipped_as_non_match() {
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(9.0)),
+            &(CalcValue::number(9.0)),
             &[
-                FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Value)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::error(WorksheetErrorCode::Value)),
+                (CalcValue::number(1.0)),
             ],
             None,
             None,
@@ -397,8 +377,8 @@ mod tests {
     #[test]
     fn eval_xmatch_surface_coercion_error_from_mode_is_propagated() {
         let got = eval_xmatch_surface(
-            &FunctionArg::Eval(FunctionValue::Number(1.0)),
-            &[FunctionArg::Eval(FunctionValue::Number(1.0))],
+            &(CalcValue::number(1.0)),
+            &[(CalcValue::number(1.0))],
             Some(&text_arg("asd")),
             None,
             &resolver(),

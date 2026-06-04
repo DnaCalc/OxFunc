@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared_lifted};
 use crate::locale_format::{WorkbookDateSystem, excel_serial_from_ymd, ymd_from_excel_serial};
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 const DATE_WEEK_BASE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE_WEEK_BASE",
@@ -242,9 +243,9 @@ pub fn isoweeknum_kernel(serial: f64) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_edate_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateWeekEvalError> {
+) -> Result<CalcValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -261,7 +262,7 @@ pub fn eval_edate_surface(
             let months =
                 coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?;
             edate_kernel(serial, months)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
         },
         map_date_week_error_to_ws,
@@ -270,9 +271,9 @@ pub fn eval_edate_surface(
 }
 
 pub fn eval_eomonth_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateWeekEvalError> {
+) -> Result<CalcValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -289,7 +290,7 @@ pub fn eval_eomonth_surface(
             let months =
                 coerce_prepared_to_number(&prepared[1]).map_err(DateWeekEvalError::Coercion)?;
             eomonth_kernel(serial, months)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
         },
         map_date_week_error_to_ws,
@@ -298,9 +299,9 @@ pub fn eval_eomonth_surface(
 }
 
 pub fn eval_weekday_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateWeekEvalError> {
+) -> Result<CalcValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -320,7 +321,7 @@ pub fn eval_weekday_surface(
                 None
             };
             weekday_kernel(serial, return_type)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
         },
         map_date_week_error_to_ws,
@@ -329,9 +330,9 @@ pub fn eval_weekday_surface(
 }
 
 pub fn eval_weeknum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateWeekEvalError> {
+) -> Result<CalcValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -351,7 +352,7 @@ pub fn eval_weeknum_surface(
                 None
             };
             weeknum_kernel(serial, return_type)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
         },
         map_date_week_error_to_ws,
@@ -360,9 +361,9 @@ pub fn eval_weeknum_surface(
 }
 
 pub fn eval_isoweeknum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateWeekEvalError> {
+) -> Result<CalcValue, DateWeekEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -377,7 +378,7 @@ pub fn eval_isoweeknum_surface(
             let serial =
                 coerce_prepared_to_number(&prepared[0]).map_err(DateWeekEvalError::Coercion)?;
             isoweeknum_kernel(serial)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(DateWeekEvalError::Domain)
         },
         map_date_week_error_to_ws,

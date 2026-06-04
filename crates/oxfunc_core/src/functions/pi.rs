@@ -2,7 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::value::{EvalError, Value};
+use crate::value::{CalcValue, EvalError};
 
 pub const PI_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PI",
@@ -18,7 +18,7 @@ pub const PI_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::None,
 };
 
-pub fn eval_pi(args: &[Value]) -> Result<Value, EvalError> {
+pub fn eval_pi(args: &[CalcValue]) -> Result<CalcValue, EvalError> {
     if !PI_META.arity.accepts(args.len()) {
         return Err(EvalError::ArityMismatch {
             expected: PI_META.arity.min,
@@ -26,12 +26,13 @@ pub fn eval_pi(args: &[Value]) -> Result<Value, EvalError> {
         });
     }
 
-    Ok(Value::Number(std::f64::consts::PI))
+    Ok(CalcValue::number(std::f64::consts::PI))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::value::CoreValue;
 
     #[test]
     fn test_pi_meta_thread_safety_class_is_safe_pure() {
@@ -67,14 +68,19 @@ mod tests {
     #[test]
     fn test_eval_pi_returns_pi_constant() {
         match eval_pi(&[]) {
-            Ok(Value::Number(n)) => assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits()),
+            Ok(value) => match value.core() {
+                CoreValue::Number(n) => {
+                    assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits());
+                }
+                other => panic!("unexpected eval_pi value: {:?}", other),
+            },
             other => panic!("unexpected eval_pi outcome: {:?}", other),
         }
     }
 
     #[test]
     fn test_eval_pi_rejects_nonzero_args() {
-        let args = [Value::Number(1.0)];
+        let args = [CalcValue::number(1.0)];
         let got = eval_pi(&args);
         assert_eq!(
             got,
@@ -89,7 +95,12 @@ mod tests {
     fn test_eval_pi_is_bitwise_stable() {
         for _ in 0..32 {
             match eval_pi(&[]) {
-                Ok(Value::Number(n)) => assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits()),
+                Ok(value) => match value.core() {
+                    CoreValue::Number(n) => {
+                        assert_eq!(n.to_bits(), std::f64::consts::PI.to_bits());
+                    }
+                    other => panic!("unexpected eval_pi value: {:?}", other),
+                },
                 other => panic!("unexpected eval_pi outcome: {:?}", other),
             }
         }

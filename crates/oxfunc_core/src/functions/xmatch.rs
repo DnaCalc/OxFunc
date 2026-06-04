@@ -3,8 +3,9 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{PreparedValue, coerce_prepared_to_number};
-use crate::value::FunctionValue;
+use crate::functions::adapters::coerce_prepared_to_number;
+use crate::value::CalcValue;
+use crate::value::CoreValue;
 use std::cmp::Ordering;
 
 pub const XMATCH_META: FunctionMeta = FunctionMeta {
@@ -115,35 +116,28 @@ fn parse_search_mode(n: f64) -> Result<XmatchSearchMode, XmatchEvalError> {
 }
 
 pub(crate) fn prepared_lookup_comparable(
-    prepared: &PreparedValue,
+    prepared: &CalcValue,
 ) -> Result<XmatchComparable, XmatchEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(XmatchComparable::Number(*n)),
-        PreparedValue::Eval(FunctionValue::Text(t)) => {
-            Ok(XmatchComparable::Text(t.to_string_lossy()))
-        }
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(XmatchComparable::Logical(*b)),
-        PreparedValue::Eval(FunctionValue::Error(code)) => Err(XmatchEvalError::Coercion(
-            CoercionError::WorksheetError(*code),
-        )),
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("array"))
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
-        }
-        PreparedValue::MissingArg => Err(XmatchEvalError::MissingArg),
-        PreparedValue::EmptyCell => Err(XmatchEvalError::EmptyCell),
-        _ => Err(XmatchEvalError::UnsupportedValueKind("unsupported_value")),
+    match prepared.core() {
+        CoreValue::Number(n) => Ok(XmatchComparable::Number(*n)),
+        CoreValue::Text(t) => Ok(XmatchComparable::Text(t.to_string_lossy())),
+        CoreValue::Logical(b) => Ok(XmatchComparable::Logical(*b)),
+        CoreValue::Error(code) => Err(XmatchEvalError::Coercion(CoercionError::WorksheetError(
+            *code,
+        ))),
+        CoreValue::Array(_) => Err(XmatchEvalError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(XmatchEvalError::UnsupportedValueKind("reference_like")),
+        CoreValue::Missing => Err(XmatchEvalError::MissingArg),
+        CoreValue::Empty => Err(XmatchEvalError::EmptyCell),
     }
 }
 
 fn to_lookup_needle(
-    prepared: &PreparedValue,
+    prepared: &CalcValue,
     blank_behavior: BlankLookupBehavior,
 ) -> Result<LookupNeedle, XmatchEvalError> {
-    match prepared {
-        PreparedValue::MissingArg | PreparedValue::EmptyCell => match blank_behavior {
+    match prepared.core() {
+        CoreValue::Missing | CoreValue::Empty => match blank_behavior {
             BlankLookupBehavior::MatchBlankCells => Ok(LookupNeedle::BlankCell),
             BlankLookupBehavior::NotAvailable => Err(XmatchEvalError::NotAvailable),
         },
@@ -152,31 +146,24 @@ fn to_lookup_needle(
 }
 
 pub(crate) fn prepared_lookup_candidate_comparable(
-    prepared: &PreparedValue,
+    prepared: &CalcValue,
 ) -> Result<Option<XmatchComparable>, XmatchEvalError> {
-    match prepared {
-        PreparedValue::Eval(FunctionValue::Number(n)) => Ok(Some(XmatchComparable::Number(*n))),
-        PreparedValue::Eval(FunctionValue::Text(t)) => {
-            Ok(Some(XmatchComparable::Text(t.to_string_lossy())))
-        }
-        PreparedValue::Eval(FunctionValue::Logical(b)) => Ok(Some(XmatchComparable::Logical(*b))),
-        PreparedValue::Eval(FunctionValue::Error(_)) => Ok(None),
-        PreparedValue::MissingArg => Ok(None),
-        PreparedValue::EmptyCell => Ok(None),
-        PreparedValue::Eval(FunctionValue::Array(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("array"))
-        }
-        PreparedValue::Eval(FunctionValue::Reference(_)) => {
-            Err(XmatchEvalError::UnsupportedValueKind("reference_like"))
-        }
-        _ => Err(XmatchEvalError::UnsupportedValueKind("unsupported_value")),
+    match prepared.core() {
+        CoreValue::Number(n) => Ok(Some(XmatchComparable::Number(*n))),
+        CoreValue::Text(t) => Ok(Some(XmatchComparable::Text(t.to_string_lossy()))),
+        CoreValue::Logical(b) => Ok(Some(XmatchComparable::Logical(*b))),
+        CoreValue::Error(_) => Ok(None),
+        CoreValue::Missing => Ok(None),
+        CoreValue::Empty => Ok(None),
+        CoreValue::Array(_) => Err(XmatchEvalError::UnsupportedValueKind("array")),
+        CoreValue::Reference(_) => Err(XmatchEvalError::UnsupportedValueKind("reference_like")),
     }
 }
 
-fn to_lookup_candidate(prepared: &PreparedValue) -> Result<LookupCandidate, XmatchEvalError> {
-    match prepared {
-        PreparedValue::EmptyCell => Ok(LookupCandidate::BlankCell),
-        PreparedValue::MissingArg => Ok(LookupCandidate::Skip),
+fn to_lookup_candidate(prepared: &CalcValue) -> Result<LookupCandidate, XmatchEvalError> {
+    match prepared.core() {
+        CoreValue::Empty => Ok(LookupCandidate::BlankCell),
+        CoreValue::Missing => Ok(LookupCandidate::Skip),
         _ => Ok(match prepared_lookup_candidate_comparable(prepared)? {
             Some(value) => LookupCandidate::Comparable(value),
             None => LookupCandidate::Skip,
@@ -184,12 +171,10 @@ fn to_lookup_candidate(prepared: &PreparedValue) -> Result<LookupCandidate, Xmat
     }
 }
 
-fn parse_optional_match_mode(
-    mode: Option<&PreparedValue>,
-) -> Result<XmatchMatchMode, XmatchEvalError> {
+fn parse_optional_match_mode(mode: Option<&CalcValue>) -> Result<XmatchMatchMode, XmatchEvalError> {
     match mode {
         None => Ok(XmatchMatchMode::Exact),
-        Some(PreparedValue::MissingArg) => Ok(XmatchMatchMode::Exact),
+        Some(p) if matches!(p.core(), CoreValue::Missing) => Ok(XmatchMatchMode::Exact),
         Some(p) => {
             parse_match_mode(coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?)
         }
@@ -197,11 +182,11 @@ fn parse_optional_match_mode(
 }
 
 fn parse_optional_search_mode(
-    mode: Option<&PreparedValue>,
+    mode: Option<&CalcValue>,
 ) -> Result<XmatchSearchMode, XmatchEvalError> {
     match mode {
         None => Ok(XmatchSearchMode::FirstToLast),
-        Some(PreparedValue::MissingArg) => Ok(XmatchSearchMode::FirstToLast),
+        Some(p) if matches!(p.core(), CoreValue::Missing) => Ok(XmatchSearchMode::FirstToLast),
         Some(p) => {
             parse_search_mode(coerce_prepared_to_number(p).map_err(XmatchEvalError::Coercion)?)
         }
@@ -310,7 +295,7 @@ fn candidate_matches(
 }
 
 fn find_blank_cell_scan(
-    lookup_array: &[PreparedValue],
+    lookup_array: &[CalcValue],
     search_mode: XmatchSearchMode,
 ) -> Result<f64, XmatchEvalError> {
     for idx in scan_indices(search_mode, lookup_array.len()) {
@@ -327,7 +312,7 @@ fn find_blank_cell_scan(
 
 fn xmatch_scan_exact_or_approximate(
     lookup_value: &XmatchComparable,
-    lookup_array: &[PreparedValue],
+    lookup_array: &[CalcValue],
     match_mode: XmatchMatchMode,
     search_mode: XmatchSearchMode,
 ) -> Result<f64, XmatchEvalError> {
@@ -378,7 +363,7 @@ fn xmatch_scan_exact_or_approximate(
 }
 
 fn collect_binary_candidates(
-    lookup_array: &[PreparedValue],
+    lookup_array: &[CalcValue],
 ) -> Result<Option<Vec<XmatchComparable>>, XmatchEvalError> {
     let mut out = Vec::with_capacity(lookup_array.len());
     for value in lookup_array {
@@ -443,7 +428,7 @@ fn first_less_or_equal_descending(
 
 fn xmatch_binary_search(
     lookup_value: &XmatchComparable,
-    lookup_array: &[PreparedValue],
+    lookup_array: &[CalcValue],
     match_mode: XmatchMatchMode,
     search_mode: XmatchSearchMode,
 ) -> Result<f64, XmatchEvalError> {
@@ -518,10 +503,10 @@ fn xmatch_binary_search(
 }
 
 pub(crate) fn eval_xmatch_adapter_prepared_with_blank_behavior(
-    lookup_value: &PreparedValue,
-    lookup_array: &[PreparedValue],
-    match_mode: Option<&PreparedValue>,
-    search_mode: Option<&PreparedValue>,
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
     blank_behavior: BlankLookupBehavior,
 ) -> Result<f64, XmatchEvalError> {
     if lookup_array.is_empty() {
@@ -572,10 +557,10 @@ pub(crate) fn eval_xmatch_adapter_prepared_with_blank_behavior(
 }
 
 pub fn eval_xmatch_adapter_prepared(
-    lookup_value: &PreparedValue,
-    lookup_array: &[PreparedValue],
-    match_mode: Option<&PreparedValue>,
-    search_mode: Option<&PreparedValue>,
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
 ) -> Result<f64, XmatchEvalError> {
     eval_xmatch_adapter_prepared_with_blank_behavior(
         lookup_value,
@@ -587,13 +572,13 @@ pub fn eval_xmatch_adapter_prepared(
 }
 
 pub fn eval_xmatch_adapter_prepared_value(
-    lookup_value: &PreparedValue,
-    lookup_array: &[PreparedValue],
-    match_mode: Option<&PreparedValue>,
-    search_mode: Option<&PreparedValue>,
-) -> Result<FunctionValue, XmatchEvalError> {
+    lookup_value: &CalcValue,
+    lookup_array: &[CalcValue],
+    match_mode: Option<&CalcValue>,
+    search_mode: Option<&CalcValue>,
+) -> Result<CalcValue, XmatchEvalError> {
     eval_xmatch_adapter_prepared(lookup_value, lookup_array, match_mode, search_mode)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
 }
 
 pub fn validate_xmatch_surface_arity(argc: usize) -> Result<(), XmatchEvalError> {
@@ -613,14 +598,12 @@ mod tests {
     use super::*;
     use crate::value::{ExcelText, WorksheetErrorCode};
 
-    fn num(n: f64) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Number(n))
+    fn num(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
-    fn text(s: &str) -> PreparedValue {
-        PreparedValue::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
-            s.encode_utf16().collect(),
-        )))
+    fn text(s: &str) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(s.encode_utf16().collect())))
     }
 
     #[test]
@@ -924,11 +907,8 @@ mod tests {
         assert_eq!(text_match, Ok(2.0));
 
         let logical_match = eval_xmatch_adapter_prepared(
-            &PreparedValue::Eval(FunctionValue::Logical(true)),
-            &[
-                PreparedValue::Eval(FunctionValue::Logical(false)),
-                PreparedValue::Eval(FunctionValue::Logical(true)),
-            ],
+            &(CalcValue::logical(true)),
+            &[(CalcValue::logical(false)), (CalcValue::logical(true))],
             None,
             Some(&num(2.0)),
         );
@@ -940,8 +920,8 @@ mod tests {
         let got = eval_xmatch_adapter_prepared(
             &num(2.0),
             &[num(1.0), num(2.0), num(3.0)],
-            Some(&PreparedValue::MissingArg),
-            Some(&PreparedValue::MissingArg),
+            Some(&CalcValue::missing()),
+            Some(&CalcValue::missing()),
         );
         assert_eq!(got, Ok(2.0));
     }
@@ -949,16 +929,16 @@ mod tests {
     #[test]
     fn eval_xmatch_adapter_prepared_blank_lookup_matches_true_blank_cells() {
         let blank_lookup = eval_xmatch_adapter_prepared(
-            &PreparedValue::EmptyCell,
-            &[PreparedValue::EmptyCell, text(""), num(1.0)],
+            &CalcValue::empty(),
+            &[CalcValue::empty(), text(""), num(1.0)],
             Some(&num(0.0)),
             None,
         );
         assert_eq!(blank_lookup, Ok(1.0));
 
         let omitted_lookup = eval_xmatch_adapter_prepared(
-            &PreparedValue::MissingArg,
-            &[PreparedValue::EmptyCell, text(""), num(1.0)],
+            &CalcValue::missing(),
+            &[CalcValue::empty(), text(""), num(1.0)],
             Some(&num(0.0)),
             None,
         );
@@ -969,7 +949,7 @@ mod tests {
     fn eval_xmatch_adapter_prepared_empty_string_does_not_match_true_blank_cells() {
         let got = eval_xmatch_adapter_prepared(
             &text(""),
-            &[PreparedValue::EmptyCell, text(""), num(1.0)],
+            &[CalcValue::empty(), text(""), num(1.0)],
             Some(&num(0.0)),
             None,
         );
@@ -995,7 +975,7 @@ mod tests {
     #[test]
     fn eval_xmatch_adapter_prepared_propagates_lookup_value_error_lane() {
         let got = eval_xmatch_adapter_prepared(
-            &PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::Value)),
+            &(CalcValue::error(WorksheetErrorCode::Value)),
             &[num(1.0)],
             None,
             None,
@@ -1012,9 +992,7 @@ mod tests {
     fn eval_xmatch_adapter_prepared_skips_lookup_array_errors_when_match_exists() {
         let got = eval_xmatch_adapter_prepared(
             &num(2.0),
-            &[PreparedValue::Eval(FunctionValue::Error(
-                WorksheetErrorCode::Value,
-            ))],
+            &[(CalcValue::error(WorksheetErrorCode::Value))],
             None,
             None,
         );
@@ -1022,10 +1000,7 @@ mod tests {
 
         let got_match = eval_xmatch_adapter_prepared(
             &num(2.0),
-            &[
-                PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
-                num(2.0),
-            ],
+            &[(CalcValue::error(WorksheetErrorCode::Div0)), num(2.0)],
             None,
             None,
         );
@@ -1038,7 +1013,7 @@ mod tests {
             &num(9.0),
             &[
                 num(1.0),
-                PreparedValue::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+                (CalcValue::error(WorksheetErrorCode::Div0)),
                 num(2.0),
             ],
             None,
@@ -1050,6 +1025,6 @@ mod tests {
     #[test]
     fn eval_xmatch_adapter_prepared_value_wraps_index_as_eval_number() {
         let got = eval_xmatch_adapter_prepared_value(&num(3.0), &[num(3.0), num(4.0)], None, None);
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 }

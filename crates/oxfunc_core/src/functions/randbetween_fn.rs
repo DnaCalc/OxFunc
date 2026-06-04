@@ -6,7 +6,8 @@ use crate::function::{
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::rand_fn::RandomProvider;
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const RANDBETWEEN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.RANDBETWEEN",
@@ -38,7 +39,7 @@ pub fn randbetween_kernel(
     provider: &(impl RandomProvider + ?Sized),
     bottom: f64,
     top: f64,
-) -> Result<FunctionValue, RandbetweenEvalError> {
+) -> Result<CalcValue, RandbetweenEvalError> {
     // Excel truncates bottom upward (ceil) and top downward (floor) to integers.
     let lo = bottom.ceil();
     let hi = top.floor();
@@ -61,14 +62,14 @@ pub fn randbetween_kernel(
     let result = lo + (raw * range).floor();
     // Clamp to hi in case of floating-point edge case where raw * range rounds up.
     let clamped = result.min(hi);
-    Ok(FunctionValue::Number(clamped))
+    Ok(CalcValue::number(clamped))
 }
 
 pub fn eval_randbetween_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
     provider: &(impl RandomProvider + ?Sized),
-) -> Result<FunctionValue, RandbetweenEvalError> {
+) -> Result<CalcValue, RandbetweenEvalError> {
     if !RANDBETWEEN_META.arity.accepts(args.len()) {
         return Err(RandbetweenEvalError::ArityMismatch {
             expected_min: RANDBETWEEN_META.arity.min,
@@ -124,7 +125,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -137,8 +138,8 @@ mod tests {
         }
     }
 
-    fn num(v: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(v))
+    fn num(v: f64) -> CalcValue {
+        (CalcValue::number(v))
     }
 
     // --- Meta tests ---
@@ -194,33 +195,33 @@ mod tests {
     fn randbetween_basic_range() {
         // provider=0.5, range [1,10]: lo=1, hi=10, range_size=10, 1 + floor(0.5*10) = 1+5 = 6
         let got = randbetween_kernel(&FixedProvider { value: 0.5 }, 1.0, 10.0);
-        assert_eq!(got, Ok(FunctionValue::Number(6.0)));
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
     }
 
     #[test]
     fn randbetween_provider_zero_gives_bottom() {
         let got = randbetween_kernel(&FixedProvider { value: 0.0 }, 1.0, 10.0);
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
     fn randbetween_provider_near_one_gives_top() {
         // 0.999... * 10 = 9.99, floor = 9, 1 + 9 = 10
         let got = randbetween_kernel(&FixedProvider { value: 0.999 }, 1.0, 10.0);
-        assert_eq!(got, Ok(FunctionValue::Number(10.0)));
+        assert_eq!(got, Ok(CalcValue::number(10.0)));
     }
 
     #[test]
     fn randbetween_equal_bounds() {
         let got = randbetween_kernel(&FixedProvider { value: 0.5 }, 5.0, 5.0);
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
     fn randbetween_negative_range() {
         // range [-10, -1]: lo=-10, hi=-1, range_size=10, -10 + floor(0.3*10) = -10+3 = -7
         let got = randbetween_kernel(&FixedProvider { value: 0.3 }, -10.0, -1.0);
-        assert_eq!(got, Ok(FunctionValue::Number(-7.0)));
+        assert_eq!(got, Ok(CalcValue::number(-7.0)));
     }
 
     #[test]
@@ -228,7 +229,7 @@ mod tests {
         // bottom=1.3 -> ceil=2, top=4.7 -> floor=4, range [2,4], size=3
         // 2 + floor(0.5*3) = 2+1 = 3
         let got = randbetween_kernel(&FixedProvider { value: 0.5 }, 1.3, 4.7);
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -236,7 +237,7 @@ mod tests {
         // bottom=-4.7 -> ceil=-4, top=-1.3 -> floor=-2, range [-4,-2], size=3
         // -4 + floor(0.0*3) = -4+0 = -4
         let got = randbetween_kernel(&FixedProvider { value: 0.0 }, -4.7, -1.3);
-        assert_eq!(got, Ok(FunctionValue::Number(-4.0)));
+        assert_eq!(got, Ok(CalcValue::number(-4.0)));
     }
 
     #[test]
@@ -267,21 +268,18 @@ mod tests {
             &MockResolver,
             &FixedProvider { value: 0.5 },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(6.0)));
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
     }
 
     #[test]
     fn randbetween_surface_boolean_coercion() {
         // TRUE=1, FALSE=0 -> range [0,1]
         let got = eval_randbetween_surface(
-            &[
-                FunctionArg::Eval(FunctionValue::Logical(false)),
-                FunctionArg::Eval(FunctionValue::Logical(true)),
-            ],
+            &[(CalcValue::logical(false)), (CalcValue::logical(true))],
             &MockResolver,
             &FixedProvider { value: 0.0 },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     // --- Error mapping tests ---

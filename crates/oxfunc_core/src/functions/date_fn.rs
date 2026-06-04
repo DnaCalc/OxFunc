@@ -4,11 +4,12 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
-    PreparedValue, coerce_prepared_to_number, prepare_calc_values_only, prepared_from_calc_value,
+    coerce_prepared_to_number, prepare_calc_values_only, prepared_from_calc_value,
     run_values_only_prepared,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcValue, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const DATE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DATE",
@@ -31,7 +32,7 @@ pub enum DateEvalError {
     NumericDomain,
 }
 
-fn truncate_to_i64(arg: &PreparedValue) -> Result<i64, DateEvalError> {
+fn truncate_to_i64(arg: &CalcValue) -> Result<i64, DateEvalError> {
     Ok(coerce_prepared_to_number(arg)
         .map_err(DateEvalError::Coercion)?
         .trunc() as i64)
@@ -76,7 +77,7 @@ fn excel_serial_from_ymd_unbounded_1900(year: i64, month: i64, day: i64) -> i64 
     if days >= 60 { days + 1 } else { days }
 }
 
-pub fn eval_date_adapter_prepared(args: &[PreparedValue]) -> Result<FunctionValue, DateEvalError> {
+pub fn eval_date_adapter_prepared(args: &[CalcValue]) -> Result<CalcValue, DateEvalError> {
     if !DATE_META.arity.accepts(args.len()) {
         return Err(DateEvalError::ArityMismatch {
             expected: DATE_META.arity.min,
@@ -107,13 +108,13 @@ pub fn eval_date_adapter_prepared(args: &[PreparedValue]) -> Result<FunctionValu
         return Err(DateEvalError::NumericDomain);
     }
 
-    Ok(FunctionValue::Number(serial as f64))
+    Ok(CalcValue::number(serial as f64))
 }
 
 pub fn eval_date_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, DateEvalError> {
+) -> Result<CalcValue, DateEvalError> {
     run_values_only_prepared(
         args,
         resolver,
@@ -159,7 +160,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -173,61 +174,61 @@ mod tests {
     fn eval_date_handles_1900_serial_baselines() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
     }
 
     #[test]
     fn eval_date_preserves_excel_1900_leap_bug_seed() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.0)),
-                FunctionArg::Eval(FunctionValue::Number(29.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(2.0)),
+                (CalcValue::number(29.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(60.0)));
+        assert_eq!(got, Ok(CalcValue::number(60.0)));
     }
 
     #[test]
     fn eval_date_normalizes_month_overflow() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(2024.0)),
-                FunctionArg::Eval(FunctionValue::Number(14.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(2024.0)),
+                (CalcValue::number(14.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(45689.0)));
+        assert_eq!(got, Ok(CalcValue::number(45689.0)));
     }
 
     #[test]
     fn eval_date_allows_serial_zero_boundary() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(0.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_date_rejects_month_zero_boundary() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
@@ -238,48 +239,48 @@ mod tests {
     fn eval_date_normalizes_march_zero_to_excel_1900_leap_bug_day() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(3.0)),
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(3.0)),
+                (CalcValue::number(0.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(60.0)));
+        assert_eq!(got, Ok(CalcValue::number(60.0)));
     }
 
     #[test]
     fn eval_date_normalizes_january_sixtieth_to_excel_1900_leap_bug_day() {
         let got = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(1900.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(60.0)),
+                (CalcValue::number(1900.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(60.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got, Ok(FunctionValue::Number(60.0)));
+        assert_eq!(got, Ok(CalcValue::number(60.0)));
     }
 
     #[test]
     fn eval_date_normalizes_short_year_and_truncates_day() {
         let got_short_year = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(0.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
+                (CalcValue::number(0.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(1.0)),
             ],
             &NoResolver,
         );
-        assert_eq!(got_short_year, Ok(FunctionValue::Number(1.0)));
+        assert_eq!(got_short_year, Ok(CalcValue::number(1.0)));
 
         let got_truncated_day = eval_date_surface(
             &[
-                FunctionArg::Eval(FunctionValue::Number(2008.0)),
-                FunctionArg::Eval(FunctionValue::Number(1.0)),
-                FunctionArg::Eval(FunctionValue::Number(2.9)),
+                (CalcValue::number(2008.0)),
+                (CalcValue::number(1.0)),
+                (CalcValue::number(2.9)),
             ],
             &NoResolver,
         );
-        assert_eq!(got_truncated_day, Ok(FunctionValue::Number(39449.0)));
+        assert_eq!(got_truncated_day, Ok(CalcValue::number(39449.0)));
     }
 }

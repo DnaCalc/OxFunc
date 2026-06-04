@@ -11,7 +11,8 @@ use crate::resolver::ReferenceSystemProvider;
 use crate::semantic_kernel::{
     NumericalReductionPolicy, SemanticKernelRuntimeError, reduce_numeric_sum,
 };
-use crate::value::{CalcValue, CoreValue, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{CoreValue, WorksheetErrorCode};
 
 pub const SUM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUM",
@@ -59,7 +60,7 @@ fn accumulate_range_like(arg: &CalcValue) -> Result<f64, CoercionError> {
 
 pub(crate) fn eval_sum_prepared_aggregate(
     args: &[AggregatePreparedValue],
-) -> Result<FunctionValue, SumEvalError> {
+) -> Result<CalcValue, SumEvalError> {
     let mut values = Vec::with_capacity(args.len());
     for item in args {
         let value = match item.origin() {
@@ -73,14 +74,14 @@ pub(crate) fn eval_sum_prepared_aggregate(
         values.push(value);
     }
     reduce_numeric_sum(NumericalReductionPolicy::SequentialLeftFold, values)
-        .map(FunctionValue::Number)
+        .map(CalcValue::number)
         .map_err(SumEvalError::SemanticKernel)
 }
 
 pub fn eval_sum_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, SumEvalError> {
+) -> Result<CalcValue, SumEvalError> {
     let argc = args.len();
     if !SUM_META.arity.accepts(argc) {
         return Err(SumEvalError::ArityMismatch {
@@ -125,13 +126,13 @@ mod tests {
         ReferenceResolutionError, ReferenceSystemCapabilities, ResolvedReferenceCell,
         ResolvedReferenceExtent, ResolvedReferenceValues,
     };
-    use crate::value::{ExcelText, FunctionArray, FunctionArrayCell, ReferenceKind, ReferenceLike};
+    use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::cell::Cell;
     use std::collections::BTreeMap;
 
     struct MockResolver {
-        resolved_value: Option<FunctionValue>,
-        by_target: BTreeMap<String, FunctionValue>,
+        resolved_value: Option<CalcValue>,
+        by_target: BTreeMap<String, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -142,7 +143,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             if let Some(value) = self.by_target.get(reference.target()) {
                 return Ok(value.clone());
@@ -168,7 +169,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             self.dense_calls.set(self.dense_calls.get() + 1);
             Err(
@@ -189,9 +190,9 @@ mod tests {
     #[test]
     fn eval_sum_on_numbers() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Number(2.0)),
-            FunctionArg::Eval(FunctionValue::Number(3.0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::number(2.0)),
+            (CalcValue::number(3.0)),
         ];
         let got = eval_sum_surface(
             &args,
@@ -200,14 +201,14 @@ mod tests {
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(6.0)));
+        assert_eq!(got, Ok(CalcValue::number(6.0)));
     }
 
     #[test]
     fn eval_sum_coerces_direct_logical_and_numeric_text() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Logical(true)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::logical(true)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
         ];
@@ -218,14 +219,14 @@ mod tests {
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
     fn eval_sum_rejects_direct_non_numeric_text() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::number(1.0)),
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "bad".encode_utf16().collect(),
             ))),
         ];
@@ -242,9 +243,9 @@ mod tests {
     #[test]
     fn eval_sum_treats_missing_and_empty_direct_args_as_zero() {
         let args = vec![
-            FunctionArg::MissingArg,
-            FunctionArg::EmptyCell,
-            FunctionArg::Eval(FunctionValue::Number(4.0)),
+            CalcValue::missing(),
+            CalcValue::empty(),
+            (CalcValue::number(4.0)),
         ];
         let got = eval_sum_surface(
             &args,
@@ -253,14 +254,14 @@ mod tests {
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(4.0)));
+        assert_eq!(got, Ok(CalcValue::number(4.0)));
     }
 
     #[test]
     fn eval_sum_propagates_direct_scalar_error() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Number(1.0)),
-            FunctionArg::Eval(FunctionValue::Error(WorksheetErrorCode::Div0)),
+            (CalcValue::number(1.0)),
+            (CalcValue::error(WorksheetErrorCode::Div0)),
         ];
         let got = eval_sum_surface(
             &args,
@@ -282,17 +283,17 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(Alpha!A1:A2,Alpha!B2)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Number(11.0),
-                    FunctionArrayCell::Number(13.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::number(11.0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap(),
             ),
         );
         let got = eval_sum_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(Alpha!A1:A2,Alpha!B2)",
             ))],
@@ -301,7 +302,7 @@ mod tests {
                 by_target,
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(31.0)));
+        assert_eq!(got, Ok(CalcValue::number(31.0)));
     }
 
     #[test]
@@ -309,17 +310,17 @@ mod tests {
         let mut by_target = BTreeMap::new();
         by_target.insert(
             "(A1:A2,C1)".to_string(),
-            FunctionValue::Array(
-                FunctionArray::from_rows(vec![vec![
-                    FunctionArrayCell::Number(7.0),
-                    FunctionArrayCell::Error(WorksheetErrorCode::Div0),
-                    FunctionArrayCell::Number(13.0),
+            CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(7.0),
+                    CalcValue::error(WorksheetErrorCode::Div0),
+                    CalcValue::number(13.0),
                 ]])
                 .unwrap(),
             ),
         );
         let got = eval_sum_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::MultiArea,
                 "(A1:A2,C1)",
             ))],
@@ -338,87 +339,90 @@ mod tests {
 
     #[test]
     fn eval_sum_ignores_reference_derived_text_and_logical() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A3".to_string(),
         ))];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(5.0)],
-                        vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::text(ExcelText::from_utf16_code_units(
                             "2".encode_utf16().collect(),
                         ))],
-                        vec![FunctionArrayCell::Logical(true)],
+                        vec![CalcValue::logical(true)],
                     ])
                     .unwrap(),
                 )),
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
     fn eval_sum_admits_opaque_reference_value_through_generic_resolver() {
-        let args = vec![FunctionArg::Eval(FunctionValue::Reference(
-            ReferenceLike::new(ReferenceKind::Area, "NameBackedRange".to_string()),
-        ))];
+        let args = vec![
+            (CalcValue::reference(ReferenceLike::new(
+                ReferenceKind::Area,
+                "NameBackedRange".to_string(),
+            ))),
+        ];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![vec![
-                        FunctionArrayCell::Number(5.0),
-                        FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![vec![
+                        CalcValue::number(5.0),
+                        CalcValue::text(ExcelText::from_utf16_code_units(
                             "8".encode_utf16().collect(),
                         )),
-                        FunctionArrayCell::Logical(true),
+                        CalcValue::logical(true),
                     ]])
                     .unwrap(),
                 )),
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
     fn eval_sum_combines_direct_scalar_and_reference_derived_policies() {
         let args = vec![
-            FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(
+            (CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             ))),
-            FunctionArg::Reference(ReferenceLike::new(ReferenceKind::Area, "A1:A3".to_string())),
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:A3".to_string())),
         ];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::Number(5.0)],
-                        vec![FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::number(5.0)],
+                        vec![CalcValue::text(ExcelText::from_utf16_code_units(
                             "8".encode_utf16().collect(),
                         ))],
-                        vec![FunctionArrayCell::Logical(true)],
+                        vec![CalcValue::logical(true)],
                     ])
                     .unwrap(),
                 )),
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(7.0)));
+        assert_eq!(got, Ok(CalcValue::number(7.0)));
     }
 
     #[test]
     fn eval_sum_direct_array_literal_uses_array_scan_policy() {
-        let array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+        let array = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             )),
-            FunctionArrayCell::Logical(true),
+            CalcValue::logical(true),
         ]])
         .unwrap();
         let prepared = expand_aggregate_array_with_provenance(
@@ -427,7 +431,7 @@ mod tests {
         );
 
         let got = eval_sum_prepared_aggregate(&prepared);
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
@@ -439,16 +443,16 @@ mod tests {
         ];
 
         let got = eval_sum_prepared_aggregate(&prepared);
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_sum_opaque_array_fallback_uses_array_scan_policy() {
-        let array = FunctionArray::from_rows(vec![vec![
-            FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
+        let array = CalcArray::from_rows(vec![vec![
+            CalcValue::text(ExcelText::from_utf16_code_units(
                 "2".encode_utf16().collect(),
             )),
-            FunctionArrayCell::Logical(true),
+            CalcValue::logical(true),
         ]])
         .unwrap();
         let prepared = expand_aggregate_array_with_provenance(
@@ -457,26 +461,25 @@ mod tests {
         );
 
         let got = eval_sum_prepared_aggregate(&prepared);
-        assert_eq!(got, Ok(FunctionValue::Number(0.0)));
+        assert_eq!(got, Ok(CalcValue::number(0.0)));
     }
 
     #[test]
     fn eval_sum_direct_arrays_use_range_like_policy() {
-        let args = vec![FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![
-                vec![
-                    FunctionArrayCell::Number(1.0),
-                    FunctionArrayCell::Text(ExcelText::from_utf16_code_units(
-                        "2".encode_utf16().collect(),
-                    )),
-                ],
-                vec![
-                    FunctionArrayCell::Logical(true),
-                    FunctionArrayCell::Number(4.0),
-                ],
-            ])
-            .unwrap(),
-        ))];
+        let args = vec![
+            (CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![
+                        CalcValue::number(1.0),
+                        CalcValue::text(ExcelText::from_utf16_code_units(
+                            "2".encode_utf16().collect(),
+                        )),
+                    ],
+                    vec![CalcValue::logical(true), CalcValue::number(4.0)],
+                ])
+                .unwrap(),
+            )),
+        ];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
@@ -484,18 +487,20 @@ mod tests {
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
     }
 
     #[test]
     fn eval_sum_propagates_errors_from_range_like_inputs() {
-        let args = vec![FunctionArg::Eval(FunctionValue::Array(
-            FunctionArray::from_rows(vec![vec![
-                FunctionArrayCell::Number(1.0),
-                FunctionArrayCell::Error(WorksheetErrorCode::Div0),
-            ]])
-            .unwrap(),
-        ))];
+        let args = vec![
+            (CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::Div0),
+                ]])
+                .unwrap(),
+            )),
+        ];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
@@ -513,25 +518,25 @@ mod tests {
 
     #[test]
     fn eval_sum_reference_derived_empty_cells_are_ignored() {
-        let args = vec![FunctionArg::Reference(ReferenceLike::new(
+        let args = vec![CalcValue::reference(ReferenceLike::new(
             ReferenceKind::Area,
             "A1:A3".to_string(),
         ))];
         let got = eval_sum_surface(
             &args,
             &MockResolver {
-                resolved_value: Some(FunctionValue::Array(
-                    FunctionArray::from_rows(vec![
-                        vec![FunctionArrayCell::EmptyCell],
-                        vec![FunctionArrayCell::Number(3.0)],
-                        vec![FunctionArrayCell::EmptyCell],
+                resolved_value: Some(CalcValue::array(
+                    CalcArray::from_rows(vec![
+                        vec![CalcValue::empty()],
+                        vec![CalcValue::number(3.0)],
+                        vec![CalcValue::empty()],
                     ])
                     .unwrap(),
                 )),
                 by_target: BTreeMap::new(),
             },
         );
-        assert_eq!(got, Ok(FunctionValue::Number(3.0)));
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
     }
 
     #[test]
@@ -540,8 +545,8 @@ mod tests {
             values: ResolvedReferenceValues::new(
                 ResolvedReferenceExtent::new(1_048_576, 1),
                 vec![
-                    ResolvedReferenceCell::new(1, 1, FunctionArrayCell::Number(2.0)),
-                    ResolvedReferenceCell::new(1_048_576, 1, FunctionArrayCell::Number(3.0)),
+                    ResolvedReferenceCell::new(1, 1, CalcValue::number(2.0)),
+                    ResolvedReferenceCell::new(1_048_576, 1, CalcValue::number(3.0)),
                 ],
                 Some("reader:whole-column".to_string()),
             ),
@@ -549,14 +554,14 @@ mod tests {
         };
 
         let got = eval_sum_surface(
-            &[FunctionArg::Reference(ReferenceLike::new(
+            &[CalcValue::reference(ReferenceLike::new(
                 ReferenceKind::Area,
                 "A:A",
             ))],
             &resolver,
         );
 
-        assert_eq!(got, Ok(FunctionValue::Number(5.0)));
+        assert_eq!(got, Ok(CalcValue::number(5.0)));
         assert_eq!(resolver.dense_calls.get(), 0);
     }
 }

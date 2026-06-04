@@ -7,7 +7,8 @@ use crate::functions::adapters::{
     coerce_prepared_to_number, coerce_prepared_to_text, run_values_only_prepared_lifted,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{ExcelText, FunctionArg, FunctionValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::{ExcelText, WorksheetErrorCode};
 
 pub const UNICHAR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.UNICHAR",
@@ -72,9 +73,9 @@ pub fn unicode_kernel(text: &ExcelText) -> Result<f64, WorksheetErrorCode> {
 }
 
 pub fn eval_unichar_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextUnicodeEvalError> {
+) -> Result<CalcValue, TextUnicodeEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -89,7 +90,7 @@ pub fn eval_unichar_surface(
             let number =
                 coerce_prepared_to_number(&prepared[0]).map_err(TextUnicodeEvalError::Coercion)?;
             unichar_kernel(number)
-                .map(FunctionValue::Text)
+                .map(CalcValue::text)
                 .map_err(TextUnicodeEvalError::Domain)
         },
         map_text_unicode_error_to_ws,
@@ -98,9 +99,9 @@ pub fn eval_unichar_surface(
 }
 
 pub fn eval_unicode_surface(
-    args: &[FunctionArg],
+    args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<FunctionValue, TextUnicodeEvalError> {
+) -> Result<CalcValue, TextUnicodeEvalError> {
     run_values_only_prepared_lifted(
         args,
         resolver,
@@ -115,7 +116,7 @@ pub fn eval_unicode_surface(
             let text =
                 coerce_prepared_to_text(&prepared[0]).map_err(TextUnicodeEvalError::Coercion)?;
             unicode_kernel(&text)
-                .map(FunctionValue::Number)
+                .map(CalcValue::number)
                 .map_err(TextUnicodeEvalError::Domain)
         },
         map_text_unicode_error_to_ws,
@@ -147,7 +148,7 @@ mod tests {
         fn dereference(
             &self,
             request: &crate::resolver::ReferenceDereferenceRequest,
-        ) -> Result<FunctionValue, crate::resolver::ReferenceResolutionError> {
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
             Err(
                 crate::resolver::ReferenceResolutionError::UnresolvedReference {
@@ -157,12 +158,12 @@ mod tests {
         }
     }
 
-    fn text_value(units: Vec<u16>) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Text(ExcelText::from_utf16_code_units(units)))
+    fn text_value(units: Vec<u16>) -> CalcValue {
+        (CalcValue::text(ExcelText::from_utf16_code_units(units)))
     }
 
-    fn number_value(n: f64) -> FunctionArg {
-        FunctionArg::Eval(FunctionValue::Number(n))
+    fn number_value(n: f64) -> CalcValue {
+        (CalcValue::number(n))
     }
 
     fn txt(s: &str) -> ExcelText {
@@ -225,16 +226,11 @@ mod tests {
     fn eval_unichar_surface_accepts_numeric_text_and_logicals() {
         assert_eq!(
             eval_unichar_surface(&[text_value("65".encode_utf16().collect())], &NoResolver),
-            Ok(FunctionValue::Text(txt("A")))
+            Ok(CalcValue::text(txt("A")))
         );
         assert_eq!(
-            eval_unichar_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Text(ExcelText::from_utf16_code_units(vec![
-                1
-            ])))
+            eval_unichar_surface(&[(CalcValue::logical(true))], &NoResolver),
+            Ok(CalcValue::text(ExcelText::from_utf16_code_units(vec![1])))
         );
     }
 
@@ -262,17 +258,14 @@ mod tests {
     fn eval_unicode_surface_textifies_numbers_logicals_and_blanks() {
         assert_eq!(
             eval_unicode_surface(&[number_value(65.0)], &NoResolver),
-            Ok(FunctionValue::Number(54.0))
+            Ok(CalcValue::number(54.0))
         );
         assert_eq!(
-            eval_unicode_surface(
-                &[FunctionArg::Eval(FunctionValue::Logical(true))],
-                &NoResolver
-            ),
-            Ok(FunctionValue::Number(84.0))
+            eval_unicode_surface(&[(CalcValue::logical(true))], &NoResolver),
+            Ok(CalcValue::number(84.0))
         );
         assert_eq!(
-            eval_unicode_surface(&[FunctionArg::EmptyCell], &NoResolver),
+            eval_unicode_surface(&[CalcValue::empty()], &NoResolver),
             Err(TextUnicodeEvalError::Domain(WorksheetErrorCode::Value))
         );
     }
@@ -311,21 +304,21 @@ mod tests {
     fn eval_unicode_surface_preserves_w7_seed_rows() {
         assert_eq!(
             eval_unicode_surface(&[text_value(vec![0xD83D, 0xDE00])], &NoResolver),
-            Ok(FunctionValue::Number(128512.0))
+            Ok(CalcValue::number(128512.0))
         );
         assert_eq!(
             eval_unicode_surface(
                 &[text_value("e\u{0301}".encode_utf16().collect())],
                 &NoResolver
             ),
-            Ok(FunctionValue::Number(101.0))
+            Ok(CalcValue::number(101.0))
         );
         assert_eq!(
             eval_unicode_surface(
                 &[text_value("\u{00E9}".encode_utf16().collect())],
                 &NoResolver
             ),
-            Ok(FunctionValue::Number(233.0))
+            Ok(CalcValue::number(233.0))
         );
     }
 }
