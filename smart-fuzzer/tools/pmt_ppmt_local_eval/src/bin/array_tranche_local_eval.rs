@@ -1,11 +1,12 @@
 use oxfunc_core::functions::rand_fn::RandomProvider;
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
 use oxfunc_core::resolver::{
-    CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
+    CallerContext, ReferenceDereferenceRequest, ReferenceEnumerationRequest,
+    ReferenceResolutionError, ReferenceSystemCapabilities, ReferenceSystemProvider,
+    ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
 };
 use oxfunc_core::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ExcelText, ReferenceKind, ReferenceLike,
-    WorksheetErrorCode,
+    CalcArray, CalcValue, CoreValue, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
 };
 use serde::Serialize;
 use serde_json::Value as JsonValue;
@@ -103,25 +104,42 @@ enum Outcome {
 }
 
 struct CaseResolver {
-    by_target: BTreeMap<String, EvalValue>,
+    by_target: BTreeMap<String, CalcValue>,
     caller: Option<CallerContext>,
 }
 
-impl ReferenceResolver for CaseResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for CaseResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
         self.by_target
-            .get(&reference.target)
+            .get(request.reference.target())
             .cloned()
-            .ok_or_else(|| RefResolutionError::UnresolvedReference {
-                target: reference.target.clone(),
+            .ok_or_else(|| ReferenceResolutionError::UnresolvedReference {
+                target: request.reference.target().to_string(),
             })
+    }
+
+    fn enumerate_values(
+        &self,
+        request: &ReferenceEnumerationRequest,
+    ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
+        Ok(self
+            .by_target
+            .get(request.reference.target())
+            .cloned()
+            .map(|value| {
+                ResolvedReferenceValues::new(
+                    ResolvedReferenceExtent::new(1, 1),
+                    vec![ResolvedReferenceCell::new(0, 0, value)],
+                    Some("array_tranche_local_eval_fixture".to_string()),
+                )
+            }))
     }
 
     fn caller_context(&self) -> Option<CallerContext> {
@@ -292,47 +310,41 @@ fn input_to_reference(input: &JsonValue) -> Result<ReferenceLike, String> {
     Ok(ReferenceLike::new(parse_reference_kind(kind)?, target))
 }
 
-fn input_to_call_arg(input: &JsonValue) -> Result<CallArgValue, String> {
+fn input_to_calc_value(input: &JsonValue) -> Result<CalcValue, String> {
     match input_kind(input)? {
-        "number" => Ok(CallArgValue::Eval(EvalValue::Number(
+        "number" => Ok(CalcValue::number(
             input_field(input, "value")?
                 .as_f64()
                 .ok_or_else(|| "number input has non-numeric value".to_string())?,
-        ))),
+        )),
         "text" => {
             let value = input_field(input, "value")?
                 .as_str()
                 .ok_or_else(|| "text input has non-string value".to_string())?;
-            Ok(CallArgValue::Eval(EvalValue::Text(
-                ExcelText::from_interop_assignment(value),
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(value)))
         }
-        "logical" => Ok(CallArgValue::Eval(EvalValue::Logical(
+        "logical" => Ok(CalcValue::logical(
             input_field(input, "value")?
                 .as_bool()
                 .ok_or_else(|| "logical input has non-boolean value".to_string())?,
-        ))),
+        )),
         "error" => {
             let code = input_field(input, "code")?
                 .as_str()
                 .ok_or_else(|| "error input has non-string code".to_string())?;
-            Ok(CallArgValue::Eval(EvalValue::Error(
-                parse_worksheet_error_code(code)?,
-            )))
+            Ok(CalcValue::error(parse_worksheet_error_code(code)?))
         }
-        "empty_cell" => Ok(CallArgValue::EmptyCell),
-        "missing_arg" => Ok(CallArgValue::MissingArg),
-        "array" => Ok(CallArgValue::Eval(EvalValue::Array(input_to_array(
-            input_field(input, "rows")?,
-        )?))),
-        "reference" => Ok(CallArgValue::Reference(input_to_reference(input)?)),
+        "empty_cell" => Ok(CalcValue::empty()),
+        "missing_arg" => Ok(CalcValue::missing()),
+        "array" => Ok(CalcValue::array(input_to_array(input_field(input, "rows")?)?)),
+        "reference" => Ok(CalcValue::reference(input_to_reference(input)?)),
         other => Err(format!("unsupported input kind: {other}")),
     }
 }
 
-fn input_to_eval_value(input: &JsonValue) -> Result<EvalValue, String> {
+fn input_to_fixture_value(input: &JsonValue) -> Result<CalcValue, String> {
     match input_kind(input)? {
-        "number" => Ok(EvalValue::Number(
+        "number" => Ok(CalcValue::number(
             input_field(input, "value")?
                 .as_f64()
                 .ok_or_else(|| "number input has non-numeric value".to_string())?,
@@ -341,9 +353,9 @@ fn input_to_eval_value(input: &JsonValue) -> Result<EvalValue, String> {
             let value = input_field(input, "value")?
                 .as_str()
                 .ok_or_else(|| "text input has non-string value".to_string())?;
-            Ok(EvalValue::Text(ExcelText::from_interop_assignment(value)))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(value)))
         }
-        "logical" => Ok(EvalValue::Logical(
+        "logical" => Ok(CalcValue::logical(
             input_field(input, "value")?
                 .as_bool()
                 .ok_or_else(|| "logical input has non-boolean value".to_string())?,
@@ -352,22 +364,17 @@ fn input_to_eval_value(input: &JsonValue) -> Result<EvalValue, String> {
             let code = input_field(input, "code")?
                 .as_str()
                 .ok_or_else(|| "error input has non-string code".to_string())?;
-            Ok(EvalValue::Error(parse_worksheet_error_code(code)?))
+            Ok(CalcValue::error(parse_worksheet_error_code(code)?))
         }
-        "array" => Ok(EvalValue::Array(input_to_array(input_field(
-            input, "rows",
-        )?)?)),
-        "empty_cell" => Ok(EvalValue::Array(
-            EvalArray::from_rows(vec![vec![ArrayCellValue::EmptyCell]])
-                .ok_or_else(|| "invalid empty-cell fixture shape".to_string())?,
-        )),
-        "reference" => Ok(EvalValue::Reference(input_to_reference(input)?)),
+        "array" => Ok(CalcValue::array(input_to_array(input_field(input, "rows")?)?)),
+        "empty_cell" => Ok(CalcValue::empty()),
+        "reference" => Ok(CalcValue::reference(input_to_reference(input)?)),
         "missing_arg" => Err("missing_arg is not a fixture value".to_string()),
         other => Err(format!("unsupported fixture value kind: {other}")),
     }
 }
 
-fn input_to_array(rows: &JsonValue) -> Result<EvalArray, String> {
+fn input_to_array(rows: &JsonValue) -> Result<CalcArray, String> {
     let rows = rows
         .as_array()
         .ok_or_else(|| "array input rows is not an array".to_string())?;
@@ -397,12 +404,12 @@ fn input_to_array(rows: &JsonValue) -> Result<EvalArray, String> {
         converted_rows.push(converted);
     }
 
-    EvalArray::from_rows(converted_rows).ok_or_else(|| "invalid array input shape".to_string())
+    CalcArray::from_rows(converted_rows).ok_or_else(|| "invalid array input shape".to_string())
 }
 
-fn input_to_array_cell(input: &JsonValue) -> Result<ArrayCellValue, String> {
+fn input_to_array_cell(input: &JsonValue) -> Result<CalcValue, String> {
     match input_kind(input)? {
-        "number" => Ok(ArrayCellValue::Number(
+        "number" => Ok(CalcValue::number(
             input_field(input, "value")?
                 .as_f64()
                 .ok_or_else(|| "number array cell has non-numeric value".to_string())?,
@@ -411,11 +418,9 @@ fn input_to_array_cell(input: &JsonValue) -> Result<ArrayCellValue, String> {
             let value = input_field(input, "value")?
                 .as_str()
                 .ok_or_else(|| "text array cell has non-string value".to_string())?;
-            Ok(ArrayCellValue::Text(ExcelText::from_interop_assignment(
-                value,
-            )))
+            Ok(CalcValue::text(ExcelText::from_interop_assignment(value)))
         }
-        "logical" => Ok(ArrayCellValue::Logical(
+        "logical" => Ok(CalcValue::logical(
             input_field(input, "value")?
                 .as_bool()
                 .ok_or_else(|| "logical array cell has non-boolean value".to_string())?,
@@ -424,9 +429,9 @@ fn input_to_array_cell(input: &JsonValue) -> Result<ArrayCellValue, String> {
             let code = input_field(input, "code")?
                 .as_str()
                 .ok_or_else(|| "error array cell has non-string code".to_string())?;
-            Ok(ArrayCellValue::Error(parse_worksheet_error_code(code)?))
+            Ok(CalcValue::error(parse_worksheet_error_code(code)?))
         }
-        "empty_cell" => Ok(ArrayCellValue::EmptyCell),
+        "empty_cell" => Ok(CalcValue::empty()),
         "missing_arg" => Err("missing_arg is not valid inside array literals".to_string()),
         "array" => Err("nested array literals are not supported".to_string()),
         other => Err(format!("unsupported array cell kind: {other}")),
@@ -500,17 +505,7 @@ fn outcome_digest(outcome: &Outcome) -> &str {
     }
 }
 
-fn array_cell_to_outcome(cell: &ArrayCellValue) -> Outcome {
-    match cell {
-        ArrayCellValue::Number(value) => number_outcome(*value),
-        ArrayCellValue::Text(value) => text_outcome(value.to_string_lossy()),
-        ArrayCellValue::Logical(value) => logical_outcome(*value),
-        ArrayCellValue::Error(code) => error_outcome(*code),
-        ArrayCellValue::EmptyCell => empty_cell_outcome(),
-    }
-}
-
-fn array_to_outcome(array: EvalArray) -> Outcome {
+fn array_to_outcome(array: CalcArray) -> Outcome {
     let shape = array.shape();
     let mut rows = Vec::with_capacity(shape.rows);
     let mut cell_digests = Vec::with_capacity(shape.cell_count());
@@ -520,7 +515,7 @@ fn array_to_outcome(array: EvalArray) -> Outcome {
         for col in 0..shape.cols {
             let outcome = array
                 .get(row, col)
-                .map(array_cell_to_outcome)
+                .map(value_to_outcome)
                 .unwrap_or_else(|| harness_error_outcome("array_get_out_of_bounds"));
             cell_digests.push(outcome_digest(&outcome).to_string());
             row_outcomes.push(outcome);
@@ -541,16 +536,19 @@ fn array_to_outcome(array: EvalArray) -> Outcome {
     }
 }
 
-fn value_to_outcome(value: EvalValue) -> Outcome {
-    match value {
-        EvalValue::Number(value) => number_outcome(value),
-        EvalValue::Text(text) => text_outcome(text.to_string_lossy()),
-        EvalValue::Logical(value) => logical_outcome(value),
-        EvalValue::Error(code) => error_outcome(code),
-        EvalValue::Array(array) => array_to_outcome(array),
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => {
-            harness_error_outcome("non_materialized_reference_or_lambda")
-        }
+fn value_to_outcome(value: &CalcValue) -> Outcome {
+    if value.callable_value().is_some() {
+        return harness_error_outcome("non_materialized_callable");
+    }
+
+    match value.core() {
+        CoreValue::Number(value) => number_outcome(*value),
+        CoreValue::Text(text) => text_outcome(text.to_string_lossy()),
+        CoreValue::Logical(value) => logical_outcome(*value),
+        CoreValue::Error(code) => error_outcome(*code),
+        CoreValue::Empty | CoreValue::Missing => empty_cell_outcome(),
+        CoreValue::Array(array) => array_to_outcome(array.clone()),
+        CoreValue::Reference(_) => harness_error_outcome("non_materialized_reference"),
     }
 }
 
@@ -581,7 +579,7 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     let args = match case
         .args
         .iter()
-        .map(input_to_call_arg)
+        .map(input_to_calc_value)
         .collect::<Result<Vec<_>, _>>()
     {
         Ok(args) => args,
@@ -601,7 +599,7 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     let fixture_result = case
         .cell_fixture
         .iter()
-        .map(|fixture| Ok((fixture.target.clone(), input_to_eval_value(&fixture.value)?)))
+        .map(|fixture| Ok((fixture.target.clone(), input_to_fixture_value(&fixture.value)?)))
         .collect::<Result<BTreeMap<_, _>, String>>();
     let resolver = match fixture_result {
         Ok(by_target) => CaseResolver {
@@ -649,7 +647,10 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
     let (execution_status, outcome) = match eval_result {
         Ok(result) => (
             "ok",
-            result.map(value_to_outcome).unwrap_or_else(error_outcome),
+            result
+                .as_ref()
+                .map(value_to_outcome)
+                .unwrap_or_else(|code| error_outcome(*code)),
         ),
         Err(payload) => (
             "local_eval_panic",

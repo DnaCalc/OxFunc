@@ -1011,7 +1011,7 @@ function Write-RoadmapTrace {
     if ($riskBands.Count -gt 0) {
         [void]$lines.Add("- Risk bands: $(($riskBands | ForEach-Object { [string]$_ }) -join ', ').")
     }
-    $axes = @($Cases | Select-Object -ExpandProperty axis -Unique | Sort-Object)
+    $axes = @($Cases | Where-Object { $_.PSObject.Properties.Name -contains "axis" } | Select-Object -ExpandProperty axis -Unique | Sort-Object)
     if ($axes.Count -gt 0) {
         [void]$lines.Add("- Array argument axes: $(($axes | ForEach-Object { [string]$_ }) -join ', ').")
     }
