@@ -593,7 +593,9 @@ pub fn apply_unary_numeric_array_map_prepared(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::resolver::{
+        ReferenceIdentityKey, ReferenceSystemCapabilities, reference_identity_key,
+    };
     use crate::value::{
         CalcArray, CallableArityShape, CallableValue, ExcelText, OpaqueCallable, ReferenceKind,
         ReferenceLike, WorksheetErrorCode,
@@ -604,7 +606,7 @@ mod tests {
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
         resolved_value: Option<CalcValue>,
-        by_target: BTreeMap<String, CalcValue>,
+        by_reference: BTreeMap<ReferenceIdentityKey, CalcValue>,
     }
     #[derive(Debug)]
     struct TestCallableHandle;
@@ -625,7 +627,7 @@ mod tests {
             request: &crate::resolver::ReferenceDereferenceRequest,
         ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            if let Some(value) = self.by_target.get(reference.target()) {
+            if let Some(value) = self.by_reference.get(&reference_identity_key(reference)) {
                 return Ok(value.clone());
             }
             self.resolved_value.clone().ok_or(
@@ -640,7 +642,7 @@ mod tests {
         MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(value),
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         }
     }
 
@@ -680,9 +682,10 @@ mod tests {
 
     #[test]
     fn prepare_values_only_accepts_provider_materialized_multi_area_reference() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(Alpha!A1:A2,Alpha!B2)".to_string(),
+        let reference = ReferenceLike::new(ReferenceKind::MultiArea, "(Alpha!A1:A2,Alpha!B2)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&reference),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(7.0),
@@ -695,12 +698,9 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
-            by_target,
+            by_reference,
         };
-        let arg = CalcValue::reference(ReferenceLike::new(
-            ReferenceKind::MultiArea,
-            "(Alpha!A1:A2,Alpha!B2)",
-        ));
+        let arg = CalcValue::reference(reference);
 
         let prepared = prepare_arg_values_only(&arg, &resolver);
         assert_eq!(
@@ -783,9 +783,10 @@ mod tests {
 
     #[test]
     fn expand_lookup_vector_accepts_provider_materialized_multi_area_reference() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(A1:A2,C1)".to_string(),
+        let reference = ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&reference),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(1.0),
@@ -798,9 +799,9 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
-            by_target,
+            by_reference,
         };
-        let arg = CalcValue::reference(ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)"));
+        let arg = CalcValue::reference(reference);
 
         let prepared = expand_lookup_vector_arg(&arg, &resolver);
         assert_eq!(
@@ -903,7 +904,7 @@ mod tests {
                 allow_external_refs: false,
             },
             resolved_value: None,
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         };
 
         let got = map_values_only_prepared(

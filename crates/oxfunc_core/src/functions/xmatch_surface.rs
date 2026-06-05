@@ -154,14 +154,16 @@ mod tests {
     use super::*;
     use crate::coercion::CoercionError;
     use crate::function::Arity;
-    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::resolver::{
+        ReferenceIdentityKey, ReferenceSystemCapabilities, reference_identity_key,
+    };
     use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
     use std::collections::BTreeMap;
 
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
         resolved_value: Option<CalcValue>,
-        by_target: BTreeMap<String, CalcValue>,
+        by_reference: BTreeMap<ReferenceIdentityKey, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -174,7 +176,7 @@ mod tests {
             request: &crate::resolver::ReferenceDereferenceRequest,
         ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            if let Some(value) = self.by_target.get(reference.target()) {
+            if let Some(value) = self.by_reference.get(&reference_identity_key(reference)) {
                 return Ok(value.clone());
             }
             self.resolved_value.clone().ok_or(
@@ -189,7 +191,7 @@ mod tests {
         MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         }
     }
 
@@ -202,7 +204,7 @@ mod tests {
         let r = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: Some(CalcValue::number(2.0)),
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         };
 
         let got = eval_xmatch_surface(
@@ -320,9 +322,10 @@ mod tests {
 
     #[test]
     fn eval_xmatch_surface_accepts_provider_materialized_multi_area_lookup_array() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(A1:A2,C1)".to_string(),
+        let reference = ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&reference),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(1.0),
@@ -335,15 +338,12 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved_value: None,
-            by_target,
+            by_reference,
         };
 
         let got = eval_xmatch_surface(
             &(CalcValue::number(3.0)),
-            &[CalcValue::reference(ReferenceLike::new(
-                ReferenceKind::MultiArea,
-                "(A1:A2,C1)",
-            ))],
+            &[CalcValue::reference(reference)],
             None,
             None,
             &resolver,

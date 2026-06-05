@@ -22,10 +22,11 @@ use oxfunc_core::host_info::{
     AggregateCellContext, AggregateReferenceContext, CellInfoQuery, HostInfoError, HostInfoProvider,
 };
 use oxfunc_core::resolver::{
-    ReferenceDereferenceRequest, ReferenceEnumerationRequest, ReferenceResolutionError,
-    ReferenceSystemCapabilities, ReferenceSystemError, ReferenceSystemOperation,
-    ReferenceSystemProvider, ReferenceTransformKind, ReferenceTransformRequest,
-    ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
+    ReferenceDereferenceRequest, ReferenceEnumerationRequest, ReferenceIdentityKey,
+    ReferenceResolutionError, ReferenceSystemCapabilities, ReferenceSystemError,
+    ReferenceSystemOperation, ReferenceSystemProvider, ReferenceTransformKind,
+    ReferenceTransformRequest, ResolvedReferenceCell, ResolvedReferenceExtent,
+    ResolvedReferenceValues, reference_identity_key,
 };
 use oxfunc_core::value::{
     CalcArray, CalcValue, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
@@ -39,6 +40,10 @@ fn text(value: &str) -> ExcelText {
 
 fn structured_arg(target: &str) -> CalcValue {
     CalcValue::reference(ReferenceLike::new(ReferenceKind::Structured, target))
+}
+
+fn structured_key(target: &str) -> ReferenceIdentityKey {
+    reference_identity_key(&ReferenceLike::new(ReferenceKind::Structured, target))
 }
 
 fn scalar_number(n: f64) -> CalcValue {
@@ -70,16 +75,16 @@ fn sparse_values(
 
 struct StructuredSparseResolver {
     caps: ReferenceSystemCapabilities,
-    sparse_values_by_target: BTreeMap<String, ResolvedReferenceValues>,
+    sparse_values_by_reference: BTreeMap<ReferenceIdentityKey, ResolvedReferenceValues>,
     dense_calls: RefCell<Vec<ReferenceLike>>,
     sparse_calls: RefCell<Vec<ReferenceLike>>,
 }
 
 impl StructuredSparseResolver {
-    fn with_values(values: BTreeMap<String, ResolvedReferenceValues>) -> Self {
+    fn with_values(values: BTreeMap<ReferenceIdentityKey, ResolvedReferenceValues>) -> Self {
         Self {
             caps: ReferenceSystemCapabilities::permissive_local(),
-            sparse_values_by_target: values,
+            sparse_values_by_reference: values,
             dense_calls: RefCell::new(Vec::new()),
             sparse_calls: RefCell::new(Vec::new()),
         }
@@ -88,7 +93,7 @@ impl StructuredSparseResolver {
     fn with_caps(caps: ReferenceSystemCapabilities) -> Self {
         Self {
             caps,
-            sparse_values_by_target: BTreeMap::new(),
+            sparse_values_by_reference: BTreeMap::new(),
             dense_calls: RefCell::new(Vec::new()),
             sparse_calls: RefCell::new(Vec::new()),
         }
@@ -118,8 +123,8 @@ impl ReferenceSystemProvider for StructuredSparseResolver {
         let reference = &request.reference;
         self.sparse_calls.borrow_mut().push(reference.clone());
         Ok(self
-            .sparse_values_by_target
-            .get(reference.target())
+            .sparse_values_by_reference
+            .get(&reference_identity_key(reference))
             .cloned())
     }
 
@@ -185,9 +190,9 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
     let totals = "treecalc-table://Revenue[#Totals][Amount]";
     let current_row = "treecalc-table://Revenue[@Amount]";
 
-    let mut sparse_values_by_target = BTreeMap::new();
-    sparse_values_by_target.insert(
-        data_column.to_string(),
+    let mut sparse_values_by_reference = BTreeMap::new();
+    sparse_values_by_reference.insert(
+        structured_key(data_column),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(4, 1),
             vec![
@@ -199,8 +204,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
             Some("reader:treecalc-table:Revenue:data-column:Amount".to_string()),
         ),
     );
-    sparse_values_by_target.insert(
-        whole_data.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(whole_data),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(2, 2),
             vec![
@@ -211,8 +216,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
             Some("reader:treecalc-table:Revenue:data-body".to_string()),
         ),
     );
-    sparse_values_by_target.insert(
-        headers.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(headers),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 2),
             vec![
@@ -222,8 +227,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
             Some("reader:treecalc-table:Revenue:headers".to_string()),
         ),
     );
-    sparse_values_by_target.insert(
-        totals.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(totals),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 3),
             vec![
@@ -233,8 +238,8 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
             Some("reader:treecalc-table:Revenue:totals".to_string()),
         ),
     );
-    sparse_values_by_target.insert(
-        current_row.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(current_row),
         ResolvedReferenceValues::new(
             ResolvedReferenceExtent::new(1, 1),
             vec![ResolvedReferenceCell::new(1, 1, CalcValue::number(11.0))],
@@ -242,7 +247,7 @@ fn aggregate_group_consumes_structured_table_sparse_readers_as_opaque_references
         ),
     );
 
-    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_reference);
 
     assert_eq!(
         eval_sum_surface(&[structured_arg(data_column)], &resolver),
@@ -367,9 +372,9 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
     let flags = "treecalc-table://Revenue[#Data][Active]";
     let labels = "treecalc-table://Revenue[#Data][Region]";
 
-    let mut sparse_values_by_target = BTreeMap::new();
-    sparse_values_by_target.insert(
-        amounts.to_string(),
+    let mut sparse_values_by_reference = BTreeMap::new();
+    sparse_values_by_reference.insert(
+        structured_key(amounts),
         sparse_values(
             3,
             1,
@@ -380,8 +385,8 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             ],
         ),
     );
-    sparse_values_by_target.insert(
-        flags.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(flags),
         sparse_values(
             2,
             1,
@@ -391,8 +396,8 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             ],
         ),
     );
-    sparse_values_by_target.insert(
-        labels.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(labels),
         sparse_values(
             1,
             3,
@@ -402,7 +407,7 @@ fn aggregate_statistical_logical_and_text_representatives_use_sparse_structured_
             ],
         ),
     );
-    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_reference);
 
     assert_eq!(
         eval_average_surface(&[structured_arg(amounts)], &resolver),
@@ -437,9 +442,9 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
     let amounts = "treecalc-table://Revenue[#Data][Amount]";
     let returns = "treecalc-table://Revenue[#Data][Return]";
 
-    let mut sparse_values_by_target = BTreeMap::new();
-    sparse_values_by_target.insert(
-        regions.to_string(),
+    let mut sparse_values_by_reference = BTreeMap::new();
+    sparse_values_by_reference.insert(
+        structured_key(regions),
         sparse_values(
             1,
             3,
@@ -450,8 +455,8 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             ],
         ),
     );
-    sparse_values_by_target.insert(
-        amounts.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(amounts),
         sparse_values(
             1,
             3,
@@ -462,8 +467,8 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             ],
         ),
     );
-    sparse_values_by_target.insert(
-        returns.to_string(),
+    sparse_values_by_reference.insert(
+        structured_key(returns),
         sparse_values(
             1,
             3,
@@ -474,7 +479,7 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
             ],
         ),
     );
-    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_reference);
 
     assert_eq!(
         eval_match_surface(
@@ -519,9 +524,9 @@ fn lookup_match_and_criteria_representatives_use_sparse_structured_refs() {
 #[test]
 fn rows_columns_and_index_use_sparse_extent_without_selector_parsing() {
     let table = "treecalc-table://Revenue[#Data]";
-    let mut sparse_values_by_target = BTreeMap::new();
-    sparse_values_by_target.insert(table.to_string(), sparse_values(7, 3, Vec::new()));
-    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let mut sparse_values_by_reference = BTreeMap::new();
+    sparse_values_by_reference.insert(structured_key(table), sparse_values(7, 3, Vec::new()));
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_reference);
 
     assert_eq!(
         eval_rows_surface_with_resolver(&[structured_arg(table)], &resolver),
@@ -568,9 +573,9 @@ fn rows_columns_and_index_use_sparse_extent_without_selector_parsing() {
 #[test]
 fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
     let amounts = "treecalc-table://Revenue[#Data][Amount]";
-    let mut sparse_values_by_target = BTreeMap::new();
-    sparse_values_by_target.insert(
-        amounts.to_string(),
+    let mut sparse_values_by_reference = BTreeMap::new();
+    sparse_values_by_reference.insert(
+        structured_key(amounts),
         sparse_values(
             4,
             1,
@@ -582,7 +587,7 @@ fn subtotal_and_aggregate_use_sparse_values_plus_host_context() {
             ],
         ),
     );
-    let resolver = StructuredSparseResolver::with_values(sparse_values_by_target);
+    let resolver = StructuredSparseResolver::with_values(sparse_values_by_reference);
     let mut host = StructuredHostInfo::default();
     host.aggregate_contexts.insert(
         amounts.to_string(),

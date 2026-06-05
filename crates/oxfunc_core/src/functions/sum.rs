@@ -123,8 +123,9 @@ mod tests {
         AggregateArrayProvenance, expand_aggregate_array_with_provenance,
     };
     use crate::resolver::{
-        ReferenceResolutionError, ReferenceSystemCapabilities, ResolvedReferenceCell,
-        ResolvedReferenceExtent, ResolvedReferenceValues,
+        ReferenceIdentityKey, ReferenceResolutionError, ReferenceSystemCapabilities,
+        ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
+        reference_identity_key,
     };
     use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike};
     use std::cell::Cell;
@@ -132,7 +133,7 @@ mod tests {
 
     struct MockResolver {
         resolved_value: Option<CalcValue>,
-        by_target: BTreeMap<String, CalcValue>,
+        by_reference: BTreeMap<ReferenceIdentityKey, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -145,7 +146,7 @@ mod tests {
             request: &crate::resolver::ReferenceDereferenceRequest,
         ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            if let Some(value) = self.by_target.get(reference.target()) {
+            if let Some(value) = self.by_reference.get(&reference_identity_key(reference)) {
                 return Ok(value.clone());
             }
             self.resolved_value.clone().ok_or(
@@ -198,7 +199,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(6.0)));
@@ -216,7 +217,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(3.0)));
@@ -234,7 +235,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert!(matches!(got, Err(SumEvalError::Coercion(_))));
@@ -251,7 +252,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(4.0)));
@@ -267,7 +268,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(
@@ -280,9 +281,10 @@ mod tests {
 
     #[test]
     fn eval_sum_accepts_provider_materialized_multi_area_reference() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(Alpha!A1:A2,Alpha!B2)".to_string(),
+        let reference = ReferenceLike::new(ReferenceKind::MultiArea, "(Alpha!A1:A2,Alpha!B2)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&reference),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(7.0),
@@ -293,13 +295,10 @@ mod tests {
             ),
         );
         let got = eval_sum_surface(
-            &[CalcValue::reference(ReferenceLike::new(
-                ReferenceKind::MultiArea,
-                "(Alpha!A1:A2,Alpha!B2)",
-            ))],
+            &[CalcValue::reference(reference)],
             &MockResolver {
                 resolved_value: None,
-                by_target,
+                by_reference,
             },
         );
         assert_eq!(got, Ok(CalcValue::number(31.0)));
@@ -307,9 +306,10 @@ mod tests {
 
     #[test]
     fn eval_sum_preserves_provider_materialized_multi_area_error_cells() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(A1:A2,C1)".to_string(),
+        let reference = ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&reference),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(7.0),
@@ -320,13 +320,10 @@ mod tests {
             ),
         );
         let got = eval_sum_surface(
-            &[CalcValue::reference(ReferenceLike::new(
-                ReferenceKind::MultiArea,
-                "(A1:A2,C1)",
-            ))],
+            &[CalcValue::reference(reference)],
             &MockResolver {
                 resolved_value: None,
-                by_target,
+                by_reference,
             },
         );
         assert_eq!(
@@ -356,7 +353,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(5.0)));
@@ -383,7 +380,7 @@ mod tests {
                     ]])
                     .unwrap(),
                 )),
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(5.0)));
@@ -410,7 +407,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(7.0)));
@@ -484,7 +481,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(5.0)));
@@ -505,7 +502,7 @@ mod tests {
             &args,
             &MockResolver {
                 resolved_value: None,
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(
@@ -533,7 +530,7 @@ mod tests {
                     ])
                     .unwrap(),
                 )),
-                by_target: BTreeMap::new(),
+                by_reference: BTreeMap::new(),
             },
         );
         assert_eq!(got, Ok(CalcValue::number(3.0)));

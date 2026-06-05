@@ -1,5 +1,6 @@
 use crate::value::{
-    CalcArray, CalcValue, ReferenceIdentity, ReferenceKind, ReferenceLike, ReferenceSystemId,
+    CalcArray, CalcValue, CompositeReferenceOperation, ReferenceIdentity, ReferenceKind,
+    ReferenceLike, ReferenceSystemId,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -345,6 +346,76 @@ pub fn reference_identity_class(reference: &ReferenceLike) -> ReferenceIdentityC
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ReferenceIdentityKey(String);
+
+impl ReferenceIdentityKey {
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+fn hex_bytes(bytes: &[u8]) -> String {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    let mut out = String::with_capacity(bytes.len() * 2);
+    for byte in bytes {
+        out.push(HEX[(byte >> 4) as usize] as char);
+        out.push(HEX[(byte & 0x0f) as usize] as char);
+    }
+    out
+}
+
+fn hex_u16(units: &[u16]) -> String {
+    const HEX: &[u8; 16] = b"0123456789abcdef";
+    let mut out = String::with_capacity(units.len() * 4);
+    for unit in units {
+        out.push(HEX[((unit >> 12) & 0x0f) as usize] as char);
+        out.push(HEX[((unit >> 8) & 0x0f) as usize] as char);
+        out.push(HEX[((unit >> 4) & 0x0f) as usize] as char);
+        out.push(HEX[(unit & 0x0f) as usize] as char);
+    }
+    out
+}
+
+fn compose_op_key(operation: CompositeReferenceOperation) -> &'static str {
+    match operation {
+        CompositeReferenceOperation::Union => "union",
+        CompositeReferenceOperation::Intersection => "intersection",
+        CompositeReferenceOperation::SpillExpansion => "spill_expansion",
+        CompositeReferenceOperation::Selector => "selector",
+    }
+}
+
+#[must_use]
+pub fn reference_identity_key(reference: &ReferenceLike) -> ReferenceIdentityKey {
+    let identity = match &reference.identity {
+        ReferenceIdentity::Textual(textual) => {
+            format!(
+                "{:?}:{}",
+                textual.kind,
+                hex_u16(textual.text.utf16_code_units())
+            )
+        }
+        ReferenceIdentity::Opaque(handle) => format!("opaque:{}", hex_bytes(&handle.id.bytes)),
+        ReferenceIdentity::Composite(composite) => {
+            let member_keys = composite
+                .members
+                .iter()
+                .map(reference_identity_key)
+                .map(|key| key.0)
+                .collect::<Vec<_>>()
+                .join(",");
+            format!(
+                "composite:{}:[{}]",
+                compose_op_key(composite.operation),
+                member_keys
+            )
+        }
+    };
+    ReferenceIdentityKey(format!("{}|{}", reference.system.0, identity))
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ResolvedReferenceExtent {
     pub rows: usize,
@@ -546,7 +617,7 @@ mod tests {
     struct MockResolver {
         caps: ReferenceSystemCapabilities,
         resolved: Option<CalcValue>,
-        by_target: BTreeMap<String, CalcValue>,
+        by_reference: BTreeMap<ReferenceIdentityKey, CalcValue>,
     }
 
     impl ReferenceSystemProvider for MockResolver {
@@ -559,7 +630,7 @@ mod tests {
             request: &crate::resolver::ReferenceDereferenceRequest,
         ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
             let reference = &request.reference;
-            if let Some(value) = self.by_target.get(reference.target()) {
+            if let Some(value) = self.by_reference.get(&reference_identity_key(reference)) {
                 return Ok(value.clone());
             }
             match &self.resolved {
@@ -615,6 +686,32 @@ mod tests {
     }
 
     #[test]
+    fn reference_identity_key_uses_raw_textual_identity_units() {
+        let high_surrogate = ReferenceLike::textual(
+            ReferenceSystemId::excel_grid_v1(),
+            ReferenceKind::A1,
+            ExcelText::from_utf16_code_units(vec![0xd800]),
+            None,
+        );
+        let low_surrogate = ReferenceLike::textual(
+            ReferenceSystemId::excel_grid_v1(),
+            ReferenceKind::A1,
+            ExcelText::from_utf16_code_units(vec![0xdc00]),
+            None,
+        );
+
+        assert_ne!(
+            reference_identity_key(&high_surrogate),
+            reference_identity_key(&low_surrogate)
+        );
+        assert!(
+            reference_identity_key(&high_surrogate)
+                .as_str()
+                .contains("d800")
+        );
+    }
+
+    #[test]
     fn null_reference_system_provider_rejects_reference_capabilities() {
         let reference = ReferenceLike::new(ReferenceKind::A1, "A1");
 
@@ -664,7 +761,7 @@ mod tests {
                 allow_external_refs: false,
             },
             resolved: Some(CalcValue::number(1.0)),
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         };
 
         let input = ReferenceLike::new(ReferenceKind::ThreeD, "Sheet1:Sheet2!A1".to_string());
@@ -686,7 +783,7 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved: Some(CalcValue::number(1.0)),
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         };
         let input = ReferenceLike::new(ReferenceKind::A1, "[External.xlsx]Sheet1!A1".to_string());
 
@@ -707,7 +804,7 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved: Some(CalcValue::number(3.0)),
-            by_target: BTreeMap::new(),
+            by_reference: BTreeMap::new(),
         };
 
         let input = ReferenceLike::new(ReferenceKind::A1, "  A1 ".to_string());
@@ -718,9 +815,10 @@ mod tests {
 
     #[test]
     fn resolve_delegates_multi_area_references_to_provider() {
-        let mut by_target = BTreeMap::new();
-        by_target.insert(
-            "(A1:A2,C1)".to_string(),
+        let multi_area = ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)");
+        let mut by_reference = BTreeMap::new();
+        by_reference.insert(
+            reference_identity_key(&multi_area),
             CalcValue::array(
                 CalcArray::from_rows(vec![vec![
                     CalcValue::number(7.0),
@@ -733,13 +831,10 @@ mod tests {
         let resolver = MockResolver {
             caps: ReferenceSystemCapabilities::permissive_local(),
             resolved: None,
-            by_target,
+            by_reference,
         };
 
-        let got = resolve_eval_value(
-            &resolver,
-            &ReferenceLike::new(ReferenceKind::MultiArea, "(A1:A2,C1)"),
-        );
+        let got = resolve_eval_value(&resolver, &multi_area);
         assert_eq!(
             got,
             Ok(CalcValue::array(
