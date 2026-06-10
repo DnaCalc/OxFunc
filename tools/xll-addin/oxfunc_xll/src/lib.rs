@@ -20,11 +20,12 @@ use oxfunc_core::locale_format::{
     LocaleValueParser, ParseFailure, WorkbookDateSystem, format_profile,
 };
 use oxfunc_core::resolver::{
-    CallerContext, RefResolutionError, ReferenceResolver, ResolverCapabilities,
+    CallerContext, ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
 };
 use oxfunc_core::value::{
-    ArrayCellValue, ArrayShape, CalcValue, CallArgValue, CoreValue, EvalArray, EvalValue,
-    ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode,
+    ArrayShape, CalcArray, CalcValue, CoreValue, ExcelText, ReferenceKind, ReferenceLike,
+    WorksheetErrorCode,
 };
 use windows_sys::Win32::Foundation::HMODULE;
 use windows_sys::Win32::System::LibraryLoader::{
@@ -409,16 +410,16 @@ struct ExcelReferenceResolver {
     caller: Option<CallerContext>,
 }
 
-impl ReferenceResolver for ExcelReferenceResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for ExcelReferenceResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        resolve_reference_via_excel(reference)
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
+        resolve_reference_via_excel(&request.reference)
     }
 
     fn caller_context(&self) -> Option<CallerContext> {
@@ -477,7 +478,7 @@ fn normalize_sheet_prefix(prefix: &str) -> String {
     trimmed.to_string()
 }
 
-fn eval_formula_via_excel(formula_text: &str) -> Result<EvalValue, HostInfoError> {
+fn eval_formula_via_excel(formula_text: &str) -> Result<CalcValue, HostInfoError> {
     let mut formula = TempXlString::new(formula_text);
     let mut args = [formula.oper_mut_ptr()];
     let (status, mut out) = call_excel_special_with_status(XLF_EVALUATE, &mut args);
@@ -487,7 +488,7 @@ fn eval_formula_via_excel(formula_text: &str) -> Result<EvalValue, HostInfoError
         });
     }
 
-    let value = resolved_eval_from_call_arg(call_arg_from_xloper(&out, false));
+    let value = calc_value_from_xloper(&out, false);
     free_excel_result_if_needed(&mut out);
     Ok(value)
 }
@@ -520,9 +521,9 @@ fn excel_number_literal(value: f64) -> Result<String, FormatFailure> {
     Ok(format!("{value:.17e}"))
 }
 
-fn expect_excel_text(value: EvalValue, code: &str) -> Result<ExcelText, FormatFailure> {
-    match value {
-        EvalValue::Text(text) => Ok(text),
+fn expect_excel_text(value: CalcValue, code: &str) -> Result<ExcelText, FormatFailure> {
+    match value.core {
+        CoreValue::Text(text) => Ok(text),
         _ => Err(FormatFailure::UnsupportedCode(code.to_string())),
     }
 }
@@ -536,7 +537,10 @@ impl LocaleValueParser for XllLocaleValueParser {
     ) -> Result<f64, ParseFailure> {
         let formula = format!("VALUE({})", excel_string_literal(text));
         match eval_formula_via_excel(&formula) {
-            Ok(EvalValue::Number(value)) => Ok(value),
+            Ok(CalcValue {
+                core: CoreValue::Number(value),
+                ..
+            }) => Ok(value),
             _ => Err(ParseFailure::UnsupportedText(text.to_string())),
         }
     }
@@ -591,26 +595,28 @@ impl HostInfoProvider for ExcelHostInfoProvider {
         &self,
         query: CellInfoQuery,
         reference: Option<&ReferenceLike>,
-    ) -> Result<EvalValue, HostInfoError> {
+    ) -> Result<CalcValue, HostInfoError> {
         if matches!(query, CellInfoQuery::Width) {
             if let Some(reference) = reference {
-                return eval_formula_via_excel(&format!("CELL(\"width\",{})", reference.target));
+                return eval_formula_via_excel(&format!("CELL(\"width\",{})", reference.target()));
             }
         }
         if matches!(query, CellInfoQuery::IsFormula) {
             let reference = reference.ok_or_else(|| HostInfoError::ProviderFailure {
                 detail: "ISFORMULA requires a reference".to_string(),
             })?;
-            return eval_formula_via_excel(&format!("ISFORMULA({})", reference.target));
+            return eval_formula_via_excel(&format!("ISFORMULA({})", reference.target()));
         }
         let formula = match reference {
-            Some(reference) => format!("CELL(\"{}\",{})", cell_query_text(query), reference.target),
+            Some(reference) => {
+                format!("CELL(\"{}\",{})", cell_query_text(query), reference.target())
+            }
             None => format!("CELL(\"{}\")", cell_query_text(query)),
         };
         eval_formula_via_excel(&formula)
     }
 
-    fn query_info(&self, query: InfoQuery) -> Result<EvalValue, HostInfoError> {
+    fn query_info(&self, query: InfoQuery) -> Result<CalcValue, HostInfoError> {
         let formula = format!("INFO(\"{}\")", info_query_text(query));
         eval_formula_via_excel(&formula)
     }
@@ -886,7 +892,7 @@ fn sheet_id_from_prefix(prefix: &str) -> Option<IdSheet> {
 }
 
 fn caller_context_from_reference(reference: &ReferenceLike) -> Option<CallerContext> {
-    let parsed = parse_a1_reference(&reference.target)?;
+    let parsed = parse_a1_reference(reference.target())?;
     Some(CallerContext {
         prefix: parsed.prefix,
         row: parsed.start_row,
@@ -1007,26 +1013,8 @@ fn owned_reference_oper_from_a1(reference: &A1Reference) -> Option<OwnedReferenc
     })
 }
 
-fn resolved_eval_from_call_arg(arg: CallArgValue) -> EvalValue {
-    match arg {
-        CallArgValue::Eval(value) => value,
-        CallArgValue::EmptyCell | CallArgValue::MissingArg => {
-            EvalValue::Array(EvalArray::from_scalar(ArrayCellValue::EmptyCell))
-        }
-        CallArgValue::Reference(reference) => EvalValue::Reference(reference),
-    }
-}
-
-fn call_arg_to_xloper(arg: CallArgValue) -> XLOPER12 {
-    match arg {
-        CallArgValue::Eval(value) => eval_value_to_xloper(value),
-        CallArgValue::MissingArg | CallArgValue::EmptyCell => make_xloper_nil(),
-        CallArgValue::Reference(reference) => eval_value_to_xloper(EvalValue::Reference(reference)),
-    }
-}
-
 fn clone_excel_return_to_owned(value: *const XLOPER12, preserve_refs: bool) -> XLOPER12 {
-    call_arg_to_xloper(call_arg_from_xloper(value, preserve_refs))
+    calc_value_to_xloper(&calc_value_from_xloper(value, preserve_refs))
 }
 
 fn free_excel_result_if_needed(value: &mut XLOPER12) {
@@ -1063,17 +1051,19 @@ fn probe_info_binary(
     alloc_result(cloned)
 }
 
-fn resolve_reference_via_excel(reference: &ReferenceLike) -> Result<EvalValue, RefResolutionError> {
-    let parsed = parse_a1_reference(&reference.target).ok_or_else(|| {
-        RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+fn resolve_reference_via_excel(
+    reference: &ReferenceLike,
+) -> Result<CalcValue, ReferenceResolutionError> {
+    let parsed = parse_a1_reference(reference.target()).ok_or_else(|| {
+        ReferenceResolutionError::UnresolvedReference {
+            target: reference.target().to_string(),
         }
     })?;
     let mut temp_ref = owned_reference_oper_from_a1(&parsed).ok_or_else(|| {
-        RefResolutionError::ProviderFailure {
+        ReferenceResolutionError::ProviderFailure {
             detail: format!(
                 "unable to construct Excel reference for {}",
-                reference.target
+                reference.target()
             ),
         }
     })?;
@@ -1082,23 +1072,28 @@ fn resolve_reference_via_excel(reference: &ReferenceLike) -> Result<EvalValue, R
         xltype: 0,
     };
     if !coerce_reference_to_value(temp_ref.as_mut_ptr(), &mut out) {
-        return Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+        return Err(ReferenceResolutionError::UnresolvedReference {
+            target: reference.target().to_string(),
         });
     }
-    let resolved = resolved_eval_from_call_arg(call_arg_from_xloper(&out, false));
+    let resolved = calc_value_from_xloper(&out, false);
     call_excel_free(&mut out);
     Ok(resolved)
 }
 
-fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
-    match value {
-        EvalValue::Number(n) => make_xloper_num(n),
-        EvalValue::Logical(b) => make_xloper_bool(b),
-        EvalValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
-        EvalValue::Error(code) => make_xloper_err(map_ws_err_to_excel(code)),
-        EvalValue::Reference(reference) => {
-            let Some(parsed) = parse_a1_reference(&reference.target) else {
+fn calc_value_to_xloper(value: &CalcValue) -> XLOPER12 {
+    if value.callable_value().is_some() {
+        return make_xloper_err(XLERR_VALUE);
+    }
+
+    match &value.core {
+        CoreValue::Number(n) => make_xloper_num(*n),
+        CoreValue::Logical(b) => make_xloper_bool(*b),
+        CoreValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
+        CoreValue::Error(code) => make_xloper_err(map_ws_err_to_excel(*code)),
+        CoreValue::Empty | CoreValue::Missing => make_xloper_nil(),
+        CoreValue::Reference(reference) => {
+            let Some(parsed) = parse_a1_reference(reference.target()) else {
                 return make_xloper_err(XLERR_VALUE);
             };
             let Some(oper) = owned_reference_oper_from_a1(&parsed) else {
@@ -1106,17 +1101,11 @@ fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
             };
             oper.into_result_oper()
         }
-        EvalValue::Array(array) => {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let items: Vec<XLOPER12> = array
                 .iter_row_major()
-                .map(|cell| match cell {
-                    ArrayCellValue::Number(n) => make_xloper_num(*n),
-                    ArrayCellValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
-                    ArrayCellValue::Logical(b) => make_xloper_bool(*b),
-                    ArrayCellValue::Error(code) => make_xloper_err(map_ws_err_to_excel(*code)),
-                    ArrayCellValue::EmptyCell => make_xloper_nil(),
-                })
+                .map(array_cell_to_xloper)
                 .collect();
             XLOPER12 {
                 val: XLOPER12Value {
@@ -1129,23 +1118,17 @@ fn eval_value_to_xloper(value: EvalValue) -> XLOPER12 {
                 xltype: XLTYPE_MULTI,
             }
         }
-        EvalValue::Lambda(_) => make_xloper_err(XLERR_VALUE),
     }
 }
 
-fn array_cell_from_call_arg(arg: CallArgValue) -> ArrayCellValue {
-    match arg {
-        CallArgValue::Eval(EvalValue::Number(n)) => ArrayCellValue::Number(n),
-        CallArgValue::Eval(EvalValue::Text(t)) => ArrayCellValue::Text(t),
-        CallArgValue::Eval(EvalValue::Logical(b)) => ArrayCellValue::Logical(b),
-        CallArgValue::Eval(EvalValue::Error(code)) => ArrayCellValue::Error(code),
-        CallArgValue::EmptyCell | CallArgValue::MissingArg => ArrayCellValue::EmptyCell,
-        CallArgValue::Reference(_) | CallArgValue::Eval(EvalValue::Reference(_)) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
-        }
-        CallArgValue::Eval(EvalValue::Array(_)) | CallArgValue::Eval(EvalValue::Lambda(_)) => {
-            ArrayCellValue::Error(WorksheetErrorCode::Value)
-        }
+fn array_cell_to_xloper(cell: &CalcValue) -> XLOPER12 {
+    match &cell.core {
+        CoreValue::Number(n) => make_xloper_num(*n),
+        CoreValue::Text(t) => make_xloper_str_from_utf16(t.utf16_code_units()),
+        CoreValue::Logical(b) => make_xloper_bool(*b),
+        CoreValue::Error(code) => make_xloper_err(map_ws_err_to_excel(*code)),
+        CoreValue::Empty | CoreValue::Missing => make_xloper_nil(),
+        CoreValue::Reference(_) | CoreValue::Array(_) => make_xloper_err(XLERR_VALUE),
     }
 }
 
@@ -1349,46 +1332,42 @@ fn coerce_reference_to_value(arg: *mut XLOPER12, out: &mut XLOPER12) -> bool {
     excel12v(XL_COERCE, out as *mut XLOPER12, &mut args) == XLRET_SUCCESS
 }
 
-fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgValue {
+fn calc_value_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CalcValue {
     if value.is_null() {
-        return CallArgValue::MissingArg;
+        return CalcValue::missing();
     }
     // SAFETY: Caller provides a valid pointer for call duration.
     let ty = unsafe { (*value).xltype & XLTYPE_MASK };
     match ty {
-        XLTYPE_MISSING => CallArgValue::MissingArg,
-        XLTYPE_NIL => CallArgValue::EmptyCell,
+        XLTYPE_MISSING => CalcValue::missing(),
+        XLTYPE_NIL => CalcValue::empty(),
         XLTYPE_NUM => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeNum`.
-            CallArgValue::Eval(EvalValue::Number(unsafe { (*value).val.num }))
+            CalcValue::number(unsafe { (*value).val.num })
         }
         XLTYPE_INT => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeInt`.
-            CallArgValue::Eval(EvalValue::Number(unsafe { (*value).val.w as f64 }))
+            CalcValue::number(unsafe { (*value).val.w as f64 })
         }
         XLTYPE_BOOL => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeBool`.
-            CallArgValue::Eval(EvalValue::Logical(unsafe { (*value).val.xbool != 0 }))
+            CalcValue::logical(unsafe { (*value).val.xbool != 0 })
         }
         XLTYPE_ERR => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeErr`.
-            CallArgValue::Eval(EvalValue::Error(map_excel_err_to_ws(unsafe {
-                (*value).val.err
-            })))
+            CalcValue::error(map_excel_err_to_ws(unsafe { (*value).val.err }))
         }
         XLTYPE_STR => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeStr`.
             let pstr = unsafe { (*value).val.str };
             if pstr.is_null() {
-                return CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(
-                    Vec::new(),
-                )));
+                return CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()));
             }
             // SAFETY: `pstr` points to an Excel Pascal-style UTF-16 string.
             let len = usize::from(unsafe { *pstr });
             // SAFETY: `pstr` points to at least `len + 1` UTF-16 units.
             let chars = unsafe { std::slice::from_raw_parts(pstr.add(1), len) }.to_vec();
-            CallArgValue::Eval(EvalValue::Text(ExcelText::from_utf16_code_units(chars)))
+            CalcValue::text(ExcelText::from_utf16_code_units(chars))
         }
         XLTYPE_MULTI => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeMulti`.
@@ -1396,24 +1375,24 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
             let rows = usize::try_from(array.rows.max(0)).unwrap_or(0);
             let cols = usize::try_from(array.columns.max(0)).unwrap_or(0);
             if rows == 0 || cols == 0 || array.lparray.is_null() {
-                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value));
+                return CalcValue::error(WorksheetErrorCode::Value);
             }
             let len = rows.saturating_mul(cols);
             // SAFETY: Excel provides `rows * columns` contiguous XLOPER12 items.
             let items = unsafe { std::slice::from_raw_parts(array.lparray, len) };
             let cells = items
                 .iter()
-                .map(|item| array_cell_from_call_arg(call_arg_from_xloper(item, preserve_refs)))
+                .map(|item| array_cell_from_xloper(item))
                 .collect();
             let shape = ArrayShape { rows, cols };
-            let eval_array = EvalArray::new(shape, cells)
+            let array = CalcArray::new(shape, cells)
                 .expect("excel multi arrays should match their declared dimensions");
-            CallArgValue::Eval(EvalValue::Array(eval_array))
+            CalcValue::array(array)
         }
         XLTYPE_SREF if preserve_refs => {
             // SAFETY: Union arm is valid because `xltype` is `xltypeSRef`.
             let sref = unsafe { (*value).val.sref };
-            CallArgValue::Reference(reference_like_from_bounds(
+            CalcValue::reference(reference_like_from_bounds(
                 sref.r#ref.rw_first,
                 sref.r#ref.rw_last,
                 sref.r#ref.col_first,
@@ -1425,7 +1404,7 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
             // SAFETY: Union arm is valid because `xltype` is `xltypeRef`.
             let mref = unsafe { (*value).val.mref };
             let Some(refs) = area_refs_from_mref(mref) else {
-                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
+                return CalcValue::error(WorksheetErrorCode::Ref);
             };
             let prefix = sheet_name_from_reference_oper(value.cast_mut())
                 .map(|sheet| normalize_sheet_prefix(&sheet));
@@ -1442,16 +1421,29 @@ fn call_arg_from_xloper(value: *const XLOPER12, preserve_refs: bool) -> CallArgV
                 })
                 .collect();
             let Some(targets) = targets else {
-                return CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Ref));
+                return CalcValue::error(WorksheetErrorCode::Ref);
             };
             let target = if targets.len() == 1 {
                 targets[0].clone()
             } else {
                 format!("({})", targets.join(","))
             };
-            CallArgValue::Reference(ReferenceLike::new(ReferenceKind::Area, target))
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, target))
         }
-        _ => CallArgValue::Eval(EvalValue::Error(WorksheetErrorCode::Value)),
+        _ => CalcValue::error(WorksheetErrorCode::Value),
+    }
+}
+
+fn array_cell_from_xloper(value: *const XLOPER12) -> CalcValue {
+    let cell = calc_value_from_xloper(value, false);
+    match cell.core {
+        CoreValue::Number(_)
+        | CoreValue::Text(_)
+        | CoreValue::Logical(_)
+        | CoreValue::Error(_)
+        | CoreValue::Empty => cell,
+        CoreValue::Missing => CalcValue::empty(),
+        CoreValue::Reference(_) | CoreValue::Array(_) => CalcValue::error(WorksheetErrorCode::Value),
     }
 }
 
@@ -1478,24 +1470,23 @@ mod xll_bridge_tests {
     }
 }
 
-fn eval_surface_value(function_id: &str, args: &[CallArgValue]) -> EvalValue {
+fn eval_surface_value(function_id: &str, args: &[CalcValue]) -> CalcValue {
     let resolver = ExcelReferenceResolver {
         caller: current_caller_context(),
     };
     let host_info = ExcelHostInfoProvider;
     let random_provider = ExcelRandomProvider;
-    let calc_args: Vec<CalcValue> = args.iter().cloned().map(calc_value_from_call_arg).collect();
     match eval_surface_value_call(
         function_id,
-        &calc_args,
+        args,
         &resolver,
         Some(current_excel_serial_utc()),
         Some(&random_provider),
         Some(&current_excel_host_context()),
         Some(&host_info),
     ) {
-        Ok(v) => eval_value_from_calc_value(v),
-        Err(code) => EvalValue::Error(code),
+        Ok(v) => v,
+        Err(code) => CalcValue::error(code),
     }
 }
 
@@ -1507,75 +1498,49 @@ impl RandomProvider for ExcelRandomProvider {
     }
 }
 
-fn calc_value_from_call_arg(arg: CallArgValue) -> CalcValue {
-    match arg {
-        CallArgValue::Eval(value) => CalcValue::from(value),
-        CallArgValue::MissingArg => CalcValue::missing(),
-        CallArgValue::EmptyCell => CalcValue::empty(),
-        CallArgValue::Reference(reference) => CalcValue::reference(reference),
+fn describe_text(text: &ExcelText) -> String {
+    if text.utf16_code_units().is_empty() {
+        "text(\"\")".to_string()
+    } else {
+        "text".to_string()
     }
 }
 
-fn eval_value_from_calc_value(value: CalcValue) -> EvalValue {
-    match value.core {
-        CoreValue::Number(n) => EvalValue::Number(n),
-        CoreValue::Text(t) => EvalValue::Text(t),
-        CoreValue::Logical(b) => EvalValue::Logical(b),
-        CoreValue::Error(code) => EvalValue::Error(code),
-        CoreValue::Empty | CoreValue::Missing => EvalValue::Error(WorksheetErrorCode::Value),
-        CoreValue::Array(array) => EvalValue::Array(array.to_legacy_eval_array_lossy()),
-        CoreValue::Reference(reference) => EvalValue::Reference(reference),
+fn describe_calc_value(value: &CalcValue) -> String {
+    if value.callable_value().is_some() {
+        return "lambda".to_string();
     }
-}
 
-fn describe_eval_value(value: &EvalValue) -> String {
-    match value {
-        EvalValue::Number(_) => "number".to_string(),
-        EvalValue::Text(text) => {
-            if text.utf16_code_units().is_empty() {
-                "text(\"\")".to_string()
-            } else {
-                "text".to_string()
-            }
+    match &value.core {
+        CoreValue::Number(_) => "number".to_string(),
+        CoreValue::Text(text) => describe_text(text),
+        CoreValue::Logical(_) => "logical".to_string(),
+        CoreValue::Error(code) => format!("error({code:?})"),
+        CoreValue::Empty => "empty_cell".to_string(),
+        CoreValue::Missing => "missing_arg".to_string(),
+        CoreValue::Reference(reference) => {
+            format!("reference({:?}:{})", reference.kind(), reference.target())
         }
-        EvalValue::Logical(_) => "logical".to_string(),
-        EvalValue::Error(code) => format!("error({code:?})"),
-        EvalValue::Reference(reference) => {
-            format!("reference({:?}:{})", reference.kind, reference.target)
-        }
-        EvalValue::Array(array) => {
+        CoreValue::Array(array) => {
             let shape = array.shape();
             let parts = array
                 .iter_row_major()
-                .map(|cell| match cell {
-                    ArrayCellValue::Number(_) => "number".to_string(),
-                    ArrayCellValue::Text(text) => {
-                        if text.utf16_code_units().is_empty() {
-                            "text(\"\")".to_string()
-                        } else {
-                            "text".to_string()
-                        }
-                    }
-                    ArrayCellValue::Logical(_) => "logical".to_string(),
-                    ArrayCellValue::Error(code) => format!("error({code:?})"),
-                    ArrayCellValue::EmptyCell => "empty_cell".to_string(),
-                })
+                .map(describe_array_cell)
                 .collect::<Vec<_>>()
                 .join(",");
             format!("array({}x{})[{}]", shape.rows, shape.cols, parts)
         }
-        EvalValue::Lambda(_) => "lambda".to_string(),
     }
 }
 
-fn describe_call_arg(arg: &CallArgValue) -> String {
-    match arg {
-        CallArgValue::MissingArg => "missing_arg".to_string(),
-        CallArgValue::EmptyCell => "empty_cell".to_string(),
-        CallArgValue::Reference(reference) => {
-            format!("reference({:?}:{})", reference.kind, reference.target)
-        }
-        CallArgValue::Eval(value) => describe_eval_value(value),
+fn describe_array_cell(cell: &CalcValue) -> String {
+    match &cell.core {
+        CoreValue::Number(_) => "number".to_string(),
+        CoreValue::Text(text) => describe_text(text),
+        CoreValue::Logical(_) => "logical".to_string(),
+        CoreValue::Error(code) => format!("error({code:?})"),
+        CoreValue::Empty | CoreValue::Missing => "empty_cell".to_string(),
+        CoreValue::Reference(_) | CoreValue::Array(_) => "error(Value)".to_string(),
     }
 }
 
@@ -1591,30 +1556,32 @@ fn probe_echo(raw: *mut XLOPER12) -> *mut XLOPER12 {
         XLTYPE_INT => alloc_result(make_xloper_num(unsafe { (*raw).val.w as f64 })),
         XLTYPE_BOOL => alloc_result(make_xloper_bool(unsafe { (*raw).val.xbool != 0 })),
         XLTYPE_ERR => alloc_result(make_xloper_err(unsafe { (*raw).val.err })),
-        XLTYPE_STR => match call_arg_from_xloper(raw, false) {
-            CallArgValue::Eval(EvalValue::Text(text)) => {
+        XLTYPE_STR => match calc_value_from_xloper(raw, false).core {
+            CoreValue::Text(text) => {
                 alloc_result(make_xloper_str_from_utf16(text.utf16_code_units()))
             }
             _ => alloc_result(make_xloper_err(XLERR_VALUE)),
         },
-        XLTYPE_MULTI => match call_arg_from_xloper(raw, false) {
-            CallArgValue::Eval(EvalValue::Array(array)) => {
-                alloc_result(eval_value_to_xloper(EvalValue::Array(array)))
+        XLTYPE_MULTI => {
+            let value = calc_value_from_xloper(raw, false);
+            match value.core {
+                CoreValue::Array(_) => alloc_result(calc_value_to_xloper(&value)),
+                _ => alloc_result(make_xloper_err(XLERR_VALUE)),
             }
-            _ => alloc_result(make_xloper_err(XLERR_VALUE)),
-        },
-        XLTYPE_SREF | XLTYPE_REF => match call_arg_from_xloper(raw, true) {
-            CallArgValue::Reference(reference) => {
-                alloc_result(eval_value_to_xloper(EvalValue::Reference(reference)))
+        }
+        XLTYPE_SREF | XLTYPE_REF => {
+            let value = calc_value_from_xloper(raw, true);
+            match value.core {
+                CoreValue::Reference(_) => alloc_result(calc_value_to_xloper(&value)),
+                _ => alloc_result(make_xloper_err(XLERR_VALUE)),
             }
-            _ => alloc_result(make_xloper_err(XLERR_VALUE)),
-        },
+        }
         _ => alloc_result(make_xloper_err(XLERR_VALUE)),
     }
 }
 
 fn probe_describe(raw: *mut XLOPER12) -> *mut XLOPER12 {
-    let description = describe_call_arg(&call_arg_from_xloper(raw, true));
+    let description = describe_calc_value(&calc_value_from_xloper(raw, true));
     alloc_result(make_xloper_text(&description))
 }
 
@@ -1629,18 +1596,13 @@ fn probe_ret_array_nil() -> *mut XLOPER12 {
 }
 
 fn probe_array_desc(raw: *mut XLOPER12) -> *mut XLOPER12 {
-    let description = match call_arg_from_xloper(raw, false) {
-        CallArgValue::Eval(EvalValue::Array(array)) => {
-            describe_eval_value(&EvalValue::Array(array))
-        }
-        other => describe_call_arg(&other),
-    };
+    let description = describe_calc_value(&calc_value_from_xloper(raw, false));
     alloc_result(make_xloper_text(&description))
 }
 
 fn trace_u1(arg1: *mut XLOPER12) -> *mut XLOPER12 {
     let caller = format_caller_context(current_caller_context());
-    let arg1_desc = describe_call_arg(&call_arg_from_xloper(arg1, true));
+    let arg1_desc = describe_calc_value(&calc_value_from_xloper(arg1, true));
     let entry = format!("U1 caller={caller} arg1={arg1_desc}");
     push_trace_entry(entry.clone());
     alloc_result(make_xloper_text(&entry))
@@ -1648,8 +1610,8 @@ fn trace_u1(arg1: *mut XLOPER12) -> *mut XLOPER12 {
 
 fn trace_u2(arg1: *mut XLOPER12, arg2: *mut XLOPER12) -> *mut XLOPER12 {
     let caller = format_caller_context(current_caller_context());
-    let arg1_desc = describe_call_arg(&call_arg_from_xloper(arg1, true));
-    let arg2_desc = describe_call_arg(&call_arg_from_xloper(arg2, true));
+    let arg1_desc = describe_calc_value(&calc_value_from_xloper(arg1, true));
+    let arg2_desc = describe_calc_value(&calc_value_from_xloper(arg2, true));
     let entry = format!("U2 caller={caller} arg1={arg1_desc} arg2={arg2_desc}");
     push_trace_entry(entry.clone());
     alloc_result(make_xloper_text(&entry))
@@ -1736,9 +1698,9 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
             for i in 0..count {
                 // SAFETY: `lparray` points to `rows*cols` contiguous XLOPER12 entries.
                 let item_ptr = unsafe { array.lparray.add(i) };
-                let call_arg = call_arg_from_xloper(item_ptr, false);
-                let eval_value = eval_surface_value(spec.function_id, &[call_arg]);
-                mapped.push(eval_value_to_xloper(eval_value));
+                let arg = calc_value_from_xloper(item_ptr, false);
+                let result = eval_surface_value(spec.function_id, &[arg]);
+                mapped.push(calc_value_to_xloper(&result));
             }
             if used_temp {
                 call_excel_free(&mut temp);
@@ -1746,12 +1708,12 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
             return alloc_result_multi(rows, cols, mapped);
         }
 
-        let call_arg = call_arg_from_xloper(value_ptr, spec.preserve_refs);
-        let eval_value = eval_surface_value(spec.function_id, &[call_arg]);
+        let arg = calc_value_from_xloper(value_ptr, spec.preserve_refs);
+        let result = eval_surface_value(spec.function_id, &[arg]);
         if used_temp {
             call_excel_free(&mut temp);
         }
-        return alloc_result(eval_value_to_xloper(eval_value));
+        return alloc_result(calc_value_to_xloper(&result));
     }
 
     let effective_len = effective_u_arg_len(spec, raw_args);
@@ -1776,15 +1738,15 @@ fn eval_u_export(spec: UExportSpec, raw_args: &[*mut XLOPER12]) -> *mut XLOPER12
             }
         }
 
-        let call_arg = call_arg_from_xloper(value_ptr, spec.preserve_refs);
+        let arg = calc_value_from_xloper(value_ptr, spec.preserve_refs);
         if used_temp {
             call_excel_free(&mut temp);
         }
-        args.push(call_arg);
+        args.push(arg);
     }
 
-    let eval_value = eval_surface_value(spec.function_id, &args);
-    alloc_result(eval_value_to_xloper(eval_value))
+    let result = eval_surface_value(spec.function_id, &args);
+    alloc_result(calc_value_to_xloper(&result))
 }
 
 #[cfg(test)]

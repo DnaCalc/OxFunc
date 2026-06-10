@@ -1,7 +1,6 @@
 use std::cell::RefCell;
 
 use oxfml_core::TypedContextQueryBundleSpec;
-use oxfml_core::eval::FunctionValue;
 use oxfml_core::interface::{
     RegisteredExternalCatalogController, RegisteredExternalCatalogMutationRequest,
     RegisteredExternalCatalogMutationResult, RegisteredExternalHostRegistrationRequest,
@@ -28,7 +27,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
 
     assert_eq!(
         register_output.published_worksheet_value,
-        FunctionValue::Number(4242.0)
+        CalcValue::number(4242.0)
     );
     assert_eq!(
         provider.last_resolve.borrow().as_ref(),
@@ -58,7 +57,7 @@ fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
 
     assert_eq!(
         call_output.published_worksheet_value,
-        FunctionValue::Number(14.0)
+        CalcValue::number(14.0)
     );
     let request = provider
         .last_resolve
@@ -99,7 +98,7 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
 
     assert_eq!(
         by_id_output.published_worksheet_value,
-        FunctionValue::Number(14.0)
+        CalcValue::number(14.0)
     );
     assert_eq!(provider.last_lookup.borrow().as_ref(), Some(&4242.0));
 
@@ -107,7 +106,7 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
         "formula:call-ref",
         "=CALL(\"Kernel32\",\"ProbeRef\",\"J\",A1)",
     );
-    ref_host.set_cell_value("A1", FunctionValue::Number(7.0));
+    ref_host.set_cell_value("A1", CalcValue::number(7.0));
 
     let ref_output = ref_host
         .recalc_with_registered_external_provider(None, Some(&provider), None, None)
@@ -115,7 +114,7 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
 
     assert_eq!(
         ref_output.published_worksheet_value,
-        FunctionValue::Number(99.0)
+        CalcValue::number(99.0)
     );
     let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
     assert_eq!(

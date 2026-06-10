@@ -269,8 +269,12 @@ Excel returns the integer `±1` ULP (e.g. `=COMBIN(23,10) → 1,144,066`
 local, `1,144,066.0000000002` in Excel; `=COMBIN(9,6) → 84` local,
 `83.99999999999999` in Excel; `=COMBINA(41,16) → 41,648,951,840,265`
 local, `41,648,951,840,265.01` in Excel; and similar for `COMBINA(9,6)`).
-These are not OxFunc bugs and are tracked as a follow-up classification
-helper rather than per-row triage in this stream.
+Per CHARTER §4.1 (2026-05-28 update), these are OxFunc bugs in the
+numeric-drift class with repair direction match-Excel — OxFunc must reproduce
+Excel's floating-point result even when Excel is less accurate than the
+mathematical integer. They are tracked as a follow-up classification group
+in this stream pending a focused repair lane; the earlier "not OxFunc bugs"
+framing is superseded by the doctrine update.
 
 ## Evidence
 1. `smart-fuzzer/runs/broad-scalar-cycle-003/` (literal-text, plumbing-flagged)

@@ -34,8 +34,8 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
 
 ## 3. Admitted Current-Baseline Slice
 1. all rows use the ordinary values-only preparation seam.
-2. text length and indexing are characterized against UTF-16-unit behavior for the current Excel baseline.
-3. `LEFT` and `RIGHT` preserve whole surrogate pairs at the one-character boundary observed in the current baseline.
+2. text length and indexing are characterized against UTF-16-unit behavior for the admitted baseline, with the exception of `LEN` which switched to Unicode-scalar counting in CV2 (see rule 5 in section 4 and the fork note below).
+3. `LEFT` and `RIGHT` surrogate-pair boundary behavior at the one-character boundary is under re-probe; the current code slices raw UTF-16 code units rather than preserving whole pairs. Do not assert either behavior as settled — see the LEN/LEFT-RIGHT compat-version fork note at the end of this section.
 4. `MID`, `FIND`, `SEARCH`, `REPLACE`, and the `*B` delegates operate over one-based UTF-16-unit positions on the admitted baseline.
 5. `SEARCH` wildcard semantics are in scope for the current ASCII-seeded baseline (`*`, `?`, `~`).
 6. the `*B` compatibility rows are admitted as current-baseline delegates to the non-`B` text functions rather than a separate historical DBCS-byte-semantic claim.
@@ -51,18 +51,28 @@ Promote the already-evidenced text core and compatibility slice into the ordinar
     `instance_num` argument on the current baseline for the lanes pinned under
     `W080`; delimiter-array widening is not admitted from the current evidence.
 
+**LEN / LEFT-RIGHT compat-version fork (open re-probe):** `LEN` switched to
+Unicode-scalar counting in Excel CV2 (commit ce9b484, `LEN(emoji) = 1`).
+`LENB` intentionally retains UTF-16 code-unit counting. `LEFT` and `RIGHT`
+surrogate-pair boundary behavior at the one-character boundary has not been
+re-probed under the new `LEN` regime; both CV1 (preserve pair) and CV2 (slice
+raw unit) behaviors are plausible. A re-probe of `LEFT(emoji,1)` and
+`RIGHT(emoji,1)` on the current Excel CV2 channel is queued before either
+behavior is pinned. Do not assert pair-preservation as a settled contract rule
+until that probe is recorded.
+
 ## 4. Main Rules Carried Into W066
 1. `CODE` rejects empty text with `#VALUE!` and reads only the first UTF-16 code unit.
 2. `LOWER` and `UPPER` textify logicals on the ordinary values-only seam.
 3. `REPT` truncates `number_times` toward zero, rejects negatives with `#VALUE!`, and enforces Excel's `32767` UTF-16-unit result ceiling.
 4. `CONCATENATE` remains scalar-only and rejects multi-cell ranges with `#VALUE!`.
-5. `LEN` counts UTF-16 code units on the current baseline.
+5. `LEN` counts Unicode scalars (grapheme-cluster-independent codepoints) on the current Excel CV2 baseline: `LEN(UNICHAR(128512)) = 1` (commit ce9b484). Earlier docs and seed rows that claim `LEN` counts UTF-16 code units (= 2 for emoji) reflect a stale pre-CV2 reading.
 6. `LEFT`, `RIGHT`, and `MID` truncate numeric count/position arguments toward zero before domain checks.
 7. `PROPER` follows the current baseline word-boundary behavior where non-letter separators, including apostrophes and digits, restart capitalization.
 8. `SUBSTITUTE` leaves the source text unchanged when `old_text` is empty and rejects `instance_num < 1` with `#VALUE!`.
 9. `FIND` is case-sensitive and treats wildcard characters literally.
 10. `SEARCH` is case-insensitive on the current ASCII-seeded baseline and honors `*`, `?`, and `~`.
-11. `FINDB`, `LEFTB`, `LENB`, `MIDB`, `REPLACEB`, `RIGHTB`, and `SEARCHB` match the current Unicode-baseline delegate posture documented in `W16_BATCH73`.
+11. `FINDB`, `LEFTB`, `MIDB`, `REPLACEB`, `RIGHTB`, and `SEARCHB` match the current Unicode-baseline delegate posture documented in `W16_BATCH73`. `LENB` is explicitly NOT delegated to the new `LEN` scalar-count behavior: `LENB` intentionally retains UTF-16 code-unit counting on the current baseline even after `LEN` switched to Unicode-scalar counting in CV2. The two functions now diverge for supplementary-plane characters (`LENB(UNICHAR(128512)) = 2`, `LEN(UNICHAR(128512)) = 1`).
 12. `CHAR`, `CODE`, `LOWER`, `UPPER`, and `TRIM` now have current-baseline
     evidence for spill over a single array-valued primary argument.
 13. `REPT` now has current-baseline evidence for spill over one array-valued

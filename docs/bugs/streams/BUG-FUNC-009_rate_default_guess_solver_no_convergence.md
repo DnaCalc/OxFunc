@@ -10,14 +10,19 @@
 - **Reported against ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
 - **Reproduced on ref**: `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `not yet fixed`
+- **Fixed in ref**: `2e818f0` (2026-04-10, "Land W080 text array-support batch and W081 RATE repair")
 - **Ref notes**: intake pinned the current committed local ref on 2026-04-10.
   Live Excel COM replay on 2026-04-10 showed that
   `RATE(360,-1073.64,200000)` has underlying value `0.004166644536345589`
   despite displaying as `0%` under General formatting, while the pre-fix local
   OxFunc omitted-guess path returned `NoConvergence` and the public surface
-  therefore mapped the lane to `#NUM!`. The local `W081` correction is now on
-  the working tree and validated, but not yet landed on a committed ref.
+  therefore mapped the lane to `#NUM!`. The bracket-and-bisection fallback
+  repair for the convergence failure landed in commit `2e818f0`.
+- **Bit-parity status**: OPEN — the local solver now converges and returns
+  `0.0041666445363460975`, which differs from Excel's published root
+  `0.004166644536345589` by approximately 1 ULP. This residual bit-mismatch is
+  a separate open item; see the W103 PMT-family campaign for the planned
+  substrate work that would address it.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`

@@ -1,8 +1,11 @@
 use oxfunc_core::functions::surface_dispatch::{
     FUNC_ID_IPMT, FUNC_ID_PMT, FUNC_ID_PPMT, eval_surface_value_call,
 };
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-use oxfunc_core::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
+use oxfunc_core::resolver::{
+    ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
+};
+use oxfunc_core::value::{CalcValue, CoreValue, WorksheetErrorCode};
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
@@ -15,17 +18,17 @@ const FUNCTIONS: [&str; 3] = ["FUNC.PMT", "FUNC.PPMT", "FUNC.IPMT"];
 
 struct NoResolver;
 
-impl ReferenceResolver for NoResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for NoResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
+        Err(ReferenceResolutionError::UnresolvedReference {
+            target: request.reference.target().to_string(),
         })
     }
 }
@@ -339,22 +342,25 @@ fn evaluate(case: &GeneratedCase) -> Outcome {
         .args
         .iter()
         .copied()
-        .map(|v| CallArgValue::Eval(EvalValue::Number(v)))
+        .map(CalcValue::number)
         .collect::<Vec<_>>();
     let resolver = NoResolver;
     match eval_surface_value_call(case.function_id, &args, &resolver, None, None, None, None) {
-        Ok(EvalValue::Number(value)) => {
-            let bits_hex = format!("0x{:016x}", value.to_bits());
-            Outcome::Number {
-                value,
-                bits_hex: bits_hex.clone(),
-                digest_payload: format!("number:{bits_hex}"),
+        Ok(value) => match value.core() {
+            CoreValue::Number(value) => {
+                let value = *value;
+                let bits_hex = format!("0x{:016x}", value.to_bits());
+                Outcome::Number {
+                    value,
+                    bits_hex: bits_hex.clone(),
+                    digest_payload: format!("number:{bits_hex}"),
+                }
             }
-        }
-        Ok(EvalValue::Error(code)) => error_outcome(code),
-        Ok(other) => Outcome::Other {
-            summary: format!("{other:?}"),
-            digest_payload: format!("other:{other:?}"),
+            CoreValue::Error(code) => error_outcome(*code),
+            other => Outcome::Other {
+                summary: format!("{other:?}"),
+                digest_payload: format!("other:{other:?}"),
+            },
         },
         Err(code) => error_outcome(code),
     }

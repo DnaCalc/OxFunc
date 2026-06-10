@@ -17,6 +17,9 @@ Artifacts created or updated:
 7. `.tmp/w28-support-function-localization-locales.csv`
 8. `.tmp/w28-support-function-localization-summary.json`
 9. `docs/worksets/W028_FUNCTION_NAME_LOCALIZATION_LIBRARY_DISCOVERY.md`
+   *(removed in baseline parking cut; the workset packet is no longer present
+   in the tree. Historical provenance is preserved via `docs/HISTORY.md` and the
+   `OxFunc_V1` tag per the project's removed-artifact convention.)*
 10. `docs/function-lane/W28_FUNCTION_NAME_LOCALIZATION_DISCOVERY_PRELIM.md`
 11. `docs/function-lane/W28_SUPPORT_FUNCTION_LOCALIZATION_LOCALE_SEED.csv`
 12. `docs/function-lane/W28_EXECUTION_RECORD.md`

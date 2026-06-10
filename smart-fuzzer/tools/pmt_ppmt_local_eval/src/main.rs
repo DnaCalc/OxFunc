@@ -1,8 +1,11 @@
 use oxfunc_core::functions::surface_dispatch::{
     FUNC_ID_PMT, FUNC_ID_PPMT, eval_surface_value_call,
 };
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-use oxfunc_core::value::{CallArgValue, EvalValue, ReferenceLike, WorksheetErrorCode};
+use oxfunc_core::resolver::{
+    ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
+};
+use oxfunc_core::value::{CalcValue, CoreValue, WorksheetErrorCode};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::File;
@@ -50,17 +53,17 @@ enum Outcome {
 
 struct NoResolver;
 
-impl ReferenceResolver for NoResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for NoResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
+        Err(ReferenceResolutionError::UnresolvedReference {
+            target: request.reference.target().to_string(),
         })
     }
 }
@@ -94,17 +97,18 @@ fn parse_args() -> Result<(PathBuf, PathBuf), String> {
     }
 }
 
-fn number_arg(value: f64) -> CallArgValue {
-    CallArgValue::Eval(EvalValue::Number(value))
+fn number_arg(value: f64) -> CalcValue {
+    CalcValue::number(value)
 }
 
 fn worksheet_error_code(code: WorksheetErrorCode) -> String {
     format!("{code:?}")
 }
 
-fn value_to_outcome(value: EvalValue) -> Outcome {
-    match value {
-        EvalValue::Number(value) => {
+fn value_to_outcome(value: &CalcValue) -> Outcome {
+    match value.core() {
+        CoreValue::Number(value) => {
+            let value = *value;
             let bits_hex = format!("0x{:016x}", value.to_bits());
             Outcome::Number {
                 value,
@@ -112,29 +116,29 @@ fn value_to_outcome(value: EvalValue) -> Outcome {
                 digest_payload: format!("number:{bits_hex}"),
             }
         }
-        EvalValue::Error(code) => {
-            let code = worksheet_error_code(code);
+        CoreValue::Error(code) => {
+            let code = worksheet_error_code(*code);
             Outcome::Error {
                 digest_payload: format!("error:{code}"),
                 code,
             }
         }
-        EvalValue::Text(text) => {
+        CoreValue::Text(text) => {
             let value = text.to_string_lossy();
             Outcome::Text {
                 digest_payload: format!("text:{value}"),
                 value,
             }
         }
-        EvalValue::Logical(value) => Outcome::Logical {
+        CoreValue::Logical(value) => Outcome::Logical {
             digest_payload: format!("logical:{value}"),
-            value,
+            value: *value,
         },
-        EvalValue::Array(_) => Outcome::Error {
+        CoreValue::Array(_) => Outcome::Error {
             code: "ArrayOutcomeUnexpected".to_string(),
             digest_payload: "error:ArrayOutcomeUnexpected".to_string(),
         },
-        EvalValue::Reference(_) | EvalValue::Lambda(_) => Outcome::Error {
+        CoreValue::Reference(_) | CoreValue::Empty | CoreValue::Missing => Outcome::Error {
             code: "NonScalarOutcomeUnexpected".to_string(),
             digest_payload: "error:NonScalarOutcomeUnexpected".to_string(),
         },
@@ -147,10 +151,10 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
         "FUNC.PPMT" => FUNC_ID_PPMT,
         other => other,
     };
-    let args: Vec<CallArgValue> = case.args.iter().copied().map(number_arg).collect();
+    let args: Vec<CalcValue> = case.args.iter().copied().map(number_arg).collect();
     let resolver = NoResolver;
     let result = eval_surface_value_call(function_id, &args, &resolver, None, None, None, None)
-        .map(value_to_outcome)
+        .map(|value| value_to_outcome(&value))
         .unwrap_or_else(|code| {
             let code = worksheet_error_code(code);
             Outcome::Error {

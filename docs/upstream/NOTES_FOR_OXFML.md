@@ -324,3 +324,98 @@ Minimum invariants:
 2. locale/format authority lives at the caller/host seam rather than behind an OxFunc fallback helper.
 3. no production path should depend on `current_excel_host_context()` or `en_us_context()` once the migration is complete.
 4. the XLL add-in and OxFml evaluator/tests should converge on the same caller-supplied capability model.
+
+## 14. Handoff Register Reconciliation Asks (2026-06-11)
+
+### 14.1 ID Collision: OxFml HANDOFF-OXFUNC-004
+
+OxFml's `docs/handoffs/HANDOFF_REGISTER.csv` row `HANDOFF-OXFUNC-004` (direction:
+outbound, title: "TAKE Omitted Row Count In Complex Helper Lambda", filed 2026-04-10,
+status: filed) collides with an existing OxFunc inbound row `HANDOFF-OXFUNC-004`
+(direction: DnaOneCalc->OxFunc, title: "Canonical runtime function registry",
+filed 2026-05-03, status: acknowledged).
+
+OxFunc has registered the TAKE handoff as `HANDOFF-OXFUNC-008` to avoid the
+collision. OxFml is asked to either:
+
+1. renumber its TAKE row to `HANDOFF-OXFUNC-008` in its own register, or
+2. add a cross-reference note to the existing OxFml `HANDOFF-OXFUNC-004` row
+   recording that OxFunc uses id `HANDOFF-OXFUNC-008` for this inbound item.
+
+The TAKE-handoff content itself (`HANDOFF-OXFUNC-004_TAKE_OMITTED_ROW_COUNT_IN_COMPLEX_LAMBDA.md`)
+is unchanged; only the register id needs alignment.
+
+### 14.2 Status Skew Sync Asks
+
+The following rows are out of sync between OxFml's register and OxFunc's register.
+OxFml is asked to update its register to match the evidence:
+
+1. `HANDOFF-OXFUNC-001` (Operator Value Surface and Array-Lift Expansion):
+   OxFml register shows `filed`; OxFunc register shows `acknowledged` with
+   acknowledged_date 2026-04-07. The historical note in OxFml's own
+   `HANDOFF_OXFUNC_001_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md`
+   confirms OxFunc received and acted on the operator-surface gap (W074
+   broadcast seam delivery). OxFml should update its row to `acknowledged`
+   with date 2026-04-07.
+
+2. `HANDOFF-OXFUNC-005` (W068 Canonical Registry Consumption Landing):
+   OxFml register shows `filed`; OxFunc register shows `acknowledged` with
+   acknowledged_date 2026-05-04. OxFunc's
+   `docs/handoffs/HANDOFF-OXFUNC-005_W068_CANONICAL_REGISTRY_CONSUMPTION_LANDING.md`
+   records full OxFunc acknowledgement of the W068 landing. OxFml should update
+   its row to `acknowledged` with date 2026-05-04.
+
+3. `HANDOFF-OXFUNC-006` (W070 Locale Profile Expansion Request):
+   OxFml register shows `filed`; OxFunc register shows `acknowledged` with
+   acknowledged_date 2026-05-04. OxFunc's
+   `docs/handoffs/HANDOFF-OXFUNC-006_W070_LOCALE_PROFILE_EXPANSION_REQUEST.md`
+   records full OxFunc acknowledgement and delivery of the W094 profile surface.
+   OxFml should update its row to `acknowledged` with date 2026-05-04.
+
+### 14.3 Genuinely-Open Outbound Debt Triage
+
+The following OxFunc outbound handoffs remain open as of 2026-06-11. This is a
+current-state triage note; it is not a request for immediate action unless noted.
+
+- `HO-FN-001` (W14 implicit intersection and scalarization seam requirements,
+  filed 2026-03-14): no acknowledgement received. `@` / `OP_IMPLICIT_INTERSECTION`
+  OxFunc implementation is complete on the admitted slice (see section 4 of this
+  document); OxFml seam closure reply is still pending.
+
+- `HO-FN-005` (Ordinary operator broadcast semantics and fallback removal,
+  filed 2026-04-07): no acknowledgement received. OxFunc W074 broadcast
+  implementation is complete and validated. OxFml temporary array-operator
+  fallback removal and OxFml-side seam reply are still pending.
+
+- `HO-FN-006` (Multi-area reference seam correction, filed 2026-04-07):
+  no acknowledgement received. OxFunc W075 `ReferenceKind::MultiArea` correction
+  is complete. OxFml acknowledgement and legacy-wrapper pressure removal are
+  still pending.
+
+- `HO-FN-007` (Multi-area value materialization Style A, filed 2026-04-07):
+  no acknowledgement received. OxFunc W076 Style-A resolver-driven materialization
+  is complete. OxFml acknowledgement and local aggregation helper removal are
+  still pending.
+
+- `HO-FN-010` (1x1 array result publication seam, filed 2026-05-02):
+  no acknowledgement received. OxFunc W089/W092 repaired the mislocalized
+  function-level scalarization and the interim smart-fuzzer classification is in
+  place. OxFml/DNA Calc result-completion / comparator publication reply is
+  still pending.
+
+- `HO-FN-012` (W091 canonical runtime function registry consumption, filed
+  2026-05-03, direction OxFunc->DNA OneCalc): no acknowledgement received.
+  OxFunc registry API is stable. DNA OneCalc migration away from a host-local
+  comprehensive function list is still pending.
+
+- `HO-FN-014` (UDF registry mutation and name-resolution invalidation, filed
+  2026-05-04): acknowledged 2026-05-06 per OxFml
+  `HO-FN-014_UDF_REGISTRY_MUTATION_AND_NAME_RESOLUTION_INVALIDATION_ACK.md`.
+  Open lanes: OxFml W074 formula-call registry lookup and prepared/cache
+  invalidation implementation evidence; Excel oracle coverage for UDF/defined-name
+  precedence; source-adapter evidence; broad UDF execution semantics.
+
+- `HO-FN-017` (W099 typed reference value shape, filed 2026-06-01): no
+  acknowledgement received. W099-002 typed `ReferenceLike` migration is landed;
+  OxFml should use `ReferenceLike::new(kind, target)` until W099-003 provider
+  constructors land. OxFml acknowledgement and follow-through plan are pending.

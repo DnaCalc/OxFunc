@@ -12,8 +12,11 @@
 // outcome contains a single cell. Used by W097 R-F MINVERSE re-sweep.
 
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-use oxfunc_core::value::{ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceLike};
+use oxfunc_core::resolver::{
+    ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
+};
+use oxfunc_core::value::{CalcArray, CalcValue, CoreValue};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::File;
@@ -68,42 +71,42 @@ struct OutcomeRecord {
 
 struct NoResolver;
 
-impl ReferenceResolver for NoResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for NoResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
+        Err(ReferenceResolutionError::UnresolvedReference {
+            target: request.reference.target().to_string(),
         })
     }
 }
 
-fn typed_to_call_arg(t: &TypedArgIn) -> CallArgValue {
+fn typed_to_call_arg(t: &TypedArgIn) -> CalcValue {
     match t {
-        TypedArgIn::Number { value } => CallArgValue::Eval(EvalValue::Number(*value)),
-        TypedArgIn::Logical { value } => CallArgValue::Eval(EvalValue::Logical(*value)),
+        TypedArgIn::Number { value } => CalcValue::number(*value),
+        TypedArgIn::Logical { value } => CalcValue::logical(*value),
         TypedArgIn::Matrix { rows, cols, values } => {
-            let row_vecs: Vec<Vec<ArrayCellValue>> = (0..*rows)
+            let row_vecs: Vec<Vec<CalcValue>> = (0..*rows)
                 .map(|r| {
                     (0..*cols)
-                        .map(|c| ArrayCellValue::Number(values[r * cols + c]))
+                        .map(|c| CalcValue::number(values[r * cols + c]))
                         .collect()
                 })
                 .collect();
-            let array = EvalArray::from_rows(row_vecs).expect("non-empty rectangular matrix");
-            CallArgValue::Eval(EvalValue::Array(array))
+            let array = CalcArray::from_rows(row_vecs).expect("non-empty rectangular matrix");
+            CalcValue::array(array)
         }
     }
 }
 
-fn cell_outcome_from_array_cell(row: usize, col: usize, c: &ArrayCellValue) -> CellOutcome {
-    match c {
-        ArrayCellValue::Number(v) => {
+fn cell_outcome_from_array_cell(row: usize, col: usize, c: &CalcValue) -> CellOutcome {
+    match c.core() {
+        CoreValue::Number(v) => {
             let bits = format!("0x{:016x}", v.to_bits());
             CellOutcome {
                 row,
@@ -115,7 +118,7 @@ fn cell_outcome_from_array_cell(row: usize, col: usize, c: &ArrayCellValue) -> C
                 digest_payload: format!("number:{bits}"),
             }
         }
-        ArrayCellValue::Logical(b) => CellOutcome {
+        CoreValue::Logical(b) => CellOutcome {
             row,
             col,
             kind: "logical".into(),
@@ -124,7 +127,7 @@ fn cell_outcome_from_array_cell(row: usize, col: usize, c: &ArrayCellValue) -> C
             error_code: None,
             digest_payload: format!("logical:{b}"),
         },
-        ArrayCellValue::Error(code) => CellOutcome {
+        CoreValue::Error(code) => CellOutcome {
             row,
             col,
             kind: "error".into(),
@@ -145,21 +148,21 @@ fn cell_outcome_from_array_cell(row: usize, col: usize, c: &ArrayCellValue) -> C
     }
 }
 
-fn cell_outcome_from_scalar(value: EvalValue) -> CellOutcome {
-    match value {
-        EvalValue::Number(v) => {
+fn cell_outcome_from_scalar(value: &CalcValue) -> CellOutcome {
+    match value.core() {
+        CoreValue::Number(v) => {
             let bits = format!("0x{:016x}", v.to_bits());
             CellOutcome {
                 row: 0,
                 col: 0,
                 kind: "number".into(),
-                value: Some(v),
+                value: Some(*v),
                 bits_hex: Some(bits.clone()),
                 error_code: None,
                 digest_payload: format!("number:{bits}"),
             }
         }
-        EvalValue::Error(code) => CellOutcome {
+        CoreValue::Error(code) => CellOutcome {
             row: 0,
             col: 0,
             kind: "error".into(),
@@ -168,7 +171,7 @@ fn cell_outcome_from_scalar(value: EvalValue) -> CellOutcome {
             error_code: Some(format!("{code:?}")),
             digest_payload: format!("error:{code:?}"),
         },
-        EvalValue::Logical(b) => CellOutcome {
+        CoreValue::Logical(b) => CellOutcome {
             row: 0,
             col: 0,
             kind: "logical".into(),
@@ -177,7 +180,7 @@ fn cell_outcome_from_scalar(value: EvalValue) -> CellOutcome {
             error_code: None,
             digest_payload: format!("logical:{b}"),
         },
-        EvalValue::Text(t) => CellOutcome {
+        CoreValue::Text(t) => CellOutcome {
             row: 0,
             col: 0,
             kind: "text".into(),
@@ -199,11 +202,15 @@ fn cell_outcome_from_scalar(value: EvalValue) -> CellOutcome {
 }
 
 fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
-    let args: Vec<CallArgValue> = case.args_typed.iter().map(typed_to_call_arg).collect();
+    let args: Vec<CalcValue> = case.args_typed.iter().map(typed_to_call_arg).collect();
     let resolver = NoResolver;
     let res = eval_surface_value_call(&case.function_id, &args, &resolver, None, None, None, None);
     match res {
-        Ok(EvalValue::Array(arr)) => {
+        Ok(value) if matches!(value.core(), CoreValue::Array(_)) => {
+            let arr = match value.core() {
+                CoreValue::Array(arr) => arr,
+                _ => unreachable!(),
+            };
             let shape = arr.shape();
             let mut cells = Vec::with_capacity(shape.rows * shape.cols);
             for r in 0..shape.rows {
@@ -225,7 +232,7 @@ fn evaluate_case(case: CaseRecord) -> OutcomeRecord {
             }
         }
         Ok(scalar) => {
-            let cell = cell_outcome_from_scalar(scalar);
+            let cell = cell_outcome_from_scalar(&scalar);
             OutcomeRecord {
                 schema_version: "oxfunc.smart_fuzzer.matrix_local_outcome.v0",
                 case_id: case.case_id,

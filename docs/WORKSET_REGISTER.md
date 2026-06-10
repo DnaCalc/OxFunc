@@ -938,7 +938,15 @@ Notes:
 
 ## W096 Full-Model Compiled Semantic Kernel Dispatch
 
-Status: `planned`
+Status: `partially_landed`
+
+Status note (2026-06-11): the by-index dispatch table
+(`surface_dispatch_by_index_generated.rs`) is wired in via `include!()` in
+`surface_dispatch.rs` and verified correct for all 526 arms. The full
+architecture refactor (resolver-signature ABI, erased FEC provider, metadata
+enrichment, OxFml compiled-plan handoff) remains `planned`. See W101-B sweep
+and registry:F1/F13 in the 2026-06-10 review digest for the current regeneration-
+pipeline gap.
 
 Execution target:
 reshape the OxFunc surface-dispatch and FEC provider architecture for long-term full-model recalculation optimization, where downstream evaluators resolve function handles once, keep function semantics in OxFunc, and can later schedule, cache, parallelize, or compile calculation graphs without passing strings through the broad dispatcher on every call.

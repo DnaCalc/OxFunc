@@ -1,4 +1,3 @@
-use oxfml_core::eval::FunctionValue;
 use oxfml_core::seam::AcceptDecision;
 use oxfml_core::test_support::host::SingleFormulaHost;
 use oxfml_core::{ReturnedValueSurfaceKind, ValuePayload};
@@ -10,7 +9,7 @@ use oxfunc_core::locale_format::{
     FormatCodeEngine, FormatFailure, LocaleFormatContext, LocaleProfileId, LocaleValueParser,
     ParseFailure, WorkbookDateSystem, format_profile,
 };
-use oxfunc_core::value::ExcelText;
+use oxfunc_core::value::{CalcValue, ExcelText};
 
 struct TestImageProvider;
 struct TestLocaleValueParser;
@@ -104,8 +103,8 @@ fn image_formula_preserves_webimage_rich_value_carrier_from_oxfunc_side() {
         .expect("image host recalc");
 
     assert_eq!(
-        run.published_worksheet_value,
-        FunctionValue::Text(ExcelText::from_interop_assignment("-2146826273"))
+        run.published_worksheet_value.core,
+        CalcValue::text(ExcelText::from_interop_assignment("-2146826273")).core
     );
     assert_eq!(
         run.returned_value_surface.kind,

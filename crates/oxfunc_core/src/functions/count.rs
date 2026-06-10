@@ -3,10 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    AggregateArrayProvenance, expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
-    sparse_reference_values_for_aggregate_arg,
-};
+use crate::functions::adapters::expand_aggregate_arg;
 use crate::functions::aggregate_common::count_argument_included;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -51,17 +48,7 @@ pub fn eval_count_surface(
 
     let mut count = 0.0;
     for arg in args {
-        let prepared = if let Some(values) =
-            sparse_reference_values_for_aggregate_arg(arg, resolver)
-                .map_err(CountEvalError::Coercion)?
-        {
-            expand_sparse_reference_values_with_provenance(
-                values,
-                AggregateArrayProvenance::ReferenceDerived,
-            )
-        } else {
-            expand_aggregate_arg(arg, resolver).map_err(CountEvalError::Coercion)?
-        };
+        let prepared = expand_aggregate_arg(arg, resolver).map_err(CountEvalError::Coercion)?;
         for item in prepared {
             if count_argument_included(&item).map_err(CountEvalError::Coercion)? {
                 count += 1.0;

@@ -5,7 +5,6 @@ use crate::function::{
 };
 use crate::functions::adapters::{
     AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg,
-    expand_sparse_reference_values_with_provenance, sparse_reference_values_for_aggregate_arg,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::semantic_kernel::{
@@ -93,15 +92,6 @@ pub fn eval_sum_surface(
 
     let mut prepared = Vec::new();
     for arg in args {
-        if let Some(values) = sparse_reference_values_for_aggregate_arg(arg, resolver)
-            .map_err(SumEvalError::Coercion)?
-        {
-            prepared.extend(expand_sparse_reference_values_with_provenance(
-                values,
-                crate::functions::adapters::AggregateArrayProvenance::ReferenceDerived,
-            ));
-            continue;
-        }
         prepared.extend(expand_aggregate_arg(arg, resolver).map_err(SumEvalError::Coercion)?);
     }
     eval_sum_prepared_aggregate(&prepared)

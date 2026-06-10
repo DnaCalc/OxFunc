@@ -72,7 +72,7 @@ def hierarchicalSubtotalRows (entries : List NestedGroupEntry) : List (List Grou
         [GroupCell.text outer, GroupCell.blank, GroupCell.number (sumInts ((entries.filter fun e => e.outerKey = outer).map fun e => e.value))]
       detailRows ++ [subtotalRow]
   let grandTotal := [GroupCell.text "Grand Total", GroupCell.blank, GroupCell.number (sumInts (entries.map fun e => e.value))]
-  List.join rendered ++ [grandTotal]
+  rendered.flatten ++ [grandTotal]
 
 def orderedRowKeys (entries : List PivotEntry) : List String :=
   orderedDistinct (entries.map fun e => e.rowKey)

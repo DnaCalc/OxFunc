@@ -15,10 +15,11 @@
 // candidate consumers still work.
 
 use oxfunc_core::functions::surface_dispatch::eval_surface_value_call;
-use oxfunc_core::resolver::{RefResolutionError, ReferenceResolver, ResolverCapabilities};
-use oxfunc_core::value::{
-    ArrayCellValue, CallArgValue, EvalArray, EvalValue, ReferenceLike, WorksheetErrorCode,
+use oxfunc_core::resolver::{
+    ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+    ReferenceSystemProvider,
 };
+use oxfunc_core::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
 use serde::Serialize;
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
@@ -44,20 +45,20 @@ enum TypedArg {
 }
 
 impl TypedArg {
-    fn as_call_arg(&self) -> CallArgValue {
+    fn as_call_arg(&self) -> CalcValue {
         match self {
-            TypedArg::Number { value } => CallArgValue::Eval(EvalValue::Number(*value)),
-            TypedArg::Logical { value } => CallArgValue::Eval(EvalValue::Logical(*value)),
+            TypedArg::Number { value } => CalcValue::number(*value),
+            TypedArg::Logical { value } => CalcValue::logical(*value),
             TypedArg::Matrix { rows, cols, values } => {
-                let row_vecs: Vec<Vec<ArrayCellValue>> = (0..*rows)
+                let row_vecs: Vec<Vec<CalcValue>> = (0..*rows)
                     .map(|r| {
                         (0..*cols)
-                            .map(|c| ArrayCellValue::Number(values[r * cols + c]))
+                            .map(|c| CalcValue::number(values[r * cols + c]))
                             .collect()
                     })
                     .collect();
-                let array = EvalArray::from_rows(row_vecs).expect("non-empty rectangular matrix");
-                CallArgValue::Eval(EvalValue::Array(array))
+                let array = CalcArray::from_rows(row_vecs).expect("non-empty rectangular matrix");
+                CalcValue::array(array)
             }
         }
     }
@@ -199,17 +200,17 @@ const STAT_FUNCTIONS: &[StatFunctionEntry] = &[
 
 struct NoResolver;
 
-impl ReferenceResolver for NoResolver {
-    fn capabilities(&self) -> ResolverCapabilities {
-        ResolverCapabilities::permissive_local()
+impl ReferenceSystemProvider for NoResolver {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        ReferenceSystemCapabilities::permissive_local()
     }
 
-    fn resolve_reference(
+    fn dereference(
         &self,
-        reference: &ReferenceLike,
-    ) -> Result<EvalValue, RefResolutionError> {
-        Err(RefResolutionError::UnresolvedReference {
-            target: reference.target.clone(),
+        request: &ReferenceDereferenceRequest,
+    ) -> Result<CalcValue, ReferenceResolutionError> {
+        Err(ReferenceResolutionError::UnresolvedReference {
+            target: request.reference.target().to_string(),
         })
     }
 }
@@ -584,21 +585,24 @@ fn pick_args(family: StatFamily, rng: &mut Lcg) -> (Vec<TypedArg>, Vec<String>) 
 }
 
 fn evaluate(func_id: &str, typed_args: &[TypedArg]) -> Outcome {
-    let arg_values: Vec<CallArgValue> = typed_args.iter().map(|a| a.as_call_arg()).collect();
+    let arg_values: Vec<CalcValue> = typed_args.iter().map(|a| a.as_call_arg()).collect();
     let resolver = NoResolver;
     match eval_surface_value_call(func_id, &arg_values, &resolver, None, None, None, None) {
-        Ok(EvalValue::Number(value)) => {
-            let bits_hex = format!("0x{:016x}", value.to_bits());
-            Outcome::Number {
-                value,
-                bits_hex: bits_hex.clone(),
-                digest_payload: format!("number:{bits_hex}"),
+        Ok(value) => match value.core() {
+            CoreValue::Number(value) => {
+                let value = *value;
+                let bits_hex = format!("0x{:016x}", value.to_bits());
+                Outcome::Number {
+                    value,
+                    bits_hex: bits_hex.clone(),
+                    digest_payload: format!("number:{bits_hex}"),
+                }
             }
-        }
-        Ok(EvalValue::Error(code)) => err_outcome(code),
-        Ok(other) => Outcome::Other {
-            summary: format!("{other:?}"),
-            digest_payload: format!("other:{other:?}"),
+            CoreValue::Error(code) => err_outcome(*code),
+            other => Outcome::Other {
+                summary: format!("{other:?}"),
+                digest_payload: format!("other:{other:?}"),
+            },
         },
         Err(code) => err_outcome(code),
     }

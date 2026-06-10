@@ -49,7 +49,12 @@ Evidence:
 2. Error mapping: `FORMULA_ADMISSION_BEHAVIOR_NOTES.md`
 
 ## 5. Unicode Handling
-1. `LEN(UNICHAR(128512))=2` in this baseline scope.
+1. `LEN(UNICHAR(128512))=2` was observed in the W7 baseline scope (Excel
+   `16.0 build 19725`, CV1). The current Excel CV2 baseline returns
+   `LEN(UNICHAR(128512))=1` (Unicode-scalar counting, commit ce9b484). `LENB`
+   retains code-unit counting (`LENB(UNICHAR(128512))=2`) and does not follow
+   `LEN`'s CV2 change. This document's W7 evidence predates the CV2 change; the
+   policy item above is superseded by the CV2 observation for `LEN`.
 2. `UNICODE(UNICHAR(128512))=128512`.
 3. Combining sequence (`"e" + U+0301`) length is `2`, distinct from precomposed `U+00E9`.
 

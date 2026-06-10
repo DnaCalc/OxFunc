@@ -2,7 +2,6 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 
-use oxfml_core::eval::FunctionValue;
 use oxfml_core::format::oxfml_current_excel_host_locale_context;
 use oxfml_core::interface::TypedContextQueryBundle;
 use oxfml_core::seam::Locus;
@@ -1095,18 +1094,18 @@ fn fixture_dir() -> PathBuf {
         .join("fixtures")
 }
 
-fn parse_cell_fixture_summary(summary: &str) -> FunctionValue {
+fn parse_cell_fixture_summary(summary: &str) -> CalcValue {
     if let Some(number) = summary
         .strip_prefix("Number(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return FunctionValue::Number(number.parse().expect("numeric summary should parse"));
+        return CalcValue::number(number.parse().expect("numeric summary should parse"));
     }
     if let Some(text) = summary
         .strip_prefix("Text(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return FunctionValue::Text(ExcelText::from_utf16_code_units(
+        return CalcValue::text(ExcelText::from_utf16_code_units(
             text.encode_utf16().collect(),
         ));
     }
@@ -1114,7 +1113,7 @@ fn parse_cell_fixture_summary(summary: &str) -> FunctionValue {
         .strip_prefix("Logical(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        return FunctionValue::Logical(matches!(logical, "TRUE" | "True" | "true"));
+        return CalcValue::logical(matches!(logical, "TRUE" | "True" | "true"));
     }
     if let Some(code) = summary
         .strip_prefix("Error(")
@@ -1132,7 +1131,7 @@ fn parse_cell_fixture_summary(summary: &str) -> FunctionValue {
             "#SPILL!" => WorksheetErrorCode::Spill,
             other => panic!("unsupported error summary: {other}"),
         };
-        return FunctionValue::Error(code);
+        return CalcValue::error(code);
     }
 
     panic!("unsupported cell summary: {summary}");

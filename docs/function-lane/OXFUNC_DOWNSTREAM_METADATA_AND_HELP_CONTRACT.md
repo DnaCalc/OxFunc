@@ -84,11 +84,26 @@ The following fields are informational pointers into OxFunc internals. Downstrea
 ## 4. Help And Signature Payload Shape
 
 ### 4.1 Current State
-No OxFunc-backed help or signature payload retrieval is frozen yet. This is an acknowledged active seam gap.
+Since commit `c6da8c2` (W091, 2026-05-06) the runtime registry serves
+OxFunc-backed help and signature metadata directly via
+`FunctionEntry.short_description`, `FunctionEntry.long_description`,
+`FunctionEntry.display_signature()`, and per-parameter
+`ParameterDescriptor.name` / `ParameterDescriptor.short_description`. The
+earlier claim "No OxFunc-backed help or signature payload retrieval is frozen
+yet" is therefore stale.
 
-Current direction after `HANDOFF-OXFUNC-004`:
-1. help and signature payloads should be sourced from an OxFunc-owned registry
-   entry or an OxFunc-generated registry snapshot,
+IMPORTANT — placeholder coverage: 229 of 528 registry rows carry a
+placeholder `signature_display` of the form `"FUNCNAME(...)"` with an empty
+parameter list and `trailing_repeats: true`. Consumers must not render
+`signature_display` as if it were a real signature for those rows. A
+placeholder row can currently be identified by `signature_display` matching
+`canonical_surface_name + "(..."`. The placeholder count is monotonically
+decreasing as the W071/W106 fill work proceeds; a guard test tracking the
+count is planned per docs-help rec 2.
+
+Current direction (unchanged from `HANDOFF-OXFUNC-004`):
+1. help and signature payloads are sourced from the OxFunc-owned runtime
+   registry (`oxfunc_core::registry::builtin_registry()`),
 2. function-name lists and arity/signature metadata must not be maintained as
    comprehensive host-local lists,
 3. `arity_shape_note` remains a `V1` compatibility/projection field and must
@@ -102,7 +117,12 @@ Current available truth for downstream help surfaces:
 3. `category` for grouping,
 4. `metadata_status` to determine profile depth,
 5. `special_interface_kind` and `admission_interface_kind` for seam-category labeling,
-6. `determinism_class` / `volatility_class` / `host_interaction_class` for behavioral classification.
+6. `determinism_class` / `volatility_class` / `host_interaction_class` for behavioral classification,
+7. `short_description` for ~97% of function rows (not operators),
+8. `display_signature()` for 100% of rows — but 229 rows return a placeholder
+   `"FUNCNAME(...)"` string; see the placeholder warning above,
+9. per-parameter `name` and `short_description` for ~284 rows; the remaining
+   229 placeholder rows have no parameter records.
 
 ### 4.2 Preferred First OneCalc-Facing Payload Shape
 The preferred first payload shape for each help surface is:
@@ -121,8 +141,8 @@ FunctionHelpPayload:
   special_interface_kind: string     # from snapshot, usable
   admission_category: string         # from labeling policy, see OXFUNC_SURFACE_ADMISSION_AND_LABELING_POLICY.md
   implementation_status_label: string # from labeling policy
-  help_summary: string | null        # NOT YET AVAILABLE from OxFunc
-  help_detail: string | null         # NOT YET AVAILABLE from OxFunc
+  help_summary: string | null        # available as short_description for ~97% of function rows (not operators); null otherwise
+  help_detail: string | null         # available as long_description for ~10 fully-curated rows; null for all others
 ```
 
 #### Argument Help
@@ -130,10 +150,10 @@ FunctionHelpPayload:
 ArgumentHelpPayload:
   surface_stable_id: string          # parent function
   arg_index: integer                 # 0-based
-  arg_name: string | null            # NOT YET AVAILABLE from OxFunc
-  arg_description: string | null     # NOT YET AVAILABLE from OxFunc
+  arg_name: string | null            # available for ~284 of 528 rows; null for the 229 placeholder rows
+  arg_description: string | null     # available for ~10 fully-curated rows only; null for all others
   arg_required: boolean | null       # derivable from arity_min vs index
-  arg_type_hint: string | null       # NOT YET AVAILABLE from OxFunc
+  arg_type_hint: string | null       # not in the runtime registry shape; exists in V2 witness artifacts only
 ```
 
 #### Signature Help Metadata
@@ -146,42 +166,60 @@ SignatureHelpMetadata:
   arg_preparation_profile: string    # from snapshot, usable
   special_interface_kind: string     # from snapshot, usable
   admission_interface_kind: string   # from snapshot, usable
-  arg_names: [string] | null         # NOT YET AVAILABLE from OxFunc
-  signature_display: string | null   # NOT YET AVAILABLE from OxFunc
+  arg_names: [string] | null         # available for ~284 of 528 rows; null for the 229 placeholder rows
+  signature_display: string | null   # available for 100% of rows, BUT 229 rows are placeholder "FUNCNAME(...)" strings — see the section 4.1 placeholder warning before rendering
 ```
 
 ### 4.3 What Is Available Now vs What Requires Upstream Work
-Available now from the snapshot export:
+Available now from the runtime registry (`oxfunc_core::registry::builtin_registry()`):
 1. identity, arity, category, behavioral classification, and seam-category fields.
-2. enough to populate completion lists, basic tooltips, and surface-labeling UI.
+2. `short_description` for ~97% of function rows.
+3. `display_signature()` for all 528 rows — with the placeholder caveat in 4.1.
+4. per-parameter `name` for ~284 rows; `short_description` for ~10 rows.
+5. enough to populate completion lists, basic tooltips, and surface-labeling UI.
+
+Note: the CSV snapshot export (`OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`)
+is a historical projection artifact and is NOT the canonical consumption path.
+The canonical path is the runtime registry. The CSV is demoted to test pinning.
 
 Requires upstream OxFunc or OxFml work:
-1. `help_summary` and `help_detail` prose content per function,
-2. per-argument names, descriptions, and type hints,
-3. `signature_display` formatted signature strings,
+1. eliminating the 229 placeholder `signature_display` rows (W106 fill),
+2. per-argument descriptions and type hints beyond the ~10 curated rows,
+3. `long_description` / example content beyond the ~10 curated rows,
 4. localized help content.
 
 ### 4.4 Interim OneCalc Guidance
-Until OxFunc publishes structured help payloads:
-1. populate function help from snapshot export stable and usable fields,
+OxFunc now publishes structured help via the runtime registry. Updated guidance:
+1. consume help via `oxfunc_core::registry::builtin_registry()`, not the CSV export,
 2. populate completion lists from `canonical_surface_name`, `category`, `arity_min`/`arity_max`, and `admission_category` from the labeling policy,
 3. show `special_interface_kind` and `admission_interface_kind` as visible metadata in help and scenario UI rather than hiding them,
-4. do not invent local prose help content that would become a private second truth,
-5. do not claim help coverage beyond what the snapshot export and labeling policy provide.
+4. before rendering `display_signature()`, check whether it is a placeholder (ends with `"(..."`) and suppress or label it accordingly,
+5. do not invent local prose help content that would become a private second truth,
+6. do not claim help coverage beyond what the runtime registry currently provides — 229 rows are placeholder; treat those as "no signature data" until the W106 fill completes.
 
 ### 4.5 Alignment With Runtime Provider Direction
-The preferred long-term direction is:
-1. `FunctionRegistry` as the OxFunc-owned comprehensive source,
-2. `LibraryContextProvider` / immutable `LibraryContextSnapshot` as the runtime substrate for publishing registry-derived snapshots (see `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`),
-3. help and signature payloads should eventually be fields on registry-backed `LibraryContextEntry` values in the runtime model rather than separate retrieval surfaces,
-4. the current CSV export remains the pinned interchange artifact for bounded integration, test pinning, and debugging,
-5. downstream consumers should design against an immutable snapshot-shaped help/catalog source even if the first implementation is CSV-backed,
-6. the snapshot must be a projection of the OxFunc registry, not a second comprehensive function list.
+The current and preferred direction:
+1. `FunctionRegistry` (`oxfunc_core::registry::builtin_registry()`) is the
+   OxFunc-owned comprehensive source and the canonical consumption path.
+2. `LibraryContextProvider` / immutable `LibraryContextSnapshot` remains the
+   preferred runtime substrate for publishing registry-derived snapshots (see
+   `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`).
+3. help and signature payloads are fields on registry-backed `FunctionEntry`
+   values in the current runtime model.
+4. the CSV export (`OXFUNC_LIBRARY_CONTEXT_SNAPSHOT_EXPORT_V1.csv`) is demoted
+   to test pinning and debugging. The CSV-adapter transition path described in
+   earlier versions of this doc was bypassed: W091 (commit c6da8c2) wired help
+   and signature retrieval directly into the runtime registry, so no consumer
+   should build a CSV-backed adapter as the first integration step.
+5. the snapshot must remain a projection of the OxFunc registry, not a second
+   comprehensive function list.
 
 Transition rule:
-1. OneCalc should consume the snapshot export through a local adapter that projects stable and usable fields into the payload shapes above,
-2. when the runtime provider model materializes, OneCalc should swap the adapter backing from CSV to runtime snapshot without changing the consumer-facing payload shape,
-3. help prose fields (`help_summary`, `help_detail`, `arg_name`, `arg_description`) should be treated as nullable until OxFunc populates them.
+1. consumers should call `builtin_registry()` directly and project its fields,
+2. the consumer-facing payload shapes in 4.2 remain unchanged,
+3. help prose fields (`help_summary`/`short_description`, `help_detail`/`long_description`,
+   `arg_name`, `arg_description`) are populated as described in 4.1 and 4.3;
+   treat placeholder `signature_display` as nullable per the 4.1 warning.
 
 ### 4.6 Semantic Witness Entry V2 Schema
 The first explicit `V2` witness contract is:

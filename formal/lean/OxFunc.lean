@@ -234,6 +234,16 @@ import OxFunc.Functions.VhlookupFamily
 import OxFunc.Functions.WebTextXmlFamily
 import OxFunc.Functions.WorkdayNetworkdaysFamily
 
+import OxFunc.Functions.Columns
+import OxFunc.Functions.GroupedAggregation
+import OxFunc.Functions.GroupBy
+import OxFunc.Functions.PivotBy
+import OxFunc.Functions.RandArray
+import OxFunc.Functions.Randbetween
+import OxFunc.Functions.Rows
+import OxFunc.Functions.TrimRange
+import OxFunc.Functions.ValueToText
+
 
 
 
