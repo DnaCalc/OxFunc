@@ -328,10 +328,15 @@ pub fn confidence_norm_kernel(
     size: f64,
 ) -> Result<f64, WorksheetErrorCode> {
     validate_probability_open_unit(alpha)?;
-    if standard_dev <= 0.0 || size <= 0.0 || !standard_dev.is_finite() || !size.is_finite() {
+    if standard_dev <= 0.0 || !standard_dev.is_finite() || !size.is_finite() {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(inverse_standard_normal(1.0 - alpha / 2.0)? * standard_dev / size.sqrt())
+    // Excel docs: size is truncated toward integer; size < 1 -> #NUM!.
+    let size_int = size.trunc();
+    if size_int < 1.0 {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(inverse_standard_normal(1.0 - alpha / 2.0)? * standard_dev / size_int.sqrt())
 }
 
 fn prepared_len_error(meta: &FunctionMeta, actual: usize) -> NormalLogEvalError {
@@ -699,6 +704,29 @@ mod tests {
         );
         assert_eq!(
             confidence_norm_kernel(0.0, 1.0, 10.0),
+            Err(WorksheetErrorCode::Num)
+        );
+    }
+
+    // BUG-FUNC-039 item 4: CONFIDENCE size truncation and size<1 rejection.
+    #[test]
+    fn confidence_size_truncation_and_sub1_rejection() {
+        // Fractional size: result should match the integer-truncated value.
+        let with_fraction = confidence_norm_kernel(0.05, 2.5, 100.9).unwrap();
+        let truncated = confidence_norm_kernel(0.05, 2.5, 100.0).unwrap();
+        assert_eq!(
+            with_fraction, truncated,
+            "CONFIDENCE(0.05,2.5,100.9) must equal CONFIDENCE(0.05,2.5,100)"
+        );
+        // size < 1 -> #NUM!
+        assert_eq!(
+            confidence_norm_kernel(0.05, 2.5, 0.5),
+            Err(WorksheetErrorCode::Num),
+            "CONFIDENCE with size=0.5 must return #NUM!"
+        );
+        // size = 0 -> #NUM!
+        assert_eq!(
+            confidence_norm_kernel(0.05, 2.5, 0.0),
             Err(WorksheetErrorCode::Num)
         );
     }

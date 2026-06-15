@@ -220,22 +220,7 @@ fn addm(s: i64, m: i64) -> Option<i64> {
     excel_serial_from_ymd(WorkbookDateSystem::System1900, ty, tm, td).map(|v| v as i64)
 }
 fn d360us(s: i64, e: i64) -> Result<f64, BondCoreEvalError> {
-    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
-        .ok_or(derr(WorksheetErrorCode::Value))?;
-    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
-        .ok_or(derr(WorksheetErrorCode::Value))?;
-    let sfl = sm == 2 && sd == dim(sy, sm);
-    let efl = em == 2 && ed == dim(ey, em);
-    if sd == 31 || sfl {
-        sd = 30;
-    }
-    if ed == 31 {
-        ed = if sd < 30 { 1 } else { 30 };
-    }
-    if efl && sfl {
-        ed = 30;
-    }
-    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+    crate::functions::day_count_common::us_30_360(s, e).map_err(derr)
 }
 fn d360eu(s: i64, e: i64) -> Result<f64, BondCoreEvalError> {
     let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
@@ -857,6 +842,22 @@ mod tests {
     fn close(a: f64, b: f64, t: f64) {
         assert!((a - b).abs() <= t, "a={a}, b={b}");
     }
+    #[test]
+    fn d360us_rolls_end_day_31_into_next_month() {
+        assert_eq!(
+            d360us(serial(2023, 11, 15) as i64, serial(2024, 1, 31) as i64),
+            Ok(76.0)
+        );
+    }
+
+    #[test]
+    fn d360us_start_at_least_30_collapses_end_in_place() {
+        assert_eq!(
+            d360us(serial(2024, 1, 30) as i64, serial(2024, 3, 31) as i64),
+            Ok(60.0)
+        );
+    }
+
     #[test]
     fn meta_shape() {
         assert_eq!(ACCRINT_META.arity.max, 8);

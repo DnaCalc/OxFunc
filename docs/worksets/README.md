@@ -43,6 +43,9 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 28. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md)
 29. [W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md)
 30. [W099_CALCVALUE_END_TO_END_MIGRATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W099_CALCVALUE_END_TO_END_MIGRATION.md)
+31. [W100_EVIDENCE_SEAM_RESTORE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W100_EVIDENCE_SEAM_RESTORE.md)
+32. [W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md)
+33. [W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -75,6 +78,9 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 27. [W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W090_FUNCTION_ARRAY_SUPPORT_SYSTEMATIC_SWEEP.md) owns the broader array-support sweep after `W080`, including function/argument inventory, static risk classification, compact replay matrices, first post-text tranche selection, local-vs-Excel comparison, and ordinary bug promotion for confirmed divergences.
 28. [W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W098_UNIFIED_VALUE_MODEL_AND_CALLABLE_RICH.md) is the design-of-record for the unified `CalcValue` (core + optional rich) value model and the callable as one of the `RichValue` types carried by an opaque Rc handle, spanning the OxFunc value-model refactor plus OxFml/OxCalc/DnaTreeCalc consumer workstreams (W2–W5); `.beads/` owns execution, this packet owns the design and cross-repo lane map.
 29. [W099_CALCVALUE_END_TO_END_MIGRATION.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W099_CALCVALUE_END_TO_END_MIGRATION.md) owns the execution plan and migration gates for making `CalcValue` the native semantic value type throughout OxFunc function dispatch, argument preparation, kernels, arrays, callable lanes, and rich-value publication, and now explicitly includes the OxFml callable follow-through needed to replace `EvalValue::Lambda` with `CalcValue` / `RichValue::Callable` backed by a real `OxFmlCallableBinding`; its first planning round records that `CalcValue.core` covers every current `CallArgValue` case, so the call boundary should migrate directly to `CalcValue` unless a concrete audited counterexample appears.
+30. [W100_EVIDENCE_SEAM_RESTORE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W100_EVIDENCE_SEAM_RESTORE.md) owns the current W100 evidence-seam checkpoint, with `.beads/` task `oxf-acdw.1` as live state and `HO-FN-018` as the explicit-`@` OxFml parser follow-up.
+31. [W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md) owns the W102A no-probe cleanup checkpoint and W102B probe queue for the June 2026 review-derived structural bug batch.
+32. [W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md) queues the PMT-family exactness campaign behind W102A reviewability and W102B finance evidence.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

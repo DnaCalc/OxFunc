@@ -163,29 +163,7 @@ fn add_months_with_anchor_day(serial: i64, months: i64, anchor_day: i64) -> Opti
 }
 
 fn days360_us(start: i64, end: i64) -> Result<f64, WorksheetErrorCode> {
-    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
-        .ok_or(WorksheetErrorCode::Value)?;
-    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, end as f64)
-        .ok_or(WorksheetErrorCode::Value)?;
-
-    let start_last_feb = sm == 2 && sd == days_in_month(sy, sm);
-    let end_last_feb = em == 2 && ed == days_in_month(ey, em);
-
-    if sd == 31 || start_last_feb {
-        sd = 30;
-    }
-    if ed == 31 {
-        if sd < 30 {
-            ed = 1;
-        } else {
-            ed = 30;
-        }
-    }
-    if end_last_feb && start_last_feb {
-        ed = 30;
-    }
-
-    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+    crate::functions::day_count_common::us_30_360(start, end)
 }
 
 fn days360_eu(start: i64, end: i64) -> Result<f64, WorksheetErrorCode> {
@@ -517,6 +495,20 @@ mod tests {
 
     fn num(n: f64) -> CalcValue {
         CalcValue::number(n)
+    }
+
+    #[test]
+    fn coupdaybs_us30_360_settlement_on_31st_rolls_end_into_next_month() {
+        let settlement = serial(2024, 7, 31);
+        let maturity = serial(2024, 8, 15);
+        assert_eq!(
+            couppcd_kernel(settlement, maturity, 2.0, Some(0.0)),
+            Ok(serial(2024, 2, 15))
+        );
+        assert_eq!(
+            coupdaybs_kernel(settlement, maturity, 2.0, Some(0.0)),
+            Ok(166.0)
+        );
     }
 
     #[test]

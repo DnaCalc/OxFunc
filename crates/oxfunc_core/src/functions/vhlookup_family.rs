@@ -398,6 +398,62 @@ mod tests {
     }
 
     #[test]
+    fn vlookup_approximate_skips_blank_keys_in_first_column() {
+        let table = CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0), CalcValue::number(10.0)],
+                vec![CalcValue::number(2.0), CalcValue::number(20.0)],
+                vec![CalcValue::empty(), CalcValue::number(99.0)],
+                vec![CalcValue::number(3.0), CalcValue::number(30.0)],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(
+            eval_vlookup_surface(
+                &[scalar_num(2.9), table.clone(), scalar_num(2.0)],
+                &NoResolver
+            ),
+            Ok(CalcValue::number(20.0))
+        );
+        assert_eq!(
+            eval_vlookup_surface(&[scalar_num(9.99e307), table, scalar_num(2.0)], &NoResolver),
+            Ok(CalcValue::number(30.0))
+        );
+    }
+
+    #[test]
+    fn hlookup_approximate_skips_blank_keys_in_first_row() {
+        let table = CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::empty(),
+                    CalcValue::number(3.0),
+                ],
+                vec![
+                    CalcValue::number(10.0),
+                    CalcValue::number(20.0),
+                    CalcValue::number(99.0),
+                    CalcValue::number(30.0),
+                ],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(
+            eval_hlookup_surface(
+                &[scalar_num(2.9), table.clone(), scalar_num(2.0)],
+                &NoResolver
+            ),
+            Ok(CalcValue::number(20.0))
+        );
+        assert_eq!(
+            eval_hlookup_surface(&[scalar_num(9.99e307), table, scalar_num(2.0)], &NoResolver),
+            Ok(CalcValue::number(30.0))
+        );
+    }
+
+    #[test]
     fn approximate_lookup_below_first_key_returns_not_available() {
         assert_eq!(
             eval_vlookup_surface(&[scalar_num(0.5), vtable(), scalar_num(2.0)], &NoResolver),

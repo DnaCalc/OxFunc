@@ -528,7 +528,11 @@ fn parse_escape_atom(chars: &[char], index: &mut usize) -> Result<RegexAtom, Wor
         'W' => RegexAtom::NotWord,
         's' => RegexAtom::Space,
         'S' => RegexAtom::NotSpace,
-        other => RegexAtom::Literal(other),
+        // Literal-escape: punctuation/meta chars that need escaping in the admitted slice.
+        '\\' | '.' | '*' | '+' | '?' | '[' | ']' => RegexAtom::Literal(ch),
+        // Any other escape sequence is not part of the admitted slice; produce #VALUE!
+        // so the caller gets a hard error rather than a silently wrong literal match.
+        _ => return Err(WorksheetErrorCode::Value),
     })
 }
 
@@ -549,8 +553,14 @@ fn parse_class_piece(
             'd' => Ok(RegexClassPiece::Digit),
             'w' => Ok(RegexClassPiece::Word),
             's' => Ok(RegexClassPiece::Space),
+            // Negated shorthands are not supported inside character classes.
             'D' | 'W' | 'S' => Err(WorksheetErrorCode::Value),
-            other => Ok(RegexClassPiece::Literal(other)),
+            // Literal-escape: punctuation/meta chars that need escaping.
+            '\\' | '.' | '*' | '+' | '?' | '[' | ']' | '-' | '^' => {
+                Ok(RegexClassPiece::Literal(escaped))
+            }
+            // Unrecognized escape inside a character class: hard error, not silent literal.
+            _ => Err(WorksheetErrorCode::Value),
         };
     }
     *index += 1;
@@ -724,63 +734,6 @@ pub fn regexreplace_kernel(
     }
     out.extend(haystack[cursor..].iter().copied());
     text_from_string_checked(out)
-}
-
-fn normalize_phrase(input: &str) -> String {
-    input.trim().to_lowercase()
-}
-
-fn normalize_lang_code(text: &ExcelText) -> Result<String, WorksheetErrorCode> {
-    let code = text.to_string_lossy().trim().to_lowercase();
-    if matches!(code.as_str(), "en" | "es" | "fr" | "de") {
-        Ok(code)
-    } else {
-        Err(WorksheetErrorCode::Value)
-    }
-}
-
-fn phrasebook() -> &'static [(&'static str, &'static str, &'static str, &'static str)] {
-    &[
-        ("en", "es", "hello, world!", "hola mundo!"),
-        ("es", "en", "hola mundo!", "hello, world!"),
-        ("en", "fr", "good morning", "bonjour"),
-        ("fr", "en", "bonjour", "good morning"),
-        ("en", "de", "good night", "gute nacht"),
-        ("de", "en", "gute nacht", "good night"),
-        ("en", "es", "thank you", "gracias"),
-        ("es", "en", "gracias", "thank you"),
-    ]
-}
-
-pub fn translate_kernel(
-    text: &ExcelText,
-    source_language: Option<&ExcelText>,
-    target_language: Option<&ExcelText>,
-) -> Result<ExcelText, WorksheetErrorCode> {
-    let target = match target_language {
-        Some(text) => normalize_lang_code(text)?,
-        None => return Err(WorksheetErrorCode::Value),
-    };
-    let source = source_language.map(normalize_lang_code).transpose()?;
-    if source.as_deref() == Some(target.as_str()) {
-        return Ok(text.clone());
-    }
-
-    let phrase = normalize_phrase(&text.to_string_lossy());
-    let matches: Vec<_> = phrasebook()
-        .iter()
-        .filter(|(src, dst, src_phrase, _)| {
-            dst == &target.as_str()
-                && src_phrase == &phrase
-                && source.as_deref().is_none_or(|wanted| wanted == *src)
-        })
-        .collect();
-
-    if matches.len() != 1 {
-        return Err(WorksheetErrorCode::Value);
-    }
-
-    text_from_string_checked(matches[0].3.to_string())
 }
 
 pub fn eval_numbervalue_surface(
@@ -1020,6 +973,49 @@ mod tests {
     #[test]
     fn regexreplace_rejects_unsupported_pattern_features() {
         let got = regexreplace_kernel(&txt("abc"), &txt("(a)"), &txt("x"), 0, true);
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn regextest_unrecognized_escape_newline_is_value_error() {
+        // \n is not in the admitted escape slice; must be #VALUE!, not a match against 'n'.
+        let got = regextest_kernel(&txt("n"), &txt("\\n"), true);
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn regextest_unrecognized_escape_tab_is_value_error() {
+        let got = regextest_kernel(&txt("t"), &txt("\\t"), true);
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn regextest_unrecognized_escape_word_boundary_is_value_error() {
+        let got = regextest_kernel(&txt("b"), &txt("\\b"), true);
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn regextest_unrecognized_escape_hex_is_value_error() {
+        let got = regextest_kernel(&txt("x"), &txt("\\x"), true);
+        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    }
+
+    #[test]
+    fn regextest_admitted_literal_escapes_still_work() {
+        // \\ escapes a backslash; \. escapes a dot.
+        assert_eq!(regextest_kernel(&txt("a.b"), &txt("a\\.b"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt("a"), &txt("a\\.b"), true), Ok(false));
+        assert_eq!(
+            regextest_kernel(&txt("a\\b"), &txt("a\\\\b"), true),
+            Ok(true)
+        );
+    }
+
+    #[test]
+    fn regextest_unrecognized_escape_in_class_is_value_error() {
+        // \n inside a character class must also be a hard error.
+        let got = regextest_kernel(&txt("n"), &txt("[\\n]"), true);
         assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 

@@ -171,6 +171,49 @@ fn to_lookup_candidate(prepared: &CalcValue) -> Result<LookupCandidate, XmatchEv
     }
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) enum ApproximateCandidate {
+    Comparable(XmatchComparable),
+    Blank,
+}
+
+pub(crate) fn prepared_approximate_candidate(
+    prepared: &CalcValue,
+) -> Result<ApproximateCandidate, XmatchEvalError> {
+    match prepared.core() {
+        CoreValue::Empty | CoreValue::Missing => Ok(ApproximateCandidate::Blank),
+        _ => match prepared_lookup_candidate_comparable(prepared)? {
+            Some(value) => Ok(ApproximateCandidate::Comparable(value)),
+            None => Err(XmatchEvalError::NotAvailable),
+        },
+    }
+}
+
+pub(crate) struct IndexedComparables {
+    pub values: Vec<XmatchComparable>,
+    pub original_indices: Vec<usize>,
+}
+
+pub(crate) fn collect_approximate_comparables(
+    lookup_array: &[CalcValue],
+) -> Result<IndexedComparables, XmatchEvalError> {
+    let mut values = Vec::with_capacity(lookup_array.len());
+    let mut original_indices = Vec::with_capacity(lookup_array.len());
+    for (idx, value) in lookup_array.iter().enumerate() {
+        match prepared_approximate_candidate(value)? {
+            ApproximateCandidate::Comparable(candidate) => {
+                values.push(candidate);
+                original_indices.push(idx);
+            }
+            ApproximateCandidate::Blank => {}
+        }
+    }
+    Ok(IndexedComparables {
+        values,
+        original_indices,
+    })
+}
+
 fn parse_optional_match_mode(mode: Option<&CalcValue>) -> Result<XmatchMatchMode, XmatchEvalError> {
     match mode {
         None => Ok(XmatchMatchMode::Exact),
@@ -362,19 +405,6 @@ fn xmatch_scan_exact_or_approximate(
         .ok_or(XmatchEvalError::NotAvailable)
 }
 
-fn collect_binary_candidates(
-    lookup_array: &[CalcValue],
-) -> Result<Option<Vec<XmatchComparable>>, XmatchEvalError> {
-    let mut out = Vec::with_capacity(lookup_array.len());
-    for value in lookup_array {
-        let Some(candidate) = prepared_lookup_candidate_comparable(value)? else {
-            return Ok(None);
-        };
-        out.push(candidate);
-    }
-    Ok(Some(out))
-}
-
 fn lower_bound_ascending(
     candidates: &[XmatchComparable],
     lookup_value: &XmatchComparable,
@@ -432,33 +462,36 @@ fn xmatch_binary_search(
     match_mode: XmatchMatchMode,
     search_mode: XmatchSearchMode,
 ) -> Result<f64, XmatchEvalError> {
-    let Some(candidates) = collect_binary_candidates(lookup_array)? else {
-        return Err(XmatchEvalError::NotAvailable);
-    };
+    let IndexedComparables {
+        values: candidates,
+        original_indices,
+    } = collect_approximate_comparables(lookup_array)?;
 
     if candidates.is_empty() {
         return Err(XmatchEvalError::NotAvailable);
     }
 
+    let result_index = |pos: usize| -> f64 { (original_indices[pos] + 1) as f64 };
+
     match search_mode {
         XmatchSearchMode::BinaryAscending => {
             let lower = lower_bound_ascending(&candidates, lookup_value);
             if lower < candidates.len() && comparable_eq(&candidates[lower], lookup_value) {
-                return Ok((lower + 1) as f64);
+                return Ok(result_index(lower));
             }
 
             match match_mode {
                 XmatchMatchMode::Exact => Err(XmatchEvalError::NotAvailable),
                 XmatchMatchMode::ExactOrNextLarger => {
                     if lower < candidates.len() {
-                        Ok((lower + 1) as f64)
+                        Ok(result_index(lower))
                     } else {
                         Err(XmatchEvalError::NotAvailable)
                     }
                 }
                 XmatchMatchMode::ExactOrNextSmaller => {
                     if lower > 0 {
-                        Ok(lower as f64)
+                        Ok(result_index(lower - 1))
                     } else {
                         Err(XmatchEvalError::NotAvailable)
                     }
@@ -472,21 +505,21 @@ fn xmatch_binary_search(
             let first_lt = first_less_descending(&candidates, lookup_value);
             let first_le = first_less_or_equal_descending(&candidates, lookup_value);
             if first_lt > 0 && comparable_eq(&candidates[first_lt - 1], lookup_value) {
-                return Ok(first_lt as f64);
+                return Ok(result_index(first_lt - 1));
             }
 
             match match_mode {
                 XmatchMatchMode::Exact => Err(XmatchEvalError::NotAvailable),
                 XmatchMatchMode::ExactOrNextLarger => {
                     if first_lt > 0 {
-                        Ok(first_lt as f64)
+                        Ok(result_index(first_lt - 1))
                     } else {
                         Err(XmatchEvalError::NotAvailable)
                     }
                 }
                 XmatchMatchMode::ExactOrNextSmaller => {
                     if first_le < candidates.len() {
-                        Ok((first_le + 1) as f64)
+                        Ok(result_index(first_le))
                     } else {
                         Err(XmatchEvalError::NotAvailable)
                     }
@@ -856,6 +889,63 @@ mod tests {
             Some(&num(2.0)),
         );
         assert_eq!(approx_smaller_unsorted, Ok(2.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_binary_ascending_skips_trailing_blank() {
+        let last_value = eval_xmatch_adapter_prepared(
+            &num(9.99e307),
+            &[num(1.0), num(2.0), CalcValue::empty(), num(3.0)],
+            Some(&num(-1.0)),
+            Some(&num(2.0)),
+        );
+        assert_eq!(last_value, Ok(4.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_binary_ascending_skips_interior_blank() {
+        let next_larger = eval_xmatch_adapter_prepared(
+            &num(2.5),
+            &[num(1.0), CalcValue::empty(), num(2.0), num(3.0)],
+            Some(&num(1.0)),
+            Some(&num(2.0)),
+        );
+        assert_eq!(next_larger, Ok(4.0));
+
+        let exact_after_blank = eval_xmatch_adapter_prepared(
+            &num(2.0),
+            &[num(1.0), CalcValue::empty(), num(2.0), num(3.0)],
+            None,
+            Some(&num(2.0)),
+        );
+        assert_eq!(exact_after_blank, Ok(3.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_binary_descending_skips_blank() {
+        let next_smaller = eval_xmatch_adapter_prepared(
+            &num(2.5),
+            &[num(3.0), CalcValue::empty(), num(2.0), num(1.0)],
+            Some(&num(-1.0)),
+            Some(&num(-2.0)),
+        );
+        assert_eq!(next_smaller, Ok(3.0));
+    }
+
+    #[test]
+    fn eval_xmatch_adapter_prepared_binary_modes_do_not_skip_error_cells() {
+        let got = eval_xmatch_adapter_prepared(
+            &num(2.5),
+            &[
+                num(1.0),
+                (CalcValue::error(WorksheetErrorCode::Div0)),
+                num(2.0),
+                num(3.0),
+            ],
+            Some(&num(1.0)),
+            Some(&num(2.0)),
+        );
+        assert_eq!(got, Err(XmatchEvalError::NotAvailable));
     }
 
     #[test]

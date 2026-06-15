@@ -166,29 +166,7 @@ fn add_months_clamped(serial: i64, months: i64) -> Option<i64> {
 }
 
 fn days360_us(start: i64, end: i64) -> Result<f64, OddBondEvalError> {
-    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
-        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Value))?;
-    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, end as f64)
-        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Value))?;
-
-    let start_last_feb = sm == 2 && sd == days_in_month(sy, sm);
-    let end_last_feb = em == 2 && ed == days_in_month(ey, em);
-
-    if sd == 31 || start_last_feb {
-        sd = 30;
-    }
-    if ed == 31 {
-        if sd < 30 {
-            ed = 1;
-        } else {
-            ed = 30;
-        }
-    }
-    if end_last_feb && start_last_feb {
-        ed = 30;
-    }
-
-    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+    crate::functions::day_count_common::us_30_360(start, end).map_err(OddBondEvalError::Domain)
 }
 fn days360_us_both(start: i64, end: i64) -> Result<f64, OddBondEvalError> {
     let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
@@ -719,6 +697,22 @@ mod tests {
         assert!(
             (actual - expected).abs() <= tolerance,
             "expected {expected}, got {actual}"
+        );
+    }
+
+    #[test]
+    fn days360_us_rolls_end_day_31_into_next_month() {
+        assert_eq!(
+            days360_us(serial(2023, 11, 15) as i64, serial(2024, 1, 31) as i64),
+            Ok(76.0)
+        );
+    }
+
+    #[test]
+    fn days360_us_start_at_least_30_collapses_end_in_place() {
+        assert_eq!(
+            days360_us(serial(2024, 1, 30) as i64, serial(2024, 3, 31) as i64),
+            Ok(60.0)
         );
     }
 

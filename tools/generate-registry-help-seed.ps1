@@ -55,12 +55,14 @@ foreach ($Row in Import-Csv $CatalogPath) {
         continue
     }
 
-    $FunctionName = $Row.function_name.Trim().ToUpperInvariant()
-    $FunctionId = "FUNC.$FunctionName"
-    $Seed = Get-Seed $Seeds $FunctionId
+    $Parts = @($Row.function_name.Split(",") | ForEach-Object { $_.Trim().ToUpperInvariant() } | Where-Object { $_ })
+    foreach ($FunctionName in $Parts) {
+        $FunctionId = "FUNC.$FunctionName"
+        $Seed = Get-Seed $Seeds $FunctionId
 
-    if (-not [string]::IsNullOrWhiteSpace($Row.description)) {
-        $Seed.short_description = $Row.description.Trim()
+        if (-not [string]::IsNullOrWhiteSpace($Row.description)) {
+            $Seed.short_description = $Row.description.Trim()
+        }
     }
 }
 

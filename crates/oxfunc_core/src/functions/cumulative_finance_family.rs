@@ -221,13 +221,14 @@ fn ipmt_from_payment(
             if period_index == 1 {
                 0.0
             } else {
-                fv(
+                (fv(
                     rate,
                     period_index as f64 - 2.0,
                     payment,
                     present_value,
                     timing,
-                )? * rate
+                )? - payment)
+                    * rate
             }
         }
     };
@@ -466,6 +467,61 @@ mod tests {
             0.0,
             1.0e-12,
         );
+    }
+
+    // BUG-FUNC-034: annuity-due (type=1) interest for ranges touching per>=2 must
+    // subtract the beginning-of-period payment. Closed-form pins are derived from
+    // the corrected per-period formula; fixed-pending Excel bit-pinning.
+    #[test]
+    fn type_one_range_witness_candidates_pending_excel_bit_pinning() {
+        let rate = 0.09 / 12.0;
+        let periods = 360.0;
+        let pv = 125000.0;
+
+        assert_close(
+            cumipmt_kernel(rate, periods, pv, 1.0, 3.0, 1.0).expect("cumipmt type1 1..3"),
+            -1859.5135466458305,
+            1.0e-7,
+        );
+        assert_close(
+            cumipmt_kernel(rate, periods, pv, 2.0, 3.0, 1.0).expect("cumipmt type1 2..3"),
+            -1859.5135466458305,
+            1.0e-7,
+        );
+        assert_close(
+            cumipmt_kernel(rate, periods, pv, 1.0, 12.0, 1.0).expect("cumipmt type1 1..12"),
+            -10201.332884494608,
+            1.0e-6,
+        );
+
+        assert_close(
+            cumprinc_kernel(rate, periods, pv, 1.0, 3.0, 1.0).expect("cumprinc type1 1..3"),
+            -1135.3597174166357,
+            1.0e-7,
+        );
+        assert_close(
+            cumprinc_kernel(rate, periods, pv, 2.0, 3.0, 1.0).expect("cumprinc type1 2..3"),
+            -137.06862939581367,
+            1.0e-7,
+        );
+        assert_close(
+            cumprinc_kernel(rate, periods, pv, 1.0, 12.0, 1.0).expect("cumprinc type1 1..12"),
+            -1778.1601717552567,
+            1.0e-6,
+        );
+    }
+
+    #[test]
+    fn type_one_interest_and_principal_partition_total_payment() {
+        let rate = 0.09 / 12.0;
+        let periods = 360.0;
+        let pv = 125000.0;
+        let payment = pmt(rate, periods, pv, 0.0, PaymentTiming::BeginningOfPeriod)
+            .expect("type-one payment");
+        let interest = cumipmt_kernel(rate, periods, pv, 2.0, 3.0, 1.0).expect("type-one cumipmt");
+        let principal =
+            cumprinc_kernel(rate, periods, pv, 2.0, 3.0, 1.0).expect("type-one cumprinc");
+        assert_close(interest + principal, payment * 2.0, 1.0e-8);
     }
 
     #[test]

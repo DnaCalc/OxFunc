@@ -228,6 +228,10 @@ pub trait ReferenceSystemProvider {
 }
 
 impl<T: ReferenceSystemProvider + ?Sized> ReferenceSystemProvider for &T {
+    fn capabilities(&self) -> ReferenceSystemCapabilities {
+        (**self).capabilities()
+    }
+
     fn dereference(
         &self,
         request: &ReferenceDereferenceRequest,
@@ -845,6 +849,64 @@ mod tests {
                 ]])
                 .unwrap()
             ))
+        );
+    }
+
+    // BUG-FUNC-036: &T and &&T must forward capabilities() to the inner provider;
+    // without the blanket impl override the default permissive_local() masks
+    // any restrictive policy the host sets.
+    #[test]
+    fn ref_wrapper_forwards_capabilities_single_and_double_indirection() {
+        let restrictive = ReferenceSystemCapabilities {
+            allow_eval_time_deref: true,
+            allow_three_d_refs: false,
+            allow_structured_refs: false,
+            allow_spill_anchor_refs: false,
+            allow_external_refs: false,
+        };
+        let resolver = MockResolver {
+            caps: restrictive,
+            resolved: Some(CalcValue::number(1.0)),
+            by_reference: BTreeMap::new(),
+        };
+
+        // &T
+        let ref_resolver: &MockResolver = &resolver;
+        assert_eq!(ref_resolver.capabilities(), restrictive);
+
+        // &&T
+        let double_ref: &&MockResolver = &&resolver;
+        assert_eq!(double_ref.capabilities(), restrictive);
+
+        // The gate must deny ThreeD through &T.
+        let three_d = ReferenceLike::new(ReferenceKind::ThreeD, "Sheet1:Sheet2!A1".to_string());
+        assert_eq!(
+            resolve_eval_value(ref_resolver, &three_d),
+            Err(
+                crate::resolver::ReferenceResolutionError::CapabilityDenied {
+                    kind: ReferenceKind::ThreeD,
+                    capability: "allow_three_d_refs",
+                }
+            )
+        );
+
+        // allow_eval_time_deref=false gate must also propagate through &T.
+        let deny_deref = MockResolver {
+            caps: ReferenceSystemCapabilities {
+                allow_eval_time_deref: false,
+                allow_three_d_refs: true,
+                allow_structured_refs: true,
+                allow_spill_anchor_refs: true,
+                allow_external_refs: false,
+            },
+            resolved: Some(CalcValue::number(2.0)),
+            by_reference: BTreeMap::new(),
+        };
+        let ref_deny: &MockResolver = &deny_deref;
+        let a1 = ReferenceLike::new(ReferenceKind::A1, "A1".to_string());
+        assert_eq!(
+            resolve_eval_value(ref_deny, &a1),
+            Err(crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed)
         );
     }
 }

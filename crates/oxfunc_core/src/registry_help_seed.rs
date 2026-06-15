@@ -1186,7 +1186,13 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.FIND, FINDB",
+        function_id: "FUNC.FIND",
+        short_description: Some("Finds one text value within another (case-sensitive)"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.FINDB",
         short_description: Some("Finds one text value within another (case-sensitive)"),
         long_description: None,
         parameters: &[],
@@ -1365,9 +1371,11 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 0,
-                name: "row_fields",
-                short_description: Some("Grouping keys used to partition the input rows."),
+                index: 2,
+                name: "function",
+                short_description: Some(
+                    "Current parked baseline supports the admitted grouped-aggregation callable/aggregate slice.",
+                ),
             },
             ParameterHelpSeed {
                 index: 1,
@@ -1375,11 +1383,9 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 short_description: Some("Value vector or matrix aggregated within each group."),
             },
             ParameterHelpSeed {
-                index: 2,
-                name: "function",
-                short_description: Some(
-                    "Current parked baseline supports the admitted grouped-aggregation callable/aggregate slice.",
-                ),
+                index: 0,
+                name: "row_fields",
+                short_description: Some("Grouping keys used to partition the input rows."),
             },
         ],
     },
@@ -1423,6 +1429,16 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
+                index: 3,
+                name: "range_lookup",
+                short_description: Some("Omitted means approximate-match mode."),
+            },
+            ParameterHelpSeed {
+                index: 2,
+                name: "row_index_num",
+                short_description: Some("Truncates toward zero before validation."),
+            },
+            ParameterHelpSeed {
                 index: 1,
                 name: "table_array",
                 short_description: Some(
@@ -1435,16 +1451,6 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 short_description: Some(
                     "Supports exact and approximate lookup, including the current-baseline wildcard text lane.",
                 ),
-            },
-            ParameterHelpSeed {
-                index: 3,
-                name: "range_lookup",
-                short_description: Some("Omitted means approximate-match mode."),
-            },
-            ParameterHelpSeed {
-                index: 2,
-                name: "row_index_num",
-                short_description: Some("Truncates toward zero before validation."),
             },
         ],
     },
@@ -1472,16 +1478,16 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 0,
-                name: "link_location",
-                short_description: Some("Target URL or workbook-local hyperlink location."),
-            },
-            ParameterHelpSeed {
                 index: 1,
                 name: "friendly_name",
                 short_description: Some(
                     "Optional display value carried alongside hyperlink formatting hints.",
                 ),
+            },
+            ParameterHelpSeed {
+                index: 0,
+                name: "link_location",
+                short_description: Some("Target URL or workbook-local hyperlink location."),
             },
         ],
     },
@@ -1507,9 +1513,11 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 0,
-                name: "logical_test",
-                short_description: Some("Condition evaluation drives the branch selection."),
+                index: 2,
+                name: "value_if_false",
+                short_description: Some(
+                    "Optional false branch; omission follows the current baseline IF defaulting rules.",
+                ),
             },
             ParameterHelpSeed {
                 index: 1,
@@ -1517,11 +1525,9 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 short_description: Some("Returned when the logical test evaluates truthy."),
             },
             ParameterHelpSeed {
-                index: 2,
-                name: "value_if_false",
-                short_description: Some(
-                    "Optional false branch; omission follows the current baseline IF defaulting rules.",
-                ),
+                index: 0,
+                name: "logical_test",
+                short_description: Some("Condition evaluation drives the branch selection."),
             },
         ],
     },
@@ -1563,21 +1569,6 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 1,
-                name: "alt_text",
-                short_description: Some("Optional alternate text for presentation-aware hosts."),
-            },
-            ParameterHelpSeed {
-                index: 0,
-                name: "source",
-                short_description: Some("Image source or provider-backed locator string."),
-            },
-            ParameterHelpSeed {
-                index: 2,
-                name: "sizing",
-                short_description: Some("Optional sizing mode selection."),
-            },
-            ParameterHelpSeed {
                 index: 4,
                 name: "width",
                 short_description: Some("Optional explicit width input."),
@@ -1586,6 +1577,21 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 index: 3,
                 name: "height",
                 short_description: Some("Optional explicit height input."),
+            },
+            ParameterHelpSeed {
+                index: 2,
+                name: "sizing",
+                short_description: Some("Optional sizing mode selection."),
+            },
+            ParameterHelpSeed {
+                index: 1,
+                name: "alt_text",
+                short_description: Some("Optional alternate text for presentation-aware hosts."),
+            },
+            ParameterHelpSeed {
+                index: 0,
+                name: "source",
+                short_description: Some("Image source or provider-backed locator string."),
             },
         ],
     },
@@ -1916,13 +1922,25 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.LEFT, LEFTB",
+        function_id: "FUNC.LEFT",
         short_description: Some("Returns the leftmost characters from a text value"),
         long_description: None,
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.LEN, LENB",
+        function_id: "FUNC.LEFTB",
+        short_description: Some("Returns the leftmost characters from a text value"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.LEN",
+        short_description: Some("Returns the number of characters in a text string"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.LENB",
         short_description: Some("Returns the number of characters in a text string"),
         long_description: None,
         parameters: &[],
@@ -1935,9 +1953,11 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 0,
-                name: "name1",
-                short_description: Some("Introduces the first lexical binding."),
+                index: 2,
+                name: "calculation_or_name2",
+                short_description: Some(
+                    "Either begins the final calculation or continues the binding chain.",
+                ),
             },
             ParameterHelpSeed {
                 index: 1,
@@ -1945,11 +1965,9 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 short_description: Some("Supplies the first bound value or expression result."),
             },
             ParameterHelpSeed {
-                index: 2,
-                name: "calculation_or_name2",
-                short_description: Some(
-                    "Either begins the final calculation or continues the binding chain.",
-                ),
+                index: 0,
+                name: "name1",
+                short_description: Some("Introduces the first lexical binding."),
             },
         ],
     },
@@ -2086,7 +2104,15 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.MID, MIDB",
+        function_id: "FUNC.MID",
+        short_description: Some(
+            "Returns a specific number of characters from a text string starting at the position you specify",
+        ),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.MIDB",
         short_description: Some(
             "Returns a specific number of characters from a text string starting at the position you specify",
         ),
@@ -2704,7 +2730,13 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.REPLACE, REPLACEB",
+        function_id: "FUNC.REPLACE",
+        short_description: Some("Replaces characters within text"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.REPLACEB",
         short_description: Some("Replaces characters within text"),
         long_description: None,
         parameters: &[],
@@ -2716,7 +2748,13 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.RIGHT, RIGHTB",
+        function_id: "FUNC.RIGHT",
+        short_description: Some("Returns the rightmost characters from a text value"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.RIGHTB",
         short_description: Some("Returns the rightmost characters from a text value"),
         long_description: None,
         parameters: &[],
@@ -2790,7 +2828,13 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         parameters: &[],
     },
     RegistryHelpSeed {
-        function_id: "FUNC.SEARCH, SEARCHB",
+        function_id: "FUNC.SEARCH",
+        short_description: Some("Finds one text value within another (not case-sensitive)"),
+        long_description: None,
+        parameters: &[],
+    },
+    RegistryHelpSeed {
+        function_id: "FUNC.SEARCHB",
         short_description: Some("Finds one text value within another (not case-sensitive)"),
         long_description: None,
         parameters: &[],
@@ -2997,17 +3041,17 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 0,
-                name: "number1",
-                short_description: Some(
-                    "Starts the additive fold and admits ordinary scalar and reference-fed lanes.",
-                ),
-            },
-            ParameterHelpSeed {
                 index: 1,
                 name: "number2",
                 short_description: Some(
                     "Represents the repeated optional additive arguments for the bounded witness slice.",
+                ),
+            },
+            ParameterHelpSeed {
+                index: 0,
+                name: "number1",
+                short_description: Some(
+                    "Starts the additive fold and admits ordinary scalar and reference-fed lanes.",
                 ),
             },
         ],
@@ -3402,6 +3446,16 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
+                index: 3,
+                name: "range_lookup",
+                short_description: Some("Omitted means approximate-match mode."),
+            },
+            ParameterHelpSeed {
+                index: 2,
+                name: "col_index_num",
+                short_description: Some("Truncates toward zero before validation."),
+            },
+            ParameterHelpSeed {
                 index: 1,
                 name: "table_array",
                 short_description: Some(
@@ -3414,16 +3468,6 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 short_description: Some(
                     "Supports exact and approximate lookup, including the current-baseline wildcard text lane.",
                 ),
-            },
-            ParameterHelpSeed {
-                index: 3,
-                name: "range_lookup",
-                short_description: Some("Omitted means approximate-match mode."),
-            },
-            ParameterHelpSeed {
-                index: 2,
-                name: "col_index_num",
-                short_description: Some("Truncates toward zero before validation."),
             },
         ],
     },
@@ -3517,23 +3561,6 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
         ),
         parameters: &[
             ParameterHelpSeed {
-                index: 2,
-                name: "return_array",
-                short_description: Some("Return vector or area paired to the lookup array."),
-            },
-            ParameterHelpSeed {
-                index: 1,
-                name: "lookup_array",
-                short_description: Some("Lookup vector used for match search."),
-            },
-            ParameterHelpSeed {
-                index: 0,
-                name: "lookup_value",
-                short_description: Some(
-                    "Current mixed tranche carries the modern lookup-value entry point.",
-                ),
-            },
-            ParameterHelpSeed {
                 index: 5,
                 name: "search_mode",
                 short_description: Some(
@@ -3549,6 +3576,23 @@ pub(crate) const REGISTRY_HELP_SEEDS: &[RegistryHelpSeed] = &[
                 index: 3,
                 name: "if_not_found",
                 short_description: Some("Optional not-found projection lane."),
+            },
+            ParameterHelpSeed {
+                index: 2,
+                name: "return_array",
+                short_description: Some("Return vector or area paired to the lookup array."),
+            },
+            ParameterHelpSeed {
+                index: 1,
+                name: "lookup_array",
+                short_description: Some("Lookup vector used for match search."),
+            },
+            ParameterHelpSeed {
+                index: 0,
+                name: "lookup_value",
+                short_description: Some(
+                    "Current mixed tranche carries the modern lookup-value entry point.",
+                ),
             },
         ],
     },

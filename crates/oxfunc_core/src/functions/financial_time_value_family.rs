@@ -184,6 +184,39 @@ fn annuity_term(
     }
 }
 
+fn growth_allow_nonpositive_base(periodic_rate: f64, periods: f64) -> Result<f64, FinancialError> {
+    validate_finite(&[periodic_rate, periods])?;
+    let base = 1.0 + periodic_rate;
+    let factor = match power_kernel(base, periods) {
+        Ok(factor) => factor,
+        Err(WorksheetErrorCode::Div0) => return Err(FinancialError::Div0),
+        Err(WorksheetErrorCode::Num) => return Err(FinancialError::Num),
+        Err(_) => return Err(FinancialError::Value),
+    };
+    if factor.is_finite() {
+        Ok(factor)
+    } else {
+        Err(FinancialError::Num)
+    }
+}
+
+fn annuity_term_allow_nonpositive_base(
+    periodic_rate: f64,
+    periods: f64,
+    timing: PaymentTiming,
+) -> Result<f64, FinancialError> {
+    if periodic_rate.abs() < EPSILON {
+        return Ok(periods);
+    }
+    let factor = growth_allow_nonpositive_base(periodic_rate, periods)?;
+    let term = timing.factor(periodic_rate) * (factor - 1.0) / periodic_rate;
+    if term.is_finite() {
+        Ok(term)
+    } else {
+        Err(FinancialError::Num)
+    }
+}
+
 fn balance_equation(
     periodic_rate: f64,
     periods: f64,
@@ -223,8 +256,11 @@ pub fn pv(
     if periodic_rate.abs() < EPSILON {
         return Ok(-(future_value + payment_value * periods));
     }
-    let factor = growth(periodic_rate, periods)?;
-    let term = annuity_term(periodic_rate, periods, timing)?;
+    let factor = growth_allow_nonpositive_base(periodic_rate, periods)?;
+    let term = annuity_term_allow_nonpositive_base(periodic_rate, periods, timing)?;
+    if factor == 0.0 {
+        return Err(FinancialError::Div0);
+    }
     let result = -(future_value + payment_value * term) / factor;
     if result.is_finite() {
         Ok(result)
@@ -241,8 +277,8 @@ pub fn fv(
     timing: PaymentTiming,
 ) -> Result<f64, FinancialError> {
     validate_finite(&[periodic_rate, periods, payment_value, present_value])?;
-    let factor = growth(periodic_rate, periods)?;
-    let term = annuity_term(periodic_rate, periods, timing)?;
+    let factor = growth_allow_nonpositive_base(periodic_rate, periods)?;
+    let term = annuity_term_allow_nonpositive_base(periodic_rate, periods, timing)?;
     let result = -(present_value * factor + payment_value * term);
     if result.is_finite() {
         Ok(result)
@@ -611,8 +647,8 @@ pub fn npv(periodic_rate: f64, cashflows: &[f64]) -> Result<f64, FinancialError>
         return Err(FinancialError::Value);
     }
     let base = 1.0 + periodic_rate;
-    if base <= 0.0 {
-        return Err(FinancialError::Num);
+    if base == 0.0 {
+        return Err(FinancialError::Div0);
     }
     let mut total = 0.0;
     let mut discount = 1.0;
@@ -663,13 +699,14 @@ pub fn ipmt(
             if period_index <= 1.0 {
                 0.0
             } else {
-                fv(
+                (fv(
                     periodic_rate,
                     period_index - 2.0,
                     periodic_payment,
                     present_value,
                     timing,
-                )? * periodic_rate
+                )? - periodic_payment)
+                    * periodic_rate
             }
         }
     };
@@ -1593,10 +1630,154 @@ mod tests {
     fn numeric_domain_errors_are_reported() {
         assert_eq!(pduration(0.0, 100.0, 120.0), Err(FinancialError::Num));
         assert_eq!(nominal(0.05, 0.0), Err(FinancialError::Num));
-        assert_eq!(npv(-1.0, &[1.0]), Err(FinancialError::Num));
+        assert_eq!(npv(-1.0, &[1.0]), Err(FinancialError::Div0));
         assert_eq!(mirr(&[1.0, 2.0], 0.1, 0.1), Err(FinancialError::Div0));
         assert_eq!(
             ipmt(0.1, 0.0, 10.0, 1000.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+    }
+
+    // BUG-FUNC-034: annuity-due (type=1) interest for per>=2 must subtract the
+    // beginning-of-period payment before multiplying by rate. Closed-form pins
+    // below are derived from the corrected formula and are fixed-pending Excel
+    // bit-pinning by the probe lane.
+    #[test]
+    fn ipmt_ppmt_type_one_witness_candidates_pending_excel_bit_pinning() {
+        let rate = 0.1;
+        let nper = 3.0;
+        let pv = 1000.0;
+        let payment =
+            pmt(rate, nper, pv, 0.0, PaymentTiming::BeginningOfPeriod).expect("type-one payment");
+
+        let interest: Vec<f64> = (1..=3)
+            .map(|per| {
+                ipmt(
+                    rate,
+                    per as f64,
+                    nper,
+                    pv,
+                    0.0,
+                    PaymentTiming::BeginningOfPeriod,
+                )
+                .expect("type-one ipmt")
+            })
+            .collect();
+
+        assert_close(interest[0], 0.0, 1e-12);
+        assert_close(interest[1], -63.44410876132934, 1e-9);
+        assert_close(interest[2], -33.232628398791576, 1e-9);
+
+        // Standard annuity-due identity: ipmt_type1(per) == ipmt_type0(per)/(1+rate).
+        for per in 2..=3 {
+            let due = ipmt(
+                rate,
+                per as f64,
+                nper,
+                pv,
+                0.0,
+                PaymentTiming::BeginningOfPeriod,
+            )
+            .expect("ipmt due");
+            let ordinary = ipmt(rate, per as f64, nper, pv, 0.0, PaymentTiming::EndOfPeriod)
+                .expect("ipmt ordinary");
+            assert_close(due, ordinary / (1.0 + rate), 1e-9);
+        }
+
+        let principal: Vec<f64> = (1..=3)
+            .map(|per| {
+                ppmt(
+                    rate,
+                    per as f64,
+                    nper,
+                    pv,
+                    0.0,
+                    PaymentTiming::BeginningOfPeriod,
+                )
+                .expect("type-one ppmt")
+            })
+            .collect();
+        for (idx, principal_value) in principal.iter().enumerate() {
+            assert_close(principal_value + interest[idx], payment, 1e-9);
+        }
+        assert_close(principal[1], -302.1148036253773, 1e-9);
+    }
+
+    #[test]
+    fn ipmt_type_one_per_equal_one_is_zero_interest() {
+        assert_eq!(
+            ipmt(0.1, 1.0, 3.0, 1000.0, 0.0, PaymentTiming::BeginningOfPeriod),
+            Ok(0.0)
+        );
+    }
+
+    // BUG-FUNC-038: NPV/FV/PV rate<=-1 lanes (live-Excel probe matrix).
+    #[test]
+    fn npv_negative_base_lanes_match_excel_probe_matrix() {
+        // rate < -1: finite alternating-sign discounting (Excel =NPV(-2,100) = -100).
+        assert_eq!(npv(-2.0, &[100.0]), Ok(-100.0));
+        assert_eq!(npv(-2.0, &[100.0, 100.0]), Ok(0.0));
+        // rate = -1: division by (1+rate) is exactly zero -> #DIV/0!.
+        assert_eq!(npv(-1.0, &[100.0]), Err(FinancialError::Div0));
+    }
+
+    #[test]
+    fn fv_negative_base_lanes_match_excel_probe_matrix() {
+        // Integer nper at rate <= -1 (including rate = -1) publishes a number.
+        assert_eq!(
+            fv(-1.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(100.0)
+        );
+        assert_eq!(
+            fv(-2.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(100.0)
+        );
+        assert_eq!(
+            fv(-3.0, 2.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(-100.0)
+        );
+        // Fractional nper at rate < -1 -> #NUM! (matches Excel).
+        assert_eq!(
+            fv(-2.0, 2.5, 0.0, -100.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+    }
+
+    #[test]
+    fn pv_negative_base_lanes_match_excel_probe_matrix() {
+        // Integer nper at rate < -1 publishes a number.
+        assert_eq!(
+            pv(-2.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Ok(-100.0)
+        );
+        // rate = -1: division by the zero growth factor -> #DIV/0!.
+        assert_eq!(
+            pv(-1.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Div0)
+        );
+        // Fractional nper at rate < -1 -> #NUM! (matches Excel).
+        assert_eq!(
+            pv(-2.0, 2.5, 0.0, -100.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+    }
+
+    #[test]
+    fn pmt_ipmt_nper_keep_num_at_rate_at_or_below_minus_one() {
+        assert_eq!(
+            pmt(-2.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+        assert_eq!(
+            pmt(-3.0, 2.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+        assert_eq!(
+            ipmt(-2.0, 1.0, 3.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+        assert_eq!(
+            nper(-2.0, 10.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
             Err(FinancialError::Num)
         );
     }

@@ -5,9 +5,9 @@ use crate::function::{
 };
 use crate::functions::adapters::{expand_lookup_vector_arg, prepare_arg_values_only};
 use crate::functions::xmatch::{
-    BlankLookupBehavior, XmatchComparable, XmatchEvalError, XmatchMatchMode, comparable_eq,
-    comparable_order, eval_xmatch_adapter_prepared_with_blank_behavior,
-    prepared_lookup_candidate_comparable, prepared_lookup_comparable,
+    BlankLookupBehavior, IndexedComparables, XmatchComparable, XmatchEvalError, XmatchMatchMode,
+    collect_approximate_comparables, comparable_eq, comparable_order,
+    eval_xmatch_adapter_prepared_with_blank_behavior, prepared_lookup_comparable,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
@@ -172,17 +172,8 @@ fn first_less_or_equal_descending(
 
 fn collect_match_candidates(
     lookup_array: &[crate::functions::adapters::CalcValue],
-) -> Result<Vec<XmatchComparable>, MatchEvalError> {
-    let mut candidates = Vec::with_capacity(lookup_array.len());
-    for value in lookup_array {
-        let Some(candidate) =
-            prepared_lookup_candidate_comparable(value).map_err(map_xmatch_error)?
-        else {
-            return Err(MatchEvalError::NotAvailable);
-        };
-        candidates.push(candidate);
-    }
-    Ok(candidates)
+) -> Result<IndexedComparables, MatchEvalError> {
+    collect_approximate_comparables(lookup_array).map_err(map_xmatch_error)
 }
 
 fn eval_match_approximate_prepared(
@@ -198,12 +189,15 @@ fn eval_match_approximate_prepared(
         Err(err) => return Err(map_xmatch_error(err)),
     };
 
-    let candidates = collect_match_candidates(lookup_array)?;
+    let IndexedComparables {
+        values: candidates,
+        original_indices,
+    } = collect_match_candidates(lookup_array)?;
     if candidates.is_empty() {
         return Err(MatchEvalError::NotAvailable);
     }
 
-    let index = match mode {
+    let position = match mode {
         MatchApproximateMode::AscendingNextSmaller => {
             let first_greater = first_greater_ascending(&candidates, &lookup_value);
             if first_greater == 0 {
@@ -228,6 +222,7 @@ fn eval_match_approximate_prepared(
         }
     };
 
+    let index = original_indices[position - 1] + 1;
     Ok(CalcValue::number(index as f64))
 }
 
@@ -567,6 +562,82 @@ mod tests {
                     .unwrap(),
             ))],
             Some(&(CalcValue::number(0.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Err(MatchEvalError::NotAvailable));
+    }
+
+    #[test]
+    fn eval_match_approximate_ascending_skips_trailing_blank_for_last_value_idiom() {
+        let got = eval_match_surface(
+            &(CalcValue::number(9.99e307)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::number(2.0),
+                    CalcValue::empty(),
+                    CalcValue::number(3.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&(CalcValue::number(1.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(CalcValue::number(4.0)));
+    }
+
+    #[test]
+    fn eval_match_approximate_ascending_skips_interior_blank() {
+        let got = eval_match_surface(
+            &(CalcValue::number(2.5)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::empty(),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&(CalcValue::number(1.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(CalcValue::number(3.0)));
+    }
+
+    #[test]
+    fn eval_match_approximate_descending_skips_blank() {
+        let got = eval_match_surface(
+            &(CalcValue::number(2.5)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(3.0),
+                    CalcValue::empty(),
+                    CalcValue::number(2.0),
+                    CalcValue::number(1.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&(CalcValue::number(-1.0))),
+            &NoResolver,
+        );
+        assert_eq!(got, Ok(CalcValue::number(1.0)));
+    }
+
+    #[test]
+    fn eval_match_approximate_blank_skipping_does_not_skip_error_cells() {
+        let got = eval_match_surface(
+            &(CalcValue::number(2.5)),
+            &[(CalcValue::array(
+                CalcArray::from_rows(vec![vec![
+                    CalcValue::number(1.0),
+                    CalcValue::error(WorksheetErrorCode::Div0),
+                    CalcValue::number(2.0),
+                    CalcValue::number(3.0),
+                ]])
+                .unwrap(),
+            ))],
+            Some(&(CalcValue::number(1.0))),
             &NoResolver,
         );
         assert_eq!(got, Err(MatchEvalError::NotAvailable));

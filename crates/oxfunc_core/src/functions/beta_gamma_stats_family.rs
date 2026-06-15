@@ -247,7 +247,8 @@ fn gamma_inv_kernel(probability: f64, alpha: f64, beta: f64) -> Result<f64, Beta
     if !probability.is_finite() {
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Value));
     }
-    if !(0.0..=1.0).contains(&probability) {
+    // Excel: p must be strictly inside (0, 1); p==0 -> #NUM!, p==1 -> #NUM!.
+    if probability <= 0.0 || probability >= 1.0 {
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num));
     }
     let hi = beta * (alpha + 10.0 * alpha.sqrt() + 10.0).max(1.0);
@@ -534,6 +535,27 @@ mod tests {
         assert_eq!(
             eval_gamma_dist_surface(&[num(-1.0), num(2.0), num(3.0), num(1.0)], &NoResolver),
             Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num))
+        );
+    }
+
+    // BUG-FUNC-039 item 3: GAMMA.INV p=0 and p=1 boundary cases.
+    #[test]
+    fn gamma_inv_boundary_cases() {
+        // p=0 -> #NUM! (Excel: p must be > 0).
+        assert_eq!(
+            gamma_inv_kernel(0.0, 1.0, 1.0),
+            Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num))
+        );
+        // p=1 -> #NUM! (Excel: p must be < 1).
+        assert_eq!(
+            gamma_inv_kernel(1.0, 1.0, 1.0),
+            Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num))
+        );
+        // Normal interior case still works.
+        let v = gamma_inv_kernel(0.5, 3.0, 2.0).unwrap();
+        assert!(
+            (v - 5.348_).abs() < 0.01,
+            "GAMMA.INV(0.5,3,2) ~ 5.348, got {v}"
         );
     }
 }

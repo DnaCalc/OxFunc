@@ -4,8 +4,9 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::resolver::{
-    ReferenceSystemError, ReferenceSystemProvider, ReferenceTransformKind,
-    ReferenceTransformRequest, enumerate_reference_values,
+    ReferenceSystemError, ReferenceSystemOperation, ReferenceSystemProvider,
+    ReferenceTransformKind, ReferenceTransformRequest, enumerate_reference_values,
+    materialize_resolved_reference_values,
 };
 use crate::value::CalcValue;
 use crate::value::{ArrayShape, CalcArray, CoreValue, ExcelText, WorksheetErrorCode};
@@ -468,9 +469,9 @@ pub fn eval_index_surface(
             if area != 1 && !matches!(r.kind(), crate::value::ReferenceKind::MultiArea) {
                 return Err(IndexEvalError::InvalidAreaNumber(area as f64));
             }
-            if let Some(values) = enumerate_reference_values(resolver, r)
-                .map_err(|e| IndexEvalError::Coercion(CoercionError::RefResolution(e)))?
-            {
+            let enumerated = enumerate_reference_values(resolver, r)
+                .map_err(|e| IndexEvalError::Coercion(CoercionError::RefResolution(e)))?;
+            if let Some(values) = &enumerated {
                 let rows = values.declared_extent.rows;
                 let cols = values.declared_extent.cols;
                 if (row > 0 && row > rows) || (col > 0 && col > cols) {
@@ -482,13 +483,29 @@ pub fn eval_index_surface(
                     });
                 }
             }
-            resolver
-                .transform_reference(&ReferenceTransformRequest {
-                    reference: r.clone(),
-                    transform: ReferenceTransformKind::Index { row, col, area },
-                })
-                .map(CalcValue::reference)
-                .map_err(IndexEvalError::ReferenceSystem)
+            match resolver.transform_reference(&ReferenceTransformRequest {
+                reference: r.clone(),
+                transform: ReferenceTransformKind::Index { row, col, area },
+            }) {
+                Ok(reference) => Ok(CalcValue::reference(reference)),
+                Err(ReferenceSystemError::Unsupported {
+                    operation: ReferenceSystemOperation::Transform,
+                }) => {
+                    let Some(values) = enumerated else {
+                        return Err(IndexEvalError::ReferenceSystem(
+                            ReferenceSystemError::Unsupported {
+                                operation: ReferenceSystemOperation::Transform,
+                            },
+                        ));
+                    };
+                    let array = materialize_resolved_reference_values(&values)
+                        .map_err(|e| IndexEvalError::Coercion(CoercionError::RefResolution(e)))?;
+                    let (row, col) =
+                        normalize_array_indices_for_vector_position(&array, row, col, args.get(2));
+                    slice_array(&array, row, col)
+                }
+                Err(err) => Err(IndexEvalError::ReferenceSystem(err)),
+            }
         }
         CoreValue::Array(array) => {
             let row_selector = coerce_array_index_selector(args.get(1), resolver, 0, 0)?;
@@ -600,7 +617,10 @@ pub fn map_index_error_to_ws(e: &IndexEvalError) -> WorksheetErrorCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::resolver::ReferenceSystemCapabilities;
+    use crate::resolver::{
+        ReferenceEnumerationRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
+        ResolvedReferenceCell, ResolvedReferenceExtent, ResolvedReferenceValues,
+    };
     use crate::value::{ReferenceKind, ReferenceLike};
 
     struct NoResolver;
@@ -642,6 +662,34 @@ mod tests {
         }
     }
 
+    struct EnumeratingOnlyResolver;
+    impl ReferenceSystemProvider for EnumeratingOnlyResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+
+        fn enumerate_values(
+            &self,
+            request: &ReferenceEnumerationRequest,
+        ) -> Result<Option<ResolvedReferenceValues>, ReferenceResolutionError> {
+            if request.reference.target() != "A1:B3" {
+                return Ok(None);
+            }
+            Ok(Some(ResolvedReferenceValues::new(
+                ResolvedReferenceExtent::new(3, 2),
+                vec![
+                    ResolvedReferenceCell::new(1, 1, CalcValue::number(10.0)),
+                    ResolvedReferenceCell::new(1, 2, CalcValue::number(20.0)),
+                    ResolvedReferenceCell::new(2, 1, CalcValue::number(30.0)),
+                    ResolvedReferenceCell::new(2, 2, CalcValue::number(40.0)),
+                    ResolvedReferenceCell::new(3, 1, CalcValue::number(50.0)),
+                    ResolvedReferenceCell::new(3, 2, CalcValue::number(60.0)),
+                ],
+                None,
+            )))
+        }
+    }
+
     #[test]
     fn eval_index_reference_projection_projects_actual_a1_target() {
         let args = [
@@ -657,6 +705,17 @@ mod tests {
                 "A2".to_string()
             )))
         );
+    }
+
+    #[test]
+    fn eval_index_reference_value_context_materializes_when_transform_unsupported() {
+        let args = [
+            CalcValue::reference(ReferenceLike::new(ReferenceKind::Area, "A1:B3".to_string())),
+            CalcValue::number(2.0),
+            CalcValue::number(2.0),
+        ];
+        let got = eval_index_surface(&args, &EnumeratingOnlyResolver);
+        assert_eq!(got, Ok(CalcValue::number(40.0)));
     }
 
     #[test]

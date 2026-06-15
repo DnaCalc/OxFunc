@@ -66,6 +66,7 @@ pub mod date_fn;
 pub mod date_parts_family;
 pub mod date_value_family;
 pub mod date_week_family;
+pub mod day_count_common;
 pub mod decimal_fn;
 pub mod degrees;
 pub mod delta_fn;

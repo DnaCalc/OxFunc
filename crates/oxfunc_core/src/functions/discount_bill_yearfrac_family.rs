@@ -190,33 +190,8 @@ fn add_months_clamped(serial: i64, months: i64) -> Option<i64> {
 }
 
 fn days360_us(start: i64, end: i64) -> Result<f64, DiscountBillYearfracEvalError> {
-    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, start as f64)
-        .ok_or(DiscountBillYearfracEvalError::Domain(
-            WorksheetErrorCode::Value,
-        ))?;
-    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, end as f64)
-        .ok_or(DiscountBillYearfracEvalError::Domain(
-            WorksheetErrorCode::Value,
-        ))?;
-
-    let start_last_feb = sm == 2 && sd == days_in_month(sy, sm);
-    let end_last_feb = em == 2 && ed == days_in_month(ey, em);
-
-    if sd == 31 || start_last_feb {
-        sd = 30;
-    }
-    if ed == 31 {
-        if sd < 30 {
-            ed = 1;
-        } else {
-            ed = 30;
-        }
-    }
-    if end_last_feb && start_last_feb {
-        ed = 30;
-    }
-
-    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+    crate::functions::day_count_common::us_30_360(start, end)
+        .map_err(DiscountBillYearfracEvalError::Domain)
 }
 
 fn days360_eu(start: i64, end: i64) -> Result<f64, DiscountBillYearfracEvalError> {
@@ -681,6 +656,30 @@ mod tests {
         assert_eq!(TBILLPRICE_META.function_id, "FUNC.TBILLPRICE");
         assert_eq!(TBILLYIELD_META.function_id, "FUNC.TBILLYIELD");
         assert_eq!(YEARFRAC_META.function_id, "FUNC.YEARFRAC");
+    }
+
+    #[test]
+    fn yearfrac_us30_360_same_month_forward_range_is_non_negative() {
+        let start = serial(2024, 1, 15);
+        let end = serial(2024, 1, 31);
+        assert_close(
+            yearfrac_kernel(start, end, Some(0.0)).unwrap(),
+            16.0 / 360.0,
+            1.0e-12,
+        );
+        assert_close(
+            yearfrac_kernel(end, start, Some(0.0)).unwrap(),
+            16.0 / 360.0,
+            1.0e-12,
+        );
+    }
+
+    #[test]
+    fn days360_us_rolls_end_day_31_into_next_month() {
+        assert_eq!(
+            days360_us(serial(2023, 11, 15) as i64, serial(2024, 1, 31) as i64),
+            Ok(76.0)
+        );
     }
 
     #[test]

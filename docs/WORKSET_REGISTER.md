@@ -1059,3 +1059,84 @@ Notes:
    reach its terminal gate.
 7. W099 remains `scope_partial` / `target_partial` / `integration_partial` until no unowned
    legacy value path or old reference-provider path remains.
+
+## W100 Evidence Seam Restore
+
+Status: `in_progress`
+
+Execution target:
+restore the OxFunc/OxFml evidence seam enough that W100 integration failures are
+either green or represented by concrete blockers and registered handoffs.
+
+Canonical surfaces:
+1. `docs/worksets/W100_EVIDENCE_SEAM_RESTORE.md`
+2. `.beads/` epic `oxf-acdw`
+3. `.beads/` task `oxf-acdw.1`
+4. `.beads/` blocker `oxf-acdw.1.1`
+5. `docs/handoffs/HO-FN-018_explicit_at_operand_parser_followup.md`
+6. `crates/oxfunc_core/tests/oxfml_seam_integration.rs`
+
+Current checkpoint:
+1. `FN-INDEX-02` no longer fails in the OxFunc-side W100 seam replay after the
+   local value-context fallback for enumerable references.
+2. `cargo test -p oxfunc_core --test oxfml_seam_integration` reports
+   `37 passed; 1 failed`.
+3. The remaining failure is explicit-`@` parsing/admission in OxFml before
+   OxFunc semantics are entered; `HO-FN-018` is filed and registered.
+
+## W102 Structural Fix Batch And Probe Queue
+
+Status: `in_progress`
+
+Execution target:
+turn the current W102A review-derived structural cleanup work into a reviewable
+checkpoint, while splitting probe-first lanes into W102B evidence work.
+
+Canonical surfaces:
+1. `docs/worksets/W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md`
+2. `.beads/` task `oxf-acdw.2`
+3. `.beads/` task `oxf-acdw.3`
+4. `docs/bugs/BUG_STREAM_REGISTER.csv`
+5. `docs/bugs/BUG_REPORT_REGISTER.csv`
+6. `docs/bugs/streams/BUG-FUNC-034_ipmt_ppmt_type_one_interest_omits_beginning_payment.md`
+7. `docs/bugs/streams/BUG-FUNC-036_reference_provider_ref_wrapper_drops_capabilities.md`
+8. `docs/bugs/streams/BUG-FUNC-037_xnpv_wrongly_inherits_sign_change_gate.md`
+9. `docs/bugs/streams/BUG-FUNC-038_npv_fv_pv_negative_base_rate_lanes.md`
+10. `docs/bugs/streams/BUG-FUNC-039_statistical_and_boundary_edge_batch.md`
+11. `docs/bugs/streams/BUG-FUNC-040_approximate_match_blank_skipping_gap.md`
+12. `docs/bugs/streams/BUG-FUNC-041_regex_silent_escape_fallthrough_and_dead_translate_phrasebook.md`
+
+Current checkpoint:
+1. `BUG-FUNC-034`, `036`, `037`, `038`, `039`, `040`, and `041` are registered
+   with matching report rows `BUGREP-FUNC-020` through `BUGREP-FUNC-026`.
+2. W102A stream status is `fix_in_progress` / `not yet fixed` until the current
+   dirty tree lands or is intentionally split.
+3. W102B evidence lanes are explicit for finance bit pins, negative-base probe
+   artifacts, approximate lookup error/cross-type probes, regex admitted
+   escape contract work, and `GAMMA.INV` tail/cap evidence.
+4. `cargo fmt --check` passes; full `cargo test -p oxfunc_core` has been
+   attempted after targeted fixes and is blocked only by the W100 explicit-`@`
+   parser lane.
+
+## W103 PMT Family Exactness Campaign
+
+Status: `planned`
+
+Execution target:
+run the PMT-family exactness campaign after the W102A checkpoint is reviewable
+and the W102B finance evidence needed for `BUG-FUNC-034` is linked or refreshed.
+
+Canonical surfaces:
+1. `docs/worksets/W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md`
+2. `.beads/` task `oxf-acdw.4`
+3. `docs/bugs/streams/BUG-FUNC-034_ipmt_ppmt_type_one_interest_omits_beginning_payment.md`
+4. `crates/oxfunc_core/src/functions/financial_time_value_family.rs`
+5. `crates/oxfunc_core/src/functions/cumulative_finance_family.rs`
+6. `docs/KNOWN_EXACTNESS_DEVIATIONS.md`
+
+Entry conditions:
+1. W102A current working tree is reviewed and either landed or intentionally
+   split.
+2. W102B finance evidence for `BUG-FUNC-034` is linked or refreshed.
+3. Existing PMT/IPMT/PPMT exactness pins and known deviations are inventoried
+   before changing publication targets.

@@ -3,9 +3,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg,
-};
+use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
 use crate::resolver::ReferenceSystemProvider;
 use crate::semantic_kernel::{
     NumericalReductionPolicy, SemanticKernelRuntimeError, reduce_numeric_sum,

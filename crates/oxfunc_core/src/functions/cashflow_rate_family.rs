@@ -224,6 +224,22 @@ fn validate_xcashflow_inputs(values: &[f64], dates: &[i64]) -> Result<(), Worksh
     Ok(())
 }
 
+// XNPV is pure discounting — no sign-change or minimum-count requirement.
+// Keep: equal-length arrays, non-empty, all values finite, no date before anchor.
+fn validate_xnpv_inputs(values: &[f64], dates: &[i64]) -> Result<(), WorksheetErrorCode> {
+    if values.len() != dates.len() || dates.is_empty() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    if !values.iter().all(|v| v.is_finite()) {
+        return Err(WorksheetErrorCode::Value);
+    }
+    let anchor = dates[0];
+    if dates.iter().any(|date| *date < anchor) {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(())
+}
+
 fn periodic_npv_with_t0(rate: f64, cashflows: &[f64]) -> Result<f64, WorksheetErrorCode> {
     validate_cashflows(cashflows)?;
     if !rate.is_finite() || rate <= MIN_VALID_RATE {
@@ -260,7 +276,7 @@ fn periodic_npv_derivative(rate: f64, cashflows: &[f64]) -> Result<f64, Workshee
 }
 
 fn xnpv_kernel_raw(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
-    validate_xcashflow_inputs(values, dates)?;
+    validate_xnpv_inputs(values, dates)?;
     if !rate.is_finite() || rate <= MIN_VALID_RATE {
         return Err(WorksheetErrorCode::Num);
     }
@@ -279,7 +295,7 @@ fn xnpv_kernel_raw(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, Work
 }
 
 fn xnpv_derivative(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
-    validate_xcashflow_inputs(values, dates)?;
+    validate_xnpv_inputs(values, dates)?;
     if !rate.is_finite() || rate <= MIN_VALID_RATE {
         return Err(WorksheetErrorCode::Num);
     }
@@ -1112,6 +1128,29 @@ mod tests {
             xnpv_kernel(0.1, &[-100.0, 121.0], &[45000]),
             Err(WorksheetErrorCode::Num)
         );
+    }
+
+    // Live Excel 16.0 probe: =XNPV(0.1,{100,200},{45000,45100}) → 294.8451203808644
+    // Verifies that XNPV no longer requires a sign change (all-positive series).
+    #[test]
+    fn xnpv_live_excel_probe_all_positive_two_cashflows() {
+        let got = xnpv_kernel(0.1, &[100.0, 200.0], &[45000, 45100]).unwrap();
+        assert_bits(got, 294.8451203808644_f64);
+    }
+
+    // XNPV of a single cashflow at the anchor date equals that cashflow (rate has no effect).
+    #[test]
+    fn xnpv_single_element_equals_anchor_cashflow() {
+        let got = xnpv_kernel(0.1, &[500.0], &[45000]).unwrap();
+        assert_bits(got, 500.0_f64);
+    }
+
+    // All-negative series: pure discounting still works (no sign-change gate).
+    #[test]
+    fn xnpv_all_negative_series_accepted() {
+        // −100 at anchor + −110 one year later at 10% discount: −100 + −110/1.1 = −200
+        let got = xnpv_kernel(0.1, &[-100.0, -110.0], &[45000, 45365]).unwrap();
+        assert_close(got, -200.0);
     }
 
     #[test]

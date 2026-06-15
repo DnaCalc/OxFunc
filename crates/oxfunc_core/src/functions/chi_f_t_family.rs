@@ -72,7 +72,8 @@ fn arity_error(meta: &FunctionMeta, actual: usize) -> ChiFTEvalError {
 
 fn truncate_positive_integer(value: f64) -> Result<f64, WorksheetErrorCode> {
     let truncated = value.trunc();
-    if !truncated.is_finite() || truncated < 1.0 || truncated >= 1e10 {
+    // Excel docs: #NUM! when deg_freedom > 1e10 (strictly greater); 1e10 itself is admitted.
+    if !truncated.is_finite() || truncated < 1.0 || truncated > 1e10 {
         Err(WorksheetErrorCode::Num)
     } else {
         Ok(truncated)
@@ -104,7 +105,8 @@ pub fn chisq_pdf_kernel(x: f64, deg_freedom: f64) -> Result<f64, WorksheetErrorC
     let k = truncate_positive_integer(deg_freedom)?;
     if x == 0.0 {
         return if k == 1.0 {
-            Ok(f64::INFINITY)
+            // CDF limit is finite but density diverges to +inf; Excel returns #NUM!
+            Err(WorksheetErrorCode::Num)
         } else if k == 2.0 {
             Ok(0.5)
         } else {
@@ -168,13 +170,14 @@ pub fn f_pdf_kernel(x: f64, deg1: f64, deg2: f64) -> Result<f64, WorksheetErrorC
     let d1 = truncate_positive_integer(deg1)?;
     let d2 = truncate_positive_integer(deg2)?;
     if x == 0.0 {
-        return Ok(if d1 < 2.0 {
-            f64::INFINITY
+        return if d1 < 2.0 {
+            // Density diverges to +inf; Excel returns #NUM!
+            Err(WorksheetErrorCode::Num)
         } else if d1 == 2.0 {
-            1.0
+            Ok(1.0)
         } else {
-            0.0
-        });
+            Ok(0.0)
+        };
     }
     let half_d1 = d1 / 2.0;
     let half_d2 = d2 / 2.0;
@@ -741,5 +744,44 @@ mod tests {
         );
         assert_eq!(t_dist_2t_kernel(-1.0, 10.0), Err(WorksheetErrorCode::Num));
         assert_eq!(t_dist_rt_kernel(-1.0, 10.0), Err(WorksheetErrorCode::Num));
+    }
+
+    // BUG-FUNC-039 item 1: x=0 divergence published as #NUM!, not +inf.
+    #[test]
+    fn chisq_pdf_x0_df1_returns_num_not_inf() {
+        assert_eq!(chisq_pdf_kernel(0.0, 1.0), Err(WorksheetErrorCode::Num));
+        // df=2 at x=0 is finite (0.5); must not be broken by the fix.
+        assert!((chisq_pdf_kernel(0.0, 2.0).unwrap() - 0.5).abs() < 1e-15);
+        // df=3 at x=0 is 0.0.
+        assert_eq!(chisq_pdf_kernel(0.0, 3.0), Ok(0.0));
+    }
+
+    // BUG-FUNC-039 item 1: F.DIST(0, d1<2, d2, FALSE) -> #NUM!.
+    #[test]
+    fn f_pdf_x0_d1lt2_returns_num_not_inf() {
+        assert_eq!(f_pdf_kernel(0.0, 1.0, 5.0), Err(WorksheetErrorCode::Num));
+        // d1=2 at x=0 is finite (1.0); must not be broken.
+        assert!((f_pdf_kernel(0.0, 2.0, 5.0).unwrap() - 1.0).abs() < 1e-15);
+        // d1=3 at x=0 is 0.0.
+        assert_eq!(f_pdf_kernel(0.0, 3.0, 5.0), Ok(0.0));
+    }
+
+    // BUG-FUNC-039 item 2: df exactly 1e10 must be admitted; df > 1e10 rejected.
+    #[test]
+    fn df_boundary_at_1e10_is_admitted() {
+        // df = 1e10 exactly: should succeed (just needs to parse without error).
+        assert!(chisq_dist_kernel(1.0, 1e10, false).is_ok());
+        // df = 1e10 + 1 (next representable float above 1e10): must be rejected.
+        let above = 1e10 + 1.0;
+        assert_eq!(
+            chisq_dist_kernel(1.0, above, false),
+            Err(WorksheetErrorCode::Num)
+        );
+        // F family too.
+        assert!(f_dist_kernel(1.0, 1e10, 1e10, false).is_ok());
+        assert_eq!(
+            f_dist_kernel(1.0, above, 1e10, false),
+            Err(WorksheetErrorCode::Num)
+        );
     }
 }

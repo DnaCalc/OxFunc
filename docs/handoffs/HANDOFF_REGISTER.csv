@@ -27,3 +27,4 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HO-FN-017","OxFunc->OxFml","W099 typed reference value shape","filed","W099","OxFml evaluator ReferenceLike construction","2026-06-01",""
 "HANDOFF-OXFUNC-008","OxFml->OxFunc","TAKE omitted row count in complex helper lambda","filed","OxFml local direct investigation","W-TBD","2026-04-10",""
 "HANDOFF-DNACALC-001","DnaOneCalc->OxFunc","Signature seeds 244 placeholder parameter entries","filed","DnaOneCalc editor regression report","W-TBD","2026-05-05",""
+"HO-FN-018","OxFunc->OxFml","Explicit @ operand parser follow-up","filed","W100","OxFml formula parser/admission follow-up","2026-06-15",""

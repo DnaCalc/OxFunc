@@ -27,6 +27,10 @@ pub fn mround_kernel(number: f64, multiple: f64) -> Result<f64, WorksheetErrorCo
     if multiple == 0.0 {
         return Ok(0.0);
     }
+    // Zero has no sign; Excel returns 0 for MROUND(0, any_nonzero_multiple).
+    if number == 0.0 {
+        return Ok(0.0);
+    }
     if number.signum() != multiple.signum() {
         return Err(WorksheetErrorCode::Num);
     }
@@ -61,5 +65,16 @@ mod tests {
         assert_eq!(mround_kernel(-10.0, 3.0), Err(WorksheetErrorCode::Num));
         assert_eq!(mround_kernel(1.25, 0.5), Ok(1.5));
         assert_eq!(mround_kernel(5.0, 0.0), Ok(0.0));
+    }
+
+    // BUG-FUNC-039 item 5: MROUND(0, negative) -> 0, not #NUM!.
+    #[test]
+    fn mround_zero_number_with_negative_multiple_returns_zero() {
+        assert_eq!(mround_kernel(0.0, -3.0), Ok(0.0));
+        assert_eq!(mround_kernel(0.0, -1.0), Ok(0.0));
+        assert_eq!(mround_kernel(0.0, 3.0), Ok(0.0));
+        // Sign-mismatch for non-zero number still errors.
+        assert_eq!(mround_kernel(1.0, -3.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(mround_kernel(-1.0, 3.0), Err(WorksheetErrorCode::Num));
     }
 }

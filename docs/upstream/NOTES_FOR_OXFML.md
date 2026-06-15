@@ -419,3 +419,11 @@ current-state triage note; it is not a request for immediate action unless noted
   acknowledgement received. W099-002 typed `ReferenceLike` migration is landed;
   OxFml should use `ReferenceLike::new(kind, target)` until W099-003 provider
   constructors land. OxFml acknowledgement and follow-through plan are pending.
+
+- `HO-FN-018` (explicit `@` operand parser follow-up, filed 2026-06-15): no
+  acknowledgement received. OxFunc W100 seam replay is now narrowed to explicit
+  `@` formulas that fail in OxFml syntax diagnostics before OxFunc semantics are
+  entered (`=@A1:A3`, `=@A1:C1`, `=@SEQUENCE(3)`, `=@A1:B2`,
+  `=@OFFSET(A1,1,0,3,1)`). The request is to parse the explicit-`@` operand
+  through the ordinary range/postfix/call expression path while preserving any
+  needed structured-reference member special case.
