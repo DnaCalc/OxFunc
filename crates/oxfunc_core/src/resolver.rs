@@ -752,6 +752,30 @@ mod tests {
                 operation: ReferenceSystemOperation::Facts,
             })
         );
+        assert_eq!(
+            NULL_REFERENCE_SYSTEM_PROVIDER.transform_reference(&ReferenceTransformRequest {
+                reference: ReferenceLike::new(ReferenceKind::A1, "A1"),
+                transform: ReferenceTransformKind::Offset {
+                    row_offset: 1,
+                    col_offset: 0,
+                    height: None,
+                    width: None,
+                },
+            }),
+            Err(ReferenceSystemError::Unsupported {
+                operation: ReferenceSystemOperation::Transform,
+            })
+        );
+        assert_eq!(
+            NULL_REFERENCE_SYSTEM_PROVIDER.compose_references(&ReferenceComposeRequest {
+                lhs: ReferenceLike::new(ReferenceKind::A1, "A1"),
+                rhs: ReferenceLike::new(ReferenceKind::A1, "B1"),
+                operation: ReferenceComposeOperation::Range,
+            }),
+            Err(ReferenceSystemError::Unsupported {
+                operation: ReferenceSystemOperation::Compose,
+            })
+        );
     }
 
     #[test]
