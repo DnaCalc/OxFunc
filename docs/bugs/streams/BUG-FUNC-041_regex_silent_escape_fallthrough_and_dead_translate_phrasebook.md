@@ -3,8 +3,21 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-041`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `open` (fix landed in `7a0003f` but OVER-REJECTS; live Excel escape battery 2026-06-18 — see below)
 - **Owner workset**: `W102A` (no-probe structural fixes)
+
+## Live Excel Verification (2026-06-18) — admitted-slice diverges
+A 40-escape `REGEXTEST("a1.B z","\X")` battery vs Excel 16.0 build 20026 found **18
+divergences**, all "OxFunc rejects what Excel admits":
+- anchors `\b \B \A \Z \z` — Excel admits (TRUE), OxFunc `#VALUE!`
+- whitespace `\n \t \r \f \v` — Excel admits (FALSE), OxFunc `#VALUE!`
+- escaped metacharacters `\( \) \| \^ \$ \/` — Excel admits (FALSE), OxFunc `#VALUE!`
+  (yet OxFunc admits `\* \+ \? \[`, so it is internally inconsistent)
+- `\h \e` — Excel admits, OxFunc `#VALUE!`
+
+Both correctly reject unknown letter escapes (`\q \k \m \g \p \c \x \y \j \o`). The
+W102A fix swapped "silently match literal" for over-rejection; the admitted escape set
+must expand to Excel's. Tracked as bead `oxf-fyhi`. Stays open.
 
 ## Source Refs
 - **Reported against ref**: review pass 2026-06-10 (digest `functions-text-lookup.md` F9)

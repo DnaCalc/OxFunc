@@ -3,8 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-040`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `closed` (fix landed in `7a0003f` on main; live Excel 16.0 b20026 verified 2026-06-18)
 - **Owner workset**: `W102A.6` (W100-W102 cleanup pass)
+
+## Live Excel Verification (2026-06-18)
+Over a range `[10, 20, blank, 40, 50]` (A1:A5, A3 blank): `MATCH(9.99E307,A1:A5,1)` = `5`
+and `MATCH(35,A1:A5,1)` = `2` on both OxFunc and Excel — the blank is skipped rather
+than aborting the lookup. The adjacent error-cell and cross-type ordering lanes named
+in the stream are separate probe-first explorations, not part of this blank-skip bug.
 
 ## Source Refs
 - **Reported against ref**: branch `w100-w102-cleanup-pass` working tree

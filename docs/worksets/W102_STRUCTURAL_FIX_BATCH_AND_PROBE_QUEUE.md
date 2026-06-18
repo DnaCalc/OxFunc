@@ -42,8 +42,15 @@ Track the June 2026 review-derived structural cleanup batch and split it into:
    - `BUG-FUNC-039` — MROUND/GAMMA.INV(p=1)/CONFIDENCE/CHISQ.DIST match, **but
      `GAMMA.INV(0,..)` returns `#NUM!` where Excel returns `0` — regression**, bead
      `oxf-99zz`; stream stays **open**.
-   - `BUG-FUNC-037` (XNPV), `040` (lookup blanks), `041` (regex escapes) → **validated_local**;
-     closure pending their reference/fixture/contract-specific Excel witnesses.
+   - `BUG-FUNC-037` (XNPV no-sign-change) — bit-exact vs Excel (`0x40808e043b3d5af9`) → **closed**.
+   - `BUG-FUNC-040` (lookup blank-skip) — MATCH over range with a blank matches Excel → **closed**.
+   - `BUG-FUNC-041` (regex escapes) — a 40-escape Excel battery found the fix **over-rejects**
+     18 escapes Excel admits (anchors, whitespace, escaped metacharacters); bead `oxf-fyhi`,
+     stream stays **open**.
+
+This pass surfaced two over-correction regressions in the W102A batch — `GAMMA.INV(0)`
+(`oxf-99zz`) and the regex admitted slice (`oxf-fyhi`) — both "the fix rejects what Excel
+accepts." Verification against live Excel before closure is what caught them.
 
 2026-06-15:
 

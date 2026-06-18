@@ -3,8 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-037`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `closed` (fix landed in `7a0003f` on main; live Excel 16.0 b20026 bit-exact verified 2026-06-18)
 - **Owner workset**: `W102A`
+
+## Live Excel Verification (2026-06-18)
+`XNPV(0.1,{100,200,300},{43831,44196,44561})` = `529.7520661157024`, f64 bits
+`0x40808e043b3d5af9` on **both** OxFunc and Excel 16.0 build 20026 — bit-exact, and
+it computes (no `#NUM!`), confirming the sign-change precondition was correctly
+removed for pure discounting. PMT/IPMT/XIRR keep their sign-change requirement.
 
 ## Source Refs
 - **Reported against ref**: `caffd0f`
