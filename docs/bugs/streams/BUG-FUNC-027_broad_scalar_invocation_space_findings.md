@@ -3,9 +3,9 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-027`
 - **Opened**: `2026-05-09`
-- **Status**: `open`
+- **Status**: `open` (CLASS-A landed + Excel-verified 2026-06-19; CLASS-B/C remain)
 - **Owner workset**: `W092`
-- **Bead**: pending allocation through `br`
+- **Bead**: `oxf-vgxs` (unary non-finite audit follow-up); CLASS-B/C beads pending
 
 ## Source Refs
 - **Reported against ref**: working tree at `2026-05-09` for the W092 broad
@@ -296,9 +296,29 @@ framing is superseded by the doctrine update.
 17. Local explorer source: `smart-fuzzer/tools/pmt_ppmt_local_eval/src/bin/broad_scalar_explorer.rs`
 18. Driver: `smart-fuzzer/tools/Run-BroadScalarExploration.ps1`
 
+## 2026-06-19 CLASS-A Landed (live Excel 16.0 build 20026)
+
+All CLASS-A kind/error subclasses are fixed, focus-tested, and verified against live
+Excel via the `array_tranche_local_eval` + COM harness:
+
+| Subclass | Witness | Was | Now / Excel | Commit |
+| -------- | ------- | --- | ----------- | ------ |
+| A1 GAMMALN tiny | `GAMMALN(1E-300)` | `+Inf` | `690.7755278982137` (bit-exact) | `8278b86` |
+| A2 GAMMA tiny-neg pole | `GAMMA(-1E-200)` | `#NUM!` | `~ -1E200` finite (fine ULP = C1) | `8278b86` |
+| A3 SINH/COSH overflow | `SINH(-326648.33)` | `±Inf` | `#NUM!` | `b0b2419` |
+| A4 POWER overflow | `POWER(10,700)` / `POWER(0.001,-700)` | `+Inf` | `#NUM!` / `#DIV/0!` | `b0b2419` |
+| A5 PERMUTATIONA overflow | `PERMUTATIONA(163,150)` | `+Inf` | `#NUM!` | `b0b2419` |
+| A6 FISHERINV saturation | `FISHERINV(817.81)` | `NaN` | `1` | `b0b2419` |
+| A7 MROUND zero-sign | `MROUND(0,-4.2)` | `#NUM!` | `0` | already in the 039 batch |
+
+A new shared `finite_or_num` guard (`excel_numeric.rs`) maps non-finite scalar results
+to `#NUM!`; it is applied per-function because saturating functions (COTH/TANH) return
+`±1` and must NOT use it. The same non-finite leak in other unary kernels (EXP, ...) is
+tracked separately as bead `oxf-vgxs`.
+
 ## Closure Checklist
-- [ ] CLASS-A1..A7 minimized into focused tests and repair landed
+- [x] CLASS-A1..A7 minimized into focused tests and repair landed (2026-06-19)
 - [ ] CLASS-B1..B3 Excel-doctrine threshold pinned and modelled
 - [ ] CLASS-C1..C5 substrate-by-substrate kernel correction landed
-- [ ] follow-up beads opened for each class group and tracked in `.beads/`
+- [x] follow-up beads opened for each class group and tracked in `.beads/` (CLASS-A audit `oxf-vgxs`; B/C beads pending)
 - [ ] handoff to OxFml not required so far (no seam-side surface affected)
