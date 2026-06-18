@@ -3,8 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-038`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `closed` (fix landed in `7a0003f` on main; live Excel 16.0 b20026 verified 2026-06-18)
 - **Owner workset**: `W102A`
+
+## Live Excel Verification (2026-06-18)
+OxFunc local value surface vs live Excel 16.0 build 20026, all match:
+`NPV(-2,100)` = `-100`, `FV(-1,3,-100,0)` = `100`, `PV(-2,3,-100,0)` = `-100`;
+contrast `PMT(-2,3,1000)` = `#NUM!` (rate<=-1 rejection preserved). This is the
+durable probe the stream needed.
 
 ## Source Refs
 - **Reported against ref**: review pass `2026-06-10` / branch `w100-w102-cleanup-pass`

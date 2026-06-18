@@ -3,8 +3,16 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-034`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `closed` (fix landed in `7a0003f` on main; live Excel 16.0 b20026 verified 2026-06-18)
 - **Owner workset**: `W102A` (structural bug-fix batch, 102-A item 1)
+
+## Live Excel Verification (2026-06-18)
+OxFunc local value surface vs live Excel 16.0 build 20026, witnesses rate=0.1
+nper=3 pv=1000 type=1 per=2; all match to 10 decimal places:
+`IPMT(0.1,2,3,1000,0,1)` = `-63.4441087613`,
+`PPMT(0.1,2,3,1000,0,1)` = `-302.1148036254`,
+`CUMIPMT(0.1,3,1000,2,2,1)` = `-63.4441087613`,
+`CUMPRINC(0.1,3,1000,2,2,1)` = `-302.1148036254`.
 
 ## Source Refs
 - **Reported against ref**: `w100-w102-cleanup-pass` working tree

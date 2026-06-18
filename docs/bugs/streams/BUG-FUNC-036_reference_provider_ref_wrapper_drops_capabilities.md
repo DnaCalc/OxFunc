@@ -3,14 +3,14 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-036`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `closed` (fix landed in `7a0003f` on main; static fix, no Excel evidence required)
 - **Owner workset**: `W102A` (no-probe structural fixes)
 
 ## Source Refs
 - **Reported against ref**: working tree at review `2026-06-10`
 - **Reproduced on ref**: code review; no fuzzer lane required (static structural finding)
 - **Introduced in ref**: unknown; present since the blanket `&T` impl was added
-- **Fixed in ref**: `not yet fixed` (working-tree patch present in `resolver.rs`; checkpoint not landed)
+- **Fixed in ref**: `7a0003f` (landed on main 2026-06-18; full lib suite 1399 passed)
 - **Ref notes**: static analysis; no Excel differential needed (pure Rust trait dispatch).
 
 ## Ownership And Root Cause
@@ -61,7 +61,7 @@ because `&&T` implements `&T` which now delegates correctly.
 - No `Arc<T>` or `Rc<T>` blanket impls exist; if added they will need the same fix.
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded (working-tree patch present; checkpoint not landed)
+- [x] fix landed (commit `7a0003f`, on main)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded

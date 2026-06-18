@@ -29,6 +29,22 @@ Track the June 2026 review-derived structural cleanup batch and split it into:
 
 ## Current Checkpoint
 
+2026-06-18 (land + close pass):
+
+1. The W102A code checkpoint (`7a0003f`) plus W100 and W104 were fast-forwarded onto
+   `main` (`ee86681`).
+2. Excel automation confirmed available locally (Excel 16.0 build 20026); the W102B
+   evidence gate is now openable.
+3. Live Excel verification of the W102A streams (OxFunc local value surface vs Excel):
+   - `BUG-FUNC-034` (IPMT/PPMT/CUMIPMT/CUMPRINC type=1) — 4/4 match to 10dp → **closed**.
+   - `BUG-FUNC-038` (NPV/FV/PV negative base; PMT-rejects contrast) — match → **closed**.
+   - `BUG-FUNC-036` (resolver `&T` capabilities) — static fix, lib suite green → **closed**.
+   - `BUG-FUNC-039` — MROUND/GAMMA.INV(p=1)/CONFIDENCE/CHISQ.DIST match, **but
+     `GAMMA.INV(0,..)` returns `#NUM!` where Excel returns `0` — regression**, bead
+     `oxf-99zz`; stream stays **open**.
+   - `BUG-FUNC-037` (XNPV), `040` (lookup blanks), `041` (regex escapes) → **validated_local**;
+     closure pending their reference/fixture/contract-specific Excel witnesses.
+
 2026-06-15:
 
 1. `BUG-FUNC-034`, `036`, `037`, `038`, `039`, `040`, and `041` are registered

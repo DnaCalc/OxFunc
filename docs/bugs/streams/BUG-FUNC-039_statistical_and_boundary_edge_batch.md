@@ -3,8 +3,20 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-039`
 - **Opened**: `2026-06-11`
-- **Status**: `fix_in_progress`
+- **Status**: `open` (most sub-lanes landed in `7a0003f`; live Excel 2026-06-18 found a GAMMA.INV p=0 regression)
 - **Owner workset**: `W102A`
+
+## Live Excel Verification (2026-06-18)
+OxFunc local value surface vs live Excel 16.0 build 20026:
+- `MROUND(0,-2)` = `0` — MATCH.
+- `GAMMA.INV(1,3,2)` = `#NUM!` — MATCH (p=1 rejected).
+- `CONFIDENCE(0.05,1,2.5)` = `1.3859038243` — MATCH (size truncation).
+- `CHISQ.DIST(0,1,FALSE)` = `#NUM!` — MATCH (divergent density).
+- **`GAMMA.INV(0,3,2)`: OxFunc `#NUM!` vs Excel `0` — REGRESSION.** The p=0/p=1
+  boundary fix over-corrected: Excel accepts p=0 (returns the inverse-CDF lower
+  bound 0) and rejects only p=1. The corrective change is to admit p=0 and return
+  the support lower bound (0 for the default location), keeping the p=1 rejection.
+  This blocks closure of BUG-FUNC-039 until repaired and re-verified.
 
 ## Source Refs
 - **Reported against ref**: review pass `2026-06-10` / branch `w100-w102-cleanup-pass`
