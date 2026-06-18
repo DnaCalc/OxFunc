@@ -101,6 +101,15 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
     };
     if result.is_nan() {
         Err(WorksheetErrorCode::Num)
+    } else if result.is_infinite() {
+        // BUG-FUNC-027 CLASS-A4: a finite-input overflow is #NUM!; a +-Inf produced
+        // by a negative exponent over a sub-unit base (1 / underflowed-to-zero) is
+        // #DIV/0! in Excel, consistent with the 0^negative path above.
+        if power < 0.0 {
+            Err(WorksheetErrorCode::Div0)
+        } else {
+            Err(WorksheetErrorCode::Num)
+        }
     } else {
         Ok(excel_underflow_to_zero(result))
     }
@@ -136,6 +145,15 @@ mod tests {
         assert_eq!(power_kernel(-0.0, 0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(0.0, -1.0), Err(WorksheetErrorCode::Div0));
         assert_eq!(power_kernel(-1.0, 0.5), Err(WorksheetErrorCode::Num));
+    }
+
+    // BUG-FUNC-027 CLASS-A4: live Excel 16.0 b20026 POWER(10,700)=#NUM!,
+    // POWER(0.001,-700)=#DIV/0!, POWER(10,-700)=0.
+    #[test]
+    fn power_kernel_overflow_maps_to_excel_error_codes() {
+        assert_eq!(power_kernel(10.0, 700.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(power_kernel(0.001, -700.0), Err(WorksheetErrorCode::Div0));
+        assert_eq!(power_kernel(10.0, -700.0), Ok(0.0));
     }
 
     #[test]

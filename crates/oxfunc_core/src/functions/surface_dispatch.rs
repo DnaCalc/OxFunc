@@ -189,6 +189,7 @@ use crate::functions::engineering_radix_family::{
 use crate::functions::error_type_fn::{eval_error_type_surface, map_error_type_error_to_ws};
 use crate::functions::even_fn::{eval_even_surface, even_kernel, map_even_error_to_ws};
 use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::exp_fn::{eval_exp_surface, exp_kernel, map_exp_error_to_ws};
 use crate::functions::fact::{eval_fact_surface, fact_kernel, map_fact_error_to_ws};
 use crate::functions::factdouble::{
@@ -1149,7 +1150,10 @@ fn eval_shared_unary_numeric_calc_dispatch(
         FUNC_ID_ATAN => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(atan_kernel(n))),
         FUNC_ID_ATANH => eval_unary_numeric_calc_surface(args, resolver, atanh_kernel),
         FUNC_ID_COS => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(cos_kernel(n))),
-        FUNC_ID_COSH => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(cosh_kernel(n))),
+        FUNC_ID_COSH => {
+            // BUG-FUNC-027 CLASS-A3: COSH overflow is #NUM! in Excel, not +Inf.
+            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(cosh_kernel(n)))
+        }
         FUNC_ID_COT => eval_unary_numeric_calc_surface(args, resolver, cot_kernel),
         FUNC_ID_COTH => eval_unary_numeric_calc_surface(args, resolver, coth_kernel),
         FUNC_ID_CSC => eval_unary_numeric_calc_surface(args, resolver, csc_kernel),
@@ -1177,7 +1181,10 @@ fn eval_shared_unary_numeric_calc_dispatch(
         FUNC_ID_SEC => eval_unary_numeric_calc_surface(args, resolver, sec_kernel),
         FUNC_ID_SECH => eval_unary_numeric_calc_surface(args, resolver, sech_kernel),
         FUNC_ID_SIGN => eval_unary_numeric_calc_surface(args, resolver, sign_kernel),
-        FUNC_ID_SINH => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(sinh_kernel(n))),
+        FUNC_ID_SINH => {
+            // BUG-FUNC-027 CLASS-A3: SINH overflow is #NUM! in Excel, not ±Inf.
+            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(sinh_kernel(n)))
+        }
         FUNC_ID_SQRT => eval_unary_numeric_calc_surface(args, resolver, sqrt_kernel),
         FUNC_ID_SQRTPI => eval_unary_numeric_calc_surface(args, resolver, sqrtpi_kernel),
         FUNC_ID_TAN => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(tan_kernel(n))),

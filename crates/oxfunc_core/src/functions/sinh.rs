@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -31,7 +32,8 @@ pub fn eval_sinh_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, |n| Ok(sinh_kernel(n)))
+    // BUG-FUNC-027 CLASS-A3: SINH overflows to #NUM! in Excel, not ±Inf.
+    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(sinh_kernel(n)))
 }
 
 pub fn map_sinh_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -50,5 +52,15 @@ mod tests {
     #[test]
     fn sinh_kernel_matches_std() {
         assert_eq!(sinh_kernel(1.0), 1.0f64.sinh());
+    }
+
+    // BUG-FUNC-027 CLASS-A3: live Excel 16.0 b20026 SINH(-326648.33)=#NUM!.
+    #[test]
+    fn sinh_overflow_maps_to_num() {
+        assert_eq!(
+            finite_or_num(sinh_kernel(-326648.33)),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(finite_or_num(sinh_kernel(1.0)), Ok(1.0f64.sinh()));
     }
 }

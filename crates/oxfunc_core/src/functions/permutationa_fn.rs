@@ -5,6 +5,7 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -27,7 +28,8 @@ pub const PERMUTATIONA_META: FunctionMeta = FunctionMeta {
 pub fn permutationa_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
     let n = trunc_nonnegative(n)?;
     let k = trunc_nonnegative(k)?;
-    Ok((n as f64).powi(k as i32))
+    // BUG-FUNC-027 CLASS-A5: n^k overflows to #NUM! in Excel, not +Inf.
+    finite_or_num((n as f64).powi(k as i32))
 }
 
 pub fn eval_permutationa_surface(
@@ -65,6 +67,11 @@ mod tests {
         assert_eq!(permutationa_kernel(0.0, 0.0), Ok(1.0));
         assert_eq!(permutationa_kernel(0.0, 1.0), Ok(0.0));
         assert_eq!(permutationa_kernel(-1.0, 1.0), Err(WorksheetErrorCode::Num));
+        // BUG-FUNC-027 CLASS-A5: live Excel 16.0 b20026 PERMUTATIONA(163,150)=#NUM!.
+        assert_eq!(
+            permutationa_kernel(163.0, 150.0),
+            Err(WorksheetErrorCode::Num)
+        );
     }
 
     #[test]
