@@ -247,9 +247,14 @@ fn gamma_inv_kernel(probability: f64, alpha: f64, beta: f64) -> Result<f64, Beta
     if !probability.is_finite() {
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Value));
     }
-    // Excel: p must be strictly inside (0, 1); p==0 -> #NUM!, p==1 -> #NUM!.
-    if probability <= 0.0 || probability >= 1.0 {
+    // Excel: p==0 returns the support lower bound (0); p==1 -> #NUM! (+inf);
+    // p<0 or p>1 -> #NUM!. Verified vs live Excel 16.0 build 20026:
+    // GAMMA.INV(0,3,2)=0, GAMMA.INV(1,3,2)=#NUM! (BUG-FUNC-039 / oxf-99zz).
+    if probability < 0.0 || probability >= 1.0 {
         return Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num));
+    }
+    if probability == 0.0 {
+        return Ok(0.0);
     }
     let hi = beta * (alpha + 10.0 * alpha.sqrt() + 10.0).max(1.0);
     let x = bisect_inverse(probability, 0.0, hi, |v| {
@@ -541,9 +546,12 @@ mod tests {
     // BUG-FUNC-039 item 3: GAMMA.INV p=0 and p=1 boundary cases.
     #[test]
     fn gamma_inv_boundary_cases() {
-        // p=0 -> #NUM! (Excel: p must be > 0).
+        // p=0 -> 0 (Excel: GAMMA.INV(0,..) returns the support lower bound; live
+        // Excel 16.0 build 20026 GAMMA.INV(0,3,2)=0).
+        assert_eq!(gamma_inv_kernel(0.0, 1.0, 1.0), Ok(0.0));
+        // p<0 -> #NUM!.
         assert_eq!(
-            gamma_inv_kernel(0.0, 1.0, 1.0),
+            gamma_inv_kernel(-0.1, 1.0, 1.0),
             Err(BetaGammaStatsError::Domain(WorksheetErrorCode::Num))
         );
         // p=1 -> #NUM! (Excel: p must be < 1).
