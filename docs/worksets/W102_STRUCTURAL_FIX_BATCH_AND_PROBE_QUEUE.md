@@ -39,18 +39,20 @@ Track the June 2026 review-derived structural cleanup batch and split it into:
    - `BUG-FUNC-034` (IPMT/PPMT/CUMIPMT/CUMPRINC type=1) — 4/4 match to 10dp → **closed**.
    - `BUG-FUNC-038` (NPV/FV/PV negative base; PMT-rejects contrast) — match → **closed**.
    - `BUG-FUNC-036` (resolver `&T` capabilities) — static fix, lib suite green → **closed**.
-   - `BUG-FUNC-039` — MROUND/GAMMA.INV(p=1)/CONFIDENCE/CHISQ.DIST match, **but
-     `GAMMA.INV(0,..)` returns `#NUM!` where Excel returns `0` — regression**, bead
-     `oxf-99zz`; stream stays **open**.
+   - `BUG-FUNC-039` — initially MROUND/GAMMA.INV(p=1)/CONFIDENCE/CHISQ.DIST matched but
+     `GAMMA.INV(0,..)` was a regression (`#NUM!` vs Excel `0`). Fixed in `ba861ac`;
+     all sub-lanes (incl. df=1e10 boundary, F.DIST divergent density) now Excel-verified →
+     **closed**, bead `oxf-99zz` closed.
    - `BUG-FUNC-037` (XNPV no-sign-change) — bit-exact vs Excel (`0x40808e043b3d5af9`) → **closed**.
    - `BUG-FUNC-040` (lookup blank-skip) — MATCH over range with a blank matches Excel → **closed**.
    - `BUG-FUNC-041` (regex escapes) — a 40-escape Excel battery found the fix **over-rejects**
      18 escapes Excel admits (anchors, whitespace, escaped metacharacters); bead `oxf-fyhi`,
      stream stays **open**.
 
-This pass surfaced two over-correction regressions in the W102A batch — `GAMMA.INV(0)`
-(`oxf-99zz`) and the regex admitted slice (`oxf-fyhi`) — both "the fix rejects what Excel
-accepts." Verification against live Excel before closure is what caught them.
+This pass surfaced two over-correction regressions in the W102A batch — both "the fix
+rejects what Excel accepts": `GAMMA.INV(0)` (`oxf-99zz`, **fixed** in `ba861ac`) and the
+regex admitted slice (`oxf-fyhi`, **open** — 18/40 escapes). Verification against live
+Excel before closure is what caught them.
 
 2026-06-15:
 
