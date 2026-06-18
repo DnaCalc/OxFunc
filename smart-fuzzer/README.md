@@ -75,6 +75,20 @@ failures. They should remain visible in rollups so the unexplored space is not
 forgotten, but they must not be counted as mismatches or repair targets for the
 current OxFunc-accessible fuzzer work.
 
+These context-sensitive axes are **not out of the smart-fuzzer's scope** — they are its
+second testing category. Per `docs/decisions/ODR-FN-002-invocation-test-category-split.md`
+and `docs/worksets/W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md`,
+the split is by **runner**, not by scope:
+
+1. **Category 2** (OxFunc-accessible, above) runs on today's local-Rust + Excel-COM runner.
+2. **Category 1** (context-sensitive) is published as a catalog under
+   `smart-fuzzer/corpus/context_sensitive_catalog/` and will run on a future runner that
+   drives the downstream OxCalc → OxFml → OxFunc stack as its evaluation engine. That
+   runner is a later infrastructure lane; the catalog is its seed corpus.
+
+As the smart-fuzzer expands to the AFL-style semantic feedback queue (§ in
+`planning/SMART_FUZZER_DESIGN.md`) and beyond, those techniques apply to both categories.
+
 ## Definition
 
 In OxFunc, a smart-fuzzer is a typed, metadata-aware, feedback-guided explorer

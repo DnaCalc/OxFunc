@@ -380,3 +380,37 @@ powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ExpandedFinanceE
 The expected PMT/PPMT/IPMT non-zero-rate exactness drift is classified as
 `expected_known_financial_exactness_drift`. Unexpected mismatches are written as
 failure packets.
+
+## Build-EvaluationClassProbes.ps1
+
+Builds the W104 Category-2 evaluation-class probe case set (ODR-FN-002): context-free
+invocations targeting the kind / coercion / error-shape axis — logical→number and
+text→number coercion (and the inline-array no-coerce contrast), error generation and
+propagation with explicit error-code comparison, returned-value kind, and scalar→array
+lift. All literals are short / bit-exact-safe; no cell fixtures are required.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Build-EvaluationClassProbes.ps1
+```
+
+Default output:
+
+```text
+smart-fuzzer/cache/evaluation-class-probes-v0.json
+```
+
+The output is the standard `oxfunc.smart_fuzzer.scenario_seed_case_set.v0` format, so it
+runs through the generic comparison runner:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File smart-fuzzer\tools\Run-ArraySupportTranche.ps1 `
+  -CaseSetPath smart-fuzzer\cache\evaluation-class-probes-v0.json
+```
+
+A kind / coercion / error-code divergence is a `structural_mismatch` (top priority); a
+numeric value divergence on a probe that should be exact is `numeric_drift_*`. The lane
+plan and axis definitions are in
+`smart-fuzzer/planning/CATEGORY_B_EVALUATION_CLASS_PROBE_PLAN.md`. Probes that turn out
+to need host/locale/reference context (the first run flagged `VALUE` as locale-seam) are
+moved to the Category-1 catalog under `smart-fuzzer/corpus/context_sensitive_catalog/`,
+not forced through the Excel comparison.

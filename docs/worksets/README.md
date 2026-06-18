@@ -46,6 +46,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 31. [W100_EVIDENCE_SEAM_RESTORE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W100_EVIDENCE_SEAM_RESTORE.md)
 32. [W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md)
 33. [W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md)
+34. [W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md)
 
 ## Active Role Split
 1. [W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W041_EXTERNAL_DATA_PROVIDER_AND_CUBE_FUNCTIONS.md) remains the live deferred/provider-family authority.
@@ -81,6 +82,7 @@ For live execution state use [.beads/issues.jsonl](/C:/Work/DnaCalc/OxFunc/.bead
 30. [W100_EVIDENCE_SEAM_RESTORE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W100_EVIDENCE_SEAM_RESTORE.md) owns the current W100 evidence-seam checkpoint, with `.beads/` task `oxf-acdw.1` as live state and `HO-FN-018` as the explicit-`@` OxFml parser follow-up.
 31. [W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W102_STRUCTURAL_FIX_BATCH_AND_PROBE_QUEUE.md) owns the W102A no-probe cleanup checkpoint and W102B probe queue for the June 2026 review-derived structural bug batch.
 32. [W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W103_PMT_FAMILY_EXACTNESS_CAMPAIGN.md) queues the PMT-family exactness campaign behind W102A reviewability and W102B finance evidence.
+33. [W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md](/C:/Work/DnaCalc/OxFunc/docs/worksets/W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md) owns the [ODR-FN-002](/C:/Work/DnaCalc/OxFunc/docs/decisions/ODR-FN-002-invocation-test-category-split.md) test category split: the published Category-1 context-sensitive catalog under `smart-fuzzer/corpus/context_sensitive_catalog/` (evaluated downstream, not faked locally) and the Category-2 evaluation-class probe lane that reuses the existing smart-fuzzer Excel comparison harness.
 
 ## Use These Instead
 1. Use [PARKED_CURRENT_BASELINE_20260401.md](/C:/Work/DnaCalc/OxFunc/docs/PARKED_CURRENT_BASELINE_20260401.md) for the parked non-deferred baseline summary.

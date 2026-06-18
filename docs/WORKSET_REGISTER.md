@@ -1140,3 +1140,30 @@ Entry conditions:
 2. W102B finance evidence for `BUG-FUNC-034` is linked or refreshed.
 3. Existing PMT/IPMT/PPMT exactness pins and known deviations are inventoried
    before changing publication targets.
+
+## W104 Invocation Test Category Split And Context-Sensitive Catalog
+
+Status: `in_progress`
+
+Execution target:
+operationalize `ODR-FN-002` by splitting in-scope invocations under test into
+Category 1 (context-sensitive → publish a downstream-evaluated catalog, do not
+fake OxFml/OxCalc context locally) and Category 2 (context-free → evaluate
+locally via the smart-fuzzer for both evaluation-class behavior and
+bit-exactness).
+
+Canonical surfaces:
+1. `docs/worksets/W104_INVOCATION_TEST_CATEGORY_SPLIT_AND_CONTEXT_SENSITIVE_CATALOG.md`
+2. `docs/decisions/ODR-FN-002-invocation-test-category-split.md`
+3. `smart-fuzzer/corpus/context_sensitive_catalog/` (Category-1 published catalog)
+4. `smart-fuzzer/planning/CATEGORY_B_EVALUATION_CLASS_PROBE_PLAN.md`
+5. `smart-fuzzer/tools/Build-EvaluationClassProbes.ps1` (Category-2 generator)
+6. `.beads/` W104 epic and task lanes
+
+Entry conditions:
+1. `ODR-FN-002` is accepted and indexed.
+2. The smart-fuzzer "Current Scope Boundary" and deferred seam classification map
+   are read as the Category-1 source rather than rewritten.
+3. The existing runnable Excel comparison harness
+   (`Run-ArraySupportTranche.ps1` + `CellRefBatch.psm1` + `pmt_ppmt_local_eval`)
+   is reused for Category 2; no new runner plumbing is introduced.

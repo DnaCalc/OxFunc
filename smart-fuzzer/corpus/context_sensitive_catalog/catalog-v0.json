@@ -1,0 +1,219 @@
+{
+  "schema_version": "oxfunc.context_sensitive_catalog.v0",
+  "authority": "published_for_downstream_evaluation",
+  "evaluation_policy": "not_evaluated_in_oxfunc",
+  "downstream_path": "OxCalc->OxFml->OxFunc",
+  "generated_utc": "2026-06-18",
+  "entries": [
+    {
+      "catalog_id": "CSC-0001",
+      "seam_class": "implicit_intersection",
+      "surface_name": "OP_IMPLICIT_INTERSECTION",
+      "formula": "=@A1:A3",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 10 },
+        { "target": "A2", "value": 20 },
+        { "target": "A3", "value": 30 }
+      ],
+      "why_context_sensitive": "Explicit @ forces implicit intersection of the column range A1:A3 against the caller's row. The result depends on the caller location relative to the range, which only exists in a bound worksheet context.",
+      "expected_behavior": "With the caller on row 1, implicit intersection of A1:A3 picks the value on the caller's row: 10.",
+      "source_ref": "HO-FN-018"
+    },
+    {
+      "catalog_id": "CSC-0002",
+      "seam_class": "implicit_intersection",
+      "surface_name": "OP_IMPLICIT_INTERSECTION",
+      "formula": "=@A1:C1",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 1 },
+        { "target": "B1", "value": 2 },
+        { "target": "C1", "value": 3 }
+      ],
+      "why_context_sensitive": "Explicit @ over a row range intersects against the caller's column. The picked element depends on caller column, a bound-context fact.",
+      "expected_behavior": "With the caller in column E (outside A:C on the same row), Excel returns #VALUE! because the implicit intersection has no overlapping column. Caller column within A:C returns that column's value.",
+      "source_ref": "HO-FN-018"
+    },
+    {
+      "catalog_id": "CSC-0003",
+      "seam_class": "implicit_intersection",
+      "surface_name": "SEQUENCE",
+      "formula": "=@SEQUENCE(3)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [],
+      "why_context_sensitive": "SEQUENCE(3) yields a dynamic-array column; explicit @ collapses it by implicit intersection against the caller row. Requires dynamic-array evaluation plus caller-relative intersection.",
+      "expected_behavior": "With the caller on row 1, @ on the 3-tall array {1;2;3} returns the caller-row element: 1.",
+      "source_ref": "HO-FN-018"
+    },
+    {
+      "catalog_id": "CSC-0004",
+      "seam_class": "implicit_intersection",
+      "surface_name": "OFFSET",
+      "formula": "=@OFFSET(A1,1,0,3,1)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 100 },
+        { "target": "A2", "value": 200 },
+        { "target": "A3", "value": 300 },
+        { "target": "A4", "value": 400 }
+      ],
+      "why_context_sensitive": "OFFSET returns a reference (a 3x1 range A2:A4); explicit @ then implicitly intersects it against the caller. Both the reference transform and the intersection are context-bound.",
+      "expected_behavior": "OFFSET(A1,1,0,3,1) is A2:A4; @ against caller row 1 has no overlap, so Excel returns #VALUE!. A caller row within rows 2-4 returns that row's value.",
+      "source_ref": "HO-FN-018"
+    },
+    {
+      "catalog_id": "CSC-0005",
+      "seam_class": "reference_transform",
+      "surface_name": "OFFSET",
+      "formula": "=SUM(OFFSET(A1,1,0,3,1))",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 100 },
+        { "target": "A2", "value": 200 },
+        { "target": "A3", "value": 300 },
+        { "target": "A4", "value": 400 }
+      ],
+      "why_context_sensitive": "OFFSET produces a derived reference from a base cell and offsets; SUM then enumerates the derived range. The reference transform requires a resolver that can offset a real reference, which OxFunc does not own in isolation.",
+      "expected_behavior": "OFFSET(A1,1,0,3,1) = A2:A4; SUM = 200+300+400 = 900.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0006",
+      "seam_class": "reference_transform",
+      "surface_name": "INDEX",
+      "formula": "=SUM(INDEX(A1:C3,0,2))",
+      "caller": { "sheet": "Sheet1", "row": 5, "col": 1 },
+      "cell_fixture": [
+        { "target": "A1", "value": 1 }, { "target": "B1", "value": 2 }, { "target": "C1", "value": 3 },
+        { "target": "A2", "value": 4 }, { "target": "B2", "value": 5 }, { "target": "C2", "value": 6 },
+        { "target": "A3", "value": 7 }, { "target": "B3", "value": 8 }, { "target": "C3", "value": 9 }
+      ],
+      "why_context_sensitive": "INDEX with row_num 0 returns the entire column 2 as a reference (B1:B3), not a scalar. SUM then enumerates that derived reference. The reference-returning form of INDEX is a reference transform the OxFunc provider does not resolve without binding.",
+      "expected_behavior": "INDEX(A1:C3,0,2) is the reference B1:B3; SUM = 2+5+8 = 15.",
+      "source_ref": "oxf-acdw.1.2"
+    },
+    {
+      "catalog_id": "CSC-0007",
+      "seam_class": "host_context",
+      "surface_name": "INDIRECT",
+      "formula": "=INDIRECT(\"A\" & B1)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 3 },
+      "cell_fixture": [
+        { "target": "A1", "value": 11 },
+        { "target": "A2", "value": 22 },
+        { "target": "B1", "value": 2 }
+      ],
+      "why_context_sensitive": "INDIRECT builds a reference from runtime text and resolves it against the workbook. Resolving the assembled A1-style string to a live cell requires host reference resolution.",
+      "expected_behavior": "B1 is 2, so the text is \"A2\"; INDIRECT(\"A2\") dereferences A2 = 22.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0008",
+      "seam_class": "host_context",
+      "surface_name": "CELL",
+      "formula": "=CELL(\"address\",A1)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 3 },
+      "cell_fixture": [
+        { "target": "A1", "value": 5 }
+      ],
+      "why_context_sensitive": "CELL reports host-level metadata (address, format, sheet) about a reference. The answer is a property of the workbook/host, not of any value OxFunc can compute alone.",
+      "expected_behavior": "CELL(\"address\",A1) returns the absolute address text \"$A$1\".",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0009",
+      "seam_class": "host_context",
+      "surface_name": "FORMULATEXT",
+      "formula": "=FORMULATEXT(A1)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 3 },
+      "cell_fixture": [
+        { "target": "A1", "formula": "=1+2" }
+      ],
+      "why_context_sensitive": "FORMULATEXT returns the literal formula string of the referenced cell, which only exists in a workbook that stores formulas. OxFunc evaluates values, not stored formula text.",
+      "expected_behavior": "A1 stores =1+2, so FORMULATEXT(A1) returns the text \"=1+2\".",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0010",
+      "seam_class": "structured_reference",
+      "surface_name": "SUM",
+      "formula": "=SUM(Table1[Amount])",
+      "caller": { "sheet": "Sheet1", "row": 10, "col": 5 },
+      "cell_fixture": [
+        { "target": "Table1[#Headers]", "value": ["Item", "Amount"] },
+        { "target": "Table1[Amount]", "value": [100, 250, 75] }
+      ],
+      "why_context_sensitive": "Table1[Amount] is a structured reference resolved against a workbook table definition (header row, body range, current region). Resolving the column to a range requires the table model.",
+      "expected_behavior": "The Amount column is {100;250;75}; SUM = 425.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0011",
+      "seam_class": "cross_sheet_reference",
+      "surface_name": "SUM",
+      "formula": "=SUM(Sheet2!A1:A3)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "Sheet2!A1", "value": 1000 },
+        { "target": "Sheet2!A2", "value": 2000 },
+        { "target": "Sheet2!A3", "value": 3000 }
+      ],
+      "why_context_sensitive": "The operand lives on a different sheet. Resolving Sheet2!A1:A3 requires a multi-sheet workbook model the local OxFunc resolver does not carry.",
+      "expected_behavior": "Sum of Sheet2!A1:A3 = 6000.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0012",
+      "seam_class": "spill_anchor",
+      "surface_name": "OP_SPILL_RANGE",
+      "formula": "=SUM(A1#)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "formula": "=SEQUENCE(3)", "spilled_values": [1, 2, 3] }
+      ],
+      "why_context_sensitive": "A1# is the spill-range reference anchored at A1. Its extent is determined by what the A1 dynamic-array formula spilled, which only exists after the workbook recalculates the anchor.",
+      "expected_behavior": "A1 spills {1;2;3}; A1# is A1:A3; SUM = 6.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0013",
+      "seam_class": "formula_binding",
+      "surface_name": "BYROW",
+      "formula": "=BYROW(A1:B2,LAMBDA(r,SUM(r)))",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 1 }, { "target": "B1", "value": 2 },
+        { "target": "A2", "value": 3 }, { "target": "B2", "value": 4 }
+      ],
+      "why_context_sensitive": "BYROW binds an inline LAMBDA and invokes it per row. Forming and invoking the callable is formula-binding scope owned by the OxFml binder, not the OxFunc value surface in isolation.",
+      "expected_behavior": "Row sums spill as a 2x1 column {3;7}.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0014",
+      "seam_class": "formula_binding",
+      "surface_name": "LET",
+      "formula": "=LET(x,A1,y,A2,x*y)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 6 },
+        { "target": "A2", "value": 7 }
+      ],
+      "why_context_sensitive": "LET introduces named bindings into formula scope before evaluating the body. The name-binding step is OxFml formula-binding scope, not a pure function call.",
+      "expected_behavior": "x=6, y=7, body x*y = 42.",
+      "source_ref": "BLOCKED_DEFERRED_SEAM_CLASSIFICATION_MAP"
+    },
+    {
+      "catalog_id": "CSC-0015",
+      "seam_class": "locale_context",
+      "surface_name": "VALUE",
+      "formula": "=VALUE(\"2\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "VALUE parses text to a number through a LocaleFormatContext parser (value_fn.rs). OxFunc does not ship a local locale parser; the capability bundle is supplied through the typed seam (W082). Without it, VALUE(\"2\") returns #VALUE! locally. This row was reclassified from a Category-2 probe to Category 1 on the first run of the evaluation-class lane (W104), demonstrating the classifier.",
+      "expected_behavior": "With a locale capability bundle supplied downstream, VALUE(\"2\") returns the number 2.",
+      "source_ref": "W082"
+    }
+  ]
+}
