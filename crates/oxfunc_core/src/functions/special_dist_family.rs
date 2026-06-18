@@ -109,7 +109,10 @@ fn bool_flag_from_number(n: f64) -> bool {
 }
 
 fn is_integer_like(x: f64) -> bool {
-    (x - x.round()).abs() < 1.0e-12
+    // BUG-FUNC-027 CLASS-A2: a fixed absolute tolerance falsely collapses a tiny
+    // non-integer such as -1e-200 onto 0. Test integrality relative to magnitude
+    // so only genuine integers (and exact 0) qualify.
+    (x - x.round()).abs() <= 1.0e-12 * x.abs()
 }
 
 fn has_gamma_pole(x: f64) -> bool {
@@ -119,6 +122,13 @@ fn has_gamma_pole(x: f64) -> bool {
 fn ln_gamma_positive(x: f64) -> Result<f64, WorksheetErrorCode> {
     if !x.is_finite() || x <= 0.0 {
         return Err(WorksheetErrorCode::Num);
+    }
+
+    // BUG-FUNC-027 CLASS-A1: for x < 1 the Lanczos term coeff/(z+1) = coeff/x
+    // diverges, and for tiny x, z = x - 1.0 loses x entirely so z+1 == 0 yields
+    // +Inf. Lift x into the stable region via lnGamma(x) = lnGamma(x+1) - ln(x).
+    if x < 1.0 {
+        return Ok(ln_gamma_positive(x + 1.0)? - x.ln());
     }
 
     let z = x - 1.0;
@@ -987,6 +997,33 @@ mod tests {
         assert_eq!(gamma_kernel(-1.0), Err(WorksheetErrorCode::Num));
         assert_eq!(gammaln_kernel(0.0), Err(WorksheetErrorCode::Num));
         assert_eq!(gamma_kernel(172.0), Err(WorksheetErrorCode::Num));
+    }
+
+    // BUG-FUNC-027 CLASS-A1: GAMMALN(1E-300) was +Inf (z+1 == 0 in Lanczos);
+    // live Excel 16.0 b20026 = 690.7755278982137 via the recurrence.
+    #[test]
+    fn gammaln_tiny_positive_uses_recurrence_not_inf() {
+        let v = gammaln_kernel(1e-300).unwrap();
+        assert!(v.is_finite(), "GAMMALN(1e-300) was non-finite: {v}");
+        assert_close(v, 690.7755278982137, 1e-9);
+        assert!(gammaln_precise_kernel(1e-300).unwrap().is_finite());
+    }
+
+    // BUG-FUNC-027 CLASS-A2: GAMMA(-1E-200) rounds to 0 but is not the pole at 0;
+    // live Excel 16.0 b20026 ~ -1E200 (finite). Fine ULP exactness is CLASS-C1.
+    #[test]
+    fn gamma_tiny_negative_is_not_a_false_pole() {
+        let v = gamma_kernel(-1e-200).unwrap();
+        assert!(v.is_finite() && v < 0.0, "GAMMA(-1e-200) = {v}");
+        assert!(
+            (v.abs().log10() - 200.0).abs() < 1.0,
+            "magnitude ~1e200: {v}"
+        );
+        // Exact non-positive-integer poles still error.
+        assert_eq!(gamma_kernel(0.0), Err(WorksheetErrorCode::Num));
+        assert_eq!(gamma_kernel(-2.0), Err(WorksheetErrorCode::Num));
+        // A non-integer negative is finite, not a pole.
+        assert!(gamma_kernel(-1.5).unwrap().is_finite());
     }
 
     #[test]
