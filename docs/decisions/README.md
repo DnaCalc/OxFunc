@@ -25,3 +25,4 @@ Each decision is a separate file: `ODR-FN-NNN-<SLUG>.md`
 |----|-------|--------|------|------|
 | ODR-FN-001 | Full Empirical Function Identity | accepted | 2026-03-09 | `../function-lane/DOCTRINE_DECISION_FULL_EMPIRICAL_FUNCTION_IDENTITY_20260309.md` |
 | ODR-FN-002 | Invocation Test Category Split — Context-Sensitive vs Locally-Evaluable | accepted | 2026-06-18 | `ODR-FN-002-invocation-test-category-split.md` |
+| ODR-FN-003 | Single OxFunc↔Excel Discrepancy Catalog | accepted | 2026-06-19 | `ODR-FN-003-single-discrepancy-catalog.md` |

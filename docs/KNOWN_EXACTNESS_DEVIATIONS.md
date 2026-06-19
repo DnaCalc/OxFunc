@@ -1,7 +1,14 @@
 # Known Exactness Deviations
 
-Status: `active_register`
-Last updated: `2026-04-30`
+Status: `superseded_for_tracking`
+Last updated: `2026-06-19`
+
+> **Superseded for live tracking (ODR-FN-003).** The single canonical tracker of open
+> OxFunc-vs-Excel discrepancies is now
+> [`OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`](OXFUNC_EXCEL_DISCREPANCY_CATALOG.md). The four
+> KED residuals below (FIN-001 PMT/PPMT, STAT-001 distributions, BESSEL-001, MATRIX-001)
+> are rows in that catalog (groups G3/G5/G6). This file is retained only as the detailed
+> numeric-drift **evidence** record; do not add new tracking here.
 
 ## Purpose
 This register is the project-wide index of current OxFunc-vs-Excel exactness

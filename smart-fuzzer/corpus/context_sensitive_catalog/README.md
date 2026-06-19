@@ -69,6 +69,7 @@ Each `CatalogEntry`:
 | `why_context_sensitive` | Prose: the exact dependency that blocks local OxFunc evaluation. |
 | `expected_behavior` | Prose: the expected Excel behavior for the downstream evaluator to assert against. Not a machine oracle value here. |
 | `source_ref` | Originating bug/handoff/workset, when the row came from one (e.g. `HO-FN-018`). |
+| `status` | Optional. For rows that are *known context-sensitive discrepancies* (not just seam examples): the current discrepancy + maturity, mirroring the maturity ladder in [`docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`](../../../docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md) (`M0 noted` … `HO downstream`). Absent ⇒ the row is a plain seam example, not a tracked bug. |
 
 ## Seam classes
 
@@ -82,6 +83,10 @@ Each `CatalogEntry`:
 8. `locale_context` — functions whose text↔number parsing/formatting depends on a
    locale-format capability bundle OxFunc does not own locally (W082), e.g. `VALUE`,
    `TEXT`, `DATEVALUE`, `TIMEVALUE`, `NUMBERVALUE`.
+9. `multi_area` — same-sheet multi-area references resolved via the OxFunc resolver
+   combination semantics, e.g. `SUM((A1:A2,C1:C2))`.
+10. `publication_shape` — the worksheet publication/comparator seam where a `1×1` array
+    vs a scalar is decided downstream (DNA Calc / OxFml), not by the function itself.
 
 ## How downstream consumes this
 

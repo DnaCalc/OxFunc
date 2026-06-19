@@ -213,7 +213,107 @@
       "cell_fixture": [],
       "why_context_sensitive": "VALUE parses text to a number through a LocaleFormatContext parser (value_fn.rs). OxFunc does not ship a local locale parser; the capability bundle is supplied through the typed seam (W082). Without it, VALUE(\"2\") returns #VALUE! locally. This row was reclassified from a Category-2 probe to Category 1 on the first run of the evaluation-class lane (W104), demonstrating the classifier.",
       "expected_behavior": "With a locale capability bundle supplied downstream, VALUE(\"2\") returns the number 2.",
-      "source_ref": "W082"
+      "source_ref": "W082",
+      "status": "M1 tested (locally) — locale seam; OxFunc returns #VALUE! without the locale capability bundle."
+    },
+    {
+      "catalog_id": "CSC-0016",
+      "seam_class": "multi_area",
+      "surface_name": "SUM",
+      "formula": "=SUM((A1:A2,C1:C2))",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 5 },
+      "cell_fixture": [
+        { "target": "A1", "value": 1 }, { "target": "A2", "value": 2 },
+        { "target": "C1", "value": 3 }, { "target": "C2", "value": 4 }
+      ],
+      "why_context_sensitive": "Same-sheet multi-area reference; SUM enumerates both areas. Resolving the combined reference is OxFunc resolver combination semantics over a real workbook.",
+      "expected_behavior": "Sum across both areas = 10.",
+      "source_ref": "BUG-FUNC-003",
+      "status": "HO downstream — OxFunc-side MultiArea identity + Style-A materialization corrected (W075/W076); HO-FN-006/007 downstream acknowledgement pending."
+    },
+    {
+      "catalog_id": "CSC-0017",
+      "seam_class": "publication_shape",
+      "surface_name": "TAKE",
+      "formula": "=TAKE({1,2;3,4},1,1)",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "TAKE preserves a 1x1 array internally (TYPE(...)=64); whether a 1x1 spill publishes as a scalar or a 1x1 array is decided by the downstream worksheet publication/comparator, not by the function.",
+      "expected_behavior": "TAKE({1,2;3,4},1,1) is a 1x1 array containing 1; final-cell publication shape is a downstream concern.",
+      "source_ref": "BUG-FUNC-026",
+      "status": "HO downstream — function-level scalarization reverted; HO-FN-010 filed for the OxFml/DNA Calc publication seam."
+    },
+    {
+      "catalog_id": "CSC-0018",
+      "seam_class": "locale_context",
+      "surface_name": "NUMBERVALUE",
+      "formula": "=NUMBERVALUE(\"2\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Locale-aware text->number parse; depends on the W082 locale-format capability bundle OxFunc does not own locally.",
+      "expected_behavior": "NUMBERVALUE(\"2\") = 2 (with the locale bundle).",
+      "source_ref": "BUG-FUNC-028",
+      "status": "M1 tested — locale parse seam (cluster: VALUE, NUMBERVALUE, DATEVALUE, TIMEVALUE). NOTE: the error-propagation aspect DATEVALUE(NA())->#N/A is Category 2 and is tracked in OXFUNC_EXCEL_DISCREPANCY_CATALOG G2."
+    },
+    {
+      "catalog_id": "CSC-0019",
+      "seam_class": "locale_context",
+      "surface_name": "DATEVALUE",
+      "formula": "=DATEVALUE(\"2020-01-01\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Locale-aware date-text->serial parse; depends on the W082 locale-format/date-system capability bundle.",
+      "expected_behavior": "DATEVALUE of an ISO date returns its 1900-system serial (with the locale/date bundle).",
+      "source_ref": "BUG-FUNC-028",
+      "status": "M1 tested — locale date-parse seam (TIMEVALUE shares it)."
+    },
+    {
+      "catalog_id": "CSC-0020",
+      "seam_class": "locale_context",
+      "surface_name": "TEXT",
+      "formula": "=TEXT(1234.5,\"#,##0.00\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Locale-aware number->text formatting; depends on the W082 locale-format capability bundle (separators, currency).",
+      "expected_behavior": "TEXT formats per the locale's group/decimal separators and the supplied format code.",
+      "source_ref": "BUG-FUNC-028",
+      "status": "M1 tested — locale format seam (cluster: TEXT, DOLLAR, FIXED)."
+    },
+    {
+      "catalog_id": "CSC-0021",
+      "seam_class": "locale_context",
+      "surface_name": "ASC",
+      "formula": "=ASC(\"Ａ\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Full-width<->half-width (DBCS) conversion; depends on the locale/DBCS capability OxFunc does not own locally.",
+      "expected_behavior": "ASC converts full-width characters to half-width per the DBCS locale.",
+      "source_ref": "BUG-FUNC-028",
+      "status": "M1 tested — DBCS/locale seam (cluster: ASC, DBCS, JIS)."
+    },
+    {
+      "catalog_id": "CSC-0022",
+      "seam_class": "host_context",
+      "surface_name": "HYPERLINK",
+      "formula": "=HYPERLINK(\"https://example.com\",\"link\")",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "HYPERLINK is a host/UI surface; its published value and behavior depend on the host, not a pure computation.",
+      "expected_behavior": "Returns the friendly-name text and registers a host hyperlink; behavior is host-defined.",
+      "source_ref": "mixed_or_open",
+      "status": "M0 noted — host seam; needs a host-fixture decision before comparison is meaningful."
+    },
+    {
+      "catalog_id": "CSC-0023",
+      "seam_class": "reference_transform",
+      "surface_name": "TRIMRANGE",
+      "formula": "=TRIMRANGE(A1:D10)",
+      "caller": { "sheet": "Sheet1", "row": 1, "col": 6 },
+      "cell_fixture": [],
+      "why_context_sensitive": "TRIMRANGE returns a reference trimmed of surrounding blank rows/columns; the result is a reference transform over a real workbook range.",
+      "expected_behavior": "Returns the inner non-blank sub-range of A1:D10.",
+      "source_ref": "mixed_or_open",
+      "status": "M0 noted — reference-transform seam; needs a workbook fixture."
     }
   ]
 }
