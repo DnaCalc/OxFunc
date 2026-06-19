@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::ExcelRealPolicy;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -23,7 +24,11 @@ pub const SEC_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
+/// BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+pub const SEC_POLICY: ExcelRealPolicy = ExcelRealPolicy::CIRCULAR_TRIG;
+
 pub fn sec_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
+    SEC_POLICY.check_arg(n)?;
     Ok(1.0 / n.cos())
 }
 
