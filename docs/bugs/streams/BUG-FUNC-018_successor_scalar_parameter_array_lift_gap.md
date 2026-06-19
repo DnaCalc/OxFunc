@@ -3,9 +3,32 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-018`
 - **Opened**: `2026-04-30`
-- **Status**: `validated_local`
+- **Status**: `closed_signed_off`
 - **Owner workset**: `W090`
 - **Bead**: `oxf-b39r`
+
+## Excel Sign-Off (2026-06-20)
+Signed off against **live Excel 16.0 build 20026** (workbook compatibility 2). All ten
+representative reopened scalar-parameter array-lift formulas were re-evaluated in Excel and
+compared bit-for-bit against the current OxFunc surface output (the values pinned in the
+passing lib test `observed_scalar_array_lift_covers_w092_reopened_successor_positions`):
+
+| Formula | OxFunc / Excel (identical) |
+|---------|----------------------------|
+| `=BINOMDIST(2,4,0.25,{FALSE,FALSE})` | `array:1x2:[0x3fcb000000000001 ×2]` |
+| `=NORMDIST(42,40,1.5,{TRUE,TRUE})` | `array:1x2:[0x3fed14cc3547f8da ×2]` |
+| `=COMPLEX(3,4,{"j","j"})` | `array:1x2:["3+4j" ×2]` |
+| `=DOLLARFR(,{16,16})` | `array:1x2:[#N/A ×2]` |
+| `=SWITCH(2,1,"a",{2,2},"b","other")` | `array:1x2:["b" ×2]` |
+| `=SWITCH(3,1,"a",{2,2},"b")` | `array:1x2:[#N/A ×2]` |
+| `=IFS("2",{"hit","hit"})` | `array:1x2:[#VALUE! ×2]` |
+| `=IFS(FALSE,{1,1},0,2)` | scalar `#N/A` (unselected array not spilled) |
+| `=ADDRESS(3,2,{4,4},FALSE,"Alpha")` | `array:1x2:["Alpha!R[3]C[2]" ×2]` |
+| `=ADDRESS(3,2,1,TRUE,{"Quarter 1","Quarter 1"})` | `array:1x2:["'Quarter 1'!$B$3" ×2]` |
+
+`10/10` exact typed bit matches; `0` mismatches. The array-admission class this stream tracks
+is resolved on the current baseline. Numeric exactness inside the lifted statistical kernels
+remains tracked separately under `BUG-FUNC-021`.
 
 ## Source Refs
 - **Reported against ref**: `8b140b50bf7f07153f87ac197cf99c470cad9ae8`

@@ -28,6 +28,11 @@ change how a *future, unrelated* fix is approached.
 - A single baseline witness that matches bit-exact does **not** clear a fuzzer-flagged
   surface — the original flag may be an edge input. Mark "cleared on baseline", and only
   fully clear once the original case is reproduced-and-fixed or proven stale.
+- **Record ULP from the bit pattern, never by eyeballing decimal strings.** BUG-FUNC-009's
+  RATE residual was logged as "~1 ULP" because OxFunc `0.0041666445363460975` and Excel
+  `0.004166644536345589` agree to ~13 printed digits. The actual bit distance is **586 ULP**
+  (`0x…485999` vs `0x…48574f`) — a NUM-L drift, not NUM-S. A shared decimal prefix hides
+  the tail; compute the distance from `f64::to_bits`.
 
 ## Error codes & non-finite results
 

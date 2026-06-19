@@ -3,8 +3,25 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-004`
 - **Opened**: 2026-04-08
-- **Status**: `validated_local`
+- **Status**: `closed_signed_off`
 - **Owner workset**: `W077`
+
+## Excel Sign-Off (2026-06-20)
+Signed off against **live Excel 16.0 build 20026**. The shared truncation-style
+15-significant-digit comparison helper (`crates/oxfunc_core/src/functions/excel_numeric_compare.rs`,
+`compare_excel_numbers`) was re-confirmed bit-for-bit against Excel on both the tolerant lanes
+and the exact-match contrast lanes:
+
+- Tolerant — all matched Excel: `=0.1+0.2{=,<>,<,<=,>,>=}0.3` → `TRUE/FALSE/FALSE/TRUE/FALSE/TRUE`;
+  the arithmetic boundary pair `((123456789012345*10)+5)/1E25` vs `…+4)/1E25` →
+  `=`/`<=` `TRUE`, `<>`/`>` `FALSE`; `=SWITCH(0.1+0.2,0.3,1,2)` → `1`;
+  `=SWITCH(<boundary lhs>,<boundary rhs>,1,2)` → `1`; `=COUNTIF(A1,0.1+0.2)` with `A1=0.3` → `1`;
+  `=SUMIF(A1,0.1+0.2,B1)` with `A1=0.3,B1=7` → `7`.
+- Exact-match contrast — stayed exact, matched Excel: `=MATCH(0.1+0.2,{0.3},0)` → `#N/A`,
+  `=XMATCH(0.1+0.2,{0.3},0)` → `#N/A`, `=DELTA(0.1+0.2,0.3)` → `0`.
+
+`16/16` typed bit matches; `0` mismatches. Database-family members (`DCOUNT`/`DSUM`/…) route
+through the same helper and pass their lib tests; re-add a row only on a fresh witness.
 
 ## Source Refs
 - **Reported against ref**: `7989fafaef703f15f2bfbdded323c03345da1072`
@@ -181,7 +198,7 @@
 9. `docs/function-lane/FLOATING_POINT_SCENARIO_MANIFEST_SEED.csv`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded (signed off vs Excel b20026 2026-06-20)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded

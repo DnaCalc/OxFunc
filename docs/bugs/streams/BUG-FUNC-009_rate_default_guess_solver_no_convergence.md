@@ -18,11 +18,17 @@
   OxFunc omitted-guess path returned `NoConvergence` and the public surface
   therefore mapped the lane to `#NUM!`. The bracket-and-bisection fallback
   repair for the convergence failure landed in commit `2e818f0`.
-- **Bit-parity status**: OPEN — the local solver now converges and returns
-  `0.0041666445363460975`, which differs from Excel's published root
-  `0.004166644536345589` by approximately 1 ULP. This residual bit-mismatch is
-  a separate open item; see the W103 PMT-family campaign for the planned
-  substrate work that would address it.
+- **Structural lane**: SIGNED OFF (2026-06-20, live Excel 16.0 build 20026).
+  `=RATE(360,-1073.64,200000)` returns a number in both engines (no `#NUM!`):
+  Excel `0x3f71110b2048574f`, OxFunc `0x3f71110b20485999`. The convergence-failure
+  discrepancy this stream opened on is resolved and Excel-verified.
+- **Bit-parity status**: OPEN — the local solver converges to
+  `0.0041666445363460975` vs Excel's root `0.004166644536345589`. Re-measured
+  bit-for-bit on 2026-06-20 the gap is **`~586` ULP** (NOT "~1 ULP" as previously
+  recorded here — the decimal strings agree to ~13 digits, which masked the true
+  distance; always compare bits). This residual numeric drift is a separate open
+  item tracked in the OxFunc↔Excel discrepancy catalog (G6, NUM-L); see the W103
+  PMT-family campaign for the planned solver-substrate work that would address it.
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`

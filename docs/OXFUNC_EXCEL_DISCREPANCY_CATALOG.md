@@ -1,7 +1,7 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-06-19`
+Last reconciled: `2026-06-20`
 
 ## Purpose
 
@@ -70,7 +70,6 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | TBILLEQ, TBILLPRICE, TBILLYIELD | scalar coercion / array-lift gap | STR | M1 | BUG-FUNC-028 |
 | ISERR, ISLOGICAL, ISNONTEXT, ISTEXT | array-lift gap (`IS*({2;3})` → `#VALUE!` vs Excel per-cell) | STR | M1 | BUG-FUNC-028 (sweep-002) |
 | DATEVALUE, TIMEVALUE, ARRAYTOTEXT | error-propagation kind drift: `f(NA())` → `#VALUE!`/stringified vs Excel `#N/A` (the *parse* path is Category 1, locale) | STR | M1 | BUG-FUNC-028 (error-prop sub-finding) |
-| BINOMDIST, NORMDIST, COMPLEX, DOLLARFR, SWITCH, IFS, ADDRESS | scalar-parameter array-lift gap (scalar error vs Excel spill) | STR | M3 | BUG-FUNC-018 |
 | OP_* binary operators | array-lift value-surface + ordinary-broadcast gaps | STR | HO | BUG-FUNC-001/002 (HO-FN-005) |
 
 ## G3 — Numeric exactness: special & statistical functions
@@ -108,22 +107,25 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| PMT, PPMT (IPMT adjacent) | annuity publication exactness drift (`21` non-zero-rate mismatches); KED known-residual, hold until reopened | NUM-L | M3 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` |
+| PMT, PPMT (IPMT adjacent) | annuity publication exactness drift; re-confirmed vs live Excel 16.0 b20026 (2026-06-20): `PMT(0.05/12,360,200000)` 8 ULP, `PPMT(0.05/12,1,360,200000)` 63 ULP. Fix never landed; KED known-residual held for W103 | NUM-L | M1 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` |
 | ACCRINT | periodic accrual returns exactly **half** of Excel (divide-by-frequency defect) | NUM-L | M1 | BUG-FUNC-030 |
 | YIELD | root-finder `#NUM!` where Excel converges (`~0.0857`) | STR | M1 | BUG-FUNC-031 |
 | ODDFPRICE, ODDFYIELD | odd-first-period `#NUM!` where Excel computes | STR | M1 | BUG-FUNC-032 |
-| RATE | default-guess solver no-convergence (mortgage lane) → `#NUM!` vs small positive rate | STR | M3 | BUG-FUNC-009 |
+| RATE | structural lane signed off (2026-06-20): default-guess mortgage root now converges and Excel returns a number, not `#NUM!`. Residual `~586` ULP vs Excel (`0.0041666445363460975` vs `0.004166644536345589`) — distinct numeric drift in the solver substrate | NUM-L | M1 | BUG-FUNC-009 (bit-parity) / W103 |
 | IRR | scalar error-code drift `#VALUE!` vs Excel `#NUM!` | STR | M1 | BUG-FUNC-028 (out-of-stream) |
 | CUMPRINC | full-schedule (type 0) numeric drift `~6` ULP — distinct from the closed type=1 structural fix (BUG-FUNC-034) | NUM-L | M1 | G8 probe `CUMPRINC(0.1,12,1000,1,12,0)` |
 | YIELDDISC | discounted-bill yield drift `~5` ULP | NUM-L | M1 | G8 probe `YIELDDISC(44013,44562,95,100,0)` |
 | NPER | period-count drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 | YIELDMAT | yield-at-maturity drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 
-## G7 — Comparison & misc semantics
+## G7 — Comparison & misc semantics (currently empty)
 
-| Function(s) | Discrepancy | Sev | Mat | Evidence |
-|-------------|-------------|-----|-----|----------|
-| operators, criteria families, SWITCH | numeric comparison tolerance lane (truncation-style vs round-to-nearest) | NUM-S | M3 | BUG-FUNC-004 (HO-FN-008) |
+The numeric-comparison tolerance lane (operators, criteria/database families, `SWITCH`;
+BUG-FUNC-004) was signed off against live Excel 16.0 build 20026 on 2026-06-20: the shared
+truncation-style 15-significant-digit helper (`compare_excel_numbers`) matches Excel
+bit-for-bit on the tolerant lanes (`=0.1+0.2=0.3`, the `((123456789012345*10)+5)/1E25`
+boundary pair, `COUNTIF`/`SUMIF`/`SWITCH`) while the exact-match contrast families
+(`MATCH`/`XMATCH`/`DELTA`) stay exact. Re-add a row only on a fresh witness.
 
 ## G8 — Untriaged inbox (currently empty)
 

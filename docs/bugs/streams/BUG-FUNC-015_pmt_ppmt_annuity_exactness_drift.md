@@ -3,8 +3,22 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-015`
 - **Opened**: `2026-04-28`
-- **Status**: `validated_local`
+- **Status**: `validated_local` (open — fix NOT landed)
 - **Owner workset**: `W088`
+
+## Re-Confirmation (2026-06-20) — not signed off
+During the M3 sign-off sweep this stream was found mislabeled `M3` ("fixed-unsigned") in
+the discrepancy catalog. There is **no landed fix** (`Fixed in ref: not yet fixed`; the
+"fix landed" closure box is unchecked). The divergence was re-confirmed bit-for-bit against
+the current OxFunc surface output and **live Excel 16.0 build 20026**:
+
+| Formula | OxFunc | Excel | ULP |
+|---------|--------|-------|-----|
+| `=PMT(0.05/12,360,200000)` | `0xc090c692af15f632` | `0xc090c692af15f63a` | `8` |
+| `=PPMT(0.05/12,1,360,200000)` | `0xc06e09eace0506e4` | `0xc06e09eace050723` | `63` |
+
+Catalog maturity corrected `M3 → M1`. Remains a KED known-residual held for the W103
+PMT-family substrate campaign.
 
 ## Source Refs
 - **Reported against ref**: `d864c1bf0c1ba29e20f8858f0b5851f94352d88f`
