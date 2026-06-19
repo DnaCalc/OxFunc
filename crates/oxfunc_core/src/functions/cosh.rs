@@ -1,8 +1,8 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -22,6 +22,8 @@ pub const COSH_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-A3: COSH overflows to `#NUM!` in Excel, not `+Inf`.
+    real_result_policy: ExcelRealPolicy::FINITE,
 };
 
 pub fn cosh_kernel(n: f64) -> f64 {
@@ -32,8 +34,11 @@ pub fn eval_cosh_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    // BUG-FUNC-027 CLASS-A3: COSH overflows to #NUM! in Excel, not +Inf.
-    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(cosh_kernel(n)))
+    eval_unary_numeric_surface(
+        args,
+        resolver,
+        COSH_META.real_result_policy.wrap(cosh_kernel),
+    )
 }
 
 pub fn map_cosh_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -58,9 +63,14 @@ mod tests {
     #[test]
     fn cosh_overflow_maps_to_num() {
         assert_eq!(
-            finite_or_num(cosh_kernel(-24230.0)),
+            COSH_META
+                .real_result_policy
+                .publish(-24230.0, cosh_kernel(-24230.0)),
             Err(WorksheetErrorCode::Num)
         );
-        assert_eq!(finite_or_num(cosh_kernel(1.0)), Ok(1.0f64.cosh()));
+        assert_eq!(
+            COSH_META.real_result_policy.publish(1.0, cosh_kernel(1.0)),
+            Ok(1.0f64.cosh())
+        );
     }
 }

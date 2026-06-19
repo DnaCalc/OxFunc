@@ -22,6 +22,7 @@ pub const PHI_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub fn phi_kernel(x: f64) -> Result<f64, WorksheetErrorCode> {

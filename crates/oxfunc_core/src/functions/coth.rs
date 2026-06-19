@@ -1,6 +1,7 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -21,6 +22,9 @@ pub const COTH_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-C3.h: for large |n|, cosh/sinh = Inf/Inf = NaN; Excel saturates
+    // COTH to `sign(n)` i.e. `±1`. Verified live Excel 16.0 b20026: COTH(800)=1.
+    real_result_policy: ExcelRealPolicy::SATURATE_SIGN,
 };
 
 pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
@@ -28,13 +32,8 @@ pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if sinh == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    let result = n.cosh() / sinh;
-    // BUG-FUNC-027 CLASS-C3.h: for large |n|, cosh/sinh = Inf/Inf = NaN; Excel
-    // saturates COTH to ±1 (the sign of n). Verified live Excel 16.0 b20026: COTH(800)=1.
-    if !result.is_finite() {
-        return Ok(n.signum());
-    }
-    Ok(result)
+    // Non-finite cosh/sinh (large |n|) saturates to sign(n) under COTH's real policy.
+    COTH_META.real_result_policy.publish(n, n.cosh() / sinh)
 }
 
 pub fn eval_coth_surface(

@@ -21,6 +21,7 @@ pub const OFFSET_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::CallerContext,
     surface_fec_dependency_profile: FecDependencyProfile::CallerContext,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 #[derive(Debug, Clone, PartialEq)]

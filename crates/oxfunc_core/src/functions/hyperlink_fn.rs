@@ -23,6 +23,7 @@ pub const HYPERLINK_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::TextToText,
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]

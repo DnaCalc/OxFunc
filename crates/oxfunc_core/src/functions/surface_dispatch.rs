@@ -101,8 +101,8 @@ use crate::functions::confidence_test_family::{
     eval_confidence_t_surface, eval_z_test_surface, map_confidence_test_error_to_ws,
 };
 use crate::functions::correl_fn::{eval_correl_surface, map_correl_error_to_ws};
-use crate::functions::cos::{cos_kernel, eval_cos_surface, map_cos_error_to_ws};
-use crate::functions::cosh::{cosh_kernel, eval_cosh_surface, map_cosh_error_to_ws};
+use crate::functions::cos::{COS_META, cos_kernel, eval_cos_surface, map_cos_error_to_ws};
+use crate::functions::cosh::{COSH_META, cosh_kernel, eval_cosh_surface, map_cosh_error_to_ws};
 use crate::functions::cot::{cot_kernel, eval_cot_surface, map_cot_error_to_ws};
 use crate::functions::coth::{coth_kernel, eval_coth_surface, map_coth_error_to_ws};
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
@@ -147,7 +147,9 @@ use crate::functions::date_week_family::{
     eval_weeknum_surface, map_date_week_error_to_ws,
 };
 use crate::functions::decimal_fn::{eval_decimal_surface, map_decimal_error_to_ws};
-use crate::functions::degrees::{degrees_kernel, eval_degrees_surface, map_degrees_error_to_ws};
+use crate::functions::degrees::{
+    DEGREES_META, degrees_kernel, eval_degrees_surface, map_degrees_error_to_ws,
+};
 use crate::functions::delta_fn::{delta_kernel, eval_delta_surface, map_delta_error_to_ws};
 use crate::functions::depreciation_family::{
     eval_db_surface, eval_ddb_surface, eval_sln_surface, eval_syd_surface, eval_vdb_surface,
@@ -189,8 +191,7 @@ use crate::functions::engineering_radix_family::{
 use crate::functions::error_type_fn::{eval_error_type_surface, map_error_type_error_to_ws};
 use crate::functions::even_fn::{eval_even_surface, even_kernel, map_even_error_to_ws};
 use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
-use crate::functions::excel_numeric::finite_or_num;
-use crate::functions::exp_fn::{eval_exp_surface, exp_kernel, map_exp_error_to_ws};
+use crate::functions::exp_fn::{EXP_META, eval_exp_surface, exp_kernel, map_exp_error_to_ws};
 use crate::functions::fact::{eval_fact_surface, fact_kernel, map_fact_error_to_ws};
 use crate::functions::factdouble::{
     eval_factdouble_surface, factdouble_kernel, map_factdouble_error_to_ws,
@@ -376,8 +377,8 @@ use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
 use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
 use crate::functions::sign_fn::{eval_sign_surface, map_sign_error_to_ws, sign_kernel};
-use crate::functions::sin::{eval_sin_surface, map_sin_error_to_ws};
-use crate::functions::sinh::{eval_sinh_surface, map_sinh_error_to_ws, sinh_kernel};
+use crate::functions::sin::{SIN_META, eval_sin_surface, map_sin_error_to_ws, sin_kernel};
+use crate::functions::sinh::{SINH_META, eval_sinh_surface, map_sinh_error_to_ws, sinh_kernel};
 use crate::functions::slope_fn::{eval_slope_surface, map_slope_error_to_ws};
 use crate::functions::small_fn::{eval_small_surface, map_small_error_to_ws};
 use crate::functions::special_dist_family::{
@@ -405,7 +406,7 @@ use crate::functions::sumproduct_family::{
 };
 use crate::functions::sumsq::{eval_sumsq_surface, map_sumsq_error_to_ws};
 use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
-use crate::functions::tan::{eval_tan_surface, map_tan_error_to_ws, tan_kernel};
+use crate::functions::tan::{TAN_META, eval_tan_surface, map_tan_error_to_ws, tan_kernel};
 use crate::functions::tanh::{eval_tanh_surface, map_tanh_error_to_ws, tanh_kernel};
 use crate::functions::test_alias_family::{eval_ztest_surface, map_test_alias_error_to_ws};
 use crate::functions::text_b_compat_family::{
@@ -1149,24 +1150,31 @@ fn eval_shared_unary_numeric_calc_dispatch(
         FUNC_ID_ASINH => eval_unary_numeric_calc_surface(args, resolver, asinh_kernel),
         FUNC_ID_ATAN => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(atan_kernel(n))),
         FUNC_ID_ATANH => eval_unary_numeric_calc_surface(args, resolver, atanh_kernel),
-        FUNC_ID_COS => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(cos_kernel(n))),
-        FUNC_ID_COSH => {
-            // BUG-FUNC-027 CLASS-A3: COSH overflow is #NUM! in Excel, not +Inf.
-            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(cosh_kernel(n)))
-        }
+        FUNC_ID_COS => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            COS_META.real_result_policy.wrap(cos_kernel),
+        ),
+        FUNC_ID_COSH => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            COSH_META.real_result_policy.wrap(cosh_kernel),
+        ),
         FUNC_ID_COT => eval_unary_numeric_calc_surface(args, resolver, cot_kernel),
         FUNC_ID_COTH => eval_unary_numeric_calc_surface(args, resolver, coth_kernel),
         FUNC_ID_CSC => eval_unary_numeric_calc_surface(args, resolver, csc_kernel),
         FUNC_ID_CSCH => eval_unary_numeric_calc_surface(args, resolver, csch_kernel),
-        FUNC_ID_DEGREES => {
-            // BUG-FUNC-027 / oxf-vgxs: DEGREES overflow is #NUM! in Excel, not ±Inf.
-            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(degrees_kernel(n)))
-        }
+        FUNC_ID_DEGREES => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            DEGREES_META.real_result_policy.wrap(degrees_kernel),
+        ),
         FUNC_ID_EVEN => eval_unary_numeric_calc_surface(args, resolver, even_kernel),
-        FUNC_ID_EXP => {
-            // BUG-FUNC-027 / oxf-vgxs: EXP overflow is #NUM! in Excel, not +Inf.
-            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(exp_kernel(n)))
-        }
+        FUNC_ID_EXP => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            EXP_META.real_result_policy.wrap(exp_kernel),
+        ),
         FUNC_ID_FACT => eval_unary_numeric_calc_surface(args, resolver, fact_kernel),
         FUNC_ID_FACTDOUBLE => eval_unary_numeric_calc_surface(args, resolver, factdouble_kernel),
         FUNC_ID_FISHER => eval_unary_numeric_calc_surface(args, resolver, fisher_kernel),
@@ -1185,13 +1193,18 @@ fn eval_shared_unary_numeric_calc_dispatch(
         FUNC_ID_SEC => eval_unary_numeric_calc_surface(args, resolver, sec_kernel),
         FUNC_ID_SECH => eval_unary_numeric_calc_surface(args, resolver, sech_kernel),
         FUNC_ID_SIGN => eval_unary_numeric_calc_surface(args, resolver, sign_kernel),
-        FUNC_ID_SINH => {
-            // BUG-FUNC-027 CLASS-A3: SINH overflow is #NUM! in Excel, not ±Inf.
-            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(sinh_kernel(n)))
-        }
+        FUNC_ID_SINH => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            SINH_META.real_result_policy.wrap(sinh_kernel),
+        ),
         FUNC_ID_SQRT => eval_unary_numeric_calc_surface(args, resolver, sqrt_kernel),
         FUNC_ID_SQRTPI => eval_unary_numeric_calc_surface(args, resolver, sqrtpi_kernel),
-        FUNC_ID_TAN => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(tan_kernel(n))),
+        FUNC_ID_TAN => eval_unary_numeric_calc_surface(
+            args,
+            resolver,
+            TAN_META.real_result_policy.wrap(tan_kernel),
+        ),
         FUNC_ID_TANH => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(tanh_kernel(n))),
         _ => return None,
     };
@@ -2880,15 +2893,23 @@ pub fn eval_surface_q_unary_number(
         FUNC_ID_ATAN => Ok(atan_kernel(value)),
         FUNC_ID_ASINH => asinh_kernel(value),
         FUNC_ID_ATANH => atanh_kernel(value),
-        FUNC_ID_COS => Ok(cos_kernel(value)),
-        FUNC_ID_COSH => Ok(cosh_kernel(value)),
+        FUNC_ID_COS => COS_META
+            .real_result_policy
+            .publish(value, cos_kernel(value)),
+        FUNC_ID_COSH => COSH_META
+            .real_result_policy
+            .publish(value, cosh_kernel(value)),
         FUNC_ID_COT => cot_kernel(value),
         FUNC_ID_COTH => coth_kernel(value),
         FUNC_ID_CSC => csc_kernel(value),
         FUNC_ID_CSCH => csch_kernel(value),
-        FUNC_ID_DEGREES => Ok(degrees_kernel(value)),
+        FUNC_ID_DEGREES => DEGREES_META
+            .real_result_policy
+            .publish(value, degrees_kernel(value)),
         FUNC_ID_EVEN => even_kernel(value),
-        FUNC_ID_EXP => Ok(exp_kernel(value)),
+        FUNC_ID_EXP => EXP_META
+            .real_result_policy
+            .publish(value, exp_kernel(value)),
         FUNC_ID_FACT => fact_kernel(value),
         FUNC_ID_FACTDOUBLE => factdouble_kernel(value),
         FUNC_ID_INT => int_kernel(value),
@@ -2902,11 +2923,17 @@ pub fn eval_surface_q_unary_number(
         FUNC_ID_SEC => sec_kernel(value),
         FUNC_ID_SECH => sech_kernel(value),
         FUNC_ID_SIGN => sign_kernel(value),
-        FUNC_ID_SIN => Ok(crate::functions::sin::sin_kernel(value)),
-        FUNC_ID_SINH => Ok(sinh_kernel(value)),
+        FUNC_ID_SIN => SIN_META
+            .real_result_policy
+            .publish(value, sin_kernel(value)),
+        FUNC_ID_SINH => SINH_META
+            .real_result_policy
+            .publish(value, sinh_kernel(value)),
         FUNC_ID_SQRT => sqrt_kernel(value),
         FUNC_ID_SQRTPI => sqrtpi_kernel(value),
-        FUNC_ID_TAN => Ok(tan_kernel(value)),
+        FUNC_ID_TAN => TAN_META
+            .real_result_policy
+            .publish(value, tan_kernel(value)),
         FUNC_ID_TANH => Ok(tanh_kernel(value)),
         _ => Err(WorksheetErrorCode::Value),
     }

@@ -32,16 +32,18 @@ change how a *future, unrelated* fix is approached.
 ## Error codes & non-finite results
 
 - **Excel never publishes `Inf`/`NaN`.** A kernel that overflows to `±Inf` or produces
-  `NaN` must map to a worksheet error — usually `#NUM!`. Shared guard: `finite_or_num`.
+  `NaN` must map to a worksheet error — usually `#NUM!`.
 - **But not every function errors on overflow — some saturate.** `COTH`/`TANH`/`FISHERINV`
-  return `±1` for large argument; `SECH`/`CSCH` → `0`. So apply the non-finite→`#NUM!`
-  guard **per function**, never blanket across a shared surface helper.
-- **A surface can route through several dispatch tables — guard all of them or guard the
-  kernel.** Unary functions reach evaluation via the calc-surface dispatch, a scalar-apply
-  table, and a by-index table (`eval_*_surface`). A `Result`-returning kernel guarded once
-  covers every path (all callers go through it); an `f64` kernel forces a guard at each
-  call site (or a signature refactor). Verify a guard with both a scalar **and** an
-  array-lift witness, since they can take different paths.
+  return `±1` for large argument; `SECH`/`CSCH` → `0`. So the non-finite rule is **per
+  function**, never blanket across a shared surface helper.
+- **Declare the result-publication rule on the meta, not at the call site.** A real kernel's
+  Excel behaviour (argument-domain guard + non-finite handling) is one declarative value:
+  `FunctionMeta::real_result_policy` (`ExcelRealPolicy::{PASS,FINITE,SATURATE_SIGN,CIRCULAR_TRIG}`).
+  A unary function reaches evaluation via three tables (calc-surface, scalar-apply, by-index
+  `eval_*_surface`); reading the *same* meta field at each site makes divergence impossible.
+  The cautionary tale: the scalar-apply table silently lacked the overflow guard that the
+  other two paths had, for months — a per-site guard is a per-site bug waiting to happen.
+  Still verify with both a scalar **and** an array-lift witness, since they take different paths.
 - **The error *code* is specific.** Overflow → `#NUM!`; a `±Inf` from `1/underflow`
   (negative exponent over a sub-unit base) → `#DIV/0!`. Verify the code, don't assume.
 - **Error propagation preserves the incoming code.** `f(NA())` should stay `#N/A`, not be

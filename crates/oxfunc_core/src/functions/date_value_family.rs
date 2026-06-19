@@ -20,6 +20,7 @@ const DATE_VALUE_FAMILY_BASE_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::LocaleProfile,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub const DATEVALUE_META: FunctionMeta = FunctionMeta {

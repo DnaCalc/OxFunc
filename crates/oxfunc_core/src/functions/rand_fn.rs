@@ -17,6 +17,7 @@ pub const RAND_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RandomProvider,
     surface_fec_dependency_profile: FecDependencyProfile::RandomProvider,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub trait RandomProvider {

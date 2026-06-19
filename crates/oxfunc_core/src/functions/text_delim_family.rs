@@ -22,6 +22,7 @@ const TEXT_DELIM_BASE_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::TextToText,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub const TEXTAFTER_META: FunctionMeta = FunctionMeta {

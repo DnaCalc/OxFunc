@@ -17,6 +17,7 @@ pub const NOW_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::TimeProvider,
     surface_fec_dependency_profile: FecDependencyProfile::TimeProvider,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub trait NowProvider {

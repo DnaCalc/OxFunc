@@ -16,6 +16,7 @@ pub const PI_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NullaryConst,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub fn eval_pi(args: &[CalcValue]) -> Result<CalcValue, EvalError> {

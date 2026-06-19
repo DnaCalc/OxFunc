@@ -1,11 +1,11 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
-use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::factorial_common::trunc_nonnegative;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -23,13 +23,16 @@ pub const PERMUTATIONA_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-A5: n^k overflows to `#NUM!` in Excel, not `+Inf`.
+    real_result_policy: ExcelRealPolicy::FINITE,
 };
 
 pub fn permutationa_kernel(n: f64, k: f64) -> Result<f64, WorksheetErrorCode> {
     let n = trunc_nonnegative(n)?;
     let k = trunc_nonnegative(k)?;
-    // BUG-FUNC-027 CLASS-A5: n^k overflows to #NUM! in Excel, not +Inf.
-    finite_or_num((n as f64).powi(k as i32))
+    PERMUTATIONA_META
+        .real_result_policy
+        .publish(n as f64, (n as f64).powi(k as i32))
 }
 
 pub fn eval_permutationa_surface(

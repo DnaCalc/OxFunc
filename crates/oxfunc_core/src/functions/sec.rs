@@ -22,13 +22,12 @@ pub const SEC_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+    real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
-/// BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
-pub const SEC_POLICY: ExcelRealPolicy = ExcelRealPolicy::CIRCULAR_TRIG;
-
 pub fn sec_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    SEC_POLICY.check_arg(n)?;
+    SEC_META.real_result_policy.check_arg(n)?;
     Ok(1.0 / n.cos())
 }
 

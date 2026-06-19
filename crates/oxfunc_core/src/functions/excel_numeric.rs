@@ -8,24 +8,20 @@ pub(crate) fn excel_underflow_to_zero(value: f64) -> f64 {
     }
 }
 
-/// Excel never publishes a non-finite numeric result: a kernel that overflows to
-/// `±Inf` or produces `NaN` surfaces as `#NUM!`. Use this to guard kernels whose
-/// output can run off to infinity (SINH/COSH, PERMUTATIONA, ...).
-///
-/// Functions that *saturate* in Excel (e.g. COTH/TANH/FISHERINV return `±1` for
-/// large arguments) must NOT use this guard — they should produce the saturated
-/// value directly.
-pub(crate) fn finite_or_num(value: f64) -> Result<f64, WorksheetErrorCode> {
-    if value.is_finite() {
-        Ok(value)
-    } else {
-        Err(WorksheetErrorCode::Num)
-    }
+/// Argument-domain pre-check applied before a real kernel runs. Named after the Excel
+/// behaviour it encodes rather than carrying a free numeric limit, so the policy stays a
+/// fully comparable (`Eq`) value and the magic threshold lives in one place (`check_arg`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ArgDomainGuard {
+    /// No pre-check; every finite argument reaches the kernel.
+    None,
+    /// Excel circular trig (`SIN/COS/TAN/COT/SEC/CSC`): reject `|x| >= 2^27` with `#NUM!`.
+    CircularTrigOverflow,
 }
 
 /// What Excel publishes when a real kernel's raw result is non-finite (`±Inf` / `NaN`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum NonFinite {
+pub enum NonFinite {
     /// Pass the raw value through — the kernel cannot produce a non-finite result for
     /// any valid argument (so this never fires; it documents that intent).
     Allow,
@@ -41,13 +37,13 @@ pub(crate) enum NonFinite {
 ///
 /// Declared once per function and applied at every dispatch site (scalar, array-lift,
 /// by-index), so the Excel behaviour is explicit and cannot diverge between paths. This
-/// is the declarative companion to the `FunctionMeta` profile enums; it currently lives
-/// as a per-function const surfaced through `real_result_policy(function_id)`, with a
-/// documented path to promote it into `FunctionMeta` itself.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub(crate) struct ExcelRealPolicy {
-    /// Reject `|arg| >= limit` with `#NUM!` before publishing (circular trig: `2^27`).
-    pub arg_abs_limit: Option<f64>,
+/// is the declarative companion to the `FunctionMeta` profile enums, and is carried as the
+/// `FunctionMeta::real_result_policy` field (re-exported from `crate::function`) so every
+/// dispatch path reads the same declared rule.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ExcelRealPolicy {
+    /// Argument-domain pre-check applied before the kernel runs.
+    pub arg_domain_guard: ArgDomainGuard,
     /// How a non-finite raw result is published.
     pub non_finite: NonFinite,
 }
@@ -59,31 +55,34 @@ pub(crate) const EXCEL_TRIG_MAX_ABS_ARG: f64 = 134_217_728.0; // 2^27
 impl ExcelRealPolicy {
     /// No argument guard, raw passes through unchanged.
     pub const PASS: Self = Self {
-        arg_abs_limit: None,
+        arg_domain_guard: ArgDomainGuard::None,
         non_finite: NonFinite::Allow,
     };
     /// No argument guard; overflow/`NaN` → `#NUM!`.
     pub const FINITE: Self = Self {
-        arg_abs_limit: None,
+        arg_domain_guard: ArgDomainGuard::None,
         non_finite: NonFinite::Num,
     };
     /// No argument guard; overflow → saturate to `±1` (COTH).
     pub const SATURATE_SIGN: Self = Self {
-        arg_abs_limit: None,
+        arg_domain_guard: ArgDomainGuard::None,
         non_finite: NonFinite::SaturateSign,
     };
     /// Circular trig: `|x| >= 2^27` → `#NUM!`; any non-finite result → `#NUM!`.
     pub const CIRCULAR_TRIG: Self = Self {
-        arg_abs_limit: Some(EXCEL_TRIG_MAX_ABS_ARG),
+        arg_domain_guard: ArgDomainGuard::CircularTrigOverflow,
         non_finite: NonFinite::Num,
     };
 
     /// Argument-domain pre-check only — for `Result`-returning kernels (COT/SEC/CSC) that
     /// own their compute path and just need the `|arg|` guard.
     pub fn check_arg(self, arg: f64) -> Result<(), WorksheetErrorCode> {
-        match self.arg_abs_limit {
-            Some(limit) if arg.abs() >= limit => Err(WorksheetErrorCode::Num),
-            _ => Ok(()),
+        match self.arg_domain_guard {
+            ArgDomainGuard::None => Ok(()),
+            ArgDomainGuard::CircularTrigOverflow if arg.abs() >= EXCEL_TRIG_MAX_ABS_ARG => {
+                Err(WorksheetErrorCode::Num)
+            }
+            ArgDomainGuard::CircularTrigOverflow => Ok(()),
         }
     }
 
@@ -114,18 +113,6 @@ impl ExcelRealPolicy {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn finite_or_num_passes_finite_and_rejects_non_finite() {
-        assert_eq!(finite_or_num(1.5), Ok(1.5));
-        assert_eq!(finite_or_num(0.0), Ok(0.0));
-        assert_eq!(finite_or_num(f64::INFINITY), Err(WorksheetErrorCode::Num));
-        assert_eq!(
-            finite_or_num(f64::NEG_INFINITY),
-            Err(WorksheetErrorCode::Num)
-        );
-        assert_eq!(finite_or_num(f64::NAN), Err(WorksheetErrorCode::Num));
-    }
 
     #[test]
     fn excel_real_policy_finite_maps_overflow_to_num() {

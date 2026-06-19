@@ -1,6 +1,7 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -21,6 +22,8 @@ pub const TAN_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+    real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
 pub fn tan_kernel(n: f64) -> f64 {
@@ -31,7 +34,7 @@ pub fn eval_tan_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, |n| Ok(tan_kernel(n)))
+    eval_unary_numeric_surface(args, resolver, TAN_META.real_result_policy.wrap(tan_kernel))
 }
 
 pub fn map_tan_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

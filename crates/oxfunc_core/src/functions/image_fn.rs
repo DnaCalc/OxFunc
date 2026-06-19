@@ -30,6 +30,7 @@ pub const IMAGE_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::ExternalProvider,
     surface_fec_dependency_profile: FecDependencyProfile::ExternalProvider,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 const WEB_IMAGE_TYPE_NAME: &str = "_webimage";

@@ -1,8 +1,8 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -23,6 +23,8 @@ pub const FACT_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 / oxf-vgxs: 171! overflows to `+Inf`; Excel returns `#NUM!`.
+    real_result_policy: ExcelRealPolicy::FINITE,
 };
 
 pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
@@ -30,8 +32,9 @@ pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if truncated < 0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // BUG-FUNC-027 / oxf-vgxs: 171! overflows to +Inf; Excel returns #NUM!.
-    finite_or_num(factorial_of_int(truncated))
+    FACT_META
+        .real_result_policy
+        .publish(n, factorial_of_int(truncated))
 }
 
 pub fn eval_fact_surface(

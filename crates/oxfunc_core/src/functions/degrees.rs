@@ -1,8 +1,8 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -22,6 +22,8 @@ pub const DEGREES_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 / oxf-vgxs: DEGREES overflow is `#NUM!` in Excel, not `±Inf`.
+    real_result_policy: ExcelRealPolicy::FINITE,
 };
 
 pub fn degrees_kernel(n: f64) -> f64 {
@@ -32,8 +34,11 @@ pub fn eval_degrees_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    // BUG-FUNC-027 / oxf-vgxs: DEGREES overflow is #NUM! in Excel, not ±Inf.
-    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(degrees_kernel(n)))
+    eval_unary_numeric_surface(
+        args,
+        resolver,
+        DEGREES_META.real_result_policy.wrap(degrees_kernel),
+    )
 }
 
 pub fn map_degrees_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -58,11 +63,15 @@ mod tests {
     #[test]
     fn degrees_overflow_maps_to_num() {
         assert_eq!(
-            finite_or_num(degrees_kernel(1e307)),
+            DEGREES_META
+                .real_result_policy
+                .publish(1e307, degrees_kernel(1e307)),
             Err(WorksheetErrorCode::Num)
         );
         assert_eq!(
-            finite_or_num(degrees_kernel(std::f64::consts::PI)),
+            DEGREES_META
+                .real_result_policy
+                .publish(std::f64::consts::PI, degrees_kernel(std::f64::consts::PI)),
             Ok(180.0)
         );
     }

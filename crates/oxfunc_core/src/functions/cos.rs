@@ -1,6 +1,7 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -21,6 +22,8 @@ pub const COS_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+    real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
 pub fn cos_kernel(n: f64) -> f64 {
@@ -31,7 +34,7 @@ pub fn eval_cos_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, |n| Ok(cos_kernel(n)))
+    eval_unary_numeric_surface(args, resolver, COS_META.real_result_policy.wrap(cos_kernel))
 }
 
 pub fn map_cos_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

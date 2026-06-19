@@ -17,6 +17,7 @@ pub const NA_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub fn eval_na_surface(args: &[crate::value::CalcValue]) -> Result<CalcValue, WorksheetErrorCode> {

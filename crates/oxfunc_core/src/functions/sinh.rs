@@ -1,8 +1,8 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -22,6 +22,8 @@ pub const SINH_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-A3: SINH overflows to `#NUM!` in Excel, not `±Inf`.
+    real_result_policy: ExcelRealPolicy::FINITE,
 };
 
 pub fn sinh_kernel(n: f64) -> f64 {
@@ -32,8 +34,11 @@ pub fn eval_sinh_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    // BUG-FUNC-027 CLASS-A3: SINH overflows to #NUM! in Excel, not ±Inf.
-    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(sinh_kernel(n)))
+    eval_unary_numeric_surface(
+        args,
+        resolver,
+        SINH_META.real_result_policy.wrap(sinh_kernel),
+    )
 }
 
 pub fn map_sinh_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -58,9 +63,14 @@ mod tests {
     #[test]
     fn sinh_overflow_maps_to_num() {
         assert_eq!(
-            finite_or_num(sinh_kernel(-326648.33)),
+            SINH_META
+                .real_result_policy
+                .publish(-326648.33, sinh_kernel(-326648.33)),
             Err(WorksheetErrorCode::Num)
         );
-        assert_eq!(finite_or_num(sinh_kernel(1.0)), Ok(1.0f64.sinh()));
+        assert_eq!(
+            SINH_META.real_result_policy.publish(1.0, sinh_kernel(1.0)),
+            Ok(1.0f64.sinh())
+        );
     }
 }

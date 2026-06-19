@@ -22,13 +22,12 @@ pub const COT_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+    real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
-/// BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
-pub const COT_POLICY: ExcelRealPolicy = ExcelRealPolicy::CIRCULAR_TRIG;
-
 pub fn cot_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    COT_POLICY.check_arg(n)?;
+    COT_META.real_result_policy.check_arg(n)?;
     let tan = n.tan();
     if tan == 0.0 {
         return Err(WorksheetErrorCode::Div0);

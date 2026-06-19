@@ -21,6 +21,7 @@ pub const QUOTIENT_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub fn quotient_kernel(numerator: f64, denominator: f64) -> Result<f64, WorksheetErrorCode> {

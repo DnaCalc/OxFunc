@@ -56,7 +56,6 @@ Excel returns an error (or saturates) where OxFunc returns a number, or vice-ver
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
 | MOD | large-quotient → number vs Excel `#NUM!` (`MOD(1.005E14,1)`) | STR | M1 | BUG-FUNC-027 B1 |
-| SIN, COS, TAN | `\|x\| >= 2^27` → number vs Excel `#NUM!` (threshold pinned `2^27`). COT/SEC/CSC **done** via `ExcelRealPolicy::CIRCULAR_TRIG` kernel guard (`432e824`, Excel-verified scalar+array). SIN/COS/TAN remain: `f64` kernels reached via 3 dispatch tables (calc-surface, scalar-apply, by-index `eval_*_surface`) — apply `CIRCULAR_TRIG.wrap` at each site, or refactor their custom `eval_*_surface` onto the shared `eval_unary_numeric_surface` helper | STR | M2 | BUG-FUNC-027 B2 |
 | ATAN2 | `(tiny, huge-neg)` → `-π/2` vs Excel `#NUM!` (singleton; needs magnitude sweep) | STR | M0 | BUG-FUNC-027 B3 |
 | ACOTH, ACOSH | near-1 argument-collapse: `ACOTH(1+ULP)` finite vs `#NUM!`; `ACOSH(1+1e-15)` non-zero vs `0` | STR | M0 | BUG-FUNC-027 C5 |
 

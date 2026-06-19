@@ -26,6 +26,7 @@ const OP_UNARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 const OP_BINARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
@@ -40,6 +41,7 @@ const OP_BINARY_NUMERIC_BASE_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
 pub const OP_UNARY_PLUS_META: FunctionMeta = FunctionMeta {

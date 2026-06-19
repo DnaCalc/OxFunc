@@ -1,13 +1,14 @@
-use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ExcelRealPolicy,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
-use crate::functions::adapters::{
-    apply_unary_numeric_scalar_prepared, expand_arg_values_only, prepare_arg_values_only,
+use crate::functions::unary_numeric::{
+    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
-use crate::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
+use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const SIN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SIN",
@@ -21,13 +22,9 @@ pub const SIN_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+    // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
+    real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum SinEvalError {
-    ArityMismatch { expected: usize, actual: usize },
-    Coercion(CoercionError),
-}
 
 pub fn sin_kernel(n: f64) -> f64 {
     n.sin()
@@ -36,52 +33,19 @@ pub fn sin_kernel(n: f64) -> f64 {
 pub fn eval_sin_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Result<CalcValue, SinEvalError> {
-    if !SIN_META.arity.accepts(args.len()) {
-        return Err(SinEvalError::ArityMismatch {
-            expected: SIN_META.arity.min,
-            actual: args.len(),
-        });
-    }
-
-    let prepared = prepare_arg_values_only(&args[0], resolver).map_err(SinEvalError::Coercion)?;
-    match prepared.core() {
-        CoreValue::Array(array) => {
-            let mapped = expand_arg_values_only(&args[0], resolver)
-                .map_err(SinEvalError::Coercion)?
-                .into_iter()
-                .map(
-                    |item| match apply_unary_numeric_scalar_prepared(&item, sin_kernel) {
-                        Ok(n) => CalcValue::number(n),
-                        Err(CoercionError::WorksheetError(code)) => CalcValue::error(code),
-                        Err(_) => CalcValue::error(WorksheetErrorCode::Value),
-                    },
-                )
-                .collect::<Vec<_>>();
-            Ok(CalcValue::array(
-                CalcArray::new(array.shape(), mapped).expect("shape preserved"),
-            ))
-        }
-        _ => Ok(CalcValue::number(
-            apply_unary_numeric_scalar_prepared(&prepared, sin_kernel)
-                .map_err(SinEvalError::Coercion)?,
-        )),
-    }
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
+    eval_unary_numeric_surface(args, resolver, SIN_META.real_result_policy.wrap(sin_kernel))
 }
 
-pub fn map_sin_error_to_ws(e: &SinEvalError) -> WorksheetErrorCode {
-    match e {
-        SinEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
-        SinEvalError::Coercion(CoercionError::WorksheetError(code)) => *code,
-        SinEvalError::Coercion(_) => WorksheetErrorCode::Value,
-    }
+pub fn map_sin_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
+    map_unary_numeric_error_to_ws(e)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::resolver::ReferenceSystemCapabilities;
-    use crate::value::ExcelText;
+    use crate::value::{CalcArray, CoreValue, ExcelText};
 
     struct NoResolver;
 
@@ -101,6 +65,11 @@ mod tests {
                 },
             )
         }
+    }
+
+    #[test]
+    fn sin_meta_function_id_is_stable() {
+        assert_eq!(SIN_META.function_id, "FUNC.SIN");
     }
 
     #[test]
@@ -143,5 +112,16 @@ mod tests {
                 .unwrap()
             )
         );
+    }
+
+    // BUG-FUNC-027 CLASS-B2: |x| >= 2^27 -> #NUM! (live Excel SIN(2^27)=#NUM!).
+    #[test]
+    fn eval_sin_large_argument_is_num() {
+        let got = eval_sin_surface(&[CalcValue::number(134_217_728.0)], &NoResolver);
+        assert_eq!(
+            got,
+            Err(UnaryNumericSurfaceError::Domain(WorksheetErrorCode::Num))
+        );
+        assert!(eval_sin_surface(&[CalcValue::number(134_217_727.0)], &NoResolver).is_ok());
     }
 }
