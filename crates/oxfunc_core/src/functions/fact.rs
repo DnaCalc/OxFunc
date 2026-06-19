@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -29,7 +30,8 @@ pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if truncated < 0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(factorial_of_int(truncated))
+    // BUG-FUNC-027 / oxf-vgxs: 171! overflows to +Inf; Excel returns #NUM!.
+    finite_or_num(factorial_of_int(truncated))
 }
 
 pub fn eval_fact_surface(
@@ -64,6 +66,13 @@ mod tests {
     fn fact_kernel_truncates_and_rejects_negative() {
         assert_eq!(fact_kernel(5.9), Ok(120.0));
         assert_eq!(fact_kernel(-1.0), Err(WorksheetErrorCode::Num));
+    }
+
+    // BUG-FUNC-027 / oxf-vgxs: live Excel FACT(171)=#NUM!, FACT(170) finite.
+    #[test]
+    fn fact_kernel_overflow_maps_to_num() {
+        assert_eq!(fact_kernel(171.0), Err(WorksheetErrorCode::Num));
+        assert!(fact_kernel(170.0).is_ok());
     }
 
     #[test]

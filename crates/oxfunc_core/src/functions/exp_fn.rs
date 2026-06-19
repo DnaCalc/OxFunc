@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -31,7 +32,8 @@ pub fn eval_exp_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, |n| Ok(exp_kernel(n)))
+    // BUG-FUNC-027 / oxf-vgxs: EXP overflow is #NUM! in Excel, not +Inf.
+    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(exp_kernel(n)))
 }
 
 pub fn map_exp_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -50,5 +52,15 @@ mod tests {
     #[test]
     fn exp_kernel_matches_std() {
         assert_eq!(exp_kernel(1.0), std::f64::consts::E);
+    }
+
+    // BUG-FUNC-027 / oxf-vgxs: live Excel EXP(1000)=#NUM! (overflow guard on the surface).
+    #[test]
+    fn exp_overflow_maps_to_num() {
+        assert_eq!(
+            finite_or_num(exp_kernel(1000.0)),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(finite_or_num(exp_kernel(1.0)), Ok(std::f64::consts::E));
     }
 }

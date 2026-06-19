@@ -28,7 +28,13 @@ pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if sinh == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(n.cosh() / sinh)
+    let result = n.cosh() / sinh;
+    // BUG-FUNC-027 CLASS-C3.h: for large |n|, cosh/sinh = Inf/Inf = NaN; Excel
+    // saturates COTH to ±1 (the sign of n). Verified live Excel 16.0 b20026: COTH(800)=1.
+    if !result.is_finite() {
+        return Ok(n.signum());
+    }
+    Ok(result)
 }
 
 pub fn eval_coth_surface(
@@ -54,5 +60,14 @@ mod tests {
     #[test]
     fn coth_kernel_zero_is_div0() {
         assert_eq!(coth_kernel(0.0), Err(WorksheetErrorCode::Div0));
+    }
+
+    // BUG-FUNC-027 CLASS-C3.h: large |n| saturates to ±1 (live Excel COTH(800)=1).
+    #[test]
+    fn coth_kernel_large_argument_saturates() {
+        assert_eq!(coth_kernel(800.0), Ok(1.0));
+        assert_eq!(coth_kernel(-800.0), Ok(-1.0));
+        // Interior values are unchanged.
+        assert_eq!(coth_kernel(1.0), Ok(1.0_f64.cosh() / 1.0_f64.sinh()));
     }
 }

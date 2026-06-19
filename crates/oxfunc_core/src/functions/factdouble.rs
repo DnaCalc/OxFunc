@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::factorial_common::{double_factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
@@ -26,7 +27,8 @@ pub const FACTDOUBLE_META: FunctionMeta = FunctionMeta {
 
 pub fn factdouble_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     let truncated = trunc_nonnegative_or_minus_one(n)?;
-    Ok(double_factorial_of_int(truncated))
+    // Overflow -> #NUM! (oxf-vgxs), consistent with FACT.
+    finite_or_num(double_factorial_of_int(truncated))
 }
 
 pub fn eval_factdouble_surface(

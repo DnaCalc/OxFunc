@@ -2,6 +2,7 @@ use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::finite_or_num;
 use crate::functions::unary_numeric::{
     UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
 };
@@ -31,7 +32,8 @@ pub fn eval_degrees_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, |n| Ok(degrees_kernel(n)))
+    // BUG-FUNC-027 / oxf-vgxs: DEGREES overflow is #NUM! in Excel, not ±Inf.
+    eval_unary_numeric_surface(args, resolver, |n| finite_or_num(degrees_kernel(n)))
 }
 
 pub fn map_degrees_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
@@ -50,5 +52,18 @@ mod tests {
     #[test]
     fn degrees_kernel_maps_pi_to_180() {
         assert_eq!(degrees_kernel(std::f64::consts::PI), 180.0);
+    }
+
+    // BUG-FUNC-027 / oxf-vgxs: live Excel DEGREES(1E307)=#NUM! (overflow guard on surface).
+    #[test]
+    fn degrees_overflow_maps_to_num() {
+        assert_eq!(
+            finite_or_num(degrees_kernel(1e307)),
+            Err(WorksheetErrorCode::Num)
+        );
+        assert_eq!(
+            finite_or_num(degrees_kernel(std::f64::consts::PI)),
+            Ok(180.0)
+        );
     }
 }

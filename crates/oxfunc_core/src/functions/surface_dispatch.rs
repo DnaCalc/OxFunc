@@ -1159,10 +1159,14 @@ fn eval_shared_unary_numeric_calc_dispatch(
         FUNC_ID_CSC => eval_unary_numeric_calc_surface(args, resolver, csc_kernel),
         FUNC_ID_CSCH => eval_unary_numeric_calc_surface(args, resolver, csch_kernel),
         FUNC_ID_DEGREES => {
-            eval_unary_numeric_calc_surface(args, resolver, |n| Ok(degrees_kernel(n)))
+            // BUG-FUNC-027 / oxf-vgxs: DEGREES overflow is #NUM! in Excel, not ±Inf.
+            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(degrees_kernel(n)))
         }
         FUNC_ID_EVEN => eval_unary_numeric_calc_surface(args, resolver, even_kernel),
-        FUNC_ID_EXP => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(exp_kernel(n))),
+        FUNC_ID_EXP => {
+            // BUG-FUNC-027 / oxf-vgxs: EXP overflow is #NUM! in Excel, not +Inf.
+            eval_unary_numeric_calc_surface(args, resolver, |n| finite_or_num(exp_kernel(n)))
+        }
         FUNC_ID_FACT => eval_unary_numeric_calc_surface(args, resolver, fact_kernel),
         FUNC_ID_FACTDOUBLE => eval_unary_numeric_calc_surface(args, resolver, factdouble_kernel),
         FUNC_ID_FISHER => eval_unary_numeric_calc_surface(args, resolver, fisher_kernel),
