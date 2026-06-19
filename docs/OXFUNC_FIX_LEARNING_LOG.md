@@ -21,6 +21,13 @@ change how a *future, unrelated* fix is approached.
   re-rounds it and the comparator blames a kernel drift that is the harness's fault.
 - A 4-witness sample can mislead. For "which inputs does Excel admit/reject" questions
   (regex escapes, domain guards), sweep a **battery**, not a handful.
+- **A dynamic-array result spills into adjacent cells — keep the comparator's helper cells
+  out of the spill range.** Probing `LINEST`/`LOGEST` with the `ERROR.TYPE` check one column
+  to the right read a false `#SPILL!`/error because the array spilled onto the check cell.
+  Place helper formulas well clear of the anchor, or read the spilled cells directly.
+- A single baseline witness that matches bit-exact does **not** clear a fuzzer-flagged
+  surface — the original flag may be an edge input. Mark "cleared on baseline", and only
+  fully clear once the original case is reproduced-and-fixed or proven stale.
 
 ## Error codes & non-finite results
 

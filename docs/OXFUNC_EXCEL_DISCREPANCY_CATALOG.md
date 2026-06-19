@@ -83,6 +83,11 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | BETAINV, CHIDIST, CHIINV, FDIST, FINV, GAMMADIST, GAMMAINV, HYPGEOMDIST, NEGBINOMDIST, NORMSDIST, NORMSINV, TDIST, TINV, CONFIDENCE.T, Z.TEST | distribution scalar numeric drift (repair by numerical substrate, not per-case) | NUM-L | M2 | BUG-FUNC-021 / KED-STAT-001 / `oxf-simj` |
 | GAMMA | negative-non-integer reflection drift (`~1290` ULP after cell-ref resweep) | NUM-L | M1 | BUG-FUNC-027 C1 |
 | BESSELY | Bessel-Y scalar numeric drift | NUM-L | M1 | BUG-FUNC-024 / KED-BESSEL-001 / `oxf-xp6p` |
+| FORECAST, FORECAST.LINEAR, TREND, LINEST, LOGEST | least-squares regression drift (`≤2` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
+| GROWTH | exponential-regression drift, `~11` ULP (`exp` amplifies the linear fit) | NUM-L | M1 | G8 probe `GROWTH({1,3,2,5},{1,2,3,4},{5})` |
+| CHISQ.TEST, CHITEST | chi-square test-statistic drift, `~8` ULP | NUM-L | M1 | G8 probe `CHISQ.TEST({10,20,30},{12,18,30})` |
+| F.TEST, FTEST | F-test statistic drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
+| GAUSS, PHI | standard-normal `Φ(z)-0.5` / density drift (`≤2` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 
 ## G4 — Numeric exactness: elementary & trig
 
@@ -92,7 +97,8 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | TAN, SIN, COT, SEC, CSC | moderate-large argument-reduction drift (Cody-Waite vs extended-π; up to `~3.3E12` ULP) | NUM-L | M1 | BUG-FUNC-027 C3 |
 | ATANH | near-`±1` precision (`~1.5E13` ULP); repair = `log1p` form | NUM-L | M1 | BUG-FUNC-027 C4 |
 | ACOTH | large-argument series (`ACOTH(x)=ATANH(1/x)`); `~1.2E14` ULP band | NUM-L | M1 | BUG-FUNC-027 C5 |
-| COMBIN, COMBINA, PERMUT, PHI, GAUSS, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP where OxFunc is analytic-exact and Excel is off — match-Excel | NUM-S | M1 | BUG-FUNC-027 (combinatorial group) |
+| COMBIN, COMBINA, PERMUT, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP where OxFunc is analytic-exact and Excel is off — match-Excel | NUM-S | M1 | BUG-FUNC-027 (combinatorial group) |
+| CONVERT | unit-conversion factor drift (`1` ULP, `CONVERT(1,"m","ft")`) | NUM-S | M1 | G8 probe 2026-06-19 |
 
 ## G5 — Numeric exactness: matrix
 
@@ -111,6 +117,10 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | ODDFPRICE, ODDFYIELD | odd-first-period `#NUM!` where Excel computes | STR | M1 | BUG-FUNC-032 |
 | RATE | default-guess solver no-convergence (mortgage lane) → `#NUM!` vs small positive rate | STR | M3 | BUG-FUNC-009 |
 | IRR | scalar error-code drift `#VALUE!` vs Excel `#NUM!` | STR | M1 | BUG-FUNC-028 (out-of-stream) |
+| CUMPRINC | full-schedule (type 0) numeric drift `~6` ULP — distinct from the closed type=1 structural fix (BUG-FUNC-034) | NUM-L | M1 | G8 probe `CUMPRINC(0.1,12,1000,1,12,0)` |
+| YIELDDISC | discounted-bill yield drift `~5` ULP | NUM-L | M1 | G8 probe `YIELDDISC(44013,44562,95,100,0)` |
+| NPER | period-count drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
+| YIELDMAT | yield-at-maturity drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 
 ## G7 — Comparison & misc semantics
 
@@ -118,19 +128,26 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 |-------------|-------------|-----|-----|----------|
 | operators, criteria families, SWITCH | numeric comparison tolerance lane (truncation-style vs round-to-nearest) | NUM-S | M3 | BUG-FUNC-004 (HO-FN-008) |
 
-## G8 — Untriaged (no stream yet) — needs a severity/maturity probe
+## G8 — Untriaged inbox (currently empty)
 
-These are `mixed_or_open` surfaces from the smart-fuzzer status map: a genuine non-match
-in the latest run, with no stream and no triaged severity. **First action is a witness +
-severity probe**, then promote into G1–G7 (or the context-sensitive catalog).
+New smart-fuzzer `mixed_or_open` findings land here first (a genuine non-match with no
+stream and no triaged severity), then get a witness + severity probe and promote into
+G1–G7 or the context-sensitive catalog.
 
-| Cluster | Surfaces | Likely note |
-|---------|----------|-------------|
-| Regression / forecast | FORECAST, FORECAST.LINEAR, TREND, GROWTH, LINEST, LOGEST | single-point `#NUM!` vs value + per-cell ULP; likely one shared regression kernel |
-| Percentile / quartile | PERCENTILE.EXC, PERCENTILE.INC, QUARTILE.EXC, QUARTILE.INC | interpolation lane |
-| Paired-sample tests | CHISQ.TEST, CHITEST, F.TEST, FTEST | array-pair statistic |
-| Finance (re-sweep) | NPV, NPER, CUMPRINC, XNPV, YIELDDISC, YIELDMAT | NPV/CUMPRINC/XNPV overlap recently-closed streams — confirm cleared by re-sweep before opening |
-| Misc scalar | ACOT, CONVERT, GAUSS, PHI | scalar value/threshold |
+**2026-06-19 drain.** The 28-surface backlog from the 2026-05-28 status map was probed
+against live Excel 16.0 build 20026 (bit-level comparison) and fully triaged:
+
+- **Promoted (numeric drift, now `M1`):** regression family FORECAST/FORECAST.LINEAR/
+  TREND/LINEST/LOGEST and GROWTH → G3; CHISQ.TEST/CHITEST and F.TEST/FTEST → G3; GAUSS/PHI
+  → G3; CONVERT → G4; CUMPRINC/YIELDDISC/NPER/YIELDMAT → G6.
+- **Already triaged:** IRR (structural) → G6.
+- **Routed to the context-sensitive catalog:** JIS, HYPERLINK, TRIMRANGE.
+- **Cleared — bit-exact on the baseline witness:** PERCENTILE.EXC/.INC, QUARTILE.EXC/.INC,
+  ACOT, NPV, XNPV. NPV/XNPV overlap closed BUG-FUNC-038/037 (stale run-data confirmed). The
+  rest were not reproduced on a baseline witness; if the smart-fuzzer re-flags them the
+  original edge input is needed, otherwise they stay clear.
+
+No surfaces are currently awaiting triage.
 
 ---
 
