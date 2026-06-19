@@ -55,8 +55,6 @@ Excel returns an error (or saturates) where OxFunc returns a number, or vice-ver
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| EXP (+ DEGREES/RADIANS/FACT/FACTDOUBLE audit) | overflow → `+Inf` vs Excel `#NUM!`; same `finite_or_num` pattern as the fixed SINH/COSH | STR | M1 | `oxf-vgxs` |
-| COTH, CSCH, SECH | large-`\|x\|` → `NaN`/`Inf` vs Excel saturates (`±1` / `0`) — needs a saturation guard, NOT `finite_or_num` | STR | M1 | BUG-FUNC-027 C3.h |
 | MOD | large-quotient → number vs Excel `#NUM!` (`MOD(1.005E14,1)`) | STR | M1 | BUG-FUNC-027 B1 |
 | COS, SIN, TAN (+ COT/SEC/CSC) | very-large argument → number vs Excel `#NUM!` (threshold ~`2^48`, to pin) | STR | M1 | BUG-FUNC-027 B2 |
 | ATAN2 | `(tiny, huge-neg)` → `-π/2` vs Excel `#NUM!` (singleton; needs magnitude sweep) | STR | M0 | BUG-FUNC-027 B3 |
