@@ -36,6 +36,12 @@ change how a *future, unrelated* fix is approached.
 - **But not every function errors on overflow — some saturate.** `COTH`/`TANH`/`FISHERINV`
   return `±1` for large argument; `SECH`/`CSCH` → `0`. So apply the non-finite→`#NUM!`
   guard **per function**, never blanket across a shared surface helper.
+- **A surface can route through several dispatch tables — guard all of them or guard the
+  kernel.** Unary functions reach evaluation via the calc-surface dispatch, a scalar-apply
+  table, and a by-index table (`eval_*_surface`). A `Result`-returning kernel guarded once
+  covers every path (all callers go through it); an `f64` kernel forces a guard at each
+  call site (or a signature refactor). Verify a guard with both a scalar **and** an
+  array-lift witness, since they can take different paths.
 - **The error *code* is specific.** Overflow → `#NUM!`; a `±Inf` from `1/underflow`
   (negative exponent over a sub-unit base) → `#DIV/0!`. Verify the code, don't assume.
 - **Error propagation preserves the incoming code.** `f(NA())` should stay `#N/A`, not be

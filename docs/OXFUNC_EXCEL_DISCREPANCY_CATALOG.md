@@ -56,7 +56,7 @@ Excel returns an error (or saturates) where OxFunc returns a number, or vice-ver
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
 | MOD | large-quotient → number vs Excel `#NUM!` (`MOD(1.005E14,1)`) | STR | M1 | BUG-FUNC-027 B1 |
-| COS, SIN, TAN (+ COT/SEC/CSC) | very-large argument → number vs Excel `#NUM!` (threshold ~`2^48`, to pin) | STR | M1 | BUG-FUNC-027 B2 |
+| SIN, COS, TAN, COT, SEC, CSC | `\|x\| >= 2^27` → number vs Excel `#NUM!`. **Threshold pinned `2^27` = `134217728`** (live Excel 16.0 b20026: `SIN(2^27)`=#NUM!, `2^27-1` ok, both signs, all six). Impl note: COT/SEC/CSC guard cleanly at their `Result` kernels (both dispatch paths call them); SIN/COS/TAN have `f64` kernels reached via 3 dispatch tables (calc-surface, scalar-apply, by-index `eval_*_surface`) so need a shared `excel_trig_arg_guard` applied at each, or a kernel-signature refactor | STR | M2 | BUG-FUNC-027 B2 |
 | ATAN2 | `(tiny, huge-neg)` → `-π/2` vs Excel `#NUM!` (singleton; needs magnitude sweep) | STR | M0 | BUG-FUNC-027 B3 |
 | ACOTH, ACOSH | near-1 argument-collapse: `ACOTH(1+ULP)` finite vs `#NUM!`; `ACOSH(1+1e-15)` non-zero vs `0` | STR | M0 | BUG-FUNC-027 C5 |
 
