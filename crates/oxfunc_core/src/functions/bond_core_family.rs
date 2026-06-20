@@ -536,7 +536,14 @@ pub fn yielddisc_kernel(
     if settlement >= maturity {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    Ok((red / price - 1.0) / yf(settlement, maturity, basis_)?)
+    // Faithful port of ExcelFinancialFunctions `yieldDisc` (bonds.fs):
+    // `(redemption - pr) / pr * b / dim`, with `dim` the numerator day-count and
+    // `b` DaysInYear. The prior `(red/price - 1) / yearfrac` form was algebraically
+    // equal but ~5 ULP off (different operation order) and used the YEARFRAC
+    // act/act algorithm rather than DaysBetween/DaysInYear.
+    let dim = dd(settlement, maturity, basis_)?;
+    let b = days_in_year_for_mat(settlement, maturity, basis_)?;
+    Ok((red - price) / price * b / dim)
 }
 pub fn price_kernel(
     settlement: f64,
@@ -889,6 +896,16 @@ mod tests {
     }
     fn close(a: f64, b: f64, t: f64) {
         assert!((a - b).abs() <= t, "a={a}, b={b}");
+    }
+    #[test]
+    fn yielddisc_bit_exact_vs_excel() {
+        // G6 three-way: the prior `(red/price - 1) / yearfrac` form was ~5 ULP off
+        // Excel. The faithful `yieldDisc` port `(red - pr)/pr * b / dim` is now
+        // bit-exact with live Excel 16.0 b20026 and the F# reference. Value pinned
+        // by exact bits.
+        let y = yielddisc_kernel(44013.0, 44562.0, 95.0, 100.0, Some(0.0))
+            .expect("yielddisc should succeed");
+        assert_eq!(y.to_bits(), 0.035_087_719_298_245_61_f64.to_bits());
     }
     #[test]
     fn d360us_rolls_end_day_31_into_next_month() {

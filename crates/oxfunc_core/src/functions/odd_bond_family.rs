@@ -235,43 +235,151 @@ fn day_count_non_negative_with_us_hack(
     Ok(result.max(0.0))
 }
 
-fn count_regular_periods(
-    first_coupon: i64,
-    maturity: i64,
-    months_per_coupon: i64,
-) -> Result<i32, OddBondEvalError> {
-    let mut count = 0i32;
-    let mut cursor = first_coupon;
-    while cursor < maturity {
-        cursor = add_months_clamped(cursor, months_per_coupon)
-            .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
-        count += 1;
-    }
-    if cursor != maturity {
-        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
-    }
-    Ok(count)
+fn ymd(serial: i64) -> Result<(i64, i64, i64), OddBondEvalError> {
+    ymd_from_excel_serial(WorkbookDateSystem::System1900, serial as f64)
+        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))
 }
 
-fn coupon_amount(rate: f64, frequency: i64, redemption: f64) -> f64 {
-    redemption * rate / frequency as f64
+fn last_day_of_month(year: i64, month: i64, day: i64) -> bool {
+    day == days_in_month(year, month)
 }
 
-/// Normal length of a quasi-coupon period used as the discounting denominator
-/// (the `dc` convention, matching the bit-exact bond_core PRICE kernel): 30/360
-/// and Actual/360 use `360/frequency`, Actual/365 uses `365/frequency`, and
-/// Actual/Actual uses the actual days of the period. `day_count` (actual days
-/// for the actual bases) is the *numerator* convention and stays as-is.
-fn coupon_period_length(
-    prev_coupon: i64,
-    first_coupon: i64,
-    basis: DayCountBasis,
+/// F# `changeMonth` (daycountbasis.fs): shift the month and either clamp the day
+/// to the target month length (.NET `DateTime.AddMonths` semantics — no
+/// end-of-month snapping) or force the last day of the target month when
+/// `return_last_day` is set. `basis` is intentionally not consulted (the F#
+/// `isLastDay` it computes is dead code).
+fn change_month(
+    serial: i64,
+    num_months: i64,
+    return_last_day: bool,
+) -> Result<i64, OddBondEvalError> {
+    let (year, month, day) = ymd(serial)?;
+    let month_index = year
+        .checked_mul(12)
+        .and_then(|v| v.checked_add(month - 1))
+        .and_then(|v| v.checked_add(num_months))
+        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
+    let target_year = month_index.div_euclid(12);
+    let target_month = month_index.rem_euclid(12) + 1;
+    let target_day = if return_last_day {
+        days_in_month(target_year, target_month)
+    } else {
+        day.min(days_in_month(target_year, target_month))
+    };
+    excel_serial_from_ymd(
+        WorkbookDateSystem::System1900,
+        target_year,
+        target_month,
+        target_day,
+    )
+    .map(|v| v as i64)
+    .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))
+}
+
+/// F# `datesAggregate1`/`findPcdNcd`: walk `start` toward `end` by `num_months`
+/// steps, returning the bounding pair `(front, trailing)` where `front` is the
+/// first position at/past `end` and `trailing` the one before it.
+fn find_pcd_ncd(
+    start: i64,
+    end: i64,
+    num_months: i64,
+    return_last_month: bool,
+) -> Result<(i64, i64), OddBondEvalError> {
+    let mut front = start;
+    let mut trailing = end;
+    loop {
+        let stop = if num_months > 0 {
+            front >= end
+        } else {
+            front <= end
+        };
+        if stop {
+            return Ok((front, trailing));
+        }
+        trailing = front;
+        front = change_month(front, num_months, return_last_month)?;
+    }
+}
+
+/// F# `findCouponDates`: the (previous, next) quasi-coupon dates bounding
+/// `settlement`, anchored on `maturity` and stepping back one period at a time.
+fn find_coupon_dates(settl: i64, mat: i64, frequency: i64) -> Result<(i64, i64), OddBondEvalError> {
+    let (my, mm, md) = ymd(mat)?;
+    let end_month = last_day_of_month(my, mm, md);
+    let num_months = -(12 / frequency);
+    find_pcd_ncd(mat, settl, num_months, end_month)
+}
+
+fn previous_coupon_date(settl: i64, mat: i64, frequency: i64) -> Result<i64, OddBondEvalError> {
+    Ok(find_coupon_dates(settl, mat, frequency)?.0)
+}
+
+fn next_coupon_date(settl: i64, mat: i64, frequency: i64) -> Result<i64, OddBondEvalError> {
+    Ok(find_coupon_dates(settl, mat, frequency)?.1)
+}
+
+/// F# `numberOfCoupons` (`CoupNum`): whole months from settlement's previous
+/// coupon date to maturity, scaled to coupon periods.
+fn number_of_coupons(settl: i64, mat: i64, frequency: i64) -> Result<f64, OddBondEvalError> {
+    let pcd = previous_coupon_date(settl, mat, frequency)?;
+    let (my, mm, _) = ymd(mat)?;
+    let (pcy, pcm, _) = ymd(pcd)?;
+    let months = ((my - pcy) * 12 + (mm - pcm)) as f64;
+    Ok(months * frequency as f64 / 12.0)
+}
+
+/// F# `CoupDays`: the normal length of the coupon period that contains
+/// settlement. 30/360 and Actual/360 use `360/freq`, Actual/365 `365/freq`, and
+/// Actual/Actual the actual days between the bounding coupon dates.
+fn coup_days(
+    settl: i64,
+    mat: i64,
     frequency: i64,
+    basis: DayCountBasis,
 ) -> Result<f64, OddBondEvalError> {
     match basis {
-        DayCountBasis::ActualActual => day_count(prev_coupon, first_coupon, basis),
+        DayCountBasis::ActualActual => {
+            let (pcd, ncd) = find_coupon_dates(settl, mat, frequency)?;
+            Ok((ncd - pcd) as f64)
+        }
         DayCountBasis::Actual365 => Ok(365.0 / frequency as f64),
         _ => Ok(360.0 / frequency as f64),
+    }
+}
+
+/// F# `coupNumber` with `isWholeNumber=true`: the count of whole quasi-coupon
+/// periods between settlement and the first coupon (used as `Nq`).
+fn whole_coupon_count(
+    mat: i64,
+    settl: i64,
+    months_per_coupon: i64,
+) -> Result<f64, OddBondEvalError> {
+    let (my, mm, md) = ymd(mat)?;
+    let (sy, sm, sd) = ymd(settl)?;
+    let end_of_month_temp = last_day_of_month(my, mm, md);
+    let end_of_month = if !end_of_month_temp && mm != 2 && md > 28 && md < days_in_month(my, mm) {
+        last_day_of_month(sy, sm, sd)
+    } else {
+        end_of_month_temp
+    };
+    let start_date = change_month(settl, 0, end_of_month)?;
+    let mut coupons = if settl < start_date { 1.0 } else { 0.0 };
+    let mut front = change_month(start_date, months_per_coupon, end_of_month)?;
+    while front < mat {
+        front = change_month(front, months_per_coupon, end_of_month)?;
+        coupons += 1.0;
+    }
+    Ok(coupons)
+}
+
+/// F# `aggrBetween` index sequence: ascending when `start <= end`, otherwise
+/// descending. The fold order is observable in floating-point accumulation.
+fn aggr_indices(start: i64, end: i64) -> Vec<i64> {
+    if start <= end {
+        (start..=end).collect()
+    } else {
+        (end..=start).rev().collect()
     }
 }
 
@@ -317,38 +425,92 @@ pub fn oddfprice_kernel(
         return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
     }
 
+    // Faithful port of ExcelFinancialFunctions `oddFPrice` (oddbonds.fs), which is
+    // bit-exact with live Excel across every day-count basis (verified by the G6
+    // three-way ledger). Two branches: a short odd first coupon (DFC < E) and a
+    // long one spanning multiple quasi-coupon periods (DFC >= E). The long branch
+    // sums per-period day-count fractions (`dci/nl`) — this is exactly what the
+    // earlier single-period-length closed form got materially wrong for the
+    // actual-day bases (where quasi periods have unequal actual lengths).
+    let m = frequency as f64;
     let months_per_coupon = 12 / frequency;
-    let prev_coupon = add_months_clamped(first_coupon, -months_per_coupon)
-        .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
-    // A *long* odd first coupon (issue more than one quasi-coupon period before
-    // first_coupon, i.e. issue <= prev_coupon) is valid in Excel and computes the
-    // same closed form with `odd_coupon_fraction = DFC/E > 1` — no special case is
-    // needed beyond not rejecting it here (BUG-FUNC-032). `prev_coupon` still gives
-    // the normal period length E below.
-    let period_days = coupon_period_length(prev_coupon, first_coupon, basis, frequency)?;
-    if period_days <= 0.0 {
+    let e = coup_days(settlement, first_coupon, frequency, basis)?;
+    if e <= 0.0 {
+        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+    }
+    let dfc = day_count_non_negative(issue, first_coupon, basis)?;
+    let x = yld / m + 1.0;
+    if x <= 0.0 {
         return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
     }
 
-    let odd_coupon_fraction = day_count(issue, first_coupon, basis)? / period_days;
-    let accrued_fraction = day_count(issue, settlement, basis)? / period_days;
-    let discount_fraction = day_count(settlement, first_coupon, basis)? / period_days;
-    let periods = count_regular_periods(first_coupon, maturity, months_per_coupon)?;
-    let coupon = coupon_amount(rate, frequency, redemption);
-    let ypf = yld / frequency as f64;
-    let base = 1.0 + ypf;
-    if base <= 0.0 {
-        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
-    }
+    let price = if dfc < e {
+        // Short odd first coupon.
+        let n = number_of_coupons(settlement, maturity, frequency)?;
+        let dsc = day_count_non_negative(settlement, first_coupon, basis)?;
+        let a = day_count_non_negative(issue, settlement, basis)?;
+        let y = dsc / e;
+        let term1 = redemption / x.powf(n - 1.0 + y);
+        let term2 = 100.0 * rate / m * dfc / e / x.powf(y);
+        let mut term3 = 0.0;
+        for index in aggr_indices(2, n as i64) {
+            term3 += 100.0 * rate / m / x.powf(index as f64 - 1.0 + y);
+        }
+        let term4 = a / e * (rate / m) * 100.0;
+        term1 + term2 + term3 - term4
+    } else {
+        // Long odd first coupon: accumulate day-count fractions over each quasi
+        // period (walking back from first_coupon), then discount.
+        let nc = number_of_coupons(issue, first_coupon, frequency)? as i64;
+        let mut late_coupon = first_coupon;
+        let mut dcnl = 0.0;
+        let mut anl = 0.0;
+        for index in aggr_indices(nc, 1) {
+            let early_coupon = change_month(late_coupon, -months_per_coupon, false)?;
+            let nl = if basis == DayCountBasis::ActualActual {
+                day_count_non_negative(early_coupon, late_coupon, basis)?
+            } else {
+                e
+            };
+            if nl <= 0.0 {
+                return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
+            }
+            let dci = if index > 1 {
+                nl
+            } else {
+                day_count_non_negative(issue, late_coupon, basis)?
+            };
+            let start_date = issue.max(early_coupon);
+            let end_date = settlement.min(late_coupon);
+            let a = day_count_non_negative(start_date, end_date, basis)?;
+            late_coupon = early_coupon;
+            dcnl += dci / nl;
+            anl += a / nl;
+        }
+        let dsc = match basis {
+            DayCountBasis::Actual360 | DayCountBasis::Actual365 => {
+                let date = next_coupon_date(settlement, first_coupon, frequency)?;
+                day_count_non_negative(settlement, date, basis)?
+            }
+            _ => {
+                let date = previous_coupon_date(settlement, first_coupon, frequency)?;
+                let a = day_count(date, settlement, basis)?;
+                e - a
+            }
+        };
+        let nq = whole_coupon_count(first_coupon, settlement, months_per_coupon)?;
+        let n = number_of_coupons(first_coupon, maturity, frequency)?;
+        let y = dsc / e;
+        let term1 = redemption / x.powf(y + nq + n);
+        let term2 = 100.0 * rate / m * dcnl / x.powf(nq + y);
+        let mut term3 = 0.0;
+        for index in aggr_indices(1, n as i64) {
+            term3 += 100.0 * rate / m / x.powf(index as f64 + nq + y);
+        }
+        let term4 = 100.0 * rate / m * anl;
+        term1 + term2 + term3 - term4
+    };
 
-    let mut future_value = 0.0;
-    for k in 1..=periods {
-        future_value += coupon / base.powf(k as f64);
-    }
-    future_value += redemption / base.powf(periods as f64);
-
-    let price = (coupon * odd_coupon_fraction + future_value) / base.powf(discount_fraction)
-        - coupon * accrued_fraction;
     if price.is_finite() {
         Ok(price)
     } else {
@@ -830,6 +992,33 @@ mod tests {
         )
         .expect("long odd first coupon computes");
         assert!((price - 98.512_878_788_572_08).abs() < 1e-9, "got {price}");
+    }
+
+    #[test]
+    fn oddfprice_actual_bases_bit_exact_vs_excel() {
+        // BUG-FUNC-032 / G6 three-way: a long odd first coupon over the actual-day
+        // bases (1=act/act, 2=act/360, 3=act/365) was materially wrong under the old
+        // single-period-length closed form (10^10-10^12 ULP). The faithful oddFPrice
+        // port sums per-period day-count fractions and is now bit-exact with live
+        // Excel 16.0 b20026 and the F# reference (all_bit_exact in the G6 ledger).
+        // Values pinned by exact bits.
+        let price = |basis: f64| {
+            oddfprice_kernel(
+                serial(2020, 9, 15),
+                serial(2022, 1, 1),
+                serial(2020, 1, 1),
+                serial(2021, 1, 1),
+                0.05,
+                0.06,
+                100.0,
+                2.0,
+                Some(basis),
+            )
+            .expect("oddfprice should succeed")
+        };
+        assert_eq!(price(1.0).to_bits(), 98.721_102_743_891_15_f64.to_bits());
+        assert_eq!(price(2.0).to_bits(), 98.658_251_302_161_82_f64.to_bits());
+        assert_eq!(price(3.0).to_bits(), 98.698_153_923_488_63_f64.to_bits());
     }
 
     #[test]
