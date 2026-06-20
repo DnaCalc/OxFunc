@@ -50,24 +50,32 @@ the guard `if issue <= prev_coupon { return Err(Num) }`, where
 (`first_coupon = 2021-01-01`, freq 2 → `prev_coupon = 2020-07-01`; `issue = 2020-01-01`), the
 issue is **more than one quasi-coupon period before the first coupon** — a *long* odd first
 coupon spanning multiple quasi-coupon periods. The current kernel only models a short odd first
-coupon (issue within the last quasi-coupon period before `first_coupon`): its
-`odd_coupon_fraction = days(issue,first_coupon)/period_days` and single discount factor
-`base^discount_fraction` are not the right shape for a multi-period odd first coupon, so even
-removing the guard would compute a wrong price. The unit test
-`odd_bond_family::tests::long_odd_first_is_currently_rejected` pins the current (wrong) rejection.
+coupon. `ODDFYIELD` inherits the same `#NUM!` because it inverts `oddfprice_kernel` in a solver.
 
-`ODDFYIELD` inherits the same defect because it inverts `oddfprice_kernel`.
+## Fix (2026-06-20) — structural `#NUM!` resolved
+The earlier worry that "even removing the guard would compute a wrong price" was **incorrect**:
+the closed form already generalizes. With just the guard removed, the witness computes
+`98.51287878857207` vs live Excel `98.51287878857208` — **1 ULP** — because
+`odd_coupon_fraction = DFC/E` is simply allowed to exceed 1 (it equals the number of
+quasi-coupon periods in the long odd first coupon, prorated), and the single discount factor
+`base^(DSC/E)` is correct for a fractional number of periods to `first_coupon`. So the fix is:
 
-## Fix
-Not yet fixed — needs the Microsoft **long-odd-first-coupon** ODDFPRICE formula (the sum over
-the Nq quasi-coupon periods in the odd first period), which is a focused sub-project on the
-scale of the ACCRINT quasi-coupon rewrite (BUG-FUNC-030), with its own Excel verification matrix
-across basis / Nq / short-vs-long stubs. Update
-`odd_bond_family::tests::long_odd_first_is_currently_rejected` when it lands.
+1. **Remove the `issue <= prev_coupon` guard** — long odd first coupons now compute.
+2. **Correct the period-length basis normalization** (`coupon_period_length`): the discounting
+   denominator E must use the `dc` convention (`360/freq`, `365/freq`, or actual days for
+   act/act) matching the bit-exact bond_core PRICE kernel, not `day_count` (which returned
+   actual days for all actual bases, making bases 1/2/3 collapse to one value).
 
-## Validation
-Pending repair. Re-run `typed-arg-001` and show `ODDFPRICE` / `ODDFYIELD`
-moving to `exact_typed_bit_match`.
+`ODDFYIELD` is fixed transitively (its solver now succeeds). The rejection test was repointed to
+`odd_bond_family::tests::long_odd_first_coupon_now_computes`.
+
+## Validation (live Excel 16.0 b20026, 13-case matrix: settlement position × basis × Nq)
+- Structural: `#NUM!` gone on every case — both functions return numbers.
+- 30/360 (basis 0/4): bit-exact or `~1` ULP (operation order). Actual/360 and Actual/365 moved
+  much closer after the `dc` fix but are not yet bit-exact; `act/act` is the furthest residual.
+- **Open numeric residual (tracked on catalog G6, not accepted):** ODDFPRICE/ODDFYIELD bit-exact
+  parity for actual-day bases + the 30/360 1-ULP — a focused exactness pass (Excel's exact
+  day-count conventions for these bases and operation order), companion to ACCRINT's act/act.
 
 ## Similar-Risk Scan
 - `ODDLPRICE` / `ODDLYIELD` (odd-last-period) matched — not affected.
@@ -80,9 +88,9 @@ moving to `exact_typed_bit_match`.
 3. `smart-fuzzer/planning/UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md` §4.1
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
+- [x] fix landed — structural `#NUM!` resolved (guard removed + `dc` basis normalization); numeric exactness residual tracked on catalog G6
+- [x] validation recorded (13-case live-Excel matrix; regression test)
+- [x] root cause recorded
 - [ ] similar-risk scan recorded
 - [ ] spec/matrix/contract updated if required
 - [ ] handoff filed if required

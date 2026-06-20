@@ -149,6 +149,55 @@ fn collect_numeric_vector_from_eval(value: &CalcValue) -> Result<Vec<f64>, Cashf
     }
 }
 
+/// Excel `IRR` collects the values array/range with these rules (verified vs live
+/// Excel 16.0 b20026, identical for array constants and ranges):
+/// numbers are included; text, logical, and blank/empty cells are **ignored**;
+/// and **any** error cell maps to `#VALUE!` (the specific code is not propagated).
+/// A whole-argument scalar error still propagates as usual. This differs from the
+/// strict positional collector used by XNPV/XIRR, whose values must stay aligned
+/// with the parallel dates array.
+fn collect_irr_values_from_eval(value: &CalcValue) -> Result<Vec<f64>, CashflowRateEvalError> {
+    match value.core() {
+        CoreValue::Number(n) => Ok(vec![*n]),
+        CoreValue::Error(code) => Err(CashflowRateEvalError::Domain(*code)),
+        CoreValue::Array(array) => {
+            let shape = array.shape();
+            if shape.rows > 1 && shape.cols > 1 {
+                return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Ref));
+            }
+            let mut out = Vec::with_capacity(shape.rows * shape.cols);
+            for cell in array.iter_row_major() {
+                match cell.core() {
+                    CoreValue::Number(n) => out.push(*n),
+                    CoreValue::Error(_) => {
+                        return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value));
+                    }
+                    CoreValue::Text(_)
+                    | CoreValue::Logical(_)
+                    | CoreValue::Empty
+                    | CoreValue::Missing => {} // ignored, like Excel
+                    CoreValue::Array(_) | CoreValue::Reference(_) => {
+                        return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value));
+                    }
+                }
+            }
+            Ok(out)
+        }
+        CoreValue::Text(_) | CoreValue::Logical(_) | CoreValue::Reference(_) => {
+            Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
+        }
+        _ => Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value)),
+    }
+}
+
+fn collect_irr_values_arg(
+    arg: &CalcValue,
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<Vec<f64>, CashflowRateEvalError> {
+    let eval = resolve_arg_eval(arg, resolver)?;
+    collect_irr_values_from_eval(&eval)
+}
+
 fn serial_from_number(value: f64) -> Result<i64, CashflowRateEvalError> {
     if !value.is_finite() {
         return Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Num));
@@ -686,7 +735,7 @@ pub fn eval_irr_surface(
     if !IRR_META.arity.accepts(args.len()) {
         return Err(arity_error(&IRR_META, args.len()));
     }
-    let cashflows = collect_numeric_vector_arg(&args[0], resolver)?;
+    let cashflows = collect_irr_values_arg(&args[0], resolver)?;
     let guess = optional_arg_value(args.get(1), resolver)?
         .map(|value| scalar_number_from_eval(&value))
         .transpose()?;
@@ -742,6 +791,36 @@ mod tests {
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{CalcArray, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
+
+    #[test]
+    fn irr_values_collection_matches_excel_skip_and_error_rules() {
+        use crate::value::ExcelText;
+        let col = |cells: Vec<CalcValue>| {
+            CalcValue::array(
+                CalcArray::from_rows(cells.into_iter().map(|c| vec![c]).collect()).unwrap(),
+            )
+        };
+        // Any error cell -> #VALUE! (specific code not propagated), matching live
+        // Excel 16.0 b20026 for both array constants and ranges (BUG-FUNC-028 IRR).
+        assert_eq!(
+            collect_irr_values_from_eval(&col(vec![
+                CalcValue::number(1.0),
+                CalcValue::number(-2.0),
+                CalcValue::error(WorksheetErrorCode::NA),
+            ])),
+            Err(CashflowRateEvalError::Domain(WorksheetErrorCode::Value))
+        );
+        // Text and logical cells are ignored; numbers kept in order.
+        assert_eq!(
+            collect_irr_values_from_eval(&col(vec![
+                CalcValue::number(1.0),
+                CalcValue::logical(true),
+                CalcValue::number(-2.0),
+                CalcValue::text(ExcelText::from_interop_assignment("x")),
+            ])),
+            Ok(vec![1.0, -2.0])
+        );
+    }
 
     struct MockResolver {
         map: BTreeMap<String, CalcValue>,

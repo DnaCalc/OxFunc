@@ -257,6 +257,24 @@ fn coupon_amount(rate: f64, frequency: i64, redemption: f64) -> f64 {
     redemption * rate / frequency as f64
 }
 
+/// Normal length of a quasi-coupon period used as the discounting denominator
+/// (the `dc` convention, matching the bit-exact bond_core PRICE kernel): 30/360
+/// and Actual/360 use `360/frequency`, Actual/365 uses `365/frequency`, and
+/// Actual/Actual uses the actual days of the period. `day_count` (actual days
+/// for the actual bases) is the *numerator* convention and stays as-is.
+fn coupon_period_length(
+    prev_coupon: i64,
+    first_coupon: i64,
+    basis: DayCountBasis,
+    frequency: i64,
+) -> Result<f64, OddBondEvalError> {
+    match basis {
+        DayCountBasis::ActualActual => day_count(prev_coupon, first_coupon, basis),
+        DayCountBasis::Actual365 => Ok(365.0 / frequency as f64),
+        _ => Ok(360.0 / frequency as f64),
+    }
+}
+
 fn validate_positive_inputs(values: &[f64]) -> Result<(), OddBondEvalError> {
     if values.iter().all(|v| v.is_finite()) {
         Ok(())
@@ -302,10 +320,12 @@ pub fn oddfprice_kernel(
     let months_per_coupon = 12 / frequency;
     let prev_coupon = add_months_clamped(first_coupon, -months_per_coupon)
         .ok_or(OddBondEvalError::Domain(WorksheetErrorCode::Num))?;
-    if issue <= prev_coupon {
-        return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
-    }
-    let period_days = day_count(prev_coupon, first_coupon, basis)?;
+    // A *long* odd first coupon (issue more than one quasi-coupon period before
+    // first_coupon, i.e. issue <= prev_coupon) is valid in Excel and computes the
+    // same closed form with `odd_coupon_fraction = DFC/E > 1` — no special case is
+    // needed beyond not rejecting it here (BUG-FUNC-032). `prev_coupon` still gives
+    // the normal period length E below.
+    let period_days = coupon_period_length(prev_coupon, first_coupon, basis, frequency)?;
     if period_days <= 0.0 {
         return Err(OddBondEvalError::Domain(WorksheetErrorCode::Num));
     }
@@ -792,21 +812,24 @@ mod tests {
     }
 
     #[test]
-    fn long_odd_first_is_currently_rejected() {
-        assert_eq!(
-            oddfprice_kernel(
-                serial(2008, 11, 11),
-                serial(2021, 3, 1),
-                serial(2008, 8, 15),
-                serial(2009, 3, 1),
-                0.0785,
-                0.0625,
-                100.0,
-                2.0,
-                Some(1.0),
-            ),
-            Err(OddBondEvalError::Domain(WorksheetErrorCode::Num))
-        );
+    fn long_odd_first_coupon_now_computes() {
+        // BUG-FUNC-032: a long (multi-quasi-coupon-period) odd first coupon is valid
+        // in Excel; the kernel no longer rejects it with #NUM!. The witness (basis 0,
+        // 2-period odd first) matches live Excel 16.0 b20026 (98.51287878857208) to
+        // ~1 ULP. (Actual-day bases remain a tracked numeric residual.)
+        let price = oddfprice_kernel(
+            serial(2020, 7, 1),
+            serial(2022, 1, 1),
+            serial(2020, 1, 1),
+            serial(2021, 1, 1),
+            0.05,
+            0.06,
+            100.0,
+            2.0,
+            Some(0.0),
+        )
+        .expect("long odd first coupon computes");
+        assert!((price - 98.512_878_788_572_08).abs() < 1e-9, "got {price}");
     }
 
     #[test]
