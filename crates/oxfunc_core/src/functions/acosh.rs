@@ -55,4 +55,18 @@ mod tests {
     fn acosh_kernel_rejects_values_below_one() {
         assert_eq!(acosh_kernel(0.5), Err(WorksheetErrorCode::Num));
     }
+
+    #[test]
+    fn acosh_just_above_one_is_nonzero_matching_excel() {
+        // BUG-FUNC-027 C5: the "Excel collapses to 0" near-1 witness was a
+        // formula-literal artifact (the parser rounded 1+1e-15 down to 1.0). With
+        // the exact input, live Excel 16.0 b20026 returns 4.712160905917527e-08,
+        // which this kernel matches — so it must stay non-zero, not collapse to 0.
+        let y = acosh_kernel(1.0 + 1e-15).expect("non-zero just above 1");
+        assert!(y > 0.0, "got {y}");
+        assert!(
+            (y / 4.712_160_905_917_527e-8 - 1.0).abs() < 1e-12,
+            "got {y}"
+        );
+    }
 }

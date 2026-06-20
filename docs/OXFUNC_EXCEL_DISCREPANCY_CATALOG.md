@@ -55,9 +55,15 @@ Excel returns an error (or saturates) where OxFunc returns a number, or vice-ver
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| MOD | large-quotient → number vs Excel `#NUM!` (`MOD(1.005E14,1)`) | STR | M1 | BUG-FUNC-027 B1 |
-| ATAN2 | `(tiny, huge-neg)` → `-π/2` vs Excel `#NUM!` (singleton; needs magnitude sweep) | STR | M0 | BUG-FUNC-027 B3 |
-| ACOTH, ACOSH | near-1 argument-collapse: `ACOTH(1+ULP)` finite vs `#NUM!`; `ACOSH(1+1e-15)` non-zero vs `0` | STR | M0 | BUG-FUNC-027 C5 |
+| MOD | large-quotient → number vs Excel `#NUM!`. Cell-ref resweep (2026-06-20): Excel `#NUM!` when the *quotient* `|n/d|` crosses a quirky ~`1.02·2^40` boundary (flips between `2^40+2^34` ok and `2^40+2^35` `#NUM!`) — not cleanly expressible, inputs degenerate (`n > 10^12·d`). **Accept-divergence candidate**: not bit-matchable without an arbitrary magic threshold | STR | M1 | BUG-FUNC-027 B1 |
+| ATAN2 | `(tiny, huge-neg)` → number vs Excel `#NUM!`. Cell-ref resweep (2026-06-20): pathological — same `|y/x|=∞` yields both `#NUM!` and a number depending on absolute magnitudes (`x=1e-200,y=1e109`→`#NUM!` but `x=1e-309,y=1`→`π/2`); no clean rule. **Accept-divergence candidate** (degenerate denormal boundary) | STR | M0 | BUG-FUNC-027 B3 |
+
+**2026-06-20 cell-ref resweep (BUG-FUNC-027 C5 signed off).** `ACOTH`/`ACOSH` near 1 were *stale
+harness artifacts*: re-probed with exact `Range.Value2` inputs, Excel returns
+`ACOTH(1+ULP)=18.36840028483855` (finite) and `ACOSH(1+1e-15)=4.712…e-8` (non-zero), and OxFunc
+matches **bit-exactly**. The earlier `#NUM!`/`0` witnesses came from formula-literal text, where
+Excel's parser rounds `1+ULP` down to exactly `1.0`. (The separate `ACOTH(1.001)` numeric drift
+remains on the G4 row.)
 
 ## G2 — Coercion, array-lift & kind/shape (currently empty)
 

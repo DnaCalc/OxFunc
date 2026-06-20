@@ -132,6 +132,16 @@ seven cycles unless noted as `singleton_witness`.
 - **Repair direction**: model Excel's `INT(n / divisor)` magnitude guard.
   Map to `WorksheetErrorCode::Num` when the implicit quotient overflows
   the Excel-defined threshold.
+- **Cell-ref resweep (2026-06-20)**: the guard is on the **quotient** `|n/d|`,
+  not `|n|` (`MOD(2^45, 2^10)` → `0` despite `|n|=2^45`; `MOD(2^51, 2^10)` →
+  `#NUM!` at quotient `2^41`). But the boundary is **quirky and not cleanly
+  expressible**: at `d=1` the flip is between quotient `2^40+2^34` (`0`) and
+  `2^40+2^35` (`#NUM!`) — i.e. ~`1.02·2^40`, not a power of two or simple
+  fraction. Matching Excel bit-for-bit would require an arbitrary magic
+  threshold that is itself wrong inside a thin boundary zone, on inputs that are
+  already degenerate (`n > 10^12·d`). Recorded as an **accept-divergence
+  candidate**; no guard landed (a guessed threshold would trade one mismatch
+  for another).
 
 ### CLASS-B2: trig family `#NUM!` at large argument
 
@@ -151,6 +161,13 @@ seven cycles unless noted as `singleton_witness`.
 - **Witness**: `=ATAN2(-1E-200, -6E199)` local `-π/2`, Excel `#NUM!`.
   Singleton-class so far; needs broader (y, x) magnitude-spread sweep
   before promotion direction is decided.
+- **Cell-ref resweep (2026-06-20)**: the `#NUM!` reproduces but is
+  **pathological — there is no clean rule**. It is not a simple `y/x` overflow:
+  `ATAN2(x=1e-200, y=1e109)` (`|y/x|=∞`) → `#NUM!`, yet `ATAN2(x=1e-309, y=1)`
+  (also `|y/x|=∞`) → `π/2`; and `ATAN2(x=1e-200, y=1e108)` (`|y/x|=1e308`) → a
+  number. The flip lives in the denormal-ratio range and appears to depend on
+  the exact absolute magnitudes, not the ratio. Degenerate inputs; recorded as
+  an **accept-divergence candidate**, no guard landed.
 
 ### CLASS-C1: GAMMA negative-non-integer numeric drift
 
@@ -194,6 +211,15 @@ seven cycles unless noted as `singleton_witness`.
   Excel `#NUM!`; `=ACOSH(1+1e-15)` local non-zero, Excel `0`. Two related
   issues: small-near-boundary precision and an Excel-side argument-collapse
   threshold.
+- **Cell-ref resweep (2026-06-20) — the near-1 "argument-collapse" half is a
+  STALE HARNESS ARTIFACT (signed off).** Re-probed with exact `Range.Value2`
+  inputs, Excel returns `ACOTH(1+ULP) = 18.36840028483855` (finite, **not**
+  `#NUM!`) and `ACOSH(1+1e-15) = 4.712160905917527e-08` (non-zero, **not** `0`),
+  and OxFunc matches **bit-exactly**. The original `#NUM!`/`0` came from
+  formula-literal text: Excel's parser rounds the `1+ULP` literal down to exactly
+  `1.0`, so it really evaluated `ACOTH(1.0)`/`ACOSH(1.0)`. Removed from catalog G1.
+  The remaining `ACOTH(1.001)` ~11244-ULP **numeric** drift is unaffected and
+  stays on the catalog G4 ACOTH row.
 
 ## 2026-05-09 Plumbing Caveat And Cell-Ref Re-Replay
 

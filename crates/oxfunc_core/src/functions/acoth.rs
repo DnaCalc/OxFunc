@@ -56,4 +56,14 @@ mod tests {
         assert_eq!(acoth_kernel(1.0), Err(WorksheetErrorCode::Num));
         assert_eq!(acoth_kernel(-1.0), Err(WorksheetErrorCode::Num));
     }
+
+    #[test]
+    fn acoth_just_above_one_is_finite_matching_excel() {
+        // BUG-FUNC-027 C5: the "Excel #NUM!" near-1 witness was a formula-literal
+        // artifact (the parser rounded 1+ULP down to 1.0). With the exact input
+        // 1 + 2^-52, live Excel 16.0 b20026 returns 18.36840028483855, which this
+        // kernel matches bit-for-bit — so it must stay finite, not collapse to #NUM!.
+        let y = acoth_kernel(1.0 + f64::EPSILON).expect("finite just above 1");
+        assert!((y - 18.36840028483855).abs() < 1e-10, "got {y}");
+    }
 }
