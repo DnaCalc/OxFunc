@@ -43,11 +43,27 @@ Inputs (odd first period): settlement `44013`, maturity `44562`, issue
 redemption `100`, frequency `2`, basis `0`. Ordering
 issue < settlement < first_coupon < maturity holds.
 
+## Root cause (diagnosed 2026-06-20)
+`oddfprice_kernel` (`crates/oxfunc_core/src/functions/odd_bond_family.rs`) rejects the case via
+the guard `if issue <= prev_coupon { return Err(Num) }`, where
+`prev_coupon = first_coupon - 1 quasi-coupon period`. For the witness
+(`first_coupon = 2021-01-01`, freq 2 → `prev_coupon = 2020-07-01`; `issue = 2020-01-01`), the
+issue is **more than one quasi-coupon period before the first coupon** — a *long* odd first
+coupon spanning multiple quasi-coupon periods. The current kernel only models a short odd first
+coupon (issue within the last quasi-coupon period before `first_coupon`): its
+`odd_coupon_fraction = days(issue,first_coupon)/period_days` and single discount factor
+`base^discount_fraction` are not the right shape for a multi-period odd first coupon, so even
+removing the guard would compute a wrong price. The unit test
+`odd_bond_family::tests::long_odd_first_is_currently_rejected` pins the current (wrong) rejection.
+
+`ODDFYIELD` inherits the same defect because it inverts `oddfprice_kernel`.
+
 ## Fix
-Not yet fixed. Repair direction: match Excel for well-posed odd-first
-inputs. Audit the odd-first-period quasi-coupon / accrual computation in
-`crates/oxfunc_core/src/functions/` (odd-bond family) — likely a
-date-fraction or quasi-coupon-count edge that trips the `#NUM!` guard.
+Not yet fixed — needs the Microsoft **long-odd-first-coupon** ODDFPRICE formula (the sum over
+the Nq quasi-coupon periods in the odd first period), which is a focused sub-project on the
+scale of the ACCRINT quasi-coupon rewrite (BUG-FUNC-030), with its own Excel verification matrix
+across basis / Nq / short-vs-long stubs. Update
+`odd_bond_family::tests::long_odd_first_is_currently_rejected` when it lands.
 
 ## Validation
 Pending repair. Re-run `typed-arg-001` and show `ODDFPRICE` / `ODDFYIELD`

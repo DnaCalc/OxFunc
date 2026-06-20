@@ -3,8 +3,30 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-031`
 - **Opened**: `2026-05-28`
-- **Status**: `open`
+- **Status**: `validated_local` (structural `#NUM!` fixed 2026-06-20; `~19` ULP numeric residual)
 - **Owner workset**: `W090` (smart-fuzzer un-poked completion sweep)
+
+## Fix (2026-06-20)
+Root cause: `yield_kernel`'s `p.n > 1` branch solved over `price_kernel`, which validates
+its yield argument with `rate(yld)` — and `rate()` rejects **any negative value** with `#NUM!`.
+The root-finder (`solve`) brackets candidate yields down to `-frequency` and bisects through
+negative yields, so the very first negative midpoint made `price_kernel` error and the whole
+`YIELD` returned `#NUM!`. (`PRICE` matched bit-exact because it is only ever called at the
+user's single non-negative yield.)
+
+Repair (`crates/oxfunc_core/src/functions/bond_core_family.rs`): the solver now evaluates the
+price via `pcomp` directly — `pcomp`'s own guards (`yld <= -frequency`, `base <= 0`) keep the
+domain correct while admitting the negative candidate yields the bisection must probe. The
+`solve` low-endpoint guard also treats an un-evaluable endpoint as `+∞` price, and the
+convergence tolerance was tightened (`1e-12 → 1e-15` on price) to let the bracket collapse to
+the true root.
+
+Result vs live Excel 16.0 b20026: `=YIELD(44013,44562,0.05,95,100,2,0)` →
+`0.0862487399523155` (`0x3fb61465bd6a9970`) vs Excel `0x3fb61465bd6a9983` — a number, not
+`#NUM!`. The structural defect is resolved; a `~19` ULP residual remains (bisection vs Excel's
+own solver), reclassified to the catalog G6 YIELD NUM-L lane. Regression test:
+`bond_core_family::tests::yield_converges_for_well_posed_multi_period_discount_bond`. Full lib
+suite green (1418).
 
 ## Source Refs
 - **Reported against ref**: working tree at run `typed-arg-001`
@@ -65,9 +87,9 @@ Pending repair. Re-run `typed-arg-001` and show the `YIELD` row moving to
 3. `smart-fuzzer/planning/UNPOKED_SURFACE_COMPLETION_SWEEP_FINDINGS_2026-05-28.md` §4.1
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
-- [ ] similar-risk scan recorded
+- [x] fix landed (structural; `~19` ULP residual on the catalog G6 NUM-L lane)
+- [x] validation recorded (live Excel b20026 + regression test + 1418 lib tests)
+- [x] root cause recorded
+- [x] similar-risk scan recorded
 - [ ] spec/matrix/contract updated if required
 - [ ] handoff filed if required

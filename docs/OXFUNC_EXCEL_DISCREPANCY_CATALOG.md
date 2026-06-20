@@ -121,10 +121,10 @@ Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 |-------------|-------------|-----|-----|----------|
 | PMT, PPMT (IPMT adjacent) | annuity publication exactness drift; re-confirmed vs live Excel 16.0 b20026 (2026-06-20): `PMT(0.05/12,360,200000)` 8 ULP, `PPMT(0.05/12,1,360,200000)` 63 ULP. Fix never landed; KED known-residual held for W103 | NUM-L | M1 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` |
 | ACCRINT | half-value defect fixed (2026-06-20): odd first coupon now sums over quasi-coupon periods and `calc_method` matches Excel; 13/15 Excel-matrix cases bit-exact. Residual: `act/act` (basis 1/3) normal-period-length on later multi-coupon periods crossing a leap February (`~0.07%`), plus `act/360` sub-ULP | NUM-L | M2 | BUG-FUNC-030 |
-| YIELD | root-finder `#NUM!` where Excel converges (`~0.0857`) | STR | M1 | BUG-FUNC-031 |
-| ODDFPRICE, ODDFYIELD | odd-first-period `#NUM!` where Excel computes | STR | M1 | BUG-FUNC-032 |
+| YIELD | structural `#NUM!` fixed (2026-06-20): the root-finder probed negative candidate yields that `price_kernel` rejected via `rate(yld)`; now solves over `pcomp` directly. Residual `~19` ULP vs Excel (bisection vs Excel's solver) | NUM-L | M2 | BUG-FUNC-031 |
+| ODDFPRICE, ODDFYIELD | odd-first-period `#NUM!`: rejects a multi-quasi-coupon-period odd first coupon (the `issue ≤ first_coupon-1period` guard); needs the MS long-odd-first-coupon formula (same class as the ACCRINT rewrite) | STR | M1 | BUG-FUNC-032 |
 | RATE | structural lane signed off (2026-06-20): default-guess mortgage root now converges and Excel returns a number, not `#NUM!`. Residual `~586` ULP vs Excel (`0.0041666445363460975` vs `0.004166644536345589`) — distinct numeric drift in the solver substrate | NUM-L | M1 | BUG-FUNC-009 (bit-parity) / W103 |
-| IRR | scalar error-code drift `#VALUE!` vs Excel `#NUM!` | STR | M1 | BUG-FUNC-028 (out-of-stream) |
+| IRR | recorded `#VALUE!`-vs-`#NUM!` not reproduced (2026-06-20): single / all-same-sign / non-convergence all return `#NUM!` matching Excel. Live edge instead: an array-literal containing an error → OxFunc propagates the error vs Excel `#VALUE!` (narrow, re-triage) | STR | M1 | BUG-FUNC-028 (out-of-stream) |
 | CUMPRINC | full-schedule (type 0) numeric drift `~6` ULP — distinct from the closed type=1 structural fix (BUG-FUNC-034) | NUM-L | M1 | G8 probe `CUMPRINC(0.1,12,1000,1,12,0)` |
 | YIELDDISC | discounted-bill yield drift `~5` ULP | NUM-L | M1 | G8 probe `YIELDDISC(44013,44562,95,100,0)` |
 | NPER | period-count drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |

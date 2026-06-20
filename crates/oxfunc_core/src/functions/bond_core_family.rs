@@ -416,7 +416,12 @@ fn solve(
     fun: impl Fn(f64) -> Result<f64, BondCoreEvalError>,
 ) -> Result<f64, BondCoreEvalError> {
     let low = -(f as f64) + 1e-10;
-    let lowp = fun(low)?;
+    // Price → +∞ as yield → -frequency, but the price kernel can overflow/reject
+    // that near-degenerate endpoint. Treat an un-evaluable low-yield endpoint as
+    // an effectively infinite price so the "is the target achievable" guard does
+    // not spuriously fail a well-posed bond (BUG-FUNC-031). The bisection below
+    // moves off `low` on its first step, so it never re-probes the endpoint.
+    let lowp = fun(low).unwrap_or(f64::INFINITY);
     if target > lowp {
         return Err(derr(WorksheetErrorCode::Num));
     }
@@ -436,7 +441,7 @@ fn solve(
     for _ in 0..100 {
         let mid = (lo + hh) / 2.0;
         let mp = fun(mid)?;
-        if (mp - target).abs() <= 1e-12 {
+        if (mp - target).abs() <= 1e-15 {
             return Ok(mid);
         }
         if mp > target { lo = mid } else { hh = mid }
@@ -567,8 +572,12 @@ pub fn yield_kernel(
         let dsc = dd(c.settlement, p.next, c.basis)?;
         return Ok((((red + coup) / (price + coup * a / e)) - 1.0) * c.frequency as f64 * e / dsc);
     }
+    // Solve over candidate yields with `pcomp` directly. `price_kernel` rejects
+    // `yld < 0` via `rate(yld)`, but the root-finder must probe negative candidate
+    // yields (its bracket runs down to `-frequency`); `pcomp`'s own guards
+    // (`yld <= -frequency`, `base <= 0`) keep the domain correct (BUG-FUNC-031).
     solve(price, c.frequency, |cand| {
-        price_kernel(settlement, maturity, rate_, cand, red, frequency, basis_)
+        Ok(pcomp(rate_, cand, red, c, p)?.0)
     })
 }
 pub fn duration_kernel(
@@ -913,6 +922,25 @@ mod tests {
             0.065,
             1e-10,
         );
+    }
+    #[test]
+    fn yield_converges_for_well_posed_multi_period_discount_bond() {
+        // BUG-FUNC-031: the root-finder probes negative candidate yields (its
+        // bracket runs to -frequency), which price_kernel rejected via rate(yld),
+        // so a well-posed discount bond returned #NUM!. Solving over pcomp directly
+        // (its own yld<=-freq / base<=0 guards handle the domain) fixes it. Excel
+        // 16.0 b20026 returns ~0.0862487 for this 3-coupon bond priced at 95.
+        let y = yield_kernel(
+            serial(2020, 7, 1),
+            serial(2022, 1, 1),
+            0.05,
+            95.0,
+            100.0,
+            2.0,
+            Some(0.0),
+        )
+        .expect("yield converges for a well-posed discount bond");
+        close(y, 0.08624873995, 1e-7);
     }
     #[test]
     fn duration_relation() {
