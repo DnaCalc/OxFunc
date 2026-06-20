@@ -3,8 +3,24 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-001`
 - **Opened**: 2026-04-07
-- **Status**: handed_off
+- **Status**: `closed_signed_off` (2026-06-20)
 - **Owner workset**: `W073`
+
+## Resolution (2026-06-20)
+Closed. The widened binary-operator value surface is landed on `main` and verified bit-exact
+against live Excel 16.0 build 20026: a 21-case operator sweep (the 5 arithmetic ops, concat,
+and all six comparisons) over array/scalar, scalar/array, same-shape, row-vs-column
+outer-product, non-broadcastable `#N/A`-padding, `#DIV/0!`, and per-cell + scalar error
+propagation matched Excel on every cell. The downstream half of this shared-seam gap is also
+discharged: OxFml now dispatches operators directly to OxFunc's `OP_*` surface
+(`OxFml/crates/oxfml_core/src/eval/mod.rs` `binary_operator_identity`) and passes array
+operands through unscalarized — **its temporary array-operator fallback is gone**, confirmed by
+reading the OxFml evaluator and running its `evaluator_operator_array_arithmetic_fixture_corpus_matches_expected_values`
+test green against current OxFunc. Dispatcher-level regression coverage lives in
+`crates/oxfunc_core/src/functions/surface_dispatch.rs::tests::eval_surface_value_call_op_add_lifts_arrays`
+/ `_op_add_broadcasts_arrays` / `_op_equal_broadcasts_arrays`
+/ `_op_concat_marks_missing_broadcast_coordinates_as_na`. Catalog G2 `OP_*` row removed;
+`HO-FN-005` marked resolved.
 
 ## Source Refs
 - **Reported against ref**: `9e9c573a46d97e248a0373938fb53dcac916fac2`
@@ -108,7 +124,7 @@
 10. `docs/worksets/W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded (landed on `main`; OxFml fallback removed, verified 2026-06-20)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded

@@ -59,26 +59,30 @@ Excel returns an error (or saturates) where OxFunc returns a number, or vice-ver
 | ATAN2 | `(tiny, huge-neg)` → `-π/2` vs Excel `#NUM!` (singleton; needs magnitude sweep) | STR | M0 | BUG-FUNC-027 B3 |
 | ACOTH, ACOSH | near-1 argument-collapse: `ACOTH(1+ULP)` finite vs `#NUM!`; `ACOSH(1+1e-15)` non-zero vs `0` | STR | M0 | BUG-FUNC-027 C5 |
 
-## G2 — Coercion, array-lift & kind/shape (structural)
+## G2 — Coercion, array-lift & kind/shape (currently empty)
 
 Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagates an error.
+Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 
-| Function(s) | Discrepancy | Sev | Mat | Evidence |
-|-------------|-------------|-----|-----|----------|
-| OP_* binary operators | array-lift value-surface + ordinary-broadcast gaps | STR | HO | BUG-FUNC-001/002 (HO-FN-005) |
-
-**2026-06-20 resweep (BUG-FUNC-028 closed).** The scalar-coercion / array-lift / error-propagation
-rows were re-probed against live Excel 16.0 build 20026 on the OxFunc evaluation surface
-(typed-arg local-eval, the Category-2 path):
-
-- **Array-lift gap — already resolved (stale rows removed).** All named surfaces now lift over
-  arrays bit-exact, including the aggregators that *consume* rather than broadcast
-  (`GCD`/`LCM`/`MULTINOMIAL`/`ARRAYTOTEXT`): Row-1 (`CLEAN`…`UNICODE`) 23/23, Row-2 dates
-  (`EOMONTH`…`YEARFRAC`) and Row-3 (`TBILL*`) 19/20, Row-4 (`IS*`) 4/4. The W090/W092
-  array-support work fixed these; the catalog rows were never reconciled.
-- **Error-propagation — fixed (2026-06-20).** `DATEVALUE`/`TIMEVALUE` (+ siblings `DAYS360`/`DATEDIF`)
-  and `ARRAYTOTEXT` now propagate a scalar error argument unchanged (`f(NA())` → `#N/A`, code
-  preserved), while errors *inside* an array argument stay textified — 7/7 vs Excel.
+- **Ordinary operators (`OP_*`) — BUG-FUNC-001/002 closed, HO-FN-005 resolved.** OxFunc's binary
+  value operators broadcast bit-exact across a 21-case sweep (5 arithmetic, concat, all six
+  comparisons; outer-product, scalar/array, same-shape, non-broadcastable `#N/A` padding,
+  `#DIV/0!`, and per-cell + scalar error propagation). The former `HO` downstream block is gone:
+  OxFml now dispatches operators straight to OxFunc's `OP_*` surface (`eval/mod.rs`
+  `binary_operator_identity`) with **no local array fallback** — confirmed by reading the OxFml
+  evaluator and running its green `evaluator_operator_array_arithmetic_*` test against current
+  OxFunc. Regression tests: `surface_dispatch::tests::eval_surface_value_call_op_*`.
+- **Scalar-coercion / array-lift / error-propagation (BUG-FUNC-028 closed).** The named conversion
+  / text / date / engineering / `IS*` surfaces were re-probed on the OxFunc evaluation surface
+  (typed-arg local-eval, the Category-2 path):
+  - *Array-lift gap — already resolved (stale rows removed).* All named surfaces now lift over
+    arrays bit-exact, including the aggregators that *consume* rather than broadcast
+    (`GCD`/`LCM`/`MULTINOMIAL`/`ARRAYTOTEXT`): Row-1 (`CLEAN`…`UNICODE`) 23/23, Row-2 dates
+    (`EOMONTH`…`YEARFRAC`) and Row-3 (`TBILL*`) 19/20, Row-4 (`IS*`) 4/4. The W090/W092
+    array-support work fixed these; the catalog rows were never reconciled.
+  - *Error-propagation — fixed (2026-06-20).* `DATEVALUE`/`TIMEVALUE` (+ siblings `DAYS360`/`DATEDIF`)
+    and `ARRAYTOTEXT` now propagate a scalar error argument unchanged (`f(NA())` → `#N/A`, code
+    preserved), while errors *inside* an array argument stay textified — 7/7 vs Excel.
 
 ## G3 — Numeric exactness: special & statistical functions
 

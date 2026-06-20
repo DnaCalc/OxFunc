@@ -127,10 +127,9 @@ Important current reading:
   - `docs/function-lane/W51_NORMALIZED_ORDINARY_BACKLOG_CURRENT.csv`, now intentionally empty after `W068`.
 - the current explicit reopened residual lane is:
   - `docs/function-lane/W51_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_INVENTORY.csv`, now carrying:
-    - the reopened ordinary operator rows under `BUG-FUNC-001` / `BUG-FUNC-002` and `W074`,
-    - the reopened `SWITCH`, criteria-family, and database-family rows under `BUG-FUNC-004` and `W077`,
     - `OP_UNION_REF`, `AREAS`, and `INDEX` under `BUG-FUNC-003` and `W075` / `W076`,
     - `RATE` under `BUG-FUNC-009` and `W081`.
+    - (the ordinary operator rows under `BUG-FUNC-001` / `BUG-FUNC-002` and the `SWITCH` / criteria / database rows under `BUG-FUNC-004` were signed off vs live Excel b20026 on 2026-06-20 and removed.)
 - the original hidden `185`-row appendix remains provenance only:
   - these rows were still `catalog_only` in the published snapshot,
   - they were not in `W050`,
@@ -185,9 +184,9 @@ For the current version target:
 9. the archived shared-interface freeze chain is preserved behind `docs/HISTORY.md` and `OxFunc_V1`; the surviving active anchors are:
    - `docs/worksets/W049_RUNTIME_LIBRARY_CONTEXT_PROVIDER_CONSUMER_MODEL.md`
    - `docs/function-lane/OXFML_OXFUNC_SHARED_INTERFACE_FREEZE_CANDIDATE_V1.md`
-10. `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, and `OP_GREATER_EQUAL` remain reopened here for the current version target because the local broadcast widening and follow-on numeric-comparison correction are not yet represented by landed refs and still await downstream seam acknowledgment under `HO-FN-005` and `HO-FN-008`.
+10. `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, and `OP_GREATER_EQUAL` no longer remain reopened here: the broadcast surface is landed on `main` and re-verified bit-exact vs live Excel b20026 (21-case sweep), and the downstream half is discharged — OxFml dispatches operators to OxFunc's `OP_*` surface with no temporary array-operator fallback remaining (verified 2026-06-20). `BUG-FUNC-001` / `BUG-FUNC-002` closed, `HO-FN-005` resolved.
 11. `BUG-FUNC-005` / `W078` no longer reopen `POWER` or `OP_POWER`: fresh Excel replay on 2026-04-29 confirmed `0^0` and `POWER(0,0)` as `#NUM!`, and the local Rust/Lean correction is landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef`.
-12. `SWITCH`, the criteria family, and the database family remain reopened here for the current version target because the local numeric-comparison tolerance correction is validated only on the working tree and still awaits landed-ref promotion and downstream seam acknowledgment under `HO-FN-008`.
+12. `SWITCH`, the criteria family, and the database family no longer remain reopened here: the numeric-comparison tolerance correction (`compare_excel_numbers`, truncation-style 15-significant-digit lane) is landed and signed off vs live Excel b20026 on 2026-06-20 (tolerant lanes and `MATCH`/`XMATCH`/`DELTA` exact contrast both bit-exact). `BUG-FUNC-004` closed.
 13. `OP_UNION_REF`, `AREAS`, and `INDEX` remain reopened here for the current version target because the local first-class multi-area correction plus same-sheet value-materialization narrowing are not yet represented by a landed ref and still await downstream seam acknowledgment under `HO-FN-006` and `HO-FN-007`.
 14. `MATCH`, `XMATCH`, `HLOOKUP`, and `VLOOKUP` no longer remain reopened here for this lane: live Excel replay on 2026-04-08 pinned array-valued `lookup_value` lifting, and the local correction is landed on `5d54d7f4ab2cdde6458272292d15ae1b317a0fef` with focused tests replayed on 2026-04-29.
 15. `XLOOKUP` no longer remains reopened here for this lane: fresh Excel replay on 2026-04-29 confirmed array-valued `lookup_value` shape preservation and matrix-return scalarization, and the local correction is landed on `b1faa5e8f08cd534601dc57bf79a9fed3ff26972`.
@@ -229,7 +228,5 @@ Exit condition:
 3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - `OP_ADD`, `OP_SUBTRACT`, `OP_MULTIPLY`, `OP_DIVIDE`, `OP_POWER`, `OP_CONCAT`, `OP_EQUAL`, `OP_NOT_EQUAL`, `OP_LESS_THAN`, `OP_LESS_EQUAL`, `OP_GREATER_THAN`, and `OP_GREATER_EQUAL` remain open under `BUG-FUNC-001` / `BUG-FUNC-002` / `W074` until the local broadcast widening and compare-lane hardening are fully published, with the operator seam then still acknowledged downstream through `HO-FN-005` and `HO-FN-008`
-  - `SWITCH`, the criteria family, and the database family remain open under `BUG-FUNC-004` / `W077` until the local numeric-comparison tolerance correction is landed on a committed ref and acknowledged downstream through `HO-FN-008`
-  - `OP_UNION_REF`, `AREAS`, and `INDEX` remain open under `BUG-FUNC-003` / `W075` / `W076` until the local first-class `MultiArea` correction plus same-sheet value-materialization narrowing are landed on a committed ref and acknowledged downstream through `HO-FN-006` and `HO-FN-007`
+   - `OP_UNION_REF`, `AREAS`, and `INDEX` remain open under `BUG-FUNC-003` / `W075` / `W076` until the local first-class `MultiArea` correction plus same-sheet value-materialization narrowing are landed on a committed ref and acknowledged downstream through `HO-FN-006` and `HO-FN-007`
   - `RATE` remains open under `BUG-FUNC-009` / `W081` until the local omitted-guess/default-guess convergence repair is landed on a committed ref, the earlier admitted seed inversion lane remains aligned, and the bounded adjacent omitted-guess scan is reconciled honestly

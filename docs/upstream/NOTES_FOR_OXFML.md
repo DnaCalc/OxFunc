@@ -383,9 +383,16 @@ current-state triage note; it is not a request for immediate action unless noted
   document); OxFml seam closure reply is still pending.
 
 - `HO-FN-005` (Ordinary operator broadcast semantics and fallback removal,
-  filed 2026-04-07): no acknowledgement received. OxFunc W074 broadcast
-  implementation is complete and validated. OxFml temporary array-operator
-  fallback removal and OxFml-side seam reply are still pending.
+  filed 2026-04-07): **RESOLVED 2026-06-20.** OxFunc's W074 broadcast surface is landed
+  and re-verified bit-exact vs live Excel b20026 (21-case operator sweep: arithmetic,
+  concat, all six comparisons; outer-product, `#N/A` padding, `#DIV/0!`, error-prop).
+  OxFunc has now also confirmed the OxFml side: the OxFml evaluator
+  (`OxFml/crates/oxfml_core/src/eval/mod.rs`, `binary_operator_identity`) dispatches
+  operators directly to OxFunc `OP_*` with array operands passed through unscalarized and
+  **no temporary array-operator fallback remaining** (verified by reading the evaluator and
+  running OxFml's `evaluator_operator_array_arithmetic_*` test green). `BUG-FUNC-001` /
+  `BUG-FUNC-002` closed; catalog G2 `OP_*` row removed. No OxFunc-side debt remains; any
+  residual OxFml-register row update is OxFml-owned.
 
 - `HO-FN-006` (Multi-area reference seam correction, filed 2026-04-07):
   no acknowledgement received. OxFunc W075 `ReferenceKind::MultiArea` correction

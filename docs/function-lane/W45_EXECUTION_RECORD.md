@@ -52,8 +52,8 @@ Artifacts created or updated in the packet:
 3. target_completeness: `target_partial`
 4. integration_completeness: `integrated`
 5. open_lanes:
-   - `BUG-FUNC-002` / `W074`: local broadcast widening and refreshed native evidence now exist for ordinary arithmetic plus compare/concat, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-005` remain open before this packet can be reported as a settled full-surface closure again
-   - `BUG-FUNC-004` / `W077`: compare/concat now also carries the reopened numeric near-equality tolerance lane proven by 2026-04-08 live Excel replay, and the corrected helper plus refreshed evidence are still awaiting landed-ref promotion and downstream acknowledgement under `HO-FN-008`
+   - `BUG-FUNC-002` / `W074`: **RESOLVED 2026-06-20** — the broadcast surface is landed on `main` and re-verified bit-exact vs live Excel b20026 (21-case sweep), and OxFml dispatches operators to OxFunc's `OP_*` surface with no temporary array-operator fallback remaining. `HO-FN-005` resolved
+   - `BUG-FUNC-004` / `W077`: **RESOLVED 2026-06-20** — the numeric near-equality tolerance helper (`compare_excel_numbers`) is landed and signed off vs live Excel b20026 (tolerant lanes and `MATCH`/`XMATCH`/`DELTA` exact contrast both bit-exact)
    - `BUG-FUNC-005` / `W078`: live Excel on 2026-04-08 pinned `0^0 -> #NUM!` and `POWER(0,0) -> #NUM!`, reopening the shared power kernel lane because the current local `power_kernel` still published `1` on zero exponent before the bug fix landed on a committed ref
    - `BUG-FUNC-003` / `W075`: local union correction now returns first-class `MultiArea` and focused reference-family validation is recorded, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-006` remain open before this packet can be reported as a settled full-surface closure again
    - `HANDOFF-OXFUNC-002` / `W076`: same-sheet `MultiArea` value-required materialization now runs through OxFunc-owned resolver-driven combination semantics locally, but landed-ref promotion and downstream OxFml acknowledgement under `HO-FN-007` remain open before this packet can be reported as a settled full-surface closure again
@@ -132,6 +132,6 @@ Artifacts created or updated in the packet:
 ## 7. Standing
 1. `W45` is no longer a planning-only packet.
 2. `W45` still preserves the wave-level runtime, Lean, export, and native-evidence packet that admitted the current local non-`@` operator families.
-3. current closure wording is now qualified by `BUG-FUNC-002` / `W074`: local broadcast widening and refreshed native validation now exist for ordinary arithmetic plus compare/concat, but the packet is still not reported as a settled full non-`@` operator closure until landed-ref promotion and downstream acknowledgement under `HO-FN-005` close.
+3. the non-`@` operator surface is a settled full-surface closure as of 2026-06-20: `BUG-FUNC-001` / `BUG-FUNC-002` are closed, the broadcast surface is landed and re-verified bit-exact vs live Excel b20026, OxFml's temporary array-operator fallback is removed, and `HO-FN-005` is resolved.
 4. the current `W45` contracts now explicitly admit the broadcast-sensitive arithmetic and compare/concat lanes proven by refreshed native probes.
 5. legacy CSE array-formula context remains an orthogonal seam topic tracked outside `W45`.

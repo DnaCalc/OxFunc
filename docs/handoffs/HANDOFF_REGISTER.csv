@@ -3,7 +3,7 @@ handoff_id,direction,title,status,source_workset,target_workset,filed_date,ackno
 "HO-FN-002","OxFunc->OxFml","W15 CELL and INFO typed host-query seam","acknowledged","W015","OxFml formula-language + fec-f3e","2026-03-15","2026-03-15"
 "HO-FN-003","OxFunc->OxFml","W52 unary negative literal and blank single-cell seam corrections","acknowledged","W052","OxFml W049/W050 follow-up","2026-03-26","2026-03-26"
 "HO-FN-004","OxFunc->OxFml","Shared interface freeze promotion candidate V1","acknowledged","W042/W046/W047/W048/W049/W051","OxFml shared interface freeze candidate","2026-03-31","2026-03-31"
-"HO-FN-005","OxFunc->OxFml","Ordinary operator broadcast semantics and fallback removal","filed","W074","OxFml ordinary operator seam follow-up","2026-04-07",""
+"HO-FN-005","OxFunc->OxFml","Ordinary operator broadcast semantics and fallback removal","resolved","W074","OxFml ordinary operator seam follow-up","2026-04-07","2026-06-20"
 "HO-FN-006","OxFunc->OxFml","Multi-area reference seam correction","filed","W075","OxFml same-sheet multi-area seam follow-up","2026-04-07",""
 "HO-FN-007","OxFunc->OxFml","Multi-area value materialization Style A","filed","W076","OxFml same-sheet multi-area value-materialization follow-up","2026-04-07",""
 "HO-FN-008","OxFunc->OxFml","Corpus IF correction and numeric comparison tolerance","acknowledged","W077","OxFml corpus follow-up","2026-04-08","2026-04-08"

@@ -58,8 +58,8 @@ Supersession note:
 - Current state: planned successor execution lane for filling the remaining supported non-deferred witness rows.
 - Canonical owner: [W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W071_SEMANTIC_WITNESS_FULL_SURFACE_POPULATION.md), [WORKSET_REGISTER.md](C:\Work\DnaCalc\OxFunc\docs\WORKSET_REGISTER.md), and `.beads/`.
 
-### IP-10 Ordinary Operator Value-Surface Expansion
-- Current state: active cross-repo follow-up with the local OxFunc broadcast pass validated and handed off; the remaining open lane is landed-ref promotion plus downstream OxFml acknowledgment/removal of the temporary fallback under `HO-FN-005`.
+### IP-10 Ordinary Operator Value-Surface Expansion — DONE (2026-06-20)
+- Current state: closed. The operator broadcast surface is landed on `main` and re-verified bit-exact vs live Excel 16.0 b20026 (21-case sweep). The downstream half is also discharged: OxFml dispatches operators to OxFunc's `OP_*` surface with no temporary array-operator fallback remaining (verified). `BUG-FUNC-001` / `BUG-FUNC-002` closed, `HO-FN-005` resolved, catalog G2 `OP_*` row removed.
 - Canonical owner: [W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W073_OPERATOR_VALUE_SURFACE_AND_ARRAY_LIFT_EXPANSION.md), [W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W074_ORDINARY_OPERATOR_BROADCAST_RECONCILIATION.md), [BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-001_binary_operator_array_lift_value_surface_gap.md), [BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-002_ordinary_operator_broadcast_semantics_gap.md), and [W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W051_IN_SCOPE_CURRENT_VERSION_NOT_COMPLETE_SURFACE.md).
 
 ### IP-11 Multi-Area Reference Seam

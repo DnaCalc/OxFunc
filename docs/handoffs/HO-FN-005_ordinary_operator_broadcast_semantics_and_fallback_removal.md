@@ -58,3 +58,23 @@ Local OxFunc validation completed on the current working tree:
 3. `docs/function-lane/W45_EXECUTION_RECORD.md`
 4. `docs/function-lane/FUNCTION_SLICE_OPERATOR_ARITHMETIC_FAMILY_CONTRACT_PRELIM.md`
 5. `docs/function-lane/FUNCTION_SLICE_OPERATOR_COMPARE_CONCAT_FAMILY_CONTRACT_PRELIM.md`
+
+## 9. Resolution (2026-06-20)
+**Resolved.** Both halves of the ask are satisfied:
+
+1. *OxFunc side* — the broadened operator value surface is landed on `main` and verified bit-exact
+   against live Excel 16.0 build 20026 via a 21-case broadcast sweep (arithmetic, concat, all six
+   comparisons; outer-product, scalar/array, same-shape, non-broadcastable `#N/A` padding,
+   `#DIV/0!`, and per-cell + scalar error propagation). The four Excel-proven examples in §4 all
+   reproduce.
+2. *OxFml side* — the temporary array-operator fallback has been **removed**. OxFml's evaluator
+   (`OxFml/crates/oxfml_core/src/eval/mod.rs`, `evaluate_binary_operator_call_evaluation` →
+   `binary_operator_identity`) now dispatches operators straight to OxFunc's `FUNC.OP_*` surface,
+   passing array operands through unscalarized, with no local broadcast/scalarization branch.
+   Verified by reading the evaluator and running OxFml's
+   `evaluator_operator_array_arithmetic_fixture_corpus_matches_expected_values` test green against
+   current OxFunc.
+
+`BUG-FUNC-001` / `BUG-FUNC-002` closed; catalog G2 `OP_*` row removed; beads `oxf-cix2` (W073) and
+`oxf-2mwh` (W074) already closed. No further OxFunc-side action; any remaining OxFml-side
+bookkeeping is owned in the OxFml repo.

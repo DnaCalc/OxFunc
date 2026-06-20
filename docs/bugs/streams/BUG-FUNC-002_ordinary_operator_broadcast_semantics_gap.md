@@ -3,8 +3,18 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-002`
 - **Opened**: 2026-04-07
-- **Status**: handed_off
+- **Status**: `closed_signed_off` (2026-06-20)
 - **Owner workset**: `W074`
+
+## Resolution (2026-06-20)
+Closed. The ordinary-operator broadcast rule is landed and verified bit-exact against live
+Excel 16.0 build 20026 across a 21-case sweep: singleton dimensions broadcast across the
+opposing dimension, row-vs-column inputs spill as 2-D outer-product grids, non-broadcastable
+coordinates pad with `#N/A`, and the rule holds across arithmetic, concat, and all six
+comparisons (plus `#DIV/0!` and error propagation). The shared-seam half is discharged: OxFml
+dispatches operators to OxFunc's `OP_*` surface with no local broadcast fallback (see
+BUG-FUNC-001 resolution for the verification). Catalog G2 `OP_*` row removed; `HO-FN-005`
+resolved; dispatcher-level regression tests in `surface_dispatch.rs` lock the broadcast law.
 
 ## Source Refs
 - **Reported against ref**: `9e9c573a46d97e248a0373938fb53dcac916fac2`
@@ -109,7 +119,7 @@
 8. `docs/handoffs/HO-FN-005_ordinary_operator_broadcast_semantics_and_fallback_removal.md`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
+- [x] fix landed or non-OxFunc ownership recorded (landed on `main`; OxFml fallback removed, verified 2026-06-20)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
