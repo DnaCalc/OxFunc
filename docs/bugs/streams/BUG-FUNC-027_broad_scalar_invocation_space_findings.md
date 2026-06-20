@@ -239,9 +239,12 @@ seven cycles unless noted as `singleton_witness`.
   came from the direct `0.5*ln((x+1)/(x-1))` ratio losing precision; replaced with the
   odd-symmetric `0.5*ln1p(2/(|x|-1))` form (ACOTH is odd like ATANH). Notably Excel's
   `ACOTH(x)` is **not** `ATANH(1/x)` (they differ ~39 ULP at `x=1.001`). Bit-exact vs
-  live Excel 16.0 b20026 across the probed range (`1.001 .. 1e6` and negatives); residual
-  `1` ULP at scattered mid-range points (`ACOTH(5)`, `ACOTH(10)`) is Excel's x87
-  extended-precision `ln`, reclassified NUM-S on catalog G4. Regression
+  live Excel 16.0 b20026 across the probed range (`1.001 .. 1e6` and negatives) **except**
+  `ACOTH(5)`/`ACOTH(10)` (open, not accepted): 6 double-precision forms all miss
+  `ACOTH(5)` by 1 ULP in the same direction (Excel's own/extended-precision `ln`), and
+  `ACOTH(10)` is bit-exact only under `atanh(1/x)` — which regresses `ACOTH(1.001)` by
+  39 ULP — so no single double form matches every point. Reclassified NUM-S on catalog
+  G4; full closure needs Excel's exact `ln`. Regression
   `acoth::tests::acoth_large_and_negative_args_bit_exact`. Probe harness:
   `tools/elem-probe/run-elem-probe.ps1`.
 
