@@ -12,6 +12,7 @@ const ROOT_DERIVATIVE_EPS: f64 = 1e-12;
 const ROOT_MAX_ITERATIONS: usize = 100;
 const MIN_VALID_RATE: f64 = -0.999_999_999;
 const IRR_PUBLICATION_ULP_SCAN_RADIUS: usize = 16;
+const ROOT_POLISH_ITERATIONS: usize = 64;
 const XIRR_TWO_CASHFLOW_RELATIVE_BRACKET_TOLERANCE: f64 = 2e-8;
 const XIRR_TWO_CASHFLOW_MAX_BRACKET_EXPANSIONS: usize = 128;
 const XIRR_GENERAL_POSITIVE_ROOT_BRENT_EPS: f64 = 1e-8;
@@ -476,7 +477,7 @@ where
 
     for _ in 0..ROOT_MAX_ITERATIONS {
         if current_value.abs() <= ROOT_TOLERANCE {
-            return Ok(current_rate);
+            return polish_rate(current_rate, &mut f, &mut derivative);
         }
 
         let secant_next = if (current_value - prev_value).abs() > ROOT_DERIVATIVE_EPS {
@@ -517,10 +518,51 @@ where
     }
 
     if current_value.abs() <= ROOT_TOLERANCE {
-        Ok(current_rate)
+        polish_rate(current_rate, &mut f, &mut derivative)
     } else {
         Err(WorksheetErrorCode::Num)
     }
+}
+
+/// Once the bracketed solve is within `ROOT_TOLERANCE` of a root, the residual
+/// `|NPV|` can still leave the *rate* far (10^4–10^5 ULP) from the true root when
+/// the NPV slope is gentle — beyond the `IRR_PUBLICATION_ULP_SCAN_RADIUS` plateau
+/// scan that selects Excel's published double. Polish the seed with analytic
+/// Newton to a rate fixpoint so the plateau sits adjacent to the |NPV|-minimal
+/// double (for a representable exact root this lands on it bit-for-bit).
+fn polish_rate<F, D>(seed: f64, f: &mut F, derivative: &mut D) -> Result<f64, WorksheetErrorCode>
+where
+    F: FnMut(f64) -> Result<f64, WorksheetErrorCode>,
+    D: FnMut(f64) -> Result<f64, WorksheetErrorCode>,
+{
+    let mut rate = seed;
+    let mut last_step = f64::INFINITY;
+    for _ in 0..ROOT_POLISH_ITERATIONS {
+        let value = f(rate)?;
+        let deriv = match derivative(rate) {
+            Ok(d) if d.abs() > ROOT_DERIVATIVE_EPS => d,
+            _ => break,
+        };
+        let next = rate - value / deriv;
+        if !next.is_finite() || next <= MIN_VALID_RATE {
+            break;
+        }
+        if next.to_bits() == rate.to_bits() {
+            break; // bit-level fixpoint
+        }
+        let step = (next - rate).abs();
+        if step >= last_step {
+            // No longer contracting (rounding noise near the root): keep whichever
+            // of the adjacent candidates has the smaller residual.
+            if f(next)?.abs() <= value.abs() {
+                rate = next;
+            }
+            break;
+        }
+        last_step = step;
+        rate = next;
+    }
+    Ok(rate)
 }
 
 fn irr_kernel(cashflows: &[f64], guess: Option<f64>) -> Result<f64, WorksheetErrorCode> {
@@ -902,6 +944,16 @@ mod tests {
     fn irr_matches_simple_two_cashflow_identity() {
         let got = irr_kernel(&[-100.0, 121.0], None).unwrap();
         assert_close(got, 0.21);
+    }
+
+    #[test]
+    fn irr_representable_root_is_bit_exact_after_polish() {
+        // G6 solver substrate: IRR({1,-2}) has the exact representable root 1.0.
+        // The gentle NPV slope left the pre-polish seed ~114720 ULP short (|NPV|<1e-8
+        // satisfied far from the root); the Newton rate-polish now lets the
+        // publication plateau land on 1.0 bit-for-bit (Excel returns exactly 1.0,
+        // and here OxFunc beats the F# reference, which is 1 ULP off).
+        assert_bits(irr_kernel(&[1.0, -2.0], None).unwrap(), 1.0);
     }
 
     #[test]

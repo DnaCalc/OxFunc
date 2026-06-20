@@ -135,7 +135,7 @@ Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 | YIELD | structural `#NUM!` fixed (2026-06-20): the root-finder probed negative candidate yields that `price_kernel` rejected via `rate(yld)`; now solves over `pcomp` directly. Residual `~19` ULP vs Excel (bisection vs Excel's solver) | NUM-L | M2 | BUG-FUNC-031 |
 | ODDFYIELD | **ODDFPRICE now bit-exact across all five bases** (2026-06-20): replaced the single-period-length closed form with a faithful port of the ExcelFinancialFunctions `oddFPrice` two-branch algorithm (short `DFC<E`; long per-quasi-coupon-period `dci/nl` summation) — `all_bit_exact` vs live Excel 16.0 b20026 *and* the F# reference on the 10-case G6 three-way matrix (incl. the act/act, act/360, act/365 bases that were `10^10`–`10^12` ULP off). ODDFPRICE row removed. ODDFYIELD still diverges: it inverts the now-bit-exact price via a solver, but OxFunc bisects from 0 while Excel uses Newton-from-guess (`~3e5` ULP; F# also off). Needs the solver substrate shared with YIELD/RATE/IRR. | NUM-L | M1 | BUG-FUNC-032 |
 | RATE | structural lane signed off (2026-06-20): default-guess mortgage root now converges and Excel returns a number, not `#NUM!`. Residual `~586` ULP vs Excel (`0.0041666445363460975` vs `0.004166644536345589`) — distinct numeric drift in the solver substrate | NUM-L | M1 | BUG-FUNC-009 (bit-parity) / W103 |
-| IRR | structural error-code drift signed off (2026-06-20): an error in the values array → `#VALUE!` (was propagating the code), and text / logical / blank cells are ignored — bit-exact vs Excel b20026 (array constants and ranges). Residual: IRR solver numeric drift (`IRR({1,-2})` = `0.99999…` vs Excel `1.0` ≈ 8000 ULP; `IRR({-100,50,60})` `~80` ULP) — needs the root-finder substrate (W103) | NUM-L | M1 | BUG-FUNC-028 (out-of-stream) |
+| IRR | structural error-code drift signed off (2026-06-20). Solver substrate, pass 1 (2026-06-20): added a Newton **rate-polish** of the solver seed (the gentle-NPV-slope cases were stopping at `|NPV|<1e-8`, ~`10^4`–`10^5` ULP from the root, outside the ±16-ULP publication plateau). **Representable-root cases now bit-exact**: `IRR({1,-2})`=`1.0` (was 114720 ULP), `IRR({-100,121})`, and the `{-10000,3000,4200,6800}` publication witness — OxFunc now *beats* the F# reference on the first two (F# 1 / 14571 ULP off). Residual: **irrational-root** cases where Excel's iteration-landing double differs from the |NPV|-minimal double — `IRR({-100,50,60})` `~80` ULP, mixed-5-flow `~14k` ULP, both ≈ F# now. Closing these needs Excel's *exact* iteration (guess / step / stop), the shared substrate with RATE/YIELD/ODDFYIELD (W103). | NUM-L | M1 | BUG-FUNC-028 (out-of-stream) |
 | CUMPRINC | full-schedule (type 0) numeric drift `~6` ULP — distinct from the closed type=1 structural fix (BUG-FUNC-034) | NUM-L | M1 | G8 probe `CUMPRINC(0.1,12,1000,1,12,0)` |
 | NPER | period-count drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 | YIELDMAT | yield-at-maturity drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
@@ -161,7 +161,8 @@ against live Excel 16.0 build 20026 (bit-level comparison) and fully triaged:
 
 - **Promoted (numeric drift, now `M1`):** regression family FORECAST/FORECAST.LINEAR/
   TREND/LINEST/LOGEST and GROWTH → G3; CHISQ.TEST/CHITEST and F.TEST/FTEST → G3; GAUSS/PHI
-  → G3; CONVERT → G4; CUMPRINC/YIELDDISC/NPER/YIELDMAT → G6.
+  → G3; CONVERT → G4; CUMPRINC/NPER/YIELDMAT → G6 (YIELDDISC also promoted here, then
+  closed bit-exact 2026-06-20).
 - **Already triaged:** IRR (structural) → G6.
 - **Routed to the context-sensitive catalog:** JIS, HYPERLINK, TRIMRANGE.
 - **Cleared — bit-exact on the baseline witness:** PERCENTILE.EXC/.INC, QUARTILE.EXC/.INC,

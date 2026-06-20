@@ -87,6 +87,15 @@ $G6Cases += @{ id='irr.unit'; row='IRR'; xlFn='IRR'; fsFn='Irr';
 $G6Cases += @{ id='irr.three'; row='IRR'; xlFn='IRR'; fsFn='Irr';
   residual='IRR({-100,50,60}) ~80 ULP';
   args=@(@{t='array';v=@(-100,50,60)}) }
+$G6Cases += @{ id='irr.witness4'; row='IRR'; xlFn='IRR'; fsFn='Irr';
+  residual='IRR({-10000,3000,4200,6800}) publication witness';
+  args=@(@{t='array';v=@(-10000,3000,4200,6800)}) }
+$G6Cases += @{ id='irr.exact121'; row='IRR'; xlFn='IRR'; fsFn='Irr';
+  residual='IRR({-100,121}) exact root 0.21';
+  args=@(@{t='array';v=@(-100,121)}) }
+$G6Cases += @{ id='irr.mixed5'; row='IRR'; xlFn='IRR'; fsFn='Irr';
+  residual='IRR 5-flow mixed-sign';
+  args=@(@{t='array';v=@(-500,100,150,200,250)}) }
 
 # --- CUMPRINC : full-schedule type 0 drift ~6 ULP -----------------------------
 $G6Cases += @{ id='cumprinc.sched'; row='CUMPRINC'; xlFn='CUMPRINC'; fsFn='CumPrinc';
