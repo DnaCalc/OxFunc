@@ -28,7 +28,11 @@ pub fn acoth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if n.abs() <= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(0.5 * ((n + 1.0) / (n - 1.0)).ln())
+    // ACOTH(x) = 0.5*ln((x+1)/(x-1)) = 0.5*ln1p(2/(x-1)). The ln1p form stays accurate
+    // both near the |x|->1 boundary and for large |x| (the direct ratio form drifts up
+    // to ~1.2e14 ULP for large |x|). Excel's ACOTH is also exactly odd-symmetric, so
+    // compute on |x| and restore the sign (BUG-FUNC-027 C5).
+    Ok((0.5 * (2.0 / (n.abs() - 1.0)).ln_1p()).copysign(n))
 }
 
 pub fn eval_acoth_surface(
@@ -65,5 +69,27 @@ mod tests {
         // kernel matches bit-for-bit — so it must stay finite, not collapse to #NUM!.
         let y = acoth_kernel(1.0 + f64::EPSILON).expect("finite just above 1");
         assert!((y - 18.36840028483855).abs() < 1e-10, "got {y}");
+    }
+
+    #[test]
+    fn acoth_large_and_negative_args_bit_exact() {
+        // BUG-FUNC-027 C5: the direct 0.5*ln((x+1)/(x-1)) form drifted up to ~1.2e14
+        // ULP for large |x|. The odd-symmetric ln1p form matches live Excel 16.0
+        // b20026 bit-for-bit across the range (a 1-ULP x87-ln residual remains at a
+        // few scattered mid-range points, tracked on catalog G4). Bits from elem-probe.
+        assert_eq!(
+            acoth_kernel(1_000_000.0).unwrap().to_bits(),
+            0x3eb0_c6f7_a0b5_f3b3
+        );
+        assert_eq!(
+            acoth_kernel(1.001).unwrap().to_bits(),
+            0x400e_67d6_037b_1a46
+        );
+        // Excel's ACOTH is exactly odd-symmetric.
+        assert_eq!(acoth_kernel(-2.0).unwrap(), -acoth_kernel(2.0).unwrap());
+        assert_eq!(
+            acoth_kernel(-1_000_000.0).unwrap(),
+            -acoth_kernel(1_000_000.0).unwrap()
+        );
     }
 }

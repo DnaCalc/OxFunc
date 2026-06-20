@@ -28,7 +28,11 @@ pub fn atanh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if n.abs() >= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(n.atanh())
+    // Excel's ATANH is exactly odd-symmetric: ATANH(-x) == -ATANH(x) bit-for-bit.
+    // The platform libm loses that symmetry near -1 (atanh(-x) differs from
+    // -atanh(x) by up to ~1.5e13 ULP). OxFunc already matches Excel bit-for-bit on
+    // the non-negative side, so compute on |x| and restore the sign (BUG-FUNC-027 C4).
+    Ok(n.abs().atanh().copysign(n))
 }
 
 pub fn eval_atanh_surface(
@@ -55,5 +59,22 @@ mod tests {
     fn atanh_kernel_rejects_abs_one() {
         assert_eq!(atanh_kernel(1.0), Err(WorksheetErrorCode::Num));
         assert_eq!(atanh_kernel(-1.0), Err(WorksheetErrorCode::Num));
+    }
+
+    #[test]
+    fn atanh_is_odd_symmetric_and_bit_exact_near_minus_one() {
+        // BUG-FUNC-027 C4: the platform libm broke odd symmetry near -1 (up to
+        // ~1.5e13 ULP). The |x|-then-copysign form matches live Excel 16.0 b20026
+        // bit-for-bit; bits pinned from the elem-probe ledger.
+        assert_eq!(
+            atanh_kernel(-0.9999999999999990).unwrap().to_bits(),
+            0xc031_9dc9_df78_50b1
+        );
+        assert_eq!(
+            atanh_kernel(-0.999999999).unwrap().to_bits(),
+            0xc025_6a9a_0b9b_2416
+        );
+        let x = 0.9999999999999990_f64;
+        assert_eq!(atanh_kernel(-x).unwrap(), -atanh_kernel(x).unwrap());
     }
 }

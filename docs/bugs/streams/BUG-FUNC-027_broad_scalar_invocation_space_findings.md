@@ -202,6 +202,13 @@ seven cycles unless noted as `singleton_witness`.
   `=ATANH(-0.9999999999999990)` `1.48E13` ULP.
 - **Repair direction**: switch to the `log1p`-based formulation
   `0.5 * log1p(2x / (1-x))` near boundary.
+- **FIXED (2026-06-21).** The defect was **lost odd symmetry**, not boundary precision:
+  the platform libm gives `atanh(-x) != -atanh(x)` near -1 (up to `~1.5e13` ULP), while
+  Excel's ATANH is exactly odd. OxFunc already matched Excel bit-for-bit on the
+  non-negative side, so `atanh_kernel` now computes `|x|.atanh().copysign(x)`. 3/3 probed
+  witnesses bit-exact vs live Excel 16.0 b20026 (incl. `-0.999999999`,
+  `-0.9999999999999990`). Regression
+  `atanh::tests::atanh_is_odd_symmetric_and_bit_exact_near_minus_one`.
 
 ### CLASS-C5: ACOTH and ACOSH near 1
 
@@ -220,6 +227,15 @@ seven cycles unless noted as `singleton_witness`.
   `1.0`, so it really evaluated `ACOTH(1.0)`/`ACOSH(1.0)`. Removed from catalog G1.
   The remaining `ACOTH(1.001)` ~11244-ULP **numeric** drift is unaffected and
   stays on the catalog G4 ACOTH row.
+- **FIXED (2026-06-21) — catastrophic band closed.** The large-`|x|` `~1.2e14` ULP band
+  came from the direct `0.5*ln((x+1)/(x-1))` ratio losing precision; replaced with the
+  odd-symmetric `0.5*ln1p(2/(|x|-1))` form (ACOTH is odd like ATANH). Notably Excel's
+  `ACOTH(x)` is **not** `ATANH(1/x)` (they differ ~39 ULP at `x=1.001`). Bit-exact vs
+  live Excel 16.0 b20026 across the probed range (`1.001 .. 1e6` and negatives); residual
+  `1` ULP at scattered mid-range points (`ACOTH(5)`, `ACOTH(10)`) is Excel's x87
+  extended-precision `ln`, reclassified NUM-S on catalog G4. Regression
+  `acoth::tests::acoth_large_and_negative_args_bit_exact`. Probe harness:
+  `tools/elem-probe/run-elem-probe.ps1`.
 
 ## 2026-05-09 Plumbing Caveat And Cell-Ref Re-Replay
 
