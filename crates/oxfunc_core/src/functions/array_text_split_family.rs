@@ -222,6 +222,16 @@ pub fn eval_arraytotext_surface(
         });
     }
 
+    // A scalar error argument propagates unchanged (`ARRAYTOTEXT(NA())` → `#N/A`,
+    // not the text "#N/A"). Errors *inside* an array argument are still textified
+    // — an array is `CoreValue::Array`, so this scalar check leaves them alone.
+    if let Some(code) = prepared.iter().find_map(|value| match value.core() {
+        CoreValue::Error(code) => Some(*code),
+        _ => None,
+    }) {
+        return Ok(CalcValue::error(code));
+    }
+
     let strict = parse_arraytotext_format(prepared.get(1))?;
     let array = materialize_arraytotext_input(&prepared[0]);
     Ok(CalcValue::text(if strict {

@@ -65,12 +65,20 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| CLEAN, GCD, LCM, QUOTIENT, ISEVEN, ISODD, NOT, LOG, SQRTPI, MULTINOMIAL, DECIMAL, DELTA, GESTEP, ARABIC, ROMAN, STANDARDIZE, OCT2DEC, BIN2OCT, UNICODE | scalar-numeric coercion gap (`ASC(2)`-style) and/or array-lift gap (`f({2;3})` → scalar `#VALUE!` vs Excel spill) | STR | M1 | BUG-FUNC-028 |
-| EOMONTH, ISOWEEKNUM, WEEKDAY, WEEKNUM, NETWORKDAYS(.INTL), WORKDAY(.INTL), YEARFRAC | date-serial coercion / array-lift gap | STR | M1 | BUG-FUNC-028 |
-| TBILLEQ, TBILLPRICE, TBILLYIELD | scalar coercion / array-lift gap | STR | M1 | BUG-FUNC-028 |
-| ISERR, ISLOGICAL, ISNONTEXT, ISTEXT | array-lift gap (`IS*({2;3})` → `#VALUE!` vs Excel per-cell) | STR | M1 | BUG-FUNC-028 (sweep-002) |
-| DATEVALUE, TIMEVALUE, ARRAYTOTEXT | error-propagation kind drift: `f(NA())` → `#VALUE!`/stringified vs Excel `#N/A` (the *parse* path is Category 1, locale) | STR | M1 | BUG-FUNC-028 (error-prop sub-finding) |
 | OP_* binary operators | array-lift value-surface + ordinary-broadcast gaps | STR | HO | BUG-FUNC-001/002 (HO-FN-005) |
+
+**2026-06-20 resweep (BUG-FUNC-028 closed).** The scalar-coercion / array-lift / error-propagation
+rows were re-probed against live Excel 16.0 build 20026 on the OxFunc evaluation surface
+(typed-arg local-eval, the Category-2 path):
+
+- **Array-lift gap — already resolved (stale rows removed).** All named surfaces now lift over
+  arrays bit-exact, including the aggregators that *consume* rather than broadcast
+  (`GCD`/`LCM`/`MULTINOMIAL`/`ARRAYTOTEXT`): Row-1 (`CLEAN`…`UNICODE`) 23/23, Row-2 dates
+  (`EOMONTH`…`YEARFRAC`) and Row-3 (`TBILL*`) 19/20, Row-4 (`IS*`) 4/4. The W090/W092
+  array-support work fixed these; the catalog rows were never reconciled.
+- **Error-propagation — fixed (2026-06-20).** `DATEVALUE`/`TIMEVALUE` (+ siblings `DAYS360`/`DATEDIF`)
+  and `ARRAYTOTEXT` now propagate a scalar error argument unchanged (`f(NA())` → `#N/A`, code
+  preserved), while errors *inside* an array argument stay textified — 7/7 vs Excel.
 
 ## G3 — Numeric exactness: special & statistical functions
 
@@ -108,7 +116,7 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
 | PMT, PPMT (IPMT adjacent) | annuity publication exactness drift; re-confirmed vs live Excel 16.0 b20026 (2026-06-20): `PMT(0.05/12,360,200000)` 8 ULP, `PPMT(0.05/12,1,360,200000)` 63 ULP. Fix never landed; KED known-residual held for W103 | NUM-L | M1 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` |
-| ACCRINT | periodic accrual returns exactly **half** of Excel (divide-by-frequency defect) | NUM-L | M1 | BUG-FUNC-030 |
+| ACCRINT | half-value defect fixed (2026-06-20): odd first coupon now sums over quasi-coupon periods and `calc_method` matches Excel; 13/15 Excel-matrix cases bit-exact. Residual: `act/act` (basis 1/3) normal-period-length on later multi-coupon periods crossing a leap February (`~0.07%`), plus `act/360` sub-ULP | NUM-L | M2 | BUG-FUNC-030 |
 | YIELD | root-finder `#NUM!` where Excel converges (`~0.0857`) | STR | M1 | BUG-FUNC-031 |
 | ODDFPRICE, ODDFYIELD | odd-first-period `#NUM!` where Excel computes | STR | M1 | BUG-FUNC-032 |
 | RATE | structural lane signed off (2026-06-20): default-guess mortgage root now converges and Excel returns a number, not `#NUM!`. Residual `~586` ULP vs Excel (`0.0041666445363460975` vs `0.004166644536345589`) — distinct numeric drift in the solver substrate | NUM-L | M1 | BUG-FUNC-009 (bit-parity) / W103 |
@@ -117,6 +125,7 @@ Local `#VALUE!` where Excel coerces a scalar, spills over an array, or propagate
 | YIELDDISC | discounted-bill yield drift `~5` ULP | NUM-L | M1 | G8 probe `YIELDDISC(44013,44562,95,100,0)` |
 | NPER | period-count drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 | YIELDMAT | yield-at-maturity drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
+| TBILLYIELD | discounted-bill yield sub-ULP drift (`1` ULP on some settlements; array-lift itself correct) | NUM-S | M1 | G2 resweep 2026-06-20 |
 
 ## G7 — Comparison & misc semantics (currently empty)
 

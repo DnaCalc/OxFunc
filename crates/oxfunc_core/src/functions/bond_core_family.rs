@@ -633,20 +633,58 @@ pub fn accrint_kernel(
         return Err(derr(WorksheetErrorCode::Num));
     }
     let coup = par * rate_ / f as f64;
-    if settlement <= first {
-        let den = dd(issue, first, basis_)?;
-        return Ok(coup * dd(issue, settlement, basis_)? / den);
-    }
-    let mut total = if calc { coup } else { 0.0 };
     let m = 12 / f;
-    let mut prev = first;
-    let mut next = addm(prev, m).ok_or(derr(WorksheetErrorCode::Num))?;
-    while settlement > next {
-        total += coup;
-        prev = next;
-        next = addm(prev, m).ok_or(derr(WorksheetErrorCode::Num))?;
+    // Accrued interest is summed over the quasi-coupon periods (each 12/freq
+    // months long, anchored on first_interest) that overlap the accrual span.
+    // A *full* quasi-coupon period contributes one whole coupon; a partial one
+    // contributes `coup * accrued_days / normal_period_length`. This matches
+    // Excel for odd first coupons that span more than one quasi-coupon period,
+    // where a single issue->first interpolation under-counts (BUG-FUNC-030).
+    //
+    // calc_method shifts the accrual start. TRUE accrues from issue; FALSE
+    // accrues from one quasi-coupon period before first_interest (Excel's
+    // empirical behaviour — for a regular one-period first coupon the two
+    // coincide, and a settlement before that start yields a negative accrual).
+    let accr_start = if calc {
+        issue
+    } else {
+        addm(first, -m).ok_or(derr(WorksheetErrorCode::Num))?
+    };
+    // The accrual span runs accr_start -> settlement; order the endpoints and
+    // carry the sign so the calc_method=FALSE backward case matches Excel.
+    let (lo, hi, sign) = if settlement >= accr_start {
+        (accr_start, settlement, 1.0)
+    } else {
+        (settlement, accr_start, -1.0)
+    };
+    // Boundaries are generated as addm(first, k*m) directly off first_interest
+    // (never iteratively) so end-of-month clamping cannot drift across periods.
+    let mut k: i64 = 0;
+    while addm(first, k * m).ok_or(derr(WorksheetErrorCode::Num))? > lo {
+        k -= 1;
     }
-    Ok(total + coup * dd(prev, settlement, basis_)? / dc(prev, next, basis_, f)?)
+    // Accumulate the coupon-fraction sum Σ(Aᵢ/NLᵢ) — a full period counts as
+    // exactly 1 — and scale by the coupon once (Excel's `par·rate/freq·Σ`),
+    // which tracks Excel's rounding more closely than summing coupons.
+    let mut frac = 0.0;
+    loop {
+        let p_start = addm(first, k * m).ok_or(derr(WorksheetErrorCode::Num))?;
+        if p_start >= hi {
+            break;
+        }
+        let p_end = addm(first, (k + 1) * m).ok_or(derr(WorksheetErrorCode::Num))?;
+        let ov_start = lo.max(p_start);
+        let ov_end = hi.min(p_end);
+        if ov_end > ov_start {
+            if ov_start == p_start && ov_end == p_end {
+                frac += 1.0;
+            } else {
+                frac += dd(ov_start, ov_end, basis_)? / dc(p_start, p_end, basis_, f)?;
+            }
+        }
+        k += 1;
+    }
+    Ok(sign * coup * frac)
 }
 fn evaln(
     args: &[CalcValue],
@@ -899,13 +937,46 @@ mod tests {
     }
     #[test]
     fn accrint_slices() {
+        // BUG-FUNC-030 witness: an odd first coupon spanning two quasi-coupon
+        // periods must sum over the periods, not interpolate issue->first once.
+        // Excel 16.0 build 20026 returns 25 exactly; the old kernel returned 12.5.
+        close(
+            accrint_kernel(
+                serial(2020, 1, 1),
+                serial(2021, 1, 1),
+                serial(2020, 7, 1),
+                0.05,
+                Some(1000.0),
+                2.0,
+                Some(0.0),
+                Some(true),
+            )
+            .unwrap(),
+            25.0,
+            1e-9,
+        );
+
+        // Regular one-period first coupon: calc_method TRUE and FALSE coincide
+        // (Excel-verified) because FALSE accrues from one period before
+        // first_interest, which equals issue here.
         let i = serial(2024, 1, 1);
         let f = serial(2024, 7, 1);
         let s = serial(2024, 10, 1);
-        assert!(
-            accrint_kernel(i, f, s, 0.12, Some(1000.0), 2.0, Some(0.0), Some(true)).unwrap()
-                > accrint_kernel(i, f, s, 0.12, Some(1000.0), 2.0, Some(0.0), Some(false)).unwrap()
+        close(
+            accrint_kernel(i, f, s, 0.12, Some(1000.0), 2.0, Some(0.0), Some(true)).unwrap(),
+            accrint_kernel(i, f, s, 0.12, Some(1000.0), 2.0, Some(0.0), Some(false)).unwrap(),
+            1e-12,
         );
+
+        // Long (multi-period) first coupon: TRUE accrues from issue, FALSE from
+        // one period before first_interest, so TRUE strictly exceeds FALSE.
+        let (li, lf, ls) = (serial(2018, 1, 1), serial(2020, 1, 1), serial(2020, 7, 15));
+        assert!(
+            accrint_kernel(li, lf, ls, 0.06, Some(1000.0), 2.0, Some(0.0), Some(true)).unwrap()
+                > accrint_kernel(li, lf, ls, 0.06, Some(1000.0), 2.0, Some(0.0), Some(false))
+                    .unwrap()
+        );
+
         close(
             accrintm_kernel(i, serial(2024, 10, 1), 0.08, Some(1000.0), Some(3.0)).unwrap(),
             1000.0 * 0.08 * (act(i as i64, serial(2024, 10, 1) as i64) / 365.0),

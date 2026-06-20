@@ -3,8 +3,29 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-028`
 - **Opened**: `2026-05-28`
-- **Status**: `open`
+- **Status**: `closed_signed_off` (2026-06-20)
 - **Owner workset**: `W090` (array-support family; successor to BUG-FUNC-017/018)
+
+## Resolution (2026-06-20, live Excel 16.0 build 20026)
+Re-probed against Excel on the OxFunc evaluation surface (typed-arg local-eval — the
+Category-2 path the original sweep used):
+
+- **Array-lift / scalar-coercion class — already resolved (stale).** Every named surface now
+  evaluates both the scalar and the `f({2;3})` array case bit-exact, including the surfaces
+  that *consume* an array (aggregate to a scalar: `GCD`→4, `LCM`→12, `MULTINOMIAL`→10,
+  `ARRAYTOTEXT`→"1, 2") versus the ones that *broadcast* (spill: `ISEVEN`, `QUOTIENT`, `ROMAN`,
+  `BIN2OCT`, `IS*`, the date family, `TBILL*`, …). Tallies: Row-1 23/23, Row-2+Row-3 19/20,
+  Row-4 4/4. The 2026-05-28 `#VALUE!` witnesses were fixed by the W090/W092 array-support work
+  between then and now; this stream's rows were simply never reconciled. The lone non-match is
+  `TBILLYIELD` at 1 ULP on one settlement — a numeric drift, not an array-admission failure,
+  moved to the catalog G6 row.
+- **Error-propagation sub-finding — fixed (2026-06-20).** `DATEVALUE`/`TIMEVALUE` (and their
+  in-file siblings `DAYS360`/`DATEDIF`) collapsed any error argument to `#VALUE!` via
+  `coerce_*.map_err(|_| Coercion)`; `ARRAYTOTEXT` stringified it to the text "#N/A". All now
+  propagate the incoming error unchanged with its code preserved (`first_error_arg` /
+  scalar-error guard), while errors *inside* an array argument stay textified
+  (`ARRAYTOTEXT({1;#N/A})` → "1, #N/A"). 7/7 vs Excel; regression test
+  `date_value_family::tests::error_args_propagate_unchanged_through_value_family`.
 
 ## Source Refs
 - **Reported against ref**: working tree at run `unswept-structural-sweep-001`
@@ -131,9 +152,9 @@ focused successor case set) and show the candidate surfaces moving to
 4. ignored run artifacts under `smart-fuzzer/runs/unswept-structural-sweep-001/`
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded per surface
-- [ ] similar-risk scan recorded
-- [ ] spec/matrix/contract updated if required
+- [x] fix landed or non-OxFunc ownership recorded (array-lift already-resolved; error-prop fixed 2026-06-20)
+- [x] validation recorded (live Excel b20026 resweep: array-lift 46/47, error-prop 7/7)
+- [x] root cause recorded per surface
+- [x] similar-risk scan recorded (siblings `DAYS360`/`DATEDIF` fixed; `TBILLYIELD` 1-ULP → G6)
+- [x] spec/matrix/contract updated if required (catalog G2 rows removed, OP_* retained)
 - [ ] handoff filed if required

@@ -461,6 +461,17 @@ fn prep_len_error(meta: &FunctionMeta, actual: usize) -> DateValueFamilyError {
     }
 }
 
+/// Excel propagates an incoming worksheet error through these surfaces unchanged
+/// (`DATEVALUE(NA())` → `#N/A`, not `#VALUE!`). The values-only lifted helper
+/// calls this closure once per cell, so checking the prepared scalar here covers
+/// both the scalar case and per-cell array-lift.
+fn first_error_arg(prepared: &[CalcValue]) -> Option<WorksheetErrorCode> {
+    prepared.iter().find_map(|value| match value.core() {
+        CoreValue::Error(code) => Some(*code),
+        _ => None,
+    })
+}
+
 fn map_family_err_to_eval(err: DateValueFamilyError) -> CalcValue {
     match err {
         DateValueFamilyError::Value | DateValueFamilyError::Coercion => {
@@ -498,6 +509,9 @@ pub fn eval_datevalue_surface(
                     prepared.len(),
                 )));
             }
+            if let Some(code) = first_error_arg(prepared) {
+                return Ok(CalcValue::error(code));
+            }
             let text =
                 coerce_prepared_to_text(&prepared[0]).map_err(|_| DateValueFamilyError::Coercion);
             Ok(
@@ -526,6 +540,9 @@ pub fn eval_timevalue_surface(
                     prepared.len(),
                 )));
             }
+            if let Some(code) = first_error_arg(prepared) {
+                return Ok(CalcValue::error(code));
+            }
             let text =
                 coerce_prepared_to_text(&prepared[0]).map_err(|_| DateValueFamilyError::Coercion);
             Ok(
@@ -553,6 +570,9 @@ pub fn eval_days360_surface(
                     &DAYS360_META,
                     prepared.len(),
                 )));
+            }
+            if let Some(code) = first_error_arg(prepared) {
+                return Ok(CalcValue::error(code));
             }
             let start = coerce_prepared_to_number(&prepared[0])
                 .map_err(|_| DateValueFamilyError::Coercion)?;
@@ -588,6 +608,9 @@ pub fn eval_datedif_surface(
                     &DATEDIF_META,
                     prepared.len(),
                 )));
+            }
+            if let Some(code) = first_error_arg(prepared) {
+                return Ok(CalcValue::error(code));
             }
             let start = coerce_prepared_to_date_serial(&prepared[0])?;
             let end = coerce_prepared_to_date_serial(&prepared[1])?;
@@ -797,6 +820,36 @@ mod tests {
             &NoResolver,
         );
         assert_eq!(got, Ok(CalcValue::number(4.0)));
+    }
+
+    #[test]
+    fn error_args_propagate_unchanged_through_value_family() {
+        use crate::value::ExcelText;
+        let na = CalcValue::error(WorksheetErrorCode::NA);
+        let serial = CalcValue::number(44197.0);
+        let unit = CalcValue::text(ExcelText::from_interop_assignment("D"));
+        let expect_na = Ok(CalcValue::error(WorksheetErrorCode::NA));
+        assert_eq!(
+            eval_datevalue_surface(&[na.clone()], &NoResolver),
+            expect_na
+        );
+        assert_eq!(
+            eval_timevalue_surface(&[na.clone()], &NoResolver),
+            expect_na
+        );
+        assert_eq!(
+            eval_days360_surface(&[na.clone(), serial.clone()], &NoResolver),
+            expect_na
+        );
+        assert_eq!(
+            eval_datedif_surface(&[na, serial, unit], &NoResolver),
+            expect_na
+        );
+        // The incoming code is preserved, not collapsed to #N/A or #VALUE!.
+        assert_eq!(
+            eval_datevalue_surface(&[CalcValue::error(WorksheetErrorCode::Div0)], &NoResolver),
+            Ok(CalcValue::error(WorksheetErrorCode::Div0))
+        );
     }
 
     #[test]
