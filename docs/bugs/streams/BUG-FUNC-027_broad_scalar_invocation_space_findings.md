@@ -184,6 +184,14 @@ seven cycles unless noted as `singleton_witness`.
 - **Witness**: `=MOD(-9.26E9, 1.86)` `9.84E9` ULP;
   `=MOD(-78170.05, 1)` `786432` ULP. Suggests an intermediate-truncation
   step in OxFunc's MOD kernel.
+- **FIXED (2026-06-21).** The kernel computed `number - divisor*floor(number/divisor)`,
+  which catastrophically cancels for large quotients (the two terms are ~equal and
+  ~`1e10`, so the `O(1)` remainder loses up to `~9.5e10` ULP). Replaced with the exact
+  IEEE remainder (`%` == fmod, no rounding) plus Excel's divisor-sign adjustment:
+  `r = n % d; if r != 0 && sign(r) != sign(d) { r + d } else { r }`. 8/8 probed cases
+  bit-exact vs live Excel 16.0 b20026 incl. all three witnesses. The `#NUM!` quotient
+  guard (CLASS-B1) is unchanged. Regression
+  `mod_fn::tests::mod_large_quotient_is_bit_exact_via_fmod`. Removed from catalog G4.
 
 ### CLASS-C3: trig family precision drift in moderate-large band
 

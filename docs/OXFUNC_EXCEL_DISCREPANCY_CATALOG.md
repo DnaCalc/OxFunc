@@ -112,7 +112,6 @@ Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| MOD | intermediate-truncation drift (up to `~9.5E10` ULP) | NUM-L | M1 | BUG-FUNC-027 C2 |
 | TAN, SIN, COT, SEC, CSC | moderate-large argument-reduction drift (Cody-Waite vs extended-π; up to `~3.3E12` ULP) | NUM-L | M1 | BUG-FUNC-027 C3 |
 | ACOTH | catastrophic large-`\|x\|` band fixed (2026-06-21): the odd-symmetric `0.5*ln1p(2/(\|x\|-1))` form replaces the direct `0.5*ln((x+1)/(x-1))` ratio (`~1.2E14` ULP → bit-exact across the probed range incl. large + negative args; ATANH was the same odd-symmetry defect, now bit-exact, row removed). Residual: `1` ULP at scattered mid-range points (`ACOTH(5)`, `ACOTH(10)`) — Excel's x87 extended-precision `ln`, not matchable in IEEE double | NUM-S | M1 | BUG-FUNC-027 C5 |
 | COMBIN, COMBINA, PERMUT, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP where OxFunc is analytic-exact and Excel is off — match-Excel | NUM-S | M1 | BUG-FUNC-027 (combinatorial group) |

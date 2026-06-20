@@ -39,7 +39,17 @@ pub fn mod_kernel(number: f64, divisor: f64) -> Result<f64, WorksheetErrorCode> 
     if (number / divisor).abs() >= MOD_QUOTIENT_NUM_LIMIT {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(number - divisor * (number / divisor).floor())
+    // Excel's MOD is the floored modulo (sign of the divisor). Compute it from the
+    // exact IEEE remainder (`%` is fmod — no rounding) and adjust the sign, rather than
+    // `number - divisor*floor(number/divisor)`, which catastrophically cancels for large
+    // quotients (the two terms are ~equal and ~1e10, so the remainder loses up to
+    // ~9.5e10 ULP). BUG-FUNC-027 C2.
+    let remainder = number % divisor;
+    if remainder != 0.0 && (remainder < 0.0) != (divisor < 0.0) {
+        Ok(remainder + divisor)
+    } else {
+        Ok(remainder)
+    }
 }
 
 pub fn eval_mod_surface(
@@ -91,5 +101,24 @@ mod tests {
             mod_kernel(2f64.powi(51), 2f64.powi(10)),
             Err(WorksheetErrorCode::Num)
         ); // quotient 2^41
+    }
+
+    #[test]
+    fn mod_large_quotient_is_bit_exact_via_fmod() {
+        // BUG-FUNC-027 C2: `n - d*floor(n/d)` catastrophically cancels for large
+        // quotients (up to ~9.5e10 ULP). The fmod form is bit-exact vs live Excel
+        // 16.0 b20026; bits pinned from the elem-probe ledger.
+        assert_eq!(
+            mod_kernel(-9.26e9, 1.86).unwrap().to_bits(),
+            0x3fe4_7ae2_4ccf_fbc0
+        );
+        assert_eq!(
+            mod_kernel(-78170.05, 1.0).unwrap().to_bits(),
+            0x3fee_6666_6666_0000
+        );
+        assert_eq!(
+            mod_kernel(9.65e9, -0.374).unwrap().to_bits(),
+            0xbfcb_22d0_b429_8e28
+        );
     }
 }

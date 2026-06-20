@@ -23,18 +23,14 @@ $inv = [System.Globalization.CultureInfo]::InvariantCulture
 
 if (-not $Cases) {
     $Cases = @(
-        @{ id='atanh.b';     fn='ATANH'; arg=-0.9999999999999990 },
-        @{ id='atanh.a';     fn='ATANH'; arg=-0.999999999 },
-        @{ id='atanh.negmid';fn='ATANH'; arg=-0.5 },
-        @{ id='acoth.1001';  fn='ACOTH'; arg=1.001 },
-        @{ id='acoth.11';    fn='ACOTH'; arg=1.1 },
-        @{ id='acoth.2';     fn='ACOTH'; arg=2.0 },
-        @{ id='acoth.5';     fn='ACOTH'; arg=5.0 },
-        @{ id='acoth.10';    fn='ACOTH'; arg=10.0 },
-        @{ id='acoth.100';   fn='ACOTH'; arg=100.0 },
-        @{ id='acoth.big';   fn='ACOTH'; arg=1000000.0 },
-        @{ id='acoth.neg2';  fn='ACOTH'; arg=-2.0 },
-        @{ id='acoth.negbig';fn='ACOTH'; arg=-1000000.0 }
+        @{ id='mod.w1';   fn='MOD'; arg=-9.26e9;  arg2=1.86 },
+        @{ id='mod.w2';   fn='MOD'; arg=-78170.05; arg2=1.0 },
+        @{ id='mod.w3';   fn='MOD'; arg=9.65e9;   arg2=-0.374 },
+        @{ id='mod.basic';fn='MOD'; arg=-3.0;     arg2=2.0 },
+        @{ id='mod.b2';   fn='MOD'; arg=3.0;      arg2=-2.0 },
+        @{ id='mod.frac'; fn='MOD'; arg=10.5;     arg2=0.3 },
+        @{ id='mod.big';  fn='MOD'; arg=1.0e11;   arg2=7.0 },
+        @{ id='mod.neg';  fn='MOD'; arg=-1.0e10;  arg2=3.7 }
     )
 }
 
@@ -58,8 +54,12 @@ function Ulp-Distance([string]$a, [string]$b) {
 
 # --- OxFunc ---
 $lines = foreach ($c in $Cases) {
+    $argJson = '{"kind":"number","value":' + (Num-Lit $c.arg) + '}'
+    if ($c.ContainsKey('arg2')) {
+        $argJson += ',{"kind":"number","value":' + (Num-Lit $c.arg2) + '}'
+    }
     '{"case_id":"' + $c.id + '","function_id":"FUNC.' + $c.fn + '","formula_text":"' + $c.id +
-    '","args":[{"kind":"number","value":' + (Num-Lit $c.arg) + '}]}'
+    '","args":[' + $argJson + ']}'
 }
 $casesPath = ".tmp/elem-probe-ox-cases.jsonl"
 $outPath = ".tmp/elem-probe-ox-out.jsonl"
@@ -89,7 +89,12 @@ try {
     foreach ($c in $Cases) {
         $r++
         $ws.Cells.Item($r, 2).Value2 = [double]$c.arg
-        $ws.Cells.Item($r, 1).Formula = '=' + $c.fn + '(B' + $r + ')'
+        if ($c.ContainsKey('arg2')) {
+            $ws.Cells.Item($r, 3).Value2 = [double]$c.arg2
+            $ws.Cells.Item($r, 1).Formula = '=' + $c.fn + '(B' + $r + ',C' + $r + ')'
+        } else {
+            $ws.Cells.Item($r, 1).Formula = '=' + $c.fn + '(B' + $r + ')'
+        }
     }
     $ws.Columns.Item(1).ColumnWidth = 100
     $r = 0
