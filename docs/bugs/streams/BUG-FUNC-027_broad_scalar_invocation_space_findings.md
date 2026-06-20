@@ -132,16 +132,15 @@ seven cycles unless noted as `singleton_witness`.
 - **Repair direction**: model Excel's `INT(n / divisor)` magnitude guard.
   Map to `WorksheetErrorCode::Num` when the implicit quotient overflows
   the Excel-defined threshold.
-- **Cell-ref resweep (2026-06-20)**: the guard is on the **quotient** `|n/d|`,
-  not `|n|` (`MOD(2^45, 2^10)` → `0` despite `|n|=2^45`; `MOD(2^51, 2^10)` →
-  `#NUM!` at quotient `2^41`). But the boundary is **quirky and not cleanly
-  expressible**: at `d=1` the flip is between quotient `2^40+2^34` (`0`) and
-  `2^40+2^35` (`#NUM!`) — i.e. ~`1.02·2^40`, not a power of two or simple
-  fraction. Matching Excel bit-for-bit would require an arbitrary magic
-  threshold that is itself wrong inside a thin boundary zone, on inputs that are
-  already degenerate (`n > 10^12·d`). Recorded as an **accept-divergence
-  candidate**; no guard landed (a guessed threshold would trade one mismatch
-  for another).
+- **FIXED (2026-06-20).** The guard is on the **quotient** `|n/d|`, not `|n|`
+  (`MOD(2^45, 2^10)` → `0` despite `|n|=2^45`; `MOD(2^51, 2^10)` → `#NUM!` at
+  quotient `2^41`), and the boundary is a **precise, d-independent threshold**.
+  Bisected against live Excel 16.0 b20026 to the exact double: `MOD(q,1)` flips
+  from a number to `#NUM!` between `1125899999999.9998` (`0x4270624de9afffff`)
+  and `1125900000000` (`0x4270624de9b00000`). `mod_kernel` now returns `#NUM!`
+  when `|number/divisor| >= 1_125_900_000_000.0`. 11/11 bit-exact vs Excel incl.
+  both witnesses, the boundary, and the quotient rule under several divisors.
+  Regression test `mod_fn::tests::mod_large_quotient_matches_excel_num_threshold`.
 
 ### CLASS-B2: trig family `#NUM!` at large argument
 
@@ -161,13 +160,14 @@ seven cycles unless noted as `singleton_witness`.
 - **Witness**: `=ATAN2(-1E-200, -6E199)` local `-π/2`, Excel `#NUM!`.
   Singleton-class so far; needs broader (y, x) magnitude-spread sweep
   before promotion direction is decided.
-- **Cell-ref resweep (2026-06-20)**: the `#NUM!` reproduces but is
-  **pathological — there is no clean rule**. It is not a simple `y/x` overflow:
-  `ATAN2(x=1e-200, y=1e109)` (`|y/x|=∞`) → `#NUM!`, yet `ATAN2(x=1e-309, y=1)`
-  (also `|y/x|=∞`) → `π/2`; and `ATAN2(x=1e-200, y=1e108)` (`|y/x|=1e308`) → a
-  number. The flip lives in the denormal-ratio range and appears to depend on
-  the exact absolute magnitudes, not the ratio. Degenerate inputs; recorded as
-  an **accept-divergence candidate**, no guard landed.
+- **FIXED (2026-06-20).** The rule *is* clean: Excel returns `#NUM!` exactly when
+  `x != 0` and `y/x` overflows to `∞`. Confirmed bit-exact on normal-range inputs
+  — `ATAN2(x=1e-200, y=1e108)` (`|y/x|=1e308`, finite) → number, `y=1e109`
+  (`|y/x|=∞`) → `#NUM!`; the axis case `x == 0` stays `±π/2`. The earlier
+  "`x=1e-309, y=1` → `π/2` despite `|y/x|=∞`" reading was a `Value2` **denormal
+  storage artifact** (the cell did not hold `1e-309`), not a real counterexample.
+  `atan2_kernel` now returns `#NUM!` when `x != 0 && (y/x).is_infinite()`.
+  Regression test `atan2::tests::atan2_overflowing_ratio_is_num_axis_stays_finite`.
 
 ### CLASS-C1: GAMMA negative-non-integer numeric drift
 

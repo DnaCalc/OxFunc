@@ -49,21 +49,26 @@ formula-binding — do **not** live here; they live in
 
 ---
 
-## G1 — Error-code & argument-domain guards (structural)
+## G1 — Error-code & argument-domain guards (currently empty)
 
 Excel returns an error (or saturates) where OxFunc returns a number, or vice-versa.
+All three G1 rows were resolved against live Excel 16.0 build 20026 on 2026-06-20:
 
-| Function(s) | Discrepancy | Sev | Mat | Evidence |
-|-------------|-------------|-----|-----|----------|
-| MOD | large-quotient → number vs Excel `#NUM!`. Cell-ref resweep (2026-06-20): Excel `#NUM!` when the *quotient* `|n/d|` crosses a quirky ~`1.02·2^40` boundary (flips between `2^40+2^34` ok and `2^40+2^35` `#NUM!`) — not cleanly expressible, inputs degenerate (`n > 10^12·d`). **Accept-divergence candidate**: not bit-matchable without an arbitrary magic threshold | STR | M1 | BUG-FUNC-027 B1 |
-| ATAN2 | `(tiny, huge-neg)` → number vs Excel `#NUM!`. Cell-ref resweep (2026-06-20): pathological — same `|y/x|=∞` yields both `#NUM!` and a number depending on absolute magnitudes (`x=1e-200,y=1e109`→`#NUM!` but `x=1e-309,y=1`→`π/2`); no clean rule. **Accept-divergence candidate** (degenerate denormal boundary) | STR | M0 | BUG-FUNC-027 B3 |
+- **MOD** (BUG-FUNC-027 B1) — **fixed**. Excel's `#NUM!` boundary is a precise, *d-independent*
+  threshold on the **quotient**: `|n/d| >= 1125900000000` (bisected to the exact double
+  `0x4270624de9b00000`). Guard added to `mod_kernel`; 11/11 bit-exact incl. both witnesses, the
+  boundary (`2^40+2^34` ok / `2^40+2^35` `#NUM!`), and the quotient rule (`MOD(2^50,2^10)` ok,
+  `MOD(2^51,2^10)` `#NUM!`).
+- **ATAN2** (BUG-FUNC-027 B3) — **fixed**. Excel returns `#NUM!` exactly when `x != 0` and `y/x`
+  overflows to `∞` (the earlier "no clean rule" reading was a denormal `Value2` artifact); the
+  axis case `x == 0` stays valid. Guard added to `atan2_kernel`; bit-exact incl. the witness and
+  the finite-vs-`∞` boundary.
+- **ACOTH / ACOSH near 1** (BUG-FUNC-027 C5) — **stale harness artifact**: the formula-literal
+  parser rounded `1+ULP` → `1.0`; with exact `Range.Value2` inputs OxFunc already matched Excel
+  bit-for-bit (`ACOTH(1+ULP)=18.36840028483855`, `ACOSH(1+1e-15)=4.712…e-8`). Regression tests added.
 
-**2026-06-20 cell-ref resweep (BUG-FUNC-027 C5 signed off).** `ACOTH`/`ACOSH` near 1 were *stale
-harness artifacts*: re-probed with exact `Range.Value2` inputs, Excel returns
-`ACOTH(1+ULP)=18.36840028483855` (finite) and `ACOSH(1+1e-15)=4.712…e-8` (non-zero), and OxFunc
-matches **bit-exactly**. The earlier `#NUM!`/`0` witnesses came from formula-literal text, where
-Excel's parser rounds `1+ULP` down to exactly `1.0`. (The separate `ACOTH(1.001)` numeric drift
-remains on the G4 row.)
+(The separate `MOD` ~`9.5E10`-ULP intermediate-truncation drift and `ACOTH(1.001)` precision drift
+remain on the G4 numeric rows.)
 
 ## G2 — Coercion, array-lift & kind/shape (currently empty)
 
