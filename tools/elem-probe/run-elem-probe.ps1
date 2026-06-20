@@ -23,14 +23,14 @@ $inv = [System.Globalization.CultureInfo]::InvariantCulture
 
 if (-not $Cases) {
     $Cases = @(
-        @{ id='mod.w1';   fn='MOD'; arg=-9.26e9;  arg2=1.86 },
-        @{ id='mod.w2';   fn='MOD'; arg=-78170.05; arg2=1.0 },
-        @{ id='mod.w3';   fn='MOD'; arg=9.65e9;   arg2=-0.374 },
-        @{ id='mod.basic';fn='MOD'; arg=-3.0;     arg2=2.0 },
-        @{ id='mod.b2';   fn='MOD'; arg=3.0;      arg2=-2.0 },
-        @{ id='mod.frac'; fn='MOD'; arg=10.5;     arg2=0.3 },
-        @{ id='mod.big';  fn='MOD'; arg=1.0e11;   arg2=7.0 },
-        @{ id='mod.neg';  fn='MOD'; arg=-1.0e10;  arg2=3.7 }
+        @{ id='tan.w';   fn='TAN'; arg=797601.58 },
+        @{ id='sin.w';   fn='SIN'; arg=961281.44 },
+        @{ id='cot.w';   fn='COT'; arg=-307.07 },
+        @{ id='sin.sm';  fn='SIN'; arg=0.5 },
+        @{ id='tan.sm';  fn='TAN'; arg=1.2 },
+        @{ id='cos.w';   fn='COS'; arg=797601.58 },
+        @{ id='sin.mid'; fn='SIN'; arg=12345.678 },
+        @{ id='tan.mid'; fn='TAN'; arg=100000.0 }
     )
 }
 
