@@ -57,6 +57,11 @@ pub enum BesselConvertEvalError {
 const ACC: f64 = 40.0;
 const BIGNO: f64 = 1.0e10;
 const BIGNI: f64 = 1.0e-10;
+/// Excel's Bessel functions use the Numerical Recipes algorithm with its *truncated*
+/// 9-digit `2/π` constant `0.636619772`, not the full-precision `2/π`. Using the exact
+/// constant makes OxFunc more accurate than Excel but diverges by up to ~6e11 ULP on
+/// BESSELY (BUG-FUNC-024). Match Excel.
+const NR_2_OVER_PI: f64 = 0.636_619_772;
 
 fn horner(y: f64, coeffs: &[f64]) -> f64 {
     coeffs.iter().rev().fold(0.0, |acc, coeff| acc * y + coeff)
@@ -218,10 +223,10 @@ fn bessj0(x: f64) -> f64 {
                 0.000_143_048_876_5,
                 -0.000_006_911_147_651,
                 0.000_000_762_109_516_1,
-                -0.000_000_093_494_515_2,
+                -0.000_000_093_493_515_2,
             ],
         );
-        (std::f64::consts::FRAC_2_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
+        (NR_2_OVER_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
     }
 }
 
@@ -276,7 +281,7 @@ fn bessj1(x: f64) -> f64 {
                 0.000_000_105_787_412,
             ],
         );
-        (std::f64::consts::FRAC_2_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
+        (NR_2_OVER_PI / ax).sqrt() * (xx.cos() * ans1 - z * xx.sin() * ans2)
     };
     if x < 0.0 { -ans } else { ans }
 }
@@ -306,7 +311,7 @@ fn bessy0(x: f64) -> f64 {
                 1.0,
             ],
         );
-        ans1 / ans2 + std::f64::consts::FRAC_2_PI * bessj0(x) * x.ln()
+        ans1 / ans2 + NR_2_OVER_PI * bessj0(x) * x.ln()
     } else {
         let z = 8.0 / x;
         let y = z * z;
@@ -331,7 +336,7 @@ fn bessy0(x: f64) -> f64 {
                 -0.000_000_093_493_515_2,
             ],
         );
-        (std::f64::consts::FRAC_2_PI / x).sqrt() * (xx.sin() * ans1 + z * xx.cos() * ans2)
+        (NR_2_OVER_PI / x).sqrt() * (xx.sin() * ans1 + z * xx.cos() * ans2)
     }
 }
 
@@ -360,7 +365,7 @@ fn bessy1(x: f64) -> f64 {
                 1.0,
             ],
         );
-        ans1 / ans2 + std::f64::consts::FRAC_2_PI * (bessj1(x) * x.ln() - 1.0 / x)
+        ans1 / ans2 + NR_2_OVER_PI * (bessj1(x) * x.ln() - 1.0 / x)
     } else {
         let z = 8.0 / x;
         let y = z * z;
@@ -385,7 +390,7 @@ fn bessy1(x: f64) -> f64 {
                 0.000_000_105_787_412,
             ],
         );
-        (std::f64::consts::FRAC_2_PI / x).sqrt() * (xx.sin() * ans1 + z * xx.cos() * ans2)
+        (NR_2_OVER_PI / x).sqrt() * (xx.sin() * ans1 + z * xx.cos() * ans2)
     }
 }
 
@@ -721,6 +726,18 @@ mod tests {
         assert_close(
             bessely_kernel(2.5, 1.0).expect("bessely seed should succeed"),
             0.145_918_138,
+        );
+    }
+
+    #[test]
+    fn bessely0_small_x_bit_exact_after_nr_constant() {
+        // BUG-FUNC-024: Excel's BESSELY uses NR's truncated 2/π = 0.636619772; with it the
+        // order-0 x<8 path matches live Excel 16.0 b20026 bit-for-bit — BESSELY(0.5,0) was
+        // 4.3e6 ULP off under full-precision 2/π. Bits from the elem-probe ledger. (The
+        // order-1, x>=8, and recurrence paths remain off — Excel's non-NR method, tracked.)
+        assert_eq!(
+            bessely_kernel(0.5, 0.0).unwrap().to_bits(),
+            0xbfdc_72fe_b3fe_171f
         );
     }
 
