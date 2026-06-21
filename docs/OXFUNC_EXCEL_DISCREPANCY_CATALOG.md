@@ -141,6 +141,21 @@ Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 | YIELDMAT | yield-at-maturity drift (`1` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 | TBILLYIELD | discounted-bill yield sub-ULP drift (`1` ULP on some settlements; array-lift itself correct) | NUM-S | M1 | G2 resweep 2026-06-20 |
 
+**Solver-substrate diagnosis (2026-06-21).** ODDFYIELD / YIELD / RATE and IRR's irrational
+roots are *not* a solver-quality problem — their forward functions (ODDFPRICE, PRICE, the
+annuity balance, NPV) are already bit-exact, and Excel stops its root-finder **early** at an
+*iteration-specific* double, not at a refined root. Evidence: at Excel's `RATE(360,-1073.64,
+200000)` the balance residual is `+1.0e-8` (positive, far from 0) and monotone — Excel halted
+when the step got small, ~48 ULP above the converged root; **ODDFYIELD is additionally
+ill-conditioned** — a ~10³-ULP band of yields all map to the same price double (residual flat
+at `-5.8e-10`), so no residual-min refinement can pick Excel's value. The residual-min/plateau
+trick that made IRR's *representable* roots bit-exact does **not** generalise here. Matching
+needs Excel's exact proprietary iteration (method / guess / derivative / stopping / op-order),
+which differs from OxFunc, the F# reference, *and* the POI/LibreOffice "Excel-compatible"
+reimplementations (POI's secant diverges for this RATE case; analytic Newton lands 48 ULP off,
+and its iteration count can't reconcile with Excel's documented 20-iter/`1e-7` cap). This is
+the hardest tier; it needs a dedicated reverse-engineering spike, not a better solver.
+
 ## G7 — Comparison & misc semantics (currently empty)
 
 The numeric-comparison tolerance lane (operators, criteria/database families, `SWITCH`;
