@@ -1,7 +1,7 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-06-20`
+Last reconciled: `2026-06-21`
 
 ## Purpose
 
@@ -67,8 +67,9 @@ All three G1 rows were resolved against live Excel 16.0 build 20026 on 2026-06-2
   parser rounded `1+ULP` → `1.0`; with exact `Range.Value2` inputs OxFunc already matched Excel
   bit-for-bit (`ACOTH(1+ULP)=18.36840028483855`, `ACOSH(1+1e-15)=4.712…e-8`). Regression tests added.
 
-(The separate `MOD` ~`9.5E10`-ULP intermediate-truncation drift and `ACOTH(1.001)` precision drift
-remain on the G4 numeric rows.)
+(The separate `MOD` ~`9.5E10`-ULP intermediate-truncation drift was fixed bit-exact on 2026-06-21
+via the exact IEEE-remainder form — the G4 `MOD` row is removed. `ACOTH(1.001)` is now bit-exact
+too; the open `ACOTH` residual is the `ACOTH(5)`/`ACOTH(10)` 1-ULP point on the G4 row.)
 
 ## G2 — Coercion, array-lift & kind/shape (currently empty)
 
