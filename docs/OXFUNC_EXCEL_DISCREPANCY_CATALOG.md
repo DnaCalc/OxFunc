@@ -136,8 +136,8 @@ substrate, not a quick fix. The order-0 `x<8` constant fix (above) stands.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| MINVERSE | multi-cell inversion low-bit drift (`1×1` publication already fixed) | NUM-L | M2 | BUG-FUNC-025 / KED-MATRIX-001 / `oxf-dzfk` |
-| MMULT | matrix numeric / `scalar-vs-1×1` shape drift | NUM-L | M1 | BUG-FUNC-023 / `oxf-i45e` |
+| MINVERSE | multi-cell inversion low-bit drift — **quantified 2026-06-21** (live Excel, `2×2`…`6×6` + ill-conditioned/Hilbert): `≤37` ULP (most cells bit-exact; worst 37 on a `3×3`, ~30 ill-conditioned; does **not** grow with size). Pivoting / operation-order vs Excel's Gaussian elimination — matching needs Excel's exact pivot + order (proprietary tier, but small). Smaller than the prior NUM-L assumption | NUM-S | M2 | BUG-FUNC-025 / KED-MATRIX-001 / `oxf-dzfk` |
+| MMULT | **numerically bit-exact** (quantified 2026-06-21: `2×2`/`2×3`/fractional all 0 ULP vs live Excel). The remaining concern is the *structural* `scalar-vs-1×1` shape edge, not numeric drift | NUM-S | M1 | BUG-FUNC-023 / `oxf-i45e` |
 
 ## G6 — Financial: exactness, computation & solver
 
