@@ -104,6 +104,18 @@ Every G2 row was signed off against live Excel 16.0 build 20026 on 2026-06-20.
 | GAMMA | negative-non-integer reflection drift (`~1290` ULP after cell-ref resweep; re-probed `GAMMA(-1.00012)` = `182` ULP) | NUM-L | M1 | BUG-FUNC-027 C1 |
 | BESSELY | **quantified + partially fixed 2026-06-21**: up to `~6.2E11` ULP (materially wrong — catastrophic band). Order-0 `x<8` fixed (Excel uses Numerical Recipes' *truncated* `2/π = 0.636619772`, not full-precision: `BESSELY(0.5,0)` `4.3E6→0`, `BESSELY(3,0)` `→1` ULP), plus a `bessj0` asymptotic coefficient typo. **Residual:** order-1 (`bessy1`), the `x≥8` asymptotic, and the order≥2 recurrence are still `10^8`–`10^11` ULP — Excel uses a **non-NR** method there (its `Y1(2.5)` and `J1(10)` differ from NR by `~1E-8`/`~5E-6`). Needs Excel's exact `x≥8`/order-1 Bessel algorithm | NUM-L | M1 | BUG-FUNC-024 / KED-BESSEL-001 / `oxf-xp6p` |
 | BESSELJ (and likely BESSELI/BESSELK) for `x≥8` | newly found 2026-06-21: NR-exact for `x<8` but the `x≥8` asymptotic diverges from Excel (`BESSELJ(10,1)` `~8E11` ULP, `BESSELJ(15,3)` `~4E9`) — same non-NR `x≥8` method as BESSELY. BESSELI/BESSELK `x≥8` not yet probed | NUM-L | M0 | BUG-FUNC-024 (companion) |
+
+**Bessel `x≥8` / order-1 diagnosis (2026-06-21).** Investigated the BESSELY/BESSELJ `x≥8` and
+order-1 residual and ruled out the tractable causes: it is **not** a coefficient typo (the
+`bessj1`/`bessy1` coefficients match Numerical Recipes exactly), **not** a structural bug
+(`bessj1` is true-accurate at `x≥50` — `J1(50)` `4E-10`), and **not** a threshold issue (the
+`x<8` rational extrapolated to `x=10` gives garbage `0.0432`, far from Excel `0.0434722`). The
+root cause: NR's 5-term asymptotic is genuinely `~1E-6` inaccurate in the moderate-`x` band
+(`8`–`~30`) for order 1, and **Excel uses a more-accurate *proprietary* method there** — Excel's
+`J1(10)` is `~5E-7` off the true value while OxFunc's NR is `~6E-6` off; Excel's `Y1(2.5)` is also
+more accurate than NR's. So OxFunc is *less* accurate than Excel here, and matching bit-for-bit
+needs Excel's exact (more-precise) Bessel coefficients/method — the same hard tier as the solver
+substrate, not a quick fix. The order-0 `x<8` constant fix (above) stands.
 | FORECAST, FORECAST.LINEAR, TREND, LINEST, LOGEST | least-squares regression drift (`≤2` ULP) | NUM-S | M1 | G8 probe 2026-06-19 |
 | GROWTH | exponential-regression drift, `~11` ULP (`exp` amplifies the linear fit) | NUM-L | M1 | G8 probe `GROWTH({1,3,2,5},{1,2,3,4},{5})` |
 | CHISQ.TEST, CHITEST | chi-square test-statistic drift, `~8` ULP | NUM-L | M1 | G8 probe `CHISQ.TEST({10,20,30},{12,18,30})` |
