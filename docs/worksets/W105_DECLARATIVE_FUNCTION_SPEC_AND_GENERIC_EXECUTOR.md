@@ -201,6 +201,62 @@ only shrink. Cost: the seed generators must emit only the non-derivable residue,
 test must run before any seed lands — sequenced **after** the `FunctionSpec` arity/signature axis
 exists so there is a spec to conform *to*.
 
+### W105-D2 — Spec is declared facts + a handler binding, not reified algorithms
+
+Date: `2026-06-22`. Status: `accepted`. Refines [ODR-FN-004](../decisions/ODR-FN-004-declarative-function-spec-and-generic-executor.md)
+Layers 2–3 and **rescopes child .12** (full-surface rollout).
+
+**Context.** The `.3` pilot's `execute()` is the kernel-publication slice (prepared `f64` →
+`Result<f64>`) and deliberately excludes reference/context/provider/callable functions. The
+remaining dispatch families (operators, dynamic-array-reshape, lookup/reference, date-time,
+lambda-helpers, provider-bound) are already `CalcValue(s) → CalcValue(s)` handlers, not `f64`
+kernels — the by-index table passes `CalcValue`s straight through (`generated_table_args_from_calc_values`
+is `args.to_vec()`). Forcing their algorithms into declarative form, or into one fat executor, is
+neither necessary nor desirable.
+
+**Decision.**
+
+1. **`FunctionSpec` is declared cross-cutting axes + a binding to the function's implementation —
+   not a reification of the algorithm.** A function whose core is an irreducible algorithm (INDEX,
+   DROP, GROUPBY, IMAGE) keeps its internal `CalcValue(s) → CalcValue(s)` handler; the generic
+   executor applies the declared axes and **delegates** ("run kernel" generalized from `f64→f64` to a
+   handler call — exactly the pilot's `UnaryNumericKernel::Fallible` shape). The `f64→f64` kernel
+   slice stays confined to the genuinely-numeric families.
+2. **Two kinds of spec fact, different truth-sources, same lightweight evidence.** (a) Excel-observable
+   *value* facts (truth = the value Excel's function evaluation yields — `real_result_policy`,
+   error-algebra, precision); (b) OxFunc/host *implementation/plumbing* facts (truth = our dispatch
+   needs / host capabilities — `requires-invoker`, reference-sensitivity, provider/rich-value deps).
+   Evidence stays the lightweight ODR-FN-004 witness doc-comment; **no new evidence-pinning gate**.
+3. **Scope boundary.** OxFunc evaluates function calls to **values** (incl. callable/rich values and
+   function-level errors `#NUM!`/`#VALUE!`/`#DIV/0!`). Cell-result/presentation semantics — e.g.
+   `#CALC!` for an uninvoked lambda in a cell, display, spill rendering — are **OxFml/OxCalc, not
+   OxFunc**. The differential oracle compares against Excel *cell* results for verification only; that
+   does not import cell semantics into the `FunctionSpec`.
+4. **Anti-drift invariant unchanged:** one declared binding per function, every dispatch path derived
+   from it, no second hand-maintained copy.
+
+**Invocable axis (the genuinely-new metadata).** Two distinct facts, both lightweight:
+`requires-invoker` (the function *consumes* a callable arg — MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY/
+GROUPBY/PIVOTBY — an implementation fact that retires the hand-coded dispatch list via a spec-derived
+check) and `invocable-passthrough` (a lambda/invocable value can *pass through* the function to its
+result — IF/LET/CHOOSE/SWITCH/INDEX/selectors — a useful per-function semantic fact, populated by
+inspection and checked that it holds). No `produces-invocable`/`#CALC!` modelling — that is out of
+OxFunc's scope (point 3).
+
+**Rescope of child .12.** The lane is **metadata-completeness + spec-derived cross-cutting checks +
+collapsing the parallel `eval_*_calc_dispatch` routing chains** — *not* reimplementing reference/
+provider/callable algorithms as kernels. Family treatment: **operators** → 2-arg numeric kernel
+pattern (extends the pilot); **dynamic-array-reshape** → plain `CalcValue` handlers, spec-derived
+routing; **reference-sensitive** → already declared (`RefsVisibleInAdapter`), verify the
+resolver-capability gate is spec-driven (don't rebuild); **provider/host + rich-value** → metadata
+already exists (`FecDependencyProfile`, `RichValueUsage`, capability-set keys), add a spec-derived
+host-capability *precondition check* mirroring the resolver gate (execution unchanged); **invocable/
+lambda** → add `requires-invoker` + `invocable-passthrough`, generate the check, retire the hand chain.
+**Corrected closure bar for .12:** every remaining function's requirements declared + the cross-cutting
+checks (invoker, host-capability, reference) spec-derived + the parallel `eval_*_calc_dispatch` chains
+collapsed — *not* "interpreter ≡ generated for literally every id" in the `f64`-kernel sense
+(handler-bound functions prove routing/precondition equivalence, not a twice-derived algorithm).
+
 ## Doctrine Axes
 
 scope_completeness: `scope_partial`
