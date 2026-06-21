@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     AggregateArrayProvenance, expand_aggregate_arg, expand_sparse_reference_values_with_provenance,
@@ -26,6 +26,7 @@ pub const COUNTA_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 #[derive(Debug, Clone, PartialEq)]

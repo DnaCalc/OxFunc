@@ -1,7 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::a1_refs::{
     A1Reference, A1ReferenceNotation, format_relative_target, parse_a1_reference,
@@ -30,6 +31,10 @@ const CRITERIA_BASE_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    // Every CRITERIA_BASE_META instance (COUNTIF/COUNTIFS/SUMIF/SUMIFS/AVERAGEIF/AVERAGEIFS/
+    // MAXIFS/MINIFS) reduces a matched range to one result, so the family is uniformly a
+    // reduction fold; the base carries the non-default error-collapse profile.
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 pub const COUNTIF_META: FunctionMeta = FunctionMeta {

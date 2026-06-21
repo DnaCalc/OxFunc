@@ -1,7 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::resolver::ReferenceSystemProvider;
@@ -22,6 +23,7 @@ pub const CHOOSE_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
 };
 
 // IFS broadcasts its first condition/value pair plus the second condition (`[0,1,2]`) over an

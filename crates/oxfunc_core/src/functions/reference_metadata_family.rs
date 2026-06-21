@@ -26,6 +26,7 @@ pub const ADDRESS_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const AREAS_META: FunctionMeta = FunctionMeta {
@@ -42,6 +43,7 @@ pub const AREAS_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const FORMULATEXT_META: FunctionMeta = FunctionMeta {
@@ -58,6 +60,7 @@ pub const FORMULATEXT_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const SHEET_META: FunctionMeta = FunctionMeta {
@@ -74,6 +77,7 @@ pub const SHEET_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const SHEETS_META: FunctionMeta = FunctionMeta {
@@ -90,6 +94,7 @@ pub const SHEETS_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

@@ -1,6 +1,6 @@
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     prepare_args_values_only, prepare_calc_values_only, prepared_arg_to_calc_value_lossy,
@@ -23,35 +23,41 @@ const FUNCTIONAL_LAMBDA_BASE_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const MAP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MAP",
     arity: Arity { min: 2, max: 255 },
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
 pub const REDUCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.REDUCE",
     arity: Arity { min: 3, max: 3 },
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
 pub const SCAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SCAN",
     arity: Arity { min: 3, max: 3 },
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
 pub const BYROW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BYROW",
     arity: Arity { min: 2, max: 2 },
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
 pub const BYCOL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BYCOL",
     arity: Arity { min: 2, max: 2 },
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 

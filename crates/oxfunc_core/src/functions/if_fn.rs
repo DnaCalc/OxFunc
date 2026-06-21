@@ -1,7 +1,8 @@
 use crate::coercion::{CoercionError, coerce_eval_to_number};
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
@@ -22,6 +23,7 @@ pub const IF_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
 };
 
 #[derive(Debug, Clone, PartialEq)]

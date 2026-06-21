@@ -6,12 +6,14 @@ use crate::capability::{
     webimage_producer_capability_set_keys,
 };
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::registry_context_seed::registry_metadata_for_id;
 use crate::registry_help_seed::{RegistryHelpSeed, registry_help_seed_for_id};
 use crate::registry_signature_seed::{SignatureSeed, signature_seed_for_id};
+use crate::semantic_kernel::NumericalReductionPolicy;
 use crate::value::ReferenceLike;
 use crate::xll_export_specs;
 
@@ -1369,75 +1371,36 @@ pub fn catalog_conformance_rows() -> Vec<CatalogConformanceRow> {
         .collect()
 }
 
+/// Project the `SemanticKernelMetadata` for a function id from the SINGLE declared error-algebra
+/// source — the function's own [`FunctionMeta::error_collapse_profile`] (W105 oxf-y2uw.7). The
+/// two previously hand-maintained id-keyed tables (`is_reduction_sensitive_function` and
+/// `is_error_collapse_sensitive_function`) are RETIRED: every projected field derives from the
+/// declared [`ErrorCollapseProfile`] axis carried on the meta, so the error rule has exactly one
+/// home and cannot drift between the meta and a second table.
+///
+/// - `error_collapse_sensitive` / `error_algebra` come straight off the axis (it owns them).
+/// - `reduction_sensitive` / `numerical_reduction_policy` derive from the axis's
+///   `is_reduction_fold()` facet — the reduction family is the `ReductionFold` variant. This
+///   numerical-reduction concern rides on the same family marker for now; a later dedicated
+///   numerical-reduction axis may take it over (see [`ErrorCollapseProfile::ReductionFold`]).
 fn semantic_kernel_metadata_for_id(function_id: &str) -> SemanticKernelMetadata {
-    let reduction_sensitive = is_reduction_sensitive_function(function_id);
-    let error_collapse_sensitive =
-        reduction_sensitive || is_error_collapse_sensitive_function(function_id);
+    let profile: ErrorCollapseProfile = xll_export_specs::lookup_function_meta_by_id(function_id)
+        .map(|meta| meta.error_collapse_profile)
+        .unwrap_or(FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE);
+    let reduction_sensitive = profile.is_reduction_fold();
+    let error_collapse_sensitive = profile.is_error_collapse_sensitive();
     SemanticKernelMetadata {
         reduction_sensitive,
         error_collapse_sensitive,
-        numerical_reduction_policy: reduction_sensitive.then(|| "SequentialLeftFold".to_string()),
-        error_algebra: error_collapse_sensitive.then(|| "CanonicalExcelLegacy".to_string()),
+        numerical_reduction_policy: reduction_sensitive.then(|| {
+            NumericalReductionPolicy::SequentialLeftFold
+                .stable_key()
+                .to_string()
+        }),
+        error_algebra: profile
+            .error_algebra()
+            .map(|algebra| algebra.stable_key().to_string()),
     }
-}
-
-fn is_reduction_sensitive_function(function_id: &str) -> bool {
-    matches!(
-        function_id,
-        "FUNC.AGGREGATE"
-            | "FUNC.AVERAGE"
-            | "FUNC.AVERAGEA"
-            | "FUNC.AVERAGEIF"
-            | "FUNC.AVERAGEIFS"
-            | "FUNC.BYCOL"
-            | "FUNC.BYROW"
-            | "FUNC.COUNT"
-            | "FUNC.COUNTA"
-            | "FUNC.COUNTIF"
-            | "FUNC.COUNTIFS"
-            | "FUNC.DAVERAGE"
-            | "FUNC.DCOUNT"
-            | "FUNC.DCOUNTA"
-            | "FUNC.DMAX"
-            | "FUNC.DMIN"
-            | "FUNC.DPRODUCT"
-            | "FUNC.DSTDEV"
-            | "FUNC.DSTDEVP"
-            | "FUNC.DSUM"
-            | "FUNC.DVAR"
-            | "FUNC.DVARP"
-            | "FUNC.GROUPBY"
-            | "FUNC.MAP"
-            | "FUNC.MAX"
-            | "FUNC.MAXA"
-            | "FUNC.MAXIFS"
-            | "FUNC.MDETERM"
-            | "FUNC.MIN"
-            | "FUNC.MINA"
-            | "FUNC.MINIFS"
-            | "FUNC.MINVERSE"
-            | "FUNC.MMULT"
-            | "FUNC.PIVOTBY"
-            | "FUNC.PRODUCT"
-            | "FUNC.REDUCE"
-            | "FUNC.SCAN"
-            | "FUNC.SUBTOTAL"
-            | "FUNC.SUM"
-            | "FUNC.SUMIF"
-            | "FUNC.SUMIFS"
-            | "FUNC.SUMPRODUCT"
-            | "FUNC.SUMSQ"
-            | "FUNC.SUMX2MY2"
-            | "FUNC.SUMX2PY2"
-            | "FUNC.SUMXMY2"
-    )
-}
-
-fn is_error_collapse_sensitive_function(function_id: &str) -> bool {
-    matches!(
-        function_id,
-        "FUNC.CHOOSE" | "FUNC.IF" | "FUNC.IFS" | "FUNC.IFERROR" | "FUNC.IFNA" | "FUNC.SWITCH"
-    )
 }
 
 pub fn producer_capability_set_keys_for_id(function_id: &str) -> Vec<String> {
@@ -1702,6 +1665,68 @@ mod tests {
             csv.contains("Materialisable(target_class=published_fallback_text)"),
             "IMAGE row must publish webimage producer capabilities"
         );
+    }
+
+    #[test]
+    fn error_collapse_axis_is_single_source() {
+        // W105 oxf-y2uw.7: `meta.error_collapse_profile` is the SINGLE declared source the
+        // `SemanticKernelMetadata` projection derives its error-algebra (and reduction) fields
+        // from. Pin, over the WHOLE catalog, that the projection mirrors the declared axis
+        // exactly — so the retired id-keyed tables can never silently come back as a second
+        // source, and no meta's axis can drift from what the projection publishes.
+        for meta in xll_export_specs::function_catalog().iter() {
+            let profile = meta.error_collapse_profile;
+            let projected = semantic_kernel_metadata_for_id(meta.function_id);
+
+            assert_eq!(
+                projected.error_collapse_sensitive,
+                profile.is_error_collapse_sensitive(),
+                "{} error_collapse_sensitive must derive from meta.error_collapse_profile",
+                meta.function_id
+            );
+            assert_eq!(
+                projected.error_algebra.as_deref(),
+                profile
+                    .error_algebra()
+                    .map(crate::semantic_kernel::ErrorAlgebra::stable_key),
+                "{} error_algebra must derive from meta.error_collapse_profile",
+                meta.function_id
+            );
+            assert_eq!(
+                projected.reduction_sensitive,
+                profile.is_reduction_fold(),
+                "{} reduction_sensitive must derive from meta.error_collapse_profile",
+                meta.function_id
+            );
+            assert_eq!(
+                projected.numerical_reduction_policy.as_deref(),
+                profile
+                    .is_reduction_fold()
+                    .then_some(NumericalReductionPolicy::SequentialLeftFold.stable_key()),
+                "{} numerical_reduction_policy must derive from meta.error_collapse_profile",
+                meta.function_id
+            );
+
+            // Non-default axis values land only on the two error-collapse families, and the
+            // error-collapse set is exactly (reduction folds ∪ selector branches).
+            match profile {
+                ErrorCollapseProfile::None => assert!(
+                    !projected.error_collapse_sensitive,
+                    "{} default profile must not be error-collapse sensitive",
+                    meta.function_id
+                ),
+                ErrorCollapseProfile::ReductionFold => assert!(
+                    projected.reduction_sensitive && projected.error_collapse_sensitive,
+                    "{} ReductionFold must be both reduction- and error-collapse sensitive",
+                    meta.function_id
+                ),
+                ErrorCollapseProfile::SelectorBranch => assert!(
+                    !projected.reduction_sensitive && projected.error_collapse_sensitive,
+                    "{} SelectorBranch must be error-collapse sensitive without a reduction policy",
+                    meta.function_id
+                ),
+            }
+        }
     }
 
     #[test]

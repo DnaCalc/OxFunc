@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{AggregatePreparedItem, expand_aggregate_arg};
 use crate::functions::aggregate_common::dual_policy_numeric_value;
@@ -23,6 +23,7 @@ pub const SUMSQ_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 #[derive(Debug, Clone, PartialEq)]

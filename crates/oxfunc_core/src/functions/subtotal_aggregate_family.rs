@@ -1,7 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::prepare_arg_values_only;
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
@@ -49,6 +50,7 @@ pub const SUBTOTAL_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
@@ -65,6 +67,7 @@ pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

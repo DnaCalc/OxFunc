@@ -26,6 +26,7 @@ pub const COTH_META: FunctionMeta = FunctionMeta {
     // BUG-FUNC-027 CLASS-C3.h: for large |n|, cosh/sinh = Inf/Inf = NaN; Excel saturates
     // COTH to `sign(n)` i.e. `±1`. Verified live Excel 16.0 b20026: COTH(800)=1.
     real_result_policy: ExcelRealPolicy::SATURATE_SIGN,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {

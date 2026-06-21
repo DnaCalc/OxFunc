@@ -22,6 +22,7 @@ pub const RTD_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::ExternalProvider,
     surface_fec_dependency_profile: FecDependencyProfile::ExternalProvider,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -25,6 +25,7 @@ pub const EXP_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     // BUG-FUNC-027 / oxf-vgxs: EXP overflow is `#NUM!` in Excel, not `+Inf`.
     real_result_policy: ExcelRealPolicy::FINITE,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub fn exp_kernel(n: f64) -> f64 {

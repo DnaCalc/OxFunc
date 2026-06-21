@@ -23,6 +23,7 @@ pub const QUOTIENT_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub fn quotient_kernel(numerator: f64, denominator: f64) -> Result<f64, WorksheetErrorCode> {

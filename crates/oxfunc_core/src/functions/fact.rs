@@ -26,6 +26,7 @@ pub const FACT_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     // BUG-FUNC-027 / oxf-vgxs: 171! overflows to `+Inf`; Excel returns `#NUM!`.
     real_result_policy: ExcelRealPolicy::FINITE,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {

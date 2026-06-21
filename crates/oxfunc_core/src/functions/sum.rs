@@ -1,7 +1,7 @@
 use crate::coercion::{CoercionError, coerce_calc_scalar_to_number};
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{AggregateArgOrigin, AggregatePreparedItem, expand_aggregate_arg};
 use crate::resolver::ReferenceSystemProvider;
@@ -25,6 +25,7 @@ pub const SUM_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 #[derive(Debug, Clone, PartialEq)]

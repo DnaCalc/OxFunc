@@ -19,6 +19,7 @@ pub const NOW_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::TimeProvider,
     surface_fec_dependency_profile: FecDependencyProfile::TimeProvider,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub trait NowProvider {

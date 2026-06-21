@@ -3,6 +3,13 @@
 // kernel helpers that consume it (`crate::functions::excel_numeric`).
 pub use crate::functions::excel_numeric::{ExcelRealPolicy, NonFinite};
 
+// Re-exported so the error-algebra vocabulary lives alongside the other `FunctionMeta`
+// declarative profile types. The algebra itself is defined next to the runtime collapse
+// helper that consumes it (`crate::semantic_kernel::collapse_worksheet_errors`); the
+// `ErrorCollapseProfile` axis below carries it and is the single declared source the
+// `SemanticKernelMetadata` projection derives its `error_algebra` string from.
+pub use crate::semantic_kernel::ErrorAlgebra;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DeterminismClass {
     Deterministic,
@@ -156,6 +163,77 @@ impl LiftBroadcastProfile {
     }
 }
 
+/// How a function collapses the Excel error inputs it sees — the error-algebra behavioural axis
+/// (ODR-FN-004 Layer 2, the axis widened under W105 oxf-y2uw.7). A CLOSED `Copy`/`Eq` enum
+/// carried on [`FunctionMeta`] and read at the SINGLE projection site
+/// (`registry.rs::semantic_kernel_metadata_for_id`), so the rule for whether a function is
+/// error-collapse sensitive and which [`ErrorAlgebra`] it applies cannot be restated (and drift)
+/// in a second id-keyed table. This is the one declared SOURCE the `SemanticKernelMetadata`
+/// projection derives `error_collapse_sensitive` and `error_algebra` FROM (and, for the
+/// reduction family, the `reduction_sensitive` / `numerical_reduction_policy` facet — see the
+/// note on [`ErrorCollapseProfile::ReductionFold`]).
+///
+/// GROWTH DISCIPLINE (same shape as [`ArgPreparationProfile`] / [`LiftBroadcastProfile`]): a
+/// [`FunctionMeta`] field with a `DEFAULT_*` associated const for the value the majority carry,
+/// variants that name a real observed Excel behaviour, no free `f64`, [`FunctionMeta`] stays
+/// `Copy`/`Eq`. The [`ErrorAlgebra`] a non-default variant applies is a named enum (reused from
+/// `crate::semantic_kernel`, the runtime collapse vocabulary), never a free string on the meta.
+///
+/// RECONCILIATION (why a three-state enum rather than a bare `bool`): the projection distinguishes
+/// two reasons a function is error-collapse sensitive that publish differently —
+/// reduction/aggregation functions (`SUM`, `MAX`, `COUNTIF`, the `D*` database family, `MMULT`, …)
+/// are error-collapse sensitive AND carry a numerical-reduction policy, while the branch-selector
+/// functions (`IF`, `IFS`, `CHOOSE`, `IFERROR`, `IFNA`, `SWITCH`) are error-collapse sensitive
+/// WITHOUT a reduction policy. A named three-state axis captures both reasons from one declared
+/// value, so the projection needs no second id-keyed table to tell the families apart.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ErrorCollapseProfile {
+    /// The majority shape: the function performs no Excel error-collapse algebra of its own — an
+    /// error input propagates through ordinary value handling, so the function is not
+    /// error-collapse sensitive and declares no [`ErrorAlgebra`].
+    None,
+    /// A reduction / aggregation function that folds many inputs (a range, the database families,
+    /// the matrix reducers) into one result and therefore collapses any error inputs by Excel's
+    /// error-precedence order ([`ErrorAlgebra::CanonicalExcelLegacy`]). Because such a function
+    /// also reduces *numerically*, this variant is additionally the source of the
+    /// `reduction_sensitive` / `numerical_reduction_policy` projection facet (current policy
+    /// `SequentialLeftFold`). That numerical facet rides on the same family marker today; a later
+    /// dedicated numerical-reduction axis may take it over, leaving this axis owning only the
+    /// error-collapse semantics. Verified live Excel 16.0 build 20026.
+    ReductionFold,
+    /// A branch-selector function (`IF`/`IFS`/`CHOOSE`/`IFERROR`/`IFNA`/`SWITCH`) that chooses
+    /// among argument branches which may themselves be errors, collapsing them by Excel's
+    /// error-precedence order ([`ErrorAlgebra::CanonicalExcelLegacy`]). Error-collapse sensitive
+    /// but NOT a numerical reducer, so it carries no numerical-reduction policy. Verified live
+    /// Excel 16.0 build 20026.
+    SelectorBranch,
+}
+
+impl ErrorCollapseProfile {
+    /// Whether this profile makes the function error-collapse sensitive — the SINGLE accessor the
+    /// projection reads, so no second site can decide a function's error-collapse sensitivity.
+    pub const fn is_error_collapse_sensitive(self) -> bool {
+        !matches!(self, Self::None)
+    }
+
+    /// The [`ErrorAlgebra`] this profile applies to collapse error inputs, or `None` when the
+    /// function performs no error-collapse. Both non-default variants apply Excel's canonical
+    /// legacy error-precedence order.
+    pub const fn error_algebra(self) -> Option<ErrorAlgebra> {
+        match self {
+            Self::None => None,
+            Self::ReductionFold | Self::SelectorBranch => Some(ErrorAlgebra::CanonicalExcelLegacy),
+        }
+    }
+
+    /// Whether this profile is a numerical reduction/aggregation fold — the facet the
+    /// `reduction_sensitive` / `numerical_reduction_policy` projection derives from while a
+    /// dedicated numerical-reduction axis does not yet exist (see [`Self::ReductionFold`]).
+    pub const fn is_reduction_fold(self) -> bool {
+        matches!(self, Self::ReductionFold)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum KernelSignatureClass {
     NullaryConst,
@@ -225,6 +303,13 @@ pub struct FunctionMeta {
     /// cannot diverge between scalar, array-lift, and by-index paths. Functions with no
     /// special real-result behaviour use `FunctionMeta::DEFAULT_REAL_RESULT_POLICY`.
     pub real_result_policy: ExcelRealPolicy,
+    /// How this function collapses Excel error inputs and which [`ErrorAlgebra`] it applies
+    /// (see [`ErrorCollapseProfile`]). The SINGLE declared source the `SemanticKernelMetadata`
+    /// projection derives `error_collapse_sensitive` / `error_algebra` from (and, for the
+    /// reduction family, the `reduction_sensitive` / `numerical_reduction_policy` facet), so the
+    /// error rule cannot diverge between the meta and a second id-keyed table. Functions that
+    /// perform no error-collapse carry [`FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE`].
+    pub error_collapse_profile: ErrorCollapseProfile,
 }
 
 impl FunctionMeta {
@@ -266,4 +351,12 @@ impl FunctionMeta {
     pub const fn lift_at(positions: &'static [usize]) -> LiftBroadcastProfile {
         LiftBroadcastProfile::lift_at(positions)
     }
+
+    /// No error-collapse algebra: error inputs propagate through ordinary value handling. This is
+    /// the value the overwhelming majority of functions carry; only reduction/aggregation folds
+    /// and the branch-selector functions override it with a non-default
+    /// [`ErrorCollapseProfile`]. Referenced by name (rather than spelled
+    /// `ErrorCollapseProfile::None`) so a default literal needs no extra import beyond
+    /// `FunctionMeta` itself — the same growth-discipline shape as the `DEFAULT_*` consts above.
+    pub const DEFAULT_ERROR_COLLAPSE_PROFILE: ErrorCollapseProfile = ErrorCollapseProfile::None;
 }

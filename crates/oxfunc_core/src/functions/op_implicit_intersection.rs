@@ -25,6 +25,7 @@ pub const OP_IMPLICIT_INTERSECTION_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

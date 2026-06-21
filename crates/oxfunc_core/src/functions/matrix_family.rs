@@ -1,7 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
+    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, prepare_arg_values_only};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
@@ -22,15 +23,18 @@ const MATRIX_BASE_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
 };
 
 pub const MDETERM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MDETERM",
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..MATRIX_BASE_META
 };
 
 pub const MINVERSE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MINVERSE",
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..MATRIX_BASE_META
 };
 
@@ -47,6 +51,7 @@ pub const MUNIT_META: FunctionMeta = FunctionMeta {
 pub const MMULT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MMULT",
     arity: Arity::exact(2),
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
     ..MATRIX_BASE_META
 };
 

@@ -2,8 +2,8 @@ use crate::value::{CalcValue, CoreValue};
 use std::cmp::Ordering;
 
 use crate::function::{
-    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile, FecDependencyProfile,
+    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     prepare_args_values_only, prepare_calc_values_only, prepared_from_calc_value,
@@ -35,6 +35,7 @@ pub const PIVOTBY_META: FunctionMeta = FunctionMeta {
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
+    error_collapse_profile: ErrorCollapseProfile::ReductionFold,
 };
 
 fn surface_arity_error(actual: usize) -> LambdaHelperEvalError {
