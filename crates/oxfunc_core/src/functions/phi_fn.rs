@@ -4,7 +4,8 @@ use crate::function::{
 };
 use crate::functions::normal_dist_common::phi_kernel as phi_kernel_impl;
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -33,7 +34,11 @@ pub fn eval_phi_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, phi_kernel)
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::fallible(phi_kernel, PHI_META.real_result_policy),
+    )
 }
 
 pub fn map_phi_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

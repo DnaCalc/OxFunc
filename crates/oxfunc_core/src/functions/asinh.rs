@@ -3,7 +3,8 @@ use crate::function::{
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -34,7 +35,11 @@ pub fn eval_asinh_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, asinh_kernel)
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::fallible(asinh_kernel, ASINH_META.real_result_policy),
+    )
 }
 
 pub fn map_asinh_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

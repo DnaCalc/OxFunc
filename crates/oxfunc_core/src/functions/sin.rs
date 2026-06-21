@@ -4,7 +4,8 @@ use crate::function::{
     ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -34,7 +35,11 @@ pub fn eval_sin_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, SIN_META.real_result_policy.wrap(sin_kernel))
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::raw(sin_kernel, SIN_META.real_result_policy),
+    )
 }
 
 pub fn map_sin_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

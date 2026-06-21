@@ -5,7 +5,8 @@ use crate::function::{
 };
 use crate::functions::factorial_common::{factorial_of_int, trunc_nonnegative_or_minus_one};
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
@@ -41,7 +42,11 @@ pub fn eval_fact_surface(
     args: &[crate::value::CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, fact_kernel)
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::fallible(fact_kernel, FACT_META.real_result_policy),
+    )
 }
 
 pub fn map_fact_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {

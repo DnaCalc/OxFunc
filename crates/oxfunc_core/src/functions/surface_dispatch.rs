@@ -1,10 +1,10 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
 use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
-use crate::functions::acos::{acos_kernel, eval_acos_surface, map_acos_error_to_ws};
-use crate::functions::acosh::{acosh_kernel, eval_acosh_surface, map_acosh_error_to_ws};
+use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
+use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
 use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
-use crate::functions::acoth::{acoth_kernel, eval_acoth_surface, map_acoth_error_to_ws};
+use crate::functions::acoth::{eval_acoth_surface, map_acoth_error_to_ws};
 use crate::functions::adapters::prepared_arg_to_calc_value_lossy;
 use crate::functions::amor_depreciation_family::{
     eval_amordegrc_surface, eval_amorlinc_surface, map_amor_depreciation_error_to_ws,
@@ -203,12 +203,10 @@ use crate::functions::financial_time_value_family::{
     eval_npv_surface, eval_pduration_surface, eval_pmt_surface, eval_ppmt_surface, eval_pv_surface,
     eval_rate_surface, eval_rri_surface, map_financial_time_value_error_to_ws,
 };
-use crate::functions::fisher_fn::{eval_fisher_surface, fisher_kernel, map_fisher_error_to_ws};
-use crate::functions::fisherinv_fn::{
-    eval_fisherinv_surface, fisherinv_kernel, map_fisherinv_error_to_ws,
-};
+use crate::functions::fisher_fn::{eval_fisher_surface, map_fisher_error_to_ws};
+use crate::functions::fisherinv_fn::{eval_fisherinv_surface, map_fisherinv_error_to_ws};
 use crate::functions::fixed_fn::{eval_fixed_surface, map_fixed_error_to_ws};
-use crate::functions::gauss_fn::{eval_gauss_surface, gauss_kernel, map_gauss_error_to_ws};
+use crate::functions::gauss_fn::{eval_gauss_surface, map_gauss_error_to_ws};
 use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
 use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
 use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
@@ -340,7 +338,7 @@ use crate::functions::percentrank_inc_fn::{
 };
 use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
 use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
-use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws, phi_kernel};
+use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws};
 use crate::functions::pi::eval_pi;
 use crate::functions::pivotby_fn::{eval_pivotby_calc_surface, eval_pivotby_surface};
 use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
@@ -444,9 +442,6 @@ use crate::functions::trimrange_fn::{eval_trimrange_surface, map_trimrange_error
 use crate::functions::true_fn::eval_true_surface;
 use crate::functions::trunc_fn::{eval_trunc_surface, map_trunc_error_to_ws, trunc_kernel};
 use crate::functions::type_fn::{eval_type_surface, map_type_error_to_ws};
-use crate::functions::unary_numeric::{
-    eval_unary_numeric_calc_surface, map_unary_numeric_error_to_ws,
-};
 use crate::functions::value_fn::{eval_value_surface, map_value_error_to_ws};
 use crate::functions::valuetotext_fn::{eval_valuetotext_surface, map_valuetotext_error_to_ws};
 use crate::functions::var_fn::{eval_var_surface, map_var_error_to_ws};
@@ -1136,82 +1131,6 @@ pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatch
         })
 }
 
-fn eval_shared_unary_numeric_calc_dispatch(
-    function_id: &str,
-    args: &[CalcValue],
-    resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Option<Result<CalcValue, WorksheetErrorCode>> {
-    let result = match function_id {
-        FUNC_ID_ABS => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(abs_kernel(n))),
-        FUNC_ID_ACOS => eval_unary_numeric_calc_surface(args, resolver, acos_kernel),
-        FUNC_ID_ACOT => eval_unary_numeric_calc_surface(args, resolver, acot_kernel),
-        FUNC_ID_ACOSH => eval_unary_numeric_calc_surface(args, resolver, acosh_kernel),
-        FUNC_ID_ACOTH => eval_unary_numeric_calc_surface(args, resolver, acoth_kernel),
-        FUNC_ID_ASINH => eval_unary_numeric_calc_surface(args, resolver, asinh_kernel),
-        FUNC_ID_ATAN => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(atan_kernel(n))),
-        FUNC_ID_ATANH => eval_unary_numeric_calc_surface(args, resolver, atanh_kernel),
-        FUNC_ID_COS => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            COS_META.real_result_policy.wrap(cos_kernel),
-        ),
-        FUNC_ID_COSH => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            COSH_META.real_result_policy.wrap(cosh_kernel),
-        ),
-        FUNC_ID_COT => eval_unary_numeric_calc_surface(args, resolver, cot_kernel),
-        FUNC_ID_COTH => eval_unary_numeric_calc_surface(args, resolver, coth_kernel),
-        FUNC_ID_CSC => eval_unary_numeric_calc_surface(args, resolver, csc_kernel),
-        FUNC_ID_CSCH => eval_unary_numeric_calc_surface(args, resolver, csch_kernel),
-        FUNC_ID_DEGREES => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            DEGREES_META.real_result_policy.wrap(degrees_kernel),
-        ),
-        FUNC_ID_EVEN => eval_unary_numeric_calc_surface(args, resolver, even_kernel),
-        FUNC_ID_EXP => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            EXP_META.real_result_policy.wrap(exp_kernel),
-        ),
-        FUNC_ID_FACT => eval_unary_numeric_calc_surface(args, resolver, fact_kernel),
-        FUNC_ID_FACTDOUBLE => eval_unary_numeric_calc_surface(args, resolver, factdouble_kernel),
-        FUNC_ID_FISHER => eval_unary_numeric_calc_surface(args, resolver, fisher_kernel),
-        FUNC_ID_FISHERINV => eval_unary_numeric_calc_surface(args, resolver, fisherinv_kernel),
-        FUNC_ID_GAUSS => eval_unary_numeric_calc_surface(args, resolver, gauss_kernel),
-        FUNC_ID_INT => eval_unary_numeric_calc_surface(args, resolver, int_kernel),
-        FUNC_ID_LN => eval_unary_numeric_calc_surface(args, resolver, ln_kernel),
-        FUNC_ID_LOG10 => eval_unary_numeric_calc_surface(args, resolver, log10_kernel),
-        FUNC_ID_ODD => eval_unary_numeric_calc_surface(args, resolver, odd_kernel),
-        FUNC_ID_OP_NEGATE => eval_unary_numeric_calc_surface(args, resolver, op_negate_kernel),
-        FUNC_ID_OP_PERCENT => eval_unary_numeric_calc_surface(args, resolver, op_percent_kernel),
-        FUNC_ID_PHI => eval_unary_numeric_calc_surface(args, resolver, phi_kernel),
-        FUNC_ID_RADIANS => {
-            eval_unary_numeric_calc_surface(args, resolver, |n| Ok(radians_kernel(n)))
-        }
-        FUNC_ID_SEC => eval_unary_numeric_calc_surface(args, resolver, sec_kernel),
-        FUNC_ID_SECH => eval_unary_numeric_calc_surface(args, resolver, sech_kernel),
-        FUNC_ID_SIGN => eval_unary_numeric_calc_surface(args, resolver, sign_kernel),
-        FUNC_ID_SINH => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            SINH_META.real_result_policy.wrap(sinh_kernel),
-        ),
-        FUNC_ID_SQRT => eval_unary_numeric_calc_surface(args, resolver, sqrt_kernel),
-        FUNC_ID_SQRTPI => eval_unary_numeric_calc_surface(args, resolver, sqrtpi_kernel),
-        FUNC_ID_TAN => eval_unary_numeric_calc_surface(
-            args,
-            resolver,
-            TAN_META.real_result_policy.wrap(tan_kernel),
-        ),
-        FUNC_ID_TANH => eval_unary_numeric_calc_surface(args, resolver, |n| Ok(tanh_kernel(n))),
-        _ => return None,
-    };
-
-    Some(result.map_err(|error| map_unary_numeric_error_to_ws(&error)))
-}
-
 fn eval_dynamic_array_reshape_calc_dispatch(
     function_id: &str,
     args: &[CalcValue],
@@ -1404,11 +1323,12 @@ pub fn eval_surface_value_call_with_dispatch_key(
             {
                 return result;
             }
-            if let Some(result) =
-                eval_shared_unary_numeric_calc_dispatch(dispatch_key.function_id, args, resolver)
-            {
-                return result;
-            }
+            // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
+            // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
+            // is served by exactly one path — the by-index generated table, whose
+            // `eval_*_surface` arms route the post-coercion math through the generic
+            // `unary_numeric::execute(spec, …)` executor. The former
+            // `eval_shared_unary_numeric_calc_dispatch` shim is deleted.
             if let Some(result) =
                 eval_binary_arithmetic_calc_dispatch(dispatch_key.function_id, args, resolver)
             {

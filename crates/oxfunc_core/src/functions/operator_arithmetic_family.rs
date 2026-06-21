@@ -9,7 +9,8 @@ use crate::functions::binary_numeric::{
 use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::functions::power_fn::power_kernel;
 use crate::functions::unary_numeric::{
-    UnaryNumericSurfaceError, eval_unary_numeric_surface, map_unary_numeric_error_to_ws,
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
 };
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcArray, CalcValue, CoreValue, WorksheetErrorCode};
@@ -166,14 +167,22 @@ pub fn eval_op_negate_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, op_negate_kernel)
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::fallible(op_negate_kernel, OP_NEGATE_META.real_result_policy),
+    )
 }
 
 pub fn eval_op_percent_surface(
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
 ) -> Result<CalcValue, UnaryNumericSurfaceError> {
-    eval_unary_numeric_surface(args, resolver, op_percent_kernel)
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::fallible(op_percent_kernel, OP_PERCENT_META.real_result_policy),
+    )
 }
 
 pub fn eval_op_subtract_surface(
