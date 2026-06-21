@@ -25,9 +25,15 @@ const NORMAL_LOG_BASE_META: FunctionMeta = FunctionMeta {
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
+// The legacy compatibility surfaces here are scalar-shaped by-index and broadcast their leading
+// arguments over an array: CONFIDENCE/LOGNORMDIST/NORMINV lift their first three (`[0,1,2]`),
+// NORMDIST its four (`[0,1,2,3]`), and the single-argument NORMSDIST/NORMSINV lift `[0]`. The
+// modern `.`-named surfaces lift natively and carry the default. Verified live Excel 16.0
+// build 20026.
 pub const CONFIDENCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CONFIDENCE",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 
@@ -52,6 +58,7 @@ pub const LOGNORM_INV_META: FunctionMeta = FunctionMeta {
 pub const LOGNORMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LOGNORMDIST",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 
@@ -70,24 +77,28 @@ pub const NORM_INV_META: FunctionMeta = FunctionMeta {
 pub const NORMSDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMSDIST",
     arity: Arity::exact(1),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NORMAL_LOG_BASE_META
 };
 
 pub const NORMSINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMSINV",
     arity: Arity::exact(1),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NORMAL_LOG_BASE_META
 };
 
 pub const NORMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMDIST",
     arity: Arity::exact(4),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2, 3]),
     ..NORMAL_LOG_BASE_META
 };
 
 pub const NORMINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NORMINV",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..NORMAL_LOG_BASE_META
 };
 

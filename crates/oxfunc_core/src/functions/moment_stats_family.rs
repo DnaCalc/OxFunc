@@ -63,7 +63,9 @@ pub const TRIMMEAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRIMMEAN",
     arity: Arity::exact(2),
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+    // TRIMMEAN keeps its data array fixed and broadcasts only the scalar `percent` argument
+    // at position `1` over an array (`[1]`). Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::lift_at(&[1]),
     kernel_signature_class: KernelSignatureClass::Custom,
     ..MOMENT_STATS_BASE_META
 };

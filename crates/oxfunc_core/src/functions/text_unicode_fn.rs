@@ -19,7 +19,9 @@ pub const UNICHAR_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+    // UNICHAR's single code-point argument is scalar-shaped by-index and broadcasts over an
+    // array (`[0]`). Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -29,6 +31,9 @@ pub const UNICHAR_META: FunctionMeta = FunctionMeta {
 pub const UNICODE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.UNICODE",
     kernel_signature_class: KernelSignatureClass::Custom,
+    // UNICODE's surface returns a scalar code point and lifts natively; it does NOT inherit
+    // UNICHAR's by-index broadcast mask. Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     ..UNICHAR_META
 };
 

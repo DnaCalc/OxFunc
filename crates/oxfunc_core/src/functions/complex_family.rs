@@ -30,71 +30,92 @@ const NUMBER_META_BASE: FunctionMeta = FunctionMeta {
     ..TEXT_META_BASE
 };
 
+// The single-arg IM* surfaces lift their one complex-string argument elementwise over an array
+// (mask `[0]`); the binary IM* surfaces (IMDIV/IMPOWER/IMSUB) lift both operands (mask `[0,1]`);
+// COMPLEX lifts its real/imaginary/suffix arguments (mask `[0,1,2]`). IMPRODUCT/IMSUM are
+// variadic aggregates that lift natively and carry the default. Verified live Excel 16.0
+// build 20026.
 pub const COMPLEX_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.COMPLEX",
     arity: Arity { min: 2, max: 3 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..TEXT_META_BASE
 };
 pub const IMABS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMABS",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NUMBER_META_BASE
 };
 pub const IMAGINARY_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMAGINARY",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NUMBER_META_BASE
 };
 pub const IMARGUMENT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMARGUMENT",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NUMBER_META_BASE
 };
 pub const IMCONJUGATE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCONJUGATE",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMCOS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCOS",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMCOSH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCOSH",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMCOT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCOT",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMCSC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCSC",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMCSCH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMCSCH",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMDIV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMDIV",
     arity: Arity::exact(2),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1]),
     ..TEXT_META_BASE
 };
 pub const IMEXP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMEXP",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMLN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMLN",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMLOG10_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMLOG10",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMLOG2_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMLOG2",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMPOWER_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMPOWER",
     arity: Arity::exact(2),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1]),
     ..TEXT_META_BASE
 };
 pub const IMPRODUCT_META: FunctionMeta = FunctionMeta {
@@ -104,31 +125,38 @@ pub const IMPRODUCT_META: FunctionMeta = FunctionMeta {
 };
 pub const IMREAL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMREAL",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..NUMBER_META_BASE
 };
 pub const IMSEC_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSEC",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMSECH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSECH",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMSIN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSIN",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMSINH_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSINH",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMSQRT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSQRT",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 pub const IMSUB_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMSUB",
     arity: Arity::exact(2),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1]),
     ..TEXT_META_BASE
 };
 pub const IMSUM_META: FunctionMeta = FunctionMeta {
@@ -138,6 +166,7 @@ pub const IMSUM_META: FunctionMeta = FunctionMeta {
 };
 pub const IMTAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IMTAN",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..TEXT_META_BASE
 };
 

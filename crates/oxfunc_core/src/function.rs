@@ -257,4 +257,13 @@ impl FunctionMeta {
     /// `DEFAULT_ARG_PREPARATION_PROFILE` and `DEFAULT_REAL_RESULT_POLICY`.
     pub const DEFAULT_LIFT_BROADCAST_PROFILE: LiftBroadcastProfile =
         LiftBroadcastProfile::SurfaceNative;
+
+    /// Construct a [`LiftBroadcastProfile::ByIndexScalarArrayLift`] over the given argument
+    /// positions for a `FunctionMeta` literal's `lift_broadcast_profile` field. A thin
+    /// re-export of [`LiftBroadcastProfile::lift_at`] so a meta literal that declares its mask
+    /// needs no import beyond `FunctionMeta` itself — the same growth-discipline shape as the
+    /// `DEFAULT_*` consts above.
+    pub const fn lift_at(positions: &'static [usize]) -> LiftBroadcastProfile {
+        LiftBroadcastProfile::lift_at(positions)
+    }
 }

@@ -23,8 +23,11 @@ pub const DOLLARDE_META: FunctionMeta = FunctionMeta {
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
+// DOLLARFR is scalar-shaped by-index and broadcasts both of its arguments over an array
+// (`[0,1]`); DOLLARDE lifts natively (default). Verified live Excel 16.0 build 20026.
 pub const DOLLARFR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DOLLARFR",
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1]),
     ..DOLLARDE_META
 };
 

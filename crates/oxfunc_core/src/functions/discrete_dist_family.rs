@@ -42,21 +42,29 @@ pub const BINOM_INV_META: FunctionMeta = FunctionMeta {
     ..DISCRETE_DIST_BASE_META
 };
 
+// The legacy compatibility surfaces (BINOMDIST/CRITBINOM/POISSON/HYPGEOMDIST/NEGBINOMDIST/
+// EXPONDIST) are scalar-shaped by-index and broadcast their leading arguments over an array:
+// BINOMDIST lifts its four arguments (`[0,1,2,3]`), the others their first three (`[0,1,2]`).
+// The modern `.`-named surfaces lift natively and carry the default. Verified live Excel 16.0
+// build 20026.
 pub const BINOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BINOMDIST",
     arity: Arity::exact(4),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2, 3]),
     ..DISCRETE_DIST_BASE_META
 };
 
 pub const CRITBINOM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CRITBINOM",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
 pub const POISSON_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.POISSON",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -75,6 +83,7 @@ pub const HYPGEOM_DIST_META: FunctionMeta = FunctionMeta {
 pub const HYPGEOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.HYPGEOMDIST",
     arity: Arity::exact(4),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -87,6 +96,7 @@ pub const NEGBINOM_DIST_META: FunctionMeta = FunctionMeta {
 pub const NEGBINOMDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.NEGBINOMDIST",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 
@@ -99,6 +109,7 @@ pub const EXPON_DIST_META: FunctionMeta = FunctionMeta {
 pub const EXPONDIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.EXPONDIST",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..DISCRETE_DIST_BASE_META
 };
 

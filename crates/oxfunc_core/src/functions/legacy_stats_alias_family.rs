@@ -42,24 +42,32 @@ pub const MODE_META: FunctionMeta = FunctionMeta {
     arity: Arity { min: 1, max: 255 },
     ..LEGACY_ALIAS_BASE_META
 };
+// PERCENTILE/PERCENTRANK/QUARTILE keep their data array fixed and broadcast only the scalar
+// k/x/quart argument at position `1` over an array (`[1]`); LOGINV is scalar-shaped by-index
+// and broadcasts its first three arguments (`[0,1,2]`). COVAR/MODE lift natively and carry the
+// default. Verified live Excel 16.0 build 20026.
 pub const PERCENTILE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PERCENTILE",
     arity: Arity::exact(2),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[1]),
     ..LEGACY_ALIAS_BASE_META
 };
 pub const PERCENTRANK_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.PERCENTRANK",
     arity: Arity { min: 2, max: 3 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[1]),
     ..LEGACY_ALIAS_BASE_META
 };
 pub const QUARTILE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.QUARTILE",
     arity: Arity::exact(2),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[1]),
     ..LEGACY_ALIAS_BASE_META
 };
 pub const LOGINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.LOGINV",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..LEGACY_ALIAS_BASE_META
 };
 

@@ -20,7 +20,9 @@ pub const CONFIDENCE_T_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+    // CONFIDENCE.T is scalar-shaped by-index and broadcasts its first three arguments over an
+    // array (`[0,1,2]`). Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
@@ -36,7 +38,9 @@ pub const Z_TEST_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+    // Z.TEST keeps its data array fixed and broadcasts the scalar x/sigma arguments at positions
+    // `1` and `2` over an array (`[1,2]`). Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::lift_at(&[1, 2]),
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,

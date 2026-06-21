@@ -34,9 +34,13 @@ pub const MINVERSE_META: FunctionMeta = FunctionMeta {
     ..MATRIX_BASE_META
 };
 
+// MUNIT's single dimension argument is scalar-shaped by-index and broadcasts over an array
+// (`[0]`). The other matrix surfaces take array arguments and lift natively (default). Verified
+// live Excel 16.0 build 20026.
 pub const MUNIT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MUNIT",
     arity: Arity::exact(1),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0]),
     ..MATRIX_BASE_META
 };
 

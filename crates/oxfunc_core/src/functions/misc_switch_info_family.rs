@@ -19,7 +19,9 @@ pub const SWITCH_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+    // SWITCH broadcasts its expression and the first value/result pair (`[0,1,3]`) over an
+    // array. Verified live Excel 16.0 build 20026.
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 3]),
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,

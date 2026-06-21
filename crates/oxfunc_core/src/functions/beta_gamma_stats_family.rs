@@ -36,14 +36,20 @@ pub const BETA_INV_META: FunctionMeta = FunctionMeta {
     arity: Arity { min: 3, max: 5 },
     ..BASE_META
 };
+// The legacy BETADIST/BETAINV/GAMMADIST/GAMMAINV compatibility surfaces are scalar-shaped
+// by-index and broadcast their first three arguments (`[0,1,2]`) over an array. The modern
+// `.`-named BETA.DIST/BETA.INV/GAMMA.DIST/GAMMA.INV surfaces lift natively and carry the
+// default. Verified live Excel 16.0 build 20026.
 pub const BETADIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BETADIST",
     arity: Arity { min: 3, max: 5 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..BASE_META
 };
 pub const BETAINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BETAINV",
     arity: Arity { min: 3, max: 5 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..BASE_META
 };
 pub const GAMMA_DIST_META: FunctionMeta = FunctionMeta {
@@ -59,11 +65,13 @@ pub const GAMMA_INV_META: FunctionMeta = FunctionMeta {
 pub const GAMMADIST_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GAMMADIST",
     arity: Arity::exact(4),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..BASE_META
 };
 pub const GAMMAINV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.GAMMAINV",
     arity: Arity::exact(3),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..BASE_META
 };
 

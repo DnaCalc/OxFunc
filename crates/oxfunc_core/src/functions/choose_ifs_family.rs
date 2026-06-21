@@ -24,9 +24,12 @@ pub const CHOOSE_META: FunctionMeta = FunctionMeta {
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
+// IFS broadcasts its first condition/value pair plus the second condition (`[0,1,2]`) over an
+// array; CHOOSE lifts natively (default). Verified live Excel 16.0 build 20026.
 pub const IFS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.IFS",
     arity: Arity { min: 2, max: 254 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..CHOOSE_META
 };
 

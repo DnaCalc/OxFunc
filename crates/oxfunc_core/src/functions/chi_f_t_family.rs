@@ -12,7 +12,20 @@ use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
 
 macro_rules! dist_meta {
+    // Default arm: surface-native lift (the modern `.`-named distributions evaluate elementwise
+    // in their own surface and carry the default lift/broadcast profile).
     ($id:literal, $min:expr, $max:expr) => {
+        dist_meta!(
+            $id,
+            $min,
+            $max,
+            FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE
+        )
+    };
+    // Explicit-lift arm: the legacy compatibility surfaces (CHIDIST/CHIINV/FDIST/FINV/TDIST/TINV)
+    // are scalar-shaped by-index and rely on the dispatch layer to broadcast over the named
+    // argument positions. Verified live Excel 16.0 build 20026.
+    ($id:literal, $min:expr, $max:expr, $lift:expr) => {
         FunctionMeta {
             function_id: $id,
             arity: Arity {
@@ -25,7 +38,7 @@ macro_rules! dist_meta {
             thread_safety: ThreadSafetyClass::SafePure,
             arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
             coercion_lift_profile: CoercionLiftProfile::Custom,
-            lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+            lift_broadcast_profile: $lift,
             kernel_signature_class: KernelSignatureClass::Custom,
             fec_dependency_profile: FecDependencyProfile::None,
             surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -38,21 +51,26 @@ pub const CHISQ_DIST_META: FunctionMeta = dist_meta!("FUNC.CHISQ.DIST", 3, 3);
 pub const CHISQ_DIST_RT_META: FunctionMeta = dist_meta!("FUNC.CHISQ.DIST.RT", 2, 2);
 pub const CHISQ_INV_META: FunctionMeta = dist_meta!("FUNC.CHISQ.INV", 2, 2);
 pub const CHISQ_INV_RT_META: FunctionMeta = dist_meta!("FUNC.CHISQ.INV.RT", 2, 2);
-pub const CHIDIST_META: FunctionMeta = dist_meta!("FUNC.CHIDIST", 2, 2);
-pub const CHIINV_META: FunctionMeta = dist_meta!("FUNC.CHIINV", 2, 2);
+pub const CHIDIST_META: FunctionMeta =
+    dist_meta!("FUNC.CHIDIST", 2, 2, FunctionMeta::lift_at(&[0, 1]));
+pub const CHIINV_META: FunctionMeta =
+    dist_meta!("FUNC.CHIINV", 2, 2, FunctionMeta::lift_at(&[0, 1]));
 pub const F_DIST_META: FunctionMeta = dist_meta!("FUNC.F.DIST", 4, 4);
 pub const F_DIST_RT_META: FunctionMeta = dist_meta!("FUNC.F.DIST.RT", 3, 3);
 pub const F_INV_META: FunctionMeta = dist_meta!("FUNC.F.INV", 3, 3);
 pub const F_INV_RT_META: FunctionMeta = dist_meta!("FUNC.F.INV.RT", 3, 3);
-pub const FDIST_META: FunctionMeta = dist_meta!("FUNC.FDIST", 3, 3);
-pub const FINV_META: FunctionMeta = dist_meta!("FUNC.FINV", 3, 3);
+pub const FDIST_META: FunctionMeta =
+    dist_meta!("FUNC.FDIST", 3, 3, FunctionMeta::lift_at(&[0, 1, 2]));
+pub const FINV_META: FunctionMeta =
+    dist_meta!("FUNC.FINV", 3, 3, FunctionMeta::lift_at(&[0, 1, 2]));
 pub const T_DIST_META: FunctionMeta = dist_meta!("FUNC.T.DIST", 3, 3);
 pub const T_DIST_2T_META: FunctionMeta = dist_meta!("FUNC.T.DIST.2T", 2, 2);
 pub const T_DIST_RT_META: FunctionMeta = dist_meta!("FUNC.T.DIST.RT", 2, 2);
 pub const T_INV_META: FunctionMeta = dist_meta!("FUNC.T.INV", 2, 2);
 pub const T_INV_2T_META: FunctionMeta = dist_meta!("FUNC.T.INV.2T", 2, 2);
-pub const TDIST_META: FunctionMeta = dist_meta!("FUNC.TDIST", 3, 3);
-pub const TINV_META: FunctionMeta = dist_meta!("FUNC.TINV", 2, 2);
+pub const TDIST_META: FunctionMeta =
+    dist_meta!("FUNC.TDIST", 3, 3, FunctionMeta::lift_at(&[0, 1, 2]));
+pub const TINV_META: FunctionMeta = dist_meta!("FUNC.TINV", 2, 2, FunctionMeta::lift_at(&[0, 1]));
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ChiFTEvalError {

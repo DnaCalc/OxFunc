@@ -15,7 +15,20 @@ use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayShape, CalcArray, CoreValue, WorksheetErrorCode};
 
 macro_rules! reshape_meta {
+    // Default arm: surface-native (the array-shaping surfaces that take only an array argument,
+    // or do their own shaping, carry the default lift/broadcast profile).
     ($id:literal, $min:expr, $max:expr) => {
+        reshape_meta!(
+            $id,
+            $min,
+            $max,
+            FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE
+        )
+    };
+    // Explicit-lift arm: the count/dimension arguments of DROP/EXPAND/TAKE/TOROW (`[1,2]`) and
+    // TOCOL/WRAPCOLS/WRAPROWS (`[1]`) are scalar-shaped by-index and broadcast over the named
+    // argument positions. Verified live Excel 16.0 build 20026.
+    ($id:literal, $min:expr, $max:expr, $lift:expr) => {
         FunctionMeta {
             function_id: $id,
             arity: Arity {
@@ -28,7 +41,7 @@ macro_rules! reshape_meta {
             thread_safety: ThreadSafetyClass::SafePure,
             arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
             coercion_lift_profile: CoercionLiftProfile::Custom,
-            lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+            lift_broadcast_profile: $lift,
             kernel_signature_class: KernelSignatureClass::Custom,
             fec_dependency_profile: FecDependencyProfile::None,
             surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -39,19 +52,25 @@ macro_rules! reshape_meta {
 
 pub const CHOOSECOLS_META: FunctionMeta = reshape_meta!("FUNC.CHOOSECOLS", 2, 255);
 pub const CHOOSEROWS_META: FunctionMeta = reshape_meta!("FUNC.CHOOSEROWS", 2, 255);
-pub const DROP_META: FunctionMeta = reshape_meta!("FUNC.DROP", 2, 3);
-pub const EXPAND_META: FunctionMeta = reshape_meta!("FUNC.EXPAND", 2, 4);
+pub const DROP_META: FunctionMeta =
+    reshape_meta!("FUNC.DROP", 2, 3, FunctionMeta::lift_at(&[1, 2]));
+pub const EXPAND_META: FunctionMeta =
+    reshape_meta!("FUNC.EXPAND", 2, 4, FunctionMeta::lift_at(&[1, 2]));
 pub const FILTER_META: FunctionMeta = reshape_meta!("FUNC.FILTER", 2, 3);
 pub const SORT_META: FunctionMeta = reshape_meta!("FUNC.SORT", 1, 4);
 pub const SORTBY_META: FunctionMeta = reshape_meta!("FUNC.SORTBY", 2, 30);
-pub const TAKE_META: FunctionMeta = reshape_meta!("FUNC.TAKE", 2, 3);
-pub const TOCOL_META: FunctionMeta = reshape_meta!("FUNC.TOCOL", 1, 3);
-pub const TOROW_META: FunctionMeta = reshape_meta!("FUNC.TOROW", 1, 3);
+pub const TAKE_META: FunctionMeta =
+    reshape_meta!("FUNC.TAKE", 2, 3, FunctionMeta::lift_at(&[1, 2]));
+pub const TOCOL_META: FunctionMeta = reshape_meta!("FUNC.TOCOL", 1, 3, FunctionMeta::lift_at(&[1]));
+pub const TOROW_META: FunctionMeta =
+    reshape_meta!("FUNC.TOROW", 1, 3, FunctionMeta::lift_at(&[1, 2]));
 pub const TRANSPOSE_META: FunctionMeta = reshape_meta!("FUNC.TRANSPOSE", 1, 1);
 pub const UNIQUE_META: FunctionMeta = reshape_meta!("FUNC.UNIQUE", 1, 3);
 pub const VSTACK_META: FunctionMeta = reshape_meta!("FUNC.VSTACK", 1, 255);
-pub const WRAPCOLS_META: FunctionMeta = reshape_meta!("FUNC.WRAPCOLS", 2, 3);
-pub const WRAPROWS_META: FunctionMeta = reshape_meta!("FUNC.WRAPROWS", 2, 3);
+pub const WRAPCOLS_META: FunctionMeta =
+    reshape_meta!("FUNC.WRAPCOLS", 2, 3, FunctionMeta::lift_at(&[1]));
+pub const WRAPROWS_META: FunctionMeta =
+    reshape_meta!("FUNC.WRAPROWS", 2, 3, FunctionMeta::lift_at(&[1]));
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum DynamicArrayReshapeEvalError {

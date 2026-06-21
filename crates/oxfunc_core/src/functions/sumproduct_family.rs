@@ -49,9 +49,13 @@ pub const SUMXMY2_META: FunctionMeta = FunctionMeta {
     ..SUMPRODUCT_BASE_META
 };
 
+// SERIESSUM is scalar-shaped by-index in its x/n/m arguments and broadcasts them over an array
+// (`[0,1,2]`); its coefficients array (position 3) is not lifted. The SUM* surfaces take array
+// arguments and lift natively (default). Verified live Excel 16.0 build 20026.
 pub const SERIESSUM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SERIESSUM",
     arity: Arity::exact(4),
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..SUMPRODUCT_BASE_META
 };
 

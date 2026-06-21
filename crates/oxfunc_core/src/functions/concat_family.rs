@@ -26,9 +26,12 @@ pub const CONCAT_META: FunctionMeta = FunctionMeta {
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
 };
 
+// Legacy CONCATENATE is scalar-shaped by-index and broadcasts its first three arguments over an
+// array (`[0,1,2]`); modern CONCAT lifts natively (default). Verified live Excel 16.0 build 20026.
 pub const CONCATENATE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.CONCATENATE",
     arity: Arity { min: 1, max: 255 },
+    lift_broadcast_profile: FunctionMeta::lift_at(&[0, 1, 2]),
     ..CONCAT_META
 };
 
