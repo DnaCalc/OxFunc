@@ -213,6 +213,8 @@ pub mod sum;
 pub mod sumproduct_family;
 pub mod sumsq;
 pub mod surface_dispatch;
+#[cfg(test)]
+mod surface_dispatch_unary_numeric_spec_generator;
 pub mod switch_fn;
 pub mod t_fn;
 pub mod tan;

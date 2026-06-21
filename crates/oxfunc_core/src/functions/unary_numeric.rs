@@ -99,6 +99,15 @@ impl UnaryNumericExecSpec {
     pub const fn policy(self) -> ExcelRealPolicy {
         self.policy
     }
+
+    /// `true` when this binding holds a pure `f64 -> f64` (`Raw`) kernel whose publication is
+    /// owned by the `ExcelRealPolicy`; `false` for a `Fallible` kernel that owns its own
+    /// publication. The spec-driven by-index generator reads THIS — rather than a hand-written
+    /// per-arm flag — to choose between emitting `UnaryNumericExecSpec::raw(..)` and
+    /// `::fallible(..)`, so the generated constructor reflects the actual declared binding.
+    pub const fn kernel_is_raw(self) -> bool {
+        matches!(self.kernel, UnaryNumericKernel::Raw(_))
+    }
 }
 
 /// THE generic executor for the unary-numeric kernel-publication slice (ODR-FN-004 Layer 3).

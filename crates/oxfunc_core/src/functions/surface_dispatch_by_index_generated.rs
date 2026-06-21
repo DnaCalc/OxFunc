@@ -1,20 +1,22 @@
-// Auto-generated from eval_surface_value_call_with_callable string arms.
-// Do not edit by hand; regenerate from surface_dispatch.rs when the catalog arms change.
+// Auto-generated dispatch table for `eval_surface_value_call_with_callable`.
+//
+// W105 oxf-y2uw.9 — PARTIAL spec-driven migration. This file has TWO partitions:
+//
+//   1. HAND-ARM partition (pending W105 .12 rollout): every arm OUTSIDE the spec-driven
+//      block is still emitted from the hand-written `eval_*_surface` string arms in
+//      `surface_dispatch.rs`. Regenerate those from `surface_dispatch.rs` as before. Those
+//      families are NOT yet spec-driven; the full-surface migration is bead .12.
+//
+//   2. SPEC-DRIVEN partition (unary-numeric family): the arms between the BEGIN/END markers
+//      are emitted FROM the declarative `UnaryNumericExecSpec` binding (kernel + the
+//      `ExcelRealPolicy` carried on each id's `FunctionMeta`) by the committed generator in
+//      `functions::surface_dispatch_unary_numeric_spec_generator` (a `#[cfg(test)]` module).
+//      Re-emit with:
+//        cargo test -p oxfunc_core -- --ignored regenerate_surface_dispatch_unary_numeric_arms
+//      The `drift_check_committed_table_equals_generator` test fails the build if this file
+//      diverges from the generator output, so the "generated" claim cannot rot. Do NOT
+//      hand-edit the block.
 match dispatch_key.catalog_index {
-    // FUNC.ACOS
-    0 => eval_acos_surface(args, resolver).map_err(|e| map_acos_error_to_ws(&e)),
-    // FUNC.ACOT
-    1 => eval_acot_surface(args, resolver).map_err(|e| map_acot_error_to_ws(&e)),
-    // FUNC.ACOSH
-    2 => {
-                eval_acosh_surface(args, resolver).map_err(|e| map_acosh_error_to_ws(&e))
-            }
-            3 => {
-                eval_acoth_surface(args, resolver).map_err(|e| map_acoth_error_to_ws(&e))
-            }
-            4 => {
-                eval_abs_surface(args, resolver).map_err(|e| map_abs_surface_error_to_ws(&e))
-            }
             5 => {
                 eval_accrint_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))
             }
@@ -31,18 +33,10 @@ match dispatch_key.catalog_index {
                     )
                 })
             }
-            9 => eval_atan_surface(args, resolver).map_err(|e| map_atan_error_to_ws(&e)),
     // FUNC.ASIN
     7 => eval_asin_surface(args, resolver).map_err(|e| map_asin_error_to_ws(&e)),
-    // FUNC.ASINH
-    8 => {
-                eval_asinh_surface(args, resolver).map_err(|e| map_asinh_error_to_ws(&e))
-            }
             10 => {
                 eval_atan2_surface(args, resolver).map_err(|e| map_atan2_error_to_ws(&e))
-            }
-            11 => {
-                eval_atanh_surface(args, resolver).map_err(|e| map_atanh_error_to_ws(&e))
             }
             12 => eval_and_surface(args, resolver).map_err(|e| map_and_error_to_ws(&e)),
     // FUNC.AMORDEGRC
@@ -236,14 +230,6 @@ match dispatch_key.catalog_index {
             }
             93 => eval_covariance_p_surface(args, resolver)
                 .map_err(|e| map_covariance_p_error_to_ws(&e)),
-    // FUNC.COS
-    77 => eval_cos_surface(args, resolver).map_err(|e| map_cos_error_to_ws(&e)),
-    // FUNC.COSH
-    78 => eval_cosh_surface(args, resolver).map_err(|e| map_cosh_error_to_ws(&e)),
-    // FUNC.COT
-    79 => eval_cot_surface(args, resolver).map_err(|e| map_cot_error_to_ws(&e)),
-    // FUNC.COTH
-    80 => eval_coth_surface(args, resolver).map_err(|e| map_coth_error_to_ws(&e)),
     // FUNC.COUNT
     81 => {
                 eval_count_surface(args, resolver).map_err(|e| map_count_error_to_ws(&e))
@@ -286,10 +272,6 @@ match dispatch_key.catalog_index {
     // FUNC.COVARIANCE.S
     94 => eval_covariance_s_surface(args, resolver)
                 .map_err(|e| map_covariance_s_error_to_ws(&e)),
-    // FUNC.CSC
-    95 => eval_csc_surface(args, resolver).map_err(|e| map_csc_error_to_ws(&e)),
-    // FUNC.CSCH
-    96 => eval_csch_surface(args, resolver).map_err(|e| map_csch_error_to_ws(&e)),
     // FUNC.CUMIPMT
     97 => eval_cumipmt_surface(args, resolver)
                 .map_err(|e| map_cumulative_finance_error_to_ws(&e)),
@@ -405,7 +387,6 @@ match dispatch_key.catalog_index {
     132 => {
                 eval_second_surface(args, resolver).map_err(|e| map_date_parts_error_to_ws(&e))
             }
-            412 => eval_sec_surface(args, resolver).map_err(|e| map_sec_error_to_ws(&e)),
     // FUNC.DECIMAL
     134 => {
                 eval_decimal_surface(args, resolver).map_err(|e| map_decimal_error_to_ws(&e))
@@ -428,9 +409,6 @@ match dispatch_key.catalog_index {
     136 => {
                 eval_devsq_surface(args, resolver).map_err(|e| map_devsq_error_to_ws(&e))
             }
-            137 => {
-                eval_degrees_surface(args, resolver).map_err(|e| map_degrees_error_to_ws(&e))
-            }
             138 => {
                 eval_delta_surface(args, resolver).map_err(|e| map_delta_error_to_ws(&e))
             }
@@ -452,8 +430,6 @@ match dispatch_key.catalog_index {
     // FUNC.EXPAND
     145 => eval_expand_surface(args, resolver)
                 .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-    // FUNC.EVEN
-    146 => eval_even_surface(args, resolver).map_err(|e| map_even_error_to_ws(&e)),
     // FUNC.ERROR.TYPE
     147 => {
                 eval_error_type_surface(args, resolver).map_err(|e| map_error_type_error_to_ws(&e))
@@ -494,17 +470,9 @@ match dispatch_key.catalog_index {
             }
             158 => eval_expon_dist_surface(args, resolver)
                 .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-    // FUNC.EXP
-    157 => eval_exp_surface(args, resolver).map_err(|e| map_exp_error_to_ws(&e)),
     // FUNC.EXPONDIST
     159 => eval_expondist_surface(args, resolver)
                 .map_err(|e| map_discrete_dist_error_to_ws(&e)),
-    // FUNC.FACT
-    160 => eval_fact_surface(args, resolver).map_err(|e| map_fact_error_to_ws(&e)),
-    // FUNC.FACTDOUBLE
-    161 => {
-                eval_factdouble_surface(args, resolver).map_err(|e| map_factdouble_error_to_ws(&e))
-            }
             164 => {
                 eval_f_dist_surface(args, resolver).map_err(|e| map_chi_f_t_error_to_ws(&e))
             }
@@ -537,13 +505,6 @@ match dispatch_key.catalog_index {
     // FUNC.FVSCHEDULE
     174 => eval_fvschedule_surface(args, resolver)
                 .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-    // FUNC.FISHER
-    175 => {
-                eval_fisher_surface(args, resolver).map_err(|e| map_fisher_error_to_ws(&e))
-            }
-            176 => {
-                eval_fisherinv_surface(args, resolver).map_err(|e| map_fisherinv_error_to_ws(&e))
-            }
             152 => eval_find_surface(args, resolver)
                 .map_err(|e| map_text_search_replace_error_to_ws(&e)),
     // FUNC.FLOOR.PRECISE
@@ -552,10 +513,6 @@ match dispatch_key.catalog_index {
     // FUNC.FORMULATEXT
     181 => eval_formulatext_surface(args, host_info)
                 .map_err(|e| map_reference_metadata_error_to_ws(&e)),
-    // FUNC.GAUSS
-    182 => {
-                eval_gauss_surface(args, resolver).map_err(|e| map_gauss_error_to_ws(&e))
-            }
             183 => {
                 eval_gamma_surface(args, resolver).map_err(|e| map_special_dist_error_to_ws(&e))
             }
@@ -774,15 +731,9 @@ match dispatch_key.catalog_index {
     // FUNC.LOGINV
     261 => eval_loginv_surface(args, resolver)
                 .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-    // FUNC.LN
-    262 => eval_ln_surface(args, resolver).map_err(|e| map_ln_error_to_ws(&e)),
     // FUNC.LOOKUP
     263 => eval_lookup_surface(args, resolver)
                 .map_err(|e| map_lookup_prob_frequency_error_to_ws(&e)),
-    // FUNC.LOG10
-    265 => {
-                eval_log10_surface(args, resolver).map_err(|e| map_log10_error_to_ws(&e))
-            }
             267 => {
                 eval_lower_surface(args, resolver).map_err(|e| map_text_scalar_error_to_ws(&e))
             }
@@ -977,8 +928,6 @@ match dispatch_key.catalog_index {
                 eval_oddlyield_surface(args, resolver).map_err(|e| map_odd_bond_error_to_ws(&e))
             }
             334 => eval_or_surface(args, resolver).map_err(|e| map_or_error_to_ws(&e)),
-    // FUNC.PHI
-    336 => eval_phi_surface(args, resolver).map_err(|e| map_phi_error_to_ws(&e)),
     // FUNC.PERCENTILE.EXC
     337 => eval_percentile_exc_surface(args, resolver)
                 .map_err(|e| map_percentile_exc_error_to_ws(&e)),
@@ -1039,15 +988,9 @@ match dispatch_key.catalog_index {
     // FUNC.OP_MULTIPLY
     356 => eval_op_multiply_surface(args, resolver)
                 .map_err(|e| map_operator_binary_error_to_ws(&e)),
-    // FUNC.OP_NEGATE
-    357 => eval_op_negate_surface(args, resolver)
-                .map_err(|e| map_operator_unary_error_to_ws(&e)),
     // FUNC.OP_NOT_EQUAL
     358 => eval_op_not_equal_surface(args, resolver)
                 .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-    // FUNC.OP_PERCENT
-    359 => eval_op_percent_surface(args, resolver)
-                .map_err(|e| map_operator_unary_error_to_ws(&e)),
     // FUNC.OP_POWER
     360 => eval_op_power_surface(args, resolver)
                 .map_err(|e| map_operator_binary_error_to_ws(&e)),
@@ -1140,10 +1083,6 @@ match dispatch_key.catalog_index {
     // FUNC.QUARTILE
     387 => eval_quartile_surface(args, resolver)
                 .map_err(|e| map_legacy_stats_alias_error_to_ws(&e)),
-    // FUNC.RADIANS
-    388 => {
-                eval_radians_surface(args, resolver).map_err(|e| map_radians_error_to_ws(&e))
-            }
             264 => eval_log_surface(args, resolver).map_err(|e| map_log_error_to_ws(&e)),
     // FUNC.RANK
     389 => eval_rank_surface(args, resolver).map_err(|e| map_rank_error_to_ws(&e)),
@@ -1211,24 +1150,15 @@ match dispatch_key.catalog_index {
     413 => {
                 eval_seriessum_surface(args, resolver).map_err(|e| map_sumproduct_error_to_ws(&e))
             }
-            329 => eval_odd_surface(args, resolver).map_err(|e| map_odd_error_to_ws(&e)),
     // FUNC.SEQUENCE
     414 => {
                 eval_sequence_surface(args, resolver).map_err(|e| map_sequence_error_to_ws(&e))
             }
             411 => eval_scan_surface(args, resolver, callable_invoker)
                 .map_err(|e| map_lambda_helper_error_to_ws(&e)),
-    // FUNC.SECH
-    415 => eval_sech_surface(args, resolver).map_err(|e| map_sech_error_to_ws(&e)),
-    // FUNC.SIGN
-    416 => eval_sign_surface(args, resolver).map_err(|e| map_sign_error_to_ws(&e)),
     // FUNC.SORTBY
     418 => eval_sortby_surface(args, resolver)
                 .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
-    // FUNC.SIN
-    419 => eval_sin_surface(args, resolver).map_err(|e| map_sin_error_to_ws(&e)),
-    // FUNC.SINH
-    420 => eval_sinh_surface(args, resolver).map_err(|e| map_sinh_error_to_ws(&e)),
     // FUNC.SKEW
     421 => {
                 eval_skew_surface(args, resolver).map_err(|e| map_moment_stats_error_to_ws(&e))
@@ -1241,11 +1171,6 @@ match dispatch_key.catalog_index {
             }
             426 => {
                 eval_small_surface(args, resolver).map_err(|e| map_small_error_to_ws(&e))
-            }
-            427 => eval_sqrt_surface(args, resolver).map_err(|e| map_sqrt_error_to_ws(&e)),
-    // FUNC.SQRTPI
-    428 => {
-                eval_sqrtpi_surface(args, resolver).map_err(|e| map_sqrtpi_error_to_ws(&e))
             }
             424 => {
                 eval_slope_surface(args, resolver).map_err(|e| map_slope_error_to_ws(&e))
@@ -1319,10 +1244,6 @@ match dispatch_key.catalog_index {
             }
             452 => eval_t_test_surface(args, resolver)
                 .map_err(|e| map_statistical_tests_error_to_ws(&e)),
-    // FUNC.TAN
-    453 => eval_tan_surface(args, resolver).map_err(|e| map_tan_error_to_ws(&e)),
-    // FUNC.TANH
-    454 => eval_tanh_surface(args, resolver).map_err(|e| map_tanh_error_to_ws(&e)),
     // FUNC.TAKE
     455 => eval_take_surface(args, resolver)
                 .map_err(|e| map_dynamic_array_reshape_error_to_ws(&e)),
@@ -1523,7 +1444,6 @@ match dispatch_key.catalog_index {
             239 => {
                 eval_intercept_surface(args, resolver).map_err(|e| map_intercept_error_to_ws(&e))
             }
-            251 => eval_int_surface(args, resolver).map_err(|e| map_int_error_to_ws(&e)),
     // FUNC.XIRR
     508 => {
                 eval_xirr_surface(args, resolver).map_err(|e| map_cashflow_rate_error_to_ws(&e))
@@ -1586,5 +1506,397 @@ match dispatch_key.catalog_index {
             }
             353 => eval_op_intersection_ref_surface(args, resolver)
                 .map_err(|e| map_operator_reference_error_to_ws(&e)),
+    // >>> BEGIN spec-driven unary-numeric arms (oxf-y2uw.9) -- generator-owned; do not hand-edit
+    // FUNC.ACOS  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    0 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::acos::acos_kernel,
+            crate::functions::acos::ACOS_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ACOT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    1 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::acot::acot_kernel,
+            crate::functions::acot::ACOT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ACOSH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    2 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::acosh::acosh_kernel,
+            crate::functions::acosh::ACOSH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ACOTH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    3 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::acoth::acoth_kernel,
+            crate::functions::acoth::ACOTH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ABS  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    4 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::abs::abs_kernel,
+            crate::functions::abs::ABS_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ASINH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    8 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::asinh::asinh_kernel,
+            crate::functions::asinh::ASINH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ATAN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    9 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::atan::atan_kernel,
+            crate::functions::atan::ATAN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ATANH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    11 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::atanh::atanh_kernel,
+            crate::functions::atanh::ATANH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.COS  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    77 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::cos::cos_kernel,
+            crate::functions::cos::COS_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.COSH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    78 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::cosh::cosh_kernel,
+            crate::functions::cosh::COSH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.COT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    79 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::cot::cot_kernel,
+            crate::functions::cot::COT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.COTH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    80 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::coth::coth_kernel,
+            crate::functions::coth::COTH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.CSC  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    95 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::csc::csc_kernel,
+            crate::functions::csc::CSC_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.CSCH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    96 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::csch::csch_kernel,
+            crate::functions::csch::CSCH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.DEGREES  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    137 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::degrees::degrees_kernel,
+            crate::functions::degrees::DEGREES_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.EVEN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    146 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::even_fn::even_kernel,
+            crate::functions::even_fn::EVEN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.EXP  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    157 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::exp_fn::exp_kernel,
+            crate::functions::exp_fn::EXP_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.FACT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    160 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::fact::fact_kernel,
+            crate::functions::fact::FACT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.FACTDOUBLE  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    161 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::factdouble::factdouble_kernel,
+            crate::functions::factdouble::FACTDOUBLE_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.FISHER  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    175 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::fisher_fn::fisher_kernel,
+            crate::functions::fisher_fn::FISHER_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.FISHERINV  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    176 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::fisherinv_fn::fisherinv_kernel,
+            crate::functions::fisherinv_fn::FISHERINV_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.GAUSS  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    182 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::gauss_fn::gauss_kernel,
+            crate::functions::gauss_fn::GAUSS_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.INT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    251 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::int_fn::int_kernel,
+            crate::functions::int_fn::INT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.LN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    262 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::ln_fn::ln_kernel,
+            crate::functions::ln_fn::LN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.LOG10  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    265 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::log10_fn::log10_kernel,
+            crate::functions::log10_fn::LOG10_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.ODD  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    329 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::odd_fn::odd_kernel,
+            crate::functions::odd_fn::ODD_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.PHI  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    336 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::phi_fn::phi_kernel,
+            crate::functions::phi_fn::PHI_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.OP_NEGATE  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    357 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::operator_arithmetic_family::op_negate_kernel,
+            crate::functions::operator_arithmetic_family::OP_NEGATE_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.OP_PERCENT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    359 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::operator_arithmetic_family::op_percent_kernel,
+            crate::functions::operator_arithmetic_family::OP_PERCENT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.RADIANS  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    388 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::radians::radians_kernel,
+            crate::functions::radians::RADIANS_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SEC  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    412 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::sec::sec_kernel,
+            crate::functions::sec::SEC_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SECH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    415 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::sech::sech_kernel,
+            crate::functions::sech::SECH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SIGN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    416 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::sign_fn::sign_kernel,
+            crate::functions::sign_fn::SIGN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SIN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    419 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::sin::sin_kernel,
+            crate::functions::sin::SIN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SINH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    420 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::sinh::sinh_kernel,
+            crate::functions::sinh::SINH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SQRT  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    427 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::sqrt_fn::sqrt_kernel,
+            crate::functions::sqrt_fn::SQRT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.SQRTPI  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    428 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::fallible(
+            crate::functions::sqrtpi::sqrtpi_kernel,
+            crate::functions::sqrtpi::SQRTPI_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.TAN  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    453 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::tan::tan_kernel,
+            crate::functions::tan::TAN_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // FUNC.TANH  [spec-driven: unary-numeric family, emitted from UnaryNumericExecSpec]
+    454 => crate::functions::unary_numeric::eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::unary_numeric::UnaryNumericExecSpec::raw(
+            crate::functions::tanh::tanh_kernel,
+            crate::functions::tanh::TANH_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
+    // <<< END spec-driven unary-numeric arms (oxf-y2uw.9)
     _ => Err(WorksheetErrorCode::Value),
 }

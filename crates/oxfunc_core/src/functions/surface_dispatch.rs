@@ -1,11 +1,8 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
 use crate::function::LiftBroadcastProfile;
-use crate::functions::abs::{abs_kernel, eval_abs_surface, map_abs_surface_error_to_ws};
-use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
-use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
-use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
-use crate::functions::acoth::{eval_acoth_surface, map_acoth_error_to_ws};
+use crate::functions::abs::abs_kernel;
+use crate::functions::acot::acot_kernel;
 use crate::functions::adapters::prepared_arg_to_calc_value_lossy;
 use crate::functions::amor_depreciation_family::{
     eval_amordegrc_surface, eval_amorlinc_surface, map_amor_depreciation_error_to_ws,
@@ -16,10 +13,10 @@ use crate::functions::array_text_split_family::{
     eval_arraytotext_surface, eval_textsplit_surface, map_array_text_split_error_to_ws,
 };
 use crate::functions::asin::{eval_asin_surface, map_asin_error_to_ws};
-use crate::functions::asinh::{asinh_kernel, eval_asinh_surface, map_asinh_error_to_ws};
-use crate::functions::atan::{atan_kernel, eval_atan_surface, map_atan_error_to_ws};
+use crate::functions::asinh::asinh_kernel;
+use crate::functions::atan::atan_kernel;
 use crate::functions::atan2::{atan2_kernel, eval_atan2_surface, map_atan2_error_to_ws};
-use crate::functions::atanh::{atanh_kernel, eval_atanh_surface, map_atanh_error_to_ws};
+use crate::functions::atanh::atanh_kernel;
 use crate::functions::avedev_fn::{eval_avedev_surface, map_avedev_error_to_ws};
 use crate::functions::average::{eval_average_surface, map_average_error_to_ws};
 use crate::functions::averagea_fn::{eval_averagea_surface, map_averagea_error_to_ws};
@@ -102,10 +99,10 @@ use crate::functions::confidence_test_family::{
     eval_confidence_t_surface, eval_z_test_surface, map_confidence_test_error_to_ws,
 };
 use crate::functions::correl_fn::{eval_correl_surface, map_correl_error_to_ws};
-use crate::functions::cos::{COS_META, cos_kernel, eval_cos_surface, map_cos_error_to_ws};
-use crate::functions::cosh::{COSH_META, cosh_kernel, eval_cosh_surface, map_cosh_error_to_ws};
-use crate::functions::cot::{cot_kernel, eval_cot_surface, map_cot_error_to_ws};
-use crate::functions::coth::{coth_kernel, eval_coth_surface, map_coth_error_to_ws};
+use crate::functions::cos::{COS_META, cos_kernel};
+use crate::functions::cosh::{COSH_META, cosh_kernel};
+use crate::functions::cot::cot_kernel;
+use crate::functions::coth::coth_kernel;
 use crate::functions::count::{eval_count_surface, map_count_error_to_ws};
 use crate::functions::counta::{eval_counta_surface, map_counta_error_to_ws};
 use crate::functions::countblank_fn::{eval_countblank_surface, map_countblank_error_to_ws};
@@ -120,8 +117,8 @@ use crate::functions::criteria_family::{
     eval_maxifs_surface, eval_minifs_surface, eval_sumif_surface, eval_sumifs_surface,
     map_criteria_error_to_ws,
 };
-use crate::functions::csc::{csc_kernel, eval_csc_surface, map_csc_error_to_ws};
-use crate::functions::csch::{csch_kernel, eval_csch_surface, map_csch_error_to_ws};
+use crate::functions::csc::csc_kernel;
+use crate::functions::csch::csch_kernel;
 use crate::functions::cumulative_finance_family::{
     eval_cumipmt_surface, eval_cumprinc_surface, map_cumulative_finance_error_to_ws,
 };
@@ -148,9 +145,7 @@ use crate::functions::date_week_family::{
     eval_weeknum_surface, map_date_week_error_to_ws,
 };
 use crate::functions::decimal_fn::{eval_decimal_surface, map_decimal_error_to_ws};
-use crate::functions::degrees::{
-    DEGREES_META, degrees_kernel, eval_degrees_surface, map_degrees_error_to_ws,
-};
+use crate::functions::degrees::{DEGREES_META, degrees_kernel};
 use crate::functions::delta_fn::{delta_kernel, eval_delta_surface, map_delta_error_to_ws};
 use crate::functions::depreciation_family::{
     eval_db_surface, eval_ddb_surface, eval_sln_surface, eval_syd_surface, eval_vdb_surface,
@@ -190,13 +185,11 @@ use crate::functions::engineering_radix_family::{
     map_engineering_radix_error_to_ws,
 };
 use crate::functions::error_type_fn::{eval_error_type_surface, map_error_type_error_to_ws};
-use crate::functions::even_fn::{eval_even_surface, even_kernel, map_even_error_to_ws};
+use crate::functions::even_fn::even_kernel;
 use crate::functions::exact_fn::{eval_exact_surface, map_exact_error_to_ws};
-use crate::functions::exp_fn::{EXP_META, eval_exp_surface, exp_kernel, map_exp_error_to_ws};
-use crate::functions::fact::{eval_fact_surface, fact_kernel, map_fact_error_to_ws};
-use crate::functions::factdouble::{
-    eval_factdouble_surface, factdouble_kernel, map_factdouble_error_to_ws,
-};
+use crate::functions::exp_fn::{EXP_META, exp_kernel};
+use crate::functions::fact::fact_kernel;
+use crate::functions::factdouble::factdouble_kernel;
 use crate::functions::false_fn::eval_false_surface;
 use crate::functions::financial_time_value_family::{
     eval_effect_surface, eval_fv_surface, eval_fvschedule_surface, eval_ipmt_surface,
@@ -204,10 +197,7 @@ use crate::functions::financial_time_value_family::{
     eval_npv_surface, eval_pduration_surface, eval_pmt_surface, eval_ppmt_surface, eval_pv_surface,
     eval_rate_surface, eval_rri_surface, map_financial_time_value_error_to_ws,
 };
-use crate::functions::fisher_fn::{eval_fisher_surface, map_fisher_error_to_ws};
-use crate::functions::fisherinv_fn::{eval_fisherinv_surface, map_fisherinv_error_to_ws};
 use crate::functions::fixed_fn::{eval_fixed_surface, map_fixed_error_to_ws};
-use crate::functions::gauss_fn::{eval_gauss_surface, map_gauss_error_to_ws};
 use crate::functions::gcd_fn::{eval_gcd_surface, map_gcd_error_to_ws};
 use crate::functions::geomean_fn::{eval_geomean_surface, map_geomean_error_to_ws};
 use crate::functions::gestep_fn::{eval_gestep_surface, gestep_kernel, map_gestep_error_to_ws};
@@ -226,7 +216,7 @@ use crate::functions::image_fn::{
 use crate::functions::index::{eval_index_calc_surface, eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
 use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
-use crate::functions::int_fn::{eval_int_surface, int_kernel, map_int_error_to_ws};
+use crate::functions::int_fn::int_kernel;
 use crate::functions::intercept_fn::{eval_intercept_surface, map_intercept_error_to_ws};
 use crate::functions::is_predicates_family::{
     eval_isblank_surface, eval_iserr_surface, eval_iserror_surface, eval_islogical_surface,
@@ -241,9 +231,9 @@ use crate::functions::legacy_stats_alias_family::{
     eval_covar_surface, eval_loginv_surface, eval_mode_surface, eval_percentile_surface,
     eval_percentrank_surface, eval_quartile_surface, map_legacy_stats_alias_error_to_ws,
 };
-use crate::functions::ln_fn::{eval_ln_surface, ln_kernel, map_ln_error_to_ws};
+use crate::functions::ln_fn::ln_kernel;
 use crate::functions::log_fn::{eval_log_surface, map_log_error_to_ws};
-use crate::functions::log10_fn::{eval_log10_surface, log10_kernel, map_log10_error_to_ws};
+use crate::functions::log10_fn::log10_kernel;
 use crate::functions::lookup_prob_frequency_family::{
     eval_frequency_surface, eval_lookup_surface, eval_mode_mult_surface, eval_prob_surface,
     map_lookup_prob_frequency_error_to_ws,
@@ -294,7 +284,7 @@ use crate::functions::odd_bond_family::{
     eval_oddfprice_surface, eval_oddfyield_surface, eval_oddlprice_surface, eval_oddlyield_surface,
     map_odd_bond_error_to_ws,
 };
-use crate::functions::odd_fn::{eval_odd_surface, map_odd_error_to_ws, odd_kernel};
+use crate::functions::odd_fn::odd_kernel;
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
 use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
 use crate::functions::op_implicit_intersection::{
@@ -305,10 +295,10 @@ use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref
 use crate::functions::operator_arithmetic_family::{
     OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
     OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_divide_surface, eval_op_multiply_surface,
-    eval_op_negate_surface, eval_op_percent_surface, eval_op_power_surface,
-    eval_op_subtract_surface, eval_op_unary_plus_surface, map_operator_binary_error_to_ws,
-    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
-    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
+    eval_op_power_surface, eval_op_subtract_surface, eval_op_unary_plus_surface,
+    map_operator_binary_error_to_ws, map_operator_unary_error_to_ws, op_divide_kernel,
+    op_multiply_kernel, op_negate_kernel, op_percent_kernel, op_subtract_kernel,
+    op_unary_plus_kernel,
 };
 use crate::functions::operator_compare_concat_family::{
     OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
@@ -339,7 +329,6 @@ use crate::functions::percentrank_inc_fn::{
 };
 use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
 use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
-use crate::functions::phi_fn::{eval_phi_surface, map_phi_error_to_ws};
 use crate::functions::pi::eval_pi;
 use crate::functions::pivotby_fn::{eval_pivotby_calc_surface, eval_pivotby_surface};
 use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
@@ -349,7 +338,7 @@ use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_
 use crate::functions::quotient_fn::{
     eval_quotient_surface, map_quotient_error_to_ws, quotient_kernel,
 };
-use crate::functions::radians::{eval_radians_surface, map_radians_error_to_ws, radians_kernel};
+use crate::functions::radians::radians_kernel;
 use crate::functions::rand_fn::{RandomProvider, eval_rand_surface, map_rand_error_to_ws};
 use crate::functions::randbetween_fn::{eval_randbetween_surface, map_randbetween_error_to_ws};
 use crate::functions::rank_avg_fn::{eval_rank_avg_surface, map_rank_avg_error_to_ws};
@@ -372,12 +361,12 @@ use crate::functions::row_fn::{eval_row_surface, map_row_error_to_ws};
 use crate::functions::rows_fn::{eval_rows_surface_with_resolver, map_rows_error_to_ws};
 use crate::functions::rsq_fn::{eval_rsq_surface, map_rsq_error_to_ws};
 use crate::functions::rtd_fn::{RtdProvider, eval_rtd_surface, map_rtd_error_to_ws};
-use crate::functions::sec::{eval_sec_surface, map_sec_error_to_ws, sec_kernel};
-use crate::functions::sech::{eval_sech_surface, map_sech_error_to_ws, sech_kernel};
+use crate::functions::sec::sec_kernel;
+use crate::functions::sech::sech_kernel;
 use crate::functions::sequence::{eval_sequence_surface, map_sequence_error_to_ws};
-use crate::functions::sign_fn::{eval_sign_surface, map_sign_error_to_ws, sign_kernel};
-use crate::functions::sin::{SIN_META, eval_sin_surface, map_sin_error_to_ws, sin_kernel};
-use crate::functions::sinh::{SINH_META, eval_sinh_surface, map_sinh_error_to_ws, sinh_kernel};
+use crate::functions::sign_fn::sign_kernel;
+use crate::functions::sin::{SIN_META, sin_kernel};
+use crate::functions::sinh::{SINH_META, sinh_kernel};
 use crate::functions::slope_fn::{eval_slope_surface, map_slope_error_to_ws};
 use crate::functions::small_fn::{eval_small_surface, map_small_error_to_ws};
 use crate::functions::special_dist_family::{
@@ -385,8 +374,8 @@ use crate::functions::special_dist_family::{
     eval_gamma_surface, eval_gammaln_precise_surface, eval_gammaln_surface,
     eval_weibull_dist_surface, eval_weibull_surface, map_special_dist_error_to_ws,
 };
-use crate::functions::sqrt_fn::{eval_sqrt_surface, map_sqrt_error_to_ws, sqrt_kernel};
-use crate::functions::sqrtpi::{eval_sqrtpi_surface, map_sqrtpi_error_to_ws, sqrtpi_kernel};
+use crate::functions::sqrt_fn::sqrt_kernel;
+use crate::functions::sqrtpi::sqrtpi_kernel;
 use crate::functions::standardize_fn::{eval_standardize_surface, map_standardize_error_to_ws};
 use crate::functions::statistical_tests_family::{
     eval_chisq_test_surface, eval_chitest_surface, eval_f_test_surface, eval_ftest_surface,
@@ -405,8 +394,8 @@ use crate::functions::sumproduct_family::{
 };
 use crate::functions::sumsq::{eval_sumsq_surface, map_sumsq_error_to_ws};
 use crate::functions::t_fn::{eval_t_surface, map_t_error_to_ws};
-use crate::functions::tan::{TAN_META, eval_tan_surface, map_tan_error_to_ws, tan_kernel};
-use crate::functions::tanh::{eval_tanh_surface, map_tanh_error_to_ws, tanh_kernel};
+use crate::functions::tan::{TAN_META, tan_kernel};
+use crate::functions::tanh::tanh_kernel;
 use crate::functions::test_alias_family::{eval_ztest_surface, map_test_alias_error_to_ws};
 use crate::functions::text_b_compat_family::{
     eval_findb_surface, eval_leftb_surface, eval_lenb_surface, eval_midb_surface,
