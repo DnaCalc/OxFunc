@@ -24,17 +24,20 @@ const MATRIX_BASE_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const MDETERM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MDETERM",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..MATRIX_BASE_META
 };
 
 pub const MINVERSE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MINVERSE",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..MATRIX_BASE_META
 };
 
@@ -52,6 +55,7 @@ pub const MMULT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MMULT",
     arity: Arity::exact(2),
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..MATRIX_BASE_META
 };
 

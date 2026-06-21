@@ -51,6 +51,7 @@ pub const SUBTOTAL_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
@@ -68,6 +69,7 @@ pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

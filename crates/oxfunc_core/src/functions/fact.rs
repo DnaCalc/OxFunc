@@ -27,6 +27,7 @@ pub const FACT_META: FunctionMeta = FunctionMeta {
     // BUG-FUNC-027 / oxf-vgxs: 171! overflows to `+Inf`; Excel returns `#NUM!`.
     real_result_policy: ExcelRealPolicy::FINITE,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub fn fact_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {

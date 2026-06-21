@@ -26,6 +26,7 @@ pub const COS_META: FunctionMeta = FunctionMeta {
     // BUG-FUNC-027 CLASS-B2: circular trig is `#NUM!` once `|x| >= 2^27`.
     real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub fn cos_kernel(n: f64) -> f64 {

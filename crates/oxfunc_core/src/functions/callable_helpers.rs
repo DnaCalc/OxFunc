@@ -24,12 +24,14 @@ const FUNCTIONAL_LAMBDA_BASE_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const MAP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.MAP",
     arity: Arity { min: 2, max: 255 },
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
@@ -37,6 +39,7 @@ pub const REDUCE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.REDUCE",
     arity: Arity { min: 3, max: 3 },
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
@@ -44,6 +47,7 @@ pub const SCAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SCAN",
     arity: Arity { min: 3, max: 3 },
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
@@ -51,6 +55,7 @@ pub const BYROW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BYROW",
     arity: Arity { min: 2, max: 2 },
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 
@@ -58,6 +63,7 @@ pub const BYCOL_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.BYCOL",
     arity: Arity { min: 2, max: 2 },
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..FUNCTIONAL_LAMBDA_BASE_META
 };
 

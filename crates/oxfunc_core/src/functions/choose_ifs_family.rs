@@ -24,6 +24,7 @@ pub const CHOOSE_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 // IFS broadcasts its first condition/value pair plus the second condition (`[0,1,2]`) over an

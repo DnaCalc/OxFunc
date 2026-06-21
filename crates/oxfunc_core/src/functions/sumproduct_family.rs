@@ -26,11 +26,13 @@ const SUMPRODUCT_BASE_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const SUMPRODUCT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMPRODUCT",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..SUMPRODUCT_BASE_META
 };
 
@@ -38,6 +40,7 @@ pub const SUMX2MY2_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMX2MY2",
     arity: Arity::exact(2),
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..SUMPRODUCT_BASE_META
 };
 
@@ -45,6 +48,7 @@ pub const SUMX2PY2_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMX2PY2",
     arity: Arity::exact(2),
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..SUMPRODUCT_BASE_META
 };
 
@@ -52,6 +56,7 @@ pub const SUMXMY2_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SUMXMY2",
     arity: Arity::exact(2),
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..SUMPRODUCT_BASE_META
 };
 

@@ -25,6 +25,7 @@ pub const INT_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub fn int_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {

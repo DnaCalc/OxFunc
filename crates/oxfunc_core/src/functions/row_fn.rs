@@ -21,6 +21,7 @@ pub const ROW_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::CallerContext,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

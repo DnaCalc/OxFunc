@@ -27,21 +27,25 @@ const DATABASE_META_BASE: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const DAVERAGE_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DAVERAGE",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DCOUNT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DCOUNT",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DCOUNTA_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DCOUNTA",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DGET_META: FunctionMeta = FunctionMeta {
@@ -51,41 +55,49 @@ pub const DGET_META: FunctionMeta = FunctionMeta {
 pub const DMAX_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DMAX",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DMIN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DMIN",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DPRODUCT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DPRODUCT",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DSTDEV_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DSTDEV",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DSTDEVP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DSTDEVP",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DSUM_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DSUM",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DVAR_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DVAR",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 pub const DVARP_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.DVARP",
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
     ..DATABASE_META_BASE
 };
 

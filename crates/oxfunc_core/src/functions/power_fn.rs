@@ -1,6 +1,7 @@
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
-    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    HostInteractionClass, KernelSignatureClass, PrecisionRoundingProfile, ThreadSafetyClass,
+    VolatilityClass,
 };
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
@@ -25,6 +26,13 @@ pub const POWER_META: FunctionMeta = FunctionMeta {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    // POWER (and the `^` operator and the financial growth callers, which all share `power_kernel`)
+    // publishes an exact-integer exponent via repeated multiplication rather than `powf` — a real,
+    // separable precision deviation, declared once here. `power_kernel` reads this policy instead of
+    // unconditionally hand-coding the rule; the integer-detection tolerance and the
+    // binary-exponentiation algorithm live in this module (the impl that interprets the variant),
+    // never as data on the meta. Verified live Excel 16.0 build 20026.
+    precision_rounding_profile: PrecisionRoundingProfile::IntegerExponentPublication,
 };
 
 fn exact_integer_exponent(power: f64) -> Option<i64> {
@@ -91,7 +99,18 @@ pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> 
         return Err(WorksheetErrorCode::Div0);
     }
 
-    let result = if let Some(integer_power) = exact_integer_exponent(power) {
+    // The exact-integer-exponent publication is the declared precision quirk on `POWER_META`
+    // (shared by the `^` operator and the financial growth callers, which all funnel through this
+    // kernel). The kernel CONSULTS the declared variant rather than carrying its own copy of the
+    // rule; the integer-detection tolerance and the binary-exponentiation algorithm below are this
+    // module's interpretation of that variant. The policy is `IntegerExponentPublication` today, so
+    // this gate is active and the published result is bit-identical to the prior hand-coded path.
+    let integer_publication = POWER_META
+        .precision_rounding_profile
+        .uses_integer_exponent_publication();
+    let result = if let Some(integer_power) =
+        exact_integer_exponent(power).filter(|_| integer_publication)
+    {
         powi_excel_publication(number, integer_power)
     } else if number < 0.0 {
         if detect_reciprocal_odd_integer(power).is_some() {

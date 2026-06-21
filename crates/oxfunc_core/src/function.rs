@@ -234,6 +234,54 @@ impl ErrorCollapseProfile {
     }
 }
 
+/// The precision/rounding quirk Excel applies when publishing a function's numeric result —
+/// a *deviation* from the obvious floating-point math, NOT a function whose core purpose is
+/// rounding. (`ROUND`/`MROUND`/`TRUNC`/`INT`/`CEILING`/`FLOOR` are not modelled here: rounding
+/// is their defined behaviour, not a separable precision quirk.) This is a behavioural axis in
+/// the `FunctionSpec` mould (ODR-FN-004 Layer 2, the axis widened under W105 oxf-y2uw.8): a
+/// CLOSED enum whose variants name a real, observed Excel precision behaviour, carried on
+/// [`FunctionMeta`] and read by the kernel that owns the quirk, so the rule is declared once and
+/// the kernel cannot carry a second private copy of it. Functions Excel publishes with the plain
+/// IEEE-754 kernel result carry [`FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE`]; only a
+/// genuine precision deviation names a non-default variant.
+///
+/// GROWTH DISCIPLINE (the same pattern as [`ArgPreparationProfile`] / [`LiftBroadcastProfile`] /
+/// [`ErrorCollapseProfile`]): a [`FunctionMeta`] field with a `DEFAULT_*` associated const for the
+/// value the overwhelming majority carry, variants that name a behaviour (never a number), no free
+/// `f64`/`String` on the meta, [`FunctionMeta`] stays `Copy`/`Eq`. ANY numeric threshold (what
+/// counts as an exact integer, the binary-exponentiation algorithm) lives in the ONE impl that
+/// interprets the variant — `crate::functions::power_fn` — never as data on the meta. A variant is
+/// added only for a precision quirk some real function exhibits; speculative variants are not
+/// introduced. Today the honest finding is a small axis: one real separable publication-time
+/// precision deviation (`POWER`/`^`), so a mostly-`Default` axis with a single named variant is the
+/// correct outcome rather than a manufactured taxonomy.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrecisionRoundingProfile {
+    /// The majority shape: Excel publishes the kernel's plain IEEE-754 result; the function
+    /// applies no special precision/rounding deviation of its own.
+    Default,
+    /// `POWER(x, n)` and the `^` operator: when the exponent is an *exact integer*, Excel computes
+    /// `x^n` by repeated multiplication (binary exponentiation) rather than `powf`/`exp(n·ln x)`,
+    /// producing a bit-different — and "rounder", Excel-matching — result than the libm transcendental
+    /// path. This is a genuine precision deviation (not a domain guard or non-finite rule, which the
+    /// `real_result_policy` axis owns), so it is its own axis. The integer-detection tolerance and the
+    /// repeated-multiplication algorithm live in `crate::functions::power_fn` (the impl that
+    /// interprets this variant); only the *name* of the behaviour is carried here. Verified live
+    /// Excel 16.0 build 20026 (`POWER(1.05,10)=1.6288946267774416`, etc.).
+    IntegerExponentPublication,
+}
+
+impl PrecisionRoundingProfile {
+    /// Whether this profile selects Excel's exact-integer-exponent publication (compute `x^n` by
+    /// repeated multiplication when `n` is an exact integer). The SINGLE accessor the owning
+    /// kernel reads, so the decision to apply the quirk is driven by the declared variant rather
+    /// than a private copy of the rule inside the kernel. The integer-detection tolerance and the
+    /// binary-exponentiation algorithm remain in the interpreting impl (`crate::functions::power_fn`).
+    pub const fn uses_integer_exponent_publication(self) -> bool {
+        matches!(self, Self::IntegerExponentPublication)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum KernelSignatureClass {
     NullaryConst,
@@ -310,6 +358,13 @@ pub struct FunctionMeta {
     /// error rule cannot diverge between the meta and a second id-keyed table. Functions that
     /// perform no error-collapse carry [`FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE`].
     pub error_collapse_profile: ErrorCollapseProfile,
+    /// The precision/rounding quirk Excel applies when publishing this function's numeric result
+    /// (see [`PrecisionRoundingProfile`]). The SINGLE declared source the owning kernel reads, so a
+    /// precision deviation cannot be hand-coded as a second private copy inside the kernel.
+    /// Functions Excel publishes with the plain IEEE-754 kernel result carry
+    /// [`FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE`]; only a genuine separable precision
+    /// deviation (today: `POWER`/`^` integer-exponent publication) names a non-default variant.
+    pub precision_rounding_profile: PrecisionRoundingProfile,
 }
 
 impl FunctionMeta {
@@ -359,4 +414,14 @@ impl FunctionMeta {
     /// `ErrorCollapseProfile::None`) so a default literal needs no extra import beyond
     /// `FunctionMeta` itself — the same growth-discipline shape as the `DEFAULT_*` consts above.
     pub const DEFAULT_ERROR_COLLAPSE_PROFILE: ErrorCollapseProfile = ErrorCollapseProfile::None;
+
+    /// No special precision/rounding deviation: Excel publishes the kernel's plain IEEE-754 result.
+    /// This is the value the overwhelming majority of functions carry; only a function with a real
+    /// separable publication-time precision quirk (today: `POWER`/`^`, which publishes an exact
+    /// integer exponent via repeated multiplication) overrides it with a non-default
+    /// [`PrecisionRoundingProfile`]. Referenced by name (rather than spelled
+    /// `PrecisionRoundingProfile::Default`) so a default literal needs no extra import beyond
+    /// `FunctionMeta` itself — the same growth-discipline shape as the `DEFAULT_*` consts above.
+    pub const DEFAULT_PRECISION_ROUNDING_PROFILE: PrecisionRoundingProfile =
+        PrecisionRoundingProfile::Default;
 }

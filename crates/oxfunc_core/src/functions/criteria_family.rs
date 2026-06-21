@@ -35,6 +35,7 @@ const CRITERIA_BASE_META: FunctionMeta = FunctionMeta {
     // MAXIFS/MINIFS) reduces a matched range to one result, so the family is uniformly a
     // reduction fold; the base carries the non-default error-collapse profile.
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const COUNTIF_META: FunctionMeta = FunctionMeta {

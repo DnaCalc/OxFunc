@@ -27,6 +27,7 @@ pub const FACTDOUBLE_META: FunctionMeta = FunctionMeta {
     // Overflow -> `#NUM!` (oxf-vgxs), consistent with FACT.
     real_result_policy: ExcelRealPolicy::FINITE,
     error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
+    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub fn factdouble_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
