@@ -120,3 +120,9 @@ Widening `FunctionMeta` is **additive** and the executor is OxFunc-internal, so 
 downstream. New declarative axes are projected into the published `RegistryFunctionMeta` export
 **deliberately**, not automatically — the published contract stays curated and versioned, keeping
 the internal-evaluation-model / external-contract boundary intact.
+
+This boundary is extended to the description/signature catalog by **W105-D1** (recorded in
+`docs/worksets/W105_DECLARATIVE_FUNCTION_SPEC_AND_GENERIC_EXECUTOR.md`): `FunctionSpec` becomes the
+single id-keyed authoring spine, signature-shape data is derived from it rather than restated in the
+seed tables, and a build-time conformance check binds `SignatureSeed` / `RegistryHelpSeed` to
+`FunctionMeta` so catalog drift becomes a build failure rather than silent help-text loss.

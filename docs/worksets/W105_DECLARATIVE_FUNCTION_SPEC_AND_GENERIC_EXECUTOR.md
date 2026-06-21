@@ -35,7 +35,13 @@ generalizes that pattern to the remaining behavioural axes and collapses the par
 5. `crates/oxfunc_core/src/functions/surface_dispatch_by_index_generated.rs`
    (the generated table — target of the spec-driven generator)
 6. `crates/oxfunc_core/src/functions/unary_numeric.rs` (the pilot family's shared helpers)
-7. `.beads/` W105 epic and task lanes
+7. `crates/oxfunc_core/src/registry.rs` (`RegistryFunctionMeta`, `SignatureForm` / `ParameterDescriptor`,
+   `signature_from_seed` — the projection where behaviour + signature seed + help seed are joined)
+8. `crates/oxfunc_core/src/registry_signature_seed.rs` (`SignatureSeed` / `signature_seed_for_id` — the
+   id-keyed signature-shape corpus)
+9. `crates/oxfunc_core/src/registry_help_seed.rs` (`RegistryHelpSeed` — the id-keyed human-authored help
+   corpus) and `tools/generate-registry-help-seed.ps1` (its generator)
+10. `.beads/` W105 epic and task lanes
 
 ## Current Checkpoint
 
@@ -51,6 +57,21 @@ generalizes that pattern to the remaining behavioural axes and collapses the par
    shadows the generated `eval_*_surface` arms for `COS`/`COSH`/`TAN`/`EXP`/`SINH`/`DEGREES`/…
    (those arms are dead), while `SIN` (absent from the chain) is served live by the by-index
    table. The XLL `Q`-scalar path is a distinct ABI surface and is retained.
+
+2026-06-21:
+
+1. Scope extended to the metadata/description catalog: decision **W105-D1** (below) records
+   `FunctionSpec` as the single id-keyed authoring spine, the minimize-duplication rule for
+   signature-shape data, and a build-time conformance check binding `RegistryHelpSeed` /
+   `SignatureSeed` to `FunctionMeta`.
+2. Code trace of the catalog duplication: signature/parameter truth is currently restated across
+   three id-keyed tables that must silently agree — `FunctionMeta.arity` (behavioural arity),
+   `registry_signature_seed.rs::SignatureSeed` (parameter names / repeats / `signature_display`,
+   ~6.5k hand-maintained lines), and `registry_help_seed.rs::RegistryHelpSeed` (per-parameter help).
+   `registry.rs::signature_from_seed` already *derives* `optional` from `arity.min` and trailing
+   `repeats` from `arity.max`, but `parameter_help_description` joins help→signature parameters by
+   `index` **and** `name.eq_ignore_ascii_case`, so a name/index mismatch makes the authored help
+   text **silently drop to `None`** with no error — the concrete drift W105-D1 closes.
 
 ## Validation Evidence
 
@@ -79,10 +100,71 @@ generalizes that pattern to the remaining behavioural axes and collapses the par
 5. **`function_spec!` macro + spec export.** Introduce a defaulting macro to retire the
    all-literal field-add sweep, and extend the registry-metadata CSV export with the new axes as
    the inspectable / diff-across-Excel-releases artifact.
+6. **Catalog unification + build-time conformance check (W105-D1).** Make `FunctionSpec` the single
+   id-keyed authoring spine; derive signature-shape data (parameter count, `optional`, `repeats`)
+   from the spec rather than re-stating it in `SignatureSeed`; and land a `#[test]`-gated build-time
+   conformance check that fails the build when `SignatureSeed` / `RegistryHelpSeed` drift from
+   `FunctionMeta`. See **Decisions** below.
+
+## Decisions
+
+### W105-D1 — Single keyed authoring spine and build-time catalog conformance
+
+Date: `2026-06-21`. Status: `accepted`. Extends [ODR-FN-004](../decisions/ODR-FN-004-declarative-function-spec-and-generic-executor.md)
+§"Export the spec table" and §"Cross-repo impact"; promote to a standalone `ODR-FN` if a third repo
+takes a dependency on the conformance contract.
+
+**Context.** The same boundary that motivates the executor refactor exists in the *catalog*:
+a function's signature/parameter identity is currently authored three times — `FunctionMeta.arity`,
+`registry_signature_seed.rs::SignatureSeed`, and `registry_help_seed.rs::RegistryHelpSeed` — joined
+only at projection time in `registry.rs::signature_from_seed`. The join is *silent*: help parameters
+are matched to signature parameters by `index` + case-insensitive `name`, so a rename or reorder
+makes the authored help text vanish (`-> None`) with no diagnostic. This is the same
+"parallel-hand-maintained-copies drift" class as the dispatch paths, one layer up.
+
+**Decision.**
+
+1. **One spine, keyed by `function_id`.** `FunctionSpec` is the single internal source of truth for
+   behaviour *and* the anchor for the catalog. The signature-shape corpus and the help corpus stay
+   **separately typed and co-located**, keyed by the same `function_id`, *not* folded into
+   `FunctionMeta` — `FunctionMeta`/`FunctionSpec` must remain a cheap, `Copy`, `Eq` closed-enum value
+   (no `String`, no free `f64`), which is the property the quirk-algebra and equivalence tests rest on.
+2. **Minimize duplication — derive, don't restate.** Anything derivable from the spec is derived, not
+   re-authored. `optional` (from `arity.min`) and trailing `repeats` (from `arity.max`) are already
+   derived in `signature_from_seed`; the seed corpus is narrowed to what is genuinely irreducible —
+   human-facing parameter *names*, `signature_display`, and help *prose*. No table may re-state
+   arity, optionality, or repeat structure that the spec already fixes.
+3. **`RegistryFunctionMeta` stays the sole curated projection.** Downstream consumes the projection,
+   never the raw seeds; new behavioural axes are projected **deliberately**, preserving the
+   internal-model / external-contract boundary from ODR-FN-004.
+4. **Build-time conformance check (the enforcement).** A `#[test]` over the full built-in registry
+   table — wired into the ordinary `cargo test` / CI gate — asserts, for **every** function id:
+   - **Arity ↔ signature seed.** `SignatureSeed` parameter count is consistent with `FunctionMeta.arity`
+     (`min <= fixed params`, trailing-repeat seed iff `arity.max > params.len()`, no fixed-arity seed
+     exceeding `arity.max`).
+   - **Help seed ↔ signature seed (no silent drop).** Every `RegistryHelpSeed` parameter entry resolves
+     to exactly one signature parameter by `index` + name (the existing join), and there are **no orphan
+     help entries** that fail to bind — the failure mode that currently degrades silently becomes a
+     build break.
+   - **Signature display ↔ parameter names.** `signature_display` is consistent with the canonical
+     surface name and the ordered parameter names (cf. `synthesized_signature_display`).
+   - **Coverage ledger.** Every linked built-in has a `SignatureSeed`; missing seeds already panic at
+     registry build — the test states it as an explicit assertion rather than a runtime panic, and
+     records `None` help/description as an *allowed, tracked* gap (not drift) so unfrozen corpora stay
+     legal while mismatches do not.
+   The check is authored as data-over-the-table (one generic test), in the spirit of the cross-surface
+   equivalence law, so it scales across all ~507 ids without per-function test code.
+
+**Consequences.** The catalog gains the same "declare once, derive the rest, drift is a test failure"
+property as the executor. The 6.5k-line `SignatureSeed` table shrinks toward names+display only. Help
+authoring (and `tools/generate-registry-help-seed.ps1`) is validated against the spec at build time,
+so a rename can no longer silently orphan help text. Cost: the seed generators must emit only the
+non-derivable residue, and the conformance test must run before any seed lands — sequenced **after**
+the `FunctionSpec` arity/signature axis exists so there is a spec to conform *to*.
 
 ## Doctrine Axes
 
 scope_completeness: `scope_partial`
 target_completeness: `target_partial`
 integration_completeness: `partial`
-open_lanes: `[cross_surface_equivalence_law, unary_numeric_pilot, functionspec_axis_widening, spec_driven_generators, function_spec_macro_and_export]`
+open_lanes: `[cross_surface_equivalence_law, unary_numeric_pilot, functionspec_axis_widening, spec_driven_generators, function_spec_macro_and_export, catalog_unification_and_conformance_check]`
