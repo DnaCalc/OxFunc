@@ -10,24 +10,20 @@ use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
 
-pub const COTH_META: FunctionMeta = FunctionMeta {
+pub const COTH_META: FunctionMeta = function_spec! {
     function_id: "FUNC.COTH",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
     // BUG-FUNC-027 CLASS-C3.h: for large |n|, cosh/sinh = Inf/Inf = NaN; Excel saturates
     // COTH to `sign(n)` i.e. `±1`. Verified live Excel 16.0 b20026: COTH(800)=1.
     real_result_policy: ExcelRealPolicy::SATURATE_SIGN,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub fn coth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {

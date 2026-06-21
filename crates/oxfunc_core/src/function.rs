@@ -424,4 +424,264 @@ impl FunctionMeta {
     /// `FunctionMeta` itself — the same growth-discipline shape as the `DEFAULT_*` consts above.
     pub const DEFAULT_PRECISION_ROUNDING_PROFILE: PrecisionRoundingProfile =
         PrecisionRoundingProfile::Default;
+
+    /// The default-fill base the [`function_spec!`] macro draws every *omitted* DEFAULTABLE axis
+    /// from. Each of the five defaultable axes is set to its `DEFAULT_*` here; the ten intrinsic
+    /// per-function fields carry placeholder values that the macro caller ALWAYS shadows (every
+    /// `function_spec!` invocation states all ten intrinsic fields by name, so the placeholders
+    /// are never observed in a generated meta — they exist only so this is a complete, valid
+    /// `const FunctionMeta`).
+    ///
+    /// THIS IS THE ONE PLACE A NEW DEFAULTABLE AXIS IS DEFAULTED. Adding a behavioural axis with a
+    /// `DEFAULT_*` const is a single new line here (`new_axis: Self::DEFAULT_NEW_AXIS,`); every meta
+    /// that carries the default then needs NO edit (the macro fills it from this base), and only the
+    /// deviating functions add a one-line `new_axis: …,` override to their `function_spec!` call —
+    /// retiring the all-literal field-add sweep the arg-prep / lift-broadcast / error-collapse /
+    /// precision-rounding axis beads each had to perform over every full literal.
+    pub const DEFAULTS_BASE: FunctionMeta = FunctionMeta {
+        // Intrinsic placeholders — ALWAYS overridden by the `function_spec!` caller (see above).
+        function_id: "",
+        arity: Arity { min: 0, max: 0 },
+        determinism: DeterminismClass::Deterministic,
+        volatility: VolatilityClass::NonVolatile,
+        host_interaction: HostInteractionClass::None,
+        thread_safety: ThreadSafetyClass::SafePure,
+        coercion_lift_profile: CoercionLiftProfile::None,
+        kernel_signature_class: KernelSignatureClass::Custom,
+        fec_dependency_profile: FecDependencyProfile::None,
+        surface_fec_dependency_profile: FecDependencyProfile::None,
+        // Defaultable axes — the macro fills any of these the caller omits FROM HERE.
+        arg_preparation_profile: Self::DEFAULT_ARG_PREPARATION_PROFILE,
+        lift_broadcast_profile: Self::DEFAULT_LIFT_BROADCAST_PROFILE,
+        real_result_policy: Self::DEFAULT_REAL_RESULT_POLICY,
+        error_collapse_profile: Self::DEFAULT_ERROR_COLLAPSE_PROFILE,
+        precision_rounding_profile: Self::DEFAULT_PRECISION_ROUNDING_PROFILE,
+    };
+}
+
+/// Build a [`FunctionMeta`] const, filling every DEFAULTABLE behavioural axis with its
+/// `FunctionMeta::DEFAULT_*` and letting a call site override only the non-default axes BY NAME.
+///
+/// Usage — state the ten intrinsic per-function fields (which have no single default:
+/// `function_id`, `arity`, `determinism`, `volatility`, `host_interaction`, `thread_safety`,
+/// `coercion_lift_profile`, `kernel_signature_class`, `fec_dependency_profile`,
+/// `surface_fec_dependency_profile`) and, optionally, any of the five DEFAULTABLE axes that
+/// deviate from the default (`arg_preparation_profile`, `lift_broadcast_profile`,
+/// `real_result_policy`, `error_collapse_profile`, `precision_rounding_profile`). Fields may be
+/// written in any order; any defaultable axis NOT named is filled from
+/// [`FunctionMeta::DEFAULTS_BASE`]:
+///
+/// ```ignore
+/// pub const ABS_META: FunctionMeta = function_spec! {
+///     function_id: "FUNC.ABS",
+///     arity: Arity::exact(1),
+///     determinism: DeterminismClass::Deterministic,
+///     volatility: VolatilityClass::NonVolatile,
+///     host_interaction: HostInteractionClass::None,
+///     thread_safety: ThreadSafetyClass::SafePure,
+///     coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+///     kernel_signature_class: KernelSignatureClass::NumToNum,
+///     fec_dependency_profile: FecDependencyProfile::None,
+///     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+///     // arg_preparation_profile / lift_broadcast_profile / real_result_policy /
+///     // error_collapse_profile / precision_rounding_profile all OMITTED → default.
+/// };
+/// ```
+///
+/// HOW DEFAULTS ARE FILLED: the macro expands to `FunctionMeta { <named fields>,
+/// ..FunctionMeta::DEFAULTS_BASE }`. Rust's functional struct-update fills every field the caller
+/// did not name from the base; the base sets each defaultable axis to its `DEFAULT_*`, so an
+/// omitted axis gets its default and a named axis gets the override. This is a plain `const`
+/// expression (no allocation, no trait dispatch), so it works wherever a `FunctionMeta` literal
+/// did — every `*_META` is `pub const X_META: FunctionMeta`.
+///
+/// SAFETY NOTE: because `..DEFAULTS_BASE` also carries intrinsic placeholders, a *forgotten*
+/// intrinsic field would silently take a placeholder (e.g. `function_id: ""`) rather than fail to
+/// compile. That class of mistake is caught by the per-function meta tests, the catalog
+/// conformance test, and the `function_spec_metas_are_bit_equal_to_pre_macro_golden` golden
+/// equality test (every generated meta is asserted bit-equal to its pre-macro value), not by the
+/// type system — state every intrinsic field on every call.
+///
+/// Scope: defined in `crate::function` and hoisted crate-wide by `#[macro_use] pub mod function;`
+/// in `lib.rs`, so every `*_META` site (all under `crate::functions`, declared after `function`)
+/// calls it by bare name with no per-file import. It is an internal authoring helper, not part of
+/// the crate's public API.
+macro_rules! function_spec {
+    ( $( $field:ident : $value:expr ),+ $(,)? ) => {
+        $crate::function::FunctionMeta {
+            $( $field: $value, )+
+            ..$crate::function::FunctionMeta::DEFAULTS_BASE
+        }
+    };
+}
+
+#[cfg(test)]
+mod function_spec_macro_tests {
+    use super::*;
+
+    // A representative full intrinsic field set, repeated in each case below (a macro cannot be
+    // expanded inside the `function_spec!` token stream, so the fields are stated inline; this also
+    // keeps each case a faithful copy of a real `*_META` call shape). Mirrors a unary-numeric meta.
+
+    /// Omitting every defaultable axis fills each one from its `DEFAULT_*` — the value the
+    /// overwhelming majority of metas carry, so the majority of `function_spec!` calls name only
+    /// the ten intrinsic fields (cf. `ABS_META`).
+    #[test]
+    fn omitted_defaultable_axes_take_their_defaults() {
+        const M: FunctionMeta = function_spec! {
+            function_id: "TEST.FUNC",
+            arity: Arity::exact(1),
+            determinism: DeterminismClass::Deterministic,
+            volatility: VolatilityClass::NonVolatile,
+            host_interaction: HostInteractionClass::None,
+            thread_safety: ThreadSafetyClass::SafePure,
+            coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+            kernel_signature_class: KernelSignatureClass::NumToNum,
+            fec_dependency_profile: FecDependencyProfile::None,
+            surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+        };
+        assert_eq!(
+            M.arg_preparation_profile,
+            FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE
+        );
+        assert_eq!(
+            M.lift_broadcast_profile,
+            FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE
+        );
+        assert_eq!(
+            M.real_result_policy,
+            FunctionMeta::DEFAULT_REAL_RESULT_POLICY
+        );
+        assert_eq!(
+            M.error_collapse_profile,
+            FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE
+        );
+        assert_eq!(
+            M.precision_rounding_profile,
+            FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE
+        );
+        // Intrinsic fields come through verbatim — the placeholders in DEFAULTS_BASE are shadowed.
+        assert_eq!(M.function_id, "TEST.FUNC");
+        assert_eq!(M.arity, Arity::exact(1));
+    }
+
+    /// Naming one defaultable axis overrides exactly that axis and leaves the rest at their
+    /// defaults (cf. `SIN_META` overriding only `real_result_policy`). Field order is free — here
+    /// the override is written FIRST, before the intrinsic fields.
+    #[test]
+    fn a_named_override_changes_only_that_axis() {
+        const M: FunctionMeta = function_spec! {
+            real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
+            function_id: "TEST.FUNC",
+            arity: Arity::exact(1),
+            determinism: DeterminismClass::Deterministic,
+            volatility: VolatilityClass::NonVolatile,
+            host_interaction: HostInteractionClass::None,
+            thread_safety: ThreadSafetyClass::SafePure,
+            coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+            kernel_signature_class: KernelSignatureClass::NumToNum,
+            fec_dependency_profile: FecDependencyProfile::None,
+            surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+        };
+        assert_eq!(M.real_result_policy, ExcelRealPolicy::CIRCULAR_TRIG);
+        // Every other defaultable axis still defaults.
+        assert_eq!(
+            M.arg_preparation_profile,
+            FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE
+        );
+        assert_eq!(
+            M.precision_rounding_profile,
+            FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE
+        );
+    }
+
+    /// The macro is a `const` expression: `M` and `_ID` below are `const`, which only compiles
+    /// because `function_spec!` expands to a plain `FunctionMeta { … }` struct literal (no
+    /// allocation, no trait dispatch), exactly as the `pub const X_META: FunctionMeta` sites require.
+    #[test]
+    fn usable_in_const_context() {
+        const M: FunctionMeta = function_spec! {
+            function_id: "TEST.FUNC",
+            arity: Arity::exact(1),
+            determinism: DeterminismClass::Deterministic,
+            volatility: VolatilityClass::NonVolatile,
+            host_interaction: HostInteractionClass::None,
+            thread_safety: ThreadSafetyClass::SafePure,
+            coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+            kernel_signature_class: KernelSignatureClass::NumToNum,
+            fec_dependency_profile: FecDependencyProfile::None,
+            surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
+        };
+        const _ID: &str = M.function_id;
+        assert_eq!(_ID, "TEST.FUNC");
+    }
+
+    // ----------------------------------------------------------------------------------------
+    // NEW-AXIS-ONE-LINE DEMONSTRATION (the bead's acceptance criterion).
+    //
+    // This is the property `function_spec!` exists to deliver: adding a NEW behavioural axis costs
+    // ONE line in the macro defaults (`DEFAULTS_BASE`) plus a one-line override ONLY on the
+    // functions that deviate — NOT an all-literal sweep over every `*_META`.
+    //
+    // We cannot extend the real `FunctionMeta` here (that is the next axis-widening bead's job),
+    // so the demonstration uses a faithful STANDALONE replica of the exact pattern: a struct with
+    // intrinsic + defaultable fields, a `DEFAULTS_BASE` const, and a `..DEFAULTS_BASE` default-fill
+    // macro identical in shape to `function_spec!`. The walkthrough below shows that introducing a
+    // brand-new defaultable axis (`new_axis`) touches only:
+    //   (1) the new field on the struct + its `DEFAULT_NEW_AXIS` const,
+    //   (2) ONE new line in `DEFAULTS_BASE` (`new_axis: Self::DEFAULT_NEW_AXIS,`),
+    //   (3) a one-line `new_axis: …` override on ONLY the deviating call site.
+    // Every pre-existing call site that takes the default is UNCHANGED — the macro fills the new
+    // axis for it. In the real crate, step (2) is the single edit to `FunctionMeta::DEFAULTS_BASE`
+    // and step (3) is one line on each deviating `*_META`; the ~237 default-carrying metas need no
+    // edit at all.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    enum NewAxis {
+        Default,
+        Deviation,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    struct DemoMeta {
+        id: &'static str,
+        existing_default_axis: u8,
+        new_axis: NewAxis, // (1) the freshly added axis
+    }
+
+    impl DemoMeta {
+        const DEFAULT_EXISTING: u8 = 0;
+        const DEFAULT_NEW_AXIS: NewAxis = NewAxis::Default; // (1) its default const
+
+        const DEFAULTS_BASE: DemoMeta = DemoMeta {
+            id: "",
+            existing_default_axis: Self::DEFAULT_EXISTING,
+            new_axis: Self::DEFAULT_NEW_AXIS, // (2) THE ONE LINE that defaults the new axis everywhere
+        };
+    }
+
+    macro_rules! demo_spec {
+        ( $( $field:ident : $value:expr ),+ $(,)? ) => {
+            DemoMeta { $( $field: $value, )+ ..DemoMeta::DEFAULTS_BASE }
+        };
+    }
+
+    #[test]
+    fn new_axis_is_one_default_line_plus_only_the_overriding_call_site() {
+        // A call site authored BEFORE the new axis existed — unchanged by the axis addition; the
+        // macro fills `new_axis` from DEFAULTS_BASE.
+        const PRE_EXISTING_META: DemoMeta = demo_spec! { id: "stays.default" };
+        // The ONLY call site that deviates adds exactly ONE line.
+        const DEVIATING_META: DemoMeta = demo_spec! {
+            id: "deviates",
+            new_axis: NewAxis::Deviation, // (3) the one-line override, only here
+        };
+
+        assert_eq!(PRE_EXISTING_META.new_axis, NewAxis::Default);
+        assert_eq!(DEVIATING_META.new_axis, NewAxis::Deviation);
+        // Adding the axis did not disturb the pre-existing axis on the unchanged call site.
+        assert_eq!(
+            PRE_EXISTING_META.existing_default_axis,
+            DemoMeta::DEFAULT_EXISTING
+        );
+    }
 }

@@ -9,22 +9,17 @@ use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
 
-const NORMAL_LOG_BASE_META: FunctionMeta = FunctionMeta {
+const NORMAL_LOG_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.NORMAL_LOG_BASE",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 // The legacy compatibility surfaces here are scalar-shaped by-index and broadcast their leading

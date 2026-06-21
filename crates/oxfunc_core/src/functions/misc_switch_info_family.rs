@@ -11,7 +11,7 @@ use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CoreValue, ReferenceLike, WorksheetErrorCode};
 
-pub const SWITCH_META: FunctionMeta = FunctionMeta {
+pub const SWITCH_META: FunctionMeta = function_spec! {
     function_id: "FUNC.SWITCH",
     arity: Arity { min: 3, max: 255 },
     determinism: DeterminismClass::Deterministic,
@@ -26,12 +26,10 @@ pub const SWITCH_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const ISFORMULA_META: FunctionMeta = FunctionMeta {
+pub const ISFORMULA_META: FunctionMeta = function_spec! {
     function_id: "FUNC.ISFORMULA",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
@@ -40,13 +38,9 @@ pub const ISFORMULA_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

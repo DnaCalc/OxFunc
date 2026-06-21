@@ -1,5 +1,6 @@
 pub mod capability;
 pub mod coercion;
+#[macro_use]
 pub mod function;
 pub mod function_call;
 pub mod functions;

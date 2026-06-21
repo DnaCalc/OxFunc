@@ -8,22 +8,17 @@ use crate::functions::adapters::{
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
-const DATE_VALUE_FAMILY_BASE_META: FunctionMeta = FunctionMeta {
+const DATE_VALUE_FAMILY_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.DATE_VALUE_FAMILY_BASE",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::LocaleProfile,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const DATEVALUE_META: FunctionMeta = FunctionMeta {

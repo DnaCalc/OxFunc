@@ -10,14 +10,13 @@ use crate::host_info::{HostInfoError, HostInfoProvider, SheetCountSpec, SheetIde
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CoreValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
-pub const ADDRESS_META: FunctionMeta = FunctionMeta {
+pub const ADDRESS_META: FunctionMeta = function_spec! {
     function_id: "FUNC.ADDRESS",
     arity: Arity { min: 2, max: 5 },
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
     // ADDRESS is scalar-shaped by-index and broadcasts all five of its arguments over an array
     // (`[0,1,2,3,4]`). Verified live Excel 16.0 build 20026.
@@ -25,12 +24,9 @@ pub const ADDRESS_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const AREAS_META: FunctionMeta = FunctionMeta {
+pub const AREAS_META: FunctionMeta = function_spec! {
     function_id: "FUNC.AREAS",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
@@ -39,16 +35,12 @@ pub const AREAS_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const FORMULATEXT_META: FunctionMeta = FunctionMeta {
+pub const FORMULATEXT_META: FunctionMeta = function_spec! {
     function_id: "FUNC.FORMULATEXT",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
@@ -57,16 +49,12 @@ pub const FORMULATEXT_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const SHEET_META: FunctionMeta = FunctionMeta {
+pub const SHEET_META: FunctionMeta = function_spec! {
     function_id: "FUNC.SHEET",
     arity: Arity { min: 0, max: 1 },
     determinism: DeterminismClass::Deterministic,
@@ -75,16 +63,12 @@ pub const SHEET_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const SHEETS_META: FunctionMeta = FunctionMeta {
+pub const SHEETS_META: FunctionMeta = function_spec! {
     function_id: "FUNC.SHEETS",
     arity: Arity { min: 0, max: 1 },
     determinism: DeterminismClass::Deterministic,
@@ -93,13 +77,9 @@ pub const SHEETS_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

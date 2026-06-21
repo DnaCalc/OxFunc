@@ -17,7 +17,7 @@ use crate::resolver::{
 use crate::value::{CalcArray, ExcelText, ReferenceKind, ReferenceLike, WorksheetErrorCode};
 use crate::value::{CalcValue, CoreValue};
 
-const CRITERIA_BASE_META: FunctionMeta = FunctionMeta {
+const CRITERIA_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.CRITERIA_BASE",
     arity: Arity { min: 2, max: 255 },
     determinism: DeterminismClass::Deterministic,
@@ -26,16 +26,13 @@ const CRITERIA_BASE_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     // Every CRITERIA_BASE_META instance (COUNTIF/COUNTIFS/SUMIF/SUMIFS/AVERAGEIF/AVERAGEIFS/
     // MAXIFS/MINIFS) reduces a matched range to one result, so the family is uniformly a
     // reduction fold; the base carries the non-default error-collapse profile.
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const COUNTIF_META: FunctionMeta = FunctionMeta {

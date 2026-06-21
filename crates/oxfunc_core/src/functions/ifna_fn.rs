@@ -8,7 +8,7 @@ use crate::functions::adapters::prepare_arg_values_only;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{CalcValue, CoreValue, WorksheetErrorCode};
 
-pub const IFNA_META: FunctionMeta = FunctionMeta {
+pub const IFNA_META: FunctionMeta = function_spec! {
     function_id: "FUNC.IFNA",
     arity: Arity::exact(2),
     determinism: DeterminismClass::Deterministic,
@@ -17,13 +17,10 @@ pub const IFNA_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::SelectorBranch,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

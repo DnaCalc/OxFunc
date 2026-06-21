@@ -9,7 +9,7 @@ use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
 use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::{CalcValue, CoreValue, ExcelText, ReferenceLike, WorksheetErrorCode};
 
-pub const CELL_META: FunctionMeta = FunctionMeta {
+pub const CELL_META: FunctionMeta = function_spec! {
     function_id: "FUNC.CELL",
     arity: Arity { min: 1, max: 2 },
     determinism: DeterminismClass::Deterministic,
@@ -18,13 +18,9 @@ pub const CELL_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::CallerContext,
     surface_fec_dependency_profile: FecDependencyProfile::CallerContext,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

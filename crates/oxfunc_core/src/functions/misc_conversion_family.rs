@@ -12,22 +12,17 @@ use crate::functions::rand_fn::RandomProvider;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayShape, CalcArray, CalcValue, CoreValue, ExcelText, WorksheetErrorCode};
 
-const MISC_CONVERSION_META_BASE: FunctionMeta = FunctionMeta {
+const MISC_CONVERSION_META_BASE: FunctionMeta = function_spec! {
     function_id: "FUNC.MISC_CONVERSION_BASE",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const BAHTTEXT_META: FunctionMeta = FunctionMeta {
@@ -49,22 +44,17 @@ pub const PERCENTOF_META: FunctionMeta = FunctionMeta {
     arity: Arity::exact(2),
     ..MISC_CONVERSION_META_BASE
 };
-pub const RANDARRAY_META: FunctionMeta = FunctionMeta {
+pub const RANDARRAY_META: FunctionMeta = function_spec! {
     function_id: "FUNC.RANDARRAY",
     arity: Arity { min: 0, max: 5 },
     determinism: DeterminismClass::PseudoRandom,
     volatility: VolatilityClass::VolatileFull,
     host_interaction: HostInteractionClass::ApplicationState,
     thread_safety: ThreadSafetyClass::HostSerialized,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RandomProvider,
     surface_fec_dependency_profile: FecDependencyProfile::RandomProvider,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

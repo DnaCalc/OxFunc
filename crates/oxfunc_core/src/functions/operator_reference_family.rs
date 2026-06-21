@@ -8,7 +8,7 @@ use crate::resolver::{
 };
 use crate::value::{CalcValue, ReferenceLike, WorksheetErrorCode};
 
-const OP_REFERENCE_BASE_META: FunctionMeta = FunctionMeta {
+const OP_REFERENCE_BASE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.OP_REFERENCE_BASE",
     arity: Arity::exact(2),
     determinism: DeterminismClass::Deterministic,
@@ -17,13 +17,9 @@ const OP_REFERENCE_BASE_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const OP_RANGE_REF_META: FunctionMeta = FunctionMeta {
@@ -44,7 +40,7 @@ pub const OP_UNION_REF_META: FunctionMeta = FunctionMeta {
     ..OP_REFERENCE_BASE_META
 };
 
-pub const OP_TRIM_REF_LEADING_META: FunctionMeta = FunctionMeta {
+pub const OP_TRIM_REF_LEADING_META: FunctionMeta = function_spec! {
     function_id: "FUNC.OP_TRIM_REF_LEADING",
     arity: Arity { min: 1, max: 1 },
     determinism: DeterminismClass::Deterministic,
@@ -53,13 +49,9 @@ pub const OP_TRIM_REF_LEADING_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const OP_TRIM_REF_TRAILING_META: FunctionMeta = FunctionMeta {

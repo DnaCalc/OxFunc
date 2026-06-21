@@ -10,22 +10,17 @@ use crate::value::WorksheetErrorCode;
 
 const EPSILON: f64 = 1.0e-12;
 
-const CUMULATIVE_FINANCE_META_BASE: FunctionMeta = FunctionMeta {
+const CUMULATIVE_FINANCE_META_BASE: FunctionMeta = function_spec! {
     function_id: "FUNC.CUMULATIVE_FINANCE_BASE",
     arity: Arity::exact(6),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const CUMIPMT_META: FunctionMeta = FunctionMeta {

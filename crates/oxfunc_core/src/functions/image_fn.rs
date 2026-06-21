@@ -18,22 +18,17 @@ use crate::value::{
     RichValueType, WorksheetErrorCode,
 };
 
-pub const IMAGE_META: FunctionMeta = FunctionMeta {
+pub const IMAGE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.IMAGE",
     arity: Arity { min: 1, max: 5 },
     determinism: DeterminismClass::ExternalEventDependent,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::ExternalProvider,
     thread_safety: ThreadSafetyClass::HostSerialized,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::ExternalProvider,
     surface_fec_dependency_profile: FecDependencyProfile::ExternalProvider,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 const WEB_IMAGE_TYPE_NAME: &str = "_webimage";

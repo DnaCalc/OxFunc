@@ -36,7 +36,7 @@ use crate::resolver::{
 use crate::value::{ArrayShape, CalcArray, ReferenceLike, WorksheetErrorCode};
 use crate::value::{CalcValue, CoreValue};
 
-pub const SUBTOTAL_META: FunctionMeta = FunctionMeta {
+pub const SUBTOTAL_META: FunctionMeta = function_spec! {
     function_id: "FUNC.SUBTOTAL",
     arity: Arity { min: 2, max: 255 },
     determinism: DeterminismClass::Deterministic,
@@ -45,16 +45,13 @@ pub const SUBTOTAL_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
+pub const AGGREGATE_META: FunctionMeta = function_spec! {
     function_id: "FUNC.AGGREGATE",
     arity: Arity { min: 3, max: 255 },
     determinism: DeterminismClass::Deterministic,
@@ -63,13 +60,10 @@ pub const AGGREGATE_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::Composite,
     surface_fec_dependency_profile: FecDependencyProfile::Composite,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
     error_collapse_profile: ErrorCollapseProfile::ReductionFold,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

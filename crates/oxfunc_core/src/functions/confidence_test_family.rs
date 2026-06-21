@@ -11,14 +11,13 @@ use crate::resolver::{ReferenceSystemProvider, resolve_eval_value};
 use crate::value::WorksheetErrorCode;
 use crate::value::{CalcValue, CoreValue};
 
-pub const CONFIDENCE_T_META: FunctionMeta = FunctionMeta {
+pub const CONFIDENCE_T_META: FunctionMeta = function_spec! {
     function_id: "FUNC.CONFIDENCE.T",
     arity: Arity::exact(3),
     determinism: DeterminismClass::Deterministic,
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
     // CONFIDENCE.T is scalar-shaped by-index and broadcasts its first three arguments over an
     // array (`[0,1,2]`). Verified live Excel 16.0 build 20026.
@@ -26,12 +25,9 @@ pub const CONFIDENCE_T_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::None,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
-pub const Z_TEST_META: FunctionMeta = FunctionMeta {
+pub const Z_TEST_META: FunctionMeta = function_spec! {
     function_id: "FUNC.Z.TEST",
     arity: Arity { min: 2, max: 3 },
     determinism: DeterminismClass::Deterministic,
@@ -46,9 +42,6 @@ pub const Z_TEST_META: FunctionMeta = FunctionMeta {
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

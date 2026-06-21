@@ -5,22 +5,17 @@ use crate::function::{
 use crate::value::CalcValue;
 use crate::value::{CoreValue, NumberFormatHint, PresentationHint, WorksheetErrorCode};
 
-pub const NOW_META: FunctionMeta = FunctionMeta {
+pub const NOW_META: FunctionMeta = function_spec! {
     function_id: "FUNC.NOW",
     arity: Arity::exact(0),
     determinism: DeterminismClass::TimeDependent,
     volatility: VolatilityClass::VolatileFull,
     host_interaction: HostInteractionClass::ApplicationState,
     thread_safety: ThreadSafetyClass::HostSerialized,
-    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::None,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::TimeProvider,
     surface_fec_dependency_profile: FecDependencyProfile::TimeProvider,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub trait NowProvider {

@@ -16,7 +16,7 @@ const RATE_MAX_ITERATIONS: usize = 20;
 const RATE_BRACKET_MAX_ITERATIONS: usize = 64;
 const MIN_VALID_RATE: f64 = -0.999_999_999;
 
-const FINANCIAL_META_BASE: FunctionMeta = FunctionMeta {
+const FINANCIAL_META_BASE: FunctionMeta = function_spec! {
     function_id: "FUNC.FINANCIAL_TIME_VALUE_BASE",
     arity: Arity::exact(1),
     determinism: DeterminismClass::Deterministic,
@@ -25,13 +25,9 @@ const FINANCIAL_META_BASE: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 pub const PV_META: FunctionMeta = FunctionMeta {

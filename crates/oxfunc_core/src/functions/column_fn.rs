@@ -6,7 +6,7 @@ use crate::functions::a1_refs::parse_a1_reference;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::{ArrayShape, CalcArray, CalcValue, WorksheetErrorCode};
 
-pub const COLUMN_META: FunctionMeta = FunctionMeta {
+pub const COLUMN_META: FunctionMeta = function_spec! {
     function_id: "FUNC.COLUMN",
     arity: Arity { min: 0, max: 1 },
     determinism: DeterminismClass::Deterministic,
@@ -15,13 +15,9 @@ pub const COLUMN_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::HostSerialized,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::CallerContext,
     surface_fec_dependency_profile: FecDependencyProfile::CallerContext,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]

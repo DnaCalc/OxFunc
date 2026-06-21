@@ -11,7 +11,7 @@ use crate::resolver::{
 use crate::value::CalcValue;
 use crate::value::{ArrayShape, CalcArray, CoreValue, ExcelText, WorksheetErrorCode};
 
-pub const INDEX_META: FunctionMeta = FunctionMeta {
+pub const INDEX_META: FunctionMeta = function_spec! {
     function_id: "FUNC.INDEX",
     arity: Arity { min: 2, max: 4 },
     determinism: DeterminismClass::Deterministic,
@@ -20,13 +20,9 @@ pub const INDEX_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: ArgPreparationProfile::RefsVisibleInAdapter,
     coercion_lift_profile: CoercionLiftProfile::Custom,
-    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RefOnly,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
-    real_result_policy: FunctionMeta::DEFAULT_REAL_RESULT_POLICY,
-    error_collapse_profile: FunctionMeta::DEFAULT_ERROR_COLLAPSE_PROFILE,
-    precision_rounding_profile: FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
 };
 
 #[derive(Debug, Clone, PartialEq)]
