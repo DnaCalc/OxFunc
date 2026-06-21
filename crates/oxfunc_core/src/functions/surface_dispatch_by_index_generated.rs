@@ -804,7 +804,6 @@ match dispatch_key.catalog_index {
             289 => {
                 eval_munit_surface(args, resolver).map_err(|e| map_matrix_error_to_ws(&e))
             }
-            293 => eval_mod_surface(args, resolver).map_err(|e| map_mod_error_to_ws(&e)),
     // FUNC.MIN
     290 => eval_min_surface(args, resolver).map_err(|e| map_min_error_to_ws(&e)),
     // FUNC.MINA
@@ -961,15 +960,8 @@ match dispatch_key.catalog_index {
             }
             343 => eval_pduration_surface(args, resolver)
                 .map_err(|e| map_financial_time_value_error_to_ws(&e)),
-    // FUNC.OP_ADD
-    347 => {
-                eval_op_add_surface(args, resolver).map_err(|e| map_op_add_error_to_ws(&e))
-            }
             348 => eval_op_concat_surface(args, resolver)
                 .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-    // FUNC.OP_DIVIDE
-    349 => eval_op_divide_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
     // FUNC.OP_EQUAL
     350 => eval_op_equal_surface(args, resolver)
                 .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
@@ -985,24 +977,15 @@ match dispatch_key.catalog_index {
     // FUNC.OP_LESS_THAN
     355 => eval_op_less_than_surface(args, resolver)
                 .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-    // FUNC.OP_MULTIPLY
-    356 => eval_op_multiply_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
     // FUNC.OP_NOT_EQUAL
     358 => eval_op_not_equal_surface(args, resolver)
                 .map_err(|e| map_operator_compare_concat_error_to_ws(&e)),
-    // FUNC.OP_POWER
-    360 => eval_op_power_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
     // FUNC.OP_RANGE_REF
     361 => eval_op_range_ref_surface(args, resolver)
                 .map_err(|e| map_operator_reference_error_to_ws(&e)),
     // FUNC.OP_SPILL_REF
     362 => eval_op_spill_ref_surface(args, resolver)
                 .map_err(|e| map_op_spill_ref_error_to_ws(&e)),
-    // FUNC.OP_SUBTRACT
-    363 => eval_op_subtract_surface(args, resolver)
-                .map_err(|e| map_operator_binary_error_to_ws(&e)),
     // FUNC.OP_TRIM_REF_BOTH
     364 => eval_op_trim_ref_both_surface(args, resolver)
                 .map_err(|e| map_operator_reference_error_to_ws(&e)),
@@ -1064,10 +1047,6 @@ match dispatch_key.catalog_index {
             .map_err(|e| {
                 crate::functions::subtotal_aggregate_family::map_subtotal_aggregate_error_to_ws(&e)
             }),
-    // FUNC.POWER
-    381 => {
-                eval_power_surface(args, resolver).map_err(|e| map_power_error_to_ws(&e))
-            }
             384 => {
                 eval_quotient_surface(args, resolver).map_err(|e| map_quotient_error_to_ws(&e))
             }
@@ -1898,5 +1877,77 @@ match dispatch_key.catalog_index {
     )
     .map_err(|e| crate::functions::unary_numeric::map_unary_numeric_error_to_ws(&e)),
     // <<< END spec-driven unary-numeric arms (oxf-y2uw.9)
+    // >>> BEGIN spec-driven binary-arithmetic arms (oxf-y2uw.12.1) -- generator-owned; do not hand-edit
+    // FUNC.MOD  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    293 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::mod_fn::mod_kernel,
+            crate::functions::mod_fn::MOD_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.OP_ADD  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    347 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::raw(
+            crate::functions::op_add::op_add_kernel,
+            crate::functions::op_add::OP_ADD_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.OP_DIVIDE  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    349 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::operator_arithmetic_family::op_divide_kernel,
+            crate::functions::operator_arithmetic_family::OP_DIVIDE_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.OP_MULTIPLY  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    356 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::operator_arithmetic_family::op_multiply_kernel,
+            crate::functions::operator_arithmetic_family::OP_MULTIPLY_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.OP_POWER  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    360 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::power_fn::power_kernel,
+            crate::functions::operator_arithmetic_family::OP_POWER_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.OP_SUBTRACT  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    363 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::operator_arithmetic_family::op_subtract_kernel,
+            crate::functions::operator_arithmetic_family::OP_SUBTRACT_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // FUNC.POWER  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]
+    381 => crate::functions::binary_numeric::eval_binary_numeric_via_executor(
+        args,
+        resolver,
+        crate::functions::binary_numeric::BinaryNumericExecSpec::fallible(
+            crate::functions::power_fn::power_kernel,
+            crate::functions::power_fn::POWER_META.real_result_policy,
+        ),
+    )
+    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),
+    // <<< END spec-driven binary-arithmetic arms (oxf-y2uw.12.1)
     _ => Err(WorksheetErrorCode::Value),
 }

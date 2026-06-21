@@ -43,6 +43,7 @@
 #![cfg(test)]
 
 use crate::function::ExcelRealPolicy;
+use crate::functions::binary_numeric::BinaryNumericExecSpec;
 use crate::functions::unary_numeric::UnaryNumericExecSpec;
 
 /// One migrated unary-numeric arm. `spec` is the SPEC INPUT the generator reads: it is built
@@ -244,20 +245,35 @@ fn emit_spec_driven_unary_numeric_arms() -> String {
 const BEGIN_MARKER: &str = "    // >>> BEGIN spec-driven unary-numeric arms (oxf-y2uw.9) -- generator-owned; do not hand-edit";
 const END_MARKER: &str = "    // <<< END spec-driven unary-numeric arms (oxf-y2uw.9)";
 
+// =====================================================================================
+//  W105 oxf-y2uw.12.1 — spec-driven generator for the binary-arithmetic operator family.
+//
+//  Same shape as the unary block above, one arity up: each migrated id's by-index arm is
+//  emitted FROM its declarative `BinaryNumericExecSpec` binding (its raw/fallible 2-arg kernel +
+//  the `ExcelRealPolicy` carried on its `FunctionMeta`), calling the generic executor entry
+//  `binary_numeric::eval_binary_numeric_via_executor(args, resolver, SPEC)` directly. These ids
+//  were previously double-served (intercepted by the now-deleted
+//  `eval_binary_arithmetic_calc_dispatch` while a shadowed hand arm also existed); after this
+//  bead they are served by exactly one path — these spec-driven arms.
+// =====================================================================================
+
+const BINARY_BEGIN_MARKER: &str = "    // >>> BEGIN spec-driven binary-arithmetic arms (oxf-y2uw.12.1) -- generator-owned; do not hand-edit";
+const BINARY_END_MARKER: &str = "    // <<< END spec-driven binary-arithmetic arms (oxf-y2uw.12.1)";
+
 fn generated_table_path() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("src/functions/surface_dispatch_by_index_generated.rs")
 }
 
-/// Extract the source slice strictly between the BEGIN and END sentinels (exclusive), with a
-/// trailing newline trimmed, so it compares apples-to-apples with the generator output.
-fn committed_spec_block(file: &str) -> String {
+/// Extract the source slice strictly between the given BEGIN and END sentinels (exclusive), with
+/// a trailing newline trimmed, so it compares apples-to-apples with the generator output.
+fn committed_block_between(file: &str, begin_marker: &str, end_marker: &str) -> String {
     let begin = file
-        .find(BEGIN_MARKER)
+        .find(begin_marker)
         .expect("BEGIN sentinel present in generated table");
-    let after_begin = begin + BEGIN_MARKER.len();
+    let after_begin = begin + begin_marker.len();
     let end_rel = file[after_begin..]
-        .find(END_MARKER)
+        .find(end_marker)
         .expect("END sentinel present in generated table");
     let block = &file[after_begin..after_begin + end_rel];
     // `block` starts with the newline after BEGIN and ends with the newline before END.
@@ -266,9 +282,184 @@ fn committed_spec_block(file: &str) -> String {
     block.replace("\r\n", "\n").trim_matches('\n').to_string()
 }
 
+/// Extract the committed unary-numeric spec-driven block.
+fn committed_spec_block(file: &str) -> String {
+    committed_block_between(file, BEGIN_MARKER, END_MARKER)
+}
+
+/// One migrated binary-arithmetic arm — the 2-arg analogue of [`MigratedUnaryArm`]. `spec` is
+/// the SPEC INPUT the generator reads, built from the id's real kernel + its
+/// `FunctionMeta::real_result_policy`, identical to the binding the calc-dispatch / by-index
+/// surface would construct. The `*_path` strings are the source-text identifiers the generator
+/// needs to *write* the arm; the drift check + interpreter-equals test prove the written arm
+/// matches the spec value. Because the kernel and the meta can live in different modules
+/// (OP_POWER binds `power_fn::power_kernel` but carries `operator_arithmetic_family::OP_POWER_META`),
+/// the kernel-module and meta-module paths are recorded separately.
+struct MigratedBinaryArm {
+    function_id: &'static str,
+    /// The declarative executor binding (kernel + policy) — the spec the arm is emitted from.
+    spec: BinaryNumericExecSpec,
+    /// `crate::functions::<module>` segment for the KERNEL, e.g. `"power_fn"`.
+    kernel_module: &'static str,
+    /// kernel fn ident, e.g. `"power_kernel"`.
+    kernel: &'static str,
+    /// `crate::functions::<module>` segment for the `*_META`, e.g. `"operator_arithmetic_family"`.
+    meta_module: &'static str,
+    /// `*_META` ident, e.g. `"OP_POWER_META"`.
+    meta: &'static str,
+}
+
+/// Build a migrated binary arm. The spec is constructed HERE from the live kernel + policy so the
+/// generator's input is the declarative binding, not a transcription. `kernel_is_raw` is read off
+/// the spec to choose the constructor — see `binary_kernel_ctor`.
+macro_rules! binary_arm {
+    ($id:expr, raw, $kmod:ident, $kernel:ident, $mmod:ident, $meta:ident) => {
+        MigratedBinaryArm {
+            function_id: $id,
+            spec: BinaryNumericExecSpec::raw(
+                crate::functions::$kmod::$kernel,
+                crate::functions::$mmod::$meta.real_result_policy,
+            ),
+            kernel_module: stringify!($kmod),
+            kernel: stringify!($kernel),
+            meta_module: stringify!($mmod),
+            meta: stringify!($meta),
+        }
+    };
+    ($id:expr, fallible, $kmod:ident, $kernel:ident, $mmod:ident, $meta:ident) => {
+        MigratedBinaryArm {
+            function_id: $id,
+            spec: BinaryNumericExecSpec::fallible(
+                crate::functions::$kmod::$kernel,
+                crate::functions::$mmod::$meta.real_result_policy,
+            ),
+            kernel_module: stringify!($kmod),
+            kernel: stringify!($kernel),
+            meta_module: stringify!($mmod),
+            meta: stringify!($meta),
+        }
+    };
+}
+
+/// The migrated binary-arithmetic family: the 6 operator ids previously served by the deleted
+/// `eval_binary_arithmetic_calc_dispatch`. OP_ADD is the one `Raw` (infallible) kernel; the rest
+/// own their compute + publication (`Fallible`). OP_POWER and POWER both bind `power_kernel`, so
+/// POWER's declared `IntegerExponentPublication` precision quirk applies identically through both
+/// arms.
+fn migrated_binary_numeric() -> Vec<MigratedBinaryArm> {
+    vec![
+        binary_arm!("FUNC.MOD", fallible, mod_fn, mod_kernel, mod_fn, MOD_META),
+        binary_arm!(
+            "FUNC.OP_ADD",
+            raw,
+            op_add,
+            op_add_kernel,
+            op_add,
+            OP_ADD_META
+        ),
+        binary_arm!(
+            "FUNC.OP_SUBTRACT",
+            fallible,
+            operator_arithmetic_family,
+            op_subtract_kernel,
+            operator_arithmetic_family,
+            OP_SUBTRACT_META
+        ),
+        binary_arm!(
+            "FUNC.OP_MULTIPLY",
+            fallible,
+            operator_arithmetic_family,
+            op_multiply_kernel,
+            operator_arithmetic_family,
+            OP_MULTIPLY_META
+        ),
+        binary_arm!(
+            "FUNC.OP_DIVIDE",
+            fallible,
+            operator_arithmetic_family,
+            op_divide_kernel,
+            operator_arithmetic_family,
+            OP_DIVIDE_META
+        ),
+        binary_arm!(
+            "FUNC.OP_POWER",
+            fallible,
+            power_fn,
+            power_kernel,
+            operator_arithmetic_family,
+            OP_POWER_META
+        ),
+        binary_arm!(
+            "FUNC.POWER",
+            fallible,
+            power_fn,
+            power_kernel,
+            power_fn,
+            POWER_META
+        ),
+    ]
+}
+
+/// The constructor token (`raw` / `fallible`) DERIVED from the spec's kernel variant.
+fn binary_kernel_ctor(spec: BinaryNumericExecSpec) -> &'static str {
+    if spec.kernel_is_raw() {
+        "raw"
+    } else {
+        "fallible"
+    }
+}
+
+/// THE binary generator. Emits the spec-driven by-index arms for the migrated binary-arithmetic
+/// family, sorted by `catalog_index`, as the exact source text that lives between the binary
+/// BEGIN/END sentinels in `surface_dispatch_by_index_generated.rs`. Every arm is derived from the
+/// [`BinaryNumericExecSpec`] binding.
+fn emit_spec_driven_binary_numeric_arms() -> String {
+    let mut rows: Vec<(usize, MigratedBinaryArm)> = migrated_binary_numeric()
+        .into_iter()
+        .map(|arm| (catalog_index_for(arm.function_id), arm))
+        .collect();
+    rows.sort_by_key(|(idx, _)| *idx);
+
+    let mut out = String::new();
+    for (idx, arm) in &rows {
+        let ctor = binary_kernel_ctor(arm.spec);
+        out.push_str(&format!(
+            "    // {fid}  [spec-driven: binary-arithmetic family, emitted from BinaryNumericExecSpec]\n",
+            fid = arm.function_id
+        ));
+        out.push_str(&format!(
+            "    {idx} => crate::functions::binary_numeric::eval_binary_numeric_via_executor(\n"
+        ));
+        out.push_str("        args,\n");
+        out.push_str("        resolver,\n");
+        out.push_str(&format!(
+            "        crate::functions::binary_numeric::BinaryNumericExecSpec::{ctor}(\n"
+        ));
+        out.push_str(&format!(
+            "            crate::functions::{kmod}::{kernel},\n",
+            kmod = arm.kernel_module,
+            kernel = arm.kernel
+        ));
+        out.push_str(&format!(
+            "            crate::functions::{mmod}::{meta}.real_result_policy,\n",
+            mmod = arm.meta_module,
+            meta = arm.meta
+        ));
+        out.push_str("        ),\n");
+        out.push_str("    )\n");
+        out.push_str("    .map_err(|e| crate::functions::binary_numeric::map_binary_numeric_error_to_ws(&e)),\n");
+    }
+    // Trim the trailing newline so the block compares cleanly against the slice between markers.
+    out.pop();
+    out
+}
+
 mod tests {
     use super::*;
-    use crate::functions::surface_dispatch::eval_surface_value_call;
+    use crate::functions::binary_numeric::execute as binary_execute;
+    use crate::functions::surface_dispatch::{
+        eval_surface_q_binary_number, eval_surface_value_call,
+    };
     use crate::functions::unary_numeric::execute;
     use crate::resolver::{
         ReferenceDereferenceRequest, ReferenceResolutionError, ReferenceSystemCapabilities,
@@ -354,6 +545,227 @@ mod tests {
         let before = ids.len();
         ids.dedup();
         assert_eq!(before, ids.len(), "duplicate id in the migrated table");
+    }
+
+    // --- W105 oxf-y2uw.12.1 binary-arithmetic generator guards ----------------------------
+
+    /// DRIFT CHECK for the binary block — the 2-arg analogue of the unary drift check. The
+    /// committed binary spec-driven block must equal exactly what the binary generator emits
+    /// today, so the "generated from the spec" claim cannot rot.
+    #[test]
+    fn binary_drift_check_committed_table_equals_generator() {
+        let file = std::fs::read_to_string(generated_table_path())
+            .expect("read committed generated dispatch table");
+        let committed = committed_block_between(&file, BINARY_BEGIN_MARKER, BINARY_END_MARKER);
+        let generated = emit_spec_driven_binary_numeric_arms();
+        assert_eq!(
+            committed, generated,
+            "the committed spec-driven binary-arithmetic block has drifted from the generator. \
+             Re-run: cargo test -p oxfunc_core -- --ignored \
+             regenerate_surface_dispatch_binary_numeric_arms"
+        );
+    }
+
+    /// Regeneration helper for the binary block (run with `--ignored`).
+    #[test]
+    #[ignore = "writes surface_dispatch_by_index_generated.rs; run explicitly to regenerate"]
+    fn regenerate_surface_dispatch_binary_numeric_arms() {
+        let path = generated_table_path();
+        let file = std::fs::read_to_string(&path).expect("read committed generated dispatch table");
+        let begin = file
+            .find(BINARY_BEGIN_MARKER)
+            .expect("binary BEGIN sentinel");
+        let after_begin = begin + BINARY_BEGIN_MARKER.len();
+        let end_rel = file[after_begin..]
+            .find(BINARY_END_MARKER)
+            .expect("binary END sentinel");
+        let mut rebuilt = String::new();
+        rebuilt.push_str(&file[..after_begin]);
+        rebuilt.push('\n');
+        rebuilt.push_str(&emit_spec_driven_binary_numeric_arms());
+        rebuilt.push('\n');
+        rebuilt.push_str(&file[after_begin + end_rel..]);
+        std::fs::write(&path, rebuilt).expect("write regenerated dispatch table");
+    }
+
+    /// The binary generator's spec table must cover the 6 migrated operator ids (OP_POWER and
+    /// POWER both ride `power_kernel`). Guards the table from silently shrinking.
+    #[test]
+    fn migrated_binary_table_is_the_full_operator_set() {
+        let rows = migrated_binary_numeric();
+        assert_eq!(
+            rows.len(),
+            7,
+            "expected 7 migrated binary-arithmetic arms (MOD, OP_ADD, OP_SUBTRACT, OP_MULTIPLY, \
+             OP_DIVIDE, OP_POWER, POWER)"
+        );
+        let mut ids: Vec<&str> = rows.iter().map(|r| r.function_id).collect();
+        for id in &ids {
+            let _ = catalog_index_for(id);
+        }
+        ids.sort_unstable();
+        let before = ids.len();
+        ids.dedup();
+        assert_eq!(
+            before,
+            ids.len(),
+            "duplicate id in the migrated binary table"
+        );
+    }
+
+    /// INTERPRETER ≡ GENERATED for the binary family (bead item 2 / .9 analogue), authored
+    /// data-over-the-table. For every migrated operator id and a representative pair-input set
+    /// (incl. overflow / domain-edge / div-by-zero / negative-base / non-integer exponent), it
+    /// asserts the GENERATED by-index dispatch path's published scalar result equals the direct
+    /// `binary_execute(spec, lhs, rhs)` result — a wrong-routing detector for the generated
+    /// binary arms (e.g. a swapped kernel or a lost POWER precision quirk would diverge).
+    #[test]
+    fn binary_interpreter_equals_generated_dispatch_for_every_migrated_id() {
+        // Representative already-coercible pairs: signed zero, div-by-zero, large quotients
+        // (MOD #NUM! threshold), POWER overflow / underflow / 0^0 / 0^-n / negative-base
+        // reciprocal-odd roots and non-integer exponents, plus ordinary arithmetic.
+        let pairs: &[(f64, f64)] = &[
+            (6.0, 2.0),
+            (-6.0, 2.0),
+            (6.0, -2.0),
+            (1.0, 0.0),
+            (0.0, 0.0),
+            (-0.0, 0.0),
+            (0.0, -1.0),
+            (3.0, 2.0),
+            (-3.0, 2.0),
+            (2.0, 3.0),
+            (2.0, -3.0),
+            (2.0, -1023.0),
+            (10.0, 700.0),
+            (0.001, -700.0),
+            (10.0, -700.0),
+            (-8.0, 1.0 / 3.0),
+            (-8.0, 0.5),
+            (1.05, 10.0),
+            (1.005e14, 1.0),
+            (1.0e-308, 1.0e-308),
+            (5.0, 0.0),
+        ];
+
+        let resolver = NoResolver;
+        let mut failures: Vec<String> = Vec::new();
+
+        for arm in migrated_binary_numeric() {
+            for &(lhs, rhs) in pairs {
+                let direct = binary_execute(arm.spec, lhs, rhs);
+
+                let dispatched = eval_surface_value_call(
+                    arm.function_id,
+                    &[CalcValue::number(lhs), CalcValue::number(rhs)],
+                    &resolver,
+                    None,
+                    None,
+                    None,
+                    None,
+                );
+
+                let dispatched_norm: Result<u64, WorksheetErrorCode> = match dispatched {
+                    Ok(value) => match value.core() {
+                        CoreValue::Number(n) => Ok(n.to_bits()),
+                        CoreValue::Error(code) => Err(*code),
+                        other => {
+                            failures.push(format!(
+                                "{} @ ({:?},{:?}): generated dispatch produced non-scalar {:?}",
+                                arm.function_id, lhs, rhs, other
+                            ));
+                            continue;
+                        }
+                    },
+                    Err(code) => Err(code),
+                };
+                let direct_norm: Result<u64, WorksheetErrorCode> = direct.map(|n| n.to_bits());
+
+                if dispatched_norm != direct_norm {
+                    failures.push(format!(
+                        "{} @ ({:?},{:?}): generated dispatch != binary_execute(spec): \
+                         dispatch={:?}, execute={:?}",
+                        arm.function_id, lhs, rhs, dispatched_norm, direct_norm,
+                    ));
+                }
+            }
+        }
+
+        assert!(
+            failures.is_empty(),
+            "binary interpreter-equals-generated broke for {} (id @ input) cases:\n{}",
+            failures.len(),
+            failures.join("\n")
+        );
+    }
+
+    /// BIT-EXACTNESS CROSS-PATH CHECK (the binary analogue of the `.1` Law-1
+    /// kernel-publication equivalence). For each migrated operator id and a representative pair
+    /// set (overflow / NaN-producing / 0 / negative / domain-edge / div-by-zero), the new binary
+    /// executor's kernel-publication slice `binary_execute(spec, lhs, rhs)` must equal — bit for
+    /// bit on the published `f64` — the UNCHANGED XLL `Q`-scalar reference
+    /// `eval_surface_q_binary_number(id, lhs, rhs)`, which calls the same kernels directly and is
+    /// the bit-exact reference for these 6 operators. This proves the migration is
+    /// behaviour-preserving at the kernel-publication boundary (and, for POWER/OP_POWER, that the
+    /// `IntegerExponentPublication` precision quirk applied inside `power_kernel` keeps applying).
+    #[test]
+    fn binary_executor_is_bit_exact_vs_q_scalar_reference() {
+        // Overflow / NaN-producing / signed-zero / div-by-zero / negative-base / large-quotient
+        // / integer-publication / underflow pairs, exercising every kernel's error + value edges.
+        let pairs: &[(f64, f64)] = &[
+            (6.0, 2.0),
+            (-6.0, 2.0),
+            (6.0, -2.0),
+            (1.0, 0.0),
+            (0.0, 0.0),
+            (-0.0, 0.0),
+            (0.0, -1.0),
+            (3.0, 2.0),
+            (-3.0, 2.0),
+            (-3.0, -2.0),
+            (2.0, 3.0),
+            (2.0, -3.0),
+            (2.0, -1023.0),
+            (2.0, -1022.0),
+            (10.0, 700.0),
+            (0.001, -700.0),
+            (10.0, -700.0),
+            (-8.0, 1.0 / 3.0),
+            (-27.0, 1.0 / 3.0),
+            (-8.0, 0.5),
+            (-8.0, 2.0 / 3.0),
+            (1.05, 10.0),
+            (1.01, 48.0),
+            (1.005e14, 1.0),
+            (-4.44e14, 0.288),
+            (1.0e-308, 1.0e-308),
+            (5.0e-308, 2.0),
+            (f64::NAN, 1.0),
+            (1.0, f64::NAN),
+            (f64::INFINITY, 1.0),
+        ];
+
+        let mut failures: Vec<String> = Vec::new();
+        for arm in migrated_binary_numeric() {
+            for &(lhs, rhs) in pairs {
+                let via_executor = binary_execute(arm.spec, lhs, rhs);
+                let via_q = eval_surface_q_binary_number(arm.function_id, lhs, rhs);
+                let exec_norm: Result<u64, WorksheetErrorCode> = via_executor.map(|n| n.to_bits());
+                let q_norm: Result<u64, WorksheetErrorCode> = via_q.map(|n| n.to_bits());
+                if exec_norm != q_norm {
+                    failures.push(format!(
+                        "{} @ ({:?},{:?}): executor != Q-scalar: executor={:?}, q={:?}",
+                        arm.function_id, lhs, rhs, exec_norm, q_norm,
+                    ));
+                }
+            }
+        }
+        assert!(
+            failures.is_empty(),
+            "binary executor diverged from the Q-scalar reference for {} case(s):\n{}",
+            failures.len(),
+            failures.join("\n")
+        );
     }
 
     /// INTERPRETER ≡ GENERATED (bead item 2), authored data-over-the-table: one generic test

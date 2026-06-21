@@ -30,9 +30,6 @@ use crate::functions::beta_gamma_stats_family::{
     eval_gamma_dist_surface, eval_gamma_inv_surface, eval_gammadist_surface, eval_gammainv_surface,
     map_beta_gamma_stats_error_to_ws,
 };
-use crate::functions::binary_numeric::{
-    eval_binary_numeric_calc_surface, map_binary_numeric_error_to_ws,
-};
 use crate::functions::bitand_fn::{bitand_kernel, eval_bitand_surface, map_bitand_error_to_ws};
 use crate::functions::bitlshift_fn::{
     bitlshift_kernel, eval_bitlshift_surface, map_bitlshift_error_to_ws,
@@ -255,7 +252,7 @@ use crate::functions::misc_conversion_family::{
 use crate::functions::misc_switch_info_family::{
     eval_isformula_surface, eval_switch_surface, map_misc_switch_info_error_to_ws,
 };
-use crate::functions::mod_fn::{eval_mod_surface, map_mod_error_to_ws, mod_kernel};
+use crate::functions::mod_fn::mod_kernel;
 use crate::functions::mode_sngl_fn::{eval_mode_sngl_surface, map_mode_sngl_error_to_ws};
 use crate::functions::moment_stats_family::{
     eval_kurt_surface, eval_skew_p_surface, eval_skew_surface, eval_steyx_surface,
@@ -286,7 +283,7 @@ use crate::functions::odd_bond_family::{
 };
 use crate::functions::odd_fn::odd_kernel;
 use crate::functions::offset::{eval_offset_surface, map_offset_error_to_ws};
-use crate::functions::op_add::{eval_op_add_surface, map_op_add_error_to_ws, op_add_kernel};
+use crate::functions::op_add::op_add_kernel;
 use crate::functions::op_implicit_intersection::{
     OP_IMPLICIT_INTERSECTION_META, eval_op_implicit_intersection_surface,
     map_op_implicit_intersection_error_to_ws,
@@ -294,11 +291,9 @@ use crate::functions::op_implicit_intersection::{
 use crate::functions::op_spill_ref::{eval_op_spill_ref_surface, map_op_spill_ref_error_to_ws};
 use crate::functions::operator_arithmetic_family::{
     OP_DIVIDE_META, OP_MULTIPLY_META, OP_NEGATE_META, OP_PERCENT_META, OP_POWER_META,
-    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_divide_surface, eval_op_multiply_surface,
-    eval_op_power_surface, eval_op_subtract_surface, eval_op_unary_plus_surface,
-    map_operator_binary_error_to_ws, map_operator_unary_error_to_ws, op_divide_kernel,
-    op_multiply_kernel, op_negate_kernel, op_percent_kernel, op_subtract_kernel,
-    op_unary_plus_kernel,
+    OP_SUBTRACT_META, OP_UNARY_PLUS_META, eval_op_unary_plus_surface,
+    map_operator_unary_error_to_ws, op_divide_kernel, op_multiply_kernel, op_negate_kernel,
+    op_percent_kernel, op_subtract_kernel, op_unary_plus_kernel,
 };
 use crate::functions::operator_compare_concat_family::{
     OP_CONCAT_META, OP_EQUAL_META, OP_GREATER_EQUAL_META, OP_GREATER_THAN_META, OP_LESS_EQUAL_META,
@@ -331,7 +326,7 @@ use crate::functions::permut_fn::{eval_permut_surface, map_permut_error_to_ws};
 use crate::functions::permutationa_fn::{eval_permutationa_surface, map_permutationa_error_to_ws};
 use crate::functions::pi::eval_pi;
 use crate::functions::pivotby_fn::{eval_pivotby_calc_surface, eval_pivotby_surface};
-use crate::functions::power_fn::{eval_power_surface, map_power_error_to_ws, power_kernel};
+use crate::functions::power_fn::power_kernel;
 use crate::functions::product::{eval_product_surface, map_product_error_to_ws};
 use crate::functions::quartile_exc_fn::{eval_quartile_exc_surface, map_quartile_exc_error_to_ws};
 use crate::functions::quartile_inc_fn::{eval_quartile_inc_surface, map_quartile_inc_error_to_ws};
@@ -1127,28 +1122,6 @@ fn eval_lookup_reference_adjacent_calc_dispatch(
     Some(eval_index_calc_surface(args).map_err(|error| map_index_error_to_ws(&error)))
 }
 
-fn eval_binary_arithmetic_calc_dispatch(
-    function_id: &str,
-    args: &[CalcValue],
-    resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Option<Result<CalcValue, WorksheetErrorCode>> {
-    let result = match function_id {
-        FUNC_ID_MOD => eval_binary_numeric_calc_surface(args, resolver, mod_kernel),
-        FUNC_ID_OP_ADD => {
-            eval_binary_numeric_calc_surface(args, resolver, |lhs, rhs| Ok(op_add_kernel(lhs, rhs)))
-        }
-        FUNC_ID_OP_DIVIDE => eval_binary_numeric_calc_surface(args, resolver, op_divide_kernel),
-        FUNC_ID_OP_MULTIPLY => eval_binary_numeric_calc_surface(args, resolver, op_multiply_kernel),
-        FUNC_ID_OP_POWER | FUNC_ID_POWER => {
-            eval_binary_numeric_calc_surface(args, resolver, power_kernel)
-        }
-        FUNC_ID_OP_SUBTRACT => eval_binary_numeric_calc_surface(args, resolver, op_subtract_kernel),
-        _ => return None,
-    };
-
-    Some(result.map_err(|error| map_binary_numeric_error_to_ws(&error)))
-}
-
 fn eval_date_time_calc_dispatch(
     function_id: &str,
     args: &[CalcValue],
@@ -1283,11 +1256,13 @@ pub fn eval_surface_value_call_with_dispatch_key(
             // `eval_*_surface` arms route the post-coercion math through the generic
             // `unary_numeric::execute(spec, …)` executor. The former
             // `eval_shared_unary_numeric_calc_dispatch` shim is deleted.
-            if let Some(result) =
-                eval_binary_arithmetic_calc_dispatch(dispatch_key.function_id, args, resolver)
-            {
-                return result;
-            }
+            //
+            // W105 oxf-y2uw.12.1: likewise the binary-arithmetic operator family (MOD, OP_ADD,
+            // OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE, OP_POWER / POWER) no longer has a
+            // calc-dispatch interception. Every member is served by exactly one path — the
+            // by-index generated table, whose spec-driven arms route the post-coercion math
+            // through the generic `binary_numeric::execute(spec, …)` 2-arg executor. The former
+            // `eval_binary_arithmetic_calc_dispatch` shim is deleted.
             if let Some(result) =
                 eval_date_time_calc_dispatch(dispatch_key.function_id, args, resolver)
             {
