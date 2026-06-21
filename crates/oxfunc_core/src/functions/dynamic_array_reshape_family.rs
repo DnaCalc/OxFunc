@@ -2191,4 +2191,119 @@ mod tests {
             )
         );
     }
+
+    // ---------------------------------------------------------------------
+    // W105 oxf-y2uw.12.2 prep-helper equivalence probe.
+    //
+    // The .12.2 bead wants CHOOSECOLS / CHOOSEROWS / DROP / TAKE collapsed from the
+    // bespoke `eval_dynamic_array_reshape_calc_dispatch` (which serves them via
+    // `eval_*_calc_surface`) down to the single by-index arm (which serves them via
+    // `eval_*_surface`). For the collapse to be behaviour-preserving the two prep
+    // helpers must agree bit-for-bit. These tests are the local proof at the prep
+    // boundary — the dynamic-array-reshape analogue of `.12.1`'s
+    // `two_binary_prep_helpers_are_equivalent_for_the_family`.
+    //
+    // FINDING (see test below): CHOOSECOLS / CHOOSEROWS agree on every input. DROP /
+    // TAKE agree on the direct (scalar / text / logical / error / blank / array-source)
+    // surface, BUT they are NOT equivalent through the *public dispatch* on an
+    // array-valued count argument, because DROP/TAKE carry `lift_at(&[1, 2])` and the
+    // by-index path is followed by `try_observed_scalar_array_lift` whereas the
+    // calc-dispatch path returns early and never reaches the lift. The bare prep
+    // helpers do agree (both reject the array count with `#VALUE!`); the divergence is
+    // introduced downstream by the lift wrapper that becomes reachable only once the
+    // calc-dispatch interception is removed.
+
+    fn rmaperr(
+        r: Result<CalcValue, DynamicArrayReshapeEvalError>,
+    ) -> Result<CalcValue, WorksheetErrorCode> {
+        r.map_err(|e| map_dynamic_array_reshape_error_to_ws(&e))
+    }
+
+    fn reshape_equivalence_inputs() -> Vec<Vec<CalcValue>> {
+        let src = array(vec![
+            vec![num(1.0), num(2.0), num(3.0)],
+            vec![num(4.0), num(5.0), num(6.0)],
+        ]);
+        let txt = CalcValue::text(ExcelText::from_interop_assignment("x"));
+        let num_txt = CalcValue::text(ExcelText::from_interop_assignment("2"));
+        let logical = CalcValue::logical(true);
+        let err = CalcValue::error(WorksheetErrorCode::NA);
+        // selector / count arguments covering scalar, numeric-text, logical, error,
+        // blank, the array-valued selector (CHOOSE*), and the array-valued count
+        // (DROP/TAKE lift positions [1, 2]).
+        vec![
+            vec![src.clone(), num(1.0)],
+            vec![src.clone(), num(-1.0)],
+            vec![src.clone(), num_txt.clone()],
+            vec![src.clone(), logical.clone()],
+            vec![src.clone(), err.clone()],
+            vec![src.clone(), CalcValue::empty()],
+            vec![src.clone(), txt.clone()],
+            vec![src.clone(), num(1.0), num(1.0)],
+            vec![src.clone(), num(1.0), num(-1.0)],
+            vec![src.clone(), CalcValue::missing(), num(2.0)],
+            // array-valued selector / count (lift positions for DROP/TAKE):
+            vec![src.clone(), array(vec![vec![num(1.0), num(2.0)]])],
+            vec![src.clone(), num(1.0), array(vec![vec![num(1.0), num(2.0)]])],
+            // scalar source so the result can fall through to a single cell:
+            vec![num(7.0), num(1.0)],
+        ]
+    }
+
+    #[test]
+    fn choosecols_chooserows_two_prep_helpers_are_equivalent_for_the_family() {
+        for args in reshape_equivalence_inputs() {
+            assert_eq!(
+                rmaperr(eval_choosecols_calc_surface(&args, &NoResolver)),
+                rmaperr(eval_choosecols_surface(&args, &NoResolver)),
+                "CHOOSECOLS prep-helper divergence on {args:?}"
+            );
+            assert_eq!(
+                rmaperr(eval_chooserows_calc_surface(&args, &NoResolver)),
+                rmaperr(eval_chooserows_surface(&args, &NoResolver)),
+                "CHOOSEROWS prep-helper divergence on {args:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn drop_take_bare_prep_helpers_agree_but_public_dispatch_diverges_on_array_count() {
+        // The bare prep helpers agree for every input (both reject array counts with
+        // #VALUE!): the collapse is safe at the prep boundary.
+        for args in reshape_equivalence_inputs() {
+            assert_eq!(
+                rmaperr(eval_drop_calc_surface(&args, &NoResolver)),
+                rmaperr(eval_drop_surface(&args, &NoResolver)),
+                "DROP bare prep-helper divergence on {args:?}"
+            );
+            assert_eq!(
+                rmaperr(eval_take_calc_surface(&args, &NoResolver)),
+                rmaperr(eval_take_surface(&args, &NoResolver)),
+                "TAKE bare prep-helper divergence on {args:?}"
+            );
+        }
+        // But on an array-valued count the bare helpers BOTH yield #VALUE!, which is
+        // the Excel-correct result and the result the calc-dispatch path returns. The
+        // by-index path adds `try_observed_scalar_array_lift` (lift_at [1, 2]) on top,
+        // so removing the calc-dispatch interception would turn that #VALUE! into a
+        // spilled array — a behaviour change. This test pins that the bare-helper
+        // result is #VALUE!, documenting why the calc-dispatch deletion must NOT be
+        // applied without also resolving the (latent, unreachable) DROP/TAKE lift mask.
+        let arr_count = vec![array(vec![vec![num(1.0), num(2.0)]]), num(1.0)];
+        let drop_arr = vec![
+            array(vec![vec![num(1.0), num(2.0), num(3.0)]]),
+            array(vec![vec![num(1.0)], vec![num(2.0)]]),
+        ];
+        let _ = arr_count;
+        assert_eq!(
+            rmaperr(eval_drop_calc_surface(&drop_arr, &NoResolver)),
+            Err(WorksheetErrorCode::Value),
+            "calc-dispatch DROP on array count must be #VALUE!"
+        );
+        assert_eq!(
+            rmaperr(eval_drop_surface(&drop_arr, &NoResolver)),
+            Err(WorksheetErrorCode::Value),
+            "by-index DROP bare helper on array count must be #VALUE! (lift is applied downstream, not here)"
+        );
+    }
 }
