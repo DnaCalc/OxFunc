@@ -1286,6 +1286,85 @@ fn canonical_surface_name(function_id: &str) -> &str {
     function_id.strip_prefix("FUNC.").unwrap_or(function_id)
 }
 
+/// Read-only view of the raw, pre-projection catalog seed data for a single built-in
+/// `function_id`, used exclusively by the W105-D1 catalog-conformance check.
+///
+/// The public `FunctionEntry` projection (`signature_from_seed` + `parameter_help_description`)
+/// *derives* `optional`/`repeats` and *silently drops* help entries that fail the
+/// `index + case-insensitive name` join, so the orphan-help defect is invisible there. The
+/// conformance check needs the un-joined raw seed corpora to detect it, and the seed modules
+/// are crate-private. This is a deliberate, owned, doc-hidden read-only accessor: it adds no
+/// `String`/`f64` field to `FunctionMeta`/`FunctionSpec` and no behaviour — it only re-exposes
+/// already-present seed data so the conformance test can live as an auto-discovered integration
+/// test without reaching into private modules.
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct CatalogConformanceRow {
+    pub function_id: String,
+    pub surface_name: String,
+    pub arity_min: usize,
+    pub arity_max: usize,
+    /// `signature_display` exactly as authored in the signature seed.
+    pub signature_display: String,
+    /// Raw signature-seed parameter names, in authored order.
+    pub signature_param_names: Vec<String>,
+    /// `trailing_repeats` flag exactly as authored in the signature seed.
+    pub signature_trailing_repeats: bool,
+    /// Whether the help seed carries a function-level `short_description`.
+    pub has_short_description: bool,
+    /// Raw help-seed parameter entries as `(index, name, has_short_description)`, in authored
+    /// order. NOT joined to the signature — orphan detection runs over this raw list.
+    pub help_param_entries: Vec<(usize, String, bool)>,
+}
+
+/// Snapshot the raw catalog seed data for every built-in function id, in catalog order.
+///
+/// See [`CatalogConformanceRow`] for why this doc-hidden accessor exists. The order matches
+/// `xll_export_specs::function_catalog()` (the same iteration `built_ins` projects from), and
+/// `signature_seed_for_id` is asserted present here — a missing seed already panics at registry
+/// build, but the conformance test prefers an explicit assertion to a panic.
+#[doc(hidden)]
+pub fn catalog_conformance_rows() -> Vec<CatalogConformanceRow> {
+    xll_export_specs::function_catalog()
+        .iter()
+        .map(|meta| {
+            let seed = signature_seed_for_id(meta.function_id)
+                .unwrap_or_else(|| panic!("missing signature seed for {}", meta.function_id));
+            let help_seed = registry_help_seed_for_id(meta.function_id);
+            CatalogConformanceRow {
+                function_id: meta.function_id.to_string(),
+                surface_name: canonical_surface_name(meta.function_id).to_string(),
+                arity_min: meta.arity.min,
+                arity_max: meta.arity.max,
+                signature_display: seed.signature_display.to_string(),
+                signature_param_names: seed
+                    .parameters
+                    .iter()
+                    .map(|parameter| parameter.name.to_string())
+                    .collect(),
+                signature_trailing_repeats: seed.trailing_repeats,
+                has_short_description: help_seed
+                    .map(|help| help.short_description.is_some())
+                    .unwrap_or(false),
+                help_param_entries: help_seed
+                    .map(|help| {
+                        help.parameters
+                            .iter()
+                            .map(|parameter| {
+                                (
+                                    parameter.index,
+                                    parameter.name.to_string(),
+                                    parameter.short_description.is_some(),
+                                )
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default(),
+            }
+        })
+        .collect()
+}
+
 fn semantic_kernel_metadata_for_id(function_id: &str) -> SemanticKernelMetadata {
     let reduction_sensitive = is_reduction_sensitive_function(function_id);
     let error_collapse_sensitive =
