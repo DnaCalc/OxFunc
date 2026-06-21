@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{coerce_prepared_to_number, run_values_only_prepared};
 use crate::functions::rand_fn::RandomProvider;
@@ -16,7 +16,7 @@ pub const RANDBETWEEN_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::VolatileFull,
     host_interaction: HostInteractionClass::ApplicationState,
     thread_safety: ThreadSafetyClass::HostSerialized,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::RandomProvider,

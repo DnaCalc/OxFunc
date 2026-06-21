@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::stdev_s_fn::{StdevSEvalError, eval_stdev_s_surface};
 use crate::resolver::ReferenceSystemProvider;
@@ -15,7 +15,7 @@ pub const STDEV_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     fec_dependency_profile: FecDependencyProfile::None,

@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     UnaryNumericCoercionLiftProfile, apply_unary_numeric_scalar_prepared, map_values_only_prepared,
@@ -17,7 +17,7 @@ pub const ABS_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
@@ -162,7 +162,7 @@ mod tests {
         assert_eq!(ABS_META.thread_safety, ThreadSafetyClass::SafePure);
         assert_eq!(
             ABS_META.arg_preparation_profile,
-            ArgPreparationProfile::ValuesOnlyPreAdapter
+            FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE
         );
         assert_eq!(
             ABS_META.coercion_lift_profile,

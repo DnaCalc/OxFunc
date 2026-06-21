@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::{
     coerce_prepared_to_text, prepare_args_values_only, prepare_calc_values_only,
@@ -18,7 +18,7 @@ pub const HYPERLINK_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::EnvironmentState,
     thread_safety: ThreadSafetyClass::HostSerialized,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
     kernel_signature_class: KernelSignatureClass::TextToText,
     fec_dependency_profile: FecDependencyProfile::Composite,

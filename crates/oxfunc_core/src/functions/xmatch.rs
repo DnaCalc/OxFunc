@@ -1,7 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::functions::adapters::coerce_prepared_to_number;
 use crate::value::CalcValue;
@@ -15,7 +15,7 @@ pub const XMATCH_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::LookupMatchProfile,
     kernel_signature_class: KernelSignatureClass::LookupMatch,
     fec_dependency_profile: FecDependencyProfile::None,
@@ -650,7 +650,7 @@ mod tests {
         assert_eq!(XMATCH_META.thread_safety, ThreadSafetyClass::SafePure);
         assert_eq!(
             XMATCH_META.arg_preparation_profile,
-            ArgPreparationProfile::ValuesOnlyPreAdapter
+            FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE
         );
         assert_eq!(
             XMATCH_META.coercion_lift_profile,

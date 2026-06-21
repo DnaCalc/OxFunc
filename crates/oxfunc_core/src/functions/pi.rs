@@ -1,6 +1,6 @@
 use crate::function::{
-    ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
-    FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
+    Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
+    HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
 };
 use crate::value::{CalcValue, EvalError};
 
@@ -11,7 +11,7 @@ pub const PI_META: FunctionMeta = FunctionMeta {
     volatility: VolatilityClass::NonVolatile,
     host_interaction: HostInteractionClass::None,
     thread_safety: ThreadSafetyClass::SafePure,
-    arg_preparation_profile: ArgPreparationProfile::ValuesOnlyPreAdapter,
+    arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::None,
     kernel_signature_class: KernelSignatureClass::NullaryConst,
     fec_dependency_profile: FecDependencyProfile::None,
@@ -44,7 +44,7 @@ mod tests {
     fn test_pi_meta_arg_preparation_profile_values_only() {
         assert_eq!(
             PI_META.arg_preparation_profile,
-            ArgPreparationProfile::ValuesOnlyPreAdapter
+            FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE
         );
     }
 
