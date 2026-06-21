@@ -87,6 +87,31 @@ Regression: `bond_core_family::tests::accrint_slices` updated to pin the witness
 (`25`), `calc TRUE == FALSE` for a regular first coupon, and `TRUE > FALSE` for a
 long first coupon. Full `oxfunc_core` lib suite green (1417 passed).
 
+## Fix (2026-06-21) — act/act leap-February residual closed
+The forward per-period loop measured each leap-crossing period by its *own* actual length
+(182 days), but Excel normalises the settlement-side fraction by the **canonical** last
+coupon period length `CoupDays(first - 1 period, first)` (184 days) — a single length, so a
+leap-crossing period is never measured by its actual length. `accrint_kernel` was rewritten
+as a faithful port of ExcelFinancialFunctions `accrInt` (bonds.fs):
+- **settlement ≤ first** (odd first coupon): backward from `pcd = first - 1 period`, whole
+  periods counting as `int(calc_method)`, settlement tail normalised by the canonical length,
+  the issue period by its own length.
+- **settlement > first** (a regime F#'s public API rejects, but Excel computes): a forward
+  accrual from the accrual start, whole periods = 1 and the final partial by the canonical
+  length. OxFunc now matches Excel here where F# throws.
+
+Helpers ported: `change_month_flag`, `find_pcd_ncd_accr`, `diff360_us` (both 30/360 modes),
+`days_between_num`/`days_between_denum`, `actual_coup_days_accr`/`coup_days_accr`.
+
+## Validation (live Excel 16.0 b20026, G6 three-way harness, 2026-06-21)
+Bit-exact across a **24-case sweep**: all five bases; leap-crossing act/act, act/365, act/360
+partials; settlement before *and* after first_interest; quarterly/annual/semiannual; EOM
+dates; deep multi-period; issue mid-period. **Residual: 1 ULP** on a single `us30360`
+triple-edge (issue mid-period AND settlement past first_interest) — an operation-order artifact
+(constant-length bases want sum-then-divide), reclassified NUM-S on the catalog G6 row; not
+accepted. Regression `bond_core_family::tests::accrint_leap_february_and_settlement_after_first_bit_exact`
+pins the act/act, act/365 leap partials and the settlement-after-first case.
+
 ## Similar-Risk Scan
 - `ACCRINTM` matched on equivalent inputs (not affected).
 - Other coupon-period functions (`COUPDAYBS`, `COUPDAYS`, `COUPDAYSNC`,

@@ -627,6 +627,130 @@ pub fn mduration_kernel(
             / (1.0 + rate(yld)? / f),
     )
 }
+fn is_month_end(s: i64) -> bool {
+    ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+        .map(|(y, mo, d)| d == dim(y, mo))
+        .unwrap_or(false)
+}
+fn last_day_of_feb(s: i64) -> bool {
+    ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+        .map(|(y, mo, d)| mo == 2 && d == dim(y, mo))
+        .unwrap_or(false)
+}
+/// F# `changeMonth` with an explicit return-last-day flag (.NET `AddMonths`
+/// semantics, or force the target month-end when `last_day` is set).
+fn change_month_flag(s: i64, months: i64, last_day: bool) -> Option<i64> {
+    let (y, mo, d) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)?;
+    let idx = y
+        .checked_mul(12)?
+        .checked_add(mo - 1)?
+        .checked_add(months)?;
+    let ty = idx.div_euclid(12);
+    let tm = idx.rem_euclid(12) + 1;
+    let td = if last_day {
+        dim(ty, tm)
+    } else {
+        d.min(dim(ty, tm))
+    };
+    excel_serial_from_ymd(WorkbookDateSystem::System1900, ty, tm, td).map(|v| v as i64)
+}
+/// F# `dateDiff360Us` (US 30/360) with the `ModifyStartDate`/`ModifyBothDates` modes.
+fn diff360_us(s: i64, e: i64, modify_both: bool) -> Result<f64, BondCoreEvalError> {
+    let (sy, sm, mut sd) = ymd_from_excel_serial(WorkbookDateSystem::System1900, s as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    let (ey, em, mut ed) = ymd_from_excel_serial(WorkbookDateSystem::System1900, e as f64)
+        .ok_or(derr(WorksheetErrorCode::Value))?;
+    if last_day_of_feb(e) && (last_day_of_feb(s) || modify_both) {
+        ed = 30;
+    }
+    if ed == 31 && (sd >= 30 || modify_both) {
+        ed = 30;
+    }
+    if sd == 31 {
+        sd = 30;
+    }
+    if last_day_of_feb(s) {
+        sd = 30;
+    }
+    Ok(((ey - sy) * 360 + (em - sm) * 30 + (ed - sd)) as f64)
+}
+/// F# `findPcdNcd`: walk `start` toward `end` by `num_months` steps, returning the
+/// bounding pair (the position at/past `end`, and the one before it).
+fn find_pcd_ncd_accr(
+    start: i64,
+    end: i64,
+    num_months: i64,
+    last_day: bool,
+) -> Result<(i64, i64), BondCoreEvalError> {
+    let mut front = start;
+    let mut trailing = end;
+    loop {
+        let stop = if num_months > 0 {
+            front >= end
+        } else {
+            front <= end
+        };
+        if stop {
+            return Ok((front, trailing));
+        }
+        trailing = front;
+        front =
+            change_month_flag(front, num_months, last_day).ok_or(derr(WorksheetErrorCode::Num))?;
+    }
+}
+/// F# `IDayCount.DaysBetween` (numerator position) per basis.
+fn days_between_num(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCoreEvalError> {
+    match b {
+        DayCountBasis::Us30_360 => diff360_us(s, e, false),
+        DayCountBasis::ActualActual | DayCountBasis::Actual360 | DayCountBasis::Actual365 => {
+            Ok(act(s, e))
+        }
+        DayCountBasis::European30_360 => d360eu(s, e),
+    }
+}
+/// F# `IDayCount.DaysBetween` (denominator position) per basis — only the
+/// ActualActual / Actual360 / European cases are reached (the kernel handles
+/// Us30_360 and Actual365 inline).
+fn days_between_denum(s: i64, e: i64, b: DayCountBasis) -> Result<f64, BondCoreEvalError> {
+    match b {
+        DayCountBasis::ActualActual => Ok(act(s, e)),
+        DayCountBasis::Actual360 => diff360_us(s, e, false),
+        DayCountBasis::European30_360 => d360eu(s, e),
+        DayCountBasis::Us30_360 => diff360_us(s, e, false),
+        DayCountBasis::Actual365 => Ok(act(s, e)),
+    }
+}
+/// F# `actualCoupDays pcd firstInterest`: the actual length of the coupon period
+/// (on `first`'s schedule) that bounds `pcd`. Works in both regimes — `pcd` a
+/// period before `first` (odd first coupon) or after it (settlement past the first
+/// interest date), where the bounding period differs.
+fn actual_coup_days_accr(
+    pcd: i64,
+    first: i64,
+    num_months: i64,
+    last_day: bool,
+) -> Result<f64, BondCoreEvalError> {
+    let (prev, next) = find_pcd_ncd_accr(first, pcd, -num_months, last_day)?;
+    Ok(act(prev, next))
+}
+/// F# `IDayCount.CoupDays pcd firstInterest`: the normal length of the coupon
+/// period anchored at `pcd`. ActualActual uses the actual bounding-period days; the
+/// 30/360 bases use `360/freq`, Actual/365 uses `365/freq`.
+fn coup_days_accr(
+    pcd: i64,
+    first: i64,
+    num_months: i64,
+    last_day: bool,
+    fc: f64,
+    b: DayCountBasis,
+) -> Result<f64, BondCoreEvalError> {
+    match b {
+        DayCountBasis::ActualActual => actual_coup_days_accr(pcd, first, num_months, last_day),
+        DayCountBasis::Actual365 => Ok(365.0 / fc),
+        _ => Ok(360.0 / fc),
+    }
+}
+
 pub fn accrint_kernel(
     issue: f64,
     first_interest: f64,
@@ -644,63 +768,89 @@ pub fn accrint_kernel(
     let par = pos(par.unwrap_or(1000.0))?;
     let f = freq(frequency)?;
     let basis_ = basis(basis_.unwrap_or(0.0))?;
-    let calc = calc_method.unwrap_or(true);
+    // calc_method: TRUE = FromIssueToSettlement (Excel default), FALSE = FromFirstToSettlement.
+    let from_issue = calc_method.unwrap_or(true);
     if !(issue < first && issue < settlement) {
         return Err(derr(WorksheetErrorCode::Num));
     }
-    let coup = par * rate_ / f as f64;
-    let m = 12 / f;
-    // Accrued interest is summed over the quasi-coupon periods (each 12/freq
-    // months long, anchored on first_interest) that overlap the accrual span.
-    // A *full* quasi-coupon period contributes one whole coupon; a partial one
-    // contributes `coup * accrued_days / normal_period_length`. This matches
-    // Excel for odd first coupons that span more than one quasi-coupon period,
-    // where a single issue->first interpolation under-counts (BUG-FUNC-030).
-    //
-    // calc_method shifts the accrual start. TRUE accrues from issue; FALSE
-    // accrues from one quasi-coupon period before first_interest (Excel's
-    // empirical behaviour — for a regular one-period first coupon the two
-    // coincide, and a settlement before that start yields a negative accrual).
-    let accr_start = if calc {
-        issue
-    } else {
-        addm(first, -m).ok_or(derr(WorksheetErrorCode::Num))?
-    };
-    // The accrual span runs accr_start -> settlement; order the endpoints and
-    // carry the sign so the calc_method=FALSE backward case matches Excel.
-    let (lo, hi, sign) = if settlement >= accr_start {
-        (accr_start, settlement, 1.0)
-    } else {
-        (settlement, accr_start, -1.0)
-    };
-    // Boundaries are generated as addm(first, k*m) directly off first_interest
-    // (never iteratively) so end-of-month clamping cannot drift across periods.
-    let mut k: i64 = 0;
-    while addm(first, k * m).ok_or(derr(WorksheetErrorCode::Num))? > lo {
-        k -= 1;
-    }
-    // Accumulate the coupon-fraction sum Σ(Aᵢ/NLᵢ) — a full period counts as
-    // exactly 1 — and scale by the coupon once (Excel's `par·rate/freq·Σ`),
-    // which tracks Excel's rounding more closely than summing coupons.
-    let mut frac = 0.0;
-    loop {
-        let p_start = addm(first, k * m).ok_or(derr(WorksheetErrorCode::Num))?;
-        if p_start >= hi {
-            break;
-        }
-        let p_end = addm(first, (k + 1) * m).ok_or(derr(WorksheetErrorCode::Num))?;
-        let ov_start = lo.max(p_start);
-        let ov_end = hi.min(p_end);
-        if ov_end > ov_start {
-            if ov_start == p_start && ov_end == p_end {
-                frac += 1.0;
+    // Faithful port of ExcelFinancialFunctions `accrInt` (bonds.fs) for the first-coupon
+    // regime, extended to match live Excel for settlement past the first interest date
+    // (which F# rejects). Excel normalises the settlement-side fraction by the *canonical*
+    // last coupon period length `CoupDays(first - 1 period, first)` — so a leap-crossing
+    // period is never measured by its own actual length (the ~0.07% act/act error of the
+    // prior kernel — BUG-FUNC-030). The two regimes measure differently: settlement within
+    // the first coupon span is measured *backward* from `pcd`, settlement past `first` is
+    // accrued *forward* from the accrual start with whole periods counting as 1.
+    let fc = f as f64;
+    let num_months = 12 / f;
+    let end_flag = is_month_end(first);
+    let pcd =
+        change_month_flag(first, -num_months, end_flag).ok_or(derr(WorksheetErrorCode::Num))?;
+    let canonical = coup_days_accr(pcd, first, num_months, end_flag, fc, basis_)?;
+
+    if settlement <= first {
+        let first_date = issue.max(pcd);
+        let days = days_between_num(first_date, settlement, basis_)?;
+        let mut a = days / canonical;
+        // datesAggregate1: walk pcd back toward issue, one quasi-coupon period per step.
+        let mut front = pcd;
+        while front > issue {
+            let ncd_i = front;
+            let pcd_i = change_month_flag(front, -num_months, end_flag)
+                .ok_or(derr(WorksheetErrorCode::Num))?;
+            front = pcd_i;
+            if issue <= pcd_i {
+                a += if from_issue { 1.0 } else { 0.0 };
             } else {
-                frac += dd(ov_start, ov_end, basis_)? / dc(p_start, p_end, basis_, f)?;
+                // The period that contains `issue`: a partial forward fraction.
+                let fd = issue.max(pcd_i);
+                let days_i = match basis_ {
+                    DayCountBasis::Us30_360 => diff360_us(fd, ncd_i, false)?,
+                    _ => days_between_num(fd, ncd_i, basis_)?,
+                };
+                let coup_days_i = match basis_ {
+                    DayCountBasis::Us30_360 => diff360_us(pcd_i, ncd_i, true)?,
+                    DayCountBasis::Actual365 => 365.0 / fc,
+                    _ => days_between_denum(pcd_i, ncd_i, basis_)?,
+                };
+                a += days_i / coup_days_i;
             }
         }
-        k += 1;
+        return Ok(par * rate_ / fc * a);
     }
-    Ok(sign * coup * frac)
+
+    // Settlement past the first interest date: accrue forward, whole periods counting as 1
+    // and the final partial by the canonical length. calc_method TRUE accrues from issue,
+    // FALSE from one quasi-coupon period before `first`.
+    let accr_start = if from_issue {
+        issue
+    } else {
+        change_month_flag(first, -num_months, end_flag).ok_or(derr(WorksheetErrorCode::Num))?
+    };
+    let mut p_start = first;
+    while p_start > accr_start {
+        p_start = change_month_flag(p_start, -num_months, end_flag)
+            .ok_or(derr(WorksheetErrorCode::Num))?;
+    }
+    let mut a = 0.0;
+    loop {
+        if p_start >= settlement {
+            break;
+        }
+        let p_end = change_month_flag(p_start, num_months, end_flag)
+            .ok_or(derr(WorksheetErrorCode::Num))?;
+        let ov_start = accr_start.max(p_start);
+        let ov_end = settlement.min(p_end);
+        if ov_end > ov_start {
+            if ov_start == p_start && ov_end == p_end {
+                a += 1.0;
+            } else {
+                a += days_between_num(ov_start, ov_end, basis_)? / canonical;
+            }
+        }
+        p_start = p_end;
+    }
+    Ok(par * rate_ / fc * a)
 }
 fn evaln(
     args: &[CalcValue],
@@ -921,6 +1071,50 @@ mod tests {
             d360us(serial(2024, 1, 30) as i64, serial(2024, 3, 31) as i64),
             Ok(60.0)
         );
+    }
+
+    #[test]
+    fn accrint_leap_february_and_settlement_after_first_bit_exact() {
+        // BUG-FUNC-030 residual closed by the faithful F# accrInt port: act/act and
+        // act/365 partial periods crossing leap February, and settlement past the first
+        // interest date (which F# itself rejects), all match live Excel 16.0 b20026
+        // bit-for-bit. Bits pinned from the G6 three-way ledger.
+        let p1 = accrint_kernel(
+            serial(2019, 3, 1),
+            serial(2020, 9, 1),
+            serial(2020, 1, 15),
+            0.05,
+            Some(1000.0),
+            2.0,
+            Some(1.0),
+            None,
+        )
+        .unwrap();
+        assert_eq!(p1.to_bits(), 0x4045_e000_0000_0000); // 43.75, act/act
+        let p3 = accrint_kernel(
+            serial(2019, 3, 1),
+            serial(2020, 9, 1),
+            serial(2020, 1, 15),
+            0.05,
+            Some(1000.0),
+            2.0,
+            Some(3.0),
+            None,
+        )
+        .unwrap();
+        assert_eq!(p3.to_bits(), 0x4045_d96c_b65b_2d97); // act/365
+        let after = accrint_kernel(
+            serial(2019, 1, 1),
+            serial(2020, 1, 1),
+            serial(2020, 6, 1),
+            0.05,
+            Some(1000.0),
+            2.0,
+            Some(1.0),
+            None,
+        )
+        .unwrap();
+        assert_eq!(after.to_bits(), 0x4051_a9bd_37a6_f4df); // settlement after first_interest
     }
 
     #[test]

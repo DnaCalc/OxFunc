@@ -42,6 +42,48 @@ $G6Cases += @{ id='accrint.actact.multi'; row='ACCRINT'; xlFn='ACCRINT'; fsFn='A
   residual='act/act (basis 1) multi-coupon span crossing leap Feb ~0.07%';
   args=@(@{t='date';v=(S '2019-01-01')},@{t='date';v=(S '2021-01-01')},@{t='date';v=(S '2020-07-01')},
          @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=2},@{t='basis';v=1}) }
+# Leap-crossing PARTIAL period (settlement inside a quasi-period spanning Feb 29 2020).
+$G6Cases += @{ id='accrint.leap.p1'; row='ACCRINT'; xlFn='ACCRINT'; fsFn='AccrInt';
+  residual='act/act partial period crossing leap Feb';
+  args=@(@{t='date';v=(S '2019-03-01')},@{t='date';v=(S '2020-09-01')},@{t='date';v=(S '2020-01-15')},
+         @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=2},@{t='basis';v=1}) }
+$G6Cases += @{ id='accrint.leap.p3'; row='ACCRINT'; xlFn='ACCRINT'; fsFn='AccrInt';
+  residual='act/365 partial period crossing leap Feb';
+  args=@(@{t='date';v=(S '2019-03-01')},@{t='date';v=(S '2020-09-01')},@{t='date';v=(S '2020-01-15')},
+         @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=2},@{t='basis';v=3}) }
+$G6Cases += @{ id='accrint.leap.ann'; row='ACCRINT'; xlFn='ACCRINT'; fsFn='AccrInt';
+  residual='act/act annual period crossing leap Feb';
+  args=@(@{t='date';v=(S '2019-09-01')},@{t='date';v=(S '2020-09-01')},@{t='date';v=(S '2020-01-15')},
+         @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=1},@{t='basis';v=1}) }
+$G6Cases += @{ id='accrint.leap.feb'; row='ACCRINT'; xlFn='ACCRINT'; fsFn='AccrInt';
+  residual='act/act settlement just after leap Feb';
+  args=@(@{t='date';v=(S '2019-09-01')},@{t='date';v=(S '2020-03-01')},@{t='date';v=(S '2020-02-15')},
+         @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=2},@{t='basis';v=1}) }
+# Broad regression sweep across bases / geometries / frequencies / EOM.
+function AccrCase($id, $iss, $fst, $set, $freq, $basis) {
+  @{ id=$id; row='ACCRINT'; xlFn='ACCRINT'; fsFn='AccrInt'; residual='broad sweep';
+     args=@(@{t='date';v=(S $iss)},@{t='date';v=(S $fst)},@{t='date';v=(S $set)},
+            @{t='num';v=0.05},@{t='num';v=1000},@{t='freq';v=$freq},@{t='basis';v=$basis}) }
+}
+$G6Cases += (AccrCase 'accrint.b0.leap'    '2019-03-01' '2020-09-01' '2020-01-15' 2 0)
+$G6Cases += (AccrCase 'accrint.b2.leap'    '2019-03-01' '2020-09-01' '2020-01-15' 2 2)
+$G6Cases += (AccrCase 'accrint.b4.leap'    '2019-03-01' '2020-09-01' '2020-01-15' 2 4)
+$G6Cases += (AccrCase 'accrint.settle.aft' '2019-01-01' '2020-01-01' '2020-06-01' 2 1)
+$G6Cases += (AccrCase 'accrint.q4'         '2020-01-15' '2021-01-15' '2020-08-20' 4 1)
+$G6Cases += (AccrCase 'accrint.ann.reg'    '2019-06-01' '2020-06-01' '2020-02-15' 1 1)
+$G6Cases += (AccrCase 'accrint.deep'       '2017-03-01' '2020-09-01' '2020-01-15' 2 1)
+$G6Cases += (AccrCase 'accrint.eom'        '2019-08-31' '2020-08-31' '2020-02-29' 2 1)
+$G6Cases += (AccrCase 'accrint.reg1'       '2020-01-01' '2020-07-01' '2020-04-01' 2 1)
+$G6Cases += (AccrCase 'accrint.b3.deep'    '2017-03-01' '2020-09-01' '2020-01-15' 2 3)
+$G6Cases += (AccrCase 'accrint.b2.v1'      '2019-06-15' '2020-12-15' '2020-03-20' 2 2)
+$G6Cases += (AccrCase 'accrint.b2.eom'     '2018-01-31' '2020-01-31' '2019-05-15' 2 2)
+$G6Cases += (AccrCase 'accrint.b2.q'       '2019-02-28' '2020-02-29' '2019-08-10' 4 2)
+$G6Cases += (AccrCase 'accrint.b3.v1'      '2019-06-15' '2020-12-15' '2020-03-20' 2 3)
+$G6Cases += (AccrCase 'accrint.b3.eom'     '2018-08-31' '2020-08-31' '2020-02-29' 2 3)
+$G6Cases += (AccrCase 'accrint.b2.aft'     '2019-01-01' '2019-07-01' '2020-03-15' 2 2)
+$G6Cases += (AccrCase 'accrint.midiss.aft' '2019-04-10' '2019-07-01' '2020-03-15' 2 1)
+$G6Cases += (AccrCase 'accrint.midiss.b2'  '2019-04-10' '2019-07-01' '2020-03-15' 2 2)
+$G6Cases += (AccrCase 'accrint.midiss.b0'  '2019-04-10' '2019-07-01' '2020-03-15' 2 0)
 
 # --- YIELD : solver residual ~19 ULP ------------------------------------------
 $G6Cases += @{ id='yield.witness'; row='YIELD'; xlFn='YIELD'; fsFn='Yield';
