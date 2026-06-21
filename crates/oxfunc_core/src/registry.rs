@@ -1258,8 +1258,12 @@ fn signature_from_seed(
             .map(|(index, parameter)| ParameterDescriptor {
                 name: parameter.name.to_string(),
                 optional: index >= meta.arity.min,
-                repeats: parameter.repeats
-                    || (implied_trailing_repeats && index == last_parameter_index),
+                // W105-D1: per-parameter `repeats` is derived, not authored. Proven (oxf-y2uw.5)
+                // identical to the dropped seed `parameter.repeats || (implied && idx==last)`:
+                // a parameter repeats iff it is the trailing one of a function whose arity admits
+                // an open tail (`seed.trailing_repeats` or arity-implied).
+                repeats: (seed.trailing_repeats || implied_trailing_repeats)
+                    && index == last_parameter_index,
                 short_description: parameter_help_description(help_seed, index, parameter.name)
                     .map(str::to_string),
             })

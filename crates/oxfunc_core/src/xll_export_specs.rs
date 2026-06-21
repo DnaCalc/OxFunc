@@ -923,12 +923,11 @@ fn arg_names_for_meta(meta: &FunctionMeta, count: usize) -> String {
         return String::new();
     };
 
-    let repeat_seed = seed
-        .parameters
-        .iter()
-        .rev()
-        .find(|parameter| parameter.repeats)
-        .or_else(|| seed.parameters.last());
+    // W105-D1 (oxf-y2uw.5): the repeat slot is the trailing parameter. The dropped per-parameter
+    // `repeats` flag was only ever set on the last parameter, so `find(|p| p.repeats)` always
+    // resolved to `seed.parameters.last()` (or fell back to it when nothing repeated) — this is the
+    // same slot, now read directly from the arity-derived trailing structure.
+    let repeat_seed = seed.parameters.last();
 
     let mut names = Vec::with_capacity(count);
     for index in 0..count {
