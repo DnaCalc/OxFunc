@@ -13,7 +13,7 @@ match dispatch_key.catalog_index {
                 eval_acoth_surface(args, resolver).map_err(|e| map_acoth_error_to_ws(&e))
             }
             4 => {
-                eval_abs_scalar_value(args, resolver).map_err(|e| map_abs_error_to_ws(&e))
+                eval_abs_surface(args, resolver).map_err(|e| map_abs_surface_error_to_ws(&e))
             }
             5 => {
                 eval_accrint_surface(args, resolver).map_err(|e| map_bond_core_error_to_ws(&e))

@@ -19,6 +19,7 @@ const MOMENT_STATS_BASE_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::Custom,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -29,6 +30,7 @@ pub const KURT_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.KURT",
     arity: Arity { min: 1, max: 255 },
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     ..MOMENT_STATS_BASE_META
 };
@@ -37,6 +39,7 @@ pub const SKEW_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SKEW",
     arity: Arity { min: 1, max: 255 },
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     ..MOMENT_STATS_BASE_META
 };
@@ -45,6 +48,7 @@ pub const SKEW_P_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.SKEW.P",
     arity: Arity { min: 1, max: 255 },
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::NumsToNum,
     ..MOMENT_STATS_BASE_META
 };
@@ -59,6 +63,7 @@ pub const TRIMMEAN_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.TRIMMEAN",
     arity: Arity::exact(2),
     coercion_lift_profile: CoercionLiftProfile::AggregateDirectAndRangeDualPolicy,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::Custom,
     ..MOMENT_STATS_BASE_META
 };

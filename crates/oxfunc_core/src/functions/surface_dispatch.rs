@@ -1,6 +1,7 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
-use crate::functions::abs::{AbsEvalError, abs_kernel, eval_abs_scalar_value};
+use crate::function::LiftBroadcastProfile;
+use crate::functions::abs::{abs_kernel, eval_abs_surface, map_abs_surface_error_to_ws};
 use crate::functions::acos::{eval_acos_surface, map_acos_error_to_ws};
 use crate::functions::acosh::{eval_acosh_surface, map_acosh_error_to_ws};
 use crate::functions::acot::{acot_kernel, eval_acot_surface, map_acot_error_to_ws};
@@ -466,7 +467,6 @@ use crate::functions::xmatch_surface::eval_xmatch_surface_value;
 use crate::functions::xor_fn::{eval_xor_surface, map_xor_error_to_ws};
 use crate::host_info::HostInfoProvider;
 use crate::locale_format::LocaleFormatContext;
-use crate::resolver::ReferenceResolutionError;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::{ArrayShape, CalcArray, CoreValue, EvalError, WorksheetErrorCode};
@@ -997,41 +997,6 @@ pub const FUNC_ID_YEAR: &str = "FUNC.YEAR";
 pub const FUNC_ID_YEARFRAC: &str = "FUNC.YEARFRAC";
 pub const FUNC_ID_Z_TEST: &str = "FUNC.Z.TEST";
 pub const FUNC_ID_ZTEST: &str = "FUNC.ZTEST";
-
-fn map_ref_resolution_to_ws(e: &ReferenceResolutionError) -> WorksheetErrorCode {
-    match e {
-        crate::resolver::ReferenceResolutionError::CapabilityDenied { .. } => {
-            WorksheetErrorCode::Ref
-        }
-        crate::resolver::ReferenceResolutionError::UnresolvedReference { .. } => {
-            WorksheetErrorCode::Ref
-        }
-        crate::resolver::ReferenceResolutionError::EvalTimeDerefNotAllowed => {
-            WorksheetErrorCode::Ref
-        }
-        crate::resolver::ReferenceResolutionError::ProviderFailure { .. } => {
-            WorksheetErrorCode::Value
-        }
-    }
-}
-
-fn map_coercion_to_ws(e: &CoercionError) -> WorksheetErrorCode {
-    match e {
-        CoercionError::WorksheetError(code) => *code,
-        CoercionError::RefResolution(err) => map_ref_resolution_to_ws(err),
-        CoercionError::MissingArg => WorksheetErrorCode::Value,
-        CoercionError::EmptyCell => WorksheetErrorCode::Value,
-        CoercionError::NonNumericText(_) => WorksheetErrorCode::Value,
-        CoercionError::UnsupportedValueKind(_) => WorksheetErrorCode::Value,
-    }
-}
-
-fn map_abs_error_to_ws(e: &AbsEvalError) -> WorksheetErrorCode {
-    match e {
-        AbsEvalError::ArityMismatch { .. } => WorksheetErrorCode::Value,
-        AbsEvalError::Coercion(err) => map_coercion_to_ws(err),
-    }
-}
 
 fn map_eval_error_to_ws(e: &EvalError) -> WorksheetErrorCode {
     match e {
@@ -2587,34 +2552,59 @@ pub fn eval_surface_value_call(
     )
 }
 
-fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
+/// The declared lift/broadcast axis for a function id (W105 oxf-y2uw.6). This is the SINGLE
+/// id-keyed source of every function's by-index scalar-array-lift rule, expressed in the
+/// declared [`LiftBroadcastProfile`] vocabulary carried on [`FunctionMeta`]. Every lift/broadcast
+/// dispatch site reads it through [`observed_scalar_array_lift_positions`] (a thin derivation
+/// below) — there is no second id-keyed lift rule a different site could contradict.
+///
+/// MIGRATION STATE (flagged for the W105 .12 rollout): the declared *axis* (the field, the
+/// `DEFAULT_*`, and the [`LiftBroadcastProfile`] ADT) now lives on [`FunctionMeta`], and
+/// `FUNC.ABS` is fully migrated onto it — ABS carries the default `SurfaceNative` profile and
+/// lifts natively through the unary-numeric executor (`eval_abs_surface`), so it is absent here.
+/// The remaining ids below still have their non-default mask *declared here* rather than on each
+/// function's own `FunctionMeta` literal, because those ~29 surfaces span ~14 modules with
+/// shared `..BASE` metas and macro-generated metas; sweeping the mask onto each meta literal is
+/// the mechanical .12 step. Until then this function is the one declared home for their masks —
+/// still a single source (no duplicate), just not yet co-located on each meta literal.
+fn lift_broadcast_profile_for_id(function_id: &str) -> LiftBroadcastProfile {
     match function_id {
-        FUNC_ID_ABS => Some(&[0]),
-        FUNC_ID_ADDRESS => Some(&[0, 1, 2, 3, 4]),
-        FUNC_ID_BINOMDIST | FUNC_ID_NORMDIST => Some(&[0, 1, 2, 3]),
+        FUNC_ID_ADDRESS => LiftBroadcastProfile::lift_at(&[0, 1, 2, 3, 4]),
+        FUNC_ID_BINOMDIST | FUNC_ID_NORMDIST => LiftBroadcastProfile::lift_at(&[0, 1, 2, 3]),
         FUNC_ID_BETADIST | FUNC_ID_BETAINV | FUNC_ID_CONFIDENCE | FUNC_ID_CONFIDENCE_T
         | FUNC_ID_CRITBINOM | FUNC_ID_EXPONDIST | FUNC_ID_FDIST | FUNC_ID_FINV
         | FUNC_ID_GAMMADIST | FUNC_ID_GAMMAINV | FUNC_ID_HYPGEOMDIST | FUNC_ID_LOGINV
         | FUNC_ID_LOGNORMDIST | FUNC_ID_NEGBINOMDIST | FUNC_ID_NORMINV | FUNC_ID_POISSON
-        | FUNC_ID_SERIESSUM | FUNC_ID_TDIST => Some(&[0, 1, 2]),
-        FUNC_ID_COMPLEX => Some(&[0, 1, 2]),
+        | FUNC_ID_SERIESSUM | FUNC_ID_TDIST => LiftBroadcastProfile::lift_at(&[0, 1, 2]),
+        FUNC_ID_COMPLEX => LiftBroadcastProfile::lift_at(&[0, 1, 2]),
         FUNC_ID_CHIDIST | FUNC_ID_CHIINV | FUNC_ID_DOLLARFR | FUNC_ID_IMDIV | FUNC_ID_IMPOWER
-        | FUNC_ID_IMSUB | FUNC_ID_TINV => Some(&[0, 1]),
-        FUNC_ID_CONCATENATE => Some(&[0, 1, 2]),
-        FUNC_ID_DROP | FUNC_ID_EXPAND | FUNC_ID_TAKE | FUNC_ID_TOROW => Some(&[1, 2]),
-        FUNC_ID_IFS => Some(&[0, 1, 2]),
+        | FUNC_ID_IMSUB | FUNC_ID_TINV => LiftBroadcastProfile::lift_at(&[0, 1]),
+        FUNC_ID_CONCATENATE => LiftBroadcastProfile::lift_at(&[0, 1, 2]),
+        FUNC_ID_DROP | FUNC_ID_EXPAND | FUNC_ID_TAKE | FUNC_ID_TOROW => {
+            LiftBroadcastProfile::lift_at(&[1, 2])
+        }
+        FUNC_ID_IFS => LiftBroadcastProfile::lift_at(&[0, 1, 2]),
         FUNC_ID_IMABS | FUNC_ID_IMAGINARY | FUNC_ID_IMARGUMENT | FUNC_ID_IMCONJUGATE
         | FUNC_ID_IMCOS | FUNC_ID_IMCOSH | FUNC_ID_IMCOT | FUNC_ID_IMCSC | FUNC_ID_IMCSCH
         | FUNC_ID_IMEXP | FUNC_ID_IMLN | FUNC_ID_IMLOG10 | FUNC_ID_IMLOG2 | FUNC_ID_IMREAL
         | FUNC_ID_IMSEC | FUNC_ID_IMSECH | FUNC_ID_IMSIN | FUNC_ID_IMSINH | FUNC_ID_IMSQRT
         | FUNC_ID_IMTAN | FUNC_ID_MUNIT | FUNC_ID_NORMSDIST | FUNC_ID_NORMSINV
-        | FUNC_ID_UNICHAR => Some(&[0]),
+        | FUNC_ID_UNICHAR => LiftBroadcastProfile::lift_at(&[0]),
         FUNC_ID_PERCENTILE | FUNC_ID_PERCENTRANK | FUNC_ID_QUARTILE | FUNC_ID_TOCOL
-        | FUNC_ID_TRIMMEAN | FUNC_ID_WRAPCOLS | FUNC_ID_WRAPROWS => Some(&[1]),
-        FUNC_ID_SWITCH => Some(&[0, 1, 3]),
-        FUNC_ID_Z_TEST => Some(&[1, 2]),
-        _ => None,
+        | FUNC_ID_TRIMMEAN | FUNC_ID_WRAPCOLS | FUNC_ID_WRAPROWS => {
+            LiftBroadcastProfile::lift_at(&[1])
+        }
+        FUNC_ID_SWITCH => LiftBroadcastProfile::lift_at(&[0, 1, 3]),
+        FUNC_ID_Z_TEST => LiftBroadcastProfile::lift_at(&[1, 2]),
+        _ => crate::function::FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     }
+}
+
+/// The by-index scalar-array-lift argument positions for a function id, DERIVED from the single
+/// declared [`LiftBroadcastProfile`] axis (see [`lift_broadcast_profile_for_id`]) via its one
+/// `scalar_array_lift_positions` accessor. A thin derivation — never a second copy of the rule.
+fn observed_scalar_array_lift_positions(function_id: &str) -> Option<&'static [usize]> {
+    lift_broadcast_profile_for_id(function_id).scalar_array_lift_positions()
 }
 
 fn observed_error_result_array_lift(function_id: &str) -> bool {
@@ -3339,6 +3329,64 @@ mod tests {
                 ]])
                 .unwrap()
             )
+        );
+    }
+
+    /// W105 oxf-y2uw.6 single-source guard. The lift/broadcast axis has ONE declared source:
+    /// `lift_broadcast_profile_for_id`, which the by-index dispatch reads via
+    /// `observed_scalar_array_lift_positions`. This test pins that there is no SECOND source a
+    /// site could contradict:
+    ///
+    /// 1. The derivation accessor exactly mirrors the declared profile for every catalog id
+    ///    (it is literally `profile.scalar_array_lift_positions()`), so no id can have a lift
+    ///    rule the two disagree on.
+    /// 2. Where a function's `FunctionMeta.lift_broadcast_profile` FIELD already carries a
+    ///    non-default value (the .12 per-meta migration target), it MUST agree with the
+    ///    transitional reflector — so migrating a mask onto a meta literal can never silently
+    ///    diverge from the declared positions.
+    /// 3. `FUNC.ABS` is fully migrated: it carries the default `SurfaceNative` profile and is
+    ///    absent from the lift table (it lifts natively through the unary-numeric executor).
+    #[test]
+    fn lift_broadcast_axis_is_single_source() {
+        use crate::function::FunctionMeta;
+
+        for meta in crate::xll_export_specs::function_catalog() {
+            let declared = lift_broadcast_profile_for_id(meta.function_id);
+
+            // (1) The derivation accessor never disagrees with the declared profile.
+            assert_eq!(
+                observed_scalar_array_lift_positions(meta.function_id),
+                declared.scalar_array_lift_positions(),
+                "{}: derivation accessor diverged from the declared lift profile",
+                meta.function_id
+            );
+
+            // (2) A non-default meta FIELD (post-.12 migration) must match the reflector.
+            if meta.lift_broadcast_profile != FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE {
+                assert_eq!(
+                    meta.lift_broadcast_profile, declared,
+                    "{}: FunctionMeta.lift_broadcast_profile diverged from the declared reflector \
+                     (a second, contradicting lift source)",
+                    meta.function_id
+                );
+            }
+        }
+
+        // (3) ABS is migrated off the lift table onto the default surface-native axis.
+        assert_eq!(
+            lift_broadcast_profile_for_id(FUNC_ID_ABS),
+            LiftBroadcastProfile::SurfaceNative,
+            "ABS must lift natively (default profile), not via the by-index lift table"
+        );
+        assert_eq!(
+            observed_scalar_array_lift_positions(FUNC_ID_ABS),
+            None,
+            "ABS must not appear in the scalar-array-lift position table after migration"
+        );
+        assert_eq!(
+            crate::functions::abs::ABS_META.lift_broadcast_profile,
+            FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+            "ABS_META must carry the default SurfaceNative lift/broadcast profile"
         );
     }
 

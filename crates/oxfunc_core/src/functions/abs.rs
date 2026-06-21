@@ -7,8 +7,13 @@ use crate::functions::adapters::{
     UnaryNumericCoercionLiftProfile, apply_unary_numeric_scalar_prepared, map_values_only_prepared,
     run_values_only_prepared,
 };
+use crate::functions::unary_numeric::{
+    UnaryNumericExecSpec, UnaryNumericSurfaceError, eval_unary_numeric_via_executor,
+    map_unary_numeric_error_to_ws,
+};
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
+use crate::value::WorksheetErrorCode;
 
 pub const ABS_META: FunctionMeta = FunctionMeta {
     function_id: "FUNC.ABS",
@@ -19,6 +24,7 @@ pub const ABS_META: FunctionMeta = FunctionMeta {
     thread_safety: ThreadSafetyClass::SafePure,
     arg_preparation_profile: FunctionMeta::DEFAULT_ARG_PREPARATION_PROFILE,
     coercion_lift_profile: CoercionLiftProfile::UnaryNumericScalarOrArrayElementwise,
+    lift_broadcast_profile: FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
     kernel_signature_class: KernelSignatureClass::NumToNum,
     fec_dependency_profile: FecDependencyProfile::None,
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
@@ -42,6 +48,32 @@ pub const ABS_COERCION_LIFT_PROFILE: UnaryNumericCoercionLiftProfile =
 
 pub fn abs_kernel(n: f64) -> f64 {
     n.abs()
+}
+
+/// Surface evaluation for `FUNC.ABS`, routed through the W105 oxf-y2uw.3 unary-numeric
+/// executor (ODR-FN-004 Layer 3) exactly like the rest of the unary-numeric family
+/// (`eval_sin_surface` et al.). ABS's `real_result_policy` is the default `PASS`, so its
+/// kernel is bound as a `Raw` spec and the executor publishes the raw result unchanged.
+///
+/// W105 oxf-y2uw.6: this REPLACES ABS's former bespoke by-index `eval_abs_scalar_value` arm
+/// plus the `observed_scalar_array_lift_positions(FUNC.ABS) = [0]` table entry. For a unary
+/// function that observed `[0]` lift is exactly the standard elementwise lift the executor's
+/// surface helper performs natively, so ABS now carries the default `SurfaceNative`
+/// `lift_broadcast_profile` and lifts here, off the id-keyed lift table. Kept bit-exact under
+/// the .1 harness Law 1 (kernel publication) and Law 2 (coercion / lift / broadcast).
+pub fn eval_abs_surface(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<CalcValue, UnaryNumericSurfaceError> {
+    eval_unary_numeric_via_executor(
+        args,
+        resolver,
+        UnaryNumericExecSpec::raw(abs_kernel, ABS_META.real_result_policy),
+    )
+}
+
+pub fn map_abs_surface_error_to_ws(e: &UnaryNumericSurfaceError) -> WorksheetErrorCode {
+    map_unary_numeric_error_to_ws(e)
 }
 
 pub fn eval_abs_adapter_scalar_prepared(args: &[CalcValue]) -> Result<f64, AbsEvalError> {
