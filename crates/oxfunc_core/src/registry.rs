@@ -7,9 +7,11 @@ use crate::capability::{
 };
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, ErrorCollapseProfile,
-    FecDependencyProfile, FunctionMeta, HostInteractionClass, KernelSignatureClass,
+    ExcelRealPolicy, FecDependencyProfile, FunctionMeta, HostInteractionClass,
+    KernelSignatureClass, LiftBroadcastProfile, NonFinite, PrecisionRoundingProfile,
     ThreadSafetyClass, VolatilityClass,
 };
+use crate::functions::excel_numeric::ArgDomainGuard;
 use crate::registry_context_seed::registry_metadata_for_id;
 use crate::registry_help_seed::{RegistryHelpSeed, registry_help_seed_for_id};
 use crate::registry_signature_seed::{SignatureSeed, signature_seed_for_id};
@@ -74,6 +76,14 @@ pub struct RegistryFunctionMeta {
     pub arg_admission_metadata_version: String,
     pub rich_value_usage: RichValueUsage,
     pub producer_capability_set_keys: Vec<String>,
+    /// The deliberately-projected W105 declarative `FunctionSpec` axes (see
+    /// [`FunctionSpecAxesMetadata`]). The sole CURATED projection of these axes into the
+    /// published export — raw `FunctionMeta` seeds are never leaked; only this bundle is.
+    pub function_spec_axes_metadata: FunctionSpecAxesMetadata,
+    /// Version key for the projected `FunctionSpec` axes, in the existing `*_version` /
+    /// `version_key()` convention OxFml already consumes. Any change to a projected axis value
+    /// advances this key, so a downstream consumer invalidates on it like the other signals.
+    pub function_spec_axes_metadata_version: String,
 }
 
 impl From<FunctionMeta> for RegistryFunctionMeta {
@@ -81,6 +91,7 @@ impl From<FunctionMeta> for RegistryFunctionMeta {
         let semantic_kernel_metadata = semantic_kernel_metadata_for_id(meta.function_id);
         let arg_admission_metadata =
             ArgAdmissionMetadata::from_arg_preparation_profile(meta.arg_preparation_profile);
+        let function_spec_axes_metadata = FunctionSpecAxesMetadata::from_meta(&meta);
         Self {
             function_id: meta.function_id.to_string(),
             arity: meta.arity,
@@ -99,6 +110,8 @@ impl From<FunctionMeta> for RegistryFunctionMeta {
             arg_admission_metadata,
             rich_value_usage: rich_value_usage_for_id(meta.function_id),
             producer_capability_set_keys: producer_capability_set_keys_for_id(meta.function_id),
+            function_spec_axes_metadata_version: function_spec_axes_metadata.version_key(),
+            function_spec_axes_metadata,
         }
     }
 }
@@ -119,6 +132,74 @@ impl RichValueUsage {
             Self::ProducesRichObject => "rich_value_usage.v1;produces_rich_object",
             Self::ProducesErrorMetadata => "rich_value_usage.v1;produces_error_metadata",
         }
+    }
+}
+
+/// The deliberately-projected subset of the W105 declarative `FunctionSpec` axes that land in
+/// the published registry-metadata export. This is the SOLE curated projection of these axes
+/// (raw `FunctionMeta` seeds are never leaked downstream — only this bundle is); it carries
+/// pre-rendered stable keys so the export layer reads strings, not enums.
+///
+/// SCOPE (which axes are projected — deliberate, per ODR-FN-004 "Cross-repo impact" + W105 Open
+/// Lanes item 5: an internal axis becomes an EXPORTED field only deliberately and additively):
+/// - `lift_broadcast_profile` — which argument positions a by-index surface broadcasts a scalar
+///   kernel over (or surface-native), the per-function lift structure;
+/// - `precision_rounding_profile` — Excel's separable publication-time precision quirk
+///   (today: `POWER`/`^` integer-exponent publication);
+/// - `real_result_policy` — Excel's argument-domain guard + non-finite publication rule.
+///
+/// NOT projected here (deliberately, to avoid double-export): `arg_preparation_profile` is already
+/// published via the `arg_admission_profile` column (it is the `ArgAdmissionMetadata` source), and
+/// `error_collapse_profile` is already reflected via the
+/// `error_collapse_sensitive` / `error_algebra` / `reduction_sensitive` / `numerical_reduction_policy`
+/// columns (the oxf-y2uw.7 reconciliation derives those from it).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FunctionSpecAxesMetadata {
+    pub lift_broadcast_profile: String,
+    pub precision_rounding_profile: String,
+    pub real_result_policy: String,
+}
+
+impl FunctionSpecAxesMetadata {
+    /// Project the chosen axes off a [`FunctionMeta`], rendering each to its stable key. The one
+    /// place the raw axes are read for export, so the published projection has a single source.
+    pub fn from_meta(meta: &FunctionMeta) -> Self {
+        Self {
+            lift_broadcast_profile: lift_broadcast_profile_key(meta.lift_broadcast_profile),
+            precision_rounding_profile: precision_rounding_profile_key(
+                meta.precision_rounding_profile,
+            )
+            .to_string(),
+            real_result_policy: real_result_policy_key(meta.real_result_policy),
+        }
+    }
+
+    /// The projection of the DEFAULT axis values — the bundle a registration with no declared
+    /// `FunctionSpec` axes (a UDF) carries. Derived from the same `FunctionMeta::DEFAULT_*` consts
+    /// the authoring macro defaults from, so the default projection has one source of truth.
+    pub fn default_axes() -> Self {
+        Self {
+            lift_broadcast_profile: lift_broadcast_profile_key(
+                FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE,
+            ),
+            precision_rounding_profile: precision_rounding_profile_key(
+                FunctionMeta::DEFAULT_PRECISION_ROUNDING_PROFILE,
+            )
+            .to_string(),
+            real_result_policy: real_result_policy_key(FunctionMeta::DEFAULT_REAL_RESULT_POLICY),
+        }
+    }
+
+    /// Version key for the projected `FunctionSpec` axes, in the EXISTING `*_version` /
+    /// `version_key()` convention OxFml already consumes (cf. `SemanticKernelMetadata::version_key`
+    /// / `ArgAdmissionMetadata::version_key`). Any change to a projected axis value changes the key,
+    /// so a downstream consumer invalidates on it conservatively. The `v1` token is the additive
+    /// version of the projected-axes set itself: projecting a further axis bumps it to `v2`.
+    pub fn version_key(&self) -> String {
+        format!(
+            "function_spec_axes_metadata.v1;lift_broadcast_profile={};precision_rounding_profile={};real_result_policy={}",
+            self.lift_broadcast_profile, self.precision_rounding_profile, self.real_result_policy,
+        )
     }
 }
 
@@ -207,6 +288,46 @@ fn arg_preparation_profile_key(profile: ArgPreparationProfile) -> &'static str {
         ArgPreparationProfile::ValuesOnlyPreAdapter => "values_only_pre_adapter",
         ArgPreparationProfile::RefsVisibleInAdapter => "refs_visible_in_adapter",
     }
+}
+
+/// Stable key for the projected `lift_broadcast_profile` axis. The non-default variant renders its
+/// position mask so the published key distinguishes functions by exactly which argument positions
+/// they broadcast over (the irreducible per-function lift structure).
+fn lift_broadcast_profile_key(profile: LiftBroadcastProfile) -> String {
+    match profile.scalar_array_lift_positions() {
+        None => "surface_native".to_string(),
+        Some(positions) => {
+            let joined = positions
+                .iter()
+                .map(|p| p.to_string())
+                .collect::<Vec<_>>()
+                .join("|");
+            format!("by_index_scalar_array_lift(positions={joined})")
+        }
+    }
+}
+
+/// Stable key for the projected `precision_rounding_profile` axis.
+fn precision_rounding_profile_key(profile: PrecisionRoundingProfile) -> &'static str {
+    match profile {
+        PrecisionRoundingProfile::Default => "default",
+        PrecisionRoundingProfile::IntegerExponentPublication => "integer_exponent_publication",
+    }
+}
+
+/// Stable key for the projected `real_result_policy` axis (the argument-domain guard plus the
+/// non-finite publication rule, named after the Excel behaviour each encodes).
+fn real_result_policy_key(policy: ExcelRealPolicy) -> String {
+    let guard = match policy.arg_domain_guard {
+        ArgDomainGuard::None => "none",
+        ArgDomainGuard::CircularTrigOverflow => "circular_trig_overflow",
+    };
+    let non_finite = match policy.non_finite {
+        NonFinite::Allow => "allow",
+        NonFinite::Num => "num",
+        NonFinite::SaturateSign => "saturate_sign",
+    };
+    format!("real_result_policy.v1;arg_domain_guard={guard};non_finite={non_finite}")
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -993,8 +1114,11 @@ pub fn builtin_registry() -> &'static FunctionRegistry {
 }
 
 pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
+    // The leading 14 columns are the FROZEN contract every existing OxFml/OxCalc consumer reads;
+    // their order and per-row values are byte-identical and MUST NOT change. The W105
+    // `function_spec_axes` columns are appended ADDITIVELY at the END (oxf-y2uw.11).
     let mut out = String::from(
-        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys\n",
+        "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy\n",
     );
 
     for entry in registry.iter() {
@@ -1005,7 +1129,8 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
             sparse_cardinality_class,
         ) = arg_admission_export_fields(&entry.meta.arg_admission_metadata);
         out.push_str(&format!(
-            "{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            // --- FROZEN: the existing 14 columns (byte-identical, never reordered) ---
             csv_escape(&entry.meta.function_id),
             csv_escape(&entry.surface_name),
             csv_escape(&entry.meta.semantic_kernel_metadata_version),
@@ -1034,6 +1159,21 @@ pub fn render_registry_metadata_csv(registry: &FunctionRegistry) -> String {
             csv_escape(&sparse_cardinality_class),
             csv_escape(entry.meta.rich_value_usage.version_key()),
             csv_escape(&entry.meta.producer_capability_set_keys.join("|")),
+            // --- ADDITIVE: W105 projected FunctionSpec axes (oxf-y2uw.11) ---
+            csv_escape(&entry.meta.function_spec_axes_metadata_version),
+            csv_escape(
+                &entry
+                    .meta
+                    .function_spec_axes_metadata
+                    .lift_broadcast_profile
+            ),
+            csv_escape(
+                &entry
+                    .meta
+                    .function_spec_axes_metadata
+                    .precision_rounding_profile
+            ),
+            csv_escape(&entry.meta.function_spec_axes_metadata.real_result_policy),
         ));
     }
 
@@ -1122,6 +1262,9 @@ fn udf_entry_from_request(request: UdfRegistrationRequest) -> FunctionEntry {
     };
     let arg_admission_metadata =
         ArgAdmissionMetadata::from_arg_preparation_profile(request.arg_preparation_profile);
+    // A UDF declares no `FunctionSpec` lift/precision/real-result axes, so its projection carries
+    // the default axis values (the same `FunctionMeta::DEFAULT_*` the authoring macro defaults to).
+    let function_spec_axes_metadata = FunctionSpecAxesMetadata::default_axes();
     let signature_display = request
         .display_signature
         .unwrap_or_else(|| synthesized_signature_display(&surface_name, &request.parameters));
@@ -1151,6 +1294,8 @@ fn udf_entry_from_request(request: UdfRegistrationRequest) -> FunctionEntry {
             arg_admission_metadata,
             rich_value_usage: RichValueUsage::RichBlind,
             producer_capability_set_keys: capability_keys,
+            function_spec_axes_metadata_version: function_spec_axes_metadata.version_key(),
+            function_spec_axes_metadata,
         },
         surface_name: surface_name.clone(),
         display_signature: SignatureForm {
@@ -1643,7 +1788,7 @@ mod tests {
         let header = csv.lines().next().expect("csv header");
         assert_eq!(
             header,
-            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys"
+            "function_id,surface_name,semantic_kernel_metadata_version,reduction_sensitive,error_collapse_sensitive,numerical_reduction_policy,error_algebra,arg_admission_metadata_version,arg_admission_profile,rich_required_capability_set_keys,sparse_extent_class,sparse_cardinality_class,rich_value_usage,producer_capability_set_keys,function_spec_axes_metadata_version,lift_broadcast_profile,precision_rounding_profile,real_result_policy"
         );
         assert!(
             csv.contains("FUNC.SUM,SUM,semantic_kernel_metadata.v1;reduction_sensitive=true;error_collapse_sensitive=true;numerical_reduction_policy=SequentialLeftFold;error_algebra=CanonicalExcelLegacy,true,true,SequentialLeftFold,CanonicalExcelLegacy,arg_admission_metadata.v1;existing_arg_preparation=values_only_pre_adapter,values_only_pre_adapter"),
@@ -1664,6 +1809,110 @@ mod tests {
         assert!(
             csv.contains("Materialisable(target_class=published_fallback_text)"),
             "IMAGE row must publish webimage producer capabilities"
+        );
+    }
+
+    /// W105 oxf-y2uw.11 schema check for the ADDITIVELY-appended `FunctionSpec` axes columns:
+    /// the four new columns sit at the END of the header in the declared order, every row has the
+    /// full 18-column count, and the projected axis values are the chosen (deliberate) ones —
+    /// `lift_broadcast_profile`, `precision_rounding_profile`, `real_result_policy`, plus the
+    /// version key in the existing `*_version` convention. The leading 14 columns are pinned by
+    /// `registry_metadata_csv_exports_version_and_capability_columns`; this guards the new tail.
+    #[test]
+    fn registry_metadata_csv_appends_function_spec_axes_columns() {
+        const FROZEN_LEADING_COLUMNS: usize = 14;
+        const NEW_COLUMNS: [&str; 4] = [
+            "function_spec_axes_metadata_version",
+            "lift_broadcast_profile",
+            "precision_rounding_profile",
+            "real_result_policy",
+        ];
+        let total_columns = FROZEN_LEADING_COLUMNS + NEW_COLUMNS.len();
+
+        let csv = render_registry_metadata_csv(builtin_registry());
+        let header = csv.lines().next().expect("csv header");
+        let header_cols: Vec<&str> = header.split(',').collect();
+        assert_eq!(
+            header_cols.len(),
+            total_columns,
+            "header must carry the 14 frozen columns plus the 4 appended axis columns"
+        );
+        // The new columns are appended at the END, in order.
+        assert_eq!(
+            &header_cols[FROZEN_LEADING_COLUMNS..],
+            &NEW_COLUMNS,
+            "new FunctionSpec axes columns must be appended at the end, in declared order"
+        );
+
+        // Every data row carries exactly the full column count. The producer-capability column is
+        // CSV-quoted for IMAGE (its keys contain commas), so count fields with a CSV-aware split
+        // rather than a naive `,` count.
+        let mut data_rows = 0usize;
+        for line in csv.lines().skip(1) {
+            assert_eq!(
+                csv_field_count(line),
+                total_columns,
+                "row must have {total_columns} columns: {line}"
+            );
+            data_rows += 1;
+        }
+        assert!(data_rows > 0, "expected at least one data row");
+
+        // The chosen axes are projected with distinguishing, version-keyed values.
+        assert!(
+            csv.contains(
+                ",function_spec_axes_metadata.v1;lift_broadcast_profile=surface_native;precision_rounding_profile=integer_exponent_publication;real_result_policy=real_result_policy.v1;arg_domain_guard=none;non_finite=allow,surface_native,integer_exponent_publication,"
+            ),
+            "POWER must publish its integer-exponent precision-rounding axis"
+        );
+        assert!(
+            csv.contains(",by_index_scalar_array_lift(positions=0|1|2|3|4),default,"),
+            "ADDRESS must publish its by-index scalar-array lift positions"
+        );
+        assert!(
+            csv.contains(
+                ",real_result_policy.v1;arg_domain_guard=circular_trig_overflow;non_finite=num"
+            ),
+            "SIN must publish its circular-trig real-result policy"
+        );
+    }
+
+    /// Count CSV fields in a row, honouring double-quoted fields that may contain commas
+    /// (RFC-4180-style; this export only ever escapes commas, never embeds quotes/newlines in a
+    /// quoted field, so a simple quote-toggle field counter is exact here).
+    fn csv_field_count(line: &str) -> usize {
+        let mut fields = 1;
+        let mut in_quotes = false;
+        for ch in line.chars() {
+            match ch {
+                '"' => in_quotes = !in_quotes,
+                ',' if !in_quotes => fields += 1,
+                _ => {}
+            }
+        }
+        fields
+    }
+
+    #[test]
+    fn function_spec_axes_version_changes_when_a_projected_axis_changes() {
+        // The version key follows the existing `version_key()` convention: any change to a
+        // projected axis value advances the key, so a downstream consumer invalidates on it.
+        let power_meta = xll_export_specs::function_catalog()
+            .iter()
+            .find(|m| m.function_id == "FUNC.POWER")
+            .expect("POWER must be in the catalog");
+        let power = FunctionSpecAxesMetadata::from_meta(power_meta);
+        let baseline = FunctionSpecAxesMetadata::default_axes();
+        assert_ne!(
+            power.version_key(),
+            baseline.version_key(),
+            "POWER's integer-exponent axis must change the version key vs the default projection"
+        );
+        assert!(
+            baseline
+                .version_key()
+                .starts_with("function_spec_axes_metadata.v1;"),
+            "version key must carry the additive v1 token in the existing convention"
         );
     }
 
@@ -2176,6 +2425,9 @@ mod tests {
                 .version_key(),
                 rich_value_usage: RichValueUsage::RichBlind,
                 producer_capability_set_keys: Vec::new(),
+                function_spec_axes_metadata: FunctionSpecAxesMetadata::default_axes(),
+                function_spec_axes_metadata_version: FunctionSpecAxesMetadata::default_axes()
+                    .version_key(),
             },
             surface_name: surface_name.to_string(),
             display_signature: SignatureForm {

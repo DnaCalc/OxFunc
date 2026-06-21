@@ -322,6 +322,60 @@ Rules:
    replay artifacts; any changed value is a prepared-package invalidation
    signal.
 
+### 4.5 W105 FunctionSpec Axes Projection (oxf-y2uw.11)
+
+The W105 declarative `FunctionSpec` work widened `FunctionMeta` with additional
+behavioural axes. A subset of those axes is now **projected, additively and
+versioned**, into `render_registry_metadata_csv(...)`. This is an ADDITIVE
+extension of the registry-metadata CSV: the previously-published columns keep
+their order and per-row values byte-identical, and the new fields are appended at
+the END of the row. Existing consumers that read only the prior columns are
+unaffected.
+
+Newly-exported columns (appended, in this order):
+1. `function_spec_axes_metadata_version`
+2. `lift_broadcast_profile`
+3. `precision_rounding_profile`
+4. `real_result_policy`
+
+Deliberately-chosen projected axes (per ODR-FN-004 "Cross-repo impact" and W105
+Open Lanes item 5: an internal axis becomes an exported field only deliberately
+and additively):
+1. `lift_broadcast_profile` — `surface_native`, or
+   `by_index_scalar_array_lift(positions=...)` naming the argument positions a
+   by-index surface broadcasts a scalar kernel over.
+2. `precision_rounding_profile` — `default`, or `integer_exponent_publication`
+   (today: `POWER`/`^`).
+3. `real_result_policy` — the argument-domain guard plus non-finite publication
+   rule, e.g. `real_result_policy.v1;arg_domain_guard=none;non_finite=allow`.
+
+Deliberately NOT re-exported (already reflected in existing columns, to avoid a
+second projection of the same fact):
+1. `arg_preparation_profile` — already published via `arg_admission_profile`
+   (it is the `ArgAdmissionMetadata` source).
+2. `error_collapse_profile` — already reflected via `error_collapse_sensitive`,
+   `error_algebra`, `reduction_sensitive`, and `numerical_reduction_policy`
+   (the oxf-y2uw.7 reconciliation derives those from it).
+
+Version signal:
+
+```text
+function_spec_axes_metadata_version
+```
+
+Rules (the SAME `*_version` / `version_key()` discipline OxFml already consumes
+for `semantic_kernel_metadata_version` and `arg_admission_metadata_version` — no
+new sign-off ceremony or pack-validation gate is introduced):
+1. The signal is `RegistryFunctionMeta::function_spec_axes_metadata_version`,
+   published through `render_registry_metadata_csv(...)`.
+2. Any change to a projected axis value advances the signal.
+3. The `function_spec_axes_metadata.v1` token versions the projected-axes SET
+   itself: projecting a further axis bumps it to `v2`.
+4. Until narrower per-axis fingerprints exist, OxFml/OxCalc may conservatively
+   invalidate prepared packages that rely on these axes.
+5. `RegistryFunctionMeta` remains the sole curated projection — raw
+   `FunctionMeta` axis seeds are never published directly.
+
 ## 5. First CALC-004 Activation Lane
 
 First concrete lanes:
