@@ -217,6 +217,12 @@ seven cycles unless noted as `singleton_witness`.
   witnesses bit-exact vs live Excel 16.0 b20026 (incl. `-0.999999999`,
   `-0.9999999999999990`). Regression
   `atanh::tests::atanh_is_odd_symmetric_and_bit_exact_near_minus_one`.
+- **Residual (2026-06-21, open).** Broader probing found ATANH is *not* fully bit-exact:
+  mid-small args drift `2`–`3` ULP (`ATANH(0.2)` = `…9849` vs OxFunc/true `…984c`;
+  `ATANH(0.1)` 2 ULP), exact at `0.5` and near `±1`. Excel's ATANH is its own
+  approximation, *less* accurate than correctly-rounded; OxFunc (Rust `atanh`) is at the
+  true value. Not an ln-precision gap (see C5: Excel's `LN` is correctly-rounded).
+  Reclassified NUM-S on catalog G4; matching needs Excel's exact ATANH routine.
 
 ### CLASS-C5: ACOTH and ACOSH near 1
 
@@ -244,7 +250,14 @@ seven cycles unless noted as `singleton_witness`.
   `ACOTH(5)` by 1 ULP in the same direction (Excel's own/extended-precision `ln`), and
   `ACOTH(10)` is bit-exact only under `atanh(1/x)` — which regresses `ACOTH(1.001)` by
   39 ULP — so no single double form matches every point. Reclassified NUM-S on catalog
-  G4; full closure needs Excel's exact `ln`. Regression
+  G4. **ln-substrate investigation (2026-06-21) — decisive.** A validated correctly-rounded
+  double-double `ln`/`exp` (verified against CR `ln(2)` = `0x3fe62e42fefa39ef`, non-trivial
+  `lo` limb) gives the *same* `…984c` as the f64 ln1p form — the true value — while Excel
+  returns `…984d` (1 ULP **high**). So a better/extended `ln` cannot match Excel here: the
+  error is in Excel's own ACOTH routine, not ln precision. Excel's `LN` is correctly-rounded
+  (8/8 probed points match OxFunc), and `ACOTH(5)` ≠ `LN(1.5)/2` ≠ `ATANH(1/5)` in Excel
+  (Excel maps the same real value to `ATANH(0.2)=…9849` and `ACOTH(5)=…984d`). Closure needs
+  Excel's exact ACOTH routine. Probe harness `tools/elem-probe/run-elem-probe.ps1`. Regression
   `acoth::tests::acoth_large_and_negative_args_bit_exact`. Probe harness:
   `tools/elem-probe/run-elem-probe.ps1`.
 
