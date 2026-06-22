@@ -28,6 +28,34 @@ pub enum CallableArgumentSpec {
     Last,
 }
 
+/// The invocable-passthrough axis (W105 oxf-y2uw.12.3, decision **W105-D2** "Invocable axis").
+///
+/// An OxFunc/host IMPLEMENTATION fact — its truth is *our dispatch behaviour*, not an Excel cell
+/// semantic: whether a lambda/invocable value handed to this function can *pass through* it,
+/// unchanged, to the function's result (e.g. `IF(TRUE, lambda, …)` returns `lambda`). It is the
+/// sibling of `requires-invoker` (the function *consumes* a callable arg, which is derived from
+/// [`callable_argument_specs_for_id`] being non-empty — never restated as a parallel id list).
+///
+/// This is a closed `Copy`/`Eq` enum whose variants name a real, observed OxFunc dispatch
+/// behaviour, populated by inspection in [`invocable_passthrough_for_id`] and checked to hold by a
+/// representative passthrough test (`if_passes_a_callable_argument_through_unchanged`). It is a
+/// lightweight plumbing fact, NOT an Excel value claim: the per-function handlers are unchanged,
+/// so the variant on a function is asserted, never used to alter routing or output. The majority
+/// of functions carry [`InvocablePassthrough::No`].
+///
+/// Scope (W105-D2 point 3): OxFunc evaluates calls to *values* (including callable/rich values).
+/// Cell-result/presentation semantics (e.g. a callable surfacing as `#CALC!` in a cell) belong to
+/// OxFml/OxCalc, not here; so there is deliberately no `produces-invocable` modelling on this axis.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InvocablePassthrough {
+    /// A callable argument does not pass through to this function's result.
+    No,
+    /// A callable argument can pass through this function, unchanged, to its result — the
+    /// branch-selectors / single-cell selectors (`IF`, `IFERROR`, `IFNA`, `IFS`, `CHOOSE`,
+    /// `SWITCH`, `INDEX`).
+    Yes,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ExpressionHoistPolicy {
     /// Permit hoisting functions whose only FEC dependency is reference
@@ -120,6 +148,7 @@ pub struct FunctionCallTarget {
     surface_name: String,
     canonical_surface_name: Option<String>,
     callable_argument_specs: &'static [CallableArgumentSpec],
+    invocable_passthrough: InvocablePassthrough,
 }
 
 impl FunctionCallTarget {
@@ -190,6 +219,7 @@ impl FunctionCallTarget {
             surface_name,
             canonical_surface_name,
             callable_argument_specs: callable_argument_specs_for_id(meta.function_id),
+            invocable_passthrough: invocable_passthrough_for_id(meta.function_id),
         }
     }
 
@@ -263,6 +293,23 @@ impl FunctionCallTarget {
 
     pub fn callable_argument_specs(&self) -> &'static [CallableArgumentSpec] {
         self.callable_argument_specs
+    }
+
+    /// Whether this function consumes a callable argument and therefore needs a
+    /// [`CallableInvoker`] to evaluate (`requires-invoker`, W105-D2). DERIVED from the declared
+    /// [`callable_argument_specs`](Self::callable_argument_specs) — non-empty iff an invoker is
+    /// required — so there is no second hand-maintained "lambda-helper family" id list.
+    ///
+    /// [`CallableInvoker`]: crate::functions::callable_helpers::CallableInvoker
+    pub fn requires_invoker(&self) -> bool {
+        !self.callable_argument_specs.is_empty()
+    }
+
+    /// Whether a callable/invocable argument can pass through this function, unchanged, to its
+    /// result (`invocable-passthrough`, W105-D2). A declared per-function fact; see
+    /// [`InvocablePassthrough`].
+    pub fn invocable_passthrough(&self) -> InvocablePassthrough {
+        self.invocable_passthrough
     }
 
     pub fn callable_argument_ordinals_for_arity(&self, argc: usize) -> Vec<usize> {
@@ -510,6 +557,44 @@ fn callable_argument_specs_for_id(function_id: &str) -> &'static [CallableArgume
     }
 }
 
+/// The `requires-invoker` axis (W105 oxf-y2uw.12.3, decision **W105-D2**): does this function
+/// *consume* a callable argument and therefore need a [`CallableInvoker`] to evaluate?
+///
+/// SINGLE-SOURCED from [`callable_argument_specs_for_id`] — a function requires an invoker iff its
+/// declared callable-argument-spec set is non-empty. There is deliberately NO parallel id list of
+/// the lambda-helper family; the hand-coded dispatch arms in
+/// `surface_dispatch::eval_surface_value_call_with_dispatch_key` route on this same predicate (and
+/// a conformance test pins that the handler-bound id set equals this spec-derived set), so the
+/// "which functions take a callable" fact lives in exactly one place.
+///
+/// [`CallableInvoker`]: crate::functions::callable_helpers::CallableInvoker
+pub(crate) fn function_id_requires_invoker(function_id: &str) -> bool {
+    !callable_argument_specs_for_id(function_id).is_empty()
+}
+
+/// The `invocable-passthrough` axis (W105 oxf-y2uw.12.3) keyed by `function_id` — co-located with
+/// [`callable_argument_specs_for_id`] (callable facts live in this `FunctionCallTarget` projection,
+/// not on the `Copy`/`Eq` `FunctionMeta`, so the meta golden is unaffected). See
+/// [`InvocablePassthrough`] for the meaning. Populated BY INSPECTION of each handler:
+///
+/// - `IF`/`IFERROR`/`IFNA`/`IFS` — the selected branch argument is returned via
+///   `prepare_arg_values_only`, which is a structural clone for a non-reference value; a callable
+///   (core `#CALC!` + rich `Callable`) is neither a 1x1 array nor Missing/Empty, so it passes
+///   through with its rich overlay intact. Checked by `if_passes_a_callable_argument_through_unchanged`.
+/// - `CHOOSE`/`SWITCH` — likewise return a selected argument verbatim.
+/// - `INDEX` — a single-cell selection returns that cell verbatim.
+///
+/// `LET` is the canonical lambda-binding passthrough in Excel, but it is an OxFml/parser binding
+/// construct with no value-dispatch entry in this crate's catalog, so it is out of OxFunc scope
+/// here (W105-D2 point 3) and not listed. Functions not named carry [`InvocablePassthrough::No`].
+fn invocable_passthrough_for_id(function_id: &str) -> InvocablePassthrough {
+    match function_id {
+        "FUNC.IF" | "FUNC.IFERROR" | "FUNC.IFNA" | "FUNC.IFS" | "FUNC.CHOOSE" | "FUNC.SWITCH"
+        | "FUNC.INDEX" => InvocablePassthrough::Yes,
+        _ => InvocablePassthrough::No,
+    }
+}
+
 fn determinism_allows_hoist(determinism: DeterminismClass, policy: ExpressionHoistPolicy) -> bool {
     match determinism {
         DeterminismClass::Deterministic => true,
@@ -588,9 +673,10 @@ mod tests {
     use crate::functions::callable_helpers::{CallableInvocationError, CallableInvoker};
     use crate::functions::rtd_fn::{RtdProvider, RtdProviderResult, RtdRequest};
     use crate::functions::surface_dispatch::{
-        FUNC_ID_BYROW, FUNC_ID_CELL, FUNC_ID_GROUPBY, FUNC_ID_HSTACK, FUNC_ID_INDEX, FUNC_ID_MAP,
-        FUNC_ID_NOW, FUNC_ID_OP_ADD, FUNC_ID_PI, FUNC_ID_PIVOTBY, FUNC_ID_RAND, FUNC_ID_REDUCE,
-        FUNC_ID_REGISTER_ID, FUNC_ID_RTD, FUNC_ID_VALUE, FUNC_ID_VSTACK,
+        FUNC_ID_BYROW, FUNC_ID_CELL, FUNC_ID_CHOOSE, FUNC_ID_GROUPBY, FUNC_ID_HSTACK, FUNC_ID_IF,
+        FUNC_ID_IFERROR, FUNC_ID_IFNA, FUNC_ID_IFS, FUNC_ID_INDEX, FUNC_ID_MAP, FUNC_ID_NOW,
+        FUNC_ID_OP_ADD, FUNC_ID_PI, FUNC_ID_PIVOTBY, FUNC_ID_RAND, FUNC_ID_REDUCE,
+        FUNC_ID_REGISTER_ID, FUNC_ID_RTD, FUNC_ID_SWITCH, FUNC_ID_VALUE, FUNC_ID_VSTACK,
         eval_surface_value_call_with_callable,
     };
     use crate::host_info::{CellInfoQuery, HostInfoError, HostInfoProvider};
@@ -924,6 +1010,140 @@ mod tests {
 
         let pivotby = FunctionCallTarget::from_function_id(FUNC_ID_PIVOTBY).unwrap();
         assert_eq!(pivotby.callable_argument_ordinals_for_arity(9), vec![3]);
+    }
+
+    /// W105 oxf-y2uw.12.3 — `requires-invoker` is DERIVED from `callable_argument_specs`, not a
+    /// parallel list. For every catalog id, `requires_invoker()` equals "callable-arg-spec set is
+    /// non-empty", and the projection accessor agrees with the free predicate the dispatch reads.
+    #[test]
+    fn requires_invoker_is_derived_from_callable_argument_specs() {
+        for meta in crate::xll_export_specs::function_catalog() {
+            let target = FunctionCallTarget::from_function_id(meta.function_id).unwrap();
+            let from_specs = !target.callable_argument_specs().is_empty();
+            assert_eq!(
+                target.requires_invoker(),
+                from_specs,
+                "{}: requires_invoker() must equal non-empty callable_argument_specs",
+                meta.function_id
+            );
+            assert_eq!(
+                target.requires_invoker(),
+                function_id_requires_invoker(meta.function_id),
+                "{}: projection accessor and free predicate (read by dispatch) must agree",
+                meta.function_id
+            );
+        }
+
+        // The eight invoker-consuming functions require an invoker; a representative selector and a
+        // plain numeric function do not.
+        for id in [
+            FUNC_ID_MAP,
+            FUNC_ID_REDUCE,
+            FUNC_ID_GROUPBY,
+            FUNC_ID_PIVOTBY,
+            FUNC_ID_BYROW,
+        ] {
+            assert!(
+                FunctionCallTarget::from_function_id(id)
+                    .unwrap()
+                    .requires_invoker(),
+                "{id} must require an invoker"
+            );
+        }
+        assert!(
+            !FunctionCallTarget::from_function_id(FUNC_ID_INDEX)
+                .unwrap()
+                .requires_invoker()
+        );
+        assert!(
+            !FunctionCallTarget::from_function_id(FUNC_ID_OP_ADD)
+                .unwrap()
+                .requires_invoker()
+        );
+    }
+
+    /// W105 oxf-y2uw.12.3 — `invocable-passthrough` is populated for the branch/single-cell
+    /// selectors and `No` elsewhere; the projection accessor mirrors the id-keyed declaration.
+    #[test]
+    fn invocable_passthrough_is_populated_for_selectors() {
+        for id in [
+            FUNC_ID_IF,
+            FUNC_ID_IFERROR,
+            FUNC_ID_IFNA,
+            FUNC_ID_IFS,
+            FUNC_ID_CHOOSE,
+            FUNC_ID_SWITCH,
+            FUNC_ID_INDEX,
+        ] {
+            assert_eq!(
+                FunctionCallTarget::from_function_id(id)
+                    .unwrap()
+                    .invocable_passthrough(),
+                InvocablePassthrough::Yes,
+                "{id} must carry invocable-passthrough Yes"
+            );
+        }
+
+        // A consumes-callable function is not itself a passthrough; a plain numeric is `No`.
+        assert_eq!(
+            FunctionCallTarget::from_function_id(FUNC_ID_MAP)
+                .unwrap()
+                .invocable_passthrough(),
+            InvocablePassthrough::No
+        );
+        assert_eq!(
+            FunctionCallTarget::from_function_id(FUNC_ID_OP_ADD)
+                .unwrap()
+                .invocable_passthrough(),
+            InvocablePassthrough::No
+        );
+    }
+
+    /// W105 oxf-y2uw.12.3 — the CHECK that `invocable-passthrough` HOLDS: a representative
+    /// passthrough function (`IF`) returns a callable argument UNCHANGED, with its rich `Callable`
+    /// overlay intact (truth = our dispatch behaviour). This witnesses the declared `Yes` is real,
+    /// not just asserted, mirroring how the existing callable tests construct a `CallableValue`.
+    #[test]
+    fn if_passes_a_callable_argument_through_unchanged() {
+        let if_target = FunctionCallTarget::from_function_id(FUNC_ID_IF).unwrap();
+        debug_assert_eq!(
+            if_target.invocable_passthrough(),
+            InvocablePassthrough::Yes,
+            "this CHECK only makes sense for a declared passthrough function"
+        );
+
+        let lambda = lambda_arg("helper.add1", 1);
+        // Sanity: the input really carries a rich Callable overlay.
+        assert!(lambda.callable_value().is_some());
+
+        let resolver = NoReferenceSystemProvider;
+        let mut fec = FunctionExecutionContextBundle::new(&resolver);
+
+        // IF(TRUE, lambda) selects the true branch — the callable must come back verbatim.
+        let got_true = if_target
+            .invoke(&[CalcValue::logical(true), lambda.clone()], &mut fec)
+            .expect("IF(TRUE, lambda) evaluates");
+        assert_eq!(
+            got_true, lambda,
+            "IF must return the selected callable branch unchanged (passthrough)"
+        );
+        assert_eq!(
+            got_true.callable_value().map(|c| c.summary.as_str()),
+            Some("helper.add1"),
+            "the rich Callable overlay must survive the passthrough"
+        );
+
+        // IF(FALSE, other, lambda) selects the false branch — again verbatim.
+        let got_false = if_target
+            .invoke(
+                &[CalcValue::logical(false), num_arg(1.0), lambda.clone()],
+                &mut fec,
+            )
+            .expect("IF(FALSE, _, lambda) evaluates");
+        assert_eq!(
+            got_false, lambda,
+            "IF must return the selected false-branch callable unchanged (passthrough)"
+        );
     }
 
     #[test]

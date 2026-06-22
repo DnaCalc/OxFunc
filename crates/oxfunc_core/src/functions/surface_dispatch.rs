@@ -1167,6 +1167,52 @@ fn eval_provider_bound_calc_dispatch(
     }
 }
 
+/// Per-id handler binding for the invoker-consuming (lambda-helper) family. Returns `Some` iff
+/// `function_id` is bound to a callable-consuming surface handler; `None` otherwise so the caller
+/// continues to the ordinary dispatch paths.
+///
+/// W105 oxf-y2uw.12.3: this is the per-function handler *binding* W105-D2 deliberately keeps (the
+/// internal `CalcValue(s) -> CalcValue(s)` handlers are not reified). It is NOT a second "which
+/// functions take a callable" list — that membership fact is single-sourced from
+/// `callable_argument_specs_for_id` via [`function_id_requires_invoker`], which gates the call
+/// below, and is pinned equal to this arm set by
+/// `requires_invoker_set_matches_lambda_helper_dispatch_arms`.
+fn eval_invoker_consuming_surface(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+    callable_invoker: &dyn CallableInvoker,
+) -> Option<Result<CalcValue, WorksheetErrorCode>> {
+    let result = match function_id {
+        FUNC_ID_MAP => eval_map_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_REDUCE => eval_reduce_calc_surface(args, resolver, callable_invoker)
+            .map(|value| prepared_arg_to_calc_value_lossy(&value))
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_SCAN => eval_scan_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_BYROW => eval_byrow_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_BYCOL => eval_bycol_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_MAKEARRAY => eval_makearray_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_GROUPBY => eval_groupby_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        FUNC_ID_PIVOTBY => eval_pivotby_calc_surface(args, resolver, callable_invoker)
+            .map(CalcValue::from)
+            .map_err(|error| map_lambda_helper_error_to_ws(&error)),
+        _ => return None,
+    };
+    Some(result)
+}
+
 pub fn eval_surface_value_call_with_dispatch_key(
     dispatch_key: SurfaceDispatchKey,
     args: &[CalcValue],
@@ -1181,93 +1227,75 @@ pub fn eval_surface_value_call_with_dispatch_key(
 ) -> Result<CalcValue, WorksheetErrorCode> {
     let rejecting_invoker = RejectingCallableInvoker;
     let callable_invoker = callable_invoker.unwrap_or(&rejecting_invoker);
-    match dispatch_key.function_id {
-        FUNC_ID_MAP => {
-            return eval_map_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
+    // The `requires-invoker` membership decision is single-sourced from the declared
+    // `callable_argument_specs` (W105-D2): a function routes to the invoker-consuming family iff
+    // its callable-arg-spec set is non-empty. The per-id handler binding then lives in exactly one
+    // place (`eval_invoker_consuming_surface`); the two are pinned equal by a conformance test.
+    if crate::function_call::function_id_requires_invoker(dispatch_key.function_id) {
+        let routed = eval_invoker_consuming_surface(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            callable_invoker,
+        );
+        debug_assert!(
+            routed.is_some(),
+            "function_id_requires_invoker is true but no invoker-consuming handler is bound for {}; \
+             callable_argument_specs and the lambda-helper dispatch arms have drifted",
+            dispatch_key.function_id
+        );
+        if let Some(result) = routed {
+            return result;
         }
-        FUNC_ID_REDUCE => {
-            return eval_reduce_calc_surface(args, resolver, callable_invoker)
-                .map(|value| prepared_arg_to_calc_value_lossy(&value))
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_SCAN => {
-            return eval_scan_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_BYROW => {
-            return eval_byrow_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_BYCOL => {
-            return eval_bycol_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_MAKEARRAY => {
-            return eval_makearray_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_GROUPBY => {
-            return eval_groupby_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        FUNC_ID_PIVOTBY => {
-            return eval_pivotby_calc_surface(args, resolver, callable_invoker)
-                .map(CalcValue::from)
-                .map_err(|error| map_lambda_helper_error_to_ws(&error));
-        }
-        _ => {
-            if let Some(result) =
-                eval_lookup_reference_adjacent_calc_dispatch(dispatch_key.function_id, args)
-            {
-                return result;
-            }
-            // W105 oxf-y2uw.12.2: the dynamic-array-reshape family (CHOOSECOLS, CHOOSEROWS,
-            // DROP, TAKE) no longer has a calc-dispatch interception. Every member is served
-            // by exactly one path — the by-index generated table, whose `eval_*_surface` arm
-            // prepares the args and runs the reshape, with the declared `lift_at(&[1, 2])`
-            // scalar-array-lift applied to DROP/TAKE uniformly with EXPAND/TOROW via
-            // `try_observed_scalar_array_lift`. The former `eval_dynamic_array_reshape_calc_dispatch`
-            // shim returned `#VALUE!` early on an array-valued count arg, shadowing that lift;
-            // live Excel (16.0 build 20026) LIFTS the count args, so removing the shim moves
-            // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift residual that
-            // remains — DROP(src,`{1}`) → `1x1` instead of Excel's intersected cell — is the
-            // shared array-lifter defect tracked as oxf-wkwj, not introduced here.)
-            //
-            // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
-            // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
-            // is served by exactly one path — the by-index generated table, whose
-            // `eval_*_surface` arms route the post-coercion math through the generic
-            // `unary_numeric::execute(spec, …)` executor. The former
-            // `eval_shared_unary_numeric_calc_dispatch` shim is deleted.
-            //
-            // W105 oxf-y2uw.12.1: likewise the binary-arithmetic operator family (MOD, OP_ADD,
-            // OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE, OP_POWER / POWER) no longer has a
-            // calc-dispatch interception. Every member is served by exactly one path — the
-            // by-index generated table, whose spec-driven arms route the post-coercion math
-            // through the generic `binary_numeric::execute(spec, …)` 2-arg executor. The former
-            // `eval_binary_arithmetic_calc_dispatch` shim is deleted.
-            if let Some(result) =
-                eval_date_time_calc_dispatch(dispatch_key.function_id, args, resolver)
-            {
-                return result;
-            }
-            if let Some(result) = eval_provider_bound_calc_dispatch(
-                dispatch_key.function_id,
-                args,
-                resolver,
-                now_serial,
-                host_info,
-            ) {
-                return result;
-            }
-        }
+    }
+    if let Some(result) =
+        eval_lookup_reference_adjacent_calc_dispatch(dispatch_key.function_id, args)
+    {
+        return result;
+    }
+    // W105 oxf-y2uw.12.2: the dynamic-array-reshape family (CHOOSECOLS, CHOOSEROWS,
+    // DROP, TAKE) no longer has a calc-dispatch interception. Every member is served
+    // by exactly one path — the by-index generated table, whose `eval_*_surface` arm
+    // prepares the args and runs the reshape, with the declared `lift_at(&[1, 2])`
+    // scalar-array-lift applied to DROP/TAKE uniformly with EXPAND/TOROW via
+    // `try_observed_scalar_array_lift`. The former `eval_dynamic_array_reshape_calc_dispatch`
+    // shim returned `#VALUE!` early on an array-valued count arg, shadowing that lift;
+    // live Excel (16.0 build 20026) LIFTS the count args, so removing the shim moves
+    // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift residual that
+    // remains — DROP(src,`{1}`) → `1x1` instead of Excel's intersected cell — is the
+    // shared array-lifter defect tracked as oxf-wkwj, not introduced here.)
+    //
+    // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
+    // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
+    // is served by exactly one path — the by-index generated table, whose
+    // `eval_*_surface` arms route the post-coercion math through the generic
+    // `unary_numeric::execute(spec, …)` executor. The former
+    // `eval_shared_unary_numeric_calc_dispatch` shim is deleted.
+    //
+    // W105 oxf-y2uw.12.1: likewise the binary-arithmetic operator family (MOD, OP_ADD,
+    // OP_SUBTRACT, OP_MULTIPLY, OP_DIVIDE, OP_POWER / POWER) no longer has a
+    // calc-dispatch interception. Every member is served by exactly one path — the
+    // by-index generated table, whose spec-driven arms route the post-coercion math
+    // through the generic `binary_numeric::execute(spec, …)` 2-arg executor. The former
+    // `eval_binary_arithmetic_calc_dispatch` shim is deleted.
+    //
+    // W105 oxf-y2uw.12.3: the invoker-consuming (lambda-helper) family
+    // (MAP/REDUCE/SCAN/BYROW/BYCOL/MAKEARRAY/GROUPBY/PIVOTBY) is routed ABOVE via the
+    // spec-derived `function_id_requires_invoker` gate (single-sourced from
+    // `callable_argument_specs`); the per-id handler binding lives once in
+    // `eval_invoker_consuming_surface`. The former eight hand-coded `FUNC_ID_* =>` match arms
+    // (a second copy of the consumes-callable set) are retired.
+    if let Some(result) = eval_date_time_calc_dispatch(dispatch_key.function_id, args, resolver) {
+        return result;
+    }
+    if let Some(result) = eval_provider_bound_calc_dispatch(
+        dispatch_key.function_id,
+        args,
+        resolver,
+        now_serial,
+        host_info,
+    ) {
+        return result;
     }
 
     let dispatch_args = generated_table_args_from_calc_values(args);
@@ -8140,6 +8168,61 @@ mod tests {
             eval_test_surface_value("FUNC.DROP", &[src, number_arg(1.0), number_arg(1.0)]).unwrap(),
             array_arg(vec![vec![number_arg(5.0), number_arg(6.0)]]),
             "DROP(src,1,1) scalar counts unchanged"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.3: the `requires-invoker` membership set is SINGLE-SOURCED. The spec
+    /// derives it from `callable_argument_specs` (via `function_id_requires_invoker`); the dispatch
+    /// binds the per-id handler in `eval_invoker_consuming_surface`. This pins, over the WHOLE
+    /// catalog, that the two sets are identical — neither side can carry an id the other lacks
+    /// (the exact drift the eight retired hand-coded `FUNC_ID_* =>` arms used to risk).
+    #[test]
+    fn requires_invoker_set_matches_lambda_helper_dispatch_arms() {
+        let rejecting = RejectingCallableInvoker;
+        for meta in crate::xll_export_specs::function_catalog() {
+            let spec_requires =
+                crate::function_call::function_id_requires_invoker(meta.function_id);
+            // `eval_invoker_consuming_surface` returns `Some` IFF the id is bound to an
+            // invoker-consuming handler. Probe with empty args + a rejecting invoker — we only
+            // observe whether the id is ROUTED (Some/None), never the handler's value/error.
+            let dispatch_routes = eval_invoker_consuming_surface(
+                meta.function_id,
+                &[],
+                &NoReferenceSystemProvider,
+                &rejecting,
+            )
+            .is_some();
+            assert_eq!(
+                spec_requires, dispatch_routes,
+                "{}: requires-invoker (spec-derived from callable_argument_specs = {spec_requires}) \
+                 and the lambda-helper dispatch binding ({dispatch_routes}) disagree — the \
+                 consumes-callable set has a second, drifting source",
+                meta.function_id
+            );
+        }
+
+        // The set is exactly the eight documented lambda-helper ids (a concrete anchor so a future
+        // catalog edit that grows/shrinks the set is reviewed deliberately).
+        let invoker_ids: Vec<&str> = crate::xll_export_specs::function_catalog()
+            .iter()
+            .map(|meta| meta.function_id)
+            .filter(|id| crate::function_call::function_id_requires_invoker(id))
+            .collect();
+        let mut sorted = invoker_ids.clone();
+        sorted.sort_unstable();
+        assert_eq!(
+            sorted,
+            vec![
+                FUNC_ID_BYCOL,
+                FUNC_ID_BYROW,
+                FUNC_ID_GROUPBY,
+                FUNC_ID_MAKEARRAY,
+                FUNC_ID_MAP,
+                FUNC_ID_PIVOTBY,
+                FUNC_ID_REDUCE,
+                FUNC_ID_SCAN,
+            ],
+            "the requires-invoker (lambda-helper) family must be exactly these eight ids"
         );
     }
 }
