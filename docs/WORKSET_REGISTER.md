@@ -1170,7 +1170,7 @@ Entry conditions:
 
 ## W105 Declarative Function Spec And Generic Executor Refactor
 
-Status: `planned`
+Status: `landed_pending_epic_close`
 
 Execution target:
 operationalize `ODR-FN-004` by growing `FunctionMeta` into a declarative `FunctionSpec`
@@ -1193,3 +1193,24 @@ Entry conditions:
 2. The `real_result_policy` prototype (`4d90246`) is landed as the pattern to generalize.
 3. The cross-surface equivalence law (scalar ≡ array-lift ≡ xll-scalar) is in place before
    any path is collapsed, so each migration step is provably behaviour-preserving.
+
+Notes:
+1. All thirteen child lanes (`.1`–`.13`, incl. the `.12.1`–`.12.5` rollout tranches) are closed
+   and green; the epic `oxf-y2uw` is close-eligible (a supervisor performs the final epic close).
+   The W105 doc Doctrine Axes are flipped to `scope_complete` / `target_complete` / `integrated`
+   with `open_lanes: []`, and a dated 2026-06-22 closing checkpoint records the evidence
+   (commit refs + test names + the no-`eval_*_calc_dispatch` closure grep).
+2. Closure is W105-D2-shaped: interpreter≡generated is proven for the numeric kernel families with
+   a re-derivable `f64→f64` slice (unary `.9`, binary `.12.1`); handler-bound families
+   (reference/provider/reshape/lambda) prove routing/precondition equivalence + that no
+   calc-dispatch copy remains, not a twice-derived algorithm. No path is left hand-maintained
+   outside the spec.
+3. Suite at closure: `oxfunc_core` lib 1470 passed / 0 failed / 3 ignored; build zero-warning,
+   `cargo fmt --check` clean. The only red test is the pre-existing HO-FN-018 `@`-parser blocker
+   (`oxfml_seam_integration::w050_seam_scenarios_pass_from_oxfunc_side`), unrelated to this lane.
+4. Truth surfaces reconciled in the W105 closing checkpoint: the live catalog is **525 rows** (not
+   528 — the `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` §4.1 figure was stale and is
+   corrected); the witness→seed generator is not committed code (`.5` finding); the spec-table
+   export was documented in `OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md` (`.11`); two
+   oracle-confirmed Excel fixes landed (DROP/TAKE `.12.2`, INDEX `.12.5`) with residuals `oxf-wkwj`
+   and `oxf-7m1k` tracked outside W105.

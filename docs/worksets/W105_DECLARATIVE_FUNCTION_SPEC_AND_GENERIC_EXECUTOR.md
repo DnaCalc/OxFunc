@@ -1,6 +1,6 @@
 # W105 Declarative Function Spec And Generic Executor Refactor
 
-Status: `planned`
+Status: `landed_pending_epic_close`
 
 ## Purpose
 
@@ -73,7 +73,89 @@ generalizes that pattern to the remaining behavioural axes and collapses the par
    `parameter_help_description` joins help→signature parameters by `index` **and**
    `name.eq_ignore_ascii_case`, so a name/index mismatch makes the authored help text **silently drop
    to `None`** with no error — the concrete drift W105-D1 closes. Separately, 229 of 528 rows still
-   carry placeholder `FUNCNAME(...)` signatures (W106 fill).
+   carry placeholder `FUNCNAME(...)` signatures (W106 fill). *(The "528" total here is the
+   then-current contract-doc figure; the live registry was later measured at 525 — see the
+   2026-06-22 closure entry.)*
+
+2026-06-22 — **W105 closure (child `.13`).** Every child lane landed and is green; the epic is
+close-eligible (a supervisor performs the final epic close). Landed state, with evidence:
+
+1. **Lanes landed (commit refs).** `.1` cross-surface equivalence harness (`079c8ce`); `.2`
+   catalog conformance + monotonic placeholder ratchet (`9f7963f`); `.3` unary-numeric pilot
+   executor (`2b16d3d`); `.4` growth discipline + arg-prep axis (`f3eb98a`); `.5` signature-seed
+   shrink to single spine (`95261b9`); `.6` lift/broadcast axis (`b9785fc` + `fcdc766`); `.7`
+   error-algebra axis (`ae3f979`); `.8` precision/rounding axis (`edf7c47`); `.9` spec-driven
+   by-index generator + interpreter≡generated test (`a215a06`); `.10` `function_spec!` macro
+   (`b03e99d`); `.11` spec-table export, additive + versioned (`7523b7b`). Decision **W105-D2**
+   (`e526f67`) refined the model and rescoped `.12` into tranches `.12.1` operators→2-arg kernel
+   (`e5ec15e`), `.12.2` dynamic-array-reshape→spec-derived routing (`2197a5c`), `.12.3` invocable
+   axis (`a7f32a7`), `.12.4` provider/date-time host-capability gate (`83496fa`), `.12.5`
+   reference-sensitive resolver gate + last calc-dispatch (INDEX) collapse (`fd052de`).
+
+2. **The drift is now structurally caught by tests (test names).**
+   - Cross-surface equivalence harness (`tests/unary_numeric_equivalence_law.rs`):
+     `law1_kernel_publication_equivalence_scalar_array_lift_xll`,
+     `law2_coercion_and_lift_equivalence_scalar_vs_array_lift`,
+     `law2_broadcast_equivalence_array_matches_scalar_elementwise`,
+     `law3_overflowing_kernel_declares_non_pass_policy`.
+   - Catalog conformance + ratchet (`tests/catalog_conformance.rs`):
+     `catalog_conformance_and_placeholder_ratchet` — one generic data-over-the-table check over
+     the live registry.
+   - Interpreter≡generated / drift-check
+     (`src/functions/surface_dispatch_unary_numeric_spec_generator.rs`):
+     `interpreter_equals_generated_dispatch_for_every_migrated_id` (unary, `.9`) and
+     `binary_interpreter_equals_generated_dispatch_for_every_migrated_id` (binary, `.12.1`).
+   - Meta golden (`tests/function_meta_golden.rs`):
+     `function_spec_metas_are_bit_equal_to_pre_macro_golden` — all 525 metas bit-equal across the
+     `function_spec!` macro migration (`.10`).
+   - Per-tranche routing / conformance:
+     `former_calc_dispatch_ids_all_route_to_a_real_result` and
+     `former_calc_dispatch_binary_ids_all_route_to_a_real_result` (routing, `tests/`);
+     `requires_invoker_set_matches_lambda_helper_dispatch_arms` and
+     `requires_invoker_is_derived_from_callable_argument_specs` (invoker, `.12.3`);
+     `host_bound_dispatch_arms_have_host_bound_surface_fec_profile` (host-capability precondition,
+     `.12.4`);
+     `reference_resolution_capability_gate_is_driven_by_declared_arg_preparation_profile`
+     (reference-sensitive resolver gate, `.12.5`);
+     `invocable_passthrough_is_populated_for_selectors` (`.12.3`).
+
+3. **Closure grep.** `grep -rn "fn eval_.*_calc_dispatch"` over the crate returns **zero** matches:
+   no `eval_*_calc_dispatch` routing function remains crate-wide (the parallel chains collapsed).
+   The only surviving textual occurrences are comments and test docstrings that name the *deleted*
+   shims as historical context.
+
+4. **Suite green.** `cargo build -p oxfunc_core` (zero warnings) + `cargo fmt --check` clean; the
+   `oxfunc_core` lib suite is **1470 passed / 0 failed / 3 ignored**. The single red integration
+   test is `oxfml_seam_integration::w050_seam_scenarios_pass_from_oxfunc_side` — the pre-existing
+   **HO-FN-018** `@`-parser blocker, unrelated to this lane (shown to fail identically on the clean
+   tree).
+
+5. **Closure framing (W105-D2 — not over-claimed).** Interpreter≡generated holds for the **numeric
+   families** that have a re-derivable `f64→f64` kernel (unary `.9`, binary `.12.1`). The
+   **handler-bound** families (reference/provider/reshape/lambda) are `CalcValue(s)→CalcValue(s)`
+   handlers, not `f64` kernels: there they prove **routing/precondition equivalence** + that **no
+   calc-dispatch copy remains**, *not* a twice-derived algorithm. The original `.13` bead text's
+   "interpreter-equals-generated for ALL ids" predates W105-D2 and is read in this W105-D2 sense.
+
+6. **Truth-surface reconciliation (honest findings, recorded not papered over).**
+   - **Live catalog is 525 rows, not 528.** Empirically measured via `catalog_conformance_rows()`
+     on the current tree (`LIVE_ROW_COUNT=525`); the conformance ledger partitions exactly
+     `525 = 229 placeholder + 22 operator_surface + 0 known_missing_help + 274 complete`. The
+     `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md` §4.1 "528" figure was stale and is corrected
+     to 525 (with the dependent "~284"/"~299" counts noted as derived from the corrected total).
+   - **The witness→seed generator is not committed code** (`.5` finding). The signature-seed file
+     header was made truthful, but the regeneration path from the W069/W071 semantic-witness
+     snapshot is absent from the tree; re-deriving the seed today is a manual step, not a runnable
+     generator.
+   - **The spec-table export was documented in
+     `OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md`** (`.11`), the doc that actually
+     documents `render_registry_metadata_csv` — not the bead-anchored
+     `OXFUNC_DOWNSTREAM_METADATA_AND_HELP_CONTRACT.md`.
+   - **Two oracle-confirmed Excel-conformance fixes landed** during the rollout: DROP/TAKE now lift
+     array counts per Excel (`.12.2`), and INDEX resolves a reference index arg per Excel (`.12.5`).
+     Residual `oxf-wkwj` (1×1-array lift) is tracked for later; `oxf-7m1k` (ASINH/SQRTPI overflow
+     drift surfaced by `.1`) is tracked separately. Both residuals are outside W105 scope and leave
+     no path hand-maintained outside the spec.
 
 ## Validation Evidence
 
@@ -259,7 +341,15 @@ collapsed — *not* "interpreter ≡ generated for literally every id" in the `f
 
 ## Doctrine Axes
 
-scope_completeness: `scope_partial`
-target_completeness: `target_partial`
-integration_completeness: `partial`
-open_lanes: `[cross_surface_equivalence_law, unary_numeric_pilot, functionspec_axis_widening, spec_driven_generators, function_spec_macro_and_export, catalog_unification_and_conformance_check]`
+scope_completeness: `scope_complete`
+target_completeness: `target_complete`
+integration_completeness: `integrated`
+open_lanes: `[]`
+
+All thirteen child lanes (`.1`–`.13`, including the `.12.1`–`.12.5` rollout tranches) are
+closed; every lane named above landed and is green. The axes read `complete` in the **W105-D2**
+sense (see the Closing Checkpoint): interpreter≡generated is proven for the numeric kernel
+families that have a re-derivable `f64→f64` slice, and the handler-bound families prove
+routing/precondition equivalence with no second hand-maintained calc-dispatch copy — not a
+twice-derived algorithm. Two oracle-confirmed residuals remain tracked outside W105 (`oxf-wkwj`,
+`oxf-7m1k`); neither is a W105 lane and neither leaves a path hand-maintained outside the spec.

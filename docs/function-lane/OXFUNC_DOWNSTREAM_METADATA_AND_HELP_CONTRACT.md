@@ -92,14 +92,24 @@ OxFunc-backed help and signature metadata directly via
 earlier claim "No OxFunc-backed help or signature payload retrieval is frozen
 yet" is therefore stale.
 
-IMPORTANT — placeholder coverage: 229 of 528 registry rows carry a
+IMPORTANT — placeholder coverage: 229 of 525 registry rows carry a
 placeholder `signature_display` of the form `"FUNCNAME(...)"` with an empty
 parameter list and `trailing_repeats: true`. Consumers must not render
 `signature_display` as if it were a real signature for those rows. A
 placeholder row can currently be identified by `signature_display` matching
 `canonical_surface_name + "(..."`. The placeholder count is monotonically
-decreasing as the W071/W106 fill work proceeds; a guard test tracking the
-count is planned per docs-help rec 2.
+decreasing as the W071/W106 fill work proceeds; the guard test that tracks the
+count now exists — `tests/catalog_conformance.rs::catalog_conformance_and_placeholder_ratchet`
+(W105 `oxf-y2uw.2`), which pins the placeholder backlog to a monotonic ratchet.
+
+Row-count reconciliation (W105 `oxf-y2uw.13`, 2026-06-22): the live registry
+catalog is **525 rows**, measured directly from `catalog_conformance_rows()`. An
+earlier revision of this section quoted **528**; that figure was stale and has been
+corrected throughout this document. The conformance ledger partitions the 525 rows
+exactly as `525 = 229 placeholder + 22 operator-surface + 0 known-missing-help +
+274 complete`. The 229 placeholder count is unchanged by the correction; the
+approximate per-row availability figures below (`~284`, `~299` in linked notes) are
+soft estimates relative to the corrected 525 total.
 
 Current direction (unchanged from `HANDOFF-OXFUNC-004`):
 1. help and signature payloads are sourced from the OxFunc-owned runtime
@@ -150,7 +160,7 @@ FunctionHelpPayload:
 ArgumentHelpPayload:
   surface_stable_id: string          # parent function
   arg_index: integer                 # 0-based
-  arg_name: string | null            # available for ~284 of 528 rows; null for the 229 placeholder rows
+  arg_name: string | null            # available for ~284 of 525 rows; null for the 229 placeholder rows
   arg_description: string | null     # available for ~10 fully-curated rows only; null for all others
   arg_required: boolean | null       # derivable from arity_min vs index
   arg_type_hint: string | null       # not in the runtime registry shape; exists in V2 witness artifacts only
@@ -166,7 +176,7 @@ SignatureHelpMetadata:
   arg_preparation_profile: string    # from snapshot, usable
   special_interface_kind: string     # from snapshot, usable
   admission_interface_kind: string   # from snapshot, usable
-  arg_names: [string] | null         # available for ~284 of 528 rows; null for the 229 placeholder rows
+  arg_names: [string] | null         # available for ~284 of 525 rows; null for the 229 placeholder rows
   signature_display: string | null   # available for 100% of rows, BUT 229 rows are placeholder "FUNCNAME(...)" strings — see the section 4.1 placeholder warning before rendering
 ```
 
@@ -174,7 +184,7 @@ SignatureHelpMetadata:
 Available now from the runtime registry (`oxfunc_core::registry::builtin_registry()`):
 1. identity, arity, category, behavioral classification, and seam-category fields.
 2. `short_description` for ~97% of function rows.
-3. `display_signature()` for all 528 rows — with the placeholder caveat in 4.1.
+3. `display_signature()` for all 525 rows — with the placeholder caveat in 4.1.
 4. per-parameter `name` for ~284 rows; `short_description` for ~10 rows.
 5. enough to populate completion lists, basic tooltips, and surface-labeling UI.
 
