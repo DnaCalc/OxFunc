@@ -1,5 +1,6 @@
 use crate::coercion::CoercionError;
 use crate::function::ArgPreparationProfile;
+use crate::function::FecDependencyProfile;
 use crate::function::LiftBroadcastProfile;
 use crate::functions::abs::abs_kernel;
 use crate::functions::acot::acot_kernel;
@@ -125,12 +126,10 @@ use crate::functions::database_family::{
     eval_dstdevp_surface, eval_dsum_surface, eval_dvar_surface, eval_dvarp_surface,
     map_database_error_to_ws,
 };
-use crate::functions::date_fn::{eval_date_calc_surface, eval_date_surface, map_date_error_to_ws};
+use crate::functions::date_fn::{eval_date_surface, map_date_error_to_ws};
 use crate::functions::date_parts_family::{
-    eval_day_calc_surface, eval_day_surface, eval_days_calc_surface, eval_days_surface,
-    eval_hour_calc_surface, eval_hour_surface, eval_minute_calc_surface, eval_minute_surface,
-    eval_month_calc_surface, eval_month_surface, eval_second_calc_surface, eval_second_surface,
-    eval_time_calc_surface, eval_time_surface, eval_year_calc_surface, eval_year_surface,
+    eval_day_surface, eval_days_surface, eval_hour_surface, eval_minute_surface,
+    eval_month_surface, eval_second_surface, eval_time_surface, eval_year_surface,
     map_date_parts_error_to_ws,
 };
 use crate::functions::date_value_family::{
@@ -1105,32 +1104,52 @@ fn eval_lookup_reference_adjacent_calc_dispatch(
     Some(eval_index_calc_surface(args).map_err(|error| map_index_error_to_ws(&error)))
 }
 
-fn eval_date_time_calc_dispatch(
-    function_id: &str,
-    args: &[CalcValue],
-    resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Option<Result<CalcValue, WorksheetErrorCode>> {
-    let result = match function_id {
-        FUNC_ID_DATE => {
-            return Some(
-                eval_date_calc_surface(args, resolver).map_err(|e| map_date_error_to_ws(&e)),
-            );
-        }
-        FUNC_ID_DAY => eval_day_calc_surface(args, resolver),
-        FUNC_ID_DAYS => eval_days_calc_surface(args, resolver),
-        FUNC_ID_HOUR => eval_hour_calc_surface(args, resolver),
-        FUNC_ID_MINUTE => eval_minute_calc_surface(args, resolver),
-        FUNC_ID_MONTH => eval_month_calc_surface(args, resolver),
-        FUNC_ID_SECOND => eval_second_calc_surface(args, resolver),
-        FUNC_ID_TIME => eval_time_calc_surface(args, resolver),
-        FUNC_ID_YEAR => eval_year_calc_surface(args, resolver),
-        _ => return None,
-    };
-
-    Some(result.map_err(|error| map_date_parts_error_to_ws(&error)))
+/// Whether a function's declared `surface_fec_dependency_profile` says its surface pipeline needs
+/// function-execution-context / host capability beyond the reference resolver (a time serial, a
+/// random/external/host provider, or locale context). DERIVED from the single declared
+/// [`FecDependencyProfile`] axis on `FunctionMeta`; the `None`/`RefOnly` profiles are the
+/// resolver-only (date-part, pure) surfaces that never reach a provider-bound handler binding.
+///
+/// W105 oxf-y2uw.12.4: this is the spec-derived host-capability *precondition* that gates the
+/// provider/host-bound handler binding below — the analogue of the resolver
+/// `ReferenceSystemCapabilities` gate, single-sourced from the declared fact (W105-D2 two-kinds-of-
+/// fact: a host/plumbing fact, truth = our dispatch needs). It is a NECESSARY precondition for
+/// routing into [`eval_host_bound_surface`] (every bound id satisfies it, pinned by
+/// `host_bound_dispatch_arms_have_host_bound_surface_fec_profile`), NOT a new error: a function for
+/// which it holds but that has no provider-bound handler simply continues to the ordinary by-index
+/// path. Execution is unchanged.
+fn surface_fec_dependency_is_host_bound(profile: FecDependencyProfile) -> bool {
+    match profile {
+        // Resolver-only / pure surfaces — no host capability beyond the reference resolver.
+        FecDependencyProfile::None | FecDependencyProfile::RefOnly => false,
+        // Surfaces whose preparation/evaluation consumes function-execution-context or a host
+        // provider (caller context, time serial, random/external/host provider, locale).
+        FecDependencyProfile::CallerContext
+        | FecDependencyProfile::TimeProvider
+        | FecDependencyProfile::RandomProvider
+        | FecDependencyProfile::ExternalProvider
+        | FecDependencyProfile::LocaleProfile
+        | FecDependencyProfile::Composite => true,
+    }
 }
 
-fn eval_provider_bound_calc_dispatch(
+/// Per-id handler binding for the provider/host-bound family (NOW/TODAY/IMAGE/HYPERLINK). Returns
+/// `Some` iff `function_id` is bound to a provider/host-bound surface handler; `None` otherwise so
+/// the caller continues to the ordinary dispatch paths.
+///
+/// W105 oxf-y2uw.12.4: this is the per-function handler *binding* W105-D2 deliberately keeps (the
+/// internal `CalcValue(s) -> CalcValue(s)` handlers are not reified). Its members differ from their
+/// by-index generated arm and so cannot be served by that path bit-exactly:
+///   * NOW/TODAY default a missing time serial to `0.0` (`now_serial.unwrap_or(0.0)`) — the
+///     by-index arm instead errors `#VALUE!` on a missing provider; the `unwrap_or(0.0)` fallback
+///     is PRESERVED here (no new host-error precondition).
+///   * IMAGE/HYPERLINK serve the rich-value (`_calc_surface_rich`) overlay — the by-index arm
+///     serves the plain (non-rich) value.
+/// It is NOT a second "which functions are host-bound" list — that membership is GATED by the
+/// spec-derived [`surface_fec_dependency_is_host_bound`] precondition (single-sourced from the
+/// declared `surface_fec_dependency_profile`), and the bound set is pinned by
+/// `host_bound_dispatch_arms_have_host_bound_surface_fec_profile`.
+fn eval_host_bound_surface(
     function_id: &str,
     args: &[CalcValue],
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -1285,17 +1304,39 @@ pub fn eval_surface_value_call_with_dispatch_key(
     // `callable_argument_specs`); the per-id handler binding lives once in
     // `eval_invoker_consuming_surface`. The former eight hand-coded `FUNC_ID_* =>` match arms
     // (a second copy of the consumes-callable set) are retired.
-    if let Some(result) = eval_date_time_calc_dispatch(dispatch_key.function_id, args, resolver) {
-        return result;
-    }
-    if let Some(result) = eval_provider_bound_calc_dispatch(
+    //
+    // W105 oxf-y2uw.12.4: the date-time family (DATE, DAY, DAYS, HOUR, MINUTE, MONTH, SECOND,
+    // TIME, YEAR) no longer has a calc-dispatch interception. Each carries the resolver-only
+    // `surface_fec_dependency_profile: RefOnly` (no provider/host dependency), and its
+    // `eval_*_calc_surface` prep is bit-equivalent to the by-index `eval_*_surface` prep:
+    // `run_values_only_prepared` and `prepare_calc_values_only` + `prepared_from_calc_value` both
+    // resolve references then clone-map the prepared `CalcValue`s into the SAME `eval_*_prepared`
+    // core (proven by `date_time_calc_and_by_index_prep_are_bit_equivalent`), with the SAME
+    // per-id error mapper. None of them declares a `lift_broadcast_profile` (all
+    // `SurfaceNative`), so the post-table `try_observed_scalar_array_lift` is a no-op for them and
+    // the by-index path is bit-identical to the deleted shim. The former
+    // `eval_date_time_calc_dispatch` shim is deleted; every member is served by exactly one path.
+    //
+    // W105 oxf-y2uw.12.4: the provider/host-bound family (NOW, TODAY, IMAGE, HYPERLINK) is routed
+    // via the spec-derived `surface_fec_dependency_is_host_bound` host-capability PRECONDITION
+    // (single-sourced from the declared `surface_fec_dependency_profile`) — the analogue of the
+    // resolver capability gate. The per-id handler binding lives once in `eval_host_bound_surface`
+    // and is NOT collapsible onto the by-index arm bit-exactly: NOW/TODAY keep the
+    // `now_serial.unwrap_or(0.0)` fallback (the by-index arm errors `#VALUE!` on a missing
+    // provider), and IMAGE/HYPERLINK serve the rich-value overlay (the by-index arm is non-rich).
+    // The former `eval_provider_bound_calc_dispatch` arm-list is retired behind the spec gate.
+    if surface_fec_dependency_is_host_bound(surface_fec_dependency_profile_for_id(
         dispatch_key.function_id,
-        args,
-        resolver,
-        now_serial,
-        host_info,
-    ) {
-        return result;
+    )) {
+        if let Some(result) = eval_host_bound_surface(
+            dispatch_key.function_id,
+            args,
+            resolver,
+            now_serial,
+            host_info,
+        ) {
+            return result;
+        }
     }
 
     let dispatch_args = generated_table_args_from_calc_values(args);
@@ -2543,6 +2584,17 @@ fn lift_broadcast_profile_for_id(function_id: &str) -> LiftBroadcastProfile {
     crate::xll_export_specs::lookup_function_meta_by_id(function_id)
         .map(|meta| meta.lift_broadcast_profile)
         .unwrap_or(crate::function::FunctionMeta::DEFAULT_LIFT_BROADCAST_PROFILE)
+}
+
+/// The declared surface-pipeline FEC dependency profile for a function id (W105 oxf-y2uw.12.4),
+/// looked up FROM the function's own [`FunctionMeta`] (`meta.surface_fec_dependency_profile`). The
+/// meta literal is the SINGLE declared home of every function's provider/host dependency fact — no
+/// independent id-keyed copy a dispatch site could contradict. Unknown ids (not in the catalog)
+/// fall back to the resolver-only `RefOnly` profile so they are never treated as host-bound.
+fn surface_fec_dependency_profile_for_id(function_id: &str) -> FecDependencyProfile {
+    crate::xll_export_specs::lookup_function_meta_by_id(function_id)
+        .map(|meta| meta.surface_fec_dependency_profile)
+        .unwrap_or(FecDependencyProfile::RefOnly)
 }
 
 /// The by-index scalar-array-lift argument positions for a function id, DERIVED from the single
@@ -8223,6 +8275,184 @@ mod tests {
                 FUNC_ID_SCAN,
             ],
             "the requires-invoker (lambda-helper) family must be exactly these eight ids"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.4: PROOF the date-time family collapse (.12.2 style) is bit-exact. The
+    /// deleted `eval_date_time_calc_dispatch` shim served each id via `eval_*_calc_surface`; the
+    /// by-index path now serves it via `eval_*_surface`. This evaluates BOTH helpers over a battery
+    /// of inputs (scalar number / text / logical / empty / missing / error, and an array to drive
+    /// the in-`prepared` lift) and asserts the produced `CalcValue` (mapped through the SAME per-id
+    /// worksheet-error mapper) is identical — so removing the shim and serving via the by-index arm
+    /// changes nothing. (DATE/DAYS/TIME take 2-3 args; the per-arg battery is applied to arg 0 with
+    /// the remaining args fixed.)
+    #[test]
+    fn date_time_calc_and_by_index_prep_are_bit_equivalent() {
+        use crate::functions::date_fn::{eval_date_calc_surface, map_date_error_to_ws};
+        use crate::functions::date_parts_family::{
+            eval_day_calc_surface, eval_days_calc_surface, eval_hour_calc_surface,
+            eval_minute_calc_surface, eval_month_calc_surface, eval_second_calc_surface,
+            eval_time_calc_surface, eval_year_calc_surface,
+        };
+
+        let r = &NoReferenceSystemProvider;
+        let battery = || -> Vec<CalcValue> {
+            vec![
+                number_arg(44197.625),
+                number_arg(-1.0),
+                text_arg("44197"),
+                text_arg("not-a-number"),
+                logical_arg(true),
+                logical_arg(false),
+                CalcValue::empty(),
+                CalcValue::missing(),
+                CalcValue::error(WorksheetErrorCode::Div0),
+                array_arg(vec![
+                    vec![number_arg(44197.0), number_arg(60.5)],
+                    vec![text_arg("0"), logical_arg(true)],
+                ]),
+            ]
+        };
+
+        // (id, calc-dispatch handler mapped to ws, by-index `eval_*_surface` handler mapped to ws,
+        //  trailing fixed args appended after the battery arg). Both columns map the SAME error
+        // type through the SAME per-id mapper, exactly as the deleted shim and the generated arm do.
+        type WsResult = Result<CalcValue, WorksheetErrorCode>;
+        #[allow(clippy::type_complexity)]
+        let cases: Vec<(
+            &str,
+            Box<dyn Fn(&[CalcValue]) -> WsResult>,
+            Box<dyn Fn(&[CalcValue]) -> WsResult>,
+            Vec<CalcValue>,
+        )> = vec![
+            (
+                FUNC_ID_DATE,
+                Box::new(|a| eval_date_calc_surface(a, r).map_err(|e| map_date_error_to_ws(&e))),
+                Box::new(|a| eval_date_surface(a, r).map_err(|e| map_date_error_to_ws(&e))),
+                vec![number_arg(6.0), number_arg(15.0)],
+            ),
+            (
+                FUNC_ID_DAY,
+                Box::new(|a| {
+                    eval_day_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_day_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_DAYS,
+                Box::new(|a| {
+                    eval_days_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_days_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![number_arg(44000.0)],
+            ),
+            (
+                FUNC_ID_HOUR,
+                Box::new(|a| {
+                    eval_hour_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_hour_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_MINUTE,
+                Box::new(|a| {
+                    eval_minute_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_minute_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_MONTH,
+                Box::new(|a| {
+                    eval_month_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_month_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_SECOND,
+                Box::new(|a| {
+                    eval_second_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_second_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+            (
+                FUNC_ID_TIME,
+                Box::new(|a| {
+                    eval_time_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_time_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![number_arg(30.0), number_arg(15.0)],
+            ),
+            (
+                FUNC_ID_YEAR,
+                Box::new(|a| {
+                    eval_year_calc_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))
+                }),
+                Box::new(|a| eval_year_surface(a, r).map_err(|e| map_date_parts_error_to_ws(&e))),
+                vec![],
+            ),
+        ];
+
+        for (id, calc, by_index, trailing) in &cases {
+            for first in battery() {
+                let mut args = vec![first];
+                args.extend(trailing.iter().cloned());
+                let calc_result = calc(&args);
+                let by_index_result = by_index(&args);
+                assert_eq!(
+                    calc_result, by_index_result,
+                    "{id}: calc-dispatch prep and by-index prep diverge on {args:?} — the \
+                     date-time collapse is NOT bit-exact"
+                );
+            }
+        }
+    }
+
+    /// W105 oxf-y2uw.12.4: the provider/host-bound family (NOW/TODAY/IMAGE/HYPERLINK) routing is
+    /// gated by the spec-derived host-capability PRECONDITION
+    /// `surface_fec_dependency_is_host_bound`, derived from the single declared
+    /// `surface_fec_dependency_profile`. This pins, over the WHOLE catalog, that (a) every id the
+    /// `eval_host_bound_surface` handler binds satisfies that precondition — so the gate is a SOUND
+    /// (necessary) derivation FROM the declared fact, never a second free-standing id list — and
+    /// (b) the bound set is exactly the four documented provider/host-bound ids (a concrete anchor
+    /// so a future catalog edit that grows/shrinks the set is reviewed deliberately).
+    #[test]
+    fn host_bound_dispatch_arms_have_host_bound_surface_fec_profile() {
+        // `eval_host_bound_surface` returns `Some` IFF the id is bound to a provider/host-bound
+        // handler. Probe with empty args + no providers — we only observe whether the id is ROUTED
+        // (Some/None), never the handler's value/error.
+        let routes = |id: &str| {
+            eval_host_bound_surface(id, &[], &NoReferenceSystemProvider, None, None).is_some()
+        };
+
+        for meta in crate::xll_export_specs::function_catalog() {
+            if routes(meta.function_id) {
+                assert!(
+                    surface_fec_dependency_is_host_bound(meta.surface_fec_dependency_profile),
+                    "{}: bound to the provider/host handler but its declared \
+                     surface_fec_dependency_profile ({:?}) is not host-bound — the host-capability \
+                     precondition gate would not route it (drift between the binding and the spec)",
+                    meta.function_id,
+                    meta.surface_fec_dependency_profile
+                );
+            }
+        }
+
+        let host_bound_ids: Vec<&str> = crate::xll_export_specs::function_catalog()
+            .iter()
+            .map(|meta| meta.function_id)
+            .filter(|id| routes(id))
+            .collect();
+        let mut sorted = host_bound_ids.clone();
+        sorted.sort_unstable();
+        assert_eq!(
+            sorted,
+            vec![FUNC_ID_HYPERLINK, FUNC_ID_IMAGE, FUNC_ID_NOW, FUNC_ID_TODAY,],
+            "the provider/host-bound family must be exactly these four ids"
         );
     }
 }
