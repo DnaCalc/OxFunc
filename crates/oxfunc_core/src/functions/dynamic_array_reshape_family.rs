@@ -2195,23 +2195,30 @@ mod tests {
     // ---------------------------------------------------------------------
     // W105 oxf-y2uw.12.2 prep-helper equivalence probe.
     //
-    // The .12.2 bead wants CHOOSECOLS / CHOOSEROWS / DROP / TAKE collapsed from the
-    // bespoke `eval_dynamic_array_reshape_calc_dispatch` (which serves them via
+    // The .12.2 bead collapsed CHOOSECOLS / CHOOSEROWS / DROP / TAKE from the bespoke
+    // `eval_dynamic_array_reshape_calc_dispatch` (which served them via
     // `eval_*_calc_surface`) down to the single by-index arm (which serves them via
-    // `eval_*_surface`). For the collapse to be behaviour-preserving the two prep
-    // helpers must agree bit-for-bit. These tests are the local proof at the prep
-    // boundary — the dynamic-array-reshape analogue of `.12.1`'s
-    // `two_binary_prep_helpers_are_equivalent_for_the_family`.
+    // `eval_*_surface` + the declared `lift_at(&[1, 2])` scalar-array-lift). These
+    // tests are the local proof at the prep boundary — the dynamic-array-reshape
+    // analogue of `.12.1`'s `two_binary_prep_helpers_are_equivalent_for_the_family`.
     //
-    // FINDING (see test below): CHOOSECOLS / CHOOSEROWS agree on every input. DROP /
-    // TAKE agree on the direct (scalar / text / logical / error / blank / array-source)
-    // surface, BUT they are NOT equivalent through the *public dispatch* on an
-    // array-valued count argument, because DROP/TAKE carry `lift_at(&[1, 2])` and the
-    // by-index path is followed by `try_observed_scalar_array_lift` whereas the
-    // calc-dispatch path returns early and never reaches the lift. The bare prep
-    // helpers do agree (both reject the array count with `#VALUE!`); the divergence is
-    // introduced downstream by the lift wrapper that becomes reachable only once the
-    // calc-dispatch interception is removed.
+    // CHOOSECOLS / CHOOSEROWS: the two prep helpers agree bit-for-bit on every input
+    // (no lift mask; array selectors are flattened by both), so the collapse is purely
+    // bit-exact for them.
+    //
+    // DROP / TAKE: the two BARE prep helpers also agree on every input — including an
+    // array-valued count, where BOTH reject it with `#VALUE!` (neither bare helper lifts;
+    // `parse_integer_calc` / `parse_integer` coerce an array count to `#VALUE!`). The
+    // collapse is therefore safe at the prep boundary. What deliberately CHANGES is the
+    // *public dispatch*: DROP/TAKE carry `lift_at(&[1, 2])`, and the by-index path is
+    // followed by `try_observed_scalar_array_lift`. The deleted calc-dispatch shim
+    // returned `#VALUE!` early and never reached that lift; with it gone, an array-valued
+    // count now lifts (implicit-intersection broadcast) — which is what live Excel 16.0
+    // build 20026 does, and what EXPAND/TOROW (same `lift_at(&[1, 2])` mechanism) already
+    // produced. The previous "calc-dispatch `#VALUE!` is Excel-correct" framing was a
+    // wrong premise (corrected by the live-Excel oracle); the lifted array is the correct
+    // result, and the public-dispatch assertions for it live in `surface_dispatch.rs`
+    // (`drop_take_array_count_lifts_through_public_dispatch_like_expand`).
 
     fn rmaperr(
         r: Result<CalcValue, DynamicArrayReshapeEvalError>,
@@ -2267,7 +2274,7 @@ mod tests {
     }
 
     #[test]
-    fn drop_take_bare_prep_helpers_agree_but_public_dispatch_diverges_on_array_count() {
+    fn drop_take_bare_prep_helpers_agree_on_array_count_lift_is_applied_downstream() {
         // The bare prep helpers agree for every input (both reject array counts with
         // #VALUE!): the collapse is safe at the prep boundary.
         for args in reshape_equivalence_inputs() {
@@ -2282,28 +2289,32 @@ mod tests {
                 "TAKE bare prep-helper divergence on {args:?}"
             );
         }
-        // But on an array-valued count the bare helpers BOTH yield #VALUE!, which is
-        // the Excel-correct result and the result the calc-dispatch path returns. The
-        // by-index path adds `try_observed_scalar_array_lift` (lift_at [1, 2]) on top,
-        // so removing the calc-dispatch interception would turn that #VALUE! into a
-        // spilled array — a behaviour change. This test pins that the bare-helper
-        // result is #VALUE!, documenting why the calc-dispatch deletion must NOT be
-        // applied without also resolving the (latent, unreachable) DROP/TAKE lift mask.
-        let arr_count = vec![array(vec![vec![num(1.0), num(2.0)]]), num(1.0)];
+        // On an array-valued count BOTH bare helpers yield #VALUE! — neither one lifts;
+        // each coerces an array count to a scalar and fails. That agreement is exactly
+        // why the calc-dispatch collapse is behaviour-preserving at the prep boundary.
+        //
+        // The lift is NOT a bare-helper concern: it is applied DOWNSTREAM by the public
+        // by-index path via `try_observed_scalar_array_lift` (DROP/TAKE carry
+        // `lift_at(&[1, 2])`). With the calc-dispatch shim deleted that wrapper is now
+        // reachable, so the public dispatch turns this #VALUE! into the implicit-
+        // intersection lifted array — the Excel-correct result (live Excel 16.0 build
+        // 20026), matching EXPAND/TOROW which ride the identical mechanism. The public-
+        // dispatch lift behaviour is asserted in `surface_dispatch.rs`
+        // (`drop_take_array_count_lifts_through_public_dispatch_like_expand`); here we
+        // pin only the bare-helper #VALUE! that the lift wrapper sits on top of.
         let drop_arr = vec![
             array(vec![vec![num(1.0), num(2.0), num(3.0)]]),
             array(vec![vec![num(1.0)], vec![num(2.0)]]),
         ];
-        let _ = arr_count;
         assert_eq!(
             rmaperr(eval_drop_calc_surface(&drop_arr, &NoResolver)),
             Err(WorksheetErrorCode::Value),
-            "calc-dispatch DROP on array count must be #VALUE!"
+            "bare calc-surface DROP on array count is #VALUE! (no lift at the prep boundary)"
         );
         assert_eq!(
             rmaperr(eval_drop_surface(&drop_arr, &NoResolver)),
             Err(WorksheetErrorCode::Value),
-            "by-index DROP bare helper on array count must be #VALUE! (lift is applied downstream, not here)"
+            "bare by-index DROP on array count is #VALUE! (lift is applied downstream by the public path, not here)"
         );
     }
 }

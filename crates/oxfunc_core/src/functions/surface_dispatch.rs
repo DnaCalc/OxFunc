@@ -168,12 +168,11 @@ use crate::functions::dollar_fraction_family::{
 use crate::functions::dynamic_array_reshape_family::{
     CHOOSECOLS_META, CHOOSEROWS_META, DROP_META, EXPAND_META, FILTER_META, SORT_META, SORTBY_META,
     TAKE_META, TOCOL_META, TOROW_META, TRANSPOSE_META, UNIQUE_META, VSTACK_META, WRAPCOLS_META,
-    WRAPROWS_META, eval_choosecols_calc_surface, eval_choosecols_surface,
-    eval_chooserows_calc_surface, eval_chooserows_surface, eval_drop_calc_surface,
-    eval_drop_surface, eval_expand_surface, eval_filter_surface, eval_sort_surface,
-    eval_sortby_surface, eval_take_calc_surface, eval_take_surface, eval_tocol_surface,
-    eval_torow_surface, eval_transpose_surface, eval_unique_surface, eval_vstack_surface,
-    eval_wrapcols_surface, eval_wraprows_surface, map_dynamic_array_reshape_error_to_ws,
+    WRAPROWS_META, eval_choosecols_surface, eval_chooserows_surface, eval_drop_surface,
+    eval_expand_surface, eval_filter_surface, eval_sort_surface, eval_sortby_surface,
+    eval_take_surface, eval_tocol_surface, eval_torow_surface, eval_transpose_surface,
+    eval_unique_surface, eval_vstack_surface, eval_wrapcols_surface, eval_wraprows_surface,
+    map_dynamic_array_reshape_error_to_ws,
 };
 use crate::functions::engineering_radix_family::{
     eval_bin2dec_surface, eval_bin2hex_surface, eval_bin2oct_surface, eval_dec2bin_surface,
@@ -1080,22 +1079,6 @@ pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatch
         })
 }
 
-fn eval_dynamic_array_reshape_calc_dispatch(
-    function_id: &str,
-    args: &[CalcValue],
-    resolver: &(impl ReferenceSystemProvider + ?Sized),
-) -> Option<Result<CalcValue, WorksheetErrorCode>> {
-    let result = match function_id {
-        FUNC_ID_CHOOSECOLS => eval_choosecols_calc_surface(args, resolver),
-        FUNC_ID_CHOOSEROWS => eval_chooserows_calc_surface(args, resolver),
-        FUNC_ID_DROP => eval_drop_calc_surface(args, resolver),
-        FUNC_ID_TAKE => eval_take_calc_surface(args, resolver),
-        _ => return None,
-    };
-
-    Some(result.map_err(|error| map_dynamic_array_reshape_error_to_ws(&error)))
-}
-
 fn eval_lookup_reference_adjacent_calc_dispatch(
     function_id: &str,
     args: &[CalcValue],
@@ -1245,11 +1228,18 @@ pub fn eval_surface_value_call_with_dispatch_key(
             {
                 return result;
             }
-            if let Some(result) =
-                eval_dynamic_array_reshape_calc_dispatch(dispatch_key.function_id, args, resolver)
-            {
-                return result;
-            }
+            // W105 oxf-y2uw.12.2: the dynamic-array-reshape family (CHOOSECOLS, CHOOSEROWS,
+            // DROP, TAKE) no longer has a calc-dispatch interception. Every member is served
+            // by exactly one path — the by-index generated table, whose `eval_*_surface` arm
+            // prepares the args and runs the reshape, with the declared `lift_at(&[1, 2])`
+            // scalar-array-lift applied to DROP/TAKE uniformly with EXPAND/TOROW via
+            // `try_observed_scalar_array_lift`. The former `eval_dynamic_array_reshape_calc_dispatch`
+            // shim returned `#VALUE!` early on an array-valued count arg, shadowing that lift;
+            // live Excel (16.0 build 20026) LIFTS the count args, so removing the shim moves
+            // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift residual that
+            // remains — DROP(src,`{1}`) → `1x1` instead of Excel's intersected cell — is the
+            // shared array-lifter defect tracked as oxf-wkwj, not introduced here.)
+            //
             // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
             // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
             // is served by exactly one path — the by-index generated table, whose
@@ -8023,5 +8013,133 @@ mod tests {
     fn eval_surface_q_nullary_number_pi_returns_constant() {
         let got = eval_surface_q_nullary_number(FUNC_ID_PI);
         assert_eq!(got, Ok(std::f64::consts::PI));
+    }
+
+    // W105 oxf-y2uw.12.2: with `eval_dynamic_array_reshape_calc_dispatch` deleted, DROP/TAKE
+    // are served by the single by-index arm + the declared `lift_at(&[1, 2])` scalar-array-lift
+    // (`try_observed_scalar_array_lift`), exactly like EXPAND/TOROW. These tests pin the
+    // resulting public-dispatch behaviour against live Excel 16.0 build 20026.
+    #[test]
+    fn drop_take_array_count_lifts_through_public_dispatch_like_expand() {
+        let src = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0), number_arg(3.0)],
+            vec![number_arg(4.0), number_arg(5.0), number_arg(6.0)],
+        ]);
+        let src22 = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0)],
+            vec![number_arg(3.0), number_arg(4.0)],
+        ]);
+
+        // Multi-element array count: DROP(src, {0;1}) -> 2x1=[1,4]; matches Excel exactly.
+        let col01 = array_arg(vec![vec![number_arg(0.0)], vec![number_arg(1.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src.clone(), col01]).unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(4.0)]]),
+            "DROP(src,{{0;1}}) must lift to Excel's 2x1=[1,4]"
+        );
+
+        // Multi-element array count: TAKE(src, {1;2}) -> 2x1=[1,1]; matches Excel exactly.
+        let col12 = array_arg(vec![vec![number_arg(1.0)], vec![number_arg(2.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), col12]).unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(1.0)]]),
+            "TAKE(src,{{1;2}}) must lift to Excel's 2x1=[1,1]"
+        );
+
+        // EXPAND uses the SAME lift mechanism; multi-element array count agrees with Excel and
+        // is the cross-check that DROP/TAKE now ride the identical `lift_at(&[1, 2])` path.
+        let col34 = array_arg(vec![vec![number_arg(3.0)], vec![number_arg(4.0)]]);
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.EXPAND",
+                &[src22.clone(), col34, number_arg(2.0), number_arg(0.0)],
+            )
+            .unwrap(),
+            array_arg(vec![vec![number_arg(1.0)], vec![number_arg(1.0)]]),
+            "EXPAND(src22,{{3;4}},2,0) lifts to Excel's 2x1=[1,1]"
+        );
+
+        // 1x1-array count: the shared array-lifter unwraps a 1x1 array to a scalar instead of
+        // lifting it (an intersected single cell). So DROP(src, {1}) reproduces the SCALAR-count
+        // DROP result (1x3=[4,5,6]) rather than Excel's intersected 1x1=[4]. This is the
+        // EXPAND/TOROW-style 1x1 residual tracked as oxf-wkwj (array-lifter defect, NOT this
+        // bead's spec): asserted explicitly here so the residual is documented, not hidden.
+        let one = array_arg(vec![vec![number_arg(1.0)]]);
+        let drop_one = eval_test_surface_value("FUNC.DROP", &[src.clone(), one]).unwrap();
+        assert_eq!(
+            drop_one,
+            eval_test_surface_value("FUNC.DROP", &[src.clone(), number_arg(1.0)]).unwrap(),
+            "oxf-wkwj: 1x1-array count {{1}} is unwrapped to scalar 1, so DROP(src,{{1}}) == DROP(src,1) \
+             (1x3=[4,5,6]); Excel lifts the 1x1 to an intersected 1x1=[4] — the shared array-lifter residual"
+        );
+        assert_eq!(
+            drop_one,
+            array_arg(vec![vec![
+                number_arg(4.0),
+                number_arg(5.0),
+                number_arg(6.0)
+            ]]),
+            "oxf-wkwj residual concrete shape"
+        );
+
+        // EXPAND's own 1x1-array residual, the model the DROP/TAKE residual mirrors.
+        let three = array_arg(vec![vec![number_arg(3.0)]]);
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.EXPAND",
+                &[src22.clone(), three, number_arg(2.0), number_arg(0.0)],
+            )
+            .unwrap(),
+            eval_test_surface_value(
+                "FUNC.EXPAND",
+                &[src22, number_arg(3.0), number_arg(2.0), number_arg(0.0)],
+            )
+            .unwrap(),
+            "oxf-wkwj: EXPAND 1x1-array count {{3}} unwraps to scalar 3, same residual class"
+        );
+    }
+
+    #[test]
+    fn drop_take_scalar_count_is_bit_exact_through_public_dispatch() {
+        // Scalar/normal counts: DROP/TAKE must stay BIT-EXACT after removing the calc-dispatch
+        // interception (the calc path and by-index path agree on non-array args; the lift never
+        // triggers because no lift-position arg is an array).
+        let src = array_arg(vec![
+            vec![number_arg(1.0), number_arg(2.0), number_arg(3.0)],
+            vec![number_arg(4.0), number_arg(5.0), number_arg(6.0)],
+        ]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src.clone(), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![
+                number_arg(4.0),
+                number_arg(5.0),
+                number_arg(6.0)
+            ]]),
+            "DROP(src,1) scalar count unchanged"
+        );
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![
+                number_arg(1.0),
+                number_arg(2.0),
+                number_arg(3.0)
+            ]]),
+            "TAKE(src,1) scalar count unchanged"
+        );
+        // Two-axis scalar counts also unchanged.
+        assert_eq!(
+            eval_test_surface_value(
+                "FUNC.TAKE",
+                &[src.clone(), number_arg(1.0), number_arg(2.0)]
+            )
+            .unwrap(),
+            array_arg(vec![vec![number_arg(1.0), number_arg(2.0)]]),
+            "TAKE(src,1,2) scalar counts unchanged"
+        );
+        assert_eq!(
+            eval_test_surface_value("FUNC.DROP", &[src, number_arg(1.0), number_arg(1.0)]).unwrap(),
+            array_arg(vec![vec![number_arg(5.0), number_arg(6.0)]]),
+            "DROP(src,1,1) scalar counts unchanged"
+        );
     }
 }
