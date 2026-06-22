@@ -15,6 +15,12 @@ Context-sensitive (Category 1) discrepancies — reference, spill, host, locale,
 formula-binding — do **not** live here; they live in
 `smart-fuzzer/corpus/context_sensitive_catalog/` and are evaluated downstream.
 
+The *inverse* of this catalog — cases where OxFunc **agrees** with Excel but **Excel itself
+deviates from the mathematically-most-accurate result** (e.g. `ASINH`/`SQRTPI` overflow to
+`#NUM!` where the math is finite; `SQRTPI` via `pow` not `sqrt`) — is durable knowledge about
+Excel, not an open bug, and is catalogued in
+[`EXCEL_MATH_DEVIATION_CATALOG.md`](EXCEL_MATH_DEVIATION_CATALOG.md).
+
 ## Maintenance rules (keep this coherent)
 
 1. **One catalog.** This is the only place open Category-2 discrepancy *status* is

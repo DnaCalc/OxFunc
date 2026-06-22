@@ -63,6 +63,16 @@ change how a *future, unrelated* fix is approached.
   falsely collapses tiny non-integers (`-1e-200`) onto `0`. Scale the tolerance by `|x|`.
 - **Argument reduction is the usual trig culprit.** Large-argument `SIN`/`TAN` drift is
   Cody-Waite vs extended-precision-π; near-boundary `ATANH`/`ACOTH` wants a `log1p` form.
+- **Scattered near-boundary 1-ULP gaps vs a correctly-rounded op → suspect Excel uses
+  `pow`/`exp·log`, not x87.** When a kernel using a correctly-rounded op (e.g. `sqrt`) matches
+  Excel everywhere except a few points near a boundary/overflow where it's 1 ULP off, Excel is
+  probably computing it via its (non-correctly-rounded) `pow` routine. 64-bit Excel and Rust
+  are both SSE2 — a correctly-rounded `sqrt` is identical on both, so a difference means Excel
+  isn't using `sqrt`. `SQRTPI(n) = (n·π)^0.5` via `pow`; Rust `(n·π).powf(0.5)` matched Excel
+  30/30 where `.sqrt()` missed the near-overflow points (`oxf-quxx`). Probe `powf` against the
+  oracle *before* chasing extended-precision/x87 emulation. (Excel-deviates-from-ideal-math
+  cases like this are catalogued in
+  [`EXCEL_MATH_DEVIATION_CATALOG.md`](EXCEL_MATH_DEVIATION_CATALOG.md).)
 
 ## Doctrine
 
