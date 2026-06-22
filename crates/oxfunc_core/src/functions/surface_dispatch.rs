@@ -1263,9 +1263,9 @@ pub fn eval_surface_value_call_with_dispatch_key(
     // `try_observed_scalar_array_lift`. The former `eval_dynamic_array_reshape_calc_dispatch`
     // shim returned `#VALUE!` early on an array-valued count arg, shadowing that lift;
     // live Excel (16.0 build 20026) LIFTS the count args, so removing the shim moves
-    // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift residual that
-    // remains — DROP(src,`{1}`) → `1x1` instead of Excel's intersected cell — is the
-    // shared array-lifter defect tracked as oxf-wkwj, not introduced here.)
+    // DROP/TAKE toward Excel and the declared spec. (The 1×1-array lift case — DROP(src,`{1}`)
+    // → Excel's intersected top-left SCALAR — is now handled by the shared array-lifter, which
+    // lifts a 1×1 array at a lift position like any array; oxf-wkwj is fixed.)
     //
     // W105 oxf-y2uw.3: the unary-numeric family no longer has a calc-dispatch
     // interception. Every member (SIN, COS/COSH/TAN/EXP/SINH/DEGREES, and the rest)
@@ -1341,6 +1341,29 @@ pub fn eval_surface_value_call_with_dispatch_key(
         )
     };
 
+    // The scalar-array-lifter (`try_observed_scalar_array_lift`) is the lift+intersect path for the
+    // observed-lift family. Excel's actual rule (verified live, build 20026) is subtle:
+    //
+    //   * A MULTI-element array at a lift position is lifted ONLY when the function actually
+    //     consumes it as a scalar — then it spills the per-cell intersection. When the array is NOT
+    //     consumed (e.g. an IFS/SWITCH value on an unselected branch), Excel returns the bare
+    //     scalar result and does NOT spill: `IFS(FALSE,{1,1},0,2)` → `#N/A` (scalar), not
+    //     `[#N/A,#N/A]`. The by-index path reproduces BOTH halves for free: a consumed multi-cell
+    //     arg fails coercion → `#VALUE!`/`Err`, which routes to the lifter (spill); an unconsumed
+    //     multi-cell arg yields a clean `Ok(scalar)`, which is kept. So the multi-element trigger
+    //     stays "by-index error → lift", exactly as before — DO NOT widen it.
+    //
+    //   * A 1×1 array at a lift position is the oxf-wkwj case. The by-index prep collapses `{e}→e`
+    //     and SUCCEEDS (returning the un-intersected full result for an array-returning fn, or the
+    //     plain scalar for a scalar-returning fn), so the by-index-error trigger never fires. Excel
+    //     instead LIFTS the unit array and returns its implicit intersection — a SCALAR (top-left of
+    //     `f(e)`). We detect a 1×1-array lift arg explicitly and route it through the lifter, which
+    //     now sees the unit array (its prep no longer collapses it) and returns the intersected
+    //     scalar. This is safe even when the unit array is unconsumed (IFS unselected branch): the
+    //     bare result is already scalar, and its 1×1 intersection is that same scalar.
+    let has_unit_lift_array =
+        lift_position_holds_unit_array(dispatch_key.function_id, args, resolver);
+
     match result {
         Err(code) => lifted_result()
             .map(|result| result.map(CalcValue::from))
@@ -1360,6 +1383,12 @@ pub fn eval_surface_value_call_with_dispatch_key(
                 .map(|result| result.map(CalcValue::from))
                 .unwrap_or(Ok(CalcValue::error(*code)))
         }
+        // oxf-wkwj: by-index produced a clean (non-#VALUE!) result, but a lift position holds a 1×1
+        // array — Excel intersects it to a scalar. Prefer the lifter (which yields that scalar);
+        // if for any reason it declines, keep the by-index result.
+        Ok(value) if has_unit_lift_array => lifted_result()
+            .map(|result| result.map(CalcValue::from))
+            .unwrap_or(Ok(value)),
         other => other.map(CalcValue::from),
     }
 }
@@ -2592,6 +2621,34 @@ fn observed_error_result_array_lift(function_id: &str) -> bool {
     matches!(function_id, FUNC_ID_DOLLARFR)
 }
 
+/// True iff `function_id` is an observed-lift function AND at least one of its declared lift
+/// positions holds a 1×1 array (after reference resolution, WITHOUT the scalar-prep `{e}→e`
+/// collapse). This is the oxf-wkwj signal: the by-index path silently coerces a unit-array lift
+/// arg to its scalar cell and SUCCEEDS, so the usual "by-index error → lift" trigger never fires —
+/// yet Excel lifts the unit array and returns its implicit intersection (a scalar). A multi-element
+/// array does NOT satisfy this (it is handled by the by-index-error trigger), and a scalar arg does
+/// not either, so this leaves every other case untouched.
+fn lift_position_holds_unit_array(
+    function_id: &str,
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> bool {
+    let Some(lift_positions) = observed_scalar_array_lift_positions(function_id) else {
+        return false;
+    };
+    let Ok(prepared) =
+        crate::functions::adapters::prepare_args_values_only_preserving_unit_arrays(args, resolver)
+    else {
+        return false;
+    };
+    lift_positions.iter().any(|&position| {
+        prepared
+            .get(position)
+            .map(|value| matches!(value.core(), CoreValue::Array(array) if array.shape() == (ArrayShape { rows: 1, cols: 1 })))
+            .unwrap_or(false)
+    })
+}
+
 fn prepared_array_shape(value: &crate::functions::adapters::CalcValue) -> ArrayShape {
     match value.core() {
         CoreValue::Array(array) => array.shape(),
@@ -2673,7 +2730,16 @@ fn try_observed_scalar_array_lift(
     registered_external_provider: Option<&dyn RegisteredExternalProvider>,
 ) -> Option<Result<CalcValue, WorksheetErrorCode>> {
     let lift_positions = observed_scalar_array_lift_positions(function_id)?;
-    let prepared = crate::functions::adapters::prepare_args_values_only(args, resolver).ok()?;
+    // Prepare WITHOUT collapsing a 1×1 array to its scalar cell. A 1×1-array argument at a lift
+    // position must be SEEN as an array so it flows through the same lift+intersect path as a
+    // multi-element array — Excel lifts a 1×1-array argument and returns its implicit
+    // intersection (the top-left scalar of `f(e)`), not a bare `f(e)`. The collapsing prep
+    // (`prepare_args_values_only`) hid the 1×1 case (oxf-wkwj): the array vanished into a scalar
+    // before the shape check, `has_lift_array` stayed false, the lifter declined, and the
+    // by-index path returned the un-intersected full result.
+    let prepared =
+        crate::functions::adapters::prepare_args_values_only_preserving_unit_arrays(args, resolver)
+            .ok()?;
     let mut has_lift_array = false;
     let mut shape = ArrayShape { rows: 1, cols: 1 };
 
@@ -2681,10 +2747,12 @@ fn try_observed_scalar_array_lift(
         let Some(value) = prepared.get(position) else {
             continue;
         };
-        let arg_shape = prepared_array_shape(value);
-        if arg_shape != (ArrayShape { rows: 1, cols: 1 }) {
+        // Any array at a lift position — including a 1×1 array — is lifted. A bare scalar arg is
+        // not (it is broadcast as-is), so scalar-arg calls still decline the lifter here.
+        if matches!(value.core(), CoreValue::Array(_)) {
             has_lift_array = true;
         }
+        let arg_shape = prepared_array_shape(value);
         shape.rows = shape.rows.max(arg_shape.rows);
         shape.cols = shape.cols.max(arg_shape.cols);
     }
@@ -2737,6 +2805,18 @@ fn try_observed_scalar_array_lift(
             };
             cells.push(cell);
         }
+    }
+
+    // When the lifted/intersected shape is 1×1 (every lift-position array was itself 1×1), Excel's
+    // implicit intersection yields a SCALAR, not a 1×1 array — return the single intersected cell
+    // bare. For a scalar-returning lift fn this is exactly `f(e)` (intersection of a scalar is the
+    // scalar, so the result is unchanged from the pre-fix scalar path); for an array-returning lift
+    // fn it is the top-left of `f(e)` (the fix). A multi-element result stays a spilled array.
+    if shape.rows == 1 && shape.cols == 1 {
+        return Some(Ok(cells
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| CalcValue::error(WorksheetErrorCode::Calc))));
     }
 
     Some(
@@ -8122,30 +8202,30 @@ mod tests {
             "EXPAND(src22,{{3;4}},2,0) lifts to Excel's 2x1=[1,1]"
         );
 
-        // 1x1-array count: the shared array-lifter unwraps a 1x1 array to a scalar instead of
-        // lifting it (an intersected single cell). So DROP(src, {1}) reproduces the SCALAR-count
-        // DROP result (1x3=[4,5,6]) rather than Excel's intersected 1x1=[4]. This is the
-        // EXPAND/TOROW-style 1x1 residual tracked as oxf-wkwj (array-lifter defect, NOT this
-        // bead's spec): asserted explicitly here so the residual is documented, not hidden.
+        // 1x1-array count: the shared array-lifter now LIFTS a 1x1 array at a lift position like any
+        // array — it computes f(e) and returns the implicit intersection (top-left scalar). So
+        // DROP(src, {1}) lifts the unit count {1}: f(1) is the scalar-count DROP (1x3=[4,5,6]) and
+        // the intersection is its top-left, the SCALAR 4 — exactly what live Excel 16.0 build 20026
+        // returns (oracle .tmp/onexone-arrayret-oracle.ps1). This is the oxf-wkwj fix.
         let one = array_arg(vec![vec![number_arg(1.0)]]);
         let drop_one = eval_test_surface_value("FUNC.DROP", &[src.clone(), one]).unwrap();
         assert_eq!(
             drop_one,
-            eval_test_surface_value("FUNC.DROP", &[src.clone(), number_arg(1.0)]).unwrap(),
-            "oxf-wkwj: 1x1-array count {{1}} is unwrapped to scalar 1, so DROP(src,{{1}}) == DROP(src,1) \
-             (1x3=[4,5,6]); Excel lifts the 1x1 to an intersected 1x1=[4] — the shared array-lifter residual"
-        );
-        assert_eq!(
-            drop_one,
-            array_arg(vec![vec![
-                number_arg(4.0),
-                number_arg(5.0),
-                number_arg(6.0)
-            ]]),
-            "oxf-wkwj residual concrete shape"
+            number_arg(4.0),
+            "DROP(src,{{1}}) lifts the 1x1 count to Excel's intersected SCALAR 4 (top-left of [4,5,6])"
         );
 
-        // EXPAND's own 1x1-array residual, the model the DROP/TAKE residual mirrors.
+        // TAKE's own 1x1-array count: TAKE(src, {2}) -> top-left of the scalar-count TAKE (1x3=[1,2,3])
+        // = SCALAR 1.
+        let two = array_arg(vec![vec![number_arg(2.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TAKE", &[src.clone(), two]).unwrap(),
+            number_arg(1.0),
+            "TAKE(src,{{2}}) lifts the 1x1 count to Excel's intersected SCALAR 1"
+        );
+
+        // EXPAND's own 1x1-array count: EXPAND(src22, {3}, 2, 0) -> top-left of the full 3x2 expand
+        // = SCALAR 1.
         let three = array_arg(vec![vec![number_arg(3.0)]]);
         assert_eq!(
             eval_test_surface_value(
@@ -8153,12 +8233,16 @@ mod tests {
                 &[src22.clone(), three, number_arg(2.0), number_arg(0.0)],
             )
             .unwrap(),
-            eval_test_surface_value(
-                "FUNC.EXPAND",
-                &[src22, number_arg(3.0), number_arg(2.0), number_arg(0.0)],
-            )
-            .unwrap(),
-            "oxf-wkwj: EXPAND 1x1-array count {{3}} unwraps to scalar 3, same residual class"
+            number_arg(1.0),
+            "EXPAND(src22,{{3}},2,0) lifts the 1x1 count to Excel's intersected SCALAR 1 (top-left)"
+        );
+
+        // TOROW's own 1x1-array count: TOROW(src22, {0}) -> top-left of the flattened row = SCALAR 1.
+        let zero = array_arg(vec![vec![number_arg(0.0)]]);
+        assert_eq!(
+            eval_test_surface_value("FUNC.TOROW", &[src22, zero]).unwrap(),
+            number_arg(1.0),
+            "TOROW(src22,{{0}}) lifts the 1x1 mode to Excel's intersected SCALAR 1"
         );
     }
 

@@ -220,6 +220,22 @@ pub fn prepare_args_values_only(
         .map(|values| prepared_vec_from_calc_values(&values))
 }
 
+/// Like [`prepare_args_values_only`], but does NOT collapse a 1×1 array argument to its
+/// single scalar cell. References are resolved through the resolver exactly as the collapsing
+/// prep does, so a reference to a single-cell range still materializes as a 1×1 array. Used by
+/// the shared scalar-array-lifter so a 1×1-array argument at a lift position is *seen* as an
+/// array (shape `1×1`) and flows through the same lift+intersect path as a multi-element array
+/// — matching Excel, which lifts a 1×1-array argument and takes its implicit intersection
+/// (top-left scalar) rather than treating it as a bare scalar.
+pub fn prepare_args_values_only_preserving_unit_arrays(
+    args: &[CalcValue],
+    resolver: &(impl ReferenceSystemProvider + ?Sized),
+) -> Result<Vec<CalcValue>, CoercionError> {
+    args.iter()
+        .map(|arg| resolve_calc_references(&calc_value_from_call_arg(arg), resolver))
+        .collect()
+}
+
 pub fn expand_arg_values_only(
     arg: &CalcValue,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
