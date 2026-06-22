@@ -1,4 +1,4 @@
-use crate::coercion::{CoercionError, coerce_arg_to_number, coerce_calc_scalar_to_number};
+use crate::coercion::{CoercionError, coerce_arg_to_number};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -78,28 +78,6 @@ fn coerce_optional_index_number(
     }
 }
 
-fn coerce_calc_index_number(arg: &CalcValue) -> Result<usize, IndexEvalError> {
-    let n = coerce_calc_scalar_to_number(arg).map_err(IndexEvalError::Coercion)?;
-    if !n.is_finite() || n < 0.0 || n.fract() != 0.0 {
-        return Err(IndexEvalError::InvalidIndexNumber(n));
-    }
-    Ok(n as usize)
-}
-
-fn coerce_optional_calc_index_number(
-    arg: Option<&CalcValue>,
-    omitted_default: usize,
-    blank_default: usize,
-) -> Result<usize, IndexEvalError> {
-    match arg {
-        None => Ok(omitted_default),
-        Some(value) if matches!(value.core(), CoreValue::Missing | CoreValue::Empty) => {
-            Ok(blank_default)
-        }
-        Some(other) => coerce_calc_index_number(other),
-    }
-}
-
 fn coerce_area_number(
     arg: Option<&CalcValue>,
     resolver: &(impl ReferenceSystemProvider + ?Sized),
@@ -152,24 +130,6 @@ fn cell_to_eval_value(cell: &CalcValue) -> CalcValue {
             CalcValue::text(ExcelText::from_utf16_code_units(Vec::new()))
         }
         CoreValue::Array(_) | CoreValue::Reference(_) => cell.clone(),
-    }
-}
-
-fn calc_cell_to_scalar_value(cell: &CalcValue) -> CalcValue {
-    match cell.core() {
-        CoreValue::Empty => CalcValue::text(ExcelText::from_utf16_code_units(Vec::new())),
-        _ => cell.clone(),
-    }
-}
-
-fn scalar_calc_array_from_value(value: &CalcValue) -> Option<CalcArray> {
-    match value.core() {
-        CoreValue::Number(_)
-        | CoreValue::Text(_)
-        | CoreValue::Logical(_)
-        | CoreValue::Error(_)
-        | CoreValue::Empty => CalcArray::from_scalar(value.clone()),
-        CoreValue::Missing | CoreValue::Array(_) | CoreValue::Reference(_) => None,
     }
 }
 
@@ -238,88 +198,7 @@ fn slice_array(array: &CalcArray, row: usize, col: usize) -> Result<CalcValue, I
     }
 }
 
-fn slice_calc_array(
-    array: &CalcArray,
-    row: usize,
-    col: usize,
-) -> Result<CalcValue, IndexEvalError> {
-    let shape = array.shape();
-    if row > shape.rows || col > shape.cols {
-        return Err(IndexEvalError::OutOfBounds {
-            rows: shape.rows,
-            cols: shape.cols,
-            row,
-            col,
-        });
-    }
-
-    match (row, col) {
-        (0, 0) => Ok(CalcValue::array(array.clone())),
-        (0, c) => {
-            let mut cells = Vec::with_capacity(shape.rows);
-            for r in 0..shape.rows {
-                cells.push(
-                    array
-                        .get(r, c - 1)
-                        .cloned()
-                        .expect("column bounds validated"),
-                );
-            }
-            Ok(CalcValue::array(
-                CalcArray::from_cells_iter(
-                    ArrayShape {
-                        rows: shape.rows,
-                        cols: 1,
-                    },
-                    cells,
-                )
-                .expect("slice dimensions validated"),
-            ))
-        }
-        (r, 0) => Ok(CalcValue::array(
-            CalcArray::from_cells_iter(
-                ArrayShape {
-                    rows: 1,
-                    cols: shape.cols,
-                },
-                array
-                    .row_slice(r - 1)
-                    .expect("row bounds validated")
-                    .iter()
-                    .cloned(),
-            )
-            .expect("slice dimensions validated"),
-        )),
-        (r, c) => Ok(calc_cell_to_scalar_value(
-            array.get(r - 1, c - 1).expect("cell bounds validated"),
-        )),
-    }
-}
-
 fn normalize_array_indices_for_vector_position(
-    array: &CalcArray,
-    row: usize,
-    col: usize,
-    col_arg: Option<&CalcValue>,
-) -> (usize, usize) {
-    let shape = array.shape();
-    let col_omitted = matches!(
-        col_arg.map(CalcValue::core),
-        None | Some(CoreValue::Missing | CoreValue::Empty)
-    );
-
-    if !col_omitted || row == 0 {
-        return (row, col);
-    }
-
-    if shape.rows == 1 && shape.cols >= 1 {
-        return (1, row);
-    }
-
-    (row, col)
-}
-
-fn normalize_calc_array_indices_for_vector_position(
     array: &CalcArray,
     row: usize,
     col: usize,
@@ -552,51 +431,6 @@ pub fn eval_index_surface(
         }
         CoreValue::Missing => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
         CoreValue::Empty => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
-    }
-}
-
-pub fn eval_index_calc_surface(args: &[CalcValue]) -> Result<CalcValue, IndexEvalError> {
-    let argc = args.len();
-    if !INDEX_META.arity.accepts(argc) {
-        return Err(IndexEvalError::ArityMismatch {
-            expected_min: INDEX_META.arity.min,
-            expected_max: INDEX_META.arity.max,
-            actual: argc,
-        });
-    }
-
-    match args[0].core() {
-        CoreValue::Reference(_) => Err(IndexEvalError::UnsupportedSource("reference_source")),
-        CoreValue::Array(array) => {
-            let row = coerce_optional_calc_index_number(args.get(1), 0, 0)?;
-            let col = coerce_optional_calc_index_number(args.get(2), 1, 0)?;
-            let (row, col) =
-                normalize_calc_array_indices_for_vector_position(array, row, col, args.get(2));
-            slice_calc_array(array, row, col)
-        }
-        CoreValue::Missing => Err(IndexEvalError::UnsupportedSource("missing_arg_source")),
-        CoreValue::Empty => Err(IndexEvalError::UnsupportedSource("empty_cell_source")),
-        _ => {
-            let source = args[0].clone();
-            let row = coerce_optional_calc_index_number(args.get(1), 0, 0)?;
-            let col = coerce_optional_calc_index_number(args.get(2), 1, 0)?;
-            if let CoreValue::Error(_) = source.core() {
-                return Ok(source);
-            }
-            if row == 1
-                && col == 0
-                && scalar_calc_array_from_value(&source).is_some()
-                && matches!(args.get(2), Some(arg) if !matches!(arg.core(), CoreValue::Missing | CoreValue::Empty))
-            {
-                return Ok(source);
-            }
-            let Some(array) = scalar_calc_array_from_value(&source) else {
-                return Err(IndexEvalError::UnsupportedSource("non_array_non_reference"));
-            };
-            let (row, col) =
-                normalize_calc_array_indices_for_vector_position(&array, row, col, args.get(2));
-            slice_calc_array(&array, row, col)
-        }
     }
 }
 

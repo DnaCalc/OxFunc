@@ -208,7 +208,7 @@ use crate::functions::ifna_fn::{eval_ifna_surface, map_ifna_error_to_ws};
 use crate::functions::image_fn::{
     eval_image_calc_surface_rich, eval_image_surface, map_image_error_to_ws,
 };
-use crate::functions::index::{eval_index_calc_surface, eval_index_surface, map_index_error_to_ws};
+use crate::functions::index::{eval_index_surface, map_index_error_to_ws};
 use crate::functions::indirect::{eval_indirect_surface, map_indirect_error_to_ws};
 use crate::functions::info_fn::{eval_info_surface, map_info_error_to_ws};
 use crate::functions::int_fn::int_kernel;
@@ -1078,32 +1078,6 @@ pub fn resolve_surface_dispatch_key(function_id: &str) -> Option<SurfaceDispatch
         })
 }
 
-fn eval_lookup_reference_adjacent_calc_dispatch(
-    function_id: &str,
-    args: &[CalcValue],
-) -> Option<Result<CalcValue, WorksheetErrorCode>> {
-    if function_id != FUNC_ID_INDEX {
-        return None;
-    }
-    if matches!(
-        args.first().map(CalcValue::core),
-        Some(CoreValue::Reference(_))
-    ) {
-        return None;
-    }
-    if args
-        .get(1)
-        .is_some_and(|value| matches!(value.core(), CoreValue::Array(_)))
-        || args
-            .get(2)
-            .is_some_and(|value| matches!(value.core(), CoreValue::Array(_)))
-    {
-        return None;
-    }
-
-    Some(eval_index_calc_surface(args).map_err(|error| map_index_error_to_ws(&error)))
-}
-
 /// Whether a function's declared `surface_fec_dependency_profile` says its surface pipeline needs
 /// function-execution-context / host capability beyond the reference resolver (a time serial, a
 /// random/external/host provider, or locale context). DERIVED from the single declared
@@ -1267,11 +1241,20 @@ pub fn eval_surface_value_call_with_dispatch_key(
             return result;
         }
     }
-    if let Some(result) =
-        eval_lookup_reference_adjacent_calc_dispatch(dispatch_key.function_id, args)
-    {
-        return result;
-    }
+    // W105 oxf-y2uw.12.5: the lookup/reference-adjacent INDEX surface no longer has a
+    // calc-dispatch interception. INDEX is served by exactly one path — the by-index generated
+    // table arm (`eval_index_surface`, which receives the live references INDEX's declared
+    // `arg_preparation_profile: RefsVisibleInAdapter` axis preserves, and resolves them through the
+    // capability-gated resolver primitives). The former `eval_lookup_reference_adjacent_calc_dispatch`
+    // shim intercepted the value-arg0 + non-array-index shape and ran the reference-blind
+    // `eval_index_calc_surface`, which rejected a *reference* row/col index arg with `#VALUE!`
+    // (`coerce_calc_scalar_to_number` → `UnsupportedValueKind("reference")`). Live Excel (16.0
+    // build 20026) RESOLVES a reference index arg — `INDEX({10;20;30},C1)` with `C1=2` yields `20`,
+    // not `#VALUE!` (oracle: .tmp/index-refarg-oracle.ps1) — so removing the shim moves INDEX onto
+    // the by-index path that already resolves it, an oracle-confirmed correction in the .12.2 mould.
+    // On every non-reference index shape the two handlers were proven bit-identical, so the collapse
+    // is bit-exact there and a deliberate correction only on the reference-index shape.
+    //
     // W105 oxf-y2uw.12.2: the dynamic-array-reshape family (CHOOSECOLS, CHOOSEROWS,
     // DROP, TAKE) no longer has a calc-dispatch interception. Every member is served
     // by exactly one path — the by-index generated table, whose `eval_*_surface` arm
@@ -8454,5 +8437,242 @@ mod tests {
             vec![FUNC_ID_HYPERLINK, FUNC_ID_IMAGE, FUNC_ID_NOW, FUNC_ID_TODAY,],
             "the provider/host-bound family must be exactly these four ids"
         );
+    }
+
+    /// Resolves any reference to a fixed numeric value (`2`) so the reference-sensitive INDEX
+    /// surface can be exercised with a live reference index arg.
+    struct RefToTwoResolver;
+    impl ReferenceSystemProvider for RefToTwoResolver {
+        fn capabilities(&self) -> ReferenceSystemCapabilities {
+            ReferenceSystemCapabilities::permissive_local()
+        }
+        fn dereference(
+            &self,
+            _request: &crate::resolver::ReferenceDereferenceRequest,
+        ) -> Result<CalcValue, crate::resolver::ReferenceResolutionError> {
+            Ok(CalcValue::number(2.0))
+        }
+    }
+
+    /// W105 oxf-y2uw.12.5: PROOF the lookup/reference-adjacent INDEX collapse (.12.2 style) leaves
+    /// INDEX served by exactly ONE path and is bit-exact on every input shape EXCEPT the one the
+    /// deleted shim got wrong. The former `eval_lookup_reference_adjacent_calc_dispatch` intercepted
+    /// the value-arg0 + non-array-index shape and ran the reference-blind `eval_index_calc_surface`;
+    /// the by-index `eval_index_surface` now serves all shapes. This drives the full
+    /// {value, reference} arg0 × {scalar, array} index matrix through the public surface and pins:
+    ///   * value/reference arg0 with scalar/array index → the documented Excel result, unchanged;
+    ///   * the value-arg0 + REFERENCE-index shape (the only place the two handlers differed) now
+    ///     RESOLVES the reference index arg, matching live Excel 16.0 build 20026:
+    ///     `INDEX({10;20;30}, ref→2) = 20` (not the shim's `#VALUE!`). Oracle:
+    ///     `.tmp/index-refarg-oracle.ps1`.
+    #[test]
+    fn index_served_by_single_by_index_path_across_input_shape_matrix() {
+        let col_vec = || {
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0)],
+                ])
+                .unwrap(),
+            )
+        };
+        let matrix = || {
+            CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0), CalcValue::number(20.0)],
+                    vec![CalcValue::number(30.0), CalcValue::number(40.0)],
+                    vec![CalcValue::number(50.0), CalcValue::number(60.0)],
+                ])
+                .unwrap(),
+            )
+        };
+        let call = |args: &[CalcValue], resolver: &dyn ReferenceSystemProvider| {
+            eval_surface_value_call(
+                FUNC_ID_INDEX,
+                args,
+                resolver,
+                Some(46000.0),
+                Some(&TEST_RANDOM_PROVIDER),
+                None,
+                None,
+            )
+        };
+
+        // --- value arg0, SCALAR index args (the shape the shim used to intercept) ---
+        assert_eq!(
+            call(
+                &[col_vec(), CalcValue::number(2.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(20.0)),
+            "value arg0 + scalar index (vector position)"
+        );
+        assert_eq!(
+            call(
+                &[matrix(), CalcValue::number(2.0), CalcValue::number(1.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(30.0)),
+            "value arg0 + scalar row/col"
+        );
+        assert_eq!(
+            call(
+                &[CalcValue::number(42.0), CalcValue::number(1.0)],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::number(42.0)),
+            "scalar value arg0 treated as single-cell array"
+        );
+        assert_eq!(
+            call(
+                &[
+                    CalcValue::error(WorksheetErrorCode::Value),
+                    CalcValue::number(3.0)
+                ],
+                &NoReferenceSystemProvider
+            ),
+            Ok(CalcValue::error(WorksheetErrorCode::Value)),
+            "error value arg0 propagates"
+        );
+
+        // --- value arg0, ARRAY index arg (the shim explicitly fell through to by-index) ---
+        let selector = CalcValue::array(
+            CalcArray::from_rows(vec![
+                vec![CalcValue::number(1.0)],
+                vec![CalcValue::number(3.0)],
+            ])
+            .unwrap(),
+        );
+        assert_eq!(
+            call(&[col_vec(), selector], &NoReferenceSystemProvider),
+            Ok(CalcValue::array(
+                CalcArray::from_rows(vec![
+                    vec![CalcValue::number(10.0)],
+                    vec![CalcValue::number(30.0)],
+                ])
+                .unwrap()
+            )),
+            "value arg0 + selector-array index"
+        );
+
+        // --- value arg0, REFERENCE index arg: the ONLY shape the two handlers disagreed on.
+        // The deleted shim rejected it (#VALUE!); live Excel RESOLVES it. By-index now resolves. ---
+        let ref_index =
+            || CalcValue::reference(ReferenceLike::new(ReferenceKind::A1, "C1".to_string()));
+        assert_eq!(
+            call(&[col_vec(), ref_index()], &RefToTwoResolver),
+            Ok(CalcValue::number(20.0)),
+            "value arg0 + REFERENCE index now resolves (Excel-correct): INDEX({{10;20;30}}, C1=2) = 20"
+        );
+        assert_eq!(
+            call(&[matrix(), ref_index(), ref_index()], &RefToTwoResolver),
+            Ok(CalcValue::number(40.0)),
+            "value arg0 + REFERENCE row/col resolves: INDEX(3x2, C1=2, C1=2) = 40"
+        );
+
+        // --- reference arg0 (always served by the by-index path; never intercepted) ---
+        // Drive the value-context materialization branch via a value-enumerating resolver.
+        struct EnumResolver;
+        impl ReferenceSystemProvider for EnumResolver {
+            fn capabilities(&self) -> ReferenceSystemCapabilities {
+                ReferenceSystemCapabilities::permissive_local()
+            }
+            fn enumerate_values(
+                &self,
+                request: &crate::resolver::ReferenceEnumerationRequest,
+            ) -> Result<
+                Option<crate::resolver::ResolvedReferenceValues>,
+                crate::resolver::ReferenceResolutionError,
+            > {
+                if request.reference.target() != "A1:B3" {
+                    return Ok(None);
+                }
+                Ok(Some(crate::resolver::ResolvedReferenceValues::new(
+                    crate::resolver::ResolvedReferenceExtent::new(3, 2),
+                    vec![
+                        crate::resolver::ResolvedReferenceCell::new(1, 1, CalcValue::number(10.0)),
+                        crate::resolver::ResolvedReferenceCell::new(1, 2, CalcValue::number(20.0)),
+                        crate::resolver::ResolvedReferenceCell::new(2, 1, CalcValue::number(30.0)),
+                        crate::resolver::ResolvedReferenceCell::new(2, 2, CalcValue::number(40.0)),
+                        crate::resolver::ResolvedReferenceCell::new(3, 1, CalcValue::number(50.0)),
+                        crate::resolver::ResolvedReferenceCell::new(3, 2, CalcValue::number(60.0)),
+                    ],
+                    None,
+                )))
+            }
+        }
+        assert_eq!(
+            call(
+                &[
+                    CalcValue::reference(ReferenceLike::new(
+                        ReferenceKind::Area,
+                        "A1:B3".to_string()
+                    )),
+                    CalcValue::number(2.0),
+                    CalcValue::number(2.0),
+                ],
+                &EnumResolver
+            ),
+            Ok(CalcValue::number(40.0)),
+            "reference arg0 materializes via the resolver (by-index path)"
+        );
+    }
+
+    /// W105 oxf-y2uw.12.5 (Part 2): the resolver-capability gate is SPEC-DRIVEN, not a hand-list.
+    /// A function's adapter sees live (unresolved) references — and can therefore reach the
+    /// capability-gated resolver primitives (`resolve_eval_value` / `enumerate_reference_values`,
+    /// each of which calls `ensure_reference_resolution_allowed`) — IFF the XLL registration sets
+    /// `preserve_refs`, which `xll_export_specs` derives SOLELY from the declared
+    /// `arg_preparation_profile == RefsVisibleInAdapter` axis. This pins, over the WHOLE catalog,
+    /// that the set of reference-resolving (refs-visible-in-adapter) functions equals the declared
+    /// `RefsVisibleInAdapter` set — neither a separate hand-maintained list nor a per-function gate.
+    #[test]
+    fn reference_resolution_capability_gate_is_driven_by_declared_arg_preparation_profile() {
+        // The single derivation site `xll_export_specs` reads when emitting each U-arity export.
+        let preserve_refs_for = |meta: &crate::function::FunctionMeta| {
+            meta.arg_preparation_profile == ArgPreparationProfile::RefsVisibleInAdapter
+        };
+
+        for spec in crate::xll_export_specs::xll_export_specs() {
+            // Only U-arity exports carry the live-reference-passing flag; Q (numeric) exports never
+            // preserve refs (they are ValuesOnlyPreAdapter by construction).
+            if let crate::xll_export_specs::XllEntryKind::UArity(_) = spec.entry_kind {
+                let meta = crate::xll_export_specs::lookup_function_meta_by_id(spec.function_id)
+                    .expect("every export id is in the catalog");
+                assert_eq!(
+                    spec.preserve_refs,
+                    preserve_refs_for(&meta),
+                    "{}: XLL preserve_refs ({}) must equal the declared \
+                     arg_preparation_profile == RefsVisibleInAdapter ({}) — the live-reference \
+                     (resolver-reachable) set must be SINGLE-SOURCED from the declared axis",
+                    spec.function_id,
+                    spec.preserve_refs,
+                    preserve_refs_for(&meta),
+                );
+            }
+        }
+
+        // Concrete anchors: INDEX (and the reference-sensitive reference-adjacent surfaces that
+        // inspect a LIVE reference's address/shape) carry the axis and therefore resolve
+        // references; functions that take a text/value reference descriptor (INDIRECT builds a ref
+        // from text) or plain numerics do NOT.
+        for id in [FUNC_ID_INDEX, FUNC_ID_CELL, FUNC_ID_OFFSET] {
+            let meta = crate::xll_export_specs::lookup_function_meta_by_id(id).unwrap();
+            assert_eq!(
+                meta.arg_preparation_profile,
+                ArgPreparationProfile::RefsVisibleInAdapter,
+                "{id} is reference-sensitive and must declare RefsVisibleInAdapter"
+            );
+        }
+        for id in [FUNC_ID_OP_ADD, FUNC_ID_INDIRECT] {
+            let meta = crate::xll_export_specs::lookup_function_meta_by_id(id).unwrap();
+            assert_eq!(
+                meta.arg_preparation_profile,
+                ArgPreparationProfile::ValuesOnlyPreAdapter,
+                "{id} does not inspect a live reference (INDIRECT builds one from text); \
+                 it must declare the default ValuesOnlyPreAdapter"
+            );
+        }
     }
 }
