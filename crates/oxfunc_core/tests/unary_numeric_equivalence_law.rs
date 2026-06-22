@@ -307,6 +307,14 @@ fn m_iter(function_id: &'static str, policy: ExcelRealPolicy, raw: RawProbe) -> 
 
 /// Construct a family row that already violates the Law-3 invariant on the untouched tree
 /// (documented pre-existing drift; see `known_law3_violation`).
+///
+/// Retained as the Law-3 ratchet constructor even though no row currently uses it: the two
+/// historical drifts (ASINH/SQRTPI internal-overflow → non-finite under PASS) have been
+/// repaired (oxf-7m1k), so both rows are now plain `m(..)`. This constructor stays so any
+/// future drift can be recorded as a *documented* known-violation rather than silently
+/// passing — the same ratchet `law3_*` enforces. Not dead machinery; an intentionally
+/// kept escape hatch (hence `#[allow(dead_code)]` until the next drift needs it).
+#[allow(dead_code)]
 fn m_known_law3(
     function_id: &'static str,
     policy: ExcelRealPolicy,
@@ -335,14 +343,10 @@ fn unary_family() -> Vec<FamilyMember> {
         m(sd::FUNC_ID_ATAN, atan::ATAN_META.real_result_policy, |n| {
             Some(atan::atan_kernel(n))
         }),
-        m_known_law3(
+        m(
             sd::FUNC_ID_ASINH,
             asinh::ASINH_META.real_result_policy,
             |n| ok(asinh::asinh_kernel(n)),
-            "asinh_kernel(1e308) overflows internally: |x| + hypot(x,1) = 2e308 -> +Inf, \
-             ln(+Inf) -> +Inf, so a finite in-domain arg publishes a non-finite number under \
-             PASS policy (true asinh(1e308) ~= 709.89, finite). Pre-existing; fix in a later \
-             repair bead.",
         ),
         m(
             sd::FUNC_ID_ATANH,
@@ -444,14 +448,10 @@ fn unary_family() -> Vec<FamilyMember> {
             sqrt_fn::SQRT_META.real_result_policy,
             |n| ok(sqrt_fn::sqrt_kernel(n)),
         ),
-        m_known_law3(
+        m(
             sd::FUNC_ID_SQRTPI,
             sqrtpi::SQRTPI_META.real_result_policy,
             |n| ok(sqrtpi::sqrtpi_kernel(n)),
-            "sqrtpi_kernel(1e308) overflows internally: n*PI = ~3.14e308 > f64::MAX -> +Inf \
-             before the sqrt, so a finite in-domain arg publishes a non-finite number under \
-             PASS policy (true sqrt(1e308*PI) ~= 1.77e154, representable). Pre-existing; fix \
-             in a later repair bead.",
         ),
         m(sd::FUNC_ID_TAN, tan::TAN_META.real_result_policy, |n| {
             Some(tan::tan_kernel(n))
