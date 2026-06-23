@@ -174,6 +174,14 @@ pub fn invoke_callable_prepared(
 }
 
 fn prepared_from_array_cell(cell: &CalcValue) -> CalcValue {
+    // A callable stored as an array cell is carried as core=#CALC! + rich=Callable.
+    // Reconstructing from `core()` alone would drop the rich callable, so a callable
+    // passed as a higher-order parameter (e.g. MAP(fns, LAMBDA(f, f(10)))) could no
+    // longer be invoked. Preserve it verbatim; everything else keeps the existing
+    // scalar normalization (incl. Array/Reference cells collapsing to #VALUE!).
+    if cell.callable_value().is_some() {
+        return cell.clone();
+    }
     match cell.core() {
         CoreValue::Number(n) => CalcValue::number(*n),
         CoreValue::Text(t) => CalcValue::text(t.clone()),
