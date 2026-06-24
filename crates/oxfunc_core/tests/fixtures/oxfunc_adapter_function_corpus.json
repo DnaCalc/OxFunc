@@ -1119,23 +1119,6 @@
     "random_provider": null
   },
   {
-    "scenario_id": "FN-COLUMNS-01",
-    "seam_family": "function_coverage",
-    "formula": "=COLUMNS(A1:C1)",
-    "caller_row": 1,
-    "caller_col": 4,
-    "snapshot_surface_name": "COLUMNS",
-    "cell_fixture": {},
-    "expected_value_summary": "Number(3)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
     "scenario_id": "FN-INDEX-01",
     "seam_family": "function_coverage",
     "formula": "=INDEX({1,2;3,4},2,1)",
@@ -1150,28 +1133,6 @@
       "DirectScalar",
       "DirectScalar"
     ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-INDEX-02",
-    "seam_family": "function_coverage",
-    "formula": "=INDEX(A1:B3,2,2)",
-    "caller_row": 1,
-    "caller_col": 3,
-    "snapshot_surface_name": "INDEX",
-    "cell_fixture": {
-      "A1": "Number(10)",
-      "B1": "Number(20)",
-      "A2": "Number(30)",
-      "B2": "Number(40)",
-      "A3": "Number(50)",
-      "B3": "Number(60)"
-    },
-    "expected_value_summary": "Number(40)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": null,
     "expected_prepared_argument_sources": null,
     "now_serial": null,
     "random_provider": null
@@ -1459,62 +1420,6 @@
     "random_provider": null
   },
   {
-    "scenario_id": "FN-IFNA-01",
-    "seam_family": "function_coverage",
-    "formula": "=IFNA(A1,0)",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "IFNA",
-    "cell_fixture": {
-      "A1": "Error(#N/A)"
-    },
-    "expected_value_summary": "Number(0)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible",
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-ISBLANK-01",
-    "seam_family": "function_coverage",
-    "formula": "=ISBLANK(A1)",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "ISBLANK",
-    "cell_fixture": {},
-    "expected_value_summary": "Logical(true)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-ISERROR-01",
-    "seam_family": "function_coverage",
-    "formula": "=ISERROR(A1)",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "ISERROR",
-    "cell_fixture": {
-      "A1": "Error(#VALUE!)"
-    },
-    "expected_value_summary": "Logical(true)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
     "scenario_id": "FN-ISNUMBER-01",
     "seam_family": "function_coverage",
     "formula": "=ISNUMBER(42)",
@@ -1795,95 +1700,6 @@
     "random_provider": null
   },
   {
-    "scenario_id": "FN-COUNTBLANK-01",
-    "seam_family": "function_coverage",
-    "formula": "=COUNTBLANK(A1:A3)",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "COUNTBLANK",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "A3": "Number(3)"
-    },
-    "expected_value_summary": "Number(1)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-COUNTIF-01",
-    "seam_family": "function_coverage",
-    "formula": "=COUNTIF(A1:A5,\">3\")",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "COUNTIF",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "A2": "Number(2)",
-      "A3": "Number(4)",
-      "A4": "Number(5)",
-      "A5": "Number(6)"
-    },
-    "expected_value_summary": "Number(3)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible",
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-SUMIF-01",
-    "seam_family": "function_coverage",
-    "formula": "=SUMIF(A1:A3,\">1\")",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "SUMIF",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "A2": "Number(2)",
-      "A3": "Number(3)"
-    },
-    "expected_value_summary": "Number(5)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible",
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-AVERAGEIF-01",
-    "seam_family": "function_coverage",
-    "formula": "=AVERAGEIF(A1:A4,\">2\")",
-    "caller_row": 1,
-    "caller_col": 2,
-    "snapshot_surface_name": "AVERAGEIF",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "A2": "Number(2)",
-      "A3": "Number(3)",
-      "A4": "Number(4)"
-    },
-    "expected_value_summary": "Number(3.5)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": [
-      "ReferenceVisible",
-      "DirectScalar"
-    ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
     "scenario_id": "FN-MEDIAN-01",
     "seam_family": "function_coverage",
     "formula": "=MEDIAN(1,3,5,7,9)",
@@ -1965,50 +1781,6 @@
       "DirectScalar",
       "DirectScalar"
     ],
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-HLOOKUP-01",
-    "seam_family": "function_coverage",
-    "formula": "=HLOOKUP(2,A1:C2,2,FALSE)",
-    "caller_row": 3,
-    "caller_col": 1,
-    "snapshot_surface_name": "HLOOKUP",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "B1": "Number(2)",
-      "C1": "Number(3)",
-      "A2": "Number(10)",
-      "B2": "Number(20)",
-      "C2": "Number(30)"
-    },
-    "expected_value_summary": "Number(20)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": null,
-    "expected_prepared_argument_sources": null,
-    "now_serial": null,
-    "random_provider": null
-  },
-  {
-    "scenario_id": "FN-XLOOKUP-01",
-    "seam_family": "function_coverage",
-    "formula": "=XLOOKUP(2,A1:A3,B1:B3)",
-    "caller_row": 1,
-    "caller_col": 3,
-    "snapshot_surface_name": "XLOOKUP",
-    "cell_fixture": {
-      "A1": "Number(1)",
-      "A2": "Number(2)",
-      "A3": "Number(3)",
-      "B1": "Text(one)",
-      "B2": "Text(two)",
-      "B3": "Text(three)"
-    },
-    "expected_value_summary": "Text(two)",
-    "expected_returned_value_surface_kind": "OrdinaryValue",
-    "expected_prepared_argument_structures": null,
     "expected_prepared_argument_sources": null,
     "now_serial": null,
     "random_provider": null

@@ -7,11 +7,12 @@ use oxfml_core::interface::{
     RegisteredExternalRegistrationChannel, TypedContextQueryFamily,
 };
 use oxfml_core::test_support::host::SingleFormulaHost;
+use oxfml_core::test_support::minimal::MINIMAL_REFERENCE_PROFILE;
 use oxfunc_core::functions::call_register_id_family::{
     RegisterIdRequest, RegisteredExternalDescriptor, RegisteredExternalOriginKind,
     RegisteredExternalProvider, RegisteredExternalProviderError, RegisteredProcedureSpec,
 };
-use oxfunc_core::value::{CalcValue, CoreValue, ExcelText, ReferenceKind, ReferenceLike};
+use oxfunc_core::value::{CalcValue, CoreValue, ExcelText, ReferenceSystemId};
 
 #[test]
 fn register_id_and_direct_call_lane_pass_from_oxfunc_side() {
@@ -108,8 +109,17 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
     );
     ref_host.set_cell_value("A1", CalcValue::number(7.0));
 
+    // OxFml core is grid-agnostic: `A1` only binds when a reference profile is
+    // supplied. Use the minimal test reference profile so the reference-visible
+    // argument flow can be exercised without depending on OxCalc's grid profile.
     let ref_output = ref_host
-        .recalc_with_registered_external_provider(None, Some(&provider), None, None)
+        .recalc_with_registered_external_provider_and_reference_bind_profile(
+            None,
+            Some(&provider),
+            None,
+            None,
+            Some(&MINIMAL_REFERENCE_PROFILE),
+        )
         .expect("call with reference host recalc");
 
     assert_eq!(
@@ -117,12 +127,20 @@ fn call_by_register_id_and_reference_visible_argument_pass_from_oxfunc_side() {
         CalcValue::number(99.0)
     );
     let (_, args) = provider.last_invoke.borrow().clone().expect("invoke");
+    assert_eq!(args.len(), 1);
+    // The reference-visible argument must reach the external provider AS a
+    // reference (not its dereferenced value 7.0). Under the minimal profile it is
+    // an opaque profile-symbolic reference whose display is the source text "A1".
+    let reference = args[0]
+        .as_reference()
+        .expect("reference-visible argument should pass through as a reference, not its value");
     assert_eq!(
-        args,
-        vec![CalcValue::reference(ReferenceLike::new(
-            ReferenceKind::A1,
-            "A1".to_string()
-        ))]
+        reference.system,
+        ReferenceSystemId("oxfml.test.minimal.v1".to_string())
+    );
+    assert_eq!(
+        reference.display.as_ref().map(|d| d.text.to_string_lossy()),
+        Some("A1".to_string())
     );
 }
 
