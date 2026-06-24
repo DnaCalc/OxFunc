@@ -128,3 +128,40 @@ fn xlookup_over_columns() {
     ];
     assert_eq!(worksheet_value("=XLOOKUP(2,A1:A3,B1:B3)", &cells), text("two"));
 }
+
+// The following mirror bind-level scenarios deferred out of the w050 seam corpus
+// (A04/A05/A06/A08/F02): same-sheet reference resolution the minimal profile
+// supports. NOT here: the `@`-operator scenarios (`=@A1:A3`, `=@SEQUENCE(3)`,
+// `=@OFFSET(...)` don't parse; `=@A1` evaluates to #VALUE! even via the real
+// provider) — those are pre-existing `@`-handling bugs (Workstream B), not
+// reference-resolution coverage.
+
+#[test]
+fn sum_over_range() {
+    let cells = [("A1", num(10.0)), ("A2", num(20.0)), ("A3", num(30.0))];
+    assert_eq!(worksheet_value("=SUM(A1:A3)", &cells), num(60.0));
+}
+
+#[test]
+fn vlookup_over_area() {
+    let cells = [
+        ("A1", num(1.0)),
+        ("B1", num(10.0)),
+        ("A2", num(2.0)),
+        ("B2", num(20.0)),
+        ("A3", num(3.0)),
+        ("B3", num(30.0)),
+    ];
+    assert_eq!(worksheet_value("=VLOOKUP(2,A1:B3,2,FALSE)", &cells), num(20.0));
+}
+
+#[test]
+fn rows_reports_range_height() {
+    assert_eq!(worksheet_value("=ROWS(A1:A5)", &[]), num(5.0));
+}
+
+#[test]
+fn let_binds_a_range_then_aggregates() {
+    let cells = [("A1", num(10.0)), ("A2", num(20.0)), ("A3", num(30.0))];
+    assert_eq!(worksheet_value("=LET(data,A1:A3,SUM(data))", &cells), num(60.0));
+}
