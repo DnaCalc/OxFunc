@@ -133,7 +133,11 @@ fn scalarize_reference(
     caller: Option<&CallerContext>,
 ) -> Result<CalcValue, ImplicitIntersectionError> {
     match reference.kind() {
-        ReferenceKind::A1 | ReferenceKind::Area => {
+        // Opaque profile-symbolic references (downstream grid profiles, OxFml's
+        // minimal test profile) project to kind = Structured with their A1 source
+        // text as the target, so they parse here. A genuinely structured (table)
+        // reference's non-A1 target fails the parse and yields the error below.
+        ReferenceKind::A1 | ReferenceKind::Area | ReferenceKind::Structured => {
             let parsed = parse_a1_reference(reference.target()).ok_or(
                 ImplicitIntersectionError::UnsupportedReferenceSource("non_a1_reference"),
             )?;
@@ -152,9 +156,6 @@ fn scalarize_reference(
         )),
         ReferenceKind::ThreeD => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
             "three_d_reference",
-        )),
-        ReferenceKind::Structured => Err(ImplicitIntersectionError::UnsupportedReferenceSource(
-            "structured_reference",
         )),
     }
 }
