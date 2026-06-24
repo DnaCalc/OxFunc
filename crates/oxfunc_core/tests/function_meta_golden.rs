@@ -51,8 +51,13 @@ fn function_spec_metas_are_bit_equal_to_pre_macro_golden() {
         actual.lines().count(),
         "catalog meta count changed vs the pre-macro golden snapshot"
     );
+    // Normalize line endings: the golden is stored LF, but a Windows checkout with
+    // core.autocrlf=true materializes it as CRLF, while render_catalog_dump joins
+    // with LF. The per-line comparison above already tolerates this; keep the
+    // whole-dump check newline-agnostic so it verifies content, not working-tree EOL.
     assert_eq!(
-        golden, actual,
+        golden.replace("\r\n", "\n"),
+        actual,
         "function_spec! catalog dump is not byte-identical to the pre-macro golden"
     );
 }
