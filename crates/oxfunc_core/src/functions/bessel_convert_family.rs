@@ -59,6 +59,10 @@ const BIGNI: f64 = 1.0e-10;
 /// 9-digit `2/π` constant `0.636619772`, not the full-precision `2/π`. Using the exact
 /// constant makes OxFunc more accurate than Excel but diverges by up to ~6e11 ULP on
 /// BESSELY (BUG-FUNC-024). Match Excel.
+///
+/// The J/Y coefficient tables and expression groupings below are pinned to Excel's
+/// published bits (BUG-FUNC-024, W097 93-case live-Excel oracle grid), not to any
+/// printed edition of NR — where they disagree, Excel wins.
 const NR_2_OVER_PI: f64 = 0.636_619_772;
 
 fn horner(y: f64, coeffs: &[f64]) -> f64 {
@@ -204,11 +208,15 @@ fn bessj0(x: f64) -> f64 {
         let z = 8.0 / ax;
         let y = z * z;
         let xx = ax - 0.785_398_164;
+        // Excel's J-side and Y-side asymptotic tables are separately-typed copies
+        // with different typos: J0's P0 y^1 coefficient transposes NR's …628627
+        // into …628267, while its Q0 keeps NR's -0.934935152e-7 (Y0's copy has
+        // …945152 instead — see bessy0). Do not "unify" these tables.
         let ans1 = horner(
             y,
             &[
                 1.0,
-                -0.001_098_628_627,
+                -0.001_098_628_267,
                 0.000_027_345_104_07,
                 -0.000_002_073_370_639,
                 0.000_000_209_388_721_1,
@@ -259,22 +267,29 @@ fn bessj1(x: f64) -> f64 {
         let z = 8.0 / ax;
         let y = z * z;
         let xx = ax - 2.356_194_491;
+        // Excel's J1 P-table is six entries: an inserted duplicate of the y^2
+        // coefficient shifts NR's remaining terms down a slot (Y1's copy has the
+        // plain five-entry NR table — see bessy1). This costs Excel ~8e-6 absolute
+        // accuracy near x=8; match Excel, not the math.
         let ans1 = horner(
             y,
             &[
                 1.0,
                 0.001_831_05,
                 -0.000_035_163_964_96,
+                -0.000_035_163_964_96,
                 0.000_002_457_520_174,
                 -0.000_000_240_337_019,
             ],
         );
+        // 0.8449199096e-5 = 8.449199096e-6; transcribing it as 8.4…e-5 (10x) drifted
+        // BESSELY(10,1) by 4.7e10 ULP through the shared Y1 table.
         let ans2 = horner(
             y,
             &[
                 0.046_874_999_95,
                 -0.000_200_269_087_3,
-                0.000_084_491_990_96,
+                0.000_008_449_199_096,
                 -0.000_000_882_289_87,
                 0.000_000_105_787_412,
             ],
@@ -309,7 +324,9 @@ fn bessy0(x: f64) -> f64 {
                 1.0,
             ],
         );
-        ans1 / ans2 + NR_2_OVER_PI * bessj0(x) * x.ln()
+        // Excel associates the reflection term as c*(J0*ln x); (c*J0)*ln x rounds
+        // differently (1 ULP at x=1.5 and x=3).
+        ans1 / ans2 + NR_2_OVER_PI * (bessj0(x) * x.ln())
     } else {
         let z = 8.0 / x;
         let y = z * z;
@@ -324,6 +341,9 @@ fn bessy0(x: f64) -> f64 {
                 0.000_000_209_388_721_1,
             ],
         );
+        // Excel's Y0 copy of the Q0 table ends in -0.934945152e-7 (…945…), unlike
+        // its J0 copy (…935152, the NR value); …935152 here drifts BESSELY(10,0)
+        // by 4773 ULP.
         let ans2 = horner(
             y,
             &[
@@ -331,7 +351,7 @@ fn bessy0(x: f64) -> f64 {
                 0.000_143_048_876_5,
                 -0.000_006_911_147_651,
                 0.000_000_762_109_516_1,
-                -0.000_000_093_493_515_2,
+                -0.000_000_093_494_515_2,
             ],
         );
         (NR_2_OVER_PI / x).sqrt() * (xx.sin() * ans1 + z * xx.cos() * ans2)
@@ -352,6 +372,8 @@ fn bessy1(x: f64) -> f64 {
                 8_511.937_935,
             ],
         );
+        // The Y1 denominator is degree 6: dropping the 0.3549632885e3 term drifts
+        // BESSELY(2.5,1) by 4.9e8 ULP and grows ~x^10 (the BUG-FUNC-024 witness).
         let ans2 = horner(
             y,
             &[
@@ -360,6 +382,7 @@ fn bessy1(x: f64) -> f64 {
                 3.733_650_367e9,
                 2.245_904_002e7,
                 1.020_426_05e5,
+                354.963_288_5,
                 1.0,
             ],
         );
@@ -378,12 +401,13 @@ fn bessy1(x: f64) -> f64 {
                 -0.000_000_240_337_019,
             ],
         );
+        // Same Q1 table as bessj1: 0.8449199096e-5, not 8.4…e-5.
         let ans2 = horner(
             y,
             &[
                 0.046_874_999_95,
                 -0.000_200_269_087_3,
-                0.000_084_491_990_96,
+                0.000_008_449_199_096,
                 -0.000_000_882_289_87,
                 0.000_000_105_787_412,
             ],
@@ -731,12 +755,80 @@ mod tests {
     fn bessely0_small_x_bit_exact_after_nr_constant() {
         // BUG-FUNC-024: Excel's BESSELY uses NR's truncated 2/π = 0.636619772; with it the
         // order-0 x<8 path matches live Excel 16.0 b20026 bit-for-bit — BESSELY(0.5,0) was
-        // 4.3e6 ULP off under full-precision 2/π. Bits from the elem-probe ledger. (The
-        // order-1, x>=8, and recurrence paths remain off — Excel's non-NR method, tracked.)
+        // 4.3e6 ULP off under full-precision 2/π. Bits from the elem-probe ledger.
         assert_eq!(
             bessely_kernel(0.5, 0.0).unwrap().to_bits(),
             0xbfdc_72fe_b3fe_171f
         );
+    }
+
+    #[test]
+    fn bessely_matches_live_excel_bits_across_all_lanes() {
+        // BUG-FUNC-024: live Excel 16.0 b19929 witnesses from the W097 R-E cell-ref
+        // oracle grid (smart-fuzzer/runs/W097-R-E-bessely-cellref), covering every
+        // kernel lane: order 0/1 rational (x<8), order 0/1 asymptotic (x>=8), and
+        // the upward recurrence for order >= 2 on both sides of the x=8 branch.
+        let witnesses: &[(f64, f64, u64)] = &[
+            (1.5, 0.0, 0x3fd8_7a0b_0e10_64fe),
+            (3.0, 0.0, 0x3fd8_1e4f_8696_66f6),
+            (10.0, 0.0, 0x3fac_80ee_66e4_640e),
+            (20.0, 0.0, 0x3fb0_0936_d237_7e6e),
+            (100.0, 0.0, 0xbfb3_c648_87ab_4ab3),
+            (0.5, 1.0, 0xbff7_8b26_a280_973f),
+            (2.5, 1.0, 0x3fc2_ad72_0e3e_e754),
+            (5.0, 1.0, 0x3fc2_ed2d_eb0c_cd22),
+            (10.0, 1.0, 0x3fcf_dfbc_c743_ab01),
+            (100.0, 1.0, 0xbf94_dc7a_b5ff_838f),
+            (2.5, 2.0, 0xbfd8_67ce_7975_e982),
+            (5.0, 3.0, 0x3fc2_b8e1_e56e_51a6),
+            (10.0, 5.0, 0x3fc1_54e3_1704_f65c),
+            (5.0, 10.0, 0xc039_210d_577f_18c6),
+            (100.0, 10.0, 0x3fad_dda2_d78f_9299),
+        ];
+        for &(x, n, excel_bits) in witnesses {
+            let actual = bessely_kernel(x, n).expect("witness should succeed").to_bits();
+            assert_eq!(
+                actual, excel_bits,
+                "BESSELY({x},{n}): local 0x{actual:016x} != Excel 0x{excel_bits:016x}"
+            );
+        }
+    }
+
+    #[test]
+    fn besselj_matches_live_excel_bits_across_all_lanes() {
+        // BUG-FUNC-024 companion: live Excel 16.0 b19929 witnesses (elem-probe,
+        // cell-ref plumbing, 2026-07-02) covering the J-specific asymptotic tables
+        // (P0 transposition, six-entry P1) plus upward/downward recurrence lanes.
+        // BESSELJ(50,0)/BESSELJ(150,0) are deliberately absent: Excel's COS is
+        // 1 ULP off ours at those reduced arguments (large-argument trig stream),
+        // which J0 inherits at full weight.
+        let witnesses: &[(f64, f64, u64)] = &[
+            (8.0, 0.0, 0x3fc5_f8a7_55e1_788c),
+            (8.75, 0.0, 0xbf9a_9256_3e96_315c),
+            (9.5, 0.0, 0xbfc8_d2a8_3e5a_7208),
+            (12.0, 0.0, 0x3fa8_6abb_bb51_85ea),
+            (20.0, 0.0, 0x3fc5_6110_6f86_4aa3),
+            (100.0, 0.0, 0x3f94_772b_b4df_490f),
+            (400.0, 0.0, 0xbfa3_e0e4_e9d2_dd2c),
+            (8.0, 1.0, 0x3fce_084d_8f61_6cc8),
+            (9.0, 1.0, 0x3fcf_663b_b752_811e),
+            (13.0, 1.0, 0xbfb2_005a_9b46_ef4e),
+            (25.0, 1.0, 0xbfc0_0b7a_105f_17f2),
+            (60.0, 1.0, 0x3fa7_dbbe_4cfb_f0ce),
+            (400.0, 1.0, 0xbf82_e303_b9a6_704d),
+            (5.0, 2.0, 0x3fa7_d762_1bc7_9bd8),
+            (10.0, 2.0, 0x3fd0_4bdc_86d3_3573),
+            (20.0, 5.0, 0x3fc3_5987_db6a_c779),
+            (100.0, 3.0, 0x3fb3_875c_878f_ce53),
+            (10.0, 10.0, 0x3fca_8ee7_9d2f_09d3),
+        ];
+        for &(x, n, excel_bits) in witnesses {
+            let actual = besselj_kernel(x, n).expect("witness should succeed").to_bits();
+            assert_eq!(
+                actual, excel_bits,
+                "BESSELJ({x},{n}): local 0x{actual:016x} != Excel 0x{excel_bits:016x}"
+            );
+        }
     }
 
     #[test]

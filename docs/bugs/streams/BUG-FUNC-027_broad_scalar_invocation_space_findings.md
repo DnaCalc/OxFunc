@@ -201,6 +201,14 @@ seven cycles unless noted as `singleton_witness`.
   `=COT(-307.07)` `12693` ULP. Classical Cody-Waite-vs-double-precision-π
   argument-reduction delta. Closing it requires an extended-precision π
   reduction in the kernel.
+- **COS witnesses at moderate arguments (2026-07-02, BUG-FUNC-024 spillover).**
+  Excel `COS` is `1` ULP off UCRT/Rust at cell-ref inputs `49.214601836`
+  (Excel `0x3fdfcbaf84b75409` vs local `…5408`) and `149.214601836`
+  (Excel `0xbf86a0d99f45d970` vs local `…d96f`); `SIN` is bit-exact at both.
+  Downstream: `BESSELJ(50,0)`, `BESSELJ(150,0)` (`1` ULP) and `BESSELJ(50,2)`
+  (`2` ULP) inherit exactly this through `cos(x-0.785398164)*P0` and close
+  automatically when COS parity lands (Bessel tables themselves signed off
+  under BUG-FUNC-024).
 
 ### CLASS-C4: ATANH near ±1 precision
 

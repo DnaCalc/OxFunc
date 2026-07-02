@@ -1,7 +1,7 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-07-02`
+Last reconciled: `2026-07-02` (BESSELY/BESSELJ rows removed on BUG-FUNC-024 sign-off)
 Last history cleanup: `2026-06-26`
 
 ## Purpose
@@ -45,13 +45,13 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `28`
+Open Category-2 rows: `26`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
-| G3 special/statistical numeric exactness | 9 |
+| G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 5 |
 | G5 matrix numeric/shape | 2 |
 | G6 financial exactness/solver | 12 |
@@ -72,8 +72,6 @@ No current open rows.
 |-------------|-------------|-----|-----|----------|
 | BETAINV, CHIDIST, CHIINV, FDIST, FINV, GAMMAINV, HYPGEOMDIST, NEGBINOMDIST, TDIST, TINV (+ CONFIDENCE.T, Z.TEST unprobed) | Distribution scalar numeric drift, currently quantified at `1`-`28` ULP on representative live-Excel witnesses. | NUM-S | M2 | BUG-FUNC-021 / KED-STAT-001 / `oxf-simj` |
 | GAMMA | Negative-non-integer reflection drift; latest representative reprobe records `182` ULP at `GAMMA(-1.00012)`. | NUM-L | M1 | BUG-FUNC-027 C1 |
-| BESSELY | Residual Bessel Y drift remains in order-1, `x>=8`, and order>=2 recurrence lanes, roughly `10^8`-`10^11` ULP on known witnesses. | NUM-L | M1 | BUG-FUNC-024 / KED-BESSEL-001 / `oxf-xp6p` |
-| BESSELJ (and likely BESSELI/BESSELK) for `x>=8` | Large `x>=8` Bessel J drift, same family as the remaining BESSELY substrate; BESSELI/BESSELK `x>=8` still need probing. | NUM-L | M0 | BUG-FUNC-024 companion |
 | FORECAST, FORECAST.LINEAR, TREND, LINEST, LOGEST | Least-squares regression drift, currently `<=2` ULP. | NUM-S | M1 | G8 probe 2026-06-19 |
 | GROWTH | Exponential-regression drift around `~11` ULP. | NUM-L | M1 | G8 probe `GROWTH({1,3,2,5},{1,2,3,4},{5})` |
 | CHISQ.TEST, CHITEST | Chi-square test-statistic drift around `~8` ULP. | NUM-L | M1 | G8 probe `CHISQ.TEST({10,20,30},{12,18,30})` |
@@ -84,7 +82,7 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| TAN, SIN, COT, SEC, CSC | Large-argument reduction drift; current cell-ref reprobes show small/moderate inputs exact and `10^5`-`10^6` inputs drifting by roughly `50`-`900` ULP. | NUM-L | M1 | BUG-FUNC-027 C3 |
+| TAN, SIN, COT, SEC, CSC (+ COS `1` ULP) | Large-argument reduction drift; current cell-ref reprobes show small/moderate inputs exact and `10^5`-`10^6` inputs drifting by roughly `50`-`900` ULP. 2026-07-02: Excel `COS` also witnessed `1` ULP off at moderate args `49.214601836`/`149.214601836` (`SIN` exact there); `BESSELJ(50,0)`, `BESSELJ(150,0)` (`1` ULP) and `BESSELJ(50,2)` (`2` ULP) inherit exactly this and close with it — the Bessel substrate itself is signed off (BUG-FUNC-024). | NUM-L | M1 | BUG-FUNC-027 C3 |
 | ATANH | Mid-small argument drift: `2`-`3` ULP at current witnesses such as `ATANH(0.1)` and `ATANH(0.2)`. | NUM-S | M1 | BUG-FUNC-027 C4 |
 | ACOTH | Small residual drift: `1` ULP at current witnesses such as `ACOTH(5)` and `ACOTH(10)`. | NUM-S | M1 | BUG-FUNC-027 C5 |
 | COMBIN, COMBINA, PERMUT, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP drift where OxFunc currently differs from Excel's published bits. | NUM-S | M1 | BUG-FUNC-027 combinatorial group |

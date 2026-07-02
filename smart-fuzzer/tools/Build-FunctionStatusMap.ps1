@@ -201,7 +201,8 @@ $streamRegisterPath = Join-Path $RepoRoot "docs\bugs\BUG_STREAM_REGISTER.csv"
 $streamRows = Import-Csv -LiteralPath $streamRegisterPath
 $openStreamStatus = @{}
 foreach ($s in $streamRows) {
-    if ([string]$s.status -eq "closed") { continue }
+    # The register uses both "closed" and "closed_signed_off" for finished streams.
+    if (([string]$s.status).StartsWith("closed")) { continue }
     $openStreamStatus[[string]$s.bug_id] = [string]$s.status
 }
 Write-Host "Open / handed_off / validated_local streams: $($openStreamStatus.Count)"
@@ -236,7 +237,9 @@ $coverage = @{}
 $arrayRollupCount = 0
 foreach ($r in $rollups) {
     $d = Get-Content $r.FullName -Raw | ConvertFrom-Json
-    $schema = [string]$d.schema_version
+    # Older runs (e.g. wd-hol-001) have an empty rollup.json; StrictMode requires guarded access.
+    if ($null -eq $d) { continue }
+    $schema = [string]$d.PSObject.Properties['schema_version'].Value
     if ($schema -ne "oxfunc.smart_fuzzer.array_rollup.v0" -and $schema -ne "oxfunc.smart_fuzzer.array_rollup.v1") {
         continue
     }
@@ -295,8 +298,10 @@ $broadCoverage = @{}
 $broadRunCount = 0
 foreach ($r in $rollups) {
     $d = Get-Content $r.FullName -Raw | ConvertFrom-Json
-    if ([string]$d.schema_version -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v0" -and
-        [string]$d.schema_version -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v1") {
+    if ($null -eq $d) { continue }
+    $schema = [string]$d.PSObject.Properties['schema_version'].Value
+    if ($schema -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v0" -and
+        $schema -ne "oxfunc.smart_fuzzer.broad_scalar_run_rollup.v1") {
         continue
     }
     $compPath = Join-Path $r.Directory.FullName "comparisons\excel_sample_comparisons.jsonl"

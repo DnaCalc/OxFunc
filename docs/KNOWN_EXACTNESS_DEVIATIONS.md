@@ -123,23 +123,27 @@ Each active entry should record:
   normal standard aliases, and `CONFIDENCE.T` / `Z.TEST`.
 
 ### KED-BESSEL-001: BESSELY Current-Baseline Exactness Residual
-- **Status**: `open`
+- **Status**: `closed_signed_off` (2026-07-02)
 - **Owner**: `BUG-FUNC-024`, bead `oxf-xp6p`
-- **Functions**: `BESSELY`
+- **Functions**: `BESSELY` (+ `BESSELJ` substrate companion)
 - **Mismatch class**: Bessel `Y` scalar numeric algorithm/publication
   exactness
-- **Current handling**: known residual split from W089; repair by Bessel
-  substrate only, not by formula-specific lookup
+- **Resolution**: three OxFunc NR-port coefficient typos fixed and two
+  Excel-side table quirks matched (Excel's J/Y asymptotic tables are
+  separately-typed copies with different typos). `93/93` BESSELY grid rows
+  bit-exact vs live Excel 16.0 b19929
+  (`smart-fuzzer/runs/oxf-xp6p-bugfunc024-repair-validation-20260702/`);
+  BESSELI/BESSELK `x>=8` probed clean (18/18). Remaining `BESSELJ(50,0)`,
+  `BESSELJ(150,0)`, `BESSELJ(50,2)` rows (≤`2` ULP) inherit Excel's 1-ULP
+  `COS` at the reduced arguments and are tracked with BUG-FUNC-027 CLASS-C3.
 - **Evidence**:
   1. `docs/bugs/streams/BUG-FUNC-024_bessely_current_baseline_exactness_drift.md`
   2. `docs/bugs/streams/BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md`
   3. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
   4. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
+  5. `smart-fuzzer/runs/oxf-xp6p-bugfunc024-repair-validation-20260702/`
 - **Representative witnesses**:
-  1. `=BESSELY(2.5,1)`
-- **Next action**: build a compact Excel probe grid for Bessel `Y` over
-  order/x branch and recurrence lanes, then replace or adjust the substrate
-  algorithm against that grid.
+  1. `=BESSELY(2.5,1)` (now bit-exact)
 
 ### KED-MATRIX-001: MINVERSE Matrix Numeric Exactness Residual
 - **Status**: `open`

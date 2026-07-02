@@ -73,6 +73,24 @@ change how a *future, unrelated* fix is approached.
   oracle *before* chasing extended-precision/x87 emulation. (Excel-deviates-from-ideal-math
   cases like this are catalogued in
   [`EXCEL_MATH_DEVIATION_CATALOG.md`](EXCEL_MATH_DEVIATION_CATALOG.md).)
+- **Drift that grows like a clean power of the argument is a coefficient-table defect, and
+  you can *solve* for it instead of guessing.** Model `excel − local` as `Σ δ_k·y^k` through
+  the kernel's own structure and solve the linear system against live-Excel bit witnesses
+  (5–20 rows suffice); a delta that comes out consistent across all rows *is* the wrong/missing
+  coefficient. BUG-FUNC-024 found five distinct table defects this way (a dropped Horner term,
+  a 10× exponent slip, a digit transposition, a `…935↔…945` digit, and a duplicated-line
+  6-entry table) that no amount of "compare against the NR book" would have settled.
+- **Excel's sibling functions keep separately-typed copies of "the same" table — with
+  different typos.** Excel's Y0/Y1 asymptotic tables match NR-with-truncated-2/π, but its
+  J0/J1 copies of the *same* P/Q polynomials each carry their own transcription errors.
+  Bit-matching one lane proves nothing about its sibling's constants; verify each function's
+  copy against the oracle independently, and never "unify" tables that Excel keeps separate.
+- **A residual no table delta can fit may be inherited from Excel's libm.** After the
+  J-side tables were exact, two rows stayed 1 ULP off; probing `COS` directly at the exact
+  reduced arguments showed Excel's `COS` (not the Bessel code) is 1 ULP off UCRT there,
+  at full weight through the `cos·P` term. Before blaming a kernel's last ULP, evaluate the
+  transcendental sub-calls through the worksheet functions at the exact intermediate
+  arguments — and if the host libm is the cause, file it with the trig lane, not the kernel.
 
 ## Doctrine
 

@@ -3,7 +3,8 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-024`
 - **Opened**: `2026-04-30`
-- **Status**: `open`
+- **Status**: `closed_signed_off` (2026-07-02; 93/93 live-Excel bit-exact, run
+  `oxf-xp6p-bugfunc024-repair-validation-20260702`)
 - **Owner workset**: `W089`
 - **Bead**: `oxf-xp6p`
 - **Split from**: `BUG-FUNC-023`
@@ -12,7 +13,8 @@
 - **Reported against ref**: `w089-comprehensive-seed-20260430-004`
 - **Reproduced on ref**: `oxf-i45e-w089-repair-20260430-001`
 - **Introduced in ref**: `unknown`
-- **Fixed in ref**: `unfixed`
+- **Fixed in ref**: `oxf-xp6p-bugfunc024-repair-validation-20260702` (local kernel fix,
+  this branch)
 
 ## Ownership And Root Cause
 - **Ownership class**: `OxFunc-owned bug`
@@ -94,10 +96,60 @@ in this stream.
      `smart-fuzzer/planning/W097-R-E-bessely-cell-ref-resweep.md`.
    - Driver: `smart-fuzzer/tools/Run-BesselyResweep.ps1`.
 
+## 2026-07-02 Repair: three OxFunc port typos + two Excel-side table quirks
+
+The entire drift surface (`10^6..10^12` ULP) came down to coefficient-level defects in
+`crates/oxfunc_core/src/functions/bessel_convert_family.rs` against Excel's Numerical
+Recipes-derived tables. Root-caused by solving per-coefficient deltas as linear systems
+against live-Excel bit witnesses (W097 93-case grid + fresh 92-row BESSELJ/I/K probes).
+
+OxFunc port typos (bugs on our side):
+
+1. `bessy1` `x<8` denominator: NR's degree-6 polynomial lost its `0.3549632885e3`
+   term (the Horner table jumped from `1.020426050e5` straight to `1.0`). Error grows
+   `~x^10`; this alone was the `=BESSELY(2.5,1)` witness (`4.9e8` ULP) and, seeded
+   through the upward recurrence, the whole order>=2 lane.
+2. `bessj1`/`bessy1` `x>=8` asymptotic `Q1` third coefficient transcribed as
+   `8.449199096e-5` instead of NR's `0.8449199096e-5` (= `8.449199096e-6`, 10x).
+3. `bessy0` `x<8` log-term grouping: Excel associates `c*(J0(x)*ln x)`, not
+   `(c*J0(x))*ln x` (1 ULP at `x=1.5`, `x=3`).
+
+Excel-side table quirks (Excel's J and Y asymptotic tables are separately-typed copies
+with *different* typos; matched deliberately, per the never-accept-divergence policy):
+
+4. Excel's **Y0** `Q0` last coefficient is `-0.934945152e-7` (`…945…`); its **J0** copy
+   keeps NR's `-0.934935152e-7`. (`4773` ULP at `BESSELY(10,0)` before matching.)
+5. Excel's **J0** `P0` `y^1` coefficient transposes NR's `…628627` into `…628267`
+   (`-0.1098628267e-2`), and Excel's **J1** `P1` table is six entries — an inserted
+   duplicate of the `y^2` coefficient `-0.3516396496e-4` shifting the remaining NR
+   terms down one slot. This costs Excel `~8e-6` absolute accuracy near `x=8`; OxFunc
+   now reproduces it bit-for-bit.
+
+## Validation (live Excel 16.0 b19929, cell-ref plumbing, 2026-07-02)
+
+- BESSELY: `Run-BesselyResweep.ps1` run
+  `smart-fuzzer/runs/oxf-xp6p-bugfunc024-repair-validation-20260702/` — `93` cases,
+  `93` exact typed bit matches, `0` drifts (was `1`/`92`).
+- BESSELJ: 56-row two-way probe (`tools/elem-probe/run-elem-probe.ps1`; orders
+  `0,1,2,3,5,10`, `x` in `[1.5,400]`) — all bit-exact **except** `BESSELJ(50,0)`,
+  `BESSELJ(150,0)` (1 ULP) and `BESSELJ(50,2)` (2 ULP, recurrence-inherited), which
+  are **not Bessel defects**: Excel's `COS` is 1 ULP off ours at the reduced arguments
+  `49.214601836` / `149.214601836` (probed directly: Excel `COS` `0x…5409`/`0x…d970`
+  vs UCRT/Rust `0x…5408`/`0x…d96f`, `SIN` exact). J0 inherits `cos` at full weight
+  (`cos*ans1` dominant). Tracked with the large-argument trig lane (BUG-FUNC-027
+  CLASS-C3); those rows close automatically when SIN/COS parity lands.
+- Similar-risk scan: BESSELI/BESSELK (shared family, `x>=8` previously unprobed) —
+  18/18 live rows bit-exact; no action.
+- Lane A: witness-table regressions
+  `bessel_convert_family::tests::bessely_matches_live_excel_bits_across_all_lanes`
+  (15 witnesses) and `besselj_matches_live_excel_bits_across_all_lanes` (18 witnesses).
+
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded
-- [ ] validation recorded
-- [ ] root cause recorded
-- [ ] similar-risk scan recorded
-- [ ] spec/matrix/contract updated if required
-- [ ] handoff filed if required
+- [x] fix landed or non-OxFunc ownership recorded
+- [x] validation recorded (93/93 BESSELY resweep + BESSELJ/I/K probes, 2026-07-02)
+- [x] root cause recorded (port typos + Excel-side divergent J/Y table copies)
+- [x] similar-risk scan recorded (BESSELI/BESSELK 18/18 exact; BESSELJ residual rows
+      reassigned to the trig lane with direct COS witnesses)
+- [x] spec/matrix/contract updated if required (catalog G3 rows removed; G4 trig row
+      updated with COS witnesses; KED-BESSEL-001 closed)
+- [x] handoff filed if required (none — BESSELJ residual folded into BUG-FUNC-027 C3)

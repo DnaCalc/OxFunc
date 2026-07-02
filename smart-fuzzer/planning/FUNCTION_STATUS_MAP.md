@@ -1,6 +1,6 @@
 # OxFunc Function Status Map
 
-Generated: 2026-05-28T21:01:31.0551801Z
+Generated: 2026-07-02T20:18:53.8684313Z
 
 This map is the reproducible derived view of where each of the published OxFunc surfaces stands against the bit-exact Excel parity goal (CHARTER.md §4.1). Rebuild with `smart-fuzzer/tools/Build-FunctionStatusMap.ps1`.
 
@@ -17,8 +17,8 @@ Inputs joined:
 | --- | ---: | --- |
 | `deferred` | 17 | in W050; not part of the 517 in-scope rows |
 | `structural_bug_open` | 86 | open BUG-FUNC stream with structural severity (kind/error/shape/array-lift) |
-| `numeric_drift_open` | 77 | open BUG-FUNC stream with numeric drift severity (1 or >1 ULP) |
-| `mixed_or_open` | 28 | genuine non-match rows in the latest run, no linked stream — needs triage |
+| `numeric_drift_open` | 76 | open BUG-FUNC stream with numeric drift severity (1 or >1 ULP) |
+| `mixed_or_open` | 29 | genuine non-match rows in the latest run, no linked stream — needs triage |
 | `harness_blocked` | 0 | latest run only harness-blocked / generator-invalid — needs a better probe, not a function bug |
 | `harness_pending` | 18 | poked, but needs a richer/different harness to judge honestly (reference-identity/host context, or statistical RAND harness) — not a bug |
 | `excluded` | 20 | deliberately not value-comparable and not planned for a harness (volatile clock / host / locale / callable) |
@@ -39,97 +39,98 @@ Inputs joined:
 | Surface | Streams | Runs seen | Last seen |
 | --- | --- | ---: | --- |
 | `ADDRESS` | BUG-FUNC-018(structural/validated_local/oxfunc) | 27 | 05/04/2026 |
-| `OCT2DEC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `NUMBERVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `NOT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `OCT2DEC` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `NUMBERVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `NOT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `NORMDIST` | BUG-FUNC-018(structural/validated_local/oxfunc) | 24 | 05/04/2026 |
 | `NETWORKDAYS.INTL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `NETWORKDAYS` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `MULTINOMIAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `NETWORKDAYS` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `MULTINOMIAL` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `MINIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `MAXIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `LOG` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `LCM` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISOWEEKNUM` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISODD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISNONTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISLOGICAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISEVEN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `LOG` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `LCM` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISOWEEKNUM` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISODD` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISNONTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISLOGICAL` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISEVEN` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `ODDFPRICE` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `ODDFYIELD` | BUG-FUNC-032(structural/open/oxfunc) | 3 | 05/28/2026 |
-| `QUOTIENT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ROMAN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `YEARFRAC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `QUOTIENT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ROMAN` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `YEARFRAC` | BUG-FUNC-028(structural/open/oxfunc) | 14 | 05/29/2026 |
 | `WORKDAY.INTL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `WORKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `WEEKNUM` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `WEEKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `VALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `UNICODE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TIMEVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ISERR` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TBILLPRICE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TBILLEQ` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `WORKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `WEEKNUM` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `WEEKDAY` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `VALUE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `UNICODE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `TIMEVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ISERR` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `TEXT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `TBILLPRICE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `TBILLEQ` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `TAKE` | BUG-FUNC-026(structural/handed_off/seam) | 34 | 05/09/2026 |
 | `SWITCH` | BUG-FUNC-004(structural/validated_local/oxfunc); BUG-FUNC-018(structural/validated_local/oxfunc) | 29 | 05/04/2026 |
 | `SUMIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `SUMIF` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `STANDARDIZE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `SQRTPI` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `TBILLYIELD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `STANDARDIZE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `SQRTPI` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `TBILLYIELD` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `INDEX` | BUG-FUNC-003(structural/handed_off/seam) | 0 |  |
 | `IFS` | BUG-FUNC-018(structural/validated_local/oxfunc) | 29 | 05/04/2026 |
-| `GESTEP` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `DECIMAL` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `GESTEP` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `DECIMAL` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `DCOUNTA` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DCOUNT` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `DBCS` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `DBCS` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `DAVERAGE` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `DATEVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `DATEVALUE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `COUNTIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `COUNTIF` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `DELTA` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `DELTA` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `COMPLEX` | BUG-FUNC-018(structural/validated_local/oxfunc) | 26 | 05/04/2026 |
 | `BINOMDIST` | BUG-FUNC-018(structural/validated_local/oxfunc) | 24 | 05/04/2026 |
-| `BIN2OCT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `BIN2OCT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `AVERAGEIFS` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `AVERAGEIF` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `ASC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ARRAYTOTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `ASC` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ARRAYTOTEXT` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `AREAS` | BUG-FUNC-003(structural/handed_off/seam) | 7 | 05/09/2026 |
-| `ARABIC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `CLEAN` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `ARABIC` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `CLEAN` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `YIELD` | BUG-FUNC-031(structural/open/oxfunc) | 3 | 05/28/2026 |
 | `DGET` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DMIN` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `GCD` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `GAMMALN.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `FIXED` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `FACTDOUBLE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ERFC.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ERFC` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ERF.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `ERF` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `GCD` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `GAMMALN.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 3 | 05/29/2026 |
+| `FIXED` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `FACTDOUBLE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `ERFC.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 3 | 05/29/2026 |
+| `ERFC` | BUG-FUNC-028(structural/open/oxfunc) | 3 | 05/29/2026 |
+| `ERF.PRECISE` | BUG-FUNC-028(structural/open/oxfunc) | 3 | 05/29/2026 |
+| `ERF` | BUG-FUNC-028(structural/open/oxfunc) | 3 | 05/29/2026 |
 | `DMAX` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
-| `EOMONTH` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `EOMONTH` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `DVAR` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DSUM` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DSTDEVP` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DSTDEV` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DPRODUCT` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `DOLLARFR` | BUG-FUNC-018(structural/validated_local/oxfunc) | 24 | 05/04/2026 |
-| `DOLLARDE` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
-| `DOLLAR` | BUG-FUNC-028(structural/open/oxfunc) | 1 | 05/28/2026 |
+| `DOLLARDE` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
+| `DOLLAR` | BUG-FUNC-028(structural/open/oxfunc) | 13 | 05/29/2026 |
 | `DVARP` | BUG-FUNC-004(structural/validated_local/oxfunc) | 0 |  |
 | `OP_UNION_REF` | BUG-FUNC-003(structural/handed_off/seam) | 0 |  |
 
-## numeric_drift_open (77)
+## numeric_drift_open (76)
 
 | Surface | Streams | Runs seen | Last seen |
 | --- | --- | ---: | --- |
 | `ACCRINT` | BUG-FUNC-030(numeric/open/oxfunc) | 3 | 05/28/2026 |
+| `PERCENTRANK.INC` | BUG-FUNC-021(numeric/open/oxfunc) | 0 |  |
 | `PERCENTRANK.EXC` | BUG-FUNC-021(numeric/open/oxfunc) | 0 |  |
 | `PERCENTRANK` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `NORMSINV` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
@@ -138,17 +139,16 @@ Inputs joined:
 | `NORM.S.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `NEGBINOMDIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `NEGBINOM.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `MROUND` | BUG-FUNC-027(numeric/open/oxfunc) | 2 | 04/29/2026 |
+| `MROUND` | BUG-FUNC-027(numeric/open/oxfunc) | 4 | 06/04/2026 |
 | `MOD` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `MINVERSE` | BUG-FUNC-025(numeric/open/oxfunc) | 17 | 05/04/2026 |
 | `KURT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `IPMT` | BUG-FUNC-015(numeric/validated_local/oxfunc) | 0 |  |
 | `HYPGEOMDIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
-| `HYPGEOM.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `PERCENTRANK.INC` | BUG-FUNC-021(numeric/open/oxfunc) | 0 |  |
 | `PERMUTATIONA` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
+| `HYPGEOM.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `PMT` | BUG-FUNC-015(numeric/validated_local/oxfunc) | 1 | 05/04/2026 |
-| `POWER` | BUG-FUNC-027(numeric/open/oxfunc) | 7 | 05/09/2026 |
+| `PPMT` | BUG-FUNC-015(numeric/validated_local/oxfunc) | 0 |  |
 | `TDIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `TANH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `TAN` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
@@ -156,19 +156,19 @@ Inputs joined:
 | `T.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `T.DIST.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `T.DIST.2T` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `GAMMALN` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `T.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `SKEW.P` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `SKEW` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `SINH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `SIN` | BUG-FUNC-027(numeric/open/oxfunc) | 11 | 05/04/2026 |
 | `SECH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `SEC` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `RATE` | BUG-FUNC-009(numeric/validated_local/oxfunc) | 0 |  |
-| `PPMT` | BUG-FUNC-015(numeric/validated_local/oxfunc) | 0 |  |
-| `SKEW.P` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `TINV` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
+| `POWER` | BUG-FUNC-027(numeric/open/oxfunc) | 7 | 05/09/2026 |
+| `GAMMALN` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `GAMMAINV` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
-| `GAMMA.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `GAMMADIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
+| `COMBIN` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `CHISQ.INV.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `CHISQ.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `CHISQ.DIST.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
@@ -179,35 +179,34 @@ Inputs joined:
 | `BETADIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `BETA.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `BETA.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `BESSELY` | BUG-FUNC-024(numeric/open/oxfunc) | 10 | 05/04/2026 |
 | `ATANH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
-| `ATAN2` | BUG-FUNC-027(numeric/open/oxfunc) | 2 | 04/29/2026 |
+| `ATAN2` | BUG-FUNC-027(numeric/open/oxfunc) | 4 | 06/04/2026 |
 | `ACOTH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `ACOSH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
-| `COMBIN` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `COMBINA` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `CONFIDENCE` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `CONFIDENCE.NORM` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `CONFIDENCE.T` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
+| `GAMMA.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `GAMMA.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `GAMMA` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `FISHERINV` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `FINV` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `FDIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `F.INV.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `TINV` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 | `F.INV` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
-| `GAMMADIST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
-| `F.DIST.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `F.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `CSCH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `CSC` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `COTH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `COT` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `COSH` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
 | `COS` | BUG-FUNC-027(numeric/open/oxfunc) | 0 |  |
-| `CONFIDENCE.T` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
-| `F.DIST` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
+| `F.DIST.RT` | BUG-FUNC-021(numeric/open/oxfunc) | 9 | 05/04/2026 |
 | `Z.TEST` | BUG-FUNC-021(numeric/open/oxfunc) | 24 | 05/04/2026 |
 
-## mixed_or_open (28)
+## mixed_or_open (29)
 
 | Surface | Streams | Runs seen | Last seen |
 | --- | --- | ---: | --- |
@@ -224,8 +223,8 @@ Inputs joined:
 | `NPER` |  | 3 | 05/28/2026 |
 | `LOGEST` |  | 1 | 05/28/2026 |
 | `LINEST` |  | 1 | 05/28/2026 |
+| `YIELDDISC` |  | 3 | 05/28/2026 |
 | `JIS` |  | 1 | 05/28/2026 |
-| `IRR` |  | 1 | 05/28/2026 |
 | `HYPERLINK` |  | 1 | 05/28/2026 |
 | `GROWTH` |  | 1 | 05/28/2026 |
 | `GAUSS` |  | 1 | 05/28/2026 |
@@ -237,7 +236,8 @@ Inputs joined:
 | `CONVERT` |  | 3 | 05/28/2026 |
 | `CHITEST` |  | 3 | 05/28/2026 |
 | `CHISQ.TEST` |  | 3 | 05/28/2026 |
-| `YIELDDISC` |  | 3 | 05/28/2026 |
+| `BESSELY` |  | 10 | 05/04/2026 |
+| `IRR` |  | 1 | 05/28/2026 |
 | `YIELDMAT` |  | 3 | 05/28/2026 |
 
 ## harness_blocked (0)
