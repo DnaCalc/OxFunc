@@ -3,6 +3,7 @@
 Status: `provisional`
 Workset: `W24`
 Primary Functions: `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`
+Last updated: `2026-06-26` for `BUG-FUNC-041` admitted-escape evidence
 
 ## 1. Scope
 1. close the admitted current-baseline pure regex trio independently from the mixed `NUMBERVALUE` / `TRANSLATE` family note,
@@ -15,8 +16,14 @@ Primary Functions: `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`
    - `.`,
    - character classes,
    - ASCII-aware ranges,
-   - `\d`, `\w`, `\s`,
+   - `\d`, `\D`, `\w`, `\W`, `\s`, `\S`,
+   - current-baseline zero-width assertions `\A`, `\Z`, `\z`, `\b`, and `\B`,
+   - current-baseline character escapes `\n`, `\t`, `\r`, `\f`, `\v`, `\e`, and `\h`,
+   - escaped literal metacharacters `\.`, `\*`, `\+`, `\?`, `\[`, `\]`,
+     `\(`, `\)`, `\|`, `\^`, `\$`, `\/`, and `\\`,
    - postfix quantifiers `*`, `+`, `?`
+   - zero-width assertions are admitted as assertions, but quantified zero-width assertions
+     remain outside this local slice to avoid implying richer regex-engine behavior.
 2. `REGEXEXTRACT`
    - first-match extraction only,
    - no-match returns `#N/A`,
@@ -31,10 +38,12 @@ Primary Functions: `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`
    - `case_sensitivity = 1` means current ASCII-only case-insensitive matching.
 
 ## 3. Explicitly Out Of Slice
-1. grouping, alternation, anchors, lookarounds, backreferences, and capture-group extraction.
+1. grouping, alternation, lookarounds, backreferences, capture-group extraction, and richer
+   regex operators. Escaped grouping/alternation characters are admitted only as literals.
 2. Unicode-aware case folding beyond the current ASCII baseline.
 3. array-return modes and richer extraction surfaces.
 4. the mixed-family `NUMBERVALUE` locale-default lanes and `TRANSLATE` provider lanes.
+5. Unknown letter escapes remain rejected with `#VALUE!` until separately Excel-probed.
 
 ## 4. Metadata Shape
 1. determinism: `deterministic`
@@ -52,6 +61,11 @@ Primary Functions: `REGEXEXTRACT`, `REGEXREPLACE`, `REGEXTEST`
 3. Native worksheet packet in `docs/function-lane/W24_BATCH10_REGEX_SCENARIO_MANIFEST_SEED.csv`
 4. Runtime harness in `tools/w24-probe/run-w24-batch10-regex-baseline.ps1`
 5. Packet execution record in `docs/function-lane/W24_BATCH10_REGEX_EXECUTION_RECORD.md`
+6. `BUG-FUNC-041` live Excel 16.0 build 20026 escape batteries (`2026-06-18`
+   divergence and `2026-06-26` sign-off), local repair tests, and
+   `docs/bugs/evidence/BUG-FUNC-041_REGEX_ESCAPE_SIGNOFF_20260626.md` plus
+   `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/rollup.json`
+   for admitted/rejected escape behavior.
 
 ## 6. Scope Boundary
 1. The closure is bounded to the admitted current-baseline regex trio above.

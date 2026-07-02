@@ -1112,8 +1112,8 @@ Current checkpoint:
 2. W102A stream status is `fix_in_progress` / `not yet fixed` until the current
    dirty tree lands or is intentionally split.
 3. W102B evidence lanes are explicit for finance bit pins, negative-base probe
-   artifacts, approximate lookup error/cross-type probes, regex admitted
-   escape contract work, and `GAMMA.INV` tail/cap evidence.
+   artifacts, approximate lookup error/cross-type probes, regex admitted-escape
+   repair checkpoint/landing, and `GAMMA.INV` tail/cap evidence.
 4. `cargo fmt --check` passes; full `cargo test -p oxfunc_core` has been
    attempted after targeted fixes and is blocked only by the W100 explicit-`@`
    parser lane.
@@ -1214,3 +1214,49 @@ Notes:
    export was documented in `OXFUNC_KERNEL_METADATA_AND_ADMISSION_PROFILE_CONTRACT.md` (`.11`); two
    oracle-confirmed Excel fixes landed (DROP/TAKE `.12.2`, INDEX `.12.5`) with residuals `oxf-wkwj`
    and `oxf-7m1k` tracked outside W105.
+
+## W107 Smart-Fuzzer Testing Infrastructure Roadmap
+
+Status: `planned`
+
+Execution target:
+turn the existing smart-fuzzer explorers, run guides, and planning contracts
+into a durable long-term testing-infrastructure platform for typed,
+feedback-guided exploration of the OxFunc function-call space.
+
+Canonical surfaces:
+1. `docs/worksets/W107_SMART_FUZZER_TESTING_INFRASTRUCTURE_ROADMAP.md`
+2. `smart-fuzzer/planning/SMART_FUZZER_DESIGN.md`
+3. `smart-fuzzer/planning/CASE_SCHEMA_V0.md`
+4. `smart-fuzzer/planning/RUN_ARTIFACT_CONTRACT.md`
+5. `smart-fuzzer/planning/SPARK_LONG_RUN_SMART_FUZZER_GUIDE.md`
+6. `smart-fuzzer/tools/CellRefBatch.psm1`
+7. `smart-fuzzer/tools/Run-ArraySupportTranche.ps1`
+8. `smart-fuzzer/corpus/context_sensitive_catalog/`
+9. `.beads/` W107 epic and child lanes, once created
+
+Depends on:
+`W072`, `W088`, `W089`, `W092`, `W097`, `W104`, and `W105`.
+
+Entry conditions:
+1. the first W107 execution bead picks one narrow infrastructure gate,
+2. unrelated dirty-tree work is avoided, landed, or intentionally split,
+3. existing smart-fuzzer run artifacts and status maps are audited before broad
+   smart-fuzzer runner rewrites.
+
+Notes:
+1. W088/W089/W092/W097/W104 remain the owners for their pilot, sweep,
+   long-run, re-measurement, and category-split scopes.
+2. W107 owns the platform-level roadmap across schema consolidation, true
+   batched Excel oracle execution, semantic feedback queue, typed mutators,
+   automated minimization, experiment indexing, campaign scheduling, and
+   Category-1 downstream-runner integration.
+3. W107 does not repair function-semantic bugs discovered by the fuzzer and
+   does not treat sampled pass rows, local-only agreement, code coverage, or
+   metamorphic agreement as semantic parity evidence.
+4. W107 is testing infrastructure only: it may change smart-fuzzer tooling,
+   corpora, fixtures, run artifacts, and test-only or feature-gated diagnostics,
+   but it does not refactor operational OxFunc function kernels, dispatch,
+   argument preparation, value semantics, FEC behavior, registry semantics, or
+   public runtime APIs. Any production semantic change discovered by W107 must
+   move to the ordinary owning bug, workset, or handoff lane.

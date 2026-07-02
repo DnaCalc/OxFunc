@@ -3,7 +3,9 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-041`
 - **Opened**: `2026-06-11`
-- **Status**: `open` (fix landed in `7a0003f` but OVER-REJECTS; live Excel escape battery 2026-06-18 — see below)
+- **Status**: `open` (W102A fix landed in `7a0003f` but over-rejected; local repair
+  on `2026-06-26` expands the admitted escape set and is live-Excel signed off;
+  checkpoint/landing still pending)
 - **Owner workset**: `W102A` (no-probe structural fixes)
 
 ## Live Excel Verification (2026-06-18) — admitted-slice diverges
@@ -16,14 +18,28 @@ divergences**, all "OxFunc rejects what Excel admits":
 - `\h \e` — Excel admits, OxFunc `#VALUE!`
 
 Both correctly reject unknown letter escapes (`\q \k \m \g \p \c \x \y \j \o`). The
-W102A fix swapped "silently match literal" for over-rejection; the admitted escape set
-must expand to Excel's. Tracked as bead `oxf-fyhi`. Stays open.
+W102A fix swapped "silently match literal" for over-rejection. The `2026-06-26`
+working-tree repair expands the admitted escape set locally and is now live-Excel
+signed off; bead `oxf-fyhi` stays open until checkpoint/landing.
+
+## Live Excel Verification (2026-06-26) — local repair matches
+The repaired working tree was replayed against desktop Excel via COM using the same
+40-case escape battery. Excel environment: version `16.0`, build `20026`, Windows
+64-bit. Result: `40/40` exact typed matches, `0` mismatches.
+
+Artifacts:
+- `docs/bugs/evidence/BUG-FUNC-041_REGEX_ESCAPE_SIGNOFF_20260626.md`
+- `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/rollup.json`
+- `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/cases/regex-escape-battery.jsonl`
+- `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/outcomes/local.jsonl`
+- `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/outcomes/excel.jsonl`
+- `smart-fuzzer/runs/bug-func-041-regex-escape-signoff-20260626/comparisons/comparisons.jsonl`
 
 ## Source Refs
 - **Reported against ref**: review pass 2026-06-10 (digest `functions-text-lookup.md` F9)
 - **Reproduced on ref**: code inspection; no fuzzer run required (code-path determinism)
 - **Introduced in ref**: unknown (predates current bug-stream history)
-- **Fixed in ref**: `not yet fixed` (working-tree patch present; checkpoint not landed)
+- **Fixed in ref**: `not yet landed` (working-tree repair is live-Excel signed off; checkpoint/landing not landed)
 
 ## Ownership And Root Cause
 
@@ -64,48 +80,58 @@ regextest_kernel(&txt("n"), &txt("[\\n]"), true) // same inside class
 rg "translate_kernel|phrasebook" crates/ -- returns only the definitions in the source file
 ```
 
-## Fix Plan
+## Repair State
 
 ### Part A
-In `parse_escape_atom`: replaced the catch-all `other => RegexAtom::Literal(other)` arm with
-an explicit whitelist of supported literal-escape punctuation (`\\ \. \* \+ \? \[ \]`) and a
-final `_ => return Err(WorksheetErrorCode::Value)` arm for everything else. The six shorthand
-atoms (`\d \D \w \W \s \S`) are unchanged.
+The original W102A repair correctly removed silent literal fallthrough but made the admitted
+escape set too narrow. The current working-tree repair expands `parse_escape_atom` to the
+Excel-observed escape split:
 
-In `parse_class_piece`: same change — added `\\ \. \* \+ \? \[ \] \- \^` as explicit
-literal-escape cases (the extra two cover characters with special meaning inside `[…]`),
-kept the `D | W | S` explicit error, and replaced the remaining `other` fallthrough with
-`_ => Err(WorksheetErrorCode::Value)`.
+- admitted shorthand classes: `\d \D \w \W \s \S`
+- admitted zero-width assertions: `\A \Z \z \b \B`
+- admitted character escapes: `\n \t \r \f \v \e \h`
+- admitted escaped literal metacharacters: `\. \* \+ \? \[ \] \( \) \| \^ \$ \/ \\`
+- rejected unknown letter escapes remain rejected with `#VALUE!`: `\q \k \m \g \p \c \x \y \j \o`
+
+The matcher now has explicit zero-width assertion atoms so anchors/boundaries are not modeled as
+literals, and quantified zero-width assertions are rejected to avoid implying a richer local regex
+engine than the current slice supports.
+
+`parse_class_piece` now admits the character escapes and escaped literals that are meaningful
+inside character classes, while unknown class escapes still return `#VALUE!`.
 
 ### Part B
-The current working-tree patch removes `normalize_phrase`, `normalize_lang_code`,
-`phrasebook`, and `translate_kernel` from `number_regex_translate_family.rs`.
-No callers existed; no tests referenced them.
+The dead `TRANSLATE` phrasebook cleanup remains part of the prior W102A checkpoint and is not
+changed by the 2026-06-26 regex escape repair.
 
 ## Validation
 - New regression tests added:
-  - `regextest_unrecognized_escape_newline_is_value_error` — `\n` → `#VALUE!`
-  - `regextest_unrecognized_escape_tab_is_value_error` — `\t` → `#VALUE!`
-  - `regextest_unrecognized_escape_word_boundary_is_value_error` — `\b` → `#VALUE!`
-  - `regextest_unrecognized_escape_hex_is_value_error` — `\x` → `#VALUE!`
-  - `regextest_unrecognized_escape_in_class_is_value_error` — `[\n]` → `#VALUE!`
-  - `regextest_admitted_literal_escapes_still_work` — `\.` and `\\` continue to work
-- Full `oxfunc_core` regex filter: 24 tests, 0 failures.
+  - `regextest_admits_excel_escape_battery` — the Excel-observed admitted/rejected split
+    for the 40-escape battery baseline.
+  - `regextest_unknown_letter_escapes_remain_value_errors` — unknown letter escapes still
+    return `#VALUE!`.
+  - `regextest_control_escapes_match_control_characters` — `\n \t \r \f \v \e \h`.
+  - `regextest_zero_width_assertions_compose_with_literals` — `\A`, `\z`, `\b`, and `\B`.
+  - `regextest_admitted_escapes_work_in_classes` — admitted class escapes.
+  - `regextest_unrecognized_escape_in_class_is_value_error` — unknown class escapes still
+    return `#VALUE!`.
+- Full `oxfunc_core` regex filter on 2026-06-26: 24 tests, 0 failures.
+- Live Excel sign-off on 2026-06-26: 40-case escape battery, 40 exact typed
+  matches, 0 mismatches.
 
 ## Similar-Risk Scan
 - The `parse_class_piece` fallthrough for `D | W | S` (negated shorthands inside `[…]`)
   was already an explicit `#VALUE!`; that behavior is correct and unchanged.
-- The loud `#VALUE!` rejections for groups `()`, alternation `|`, anchors `^ $`,
-  and braces `{}` in `parse_regex_pattern` are intentional slice boundaries; not touched.
+- The loud `#VALUE!` rejections for unescaped groups `()`, alternation `|`, anchors `^ $`,
+  and braces `{}` in `parse_regex_pattern` remain intentional slice boundaries. Escaped
+  grouping/alternation/anchor characters are now admitted only as literals.
 - No other escape-parsing paths exist in this file.
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded (working-tree patch present; checkpoint not landed)
+- [ ] fix landed or non-OxFunc ownership recorded (working-tree repair present and live-Excel signed off; checkpoint/landing not landed)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
-- [ ] OxFunc-local admitted escape contract updated under W102B
-      (`FUNCTION_SLICE_REGEX_TRIAD_CONTRACT_PRELIM.md` does not enumerate the
-      admitted escape set)
-- [ ] handoff filed if W102B evidence shows an OxFml-facing contract change is required
+- [x] OxFunc-local admitted escape contract updated under W102B
+- [x] cross-repo handoff assessed: not required for this pure OxFunc parser-slice repair
 - [x] linked reports updated

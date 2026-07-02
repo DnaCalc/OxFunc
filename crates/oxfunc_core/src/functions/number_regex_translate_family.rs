@@ -88,6 +88,11 @@ enum RegexAtom {
     NotWord,
     Space,
     NotSpace,
+    HorizontalSpace,
+    StartOfText,
+    EndOfText,
+    WordBoundary,
+    NotWordBoundary,
     Class(RegexClass),
 }
 
@@ -104,6 +109,7 @@ enum RegexClassItem {
     Digit,
     Word,
     Space,
+    HorizontalSpace,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -126,6 +132,7 @@ enum RegexClassPiece {
     Digit,
     Word,
     Space,
+    HorizontalSpace,
 }
 
 fn text_from_string_checked(s: String) -> Result<ExcelText, WorksheetErrorCode> {
@@ -385,10 +392,41 @@ fn class_item_matches(item: &RegexClassItem, ch: char, case_sensitive: bool) -> 
         RegexClassItem::Digit => ch.is_ascii_digit(),
         RegexClassItem::Word => is_word_char(ch),
         RegexClassItem::Space => ch.is_whitespace(),
+        RegexClassItem::HorizontalSpace => ch == ' ' || ch == '\t',
     }
 }
 
-fn atom_matches(atom: &RegexAtom, ch: char, case_sensitive: bool) -> bool {
+fn is_word_boundary(chars: &[char], position: usize) -> bool {
+    let before = position
+        .checked_sub(1)
+        .and_then(|index| chars.get(index))
+        .copied()
+        .is_some_and(is_word_char);
+    let after = chars.get(position).copied().is_some_and(is_word_char);
+    before != after
+}
+
+fn zero_width_atom_matches(atom: &RegexAtom, chars: &[char], position: usize) -> Option<bool> {
+    Some(match atom {
+        RegexAtom::StartOfText => position == 0,
+        RegexAtom::EndOfText => position == chars.len(),
+        RegexAtom::WordBoundary => is_word_boundary(chars, position),
+        RegexAtom::NotWordBoundary => !is_word_boundary(chars, position),
+        _ => return None,
+    })
+}
+
+fn atom_consumes_input(atom: &RegexAtom) -> bool {
+    !matches!(
+        atom,
+        RegexAtom::StartOfText
+            | RegexAtom::EndOfText
+            | RegexAtom::WordBoundary
+            | RegexAtom::NotWordBoundary
+    )
+}
+
+fn consuming_atom_matches(atom: &RegexAtom, ch: char, case_sensitive: bool) -> bool {
     match atom {
         RegexAtom::Literal(expected) => chars_equal(ch, *expected, case_sensitive),
         RegexAtom::Any => true,
@@ -398,6 +436,7 @@ fn atom_matches(atom: &RegexAtom, ch: char, case_sensitive: bool) -> bool {
         RegexAtom::NotWord => !is_word_char(ch),
         RegexAtom::Space => ch.is_whitespace(),
         RegexAtom::NotSpace => !ch.is_whitespace(),
+        RegexAtom::HorizontalSpace => ch == ' ' || ch == '\t',
         RegexAtom::Class(class) => {
             let found = class
                 .items
@@ -405,6 +444,10 @@ fn atom_matches(atom: &RegexAtom, ch: char, case_sensitive: bool) -> bool {
                 .any(|item| class_item_matches(item, ch, case_sensitive));
             if class.negated { !found } else { found }
         }
+        RegexAtom::StartOfText
+        | RegexAtom::EndOfText
+        | RegexAtom::WordBoundary
+        | RegexAtom::NotWordBoundary => false,
     }
 }
 
@@ -414,8 +457,11 @@ fn match_atom_once(
     position: usize,
     case_sensitive: bool,
 ) -> Option<usize> {
+    if let Some(matches) = zero_width_atom_matches(&token.atom, chars, position) {
+        return matches.then_some(position);
+    }
     let ch = *chars.get(position)?;
-    if atom_matches(&token.atom, ch, case_sensitive) {
+    if consuming_atom_matches(&token.atom, ch, case_sensitive) {
         Some(position + 1)
     } else {
         None
@@ -515,6 +561,19 @@ fn find_all_matches(
     matches
 }
 
+fn escaped_literal_char(ch: char) -> Option<char> {
+    Some(match ch {
+        'n' => '\n',
+        't' => '\t',
+        'r' => '\r',
+        'f' => '\u{000c}',
+        'v' => '\u{000b}',
+        'e' => '\u{001b}',
+        '\\' | '.' | '*' | '+' | '?' | '[' | ']' | '(' | ')' | '|' | '^' | '$' | '/' => ch,
+        _ => return None,
+    })
+}
+
 fn parse_escape_atom(chars: &[char], index: &mut usize) -> Result<RegexAtom, WorksheetErrorCode> {
     let Some(ch) = chars.get(*index).copied() else {
         return Err(WorksheetErrorCode::Value);
@@ -527,11 +586,19 @@ fn parse_escape_atom(chars: &[char], index: &mut usize) -> Result<RegexAtom, Wor
         'W' => RegexAtom::NotWord,
         's' => RegexAtom::Space,
         'S' => RegexAtom::NotSpace,
-        // Literal-escape: punctuation/meta chars that need escaping in the admitted slice.
-        '\\' | '.' | '*' | '+' | '?' | '[' | ']' => RegexAtom::Literal(ch),
-        // Any other escape sequence is not part of the admitted slice; produce #VALUE!
-        // so the caller gets a hard error rather than a silently wrong literal match.
-        _ => return Err(WorksheetErrorCode::Value),
+        'h' => RegexAtom::HorizontalSpace,
+        'A' => RegexAtom::StartOfText,
+        'Z' | 'z' => RegexAtom::EndOfText,
+        'b' => RegexAtom::WordBoundary,
+        'B' => RegexAtom::NotWordBoundary,
+        ch => {
+            let Some(literal) = escaped_literal_char(ch) else {
+                // Any other escape sequence is not part of the admitted slice; produce #VALUE!
+                // so the caller gets a hard error rather than a silently wrong literal match.
+                return Err(WorksheetErrorCode::Value);
+            };
+            RegexAtom::Literal(literal)
+        }
     })
 }
 
@@ -552,14 +619,17 @@ fn parse_class_piece(
             'd' => Ok(RegexClassPiece::Digit),
             'w' => Ok(RegexClassPiece::Word),
             's' => Ok(RegexClassPiece::Space),
+            'h' => Ok(RegexClassPiece::HorizontalSpace),
             // Negated shorthands are not supported inside character classes.
             'D' | 'W' | 'S' => Err(WorksheetErrorCode::Value),
-            // Literal-escape: punctuation/meta chars that need escaping.
-            '\\' | '.' | '*' | '+' | '?' | '[' | ']' | '-' | '^' => {
-                Ok(RegexClassPiece::Literal(escaped))
+            '-' => Ok(RegexClassPiece::Literal('-')),
+            ch => {
+                let Some(literal) = escaped_literal_char(ch) else {
+                    // Unrecognized escape inside a character class: hard error, not silent literal.
+                    return Err(WorksheetErrorCode::Value);
+                };
+                Ok(RegexClassPiece::Literal(literal))
             }
-            // Unrecognized escape inside a character class: hard error, not silent literal.
-            _ => Err(WorksheetErrorCode::Value),
         };
     }
     *index += 1;
@@ -606,6 +676,7 @@ fn parse_char_class(chars: &[char], index: &mut usize) -> Result<RegexAtom, Work
             RegexClassPiece::Digit => items.push(RegexClassItem::Digit),
             RegexClassPiece::Word => items.push(RegexClassItem::Word),
             RegexClassPiece::Space => items.push(RegexClassItem::Space),
+            RegexClassPiece::HorizontalSpace => items.push(RegexClassItem::HorizontalSpace),
         }
         i += 1;
     }
@@ -659,6 +730,10 @@ fn parse_regex_pattern(pattern: &str) -> Result<Vec<RegexToken>, WorksheetErrorC
             }
             _ => RegexQuantifier::One,
         };
+
+        if !atom_consumes_input(&atom) && quantifier != RegexQuantifier::One {
+            return Err(WorksheetErrorCode::Value);
+        }
 
         tokens.push(RegexToken { atom, quantifier });
     }
@@ -976,45 +1051,110 @@ mod tests {
     }
 
     #[test]
-    fn regextest_unrecognized_escape_newline_is_value_error() {
-        // \n is not in the admitted escape slice; must be #VALUE!, not a match against 'n'.
-        let got = regextest_kernel(&txt("n"), &txt("\\n"), true);
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    fn regextest_admits_excel_escape_battery() {
+        let cases: &[(&str, Result<bool, WorksheetErrorCode>)] = &[
+            ("\\d", Ok(true)),
+            ("\\D", Ok(true)),
+            ("\\w", Ok(true)),
+            ("\\W", Ok(true)),
+            ("\\s", Ok(true)),
+            ("\\S", Ok(true)),
+            ("\\b", Ok(true)),
+            ("\\B", Ok(true)),
+            ("\\A", Ok(true)),
+            ("\\Z", Ok(true)),
+            ("\\z", Ok(true)),
+            ("\\n", Ok(false)),
+            ("\\t", Ok(false)),
+            ("\\r", Ok(false)),
+            ("\\f", Ok(false)),
+            ("\\v", Ok(false)),
+            ("\\.", Ok(true)),
+            ("\\*", Ok(false)),
+            ("\\+", Ok(false)),
+            ("\\?", Ok(false)),
+            ("\\(", Ok(false)),
+            ("\\)", Ok(false)),
+            ("\\[", Ok(false)),
+            ("\\|", Ok(false)),
+            ("\\^", Ok(false)),
+            ("\\$", Ok(false)),
+            ("\\/", Ok(false)),
+            ("\\e", Ok(false)),
+            ("\\h", Ok(true)),
+            ("\\\\", Ok(false)),
+        ];
+
+        for (pattern, expected) in cases {
+            assert_eq!(
+                regextest_kernel(&txt("a1.B z"), &txt(pattern), true),
+                expected.clone(),
+                "pattern {pattern}"
+            );
+        }
     }
 
     #[test]
-    fn regextest_unrecognized_escape_tab_is_value_error() {
-        let got = regextest_kernel(&txt("t"), &txt("\\t"), true);
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
+    fn regextest_unknown_letter_escapes_remain_value_errors() {
+        for pattern in [
+            "\\q", "\\k", "\\m", "\\g", "\\p", "\\c", "\\x", "\\y", "\\j", "\\o",
+        ] {
+            assert_eq!(
+                regextest_kernel(&txt("a1.B z"), &txt(pattern), true),
+                Err(WorksheetErrorCode::Value),
+                "pattern {pattern}"
+            );
+        }
     }
 
     #[test]
-    fn regextest_unrecognized_escape_word_boundary_is_value_error() {
-        let got = regextest_kernel(&txt("b"), &txt("\\b"), true);
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
-    }
-
-    #[test]
-    fn regextest_unrecognized_escape_hex_is_value_error() {
-        let got = regextest_kernel(&txt("x"), &txt("\\x"), true);
-        assert_eq!(got, Err(WorksheetErrorCode::Value));
-    }
-
-    #[test]
-    fn regextest_admitted_literal_escapes_still_work() {
-        // \\ escapes a backslash; \. escapes a dot.
-        assert_eq!(regextest_kernel(&txt("a.b"), &txt("a\\.b"), true), Ok(true));
-        assert_eq!(regextest_kernel(&txt("a"), &txt("a\\.b"), true), Ok(false));
+    fn regextest_control_escapes_match_control_characters() {
+        assert_eq!(regextest_kernel(&txt("\n"), &txt("\\n"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt("\t"), &txt("\\t"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt("\r"), &txt("\\r"), true), Ok(true));
         assert_eq!(
-            regextest_kernel(&txt("a\\b"), &txt("a\\\\b"), true),
+            regextest_kernel(&txt("\u{000c}"), &txt("\\f"), true),
+            Ok(true)
+        );
+        assert_eq!(
+            regextest_kernel(&txt("\u{000b}"), &txt("\\v"), true),
+            Ok(true)
+        );
+        assert_eq!(regextest_kernel(&txt(" "), &txt("\\h"), true), Ok(true));
+        assert_eq!(
+            regextest_kernel(&txt("\u{001b}"), &txt("\\e"), true),
             Ok(true)
         );
     }
 
     #[test]
+    fn regextest_zero_width_assertions_compose_with_literals() {
+        assert_eq!(
+            regextest_kernel(&txt("abc"), &txt("\\Aabc\\z"), true),
+            Ok(true)
+        );
+        assert_eq!(
+            regextest_kernel(&txt("xabc"), &txt("\\Aabc"), true),
+            Ok(false)
+        );
+        assert_eq!(regextest_kernel(&txt("ab"), &txt("\\ba"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt("ab"), &txt("\\Bb"), true), Ok(true));
+        assert_eq!(
+            regextest_kernel(&txt("abc"), &txt("\\b*"), true),
+            Err(WorksheetErrorCode::Value)
+        );
+    }
+
+    #[test]
+    fn regextest_admitted_escapes_work_in_classes() {
+        assert_eq!(regextest_kernel(&txt("\n"), &txt("[\\n]"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt(" "), &txt("[\\h]"), true), Ok(true));
+        assert_eq!(regextest_kernel(&txt("-"), &txt("[\\-]"), true), Ok(true));
+    }
+
+    #[test]
     fn regextest_unrecognized_escape_in_class_is_value_error() {
-        // \n inside a character class must also be a hard error.
-        let got = regextest_kernel(&txt("n"), &txt("[\\n]"), true);
+        let got = regextest_kernel(&txt("q"), &txt("[\\q]"), true);
         assert_eq!(got, Err(WorksheetErrorCode::Value));
     }
 

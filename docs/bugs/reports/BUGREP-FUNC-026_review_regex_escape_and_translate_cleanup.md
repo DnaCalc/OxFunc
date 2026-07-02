@@ -31,4 +31,6 @@ host-provider delegation.
 2. `crates/oxfunc_core/src/functions/number_regex_translate_family.rs`
 
 ## Triage Notes
-The regex admitted-slice contract should eventually enumerate supported escapes.
+The regex admitted-slice contract now enumerates supported escapes via
+`BUG-FUNC-041-REGEX-ESCAPES-20260626`. The local repair is live-Excel signed off
+against the 40-case escape battery; the remaining lane is checkpoint/landing.

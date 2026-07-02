@@ -29,6 +29,19 @@ Track the June 2026 review-derived structural cleanup batch and split it into:
 
 ## Current Checkpoint
 
+2026-06-26 (regex repair story):
+
+1. `BUG-FUNC-041` now has a working-tree repair that expands the regex parser/matcher
+   to the live-Excel escape split from the 2026-06-18 battery:
+   shorthand classes, zero-width assertions, whitespace/control escapes, escaped
+   metacharacter literals, and continued `#VALUE!` for unknown letter escapes.
+2. `FUNCTION_SLICE_REGEX_TRIAD_CONTRACT_PRELIM.md`, the bug stream/register rows,
+   and the discrepancy catalog are updated to treat contract enumeration as handled
+   locally.
+3. Live Excel 16.0 build 20026 sign-off on 2026-06-26 matched `40/40` typed
+   outcomes against the repaired local outcomes.
+4. The lane remains open until the working-tree repair is checkpointed/landed.
+
 2026-06-18 (land + close pass):
 
 1. The W102A code checkpoint (`7a0003f`) plus W100 and W104 were fast-forwarded onto
@@ -47,12 +60,14 @@ Track the June 2026 review-derived structural cleanup batch and split it into:
    - `BUG-FUNC-040` (lookup blank-skip) — MATCH over range with a blank matches Excel → **closed**.
    - `BUG-FUNC-041` (regex escapes) — a 40-escape Excel battery found the fix **over-rejects**
      18 escapes Excel admits (anchors, whitespace, escaped metacharacters); bead `oxf-fyhi`,
-     stream stays **open**.
+     stream stays **open**. Superseded by the 2026-06-26 working-tree repair and live
+     Excel sign-off; pending checkpoint/landing.
 
 This pass surfaced two over-correction regressions in the W102A batch — both "the fix
 rejects what Excel accepts": `GAMMA.INV(0)` (`oxf-99zz`, **fixed** in `ba861ac`) and the
-regex admitted slice (`oxf-fyhi`, **open** — 18/40 escapes). Verification against live
-Excel before closure is what caught them.
+regex admitted slice (`oxf-fyhi`, **open**; 2026-06-26 local repair present and
+Excel-signed-off, checkpoint pending).
+Verification against live Excel before closure is what caught them.
 
 2026-06-15:
 
@@ -90,8 +105,8 @@ Excel before closure is what caught them.
 1. `BUG-FUNC-034`: live Excel bit pins for type=1 finance witnesses.
 2. `BUG-FUNC-038`: link or refresh the durable negative-base live probe matrix.
 3. `BUG-FUNC-040`: probe error-cell and cross-type approximate lookup lanes.
-4. `BUG-FUNC-041`: update the OxFunc-local admitted regex escape contract and
-   file a cross-repo handoff only if W102B evidence requires one.
+4. `BUG-FUNC-041`: checkpoint the local admitted regex escape repair; file a
+   cross-repo handoff only if follow-up evidence requires one.
 5. `GAMMA.INV`: tail/cap behavior remains split from W102A and needs live
    evidence and/or a numeric exactness repair lane before promotion.
 
@@ -100,4 +115,4 @@ Excel before closure is what caught them.
 scope_completeness: `scope_partial`
 target_completeness: `target_partial`
 integration_completeness: `partial`
-open_lanes: `[W102A_land_or_split, BUG-FUNC-034_bit_pins, BUG-FUNC-038_probe_artifact, BUG-FUNC-040_probe_matrix, BUG-FUNC-041_contract_update, GAMMA_INV_tail_cap_evidence]`
+open_lanes: `[W102A_land_or_split, BUG-FUNC-034_bit_pins, BUG-FUNC-038_probe_artifact, BUG-FUNC-040_probe_matrix, BUG-FUNC-041_checkpoint, GAMMA_INV_tail_cap_evidence]`

@@ -1,8 +1,13 @@
 # W24 Batch 10 Execution Record - Regex Triad
 
-Status: `complete-provisional`
+Status: `complete-provisional` (historical; administratively qualified by uncheckpointed `BUG-FUNC-041` repair)
 Workset: `W24`
 Evidence ID: `W24-B10-REGEX-20260318`
+
+Current qualification (`2026-06-26`): the original W24 packet remains the replay record for
+the bounded March 2026 regex slice, and `BUG-FUNC-041` later found an escape-admission gap.
+The 2026-06-26 local repair for the expanded admitted-escape slice is live-Excel signed off
+with `40/40` exact typed matches; the remaining qualification is checkpoint/landing.
 
 ## 1. Purpose
 Record the pure regex trio closure packet inside the `W24` ordinary mega-batch.
@@ -55,6 +60,7 @@ From `.tmp/w24-batch10-regex-results.csv`:
 4. `lake build`
 
 ## 8. Standing
-1. `REGEXEXTRACT`, `REGEXREPLACE`, and `REGEXTEST` are now function-phase-complete for the admitted current reference baseline.
+1. Historical W24 standing: `REGEXEXTRACT`, `REGEXREPLACE`, and `REGEXTEST` were treated as function-phase-complete for the bounded admitted current reference baseline captured by this packet.
 2. The closure is bounded to the admitted regex-triad slice above.
 3. `W024` continues with the next unblocked family after removing the mixed-family seam confusion.
+4. Current standing is qualified by `BUG-FUNC-041`: the expanded admitted escape slice is live-Excel signed off locally and remains open pending checkpoint/landing.
