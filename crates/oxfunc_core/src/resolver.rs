@@ -1,6 +1,6 @@
 use crate::value::{
     CalcArray, CalcValue, CompositeReferenceOperation, ReferenceIdentity, ReferenceKind,
-    ReferenceLike, ReferenceSystemId,
+    ReferenceLike, ReferenceSystemId, WorksheetErrorCode,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -41,9 +41,22 @@ pub enum ReferenceResolutionError {
     UnresolvedReference {
         target: String,
     },
+    UnresolvedName {
+        target: String,
+    },
     ProviderFailure {
         detail: String,
     },
+}
+
+impl ReferenceResolutionError {
+    #[must_use]
+    pub fn worksheet_error_code(&self) -> WorksheetErrorCode {
+        match self {
+            ReferenceResolutionError::UnresolvedName { .. } => WorksheetErrorCode::Name,
+            _ => WorksheetErrorCode::Value,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

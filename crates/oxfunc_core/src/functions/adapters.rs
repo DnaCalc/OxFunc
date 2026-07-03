@@ -1,4 +1,4 @@
-use crate::coercion::{CoercionError, coerce_eval_to_number};
+use crate::coercion::{CoercionError, coerce_eval_to_number, coercion_error_from_resolution};
 use crate::resolver::{
     ReferenceSystemCapabilities, ReferenceSystemProvider, ResolvedReferenceValues,
     enumerate_reference_values, materialize_resolved_reference_values, resolve_eval_value,
@@ -90,7 +90,7 @@ fn expand_resolved_reference_values(
     values: ResolvedReferenceValues,
 ) -> Result<Vec<CalcValue>, CoercionError> {
     let array =
-        materialize_resolved_reference_values(&values).map_err(CoercionError::RefResolution)?;
+        materialize_resolved_reference_values(&values).map_err(coercion_error_from_resolution)?;
     Ok(array
         .iter_row_major()
         .map(prepared_from_array_cell)
@@ -115,7 +115,7 @@ pub fn sparse_reference_values_for_aggregate_arg(
 ) -> Result<Option<ResolvedReferenceValues>, CoercionError> {
     match arg.core() {
         CoreValue::Reference(r) => {
-            enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)
+            enumerate_reference_values(resolver, r).map_err(coercion_error_from_resolution)
         }
         _ => Ok(None),
     }
@@ -143,7 +143,8 @@ fn resolve_eval_references(
 ) -> Result<CalcValue, CoercionError> {
     match value.core() {
         CoreValue::Reference(r) => {
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let resolved =
+                resolve_eval_value(resolver, r).map_err(coercion_error_from_resolution)?;
             resolve_eval_references(&resolved, resolver)
         }
         _ => Ok(value.clone()),
@@ -157,7 +158,7 @@ fn resolve_calc_references(
     match value.core() {
         CoreValue::Reference(reference) => {
             let resolved =
-                resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
+                resolve_eval_value(resolver, reference).map_err(coercion_error_from_resolution)?;
             resolve_calc_references(&resolved, resolver)
         }
         _ => Ok(value.clone()),
@@ -243,11 +244,12 @@ pub fn expand_arg_values_only(
     match arg.core() {
         CoreValue::Reference(r) => {
             if let Some(values) =
-                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(coercion_error_from_resolution)?
             {
                 return expand_resolved_reference_values(values);
             }
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let resolved =
+                resolve_eval_value(resolver, r).map_err(coercion_error_from_resolution)?;
             Ok(expand_resolved_eval_value(&resolve_eval_references(
                 &resolved, resolver,
             )?))
@@ -265,13 +267,14 @@ pub fn expand_lookup_vector_arg(
     match arg.core() {
         CoreValue::Reference(r) => {
             if let Some(values) =
-                enumerate_reference_values(resolver, r).map_err(CoercionError::RefResolution)?
+                enumerate_reference_values(resolver, r).map_err(coercion_error_from_resolution)?
             {
                 let array = materialize_resolved_reference_values(&values)
-                    .map_err(CoercionError::RefResolution)?;
+                    .map_err(coercion_error_from_resolution)?;
                 return expand_lookup_eval_value(&CalcValue::array(array));
             }
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let resolved =
+                resolve_eval_value(resolver, r).map_err(coercion_error_from_resolution)?;
             expand_lookup_eval_value(&resolve_eval_references(&resolved, resolver)?)
         }
         _ => expand_lookup_eval_value(&resolve_eval_references(arg, resolver)?),
@@ -290,7 +293,8 @@ pub(crate) fn expand_aggregate_arg(
                     AggregateArrayProvenance::ReferenceDerived,
                 ));
             }
-            let resolved = resolve_eval_value(resolver, r).map_err(CoercionError::RefResolution)?;
+            let resolved =
+                resolve_eval_value(resolver, r).map_err(coercion_error_from_resolution)?;
             let resolved = resolve_eval_references(&resolved, resolver)?;
             match resolved.core() {
                 CoreValue::Array(array) => Ok(expand_aggregate_array_with_provenance(
