@@ -203,6 +203,44 @@ should not raise `#NUM!` when Excel returns a finite value).
 10. W097 R-C cell-ref finance broad seed run:
     `smart-fuzzer/runs/W097-R-C-expanded-finance-1m-cellref/`
 
+## 2026-07-03 W108 Root-Cause Resolution (investigation complete; repair scoped)
+
+A deep multi-agent investigation (live Excel 16.0 b20131, 64-bit; 25 targeted
+probes + 855-cell factor grid + intermediate-precision discriminators) fully
+root-caused this drift and the adjacent family. Repair is scoped under
+`docs/worksets/W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md`
+(epic `oxf-wpzw`, beads `oxf-wpzw.1/.2/.3`).
+
+Findings:
+
+1. **FV/PV already match Excel bit-exact** (`powi`/`powf` factor + `(F-1)/r`
+   term). The drift is NOT a shared growth factor.
+2. **PMT uses a different substrate than FV/PV**: `exp(n*log1p(r))` factor +
+   `expm1`-based term, not the `powi` kernel. OxFunc's PMT wrongly reuses the FV
+   `powi` kernel -> catastrophic error on the common loan regime (up to `5.5e8`
+   ULP; `PMT(1e-9,120,1e5)`). Switching PMT to the exp/expm1 chain collapses this
+   to <=2 ULP and closes the `PMT(0.05/12,360,200000)` witness bit-exact.
+3. **64-bit Excel is pure IEEE-754 double** (SSE2; no x87, no FMA, no wide
+   intermediates) — proven directly (`=A1*A1-B1`, dot-product, `=A1^2-B1` all
+   publish `0x0`). The fix is fully portable; the earlier x87-tail hypothesis is
+   retracted.
+4. **Excel's `exp`/`log` are correctly-rounded, not UCRT** (Rust `f64::exp` =
+   UCRT; UCRT `log1p` misrounds ~21%). Matching Excel across the full input space
+   requires a correctly-rounded `exp`/`expm1`/`log1p`/`log` (CR vs Intel SVML fork
+   resolved in W108-A).
+5. **NPER solved**: `CR_log(ratio) / log(1+r)` (numerator correctly-rounded,
+   denominator plain `ln(1+r)` NOT `log1p`).
+6. **PPMT/IPMT/CUMPRINC use a dedicated internal principal path** (running-balance
+   / geometric-factor), NOT `PMT - IPMT` — proven: built-in `PPMT(...,1,...)`
+   `...0723` vs standalone `PMT-IPMT` `...0724` vs `CUMPRINC(1,1)` `...0722`.
+
+Repair path (portable, pure-double): explicit Excel elementary-primitives core
+(`exp`/`expm1`/`log1p`/`log` + `powi`/`powf`) validated against a batch oracle
+corpus, then re-express PMT/PPMT/IPMT/CUMPRINC/CUMIPMT/NPER (and fix the related
+`POWER` 377-ULP surface anomaly) explicitly on those primitives. Isolation lanes
+used: `FV(r,n,0,-1,0)` = Excel's internal `(1+r)^n`; `FV(r,n,-1,0,type)` = the
+annuity term.
+
 ## Closure Checklist
 - [ ] local fix implemented
 - [ ] validation recorded

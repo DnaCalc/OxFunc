@@ -92,6 +92,31 @@ change how a *future, unrelated* fix is approached.
   transcendental sub-calls through the worksheet functions at the exact intermediate
   arguments — and if the host libm is the cause, file it with the trig lane, not the kernel.
 
+- **64-bit Excel is pure IEEE-754 double — prove it, don't assume x87.** Legacy lore
+  says Excel keeps 80-bit x87 intermediates; that is FALSE for the 64-bit build (SSE2,
+  no x87/FMA). Test it directly with discriminator formulas whose published double
+  differs under wide-vs-double: `=A1*A1-B1` with `A1=1+2^-27, B1=1+2^-26` publishes
+  exactly `0.0` under pure-double but `~5.5e-17` under x87; `=A1*B1+C1*D1` and
+  `=SUMPRODUCT(...)` test FMA fusion. All returned `0.0` (W108). A residual you can't
+  reach in pure double is almost always a wrong composition/libm, not extended precision.
+- **Excel's elementary functions are correctly-rounded, not the platform libm.** On
+  inputs where UCRT `exp` != correctly-rounded, 64-bit Excel publishes the CR value
+  (W108). Rust `f64::exp/ln_1p/exp_m1` = UCRT, which misrounds `log1p` ~21% / `expm1`
+  ~5% — so it cannot match Excel in general. Matching needs a correctly-rounded (or the
+  identified SVML) `exp`/`expm1`/`log1p`/`log`. Many small-ULP finance/stat/special
+  residuals share this one substrate.
+- **Excel's financial functions split by primitive, not by module.** FV/PV compute
+  `(1+r)^n` via `powi` (integer n) / `powf` (fractional n) + `(F-1)/r`; PMT uses an
+  `exp(n*log1p(r))`/`expm1` chain; NPER uses `ln(1+r)` (NOT `log1p`) with a
+  correctly-rounded numerator `ln`; PPMT/IPMT/CUMPRINC use a dedicated internal
+  principal path, not `PMT-IPMT` (proven: the three give values 1 ULP apart). Do not
+  assume one shared kernel across a function family — probe each surface.
+- **Reverse-engineer composite functions through isolation lanes that make the engine
+  publish its own intermediates.** `FV(r,n,0,-1,0)` = Excel's internal `(1+r)^n` factor
+  bit-exact (the `pmt=0, pv=-1` terms are exact); `FV(r,n,-1,0,type)` = the annuity
+  term. This let W108 classify the FV factor as `powi` and isolate PMT's chain without
+  guessing.
+
 ## Doctrine
 
 - **"OxFunc more accurate than Excel" is still a bug.** When OxFunc returns the exact

@@ -99,7 +99,7 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| PMT, PPMT (IPMT adjacent) | Annuity publication exactness drift; representative current witnesses show `8` ULP for PMT and `63` ULP for PPMT. | NUM-L | M1 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` |
+| PMT, PPMT (IPMT, CUMPRINC adjacent) | Annuity publication exactness drift; PMT `8` ULP, PPMT `63` ULP on witnesses (PMT reaches `~5.5e8` ULP on tiny-rate/long-horizon). **Root cause resolved 2026-07-03 (W108)**: PMT uses Excel's `exp(n*log1p(r))`/`expm1` chain with correctly-rounded transcendentals (FV/PV use `powi` and already match); fix is portable pure-double (64-bit Excel proven SSE2, no x87). Scoped under W108 epic `oxf-wpzw` (numeric-primitives core + explicit compositions). | NUM-L | M2 | BUG-FUNC-015 / KED-FIN-001 / `oxf-fckb` / W108 |
 | ACCRINT | Residual `1` ULP on the `us30360` triple-edge case: issue mid-period and settlement past first interest. | NUM-S | M1 | BUG-FUNC-030 |
 | YIELD | Solver publication drift around `~19` ULP. | NUM-L | M2 | BUG-FUNC-031 |
 | ODDFYIELD | Solver drift around `~3e5` ULP after the forward price path is aligned. | NUM-L | M1 | BUG-FUNC-032 |
