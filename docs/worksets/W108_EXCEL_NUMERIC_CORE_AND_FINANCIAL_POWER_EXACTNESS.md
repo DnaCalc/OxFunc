@@ -272,3 +272,23 @@ since Excel's internal `log1p`/`expm1` are almost certainly the same x87 primiti
 
 Evidence: `C:/Temp/ExcelExpFunction/REPORT.md` (algorithm + 294-row validation),
 `crate::excel_numeric::x87`, scratch `x87lab` (396+220 live-Excel probe rows).
+
+## 11. W108 Phase C (2026-07-04): financial family — CHARACTERIZED, not yet bit-exact
+
+Reverse-engineered the authoritative annuity algorithm (LibreOffice `interpr2.cxx`, which mirrors
+Excel) and confirmed key building blocks against live Excel, but did NOT reach bit-exact — the
+residual is a POWER-class transcendental-substrate problem. Full write-up + witnesses + harness:
+[`docs/EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md`](../EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md).
+
+Confirmed: (a) FV/PV factor `(1+r)^n` is exactly `power_kernel`/POWER (120/120 isolated via
+`FV(r,n,0,-1,0)`); (b) PMT is the **forward** form `-(fv+pv·exp(n·log1p r))·r/expm1(n·log1p r)`
+(NOT the crate's discount form), with x87 `FYL2XP1` log1p + `F2XM1` expm1 the right substrate
+direction; (c) FV annuity term prefers divide-first.
+
+Open: with the best model, FV 74/90, PMT 45/150 (rest 1-2 ULP), PV 16/50 — Excel's exact internal
+`log1p`/`expm1` rounding and per-function op-order (esp. PV) are undetermined. A dedicated crack
+(like `C:/Temp/ExcelExpFunction` did for EXP/LN/POWER) is needed; the findings doc is its seed.
+
+Decision: the crate financial family STAYS FROZEN on the portable CR core (Bead C, ≤2-3 ULP) — the
+forward-form x87 model is not yet more bit-exact than the frozen state on realistic inputs, so no
+non-regressing swap is available. FV/PV already inherit the bit-exact `power_kernel` factor.
