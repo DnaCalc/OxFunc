@@ -17,6 +17,15 @@ pub enum CoercionError {
     RefResolution(ReferenceResolutionError),
 }
 
+pub(crate) fn coercion_error_from_resolution(e: ReferenceResolutionError) -> CoercionError {
+    match &e {
+        ReferenceResolutionError::UnresolvedName { .. } => {
+            CoercionError::WorksheetError(WorksheetErrorCode::Name)
+        }
+        _ => CoercionError::RefResolution(e),
+    }
+}
+
 fn parse_excel_number(text: &str) -> Option<f64> {
     let trimmed = text.trim();
     if trimmed.is_empty() {
@@ -49,7 +58,7 @@ pub fn coerce_eval_to_number(
         CoreValue::Array(_) => Err(CoercionError::UnsupportedValueKind("array")),
         CoreValue::Reference(reference) => {
             let resolved =
-                resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
+                resolve_eval_value(resolver, reference).map_err(coercion_error_from_resolution)?;
             coerce_eval_to_number(&resolved, resolver)
         }
         _ => Err(CoercionError::UnsupportedValueKind("unsupported_value")),
@@ -85,7 +94,7 @@ pub fn coerce_arg_to_number(
         CoreValue::Empty => Err(CoercionError::EmptyCell),
         CoreValue::Reference(reference) => {
             let resolved =
-                resolve_eval_value(resolver, reference).map_err(CoercionError::RefResolution)?;
+                resolve_eval_value(resolver, reference).map_err(coercion_error_from_resolution)?;
             coerce_eval_to_number(&resolved, resolver)
         }
         _ => coerce_eval_to_number(arg, resolver),
@@ -247,6 +256,27 @@ mod tests {
                     target: "A1".to_string()
                 }
             ))
+        );
+    }
+
+    #[test]
+    fn coercion_error_from_resolution_maps_unresolved_name_to_worksheet_name_error() {
+        let got = coercion_error_from_resolution(ReferenceResolutionError::UnresolvedName {
+            target: "MyName".to_string(),
+        });
+        assert_eq!(got, CoercionError::WorksheetError(WorksheetErrorCode::Name));
+    }
+
+    #[test]
+    fn coercion_error_from_resolution_preserves_prior_behavior_for_other_variants() {
+        let got = coercion_error_from_resolution(ReferenceResolutionError::UnresolvedReference {
+            target: "A1".to_string(),
+        });
+        assert_eq!(
+            got,
+            CoercionError::RefResolution(ReferenceResolutionError::UnresolvedReference {
+                target: "A1".to_string()
+            })
         );
     }
 
