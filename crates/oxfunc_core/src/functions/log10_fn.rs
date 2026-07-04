@@ -27,7 +27,8 @@ pub fn log10_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if n <= 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(n.log10())
+    // Excel's LOG10 is the x87 `fldlg2` + `fyl2x` fused op; match it bit-exact.
+    Ok(crate::excel_numeric::excel_log10(n))
 }
 
 pub fn eval_log10_surface(

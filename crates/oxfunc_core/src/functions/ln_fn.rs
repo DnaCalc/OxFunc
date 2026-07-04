@@ -27,7 +27,8 @@ pub fn ln_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     if n <= 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    Ok(n.ln())
+    // Excel's LN is the x87 `fldln2` + `fyl2x` fused op; match it bit-for-bit.
+    Ok(crate::excel_numeric::excel_log(n))
 }
 
 pub fn eval_ln_surface(

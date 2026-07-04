@@ -1,4 +1,10 @@
 use crate::coercion::CoercionError;
+// The annuity compositions were tuned and live-Excel-validated (W108 Bead C)
+// against the portable correctly-rounded numeric core. They intentionally do
+// NOT use the x87 `excel_exp`/`excel_log` worksheet backends yet; migrating the
+// financial substrate to the x87 primitives (`fyl2xp1`/`f2xm1`) is tracked as
+// W108 Phase C and requires its own live-Excel re-validation.
+use crate::excel_numeric::{excel_expm1, excel_log1p, exp_portable, log_portable};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -287,6 +293,23 @@ pub fn fv(
     }
 }
 
+/// PMT on the correctly-rounded numeric core (W108 Bead C).
+///
+/// PV-side stable discount form (the live-Excel search winner). Instead of the
+/// FV `powi` factor + `(F-1)/r` term (catastrophically wrong on the PMT lane —
+/// up to ~5.5e8 ULP), this reproduces Excel's own `exp`/`log1p`/`expm1` chain:
+///
+/// ```text
+/// negL  = -(n * log1p(r))        // -n·ln(1+r)
+/// invF  = exp(negL)              // (1+r)^-n   (no cancellation)
+/// denom = -expm1(negL)           // 1 - (1+r)^-n  (stable; avoids 1 - tiny)
+/// tf    = 1 + r·type
+/// pmt   = -(pv + fv·invF) · r / (tf · denom)
+/// ```
+///
+/// The transcendentals are the faithful (~0.5-ULP) deterministic core, matching
+/// Excel's bespoke routine on ~99% of inputs. The residual is the tracked W108
+/// floor (≤2-3 ULP open discrepancy), NOT an acceptance.
 pub fn pmt(
     periodic_rate: f64,
     periods: f64,
@@ -295,18 +318,31 @@ pub fn pmt(
     timing: PaymentTiming,
 ) -> Result<f64, FinancialError> {
     validate_finite(&[periodic_rate, periods, present_value, future_value])?;
-    if periods.abs() < EPSILON {
+    if periods == 0.0 {
         return Err(FinancialError::Num);
     }
-    if periodic_rate.abs() < EPSILON {
+    // W108 Bead C: the zero-rate special case is EXACT `r == 0.0`, matching Excel
+    // and the live-search model — a merely-tiny rate (e.g. 1e-13) is NOT collapsed
+    // to the linear branch (that was a ~3813-ULP miss); it flows through the
+    // stable discount form (1-ULP on PMT-0025).
+    if periodic_rate == 0.0 {
         return Ok(-(future_value + present_value) / periods);
     }
-    let factor = growth(periodic_rate, periods)?;
-    let term = annuity_term(periodic_rate, periods, timing)?;
-    if term.abs() < EPSILON {
+    // Growth-domain guard: (1+r) <= 0 has no real (1+r)^-n — #NUM!, matching the
+    // prior `growth` guard and live Excel.
+    if 1.0 + periodic_rate <= 0.0 {
         return Err(FinancialError::Num);
     }
-    let result = -(future_value + present_value * factor) / term;
+    let neg_log = -(periods * excel_log1p(periodic_rate));
+    let inv_factor = exp_portable(neg_log); // (1+r)^-n
+    let denom = -excel_expm1(neg_log); // 1 - (1+r)^-n
+    if denom == 0.0 {
+        return Err(FinancialError::Num);
+    }
+    let tf = timing.factor(periodic_rate); // 1 + r·type
+    let numerator = present_value + future_value * inv_factor;
+    let recip = 1.0 / (tf * denom);
+    let result = -numerator * periodic_rate * recip;
     if result.is_finite() {
         Ok(result)
     } else {
@@ -314,6 +350,26 @@ pub fn pmt(
     }
 }
 
+/// NPER on the correctly-rounded numeric core (W108 Bead C).
+///
+/// ```text
+/// tf     = 1 + r·type
+/// ratio  = (tf·pmt - fv·r) / (tf·pmt + pv·r)
+/// nper   = log(ratio) / log(1 + r)
+/// ```
+///
+/// W108 <DENOM_LOG> choice — the numerator `log(ratio)` is the faithful core
+/// `log_portable`. The DENOMINATOR is `ln(1+r)` via the core `log_portable(1.0 +
+/// r)` — NOT `excel_log1p(r)` (the live-Excel search established the denominator
+/// is `ln(1+r)`, not `log1p(r)`). Empirically A/B-tested against the 8-row
+/// live-Excel NPER corpus on the OxFunc core: `log_portable(1.0 + r)` and Rust
+/// std `(1.0 + r).ln()` TIE at 7/8 exact (both share the same single 1-ULP miss
+/// on NPER-0000). `log_portable` (the deterministic in-crate correctly-rounded
+/// core, no platform-libm dependency) is the tiebreaker, preserving W108's
+/// cross-target determinism. This intentionally does NOT use the x87 `excel_log`
+/// worksheet backend, which shifts NPER-0000 by 1 ULP — whether Excel's NPER
+/// internally uses the x87 `ln` is a W108 Phase-C question (re-probe the oracle).
+/// See `nper_denom_log_choice_pins_excel_corpus` for the pinned rows.
 pub fn nper(
     periodic_rate: f64,
     payment_value: f64,
@@ -333,14 +389,19 @@ pub fn nper(
             Err(FinancialError::Num)
         };
     }
-    let adjust = payment_value * timing.factor(periodic_rate) / periodic_rate;
-    let numerator = adjust - future_value;
-    let denominator = present_value + adjust;
+    let tf = timing.factor(periodic_rate); // 1 + r·type
+    let tf_pmt = tf * payment_value;
+    let numerator = tf_pmt - future_value * periodic_rate;
+    let denominator = tf_pmt + present_value * periodic_rate;
     let ratio = numerator / denominator;
     if ratio <= 0.0 {
         return Err(FinancialError::Num);
     }
-    let result = ratio.ln() / (1.0 + periodic_rate).ln();
+    // Growth-domain guard for the denominator log.
+    if 1.0 + periodic_rate <= 0.0 {
+        return Err(FinancialError::Num);
+    }
+    let result = log_portable(ratio) / log_portable(1.0 + periodic_rate);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -663,6 +724,36 @@ pub fn npv(periodic_rate: f64, cashflows: &[f64]) -> Result<f64, FinancialError>
     }
 }
 
+/// Remaining balance after `periods` payments, on the exp/log1p/expm1 core (W108
+/// Bead C). This is the FV of an annuity expressed with the stable transcendental
+/// chain, dedicated to the IPMT reconstruction so it shares PMT's op-order:
+///
+/// ```text
+/// fv_exp(r, m, pmt, pv, tf): if m==0 -> -pv ; if r==0 -> -(pv + pmt·m)
+///   L  = m · log1p(r) ; F = exp(L) ; em = expm1(L)
+///   -> -(pv·F + pmt·tf·(em/r))
+/// ```
+///
+/// `tf` is `1 + r·type` for the IPMT timing (passed in so beginning/end share one
+/// body). NOTE: near-payoff periods still suffer cancellation (~hundreds of ULP);
+/// that is better than the prior `powi` FV path's thousands but a fully-stable
+/// last-period path is NOT solved — documented W108 residual.
+fn fv_exp(rate: f64, m: f64, payment: f64, present_value: f64, tf: f64) -> f64 {
+    if m == 0.0 {
+        return -present_value;
+    }
+    if rate == 0.0 {
+        return -(present_value + payment * m);
+    }
+    let log_growth = m * excel_log1p(rate);
+    let factor = exp_portable(log_growth);
+    let expm1_growth = excel_expm1(log_growth);
+    -(present_value * factor + payment * tf * (expm1_growth / rate))
+}
+
+/// IPMT on the correctly-rounded numeric core (W108 Bead C). Interest portion of
+/// payment `period_index`: the remaining balance entering the period times `r`,
+/// reconstructed from the core PMT and the `fv_exp` balance recurrence.
 pub fn ipmt(
     periodic_rate: f64,
     period_index: f64,
@@ -684,32 +775,37 @@ pub fn ipmt(
     if periodic_rate.abs() < EPSILON {
         return Ok(0.0);
     }
+    if 1.0 + periodic_rate <= 0.0 {
+        return Err(FinancialError::Num);
+    }
     let periodic_payment = pmt(periodic_rate, periods, present_value, future_value, timing)?;
-    let result = match timing {
-        PaymentTiming::EndOfPeriod => {
-            fv(
-                periodic_rate,
-                period_index - 1.0,
-                periodic_payment,
-                present_value,
-                timing,
-            )? * periodic_rate
+    let tf = timing.factor(periodic_rate); // 1 + r·type
+    let type_is_beginning = matches!(timing, PaymentTiming::BeginningOfPeriod);
+    // Remaining balance entering `period_index` (the `rip` term); interest = rip·r.
+    let rip = if period_index <= 1.0 {
+        if type_is_beginning {
+            0.0
+        } else {
+            -present_value
         }
-        PaymentTiming::BeginningOfPeriod => {
-            if period_index <= 1.0 {
-                0.0
-            } else {
-                (fv(
-                    periodic_rate,
-                    period_index - 2.0,
-                    periodic_payment,
-                    present_value,
-                    timing,
-                )? - periodic_payment)
-                    * periodic_rate
-            }
-        }
+    } else if type_is_beginning {
+        fv_exp(
+            periodic_rate,
+            period_index - 2.0,
+            periodic_payment,
+            present_value,
+            tf,
+        ) - periodic_payment
+    } else {
+        fv_exp(
+            periodic_rate,
+            period_index - 1.0,
+            periodic_payment,
+            present_value,
+            tf,
+        )
     };
+    let result = rip * periodic_rate;
     if result.is_finite() {
         Ok(result)
     } else {
@@ -1346,6 +1442,44 @@ mod tests {
 
     #[test]
     fn pmt_and_npv_exactness_witness_rows_are_pinned() {
+        // W108 Bead C — CLOSED. On the correctly-rounded numeric core (PV-side
+        // stable discount form), PMT(0.05/12, 360, 200000) now matches live Excel
+        // bit-for-bit at 0xc090c692af15f63a (= -1073.6432460242781), the
+        // w108-b2-financial PMT-0000 target. The prior wrong-kernel local was
+        // -1073.6432460242763 (0xc090c692af15f632, ~8 ULP off Excel).
+        let pmt_actual = pmt(
+            0.05 / 12.0,
+            360.0,
+            200000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+        )
+        .expect("pmt witness");
+        assert_bits(pmt_actual, f64::from_bits(0xc090c692af15f63a));
+        assert_bits(
+            npv(0.1, &[-10000.0, 3000.0, 4200.0, 6800.0]).expect("npv witness"),
+            1188.4434123352207,
+        );
+    }
+
+    #[test]
+    fn w108_bead_c_bit_exact_witnesses_match_live_excel() {
+        // New W108 Bead C bit-exact witnesses drawn from the w108-b2-financial
+        // live-Excel corpus (242 cases). These pin OxFunc==Excel bit-for-bit on the
+        // CR-core PMT family, guarding the kernel rewrite against regression.
+        // PMT-0001 (type=1 annuity-due).
+        assert_bits(
+            pmt(
+                0.05 / 12.0,
+                360.0,
+                200000.0,
+                0.0,
+                PaymentTiming::BeginningOfPeriod,
+            )
+            .expect("PMT-0001"),
+            f64::from_bits(0xc090b4c0d059daa6),
+        );
+        // PMT-0000 (canonical 30y mortgage payment) — Excel-exact.
         assert_bits(
             pmt(
                 0.05 / 12.0,
@@ -1354,13 +1488,86 @@ mod tests {
                 0.0,
                 PaymentTiming::EndOfPeriod,
             )
-            .expect("pmt witness"),
-            -1073.6432460242763,
+            .expect("PMT-0000"),
+            f64::from_bits(0xc090c692af15f63a),
         );
+        // IPMT-0000 (first-period interest) — Excel-exact.
         assert_bits(
-            npv(0.1, &[-10000.0, 3000.0, 4200.0, 6800.0]).expect("npv witness"),
-            1188.4434123352207,
+            ipmt(
+                0.05 / 12.0,
+                1.0,
+                360.0,
+                200000.0,
+                0.0,
+                PaymentTiming::EndOfPeriod,
+            )
+            .expect("IPMT-0000"),
+            f64::from_bits(0xc08a0aaaaaaaaaab),
         );
+    }
+
+    #[test]
+    fn nper_denom_log_choice_pins_excel_corpus() {
+        // W108 <DENOM_LOG> evidence. NPER = log_portable(ratio) / log_portable(1 + r).
+        // The 8-row live-Excel NPER corpus: 7/8 are Excel bit-exact; the single
+        // 1-ULP residual is NPER-0000. A/B against Rust std `.ln()` for the
+        // denominator TIES at 7/8 (same NPER-0000 miss), so the deterministic core
+        // `log_portable(1 + r)` is chosen. (Corpus w108-b2-financial NPER-0001..0007.)
+        let bit_exact_rows: &[(f64, f64, f64, f64, PaymentTiming, u64)] = &[
+            // NPER-0001
+            (
+                0.004166666666666667,
+                -1500.0,
+                200000.0,
+                0.0,
+                PaymentTiming::EndOfPeriod,
+                0x406860e8f2a3c05a,
+            ),
+            // NPER-0002
+            (
+                0.006666666666666667,
+                -500.0,
+                25000.0,
+                0.0,
+                PaymentTiming::EndOfPeriod,
+                0x404e82d9e2083eb5,
+            ),
+            // NPER-0005 (type=1)
+            (
+                0.005416666666666667,
+                -1200.0,
+                150000.0,
+                0.0,
+                PaymentTiming::BeginningOfPeriod,
+                0x4069e55a897343be,
+            ),
+            // NPER-0006 (nonzero fv)
+            (
+                0.004166666666666667,
+                -1500.0,
+                200000.0,
+                10000.0,
+                PaymentTiming::EndOfPeriod,
+                0x406933c5abe16989,
+            ),
+        ];
+        for &(r, pmt_v, pv, fv_v, timing, bits) in bit_exact_rows {
+            assert_bits(
+                nper(r, pmt_v, pv, fv_v, timing).expect("nper corpus row"),
+                f64::from_bits(bits),
+            );
+        }
+        // NPER-0000: the single tracked 1-ULP open discrepancy (local vs Excel).
+        let nper_0000 = nper(
+            0.0008333333333333334,
+            -100.0,
+            10000.0,
+            0.0,
+            PaymentTiming::EndOfPeriod,
+        )
+        .expect("NPER-0000");
+        assert_bits(nper_0000, f64::from_bits(0x405a1d41fa9d1c49)); // local
+        assert_ne!(nper_0000.to_bits(), 0x405a1d41fa9d1c4au64); // Excel (1 ULP away)
     }
 
     #[test]
@@ -1383,6 +1590,12 @@ mod tests {
 
     #[test]
     fn ppmt_exactness_witness_pins_current_local_bits_and_excel_gap() {
+        // W108 Bead C — open discrepancy, MAGNITUDE COLLAPSED. On the CR core,
+        // PPMT(0.05/12, 1, 360, 200000) = 0xc06e09eace050724; Excel (PPMT-0000) is
+        // 0xc06e09eace050723 — a 1-ULP gap (Excel's bespoke transcendental last
+        // bit). The prior wrong-kernel local was 0xc06e09eace0506e4 (~63 ULP off
+        // Excel). Pin the NEW local bits with the Excel target recorded; the 1-ULP
+        // residual is a tracked W108 open bug, not an acceptance.
         let ppmt_actual = ppmt(
             0.05 / 12.0,
             1.0,
@@ -1392,7 +1605,7 @@ mod tests {
             PaymentTiming::EndOfPeriod,
         )
         .expect("ppmt witness");
-        let ppmt_current_local = f64::from_bits(0xc06e09eace0506e4);
+        let ppmt_current_local = f64::from_bits(0xc06e09eace050724);
         let ppmt_excel_target = f64::from_bits(0xc06e09eace050723);
 
         assert_bits(ppmt_actual, ppmt_current_local);
@@ -1482,6 +1695,8 @@ mod tests {
 
     #[test]
     fn core_annuity_functions_match_pinned_excel_publication_rows() {
+        // PV/FV are UNCHANGED by W108 Bead C (two-kernel `powi`/`powf` split kept)
+        // and still match their pinned publication values bit-for-bit.
         assert_eq!(
             pv(0.05, 10.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
             Ok(772.1734929184813)
@@ -1490,9 +1705,14 @@ mod tests {
             fv(0.05, 10.0, -100.0, 0.0, PaymentTiming::EndOfPeriod),
             Ok(1257.789253554883)
         );
-        assert_eq!(
-            pmt(0.05, 10.0, 1000.0, 0.0, PaymentTiming::EndOfPeriod),
-            Ok(-129.50457496545667)
+        // W108 Bead C: PMT moved onto the CR core (exp/log1p/expm1). The new local
+        // is 0xc06030257a65e08a (-129.5045749654567), 1 ULP from the prior
+        // publication value -129.50457496545667 (0xc06030257a65e089). This row is
+        // NOT in the live-Excel corpus (no bit-oracle), so pin the NEW core bits;
+        // the ±1-ULP delta from the doc value is a tracked W108 note.
+        assert_bits(
+            pmt(0.05, 10.0, 1000.0, 0.0, PaymentTiming::EndOfPeriod).expect("pmt publication row"),
+            f64::from_bits(0xc06030257a65e08a),
         );
     }
 

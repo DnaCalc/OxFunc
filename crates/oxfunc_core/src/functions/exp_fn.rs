@@ -26,7 +26,9 @@ pub const EXP_META: FunctionMeta = function_spec! {
 };
 
 pub fn exp_kernel(n: f64) -> f64 {
-    n.exp()
+    // Excel's EXP is the legacy x87 CRT chain, not the platform `exp`; the
+    // backend reproduces it bit-for-bit on x86_64. See `crate::excel_numeric`.
+    crate::excel_numeric::excel_exp(n)
 }
 
 pub fn eval_exp_surface(

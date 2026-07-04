@@ -59,13 +59,19 @@ fn ifna_substitutes_for_na_cell() {
 
 #[test]
 fn isblank_is_true_for_absent_cell() {
-    assert_eq!(worksheet_value("=ISBLANK(A1)", &[]), CalcValue::logical(true));
+    assert_eq!(
+        worksheet_value("=ISBLANK(A1)", &[]),
+        CalcValue::logical(true)
+    );
 }
 
 #[test]
 fn iserror_is_true_for_error_cell() {
     let cells = [("A1", CalcValue::error(WorksheetErrorCode::Value))];
-    assert_eq!(worksheet_value("=ISERROR(A1)", &cells), CalcValue::logical(true));
+    assert_eq!(
+        worksheet_value("=ISERROR(A1)", &cells),
+        CalcValue::logical(true)
+    );
 }
 
 #[test]
@@ -100,7 +106,10 @@ fn averageif_over_range() {
         ("A3", num(3.0)),
         ("A4", num(4.0)),
     ];
-    assert_eq!(worksheet_value("=AVERAGEIF(A1:A4,\">2\")", &cells), num(3.5));
+    assert_eq!(
+        worksheet_value("=AVERAGEIF(A1:A4,\">2\")", &cells),
+        num(3.5)
+    );
 }
 
 #[test]
@@ -113,7 +122,10 @@ fn hlookup_over_area() {
         ("B2", num(20.0)),
         ("C2", num(30.0)),
     ];
-    assert_eq!(worksheet_value("=HLOOKUP(2,A1:C2,2,FALSE)", &cells), num(20.0));
+    assert_eq!(
+        worksheet_value("=HLOOKUP(2,A1:C2,2,FALSE)", &cells),
+        num(20.0)
+    );
 }
 
 #[test]
@@ -126,7 +138,10 @@ fn xlookup_over_columns() {
         ("B2", text("two")),
         ("B3", text("three")),
     ];
-    assert_eq!(worksheet_value("=XLOOKUP(2,A1:A3,B1:B3)", &cells), text("two"));
+    assert_eq!(
+        worksheet_value("=XLOOKUP(2,A1:A3,B1:B3)", &cells),
+        text("two")
+    );
 }
 
 // The following mirror bind-level scenarios deferred out of the w050 seam corpus
@@ -152,7 +167,10 @@ fn vlookup_over_area() {
         ("A3", num(3.0)),
         ("B3", num(30.0)),
     ];
-    assert_eq!(worksheet_value("=VLOOKUP(2,A1:B3,2,FALSE)", &cells), num(20.0));
+    assert_eq!(
+        worksheet_value("=VLOOKUP(2,A1:B3,2,FALSE)", &cells),
+        num(20.0)
+    );
 }
 
 #[test]
@@ -163,5 +181,8 @@ fn rows_reports_range_height() {
 #[test]
 fn let_binds_a_range_then_aggregates() {
     let cells = [("A1", num(10.0)), ("A2", num(20.0)), ("A3", num(30.0))];
-    assert_eq!(worksheet_value("=LET(data,A1:A3,SUM(data))", &cells), num(60.0));
+    assert_eq!(
+        worksheet_value("=LET(data,A1:A3,SUM(data))", &cells),
+        num(60.0)
+    );
 }

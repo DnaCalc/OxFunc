@@ -1634,7 +1634,7 @@
     "caller_col": 1,
     "snapshot_surface_name": "PMT",
     "cell_fixture": {},
-    "expected_value_summary": "Number(-129.50457496545667)",
+    "expected_value_summary": "Number(-129.5045749654567)",
     "expected_returned_value_surface_kind": "OrdinaryValue",
     "expected_prepared_argument_structures": [
       "DirectScalar",

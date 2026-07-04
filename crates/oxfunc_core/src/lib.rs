@@ -1,5 +1,8 @@
 pub mod capability;
 pub mod coercion;
+/// W108 Excel-faithful elementary numeric core (exp/expm1/log/log1p/sqrt).
+/// Internal to the crate; financial/math kernels call these `pub(crate)` fns.
+mod excel_numeric;
 #[macro_use]
 pub mod function;
 pub mod function_call;

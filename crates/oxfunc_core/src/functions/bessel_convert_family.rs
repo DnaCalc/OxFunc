@@ -786,7 +786,9 @@ mod tests {
             (100.0, 10.0, 0x3fad_dda2_d78f_9299),
         ];
         for &(x, n, excel_bits) in witnesses {
-            let actual = bessely_kernel(x, n).expect("witness should succeed").to_bits();
+            let actual = bessely_kernel(x, n)
+                .expect("witness should succeed")
+                .to_bits();
             assert_eq!(
                 actual, excel_bits,
                 "BESSELY({x},{n}): local 0x{actual:016x} != Excel 0x{excel_bits:016x}"
@@ -823,7 +825,9 @@ mod tests {
             (10.0, 10.0, 0x3fca_8ee7_9d2f_09d3),
         ];
         for &(x, n, excel_bits) in witnesses {
-            let actual = besselj_kernel(x, n).expect("witness should succeed").to_bits();
+            let actual = besselj_kernel(x, n)
+                .expect("witness should succeed")
+                .to_bits();
             assert_eq!(
                 actual, excel_bits,
                 "BESSELJ({x},{n}): local 0x{actual:016x} != Excel 0x{excel_bits:016x}"

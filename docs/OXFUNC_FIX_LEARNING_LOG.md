@@ -73,6 +73,12 @@ change how a *future, unrelated* fix is approached.
   oracle *before* chasing extended-precision/x87 emulation. (Excel-deviates-from-ideal-math
   cases like this are catalogued in
   [`EXCEL_MATH_DEVIATION_CATALOG.md`](EXCEL_MATH_DEVIATION_CATALOG.md).)
+  **CAVEAT (W108 x87 discovery):** the "not x87" framing above is now known to be too strong —
+  Excel's `POWER`/`EXP`/`LN` ARE the x87 CRT chain. `powf(x, 0.5)` matched Excel for `SQRTPI`
+  because the exponent `0.5` is a special case (`powf(_,0.5)` returns `sqrt`, and Excel's
+  `exp(0.5·ln x)` coincides there); for GENERAL fractional exponents `powf` matches Excel only
+  ~5% while `exp(y·ln x)` matches ~86% (see the x87 entries below). Probe `powf` first still
+  holds as cheap triage, but a `powf` miss now points AT the x87 chain, not away from it.
 - **Drift that grows like a clean power of the argument is a coefficient-table defect, and
   you can *solve* for it instead of guessing.** Model `excel − local` as `Σ δ_k·y^k` through
   the kernel's own structure and solve the linear system against live-Excel bit witnesses
@@ -92,19 +98,41 @@ change how a *future, unrelated* fix is approached.
   transcendental sub-calls through the worksheet functions at the exact intermediate
   arguments — and if the host libm is the cause, file it with the trig lane, not the kernel.
 
-- **64-bit Excel is pure IEEE-754 double — prove it, don't assume x87.** Legacy lore
-  says Excel keeps 80-bit x87 intermediates; that is FALSE for the 64-bit build (SSE2,
-  no x87/FMA). Test it directly with discriminator formulas whose published double
-  differs under wide-vs-double: `=A1*A1-B1` with `A1=1+2^-27, B1=1+2^-26` publishes
-  exactly `0.0` under pure-double but `~5.5e-17` under x87; `=A1*B1+C1*D1` and
-  `=SUMPRODUCT(...)` test FMA fusion. All returned `0.0` (W108). A residual you can't
-  reach in pure double is almost always a wrong composition/libm, not extended precision.
-- **Excel's elementary functions are correctly-rounded, not the platform libm.** On
-  inputs where UCRT `exp` != correctly-rounded, 64-bit Excel publishes the CR value
-  (W108). Rust `f64::exp/ln_1p/exp_m1` = UCRT, which misrounds `log1p` ~21% / `expm1`
-  ~5% — so it cannot match Excel in general. Matching needs a correctly-rounded (or the
-  identified SVML) `exp`/`expm1`/`log1p`/`log`. Many small-ULP finance/stat/special
-  residuals share this one substrate.
+- **64-bit Excel ARITHMETIC is pure IEEE-754 double, but the TRANSCENDENTAL FUNCTIONS
+  are x87.** The two are separate questions and have opposite answers. Worksheet `+`,
+  `*`, `SUMPRODUCT` etc. are pure SSE2 double, no 80-bit intermediates, no FMA — proven
+  with discriminator formulas whose published double differs under wide-vs-double:
+  `=A1*A1-B1` with `A1=1+2^-27, B1=1+2^-26` publishes exactly `0.0` under pure-double
+  but `~5.5e-17` under x87; all returned `0.0` (W108). But `EXP`/`LN`/`LOG10`/`LOG`/
+  `POWER` are implemented internally with the **legacy Microsoft x87 CRT transcendental
+  sequence** (`87tran.asm`, control word `0x133F`, precision-control 64-bit) — 80-bit
+  `FLDL2E`/`F2XM1`/`FSCALE` and `FLDLN2`/`FYL2X`. So "pure double" applies to the
+  operators, NOT to the elementary functions. (See `crate::excel_numeric::x87` and
+  `C:/Temp/ExcelExpFunction`.)
+- **Excel's elementary functions are the x87 CRT chain — NOT correctly-rounded, and not
+  any modern libm.** (This CORRECTS the earlier W108-A claim that Excel publishes the CR
+  value; that was wrong.) `EXP`/`LN` are `~0.502` ULP faithful with a systematic
+  "away-from-1.0" 1-ULP bias on hard near-midpoint inputs (`sign(k)` where `k=round(x/ln2)`),
+  the fingerprint of `FLDL2E` rounded up carried through `×2^k`. They match neither UCRT,
+  glibc, MKL, nor the correctly-rounded value. Reproduce them **bit-for-bit by executing
+  the x87 instructions on the host CPU** (`crate::excel_numeric::excel_exp/excel_log/
+  excel_log10`, validated 249/249 + a fresh 396-row live-Excel sweep). Rust `f64::exp/ln/
+  log10` = UCRT and cannot match Excel on hard cases, so worksheet transcendentals must
+  route through the x87 backend. **The x87 microcode (`F2XM1`/`FYL2X`) is CPU-specific**,
+  so on the ~1-in-30 hardest rows parity is a host-CPU property (validated on AMD Zen2).
+- **Excel `LOG(x, base)` is `ln(x)/ln(base)` for EVERY base — but the dedicated
+  `LOG10()` worksheet function is `fldlg2` and differs.** Do not special-case `LOG(_,10)`
+  or `LOG(_,2)` to a dedicated log: a live-Excel sweep of 218 rows showed `ln/ln` exact
+  for all bases, including Excel's own imprecision `LOG(1000,10)=2.9999999999999996`,
+  while `LOG10(1000)=3` exactly. `LOG` and `LOG10` are genuinely different Excel code
+  paths; each OxFunc surface must use its own.
+- **Excel `POWER(x, y)` (fractional exponent, positive base) is `exp(y·ln x)` via the
+  x87 exp/ln with f64 intermediates — NOT `powf`, NOT the fused x87 `x^y` (`FYL2X`+`F2XM1`)
+  chain.** A 220-row live sweep: `exp(y·ln x)` matched 86% (rest 1 ULP), `powf` 5%, the
+  fused chain 5%; `exp(y·ln x)` strictly beat `powf` on 84/90 head-to-head rows. The 14%
+  residual (all exactly 1 ULP) is an unresolved intermediate-precision detail — Excel's
+  exact `POWER` composition is a puzzle catalogued for a dedicated pass. Integer exponents
+  keep the validated `powi` publication path (a separate Excel quirk).
 - **Excel's financial functions split by primitive, not by module.** FV/PV compute
   `(1+r)^n` via `powi` (integer n) / `powf` (fractional n) + `(F-1)/r`; PMT uses an
   `exp(n*log1p(r))`/`expm1` chain; NPER uses `ln(1+r)` (NOT `log1p`) with a
