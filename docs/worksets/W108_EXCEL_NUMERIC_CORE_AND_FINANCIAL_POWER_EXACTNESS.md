@@ -252,11 +252,17 @@ substrate + expm1/log1p/sqrt basis).
   live Excel sweep (`x87lab`): EXP 24/24, LN 19/19, LOG10 120/120, LOG 218/218 bit-exact
   (excl. one subnormal-domain edge where Excel flushes `5e-324` to 0 → `#NUM!`).
 
-**POWER (fractional exponent) — CHARACTERIZED, not yet fixed (Phase D):** Excel `POWER(x,y)`
-is `exp(y·ln x)` via x87 exp/ln with **f64 intermediates** — matched 86% (rest 1 ULP) on a
-220-row live sweep, vs `powf` 5% and the fused `FYL2X`+`F2XM1` chain 5%; `exp(y·ln x)`
-strictly beat `powf` 84/90 head-to-head. Kept `powf` for now (the 14% residual is a
-1-ULP intermediate-precision puzzle); catalogued in the discrepancy catalog (G4).
+**POWER (fractional exponent) — RESOLVED, bit-exact (Phase D, BUG-FUNC-042):** Excel
+`POWER(x,y)` fractional path is `exp(y·ln x)` via x87 exp/ln with a **double-rounded** product,
+plus two subtleties that close it to bit-exact: (a) for `y<0`, Excel computes the positive
+power, stores it to f64, then takes ONE x87 double-rounded reciprocal (the 1-ULP residual —
+`exp(y·ln x)` was the right function at the wrong point; `C:/Temp/ExcelExpFunction`
+POWER_REPORT, 315/315); (b) exponent `|y|==0.5` is the correctly-rounded hardware `sqrt`, NOT
+`exp(0.5·ln x)` — a case the reference missed (it only tested `0.5` on negative bases), caught
+by an OxFunc live sweep. Full model 400/400 fresh + 315 ground truth. Landed in `power_kernel`
+via `excel_numeric::{excel_pow_positive, excel_x87_recip}` and new `x87::{mul, recip}` (the
+PC=64 double-rounded FMUL/FDIV). Replaces `powf`. Spec + test suite:
+`docs/EXCEL_POWER_SPEC_AND_TEST_CASES.md`.
 
 **Financial family — FROZEN on the portable core pending Phase C.** PMT/PPMT/IPMT/NPER/CUM
 explicitly use `exp_portable`/`log_portable`/`excel_expm1`/`excel_log1p` (unchanged from

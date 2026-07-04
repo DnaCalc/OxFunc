@@ -21,9 +21,12 @@ regime-switched function:
   `-exp(y · ln|x|)`;
 - **domain edges** (`0^0`, `0^negative`, overflow) → specific worksheet errors.
 
-The interesting and only unresolved part is the fractional/positive-base path: `exp(y·ln x)`
-reproduces Excel bit-for-bit **~86%** of the time, and the remaining ~14% are **all exactly
-1 ULP** off — an open reverse-engineering question (§4).
+**Status: RESOLVED — bit-exact.** The full algorithm reproduces live Excel on 715/715 rows
+(315 reverse-engineering ground truth + 400 fresh confirmation). Two subtleties complete the
+fractional path: (a) for **`y < 0`** Excel computes the *positive* power, stores it to
+`binary64`, then takes **one** x87 double-rounded reciprocal — `exp(y·ln x)` was the right
+function evaluated at the wrong point (§4); (b) for exponent **exactly `0.5`** Excel uses the
+correctly-rounded hardware `sqrt`, not `exp(0.5·ln x)` (§4a).
 
 ---
 
@@ -39,9 +42,10 @@ contrast, is pure SSE2 `binary64`; only the transcendental *functions* are x87.)
 
 | Case | What Excel computes |
 |------|---------------------|
-| `y` an exact integer | `x^y` by binary exponentiation (square-and-multiply), reciprocal if `y<0`. Gives exact integers where math is exact (`POWER(3,3)=27`), and its own rounding elsewhere. |
-| `y` fractional, `x > 0` | `exp(y · ln x)` — x87 `ln`, `binary64` multiply `y·ln x`, x87 `exp`. |
-| `y` fractional, `x < 0` | `#NUM!`, **except** `y ≈ 1/(odd integer)` (a real root): then `-exp(y · ln(-x))`. |
+| `y` an exact integer | `x^y` by LSB-first binary exponentiation (square-and-multiply), reciprocal if `y<0`. Gives exact integers where math is exact (`POWER(3,3)=27`), and its own rounding elsewhere. |
+| `y = ±0.5` | positive power is the correctly-rounded hardware `sqrt(|x|)` (SSE2 SQRTSD), NOT `exp(0.5·ln x)`; for `y=-0.5` reciprocate. |
+| `y` fractional (other), `x > 0` | `p = exp_x87(RN53(RN64(\|y\| · ln_x87 x)))` — x87 `ln`, x87 **double-rounded** product, x87 `exp`. If `y<0`: `r = RN53(RN64(1/p))` (x87 double-rounded reciprocal); publish `r`. |
+| `y` fractional, `x < 0` | `#NUM!`, **except** when `1/y` rounded to 15 significant decimal digits is an **odd** integer within signed int32 (a real root): then `-POWER(\|x\|, y)`. |
 | `x = 0`, `y = 0` | `#NUM!` |
 | `x = 0`, `y < 0` | `#DIV/0!` |
 | overflow (result `> ~1.8e308`) | `#NUM!` |
@@ -65,29 +69,33 @@ For each fractional/positive-base test case, three independent implementations a
 
 ---
 
-## 4. The reverse-engineering result and the open question
+## 4. The resolution
 
-A 220-row live-Excel sweep of fractional/positive-base inputs (log-uniform bases `1e-6..1e4`,
-exponents `±25`), comparing five candidate compositions:
+A first pass found `exp(y·ln x)` (x87, `binary64` intermediates) matched a 220-row
+fractional/positive-base sweep only **86%**, with the residual **all exactly 1 ULP** —
+and all on **negative exponents**. Two facts closed the gap:
 
-| candidate | bit-exact vs Excel |
-|-----------|--------------------|
-| `exp(y · ln x)`, `binary64` intermediates (x87 exp/ln) | **189 / 220 (86%)** |
-| `powf(x, y)` | 12 / 220 |
-| fused x87 `2^(y · log2 x)` (`FYL2X` + `F2XM1`) | ~10 / 220 |
-| `y · ln x` product kept at 80-bit, then exp | 22 / 220 |
-| `2^(y · log2 x)` with `binary64` product | ~12 / 220 |
+**(a) `y < 0` is reciprocal-staged.** The 1-ULP-exactly signature rules out any
+product-level difference (that would be multi-ULP). Excel never evaluates `exp` at the
+negative argument: it computes the **positive** power `p = exp_x87(RN53(RN64(|y|·ln x)))`,
+**stores `p` to `binary64`**, then takes **one** x87 double-rounded reciprocal
+`r = RN53(RN64(1/p))`. The extra `binary64` store of `p` perturbs the final rounding by
+±½ ULP on ~28% of negative-`y` rows — exactly the observed residual. (Also settled: the
+`|y|·ln x` product and the `1/p` divide are both x87 **double-rounded** RN64→RN53, not
+single-rounded SSE; and the negative-base odd-root test is a **decimal** 15-sig-digit fuzz,
+not binary.) This model scored **315/315** across the reverse-engineering ground truth.
 
-Head-to-head on 90 rows: `exp(y·ln x)` was strictly closer to Excel than `powf` on **84/90**,
-tied on 5, and worse on exactly 1 (a 1-ULP row where `powf` happened to be exact). So Excel is
-unambiguously an `exp∘ln` composition with `binary64` intermediates.
+**(b) exponent `0.5` is `sqrt`.** A fresh confirmation sweep found the one remaining class:
+Excel evaluates `POWER(x, 0.5)` as the **correctly-rounded hardware `sqrt(x)`** (SSE2
+SQRTSD), not `exp(0.5·ln x)` — the latter is 1 ULP low, e.g. `POWER(2, 0.5)` = √2 =
+`0x3ff6a09e667f3bcd` vs `exp(0.5·ln 2)` = `0x…bcc`. It applies to `|y| == 0.5` (so `y=-0.5`
+reciprocates `sqrt`); every other tested fractional exponent (0.25, 0.75, 1/3, 1.5, 2.5, …)
+uses `exp∘ln`. Because it is hardware `sqrt`, the `0.5` path is CPU-independent (no x87
+microcode caveat). With (a)+(b) the full algorithm reproduces live Excel **400/400** on a
+fresh sweep spanning both signs, negative-base roots, integer, subnormal, and error rows.
 
-**Open question.** The residual ~14% are **all exactly 1 ULP** off, even though the x87 `exp`,
-the x87 `ln`, and the `binary64` multiply are *each individually* bit-exact to Excel. Something
-about the intermediate precision or the internal `ln` used specifically inside `POWER` differs
-on these near-rounding-boundary rows. Identifying it (a different internal `ln`? a partially
-fused reduction?) is the same class of problem that pinning Excel's `EXP`/`LN` required, and is
-left open. The `exp(y·ln x)` model is the closest known reproduction.
+The only residual caveat is the shared x87 `exp`/`ln` per-CPU-family microcode on the
+hardest ~1-in-2000 general-fractional inputs (same as `EXP`/`LN`); validated on AMD Zen2.
 
 ---
 
@@ -121,16 +129,27 @@ from `pow(x, y)` in the low bits. (Bit patterns are the exact Excel doubles.)
 
 ### 5C. Negative base — exact reciprocal-odd-integer roots only
 
-`POWER(negative, y)` is `#NUM!` unless `y` rounds to `1/(odd integer)` (a real root), which
-Excel evaluates as `-exp(y · ln(-x))`:
+`POWER(negative, y)` is `#NUM!` unless `1/y` (to 15 significant decimal digits) is an odd
+integer within signed int32 (a real root), evaluated as `-POWER(|x|, y)`:
 
 | Call | Excel result |
 |------|--------------|
 | `POWER(-8, 1/3)` | `-1.9999999999999998` |
 | `POWER(-27, 1/3)` | `-2.9999999999999996` |
 | `POWER(-32, 1/5)` | `-2` |
-| `POWER(-8, 2/3)` | `#NUM!` |
-| `POWER(-8, 0.5)` | `#NUM!` |
+| `POWER(-8, -1/3)` | `-0.5` (exact — via the double-rounded reciprocal tie) |
+| `POWER(-8, 2/3)` | `#NUM!` (2/3 → 1/y=1.5, not an integer) |
+| `POWER(-8, 0.5)` | `#NUM!` (1/y = 2 is even) |
+
+### 5C-b. Exponent `0.5` — hardware `sqrt`, positive base
+
+Excel evaluates `POWER(x, 0.5)` as the correctly-rounded `sqrt(x)`, NOT `exp(0.5·ln x)`:
+
+| Call | Excel result (bits) | note |
+|------|---------------------|------|
+| `POWER(2, 0.5)` | `0x3ff6a09e667f3bcd` (√2) | `exp(0.5·ln 2)` gives `0x…bcc`, 1 ULP low |
+| `POWER(16, 0.5)` | `4` | exact |
+| `POWER(4, -0.5)` | `0.5` | `sqrt` then reciprocal |
 
 ### 5D. Fractional exponent, positive base — AGREE cases
 
@@ -161,10 +180,12 @@ bits, then the ULP distance of `powf` from Excel.
 | `0x3f3b5f01d0169560` | 0.00041765 | `0xc035628cf5bf874a` | -21.385 | `0x4ef09f93cfba3aee` | `0x4ef09f93cfba3afa` | 12 |
 | `0x3fa4fdb253411d7d` | 0.040998 | `0xc0224474cf6af0fb` | -9.1337 | `0x42910a3e438790fe` | `0x42910a3e438790f6` | 8 |
 
-### 5E. Fractional exponent, positive base — DIVERGE cases (the open puzzle)
+### 5E. Fractional exponent, positive base — the former "puzzle" rows (now resolved)
 
-These are the cases where `exp(y·ln x)` is **1 ULP** off Excel — the closest known model
-still misses. `powf` is farther still (its ULP gap shown). This is the residual to crack.
+These are the cases where the naive `exp(y·ln x)` column is **1 ULP** off Excel. They are all
+`y < 0`: the **reciprocal-staged** model (positive power stored to f64, then one double-rounded
+`1/p`) reproduces every one of them bit-exact — the `exp(y·ln x)` column below is shown only to
+document why the staging is required. `powf` is farther still (its ULP gap shown).
 
 | base (hex) | base | exp (hex) | exp | excel | exp(y·ln x) | powf | exp Δ | powf Δ |
 |---|---|---|---|---|---|---|---|---|
@@ -185,11 +206,11 @@ still misses. `powf` is farther still (its ULP gap shown). This is the residual 
 | `0x3f35555c1c5db44a` | 0.000325522 | `0xc0027ddbd2dd7298` | -2.31145 | `0x419b701886193c80` | `0x419b701886193c81` | `0x419b701886193c97` | 1 | 23 |
 | `0x3fea8dd63b8fda6d` | 0.829814 | `0xc034be75d6e58f7f` | -20.744 | `0x4047f7cce8d618df` | `0x4047f7cce8d618de` | `0x4047f7cce8d618e1` | 1 | 2 |
 
-**Observation.** Every diverge case in this sample has a **negative exponent** and lands
-where the true result is within a fraction of a ULP of a rounding midpoint — the same
-"hardest-to-round" signature seen for `EXP`/`LN`. On the diverge rows `exp(y·ln x)` is 1 ULP
-off; `powf` is 0–124 ULP off (amplified by `|y|`). There is no known composition that is 0 ULP
-on all of these.
+**Observation → resolution.** Every row here has a **negative exponent** — the tell that led
+to the reciprocal-staging fix (§4a). The reciprocal-staged model (compute the positive power
+`p = exp(|y|·ln x)`, store to f64, then `RN53(RN64(1/p))`) reproduces the Excel column on all
+of them bit-exact. The `exp(y·ln x)` column above is the *un-staged* value, kept to show the
+1-ULP gap that staging closes; `powf` is 0–124 ULP off (amplified by `|y|`).
 
 ---
 
@@ -200,18 +221,20 @@ on all of these.
    corrupt the comparison). Read `=POWER(A1, B1)` back as its 64-bit pattern.
 2. Compare bit patterns, not decimal strings — a shared 15-digit decimal prefix routinely
    hides a multi-ULP tail.
-3. Expect: 5A/5B/5C exact; 5D exact for `exp(y·ln x)`; 5E off by exactly 1 ULP for the best
-   known model (`exp(y·ln x)`) and more for `powf`.
-4. The x87 `exp`/`ln` needed for the `exp(y·ln x)` model is itself CPU-microcode-sensitive on
-   the hardest inputs (`F2XM1`/`FYL2X`), so bit-exactness is a property of the host x86-64 CPU
-   family (validated on AMD Zen2).
+3. Expect the **full algorithm** (§2, with the §4 reciprocal staging and the `0.5→sqrt`
+   special case) to be bit-exact on every row: 5A–5C, 5C-b, 5D, and 5E. The bare `exp(y·ln x)`
+   column in 5E is the un-staged value and is 1 ULP off on those `y<0` rows by design.
+4. The general-fractional path's x87 `exp`/`ln` is CPU-microcode-sensitive on the hardest
+   inputs (`F2XM1`/`FYL2X`), so its bit-exactness is a property of the host x86-64 CPU family
+   (validated on AMD Zen2). The `0.5→sqrt` path uses hardware SQRTSD and is CPU-independent.
 
 ---
 
 ## 7. Status
 
-`exp(y·ln x)` (x87, `binary64` intermediates) is the confirmed model: ~86% bit-exact,
-strictly better than `powf`. It is **not yet adopted** in place of `powf` pending a decision
-on the 1-ULP residual — either reverse-engineer it to 100% (the §4 open question) or land
-`exp(y·ln x)` as the best-achievable improvement. Integer exponents already use the correct
-binary-exponentiation publication and are unaffected.
+**RESOLVED — bit-exact.** The full algorithm (§2) reproduces live Excel on 715/715 rows
+(315 reverse-engineering ground truth + 400 fresh confirmation). Adopted in OxFunc
+(`power_kernel` → `crate::excel_numeric::excel_pow_positive` / `excel_x87_recip`), replacing
+`powf`. The only residual is the shared x87 `exp`/`ln` per-CPU-family microcode caveat on the
+hardest general-fractional inputs (same as `EXP`/`LN`); the integer path (binary exponentiation)
+and the `0.5→sqrt` path are exact and CPU-independent.

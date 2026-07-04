@@ -126,13 +126,20 @@ change how a *future, unrelated* fix is approached.
   for all bases, including Excel's own imprecision `LOG(1000,10)=2.9999999999999996`,
   while `LOG10(1000)=3` exactly. `LOG` and `LOG10` are genuinely different Excel code
   paths; each OxFunc surface must use its own.
-- **Excel `POWER(x, y)` (fractional exponent, positive base) is `exp(y·ln x)` via the
-  x87 exp/ln with f64 intermediates — NOT `powf`, NOT the fused x87 `x^y` (`FYL2X`+`F2XM1`)
-  chain.** A 220-row live sweep: `exp(y·ln x)` matched 86% (rest 1 ULP), `powf` 5%, the
-  fused chain 5%; `exp(y·ln x)` strictly beat `powf` on 84/90 head-to-head rows. The 14%
-  residual (all exactly 1 ULP) is an unresolved intermediate-precision detail — Excel's
-  exact `POWER` composition is a puzzle catalogued for a dedicated pass. Integer exponents
-  keep the validated `powi` publication path (a separate Excel quirk).
+- **Excel `POWER(x, y)` fractional path = `exp(y·ln x)` (x87 exp/ln, double-rounded product),
+  with two subtleties that make it bit-exact.** (RESOLVED, BUG-FUNC-042, 715/715 live.) NOT
+  `powf`, NOT the fused x87 `x^y` chain. (1) For **`y < 0`** Excel computes the POSITIVE
+  power, stores it to `binary64`, then takes ONE x87 double-rounded reciprocal — `exp(y·ln x)`
+  was the right function evaluated at the wrong point (this is the 1-ULP residual the naive
+  model left; the extra store perturbs ~28% of negative-`y` rows by ½ULP). (2) Exponent
+  **`|y| == 0.5`** is the correctly-rounded hardware **`sqrt`**, not `exp(0.5·ln x)` — e.g.
+  `POWER(2,0.5)=√2` exactly (`powf` matches here only because `powf(_,0.5)=sqrt`). The `y*ln`
+  product and the `1/p` divide are x87 **double-rounded** (RN64→RN53), not single-rounded SSE;
+  the negative-base odd-root test is a **decimal** 15-sig-digit fuzz on `1/y`. Integer
+  exponents keep the LSB-first binary-exponentiation publication. **Lesson for reverse-
+  engineered specs: probe the "nice" inputs the spec skipped** — the reference nailed 315/315
+  but never tested `POWER(positive, 0.5)`, so it missed the `sqrt` special case; one broad
+  OxFunc live sweep caught it.
 - **Excel's financial functions split by primitive, not by module.** FV/PV compute
   `(1+r)^n` via `powi` (integer n) / `powf` (fractional n) + `(F-1)/r`; PMT uses an
   `exp(n*log1p(r))`/`expm1` chain; NPER uses `ln(1+r)` (NOT `log1p`) with a

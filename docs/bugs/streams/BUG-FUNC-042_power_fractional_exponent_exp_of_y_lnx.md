@@ -1,9 +1,29 @@
 # BUG-FUNC-042 — POWER fractional exponent: Excel is `exp(y·ln x)`, not `powf`
 
-Status: `open` (characterized, root cause found, fix deferred to a dedicated pass)
+Status: `RESOLVED` — bit-exact, landed in `power_kernel` (commit `af79125`)
 Owner workset: W108 (Phase D)
-Catalog: `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md` G4 (POWER)
+Catalog: resolved (removed from the open tracker)
 Reproduced on: live Excel 16.0 build 20131, 64-bit, AMD Zen2, Value2 cell-ref plumbing
+
+## Resolution (2026-07-04)
+
+`POWER` is now bit-exact (715/715 live rows: 315 reverse-engineering ground truth +
+400 fresh confirmation). The fractional path is `exp(y·ln x)` via the x87 `exp`/`ln` with
+a **double-rounded** product; for `y < 0` Excel computes the positive power, stores it to
+`binary64`, then takes **one** x87 double-rounded reciprocal (`exp(y·ln x)` was the right
+function at the wrong point — the earlier 1-ULP residual). Two corrections beyond the
+first-pass `exp(y·ln x)`:
+1. the `y<0` **reciprocal staging** (`C:/Temp/ExcelExpFunction/POWER_REPORT.md`, 315/315);
+2. exponent `|y| == 0.5` is the correctly-rounded hardware **`sqrt`**, NOT `exp(0.5·ln x)`
+   — found by an OxFunc live sweep the reference missed (it only tested `0.5` on negative
+   bases). `base.sqrt()` (SSE2 SQRTSD) is CPU-independent.
+
+Implemented: `power_kernel` (integer→binexp, fractional→`excel_pow_positive` with the
+`0.5→sqrt` case, `y<0`→`excel_x87_recip`), new x87 primitives `x87::{mul,recip}` (the
+double-rounded PC=64 FMUL/FDIV). Full spec + validated test suite:
+`docs/EXCEL_POWER_SPEC_AND_TEST_CASES.md`.
+
+Original characterization (kept for history) follows.
 
 ## Summary
 

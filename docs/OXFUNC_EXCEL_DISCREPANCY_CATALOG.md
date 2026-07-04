@@ -1,7 +1,7 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-07-04` (W108 x87 transcendental core: EXP/LN/LOG10/LOG now bit-exact; POWER row added)
+Last reconciled: `2026-07-04` (W108 x87: EXP/LN/LOG10/LOG and POWER now bit-exact; BUG-FUNC-042 signed off)
 Last history cleanup: `2026-06-26`
 
 ## Purpose
@@ -45,25 +45,26 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `27`
+Open Category-2 rows: `26`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
-| G4 elementary/trig numeric exactness | 6 |
+| G4 elementary/trig numeric exactness | 5 |
 | G5 matrix numeric/shape | 2 |
 | G6 financial exactness/solver | 12 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
-W108 resolved (removed from tracking as bit-exact via the x87 backend): `EXP`, `LN`,
-`LOG10`, `LOG(x, base)` — 64-bit Excel computes these with the legacy x87 CRT
+W108 resolved (bit-exact via the x87 backend, removed from tracking): `EXP`, `LN`, `LOG10`,
+`LOG(x, base)`, and `POWER` — 64-bit Excel computes these with the legacy x87 CRT
 transcendental chain (`87tran.asm`, CW `0x133F`), reproduced bit-for-bit by
-[`crate::excel_numeric::x87`] on the reference x86-64 host (249/249 corpus + a fresh
-396-row live sweep). These were never catalog rows (they were W108-A research findings);
-noted here for provenance. Many small-ULP G3/G4 residuals whose kernels call `exp`/`ln`
+[`crate::excel_numeric::x87`] on the reference x86-64 host. `POWER` (BUG-FUNC-042, signed
+off) is the fractional-path `exp(y·ln x)` with the `y<0` reciprocal staging and the
+`|y|==0.5→sqrt` special case (715/715 live rows). `EXP`/`LN`/`LOG10`/`LOG` were never catalog
+rows (W108-A research findings). Many small-ULP G3/G4 residuals whose kernels call `exp`/`ln`
 internally may now be closable by routing those calls through the x87 backend.
 
 ## G1 — Error-Code And Argument-Domain Guards
@@ -95,7 +96,6 @@ No current open rows.
 | ACOTH | Small residual drift: `1` ULP at current witnesses such as `ACOTH(5)` and `ACOTH(10)`. | NUM-S | M1 | BUG-FUNC-027 C5 |
 | COMBIN, COMBINA, PERMUT, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP drift where OxFunc currently differs from Excel's published bits. | NUM-S | M1 | BUG-FUNC-027 combinatorial group |
 | CONVERT | Unit-conversion factor drift, currently `1` ULP at `CONVERT(1,"m","ft")`. | NUM-S | M1 | G8 probe 2026-06-19 |
-| POWER | Fractional-exponent, positive-base path drift. Root cause found (W108): Excel `POWER(x,y)` is `exp(y·ln x)` via the x87 exp/ln with f64 intermediates, NOT `powf` and NOT the fused x87 `x^y` chain. Live sweep (220 rows): `exp(y·ln x)` `86%` bit-exact (rest `1` ULP), current `powf` only `~5%` (up to `~125` ULP on large `\|y\|`). `exp(y·ln x)` strictly beats `powf` `84/90` head-to-head. Integer exponents use the validated `powi` publication (unaffected). Residual `14%` (all `1` ULP) is an unresolved intermediate-precision detail — a dedicated pass may reach bit-exact or land `exp(y·ln x)` as best-achievable. | NUM-L | M2 | BUG-FUNC-042 / W108 Phase-D |
 
 ## G5 — Matrix Numeric And Shape
 
