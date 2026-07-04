@@ -134,6 +134,59 @@ fyl2x_fn!(
     log10, "fldlg2"
 );
 
+/// `RN53(RN64(a * b))` — one x87 `FMUL` at PC=64 then a `binary64` store: the
+/// **double-rounded** product. Excel forms `POWER`'s `|y|·ln x` this way; a plain
+/// SSE multiply is single-rounded and differs on double-rounding-window inputs.
+pub(super) fn mul(a: f64, b: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: balanced x87 stack (2 push; `fmulp` and `fstp` pop both), pointer
+    // I/O only, control word saved and restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{a}]",     // st0 = a
+            "fld qword ptr [{b}]",     // st0 = b, st1 = a
+            "fmulp st(1), st",         // st0 = RN64(a*b)
+            "fstp qword ptr [{res}]",  // RN53 store
+            "fldcw word ptr [{save}]",
+            a = in(reg) &a,
+            b = in(reg) &b,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+        );
+    }
+    result
+}
+
+/// `RN53(RN64(1.0 / x))` — one x87 `FDIV` at PC=64 then a `binary64` store: the
+/// double-rounded reciprocal Excel uses to stage `POWER(x, y)` for `y < 0`
+/// (compute the positive power, store it, then reciprocate).
+pub(super) fn recip(x: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: balanced x87 stack (`fld1` pushes, `fstp` pops), pointer I/O only.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld1",                    // st0 = 1
+            "fdiv qword ptr [{x}]",    // st0 = RN64(1/x)
+            "fstp qword ptr [{res}]",  // RN53 store
+            "fldcw word ptr [{save}]",
+            x = in(reg) &x,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+        );
+    }
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -198,6 +251,20 @@ mod tests {
         assert_eq!(ln(1.0).to_bits(), 0.0f64.to_bits());
         assert_eq!(ln(std::f64::consts::E), 1.0);
         assert_eq!(log10(1000.0), 3.0);
+    }
+
+    #[test]
+    fn double_rounded_mul_and_recip() {
+        // Exact cases.
+        assert_eq!(mul(2.0, 3.0), 6.0);
+        assert_eq!(recip(2.0).to_bits(), 0.5f64.to_bits());
+        assert_eq!(recip(0.5), 2.0);
+        // Double-rounding discriminator (POWER_LIVE_ROUND1): p = 0x3fffffffffffffff
+        // (~1.9999999999999998). RN64(1/p) = 0.5 + 2^-54, then RN53 ties to even
+        // -> exactly 0.5. A single-rounded SSE `1.0/p` gives 0x3fe0000000000001.
+        let p = f64::from_bits(0x3fffffffffffffff);
+        assert_eq!(recip(p).to_bits(), 0.5f64.to_bits());
+        assert_ne!((1.0 / p).to_bits(), 0.5f64.to_bits());
     }
 
     #[test]

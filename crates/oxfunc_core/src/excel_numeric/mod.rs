@@ -272,6 +272,50 @@ pub(crate) fn excel_log10(x: f64) -> f64 {
     }
 }
 
+/// The positive-power staging of Excel's `POWER(x, y)`: `p = exp(y · ln x)` via
+/// the x87 `exp`/`ln`, with the product formed as the x87 **double-rounded**
+/// `t = RN53(RN64(y · ln x))`. Bit-exact to 64-bit Excel on `x86_64`.
+///
+/// `base` must be finite and `> 0`, `exp` finite and `> 0`. The caller
+/// (`power_fn`) owns the surrounding algorithm: sign of a negative base, the
+/// `y < 0` reciprocal via [`excel_x87_recip`], the zero/integer dispatch, and
+/// the worksheet error/subnormal publication rules. The returned `p` is the raw
+/// positive power and may be `+Inf`, `+0`, or subnormal.
+pub(crate) fn excel_pow_positive(base: f64, exp: f64) -> f64 {
+    // Excel special-cases exponent 0.5 to the correctly-rounded hardware `sqrt`
+    // (SSE2 SQRTSD), NOT `exp(0.5·ln x)` — the latter is 1 ULP off (e.g.
+    // POWER(2, 0.5) = √2 exactly). `exp` here is `|y|`, so this also covers the
+    // `y = -0.5` case, whose positive power is then reciprocated by the caller.
+    // (Live-Excel confirmed 400/400; corrects the reciprocal-staging reference.)
+    if exp == 0.5 {
+        return base.sqrt();
+    }
+    #[cfg(target_arch = "x86_64")]
+    {
+        let ln_base = x87::ln(base);
+        let t = x87::mul(exp, ln_base); // RN53(RN64(exp * ln base))
+        x87::exp(t)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        base.powf(exp)
+    }
+}
+
+/// `RN53(RN64(1.0 / x))` — the x87 double-rounded reciprocal Excel uses to stage
+/// `POWER(x, y)` for `y < 0` (positive power, stored to `binary64`, then one
+/// reciprocal). Bit-exact to 64-bit Excel on `x86_64`.
+pub(crate) fn excel_x87_recip(x: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::recip(x)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        1.0 / x
+    }
+}
+
 /// Portable faithful (`~0.507` ULP) double-precision `ln(x)` — the glibc-2.29
 /// no-FMA `__log` port. The non-`x86_64` fallback for [`excel_log`], a
 /// correctly-rounded reference in tests, and the deterministic substrate the

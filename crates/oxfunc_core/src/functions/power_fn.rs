@@ -1,3 +1,4 @@
+use crate::excel_numeric::{excel_pow_positive, excel_x87_recip};
 use crate::function::{
     Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile, FunctionMeta,
     HostInteractionClass, KernelSignatureClass, PrecisionRoundingProfile, ThreadSafetyClass,
@@ -6,7 +7,6 @@ use crate::function::{
 use crate::functions::binary_numeric::{
     BinaryNumericSurfaceError, eval_binary_numeric_surface, map_binary_numeric_error_to_ws,
 };
-use crate::functions::excel_numeric::excel_underflow_to_zero;
 use crate::resolver::ReferenceSystemProvider;
 use crate::value::CalcValue;
 use crate::value::WorksheetErrorCode;
@@ -43,94 +43,126 @@ fn exact_integer_exponent(power: f64) -> Option<i64> {
     }
 }
 
-fn detect_reciprocal_odd_integer(power: f64) -> Option<i64> {
-    if !power.is_finite() || power <= 0.0 || power >= 1.0 {
-        return None;
-    }
-    let tolerance = 32.0 * f64::EPSILON * power.abs().max(1.0);
-    let mut best_q: Option<i64> = None;
-    let mut best_diff = f64::INFINITY;
-    let mut q = 3_i64;
-    while q <= 255 {
-        let recip = 1.0_f64 / q as f64;
-        let diff = (power - recip).abs();
-        if diff < best_diff {
-            best_diff = diff;
-            best_q = Some(q);
-        }
-        q += 2;
-    }
-    if best_diff <= tolerance { best_q } else { None }
+/// Excel's real-root acceptance for a negative base with a fractional exponent.
+/// Excel accepts `POWER(x<0, y)` only when `1/y`, rounded to **15 significant
+/// decimal digits**, is an odd integer within signed `int32`; the result is then
+/// `-POWER(|x|, y)`, evaluated at the ORIGINAL `y`. (Round-1 live-Excel finding:
+/// the acceptance band around `n=101` is exactly 100x the band around `n=3` — a
+/// decimal signature no binary tolerance reproduces. BUG-FUNC-042 / W108.)
+fn accept_negative_base_odd_root(power: f64) -> bool {
+    // 15 significant decimal digits == 14 after the point in scientific form,
+    // matching Excel's `%.14e` fuzz on 1/y.
+    let n: f64 = match format!("{:.14e}", 1.0 / power).parse() {
+        Ok(v) => v,
+        Err(_) => return false,
+    };
+    n.fract() == 0.0 && (-2_147_483_648.0..=2_147_483_647.0).contains(&n) && (n as i64) % 2 != 0
 }
 
-fn powi_excel_publication(number: f64, power: i64) -> f64 {
-    if power == 0 {
-        return 1.0;
-    }
-
-    let negative = power < 0;
-    let mut exponent = power.unsigned_abs();
-    let mut base = number;
-    let mut result = 1.0;
-
-    while exponent > 0 {
-        if exponent & 1 == 1 {
-            result *= base;
+/// LSB-first (right-to-left) square-and-multiply `base^n` for `n >= 0`, in plain
+/// `binary64` — Excel's integer-exponent publication (matches live-Excel bits,
+/// distinct from `powf`). Returns the POSITIVE power; the caller reciprocates.
+fn binexp_positive(base: f64, mut n: u64) -> f64 {
+    let mut acc = 1.0;
+    let mut b = base;
+    while n > 0 {
+        if n & 1 == 1 {
+            acc *= b;
         }
-        exponent >>= 1;
-        if exponent > 0 {
-            base *= base;
+        n >>= 1;
+        if n > 0 {
+            b *= b;
         }
     }
-
-    if negative { 1.0 / result } else { result }
+    acc
 }
 
+/// `POWER(x, y)` bit-exact to 64-bit Excel (the `^` operator shares this kernel).
+/// Transcribes the reverse-engineered algorithm (BUG-FUNC-042 / W108 Phase D,
+/// 315/315 live-Excel rows): integer exponent → binary exponentiation; fractional
+/// → `exp(y·ln x)` via the x87 backend with the `y<0` reciprocal staging (positive
+/// power stored to `binary64`, then one x87 double-rounded reciprocal) that
+/// resolved the earlier 1-ULP residual — `exp(y·ln x)` was the right function
+/// evaluated at the wrong point for `y < 0`.
 pub fn power_kernel(number: f64, power: f64) -> Result<f64, WorksheetErrorCode> {
-    if number == 0.0 && power == 0.0 {
-        return Err(WorksheetErrorCode::Num);
+    // 1. zero exponent
+    if power == 0.0 {
+        return if number == 0.0 {
+            Err(WorksheetErrorCode::Num) // POWER(0, 0)
+        } else {
+            Ok(1.0)
+        };
+    }
+    // 2. zero base
+    if number == 0.0 {
+        return if power < 0.0 {
+            Err(WorksheetErrorCode::Div0) // POWER(0, negative)
+        } else {
+            Ok(0.0)
+        };
     }
 
-    if number == 0.0 && power < 0.0 {
-        return Err(WorksheetErrorCode::Div0);
-    }
-
-    // The exact-integer-exponent publication is the declared precision quirk on `POWER_META`
-    // (shared by the `^` operator and the financial growth callers, which all funnel through this
-    // kernel). The kernel CONSULTS the declared variant rather than carrying its own copy of the
-    // rule; the integer-detection tolerance and the binary-exponentiation algorithm below are this
-    // module's interpretation of that variant. The policy is `IntegerExponentPublication` today, so
-    // this gate is active and the published result is bit-identical to the prior hand-coded path.
+    // 3. integer exponent → binary-exponentiation publication. This is the
+    // declared precision quirk on `POWER_META` (shared by `^` and the financial
+    // growth callers). Dispatch is EXACT — `POWER(2, 3+ulp)` takes the fractional
+    // path. The positive power is formed by `binexp`, reciprocated for `y<0`.
     let integer_publication = POWER_META
         .precision_rounding_profile
         .uses_integer_exponent_publication();
-    let result = if let Some(integer_power) =
-        exact_integer_exponent(power).filter(|_| integer_publication)
-    {
-        powi_excel_publication(number, integer_power)
-    } else if number < 0.0 {
-        if detect_reciprocal_odd_integer(power).is_some() {
-            -((power * (-number).ln()).exp())
-        } else {
-            number.powf(power)
-        }
-    } else {
-        number.powf(power)
-    };
-    if result.is_nan() {
-        Err(WorksheetErrorCode::Num)
-    } else if result.is_infinite() {
-        // BUG-FUNC-027 CLASS-A4: a finite-input overflow is #NUM!; a +-Inf produced
-        // by a negative exponent over a sub-unit base (1 / underflowed-to-zero) is
-        // #DIV/0! in Excel, consistent with the 0^negative path above.
+    if let Some(exponent) = exact_integer_exponent(power).filter(|_| integer_publication) {
+        let mut p = binexp_positive(number, exponent.unsigned_abs());
         if power < 0.0 {
-            Err(WorksheetErrorCode::Div0)
-        } else {
-            Err(WorksheetErrorCode::Num)
+            if p == 0.0 {
+                return Err(WorksheetErrorCode::Div0); // 1 / underflowed power
+            }
+            p = 1.0 / p; // 1/inf -> 0, published below
         }
-    } else {
-        Ok(excel_underflow_to_zero(result))
+        if p.is_nan() || p.is_infinite() {
+            return Err(WorksheetErrorCode::Num);
+        }
+        // Integer path flushes subnormal / -0 / 0 to +0 (Excel: POWER(2,-1023)=0).
+        return Ok(if p.abs() < f64::MIN_POSITIVE { 0.0 } else { p });
     }
+
+    // 4. fractional exponent.
+    let mut sign = 1.0;
+    let mut base = number;
+    if number < 0.0 {
+        if !accept_negative_base_odd_root(power) {
+            return Err(WorksheetErrorCode::Num); // no real root
+        }
+        sign = -1.0;
+        base = -number; // continue with |x|
+    }
+
+    // p = exp_x87( RN53(RN64( |y| * ln_x87(base) )) ) — the positive power.
+    let p = excel_pow_positive(base, power.abs());
+
+    if power > 0.0 {
+        if p.is_infinite() {
+            return Err(WorksheetErrorCode::Num); // overflow
+        }
+        if p == 0.0 {
+            return Ok(0.0);
+        }
+        return Ok(sign * p); // subnormals ARE published on the y>0 path
+    }
+
+    // y < 0: reciprocal staging (the resolved 1-ULP puzzle).
+    if p < f64::MIN_POSITIVE {
+        return Err(WorksheetErrorCode::Div0); // subnormal/zero positive power (DAZ-style)
+    }
+    if p.is_infinite() {
+        return Ok(0.0); // 1 / inf
+    }
+    let r = excel_x87_recip(p); // RN53(RN64(1/p))
+    if r < f64::MIN_POSITIVE {
+        return Ok(0.0); // subnormal quotient flushes to +0
+    }
+    if r.is_infinite() {
+        return Err(WorksheetErrorCode::Num);
+    }
+    Ok(sign * r)
 }
 
 pub fn eval_power_surface(
@@ -204,5 +236,43 @@ mod tests {
         // Non-reciprocal-odd negative-base exponents fall through to #NUM!.
         assert_eq!(power_kernel(-8.0, 2.0 / 3.0), Err(WorksheetErrorCode::Num));
         assert_eq!(power_kernel(-8.0, 0.5), Err(WorksheetErrorCode::Num));
+    }
+
+    // W108 Phase D: Excel special-cases exponent 0.5 to the correctly-rounded
+    // hardware sqrt, NOT exp(0.5·ln x). Pinned to live Excel 16.0 build 20131.
+    #[test]
+    fn power_kernel_exponent_half_is_sqrt() {
+        // POWER(2, 0.5) = √2 exactly (0x…bcd); exp(0.5·ln2) is 1 ULP low (0x…bcc).
+        assert_eq!(power_kernel(2.0, 0.5), Ok(2.0f64.sqrt()));
+        assert_eq!(
+            power_kernel(2.0, 0.5).unwrap().to_bits(),
+            0x3ff6a09e667f3bcd
+        );
+        assert_eq!(power_kernel(16.0, 0.5), Ok(4.0));
+        assert_eq!(power_kernel(0.25, 0.5), Ok(0.5));
+        // y = -0.5: positive power is sqrt, then the x87 double-rounded reciprocal.
+        assert_eq!(power_kernel(4.0, -0.5), Ok(0.5));
+        // negative base with 0.5 stays #NUM! (1/0.5 = 2 is even → no real root).
+        assert_eq!(power_kernel(-4.0, 0.5), Err(WorksheetErrorCode::Num));
+    }
+
+    // W108 Phase D: fractional-path witnesses pinned to live Excel (the previously
+    // 1-ULP "DIVERGE" rows, now bit-exact via the y<0 reciprocal staging).
+    #[test]
+    fn power_kernel_fractional_pins_live_excel() {
+        let rows: &[(u64, u64, u64)] = &[
+            // base_bits, exp_bits, excel_result_bits
+            (0x4093551c15e0b619, 0xbff2ead4957fb090, 0x3f2ceb593d898c6a), // 1237.28^-1.182
+            (0x3f265c8a48107e4d, 0xc02a0aee3a890266, 0x4a1fc17fcee62254), // 1.7e-4^-13.02
+            (0x404deffe2214465f, 0xc034acb0e18b10b2, 0x384eb120beb7818a), // 59.87^-20.67
+            (0x40780a045b93fb26, 0xbff0a944c2b86230, 0x3f60a779471f9ac7), // 384.6^-1.041 (AGREE)
+        ];
+        for &(xb, yb, rb) in rows {
+            assert_eq!(
+                power_kernel(f64::from_bits(xb), f64::from_bits(yb)),
+                Ok(f64::from_bits(rb)),
+                "POWER(0x{xb:016x}, 0x{yb:016x})"
+            );
+        }
     }
 }
