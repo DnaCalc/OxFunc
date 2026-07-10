@@ -231,6 +231,17 @@ seven cycles unless noted as `singleton_witness`.
   approximation, *less* accurate than correctly-rounded; OxFunc (Rust `atanh`) is at the
   true value. Not an ln-precision gap (see C5: Excel's `LN` is correctly-rounded).
   Reclassified NUM-S on catalog G4; matching needs Excel's exact ATANH routine.
+- **Candidate rejected and reverted (2026-07-10 expanded sign-off).** The W108 x87
+  breakthrough invalidated the earlier assumption that worksheet `LN` was simply
+  correctly rounded. Black-box decomposition on Excel 16.0 b20131 shows
+  `ATANH(x) == 0.5*LN((1+x)/(1-x))` bit-for-bit at `x=0.1` and `x=0.2`, while
+  the log-difference form differs. `atanh_kernel` now uses that graph through
+  the reproduced x87 worksheet-LN backend and retained the already-pinned odd
+  symmetry. Although both bounded residual witnesses became exact, the required
+  368-case expansion matched only `297` and regressed `71`, catastrophically
+  collapsing tiny inputs and drifting near the boundary. The candidate was
+  reverted. The restored odd-symmetric platform path matches `235/368`; ATANH
+  remains an M2 piecewise-kernel search.
 
 ### CLASS-C5: ACOTH and ACOSH near 1
 

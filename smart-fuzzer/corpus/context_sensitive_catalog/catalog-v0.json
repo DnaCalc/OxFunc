@@ -3,7 +3,7 @@
   "authority": "published_for_downstream_evaluation",
   "evaluation_policy": "not_evaluated_in_oxfunc",
   "downstream_path": "OxCalc->OxFml->OxFunc",
-  "generated_utc": "2026-06-18",
+  "generated_utc": "2026-07-10",
   "entries": [
     {
       "catalog_id": "CSC-0001",
@@ -314,6 +314,30 @@
       "expected_behavior": "Returns the inner non-blank sub-range of A1:D10.",
       "source_ref": "mixed_or_open",
       "status": "M0 noted — reference-transform seam; needs a workbook fixture."
+    },
+    {
+      "catalog_id": "CSC-0024",
+      "seam_class": "publication_shape",
+      "surface_name": "MINVERSE",
+      "formula": "=MINVERSE(5)",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Nested TYPE evidence classifies MINVERSE(5) as a 1x1 array; Excel's final worksheet cell displays its scalar anchor value. That final publication/comparator choice is downstream of the OxFunc function result.",
+      "expected_behavior": "MINVERSE(5) remains a 1x1 array containing 0.2 internally; final-cell scalar-versus-array publication is a downstream concern.",
+      "source_ref": "BUG-FUNC-023 / HO-FN-010",
+      "status": "HO downstream — function-level scalarization reverted; HO-FN-010 filed for the OxFml/DNA Calc publication seam."
+    },
+    {
+      "catalog_id": "CSC-0025",
+      "seam_class": "publication_shape",
+      "surface_name": "MMULT",
+      "formula": "=MMULT(5,2)",
+      "caller": null,
+      "cell_fixture": [],
+      "why_context_sensitive": "Nested TYPE evidence classifies MMULT(5,2) as a 1x1 array; Excel's final worksheet cell displays its scalar anchor value. That final publication/comparator choice is downstream of the OxFunc function result.",
+      "expected_behavior": "MMULT(5,2) remains a 1x1 array containing 10 internally; final-cell scalar-versus-array publication is a downstream concern.",
+      "source_ref": "BUG-FUNC-023 / HO-FN-010",
+      "status": "HO downstream — function-level scalarization reverted; HO-FN-010 filed for the OxFml/DNA Calc publication seam."
     }
   ]
 }

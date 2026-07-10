@@ -160,9 +160,9 @@ $G6Cases += @{ id='yieldmat.witness'; row='YIELDMAT'; xlFn='YIELDMAT'; fsFn='Yie
   args=@(@{t='date';v=(S '2024-06-15')},@{t='date';v=(S '2025-12-31')},@{t='date';v=(S '2024-01-01')},
          @{t='num';v=0.0525},@{t='num';v=98.59811340546048},@{t='basis';v=1}) }
 
-# --- TBILLYIELD : discounted-bill yield sub-ULP -------------------------------
+# --- TBILLYIELD : signed-off association control ------------------------------
 $G6Cases += @{ id='tbillyield.witness'; row='TBILLYIELD'; xlFn='TBILLYIELD'; fsFn='TBillYield';
-  residual='~1 ULP on some settlements';
+  residual='signed off 2026-07-10; expanded matrix 2156/2156';
   args=@(@{t='date';v=(S '2008-03-31')},@{t='date';v=(S '2008-06-01')},@{t='num';v=98.45}) }
 
 $G6Cases

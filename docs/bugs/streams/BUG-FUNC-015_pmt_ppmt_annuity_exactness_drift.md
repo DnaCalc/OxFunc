@@ -3,8 +3,8 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-015`
 - **Opened**: `2026-04-28`
-- **Status**: `validated_local` (open — fix NOT landed)
-- **Owner workset**: `W088`
+- **Status**: `investigating` (open — W108 partial repair landed; exact parity not landed)
+- **Owner workset**: `W108` (absorbs the earlier W088/W103 lane)
 
 ## Re-Confirmation (2026-06-20) — not signed off
 During the M3 sign-off sweep this stream was found mislabeled `M3` ("fixed-unsigned") in
@@ -203,7 +203,59 @@ should not raise `#NUM!` when Excel returns a finite value).
 10. W097 R-C cell-ref finance broad seed run:
     `smart-fuzzer/runs/W097-R-C-expanded-finance-1m-cellref/`
 
-## 2026-07-03 W108 Root-Cause Resolution (investigation complete; repair scoped)
+## 2026-07-05 W108 Phase-E Reconciliation (validated 2026-07-10)
+
+Further clean-room research under `C:\Temp\ExcelExpFunction` supplied `5,319`
+live-Excel family rows on Excel 16.0 build 20131. Inputs were transferred through
+`Range.Value2` and captured with exact binary64 input/output bits.
+
+The new evidence supersedes two earlier interpretations while preserving the
+landed partial repair:
+
+1. Excel PMT uses the discount arrangement already present in the current
+   OxFunc kernel:
+   `em=expm1(-n*log1p(r)); v=1+em; pmt=(pv+fv*v)*r/em`.
+2. The Phase-C OpenOffice/LibreOffice forward-form conclusion is rejected by
+   large-`t` rows where Excel collapses `v=1+em` to zero while the forward form
+   remains nonzero.
+3. The historical Kahan/Goldberg `log1p` and `expm1` identities, built on the
+   W108 x87 `EXP`/`LN` substrate, are the best tested primitive model.
+4. The best candidate scores `2285/4040` PMT rows exact and `92.9%` within
+   `1` ULP. On `553` `nper=1` isolation rows, PMT's final division is exact
+   whenever the candidate `em` is exact, localizing the remaining last-bit gap
+   to `em=expm1(-log1p(rate))`.
+5. The candidate is not promoted into Rust: it has not yet demonstrated a
+   non-regressing advantage over current OxFunc on one common repo-owned corpus,
+   and approximately `43%` of the adversarial PMT rows still differ by a last
+   bit.
+
+Validation rerun on 2026-07-10:
+
+- `python validate_reference.py research/data/ground_truth_all.json research/data/disc2_results.json`
+  -> x87 EXP/LN `294/294` exact.
+- `python validate_power_reference.py` -> POWER `315/315` exact.
+- `python finlab/final_sweep.py` -> PMT candidate `2285/4040` exact,
+  `92.9%` within `1` ULP.
+- `python finlab/score_family.py` -> public-source recurrence model `244/855`
+  exact on the adjacent family; this is model telemetry, not an OxFunc pass rate.
+
+Canonical synthesis:
+`docs/EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md`.
+Compact exact-bit witness seed:
+`docs/function-lane/W108_ANNUITY_PHASE_E_WITNESS_SEED.csv`.
+
+Current open sub-lanes:
+
+1. repo-owned replay of all Phase-E exact inputs against current OxFunc,
+2. exact partial-extended store/rounding placement in `log1p`/`expm1`,
+3. per-function IPMT/PPMT/CUM op-order and accumulation,
+4. alternate CPU, Excel channel, and workbook Compatibility Version validation.
+
+## 2026-07-03 W108 Root-Cause Resolution (partially superseded by Phase E)
+
+The historical notes below explain the partial repair landed on `ecbcd60`, but
+their pure-double and forward-chain interpretations are superseded by the July 4
+x87 result and the July 5 Phase-E annuity evidence recorded later in this file.
 
 A deep multi-agent investigation (live Excel 16.0 b20131, 64-bit; 25 targeted
 probes + 855-cell factor grid + intermediate-precision discriminators) fully

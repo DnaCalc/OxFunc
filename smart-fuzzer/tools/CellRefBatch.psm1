@@ -120,13 +120,20 @@ function Get-UlpDistance {
     param([Parameter(Mandatory)] [double] $A, [Parameter(Mandatory)] [double] $B)
     if ([double]::IsNaN($A) -or [double]::IsNaN($B)) { return [double]::PositiveInfinity }
     if ([double]::IsInfinity($A) -or [double]::IsInfinity($B)) { return [double]::PositiveInfinity }
-    $aBits = [System.BitConverter]::DoubleToInt64Bits($A)
-    $bBits = [System.BitConverter]::DoubleToInt64Bits($B)
-    if ($aBits -lt 0) { $aBits = [int64]9223372036854775807 - $aBits }
-    if ($bBits -lt 0) { $bBits = [int64]9223372036854775807 - $bBits }
-    $diff = $aBits - $bBits
-    if ($diff -lt 0) { $diff = -$diff }
-    return [double] $diff
+    # Map IEEE-754 bits to monotonically ordered decimal keys.  The prior
+    # signed-Int64 subtraction overflowed for negative finite values and could
+    # report a real multi-ULP gap as zero.
+    $signMask = [uint64]::Parse("8000000000000000", [Globalization.NumberStyles]::HexNumber)
+    function Ordered-Key([double]$value) {
+        $bits = [System.BitConverter]::ToUInt64([System.BitConverter]::GetBytes($value), 0)
+        if (($bits -band $signMask) -ne 0) {
+            return [decimal]([uint64]::MaxValue - $bits)
+        }
+        return [decimal]$bits + [decimal]9223372036854775808
+    }
+    $aKey = Ordered-Key $A
+    $bKey = Ordered-Key $B
+    return [double][Math]::Abs($aKey - $bKey)
 }
 
 function _Get-CandidateColumnLetter {

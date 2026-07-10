@@ -1,0 +1,77 @@
+{
+  "schema_version": "oxfunc.discrepancy_recon_cases.v0",
+  "description": "Bounded representative witnesses for every open Category-2 discrepancy row as reconciled 2026-07-10.",
+  "cases": [
+    {"row_id":"G3-01-distributions","case_id":"dist-betainv","function_name":"BETAINV","args":[{"kind":"number","value":0.6},{"kind":"number","value":2},{"kind":"number","value":3}]},
+    {"row_id":"G3-01-distributions","case_id":"dist-chiinv","function_name":"CHIINV","args":[{"kind":"number","value":0.0500006},{"kind":"number","value":10}]},
+
+    {"row_id":"G3-02-gamma-reflection","case_id":"gamma-neg-near-int","function_name":"GAMMA","args":[{"kind":"number","value":-1.00012}]},
+    {"row_id":"G3-02-gamma-reflection","case_id":"gamma-neg-half","function_name":"GAMMA","args":[{"kind":"number","value":-1.5}]},
+
+    {"row_id":"G3-03-linear-regression","case_id":"forecast-linear","function_name":"FORECAST","args":[{"kind":"number","value":5},{"kind":"array","rows":[[2,4,6,8]]},{"kind":"array","rows":[[1,2,3,4]]}]},
+    {"row_id":"G3-03-linear-regression","case_id":"forecast-perturbed","function_name":"FORECAST.LINEAR","args":[{"kind":"number","value":5.5},{"kind":"array","rows":[[2.3,4.1,5.9,8.2]]},{"kind":"array","rows":[[1,2,3,4]]}]},
+
+    {"row_id":"G3-04-growth","case_id":"growth-catalog","function_name":"GROWTH","args":[{"kind":"array","rows":[[1,3,2,5]]},{"kind":"array","rows":[[1,2,3,4]]},{"kind":"array","rows":[[5]]}]},
+    {"row_id":"G3-04-growth","case_id":"growth-geometric","function_name":"GROWTH","args":[{"kind":"array","rows":[[2,4,8,16]]},{"kind":"array","rows":[[1,2,3,4]]},{"kind":"array","rows":[[5]]}]},
+
+    {"row_id":"G3-05-chisq-test","case_id":"chisq-catalog","function_name":"CHISQ.TEST","args":[{"kind":"array","rows":[[10,20,30]]},{"kind":"array","rows":[[12,18,30]]}]},
+    {"row_id":"G3-05-chisq-test","case_id":"chitest-alias","function_name":"CHITEST","args":[{"kind":"array","rows":[[5,15,25,55]]},{"kind":"array","rows":[[10,20,30,40]]}]},
+
+    {"row_id":"G3-06-f-test","case_id":"ftest-balanced","function_name":"F.TEST","args":[{"kind":"array","rows":[[1,2,3,4,5]]},{"kind":"array","rows":[[2,4,6,8,10]]}]},
+    {"row_id":"G3-06-f-test","case_id":"ftest-alias","function_name":"FTEST","args":[{"kind":"array","rows":[[3,6,7,8,6]]},{"kind":"array","rows":[[4,5,6,7,8]]}]},
+
+    {"row_id":"G3-07-gauss-phi","case_id":"gauss-one","function_name":"GAUSS","args":[{"kind":"number","value":1}]},
+    {"row_id":"G3-07-gauss-phi","case_id":"phi-zero","function_name":"PHI","args":[{"kind":"number","value":0}]},
+
+    {"row_id":"G4-01-trig-reduction","case_id":"trig-tan-large","function_name":"TAN","args":[{"kind":"number","value":797601.58}]},
+    {"row_id":"G4-01-trig-reduction","case_id":"trig-sin-limit-minus","function_name":"SIN","args":[{"kind":"number","value":134217727}]},
+
+    {"row_id":"G4-02-atanh","case_id":"atanh-point-one","function_name":"ATANH","args":[{"kind":"number","value":0.1}]},
+    {"row_id":"G4-02-atanh","case_id":"atanh-point-two","function_name":"ATANH","args":[{"kind":"number","value":0.2}]},
+
+    {"row_id":"G4-03-acoth","case_id":"acoth-five","function_name":"ACOTH","args":[{"kind":"number","value":5}]},
+    {"row_id":"G4-03-acoth","case_id":"acoth-ten","function_name":"ACOTH","args":[{"kind":"number","value":10}]},
+
+    {"row_id":"G4-04-combinatorial","case_id":"combin-integer-imprecision","function_name":"COMBIN","args":[{"kind":"number","value":23},{"kind":"number","value":10}]},
+    {"row_id":"G4-04-combinatorial","case_id":"permut-large","function_name":"PERMUT","args":[{"kind":"number","value":61},{"kind":"number","value":20}]},
+
+    {"row_id":"G4-05-convert","case_id":"convert-meter-foot","function_name":"CONVERT","args":[{"kind":"number","value":1},{"kind":"text","value":"m"},{"kind":"text","value":"ft"}]},
+    {"row_id":"G4-05-convert","case_id":"convert-inch-meter","function_name":"CONVERT","args":[{"kind":"number","value":1},{"kind":"text","value":"in"},{"kind":"text","value":"m"}]},
+
+    {"row_id":"G5-01-minverse","case_id":"minverse-2x2-r1c1","function_name":"MINVERSE","args":[{"kind":"array","rows":[[1,2],[3,4]]}],"result_index":[1,1]},
+    {"row_id":"G5-01-minverse","case_id":"minverse-2x2-r2c2","function_name":"MINVERSE","args":[{"kind":"array","rows":[[1,2],[3,4]]}],"result_index":[2,2]},
+
+    {"row_id":"G6-01-annuity","case_id":"pmt-mortgage","function_name":"PMT","args":[{"kind":"number","value":0.004166666666666667},{"kind":"number","value":360},{"kind":"number","value":200000},{"kind":"number","value":0},{"kind":"number","value":0}]},
+    {"row_id":"G6-01-annuity","case_id":"ppmt-first","function_name":"PPMT","args":[{"kind":"number","value":0.004166666666666667},{"kind":"number","value":1},{"kind":"number","value":360},{"kind":"number","value":200000},{"kind":"number","value":0},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-02-accrint","case_id":"accrint-repaired-base","function_name":"ACCRINT","args":[{"kind":"number","value":43831},{"kind":"number","value":44197},{"kind":"number","value":44013},{"kind":"number","value":0.05},{"kind":"number","value":1000},{"kind":"number","value":2},{"kind":"number","value":0}]},
+    {"row_id":"G6-02-accrint","case_id":"accrint-us30360-triple-edge","function_name":"ACCRINT","args":[{"kind":"number","value":43565},{"kind":"number","value":43647},{"kind":"number","value":43905},{"kind":"number","value":0.05},{"kind":"number","value":1000},{"kind":"number","value":2},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-03-yield","case_id":"yield-catalog","function_name":"YIELD","args":[{"kind":"number","value":44013},{"kind":"number","value":44562},{"kind":"number","value":0.05},{"kind":"number","value":95},{"kind":"number","value":100},{"kind":"number","value":2},{"kind":"number","value":0}]},
+    {"row_id":"G6-03-yield","case_id":"yield-par","function_name":"YIELD","args":[{"kind":"number","value":44013},{"kind":"number","value":44562},{"kind":"number","value":0.05},{"kind":"number","value":100},{"kind":"number","value":100},{"kind":"number","value":2},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-04-oddfyield","case_id":"oddfyield-catalog","function_name":"ODDFYIELD","args":[{"kind":"number","value":44013},{"kind":"number","value":44562},{"kind":"number","value":43831},{"kind":"number","value":44197},{"kind":"number","value":0.05},{"kind":"number","value":95},{"kind":"number","value":100},{"kind":"number","value":2},{"kind":"number","value":0}]},
+    {"row_id":"G6-04-oddfyield","case_id":"oddfyield-par","function_name":"ODDFYIELD","args":[{"kind":"number","value":44013},{"kind":"number","value":44562},{"kind":"number","value":43831},{"kind":"number","value":44197},{"kind":"number","value":0.05},{"kind":"number","value":100},{"kind":"number","value":100},{"kind":"number","value":2},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-05-rate","case_id":"rate-mortgage","function_name":"RATE","args":[{"kind":"number","value":360},{"kind":"number","value":-1073.64},{"kind":"number","value":200000},{"kind":"number","value":0},{"kind":"number","value":0}]},
+    {"row_id":"G6-05-rate","case_id":"rate-unit-root","function_name":"RATE","args":[{"kind":"number","value":1},{"kind":"number","value":-110},{"kind":"number","value":100},{"kind":"number","value":0},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-06-irr","case_id":"irr-three","function_name":"IRR","args":[{"kind":"array","rows":[[-100,50,60]]}]},
+    {"row_id":"G6-06-irr","case_id":"irr-mixed-five","function_name":"IRR","args":[{"kind":"array","rows":[[-500,100,150,200,250]]}]},
+
+    {"row_id":"G6-07-cumprinc","case_id":"cumprinc-schedule","function_name":"CUMPRINC","args":[{"kind":"number","value":0.1},{"kind":"number","value":12},{"kind":"number","value":1000},{"kind":"number","value":1},{"kind":"number","value":12},{"kind":"number","value":0}]},
+    {"row_id":"G6-07-cumprinc","case_id":"cumprinc-half","function_name":"CUMPRINC","args":[{"kind":"number","value":0.1},{"kind":"number","value":12},{"kind":"number","value":1000},{"kind":"number","value":1},{"kind":"number","value":6},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-08-nper","case_id":"nper-0000","function_name":"NPER","args":[{"kind":"number","value":0.0008333333333333334},{"kind":"number","value":-100},{"kind":"number","value":10000},{"kind":"number","value":0},{"kind":"number","value":0}]},
+    {"row_id":"G6-08-nper","case_id":"nper-threeway-clean","function_name":"NPER","args":[{"kind":"number","value":0.006666666666666667},{"kind":"number","value":-1037.0320893591607},{"kind":"number","value":10000},{"kind":"number","value":0},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-09-yieldmat","case_id":"yieldmat-catalog","function_name":"YIELDMAT","args":[{"kind":"number","value":45458},{"kind":"number","value":46022},{"kind":"number","value":45292},{"kind":"number","value":0.0525},{"kind":"number","value":98.59811340546048},{"kind":"number","value":1}]},
+    {"row_id":"G6-09-yieldmat","case_id":"yieldmat-basis-zero","function_name":"YIELDMAT","args":[{"kind":"number","value":45458},{"kind":"number","value":46022},{"kind":"number","value":45292},{"kind":"number","value":0.0525},{"kind":"number","value":98.59811340546048},{"kind":"number","value":0}]},
+
+    {"row_id":"G6-10-tbillyield","case_id":"tbillyield-current-clean","function_name":"TBILLYIELD","args":[{"kind":"number","value":39538},{"kind":"number","value":39600},{"kind":"number","value":98.45}]},
+    {"row_id":"G6-10-tbillyield","case_id":"tbillyield-neighbor","function_name":"TBILLYIELD","args":[{"kind":"number","value":39539},{"kind":"number","value":39600},{"kind":"number","value":98.45}]},
+
+    {"row_id":"G6-11-xnpv","case_id":"xnpv-catalog","function_name":"XNPV","args":[{"kind":"number","value":0.05},{"kind":"array","rows":[[-1000,500,600]]},{"kind":"array","rows":[[43831,44013,44562]]}]},
+    {"row_id":"G6-11-xnpv","case_id":"xnpv-two-flow","function_name":"XNPV","args":[{"kind":"number","value":0.05},{"kind":"array","rows":[[-1000,1100]]},{"kind":"array","rows":[[43831,44197]]}]}
+  ]
+}

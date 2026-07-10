@@ -67,5 +67,7 @@ Ledger lands at `.tmp/g6-threeway-ledger.csv`; the committed snapshot is
 - **Solver-dominated divergence** (all three differ): ODDFYIELD, RATE, IRR — the price
   kernel is now exact but the inversion solver isn't; shared financial-solver substrate.
 - **Already bit-exact on the probed witness**: IPMT, ACCRINT (30/360 + the constructed
-  act/act multi), NPER, TBILLYIELD — remaining catalog residuals for these are
-  witness-specific; re-capture the exact drifting input or close the row.
+  act/act multi), and NPER. Their distinct drifting witnesses are now separately
+  pinned in the discrepancy reconnaissance corpus.
+- **TBILLYIELD signed off 2026-07-10**: expression association repaired from
+  left-associative `*360/days` to `*(360/days)`; expanded live matrix `2156/2156`.

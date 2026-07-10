@@ -90,6 +90,13 @@ $a = _Number-Outcome 1.0; $b = _Number-Outcome 1.0000001
 $r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b
 Assert-Equal "4: numeric_drift_gt1ulp"  "numeric_drift_gt1ulp" $r.severity_class
 
+# 4b. Negative finite values must not overflow the ULP-key calculation.
+$negative = -0.1
+$negativeNext = [System.BitConverter]::Int64BitsToDouble([System.BitConverter]::DoubleToInt64Bits($negative) + 1)
+$r = Get-StandardSeverityClass -LocalOutcome (_Number-Outcome $negative) -ExcelOutcome (_Number-Outcome $negativeNext)
+Assert-Equal "4b: negative numeric drift is 1 ULP" "numeric_drift_1ulp" $r.severity_class
+Assert-Equal "4b: negative ULP distance" 1 $r.ulp_distance
+
 # 5. Signed-zero collapse.
 $a = _Number-Outcome 0.0; $b = _Number-Outcome (-0.0)
 $r = Get-StandardSeverityClass -LocalOutcome $a -ExcelOutcome $b

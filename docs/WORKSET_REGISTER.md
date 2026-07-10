@@ -1120,7 +1120,7 @@ Current checkpoint:
 
 ## W103 PMT Family Exactness Campaign
 
-Status: `planned`
+Status: `superseded_by_W108`
 
 Execution target:
 run the PMT-family exactness campaign after the W102A checkpoint is reviewable
@@ -1140,6 +1140,12 @@ Entry conditions:
 2. W102B finance evidence for `BUG-FUNC-034` is linked or refreshed.
 3. Existing PMT/IPMT/PPMT exactness pins and known deviations are inventoried
    before changing publication targets.
+
+Supersession note:
+1. W108 absorbed this exactness scope after the W103 investigation expanded into
+   the shared Excel numeric core and POWER substrate.
+2. Use W108 and epic `oxf-wpzw` for current execution state; retain W103 only as
+   the earlier campaign seed.
 
 ## W104 Invocation Test Category Split And Context-Sensitive Catalog
 
@@ -1260,3 +1266,35 @@ Notes:
    argument preparation, value semantics, FEC behavior, registry semantics, or
    public runtime APIs. Any production semantic change discovered by W107 must
    move to the ordinary owning bug, workset, or handoff lane.
+
+## W108 Excel Numeric Core And Financial/POWER Exactness
+
+Status: `in_progress`
+
+Execution target:
+make Excel's elementary numeric model explicit and bit-exact on the declared
+x86-64 reference baseline, then close the PMT/IPMT/PPMT/CUM annuity exactness
+residual without weakening exact typed-bit comparison.
+
+Canonical surfaces:
+1. `docs/worksets/W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md`
+2. `docs/EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md`
+3. `docs/EXCEL_POWER_SPEC_AND_TEST_CASES.md`
+4. `docs/OXFUNC_EXCEL_DISCREPANCY_CATALOG.md`
+5. `docs/bugs/streams/BUG-FUNC-015_pmt_ppmt_annuity_exactness_drift.md`
+6. `docs/bugs/streams/BUG-FUNC-042_power_fractional_exponent_exp_of_y_lnx.md`
+7. `crates/oxfunc_core/src/excel_numeric/`
+8. `.beads/` epic `oxf-wpzw`
+
+Depends on:
+`W088`, `W097`, and the superseded `W103` investigation seed.
+
+Current checkpoint:
+1. `EXP`, `LN`, `LOG10`, `LOG`, and `POWER` are signed off bit-exact on the
+   declared x86-64 reference baseline; `BUG-FUNC-042` is resolved.
+2. The current PMT partial repair is landed, and Phase E confirms OxFunc's
+   discount arrangement as the correct high-level Excel structure.
+3. Exact PMT-family parity remains open at the `log1p`/`expm1` last-bit and
+   per-function IPMT/PPMT/CUM op-order/accumulation lanes.
+4. The next gate is repo-owned replay of the full `5,319`-row Phase-E family
+   corpus and a non-regressing helper-rounding result.

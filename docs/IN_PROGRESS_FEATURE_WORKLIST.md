@@ -1,7 +1,7 @@
 # IN_PROGRESS_FEATURE_WORKLIST.md - OxFunc
 
 Status: `active_feature_map`
-Last updated: 2026-06-01
+Last updated: 2026-07-10
 
 Purpose:
 1. provide a compact repo-level map of the major OxFunc lanes that remain live after the parked non-deferred baseline,
@@ -91,7 +91,7 @@ Supersession note:
 - Canonical owner: [W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W082_LOCALE_FORMAT_SEAM_OWNERSHIP_REALIGNMENT.md), [HO-FN-009_locale_format_seam_ownership_realignment.md](C:\Work\DnaCalc\OxFunc\docs\handoffs\HO-FN-009_locale_format_seam_ownership_realignment.md), and [LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md](C:\Work\DnaCalc\OxFunc\docs\function-lane\LOCALE_FORMAT_SEAM_EXECUTION_RECORD.md).
 
 ### IP-18 Smart-Fuzzer Differential Exploration
-- Current state: active smart-fuzzer lane. `W088` supplied the pilot substrate; `W089` has now run the first comprehensive manifest-seed exploration against live Excel COM. The 2026-04-30 pass recorded `339` broad seed cases, `139` successor array-support replay cases, a `1,000,000`-case local finance reference run, and an Excel throughput benchmark. It fixed the `ABS` array-lift gap as `BUG-FUNC-022`, corrected stale POWER known-deviation classification in the smart-fuzzer inventory, and promoted residual statistical exactness drift to `BUG-FUNC-021` plus non-statistical/matrix drift to `BUG-FUNC-023`. The `BUG-FUNC-023` follow-up repaired `VDB`, `MINVERSE(5)`, and `MMULT(5,2)`, then split the active residual lanes to `BUG-FUNC-024` (`BESSELY`) and `BUG-FUNC-025` (`MINVERSE` matrix numeric exactness). The 2026-05-09 broad scalar exploration extended W092 outside the manifest-seed plateau by walking `~50` single/two-arg numeric scalar functions across per-family numeric bands; aggregate `11.5M` local cases plus `4,200` Excel comparisons surfaced `BUG-FUNC-027` covering 15 recurring mismatch subclasses (GAMMALN tiny pos `+Inf`, GAMMA tiny non-zero false pole, SINH/COSH overflow, POWER overflow, PERMUTATIONA overflow, FISHERINV saturation, MROUND zero-num, MOD `#NUM!` threshold, trig large-arg `#NUM!`, trig precision drift, ATANH near-boundary, ACOTH/ACOSH near-1, ATAN2 magnitude spread).
+- Current state: active smart-fuzzer lane. `W088` supplied the pilot substrate; `W089` has now run the first comprehensive manifest-seed exploration against live Excel COM. The 2026-04-30 pass recorded `339` broad seed cases, `139` successor array-support replay cases, a `1,000,000`-case local finance reference run, and an Excel throughput benchmark. It fixed the `ABS` array-lift gap as `BUG-FUNC-022`, corrected stale POWER known-deviation classification in the smart-fuzzer inventory, and promoted residual statistical exactness drift to `BUG-FUNC-021` plus non-statistical/matrix drift to `BUG-FUNC-023`. The `BUG-FUNC-023` follow-up repaired `VDB`; its attempted `MINVERSE(5)` / `MMULT(5,2)` scalar collapse was later reverted when nested `TYPE` probes proved an internal `1x1` array, so final-cell appearance is now Category-1 publication work (`CSC-0024`/`CSC-0025`, `HO-FN-010`). Numeric successors split to `BUG-FUNC-024` (`BESSELY`, subsequently signed off) and `BUG-FUNC-025` (`MINVERSE` matrix numeric exactness). The 2026-05-09 broad scalar exploration extended W092 outside the manifest-seed plateau by walking `~50` single/two-arg numeric scalar functions across per-family numeric bands; aggregate `11.5M` local cases plus `4,200` Excel comparisons surfaced `BUG-FUNC-027` covering 15 recurring mismatch subclasses (GAMMALN tiny pos `+Inf`, GAMMA tiny non-zero false pole, SINH/COSH overflow, POWER overflow, PERMUTATIONA overflow, FISHERINV saturation, MROUND zero-num, MOD `#NUM!` threshold, trig large-arg `#NUM!`, trig precision drift, ATANH near-boundary, ACOTH/ACOSH near-1, ATAN2 magnitude spread).
 - Canonical owner: [W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W088_SMART_FUZZER_DIFFERENTIAL_EXPLORATION.md), [W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W089_SMART_FUZZER_SWEEPING_INVOCATION_SPACE_EXPLORATION.md), [COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\COMPREHENSIVE_SMART_FUZZER_RUN_20260430.md), [BROAD_SCALAR_EXPLORATION_2026-05-09.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\BROAD_SCALAR_EXPLORATION_2026-05-09.md), [BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-021_w090_statistical_numeric_exactness_drift.md), [BUG-FUNC-022_abs_unary_array_lift_gap.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-022_abs_unary_array_lift_gap.md), [BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-023_w089_non_statistical_exactness_and_matrix_shape_drift.md), [BUG-FUNC-024_bessely_current_baseline_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-024_bessely_current_baseline_exactness_drift.md), [BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md), [BUG-FUNC-027_broad_scalar_invocation_space_findings.md](C:\Work\DnaCalc\OxFunc\docs\bugs\streams\BUG-FUNC-027_broad_scalar_invocation_space_findings.md), [smart-fuzzer\README.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\README.md), and [SMART_FUZZER_DESIGN.md](C:\Work\DnaCalc\OxFunc\smart-fuzzer\planning\SMART_FUZZER_DESIGN.md).
 
 ### IP-19 Canonical Runtime Function Registry
@@ -317,3 +317,29 @@ Status axes:
 2. `target_completeness`: `target_partial`
 3. `integration_completeness`: `partial`
 4. `open_lanes`: OxFml `invoke_many(...)` specialization through `HO-FN-015`, post-OxFml-specialization DnaOneCalc perf replay, and landed-ref promotion.
+
+### IP-26 Excel Numeric Core And Financial Exactness
+
+- Current state: W108 is in progress. `EXP`, `LN`, `LOG10`, `LOG`, and `POWER`
+  are signed off bit-exact on the declared x86-64 reference baseline. The
+  PMT/IPMT/PPMT/CUM family remains open: Phase E confirms the discount
+  arrangement already used by OxFunc but leaves the exact final rounding of
+  `expm1(-nper*log1p(rate))` and per-function payment/principal accumulation
+  unresolved. A bounded 2026-07-10 propagation pass now gives all 24 open
+  Category-2 rows two live-Excel witnesses plus a calculation-path search map.
+  The required expanded closure sweep rejected the apparent two-witness x87-LN
+  ATANH candidate (`297/368` exact, `71` regressions), so it was reverted and
+  ATANH remains open. The same pass repaired TBILLYIELD's expression association
+  and signed it off `2156/2156`; its G6 row is removed. A test-only
+  `power_kernel` XNPV candidate still closes the catalog's 16-ULP witness, while
+  production XNPV routing stays unchanged pending a cancellation/order corpus.
+- Canonical owner: [W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md](C:\Work\DnaCalc\OxFunc\docs\worksets\W108_EXCEL_NUMERIC_CORE_AND_FINANCIAL_POWER_EXACTNESS.md), [EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md](C:\Work\DnaCalc\OxFunc\docs\EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md), [OXFUNC_EXCEL_DISCREPANCY_CATALOG.md](C:\Work\DnaCalc\OxFunc\docs\OXFUNC_EXCEL_DISCREPANCY_CATALOG.md), and `BUG-FUNC-015`.
+
+Status axes:
+1. `scope_completeness`: `scope_partial`
+2. `target_completeness`: `target_partial`
+3. `integration_completeness`: `partial`
+4. `open_lanes`: repo-owned replay of the full Phase-E corpus, exact
+   `log1p`/`expm1` store/rounding placement, IPMT/PPMT/CUM op-order and
+   accumulation, ATANH piecewise-kernel search, XNPV candidate non-regression grid,
+   remaining per-row calculation-map searches, alternate CPU/version validation.

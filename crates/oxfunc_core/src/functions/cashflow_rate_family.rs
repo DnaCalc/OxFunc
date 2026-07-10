@@ -829,6 +829,7 @@ pub fn map_cashflow_rate_error_to_ws(error: &CashflowRateEvalError) -> Worksheet
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::functions::power_fn::power_kernel;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{CalcArray, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
@@ -959,6 +960,38 @@ mod tests {
     fn xnpv_matches_one_year_discount_identity() {
         let got = xnpv_kernel(0.1, &[-100.0, 121.0], &[45000, 45365]).unwrap();
         assert_close(got, 10.0);
+    }
+
+    /// Calculation-path reconnaissance only: do not route production XIRR/XNPV
+    /// through this helper until a broader cancellation/order corpus proves the
+    /// change non-regressing.  The live worksheet decomposition
+    /// `value/POWER(1+rate,years)` matches XNPV exactly on the catalog witness,
+    /// while the current platform-powf path is 16 ULP away.
+    fn xnpv_excel_power_candidate(
+        rate: f64,
+        values: &[f64],
+        dates: &[i64],
+    ) -> Result<f64, WorksheetErrorCode> {
+        let base = 1.0 + rate;
+        let anchor = dates[0];
+        let mut total = 0.0;
+        for (value, date) in values.iter().zip(dates.iter()) {
+            let years = (*date - anchor) as f64 / 365.0;
+            total += *value / power_kernel(base, years)?;
+        }
+        Ok(total)
+    }
+
+    #[test]
+    fn xnpv_excel_power_candidate_matches_live_decomposition_witness() {
+        let values = [-1000.0, 500.0, 600.0];
+        let dates = [43831, 44013, 44562];
+        let current = xnpv_kernel(0.05, &values, &dates).unwrap();
+        let candidate = xnpv_excel_power_candidate(0.05, &values, &dates).unwrap();
+        let excel = f64::from_bits(0x4040_1055_0d1e_8460);
+
+        assert_eq!(candidate.to_bits(), excel.to_bits());
+        assert_eq!(current.to_bits(), 0x4040_1055_0d1e_8470);
     }
 
     #[test]

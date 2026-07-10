@@ -1,0 +1,5 @@
+lane,variant,cases,exact,mismatches,max_ulp,outcome
+ATANH,x87_half_log_ratio_candidate,368,297,71,118622047889322848,rejected_reverted
+ATANH,restored_odd_symmetric_platform,368,235,133,18792872814564,open_piecewise_search
+TBILLYIELD,left_associative_pre_repair,2156,1848,308,1,reproduced
+TBILLYIELD,grouped_day_scale_repair,2156,2156,0,0,closed_signed_off

@@ -3,9 +3,7 @@
 ## Summary
 - **Bug id**: `BUG-FUNC-041`
 - **Opened**: `2026-06-11`
-- **Status**: `open` (W102A fix landed in `7a0003f` but over-rejected; local repair
-  on `2026-06-26` expands the admitted escape set and is live-Excel signed off;
-  checkpoint/landing still pending)
+- **Status**: `closed` (repair landed in `fd5633a`; live-Excel signed off)
 - **Owner workset**: `W102A` (no-probe structural fixes)
 
 ## Live Excel Verification (2026-06-18) — admitted-slice diverges
@@ -39,7 +37,7 @@ Artifacts:
 - **Reported against ref**: review pass 2026-06-10 (digest `functions-text-lookup.md` F9)
 - **Reproduced on ref**: code inspection; no fuzzer run required (code-path determinism)
 - **Introduced in ref**: unknown (predates current bug-stream history)
-- **Fixed in ref**: `not yet landed` (working-tree repair is live-Excel signed off; checkpoint/landing not landed)
+- **Fixed in ref**: `fd5633a`
 
 ## Ownership And Root Cause
 
@@ -128,10 +126,44 @@ changed by the 2026-06-26 regex escape repair.
 - No other escape-parsing paths exist in this file.
 
 ## Closure Checklist
-- [ ] fix landed or non-OxFunc ownership recorded (working-tree repair present and live-Excel signed off; checkpoint/landing not landed)
+- [x] fix landed or non-OxFunc ownership recorded (`fd5633a`)
 - [x] validation recorded
 - [x] root cause recorded
 - [x] similar-risk scan recorded
 - [x] OxFunc-local admitted escape contract updated under W102B
 - [x] cross-repo handoff assessed: not required for this pure OxFunc parser-slice repair
 - [x] linked reports updated
+
+## Closure Verification (2026-07-10)
+
+Pre-Closure Verification Checklist (`OPERATIONS.md` Section 12), applied to the
+declared regex escape-set repair slice:
+
+1. contract rows promoted for the slice: yes.
+2. Lean/formal alignment: yes; this parser-slice correction creates no new
+   numerical/formal substrate obligation beyond the recorded contract.
+3. Rust implementation and required tests pass: yes; `cargo test -p oxfunc_core regex --lib`
+   passed `24/24` on 2026-07-10.
+4. deterministic replay evidence exists: yes; the 40-case Excel battery is recorded.
+5. evidence links complete and reproducible: yes.
+6. Excel version/channel and workbook compatibility scope explicit: yes for the
+   reference baseline; alternate-version/compatibility sweeps are orthogonal.
+7. public-doc vs empirical discrepancy handled in favor of Excel: yes.
+8. XLL verification-seam limitation documented where material: yes; not material
+   to this local regex parser slice.
+9. cross-repo impact assessed: yes; no evaluator/FEC handoff required.
+10. no known semantic gap remains in the declared escape-set slice: yes.
+11. completion-language audit: yes; closure is limited to this bug stream.
+12. in-progress feature map updated where required: yes; no open catalog row remains.
+13. bead state updated: yes; `oxf-fyhi` closed with the landed ref and sign-off evidence.
+
+Completion Claim Self-Audit (`OPERATIONS.md` Section 14):
+
+1. scope re-read: pass; only the admitted escape set and dead translate phrasebook
+   cleanup are claimed.
+2. gate criteria re-read: pass; landed ref, focused tests, contract evidence, and
+   live Excel sign-off are present.
+3. silent scope reduction: pass; no declared escape class was dropped.
+4. looks-done-but-is-not patterns: pass; no stub, compile-only path, unsupported
+   proof claim, or unacknowledged handoff is used.
+5. result: pass for the declared BUG-FUNC-041 slice.

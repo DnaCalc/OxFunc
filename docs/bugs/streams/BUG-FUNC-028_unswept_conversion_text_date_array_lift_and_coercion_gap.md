@@ -18,7 +18,12 @@ Category-2 path the original sweep used):
   Row-4 4/4. The 2026-05-28 `#VALUE!` witnesses were fixed by the W090/W092 array-support work
   between then and now; this stream's rows were simply never reconciled. The lone non-match is
   `TBILLYIELD` at 1 ULP on one settlement — a numeric drift, not an array-admission failure,
-  moved to the catalog G6 row.
+  moved to the catalog G6 row. **Follow-up 2026-07-10:** the exact input was
+  recaptured by an expanded `2,156`-case sweep. The root cause was expression
+  association: `((100-pr)/pr*360)/days` versus Excel's
+  `((100-pr)/pr)*(360/days)`. After repair the same matrix is `2156/2156`
+  bit-exact and the G6 row is retired; see
+  `docs/function-lane/CANDIDATE_CLOSURE_SWEEP_20260710.md`.
 - **Error-propagation sub-finding — fixed (2026-06-20).** `DATEVALUE`/`TIMEVALUE` (and their
   in-file siblings `DAYS360`/`DATEDIF`) collapsed any error argument to `#VALUE!` via
   `coerce_*.map_err(|_| Coercion)`; `ARRAYTOTEXT` stringified it to the text "#N/A". All now
@@ -155,6 +160,8 @@ focused successor case set) and show the candidate surfaces moving to
 - [x] fix landed or non-OxFunc ownership recorded (array-lift already-resolved; error-prop fixed 2026-06-20)
 - [x] validation recorded (live Excel b20026 resweep: array-lift 46/47, error-prop 7/7)
 - [x] root cause recorded per surface
-- [x] similar-risk scan recorded (siblings `DAYS360`/`DATEDIF` fixed; `TBILLYIELD` 1-ULP → G6)
+- [x] similar-risk scan recorded (siblings `DAYS360`/`DATEDIF` fixed;
+  `TBILLYIELD` follow-up association repair signed off `2156/2156` and removed
+  from G6 on 2026-07-10)
 - [x] spec/matrix/contract updated if required (catalog G2 rows removed, OP_* retained)
 - [ ] handoff filed if required

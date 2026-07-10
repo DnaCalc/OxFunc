@@ -1,6 +1,6 @@
 # W108 Excel Numeric Core and Financial/POWER Exactness Campaign
 
-Status: `planned`
+Status: `in_progress`
 Opened: `2026-07-03`
 Supersedes/absorbs: W103 PMT-family exactness lane (`oxf-acdw.4`)
 Anchor bug: `BUG-FUNC-015` / `oxf-fckb` (reopened)
@@ -131,10 +131,11 @@ input bits. Three planned batches (Bead A):
 
 ## 7. Doctrine Axes
 
-scope_completeness: `scope_substantial`
-target_completeness: `target_substantial`
+execution_state: `in_progress`
+scope_completeness: `scope_partial`
+target_completeness: `target_partial`
 integration_completeness: `partial`
-open_lanes: `[IPMT_PPMT_near_payoff_stable_path, PPMT_CUM_dedicated_op_order, bespoke_transcendental_floor]`
+open_lanes: `[annuity_phase_e_repo_owned_full_replay, log1p_expm1_final_rounding, IPMT_PPMT_CUM_exact_op_order, alternate_cpu_and_version_validation]`
 
 ## 9. Bead C outcome (2026-07-03): financial kernels on the CR core — LANDED
 
@@ -273,7 +274,12 @@ since Excel's internal `log1p`/`expm1` are almost certainly the same x87 primiti
 Evidence: `C:/Temp/ExcelExpFunction/REPORT.md` (algorithm + 294-row validation),
 `crate::excel_numeric::x87`, scratch `x87lab` (396+220 live-Excel probe rows).
 
-## 11. W108 Phase C (2026-07-04): financial family — CHARACTERIZED, not yet bit-exact
+## 11. W108 Phase C (2026-07-04): financial family — SUPERSEDED by Phase E
+
+The forward-form conclusion in this section is retained as investigation history
+only. The expanded Phase-E black-box campaign in Section 12 disproved it on
+large-`t` discriminator rows and restored the discount arrangement as the current
+high-confidence Excel model.
 
 Reverse-engineered the authoritative annuity algorithm (LibreOffice `interpr2.cxx`, which mirrors
 Excel) and confirmed key building blocks against live Excel, but did NOT reach bit-exact — the
@@ -292,3 +298,77 @@ Open: with the best model, FV 74/90, PMT 45/150 (rest 1-2 ULP), PV 16/50 — Exc
 Decision: the crate financial family STAYS FROZEN on the portable CR core (Bead C, ≤2-3 ULP) — the
 forward-form x87 model is not yet more bit-exact than the frozen state on realistic inputs, so no
 non-regressing swap is available. FV/PV already inherit the bit-exact `power_kernel` factor.
+
+## 12. W108 Phase E (2026-07-05, reconciled 2026-07-10): discount form confirmed; last-bit helper gap open
+
+The further research under `C:\Temp\ExcelExpFunction` expanded the financial
+evidence to `5,319` live-Excel rows and added decisive large-`t` arrangement
+discriminators. The current canonical synthesis is
+[`docs/EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md`](../EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md).
+
+Current findings:
+
+1. Excel PMT uses the discount arrangement
+   `em=expm1(-n*log1p(r)); v=1+em; pmt=(pv+fv*v)*r/em`, not the
+   OpenOffice/LibreOffice forward arrangement claimed in Phase C.
+2. The historical Kahan/Goldberg `log1p`/`expm1` identities over the already
+   reproduced x87 `EXP`/`LN` substrate are the best tested primitive model.
+3. On `4,040` PMT rows the best candidate is `56.6%` bit-exact and `92.9%`
+   within `1` ULP. The remaining PMT error is localized to the composite
+   `em=expm1(-n*log1p(r))`; the final division adds no error when `em` is exact
+   on the `553`-row `n=1` isolation lane.
+4. No Rust change is promoted from this result. The current OxFunc kernel
+   already has the correct high-level discount arrangement, while the candidate
+   helper implementation is still partial and has not proved a non-regressing
+   advantage over current OxFunc on one common repo-owned corpus.
+5. `EXP`, `LN`, `LOG10`, `LOG`, and `POWER` remain separately signed off on the
+   declared x86-64 reference baseline; the Phase-E finding does not reopen them.
+
+Re-run on 2026-07-10:
+
+- EXP/LN x87 reference: `294/294` exact.
+- POWER reference: `315/315` exact.
+- annuity helper sweep: `2285/4040` exact, `92.9%` within `1` ULP.
+- adjacent public-source recurrence score: `244/855` exact; this is research-model
+  telemetry, not an OxFunc pass rate.
+
+Gate remains open. Next work is to import/replay the full Phase-E exact-input
+corpus through the repo-owned comparator and pin the partial-extended rounding
+placement in `log1p`/`expm1` before any kernel promotion.
+
+The 2026-07-10 cross-catalog audit and live-Excel spot replays are recorded in
+[`DISCREPANCY_RECONCILIATION_20260710.md`](../function-lane/DISCREPANCY_RECONCILIATION_20260710.md).
+That audit retires the stale YIELDDISC row, reclassifies the matrix `1x1`
+publication observations, and confirms that the trig numeric lane remains open;
+it does not change this workset's open gate.
+
+## 13. Bounded propagation pass across the discrepancy catalog (2026-07-10)
+
+The x87/store-boundary method from `C:\Temp\ExcelExpFunction` has now been
+propagated as a hypothesis/search vocabulary across all 24 Category-2 rows. The
+pass is recorded in
+[`DISCREPANCY_RECONNAISSANCE_PASS_20260710.md`](../function-lane/DISCREPANCY_RECONNAISSANCE_PASS_20260710.md)
+with 48 live-Excel cases and a per-row calculation map.
+
+Two concrete outcomes were promoted from hypothesis to exercised code/evidence:
+
+1. `ATANH(x)` decomposes bit-for-bit as
+   `0.5 * LN((1+x)/(1-x))` on the two bounded witnesses, but the required
+   expanded sweep rejected that as a global kernel: `297/368` exact and `71`
+   regressions, including tiny-input collapse and near-boundary drift. The
+   candidate was reverted; ATANH remains open as a piecewise-kernel search.
+2. The fractional-year XNPV witness is bit-identical to a worksheet
+   POWER-per-term decomposition. A test-only `power_kernel` candidate closes
+   the 16-ULP witness, but production XNPV/XIRR routing is intentionally not
+   changed until a cancellation/order corpus proves non-regression.
+
+Decomposition probes also disprove simple public-graph equivalence for ACOTH
+and GROWTH, and support centered-regression investigation for FORECAST. These
+are bounded insights, not row-closure claims. The W108 annuity gate remains
+open.
+
+The same expanded closure pass resolved TBILLYIELD independently: the
+left-associative `*360/days` path produced `308/2156` one-ULP failures, while
+grouping the day-scale factor as `*(360/days)` is `2156/2156` exact. The G6
+TBILLYIELD row is retired with evidence in
+[`CANDIDATE_CLOSURE_SWEEP_20260710.md`](../function-lane/CANDIDATE_CLOSURE_SWEEP_20260710.md).

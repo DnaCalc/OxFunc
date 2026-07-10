@@ -1,7 +1,7 @@
 # Known Exactness Deviations
 
 Status: `superseded_for_tracking`
-Last updated: `2026-06-19`
+Last updated: `2026-07-10`
 
 > **Superseded for live tracking (ODR-FN-003).** The single canonical tracker of open
 > OxFunc-vs-Excel discrepancies is now
@@ -53,21 +53,24 @@ Each active entry should record:
 ## Active Residuals
 
 ### KED-FIN-001: Financial Payment Publication Exactness
-- **Status**: `blocked_deferred_repair`
+- **Status**: `open_w108_phase_e_characterized`
 - **Owner**: `BUG-FUNC-015`, bead `oxf-fckb`
 - **Functions**: confirmed `PMT`, `PPMT`; adjacent shared-calculation review
   includes `IPMT`
 - **Mismatch class**: financial time-value publication exactness and adjacent
   high-rate/long-horizon edge behavior
-- **Current handling**: known residual; useful smart-fuzzer reference lane; do
-  not repair until a focused convergence/reparation thread is explicitly
-  reopened
+- **Current handling**: open W108 exactness lane. Phase E confirms the discount
+  arrangement already used by OxFunc and localizes the remaining PMT last-bit
+  gap to `expm1(-nper*log1p(rate))`; no partial helper swap is promoted until it
+  dominates current OxFunc on one repo-owned exact-input corpus.
 - **Evidence**:
   1. `docs/bugs/streams/BUG-FUNC-015_pmt_ppmt_annuity_exactness_drift.md`
   2. `smart-fuzzer/tools/Run-PmtPpmtPilot.ps1`
   3. `smart-fuzzer/tools/pmt_ppmt_local_eval/`
   4. `smart-fuzzer/runs/w088-pmt-ppmt-pilot/` when present locally
   5. expanded run `expanded-finance-10m-20260428`
+  6. `docs/EXCEL_FINANCIAL_ANNUITY_SPEC_AND_FINDINGS.md`
+  7. `docs/function-lane/W108_ANNUITY_PHASE_E_WITNESS_SEED.csv`
 - **Compact counts**:
   1. W088 PMT/PPMT pilot: `28` cases, `7` exact matches, `21` numeric bit
      mismatches, `0` blocked.
@@ -75,11 +78,16 @@ Each active entry should record:
      `102` expected known financial-exactness or formula-literal encoding
      deviations, and `2` adjacent high-rate/long-horizon `PPMT` rows where
      local returned `#NUM!` while Excel returned a tiny numeric value or zero.
+  3. Phase-E research corpus: `5,319` live-Excel family rows. The best tested
+     Kahan/x87 helper candidate scores `2285/4040` exact PMT rows and `92.9%`
+     within `1` ULP; these are research-model figures, not current OxFunc pass
+     rates.
 - **Representative witnesses**:
   1. `=PMT(0.05/12,360,200000)`
   2. `=PPMT(0.05/12,1,360,200000)`
-- **Next action**: characterize Excel's payment publication path over a small,
-  theory-driven matrix before changing the shared annuity implementation.
+- **Next action**: import the Phase-E exact-input corpus into the repo-owned
+  comparator, score current OxFunc and the Kahan/x87 candidate head-to-head,
+  then isolate the remaining partial-extended helper rounding placement.
 
 ### KED-STAT-001: Statistical Distribution Exactness Residuals
 - **Status**: `open`
@@ -177,6 +185,9 @@ evidence under the owning bug stream or open a new bug stream.
 
 ## Resolved History
 1. `KED-MISC-001` records the mixed W089 non-statistical residual triage:
-   `VDB`, `MINVERSE(5)`, and `MMULT(5,2)` were repaired under
-   `BUG-FUNC-023`; `BESSELY(2.5,1)` and `MINVERSE({1,2;3,4})` remain active
-   under dedicated entries above.
+   `VDB` was repaired under `BUG-FUNC-023`; the attempted function-level
+   scalarization of `MINVERSE(5)` and `MMULT(5,2)` was reverted after nested
+   `TYPE` probes proved these are internal `1x1` arrays, and their final-cell
+   appearance is now tracked downstream as Category-1 publication rows
+   `CSC-0024`/`CSC-0025` under `HO-FN-010`. `BESSELY(2.5,1)` was subsequently
+   repaired under `BUG-FUNC-024`; `MINVERSE({1,2;3,4})` remains active above.

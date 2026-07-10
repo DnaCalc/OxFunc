@@ -432,7 +432,10 @@ pub fn tbillyield_kernel(
         ));
     }
     let dsm = tbill_days(settlement, maturity)?;
-    Ok((100.0 - pr) / pr * 360.0 / dsm)
+    // Excel groups the day-scale factor before the final multiplication:
+    // ((100-pr)/pr) * (360/dsm).  The mathematically equivalent left-associative
+    // `*360/dsm` form differs by 1 ULP on hundreds of settlement/price rows.
+    Ok(((100.0 - pr) / pr) * (360.0 / dsm))
 }
 
 pub fn tbilleq_kernel(
@@ -777,6 +780,16 @@ mod tests {
             0.094_151_493_565_943,
             1.0e-12,
         );
+    }
+
+    #[test]
+    fn tbillyield_groups_day_scale_like_excel() {
+        let actual = tbillyield_kernel(36526.0, 36533.0, 98.45).unwrap();
+        let excel = f64::from_bits(0x3fe9_e901_8124_6c32);
+        let prior_left_associative: f64 = (100.0 - 98.45) / 98.45 * 360.0 / 7.0;
+
+        assert_eq!(actual.to_bits(), excel.to_bits());
+        assert_eq!(prior_left_associative.to_bits(), 0x3fe9_e901_8124_6c31);
     }
 
     #[test]

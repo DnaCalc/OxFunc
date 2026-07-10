@@ -25,4 +25,4 @@
 "yielddisc.witness","YIELDDISC","YIELDDISC","0x3fa1f7047dc11f70","0x3fa1f7047dc11f70","0x3fa1f7047dc11f70","0","0","all_bit_exact","YIELDDISC(44013,44562,95,100,0) ~5 ULP"
 "nper.witness","NPER","NPER","0x402400000000000b","0x402400000000000b","0x402400000000000b","0","0","all_bit_exact","~1 ULP"
 "yieldmat.witness","YIELDMAT","YIELDMAT","0x3faf3b645a1cabff","0x3faf3b645a1cabff","0x3faf3b645a1cabfe","1","1","both_off_ox_eq_fs","~1 ULP"
-"tbillyield.witness","TBILLYIELD","TBILLYIELD","0x3fb7671a221061b9","0x3fb7671a221061b9","0x3fb7671a221061b9","0","0","all_bit_exact","~1 ULP on some settlements"
+"tbillyield.witness","TBILLYIELD","TBILLYIELD","0x3fb7671a221061b9","0x3fb7671a221061b9","0x3fb7671a221061b9","0","0","all_bit_exact","signed off 2026-07-10 after association repair; expanded matrix 2156/2156"

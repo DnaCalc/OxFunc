@@ -28,9 +28,10 @@ pub fn atanh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
         return Err(WorksheetErrorCode::Num);
     }
     // Excel's ATANH is exactly odd-symmetric: ATANH(-x) == -ATANH(x) bit-for-bit.
-    // The platform libm loses that symmetry near -1 (atanh(-x) differs from
-    // -atanh(x) by up to ~1.5e13 ULP). OxFunc already matches Excel bit-for-bit on
-    // the non-negative side, so compute on |x| and restore the sign (BUG-FUNC-027 C4).
+    // The platform libm loses that symmetry near -1, so compute on |x| and restore
+    // the sign. A 2026-07-10 x87-LN candidate closed the 0.1/0.2 witnesses but
+    // regressed 71/368 expanded rows (tiny inputs and near-boundary values), so it
+    // remains a search hypothesis rather than the production path.
     Ok(n.abs().atanh().copysign(n))
 }
 
@@ -79,5 +80,18 @@ mod tests {
         );
         let x = 0.9999999999999990_f64;
         assert_eq!(atanh_kernel(-x).unwrap(), -atanh_kernel(x).unwrap());
+    }
+
+    #[test]
+    fn atanh_x87_log_candidate_is_not_global() {
+        let candidate = |x: f64| 0.5 * crate::excel_numeric::excel_log((1.0 + x) / (1.0 - x));
+        assert_eq!(candidate(0.1).to_bits(), 0x3fb9_af93_cd23_4415);
+        assert_eq!(candidate(0.2).to_bits(), 0x3fc9_f323_ecbf_9849);
+
+        // Live Excel preserves the smallest positive subnormal, whereas the
+        // ratio rounds to 1 and this candidate collapses it to zero.
+        let tiny = f64::from_bits(1);
+        assert_eq!(candidate(tiny).to_bits(), 0.0_f64.to_bits());
+        assert_eq!(atanh_kernel(tiny).unwrap().to_bits(), tiny.to_bits());
     }
 }

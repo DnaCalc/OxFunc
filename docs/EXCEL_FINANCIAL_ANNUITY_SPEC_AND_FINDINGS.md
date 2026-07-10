@@ -1,133 +1,150 @@
-# Excel annuity functions (PMT/FV/PV/IPMT/PPMT/CUM): algorithm + W108 Phase-C findings
+# Excel annuity functions (PMT/FV/PV/IPMT/PPMT/CUM): W108 Phase-E findings
 
-*Status: CHARACTERIZED, not yet bit-exact. The authoritative algorithm is pinned; the residual
-is a POWER-class transcendental-substrate problem (Excel's exact internal `log1p`/`expm1`
-rounding), still open. The crate financial family stays frozen on the portable correctly-rounded
-core pending the crack. This document is the seed for a dedicated reverse-engineering pass, in the
-same shape as [`EXCEL_POWER_SPEC_AND_TEST_CASES.md`](EXCEL_POWER_SPEC_AND_TEST_CASES.md) was for
-POWER.*
+Status: `characterized_high_confidence_not_bit_exact`
 
-Target: Excel 16.0 build 20131, 64-bit, Windows, AMD Zen2. All inputs fed as exact doubles via
-`Range.Value2`; results read as raw bit patterns.
+Last reconciled: `2026-07-10`
 
----
+Target baseline: Excel `16.0` build `20131`, 64-bit, Windows, AMD Zen2. Numeric
+inputs were written as exact doubles through `Range.Value2`; results and input
+round-trips were captured as binary64 bit patterns.
 
-## 1. The authoritative algorithm
+This record supersedes the Phase-C conclusion that Excel PMT evaluates the
+OpenOffice/LibreOffice forward formula. The public OpenOffice/LibreOffice source
+remains a useful clean-room comparison source, but the expanded black-box Excel
+evidence proves that Excel uses a different, discount-form arrangement.
 
-Excel's time-value functions share their heritage with OpenOffice/LibreOffice (the LibreOffice
-implementations were "borrowed from OpenOffice 1.0" and mirror Excel). The exact formulas are in
-LibreOffice `sc/source/core/tool/interpr2.cxx`
-([source](https://cgit.freedesktop.org/libreoffice/core/tree/sc/source/core/tool/interpr2.cxx)):
+## 1. Current conclusion
 
-```cpp
-// PMT — forward form via exp/log1p/expm1 (NOT pow):
-if (bPayInAdvance)  // type = 1
-    pmt = (fv + pv*exp(nper*log1p(rate))) * rate /
-          (expm1((nper+1)*log1p(rate)) - rate);
-else                // type = 0
-    pmt = (fv + pv*exp(nper*log1p(rate))) * rate / expm1(nper*log1p(rate));
-return -pmt;
+For nonzero `rate`, the Excel PMT path is best described by:
 
-// FV — pow-based:
-term = pow(1.0+rate, nper);
-if (bPayInAdvance) fv = pv*term + pmt*(1.0+rate)*(term-1.0)/rate;
-else               fv = pv*term + pmt*(term-1.0)/rate;
-return -fv;
-
-// PV — pow(1+r, -n):
-if (bPayInAdvance)
-    pv = fv*pow(1+rate,-nper) + pmt*(1 - pow(1+rate,-nper+1))/rate + pmt;
-else
-    pv = fv*pow(1+rate,-nper) + pmt*(1 - pow(1+rate,-nper))/rate;
-return -pv;
+```text
+l   = log1p(rate)
+t   = nper * l
+em  = expm1(-t)
+v   = 1 + em
+pmt = (pv + fv*v) * rate / em          // type 0
+pmt = pmt / (1 + rate)                 // additional type-1 step
 ```
 
-The two families use **different** power methods, confirmed against live Excel:
+The important points are:
 
-- **PMT** uses `exp(n·log1p(r))` and `expm1(n·log1p(r))` — the forward `(1+r)^n` via the x87
-  `exp`/`log1p`/`expm1`, NOT `pow`.
-- **FV / PV** use `pow(1+r, ±n)`, which is the Excel `POWER` routine
-  (`crate::excel_numeric::excel_pow_positive` etc.).
+1. Excel uses the discount arrangement. The current OxFunc PMT kernel therefore
+   has the correct high-level arrangement.
+2. Excel's `log1p`/`expm1` behavior is consistent with the historical
+   Kahan/Goldberg compensation formulas built on the already identified x87
+   `EXP`/`LN` substrate.
+3. The exact final binary64 rounding of the composite
+   `expm1(-nper*log1p(rate))` remains unresolved. This is an open OxFunc-vs-Excel
+   discrepancy, not an accepted tolerance.
 
-IPMT/PPMT/CUMPRINC/CUMIPMT are built on PMT plus a running balance (`fv_exp`), so they inherit
-whatever PMT and the balance recurrence use.
+## 2. Why the forward-form conclusion was rejected
 
----
+The public historical OpenOffice implementation uses a forward form based on
+`exp(n*log1p(rate))` and `expm1(n*log1p(rate))`. Excel agrees with it over ordinary
+inputs where both algebraic forms round to the same result, but the large-`t`
+tail separates them decisively:
 
-## 2. Confirmed (live Excel, this campaign)
+| Input | Excel observation | Consequence |
+|---|---|---|
+| `PMT(0.015625,4096,0,1,0)` | exactly `0` | requires discount-factor cancellation after `v = 1 + em` |
+| `PMT(0.015625,2048,0,1,0)` | about `3.2e12` ULP from the accurate forward form | incompatible with the forward arrangement |
+| `PMT(0.25,240,0,1,0)` | exactly `0` | again exposes `v = 1 + expm1(-t)` cancellation |
 
-1. **The FV/PV factor `(1+r)^n` is exactly `power_kernel` (Excel POWER)** — 120/120 on an
-   integer+fractional-n sweep isolated via `FV(r,n,0,-1,0) = (1+r)^n`. Not `exp(n·ln(1+r))`
-   (56/120) and not `exp(n·log1p(r))` (10/120). So FV/PV's `pow` = the bit-exact POWER routine.
-2. **PMT is the forward form** `-(fv+pv·exp(n·log1p(r)))·r / expm1(n·log1p(r))`, not the discount
-   form the crate currently uses. The x87 substrate `log1p` = `FYL2XP1` and `expm1` = `F2XM1`-based
-   is the right direction (M1 45/150 exact; `ln(1+r)` for log1p → 11/150; `exp(x)-1` for expm1 →
-   24/150 — both worse).
-3. **FV's annuity term prefers divide-first** `pmt·tf·((q-1)/r)` (74/90) over mult-first
-   `pmt·tf·(q-1)/r` (65/90).
+The forward expression remains nonzero on these rows. No last-bit choice inside
+that expression can produce Excel's zero, so this is an arrangement discriminator,
+not a library-rounding preference.
 
-## 3. Open (the residual)
+## 3. Primitive-substrate characterization
 
-With the authoritative formulas + best x87 substrate, best-candidate accuracy on a 290-row
-realistic+adversarial sweep:
+The best tested model uses the historical compensation identities:
 
-| function | bit-exact | residual |
-|----------|-----------|----------|
-| FV  | 74/90  | mostly 1 ULP |
-| PMT | 45/150 | 52 rows @1 ULP, 25 @2 ULP |
-| PV  | 16/50  | wide — the reconstructed PV op-order is not yet Excel's |
+```text
+log1p(x): fp = 1+x
+          fp == 1 ? x : LN(fp) * x / (fp-1)
 
-The PMT/FV residual is **1-2 ULP**, concentrated where the transcendental substrate is exercised.
-It is the same class as the pre-crack POWER residual: Excel's internal `log1p` and `expm1` have
-their own bespoke rounding (they may be `FYL2XP1`/`F2XM1`, or a software routine — undetermined),
-and the multi-step composition compounds sub-ULP differences from `log1p`, `expm1`, and the exact
-f64 arithmetic order. PV additionally needs its exact op-order pinned (the LibreOffice `ScGetPV`
-form reproduced here is not yet matching Excel's — Excel likely diverged from OpenOffice on PV).
-
-**What a dedicated pass needs to nail:** (a) Excel's internal `log1p(r)` bit pattern (isolate via
-`PMT(r,n,0,1,0) = -r/expm1(n·log1p r)` and `exp(n·log1p r)`); (b) Excel's internal `expm1`
-rounding across the `|x| ≤ ln2` (`F2XM1`) and `|x| > ln2` regimes; (c) the exact f64 op-order of
-each function (esp. PV); (d) then IPMT/PPMT/CUM via the balance recurrence.
-
----
-
-## 4. Test witnesses (all `fv=0`, so PMT reduces to `-pv·(1+r)^n·r/expm1(n·log1p r)`)
-
-`x87fwd` = the forward-form x87 model (§1 PMT, `FYL2XP1`+`F2XM1`).
-
-### PMT — AGREE (model reproduces Excel)
-```
-r=0.00375   n=24  pv=92838.45   type=1  excel=0xc0af8a1cc7814075
-r=0.00666667 n=60 pv=671341.59  type=0  excel=0xc0ca9631820a9d6e
-r=0.0165833 n=24  pv=168673.67  type=1  excel=0xc0c07a5178b2b075
-```
-### PMT — DIVERGE (1-2 ULP; the residual to crack)
-```
-r=0.00375   n=24  pv=655719.05  type=1  excel=0xc0dbd87197774a52  x87fwd=0xc0dbd87197774a53
-r=0.005     n=60  pv=182607.64  type=0  excel=0xc0ab94a2702615e0  x87fwd=0xc0ab94a2702615e2
-r=0.0025    n=180 pv=890329.61  type=1  excel=0xc0b7f51eb9edec0e  x87fwd=0xc0b7f51eb9edec0d
-r=0.0165833 n=360 pv=888359.13  type=0  excel=0xc0ccd9ca1d3c302a  x87fwd=0xc0ccd9ca1d3c3029
-r=0.00208333 n=12 pv=713383.46  type=1  excel=0xc0ed5c6e7d21dbc6  x87fwd=0xc0ed5c6e7d21dbc8
-r=0.005     n=36  pv=207968.39  type=0  excel=0xc0b8b6cd256fa8d5  x87fwd=0xc0b8b6cd256fa8d8
+expm1(x): fe = EXP(x)
+          fe == 1 ? x : (fe-1) * x / LN(fe)
 ```
 
----
+The `LN` and `EXP` operations are the x87 routines already reproduced by
+`crate::excel_numeric::x87`. A 4,040-row PMT sweep over operation order and
+SSE/x87-extended store placement produced this best candidate:
 
-## 5. Current crate state (unchanged)
+| Model | Exact | Within 1 ULP |
+|---|---:|---:|
+| `log1p` extended, `expm1` binary64 order A | `2285/4040` (`56.6%`) | `92.9%` |
+| both helpers binary64 | `55.2%` | `92.2%` |
+| UCRT C99 helpers | `47.8%` | `89.0%` |
+| fdlibm helpers | `51.9%` | `91.9%` |
+| naive `exp(x)-1` | `21.5%` | `41.8%` |
 
-The financial family (`financial_time_value_family.rs`, `cumulative_finance_family.rs`) stays on
-the portable correctly-rounded core (W108 Bead C): PMT/IPMT/PPMT/NPER/CUM use the **discount**
-form `exp(-n·log1p(r))`/`expm1` with `exp_portable`/`log_portable`/`excel_log1p`/`excel_expm1`
-(glibc-CR). This is structurally different from Excel's forward form but tuned to a ≤2-3 ULP
-residual and is not regressed by this campaign. FV/PV already route `(1+r)^n` through the
-bit-exact `power_kernel` (via `growth`).
+The clean `nper=1`, `pv=1`, `fv=0`, `type=0` isolation lane reduces PMT to
+`rate/em`. Across 553 such rows the final division was exact whenever the
+candidate `em` was exact (`div-only-wrong = 0`). That localizes the remaining PMT
+last-bit problem to `em = expm1(-log1p(rate))`, not PMT's final division.
 
-**Do not partially migrate** to the forward form until the substrate is cracked — the forward-form
-x87 model is not yet more bit-exact than the frozen discount form on realistic inputs, so a swap
-would trade one ≤2-3 ULP approximation for another without a net win.
+## 4. Adjacent-family observations
 
-## 6. Reproduce
+The expanded live corpus contains 5,319 rows across the financial family. The
+public source recurrences, evaluated with the current best research model, score:
 
-Scratch harness `x87lab` (`x87fin.rs` = FV/PV/PMT candidate compositions with x87 exp/ln/log1p/
-expm1/mul/recip; `x87fac.rs` = factor isolation; `compare_fin.ps1` / `compare_fac.ps1` drive Excel
-via `smart-fuzzer/tools/CellRefBatch.psm1`).
+| Function | Current research-model result |
+|---|---|
+| `RRI` | `65/65` bit-exact |
+| `PDURATION` | `17/17` bit-exact |
+| `FV` | `79/90` exact; `94%` within 1 ULP |
+| `PV` | `25/90` exact; `62%` within 1 ULP |
+| `IPMT` | `55/180` exact; `41%` within 1 ULP |
+| type-1 `IPMT` | `64/180` exact; `48%` within 1 ULP |
+| `PPMT` | `17/180` exact; `31%` within 1 ULP |
+| `CUMIPMT` / `CUMPRINC` | recurrence shape supported, exact op-order and accumulated rounding still open |
+
+These figures characterize the research model, not the current Rust kernel.
+They must not be reported as OxFunc pass rates. The current Rust implementation
+has not yet been replayed over all 5,319 Phase-E rows through a repo-owned runner.
+
+## 5. Current OxFunc decision
+
+No Rust kernel change is promoted from Phase E yet.
+
+The current OxFunc PMT implementation already uses the empirically correct
+discount arrangement on the portable `excel_log1p`/`excel_expm1` core and closed
+the canonical mortgage witness exactly. The Phase-E Kahan/x87 candidate does not
+yet dominate that implementation across the established realistic and
+adversarial corpora, and it still misses roughly 43% of the 4,040 adversarial PMT
+rows by a last bit. Swapping models now would be a partial trade, not parity.
+
+The next implementation gate is:
+
+1. import the Phase-E probe set into a repo-owned replay format,
+2. score current OxFunc and the Kahan/x87 candidate over the same exact inputs,
+3. isolate the partial-extended rounding placement inside the two helpers,
+4. promote only a non-regressing change with exact-bit regression pins.
+
+## 6. Evidence and reproduction
+
+Validated on `2026-07-10` from `C:\Temp\ExcelExpFunction`:
+
+1. `python validate_reference.py research/data/ground_truth_all.json research/data/disc2_results.json`
+   - x87 EXP/LN reference: `294/294` exact.
+2. `python validate_power_reference.py`
+   - POWER reference: `315/315` exact.
+3. `python finlab/final_sweep.py`
+   - `4040` PMT rows; best helper configuration `2285/4040` exact, `92.9%` within 1 ULP.
+4. `python finlab/score_family.py`
+   - `855` adjacent-family rows; `244/855` exact for the tested public-source recurrence model.
+
+Primary Phase-E report SHA-256:
+`14647C7B461D2198DE2817363D172CAC3A19B8CB1025B0E3BBE57AE566DEC955`.
+
+The compact repo-owned witness seed is
+[`W108_ANNUITY_PHASE_E_WITNESS_SEED.csv`](function-lane/W108_ANNUITY_PHASE_E_WITNESS_SEED.csv).
+
+## 7. Claim boundaries
+
+- `EXP`, `LN`, `LOG10`, `LOG`, and `POWER` are separate W108 results and remain
+  signed off on the declared x86-64 reference baseline.
+- The PMT/PPMT/IPMT/CUM family remains `scope_partial` for exact current-baseline
+  parity.
+- Alternate CPU, Excel channel, locale, and workbook Compatibility Version
+  sweeps remain separate validation lanes.

@@ -96,6 +96,9 @@ Rows intentionally split to successor exactness streams:
 3. Successor stream: `docs/bugs/streams/BUG-FUNC-024_bessely_current_baseline_exactness_drift.md`
 4. Successor stream: `docs/bugs/streams/BUG-FUNC-025_minverse_matrix_numeric_exactness_drift.md`
 5. Bead: `oxf-i45e`
+6. Category-1 publication rows: `CSC-0024` (`MINVERSE(5)`) and `CSC-0025`
+   (`MMULT(5,2)`) in `smart-fuzzer/corpus/context_sensitive_catalog/catalog-v0.json`
+7. Downstream handoff: `HO-FN-010`
 
 ## Closure Checklist
 - [x] fix landed or successor OxFunc ownership recorded
@@ -103,5 +106,6 @@ Rows intentionally split to successor exactness streams:
 - [x] root cause recorded
 - [x] similar-risk scan recorded
 - [x] spec/matrix/contract updated if required
-- [x] handoff filed if required: not required; no FEC/F3E or OxFml
-  evaluator-facing seam change
+- [x] handoff filed if required: `HO-FN-010` covers the OxFml/DNA Calc
+  result-publication/comparator seam; downstream acknowledgement remains open
+  and therefore bead `oxf-i45e` remains open.
