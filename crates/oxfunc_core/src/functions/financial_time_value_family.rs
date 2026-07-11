@@ -382,7 +382,9 @@ pub fn nper(
     future_value: f64,
     timing: PaymentTiming,
 ) -> Result<f64, FinancialError> {
-    use crate::excel_numeric::{excel_log, excel_x87_add, excel_x87_div, excel_x87_mul, excel_x87_sub};
+    use crate::excel_numeric::{
+        excel_log, excel_x87_add, excel_x87_div, excel_x87_mul, excel_x87_sub,
+    };
 
     validate_finite(&[periodic_rate, payment_value, present_value, future_value])?;
     if periodic_rate == 0.0 {

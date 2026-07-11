@@ -122,11 +122,18 @@ mod tests {
             .to_bits();
             n += 1;
             if got != exb && bad.len() < 20 {
-                bad.push(format!("{func} x={xb:016x}: got {got:016x} want {exb:016x}"));
+                bad.push(format!(
+                    "{func} x={xb:016x}: got {got:016x} want {exb:016x}"
+                ));
             }
         }
         assert!(n >= 200, "expected the full corpus, saw {n} rows");
-        assert!(bad.is_empty(), "{} mismatches:\n{}", bad.len(), bad.join("\n"));
+        assert!(
+            bad.is_empty(),
+            "{} mismatches:\n{}",
+            bad.len(),
+            bad.join("\n")
+        );
     }
 
     #[test]
@@ -176,9 +183,21 @@ mod tests {
         let s = ext_to_f64(&ext_sin(&ext_from_f64(x), cw), cw);
         let c = ext_to_f64(&ext_cos(&ext_from_f64(x), cw), cw);
         let t = ext_to_f64(&ext_tan(&ext_from_f64(x), cw), cw);
-        assert!((s - x.sin()).abs() <= f64::EPSILON, "sin: {s} vs {}", x.sin());
-        assert!((c - x.cos()).abs() <= f64::EPSILON, "cos: {c} vs {}", x.cos());
-        assert!((t - x.tan()).abs() <= 2.0 * f64::EPSILON, "tan: {t} vs {}", x.tan());
+        assert!(
+            (s - x.sin()).abs() <= f64::EPSILON,
+            "sin: {s} vs {}",
+            x.sin()
+        );
+        assert!(
+            (c - x.cos()).abs() <= f64::EPSILON,
+            "cos: {c} vs {}",
+            x.cos()
+        );
+        assert!(
+            (t - x.tan()).abs() <= 2.0 * f64::EPSILON,
+            "tan: {t} vs {}",
+            x.tan()
+        );
         // sqrt/abs/chs.
         assert_eq!(ext_to_f64(&ext_sqrt(&ext_from_f64(9.0), cw), cw), 3.0);
         assert_eq!(ext_to_f64(&ext_abs(&ext_from_f64(-2.5), cw), cw), 2.5);
@@ -196,7 +215,10 @@ mod tests {
         // production code paths, not lookalikes.
         let p = f64::from_bits(0x3fffffffffffffff);
         assert_eq!(x87_recip(p).to_bits(), 0.5f64.to_bits());
-        assert_eq!(excel_pow_positive(2.0, 0.5).to_bits(), 2.0f64.sqrt().to_bits());
+        assert_eq!(
+            excel_pow_positive(2.0, 0.5).to_bits(),
+            2.0f64.sqrt().to_bits()
+        );
         assert_eq!(excel_exp(1.0).to_bits(), std::f64::consts::E.to_bits());
         assert_eq!(excel_ln(std::f64::consts::E), 1.0);
         assert_eq!(excel_log10(1000.0), 3.0);

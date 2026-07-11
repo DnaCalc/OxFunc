@@ -204,8 +204,23 @@ impl<'a> Evaluator<'a> {
                     EvalModel::X87 { .. } => rx::excel_log10(v),
                 }))
             }
-            Op::Expm1(x) => Ok(Val::F64(rx::excel_expm1(self.f64_in(*x)?))),
-            Op::Log1p(x) => Ok(Val::F64(rx::excel_log1p(self.f64_in(*x)?))),
+            // Model split for the substrate helpers: Strict = the platform
+            // libm (UCRT comparator), X87 = the in-crate portable faithful
+            // core (`excel_expm1`/`excel_log1p`).
+            Op::Expm1(x) => {
+                let v = self.f64_in(*x)?;
+                Ok(Val::F64(match model {
+                    EvalModel::Strict => v.exp_m1(),
+                    EvalModel::X87 { .. } => rx::excel_expm1(v),
+                }))
+            }
+            Op::Log1p(x) => {
+                let v = self.f64_in(*x)?;
+                Ok(Val::F64(match model {
+                    EvalModel::Strict => v.ln_1p(),
+                    EvalModel::X87 { .. } => rx::excel_log1p(v),
+                }))
+            }
             Op::Sin(x) => self.trig(*x, model, f64::sin, rx::ext_sin),
             Op::Cos(x) => self.trig(*x, model, f64::cos, rx::ext_cos),
             Op::Tan(x) => self.trig(*x, model, f64::tan, rx::ext_tan),
@@ -266,25 +281,69 @@ impl<'a> Evaluator<'a> {
                 self.accumulate(vals, *order, model, AccKind::Prod)
             }
             Op::FoldSum { over, body, order } => {
-                if over.is_empty() {
-                    return err("fold_sum needs at least one array to iterate");
-                }
-                let len = self.array_arg(over[0])?.len();
-                for arg in over.iter().skip(1) {
-                    if self.array_arg(*arg)?.len() != len {
-                        return err("fold_sum arrays must have equal length");
-                    }
-                }
-                let mut vals = Vec::with_capacity(len);
-                for i in 0..len {
-                    let mut body_args: Vec<ArgValue> = Vec::with_capacity(over.len() + self.args.len());
-                    for arg in over {
-                        body_args.push(ArgValue::Scalar(self.array_arg(*arg)?[i]));
-                    }
-                    body_args.extend(self.args.iter().cloned());
-                    vals.push(eval_graph_val(body, &body_args)?);
-                }
+                let vals = self.fold_terms(over, body)?;
                 self.accumulate(vals, *order, model, AccKind::Sum)
+            }
+            Op::FoldProd { over, body, order } => {
+                let vals = self.fold_terms(over, body)?;
+                self.accumulate(vals, *order, model, AccKind::Prod)
+            }
+            Op::FoldMulDiv { nums, dens, order } => {
+                let nums = self.array_arg(*nums)?.clone();
+                let dens = self.array_arg(*dens)?.clone();
+                if nums.len() != dens.len() {
+                    return err("fold_mul_div arrays must have equal length");
+                }
+                let mut idx: Vec<usize> = (0..nums.len()).collect();
+                if matches!(order, SumOrder::Reverse | SumOrder::ReverseStoredStep) {
+                    idx.reverse();
+                }
+                match model {
+                    EvalModel::Strict => {
+                        let mut acc = 1.0f64;
+                        for i in idx {
+                            acc = (acc * nums[i]) / dens[i];
+                        }
+                        Ok(Val::F64(acc))
+                    }
+                    EvalModel::X87 { cw, store } => {
+                        let stored_step = matches!(
+                            order,
+                            SumOrder::ForwardStoredStep | SumOrder::ReverseStoredStep
+                        );
+                        if stored_step {
+                            // Legacy spill loop: every op double-rounded.
+                            let mut acc = 1.0f64;
+                            for i in idx {
+                                let p = rx::ext_to_f64(
+                                    &rx::ext_mul(
+                                        &rx::ext_from_f64(acc),
+                                        &rx::ext_from_f64(nums[i]),
+                                        cw.value(),
+                                    ),
+                                    cw.value(),
+                                );
+                                acc = rx::ext_to_f64(
+                                    &rx::ext_div(
+                                        &rx::ext_from_f64(p),
+                                        &rx::ext_from_f64(dens[i]),
+                                        cw.value(),
+                                    ),
+                                    cw.value(),
+                                );
+                            }
+                            Ok(Val::F64(acc))
+                        } else {
+                            // Extended-continuous accumulator.
+                            let mut acc = rx::ext_from_f64(1.0);
+                            for i in idx {
+                                acc = rx::ext_mul(&acc, &rx::ext_from_f64(nums[i]), cw.value());
+                                acc = rx::ext_div(&acc, &rx::ext_from_f64(dens[i]), cw.value());
+                            }
+                            Ok(self.finish_x87(acc, cw, store))
+                        }
+                    }
+                }
             }
             Op::Branch {
                 pred,
@@ -362,6 +421,29 @@ impl<'a> Evaluator<'a> {
 
     fn terms(&mut self, ids: &[NodeId]) -> Result<Vec<Val>, EvalError> {
         ids.iter().map(|id| self.node(*id)).collect()
+    }
+
+    /// Shared body evaluation for `FoldSum`/`FoldProd`.
+    fn fold_terms(&mut self, over: &[usize], body: &Graph) -> Result<Vec<Val>, EvalError> {
+        if over.is_empty() {
+            return err("fold needs at least one array to iterate");
+        }
+        let len = self.array_arg(over[0])?.len();
+        for arg in over.iter().skip(1) {
+            if self.array_arg(*arg)?.len() != len {
+                return err("fold arrays must have equal length");
+            }
+        }
+        let mut vals = Vec::with_capacity(len);
+        for i in 0..len {
+            let mut body_args: Vec<ArgValue> = Vec::with_capacity(over.len() + self.args.len());
+            for arg in over {
+                body_args.push(ArgValue::Scalar(self.array_arg(*arg)?[i]));
+            }
+            body_args.extend(self.args.iter().cloned());
+            vals.push(eval_graph_val(body, &body_args)?);
+        }
+        Ok(vals)
     }
 
     fn accumulate(

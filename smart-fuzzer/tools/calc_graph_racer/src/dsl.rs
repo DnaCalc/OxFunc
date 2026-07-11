@@ -187,6 +187,18 @@ pub enum Op {
         body: Graph,
         order: SumOrder,
     },
+    /// Product fold over array arguments (same body/arg conventions as
+    /// [`Op::FoldSum`], accumulation is multiplication).
+    FoldProd {
+        over: Vec<usize>,
+        body: Graph,
+        order: SumOrder,
+    },
+    /// The legacy interleaved multiply–divide loop
+    /// `acc = (acc * nums[i]) / dens[i]` (combinatorial kernels). `order`
+    /// picks direction and per-step store behavior; the model picks
+    /// strict / extended arithmetic. Starts from `acc = 1.0`.
+    FoldMulDiv { nums: usize, dens: usize, order: SumOrder },
     Branch {
         pred: Pred,
         then_node: NodeId,
@@ -212,7 +224,7 @@ impl Graph {
         let mut n = 0u32;
         for node in &self.nodes {
             n += 1;
-            if let Op::FoldSum { body, .. } = &node.op {
+            if let Op::FoldSum { body, .. } | Op::FoldProd { body, .. } = &node.op {
                 n += body.complexity();
             }
         }
