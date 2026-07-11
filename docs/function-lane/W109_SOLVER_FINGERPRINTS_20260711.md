@@ -200,3 +200,17 @@ bit-faithful; results (annuity_family_race.py):
 Consequences: G6-01 (PMT family) now has two of its members identified
 bit-exactly on first corpora; RATE's f is the closed FV kernel;
 remaining G6-01 work = PMT (+IPMT/PPMT/CUM* compositions after PMT).
+
+## Round 7 (2026-07-12): PMT staging race opened
+
+fit_pmt_stores.rs: composition zoo {direct, split, (num/(P-1))*(rate/tf),
+rate-mul, reciprocal, PV-dual} x P-forms {binexp, loop-multiply, stored
+CRT pow, EXTENDED x87 pow chain} x 512 store masks. Leader: extended x87
+pow chain + comp (num/(P-1))*(rate/tf) at 34/48. Diagnostics: ordinary
+rates miss +-1..7; rate=1.5e-6 rows swing wildly (up to 16285 ULP off
+under the leader) -> PMT's small-rate path is materially more accurate
+than any current variant: suspect a dedicated (P-1) formulation
+(extended chain into the subtraction, or expm1-style) or a different
+inversion. PMT does NOT reuse the closed FV/PV plain-double path.
+Next: probe PMT vs FV/PV at identical (rate,n) to difference the paths
+directly; then IPMT/PPMT once PMT lands.
