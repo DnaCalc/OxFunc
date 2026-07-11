@@ -129,3 +129,31 @@ one-step at 9.5e-7 and multi-step far sweeps simultaneously).
 Next tool: the same exhaustive store-mask fit that cracked the GAMMALN
 Stirling staging, applied to the NPV+step chain, scored on the ladder
 rows. Fifty-four single-step photographs against a few thousand masks.
+
+## Act VII — the model eats its own tail (and the doctrine wins)
+
+Confession first: Act IV's "one-step FD, h = 1e-6·v, three-digit match"
+was itself an over-fit — of the *small-error plateau*. A single FD step's
+error ratio must grow ~25× across the ladder (the quadratic term never
+sleeps); the data's ratio moves 4.5%. The only composition that kills a
+quadratic is another step: the rungs take **two** steps, and the plateau
+is λ'² — which pins λ' = 8.59e-4 per step, i.e. **h = 0.001, absolute**.
+(0.8593·10⁻³)² = 7.39e-7. The plateau again, to three digits — same
+number, new meaning. Lesson: a perfect fit on a plateau identifies the
+plateau, not the mechanism; only the *curvature* of the error map tells
+one step from two.
+
+Then case B paid out a second time. Its mid-rung ±8s scale exactly like
+f's own cancellation noise — and *no* staging of `1210·v − 1000` could
+reproduce Excel's noise realization. The kernel is not a v-polynomial.
+At which point we finally did what the charter said on day one: identify
+f first. Excel documents IRR's f as `cf0 + NPV(rate, …)` — and worksheet
+NPV answers probes directly, no solver in the way. Ninety-four probes
+later: every single-flow row matches a division chain exactly, and the
+3-flow leader is a **reverse Horner division chain** — `s = (s+c)/w`
+from the last cashflow — at 79/94, fifteen ±1-ULP rows from closure.
+
+The irony is not lost on us: the tool that cracked GAMMALN's over-fit
+(dense probes killing a free-parameter fit) is the same tool that
+corrected our own Act IV. The oracle doesn't care whose hypothesis it
+is.
