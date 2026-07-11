@@ -157,3 +157,22 @@ The irony is not lost on us: the tool that cracked GAMMALN's over-fit
 (dense probes killing a free-parameter fit) is the same tool that
 corrected our own Act IV. The oracle doesn't care whose hypothesis it
 is.
+
+## Act VIII — stuck, so we knocked on the neighbor's door
+
+The NPV residue would not budge: nine kernel forms, sixteen masks each,
+all parked at 106/142. So we took the advice to wander: RATE, the
+sibling solver. Its ladder produced a lambda-plateau of 3.48e-5 — and
+inverting it through the annuity equation's curvature spat out
+h = 0.00099981… The same absolute h = 0.001, the same two-step
+composition, the same 1e-7 stop as IRR. **One shared FD-solver harness
+drives both functions**, each iterating its own f's natural argument.
+
+Then the real prize: RATE's f is the annuity kernel, and worksheet FV
+exposes it directly. Ninety-six probes, one race: **96/96** — plain
+double, binary exponentiation LSB-first, the whole chain stored. After
+weeks of x87 spill-loops, a financial kernel that's just… plain double.
+And a new idea to carry back to the stuck NPV: maybe its per-term
+discount is a plain binexp POWER too.
+
+The neighbor's door had the key all along.
