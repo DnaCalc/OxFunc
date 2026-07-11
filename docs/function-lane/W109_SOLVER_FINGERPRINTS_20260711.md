@@ -43,3 +43,51 @@ Corpora: answers-irr-r0.json (49), answers-rate-r0.json (48).
    RATE f = annuity equation (W108 Phase C characterization exists).
 5. YIELD/ODDFYIELD after RATE/IRR (100-iteration price inversion; forward
    PRICE kernel already aligned).
+
+---
+
+# Round 2 (same day): IRR update rule IDENTIFIED from the one-step error map
+
+Probes: bit-level guess ladders at anchor+-2^j ULP, j=24..40, both cases
+(answers-irr-r1.json, answers-irr-r2.json; 128 more live rows).
+
+## The measurement
+
+For case A (4 cashflows) the one-step error map is PURELY LINEAR and
+sign-preserving over three decades: err_out/err_in = +7.40e-7 constant
+for err_in in [1e-9, 3e-5] (plateau 7.38-7.41e-7, both sides). For case B
+(2 cashflows) the map is EXACTLY ZERO everywhere (every ladder guess ->
+exact root bits).
+
+## The identification
+
+The unique model consistent with both:
+
+- Excel iterates in v = 1/(1+r) (discount-factor space). Case B's NPV is
+  LINEAR in v -> any chord/FD slope is exact -> lambda = 0. Bit-confirmed.
+- The update is forward-difference Newton with RELATIVE step h = 1e-6*v:
+  predicted lambda = (f''_v / 2 f'_v) * 1e-6 * v* = 7.3865e-7 for case A
+  vs measured 7.40e-7 +- 0.02. (Analytic Newton = quadratic map: ruled
+  out; fixed-h FD, secant seed pairs, r-space FD: all ruled out by the
+  case-B zero and/or the sign/linearity of the map.)
+- Publication is r = 1/v - 1 from the final v: predicts output
+  quantization of ~5.86 r-ULP per v-ULP; observed case-B outputs take
+  only {root, root+-8 ULP} from far guesses, and the whole ladder basin
+  collapses to exact root bits.
+- Stop: guess passthrough when computed f rounds to zero (observed at
+  anchor+8 exactly); otherwise |dv|-tolerance around 1e-5 with the final
+  sub-tolerance step still applied (apply-last), then iterate-to-fixpoint
+  behavior for far guesses. Exact tol/cap/order still open.
+
+Python plain-double simulation of this structure already reproduces
+104/177 rows (all fixpoint-attractor rows) with NPV in sequential
+v-accumulation form; the residual far-guess scatter (~1e2 r-ULP) is
+f-evaluation staging noise -> the remaining work is the joint (small)
+race of NPV staging {plain, x87-spill; seq/Horner/pow} x {h sign, tol,
+cap, check order} in the Rust racer with x87 ops. Work-dir scripts:
+irr_schedule_race.py, irr_vspace_race.py.
+
+RATE contrast: no passthrough anywhere (published anchors move by
+50-160 ULP when fed back) -> RATE has a different schedule (mandatory
+second seed / always-step), consistent with the recon root==guess 72-ULP
+witness and the #NUM! divergences.
