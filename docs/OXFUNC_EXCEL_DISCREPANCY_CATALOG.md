@@ -102,12 +102,12 @@ No current open rows.
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
 | G3-01 — BETAINV, CHIDIST, CHIINV, FDIST, FINV, GAMMAINV, HYPGEOMDIST, NEGBINOMDIST, TDIST, TINV (+ CONFIDENCE.T, Z.TEST unprobed) | Distribution scalar numeric drift, currently quantified at `1`-`28` ULP on representative live-Excel witnesses. | NUM-S | M2 | BUG-FUNC-021 / KED-STAT-001 / `oxf-simj` |
-| G3-02 — GAMMA | Negative-non-integer reflection drift; latest representative reprobe records `182` ULP at `GAMMA(-1.00012)`. | NUM-L | M1 | BUG-FUNC-027 C1 |
+| G3-02 — GAMMA (+ GAMMALN substrate) | W109 re-scoping (2026-07-11): the row was under-scoped — a fresh 156-row live sweep shows the POSITIVE side is `0/79` exact (up to `1370` ULP at large x) and negatives reach `810k` ULP; the recon corpus had only probed two negative points. Ruled out: current Lanczos log-domain kernel; `x87-EXP(published GAMMALN)` composition (6/79, errors grow with |lnΓ| — Excel uses a HIGHER-precision internal lgamma than published GAMMALN). Same internal extended-lgamma substrate implicated for COMBIN (G4-04 findings). Identify the extended lgamma algorithm/coefficients first (Phase-5); reflection staging second (trig chain now available as `excel_sin`). | NUM-L | M2 | BUG-FUNC-027 C1 / W109 findings / smart-fuzzer/work/w109/G3-02-gamma |
 | G3-03 — FORECAST, FORECAST.LINEAR, TREND, LINEST, LOGEST | Least-squares regression drift; fresh exact-line FORECAST is `5` ULP and a perturbed case is `2` ULP. | NUM-L | M1 | G8 probe / recon G3-03 |
 | G3-04 — GROWTH | Exponential-regression drift around `11`-`13` ULP on the bounded witnesses. | NUM-L | M1 | recon G3-04 |
 | G3-05 — CHISQ.TEST, CHITEST | Chi-square test-statistic drift around `7`-`8` ULP. | NUM-L | M1 | recon G3-05 |
 | G3-06 — F.TEST, FTEST | F-test statistic drift around `1` ULP. | NUM-S | M1 | recon G3-06 |
-| G3-07 — GAUSS, PHI | Standard-normal `Phi(z)-0.5` / density drift, currently `1`-`2` ULP on stable witnesses. | NUM-S | M1 | recon G3-07 |
+| G3-07 — GAUSS | Standard-normal `Phi(z)-0.5` drift, `2` ULP on the stable witness; needs the erf/CDF substrate (Phase-5 adjacent). PHI is resolved out of this row (W109 2026-07-11: `RN53(RN64(x·x))` -> x87 EXP -> `RN53(RN64(e·RN(1/sqrt(2π))))` with a live-pinned subnormal publication flush; `764/764` answered rows, see the ruled-out ledger and `smart-fuzzer/work/w109/G3-07-phi`). | NUM-S | M1 | recon G3-07 / W109 PHI closure |
 
 ## G4 — Numeric Exactness: Elementary And Trig
 

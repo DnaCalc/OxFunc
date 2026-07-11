@@ -1,7 +1,28 @@
 pub const SQRT_2PI: f64 = 2.506_628_274_631_000_7;
 
+/// `RN(1/sqrt(2π))` — PHI multiplies by this reciprocal constant (the
+/// divide-by-`SQRT_2PI` staging is ruled out; live PHI(0) publishes exactly
+/// these bits).
+const INV_SQRT_2PI: f64 = f64::from_bits(0x3fd9884533d43651);
+
+/// Worksheet `PHI` — bit-exact to 64-bit Excel on `x86_64` (W109, unique
+/// surviving candidate; 723/725 discovery+held-out rows plus the
+/// subnormal-flush band, max ULP 0 after the flush rule):
+///
+/// ```text
+/// sq  = RN53(RN64(x·x))            (x87 double-rounded square)
+/// t   = -(sq/2)                    (exact halving + negation)
+/// e   = EXP(t)                     (the identified x87 fFEXP chain)
+/// v   = RN53(RN64(e · RN(1/sqrt(2π))))
+/// PHI = +0.0 if |v| < DBL_MIN      (live-pinned publication flush;
+///        normal values publish unchanged — boundary probed at bit level)
+/// ```
 pub fn phi_kernel(x: f64) -> f64 {
-    (-0.5 * x * x).exp() / SQRT_2PI
+    use crate::excel_numeric::{excel_exp, excel_x87_mul};
+    let sq = excel_x87_mul(x, x);
+    let e = excel_exp(-(sq / 2.0));
+    let v = excel_x87_mul(e, INV_SQRT_2PI);
+    if v.abs() < f64::MIN_POSITIVE { 0.0 } else { v }
 }
 
 pub fn erf_approx(x: f64) -> f64 {
@@ -18,6 +39,22 @@ pub fn gauss_kernel(x: f64) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// W109 PHI identification pins — live Excel 16.0 build 20131 (unique
+    /// surviving staging; 764/764 answered rows replay via
+    /// `verify_phi_promotion`).
+    #[test]
+    #[cfg(target_arch = "x86_64")]
+    fn phi_matches_live_excel_pinned_witnesses() {
+        // PHI(0) publishes the reciprocal constant bits exactly.
+        assert_eq!(phi_kernel(0.0).to_bits(), 0x3fd9884533d43651);
+        // Subnormal-flush boundary (bit-pinned): x=37.6157 still publishes a
+        // normal value; the next band flushes to +0.
+        let x_norm = 37.6157f64;
+        assert!(phi_kernel(x_norm) >= f64::MIN_POSITIVE);
+        assert_eq!(phi_kernel(37.8511319f64), 0.0);
+        assert_eq!(phi_kernel(39.0), 0.0);
+    }
 
     #[test]
     fn phi_and_gauss_match_excel_probe_lanes() {
