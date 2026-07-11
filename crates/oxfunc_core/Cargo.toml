@@ -8,6 +8,12 @@ license = "MIT"
 name = "oxfunc_core"
 path = "src/lib.rs"
 
+[features]
+# W109 research surface: exposes the raw x87 instruction primitives and the
+# Ext80 extended-precision temporary type (excel_numeric::research) to the
+# calculation-graph search tooling. Never enabled by production consumers.
+research-x87 = []
+
 [dependencies]
 libm = "0.2"
 oxfunc_value_types = { path = "../oxfunc_value_types" }

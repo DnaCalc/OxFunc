@@ -574,11 +574,49 @@ fn irr_kernel(cashflows: &[f64], guess: Option<f64>) -> Result<f64, WorksheetErr
     midpoint_of_local_min_abs_residual_plateau(root, |rate| periodic_npv_with_t0(rate, cashflows))
 }
 
+/// Worksheet `XNPV` — bit-exact to 64-bit Excel on `x86_64` (W109 pilot,
+/// identified by calculation-graph search and validated on 1,650 live-Excel
+/// witnesses, build 20131, max ULP 0):
+///
+/// * guard: `rate <= 0` (including `-0.0`) publishes `#NUM!` — live-Excel
+///   probed; `+1e-300` evaluates;
+/// * `base = RN53(RN64(1 + rate))` — x87 double-rounded add;
+/// * `years = (date - anchor) / 365` — strict binary64 division (proven
+///   observationally equivalent to the double-rounded form over the entire
+///   integer-serial date domain: no delta in `1..2.9M` hits a
+///   double-rounding window);
+/// * `pow = POWER(base, years)` — the FULL worksheet POWER kernel
+///   (`power_kernel`), including the exact-integer binary-exponentiation
+///   publication (integer year counts take that path, not `exp(y·ln x)`);
+/// * `term = RN53(RN64(value / pow))` — x87 double-rounded divide;
+/// * `total = RN53(RN64(total + term))` per step, forward order — the legacy
+///   x87 memory-spill accumulation loop.
+///
+/// The internal solver substrate `xnpv_kernel_raw` (used by XIRR, whose
+/// iterates legitimately go negative) is intentionally NOT this path; its
+/// staging is a separate identification (catalog G6 solver lane).
 pub fn xnpv_kernel(rate: f64, values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
-    if rate < 0.0 {
+    use crate::excel_numeric::{excel_x87_add, excel_x87_div};
+    use crate::functions::power_fn::power_kernel;
+
+    validate_xnpv_inputs(values, dates)?;
+    if !rate.is_finite() || rate <= 0.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    xnpv_kernel_raw(rate, values, dates)
+    let base = excel_x87_add(1.0, rate);
+    let anchor = dates[0];
+    let mut total = 0.0;
+    for (value, date) in values.iter().zip(dates.iter()) {
+        let years = (*date - anchor) as f64 / 365.0;
+        let pow = power_kernel(base, years)?;
+        let term = excel_x87_div(*value, pow);
+        total = excel_x87_add(total, term);
+    }
+    if total.is_finite() {
+        Ok(total)
+    } else {
+        Err(WorksheetErrorCode::Num)
+    }
 }
 
 fn xirr_two_cashflow_root(values: &[f64], dates: &[i64]) -> Result<f64, WorksheetErrorCode> {
@@ -962,48 +1000,115 @@ mod tests {
         assert_close(got, 10.0);
     }
 
-    /// Calculation-path reconnaissance only: do not route production XIRR/XNPV
-    /// through this helper until a broader cancellation/order corpus proves the
-    /// change non-regressing.  The live worksheet decomposition
-    /// `value/POWER(1+rate,years)` matches XNPV exactly on the catalog witness,
-    /// while the current platform-powf path is 16 ULP away.
-    fn xnpv_excel_power_candidate(
-        rate: f64,
-        values: &[f64],
-        dates: &[i64],
-    ) -> Result<f64, WorksheetErrorCode> {
-        let base = 1.0 + rate;
-        let anchor = dates[0];
-        let mut total = 0.0;
-        for (value, date) in values.iter().zip(dates.iter()) {
-            let years = (*date - anchor) as f64 / 365.0;
-            total += *value / power_kernel(base, years)?;
+    /// W109 XNPV identification pins — live Excel 16.0 build 20131 bits.
+    /// Each row exercises one identified staging axis; together they pin the
+    /// full graph: `RN53(RN64(1+rate))` base, full POWER kernel per term
+    /// (integer binexp dispatch included), `RN53(RN64(value/pow))` term, and
+    /// the forward per-step-stored x87 accumulation loop. The broader
+    /// 1,530-row live sweep is replayed by
+    /// `calc_graph_racer verify_xnpv_promotion` over the oracle cache.
+    #[test]
+    fn xnpv_matches_live_excel_pinned_witnesses() {
+        struct Pin {
+            rate_bits: u64,
+            values_bits: &'static [u64],
+            date_serials: &'static [i64],
+            excel_bits: u64,
         }
-        Ok(total)
+        let pins = [
+            // catalog witness (former 16-ULP row G6-11)
+            Pin {
+                rate_bits: 0x3fa999999999999a,
+                values_bits: &[0xc08f400000000000, 0x407f400000000000, 0x4082c00000000000],
+                date_serials: &[43831, 44013, 44562],
+                excel_bits: 0x404010550d1e8460,
+            },
+            // integer-year dispatch witness (killed the fractional-only POWER)
+            Pin {
+                rate_bits: 0x3f3f280c4b1268d3,
+                values_bits: &[
+                    0xc113a0669520ead7,
+                    0xc122a72668355649,
+                    0x41259dd158517e83,
+                    0x4116a564d581cf23,
+                    0x40fd227f6ec7fccc,
+                    0xc12709fd89ae57e6,
+                ],
+                date_serials: &[45964, 46118, 46688, 46875, 47369, 47789],
+                excel_bits: 0xc11dcfd2f902283c,
+            },
+            // 1+rate double-rounding window (killed the strict base add)
+            Pin {
+                rate_bits: 0x3d7b8c800561cf83,
+                values_bits: &[0x0000000000000000, 0x412e848000000000],
+                date_serials: &[40000, 40500],
+                excel_bits: 0x412e847fffffb807,
+            },
+            // value/pow double-rounding window (killed the strict term divide)
+            Pin {
+                rate_bits: 0x3fb1eb851eb851ec,
+                values_bits: &[0x0000000000000000, 0x41354601a948c971],
+                date_serials: &[40000, 40313],
+                excel_bits: 0x41341305e157affe,
+            },
+            // pure-summation probe, all dates equal (killed the strict sum:
+            // the per-step-stored x87 accumulate differs on this window)
+            Pin {
+                rate_bits: 0x3fa999999999999a,
+                values_bits: &[0x413dd9cc1b49078c, 0x3ff68b7b5cb7ff42, 0x3eaa90fad706a60f],
+                date_serials: &[40000, 40000, 40000],
+                excel_bits: 0x413dd9cd8400caa0,
+            },
+            // long multi-flow accumulation witness
+            Pin {
+                rate_bits: 0x3ff6a37ea9daf7d2,
+                values_bits: &[
+                    0xc0f0842896944e0a,
+                    0x412d422be0336426,
+                    0xc118bf10872fc5f4,
+                    0x412e059bbb0021b8,
+                    0xc12a402e6b32bad4,
+                    0x40fc28b53eca41ee,
+                    0x41178fab6fd23b36,
+                    0x412c00559d46d1da,
+                ],
+                date_serials: &[31100, 31238, 31292, 31940, 32638, 33302, 33458, 34117],
+                excel_bits: 0x411d00ee1d249213,
+            },
+            // tiny positive rate is accepted (guard boundary)
+            Pin {
+                rate_bits: 0x01a56e1fc2f8f359, // 1e-300
+                values_bits: &[0xc08f400000000000, 0x4091300000000000],
+                date_serials: &[40000, 40200],
+                excel_bits: 0x4059000000000000, // exactly 100.0
+            },
+        ];
+        for (i, p) in pins.iter().enumerate() {
+            let values: Vec<f64> = p.values_bits.iter().map(|b| f64::from_bits(*b)).collect();
+            let got = xnpv_kernel(f64::from_bits(p.rate_bits), &values, p.date_serials)
+                .unwrap_or_else(|e| panic!("pin {i}: unexpected error {e:?}"));
+            assert_eq!(
+                got.to_bits(),
+                p.excel_bits,
+                "pin {i}: got 0x{:016x} want 0x{:016x}",
+                got.to_bits(),
+                p.excel_bits
+            );
+        }
     }
 
+    /// W109 guard identification: live Excel publishes `#NUM!` for every
+    /// `rate <= 0` — including exact zero and negative zero — while
+    /// `+1e-300` evaluates (covered by the pinned-witness test above).
     #[test]
-    fn xnpv_excel_power_candidate_matches_live_decomposition_witness() {
-        let values = [-1000.0, 500.0, 600.0];
-        let dates = [43831, 44013, 44562];
-        let current = xnpv_kernel(0.05, &values, &dates).unwrap();
-        let candidate = xnpv_excel_power_candidate(0.05, &values, &dates).unwrap();
-        let excel = f64::from_bits(0x4040_1055_0d1e_8460);
-
-        assert_eq!(candidate.to_bits(), excel.to_bits());
-        assert_eq!(current.to_bits(), 0x4040_1055_0d1e_8470);
-    }
-
-    #[test]
-    fn xnpv_rejects_negative_rate_on_surface() {
-        assert_eq!(
-            xnpv_kernel(
-                -0.1,
-                &[206_101_714.849_377, -156_650_972.542_65],
-                &[36584, 36615]
-            ),
-            Err(WorksheetErrorCode::Num)
-        );
+    fn xnpv_rejects_zero_and_negative_rates_on_surface() {
+        for rate in [-0.1, 0.0, -0.0, -1.0e-9, -1.0e-300, -1.0, -1.5] {
+            assert_eq!(
+                xnpv_kernel(rate, &[-1000.0, 1100.0], &[40000, 40200]),
+                Err(WorksheetErrorCode::Num),
+                "rate {rate}"
+            );
+        }
     }
 
     #[test]

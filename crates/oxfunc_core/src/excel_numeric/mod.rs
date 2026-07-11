@@ -65,6 +65,12 @@ use tables::*;
 #[cfg(target_arch = "x86_64")]
 mod x87;
 
+/// W109 research surface: raw x87 instruction primitives + `Ext80` extended
+/// temporaries for the calculation-graph search tooling. Feature-gated and
+/// `x86_64`-only; production kernels never go through here.
+#[cfg(all(feature = "research-x87", target_arch = "x86_64"))]
+pub mod research;
+
 const EXP_TABLE_BITS: u32 = 7;
 const N_EXP: u64 = 1 << EXP_TABLE_BITS; // 128
 const LOG_TABLE_BITS: u32 = 7;
@@ -299,6 +305,34 @@ pub(crate) fn excel_pow_positive(base: f64, exp: f64) -> f64 {
     #[cfg(not(target_arch = "x86_64"))]
     {
         base.powf(exp)
+    }
+}
+
+/// `RN53(RN64(a + b))` — the x87 double-rounded sum of Excel's legacy
+/// x87-compiled function bodies (W109: XNPV's `1 + rate` and running-total
+/// accumulation). Bit-exact to 64-bit Excel on `x86_64`; plain `a + b`
+/// elsewhere (single-rounded — the documented portable fallback).
+pub(crate) fn excel_x87_add(a: f64, b: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::add(a, b)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        a + b
+    }
+}
+
+/// `RN53(RN64(a / b))` — the x87 double-rounded quotient (W109: XNPV's
+/// per-term `value / pow`). Bit-exact to 64-bit Excel on `x86_64`.
+pub(crate) fn excel_x87_div(a: f64, b: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::div(a, b)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        a / b
     }
 }
 

@@ -162,6 +162,60 @@ pub(super) fn mul(a: f64, b: f64) -> f64 {
     result
 }
 
+/// `RN53(RN64(a + b))` — one x87 `FADD` at PC=64 then a `binary64` store: the
+/// double-rounded sum. Excel's legacy x87-compiled function bodies produce
+/// this for every `t = a + b;` with `t` spilled to memory (W109: XNPV's
+/// `1 + rate` and its running `total += term` accumulate this way).
+pub(super) fn add(a: f64, b: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: balanced x87 stack (one push; `fadd` folds in memory operand,
+    // `fstp` pops), pointer I/O only, control word saved and restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{a}]",     // st0 = a
+            "fadd qword ptr [{b}]",    // st0 = RN64(a+b)
+            "fstp qword ptr [{res}]",  // RN53 store
+            "fldcw word ptr [{save}]",
+            a = in(reg) &a,
+            b = in(reg) &b,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+        );
+    }
+    result
+}
+
+/// `RN53(RN64(a / b))` — one x87 `FDIV` at PC=64 then a `binary64` store: the
+/// double-rounded quotient (W109: XNPV's per-term `value / pow`).
+pub(super) fn div(a: f64, b: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: balanced x87 stack (one push; `fdiv` folds in memory operand,
+    // `fstp` pops), pointer I/O only, control word saved and restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{a}]",     // st0 = a
+            "fdiv qword ptr [{b}]",    // st0 = RN64(a/b)
+            "fstp qword ptr [{res}]",  // RN53 store
+            "fldcw word ptr [{save}]",
+            a = in(reg) &a,
+            b = in(reg) &b,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+        );
+    }
+    result
+}
+
 /// `RN53(RN64(1.0 / x))` — one x87 `FDIV` at PC=64 then a `binary64` store: the
 /// double-rounded reciprocal Excel uses to stage `POWER(x, y)` for `y < 0`
 /// (compute the positive power, store it, then reciprocate).
@@ -185,6 +239,392 @@ pub(super) fn recip(x: f64) -> f64 {
         );
     }
     result
+}
+
+// ============================================================================
+// W109 research primitives (`research-x87` feature)
+//
+// Raw x87 instruction wrappers for the calculation-graph search tooling. The
+// production Excel-parity chains above stay untouched; everything below is a
+// composable instruction set the racer assembles into *candidate* graphs.
+//
+// The core type is [`raw::Ext80`]: an 80-bit extended-precision temporary held
+// in memory via `fld tbyte`/`fstp tbyte`, which preserve the full register
+// image (no rounding). Chaining ops through `Ext80` is therefore bit-identical
+// to keeping the value on the x87 register stack, so a candidate graph can mix
+// "x87-continuous" stretches (Ext80 all the way) with explicit `binary64`
+// store barriers (`ext_to_f64` then `ext_from_f64`) at any node boundary —
+// exactly the store-mask search axis. Every arithmetic op takes the control
+// word explicitly so precision-control hypotheses (PC=64/53/24) are searchable
+// too.
+// ============================================================================
+#[cfg(feature = "research-x87")]
+pub(super) mod raw {
+    use core::arch::asm;
+
+    /// PC=64, round-to-nearest-even, all exceptions masked (`87disp.asm` /
+    /// Excel's transcendental control word).
+    pub const CW_PC64_RN: u16 = 0x133F;
+    /// PC=53 (double), round-to-nearest-even, all exceptions masked.
+    pub const CW_PC53_RN: u16 = 0x123F;
+    /// PC=24 (single), round-to-nearest-even, all exceptions masked.
+    pub const CW_PC24_RN: u16 = 0x103F;
+
+    /// An x87 80-bit extended-precision value parked in memory. `fld tbyte` /
+    /// `fstp tbyte` move the full register image with no rounding, so this is
+    /// a faithful stand-in for "the value stayed on the x87 stack".
+    #[derive(Clone, Copy, PartialEq, Eq)]
+    pub struct Ext80(pub [u8; 10]);
+
+    impl core::fmt::Debug for Ext80 {
+        fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+            let mut hex = String::with_capacity(20);
+            for b in self.0.iter().rev() {
+                hex.push_str(&format!("{b:02x}"));
+            }
+            write!(f, "Ext80(0x{hex})")
+        }
+    }
+
+    /// `f64 -> Ext80` — exact (every binary64 is representable in extended).
+    pub fn ext_from_f64(x: f64) -> Ext80 {
+        let mut out = Ext80([0u8; 10]);
+        // SAFETY: one push, one pop; pointer I/O only. No CW dependence: the
+        // widening load is exact under every rounding/precision mode.
+        unsafe {
+            asm!(
+                "fld qword ptr [{x}]",
+                "fstp tbyte ptr [{out}]",
+                x = in(reg) &x,
+                out = in(reg) out.0.as_mut_ptr(),
+            );
+        }
+        out
+    }
+
+    /// `Ext80 -> f64` — the explicit `binary64` store barrier (`RN53` under the
+    /// given control word's rounding mode; precision control is irrelevant to
+    /// stores).
+    pub fn ext_to_f64(x: &Ext80, cw: u16) -> f64 {
+        let mut result: f64 = 0.0;
+        let mut cw_save: u16 = 0;
+        // SAFETY: one push, one pop; pointer I/O only; CW saved and restored.
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{x}]",
+                "fstp qword ptr [{res}]",
+                x = in(reg) x.0.as_ptr(),
+                res = in(reg) &mut result,
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+            );
+        }
+        result
+    }
+
+    macro_rules! ext_binop {
+        ($(#[$m:meta])* $name:ident, $inst:literal) => {
+            $(#[$m])*
+            pub fn $name(a: &Ext80, b: &Ext80, cw: u16) -> Ext80 {
+                let mut out = Ext80([0u8; 10]);
+                let mut cw_save: u16 = 0;
+                // SAFETY: two pushes, both popped ($inst pops one, the tbyte
+                // store pops the other); pointer I/O only; CW saved/restored.
+                unsafe {
+                    asm!(
+                        "fnstcw word ptr [{save}]",
+                        "fldcw word ptr [{cw}]",
+                        "fld tbyte ptr [{a}]",     // st0 = a
+                        "fld tbyte ptr [{b}]",     // st0 = b, st1 = a
+                        $inst,                     // st0 = a <op> b
+                        "fstp tbyte ptr [{out}]",
+                        "fldcw word ptr [{save}]",
+                        a = in(reg) a.0.as_ptr(),
+                        b = in(reg) b.0.as_ptr(),
+                        out = in(reg) out.0.as_mut_ptr(),
+                        cw = in(reg) &cw,
+                        save = in(reg) &mut cw_save,
+                    );
+                }
+                out
+            }
+        };
+    }
+
+    ext_binop!(
+        /// `a + b` rounded per the control word's precision/rounding fields.
+        ext_add, "faddp st(1), st"
+    );
+    ext_binop!(
+        /// `a - b`.
+        ext_sub, "fsubp st(1), st"
+    );
+    ext_binop!(
+        /// `a * b`.
+        ext_mul, "fmulp st(1), st"
+    );
+    ext_binop!(
+        /// `a / b`.
+        ext_div, "fdivp st(1), st"
+    );
+
+    macro_rules! ext_unop {
+        ($(#[$m:meta])* $name:ident, $inst:literal) => {
+            $(#[$m])*
+            pub fn $name(x: &Ext80, cw: u16) -> Ext80 {
+                let mut out = Ext80([0u8; 10]);
+                let mut cw_save: u16 = 0;
+                // SAFETY: one push, one pop; pointer I/O only; CW saved/restored.
+                unsafe {
+                    asm!(
+                        "fnstcw word ptr [{save}]",
+                        "fldcw word ptr [{cw}]",
+                        "fld tbyte ptr [{x}]",
+                        $inst,
+                        "fstp tbyte ptr [{out}]",
+                        "fldcw word ptr [{save}]",
+                        x = in(reg) x.0.as_ptr(),
+                        out = in(reg) out.0.as_mut_ptr(),
+                        cw = in(reg) &cw,
+                        save = in(reg) &mut cw_save,
+                    );
+                }
+                out
+            }
+        };
+    }
+
+    ext_unop!(
+        /// `|x|`.
+        ext_abs, "fabs"
+    );
+    ext_unop!(
+        /// `-x`.
+        ext_chs, "fchs"
+    );
+    ext_unop!(
+        /// `sqrt(x)` (x87 `FSQRT`, correctly rounded to the CW precision).
+        ext_sqrt, "fsqrt"
+    );
+    ext_unop!(
+        /// `rint(x)` per the CW rounding mode (x87 `FRNDINT`).
+        ext_rndint, "frndint"
+    );
+    ext_unop!(
+        /// `sin(x)` — x87 `FSIN` microcode, hardware 66-bit-π internal
+        /// reduction. Caller must keep `|x| < 2^63` (C2 no-op otherwise).
+        ext_sin, "fsin"
+    );
+    ext_unop!(
+        /// `cos(x)` — x87 `FCOS`. Same `|x| < 2^63` caveat as [`ext_sin`].
+        ext_cos, "fcos"
+    );
+    ext_unop!(
+        /// `2^x - 1` — x87 `F2XM1`; requires `|x| <= 1` (else undefined).
+        ext_f2xm1, "f2xm1"
+    );
+
+    /// `tan(x)` — x87 `FPTAN` microcode (pushes 1.0, which is popped here).
+    /// Caller must keep `|x| < 2^63`.
+    pub fn ext_tan(x: &Ext80, cw: u16) -> Ext80 {
+        let mut out = Ext80([0u8; 10]);
+        let mut cw_save: u16 = 0;
+        // SAFETY: fptan pushes a 1.0 above the result; both are popped
+        // (fstp st(0) drops the 1.0, the tbyte store pops the tangent).
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{x}]",     // st0 = x
+                "fptan",                   // st0 = 1.0, st1 = tan(x)
+                "fstp st(0)",              // drop the pushed 1.0
+                "fstp tbyte ptr [{out}]",
+                "fldcw word ptr [{save}]",
+                x = in(reg) x.0.as_ptr(),
+                out = in(reg) out.0.as_mut_ptr(),
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+            );
+        }
+        out
+    }
+
+    /// `y * log2(x)` — x87 `FYL2X` microcode. `x` must be finite and `> 0`.
+    pub fn ext_fyl2x(y: &Ext80, x: &Ext80, cw: u16) -> Ext80 {
+        let mut out = Ext80([0u8; 10]);
+        let mut cw_save: u16 = 0;
+        // SAFETY: two pushes; fyl2x pops one, the tbyte store pops the other.
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{y}]",     // st0 = y
+                "fld tbyte ptr [{x}]",     // st0 = x, st1 = y
+                "fyl2x",                   // st0 = y*log2(x), pop
+                "fstp tbyte ptr [{out}]",
+                "fldcw word ptr [{save}]",
+                y = in(reg) y.0.as_ptr(),
+                x = in(reg) x.0.as_ptr(),
+                out = in(reg) out.0.as_mut_ptr(),
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+            );
+        }
+        out
+    }
+
+    /// `y * log2(1 + x)` — x87 `FYL2XP1` microcode; requires
+    /// `|x| < 1 - sqrt(2)/2` (else undefined).
+    pub fn ext_fyl2xp1(y: &Ext80, x: &Ext80, cw: u16) -> Ext80 {
+        let mut out = Ext80([0u8; 10]);
+        let mut cw_save: u16 = 0;
+        // SAFETY: as in ext_fyl2x.
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{y}]",
+                "fld tbyte ptr [{x}]",
+                "fyl2xp1",
+                "fstp tbyte ptr [{out}]",
+                "fldcw word ptr [{save}]",
+                y = in(reg) y.0.as_ptr(),
+                x = in(reg) x.0.as_ptr(),
+                out = in(reg) out.0.as_mut_ptr(),
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+            );
+        }
+        out
+    }
+
+    /// `x * 2^trunc(k)` — x87 `FSCALE`.
+    pub fn ext_scale(x: &Ext80, k: &Ext80, cw: u16) -> Ext80 {
+        let mut out = Ext80([0u8; 10]);
+        let mut cw_save: u16 = 0;
+        // SAFETY: two pushes; fscale leaves both, the store pops st0 and the
+        // trailing fstp drops k.
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{k}]",     // st0 = k
+                "fld tbyte ptr [{x}]",     // st0 = x, st1 = k
+                "fscale",                  // st0 = x*2^trunc(k), st1 = k
+                "fstp tbyte ptr [{out}]",
+                "fstp st(0)",              // drop k
+                "fldcw word ptr [{save}]",
+                x = in(reg) x.0.as_ptr(),
+                k = in(reg) k.0.as_ptr(),
+                out = in(reg) out.0.as_mut_ptr(),
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+            );
+        }
+        out
+    }
+
+    macro_rules! ext_prem {
+        ($(#[$m:meta])* $name:ident, $inst:literal) => {
+            $(#[$m])*
+            pub fn $name(x: &Ext80, modulus: &Ext80, cw: u16) -> Ext80 {
+                let mut out = Ext80([0u8; 10]);
+                let mut cw_save: u16 = 0;
+                // SAFETY: two pushes, both popped; the reduction loop repeats
+                // the instruction until status C2 clears (complete reduction),
+                // as the ISA requires for widely separated exponents. Clobbers
+                // ax (fnstsw) and flags (test).
+                unsafe {
+                    asm!(
+                        "fnstcw word ptr [{save}]",
+                        "fldcw word ptr [{cw}]",
+                        "fld tbyte ptr [{m}]",     // st0 = modulus
+                        "fld tbyte ptr [{x}]",     // st0 = x, st1 = modulus
+                        "2:",
+                        $inst,                     // st0 = partial remainder
+                        "fnstsw ax",
+                        "test ah, 4",              // C2 (status bit 10) set -> incomplete
+                        "jnz 2b",
+                        "fstp tbyte ptr [{out}]",
+                        "fstp st(0)",              // drop modulus
+                        "fldcw word ptr [{save}]",
+                        x = in(reg) x.0.as_ptr(),
+                        m = in(reg) modulus.0.as_ptr(),
+                        out = in(reg) out.0.as_mut_ptr(),
+                        cw = in(reg) &cw,
+                        save = in(reg) &mut cw_save,
+                        out("ax") _,
+                    );
+                }
+                out
+            }
+        };
+    }
+
+    ext_prem!(
+        /// Truncating partial remainder `x rem_trunc modulus` — x87 `FPREM`
+        /// (8087-compatible, quotient toward zero), iterated to completion.
+        ext_prem, "fprem"
+    );
+    ext_prem!(
+        /// IEEE remainder `x rem_nearest modulus` — x87 `FPREM1` (quotient
+        /// rounded to nearest-even), iterated to completion.
+        ext_prem1, "fprem1"
+    );
+
+    macro_rules! ext_const {
+        ($(#[$m:meta])* $name:ident, $inst:literal) => {
+            $(#[$m])*
+            pub fn $name() -> Ext80 {
+                let mut out = Ext80([0u8; 10]);
+                let mut cw_save: u16 = 0;
+                let cw: u16 = CW_PC64_RN;
+                // SAFETY: one push, one pop; CW pinned to PC=64/RN so the ROM
+                // constant rounds exactly as in Excel's chains.
+                unsafe {
+                    asm!(
+                        "fnstcw word ptr [{save}]",
+                        "fldcw word ptr [{cw}]",
+                        $inst,
+                        "fstp tbyte ptr [{out}]",
+                        "fldcw word ptr [{save}]",
+                        out = in(reg) out.0.as_mut_ptr(),
+                        cw = in(reg) &cw,
+                        save = in(reg) &mut cw_save,
+                    );
+                }
+                out
+            }
+        };
+    }
+
+    ext_const!(
+        /// π as the x87 ROM constant (`FLDPI`, 66-bit source rounded to the
+        /// 64-bit significand under RN) — the internal-reduction π candidate.
+        ext_pi, "fldpi"
+    );
+    ext_const!(
+        /// `log2(e)` ROM constant (`FLDL2E`).
+        ext_l2e, "fldl2e"
+    );
+    ext_const!(
+        /// `log2(10)` ROM constant (`FLDL2T`).
+        ext_l2t, "fldl2t"
+    );
+    ext_const!(
+        /// `ln 2` ROM constant (`FLDLN2`).
+        ext_ln2, "fldln2"
+    );
+    ext_const!(
+        /// `log10(2)` ROM constant (`FLDLG2`).
+        ext_lg2, "fldlg2"
+    );
+    ext_const!(
+        /// `1.0` (`FLD1`).
+        ext_one, "fld1"
+    );
 }
 
 #[cfg(test)]

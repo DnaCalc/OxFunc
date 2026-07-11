@@ -1,9 +1,11 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-07-10` (live Excel build `20131`; stale YIELDDISC row removed;
-MMULT/MINVERSE `1x1` publication observations moved to Category 1; TBILLYIELD
-association repaired and signed off `2156/2156`)
+Last reconciled: `2026-07-11` (live Excel build `20131`; XNPV `G6-11` identified
+by the W109 calculation-graph search, repaired, and signed off `1530/1530`
+numeric + `175/175` error rows; previous reconcile 2026-07-10: stale YIELDDISC
+row removed; MMULT/MINVERSE `1x1` publication observations moved to Category 1;
+TBILLYIELD association repaired and signed off `2156/2156`)
 Last history cleanup: `2026-06-26`
 
 ## Purpose
@@ -47,7 +49,7 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `23`
+Open Category-2 rows: `22`
 
 | Group | Current rows |
 |-------|--------------|
@@ -56,7 +58,7 @@ Open Category-2 rows: `23`
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 5 |
 | G5 matrix numeric/shape | 1 |
-| G6 financial exactness/solver | 10 |
+| G6 financial exactness/solver | 9 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
@@ -130,7 +132,7 @@ They are now explicit `publication_shape` rows `CSC-0024`/`CSC-0025` under
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G6-01 — PMT, PPMT (IPMT, CUMPRINC/CUMIPMT adjacent) | Annuity publication exactness drift. W108 Phase E supersedes the earlier forward-form conclusion: Excel uses the discount arrangement already present in OxFunc, `em=expm1(-n*log1p(r)); v=1+em; pmt=(pv+fv*v)*r/em`. The best tested historical Kahan/x87 helper candidate scores `2285/4040` exact (`56.6%`) and `92.9%` within `1` ULP on the adversarial PMT corpus; the `553`-row `n=1` isolation lane localizes its remaining error to the final rounding of `em`. The fresh mortgage PMT control is exact while first-period PPMT is `1` ULP, sharpening the adjacent recurrence/publication lane. Row STAYS OPEN. | NUM-L→NUM-S | M2 | BUG-FUNC-015 / KED-FIN-001 / W108 / recon G6-01 |
+| G6-01 — PMT, PPMT (IPMT, CUMPRINC/CUMIPMT adjacent) | Annuity publication exactness drift. W108 Phase E supersedes the earlier forward-form conclusion: Excel uses the discount arrangement already present in OxFunc, `em=expm1(-n*log1p(r)); v=1+em; pmt=(pv+fv*v)*r/em`. The best tested historical Kahan/x87 helper candidate scores `2285/4040` exact (`56.6%`) and `92.9%` within `1` ULP on the adversarial PMT corpus; the `553`-row `n=1` isolation lane localizes its remaining error to the final rounding of `em`. The fresh mortgage PMT control is exact while first-period PPMT is `1` ULP, sharpening the adjacent recurrence/publication lane. W109 replay (2026-07-11): the full `5,154`-row Phase-E live corpus through current OxFunc scores `3117` exact, `1318` at `1` ULP, `542` at `2-16`, `177` above — PMT lanes are dominated by `<=4` ULP publication drift while IPMT/PPMT/CUM schedule rows reach catastrophic drift, including sign-of-zero/branch rows (`IPMT-139` publishes `-0` vs a finite Excel value; `ISO-EM-T0-109/122` publish tiny nonzero vs Excel exact `0`). Rollup: `smart-fuzzer/runs/w109-phase-e-replay/rollup.json`. Row STAYS OPEN. | NUM-L→NUM-S | M2 | BUG-FUNC-015 / KED-FIN-001 / W108 / recon G6-01 / W109 replay |
 | G6-02 — ACCRINT | Residual `1` ULP on the now-pinned `us30360` triple-edge witness: issue `43565`, first interest `43647`, settlement `43905`, rate `0.05`, par `1000`, frequency `2`, basis `0`. | NUM-S | M1 | BUG-FUNC-030 / recon G6-02 |
 | G6-03 — YIELD | Solver publication drift: `19` ULP on the catalog witness and `6` ULP even on the par-price control. | NUM-L | M2 | BUG-FUNC-031 / recon G6-03 |
 | G6-04 — ODDFYIELD | Solver drift around `3e5` ULP after the forward price path is aligned; two fresh witnesses are `307444`-`311909` ULP. | NUM-L | M1 | BUG-FUNC-032 / recon G6-04 |
@@ -139,7 +141,16 @@ They are now explicit `publication_shape` rows `CSC-0024`/`CSC-0025` under
 | G6-07 — CUMPRINC | The full-schedule control is exact; the half-schedule witness is `1` ULP, localizing the current evidence to boundary-sensitive accumulation. | NUM-S | M1 | recon G6-07 |
 | G6-08 — NPER | Period-count drift `1` ULP on `NPER-0000` (`0x405a1d41fa9d1c49` local vs Excel `...4a`); the control witness is exact. | NUM-S | M1 | in-crate `nper_exactness_audit` / W108 / recon G6-08 |
 | G6-09 — YIELDMAT | Yield-at-maturity drift is `1` ULP for basis 1 and `2` ULP for the fresh basis-0 control. | NUM-S | M1 | recon G6-09 |
-| G6-11 — XNPV | The fractional-year catalog witness is `16` ULP while a two-flow exact-year control is bit-exact, pointing to POWER/transcendental and summation staging rather than basic date admission. | NUM-L | M1 | `oxf-jbi3` / W090 §4.3 / recon G6-11 |
+
+The former `G6-11` XNPV row is signed off and removed (2026-07-11). The W109
+calculation-graph search identified the full staging — `RN53(RN64(1+rate))`
+base, the full worksheet POWER kernel per term (integer binexp dispatch
+included), `RN53(RN64(value/pow))` term, forward per-step-stored x87
+accumulation — plus a previously unknown guard (`rate <= 0`, including `-0.0`,
+publishes `#NUM!`; OxFunc formerly accepted `(-1, 0]`). Validated
+`1530/1530` numeric + `175/175` error rows on live build `20131`, including
+held-out and metamorphic sweeps. See
+[`W109_XNPV_IDENTIFICATION_20260711.md`](function-lane/W109_XNPV_IDENTIFICATION_20260711.md).
 
 The former `G6-10` TBILLYIELD row is signed off and removed. A `2,156`-case
 settlement × duration × price sweep first reproduced `308` one-ULP failures,
