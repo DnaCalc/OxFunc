@@ -91,3 +91,31 @@ RATE contrast: no passthrough anywhere (published anchors move by
 50-160 ULP when fed back) -> RATE has a different schedule (mandatory
 second seed / always-step), consistent with the recon root==guess 72-ULP
 witness and the #NUM! divergences.
+
+## Round 3: expanded staging race + miss anatomy (same day)
+
+Extended check_irr_schedule.rs axes: dv association {f0*h/den, (f0/den)*h,
+fused update}, staged v-update / v+h / publication association
+{1/v-1, (1-v)/v}. Winner unchanged at 112/177
+(spill/horner, h=1e-6*v, tol=1e-7, apply-last, dv=f0*h/den, pub=1/v-1).
+
+Miss anatomy (the useful part):
+- ladder-B 70/72 (misses only the two 2-cycle quirk rows, -8 ULP);
+- ladder-A 25/54, misses almost all exactly +-8 r-ULP = ~1.35 v-ULP;
+- the j~40 rungs: Excel stops after ONE step where tol=1e-7 takes two
+  -> the true stop rule is still not a plain |dv| threshold (no single
+  tol explains one-step-at-9.5e-7 AND multi-step far sweeps; candidate
+  forms to test: |dv| vs h comparison, |f|-based with staging-true f,
+  fixed-step-count-after-bracketing);
+- sweep-A 3/24: far trajectories amplify any staging mismatch
+  chaotically; they close only after the kernel is bit-exact.
+
+Diagnosis of the +-8 scatter: den = f1 - f0 is a catastrophic
+cancellation of two ~O(0.001) values carrying ~4.4e-13 absolute NPV
+noise -> ~2.3e-10 relative error in dv -> ~1.5 v-ULP in the update ->
++-8 r-ULP after publication. So the remaining unknown is the exact NPV
+evaluation chain (association/order variants beyond seq/horner, the
+v+h formation, and h = v*1e-6 vs v/1e6), NOT the schedule skeleton.
+Next: enumerate NPV forms against the ladder-A one-step rows alone
+(they isolate a single FD step), then revisit the stop rule with the
+winning kernel.
