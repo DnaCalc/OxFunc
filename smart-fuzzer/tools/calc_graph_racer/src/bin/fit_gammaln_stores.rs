@@ -1,10 +1,17 @@
 //! W109 Phase-5: exhaustive store-mask fit of Cephes lgam against the 93-row
-//! published-GAMMALN corpus. Eight statement-boundary toggles (bit=1 -> the
+//! published-GAMMALN corpus. Thirteen staging toggles (bit=1 -> the
 //! intermediate is STORED to binary64; bit=0 -> it stays extended):
-//!   b0 z-loop steps        b1 ln(z) result        b2 Horner steps (B/C/A)
-//!   b3 rational q value    b4 (small) final sum is always stored (return)
-//!   b4 Stirling q0         b5 Stirling p=1/x^2    b6 Stirling correction t
-//!   b7 ln(x) result (Stirling)
+//!
+//! Small path (x < 13):
+//!   b0  z-loop steps            b1  ln(z) INPUT (CRT call argument)
+//!   b2  ln(z) result            b3  B/C Horner steps
+//!   b4  rational q value        b5  q intermediate (x*num before /den)
+//!
+//! Stirling path (x >= 13; ln(x) input is already a stored double):
+//!   b6  ln(x) result            b7  q0 statement
+//!   b8  q0 per-op intermediates b9  p = 1/x^2
+//!   b10 A-poly / >=1000 t       b11 t/x before the final add
+//!   b12 Horner steps of the A polynomial
 
 use calc_graph_racer::eval::parse_bits_hex;
 use calc_graph_racer::score::{WitnessArg, WitnessSet, ulp_distance};
@@ -65,9 +72,12 @@ impl V {
     fn div(self, o: V) -> V {
         V(rx::ext_div(&self.0, &o.0, CW))
     }
-    fn ln(self, stored: bool) -> V {
-        // x87 fldln2+fyl2x; `stored` models the CRT double return.
-        V(rx::ext_fyl2x(&rx::ext_ln2(), &self.0, CW)).store(stored)
+    fn ln(self, input_stored: bool, output_stored: bool) -> V {
+        // x87 fldln2+fyl2x. `input_stored` models a CRT log() call taking a
+        // stored-double argument (fld qword); `output_stored` models the
+        // caller spilling the ST(0) return to a double variable.
+        let arg = self.store(input_stored);
+        V(rx::ext_fyl2x(&rx::ext_ln2(), &arg.0, CW)).store(output_stored)
     }
 }
 
@@ -104,38 +114,42 @@ fn lgam(x0: f64, m: u32) -> f64 {
         }
         let z = V(rx::ext_abs(&z.0, CW));
         if u == 2.0 {
-            return z.ln(true).f();
+            return z.ln(bit(1), true).f();
         }
         let x = x0 + (p - 2.0);
         let xv = V::new(x);
-        let num = polevl(xv, &B, bit(2));
-        let den = p1evl(xv, &C, bit(2));
-        let q = xv.mul(num).div(den).store(bit(3));
-        return z.ln(bit(1)).add(q).f();
+        let num = polevl(xv, &B, bit(3));
+        let den = p1evl(xv, &C, bit(3));
+        let q = xv.mul(num).store(bit(5)).div(den).store(bit(4));
+        return z.ln(bit(1), bit(2)).add(q).f();
     }
     let xv = V::new(x0);
-    let lnx = xv.ln(bit(7));
+    let lnx = xv.ln(false, bit(6)); // input is already a stored double
     let q0 = xv
         .sub(V::new(0.5))
+        .store(bit(8))
         .mul(lnx)
+        .store(bit(8))
         .sub(xv)
+        .store(bit(8))
         .add(V::new(LS2PI))
-        .store(bit(4));
+        .store(bit(7));
     if x0 > 1.0e8 {
         return q0.f();
     }
-    let p = V::new(1.0).div(xv.mul(xv)).store(bit(5));
+    let p = V::new(1.0).div(xv.mul(xv)).store(bit(9));
     let t = if x0 >= 1000.0 {
         V::new(7.9365079365079365079365e-4)
             .mul(p)
             .sub(V::new(2.7777777777777777777778e-3))
+            .store(bit(12))
             .mul(p)
             .add(V::new(0.0833333333333333333333))
-            .store(bit(6))
+            .store(bit(10))
     } else {
-        polevl(p, &A, bit(2)).store(bit(6))
+        polevl(p, &A, bit(12)).store(bit(10))
     };
-    q0.add(t.div(xv)).f()
+    q0.add(t.div(xv).store(bit(11))).f()
 }
 
 fn main() {
@@ -155,7 +169,7 @@ fn main() {
         }
     }
     let mut best: Vec<(u32, u32, u64)> = Vec::new(); // (mask, exact, max_ulp)
-    for m in 0u32..256 {
+    for m in 0u32..(1 << 13) {
         let (mut exact, mut max_ulp) = (0u32, 0u64);
         for &(x, want) in &rows {
             let v = lgam(x, m);
@@ -168,7 +182,32 @@ fn main() {
         best.push((m, exact, max_ulp));
     }
     best.sort_by(|a, b| b.1.cmp(&a.1).then(a.2.cmp(&b.2)));
-    for (m, exact, max_ulp) in best.iter().take(10) {
-        println!("mask {m:08b}: {exact}/{} exact, max_ulp {max_ulp}", rows.len());
+    for (m, exact, max_ulp) in best.iter().take(12) {
+        println!("mask {m:013b}: {exact}/{} exact, max_ulp {max_ulp}", rows.len());
     }
+    // Per-path breakdown + failing rows for the winner.
+    let (m, _, _) = best[0];
+    let (mut s_ex, mut s_n, mut l_ex, mut l_n) = (0u32, 0u32, 0u32, 0u32);
+    println!("-- winner mask {m:013b} failures --");
+    for &(x, want) in &rows {
+        let v = lgam(x, m);
+        let (ex, n) = if x < 13.0 {
+            (&mut s_ex, &mut s_n)
+        } else {
+            (&mut l_ex, &mut l_n)
+        };
+        *n += 1;
+        if v.to_bits() == want.to_bits() {
+            *ex += 1;
+        } else {
+            println!(
+                "  x={x:.17e} ({:016x}) got {:016x} want {:016x} ulp {}",
+                x.to_bits(),
+                v.to_bits(),
+                want.to_bits(),
+                ulp_distance(v, want).unwrap_or(u64::MAX)
+            );
+        }
+    }
+    println!("winner small: {s_ex}/{s_n}  stirling: {l_ex}/{l_n}");
 }
