@@ -102,11 +102,13 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
 }
 
 fn main() {
+    let mut obs: Vec<(f64, Vec<f64>, u64)> = Vec::new();
+    for file in ["../../work/w109/G6-solvers/answers-npv-r0.json",
+                 "../../work/w109/G6-solvers/answers-npv-r1.json"] {
     let ws: WitnessSet = serde_json::from_str(
-        &std::fs::read_to_string("../../work/w109/G6-solvers/answers-npv-r0.json").expect("read"),
+        &std::fs::read_to_string(file).expect("read"),
     )
     .expect("parse");
-    let mut obs: Vec<(f64, Vec<f64>, u64)> = Vec::new();
     for w in &ws.witnesses {
         let rate = match &w.args[0] {
             WitnessArg::Scalar(s) => parse_bits_hex(s).unwrap(),
@@ -119,6 +121,7 @@ fn main() {
         if let Some(want) = parse_bits_hex(&w.expected_bits) {
             obs.push((rate, cf, want.to_bits()));
         }
+    }
     }
     println!("{} NPV rows", obs.len());
     let mut results: Vec<(u32, u32, u8)> = Vec::new();
