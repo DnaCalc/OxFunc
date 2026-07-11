@@ -25,8 +25,10 @@ pub const COS_META: FunctionMeta = function_spec! {
     real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
+/// W109 G4-01: the fFCOS π/2-quadrant chain with the |x| < 2^-26 -> 1.0
+/// shortcut (see `excel_numeric::excel_cos`).
 pub fn cos_kernel(n: f64) -> f64 {
-    n.cos()
+    crate::excel_numeric::excel_cos(n)
 }
 
 pub fn eval_cos_surface(

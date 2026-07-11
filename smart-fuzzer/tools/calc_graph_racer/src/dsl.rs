@@ -160,6 +160,24 @@ pub enum Op {
     Sin(NodeId),
     Cos(NodeId),
     Tan(NodeId),
+    /// Legacy CRT π-reduction chains (x87-only): `FPREM1(x, FLDPI)` with the
+    /// quotient's low bit from the status flags, then the trig instruction on
+    /// the residue with the `(-1)^Q` parity fixup (`sin`/`cos`; `tan` has
+    /// period π and needs none). Result honors the model's `store` flag.
+    SinPiParity(NodeId),
+    CosPiParity(NodeId),
+    TanPiReduced(NodeId),
+    /// Legacy CRT π/2-reduction chains (x87-only): `FPREM1(x, FLDPI/2)` with
+    /// the quotient low bits selecting the quadrant:
+    /// sin -> {sin, cos, -sin, -cos}[q mod 4](r);
+    /// cos -> {cos, -sin, -cos, sin}[q mod 4](r);
+    /// tan -> tan(r) on even q, -1/tan(r) (extended divide) on odd q.
+    SinPi2Quadrant(NodeId),
+    CosPi2Quadrant(NodeId),
+    TanPi2Quadrant(NodeId),
+    /// The `87trig.asm` `fFCOS` shape: `u = x + π/2` formed in EXTENDED
+    /// (unstored), then the `fFSIN` π-parity chain on `u`.
+    CosViaSinShift(NodeId),
     PowExcelPositive { base: NodeId, exp: NodeId },
     /// The FULL production Excel `POWER` kernel (BUG-FUNC-042): exact-integer
     /// exponents publish via plain-binary64 binary exponentiation; fractional

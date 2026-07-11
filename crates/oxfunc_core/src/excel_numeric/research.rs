@@ -12,8 +12,8 @@
 pub use super::x87::raw::{
     CW_PC24_RN, CW_PC53_RN, CW_PC64_RN, Ext80, ext_abs, ext_add, ext_chs, ext_cos, ext_div,
     ext_f2xm1, ext_from_f64, ext_fyl2x, ext_fyl2xp1, ext_l2e, ext_l2t, ext_lg2, ext_ln2, ext_mul,
-    ext_one, ext_pi, ext_prem, ext_prem1, ext_rndint, ext_scale, ext_sin, ext_sqrt, ext_sub,
-    ext_tan, ext_to_f64,
+    ext_one, ext_pi, ext_prem, ext_prem1, ext_prem1_quo, ext_rndint, ext_scale, ext_sin, ext_sqrt,
+    ext_sub, ext_tan, ext_to_f64,
 };
 
 /// Excel `EXP` — the confirmed `87tran.asm` `fFEXP` chain (bit-exact to live

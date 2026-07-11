@@ -224,6 +224,26 @@ impl<'a> Evaluator<'a> {
             Op::Sin(x) => self.trig(*x, model, f64::sin, rx::ext_sin),
             Op::Cos(x) => self.trig(*x, model, f64::cos, rx::ext_cos),
             Op::Tan(x) => self.trig(*x, model, f64::tan, rx::ext_tan),
+            Op::SinPiParity(x) => self.trig_pi_parity(*x, model, rx::ext_sin, true),
+            Op::CosPiParity(x) => self.trig_pi_parity(*x, model, rx::ext_cos, true),
+            Op::TanPiReduced(x) => self.trig_pi_parity(*x, model, rx::ext_tan, false),
+            Op::SinPi2Quadrant(x) => self.trig_pi2_quadrant(*x, model, TrigKind::Sin),
+            Op::CosPi2Quadrant(x) => self.trig_pi2_quadrant(*x, model, TrigKind::Cos),
+            Op::TanPi2Quadrant(x) => self.trig_pi2_quadrant(*x, model, TrigKind::Tan),
+            Op::CosViaSinShift(x) => {
+                let (cw, store) = self.x87_model("cos-via-sin-shift", model)?;
+                let cwv = cw.value();
+                let xe = self.ext_in(*x)?;
+                let minus_one = rx::ext_chs(&rx::ext_one(), cwv);
+                let pi_half = rx::ext_scale(&rx::ext_pi(), &minus_one, cwv);
+                let u = rx::ext_add(&xe, &pi_half, cwv); // extended, unstored
+                let (r, q) = rx::ext_prem1_quo(&u, &rx::ext_pi(), cwv);
+                let mut s = rx::ext_sin(&r, cwv);
+                if q & 1 == 1 {
+                    s = rx::ext_chs(&s, cwv);
+                }
+                Ok(self.finish_x87(s, cw, store))
+            }
             Op::PowExcelPositive { base, exp } => {
                 let b = self.f64_in(*base)?;
                 let e = self.f64_in(*exp)?;
@@ -385,6 +405,75 @@ impl<'a> Evaluator<'a> {
         }
     }
 
+    /// The legacy CRT π/2-reduction chain: FPREM1 against FLDPI/2 (exact
+    /// halving via FSCALE by -1), quadrant dispatch on the quotient low bits.
+    fn trig_pi2_quadrant(
+        &mut self,
+        x: NodeId,
+        model: EvalModel,
+        kind: TrigKind,
+    ) -> Result<Val, EvalError> {
+        let (cw, store) = self.x87_model("pi/2-quadrant trig", model)?;
+        let cwv = cw.value();
+        let mut xe = self.ext_in(x)?;
+        if kind == TrigKind::Cos {
+            // fFCOS small-argument shortcut, live-probed at bit resolution:
+            // |x| < 2^-26 publishes exactly 1.0 (2^-26 itself takes FCOS).
+            let xf = rx::ext_to_f64(&xe, cwv);
+            if xf.abs() < 1.490_116_119_384_765_6e-8 {
+                return Ok(self.finish_x87(rx::ext_one(), cw, store));
+            }
+            // cos is even; FPREM1 reports the quotient-MAGNITUDE bits, so the
+            // mod-4 dispatch is only valid on |x| (the CRT reduces |x| here).
+            xe = rx::ext_abs(&xe, cwv);
+        }
+        let minus_one = rx::ext_chs(&rx::ext_one(), cwv);
+        let pi_half = rx::ext_scale(&rx::ext_pi(), &minus_one, cwv); // exact /2
+        let (r, q) = rx::ext_prem1_quo(&xe, &pi_half, cwv);
+        let v = match kind {
+            TrigKind::Sin => match q & 3 {
+                0 => rx::ext_sin(&r, cwv),
+                1 => rx::ext_cos(&r, cwv),
+                2 => rx::ext_chs(&rx::ext_sin(&r, cwv), cwv),
+                _ => rx::ext_chs(&rx::ext_cos(&r, cwv), cwv),
+            },
+            TrigKind::Cos => match q & 3 {
+                0 => rx::ext_cos(&r, cwv),
+                1 => rx::ext_chs(&rx::ext_sin(&r, cwv), cwv),
+                2 => rx::ext_chs(&rx::ext_cos(&r, cwv), cwv),
+                _ => rx::ext_sin(&r, cwv),
+            },
+            TrigKind::Tan => {
+                let t = rx::ext_tan(&r, cwv);
+                if q & 1 == 0 {
+                    t
+                } else {
+                    rx::ext_chs(&rx::ext_div(&rx::ext_one(), &t, cwv), cwv)
+                }
+            }
+        };
+        Ok(self.finish_x87(v, cw, store))
+    }
+
+    /// The legacy CRT π-reduction chain: FPREM1 against the extended FLDPI,
+    /// trig instruction on the residue, optional (-1)^Q parity fixup.
+    fn trig_pi_parity(
+        &mut self,
+        x: NodeId,
+        model: EvalModel,
+        x87: fn(&Ext80, u16) -> Ext80,
+        parity_fixup: bool,
+    ) -> Result<Val, EvalError> {
+        let (cw, store) = self.x87_model("pi-parity trig", model)?;
+        let xe = self.ext_in(x)?;
+        let (r, q) = rx::ext_prem1_quo(&xe, &rx::ext_pi(), cw.value());
+        let mut v = x87(&r, cw.value());
+        if parity_fixup && q & 1 == 1 {
+            v = rx::ext_chs(&v, cw.value());
+        }
+        Ok(self.finish_x87(v, cw, store))
+    }
+
     fn trig(
         &mut self,
         x: NodeId,
@@ -536,6 +625,13 @@ impl<'a> Evaluator<'a> {
 enum AccKind {
     Sum,
     Prod,
+}
+
+#[derive(PartialEq, Clone, Copy)]
+enum TrigKind {
+    Sin,
+    Cos,
+    Tan,
 }
 
 fn f64_add(a: f64, b: f64) -> f64 {

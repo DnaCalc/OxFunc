@@ -284,7 +284,6 @@ pub(super) fn recip(x: f64) -> f64 {
 // word explicitly so precision-control hypotheses (PC=64/53/24) are searchable
 // too.
 // ============================================================================
-#[cfg(feature = "research-x87")]
 pub(super) mod raw {
     use core::arch::asm;
 
@@ -599,6 +598,46 @@ pub(super) mod raw {
         /// rounded to nearest-even), iterated to completion.
         ext_prem1, "fprem1"
     );
+
+    /// [`ext_prem1`] that also returns the low three quotient bits the ISA
+    /// leaves in the status flags (bit0 = Q0 from C1, bit1 = Q1 from C3,
+    /// bit2 = Q2 from C0) — the parity the legacy CRT trig chains use for the
+    /// `sin(x) = (-1)^Q sin(r)` sign fixup after reducing by π.
+    pub fn ext_prem1_quo(x: &Ext80, modulus: &Ext80, cw: u16) -> (Ext80, u8) {
+        let mut out = Ext80([0u8; 10]);
+        let mut cw_save: u16 = 0;
+        let mut status: u16 = 0;
+        // SAFETY: as in ext_prem1; additionally stores the final status word.
+        unsafe {
+            asm!(
+                "fnstcw word ptr [{save}]",
+                "fldcw word ptr [{cw}]",
+                "fld tbyte ptr [{m}]",
+                "fld tbyte ptr [{x}]",
+                "2:",
+                "fprem1",
+                "fnstsw ax",
+                "test ah, 4",
+                "jnz 2b",
+                "mov word ptr [{st}], ax",
+                "fstp tbyte ptr [{out}]",
+                "fstp st(0)",
+                "fldcw word ptr [{save}]",
+                x = in(reg) x.0.as_ptr(),
+                m = in(reg) modulus.0.as_ptr(),
+                out = in(reg) out.0.as_mut_ptr(),
+                st = in(reg) &mut status,
+                cw = in(reg) &cw,
+                save = in(reg) &mut cw_save,
+                out("ax") _,
+            );
+        }
+        // Status: C0 = bit 8, C1 = bit 9, C3 = bit 14.
+        let q0 = ((status >> 9) & 1) as u8;
+        let q1 = ((status >> 14) & 1) as u8;
+        let q2 = ((status >> 8) & 1) as u8;
+        (out, q0 | (q1 << 1) | (q2 << 2))
+    }
 
     macro_rules! ext_const {
         ($(#[$m:meta])* $name:ident, $inst:literal) => {

@@ -308,6 +308,105 @@ pub(crate) fn excel_pow_positive(base: f64, exp: f64) -> f64 {
     }
 }
 
+/// Excel `SIN` — bit-exact to 64-bit Excel on `x86_64` (W109 G4-01, validated
+/// 1020/1020 live rows incl. held-out, build 20131): the legacy CRT `fFSIN`
+/// chain — `FPREM1(x, FLDPI)` (the 64-bit ROM π, NOT the hardware's internal
+/// 66-bit reduction), `FSIN` on the residue, `(-1)^Q` parity fixup from the
+/// quotient low bit. This is the source of Excel's large-argument trig
+/// "error": the reduction constant is the fldpi double-rounding of π.
+pub(crate) fn excel_sin(x: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        use x87::raw::{
+            CW_PC64_RN, ext_chs, ext_from_f64, ext_pi, ext_prem1_quo, ext_sin, ext_to_f64,
+        };
+        if !x.is_finite() {
+            return f64::NAN;
+        }
+        let (r, q) = ext_prem1_quo(&ext_from_f64(x), &ext_pi(), CW_PC64_RN);
+        let mut s = ext_sin(&r, CW_PC64_RN);
+        if q & 1 == 1 {
+            s = ext_chs(&s, CW_PC64_RN);
+        }
+        ext_to_f64(&s, CW_PC64_RN)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        x.sin()
+    }
+}
+
+/// Excel `COS` — bit-exact on `x86_64` (W109 G4-01, 1044/1044 incl. the
+/// bit-resolution threshold ladder): `|x| < 2^-26` publishes exactly `1.0`
+/// (live-probed; `2^-26` itself takes the chain); otherwise the `fFCOS`
+/// π/2-quadrant chain on `|x|` — `FPREM1(|x|, FLDPI/2)` with the quotient
+/// low bits selecting `{cos, -sin, -cos, sin}` (cos is even; FPREM1 reports
+/// quotient-magnitude bits, so the dispatch is only valid on `|x|`).
+pub(crate) fn excel_cos(x: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        use x87::raw::{
+            CW_PC64_RN, ext_abs, ext_chs, ext_cos, ext_from_f64, ext_one, ext_pi, ext_prem1_quo,
+            ext_scale, ext_sin, ext_to_f64,
+        };
+        if !x.is_finite() {
+            return f64::NAN;
+        }
+        if x.abs() < f64::from_bits(0x3E50000000000000) {
+            // 2^-26
+            return 1.0;
+        }
+        let cw = CW_PC64_RN;
+        let minus_one = ext_chs(&ext_one(), cw);
+        let pi_half = ext_scale(&ext_pi(), &minus_one, cw); // exact halving
+        let xa = ext_abs(&ext_from_f64(x), cw);
+        let (r, q) = ext_prem1_quo(&xa, &pi_half, cw);
+        let v = match q & 3 {
+            0 => ext_cos(&r, cw),
+            1 => ext_chs(&ext_sin(&r, cw), cw),
+            2 => ext_chs(&ext_cos(&r, cw), cw),
+            _ => ext_sin(&r, cw),
+        };
+        ext_to_f64(&v, cw)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        x.cos()
+    }
+}
+
+/// Excel `TAN` — bit-exact on `x86_64` (W109 G4-01, 1020/1020): the `fFTAN`
+/// π/2-quadrant chain — `FPREM1(x, FLDPI/2)`, `FPTAN` on the residue, and on
+/// odd quadrants `-1/tan(r)` with the reciprocal taken in EXTENDED before the
+/// single binary64 store.
+pub(crate) fn excel_tan(x: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        use x87::raw::{
+            CW_PC64_RN, ext_chs, ext_div, ext_from_f64, ext_one, ext_pi, ext_prem1_quo, ext_scale,
+            ext_tan, ext_to_f64,
+        };
+        if !x.is_finite() {
+            return f64::NAN;
+        }
+        let cw = CW_PC64_RN;
+        let minus_one = ext_chs(&ext_one(), cw);
+        let pi_half = ext_scale(&ext_pi(), &minus_one, cw);
+        let (r, q) = ext_prem1_quo(&ext_from_f64(x), &pi_half, cw);
+        let t = ext_tan(&r, cw);
+        let v = if q & 1 == 0 {
+            t
+        } else {
+            ext_chs(&ext_div(&ext_one(), &t, cw), cw)
+        };
+        ext_to_f64(&v, cw)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        x.tan()
+    }
+}
+
 /// `RN53(RN64(a + b))` — the x87 double-rounded sum of Excel's legacy
 /// x87-compiled function bodies (W109: XNPV's `1 + rate` and running-total
 /// accumulation). Bit-exact to 64-bit Excel on `x86_64`; plain `a + b`
@@ -721,6 +820,55 @@ mod tests {
         // consistency with log: log1p(x) == log(1+x) where 1+x is exact
         assert_eq!(excel_log1p(1.0).to_bits(), excel_log(2.0).to_bits());
         assert_eq!(excel_log1p(7.0).to_bits(), excel_log(8.0).to_bits());
+    }
+
+    /// W109 G4-01 trig identification pins — live Excel 16.0 build 20131.
+    /// One row per identified chain plus the bit-resolution COS threshold.
+    /// The 5,425-row live sweep is replayed by `verify_trig_promotion`.
+    #[test]
+    #[cfg(target_arch = "x86_64")]
+    fn trig_matches_live_excel_pinned_witnesses() {
+        use crate::excel_numeric::{excel_cos, excel_sin, excel_tan, excel_x87_recip};
+        let sin_rows: &[(u64, u64)] = &[
+            (0x419ffffffc000000, 0xbfee977f5248babf), // SIN(134217727), old 5664-ULP row
+            (0x40f86a0000000000, 0x3fa24daa9c527f7c), // SIN(100000)
+            (0xc0f86a0000000000, 0xbfa24daa9c527f7c), // SIN(-100000)
+        ];
+        for &(xb, want) in sin_rows {
+            assert_eq!(excel_sin(f64::from_bits(xb)).to_bits(), want);
+        }
+        let cos_rows: &[(u64, u64)] = &[
+            (0x40489b7812ada40a, 0x3fdfcbaf84b75409), // COS(49.214601836), old 1-ULP row
+            (0x4062a6de04ab6903, 0xbf86a0d99f45d970), // COS(149.214601836)
+        ];
+        for &(xb, want) in cos_rows {
+            assert_eq!(excel_cos(f64::from_bits(xb)).to_bits(), want);
+        }
+        // fFCOS small-argument shortcut: strictly below 2^-26 -> exactly 1.0;
+        // 2^-26 itself takes the FCOS chain (1 - ulp).
+        let t = f64::from_bits(0x3E50000000000000);
+        assert_eq!(
+            excel_cos(f64::from_bits(t.to_bits() - 1)).to_bits(),
+            1.0f64.to_bits()
+        );
+        assert_eq!(
+            excel_cos(-f64::from_bits(t.to_bits() - 1)).to_bits(),
+            1.0f64.to_bits()
+        );
+        assert_eq!(excel_cos(t).to_bits(), 0x3fefffffffffffff);
+        let tan_rows: &[(u64, u64)] = &[
+            (0x4128574328f5c28f, 0x4023ebd3414768f1), // TAN(797601.58), old 719-ULP row
+            (0x40f86a0000000000, 0xbfa250a9d5033223), // TAN(100000)
+        ];
+        for &(xb, want) in tan_rows {
+            assert_eq!(excel_tan(f64::from_bits(xb)).to_bits(), want);
+        }
+        // Reciprocal family at 100000 (old 351-ULP rows): double-rounded recip
+        // of the published primaries.
+        let x = f64::from_bits(0x40f86a0000000000);
+        assert_eq!(excel_x87_recip(excel_tan(x)).to_bits(), 0xc03bf480ac5b2f41); // COT
+        assert_eq!(excel_x87_recip(excel_sin(x)).to_bits(), 0x403bf91476e180a3); // CSC
+        assert_eq!(excel_x87_recip(excel_cos(x)).to_bits(), 0xbff0029eabb0db59); // SEC
     }
 
     #[test]

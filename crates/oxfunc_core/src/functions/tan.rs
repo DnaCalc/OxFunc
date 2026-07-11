@@ -25,8 +25,9 @@ pub const TAN_META: FunctionMeta = function_spec! {
     real_result_policy: ExcelRealPolicy::CIRCULAR_TRIG,
 };
 
+/// W109 G4-01: the fFTAN π/2-quadrant chain (see `excel_numeric::excel_tan`).
 pub fn tan_kernel(n: f64) -> f64 {
-    n.tan()
+    crate::excel_numeric::excel_tan(n)
 }
 
 pub fn eval_tan_surface(

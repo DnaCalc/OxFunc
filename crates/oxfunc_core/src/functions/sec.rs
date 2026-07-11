@@ -28,7 +28,12 @@ pub const SEC_META: FunctionMeta = function_spec! {
 
 pub fn sec_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     SEC_META.real_result_policy.check_arg(n)?;
-    Ok(1.0 / n.cos())
+    // W109 G4-01: SEC = RN53(RN64(1/cos)) over the RAW fFCOS chain (the
+    // published-COS small-argument 1.0 shortcut composes identically here:
+    // recip-dr of 1-ulp ties back to exactly 1.0).
+    Ok(crate::excel_numeric::excel_x87_recip(
+        crate::excel_numeric::excel_cos(n),
+    ))
 }
 
 pub fn eval_sec_surface(

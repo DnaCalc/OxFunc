@@ -28,11 +28,13 @@ pub const COT_META: FunctionMeta = function_spec! {
 
 pub fn cot_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     COT_META.real_result_policy.check_arg(n)?;
-    let tan = n.tan();
+    // W109 G4-01: COT = RN53(RN64(1/TAN)) over the published fFTAN chain
+    // (the double-rounded x87 reciprocal, unique surviving staging).
+    let tan = crate::excel_numeric::excel_tan(n);
     if tan == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(1.0 / tan)
+    Ok(crate::excel_numeric::excel_x87_recip(tan))
 }
 
 pub fn eval_cot_surface(

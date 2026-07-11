@@ -1,7 +1,8 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-07-11` (live Excel build `20131`; YIELDMAT `G6-09`
+Last reconciled: `2026-07-11` (live Excel build `20131`; trig `G4-01`
+identified and signed off `5425/5425` across all six functions; YIELDMAT `G6-09`
 identified and signed off `1250/1250`; NPER `G6-08` identified
 and signed off `1286/1286` + `7/7` error rows; XNPV `G6-11` identified
 by the W109 calculation-graph search, repaired, and signed off `1530/1530`
@@ -51,14 +52,14 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `20`
+Open Category-2 rows: `19`
 
 | Group | Current rows |
 |-------|--------------|
 | G1 error-code/domain guards | 0 |
 | G2 structural kind/shape/admission | 0 |
 | G3 special/statistical numeric exactness | 7 |
-| G4 elementary/trig numeric exactness | 5 |
+| G4 elementary/trig numeric exactness | 4 |
 | G5 matrix numeric/shape | 1 |
 | G6 financial exactness/solver | 7 |
 | G7 comparison/misc semantics | 0 |
@@ -112,11 +113,23 @@ No current open rows.
 
 | Function(s) | Discrepancy | Sev | Mat | Evidence |
 |-------------|-------------|-----|-----|----------|
-| G4-01 — TAN, SIN, COT, SEC, CSC (+ COS `1` ULP) | **Open numeric kernel; the separate `|x| >= 2^27 -> #NUM!` guard is aligned.** Fresh cell-ref replay on Excel 16.0 build 20131 records `TAN(797601.58)` `719` ULP, `SIN(961281.44)` `49` ULP, `SIN(100000)` / `TAN(100000)` `230` ULP, `COT(100000)` / `CSC(100000)` `351` ULP, and `SIN(134217727)` `5664` ULP; `COS(49.214601836)` and `COS(149.214601836)` remain `1` ULP. Some witnesses/functions are exact, so this is argument-dependent reduction/publication drift, not a blanket family failure. The small Bessel residuals noted by BUG-FUNC-024 inherit this trig lane. | NUM-L | M1 | BUG-FUNC-027 C3 / recon G4-01 |
 | G4-02 — ATANH | Mid-small witnesses remain `2`-`3` ULP. The apparent x87-LN repair was rejected after an expanded 368-case sweep: it matched `297` but regressed `71`, including catastrophic tiny-input collapse and near-boundary drift. The restored odd-symmetric platform path matches `235/368`; search a piecewise historical kernel. | NUM-S | M2 | BUG-FUNC-027 C4 / candidate-closure sweep |
 | G4-03 — ACOTH | Small residual drift: `1` ULP at `ACOTH(5)` and `ACOTH(10)`. W109 (2026-07-11): all 13 independent-kernel graphs ruled out; Excel sits 1 ULP above every log-identity form — ACOTH publishes through the internal ATANH kernel. BLOCKED ON G4-02. | NUM-S | M2 | BUG-FUNC-027 C5 / recon G4-03 / W109 findings |
 | G4-04 — COMBIN, COMBINA, FACTDOUBLE, ERF.PRECISE, ERFC.PRECISE | `±1` ULP drift where OxFunc currently differs from Excel's published bits. PERMUT is resolved out of this row (W109 2026-07-11: ascending x87 spill-loop product, `702/702` live rows, see [`W109_PERMUT_COMBIN_FINDINGS_20260711.md`](function-lane/W109_PERMUT_COMBIN_FINDINGS_20260711.md)). COMBIN: `k -> min(k, n-k)` reduction CONFIRMED; all product-loop, factorial-ratio, reciprocal-multiply, and published-GAMMALN-composition kernels ruled out on a 505-row live corpus — leading hypothesis is an internal extended lgamma/exp substrate (Phase-5 lane). | NUM-S | M2 | BUG-FUNC-027 combinatorial group / recon G4-04 / W109 findings |
 | G4-05 — CONVERT | Unit-conversion factor drift, `1` ULP at `CONVERT(1,"m","ft")`; `CONVERT(1,"in","m")` is an exact control. | NUM-S | M1 | recon G4-05 |
+
+
+The former `G4-01` trig row is signed off and removed (2026-07-11). The W109
+search identified the full legacy CRT chains: SIN = `FPREM1(x, FLDPI)` +
+parity + `FSIN`; COS = `|x| < 2^-26 -> 1.0` else `FPREM1(|x|, FLDPI/2)` with
+quadrant dispatch; TAN = π/2 chain with `-1/tan` (extended) on odd quadrants;
+COT/CSC/SEC = double-rounded reciprocals of the published primaries. The
+reduction constant is the 64-bit ROM `FLDPI` π — the entire source of the
+large-argument drift. Validated `5425/5425` live rows (all six functions,
+incl. held-out sweeps and a bit-resolution COS threshold ladder). See
+[`W109_TRIG_IDENTIFICATION_20260711.md`](function-lane/W109_TRIG_IDENTIFICATION_20260711.md).
+The GAMMA-reflection and Bessel inheritors (G3-02, BUG-FUNC-024) are now
+unblocked: re-race their internal trig against `excel_sin`/`excel_cos`.
 
 ## G5 — Matrix Numeric And Shape
 

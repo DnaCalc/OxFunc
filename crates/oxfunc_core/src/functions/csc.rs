@@ -28,11 +28,12 @@ pub const CSC_META: FunctionMeta = function_spec! {
 
 pub fn csc_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     CSC_META.real_result_policy.check_arg(n)?;
-    let sin = n.sin();
+    // W109 G4-01: CSC = RN53(RN64(1/SIN)) over the published fFSIN chain.
+    let sin = crate::excel_numeric::excel_sin(n);
     if sin == 0.0 {
         return Err(WorksheetErrorCode::Div0);
     }
-    Ok(1.0 / sin)
+    Ok(crate::excel_numeric::excel_x87_recip(sin))
 }
 
 pub fn eval_csc_surface(
