@@ -867,7 +867,6 @@ pub fn map_cashflow_rate_error_to_ws(error: &CashflowRateEvalError) -> Worksheet
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::functions::power_fn::power_kernel;
     use crate::resolver::ReferenceSystemCapabilities;
     use crate::value::{CalcArray, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;

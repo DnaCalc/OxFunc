@@ -1,7 +1,9 @@
 # OxFunc ↔ Excel Discrepancy Catalog
 
 Status: `active_canonical_tracker`
-Last reconciled: `2026-07-11` (live Excel build `20131`; XNPV `G6-11` identified
+Last reconciled: `2026-07-11` (live Excel build `20131`; YIELDMAT `G6-09`
+identified and signed off `1250/1250`; NPER `G6-08` identified
+and signed off `1286/1286` + `7/7` error rows; XNPV `G6-11` identified
 by the W109 calculation-graph search, repaired, and signed off `1530/1530`
 numeric + `175/175` error rows; previous reconcile 2026-07-10: stale YIELDDISC
 row removed; MMULT/MINVERSE `1x1` publication observations moved to Category 1;
@@ -49,7 +51,7 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `22`
+Open Category-2 rows: `20`
 
 | Group | Current rows |
 |-------|--------------|
@@ -58,7 +60,7 @@ Open Category-2 rows: `22`
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 5 |
 | G5 matrix numeric/shape | 1 |
-| G6 financial exactness/solver | 9 |
+| G6 financial exactness/solver | 7 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
@@ -139,8 +141,23 @@ They are now explicit `publication_shape` rows `CSC-0024`/`CSC-0025` under
 | G6-05 — RATE | Solver residual `586` ULP on the mortgage witness and `72` ULP on a one-period identity whose mathematical root is `0.1`. | NUM-L | M1 | BUG-FUNC-009 bit-parity / W103 / recon G6-05 |
 | G6-06 — IRR | Irrational-root solver residuals remain: `80` ULP and `14096` ULP on the bounded witnesses. | NUM-L | M1 | BUG-FUNC-028 out-of-stream / recon G6-06 |
 | G6-07 — CUMPRINC | The full-schedule control is exact; the half-schedule witness is `1` ULP, localizing the current evidence to boundary-sensitive accumulation. | NUM-S | M1 | recon G6-07 |
-| G6-08 — NPER | Period-count drift `1` ULP on `NPER-0000` (`0x405a1d41fa9d1c49` local vs Excel `...4a`); the control witness is exact. | NUM-S | M1 | in-crate `nper_exactness_audit` / W108 / recon G6-08 |
-| G6-09 — YIELDMAT | Yield-at-maturity drift is `1` ULP for basis 1 and `2` ULP for the fresh basis-0 control. | NUM-S | M1 | recon G6-09 |
+
+The former `G6-09` YIELDMAT row is signed off and removed (2026-07-11). The
+W109 search identified x87 spill-loop arithmetic with the PUBLISHED formula's
+association — `term1 = (1 + DIM/B·rate) - term2` with `term2` reused — not the
+F#-style left chain OxFunc had ported. Validated `1250/1250` bit-exact on live
+build `20131` (bases 2/3 sweep incl. held-out) and both former catalog
+witnesses (bases 1/0) through the production day-count logic. See
+[`W109_YIELDMAT_IDENTIFICATION_20260711.md`](function-lane/W109_YIELDMAT_IDENTIFICATION_20260711.md).
+
+The former `G6-08` NPER row is signed off and removed (2026-07-11). The W109
+search identified the same legacy x87 spill-loop signature as XNPV — every
+assignment double-rounded, both logs the x87 worksheet `ln`, denominator on a
+double-rounded `1+rate` — plus three newly pinned lanes: no epsilon small-rate
+branch (tiny rates take the main path, `#DIV/0!` once `1+rate == 1`),
+`NPER(0,0,..)` is `#DIV/0!`, and the zero-rate linear branch is double-rounded.
+Validated `1286/1286` numeric + `7/7` error rows on live build `20131`. See
+[`W109_NPER_IDENTIFICATION_20260711.md`](function-lane/W109_NPER_IDENTIFICATION_20260711.md).
 
 The former `G6-11` XNPV row is signed off and removed (2026-07-11). The W109
 calculation-graph search identified the full staging — `RN53(RN64(1+rate))`

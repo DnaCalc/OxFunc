@@ -510,14 +510,25 @@ pub fn yieldmat_kernel(
     if !(issue < settlement && settlement < maturity) {
         return Err(derr(WorksheetErrorCode::Num));
     }
+    // W109 identification (2026-07-11, live build 20131, 1250/1250 bit-exact
+    // incl. held-out sweep): the arithmetic is the legacy x87 spill loop —
+    // every assignment double-rounded (`RN53(RN64(op))`) — with the PUBLISHED
+    // formula's association: `term1 = (1 + DIM/B·rate) - term2`, reusing
+    // `term2 = price/100 + A/B·rate` (the former F#-style left chain
+    // `dim/b*rate + 1 - price/100 - a/b*rate` is 1-2 ULP off and ruled out).
+    use crate::excel_numeric::{excel_x87_add, excel_x87_div, excel_x87_mul, excel_x87_sub};
     let b = days_in_year_for_mat(issue, settlement, basis_)?;
     let dim = dd(issue, maturity, basis_)?;
     let a = dd(issue, settlement, basis_)?;
-    let dsm = dim - a;
-    let term1 = dim / b * rate_ + 1.0 - price / 100.0 - a / b * rate_;
-    let term2 = price / 100.0 + a / b * rate_;
-    let term3 = b / dsm;
-    Ok(term1 / term2 * term3)
+    let dsm = excel_x87_sub(dim, a);
+    let dbr = excel_x87_mul(excel_x87_div(dim, b), rate_);
+    let accr = excel_x87_mul(excel_x87_div(a, b), rate_);
+    let p_norm = excel_x87_div(price, 100.0);
+    let term2 = excel_x87_add(p_norm, accr);
+    let term1 = excel_x87_sub(excel_x87_add(1.0, dbr), term2);
+    let quotient = excel_x87_div(term1, term2);
+    let year_ratio = excel_x87_div(b, dsm);
+    Ok(excel_x87_mul(quotient, year_ratio))
 }
 pub fn yielddisc_kernel(
     settlement: f64,
@@ -1159,6 +1170,63 @@ mod tests {
         let md = mduration_kernel(s, m, 0.06, 0.0675, 2.0, Some(0.0)).unwrap();
         close(md, d / (1.0 + 0.0675 / 2.0), 1e-12);
     }
+    /// W109 YIELDMAT identification pins — live Excel 16.0 build 20131 bits.
+    /// Rows: the two former catalog witnesses (basis 1 and 0, previously 1 and
+    /// 2 ULP off), and a constructed double-rounding-window row that separates
+    /// the spill-loop arithmetic from strict staging. The 1,250-row live sweep
+    /// is replayed via the racer work dir (race-validation.json).
+    #[test]
+    fn yieldmat_matches_live_excel_pinned_witnesses() {
+        let rows: &[(u64, u64, u64, u64, u64, f64, u64)] = &[
+            // settlement, maturity, issue, rate, price bits; basis; excel bits
+            (
+                0x40e6324000000000, // 45458
+                0x40e678c000000000, // 46022
+                0x40e61d8000000000, // 45292
+                0x3faae147ae147ae1, // 0.0525
+                0x4058a6477d72f020, // 98.59811340546048
+                1.0,
+                0x3faf3b645a1cabfe,
+            ),
+            (
+                0x40e6324000000000,
+                0x40e678c000000000,
+                0x40e61d8000000000,
+                0x3faae147ae147ae1,
+                0x4058a6477d72f020,
+                0.0,
+                0x3faf37e9d4b23782,
+            ),
+            // spill-loop discriminator (basis 2, window row win-rand-10280)
+            (
+                0x40dfca8000000000,
+                0x40e0a16000000000,
+                0x40deedc000000000,
+                0x3fb88743a94c782d,
+                0x4048d9ae489dbe14,
+                2.0,
+                0x3fd2e57422c16238,
+            ),
+        ];
+        for (i, &(s, m, iss, r, p, basis, excel)) in rows.iter().enumerate() {
+            let got = yieldmat_kernel(
+                f64::from_bits(s),
+                f64::from_bits(m),
+                f64::from_bits(iss),
+                f64::from_bits(r),
+                f64::from_bits(p),
+                Some(basis),
+            )
+            .unwrap_or_else(|e| panic!("pin {i}: unexpected error {e:?}"));
+            assert_eq!(
+                got.to_bits(),
+                excel,
+                "pin {i}: got 0x{:016x} want 0x{excel:016x}",
+                got.to_bits()
+            );
+        }
+    }
+
     #[test]
     fn mat_round_trip() {
         let s = serial(2024, 6, 15);

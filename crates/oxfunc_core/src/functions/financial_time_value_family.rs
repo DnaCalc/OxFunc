@@ -4,7 +4,7 @@ use crate::coercion::CoercionError;
 // NOT use the x87 `excel_exp`/`excel_log` worksheet backends yet; migrating the
 // financial substrate to the x87 primitives (`fyl2xp1`/`f2xm1`) is tracked as
 // W108 Phase C and requires its own live-Excel re-validation.
-use crate::excel_numeric::{excel_expm1, excel_log1p, exp_portable, log_portable};
+use crate::excel_numeric::{excel_expm1, excel_log1p, exp_portable};
 use crate::function::{
     ArgPreparationProfile, Arity, CoercionLiftProfile, DeterminismClass, FecDependencyProfile,
     FunctionMeta, HostInteractionClass, KernelSignatureClass, ThreadSafetyClass, VolatilityClass,
@@ -350,26 +350,31 @@ pub fn pmt(
     }
 }
 
-/// NPER on the correctly-rounded numeric core (W108 Bead C).
+/// Worksheet `NPER` — bit-exact to 64-bit Excel on `x86_64` (W109 Phase 2,
+/// identified by calculation-graph search; 1,729/1,729 live main-path
+/// witnesses bit-exact, max ULP 0, build 20131). The body is the legacy x87
+/// spill loop — every arithmetic assignment is double-rounded
+/// (`RN53(RN64(op))`) and both logarithms are the x87 worksheet `ln`:
 ///
 /// ```text
-/// tf     = 1 + r·type
-/// ratio  = (tf·pmt - fv·r) / (tf·pmt + pv·r)
-/// nper   = log(ratio) / log(1 + r)
+/// rate == 0 (either sign, EXACT — no epsilon band):
+///     nper = RN53(RN64( -(RN53(RN64(fv+pv))) / pmt ))     (#DIV/0! on pmt=0)
+/// else:
+///     tf    = RN53(RN64(1 + rate·type))
+///     tfp   = RN53(RN64(tf·pmt))
+///     num   = RN53(RN64(tfp - RN53(RN64(fv·rate))))
+///     den   = RN53(RN64(tfp + RN53(RN64(pv·rate))))
+///     ratio = RN53(RN64(num/den))                          (ratio<=0 -> #NUM!)
+///     nper  = RN53(RN64( ln_x87(ratio) / ln_x87(RN53(RN64(1+rate))) ))
+///             (1+rate rounding to 1 -> ln=0 -> #DIV/0!, live-probed;
+///              1+rate <= 0 -> #NUM!)
 /// ```
 ///
-/// W108 <DENOM_LOG> choice — the numerator `log(ratio)` is the faithful core
-/// `log_portable`. The DENOMINATOR is `ln(1+r)` via the core `log_portable(1.0 +
-/// r)` — NOT `excel_log1p(r)` (the live-Excel search established the denominator
-/// is `ln(1+r)`, not `log1p(r)`). Empirically A/B-tested against the 8-row
-/// live-Excel NPER corpus on the OxFunc core: `log_portable(1.0 + r)` and Rust
-/// std `(1.0 + r).ln()` TIE at 7/8 exact (both share the same single 1-ULP miss
-/// on NPER-0000). `log_portable` (the deterministic in-crate correctly-rounded
-/// core, no platform-libm dependency) is the tiebreaker, preserving W108's
-/// cross-target determinism. This intentionally does NOT use the x87 `excel_log`
-/// worksheet backend, which shifts NPER-0000 by 1 ULP — whether Excel's NPER
-/// internally uses the x87 `ln` is a W108 Phase-C question (re-probe the oracle).
-/// See `nper_denom_log_choice_pins_excel_corpus` for the pinned rows.
+/// Live-probed lanes: tiny nonzero rates take the MAIN path (degrading
+/// numerically exactly like Excel, then #DIV/0! once `1+rate == 1`);
+/// `NPER(0, 0, ..)` is `#DIV/0!`; `rate <= -1` is `#NUM!`. This replaces the
+/// former portable-CR-log path and its `EPSILON` small-rate band (both ruled
+/// out by the oracle bits — see DISCREPANCY_RULED_OUT_LEDGER.csv G6-08).
 pub fn nper(
     periodic_rate: f64,
     payment_value: f64,
@@ -377,31 +382,41 @@ pub fn nper(
     future_value: f64,
     timing: PaymentTiming,
 ) -> Result<f64, FinancialError> {
+    use crate::excel_numeric::{excel_log, excel_x87_add, excel_x87_div, excel_x87_mul, excel_x87_sub};
+
     validate_finite(&[periodic_rate, payment_value, present_value, future_value])?;
-    if periodic_rate.abs() < EPSILON {
-        if payment_value.abs() < EPSILON {
-            return Err(FinancialError::Num);
+    if periodic_rate == 0.0 {
+        if payment_value == 0.0 {
+            return Err(FinancialError::Div0); // live-probed: #DIV/0!
         }
-        let result = -(future_value + present_value) / payment_value;
+        let sum = excel_x87_add(future_value, present_value);
+        let result = excel_x87_div(-sum, payment_value);
         return if result.is_finite() {
             Ok(result)
         } else {
             Err(FinancialError::Num)
         };
     }
-    let tf = timing.factor(periodic_rate); // 1 + r·type
-    let tf_pmt = tf * payment_value;
-    let numerator = tf_pmt - future_value * periodic_rate;
-    let denominator = tf_pmt + present_value * periodic_rate;
-    let ratio = numerator / denominator;
-    if ratio <= 0.0 {
+    let tf = match timing {
+        PaymentTiming::EndOfPeriod => 1.0,
+        PaymentTiming::BeginningOfPeriod => excel_x87_add(1.0, periodic_rate),
+    };
+    let tf_pmt = excel_x87_mul(tf, payment_value);
+    let numerator = excel_x87_sub(tf_pmt, excel_x87_mul(future_value, periodic_rate));
+    let denominator = excel_x87_add(tf_pmt, excel_x87_mul(present_value, periodic_rate));
+    let ratio = excel_x87_div(numerator, denominator);
+    if ratio <= 0.0 || !ratio.is_finite() {
         return Err(FinancialError::Num);
     }
-    // Growth-domain guard for the denominator log.
-    if 1.0 + periodic_rate <= 0.0 {
+    let base = excel_x87_add(1.0, periodic_rate);
+    if base <= 0.0 {
         return Err(FinancialError::Num);
     }
-    let result = log_portable(ratio) / log_portable(1.0 + periodic_rate);
+    let ln_den = excel_log(base);
+    if ln_den == 0.0 {
+        return Err(FinancialError::Div0); // 1+rate rounded to 1 (live-probed)
+    }
+    let result = excel_x87_div(excel_log(ratio), ln_den);
     if result.is_finite() {
         Ok(result)
     } else {
@@ -1506,68 +1521,130 @@ mod tests {
         );
     }
 
+    /// W109 NPER identification pins — live Excel 16.0 build 20131 bits.
+    /// One pin per identified staging axis (x87 spill-loop arithmetic, x87
+    /// worksheet ln for both logs, double-rounded `1+rate` base, double-rounded
+    /// final divide, double-rounded linear zero-rate branch) plus the
+    /// live-probed error lanes. The 1,729-row live sweep is replayed by the
+    /// racer's oracle-cache verifier.
     #[test]
-    fn nper_denom_log_choice_pins_excel_corpus() {
-        // W108 <DENOM_LOG> evidence. NPER = log_portable(ratio) / log_portable(1 + r).
-        // The 8-row live-Excel NPER corpus: 7/8 are Excel bit-exact; the single
-        // 1-ULP residual is NPER-0000. A/B against Rust std `.ln()` for the
-        // denominator TIES at 7/8 (same NPER-0000 miss), so the deterministic core
-        // `log_portable(1 + r)` is chosen. (Corpus w108-b2-financial NPER-0001..0007.)
-        let bit_exact_rows: &[(f64, f64, f64, f64, PaymentTiming, u64)] = &[
-            // NPER-0001
+    fn nper_matches_live_excel_pinned_witnesses() {
+        let rows: &[(u64, u64, u64, u64, PaymentTiming, u64)] = &[
+            // NPER-0000 — the former 1-ULP catalog witness, now Excel-exact.
             (
-                0.004166666666666667,
-                -1500.0,
-                200000.0,
-                0.0,
+                0x3f4b4e81b4e81b4f, // 0.0008333333333333334
+                0xc059000000000000, // -100
+                0x40c3880000000000, // 10000
+                0x0000000000000000,
+                PaymentTiming::EndOfPeriod,
+                0x405a1d41fa9d1c4a,
+            ),
+            // W108 corpus rows (still exact under the identified path).
+            (
+                0x3f71111111111111,
+                0xc097700000000000,
+                0x41086a0000000000,
+                0x0000000000000000,
                 PaymentTiming::EndOfPeriod,
                 0x406860e8f2a3c05a,
             ),
-            // NPER-0002
             (
-                0.006666666666666667,
-                -500.0,
-                25000.0,
-                0.0,
-                PaymentTiming::EndOfPeriod,
-                0x404e82d9e2083eb5,
-            ),
-            // NPER-0005 (type=1)
-            (
-                0.005416666666666667,
-                -1200.0,
-                150000.0,
-                0.0,
+                0x3f762fc962fc9630, // NPER-0005, type=1
+                0xc092c00000000000,
+                0x41024f8000000000,
+                0x0000000000000000,
                 PaymentTiming::BeginningOfPeriod,
                 0x4069e55a897343be,
             ),
-            // NPER-0006 (nonzero fv)
             (
-                0.004166666666666667,
-                -1500.0,
-                200000.0,
-                10000.0,
+                0x3f71111111111111, // NPER-0006, nonzero fv
+                0xc097700000000000,
+                0x41086a0000000000,
+                0x40c3880000000000,
                 PaymentTiming::EndOfPeriod,
                 0x406933c5abe16989,
             ),
+            // 1+rate double-rounding window (kills a strict base add).
+            (
+                0x3e953366e7dfffae,
+                0xc07f400cf09f8f07,
+                0x40c3880000000000,
+                0x0000000000000000,
+                PaymentTiming::EndOfPeriod,
+                0x4033fffc10d95175,
+            ),
+            // final-division double-rounding window.
+            (
+                0x3fcdf7a38b15bcac,
+                0xc10bc9b28757a1a4,
+                0x412aa42e8d5d0907,
+                0x0000000000000000,
+                PaymentTiming::EndOfPeriod,
+                0x4025b05836d37ea6,
+            ),
+            // zero-rate linear branch: fv+pv add window and divide window.
+            (
+                0x0000000000000000,
+                0xc05e000000000000,
+                0x41298c2d40ecfef9,
+                0x3feb43c1097800ad,
+                PaymentTiming::EndOfPeriod,
+                0x40bb4032169232bc,
+            ),
+            (
+                0x0000000000000000,
+                0xc096864a8c753ce2,
+                0x40f05290cc46d61d,
+                0x0000000000000000,
+                PaymentTiming::EndOfPeriod,
+                0x4047305d73617c0a,
+            ),
+            // tiny nonzero rate stays on the MAIN path (no epsilon branch).
+            (
+                0x3e112e0be826d695, // 1e-9
+                0xc05e000000000000,
+                0x40c3880000000000,
+                0x0000000000000000,
+                PaymentTiming::EndOfPeriod,
+                0x4054d55546f1cd61,
+            ),
         ];
-        for &(r, pmt_v, pv, fv_v, timing, bits) in bit_exact_rows {
-            assert_bits(
-                nper(r, pmt_v, pv, fv_v, timing).expect("nper corpus row"),
-                f64::from_bits(bits),
+        for (i, &(rb, pmtb, pvb, fvb, timing, excel)) in rows.iter().enumerate() {
+            let got = nper(
+                f64::from_bits(rb),
+                f64::from_bits(pmtb),
+                f64::from_bits(pvb),
+                f64::from_bits(fvb),
+                timing,
+            )
+            .unwrap_or_else(|e| panic!("pin {i}: unexpected error {e:?}"));
+            assert_eq!(
+                got.to_bits(),
+                excel,
+                "pin {i}: got 0x{:016x} want 0x{excel:016x}",
+                got.to_bits()
             );
         }
-        // NPER-0000: the single tracked 1-ULP open discrepancy (local vs Excel).
-        let nper_0000 = nper(
-            0.0008333333333333334,
-            -100.0,
-            10000.0,
-            0.0,
-            PaymentTiming::EndOfPeriod,
-        )
-        .expect("NPER-0000");
-        assert_bits(nper_0000, f64::from_bits(0x405a1d41fa9d1c49)); // local
-        assert_ne!(nper_0000.to_bits(), 0x405a1d41fa9d1c4au64); // Excel (1 ULP away)
+        // Live-probed error lanes.
+        assert_eq!(
+            nper(0.0, 0.0, 100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Div0),
+            "NPER(0,0,..) is #DIV/0!"
+        );
+        assert_eq!(
+            nper(1.0e-18, -120.0, 10000.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Div0),
+            "1+rate == 1 -> #DIV/0!"
+        );
+        assert_eq!(
+            nper(-1.0, -120.0, 10000.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num)
+        );
+        assert_eq!(
+            nper(0.05, 0.0, 100.0, 0.0, PaymentTiming::EndOfPeriod),
+            Err(FinancialError::Num),
+            "pmt=0 on the main path is #NUM!"
+        );
     }
 
     #[test]

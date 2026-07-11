@@ -190,6 +190,32 @@ pub(super) fn add(a: f64, b: f64) -> f64 {
     result
 }
 
+/// `RN53(RN64(a - b))` — one x87 `FSUB` at PC=64 then a `binary64` store: the
+/// double-rounded difference (W109: NPER's `tf·pmt - fv·rate`).
+pub(super) fn sub(a: f64, b: f64) -> f64 {
+    let mut result: f64 = 0.0;
+    let cw_core: u16 = CW_CORE;
+    let mut cw_save: u16 = 0;
+    // SAFETY: balanced x87 stack (one push; `fsub` folds in memory operand,
+    // `fstp` pops), pointer I/O only, control word saved and restored.
+    unsafe {
+        asm!(
+            "fnstcw word ptr [{save}]",
+            "fldcw word ptr [{core}]",
+            "fld qword ptr [{a}]",     // st0 = a
+            "fsub qword ptr [{b}]",    // st0 = RN64(a-b)
+            "fstp qword ptr [{res}]",  // RN53 store
+            "fldcw word ptr [{save}]",
+            a = in(reg) &a,
+            b = in(reg) &b,
+            res = in(reg) &mut result,
+            core = in(reg) &cw_core,
+            save = in(reg) &mut cw_save,
+        );
+    }
+    result
+}
+
 /// `RN53(RN64(a / b))` — one x87 `FDIV` at PC=64 then a `binary64` store: the
 /// double-rounded quotient (W109: XNPV's per-term `value / pow`).
 pub(super) fn div(a: f64, b: f64) -> f64 {

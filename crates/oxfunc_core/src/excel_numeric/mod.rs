@@ -323,6 +323,32 @@ pub(crate) fn excel_x87_add(a: f64, b: f64) -> f64 {
     }
 }
 
+/// `RN53(RN64(a - b))` — the x87 double-rounded difference (W109: NPER's
+/// numerator). Bit-exact to 64-bit Excel on `x86_64`.
+pub(crate) fn excel_x87_sub(a: f64, b: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::sub(a, b)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        a - b
+    }
+}
+
+/// `RN53(RN64(a * b))` — the x87 double-rounded product as a `pub(crate)`
+/// spill-loop helper (the same op `POWER` uses internally via [`x87::mul`]).
+pub(crate) fn excel_x87_mul(a: f64, b: f64) -> f64 {
+    #[cfg(target_arch = "x86_64")]
+    {
+        x87::mul(a, b)
+    }
+    #[cfg(not(target_arch = "x86_64"))]
+    {
+        a * b
+    }
+}
+
 /// `RN53(RN64(a / b))` — the x87 double-rounded quotient (W109: XNPV's
 /// per-term `value / pow`). Bit-exact to 64-bit Excel on `x86_64`.
 pub(crate) fn excel_x87_div(a: f64, b: f64) -> f64 {
