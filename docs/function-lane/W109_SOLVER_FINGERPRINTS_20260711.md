@@ -146,3 +146,35 @@ answers-npv-r0.json; IRR's f is documented as cf0 + NPV(rate, rest)):
 Next: widen NPV probe shapes (n=2,4..8 flows) to pin the chain
 associativity, close the kernel, then re-run the solver fit with the
 identified f (the schedule skeleton h=1e-3/two-step/tol is settled).
+
+## Round 5 (2026-07-12): RATE joins the harness; annuity kernel identified 96/96
+
+NPV kernel stalled at 106/142 (nine forms x 16 masks, +-1..2 ULP residue
+on a quarter of multi-flow rows) -> pivoted to RATE per plan.
+
+RATE ladder (45 live probes, answers-rate-r2.json):
+- lambda-plateau +3.48e-5, sign-preserving, over j=22..34;
+- stop boundary between j=34 (err 6.7e-8) and j=36 (2.7e-7): the
+  documented |dv| < 1e-7 tolerance, apply-last;
+- inverting the plateau through the annuity curvature (f''/2f' = 5.900
+  at the root): two-step h = 0.00099981... = 1e-3 ABSOLUTE.
+  **Same h = 1e-3, same two-step near-root composition, same 1e-7-class
+  stop as IRR: a shared FD-solver harness** (IRR iterates v = 1/(1+r),
+  RATE iterates r; each linearizes its own f's natural argument).
+- No passthrough anywhere; the attractor is fuzzy (+-100 ULP f-noise,
+  consistent with the annuity kernel's larger evaluation noise).
+
+FV / annuity kernel (96 direct worksheet FV probes, answers-fv-r0.json;
+8 shapes x 12 rates incl. type=1 and n=360): fit_fv_stores.rs reaches
+**96/96 bit-exact**: FV = -(pv*P + pmt*(1+rate*type)*((P-1)/rate)) in
+PLAIN DOUBLE with P = (1+rate)^n via LSB-first binary exponentiation
+(stored steps). Free bits: P/sum stores (degenerate); type-factor
+association tie {pmt*(tf*q), q*tf folded, w-shift} needs one
+discriminating probe. Closure discipline still pending (held-out +
+adversarial: tiny rates, negative rates, huge n) before promotion, but
+this kernel underpins G6-01 (PMT family) and RATE's f simultaneously.
+
+Cross-pollination note for the NPV residue: the annuity kernel is
+plain-double binexp — the IRR NPV per-term discount may likewise be a
+plain binexp POWER per term with a c*recip(P) or c/P association not yet
+in the form set.

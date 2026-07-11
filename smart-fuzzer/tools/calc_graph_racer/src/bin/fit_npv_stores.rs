@@ -26,6 +26,7 @@ impl V {
     }
     fn f(self) -> f64 { rx::ext_to_f64(&self.0, CW) }
     fn add(self, o: V) -> V { V(rx::ext_add(&self.0, &o.0, CW)) }
+    fn sub(self, o: V) -> V { V(rx::ext_sub(&self.0, &o.0, CW)) }
     fn mul(self, o: V) -> V { V(rx::ext_mul(&self.0, &o.0, CW)) }
     fn div(self, o: V) -> V { V(rx::ext_div(&self.0, &o.0, CW)) }
 }
@@ -91,10 +92,43 @@ fn npv(rate: f64, cf: &[f64], m: u32, form: u8) -> f64 {
             }
             s.st(true).f()
         }
-        _ => { // reverse-order division chain: s = (s + c)/w from last term
+        5 => { // reverse-order division chain: s = (s + c)/w from last term
             let mut s = V::new(0.0);
             for c in cf.iter().rev() {
                 s = s.add(V::new(*c)).st(bit(1)).div(w).st(bit(2));
+            }
+            s.st(true).f()
+        }
+        6 => { // t seeded as 1/w, then t /= w per subsequent term
+            let mut t = V::new(1.0).div(w).st(bit(0));
+            let mut s = V::new(cf[0]).mul(t).st(bit(1));
+            for c in &cf[1..] {
+                t = t.div(w).st(bit(0));
+                s = s.add(V::new(*c).mul(t).st(bit(1))).st(bit(2));
+            }
+            s.st(true).f()
+        }
+        7 => { // split positive/negative accumulators, subtract at end
+            let mut sp = V::new(0.0);
+            let mut sn = V::new(0.0);
+            let mut t = V::new(1.0);
+            for c in cf {
+                t = t.div(w).st(bit(0));
+                let term = V::new(c.abs()).mul(t).st(bit(1));
+                if *c >= 0.0 {
+                    sp = sp.add(term).st(bit(2));
+                } else {
+                    sn = sn.add(term).st(bit(2));
+                }
+            }
+            sp.sub(sn).st(true).f()
+        }
+        _ => { // term = c/p, p multiplied AFTER use (p tracks w^i then bumps)
+            let mut s = V::new(0.0);
+            let mut p = w;
+            for c in cf {
+                s = s.add(V::new(*c).div(p).st(bit(1))).st(bit(2));
+                p = p.mul(w).st(bit(0));
             }
             s.st(true).f()
         }
@@ -125,7 +159,7 @@ fn main() {
     }
     println!("{} NPV rows", obs.len());
     let mut results: Vec<(u32, u32, u8)> = Vec::new();
-    for form in 0u8..6 {
+    for form in 0u8..9 {
         for m in 0u32..16 {
             let sc = obs
                 .iter()
