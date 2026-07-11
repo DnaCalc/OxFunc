@@ -178,3 +178,25 @@ Cross-pollination note for the NPV residue: the annuity kernel is
 plain-double binexp — the IRR NPV per-term discount may likewise be a
 plain binexp POWER per term with a c*recip(P) or c/P association not yet
 in the form set.
+
+## Round 6 (2026-07-12): the wide annuity surface — FV and PV closed, PMT resists
+
+150 new live rows (answers-fv-r1 / answers-pmt-r0 / answers-pv-r0):
+FV adversarial+held-out (rates 1e-15..745, negative, n=500, type=1) and
+wide PMT/PV discovery grids. The kernel is plain double, so Python is
+bit-faithful; results (annuity_family_race.py):
+
+- **FV: 149/149 over the FULL corpus** (discovery + adversarial +
+  held-out): FV = -(pv*P + pmt*(tf*q)), P = binexp LSB-first(1+rate, n),
+  q = (P-1)/rate, tf = 1+rate*type; rate==0 -> -(pv+pmt*n).
+  The earlier "type-factor tie" is an algebraic degeneracy (tf == w
+  bit-for-bit at type=1; tf*q commutes) — the kernel is unique.
+- **PV: 48/48 first race**: PV = -(fv + pmt*(tf*q))/P, same kernel.
+- **PMT: best 21/48** across 15 plain-double compositions AND
+  platform-pow P variants (misses +-1..5 ULP) -> PMT does NOT share the
+  plain-double path; next: x87-spill staged race (Rust) over the same
+  composition zoo.
+
+Consequences: G6-01 (PMT family) now has two of its members identified
+bit-exactly on first corpora; RATE's f is the closed FV kernel;
+remaining G6-01 work = PMT (+IPMT/PPMT/CUM* compositions after PMT).
