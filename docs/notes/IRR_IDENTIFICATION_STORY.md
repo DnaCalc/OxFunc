@@ -113,3 +113,19 @@ structure is fixed.
 *Continued in W109_SOLVER_FINGERPRINTS_20260711.md (data) and
 check_irr_schedule.rs (the racer). Next: close the 65 staging rows,
 then aim the same ladder camera at RATE.*
+
+## Act VI — the last mile is a store mask (in progress)
+
+With the schedule skeleton fixed, we tried to pin the NPV kernel from
+the one-step ladder rows alone (each is a single photographed FD step).
+Five NPV forms x four h-forms x two stagings all plateau at 25/54 —
+identical to the full simulator on those rows, proving the rows really
+are single steps and the ±8-ULP misses are pure f-evaluation noise:
+`den = f1 − f0` is Sterbenz-exact, so every last bit of the update comes
+from the rounding pattern inside the two NPV evaluations. Also learned:
+the stop rule is NOT a plain |dv| threshold (no constant explains
+one-step at 9.5e-7 and multi-step far sweeps simultaneously).
+
+Next tool: the same exhaustive store-mask fit that cracked the GAMMALN
+Stirling staging, applied to the NPV+step chain, scored on the ladder
+rows. Fifty-four single-step photographs against a few thousand masks.
