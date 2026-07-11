@@ -119,3 +119,30 @@ v+h formation, and h = v*1e-6 vs v/1e6), NOT the schedule skeleton.
 Next: enumerate NPV forms against the ladder-A one-step rows alone
 (they isolate a single FD step), then revisit the stop rule with the
 winning kernel.
+
+## Round 4 (2026-07-12): h = 1e-3 absolute, two-step composition; NPV probed directly
+
+The Act-IV one-step reading was itself an over-fit: a single FD step's
+error ratio must grow ~25x across the ladder (quadratic term), but the
+data's ratio is nearly constant. The unique fix: the ladder rows take
+(at least) TWO steps, and lambda_total = lambda'^2 with lambda' =
+0.8593 * h  ->  h = 1e-3 ABSOLUTE in v ((0.8593e-3)^2 = 7.39e-7 = the
+measured plateau). Python race confirms: h=0.001, always >=1 applied
+step, |dv| < tol (1e-7..1e-10 degenerate) with apply-last -> 110/177 in
+plain double; the multi-step Rust mask fit reaches 129/229 after adding
+52 mid-ladder probes (j=41..53, answers-irr-r3.json), then 132/229 with
+a DIVISION-form NPV (t /= (1+rate)) and NEGATIVE probe step.
+
+Case-B mid-rung +-8 misses quantified the residual: the landing offset
+scales like f0's own cancellation noise (~1.4e-13 relative), and NO
+staging of s = 1210*v - 1000 reproduces Excel's realization -> the f
+kernel is not a v-polynomial. Probed worksheet NPV directly (94 rows,
+answers-npv-r0.json; IRR's f is documented as cf0 + NPV(rate, rest)):
+- every 1-flow row matches the division form exactly;
+- best 3-flow form: REVERSE Horner division chain s = (s + c)/w from the
+  last cashflow (79/94, mask: sum stored, division extended, w stored);
+  15 rows remain at +-1..2 ULP.
+
+Next: widen NPV probe shapes (n=2,4..8 flows) to pin the chain
+associativity, close the kernel, then re-run the solver fit with the
+identified f (the schedule skeleton h=1e-3/two-step/tol is settled).
