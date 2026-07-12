@@ -23,15 +23,33 @@ pub const ACOTH_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
+/// Above this `|x|`, Excel's ACOTH switches from the direct ratio-log to the
+/// reciprocal ln1p-pair `ATANH(1/x)` path (W109). The switch is bracketed by the
+/// live corpus near `3.5` (rows just below want the ratio, just above want the
+/// pair); the exact double is not yet pinned (needs dense probes — see W109 ACOTH).
+const ACOTH_PAIR_FLOOR: f64 = 3.5;
+
 pub fn acoth_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    if n.abs() <= 1.0 {
+    let a = n.abs();
+    if a <= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // ACOTH(x) = 0.5*ln((x+1)/(x-1)) = 0.5*ln1p(2/(x-1)). The ln1p form stays accurate
-    // both near the |x|->1 boundary and for large |x| (the direct ratio form drifts up
-    // to ~1.2e14 ULP for large |x|). Excel's ACOTH is also exactly odd-symmetric, so
-    // compute on |x| and restore the sign (BUG-FUNC-027 C5).
-    Ok((0.5 * (2.0 / (n.abs() - 1.0)).ln_1p()).copysign(n))
+    // W109 identification (2026-07-12): Excel's ACOTH is exactly ODD (compute on
+    // |x|, restore the sign) and splits into two regimes, mirroring ATANH:
+    //   * `|x| < ~3.5`: the direct ratio `0.5·ln((|x|+1)/(|x|-1))` with the x87
+    //     CRT ln (the binary64 ratio's rounding is load-bearing), i.e. ATANH's
+    //     region-C form on `1/|x|` but with the ratio formed directly.
+    //   * `|x| >= ~3.5`: the reciprocal ln1p pair `0.5·(ln1p(1/|x|)−ln1p(−1/|x|))`
+    //     via the x87 `fyl2xp1` pair — i.e. `ATANH(1/|x|)` on the region-B path.
+    // Strictly dominates the prior platform-ln1p form (0 regressions, +19 rows on
+    // the 56-row live corpus; 53/56). Residual: 3 pair-branch rows (±5, +8.1) at
+    // +-1..2 ULP and the exact switch double remain open (dense probes — see W109).
+    let mag = if a < ACOTH_PAIR_FLOOR {
+        0.5 * crate::excel_numeric::excel_log((a + 1.0) / (a - 1.0))
+    } else {
+        crate::excel_numeric::excel_atanh_small(1.0 / a)
+    };
+    Ok(mag.copysign(n))
 }
 
 pub fn eval_acoth_surface(
@@ -94,5 +112,16 @@ mod tests {
             acoth_kernel(-1_000_000.0).unwrap(),
             -acoth_kernel(1_000_000.0).unwrap()
         );
+    }
+
+    /// W109 (2026-07-12): the two-regime identification. ACOTH(2) takes the
+    /// ratio branch (|x| < 3.5) and equals ATANH(0.5) bit-for-bit (the ACOTH(x) =
+    /// ATANH(1/x) identity — 0x3fe193ea7aad030b); ACOTH(20) takes the reciprocal
+    /// ln1p-pair branch (|x| >= 3.5). Both pinned from live Excel 16.0 build 20131.
+    #[test]
+    fn acoth_two_regime_matches_live_excel_pinned_witnesses() {
+        assert_eq!(acoth_kernel(2.0).unwrap().to_bits(), 0x3fe1_93ea_7aad_030b); // ratio branch
+        assert_eq!(acoth_kernel(20.0).unwrap().to_bits(), 0x3fa9_9f11_cd5f_7091); // pair branch
+        assert_eq!(acoth_kernel(-20.0).unwrap().to_bits(), 0xbfa9_9f11_cd5f_7091); // odd
     }
 }
