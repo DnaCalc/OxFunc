@@ -98,3 +98,32 @@ published tables can close it.** (Harness: `lgamma_recover.py`; data:
 Scope note: all candidates are PUBLISHED numerical-library coefficients — no Excel
 decompilation. If none of the published tables match, Excel used in-house-fitted
 coefficients and the lane is not closable by this route.
+
+## Extended search findings (2026-07-12) — the published-table route is closed
+
+- **`GAMMALN.PRECISE` == legacy `GAMMALN`** on modern build 20131: identical bits at
+  every probed point, both ±3 ULP from true. Excel 2010 introduced `.PRECISE`, but on
+  this build BOTH resolve to the SAME custom Cody-family implementation — no cleaner
+  modern library (Boost/fdlibm) shortcut exists, and it is NOT correctly-rounded.
+- **Modern-rewrite angle closed:** the legacy/precise split does not give a second,
+  matchable target.
+- **Reliably machine-readable published tables are exhausted** and none match:
+  netlib Cody 365, fdlibm 384, Boost 374, Cephes 106, DCDFLIB 174, SLATEC/R 177,
+  AS245 74, NR/GSL Lanczos ruled out.
+- **Book/paper sources are unreliable for bit-exact work:** Hart "Computer
+  Approximations" (1968) is not on the Internet Archive as full text (Open Library /
+  HathiTrust catalog only); the Cody & Hillstrom 1967 paper mirror refused connection;
+  and OCR of 16-digit coefficient tables would corrupt the very digits that must be
+  perfect. Abramowitz & Stegun / Hastings give only ~8-digit approximations (too coarse).
+- A literature note surfaced that **Cody's lgamma coefficients for the (1,2) interval
+  are "unpublished."**
+
+**Conclusion:** Excel's GAMMALN (= GAMMALN.PRECISE) is the Cody structure (split 1.5,
+D₁=−γ, `xm·(D+xm·P/Q)`) with an **unpublished coefficient set** — most likely Microsoft's
+own minimax re-fit or a proprietary-vendor table. It is NOT recoverable from output bits
+(fitting is rounding-floor-limited) and NOT matched by any public table. The lane is
+**closed to reverse-engineering by this route**; genuine closure would need the actual
+Microsoft/vendor source constants. DEFERRED as characterized-and-blocked. The value banked:
+the tree is fully identified (Cody family, 3 rationals over (0.5,12) + Stirling), the exact
+netlib Cody constants are on file as the nearest published reference, and the fitting/precision
+dead-ends are documented so the lane is not re-attacked by the same routes.
