@@ -23,16 +23,33 @@ pub const ATANH_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
+/// Below this |x|, Excel switches ATANH off the naive log-ratio onto a distinct
+/// accurate small-argument path (an x87 `fyl2xp1` ln1p-difference, per W109);
+/// the exact switch and a non-odd transition band near `1e-4` are not yet pinned,
+/// so the retained platform path below the boundary is unchanged.
+const ATANH_RATIO_FLOOR: f64 = 1.25e-4;
+
 pub fn atanh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
-    if n.abs() >= 1.0 {
+    let a = n.abs();
+    if a >= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // Excel's ATANH is exactly odd-symmetric: ATANH(-x) == -ATANH(x) bit-for-bit.
-    // The platform libm loses that symmetry near -1, so compute on |x| and restore
-    // the sign. A 2026-07-10 x87-LN candidate closed the 0.1/0.2 witnesses but
-    // regressed 71/368 expanded rows (tiny inputs and near-boundary values), so it
-    // remains a search hypothesis rather than the production path.
-    Ok(n.abs().atanh().copysign(n))
+    // W109 identification (2026-07-12): for |x| >= ~1.25e-4 — which covers the
+    // entire catalog band (mid-small witnesses) AND the near-1 rows — Excel's
+    // ATANH is the naive log-ratio 0.5·ln((1+x)/(1-x)) evaluated with the x87
+    // CRT ln, bit-for-bit (163/163 live rows). The double-rounding of the
+    // binary64 ratio is load-bearing; a higher-precision ratio does NOT match.
+    // The form is naturally odd (x -> -x maps the ratio to its reciprocal, ln
+    // negates), so no abs/copysign is needed here.
+    if a >= ATANH_RATIO_FLOOR {
+        return Ok(0.5 * crate::excel_numeric::excel_log((1.0 + n) / (1.0 - n)));
+    }
+    // Small-|x| region: distinct accurate path in Excel (ln1p-difference). The
+    // platform atanh already matches there for tiny x (and atanh(x)->x as x->0);
+    // computing on |x| and restoring the sign preserves the odd symmetry the
+    // platform libm otherwise loses near the domain edge. Region-B bit-exactness
+    // (x87 ln1p-pair) and the ~1e-4 transition band remain open — see W109.
+    Ok(a.atanh().copysign(n))
 }
 
 pub fn eval_atanh_surface(
@@ -84,14 +101,47 @@ mod tests {
 
     #[test]
     fn atanh_x87_log_candidate_is_not_global() {
+        // The ratio-log is the production path only for |x| >= the floor; below
+        // it the small-arg path must be retained. The subnormal input is the
+        // canonical witness: the ratio rounds to 1 and collapses to zero, while
+        // live Excel (and the retained path) preserve the input.
         let candidate = |x: f64| 0.5 * crate::excel_numeric::excel_log((1.0 + x) / (1.0 - x));
-        assert_eq!(candidate(0.1).to_bits(), 0x3fb9_af93_cd23_4415);
-        assert_eq!(candidate(0.2).to_bits(), 0x3fc9_f323_ecbf_9849);
-
-        // Live Excel preserves the smallest positive subnormal, whereas the
-        // ratio rounds to 1 and this candidate collapses it to zero.
         let tiny = f64::from_bits(1);
         assert_eq!(candidate(tiny).to_bits(), 0.0_f64.to_bits());
         assert_eq!(atanh_kernel(tiny).unwrap().to_bits(), tiny.to_bits());
+    }
+
+    /// W109 (2026-07-12): region-C ratio-log is bit-exact to live Excel 16.0
+    /// build 20131 across the catalog mid-small band and up to the domain edge
+    /// (163/163 answered rows; pins from G4-hyp / G4-02 answer sets).
+    #[test]
+    fn atanh_region_c_matches_live_excel_pinned_witnesses() {
+        let pins: [(u64, u64); 5] = [
+            (0x3fb9_9999_9999_999a, 0x3fb9_af93_cd23_4415), // 0.1
+            (0x3fc9_9999_9999_999a, 0x3fc9_f323_ecbf_9849), // 0.2
+            (0x3f94_7ae1_47ae_147b, 0x3f94_7b94_47a9_a9f8), // 0.02 (band floor)
+            (0x3fe0_0000_0000_0000, 0x3fe1_93ea_7aad_030b), // 0.5
+            (0x3fde_147a_e147_ae14, 0x3fe0_527f_06cd_3e63), // 0.47
+        ];
+        for (xb, want) in pins {
+            let x = f64::from_bits(xb);
+            assert_eq!(atanh_kernel(x).unwrap().to_bits(), want, "x={x}");
+        }
+    }
+
+    /// W109 (2026-07-12): Excel ATANH is NOT exactly odd in region C — it
+    /// evaluates the signed ratio 0.5·ln((1+x)/(1-x)) directly, and the negative
+    /// argument rounds independently. Live Excel: ATANH(-0.2) = 0xbfc9f323ecbf984a,
+    /// which is 1 ULP away from -ATANH(0.2) = 0xbfc9f323ecbf9849. The prior
+    /// copysign-forced oddness therefore introduced a divergence; the signed ratio
+    /// reproduces Excel's actual (non-odd) value.
+    #[test]
+    fn atanh_region_c_is_not_odd_and_matches_signed_ratio() {
+        let x = f64::from_bits(0x3fc9_9999_9999_999a); // 0.2
+        assert_eq!(atanh_kernel(-x).unwrap().to_bits(), 0xbfc9_f323_ecbf_984a);
+        assert_ne!(
+            atanh_kernel(-x).unwrap().to_bits(),
+            (-atanh_kernel(x).unwrap()).to_bits()
+        );
     }
 }
