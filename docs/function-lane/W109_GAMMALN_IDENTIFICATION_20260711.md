@@ -233,6 +233,39 @@ on each half. Realistic closure paths: (1) obtain Excel/MS's actual lgamma sourc
 (2) a joint op-graph × coefficient search far larger than fitting. DEFERRED — best-characterized
 hard lane in W109.
 
+## 2026-07-12 residual-DRIVEN recovery (replaces pass/fail scoring)
+
+Pass/fail match-count is a near-flat, information-destroying objective for this
+inverse problem. Replaced it with a **residual-structure** harness
+(`residual_harness.py`, `gn_fit.py`, `opgraph_scan.py`): the signed ULP residual
+`Excel(x)−eval(c,x)` is decomposed into a SMOOTH component (moving-average →
+coefficient/metric/form error) and a HIGH-FREQUENCY component (→ op-graph /
+per-op rounding). This separates the two unknowns and gives each a continuous
+objective.
+
+Findings on [1,1.5] (netlib Cody form, 718 pts):
+- **Coefficients are recoverable to ~1 ULP.** Gauss-Newton on the residual (value
+  space, numerical Jacobian) drives the SMOOTH component `1.32 → 0.99 ULP`
+  (exact 180 → 224) — the coefficient error is small and shrinks under GN, i.e.
+  Cody's coefficients are already within ~1–2 ULP of Excel's.
+- **The op-graph family is x87-extended.** The NOISE floor is op-graph-specific
+  and coefficient-independent. Ranked over 9 stagings: every **x87** variant
+  (1.24–1.29 ULP) beats every **plain-double** variant (1.41–1.58); `x87
+  continuous` (extended registers, single final round) is whitest at **1.24**.
+  This is a robust structural identification — Excel evaluates the rational in
+  x87 extended precision (consistent with the 1990s x87 origin), which the
+  pass/fail count (all ~25–40%) completely hid.
+- Neither the smooth (~1.0) nor the noise (~1.24) floor is yet 0, so the EXACT
+  x87 staging + joint coefficient optimum are not both pinned. The residual
+  floor is now the objective to minimize.
+
+**Reformulated recovery pipeline (residual-driven):** (1) enumerate op-graph
+stagings, rank by NOISE floor → pin the x87 staging that whitens it to ~0;
+(2) joint/stable Gauss-Newton in that op-graph to drive SMOOTH → 0; (3) LLL /
+`fpminimax` for the last bit. The blocker to full closure is a numerically stable
+x87-op-graph Gauss-Newton (the current x87 Jacobian is noisy through the rounding)
+plus finer staging enumeration. Artifacts in `smart-fuzzer/work/w109/G3-02-gamma/`.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
