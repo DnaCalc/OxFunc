@@ -757,6 +757,19 @@ fn logest_kernel(
     Ok(row_array(&row))
 }
 
+/// Worksheet `FORECAST`/`FORECAST.LINEAR` — bit-exact to 64-bit Excel on
+/// `x86_64` (W109 sweep, 65/65 discovery + adversarial rows incl. 1e12
+/// common offsets, n=2, near-constant x, n=12 irregular sets):
+///
+/// ```text
+/// mx  = (Σx)/n ; my = (Σy)/n            (forward sums, plain double)
+/// num = Σ (x-mx)·(y-my) ; den = Σ (x-mx)²   (single fused loop)
+/// b   = num/den ; a = my - b·mx
+/// FORECAST = a + b·xp                    (intercept form, NOT point-slope)
+/// ```
+///
+/// Excel does NOT route FORECAST through the LINEST least-squares pipeline
+/// (unlike TREND, which does and therefore publishes different bits).
 fn forecast_pair_kernel(
     x: f64,
     known_y: &NumericVector,
@@ -765,24 +778,34 @@ fn forecast_pair_kernel(
     if known_x.values.len() != known_y.values.len() {
         return Err(WorksheetErrorCode::NA);
     }
-    let known_x_prepared = predictor_input_from_optional(
-        Some(NumericMatrix {
-            rows: known_x.values.len(),
-            cols: 1,
-            values: known_x.values.clone(),
-        }),
-        known_y,
-    )
-    .map_err(|error| map_regression_forecast_error_to_ws(&error))?;
-    let new_x = PreparedPredictorInput {
-        predictors: NumericMatrix {
-            rows: 1,
-            cols: 1,
-            values: vec![x],
-        },
-        output_shape: OutputShape::Scalar,
-    };
-    trend_kernel(known_y, &known_x_prepared, &new_x, true)
+    let n = known_x.values.len();
+    if n == 0 {
+        return Err(WorksheetErrorCode::Div0);
+    }
+    let mut sum_x = 0.0;
+    for v in &known_x.values {
+        sum_x += *v;
+    }
+    let mut sum_y = 0.0;
+    for v in &known_y.values {
+        sum_y += *v;
+    }
+    let nf = n as f64;
+    let mean_x = sum_x / nf;
+    let mean_y = sum_y / nf;
+    let mut num = 0.0;
+    let mut den = 0.0;
+    for (xv, yv) in known_x.values.iter().zip(known_y.values.iter()) {
+        let dx = *xv - mean_x;
+        num += dx * (*yv - mean_y);
+        den += dx * dx;
+    }
+    if den == 0.0 {
+        return Err(WorksheetErrorCode::Div0);
+    }
+    let b = num / den;
+    let a = mean_y - b * mean_x;
+    Ok(CalcValue::number(a + b * x))
 }
 
 pub fn eval_trend_surface(
@@ -919,6 +942,49 @@ mod tests {
     use crate::resolver::{CallerContext, ReferenceSystemCapabilities};
     use crate::value::{ArrayShape, ReferenceKind, ReferenceLike};
     use std::collections::BTreeMap;
+
+    fn nv(values: Vec<f64>) -> NumericVector {
+        let shape = VectorShape::Column(values.len());
+        NumericVector { values, shape }
+    }
+
+    /// W109 sweep pins — live Excel 16.0 build 20131 (65/65 discovery +
+    /// adversarial rows replay bit-exactly through this kernel; corpora at
+    /// smart-fuzzer/work/w109/G3-03-answers-forecast.json / -fc-adv.json).
+    #[test]
+    fn forecast_matches_live_excel_pinned_witnesses() {
+        let cases: [(f64, Vec<f64>, Vec<f64>, u64); 3] = [
+            (
+                1.0,
+                vec![10.5, -3.25, 7.75, 22.0, 0.125],
+                vec![0.5, 1.75, 2.25, 5.0, 3.125],
+                0x4006f2ee1992538a,
+            ),
+            (
+                0.5,
+                vec![1e12 + 1.0, 1e12 + 2.0, 1e12 + 2.5, 1e12 + 4.75],
+                vec![1e9 + 1.0, 1e9 + 2.0, 1e9 + 3.0, 1e9 + 4.0],
+                0x426d11d37f8806cd,
+            ),
+            (
+                0.5,
+                vec![
+                    3.1, -1.4, 15.9, 2.65, 35.8, -9.79, 32.3, 8.46, 26.4, 33.8, 3.27, 9.5,
+                ],
+                vec![
+                    2.71, 8.28, 1.82, 8.45, 9.04, 5.23, 5.36, 2.87, 4.71, 3.52, 6.6, 2.87,
+                ],
+                0x402beba52e78bf17,
+            ),
+        ];
+        for (x, ys, xs, want) in cases {
+            let got = forecast_pair_kernel(x, &nv(ys), &nv(xs)).expect("numeric");
+            let CoreValue::Number(v) = got.core() else {
+                panic!("expected number");
+            };
+            assert_eq!(v.to_bits(), want, "x={x}");
+        }
+    }
 
     struct MockResolver {
         map: BTreeMap<String, CalcValue>,
