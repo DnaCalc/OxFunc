@@ -43,13 +43,35 @@ function ConvertTo-OracleRequest {
     $args = New-Object 'System.Collections.Generic.List[object]'
     foreach ($a in @($Probe.args)) {
         if ($a -is [System.Array] -or $a -is [System.Collections.IList]) {
-            $values = @(@($a) | ForEach-Object { ConvertFrom-BitsHex ([string]$_) })
-            [void]$args.Add(@{ kind = "matrix"; rows = $values.Count; cols = 1; values = $values })
+            $items = @($a)
+            if ($items.Count -gt 0 -and ($items[0] -is [System.Array] -or $items[0] -is [System.Collections.IList])) {
+                # 2-D matrix: array of row arrays (row-major)
+                $rows = $items.Count
+                $cols = @($items[0]).Count
+                $values = @()
+                foreach ($row in $items) {
+                    $values += @(@($row) | ForEach-Object { ConvertFrom-BitsHex ([string]$_) })
+                }
+                [void]$args.Add(@{ kind = "matrix"; rows = $rows; cols = $cols; values = $values })
+            } else {
+                $values = @($items | ForEach-Object { ConvertFrom-BitsHex ([string]$_) })
+                [void]$args.Add(@{ kind = "matrix"; rows = $values.Count; cols = 1; values = $values })
+            }
         } else {
             [void]$args.Add((ConvertFrom-BitsHex ([string]$a)))
         }
     }
-    return @{ function_name = $FunctionName; args = $args.ToArray() }
+    $request = @{ function_name = $FunctionName; args = $args.ToArray() }
+    $hasRi = $false
+    if ($Probe -is [System.Collections.IDictionary]) {
+        $hasRi = $Probe.Contains("result_index")
+    } else {
+        $hasRi = ($Probe.PSObject.Properties.Name -contains "result_index")
+    }
+    if ($hasRi -and $null -ne $Probe.result_index) {
+        $request.result_index = @($Probe.result_index | ForEach-Object { [int]$_ })
+    }
+    return $request
 }
 
 $batchDoc = Get-Content $Batch -Raw | ConvertFrom-Json
