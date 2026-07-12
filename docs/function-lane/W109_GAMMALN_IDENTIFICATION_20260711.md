@@ -201,6 +201,38 @@ combination the workflow did not isolate. Harness: `lgamma_recover.py`;
 data: `answers-g12dense.json` (1468 pts). NB: `identify_constant` tol was 1e-25
 (can't fire on doubles) — widen to ~1e-15 if PSLQ-anchoring is retried.
 
+## 2026-07-12 tree-aware probing — TREE largely identified, op-graph is the floor
+
+Following the 1990s-x87 + Gaussian-quadrature-probing insight: instead of blind
+fitting, probe at exactly-representable offsets and read the tree directly.
+
+**Findings (the tree is now substantially pinned):**
+- **(b) x87 on fdlibm's tc-tree does NOT help**: fdlibm's exact tc-branch scores
+  177/750 under the realistic x87 model (80-bit within expressions, round at each
+  `double` temp) vs 179/750 plain — same worst-5. Excel's tree ≠ fdlibm's tree.
+- **Exact-offset peel** `x = 1 + m·2⁻ᵏ` (so x−1 is an exact power of two): the value
+  peels term-by-term. `excel(1+2⁻ᵏ)/2⁻ᵏ → −0.5772156649015329` to ~52 bits ⇒
+  **D₁ = correctly-rounded −γ** (digamma(1)); Excel near x=1 tracks the TRUE function
+  to ~1 ULP.
+- **Breakpoint at x=1.5** (Cody's classic split): the window-median error flips sign
+  — `+1/+2` ULP on [1.1,1.5], zero at 1.5, `−1/−2` on [1.55,2] — the fingerprint of
+  two separate minimax approximations meeting at 1.5 (rational in x−1 below, x−2 above).
+- **Cody form `lgamma(x)=(x−1)·[(x−1)·N/D + D₁]`, D₁=−γ, refit N/D on [1,1.5]**: best
+  229/718 at (5,5), worst 15. Still a plateau.
+
+**Why every form plateaus (~32–41%):** fitting to ±5-ULP-rounded output cannot recover
+coefficients to better than ~5 ULP (fdlibm's PUBLISHED coeffs give worst-5 everywhere;
+any REFIT from Excel's rounded bits gives worst≥5-15). So the residual is the rounding
+floor of the fit itself. Closing it needs Excel's EXACT stored coefficients + exact
+op-order — information not present in the output bits. LLL can't break the floor because
+setting up the lattice requires the exact op-graph, which is the unknown.
+
+**Tree now known:** fdlibm/Cody-family minimax rational, split at 1.5, D₁=−γ, near-1 ≈
+true function. **Unknown (the wall):** the exact N/D coefficients + per-op evaluation graph
+on each half. Realistic closure paths: (1) obtain Excel/MS's actual lgamma source constants;
+(2) a joint op-graph × coefficient search far larger than fitting. DEFERRED — best-characterized
+hard lane in W109.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
