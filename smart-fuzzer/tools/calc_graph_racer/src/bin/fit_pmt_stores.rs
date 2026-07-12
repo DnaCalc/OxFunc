@@ -161,21 +161,45 @@ fn pmt(rate: f64, n: f64, pv: f64, fvv: f64, ty: f64, m: u32, pform: u8, comp: u
             let fac = V::new(rate).mul(p).div(pm1).st(bit(5));
             num.mul(fac).div(tf).st(bit(7)).neg().f()
         }
-        _ => {
+        5 => {
             // PV-side dual: -(pv + fv/P)/(tf*(1 - 1/P)/rate)
             let pinv = V::new(1.0).div(p).st(bit(4));
             let apvf = V::new(1.0).sub(pinv).st(bit(3)).div(V::new(rate)).st(bit(5));
             let num = V::new(pv).add(V::new(fvv).mul(pinv).st(bit(6))).st(bit(6));
             num.div(tf.mul(apvf).st(bit(5))).st(bit(7)).neg().f()
         }
+        6 => {
+            // den = (tf/rate)*(P-1)  [tf/rate grouped first]
+            let num = V::new(pv).mul(p).add(V::new(fvv)).st(bit(6));
+            let tr = tf.div(V::new(rate)).st(bit(4));
+            let den = tr.mul(pm1).st(bit(5));
+            num.div(den).st(bit(7)).neg().f()
+        }
+        7 => {
+            // seq: (num/(P-1))/tf*rate
+            let num = V::new(pv).mul(p).add(V::new(fvv)).st(bit(6));
+            let a = num.div(pm1).st(bit(4)).div(tf).st(bit(5));
+            a.mul(V::new(rate)).st(bit(7)).neg().f()
+        }
+        8 => {
+            // seq: (num*rate)/tf/(P-1)
+            let num = V::new(pv).mul(p).add(V::new(fvv)).st(bit(6));
+            let a = num.mul(V::new(rate)).st(bit(4)).div(tf).st(bit(5));
+            a.div(pm1).st(bit(7)).neg().f()
+        }
+        _ => {
+            // (num/tf)*(rate/(P-1))
+            let num = V::new(pv).mul(p).add(V::new(fvv)).st(bit(6));
+            let a = num.div(tf).st(bit(4));
+            let b = V::new(rate).div(pm1).st(bit(5));
+            a.mul(b).st(bit(7)).neg().f()
+        }
     }
 }
 
-fn main() {
-    let ws: WitnessSet = serde_json::from_str(
-        &std::fs::read_to_string("../../work/w109/G6-solvers/answers-pmt-r0.json").expect("read"),
-    )
-    .expect("parse");
+fn load_obs(path: &str) -> Vec<(Vec<f64>, u64)> {
+    let ws: WitnessSet =
+        serde_json::from_str(&std::fs::read_to_string(path).expect("read")).expect("parse");
     let mut obs: Vec<(Vec<f64>, u64)> = Vec::new();
     for w in &ws.witnesses {
         let a: Vec<f64> = w
@@ -193,15 +217,62 @@ fn main() {
             obs.push((a, want.to_bits()));
         }
     }
-    println!("{} PMT rows", obs.len());
+    obs
+}
+
+fn score(obs: &[(Vec<f64>, u64)], m: u32, pform: u8, comp: u8) -> u32 {
+    obs.iter()
+        .filter(|(a, want)| pmt(a[0], a[1], a[2], a[3], a[4], m, pform, comp).to_bits() == *want)
+        .count() as u32
+}
+
+fn main() {
+    let argv: Vec<String> = std::env::args().collect();
+    let train_path = argv.get(1).cloned().unwrap_or_else(|| {
+        "../../work/w109/G6-solvers/answers-pmt-r0.json".to_string()
+    });
+    let heldout_path = argv.get(2).cloned();
+    let obs = load_obs(&train_path);
+    println!("{} PMT train rows ({train_path})", obs.len());
+    // held-out validation mode: fit on train, RANK by held-out score (overfit killer)
+    if let Some(hp) = heldout_path {
+        let ho = load_obs(&hp);
+        println!("{} PMT held-out rows ({hp})", ho.len());
+        let mut all: Vec<(u32, u32, u8, u8)> = Vec::new();
+        for pform in 0u8..6 {
+            for comp in 0u8..10 {
+                for m in 0u32..(1 << 9) {
+                    all.push((score(&obs, m, pform, comp), m, pform, comp));
+                }
+            }
+        }
+        let best_train = all.iter().map(|r| r.0).max().unwrap();
+        // rank ALL candidates by held-out -> the model family's ceiling on fresh data
+        let mut cand: Vec<(u32, u32, u32, u8, u8)> = all
+            .iter()
+            .map(|&(tr, m, pf, cp)| (score(&ho, m, pf, cp), tr, m, pf, cp))
+            .collect();
+        cand.sort_by(|a, b| b.0.cmp(&a.0).then(b.1.cmp(&a.1)));
+        println!("top by HELD-OUT over ALL candidates (best_train={best_train}):");
+        for (h, tr, m, pf, cp) in cand.iter().take(16) {
+            println!("  held {h:3}/{}  train {tr:2}/{}  pform{pf} comp{cp} mask {m:09b}", ho.len(), obs.len());
+        }
+        let (_, _, m, pf, cp) = cand[0];
+        println!("BEST-ON-HELDOUT pform{pf} comp{cp} mask {m:09b}:");
+        for (a, want) in &ho {
+            let got = pmt(a[0], a[1], a[2], a[3], a[4], m, pf, cp);
+            if got.to_bits() != *want {
+                println!("  MISS rate={:.6e} n={} pv={} fv={} ty={} {:+} ulp",
+                    a[0], a[1], a[2], a[3], a[4], got.to_bits() as i64 - *want as i64);
+            }
+        }
+        return;
+    }
     let mut results: Vec<(u32, u32, u8, u8)> = Vec::new();
     for pform in 0u8..6 {
-        for comp in 0u8..6 {
+        for comp in 0u8..10 {
             for m in 0u32..(1 << 9) {
-                let sc = obs
-                    .iter()
-                    .filter(|(a, want)| pmt(a[0], a[1], a[2], a[3], a[4], m, pform, comp).to_bits() == *want)
-                    .count() as u32;
+                let sc = score(&obs, m, pform, comp);
                 results.push((sc, m, pform, comp));
             }
         }
