@@ -22,17 +22,27 @@ approximation error. Exact Cephes P/Q scores `3/32` on the band.
   the near-1 rows): `ATANH(x) = 0.5·ln((1+x)/(1-x))`, ratio formed in binary64
   (double-rounding LOAD-BEARING — a higher-precision ratio scores `22/57`),
   ln via the x87 CRT chain. **163/163 bit-exact.** PROMOTED into atanh.rs.
-- **Region B** (tiny `|x|`, roughly `1.66e-8 .. ~1e-4`): a distinct accurate
-  path, empirically Excel's x87 `fyl2xp1` ln1p-difference `0.5·(ln1p(x)-ln1p(-x))`;
-  the naive ratio catastrophically cancels here (millions of ULP). The x87
-  fyl2xp1-pair reproduces most of it; residual `±1` ULP rows are the microcode
-  vs Excel's exact log1p. NOT yet bit-exact; platform path retained (no regression).
+- **Region B** (`|x| <= ~9.0e-5`): Excel's x87 `fyl2xp1` ln1p pair
+  `0.5·(ln1p(x)-ln1p(-x))`, extended temporaries with a SINGLE final store —
+  **175/175 bit-exact** on every live region-B row. **PROMOTED** into `atanh.rs`
+  via the production `excel_atanh_small` helper (`excel_numeric`); the naive ratio
+  catastrophically cancels here (thousands of ULP). Passthrough (`atanh(x)->x` for
+  subnormal x) is emergent from this form; the pair is exactly odd (negative row =
+  sign-flip). The SSE2 double-double log1p pair scores only `133/175` here, so the
+  provider is decisively the x87 hardware `fyl2xp1`, consistent with Excel's
+  EXP/LN/POWER transcendental family.
 - **Passthrough** (`|x| <~ 1.66e-8`): returns `x`; emergent from region-B
   accuracy (`atanh(x) -> x` while `x³/3 < ½ ulp`), not a hard branch. Corpus:
   `x=1.0985e-8` passes, `x=1.42805e-8` does not.
-- **Transition band** (`|x| ~ 1e-4`): 6 rows where NEITHER the pair NOR the
-  ratio matches, and where Excel is provably **not odd** (miss `+521` at `+x`
-  vs `+3589` at `-x`). A genuinely distinct micro-path; open.
+- **Transition/switch band** (3 distinct `|x|`: `9.563e-5, 9.9996e-5, 1.0137e-4`;
+  6 rows): NEITHER the pair NOR the ratio matches. Sharpened 2026-07-12: the pair
+  is exact up to `9.02e-5` and the ratio is exact from `1.0745e-4` up, with NO
+  rows in `(9.02e-5, 9.56e-5)` — a clean gap containing exactly these 3 values.
+  In the band, Excel is `+1` ULP above the x87 extended pair on ALL 6 rows, and
+  the SSE2 log1p pair / the binary64 fdlibm-style argument `2x+2x²/(1-x)` via
+  fyl2xp1 each hit `4/6` (the same 4). This is a sub-½-ULP internal-log1p switch
+  regime; 3 points cannot disambiguate the exact staging without overfitting.
+  Open, gated on dense probes.
 
 ## Excel ATANH is NOT globally odd
 
@@ -43,15 +53,18 @@ Excel does not have, i.e. it introduced a divergence. The signed ratio removes i
 
 ## Scores
 
-Piecewise (x87 pair below T, ratio-log above): best `344/350` at `T≈9.5e-5..1.05e-4`,
-the 6 residuals all in the non-odd transition band. Region C alone `163/163`.
-Promotion boundary chosen conservatively at `1.25e-4` (region C proven `163/163`
-there) with the platform path retained below (strict improvement, zero regression;
-full corpus `186 -> 301/350`, region C `50 -> 163/163`).
+Piecewise (x87 pair below T, ratio-log above): best `344/350` at `T≈1.0e-4..1.05e-4`,
+the 6 residuals all in the switch band. **Region B `175/175` and region C `163/163`
+both PROMOTED** (2026-07-12): the production `atanh_kernel` now uses `excel_atanh_small`
+(x87 fyl2xp1 pair) below `1.05e-4` and the x87 ratio-log at/above it. Full corpus
+`344/350`; the only open rows are the 6 band rows at `+1` ULP.
 
 ## Next
 
-Pin the exact B->C switch and the transition micro-path; port the x87 fyl2xp1
-ln1p-pair into a production helper to close region B; then lower the promotion
-floor to Excel's true switch and reach `350/350`. ACOTH inherits region B's
-difficulty (literal `ATANH(1/x)` ruled out — forming `1/x` first scores `18/57`).
+Close the band: harvest dense adjacent-double live probes across `[8e-5, 1.3e-4]`
+both signs (≥60/side) to pin the exact B→C switch double and identify the band
+micro-path (candidates: SSE2 double-double log1p, fdlibm-style argument, or a third
+transitional path — each currently `4/6`). Low ROI (6 rows) vs the rest of W109, so
+deferred to a cleanup pass. ACOTH (G4-03) inherits the region-B x87 fyl2xp1 path —
+see the ACOTH racer follow-up; literal `ATANH(1/x)` forming `1/x` first is ruled out
+(`18/57`).
