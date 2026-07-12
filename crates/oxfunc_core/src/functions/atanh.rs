@@ -23,33 +23,33 @@ pub const ATANH_META: FunctionMeta = function_spec! {
     surface_fec_dependency_profile: FecDependencyProfile::RefOnly,
 };
 
-/// Below this |x|, Excel switches ATANH off the naive log-ratio onto a distinct
-/// accurate small-argument path (an x87 `fyl2xp1` ln1p-difference, per W109);
-/// the exact switch and a non-odd transition band near `1e-4` are not yet pinned,
-/// so the retained platform path below the boundary is unchanged.
-const ATANH_RATIO_FLOOR: f64 = 1.25e-4;
+/// Below this |x|, Excel switches ATANH off the naive log-ratio onto the x87
+/// `fyl2xp1` ln1p-difference small-argument path (W109). The ratio-log is
+/// bit-exact for every live row at |x| >= ~1.07e-4; the pair is bit-exact for
+/// every row at |x| <= ~9.0e-5. The switch is placed in the gap between them.
+const ATANH_RATIO_FLOOR: f64 = 1.05e-4;
 
 pub fn atanh_kernel(n: f64) -> Result<f64, WorksheetErrorCode> {
     let a = n.abs();
     if a >= 1.0 {
         return Err(WorksheetErrorCode::Num);
     }
-    // W109 identification (2026-07-12): for |x| >= ~1.25e-4 — which covers the
-    // entire catalog band (mid-small witnesses) AND the near-1 rows — Excel's
+    // W109 identification (2026-07-12): for |x| >= the ratio floor — which covers
+    // the entire catalog band (mid-small witnesses) AND the near-1 rows — Excel's
     // ATANH is the naive log-ratio 0.5·ln((1+x)/(1-x)) evaluated with the x87
     // CRT ln, bit-for-bit (163/163 live rows). The double-rounding of the
     // binary64 ratio is load-bearing; a higher-precision ratio does NOT match.
-    // The form is naturally odd (x -> -x maps the ratio to its reciprocal, ln
-    // negates), so no abs/copysign is needed here.
+    // The signed ratio is evaluated directly (Excel's ATANH is NOT exactly odd
+    // here — the negative argument rounds independently), so no abs/copysign.
     if a >= ATANH_RATIO_FLOOR {
         return Ok(0.5 * crate::excel_numeric::excel_log((1.0 + n) / (1.0 - n)));
     }
-    // Small-|x| region: distinct accurate path in Excel (ln1p-difference). The
-    // platform atanh already matches there for tiny x (and atanh(x)->x as x->0);
-    // computing on |x| and restoring the sign preserves the odd symmetry the
-    // platform libm otherwise loses near the domain edge. Region-B bit-exactness
-    // (x87 ln1p-pair) and the ~1e-4 transition band remain open — see W109.
-    Ok(a.atanh().copysign(n))
+    // Small-|x| region B: Excel's x87 `fyl2xp1` ln1p pair 0.5·(ln1p(x)−ln1p(−x)),
+    // extended temporaries with a single final store — bit-exact on every live
+    // region-B row (175/175, |x| <= ~9.0e-5), and passthrough (atanh(x)->x) is
+    // emergent for subnormal x. A narrow band (~9.5e-5..1.07e-4) straddling the
+    // switch is +-1 ULP on Excel's exact internal-log1p rounding — open, see W109.
+    Ok(crate::excel_numeric::excel_atanh_small(n))
 }
 
 pub fn eval_atanh_surface(
@@ -140,6 +140,37 @@ mod tests {
         let x = f64::from_bits(0x3fc9_9999_9999_999a); // 0.2
         assert_eq!(atanh_kernel(-x).unwrap().to_bits(), 0xbfc9_f323_ecbf_984a);
         assert_ne!(
+            atanh_kernel(-x).unwrap().to_bits(),
+            (-atanh_kernel(x).unwrap()).to_bits()
+        );
+    }
+
+    /// W109 (2026-07-12): region B — Excel's x87 `fyl2xp1` ln1p pair. Bit-exact
+    /// to live Excel 16.0 build 20131 on 175/175 region-B rows (|x| below the
+    /// ratio-log switch). Pins span passthrough, the small-correction regime, and
+    /// the near-boundary top of region B (all from the G4-hyp / G4-02 answer sets).
+    #[test]
+    fn atanh_region_b_matches_live_excel_pinned_witnesses() {
+        let pins: [(u64, u64); 4] = [
+            (0x01a5_6e1f_c2f8_f359, 0x01a5_6e1f_c2f8_f359), // 1e-300 (passthrough)
+            (0x3e6c_775b_423f_371b, 0x3e6c_775b_423f_3723), // 5.302250e-08
+            (0x3eab_9139_70d9_aa3f, 0x3eab_9139_70d9_b111), // 8.215690e-07
+            (0x3f15_0c68_6bf5_4163, 0x3f15_0c68_6cb7_882b), // 8.029353e-05 (near boundary)
+        ];
+        for (xb, want) in pins {
+            let x = f64::from_bits(xb);
+            assert_eq!(atanh_kernel(x).unwrap().to_bits(), want, "x={x:e}");
+        }
+    }
+
+    /// The region-B pair is exactly odd by construction (x -> -x negates the
+    /// ln1p difference), unlike the region-C ratio. Live Excel agrees: the
+    /// negative row is the exact sign flip of the positive one.
+    #[test]
+    fn atanh_region_b_pair_is_odd() {
+        let x = f64::from_bits(0x3f15_0c68_6bf5_4163); // 8.029353e-05
+        assert_eq!(atanh_kernel(-x).unwrap().to_bits(), 0xbf15_0c68_6cb7_882b);
+        assert_eq!(
             atanh_kernel(-x).unwrap().to_bits(),
             (-atanh_kernel(x).unwrap()).to_bits()
         );
