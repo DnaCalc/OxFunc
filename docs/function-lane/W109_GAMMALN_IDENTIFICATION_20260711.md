@@ -166,6 +166,41 @@ at 1.5, compensated/double-double + Estrin evaluation, PSLQ-anchored coefficient
 exact published Cephes/fdlibm/Boost branches, alternative variable/no-factor) is
 running with adversarial held-out verification of any family that beats the plateau.
 
+## 2026-07-12 recovery workflow — 6 families, convergent hard wall + family ID
+
+A 6-agent recovery workflow (rational, Cody sub-band split, compensated/dd eval,
+PSLQ-anchor, exact published impls, alt-variable) with adversarial verification.
+**None close** (best 601/1468 ≈ 41%), but they CONVERGED on the cause:
+
+- **Precision monotonically HURTS** (compensated-eval): plain double 571 →
+  double-double 460 → x87-extended-throughout 462. Falsifies extended-precision;
+  Excel uses plain-double sloppy per-op rounding. `R=excel/((x-1)(x-2))` is
+  provably NOT a polynomial (fit residual flat ~2.3 ULP, degree 20→32).
+- **Exact-real ceiling of ANY smooth form ≈ 478/1468 — BELOW sloppy-double 571**
+  (rational). So Excel's bits encode a specific finite-precision OP-FINGERPRINT,
+  not a cleaner function. x87 per-op double-rounded (spill) poly reaches 579 —
+  slightly better than plain, still a plateau.
+- **FAMILY IDENTIFIED (published-impls):** fdlibm `__ieee754_lgamma_r` `1≤x<2`
+  branch (centered at the lgamma minimum `tc=1.46163214496836224576`, 3-way
+  parallel poly `p=z·p1−(tt−w·(p2+y·p3))`, `val=tf+p`) lands **within 5 ULP at
+  EVERY point**; Boost `lgamma_small_imp<64>` `(x-1)(x-2)(Y+P/Q)` within 6.
+  Excel is a minimax rational in THIS family. But refitting Excel's coefficients
+  into fdlibm's exact op-tree still caps ~225/750 with a stubborn 4-ULP residual
+  that ULP-refine cannot remove.
+- A **universal ~5-ULP wall** appears in every form/cut/precision → the residual
+  is Excel's **exact per-operation evaluation graph** (op-order + per-op rounding),
+  NOT the coefficients, function form, variable, or subbanding.
+
+**Verdict:** GAMMALN(1,2) is the "custom Microsoft implementation" — a minimax
+rational in the fdlibm/Boost family, reproducible only by matching Excel's exact
+internal op-graph. Not recoverable from observed bits by form/coefficient fitting.
+Hardest lane in W109; DEFERRED. The one untested experiment for cycle-back: take
+fdlibm's tc-centered op-tree structure EXACTLY and apply the x87 per-op double-round
+(spill) model while jointly refitting coefficients — the only precision×op-graph
+combination the workflow did not isolate. Harness: `lgamma_recover.py`;
+data: `answers-g12dense.json` (1468 pts). NB: `identify_constant` tol was 1e-25
+(can't fire on doubles) — widen to ~1e-15 if PSLQ-anchoring is retried.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
