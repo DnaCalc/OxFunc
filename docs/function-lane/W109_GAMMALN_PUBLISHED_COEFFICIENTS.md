@@ -117,6 +117,14 @@ coefficients and the lane is not closable by this route.
   perfect. Abramowitz & Stegun / Hastings give only ~8-digit approximations (too coarse).
 - A literature note surfaced that **Cody's lgamma coefficients for the (1,2) interval
   are "unpublished."**
+- **"Both are the new function" verified & pursued:** GAMMALN≡GAMMALN.PRECISE means we
+  ARE probing the modern (2010-rewrite) function, so the modern-library candidates were
+  tested against the actual bits: **exact Boost.Math source `lgamma_small_imp` = 374/1468
+  (worst-6)** — Boost's structure matches the fingerprint perfectly (split 1.5, `(z-1)(z-2)(Y+P/Q)`,
+  Y+R(0)=γ, reflected upper half) but its coefficients are not Excel's. **System lgamma also
+  ruled out:** Windows UCRT `ucrtbase.dll` lgamma = 335/1468, Python `math.lgamma` = 19/1468 —
+  Excel does not delegate to the OS runtime. Best of ANY implementation on the dense (1,2)
+  set: fdlibm 384/1468 (26%).
 
 **Conclusion:** Excel's GAMMALN (= GAMMALN.PRECISE) is the Cody structure (split 1.5,
 D₁=−γ, `xm·(D+xm·P/Q)`) with an **unpublished coefficient set** — most likely Microsoft's
