@@ -144,6 +144,28 @@ evaluation ansatz (variable/center/staging), and (c) LLL/PSLQ against that ansat
 or a match to an obscure historical lgamma. This is a dedicated multi-session
 sub-campaign; deferred. Form + these negatives are the load-bearing progress.
 
+## 2026-07-12 recovery harness + workflow — monomial plateau, form is structural
+
+Built the recovery harness `smart-fuzzer/work/w109/G3-02-gamma/lgamma_recover.py`
+(load dense band, high-precision fit of `R` in `lgamma(x)=(x-1)(x-2)·R(x)`, staged
+double evaluation, bit-exact scoring, per-coordinate ULP refine, PSLQ constant-id).
+Harvested a dense (1,2) constraint set (`answers-g12dense.json`, 1468 points: fine
+0.0008 grid + adjacent-double clusters at 7 anchors).
+
+Findings on the monomial ansatz:
+- Best staging is `(x-1)·((x-2)·R)`, center 1.5, and it converges with degree
+  (D16 27/1468 worst 4377 → D20 **564/1468 worst 54** → D22 571 → then conditioning
+  noise). A scaled/Chebyshev-conditioned fit (u=(x-c)/0.5) is needed past D16.
+- **PLATEAUS at ~571-578/1468 (~39%)**; the per-coordinate ±ULP refine only reaches
+  578 — so the residual is **structural, not coefficient rounding**. The monomial
+  `(x-1)(x-2)·Horner(R)` captures the function shape but is NOT Excel's exact
+  evaluation structure.
+
+A recovery workflow (6 parallel ansatz families: rational N/D, Cody sub-band split
+at 1.5, compensated/double-double + Estrin evaluation, PSLQ-anchored coefficients,
+exact published Cephes/fdlibm/Boost branches, alternative variable/no-factor) is
+running with adversarial held-out verification of any family that beats the plateau.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
