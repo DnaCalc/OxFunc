@@ -86,6 +86,39 @@ so GAMMA is expected to be `exp` over this same internal lgamma; COMBIN
 and the G3-01 distributions sit on the same substrate. **Identifying this
 one custom kernel remains the gate for the whole gamma family.**
 
+## 2026-07-12 live-probe harvest — the (1,2) FORM identified
+
+Live pipeline re-validated (GAMMALN(11)=0x402e357590954d16, GAMMALN(1)=GAMMALN(2)=0)
+and a 1016-point dense batch harvested over (0.1, 11.5) into
+`answers-dense1.json`. Error-vs-true(mpmath) ULP profile by band:
+
+| band | ULP err | note |
+|---|---|---|
+| (0.1,0.5) | ±1 | near-correctly-rounded (`-log(x)+poly` regime) |
+| (0.5,1.0) | ±2 | |
+| (1.0,1.5) | −3..+5 | polynomial EXPOSED |
+| (1.5,2.0) | −5..+2 | polynomial EXPOSED |
+| (2.0,3.0) | ±4 | exposed |
+| (3.0,6.0) | ±1 | accurate again |
+| (6.0,10) | −3..+1 | |
+| (10,11.5) | ±2 | Stirling region |
+
+The error curve is a SMOOTH ±few-ULP oscillation, NOT piecewise — the apparent
+"edges" are just the approximation error oscillating, so there is no hidden
+sub-band structure in (1,3).
+
+**KEY: the (1,2) form is `lgamma(1+s) = s·(s−1)·P(s)`** (s = x−1), anchored at
+the exact zeros s=0 (x=1) and s=1 (x=2). Extracting `P(s)=Excel(1+s)/(s(s−1))`
+and fitting a polynomial: residual falls monotonically with degree (deg4
+4.7e-5 → deg12 1.8e-11), and the recovered coefficients MATCH the true-lgamma
+expansion — **P(0) = 0.57721566… = γ (Euler–Mascheroni)** to 6.7e-16, P(1)≈
+−0.2452512, etc. So Excel's (1,2) core is an accurate series-form approximation
+`s(s−1)·P(s)` (NOT an arbitrary minimax rational); the ±5 ULP vs true is the
+double-precision Horner evaluation of the degree-high P, not coefficient error.
+This is the recoverable form. Note P(0)=γ means the earlier "recovered constant
+γ is a true-function value not a fingerprint" caveat is resolved: γ IS the
+leading coefficient of the (1,2) core.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
