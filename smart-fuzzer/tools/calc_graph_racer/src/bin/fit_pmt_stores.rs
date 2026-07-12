@@ -30,8 +30,43 @@ impl V {
     fn neg(self) -> V { V::new(0.0).sub(self) }
 }
 
-fn pow_n(w: V, n: u64, m: u32, pform: u8) -> V {
+// 2^t via f2xm1 + fscale, extended. Returns (P, P-1) where P-1 is the ACCURATE
+// expm1: for |t|<1 (k=0) it is F2XM1(t) directly (no P then minus-1
+// cancellation); otherwise P-1 = scale(1+f2xm1(f),k) - 1. Used by the
+// log-domain pow forms; `expm1_pm1` selects the accurate P-1 vs plain P.sub(1).
+fn two_pow2(t: V, store_t: bool, expm1_pm1: bool) -> (V, V) {
+    let t = t.st(store_t);
+    let k = rx::ext_rndint(&t.0, CW);
+    let f = rx::ext_sub(&t.0, &k, CW);
+    // f2xm1 needs |f| in [0,1]; here |f|<=0.5 by construction of rndint.
+    let neg = rx::ext_to_f64(&f, CW) < 0.0;
+    let wv = rx::ext_f2xm1(&rx::ext_abs(&f, CW), CW); // 2^|f| - 1
+    let mut fm1 = wv; // 2^f - 1
+    if neg {
+        // 2^(-|f|)-1 = -(2^|f|-1)/2^|f|
+        let two_f = rx::ext_add(&wv, &rx::ext_one(), CW);
+        fm1 = rx::ext_div(&rx::ext_sub(&rx::ext_from_f64(0.0), &wv, CW), &two_f, CW);
+    }
+    let p2f = rx::ext_add(&fm1, &rx::ext_one(), CW); // 2^f
+    let p = V(rx::ext_scale(&p2f, &k, CW)); // 2^t
+    let kf = rx::ext_to_f64(&k, CW);
+    let pm1 = if expm1_pm1 && kf == 0.0 {
+        V(fm1) // exact expm1: 2^t - 1 with t = f (k==0)
+    } else {
+        p.sub(V::new(1.0))
+    };
+    (p, pm1)
+}
+
+// FYL2XP1 is only valid for |rate| <= 1 - sqrt(1/2) ~ 0.29289; outside that
+// Excel must fall back to fyl2x(1+rate).
+const FYL2XP1_DOM: f64 = 0.292893218813452476;
+
+// Returns (P, P-1). For the log-domain pforms 4/5 the P-1 is the accurate
+// F2XM1-based expm1 (killing the small-rate cancellation); pform 3 keeps P.sub(1).
+fn pow_pm1(w: V, rate: f64, n: u64, m: u32, pform: u8) -> (V, V) {
     let bit = |i: u32| m & (1 << i) != 0;
+    let mul_pm1 = |p: V| (p, p.sub(V::new(1.0)));
     match pform {
         0 => {
             let mut p = V::new(1.0);
@@ -46,29 +81,36 @@ fn pow_n(w: V, n: u64, m: u32, pform: u8) -> V {
                     b = b.mul(b).st(bit(0));
                 }
             }
-            p
+            mul_pm1(p)
         }
         1 => {
             let mut p = w;
             for _ in 1..n {
                 p = p.mul(w).st(bit(0));
             }
-            p
+            mul_pm1(p)
         }
-        2 => V::new(rx::excel_pow_positive(w.f(), n as f64)),
+        2 => mul_pm1(V::new(rx::excel_pow_positive(w.f(), n as f64))),
+        3 => {
+            // fused x87 pow chain via fyl2x(1+rate): P = 2^(n*log2 w); plain P-1
+            let t = V(rx::ext_fyl2x(&rx::ext_from_f64(n as f64), &w.0, CW));
+            two_pow2(t, bit(0), false)
+        }
+        4 => {
+            // log1p provider: P = 2^(n*log2(1+rate)) via FYL2XP1(rate) directly;
+            // P-1 via F2XM1 (accurate expm1 for small rate).
+            let t = V(rx::ext_fyl2xp1(&rx::ext_from_f64(n as f64), &rx::ext_from_f64(rate), CW));
+            two_pow2(t, bit(0), true)
+        }
         _ => {
-            // fused x87 pow chain: P = 2^(n*log2 w), extended end-to-end;
-            // bit(0) optionally stores t = n*log2(w) (the POWER staging)
-            let t = V(rx::ext_fyl2x(&rx::ext_from_f64(n as f64), &w.0, CW)).st(bit(0));
-            let k = rx::ext_rndint(&t.0, CW);
-            let f = rx::ext_sub(&t.0, &k, CW);
-            let neg = rx::ext_to_f64(&f, CW) < 0.0;
-            let wv = rx::ext_f2xm1(&rx::ext_abs(&f, CW), CW);
-            let mut m = rx::ext_add(&wv, &rx::ext_one(), CW);
-            if neg {
-                m = rx::ext_div(&rx::ext_one(), &m, CW);
+            // branched provider: FYL2XP1 in-domain (with expm1 P-1), else fyl2x.
+            if rate.abs() <= FYL2XP1_DOM {
+                let t = V(rx::ext_fyl2xp1(&rx::ext_from_f64(n as f64), &rx::ext_from_f64(rate), CW));
+                two_pow2(t, bit(0), true)
+            } else {
+                let t = V(rx::ext_fyl2x(&rx::ext_from_f64(n as f64), &w.0, CW));
+                two_pow2(t, bit(0), false)
             }
-            V(rx::ext_scale(&m, &k, CW))
         }
     }
 }
@@ -79,8 +121,9 @@ fn pmt(rate: f64, n: f64, pv: f64, fvv: f64, ty: f64, m: u32, pform: u8, comp: u
         return -(pv + fvv) / n;
     }
     let w = V::new(1.0).add(V::new(rate)).st(bit(1));
-    let p = pow_n(w, n as u64, m, pform).st(bit(2));
-    let pm1 = p.sub(V::new(1.0)).st(bit(3));
+    let (p_raw, pm1_raw) = pow_pm1(w, rate, n as u64, m, pform);
+    let p = p_raw.st(bit(2));
+    let pm1 = pm1_raw.st(bit(3));
     let tf = V::new(1.0).add(V::new(rate).mul(V::new(ty))).st(bit(8));
     match comp {
         0 => {
@@ -152,7 +195,7 @@ fn main() {
     }
     println!("{} PMT rows", obs.len());
     let mut results: Vec<(u32, u32, u8, u8)> = Vec::new();
-    for pform in 0u8..4 {
+    for pform in 0u8..6 {
         for comp in 0u8..6 {
             for m in 0u32..(1 << 9) {
                 let sc = obs
@@ -167,12 +210,11 @@ fn main() {
     for (sc, m, pform, comp) in results.iter().take(10) {
         println!("{sc:3}/{}  pform{pform} comp{comp} mask {m:09b}", obs.len());
     }
-    let (_, m, pform, comp) = results[0];
-    let mut shown = 0;
+    let (best_sc, m, pform, comp) = results[0];
+    println!("CHAMPION {best_sc}/{}  pform{pform} comp{comp} mask {m:09b}", obs.len());
     for (a, want) in &obs {
         let got = pmt(a[0], a[1], a[2], a[3], a[4], m, pform, comp);
-        if got.to_bits() != *want && shown < 10 {
-            shown += 1;
+        if got.to_bits() != *want {
             println!(
                 "  MISS rate={:.6e} n={} pv={} fv={} ty={} {:+} ulp",
                 a[0], a[1], a[2], a[3], a[4],
