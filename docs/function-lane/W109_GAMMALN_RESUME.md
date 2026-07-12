@@ -23,7 +23,32 @@ Self-contained handoff to continue the GAMMALN custom-core recovery. Read this +
 - Gauss-Newton-fitted (plain-double op-graph): **224/718, smooth 0.99**, noise floor 1.41.
 - op-graph scan (fixed coeffs, ranked by noise): **x87 continuous 1.24** < x87 spill 1.27–1.29
   < ALL plain-double 1.41–1.58. → Excel evaluates in x87 extended precision.
-- Neither floor is 0 yet, so the EXACT x87 staging + joint coefficient optimum are unpinned.
+
+## 2026-07-12 UPDATE — stable Jacobian solved + DECISIVE reframing
+- **Stable x87 Gauss-Newton — SOLVED (the prior blocker).** The finite-difference
+  Jacobian through the x87 op-graph was quantized by the round-to-double steps. Fix:
+  compute the Jacobian ANALYTICALLY at high precision (`stable_gn.jac`) — it is the
+  derivative of the ideal real function, hence STAGING-INDEPENDENT and clean — while
+  the residual uses the actual rounded op-graph, and fit the SMOOTHED residual (LM).
+  Result on the x87 staging: smooth 1.30 → **0.42**, exact 138 → **240**. The analytic
+  Jacobian is reused across all stagings (only `resid()` changes) → cheap enumeration.
+- **Staging enumeration:** best is `poly0 rat0 prod0 sum1` = x87 poly/ratio/product with
+  the `xm*rat + D` sum rounded to double before the outer multiply → **298/718** (noise
+  1.234). All 16 Cody stagings floor at noise 1.21–1.34; none approach the ~0.29
+  single-rounding limit.
+- **DECISIVE free-fit test (`freefit.py`): Excel lgamma[1,1.5] has ≥2 internal roundings.**
+  A free, arbitrary-degree Chebyshev fit of `g=lgamma/((x-1)(x-2))` (the best ANY smooth
+  form could do) plateaus at **RMS 1.21 ULP / max 4.3 / ~248 exact** and does not improve
+  past degree 14 (mean → 0). A single `round(smooth F)` would floor at ~0.29 ULP / ~100%
+  exact. ⇒ **No smooth-form coefficient recovery (Cody/Boost/Lanczos/published) can be
+  bit-exact.** This RETIRES the coefficient-hunt program. The mixed staging with an extra
+  inner rounding (298) already beats the free smooth fit (248), confirming ≥2 roundings.
+- **Endgame is now:** identify the exact multi-rounding op-graph (which intermediates
+  spill to double), then CVP the coefficients. Correct-staging signal = misses collapse to
+  <1 ULP pre-round (`miss_diagnostic.py`). Best staging so far still has 80% of misses
+  >1 ULP → staging not yet exact. `mixed_scan.py` ranks stagings by this CVP-viability.
+- Harness added: `stable_gn.py`, `staging_scan.py`, `inner_scan.py`, `miss_diagnostic.py`,
+  `freefit.py`, `mixed_scan.py`, `refine_staging.py`, `cvp_refine.py` (all in work dir).
 
 ## Files (harness + data live in the GITIGNORED work dir, on local disk)
 Dir: `smart-fuzzer/work/w109/G3-02-gamma/`
@@ -38,17 +63,24 @@ Dir: `smart-fuzzer/work/w109/G3-02-gamma/`
 - **Exact coefficients** (tracked): `W109_GAMMALN_PUBLISHED_COEFFICIENTS.md` (netlib Cody D1/P1/Q1,
   D2/P2/Q2, D4/P4/Q4, Stirling C; Boost Y/P/Q per sub-range).
 
-## Next steps (in order)
-1. **Stable x87 Gauss-Newton.** Current x87 GN Jacobian is noisy across the round-to-double steps
-   (that's the blocker). Options: fit the SMOOTH part in exact-real value space first, then a
-   damped GN / Levenberg-Marquardt with a higher-precision finite-difference Jacobian; or IRLS.
-   Goal: drive smooth → 0 **inside the x87 op-graph**.
-2. **Finer x87 staging enumeration → drive the noise floor to 0.** Try more spill masks (round after
-   each poly step vs register-kept), the Boost `Y`-split (`prefix*Y + prefix*R`) in x87, division vs
-   x87-reciprocal, `xm=(x−0.5)−0.5` vs `x−1` in x87. Rank by noise floor; the staging with noise → 0
-   IS Excel's op-graph.
-3. **LLL / `fpminimax`** for the last ~1 ULP once smooth + noise are both near 0.
-4. **Extend** to [1.5,2] (reflected `(2−z)(1−z)(Y+R(2−z))`) and [2,3]; then compose
+## Next steps (in order) — REVISED 2026-07-12 post-freefit
+1. ~~Stable x87 Gauss-Newton~~ **DONE** (`stable_gn.py`, analytic staging-independent Jacobian).
+2. ~~Prove single-vs-multi rounding~~ **DONE** (`freefit.py`): ≥2 roundings; smooth-form recovery
+   is impossible. Coefficient-hunt program retired.
+3. **Identify the exact multi-rounding op-graph.** Enumerate mixed-precision stagings (which of
+   {poly-per-step, ratio, xm·rat, +D, final} round to double vs stay x87-extended; division vs
+   x87-reciprocal; Cody `xm*(xm*R+d1)` ordering). Rank by CVP-viability = fraction of misses with
+   pre-round |dist|<1 ULP (`mixed_scan.py` / `miss_diagnostic.py`), NOT exact count. The correct
+   op-graph is the one whose misses collapse to <1 ULP.
+4. **CVP the coefficients** on the pinned op-graph (`cvp_refine.py` / `refine_staging.py`): the
+   remaining <1-ULP misses are integer coefficient-ULP nudges. Upgrade to real LLL (fpylll) if
+   coordinate/Babai polish stalls.
+5. **If step 3 finds no <1-ULP-collapsing staging:** the op-graph is more exotic (e.g. a different
+   algorithm/precision than Cody-rational, or an SSE2/x87 mix per subexpression the current
+   parametrization can't express). Per the "don't get stuck" rule: write up the residual structure
+   (mixed_scan ranking + where structural misses concentrate), design the next probe, and cycle to a
+   higher-leverage lane (PMT/MINVERSE/ACCRINT/solver), returning later.
+6. **Extend** to [1.5,2] (reflected `(2−z)(1−z)(Y+R(2−z))`) and [2,3]; then compose
    GAMMA = exp(lgamma) (+ sin reflection for negatives), COMBIN, and re-race the G3-01 distributions.
 
 ## Commands
