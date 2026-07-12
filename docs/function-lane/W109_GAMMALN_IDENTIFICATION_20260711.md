@@ -119,6 +119,31 @@ This is the recoverable form. Note P(0)=γ means the earlier "recovered constant
 γ is a true-function value not a fingerprint" caveat is resolved: γ IS the
 leading coefficient of the (1,2) core.
 
+## 2026-07-12 recovery attempts on the (1,2) core — the hard wall confirmed
+
+With the `s(s−1)·P(s)` form and 249 dense (1,2) points, three recovery routes
+were tried and all fail bit-exact — the core is a genuine custom high-order
+approximation, not directly recoverable from ±5-ULP-rounded evaluations:
+- **Truncated true Taylor** of P(s): catastrophic (1e14 ULP) — P's Taylor around
+  0 converges only slowly toward s=1 (boundary singularity of the numerator's
+  series), so Excel is NOT a Taylor truncation.
+- **Recurrence** `lgamma(x)=lgamma(x−1)+log(x−1)` for (2,3): RULED OUT — residual
+  drifts +5..+9 ULP (would be ~±1 if real), and band error SHRINKS with x
+  ((3,4) ±1 vs (1,2) ±5) whereas recurrence would accumulate error. Each region
+  has its own direct approximation.
+- **High-precision polynomial fit** (mpmath, monomial in s): converges but slowly
+  — D=16 still 47666 ULP off (D=15 → 207922). **Rational P/Q fit** (m,m): worse /
+  ill-conditioned (≥6e12 ULP). Neither a modest polynomial nor a modest rational
+  matches; the exact stored coefficients are not recoverable by direct fitting to
+  the rounded data.
+
+**Assessment:** the (1,2) core is the evidence doc's "custom Microsoft
+implementation, no public source" — recovering it bit-exact needs (a) much denser
+adjacent-double probes to tighten per-coefficient constraints, (b) the exact
+evaluation ansatz (variable/center/staging), and (c) LLL/PSLQ against that ansatz,
+or a match to an obscure historical lgamma. This is a dedicated multi-session
+sub-campaign; deferred. Form + these negatives are the load-bearing progress.
+
 ## Next steps (Phase-5b)
 
 1. **Pin the Stirling boundary** by live bisection in (10.25, 11.0].
