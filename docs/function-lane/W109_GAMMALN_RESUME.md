@@ -24,6 +24,23 @@ Self-contained handoff to continue the GAMMALN custom-core recovery. Read this +
 - op-graph scan (fixed coeffs, ranked by noise): **x87 continuous 1.24** < x87 spill 1.27–1.29
   < ALL plain-double 1.41–1.58. → Excel evaluates in x87 extended precision.
 
+## 2026-07-13 — SOURCE SWEEP exhausted (don't redo)
+GitHub + literature sweep for a public source that could bit-match Excel's op-graph:
+- **Provenance:** the Excel-2010 stats rewrite is undocumented at the algorithm level.
+  The academic literature (McCullough; Mélard, *Comput Stat* 2014) only ASSESSES accuracy;
+  no cited method / source. Microsoft's implementation is proprietary/internal.
+- **Code sweep** (`gh search code` GAMMALN.PRECISE / gammaln): every public GAMMALN is an
+  INDEPENDENT accuracy-oriented reimplementation — IronCalc, PhpSpreadsheet, formula.js,
+  ClosedXML, LibreOffice Calc, HyperFormula, and Gnumeric (which uses its own `lgamma_rgnum`
+  from R/GSL). None copies Excel; all are "right family" at most, never the exact op-graph.
+  Gnumeric's Welinder — the deepest open-source RE of Excel stats — states Excel's source
+  isn't available and does NOT bit-match it.
+- **Conclusion:** consistent with the ≥2-rounding proof — the op-graph is what's needed and
+  it is proprietary. No public source will bit-match. This path is CLOSED; GAMMALN stays
+  legitimately open (NOT accept-divergence). The only untested corner is a specific
+  proprietary BINARY (e.g. the msvcr90/100 CRT Excel 2010 shipped with) — but GAMMALN is
+  Excel-internal 2010-rewrite code, not a CRT lgamma call, so even that is low-EV.
+
 ## 2026-07-12 UPDATE — stable Jacobian solved + DECISIVE reframing
 - **Stable x87 Gauss-Newton — SOLVED (the prior blocker).** The finite-difference
   Jacobian through the x87 op-graph was quantized by the round-to-double steps. Fix:
