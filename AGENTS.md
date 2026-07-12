@@ -130,3 +130,22 @@ Post-bootstrap rule:
 2. Changes to FEC/F3E boundary semantics (function-facing declarations, coercion policies, admission contracts) require cross-repo impact assessment before promotion.
 3. When proposing changes that affect OxFml evaluator-facing clauses, file a handoff packet and register it in `docs/handoffs/HANDOFF_REGISTER.csv`.
 4. Neither repo marks a seam change as "complete" until both sides acknowledge.
+
+## Session Transcript Archiving
+
+Raw agent/Claude Code session transcripts for OxFunc work are archived to a
+**separate private repository**, `DnaCalc/OxFunc-History` (local sibling checkout
+`../OxFunc-History`) — never into this repo.
+
+1. **Never commit session transcripts, `*.jsonl` transcript dumps, or transcript
+   archives (`.gz`/`.zip`/`.tar`) into OxFunc.** This repo is **public**;
+   transcripts contain full conversation content and must not be published here.
+2. The history repo stores one gzipped transcript per session
+   (`<session-uuid>.jsonl.gz`), plus `manifest.txt` and `archive-transcripts.sh`.
+3. To refresh, run in `../OxFunc-History`:
+   `bash archive-transcripts.sh && git add -A && git commit -m "Refresh session archives" && git push`.
+   The script reads from `~/.claude/projects/C--Work-DnaCalc-OxFunc/` and uses
+   `gzip -n` so an unchanged session stays a byte-identical blob (no history bloat).
+4. Prefer archiving a session **once at its end** rather than re-committing a
+   growing blob repeatedly. If the archive grows large, migrate it to `git-lfs`.
+5. `DnaCalc/OxFunc-History` is and must remain **private**.
