@@ -1,3 +1,24 @@
+# NPV kernel — offline search EXHAUSTED (2026-07-12 round 2)
+
+A bounded 10-variant staging race (`check_npv_staging.rs`) plus an mpmath
+correctly-rounded control settle the worksheet-NPV kernel identification as far
+as offline analysis can:
+- **Leader: plain-double reverse-Horner division `a=(a+c)/w`, 117/142 (cluster 36/47).**
+  Three independently-staged reverse-Horner forms — pure SSE2, x87 `w` computed
+  once, x87 `w` recomputed per statement — are **bit-identical** on every row.
+  So NPV is x87-transparent (NOT a spill loop) and CSE-insensitive.
+- **Ruled out:** reciprocal-multiply `(a+c)·(1/w)` (strictly worse, max|Δ|=3 —
+  Excel does not precompute `1/(1+rate)`); forward running-product; integer-binexp
+  pow; forward/reverse term summation; the `a/w + c/w` distributed split; and
+  **extended-precision / correctly-rounded** accumulation (mpmath CR = 78/142,
+  WORSE — NPV is genuinely plain double, not double-double).
+- **Residual:** 25 rows (11 in the npvA cluster) at `±1..2` ULP, entirely in the
+  cancellation regime (rates near the IRR root ~0.1634 where NPV≈0). Irreducible
+  from offline re-staging. Needs DISCRIMINATING LIVE PROBES that isolate the exact
+  plain-double accumulation order in cancellation (e.g. exact-cancelling cashflow
+  designs), not more offline variants. **Solver family (IRR/RATE/YIELD/ODDFYIELD)
+  is live-probe-gated here — deferred to a probe pass; cycle back.**
+
 # IRR / NPV kernel state at 2026-07-12 session end
 
 SCHEDULE (settled): FD-Newton in v = 1/(1+r); probe step ABSOLUTE
