@@ -87,6 +87,49 @@ a future repair lands a different matrix-inversion substrate
 (LU-solve / Crout / Cholesky). Anything worse than the per-kind
 floor recorded above is a regression.
 
+## 2026-07-13 W109 Kernel Landed — Gauss-Jordan → Doolittle LU
+
+The inversion kernel `inverse_kernel` in
+`crates/oxfunc_core/src/functions/matrix_family.rs` has been replaced. It
+previously ran **Gauss-Jordan on `[A|I]`** (the algorithm W109 had already
+ruled out); it now runs the identified **Doolittle LU + partial pivot +
+per-column unit-vector solve with division-form back-substitution, plain
+binary64** (each multiply/subtract rounds separately — no FMA contraction;
+the multiplier is a true division). The determinant kernel already carried
+the same LU elimination, so the two matrix kernels are now consistent.
+
+Verified end-to-end through the compiled surface (`eval_surface_value_call`
+via `matrix_local_eval`), scored against cached live-Excel bits
+(build 20131):
+
+| Corpus | Gauss-Jordan (old) | Doolittle LU (new) |
+| ------ | ------------------ | ------------------ |
+| 3x3 (159 cells, 21 matrices) | `80` | `150` |
+| 4x4 (448 cells, 28 matrices, `m4b`) | `102` | `448` — **perfect** |
+
+Net **+416 cells** (`182 → 598` of `607`). The old-kernel passing set is a
+strict subset of the new (0 regressions, confirmed cell-by-cell).
+`cargo test -p oxfunc_core --lib` = `1502/1502` green; the 11 matrix unit
+tests (singular→#NUM guard, seed inverse, non-square→#VALUE) all preserved —
+the `EPS = 1e-12` singularity threshold is unchanged, so only the algorithm
+changed.
+
+**Residual (still open):** `9` cells on the 3x3 corpus (+ 2 of the 4 on the
+`{1,2;3,4}` witness) drift by exactly `+1`/`+2` ULP. All are ill-conditioned
+small-determinant cases (tridiag det 4, `[[1,2,3],[4,5,6],[7,8,10]]` det -3,
+near-identity 1e-8) where Excel lands 1 ULP off the exact representable
+value. Ruled out as explanations this round: the full 32-variant solve-ordering
+sweep (all ≤150), and x87 80-bit extended registers (best 110, strictly worse
+— MINVERSE is plain SSE2 double, not a legacy x87 body). The residual
+*direction flips* (Excel further from exact on tridiag/integer, closer on
+near-identity), so it is a genuinely different op-graph for those cells, not a
+uniform extra/fewer rounding. Tracked as a targeted decoder probe in
+`docs/function-lane/DISCREPANCY_RULED_OUT_LEDGER.csv`. **4x4 has zero residual.**
+
+The W097 R-F per-kind drift floor recorded above no longer applies as-is: the
+Gauss-Jordan condition-number amplification (Hilbert 4x4 → 352 ULP) is gone;
+the new gate is the m4b 448/448 bit-exact result plus the 3x3 150/159.
+
 ## Evidence
 1. `smart-fuzzer/runs/w089-comprehensive-seed-20260430-004/`
 2. `smart-fuzzer/runs/oxf-i45e-w089-repair-20260430-001/`
