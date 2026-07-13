@@ -52,7 +52,7 @@ Maturity:
 
 ## Current Summary
 
-Open Category-2 rows: `19`
+Open Category-2 rows: `20`
 
 | Group | Current rows |
 |-------|--------------|
@@ -61,7 +61,7 @@ Open Category-2 rows: `19`
 | G3 special/statistical numeric exactness | 7 |
 | G4 elementary/trig numeric exactness | 4 |
 | G5 matrix numeric/shape | 1 |
-| G6 financial exactness/solver | 7 |
+| G6 financial exactness/solver | 8 |
 | G7 comparison/misc semantics | 0 |
 | G8 untriaged inbox | 0 |
 
@@ -149,8 +149,9 @@ They are now explicit `publication_shape` rows `CSC-0024`/`CSC-0025` under
 |-------------|-------------|-----|-----|----------|
 | G6-01 — PMT, PPMT (IPMT, CUMPRINC/CUMIPMT adjacent) | Annuity publication exactness drift. W108 Phase E supersedes the earlier forward-form conclusion: Excel uses the discount arrangement already present in OxFunc, `em=expm1(-n*log1p(r)); v=1+em; pmt=(pv+fv*v)*r/em`. The best tested historical Kahan/x87 helper candidate scores `2285/4040` exact (`56.6%`) and `92.9%` within `1` ULP on the adversarial PMT corpus; the `553`-row `n=1` isolation lane localizes its remaining error to the final rounding of `em`. The fresh mortgage PMT control is exact while first-period PPMT is `1` ULP, sharpening the adjacent recurrence/publication lane. W109 replay (2026-07-11): the full `5,154`-row Phase-E live corpus through current OxFunc scores `3117` exact, `1318` at `1` ULP, `542` at `2-16`, `177` above — PMT lanes are dominated by `<=4` ULP publication drift while IPMT/PPMT/CUM schedule rows reach catastrophic drift, including sign-of-zero/branch rows (`IPMT-139` publishes `-0` vs a finite Excel value; `ISO-EM-T0-109/122` publish tiny nonzero vs Excel exact `0`). Rollup: `smart-fuzzer/runs/w109-phase-e-replay/rollup.json`. Row STAYS OPEN. | NUM-L→NUM-S | M2 | BUG-FUNC-015 / KED-FIN-001 / W108 / recon G6-01 / W109 replay |
 | G6-02 — ACCRINT | Residual `1` ULP on the now-pinned `us30360` triple-edge witness: issue `43565`, first interest `43647`, settlement `43905`, rate `0.05`, par `1000`, frequency `2`, basis `0`. | NUM-S | M1 | BUG-FUNC-030 / recon G6-02 |
-| G6-03 — YIELD | Solver publication drift: `19` ULP on the catalog witness and `6` ULP even on the par-price control. | NUM-L | M2 | BUG-FUNC-031 / recon G6-03 |
-| G6-04 — ODDFYIELD | Solver drift around `3e5` ULP after the forward price path is aligned; two fresh witnesses are `307444`-`311909` ULP. | NUM-L | M1 | BUG-FUNC-032 / recon G6-04 |
+| G6-03 — YIELD | W109 (2026-07-13): the dive-plan premise "forward kernel already bit-exact, YIELD is 100% schedule" is FALSE. The **forward PRICE kernel is not bit-exact**: `pcomp` computes `base^(off+k)` via `base.powf` (Rust powf = `exp·ln` even for integer exponents), but Excel uses the C-runtime `pow` integer special case = **binary exponentiation**. IDENTIFIED + held-out validated (25 live-Excel PRICE points / 5 bonds: **15/15 ident + 10/10 held-out** for binexp-integer + powf-fractional + coupons-first). Ruled out: naive repeated-multiply (5/10, breaks exp≥4), powf/x87·log integer (6/10), getPrice_ redemption-first order (2/5). Residual after the forward fix = **plateau publication**: corrected PRICE is flat at exactly 95 across a ~20-ULP yield band; Excel publishes a specific point (catalog `0x…9983`, par exactly `0.05`). COUPLED: fixing pcomp alone + current bisection regresses par 6→~40 ULP — land the forward fix AND the schedule together. Writeup: `work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md`. | NUM-L | M2 | BUG-FUNC-031 / recon G6-03 |
+| G6-04 — ODDFYIELD | Solver drift around `3e5` ULP; two fresh witnesses are `307444`-`311909` ULP. The "forward price path aligned" note is suspect — `oddfprice_kernel` shares the same `base.powf` integer-exponent bug as `pcomp` (see G6-03: apply the binexp `excel_bond_pow` fix here too before the schedule). | NUM-L | M1 | BUG-FUNC-032 / recon G6-04 |
+| G6-03b — PRICE (latent) | W109 (2026-07-13) NEW: PRICE drifts on **on-coupon** bonds (integer discount exponents) — the same `base.powf` vs C-runtime `pow` binexp bug as G6-03. `PRICE(44013,44562,0.05,0.05,100,2,0)` → OxFunc `100.00000000000003` vs live Excel exactly `100` (`0x4059000000000000`); `pcomp` scored `3/5` on the on-coupon ladder. Never caught (no on-coupon integer-exponent PRICE witness existed). Closes with the same `excel_bond_pow` fix (binexp integer / powf fractional), validated `15/15`+`10/10` held-out; PRICE has no schedule so it closes cleanly once landed. Shared by PRICEMAT/DURATION/MDURATION — re-verify. | NUM-S | M2 | W109 PRICE ladder / work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md |
 | G6-05 — RATE | Solver residual `586` ULP on the mortgage witness and `72` ULP on a one-period identity whose mathematical root is `0.1`. | NUM-L | M1 | BUG-FUNC-009 bit-parity / W103 / recon G6-05 |
 | G6-06 — IRR | Irrational-root solver residuals remain: `80` ULP and `14096` ULP on the bounded witnesses. | NUM-L | M1 | BUG-FUNC-028 out-of-stream / recon G6-06 |
 | G6-07 — CUMPRINC | The full-schedule control is exact; the half-schedule witness is `1` ULP, localizing the current evidence to boundary-sensitive accumulation. | NUM-S | M1 | recon G6-07 |

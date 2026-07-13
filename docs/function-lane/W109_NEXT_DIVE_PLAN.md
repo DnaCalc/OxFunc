@@ -18,6 +18,15 @@ gate, re-run the held-out ceiling. Banks ~70 cells + removes 3 spurious #NUM. (R
 +1-ULP near-cancellation stays as a separate decoder probe.)
 
 ## THEN — recommended DIVE: YIELD / ODDFYIELD (G6-03/04)
+**UPDATE 2026-07-13 — this premise was WRONG.** The forward `pcomp` price kernel is NOT
+bit-exact: it computes `base^(off+k)` with `base.powf` (Rust powf = `exp·ln` even for integer
+exponents) but Excel uses the C-runtime `pow` integer special case = **binary exponentiation**.
+Identified + held-out validated (25 live-Excel PRICE pts / 5 bonds, 15/15 + 10/10). YIELD is a
+forward-kernel binexp fix PLUS a plateau-publication schedule (COUPLED — land together; pcomp
+fix alone regresses YIELD-par 6→~40 ULP). PRICE has latent binexp drift too. Full writeup:
+`work/w109/G6-solvers/YIELD_PRICE_FORWARD_KERNEL.md`; catalog G6-03/03b/04 updated. Original
+(now-corrected) text follows:
+
 Forward `pcomp` (YIELD, `bond_core_family.rs`) and `oddfprice_kernel` (ODDFYIELD,
 `odd_bond_family.rs`) are ALREADY bit-exact, so 100% of the residual is the ~15-line inversion
 SCHEDULE. First experiment needs **zero new Excel capture**: implement the classic
