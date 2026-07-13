@@ -69,3 +69,27 @@ STRUCTURE best matches Excel's ≥2-rounding op-graph. Strong prior (deep wall +
 principled test the corpus was harvested for, and it closes the shape-coverage question.
 Also pending: fdlibm UPPER (tc-polynomial + double-double) on its [1.2316,1.5] sub-band; GSL
 factored-Padé. (The log/Lanczos/cancellation shapes are excluded by the verified exact zeros.)
+
+## DETERMINISTIC RESIDUAL DECODE (2026-07-13, "there is no noise")
+The high-freq residual is a DETERMINISTIC signal, not noise: for a fixed op-graph
+`Excel(x)=round(F_real(x) + Σ_{k∈S} shift_k(x))`, where `shift_k` = the sensitivity-weighted
+rounding-error SAWTOOTH of intermediate `T_k`. Tools: `residual_decode.py` (regress δ on the
+spill basis + spill-subset scan), `delta_shape.py` (profile δ across the band), `split_test.py`.
+Findings on the best Cody sum-spill model (coeffs fit so smooth≈0):
+- **Pre-final residual δ: rms 1.28, smooth 0.43, max|δ| 4.6** — deterministic, NOT bounded <0.5.
+- **δ is HIGH-FREQUENCY** (lag-1 autocorr +0.07, 46% sign-flips) — bit-level structure, not a
+  smooth form gap; its **ULP-amplitude GROWS toward the upper band** (rms 1.0→1.7 as x:1→1.5,
+  ~4-ULP peaks in [1.25,1.5]). "Not fractal" — the amplitude has real structure.
+- **None of the 5 intermediate spills explain it**: corr(δ,shift_k) ≤ 0.08 for xn/xd/ratio/
+  t/inner; regression β all 0.14–0.27 (none ≈1); NO spill-subset drives max|δ|<0.5 (best
+  {inner} max 4.28). The confound: **sawtooth PHASE depends on the coefficients**, and fitted
+  coeffs ≠ Excel's exact doubles, so op-graph and coeffs are entangled in every observation.
+- **Split at 1.2316 rejected as the primary structure**: band-specific coeffs cut only the
+  SMOOTH part (0.48→0.23 lower, 0.29→0.20 upper; exact 136→150, 158→167) — the **noise floor
+  stays ~1.0/1.4 regardless of split**. The ≥2-rounding structure is intrinsic per sub-band;
+  the upper band is coefficient-independently noisier.
+- **Frontier:** the exact structure is the JOINT (x87 register-spill pattern × exact double
+  coefficients) — a large combinatorial × lattice problem. Natural candidate spaces (5 spills,
+  coeffs, split) are exhausted without closing it. To break the coeff-phase confound: EXACT-
+  ARITHMETIC probing (choose x where a target intermediate is exactly representable, isolating
+  one rounding), or a joint spill×CVP search over a much larger spill-pattern space.
